@@ -18,11 +18,12 @@ Without a key the game still runs, using an offline keyword matcher for story de
 
 | Site | Domain | What it does |
 |---|---|---|
-| **Y** (social network: graphite timeline, yellow accents) | `y.com` | News and leads. Posting is free; every post is rated for how well it wins followers, and some posts move the story (see `postActions`). Followers unlock story branches and Y creator payouts. |
+| **Y** (social network: graphite timeline, yellow accents) | `y.com` | News and leads. Posting is free; every post is rated for how well it wins followers, and some posts move the story (see `postActions`). Followers unlock story branches and Y creator payouts. Click any name or @mention for their profile (`y.com/<handle>`): bio, location, link, follower counts and their posts. Type `@username` in Y search, or `y.com/username` in the address bar, to look up someone who hasn't posted. |
 | **Qmail** (email) | `qmail.com` | Personal mail: your landlord, your mom, agent receipts, clients. Writing and replying is free, and some emails move the story (see `mailActions`). Other emails get an in-character reply written by Gemma, if the person replies at all. You can send one message per address until they answer. Mail to an address you haven't seen bounces. |
 | **Satchel** (crypto wallet) | `satchel.app` | Dark crypto wallet. Your money is DOLR, a made-up stablecoin pegged 1:1 to the dollar. Balance chart, tokens, scheduled rent and nightly settlement, and on-chain style activity with hashes and blocks. |
 | **Forkyard** (fake GitHub) | `forkyard.com` | Repos the agent pushes for you. You press **Deploy** yourself. Live apps are at `<repo>.forkyard.app`. |
 | **agent** (AI chatbot) | `agent.chat` | Where you type prompts. Each one costs money (depending on the model) and an hour of game time. Upgrade models at `agent.chat/models`. |
+| **Yowl** (business reviews) | `yowl.com` | Local businesses: the bakery, the laundromat, GeneralAI (a parking lot, 1 star), Gary's property company, Noodle Hut, the hardware store. Reviews change with the story (the laundromat's mention a van at 2am; agent starts reviewing GeneralAI in your name once it's misaligned enough). You can review each business once; some reviews move the story (see `yowl.reviewActions`). |
 
 ### Sites you find
 
@@ -169,6 +170,8 @@ nodes: {
 - `endings`: checked in order by the effect `ending: true`; the first whose `when` holds runs its `effects` and shows its `title`/`text` end screen (`open` is where "Read the message" goes). The last one should have no `when`.
 - `sites`: hidden sites, each `{ label, url, about, unlockOnly?, gate?, gateText? }`. Their URL works once known; the first visit bookmarks them and fires `{ on: 'discover', site }` events. The effect `unlock: 'id'` bookmarks a site directly (the only way in for `unlockOnly` sites); `gate` is a condition the visit must meet. Condition: `discovered: 'id'`. Tests fail if a findable site's URL never appears in a post, email or thread.
 - `laptop` (`ramGb`, `diskGb`) and `localModels`: `{ id, source: 'weightroom' | 'cellar', sizeGb, ramGb, tier, hours, downloadHours, about, persona, fallback, onPrompt? }`. Events `{ on: 'download' }` and `{ on: 'run' }` (optionally with `model`) fire on downloads and on loading a model. The effect `localModel: 'id'` puts a model on the laptop; `file: { name, text }` saves a text file there.
+- `y.profiles`: Y profiles keyed by handle (`name`, `bio`, `location`, `joined`, `followers`, `following`, `verified`, `link` as a string or `{ text, when }`, `protected`). Anyone who posts gets a page anyway; listed handles can be looked up even if they never post. Tests fail if a handle that posts has no profile.
+- `yowl`: `businesses` (`id`, `name`, `category`, `price`, `address`, `hours`, `website` as `{ repo }` (shown while deployed) or `{ url }`, and `reviews` with `author`, `stars`, `text`, and `ago` days or a `when`), and `reviewActions` (branches with a `business`, judged by Jev like posts; the server takes `kind: 'review'`).
 - `forum`: nullboard `threads` (`id`, `title`, `author`, `posts`, optional `when`, `pinned` and `onRead` effects).
 - `market`: Cellar `listings` (`id`, `title`, `seller`, `rating`, `price`, `about`, `effects`, optional `hours` delivery and `once`), plus `onBuy` effects for every purchase.
 - More hooks that move meters: `models[n].effects` (run on purchase), `agent.onFake` (whenever a too-weak model fakes a job), `contacts[addr].onMail` (whenever the player emails them), and `onFix` on a defect or upkeep issue.

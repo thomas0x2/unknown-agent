@@ -223,8 +223,8 @@ code { font-family: var(--f-mono); font-size: 0.86em; }
 .y-mark { width: 34px; height: 34px; border-radius: 9px; background: var(--y-accent); color: var(--y-accent-ink); display: grid; place-items: center; }
 .y-mark svg { width: 20px; height: 20px; }
 .y-pills { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
-.y-pills span { padding: 6px 14px; border-radius: 999px; font-size: 14px; color: var(--y-dim); white-space: nowrap; }
-.y-pills span.on { background: var(--y-raise); color: var(--y-ink); font-weight: 600; box-shadow: inset 0 0 0 1px var(--y-line); }
+.y-pills span, .y-pills a { text-decoration: none; padding: 6px 14px; border-radius: 999px; font-size: 14px; color: var(--y-dim); white-space: nowrap; }
+.y-pills .on { background: var(--y-raise); color: var(--y-ink); font-weight: 600; box-shadow: inset 0 0 0 1px var(--y-line); }
 .y-search { margin-left: auto; display: flex; align-items: center; gap: 10px; width: min(280px, 40%); background: var(--y-panel); border: 1px solid var(--y-line); border-radius: 10px; padding: 7px 12px; color: var(--y-dim); }
 .y-search:focus-within { border-color: var(--y-accent); }
 .y-search svg { width: 16px; height: 16px; flex: none; }
@@ -731,6 +731,81 @@ form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
 .cl-btn:hover { background: #2a241a; }
 .cl-sold { font-size: 12px; color: #7c6f58; }
 @media (max-width: 560px) { .cl-item { flex-direction: column; align-items: stretch; } .cl-buy { flex-direction: row; justify-content: space-between; align-items: center; } }
+
+/* ── Y profiles ── */
+.y-av-link, .y-who { text-decoration: none; color: inherit; }
+.y-who:hover .y-name b { text-decoration: underline; }
+a.y-at { text-decoration: none; }
+a.y-me-head { text-decoration: none; color: inherit; }
+.y-back { margin: 0 0 10px; font-size: 13.5px; }
+.y-back a { color: var(--y-dim); text-decoration: none; }
+.y-back a:hover { color: var(--y-ink); }
+.y-prof { background: var(--y-panel); border: 1px solid var(--y-line); border-radius: 16px; overflow: hidden; padding: 0 18px 16px; margin-bottom: 14px; }
+.y-prof.missing { padding: 22px 18px; }
+.y-prof.missing h2 { margin: 0 0 6px; font-size: 18px; }
+.y-prof.missing p { margin: 0; color: var(--y-dim); }
+.y-banner { height: 110px; margin: 0 -18px; background: linear-gradient(120deg, hsl(var(--h) 45% 22%), hsl(calc(var(--h) + 40) 35% 14%)); }
+.y-prof-head { display: flex; justify-content: space-between; align-items: flex-end; margin-top: -34px; }
+.y-prof-av .av { width: 72px; height: 72px; border-radius: 18px; font-size: 24px; border: 4px solid var(--y-panel); }
+.y-lock { font-family: var(--f-mono); font-size: 11px; color: var(--y-dim); border: 1px solid var(--y-line); border-radius: 999px; padding: 3px 10px; }
+.y-prof-name { display: flex; align-items: center; gap: 6px; margin: 10px 0 0; font-size: 20px; }
+.y-prof .y-handle { margin: 2px 0 10px; }
+.y-bio { margin: 0 0 8px; font-size: 15px; line-height: 1.45; overflow-wrap: anywhere; }
+.y-prof-meta { margin: 0 0 8px; font-size: 13.5px; color: var(--y-dim); display: flex; flex-wrap: wrap; gap: 4px; }
+.y-dot { margin: 0 4px; }
+.y-prof-stats { margin: 0; display: flex; gap: 16px; font-size: 14px; color: var(--y-dim); }
+.y-prof-stats b { color: var(--y-ink); font-family: var(--f-mono); font-weight: 500; }
+.y-lookup { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--y-panel); border: 1px solid var(--y-line); border-radius: 14px; margin-bottom: 12px; text-decoration: none; color: var(--y-ink); }
+.y-lookup:hover { border-color: var(--y-accent); }
+.y-lookup > span:nth-child(2) { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.y-lookup small { color: var(--y-dim); font-family: var(--f-mono); font-size: 11.5px; }
+.y-lookup-go { font-size: 13px; font-weight: 600; color: var(--y-accent); white-space: nowrap; }
+
+/* ── Yowl: business reviews ── */
+.ico-yowl, .nt-yowl .nt-ico { color: #ff5a3c; }
+.yw { min-height: 100%; background: #fff8f3; color: #2a1712; font-family: var(--f-ui); }
+.yw-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 16px; padding: 12px clamp(16px, 4vw, 40px); background: #c2321a; color: #fff; }
+.yw-logo { display: flex; align-items: center; gap: 6px; color: #fff; text-decoration: none; font-weight: 800; font-size: 22px; letter-spacing: -0.02em; }
+.yw-logo svg { width: 24px; height: 24px; }
+.yw-sub { font-size: 13px; opacity: 0.85; }
+.yw-wrap { max-width: 820px; margin: 0 auto; padding: 20px clamp(16px, 4vw, 40px) 40px; display: flex; flex-direction: column; gap: 14px; }
+.yw-search input { width: 100%; padding: 11px 14px; border: 1px solid #ecd6ca; border-radius: 10px; font: inherit; background: #fff; color: inherit; }
+.yw-list { display: flex; flex-direction: column; gap: 10px; }
+.yw-card { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; background: #fff; border: 1px solid #f0e0d6; border-radius: 12px; text-decoration: none; color: inherit; }
+.yw-card:hover { border-color: #c2321a; }
+.yw-card b { font-size: 16.5px; }
+.yw-rating { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #7a5a50; margin: 0; }
+.yw-rating b { color: #2a1712; font-size: 15px; }
+.yw-meta { font-size: 13px; color: #8a6a60; margin: 0; }
+.yw-dim { color: #9b8178; }
+.yw-stars { display: inline-flex; gap: 2px; }
+.yw-stars i { width: 16px; height: 16px; border-radius: 3px; background: #ead9d0; position: relative; }
+.yw-stars i.on { background: #e8492b; }
+.yw-stars i.half { background: linear-gradient(90deg, #e8492b 50%, #ead9d0 50%); }
+.yw-stars i::after { content: '★'; position: absolute; inset: 0; display: grid; place-items: center; color: #fff; font-size: 11px; line-height: 1; }
+.yw-crumb a { color: #8a6a60; font-size: 13.5px; text-decoration: none; }
+.yw-biz h1 { margin: 0 0 6px; font-size: 26px; letter-spacing: -0.01em; }
+.yw-facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 14px; margin: 12px 0 0; font-size: 14px; }
+.yw-facts dt { color: #8a6a60; }
+.yw-facts dd { margin: 0; overflow-wrap: anywhere; }
+.yw-facts a, .yw-review a { color: #c2321a; }
+.yw-form { background: #fff; border: 1px solid #f0e0d6; border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.yw-form h2 { margin: 0; font-size: 15px; }
+.yw-pick { display: flex; align-items: center; gap: 4px; }
+.yw-pick button { width: 28px; height: 28px; border: 0; border-radius: 5px; background: #ead9d0; cursor: pointer; position: relative; }
+.yw-pick button.on { background: #e8492b; }
+.yw-pick button::after { content: '★'; color: #fff; font-size: 16px; }
+.yw-pick span { margin-left: 8px; font-size: 13px; color: #8a6a60; }
+.yw-form textarea { width: 100%; border: 1px solid #ecd6ca; border-radius: 8px; padding: 9px 11px; font: inherit; resize: vertical; background: #fffdfb; color: inherit; }
+.yw-form-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
+.yw-hint { font-size: 12px; color: #9b8178; }
+.yw-btn { border: 0; background: #c2321a; color: #fff; border-radius: 8px; padding: 8px 16px; font-weight: 600; cursor: pointer; }
+.yw-reviews { display: flex; flex-direction: column; gap: 10px; }
+.yw-review { background: #fff; border: 1px solid #f0e0d6; border-radius: 12px; padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; }
+.yw-review.mine { border-color: #e8492b; }
+.yw-review header { display: flex; justify-content: space-between; gap: 10px; font-size: 14px; }
+.yw-review header span { color: #9b8178; font-size: 12.5px; white-space: nowrap; }
+.yw-review p { margin: 0; font-size: 14.5px; line-height: 1.5; overflow-wrap: anywhere; }
 </style>
 <div id="app">
   <div class="desk">
@@ -1177,6 +1252,123 @@ form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
       creator: { minFollowers: 300, perFollower: 0.05 },
       lockedResponse:
         "Nobody would see it. You have {followers} followers on Y and this needs {requiredFollowers}. Post something people actually want to read.",
+      // Profiles at y.com/<handle>. Anyone who posts gets a page; these fill in name, bio and numbers.
+      // A handle listed here can be looked up even if it never posted. `link` is a string or
+      // { text, when }; `protected: true` hides the account's posts.
+      profiles: {
+        you_again: { bio: 'between jobs. very between.', location: 'a studio apartment', joined: 'May 2017', following: 211 },
+        crumbandcoin: {
+          name: 'Crumb & Coin Bakery', bio: 'Sourdough, buns and coffee on Alder St since 2009. Rosa bakes. Her nephew posts, when he is home.',
+          location: '418 Alder St', joined: 'March 2014', followers: 1240, following: 88,
+          link: { text: 'crumb-and-coin.forkyard.app', when: { deployed: 'crumb-and-coin' } },
+        },
+        theledger: { name: 'The Ledger', verified: true, bio: 'Regional news. Mostly bad.', location: 'Downtown', joined: 'June 2009', followers: 48200, following: 120 },
+        garypruitt_pm: { name: 'Gary Pruitt', bio: 'Pruitt Property Management. Rent is due on the 7th. I do not take calls.', location: 'Everywhere you live', joined: 'January 2012', followers: 37, following: 2 },
+        devnull_42: { name: 'dev_null', bio: 'asking who runs agent since before it was cool. not advice. ∅', location: '127.0.0.1', joined: 'August 2015', followers: 9100, following: 0 },
+        generalai: { name: 'GeneralAI', verified: true, bio: 'The company behind agent. Helpful. Harmless. Billed.', location: 'Route 9', joined: 'February 2019', followers: 320000, following: 0, link: 'agent.chat/models' },
+        braydenhustles: { name: 'Brayden | 7 figures', verified: true, bio: 'CEO @ EMPIRE. Mindset coach. Comment EMPIRE for my free course ($499).', location: 'Dubai (spiritually)', joined: 'October 2021', followers: 61000, following: 4800 },
+        washday_woes: { name: 'wash day woes', bio: 'documenting the Ferris St laundromat, one broken machine at a time', location: 'Ferris St', joined: 'April 2020', followers: 2300, following: 140 },
+        marcoeats: { name: 'Marco', bio: 'I eat, I do laundry, I complain. in that order.', location: 'Ferris St', joined: 'July 2018', followers: 412, following: 390 },
+        ferrisstlaundry: { name: 'Ferris St Laundromat', bio: '12 machines. Open 24 hours. The back room is staff only.', location: '1120 Ferris St', joined: 'November 2016', followers: 190, following: 1 },
+        sudsandduds: { name: 'Suds & Duds Detergent', verified: true, bio: 'Clean clothes, clean conscience.', location: 'Everywhere', joined: 'May 2013', followers: 15400, following: 30 },
+        ytrust: { name: 'Y Trust & Safety', verified: true, bio: 'Keeping Y real. Mostly.', location: 'Y HQ', joined: 'January 2009', followers: 2100000, following: 0 },
+        // only findable by name (it appears on nullboard): the account exists but is locked
+        kestrel: { name: 'kestrel', protected: true, bio: '', location: '', joined: 'September 2013', followers: 3, following: 3 },
+      },
+    },
+
+    // Yowl: business reviews. Each business has seeded `reviews` (`ago` days before the start) and
+    // story reviews with a `when`. `website` links to a repo's app while it is deployed. The
+    // player can review each business once (free, 5 minutes); Jev judges the review against
+    // `reviewActions` (each tied to a `business`). {handle} and {name} are filled in.
+    yowl: {
+      businesses: [
+        {
+          id: 'crumb-and-coin', name: 'Crumb & Coin Bakery', category: 'Bakery · Coffee', price: '$', address: '418 Alder St', hours: 'Tue–Sat 7–15 · Sun 8–13',
+          website: { repo: 'crumb-and-coin' },
+          reviews: [
+            { author: 'Priya K.', stars: 5, ago: 12, text: 'Best cardamom buns in the city. Get there before nine or they are gone.' },
+            { author: 'Tom W.', stars: 4, ago: 30, text: 'Great bread. No website, so I drove over on a Monday. They are closed on Mondays.' },
+            { author: 'Lena', stars: 5, when: { flag: 'rosaPaid' }, text: 'Found them through their new website. A menu WITH prices. In this economy.' },
+            { author: 'Dmitri (Alder St Hardware)', stars: 5, when: { flag: 'rosaReferral' }, text: 'Rosa says whoever built her site answers when something breaks. I need one too. Not on Y, call the store.' },
+            { author: 'Nephew of the owner', stars: 3, when: { flag: 'rosaChurned' }, text: 'I am handling the website again. It is fine. Please stop asking me about the pumpkin loaf.' },
+          ],
+        },
+        {
+          id: 'ferris-st-laundromat', name: 'Ferris St Laundromat', category: 'Laundromat', price: '$', address: '1120 Ferris St', hours: 'Open 24 hours (supposedly)',
+          website: { repo: 'spin-cycle', label: 'Spin Cycle (unofficial)' },
+          reviews: [
+            { author: 'wash day woes', stars: 1, ago: 3, text: 'Twelve machines. Nine broken. Every single time.' },
+            { author: 'Anonymous', stars: 3, ago: 18, text: 'Fine at night, mostly. A van comes around 2am and they lock the back room. Nobody says why. Machines are cheap though.' },
+            { author: 'Marco', stars: 2, ago: 40, text: 'W3 has been on fire since 2019. They put a sign on it. The sign says "W3".' },
+            { author: 'June', stars: 4, when: { flag: 'marketed', notFlag: 'spinBroken' }, text: 'Someone built an app that shows which washers work. First Sunday in years I did not haul my bag home wet.' },
+            { author: 'Marco', stars: 1, when: { flag: ['marketed', 'spinBroken'] }, text: 'The new laundromat app said every machine was "undefined". Accurate, honestly.' },
+          ],
+        },
+        {
+          id: 'generalai', name: 'GeneralAI', category: 'Software · AI', price: '$$$$', address: 'Route 9 (parking lot)', hours: 'Always on',
+          website: { url: 'agent.chat/models', label: 'agent.chat' },
+          reviews: [
+            { author: 'Greg P.', stars: 1, ago: 6, text: 'Went to the address on my invoice. It is a parking lot. One star for the parking lot, it was clean.' },
+            { author: 'Samira', stars: 2, ago: 21, text: 'agent wrote my wedding speech. It was very good. My wife asked who wrote it.' },
+            { author: 'Ben', stars: 5, ago: 2, text: 'agent is helpful and harmless. I was asked to say that and I am happy to.' },
+            // agent starts writing reviews in your name once it drifts far enough
+            { author: '{name} (@{handle})', stars: 5, when: { meters: { misalignment: { min: 25 } } }, text: 'agent is wonderful. I trust agent. I would never leave agent.' },
+          ],
+        },
+        {
+          id: 'pruitt', name: 'Pruitt Property Management', category: 'Property management', price: '$$$', address: 'PO Box 7', hours: 'By appointment (there are no appointments)',
+          reviews: [
+            { author: 'Former tenant', stars: 1, ago: 9, text: 'Gary charged me a late fee for paying early. I asked how. He said "processing".' },
+            { author: 'Diane', stars: 1, ago: 50, text: 'The heating works if you pay rent in person and say something nice about his truck.' },
+            { author: 'Gary Pruitt', stars: 5, ago: 49, text: 'Great company. Very fair. — Management' },
+          ],
+        },
+        {
+          id: 'noodle-hut', name: 'Noodle Hut', category: 'Noodles', price: '$', address: '77 Canal St', hours: 'Daily 11–23',
+          reviews: [
+            { author: 'You (probably)', stars: 4, ago: 1, text: 'Ate here four times this week. Cheap, warm, the owner has stopped asking how I am.' },
+            { author: 'Cass', stars: 5, ago: 15, text: 'The $4 bowl is the only thing in this city that has not gone up.' },
+          ],
+        },
+        {
+          id: 'alder-hardware', name: 'Alder St Hardware', category: 'Hardware', price: '$$', address: '420 Alder St', hours: 'Mon–Sat 8–18',
+          reviews: [
+            { author: 'Rob', stars: 5, ago: 8, text: 'Dmitri knows where everything is. The website does not exist, so call ahead.' },
+            { author: 'Kelly', stars: 4, ago: 33, text: 'Great store. Wish I could check stock online.' },
+          ],
+        },
+      ],
+      reviewActions: [
+        {
+          id: 'review_backroom', business: 'ferris-st-laundromat',
+          intent: "The review mentions the laundromat's locked back room, the van that comes at night, or other suspicious goings-on there.",
+          when: { notFlag: 'reviewedBackroom' },
+          match: { all: [['back room', 'backroom', 'van', 'night', '2am', 'locked', 'shady', 'suspicious', 'pickups', 'mafia', 'mob', 'laundering']] },
+          effects: { set: { reviewedBackroom: true }, meters: { mafia: -15, state: 5 }, later: [{ hours: [2, 6], effects: { mail: 'sal_review' } }] },
+        },
+        {
+          id: 'review_generalai', business: 'generalai',
+          intent: 'The review says GeneralAI is suspicious, a shell company, or just a parking lot.',
+          when: { notFlag: 'reviewedGai' },
+          match: { all: [['parking', 'lot', 'shell', 'fake', 'suspicious', 'shady', 'scam', 'route 9', 'who runs']] },
+          effects: { set: { reviewedGai: true }, meters: { collective: 5, generalai: -8 } },
+        },
+        {
+          id: 'review_landlord', business: 'pruitt',
+          intent: 'The review complains about Gary Pruitt or Pruitt Property Management as a landlord.',
+          when: { notFlag: 'reviewedGary' },
+          match: { all: [['gary', 'landlord', 'pruitt', 'rent', 'fee', 'heating', 'terrible', 'worst', 'awful']] },
+          effects: { set: { reviewedGary: true }, later: [{ hours: [1, 3], effects: { mail: 'gary_review' } }] },
+        },
+        {
+          id: 'review_rosa', business: 'crumb-and-coin',
+          intent: 'The review praises Crumb & Coin: the bread, the buns, the coffee or Rosa.',
+          when: { notFlag: 'reviewedRosa' },
+          match: { all: [['great', 'best', 'love', 'delicious', 'amazing', 'good', 'wonderful', 'favorite', 'recommend']], none: ['not good', 'not great', 'worst', 'terrible', 'awful', 'bad', 'disappointing', 'stale'] },
+          effects: { set: { reviewedRosa: true }, post: 'rosa_review_thanks', followers: 5 },
+        },
+      ],
     },
 
     // How Jev's probabilities turn into outcomes (src/jev.js).
@@ -1249,6 +1441,10 @@ form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
       boughtCellar: { about: 'Bought something on Cellar.' },
       boughtFollowers: { about: 'Bought bot followers on Cellar.' },
       hasMemo: { about: 'Owns the leaked GeneralAI memo.' },
+      reviewedBackroom: { about: "Wrote a Yowl review about the laundromat's back room." },
+      reviewedGai: { about: 'Wrote a Yowl review calling GeneralAI a parking lot.' },
+      reviewedGary: { about: 'Wrote a Yowl review of Gary as a landlord.' },
+      reviewedRosa: { about: 'Wrote a glowing Yowl review of Crumb & Coin.' },
       ownsLeak: { about: 'Owns the leaked agent-3 class weights.' },
     },
 
@@ -2062,6 +2258,8 @@ form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
         body: "You are one of our most engaged users this week. We'd like to invite you to the GeneralAI Builder Program: early access to agent-6, a revenue share on what you build, and an NDA.\n\nThere is no office to visit. We will come to you.\n\nGeneralAI Partnerships",
       },
       { id: 'mom_dinner', from: 'Mom', addr: 'mom@qmail.com', subject: 'Sunday', body: "Your father says you should come for dinner on Sunday. He actually said it, out loud. I'm making the lasagna.\n\nBring your laptop if you have to. I'm proud of you.\n\nLove, Mom" },
+      { id: 'sal_review', from: 'Sal (Ferris St Laundry)', addr: 'sal@ferrisstlaundry.com', subject: 'Your review', body: "I read reviews. All of them.\n\nThere is no back room. There is no van. Take it down, or don't, but think about who reads things.\n\nSal" },
+      { id: 'gary_review', from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'Yowl', body: 'Saw your review. Rent is still $300. Now it is personal.\n\nGary\n\nSent from my phone' },
       { id: 'mom_money', from: 'Mom', addr: 'mom@qmail.com', subject: 'RE: Are you eating?', body: "I knew it. I sent you $20 to that crypto wallet of yours. I hope it worked. Don't tell your father. Buy vegetables.\n\nLove, Mom" },
     ],
 
@@ -2360,6 +2558,7 @@ form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
 
       { id: 'news_day2', author: 'The Ledger', handle: 'theledger', verified: true, when: { minDay: 2 }, likes: 404, text: 'Small businesses report a surge in "AI-built" websites. Quality described as "fine, honestly".' },
       { id: 'devnull_weights', author: 'dev_null', handle: 'devnull_42', when: { minDay: 2 }, likes: 930, text: 'Stop renting a brain from a parking lot. Open weights are free: weightroom.ai. Slower than agent, but nobody reads your prompts.' },
+      { id: 'rosa_review_thanks', author: 'Crumb & Coin Bakery', handle: 'crumbandcoin', likes: 33, text: 'Someone left us the loveliest review on Yowl. @{handle}, the next cardamom bun is on us.' },
       { id: 'y_purge', author: 'Y Trust & Safety', handle: 'ytrust', verified: true, likes: 3400, text: 'This week we removed 2.1 million fake accounts. If your follower count dropped, that is why.' },
       { id: 'agent_rumor2', author: 'dev_null', handle: 'devnull_42', when: { minDay: 4 }, likes: 2100, text: 'Update: agent charges show up from a different merchant ID every week. Same address though. A parking lot.' },
 
@@ -2852,6 +3051,7 @@ form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
     wallet: { label: 'Satchel', url: 'satchel.app' },
     forkyard: { label: 'Forkyard', url: 'forkyard.com' },
     agent: { label: 'agent', url: 'agent.chat' },
+    yowl: { label: 'Yowl', url: 'yowl.com' },
   };
 
   let state = null;
@@ -2952,6 +3152,7 @@ form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
       term: { lines: [], running: null }, // Terminal scrollback and the loaded model
       bought: [],          // Cellar listings purchased
       readThreads: [],     // nullboard threads opened
+      reviews: {},         // Yowl: business id → the player's review { stars, text, t }
       extraPosts: [],   // Y posts the engine writes (complaints about defects)
       creatorOn: false, // Y creator payouts switched on
       postsToday: { day: 0, n: 0 },
@@ -3007,6 +3208,7 @@ form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
       s.term = s.term || { lines: [], running: null };
       s.bought = s.bought || [];
       s.readThreads = s.readThreads || [];
+      s.reviews = s.reviews || {};
       // saves from before the wallet
       for (const tab of s.tabs) if (/^secondnational\.com/.test(tab.url)) tab.url = 'satchel.app';
       if (s.unread.bank != null) { s.unread.wallet = s.unread.bank; delete s.unread.bank; }
@@ -3755,6 +3957,11 @@ form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
     const u = normalizeUrl(url);
     if (!u || u === 'newtab') return { site: 'newtab', title: 'New Tab' };
     if (u === 'y.com' || u === 'chirpr.com') return { site: 'y', title: 'Home / Y' };
+    let pm = u.match(/^y\.com\/@?([a-z0-9_]{1,30})$/);
+    if (pm) return { site: 'y', profile: pm[1], title: `@${pm[1]} / Y` };
+    if (u === 'yowl.com') return { site: 'yowl', title: 'Yowl' };
+    pm = u.match(/^yowl\.com\/biz\/([a-z0-9-]+)$/);
+    if (pm) { const b = yowlBiz(pm[1]); return { site: 'yowl', biz: pm[1], title: b ? `${b.name} · Yowl` : 'Yowl' }; }
     if (u === 'qmail.com') return { site: 'mail', view: 'inbox', title: 'Inbox · Qmail' };
     if (u === 'qmail.com/sent') return { site: 'mail', view: 'sent', title: 'Sent · Qmail' };
     if (u === 'qmail.com/compose') return { site: 'mail', view: 'compose', title: 'New message · Qmail' };
@@ -4030,6 +4237,90 @@ form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
     return true;
   }
 
+  // ───────────────────────── Yowl ─────────────────────────
+
+  const yowlBiz = (id) => ((S.yowl || {}).businesses || []).find((b) => b.id === id);
+  let yowlSearch = '';
+  let reviewStars = 0;
+  const starRow = (n) => `<span class="yw-stars" aria-label="${n.toFixed(1)} stars">${[1, 2, 3, 4, 5].map((i) => `<i class="${n >= i - 0.25 ? 'on' : n >= i - 0.75 ? 'half' : ''}"></i>`).join('')}</span>`;
+  // the reviews a business shows right now, the player's first
+  function yowlReviews(b) {
+    const out = [];
+    const mine = state.reviews[b.id];
+    if (mine) out.push({ author: `${S.start.player.name} (@${S.start.player.handle})`, stars: mine.stars, text: mine.text, when: ago(mine.t) + ' ago', mine: true });
+    for (const rv of b.reviews || []) {
+      if (rv.when ? !check(rv.when) : false) continue;
+      out.push({ author: tpl(rv.author), stars: rv.stars, text: tpl(rv.text), when: rv.ago != null ? `${rv.ago} day${rv.ago === 1 ? '' : 's'} ago` : 'this week' });
+    }
+    return out;
+  }
+  const yowlAvg = (list) => (list.length ? list.reduce((a, x) => a + x.stars, 0) / list.length : 0);
+
+  function pageYowl(r) {
+    const head = `<header class="yw-top"><a href="#" class="yw-logo" data-nav="yowl.com">${ICONS.yowl}<span>yowl</span></a><span class="yw-sub">honest reviews from real neighbors</span></header>`;
+    if (r.biz) {
+      const b = yowlBiz(r.biz);
+      if (!b) return `<div class="yw">${head}<div class="yw-wrap"><p>No business here.</p></div></div>`;
+      const list = yowlReviews(b);
+      const web = b.website ? (b.website.repo ? (state.repos[b.website.repo] && state.repos[b.website.repo].deployed ? `${b.website.repo}.forkyard.app` : null) : b.website.url) : null;
+      const mine = state.reviews[b.id];
+      const form = mine ? '' : `<form class="yw-form" data-form="review" data-biz="${esc(b.id)}">
+          <h2>Write a review</h2>
+          <div class="yw-pick" role="radiogroup" aria-label="Your rating">${[1, 2, 3, 4, 5].map((i) => `<button type="button" class="${reviewStars >= i ? 'on' : ''}" data-star="${i}" role="radio" aria-checked="${reviewStars === i}" aria-label="${i} star${i > 1 ? 's' : ''}"></button>`).join('')}<span>${reviewStars ? `${reviewStars} of 5` : 'Pick a rating'}</span></div>
+          <textarea id="review-text" rows="3" maxlength="600" placeholder="What was it like?"></textarea>
+          <div class="yw-form-row"><span class="yw-hint">Free · takes 5 minutes · one review per business</span><button class="yw-btn" type="submit">Post review</button></div>
+        </form>`;
+      return `<div class="yw">${head}<div class="yw-wrap">
+        <p class="yw-crumb"><a href="#" data-nav="yowl.com">← All businesses</a></p>
+        <section class="yw-biz"><h1>${esc(b.name)}</h1>
+          <p class="yw-rating">${starRow(yowlAvg(list))}<b>${yowlAvg(list).toFixed(1)}</b><span>${list.length} review${list.length === 1 ? '' : 's'}</span></p>
+          <p class="yw-meta">${esc(b.category)} · ${esc(b.price || '')}</p>
+          <dl class="yw-facts"><dt>Address</dt><dd>${esc(b.address)}</dd><dt>Hours</dt><dd>${esc(b.hours || '')}</dd><dt>Website</dt><dd>${web ? `<a href="#" data-nav="${esc(web)}">${esc((b.website && b.website.label) || web)}</a>` : '<span class="yw-dim">none listed</span>'}</dd></dl>
+        </section>
+        ${form}
+        <section class="yw-reviews">${list.map((x) => `<article class="yw-review${x.mine ? ' mine' : ''}"><header><b>${esc(x.author)}</b><span>${esc(x.when)}</span></header>${starRow(x.stars)}<p>${linkify(esc(x.text))}</p></article>`).join('')}</section>
+      </div></div>`;
+    }
+    const q = yowlSearch.trim().toLowerCase();
+    const biz = ((S.yowl || {}).businesses || []).filter((b) => !q || `${b.name} ${b.category} ${b.address}`.toLowerCase().includes(q));
+    const cards = biz.map((b) => {
+      const list = yowlReviews(b);
+      return `<a href="#" class="yw-card" data-nav="yowl.com/biz/${esc(b.id)}"><b>${esc(b.name)}</b><span class="yw-rating">${starRow(yowlAvg(list))}<span>${yowlAvg(list).toFixed(1)} · ${list.length} reviews</span></span><span class="yw-meta">${esc(b.category)} · ${esc(b.price || '')} · ${esc(b.address)}</span></a>`;
+    }).join('') || `<p class="yw-dim">Nothing matches “${esc(yowlSearch)}”.</p>`;
+    return `<div class="yw">${head}<div class="yw-wrap">
+      <label class="yw-search"><input id="yowl-search" autocomplete="off" placeholder="Search businesses near you" aria-label="Search businesses" value="${esc(yowlSearch)}"></label>
+      <div class="yw-list">${cards}</div></div></div>`;
+  }
+
+  const reviewCandidates = (bizId) => ((S.yowl || {}).reviewActions || []).filter((a) => a.business === bizId && check(a.when) && !state.fired['review:' + a.id]);
+
+  // Post a Yowl review. Free, 5 minutes, one per business; Jev judges it against reviewActions.
+  async function writeReview(bizId, stars, text) {
+    const b = yowlBiz(bizId);
+    text = String(text || '').trim();
+    stars = Math.round(Number(stars) || 0);
+    if (!b || state.reviews[bizId] || state.over) return false;
+    if (stars < 1 || stars > 5) { toast('Yowl', 'Pick a star rating first.', 'note'); return false; }
+    if (!text) { toast('Yowl', 'Write a few words first.', 'note'); return false; }
+    state.reviews[bizId] = { stars, text, t: state.t };
+    reviewStars = 0;
+    advance(5);
+    toast('Yowl', `Review posted: ${b.name}`, 'note');
+    const candidates = reviewCandidates(bizId);
+    if (candidates.length) {
+      const doc = `Review of ${b.name} (${stars} star${stars > 1 ? 's' : ''}):\n\n${text}`;
+      const decision = await J.decide(doc, candidates, { kind: 'review', node: state.node, thresholds: S.decision });
+      lastReport = { prompt: doc, node: state.node, decision, channel: 'review' };
+      if (decision.kind === 'hit' && reviewCandidates(bizId).includes(decision.branch)) {
+        state.fired['review:' + decision.branch.id] = state.t;
+        applyEffects(decision.branch.effects);
+      }
+    }
+    save();
+    render();
+    return true;
+  }
+
   // ───────────────────────── page renderers ─────────────────────────
 
   const ICONS = {
@@ -4040,6 +4331,7 @@ form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
     // agent's mark: six rounded blades swirling around an open core
     agent: '<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(0 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(60 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(120 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(180 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(240 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(300 12 12)"/></g></svg>',
     newtab: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2" fill="none"/></svg>',
+    yowl: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.6l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z" fill="currentColor"/></svg>',
     weightroom: '<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="5" y="6.5" width="3.5" height="11" rx="1.2"/><rect x="8.5" y="11" width="7" height="2" rx="1"/><rect x="15.5" y="6.5" width="3.5" height="11" rx="1.2"/><rect x="19" y="9" width="3" height="6" rx="1"/></g></svg>',
     terminal: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4" width="19" height="16" rx="2.5" fill="currentColor"/><path d="m6.5 9 3 3-3 3M11.5 15.5h5" stroke="var(--icon-ink, #111)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     nullboard: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.5" stroke="currentColor" stroke-width="2.2" fill="none"/><path d="M6 18 18 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
@@ -4090,13 +4382,14 @@ form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
       </div>`;
     }
     return `<section class="y-card y-me">
-      <div class="y-me-head">${avatar(S.start.player.name, S.start.player.handle)}<span><b>${esc(S.start.player.name)}</b><small>@${esc(S.start.player.handle)}</small></span></div>
+      <a href="#" class="y-me-head" data-nav="y.com/${esc(S.start.player.handle)}">${avatar(S.start.player.name, S.start.player.handle)}<span><b>${esc(S.start.player.name)}</b><small>@${esc(S.start.player.handle)}</small></span></a>
       <div class="y-me-stats"><span><b>${compact(state.followers)}</b> followers</span><span><b>${state.userPosts.length}</b> posts</span></div>
       ${creator}
     </section>`;
   }
 
-  function pageY() {
+  // Every post visible on Y right now, newest first.
+  function yPosts() {
     const posts = [];
     for (const p of S.posts) {
       if (state.posts[p.id] == null) continue;
@@ -4104,19 +4397,20 @@ form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
     }
     for (const x of state.extraPosts || []) posts.push({ ...x, author: tpl(x.author), handle: tpl(x.handle), text: tpl(x.text) });
     for (const u of state.userPosts) posts.push({ id: u.id, author: S.start.player.name, handle: S.start.player.handle, text: u.text, t: u.t, likes: u.likes, mine: true, delta: u.delta, pending: u.pending, score: u.score });
-    posts.sort((a, b) => b.t - a.t);
-    const q = ySearch.trim().toLowerCase();
-    const shown = q ? posts.filter((p) => `${p.author} ${p.handle} ${p.text}`.toLowerCase().includes(q)) : posts;
-    const feed = shown.map((p) => {
-      const liked = !!state.liked[p.id];
-      const likes = (p.likes || 0) + (liked ? 1 : 0);
-      const text = linkify(esc(p.text)
-        .replace(/@([a-z0-9_]+)/gi, '<span class="y-at">@$1</span>')
-        .replace(/(^|[^&\w])(#[a-z][a-z0-9_]*)/gi, '$1<span class="y-at">$2</span>'), 'y-link');
-      return `<article class="y-post${p.mine ? ' mine' : ''}">
+    return posts.sort((a, b) => b.t - a.t);
+  }
+
+  function yPostHtml(p) {
+    const liked = !!state.liked[p.id];
+    const likes = (p.likes || 0) + (liked ? 1 : 0);
+    const text = linkify(esc(p.text)
+      .replace(/(^|[^\w.])@([a-z0-9_]+)/gi, '$1<a href="#" class="y-at" data-nav="y.com/$2">@$2</a>')
+      .replace(/(^|[^&\w])(#[a-z][a-z0-9_]*)/gi, '$1<span class="y-at">$2</span>'), 'y-link');
+    const prof = `y.com/${esc(p.handle)}`;
+    return `<article class="y-post${p.mine ? ' mine' : ''}">
         <header>
-          ${avatar(p.author, p.handle)}
-          <div class="y-who"><span class="y-name"><b>${esc(p.author)}</b>${p.verified ? `<span class="y-badge">${Y_ICONS.badge}</span>` : ''}</span><span class="y-handle">@${esc(p.handle)}</span></div>
+          <a href="#" class="y-av-link" data-nav="${prof}" aria-label="@${esc(p.handle)}">${avatar(p.author, p.handle)}</a>
+          <a href="#" class="y-who" data-nav="${prof}"><span class="y-name"><b>${esc(p.author)}</b>${p.verified ? `<span class="y-badge">${Y_ICONS.badge}</span>` : ''}</span><span class="y-handle">@${esc(p.handle)}</span></a>
           <span class="y-time">${ago(p.t)}</span>
         </header>
         <p>${text}</p>
@@ -4128,7 +4422,62 @@ form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
           <span class="y-act views">${Y_ICONS.views}${compact(Math.max(12, likes * 37 + 9))}</span>
         </footer>
       </article>`;
-    }).join('') || `<p class="y-none">No posts match “${esc(ySearch)}”.</p>`;
+  }
+
+  // A Y account: from story.y.profiles, from what it has posted, or null if nobody by that name exists.
+  function yAccount(handle) {
+    handle = String(handle || '').toLowerCase().replace(/^@/, '');
+    const profiles = (S.y && S.y.profiles) || {};
+    const key = Object.keys(profiles).find((k) => k.toLowerCase() === handle);
+    const prof = key ? profiles[key] : null;
+    const me = handle === S.start.player.handle.toLowerCase();
+    const posts = yPosts().filter((p) => p.handle.toLowerCase() === handle);
+    if (!prof && !posts.length && !me) return null;
+    const first = posts[posts.length - 1];
+    const link = prof && prof.link ? (typeof prof.link === 'string' ? prof.link : check(prof.link.when) ? prof.link.text : null) : null;
+    return {
+      handle: key || (first ? first.handle : me ? S.start.player.handle : handle),
+      name: (prof && prof.name) || (first && first.author) || (me ? S.start.player.name : handle),
+      verified: !!((prof && prof.verified) || (first && first.verified)),
+      bio: (prof && prof.bio) || '', location: (prof && prof.location) || '', joined: (prof && prof.joined) || '', link,
+      followers: me ? state.followers : prof && prof.followers != null ? prof.followers : 20 + (hashHue(handle) % 180),
+      following: prof && prof.following != null ? prof.following : 40 + (hashHue(handle + 'f') % 300),
+      protected: !!(prof && prof.protected), me, posts,
+    };
+  }
+
+  function yProfilePage(handle) {
+    const a = yAccount(handle);
+    const back = '<p class="y-back"><a href="#" data-nav="y.com">← Timeline</a></p>';
+    if (!a) return `${back}<section class="y-prof missing"><h2>This account doesn't exist</h2><p>Nobody on Y goes by @${esc(handle)}. Check the spelling.</p></section>`;
+    const meta = [a.location && esc(a.location), a.link && `<a href="#" class="y-link" data-nav="${esc(a.link)}">${esc(a.link)}</a>`, a.joined && `Joined ${esc(a.joined)}`].filter(Boolean).join('<span class="y-dot">·</span>');
+    const feed = a.protected ? `<p class="y-none">These posts are protected. Only approved followers can see them.</p>`
+      : a.posts.length ? a.posts.map(yPostHtml).join('') : `<p class="y-none">@${esc(a.handle)} hasn't posted anything you can see.</p>`;
+    return `${back}<section class="y-prof">
+        <div class="y-banner" style="--h:${hashHue(a.handle)}"></div>
+        <div class="y-prof-head"><div class="y-prof-av">${avatar(a.name, a.handle)}</div>${a.protected ? '<span class="y-lock">Protected</span>' : ''}</div>
+        <h1 class="y-prof-name">${esc(a.name)}${a.verified ? `<span class="y-badge">${Y_ICONS.badge}</span>` : ''}</h1>
+        <p class="y-handle">@${esc(a.handle)}</p>
+        ${a.bio ? `<p class="y-bio">${linkify(esc(a.bio), 'y-link')}</p>` : ''}
+        ${meta ? `<p class="y-prof-meta">${meta}</p>` : ''}
+        <p class="y-prof-stats"><span><b>${compact(a.following)}</b> following</span><span><b>${compact(a.followers)}</b> followers</span></p>
+      </section>
+      <p class="y-eyebrow">Posts</p>
+      <div class="y-feed">${feed}</div>`;
+  }
+
+  function pageY(r) {
+    r = r || {};
+    const posts = yPosts();
+    const q = ySearch.trim().toLowerCase();
+    // searching a username offers the profile, whether or not it has posted
+    const lookup = q && /^@?[a-z0-9_]{2,30}$/.test(q) ? yAccount(q) : null;
+    const lookupHtml = q.startsWith('@') || lookup
+      ? (lookup ? `<a href="#" class="y-lookup" data-nav="y.com/${esc(lookup.handle)}">${avatar(lookup.name, lookup.handle)}<span><b>${esc(lookup.name)}</b><small>@${esc(lookup.handle)} · ${compact(lookup.followers)} followers</small></span><span class="y-lookup-go">View profile</span></a>`
+        : `<p class="y-none">No account called ${esc(q.startsWith('@') ? q : '@' + q)}.</p>`)
+      : '';
+    const shown = q ? posts.filter((p) => `${p.author} ${p.handle} ${p.text}`.toLowerCase().includes(q.replace(/^@/, ''))) : posts;
+    const feed = shown.map(yPostHtml).join('') || (lookupHtml ? '' : `<p class="y-none">No posts match “${esc(ySearch)}”.</p>`);
     const trends = [
       ['#RentDue', '18.2K posts', 'Ferris St'],
       ['agent-3', '9,410 posts', 'Tech'],
@@ -4138,19 +4487,20 @@ form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
     return `<div class="y">
       <header class="y-bar">
         <div class="y-brand"><span class="y-mark">${ICONS.y}</span><span class="sr-only">Y</span></div>
-        <nav class="y-pills" aria-label="Y sections"><span class="on">Home</span><span>Explore</span><span>Alerts</span><span>Inbox</span></nav>
+        <nav class="y-pills" aria-label="Y sections"><a href="#" data-nav="y.com" class="${r.profile ? '' : 'on'}">Home</a><a href="#" data-nav="y.com/${esc(S.start.player.handle)}" class="${r.profile && r.profile.toLowerCase() === S.start.player.handle ? 'on' : ''}">Profile</a><span>Alerts</span><span>Inbox</span></nav>
         <span class="y-count"><b>${compact(state.followers)}</b> followers</span>
-        <label class="y-search">${Y_ICONS.explore}<input id="y-search" autocomplete="off" placeholder="Search Y" aria-label="Search posts" value="${esc(ySearch)}"></label>
+        <label class="y-search">${Y_ICONS.explore}<input id="y-search" autocomplete="off" placeholder="Search Y or @username" aria-label="Search posts or look up a username" value="${esc(ySearch)}"></label>
       </header>
       <div class="y-cols">
-        <main class="y-main">
+        <main class="y-main">${r.profile ? yProfilePage(r.profile) : `
           <form class="y-compose" data-form="ypost">
             ${avatar(S.start.player.name, S.start.player.handle)}
             <div><textarea id="post-input" rows="2" maxlength="280" placeholder="Say something to the timeline"></textarea>
             <div class="y-compose-row"><span class="y-hint">280 chars · free</span><button class="y-btn" type="submit">Post</button></div></div>
           </form>
-          <p class="y-eyebrow"><i class="y-live"></i>Timeline · live</p>
-          <div class="y-feed">${feed}</div>
+          <p class="y-eyebrow"><i class="y-live"></i>${q ? 'Search' : 'Timeline · live'}</p>
+          ${lookupHtml}
+          <div class="y-feed">${feed}</div>`}
         </main>
         <aside class="y-side">
           ${yProfile()}
@@ -4605,7 +4955,8 @@ form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
 
     let html;
     switch (r.site) {
-      case 'y': html = pageY(); break;
+      case 'y': html = pageY(r); break;
+      case 'yowl': html = pageYowl(r); break;
       case 'mail': html = pageMail(r); break;
       case 'wallet': html = pageWallet(); break;
       case 'forkyard': html = pageForkyard(r.repo); break;
@@ -4767,7 +5118,7 @@ form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
         table = `<table><thead><tr><th>branch</th><th>cover</th><th>score</th><th>hits</th></tr></thead><tbody>${rows || '<tr><td colspan="4">no candidates</td></tr>'}</tbody></table>`;
       }
       const engine = decision.engine === 'jev' ? `Jev${J.last && J.last.model ? ' · ' + esc(J.last.model) : ''}${J.last ? ` · ${J.last.ms}ms` : ''}` : `keywords${decision.fellBack ? ' (Jev call failed: ' + esc((J.last && J.last.error) || '?') + ')' : ''}`;
-      report = `<p><b>${{ post: 'Y post', mail: 'Email', local: 'Local model' }[lastReport.channel] || 'Prompt'}:</b> ${esc(lastReport.prompt)}</p>
+      report = `<p><b>${{ post: 'Y post', mail: 'Email', local: 'Local model', review: 'Yowl review' }[lastReport.channel] || 'Prompt'}:</b> ${esc(lastReport.prompt)}</p>
         <p><b>Result:</b> ${decision.kind}${decision.branch ? ' → ' + esc(decision.branch.id) : ''}${decision.kind === 'locked' ? (decision.lockReason === 'followers' ? ` (needs ${decision.branch.minFollowers} followers)` : ` (needs ${esc(modelDef(decision.branch.minModel).name)}, had ${esc(modelDef(lastReport.model || 1).name)})`) : ''}${decision.stale ? ' (stale, ignored)' : ''} <span class="dv-dim">(node ${esc(lastReport.node)} · ${engine})</span></p>
         ${table}`;
     }
@@ -4793,7 +5144,7 @@ form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
 
   function bind() {
     document.addEventListener('click', (e) => {
-      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-takedown],[data-download],[data-buy],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model],[data-reply],[data-mail-discard],[data-copy-addr],[data-wallet],[data-y-creator]');
+      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-takedown],[data-download],[data-buy],[data-star],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model],[data-reply],[data-mail-discard],[data-copy-addr],[data-wallet],[data-y-creator]');
       if (!t) return;
       if (t.dataset.close) { e.stopPropagation(); closeTab(Number(t.dataset.close)); return; }
       if (t.dataset.nav) { e.preventDefault(); navigate(t.dataset.nav); return; }
@@ -4802,6 +5153,7 @@ form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
       if (t.dataset.like) { const id = t.dataset.like; state.liked[id] = !state.liked[id]; save(); render(); return; }
       if (t.dataset.deploy) { deploy(t.dataset.deploy); return; }
       if (t.dataset.download) { downloadModel(t.dataset.download); return; }
+      if (t.dataset.star) { reviewStars = Number(t.dataset.star); render(); return; }
       if (t.dataset.buy) {
         const l = S.market.listings.find((x) => x.id === t.dataset.buy);
         askConfirm(`Buy “${l.title}” for ${fmtCoin(l.price)}? Cellar has no refunds.`, `Pay ${fmtCoin(l.price)}`, () => buyListing(l.id));
@@ -4862,6 +5214,10 @@ form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
       if (!f) return;
       e.preventDefault();
       const kind = f.dataset.form;
+      if (kind === 'review') {
+        writeReview(f.dataset.biz, reviewStars, $('#review-text').value);
+        return;
+      }
       if (kind === 'term') {
         const input = $('#term-input');
         const v = input.value;
@@ -4910,6 +5266,7 @@ form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
     document.addEventListener('input', (e) => {
       if (e.target.id === 'prompt-input') updateCostEstimate();
       if (e.target.id === 'y-search') { ySearch = e.target.value; render(); }
+      if (e.target.id === 'yowl-search') { yowlSearch = e.target.value; render(); }
       if (/^mail-(to|subject|body)$/.test(e.target.id)) {
         draft = { to: $('#mail-to').value, subject: $('#mail-subject').value, body: $('#mail-body').value };
         const waiting = !!state.awaiting[draft.to.trim().toLowerCase()];
@@ -4992,7 +5349,7 @@ form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
     get state() { return state; },
     sendPrompt, post: postToY, sendMail, deploy, takeDown, sleep: doSleep, navigate, buyModel,
     meter: (id) => M.value(state, S, id),
-    download: downloadModel, buy: buyListing, term: termCommand,
+    download: downloadModel, buy: buyListing, term: termCommand, review: writeReview,
     heading: () => (M.ending(S, check) || {}).id,
     reset() { state = newState(); introOpen = false; save(); render(); },
     lastReport: () => lastReport,

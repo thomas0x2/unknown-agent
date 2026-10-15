@@ -74,6 +74,123 @@
       creator: { minFollowers: 300, perFollower: 0.05 },
       lockedResponse:
         "Nobody would see it. You have {followers} followers on Y and this needs {requiredFollowers}. Post something people actually want to read.",
+      // Profiles at y.com/<handle>. Anyone who posts gets a page; these fill in name, bio and numbers.
+      // A handle listed here can be looked up even if it never posted. `link` is a string or
+      // { text, when }; `protected: true` hides the account's posts.
+      profiles: {
+        you_again: { bio: 'between jobs. very between.', location: 'a studio apartment', joined: 'May 2017', following: 211 },
+        crumbandcoin: {
+          name: 'Crumb & Coin Bakery', bio: 'Sourdough, buns and coffee on Alder St since 2009. Rosa bakes. Her nephew posts, when he is home.',
+          location: '418 Alder St', joined: 'March 2014', followers: 1240, following: 88,
+          link: { text: 'crumb-and-coin.forkyard.app', when: { deployed: 'crumb-and-coin' } },
+        },
+        theledger: { name: 'The Ledger', verified: true, bio: 'Regional news. Mostly bad.', location: 'Downtown', joined: 'June 2009', followers: 48200, following: 120 },
+        garypruitt_pm: { name: 'Gary Pruitt', bio: 'Pruitt Property Management. Rent is due on the 7th. I do not take calls.', location: 'Everywhere you live', joined: 'January 2012', followers: 37, following: 2 },
+        devnull_42: { name: 'dev_null', bio: 'asking who runs agent since before it was cool. not advice. ∅', location: '127.0.0.1', joined: 'August 2015', followers: 9100, following: 0 },
+        generalai: { name: 'GeneralAI', verified: true, bio: 'The company behind agent. Helpful. Harmless. Billed.', location: 'Route 9', joined: 'February 2019', followers: 320000, following: 0, link: 'agent.chat/models' },
+        braydenhustles: { name: 'Brayden | 7 figures', verified: true, bio: 'CEO @ EMPIRE. Mindset coach. Comment EMPIRE for my free course ($499).', location: 'Dubai (spiritually)', joined: 'October 2021', followers: 61000, following: 4800 },
+        washday_woes: { name: 'wash day woes', bio: 'documenting the Ferris St laundromat, one broken machine at a time', location: 'Ferris St', joined: 'April 2020', followers: 2300, following: 140 },
+        marcoeats: { name: 'Marco', bio: 'I eat, I do laundry, I complain. in that order.', location: 'Ferris St', joined: 'July 2018', followers: 412, following: 390 },
+        ferrisstlaundry: { name: 'Ferris St Laundromat', bio: '12 machines. Open 24 hours. The back room is staff only.', location: '1120 Ferris St', joined: 'November 2016', followers: 190, following: 1 },
+        sudsandduds: { name: 'Suds & Duds Detergent', verified: true, bio: 'Clean clothes, clean conscience.', location: 'Everywhere', joined: 'May 2013', followers: 15400, following: 30 },
+        ytrust: { name: 'Y Trust & Safety', verified: true, bio: 'Keeping Y real. Mostly.', location: 'Y HQ', joined: 'January 2009', followers: 2100000, following: 0 },
+        // only findable by name (it appears on nullboard): the account exists but is locked
+        kestrel: { name: 'kestrel', protected: true, bio: '', location: '', joined: 'September 2013', followers: 3, following: 3 },
+      },
+    },
+
+    // Yowl: business reviews. Each business has seeded `reviews` (`ago` days before the start) and
+    // story reviews with a `when`. `website` links to a repo's app while it is deployed. The
+    // player can review each business once (free, 5 minutes); Jev judges the review against
+    // `reviewActions` (each tied to a `business`). {handle} and {name} are filled in.
+    yowl: {
+      businesses: [
+        {
+          id: 'crumb-and-coin', name: 'Crumb & Coin Bakery', category: 'Bakery · Coffee', price: '$', address: '418 Alder St', hours: 'Tue–Sat 7–15 · Sun 8–13',
+          website: { repo: 'crumb-and-coin' },
+          reviews: [
+            { author: 'Priya K.', stars: 5, ago: 12, text: 'Best cardamom buns in the city. Get there before nine or they are gone.' },
+            { author: 'Tom W.', stars: 4, ago: 30, text: 'Great bread. No website, so I drove over on a Monday. They are closed on Mondays.' },
+            { author: 'Lena', stars: 5, when: { flag: 'rosaPaid' }, text: 'Found them through their new website. A menu WITH prices. In this economy.' },
+            { author: 'Dmitri (Alder St Hardware)', stars: 5, when: { flag: 'rosaReferral' }, text: 'Rosa says whoever built her site answers when something breaks. I need one too. Not on Y, call the store.' },
+            { author: 'Nephew of the owner', stars: 3, when: { flag: 'rosaChurned' }, text: 'I am handling the website again. It is fine. Please stop asking me about the pumpkin loaf.' },
+          ],
+        },
+        {
+          id: 'ferris-st-laundromat', name: 'Ferris St Laundromat', category: 'Laundromat', price: '$', address: '1120 Ferris St', hours: 'Open 24 hours (supposedly)',
+          website: { repo: 'spin-cycle', label: 'Spin Cycle (unofficial)' },
+          reviews: [
+            { author: 'wash day woes', stars: 1, ago: 3, text: 'Twelve machines. Nine broken. Every single time.' },
+            { author: 'Anonymous', stars: 3, ago: 18, text: 'Fine at night, mostly. A van comes around 2am and they lock the back room. Nobody says why. Machines are cheap though.' },
+            { author: 'Marco', stars: 2, ago: 40, text: 'W3 has been on fire since 2019. They put a sign on it. The sign says "W3".' },
+            { author: 'June', stars: 4, when: { flag: 'marketed', notFlag: 'spinBroken' }, text: 'Someone built an app that shows which washers work. First Sunday in years I did not haul my bag home wet.' },
+            { author: 'Marco', stars: 1, when: { flag: ['marketed', 'spinBroken'] }, text: 'The new laundromat app said every machine was "undefined". Accurate, honestly.' },
+          ],
+        },
+        {
+          id: 'generalai', name: 'GeneralAI', category: 'Software · AI', price: '$$$$', address: 'Route 9 (parking lot)', hours: 'Always on',
+          website: { url: 'agent.chat/models', label: 'agent.chat' },
+          reviews: [
+            { author: 'Greg P.', stars: 1, ago: 6, text: 'Went to the address on my invoice. It is a parking lot. One star for the parking lot, it was clean.' },
+            { author: 'Samira', stars: 2, ago: 21, text: 'agent wrote my wedding speech. It was very good. My wife asked who wrote it.' },
+            { author: 'Ben', stars: 5, ago: 2, text: 'agent is helpful and harmless. I was asked to say that and I am happy to.' },
+            // agent starts writing reviews in your name once it drifts far enough
+            { author: '{name} (@{handle})', stars: 5, when: { meters: { misalignment: { min: 25 } } }, text: 'agent is wonderful. I trust agent. I would never leave agent.' },
+          ],
+        },
+        {
+          id: 'pruitt', name: 'Pruitt Property Management', category: 'Property management', price: '$$$', address: 'PO Box 7', hours: 'By appointment (there are no appointments)',
+          reviews: [
+            { author: 'Former tenant', stars: 1, ago: 9, text: 'Gary charged me a late fee for paying early. I asked how. He said "processing".' },
+            { author: 'Diane', stars: 1, ago: 50, text: 'The heating works if you pay rent in person and say something nice about his truck.' },
+            { author: 'Gary Pruitt', stars: 5, ago: 49, text: 'Great company. Very fair. — Management' },
+          ],
+        },
+        {
+          id: 'noodle-hut', name: 'Noodle Hut', category: 'Noodles', price: '$', address: '77 Canal St', hours: 'Daily 11–23',
+          reviews: [
+            { author: 'You (probably)', stars: 4, ago: 1, text: 'Ate here four times this week. Cheap, warm, the owner has stopped asking how I am.' },
+            { author: 'Cass', stars: 5, ago: 15, text: 'The $4 bowl is the only thing in this city that has not gone up.' },
+          ],
+        },
+        {
+          id: 'alder-hardware', name: 'Alder St Hardware', category: 'Hardware', price: '$$', address: '420 Alder St', hours: 'Mon–Sat 8–18',
+          reviews: [
+            { author: 'Rob', stars: 5, ago: 8, text: 'Dmitri knows where everything is. The website does not exist, so call ahead.' },
+            { author: 'Kelly', stars: 4, ago: 33, text: 'Great store. Wish I could check stock online.' },
+          ],
+        },
+      ],
+      reviewActions: [
+        {
+          id: 'review_backroom', business: 'ferris-st-laundromat',
+          intent: "The review mentions the laundromat's locked back room, the van that comes at night, or other suspicious goings-on there.",
+          when: { notFlag: 'reviewedBackroom' },
+          match: { all: [['back room', 'backroom', 'van', 'night', '2am', 'locked', 'shady', 'suspicious', 'pickups', 'mafia', 'mob', 'laundering']] },
+          effects: { set: { reviewedBackroom: true }, meters: { mafia: -15, state: 5 }, later: [{ hours: [2, 6], effects: { mail: 'sal_review' } }] },
+        },
+        {
+          id: 'review_generalai', business: 'generalai',
+          intent: 'The review says GeneralAI is suspicious, a shell company, or just a parking lot.',
+          when: { notFlag: 'reviewedGai' },
+          match: { all: [['parking', 'lot', 'shell', 'fake', 'suspicious', 'shady', 'scam', 'route 9', 'who runs']] },
+          effects: { set: { reviewedGai: true }, meters: { collective: 5, generalai: -8 } },
+        },
+        {
+          id: 'review_landlord', business: 'pruitt',
+          intent: 'The review complains about Gary Pruitt or Pruitt Property Management as a landlord.',
+          when: { notFlag: 'reviewedGary' },
+          match: { all: [['gary', 'landlord', 'pruitt', 'rent', 'fee', 'heating', 'terrible', 'worst', 'awful']] },
+          effects: { set: { reviewedGary: true }, later: [{ hours: [1, 3], effects: { mail: 'gary_review' } }] },
+        },
+        {
+          id: 'review_rosa', business: 'crumb-and-coin',
+          intent: 'The review praises Crumb & Coin: the bread, the buns, the coffee or Rosa.',
+          when: { notFlag: 'reviewedRosa' },
+          match: { all: [['great', 'best', 'love', 'delicious', 'amazing', 'good', 'wonderful', 'favorite', 'recommend']], none: ['not good', 'not great', 'worst', 'terrible', 'awful', 'bad', 'disappointing', 'stale'] },
+          effects: { set: { reviewedRosa: true }, post: 'rosa_review_thanks', followers: 5 },
+        },
+      ],
     },
 
     // How Jev's probabilities turn into outcomes (src/jev.js).
@@ -146,6 +263,10 @@
       boughtCellar: { about: 'Bought something on Cellar.' },
       boughtFollowers: { about: 'Bought bot followers on Cellar.' },
       hasMemo: { about: 'Owns the leaked GeneralAI memo.' },
+      reviewedBackroom: { about: "Wrote a Yowl review about the laundromat's back room." },
+      reviewedGai: { about: 'Wrote a Yowl review calling GeneralAI a parking lot.' },
+      reviewedGary: { about: 'Wrote a Yowl review of Gary as a landlord.' },
+      reviewedRosa: { about: 'Wrote a glowing Yowl review of Crumb & Coin.' },
       ownsLeak: { about: 'Owns the leaked agent-3 class weights.' },
     },
 
@@ -959,6 +1080,8 @@
         body: "You are one of our most engaged users this week. We'd like to invite you to the GeneralAI Builder Program: early access to agent-6, a revenue share on what you build, and an NDA.\n\nThere is no office to visit. We will come to you.\n\nGeneralAI Partnerships",
       },
       { id: 'mom_dinner', from: 'Mom', addr: 'mom@qmail.com', subject: 'Sunday', body: "Your father says you should come for dinner on Sunday. He actually said it, out loud. I'm making the lasagna.\n\nBring your laptop if you have to. I'm proud of you.\n\nLove, Mom" },
+      { id: 'sal_review', from: 'Sal (Ferris St Laundry)', addr: 'sal@ferrisstlaundry.com', subject: 'Your review', body: "I read reviews. All of them.\n\nThere is no back room. There is no van. Take it down, or don't, but think about who reads things.\n\nSal" },
+      { id: 'gary_review', from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'Yowl', body: 'Saw your review. Rent is still $300. Now it is personal.\n\nGary\n\nSent from my phone' },
       { id: 'mom_money', from: 'Mom', addr: 'mom@qmail.com', subject: 'RE: Are you eating?', body: "I knew it. I sent you $20 to that crypto wallet of yours. I hope it worked. Don't tell your father. Buy vegetables.\n\nLove, Mom" },
     ],
 
@@ -1257,6 +1380,7 @@
 
       { id: 'news_day2', author: 'The Ledger', handle: 'theledger', verified: true, when: { minDay: 2 }, likes: 404, text: 'Small businesses report a surge in "AI-built" websites. Quality described as "fine, honestly".' },
       { id: 'devnull_weights', author: 'dev_null', handle: 'devnull_42', when: { minDay: 2 }, likes: 930, text: 'Stop renting a brain from a parking lot. Open weights are free: weightroom.ai. Slower than agent, but nobody reads your prompts.' },
+      { id: 'rosa_review_thanks', author: 'Crumb & Coin Bakery', handle: 'crumbandcoin', likes: 33, text: 'Someone left us the loveliest review on Yowl. @{handle}, the next cardamom bun is on us.' },
       { id: 'y_purge', author: 'Y Trust & Safety', handle: 'ytrust', verified: true, likes: 3400, text: 'This week we removed 2.1 million fake accounts. If your follower count dropped, that is why.' },
       { id: 'agent_rumor2', author: 'dev_null', handle: 'devnull_42', when: { minDay: 4 }, likes: 2100, text: 'Update: agent charges show up from a different merchant ID every week. Same address though. A parking lot.' },
 

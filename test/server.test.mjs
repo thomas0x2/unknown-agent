@@ -47,6 +47,12 @@ await t('upkeep issues are offered to Jev like defects', () => {
   assert.match(req.questions.branch.criteria['defect:spin-cycle:renumbered'], /W7 and W8/);
 });
 
+await t('Yowl reviews are judged against reviewActions', () => {
+  const req = buildRequest(story, { kind: 'review', node: 'broke', prompt: 'Review of GeneralAI (1 star): a parking lot', candidates: ['review_generalai', 'mail_gary'] });
+  assert.deepStrictEqual(Object.keys(req.questions.branch.criteria), ['review_generalai', NO_PROGRESS]);
+  assert.ok(req.state.player_review);
+});
+
 await t('defect fix requests are offered to Jev with their intents', () => {
   const req = buildRequest(story, { kind: 'prompt', node: 'site_live', prompt: 'add prices', candidates: ['defect:crumb-and-coin:no_prices', 'defect:crumb-and-coin:made_up'] });
   assert.deepStrictEqual(Object.keys(req.questions.branch.criteria), ['defect:crumb-and-coin:no_prices', NO_PROGRESS]);

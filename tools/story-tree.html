@@ -46,7 +46,7 @@ h2 { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacin
 .legend { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip { display: inline-flex; align-items: center; gap: 5px; border: 1px solid currentColor; border-radius: 999px; padding: 1px 8px; font-family: var(--f-mono); font-size: 10.5px; white-space: nowrap; background: var(--panel); }
 .chip.prompt { color: var(--k-prompt); } .chip.deploy { color: var(--k-deploy); } .chip.post { color: var(--k-post); }
-.chip.mail { color: var(--k-mail); } .chip.day { color: var(--k-day); } .chip.timer { color: var(--k-timer); border-style: dashed; }
+.chip.mail { color: var(--k-mail); } .chip.review { color: var(--k-deploy); border-style: dotted; } .chip.day { color: var(--k-day); } .chip.timer { color: var(--k-timer); border-style: dashed; }
 .chip.model { color: var(--warn); }
 .chip.fake { border-style: dashed; color: var(--warn); }
 .chip.fol { color: var(--k-post); border-style: dotted; }
@@ -170,7 +170,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
   const clip = (s, n) => { s = String(s || '').replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 1) + '…' : s; };
   const bundle = (fx) => (typeof fx === 'string' ? (S.bundles || {})[fx] || {} : fx || {});
   const model = (n) => (S.models && S.models[n - 1] ? S.models[n - 1].name : `tier ${n}`);
-  const KIND = { prompt: 'agent prompt', post: 'Y post', mail: 'email', deploy: 'deploy', day: 'new day', timer: 'delay' };
+  const KIND = { prompt: 'agent prompt', post: 'Y post', mail: 'email', review: 'Yowl review', deploy: 'deploy', day: 'new day', timer: 'delay' };
 
   function delayText(l) {
     if (l.nextDay != null) return `next day ${l.nextDay}:00`;
@@ -340,6 +340,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       <span class="node-obj">Side content that works at any point in the story.</span>
       <span class="side-list">
         ${sideMail.map((a) => `<span class="side-item"><span><span class="chip mail">email</span><code>${esc(a.id)}</code>${a.when && a.when.notFlag ? '<span class="chip timer">once</span>' : ''}</span><span class="side-out">${esc(summary(a.effects))}</span></span>`).join('')}
+        ${((S.yowl || {}).reviewActions || []).map((a) => `<span class="side-item"><span><span class="chip review">Yowl review</span><code>${esc(a.id)}</code></span><span class="side-out">${esc(summary(a.effects))}</span></span>`).join('')}
         ${sidePosts.map((a) => `<span class="side-item"><span><span class="chip post">Y post</span><code>${esc(a.id)}</code></span><span class="side-out">${esc(summary(a.effects))}</span></span>`).join('')}
         ${(S.global || []).filter(hasOutcome).map((b) => `<span class="side-item"><span><span class="chip prompt">agent prompt</span><code>${esc(b.id)}</code></span><span class="side-out">${[b.effects ? summary(b.effects) : '', ...Object.entries(b.atModel || {}).map(([t, alt]) => `on ${model(Number(t))}+: ${summary(alt.effects || {}) || 'different reply'}`)].filter(Boolean).map(esc).join(' · ')}</span></span>`).join('')}
         ${(S.events || []).filter((ev) => ev.on === 'day' && !(ev.when && ev.when.minDay)).map((ev) => `<span class="side-item"><span><span class="chip day">morning check</span><code>${esc(ev.id || '')}</code></span><span class="side-out">if ${esc(whenText(ev.when || {}))}: ${esc(summary(ev.effects))}</span></span>`).join('')}
@@ -540,6 +541,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       <p class="scene">These are offered no matter where the player is. Story-step branches win ties, so a global branch only fires when nothing more specific fits.</p>
       <h2>Side emails (${sideMail.length})</h2>${sideMail.map((b) => branchHtml(b, 'mail')).join('') || '<p class="note">None.</p>'}
       ${sidePosts.length ? `<h2>Side Y posts</h2>${sidePosts.map((b) => branchHtml(b, 'post')).join('')}` : ''}
+      ${S.yowl ? `<h2>Yowl reviews (${S.yowl.reviewActions.length})</h2>${S.yowl.reviewActions.map((b) => `<p class="kw"><span class="lbl">review of</span>${esc((S.yowl.businesses.find((x) => x.id === b.business) || {}).name || b.business)}</p>${branchHtml(b, 'review')}`).join('')}` : ''}
       <h2>Global agent prompts (${(S.global || []).length})</h2>${(S.global || []).map((b) => branchHtml(b, 'prompt')).join('')}
       <p class="note">Any other email to a contact gets an ordinary reply (see Contacts below).</p>`;
     try { history.replaceState(null, '', '#anytime'); } catch (e) { /* not allowed in some frames */ }
@@ -568,7 +570,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     }
   }
   for (const [id, n] of Object.entries(S.nodes)) walk(n, nodeName(id));
-  for (const key of ['global', 'postActions', 'mailActions', 'events', 'endings', 'posts', 'mail']) walk(S[key], key);
+  for (const key of ['global', 'postActions', 'mailActions', 'events', 'endings', 'posts', 'mail', 'yowl']) walk(S[key], key);
   for (const [n, fx] of Object.entries(S.bundles || {})) walk(fx, `bundle ${n}`);
   for (const [addr, c] of Object.entries(S.contacts || {})) walk(c, `email to ${c.name || addr}`);
   for (const m of S.models || []) walk(m.effects, `buy ${m.name}`);
@@ -638,6 +640,19 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     ref.push(`<section class="card"><h2>Cellar listings</h2><p class="note">Every purchase also runs: ${esc(summary(S.market.onBuy || {}))}.</p>
       ${S.market.listings.map((l) => `<div class="br"><div class="br-head"><b>${esc(l.title)}</b><code>${esc(l.id)}</code><span class="chip mail">$${l.price}</span>${l.once ? '<span class="chip timer">once</span>' : ''}${l.hours ? `<span class="chip timer">${l.hours}h delivery</span>` : ''}</div>
         <p class="note">${esc(l.about)}</p>${outcomeHtml(l.effects)}</div>`).join('')}</section>`);
+  }
+  if (S.yowl) {
+    const stars = (n) => '★'.repeat(n) + '☆'.repeat(5 - n);
+    ref.push(`<section class="card"><h2>Yowl businesses</h2><p class="note">Reviews with a condition appear once it holds; the rating is the average of what's showing. The player can review each business once; Jev judges it against the review actions (see <button class="go" data-node="anytime">anytime</button>).</p>
+      ${S.yowl.businesses.map((b) => `<div class="br"><div class="br-head"><b>${esc(b.name)}</b><code>${esc(b.id)}</code><span class="kw">${esc(b.category)} · ${esc(b.address)}</span></div>
+        ${b.website ? `<p class="kw"><span class="lbl">website</span>${esc(b.website.repo ? `${b.website.repo}.forkyard.app while deployed` : b.website.url)}</p>` : ''}
+        ${b.reviews.map((r) => `<p class="otext"><span class="mono">${stars(r.stars)}</span> <b>${txt(r.author)}</b>${r.when ? ` <span class="chip timer">if ${esc(whenText(r.when))}</span>` : ''}: ${txt(r.text)}</p>`).join('')}
+        ${S.yowl.reviewActions.filter((a) => a.business === b.id).map((a) => `<p class="kw"><span class="lbl">review action</span><code>${esc(a.id)}</code>: ${esc(summary(a.effects))}</p>`).join('')}</div>`).join('')}</section>`);
+  }
+  if (S.y && S.y.profiles) {
+    ref.push(`<section class="card"><h2>Y profiles</h2><p class="note">Everyone who posts has a page at <code>y.com/&lt;handle&gt;</code>; these add bios and numbers. Any listed handle can be looked up, even one that never posts.</p>
+      ${Object.entries(S.y.profiles).map(([h, p]) => `<div class="br"><div class="br-head"><b>${esc(p.name || h)}</b><code>@${esc(h)}</code>${p.protected ? '<span class="chip timer">protected</span>' : ''}${p.followers != null ? `<span class="kw">${p.followers} followers</span>` : ''}</div>
+        ${p.bio ? `<p class="otext">${txt(p.bio)}</p>` : ''}${p.link ? `<p class="kw"><span class="lbl">link</span>${esc(typeof p.link === 'string' ? p.link : `${p.link.text} (if ${whenText(p.link.when)})`)}</p>` : ''}</div>`).join('')}</section>`);
   }
   const A = S.agent || {};
   ref.push(`<section class="card"><h2>agent's own voice</h2>

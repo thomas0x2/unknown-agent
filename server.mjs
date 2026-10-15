@@ -50,6 +50,7 @@ export function buildRequest(story, { kind, node, prompt, candidates }) {
   if (!nodeDef) throw new HttpError(400, `Unknown node: ${node}`);
   const pool = kind === 'post' ? story.postActions || []
     : kind === 'mail' ? story.mailActions || []
+    : kind === 'review' ? (story.yowl && story.yowl.reviewActions) || []
     : [...(nodeDef.branches || []), ...(story.global || []), ...defectBranches(story)];
   const byId = new Map(pool.filter((b) => b.intent).map((b) => [b.id, b]));
   const ids = [...new Set(candidates)].filter((id) => byId.has(id) && id !== NO_PROGRESS);
@@ -61,17 +62,22 @@ export function buildRequest(story, { kind, node, prompt, candidates }) {
     ? 'The post does none of the above. Everyday posts, jokes, complaints and unrelated topics belong here.'
     : kind === 'mail'
     ? 'The email does none of the above, or goes to someone else. Small talk with other people, spam replies and unrelated topics belong here.'
+    : kind === 'review'
+    ? 'The review does none of the above. Ordinary praise or complaints about food, service, prices or cleanliness belong here.'
     : 'The prompt asks for none of the above, is too vague to tell which, or leaves out details that an outcome above requires. ' +
       'Chit-chat, jokes, off-topic questions and unrelated tasks belong here.';
 
   const situation = nodeDef.scene || nodeDef.objective;
   const state = kind === 'post' ? { setting: SETTING, situation, player_post: prompt }
     : kind === 'mail' ? { setting: SETTING, situation, player_email: prompt }
+    : kind === 'review' ? { setting: SETTING, situation, player_review: prompt }
     : { setting: SETTING, situation, player_prompt: prompt };
   const instructions = kind === 'post'
     ? 'The player published `player_post` on Y. Given `situation`, which outcome does the post accomplish?'
     : kind === 'mail'
     ? 'The player sent `player_email` from Qmail (its To line says who it went to). Given `situation`, which outcome does the email accomplish?'
+    : kind === 'review'
+    ? 'The player published `player_review` on Yowl, a business review site (its first line says which business and how many stars). Given `situation`, which outcome does the review accomplish?'
     : 'The player typed `player_prompt` to their AI agent. Given `situation`, which outcome is the player asking the agent to carry out? ' +
       'Choose an outcome only when the prompt clearly asks for it, including any details its description requires.';
 
@@ -95,7 +101,7 @@ export function buildRateRequest(story, text) {
 
 function validate(body) {
   const { kind = 'prompt', node, prompt, candidates } = body || {};
-  if (!['prompt', 'post', 'mail'].includes(kind)) throw new HttpError(400, 'kind must be "prompt", "post" or "mail"');
+  if (!['prompt', 'post', 'mail', 'review'].includes(kind)) throw new HttpError(400, 'kind must be "prompt", "post", "mail" or "review"');
   if (typeof node !== 'string' || node.length > 64) throw new HttpError(400, 'node must be a string');
   if (typeof prompt !== 'string' || !prompt.trim() || prompt.length > 2000) throw new HttpError(400, 'prompt must be 1–2000 characters');
   if (!Array.isArray(candidates) || candidates.length > 50 || !candidates.every((c) => typeof c === 'string')) {

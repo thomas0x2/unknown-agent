@@ -45,5 +45,32 @@ t('forum threads have posts and unique ids', () => {
   for (const th of S.forum.threads) assert.ok(th.title && th.posts.length, th.id);
 });
 
+t('Yowl: businesses are well-formed and every review action names one', () => {
+  const ids = new Set(S.yowl.businesses.map((b) => b.id));
+  assert.strictEqual(ids.size, S.yowl.businesses.length, 'unique business ids');
+  for (const b of S.yowl.businesses) {
+    assert.ok(b.name && b.category && b.address && b.reviews.length, `${b.id}: name, category, address, reviews`);
+    for (const r of b.reviews) assert.ok(r.author && r.stars >= 1 && r.stars <= 5 && r.text, `${b.id}: review fields`);
+    if (b.website && b.website.repo) assert.ok(S.repos[b.website.repo], `${b.id}: website repo ${b.website.repo}`);
+  }
+  for (const a of S.yowl.reviewActions) assert.ok(ids.has(a.business) && a.intent && a.match, `${a.id}: business, intent, match`);
+});
+t('everyone who posts on Y has a profile', () => {
+  const handles = new Set([...S.posts.map((p) => p.handle), ...JSON.stringify(S.repos).match(/"handle":"[a-z0-9_]+"/g).map((x) => x.slice(10, -1))]);
+  const missing = [...handles].filter((h) => !h.includes('{') && !S.y.profiles[h]);
+  assert.deepStrictEqual(missing, []);
+});
+const Keywords = require(path.join(__dirname, '../src/keywords.js'));
+const label = (d) => (d.kind === 'miss' ? 'miss' : `${d.kind}:${d.branch.id}`);
+for (const [biz, text, want] of [
+  ['ferris-st-laundromat', 'Review of Ferris St Laundromat (2 stars):\n\nWhy does a van show up at 2am and why is the back room locked?', 'hit:review_backroom'],
+  ['generalai', 'Review of GeneralAI (1 star):\n\nTheir office is a parking lot.', 'hit:review_generalai'],
+  ['pruitt', 'Review of Pruitt Property Management (1 star):\n\nGary is the worst landlord.', 'hit:review_landlord'],
+  ['crumb-and-coin', 'Review of Crumb & Coin Bakery (5 stars):\n\nBest cardamom buns, love it.', 'hit:review_rosa'],
+  ['noodle-hut', 'Review of Noodle Hut (4 stars):\n\nCheap noodles.', 'miss'],
+]) {
+  t(`[review ${biz}] → ${want}`, () => assert.strictEqual(label(Keywords.decide(text, S.yowl.reviewActions.filter((a) => a.business === biz))), want));
+}
+
 console.log(fail ? `\n${fail} failing` : '\nall passing');
 process.exit(fail ? 1 : 0);

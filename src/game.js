@@ -20,6 +20,7 @@
     wallet: { label: 'Satchel', url: 'satchel.app' },
     forkyard: { label: 'Forkyard', url: 'forkyard.com' },
     agent: { label: 'agent', url: 'agent.chat' },
+    yowl: { label: 'Yowl', url: 'yowl.com' },
   };
 
   let state = null;
@@ -120,6 +121,7 @@
       term: { lines: [], running: null }, // Terminal scrollback and the loaded model
       bought: [],          // Cellar listings purchased
       readThreads: [],     // nullboard threads opened
+      reviews: {},         // Yowl: business id → the player's review { stars, text, t }
       extraPosts: [],   // Y posts the engine writes (complaints about defects)
       creatorOn: false, // Y creator payouts switched on
       postsToday: { day: 0, n: 0 },
@@ -175,6 +177,7 @@
       s.term = s.term || { lines: [], running: null };
       s.bought = s.bought || [];
       s.readThreads = s.readThreads || [];
+      s.reviews = s.reviews || {};
       // saves from before the wallet
       for (const tab of s.tabs) if (/^secondnational\.com/.test(tab.url)) tab.url = 'satchel.app';
       if (s.unread.bank != null) { s.unread.wallet = s.unread.bank; delete s.unread.bank; }
@@ -923,6 +926,11 @@
     const u = normalizeUrl(url);
     if (!u || u === 'newtab') return { site: 'newtab', title: 'New Tab' };
     if (u === 'y.com' || u === 'chirpr.com') return { site: 'y', title: 'Home / Y' };
+    let pm = u.match(/^y\.com\/@?([a-z0-9_]{1,30})$/);
+    if (pm) return { site: 'y', profile: pm[1], title: `@${pm[1]} / Y` };
+    if (u === 'yowl.com') return { site: 'yowl', title: 'Yowl' };
+    pm = u.match(/^yowl\.com\/biz\/([a-z0-9-]+)$/);
+    if (pm) { const b = yowlBiz(pm[1]); return { site: 'yowl', biz: pm[1], title: b ? `${b.name} · Yowl` : 'Yowl' }; }
     if (u === 'qmail.com') return { site: 'mail', view: 'inbox', title: 'Inbox · Qmail' };
     if (u === 'qmail.com/sent') return { site: 'mail', view: 'sent', title: 'Sent · Qmail' };
     if (u === 'qmail.com/compose') return { site: 'mail', view: 'compose', title: 'New message · Qmail' };
@@ -1198,6 +1206,90 @@
     return true;
   }
 
+  // ───────────────────────── Yowl ─────────────────────────
+
+  const yowlBiz = (id) => ((S.yowl || {}).businesses || []).find((b) => b.id === id);
+  let yowlSearch = '';
+  let reviewStars = 0;
+  const starRow = (n) => `<span class="yw-stars" aria-label="${n.toFixed(1)} stars">${[1, 2, 3, 4, 5].map((i) => `<i class="${n >= i - 0.25 ? 'on' : n >= i - 0.75 ? 'half' : ''}"></i>`).join('')}</span>`;
+  // the reviews a business shows right now, the player's first
+  function yowlReviews(b) {
+    const out = [];
+    const mine = state.reviews[b.id];
+    if (mine) out.push({ author: `${S.start.player.name} (@${S.start.player.handle})`, stars: mine.stars, text: mine.text, when: ago(mine.t) + ' ago', mine: true });
+    for (const rv of b.reviews || []) {
+      if (rv.when ? !check(rv.when) : false) continue;
+      out.push({ author: tpl(rv.author), stars: rv.stars, text: tpl(rv.text), when: rv.ago != null ? `${rv.ago} day${rv.ago === 1 ? '' : 's'} ago` : 'this week' });
+    }
+    return out;
+  }
+  const yowlAvg = (list) => (list.length ? list.reduce((a, x) => a + x.stars, 0) / list.length : 0);
+
+  function pageYowl(r) {
+    const head = `<header class="yw-top"><a href="#" class="yw-logo" data-nav="yowl.com">${ICONS.yowl}<span>yowl</span></a><span class="yw-sub">honest reviews from real neighbors</span></header>`;
+    if (r.biz) {
+      const b = yowlBiz(r.biz);
+      if (!b) return `<div class="yw">${head}<div class="yw-wrap"><p>No business here.</p></div></div>`;
+      const list = yowlReviews(b);
+      const web = b.website ? (b.website.repo ? (state.repos[b.website.repo] && state.repos[b.website.repo].deployed ? `${b.website.repo}.forkyard.app` : null) : b.website.url) : null;
+      const mine = state.reviews[b.id];
+      const form = mine ? '' : `<form class="yw-form" data-form="review" data-biz="${esc(b.id)}">
+          <h2>Write a review</h2>
+          <div class="yw-pick" role="radiogroup" aria-label="Your rating">${[1, 2, 3, 4, 5].map((i) => `<button type="button" class="${reviewStars >= i ? 'on' : ''}" data-star="${i}" role="radio" aria-checked="${reviewStars === i}" aria-label="${i} star${i > 1 ? 's' : ''}"></button>`).join('')}<span>${reviewStars ? `${reviewStars} of 5` : 'Pick a rating'}</span></div>
+          <textarea id="review-text" rows="3" maxlength="600" placeholder="What was it like?"></textarea>
+          <div class="yw-form-row"><span class="yw-hint">Free · takes 5 minutes · one review per business</span><button class="yw-btn" type="submit">Post review</button></div>
+        </form>`;
+      return `<div class="yw">${head}<div class="yw-wrap">
+        <p class="yw-crumb"><a href="#" data-nav="yowl.com">← All businesses</a></p>
+        <section class="yw-biz"><h1>${esc(b.name)}</h1>
+          <p class="yw-rating">${starRow(yowlAvg(list))}<b>${yowlAvg(list).toFixed(1)}</b><span>${list.length} review${list.length === 1 ? '' : 's'}</span></p>
+          <p class="yw-meta">${esc(b.category)} · ${esc(b.price || '')}</p>
+          <dl class="yw-facts"><dt>Address</dt><dd>${esc(b.address)}</dd><dt>Hours</dt><dd>${esc(b.hours || '')}</dd><dt>Website</dt><dd>${web ? `<a href="#" data-nav="${esc(web)}">${esc((b.website && b.website.label) || web)}</a>` : '<span class="yw-dim">none listed</span>'}</dd></dl>
+        </section>
+        ${form}
+        <section class="yw-reviews">${list.map((x) => `<article class="yw-review${x.mine ? ' mine' : ''}"><header><b>${esc(x.author)}</b><span>${esc(x.when)}</span></header>${starRow(x.stars)}<p>${linkify(esc(x.text))}</p></article>`).join('')}</section>
+      </div></div>`;
+    }
+    const q = yowlSearch.trim().toLowerCase();
+    const biz = ((S.yowl || {}).businesses || []).filter((b) => !q || `${b.name} ${b.category} ${b.address}`.toLowerCase().includes(q));
+    const cards = biz.map((b) => {
+      const list = yowlReviews(b);
+      return `<a href="#" class="yw-card" data-nav="yowl.com/biz/${esc(b.id)}"><b>${esc(b.name)}</b><span class="yw-rating">${starRow(yowlAvg(list))}<span>${yowlAvg(list).toFixed(1)} · ${list.length} reviews</span></span><span class="yw-meta">${esc(b.category)} · ${esc(b.price || '')} · ${esc(b.address)}</span></a>`;
+    }).join('') || `<p class="yw-dim">Nothing matches “${esc(yowlSearch)}”.</p>`;
+    return `<div class="yw">${head}<div class="yw-wrap">
+      <label class="yw-search"><input id="yowl-search" autocomplete="off" placeholder="Search businesses near you" aria-label="Search businesses" value="${esc(yowlSearch)}"></label>
+      <div class="yw-list">${cards}</div></div></div>`;
+  }
+
+  const reviewCandidates = (bizId) => ((S.yowl || {}).reviewActions || []).filter((a) => a.business === bizId && check(a.when) && !state.fired['review:' + a.id]);
+
+  // Post a Yowl review. Free, 5 minutes, one per business; Jev judges it against reviewActions.
+  async function writeReview(bizId, stars, text) {
+    const b = yowlBiz(bizId);
+    text = String(text || '').trim();
+    stars = Math.round(Number(stars) || 0);
+    if (!b || state.reviews[bizId] || state.over) return false;
+    if (stars < 1 || stars > 5) { toast('Yowl', 'Pick a star rating first.', 'note'); return false; }
+    if (!text) { toast('Yowl', 'Write a few words first.', 'note'); return false; }
+    state.reviews[bizId] = { stars, text, t: state.t };
+    reviewStars = 0;
+    advance(5);
+    toast('Yowl', `Review posted: ${b.name}`, 'note');
+    const candidates = reviewCandidates(bizId);
+    if (candidates.length) {
+      const doc = `Review of ${b.name} (${stars} star${stars > 1 ? 's' : ''}):\n\n${text}`;
+      const decision = await J.decide(doc, candidates, { kind: 'review', node: state.node, thresholds: S.decision });
+      lastReport = { prompt: doc, node: state.node, decision, channel: 'review' };
+      if (decision.kind === 'hit' && reviewCandidates(bizId).includes(decision.branch)) {
+        state.fired['review:' + decision.branch.id] = state.t;
+        applyEffects(decision.branch.effects);
+      }
+    }
+    save();
+    render();
+    return true;
+  }
+
   // ───────────────────────── page renderers ─────────────────────────
 
   const ICONS = {
@@ -1208,6 +1300,7 @@
     // agent's mark: six rounded blades swirling around an open core
     agent: '<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(0 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(60 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(120 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(180 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(240 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(300 12 12)"/></g></svg>',
     newtab: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2" fill="none"/></svg>',
+    yowl: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.6l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z" fill="currentColor"/></svg>',
     weightroom: '<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="5" y="6.5" width="3.5" height="11" rx="1.2"/><rect x="8.5" y="11" width="7" height="2" rx="1"/><rect x="15.5" y="6.5" width="3.5" height="11" rx="1.2"/><rect x="19" y="9" width="3" height="6" rx="1"/></g></svg>',
     terminal: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4" width="19" height="16" rx="2.5" fill="currentColor"/><path d="m6.5 9 3 3-3 3M11.5 15.5h5" stroke="var(--icon-ink, #111)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     nullboard: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.5" stroke="currentColor" stroke-width="2.2" fill="none"/><path d="M6 18 18 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
@@ -1258,13 +1351,14 @@
       </div>`;
     }
     return `<section class="y-card y-me">
-      <div class="y-me-head">${avatar(S.start.player.name, S.start.player.handle)}<span><b>${esc(S.start.player.name)}</b><small>@${esc(S.start.player.handle)}</small></span></div>
+      <a href="#" class="y-me-head" data-nav="y.com/${esc(S.start.player.handle)}">${avatar(S.start.player.name, S.start.player.handle)}<span><b>${esc(S.start.player.name)}</b><small>@${esc(S.start.player.handle)}</small></span></a>
       <div class="y-me-stats"><span><b>${compact(state.followers)}</b> followers</span><span><b>${state.userPosts.length}</b> posts</span></div>
       ${creator}
     </section>`;
   }
 
-  function pageY() {
+  // Every post visible on Y right now, newest first.
+  function yPosts() {
     const posts = [];
     for (const p of S.posts) {
       if (state.posts[p.id] == null) continue;
@@ -1272,19 +1366,20 @@
     }
     for (const x of state.extraPosts || []) posts.push({ ...x, author: tpl(x.author), handle: tpl(x.handle), text: tpl(x.text) });
     for (const u of state.userPosts) posts.push({ id: u.id, author: S.start.player.name, handle: S.start.player.handle, text: u.text, t: u.t, likes: u.likes, mine: true, delta: u.delta, pending: u.pending, score: u.score });
-    posts.sort((a, b) => b.t - a.t);
-    const q = ySearch.trim().toLowerCase();
-    const shown = q ? posts.filter((p) => `${p.author} ${p.handle} ${p.text}`.toLowerCase().includes(q)) : posts;
-    const feed = shown.map((p) => {
-      const liked = !!state.liked[p.id];
-      const likes = (p.likes || 0) + (liked ? 1 : 0);
-      const text = linkify(esc(p.text)
-        .replace(/@([a-z0-9_]+)/gi, '<span class="y-at">@$1</span>')
-        .replace(/(^|[^&\w])(#[a-z][a-z0-9_]*)/gi, '$1<span class="y-at">$2</span>'), 'y-link');
-      return `<article class="y-post${p.mine ? ' mine' : ''}">
+    return posts.sort((a, b) => b.t - a.t);
+  }
+
+  function yPostHtml(p) {
+    const liked = !!state.liked[p.id];
+    const likes = (p.likes || 0) + (liked ? 1 : 0);
+    const text = linkify(esc(p.text)
+      .replace(/(^|[^\w.])@([a-z0-9_]+)/gi, '$1<a href="#" class="y-at" data-nav="y.com/$2">@$2</a>')
+      .replace(/(^|[^&\w])(#[a-z][a-z0-9_]*)/gi, '$1<span class="y-at">$2</span>'), 'y-link');
+    const prof = `y.com/${esc(p.handle)}`;
+    return `<article class="y-post${p.mine ? ' mine' : ''}">
         <header>
-          ${avatar(p.author, p.handle)}
-          <div class="y-who"><span class="y-name"><b>${esc(p.author)}</b>${p.verified ? `<span class="y-badge">${Y_ICONS.badge}</span>` : ''}</span><span class="y-handle">@${esc(p.handle)}</span></div>
+          <a href="#" class="y-av-link" data-nav="${prof}" aria-label="@${esc(p.handle)}">${avatar(p.author, p.handle)}</a>
+          <a href="#" class="y-who" data-nav="${prof}"><span class="y-name"><b>${esc(p.author)}</b>${p.verified ? `<span class="y-badge">${Y_ICONS.badge}</span>` : ''}</span><span class="y-handle">@${esc(p.handle)}</span></a>
           <span class="y-time">${ago(p.t)}</span>
         </header>
         <p>${text}</p>
@@ -1296,7 +1391,62 @@
           <span class="y-act views">${Y_ICONS.views}${compact(Math.max(12, likes * 37 + 9))}</span>
         </footer>
       </article>`;
-    }).join('') || `<p class="y-none">No posts match “${esc(ySearch)}”.</p>`;
+  }
+
+  // A Y account: from story.y.profiles, from what it has posted, or null if nobody by that name exists.
+  function yAccount(handle) {
+    handle = String(handle || '').toLowerCase().replace(/^@/, '');
+    const profiles = (S.y && S.y.profiles) || {};
+    const key = Object.keys(profiles).find((k) => k.toLowerCase() === handle);
+    const prof = key ? profiles[key] : null;
+    const me = handle === S.start.player.handle.toLowerCase();
+    const posts = yPosts().filter((p) => p.handle.toLowerCase() === handle);
+    if (!prof && !posts.length && !me) return null;
+    const first = posts[posts.length - 1];
+    const link = prof && prof.link ? (typeof prof.link === 'string' ? prof.link : check(prof.link.when) ? prof.link.text : null) : null;
+    return {
+      handle: key || (first ? first.handle : me ? S.start.player.handle : handle),
+      name: (prof && prof.name) || (first && first.author) || (me ? S.start.player.name : handle),
+      verified: !!((prof && prof.verified) || (first && first.verified)),
+      bio: (prof && prof.bio) || '', location: (prof && prof.location) || '', joined: (prof && prof.joined) || '', link,
+      followers: me ? state.followers : prof && prof.followers != null ? prof.followers : 20 + (hashHue(handle) % 180),
+      following: prof && prof.following != null ? prof.following : 40 + (hashHue(handle + 'f') % 300),
+      protected: !!(prof && prof.protected), me, posts,
+    };
+  }
+
+  function yProfilePage(handle) {
+    const a = yAccount(handle);
+    const back = '<p class="y-back"><a href="#" data-nav="y.com">← Timeline</a></p>';
+    if (!a) return `${back}<section class="y-prof missing"><h2>This account doesn't exist</h2><p>Nobody on Y goes by @${esc(handle)}. Check the spelling.</p></section>`;
+    const meta = [a.location && esc(a.location), a.link && `<a href="#" class="y-link" data-nav="${esc(a.link)}">${esc(a.link)}</a>`, a.joined && `Joined ${esc(a.joined)}`].filter(Boolean).join('<span class="y-dot">·</span>');
+    const feed = a.protected ? `<p class="y-none">These posts are protected. Only approved followers can see them.</p>`
+      : a.posts.length ? a.posts.map(yPostHtml).join('') : `<p class="y-none">@${esc(a.handle)} hasn't posted anything you can see.</p>`;
+    return `${back}<section class="y-prof">
+        <div class="y-banner" style="--h:${hashHue(a.handle)}"></div>
+        <div class="y-prof-head"><div class="y-prof-av">${avatar(a.name, a.handle)}</div>${a.protected ? '<span class="y-lock">Protected</span>' : ''}</div>
+        <h1 class="y-prof-name">${esc(a.name)}${a.verified ? `<span class="y-badge">${Y_ICONS.badge}</span>` : ''}</h1>
+        <p class="y-handle">@${esc(a.handle)}</p>
+        ${a.bio ? `<p class="y-bio">${linkify(esc(a.bio), 'y-link')}</p>` : ''}
+        ${meta ? `<p class="y-prof-meta">${meta}</p>` : ''}
+        <p class="y-prof-stats"><span><b>${compact(a.following)}</b> following</span><span><b>${compact(a.followers)}</b> followers</span></p>
+      </section>
+      <p class="y-eyebrow">Posts</p>
+      <div class="y-feed">${feed}</div>`;
+  }
+
+  function pageY(r) {
+    r = r || {};
+    const posts = yPosts();
+    const q = ySearch.trim().toLowerCase();
+    // searching a username offers the profile, whether or not it has posted
+    const lookup = q && /^@?[a-z0-9_]{2,30}$/.test(q) ? yAccount(q) : null;
+    const lookupHtml = q.startsWith('@') || lookup
+      ? (lookup ? `<a href="#" class="y-lookup" data-nav="y.com/${esc(lookup.handle)}">${avatar(lookup.name, lookup.handle)}<span><b>${esc(lookup.name)}</b><small>@${esc(lookup.handle)} · ${compact(lookup.followers)} followers</small></span><span class="y-lookup-go">View profile</span></a>`
+        : `<p class="y-none">No account called ${esc(q.startsWith('@') ? q : '@' + q)}.</p>`)
+      : '';
+    const shown = q ? posts.filter((p) => `${p.author} ${p.handle} ${p.text}`.toLowerCase().includes(q.replace(/^@/, ''))) : posts;
+    const feed = shown.map(yPostHtml).join('') || (lookupHtml ? '' : `<p class="y-none">No posts match “${esc(ySearch)}”.</p>`);
     const trends = [
       ['#RentDue', '18.2K posts', 'Ferris St'],
       ['agent-3', '9,410 posts', 'Tech'],
@@ -1306,19 +1456,20 @@
     return `<div class="y">
       <header class="y-bar">
         <div class="y-brand"><span class="y-mark">${ICONS.y}</span><span class="sr-only">Y</span></div>
-        <nav class="y-pills" aria-label="Y sections"><span class="on">Home</span><span>Explore</span><span>Alerts</span><span>Inbox</span></nav>
+        <nav class="y-pills" aria-label="Y sections"><a href="#" data-nav="y.com" class="${r.profile ? '' : 'on'}">Home</a><a href="#" data-nav="y.com/${esc(S.start.player.handle)}" class="${r.profile && r.profile.toLowerCase() === S.start.player.handle ? 'on' : ''}">Profile</a><span>Alerts</span><span>Inbox</span></nav>
         <span class="y-count"><b>${compact(state.followers)}</b> followers</span>
-        <label class="y-search">${Y_ICONS.explore}<input id="y-search" autocomplete="off" placeholder="Search Y" aria-label="Search posts" value="${esc(ySearch)}"></label>
+        <label class="y-search">${Y_ICONS.explore}<input id="y-search" autocomplete="off" placeholder="Search Y or @username" aria-label="Search posts or look up a username" value="${esc(ySearch)}"></label>
       </header>
       <div class="y-cols">
-        <main class="y-main">
+        <main class="y-main">${r.profile ? yProfilePage(r.profile) : `
           <form class="y-compose" data-form="ypost">
             ${avatar(S.start.player.name, S.start.player.handle)}
             <div><textarea id="post-input" rows="2" maxlength="280" placeholder="Say something to the timeline"></textarea>
             <div class="y-compose-row"><span class="y-hint">280 chars · free</span><button class="y-btn" type="submit">Post</button></div></div>
           </form>
-          <p class="y-eyebrow"><i class="y-live"></i>Timeline · live</p>
-          <div class="y-feed">${feed}</div>
+          <p class="y-eyebrow"><i class="y-live"></i>${q ? 'Search' : 'Timeline · live'}</p>
+          ${lookupHtml}
+          <div class="y-feed">${feed}</div>`}
         </main>
         <aside class="y-side">
           ${yProfile()}
@@ -1773,7 +1924,8 @@
 
     let html;
     switch (r.site) {
-      case 'y': html = pageY(); break;
+      case 'y': html = pageY(r); break;
+      case 'yowl': html = pageYowl(r); break;
       case 'mail': html = pageMail(r); break;
       case 'wallet': html = pageWallet(); break;
       case 'forkyard': html = pageForkyard(r.repo); break;
@@ -1935,7 +2087,7 @@
         table = `<table><thead><tr><th>branch</th><th>cover</th><th>score</th><th>hits</th></tr></thead><tbody>${rows || '<tr><td colspan="4">no candidates</td></tr>'}</tbody></table>`;
       }
       const engine = decision.engine === 'jev' ? `Jev${J.last && J.last.model ? ' · ' + esc(J.last.model) : ''}${J.last ? ` · ${J.last.ms}ms` : ''}` : `keywords${decision.fellBack ? ' (Jev call failed: ' + esc((J.last && J.last.error) || '?') + ')' : ''}`;
-      report = `<p><b>${{ post: 'Y post', mail: 'Email', local: 'Local model' }[lastReport.channel] || 'Prompt'}:</b> ${esc(lastReport.prompt)}</p>
+      report = `<p><b>${{ post: 'Y post', mail: 'Email', local: 'Local model', review: 'Yowl review' }[lastReport.channel] || 'Prompt'}:</b> ${esc(lastReport.prompt)}</p>
         <p><b>Result:</b> ${decision.kind}${decision.branch ? ' → ' + esc(decision.branch.id) : ''}${decision.kind === 'locked' ? (decision.lockReason === 'followers' ? ` (needs ${decision.branch.minFollowers} followers)` : ` (needs ${esc(modelDef(decision.branch.minModel).name)}, had ${esc(modelDef(lastReport.model || 1).name)})`) : ''}${decision.stale ? ' (stale, ignored)' : ''} <span class="dv-dim">(node ${esc(lastReport.node)} · ${engine})</span></p>
         ${table}`;
     }
@@ -1961,7 +2113,7 @@
 
   function bind() {
     document.addEventListener('click', (e) => {
-      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-takedown],[data-download],[data-buy],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model],[data-reply],[data-mail-discard],[data-copy-addr],[data-wallet],[data-y-creator]');
+      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-takedown],[data-download],[data-buy],[data-star],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model],[data-reply],[data-mail-discard],[data-copy-addr],[data-wallet],[data-y-creator]');
       if (!t) return;
       if (t.dataset.close) { e.stopPropagation(); closeTab(Number(t.dataset.close)); return; }
       if (t.dataset.nav) { e.preventDefault(); navigate(t.dataset.nav); return; }
@@ -1970,6 +2122,7 @@
       if (t.dataset.like) { const id = t.dataset.like; state.liked[id] = !state.liked[id]; save(); render(); return; }
       if (t.dataset.deploy) { deploy(t.dataset.deploy); return; }
       if (t.dataset.download) { downloadModel(t.dataset.download); return; }
+      if (t.dataset.star) { reviewStars = Number(t.dataset.star); render(); return; }
       if (t.dataset.buy) {
         const l = S.market.listings.find((x) => x.id === t.dataset.buy);
         askConfirm(`Buy “${l.title}” for ${fmtCoin(l.price)}? Cellar has no refunds.`, `Pay ${fmtCoin(l.price)}`, () => buyListing(l.id));
@@ -2030,6 +2183,10 @@
       if (!f) return;
       e.preventDefault();
       const kind = f.dataset.form;
+      if (kind === 'review') {
+        writeReview(f.dataset.biz, reviewStars, $('#review-text').value);
+        return;
+      }
       if (kind === 'term') {
         const input = $('#term-input');
         const v = input.value;
@@ -2078,6 +2235,7 @@
     document.addEventListener('input', (e) => {
       if (e.target.id === 'prompt-input') updateCostEstimate();
       if (e.target.id === 'y-search') { ySearch = e.target.value; render(); }
+      if (e.target.id === 'yowl-search') { yowlSearch = e.target.value; render(); }
       if (/^mail-(to|subject|body)$/.test(e.target.id)) {
         draft = { to: $('#mail-to').value, subject: $('#mail-subject').value, body: $('#mail-body').value };
         const waiting = !!state.awaiting[draft.to.trim().toLowerCase()];
@@ -2160,7 +2318,7 @@
     get state() { return state; },
     sendPrompt, post: postToY, sendMail, deploy, takeDown, sleep: doSleep, navigate, buyModel,
     meter: (id) => M.value(state, S, id),
-    download: downloadModel, buy: buyListing, term: termCommand,
+    download: downloadModel, buy: buyListing, term: termCommand, review: writeReview,
     heading: () => (M.ending(S, check) || {}).id,
     reset() { state = newState(); introOpen = false; save(); render(); },
     lastReport: () => lastReport,
