@@ -43,7 +43,16 @@ h2 { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacin
 .chip.model { color: var(--warn); }
 .work { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 16px; align-items: start; }
 .graph-wrap { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: auto; min-width: 0; }
-.graph { position: relative; padding: 24px 40px 32px; min-width: max-content; display: flex; flex-direction: column; align-items: center; }
+.graph { position: relative; padding: 24px 40px 32px; min-width: max-content; display: flex; gap: 72px; align-items: flex-start; justify-content: center; }
+.chain { display: flex; flex-direction: column; align-items: center; }
+.side-lane { width: 300px; position: relative; z-index: 1; }
+.node.anytime { width: 100%; border-style: dashed; border-width: 1.5px; }
+.side-list { display: flex; flex-direction: column; gap: 6px; margin-top: 2px; }
+.side-item { display: flex; flex-direction: column; gap: 2px; border-top: 1px solid var(--line); padding-top: 6px; }
+.side-item > span:first-child { display: flex; align-items: center; gap: 6px; }
+.side-item code { font-size: 11px; }
+.side-out { font-size: 12px; color: var(--dim); }
+.node-outs { display: flex; flex-direction: column; gap: 3px; font-size: 11.5px; color: var(--dim); }
 .layer { display: flex; gap: 28px; justify-content: center; position: relative; z-index: 1; }
 .node { width: 230px; text-align: left; background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; font: inherit; cursor: pointer; box-shadow: 0 1px 0 var(--line); }
 .node:hover { border-color: var(--dim); }
@@ -780,7 +789,10 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     `<span class="chip model">agent-N+ needed</span>`;
 
   const graph = document.getElementById('graph');
-  graph.innerHTML = layers.map((ids) => `<div class="layer">${ids.map((id) => {
+  const sideMail = (S.mailActions || []).filter((a) => !(a.when && a.when.node));
+  const sidePosts = (S.postActions || []).filter((a) => !(a.when && a.when.node));
+  function renderGraph() {
+  graph.innerHTML = `<div class="chain">` + layers.map((ids) => `<div class="layer">${ids.map((id) => {
     const n = S.nodes[id];
     const out = edges.filter((e) => e.from === id);
     const stays = (n.branches || []).filter((b) => !out.some((e) => e.kind === 'prompt' && e.id === b.id)).length;
@@ -789,8 +801,25 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       <span class="node-id">${esc(id)}<span>${id === S.start.node ? 'start' : endNodes.has(id) ? 'end' : unreachable.includes(id) ? 'unreachable' : ''}</span></span>
       <span class="node-obj">${esc(n.objective || '')}</span>
       <span class="node-meta"><span class="chip prompt">${(n.branches || []).length} branches</span>${stays ? `<span class="chip timer">${stays} stay</span>` : ''}${models.map((m) => `<span class="chip model">${esc(model(m))}+</span>`).join('')}</span>
+      ${(() => {
+        // branches that change something without moving the story on
+        const quiet = (n.branches || []).filter((b) => hasOutcome(b) && !out.some((e) => e.kind === 'prompt' && e.id === b.id));
+        return quiet.length ? `<span class="node-outs">${quiet.map((b) => `<span><code>${esc(b.id)}</code>: ${esc(summary(b.effects || {}))}</span>`).join('')}</span>` : '';
+      })()}
     </button>`;
-  }).join('')}</div>`).join('') + `<svg class="edges" id="edges" aria-hidden="true"></svg>`;
+  }).join('')}</div>`).join('') + `</div>
+    <div class="side-lane"><button class="node anytime" data-node="anytime" id="n-anytime">
+      <span class="node-id">anytime<span>every step</span></span>
+      <span class="node-obj">Side content that works at any point in the story.</span>
+      <span class="side-list">
+        ${sideMail.map((a) => `<span class="side-item"><span><span class="chip mail">email</span><code>${esc(a.id)}</code>${a.when && a.when.notFlag ? '<span class="chip timer">once</span>' : ''}</span><span class="side-out">${esc(summary(a.effects))}</span></span>`).join('')}
+        ${sidePosts.map((a) => `<span class="side-item"><span><span class="chip post">Y post</span><code>${esc(a.id)}</code></span><span class="side-out">${esc(summary(a.effects))}</span></span>`).join('')}
+        ${(S.global || []).filter(hasOutcome).map((b) => `<span class="side-item"><span><span class="chip prompt">agent prompt</span><code>${esc(b.id)}</code></span><span class="side-out">${[b.effects ? summary(b.effects) : '', ...Object.entries(b.atModel || {}).map(([t, alt]) => `on ${model(Number(t))}+: ${summary(alt.effects || {}) || 'different reply'}`)].filter(Boolean).map(esc).join(' · ')}</span></span>`).join('')}
+        <span class="side-item"><span class="side-out">${(S.global || []).filter((b) => !hasOutcome(b)).length} more agent prompts that only talk back · ${Object.keys(S.contacts || {}).length} contacts answer any other email</span></span>
+      </span>
+    </button></div>
+    <svg class="edges" id="edges" aria-hidden="true"></svg>`;
+  }
 
   // group edges per node pair and draw them once the cards have their real sizes
   const pairs = {};
@@ -883,6 +912,23 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     return html ? `<div class="outcome">${html}</div>` : '';
   }
 
+  function summary(fx) {
+    fx = bundle(fx);
+    const parts = [];
+    if (fx.goto) parts.push(`→ ${fx.goto}`);
+    if (fx.money != null) { const a = typeof fx.money === 'number' ? fx.money : fx.money.amount; parts.push(`${a >= 0 ? '+' : '−'}$${Math.abs(a)}`); }
+    for (const id of arr(fx.mail)) { const m = mailById(id); parts.push(m && m.folder === 'sent' ? `sends “${m.subject}”` : `email “${m ? m.subject : id}”`); }
+    for (const id of arr(fx.post)) parts.push(`Y post ${id}`);
+    if (fx.repo) parts.push(`repo ${arr(fx.repo).join(', ')}`);
+    if (fx.agent) parts.push('agent message');
+    if (fx.end) parts.push('ending');
+    for (const l of arr(fx.later)) parts.push(`after ${delayText(l)}: ${summary(l.effects)}`);
+    // flags are bookkeeping; mention them only when nothing else happens
+    if (fx.set && !parts.length) parts.push('flag ' + Object.keys(fx.set).join(', '));
+    return parts.join(' · ');
+  }
+  const hasOutcome = (b) => !!(b.effects || b.atModel);
+
   function branchHtml(b, kind, nodeId) {
     const out = gotos(b.effects);
     const go = out.length ? out.map((g) => `<button class="go" data-node="${esc(g.to)}">→ ${esc(g.to)}</button>${g.delay ? ` <span class="chip timer">after ${esc(g.delay)}</span>` : ''}`).join(' ') : '<span class="chip timer">stays</span>';
@@ -901,6 +947,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     </div>`;
   }
   function select(id) {
+    if (id === 'anytime') return selectAnytime();
     if (!S.nodes[id]) id = S.start.node;
     graph.querySelectorAll('.node').forEach((el) => el.classList.toggle('sel', el.dataset.node === id));
     const n = S.nodes[id];
@@ -918,8 +965,21 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       ${posts.length ? `<h2>Y posts here</h2>${posts.map((b) => branchHtml(b, 'post', id)).join('')}` : ''}
       ${mails.length ? `<h2>Emails here</h2>${mails.map((b) => branchHtml(b, 'mail', id)).join('')}` : ''}
       ${evs.length ? `<h2>Events</h2>${evs.map((e) => `<div class="br"><div class="br-head"><span class="chip ${e.kind}">${esc(e.id)}</span><button class="go" data-node="${esc(e.to)}">→ ${esc(e.to)}</button></div>${outcomeHtml(e.fx)}</div>`).join('')}` : ''}
-      <p class="note">${(S.global || []).length} global branches are also offered here (see below).</p>`;
+      <p class="note">Side emails and ${(S.global || []).length} global prompts also work here: <button class="go" data-node="anytime">anytime</button>.</p>`;
     try { history.replaceState(null, '', '#' + id); } catch (e) { /* not allowed in some frames */ }
+  }
+
+  function selectAnytime() {
+    graph.querySelectorAll('.node').forEach((el) => el.classList.toggle('sel', el.dataset.node === 'anytime'));
+    document.getElementById('detail').innerHTML = `
+      <h3>anytime</h3>
+      <p class="obj">Side content that works at every step.</p>
+      <p class="scene">These are offered no matter where the player is. Story-step branches win ties, so a global branch only fires when nothing more specific fits.</p>
+      <h2>Side emails (${sideMail.length})</h2>${sideMail.map((b) => branchHtml(b, 'mail')).join('') || '<p class="note">None.</p>'}
+      ${sidePosts.length ? `<h2>Side Y posts</h2>${sidePosts.map((b) => branchHtml(b, 'post')).join('')}` : ''}
+      <h2>Global agent prompts (${(S.global || []).length})</h2>${(S.global || []).map((b) => branchHtml(b, 'prompt')).join('')}
+      <p class="note">Any other email to a contact gets an ordinary reply (see Contacts below).</p>`;
+    try { history.replaceState(null, '', '#anytime'); } catch (e) { /* not allowed in some frames */ }
   }
 
   // ── reference tables ──
@@ -932,9 +992,6 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     <p style="margin-top:10px"><span class="lbl">Gemma persona</span></p><p class="quote">${txt(A.llmPersona)}</p>
     <p><span class="lbl">Gemma examples</span></p><ol class="lines">${(A.llmExamples || []).map(([u, a]) => `<li><b>${txt(u)}</b> → ${txt(a)}</li>`).join('')}</ol>
   </section>`);
-  ref.push(`<section class="card"><h2>Global branches (every node)</h2>${(S.global || []).map((b) => branchHtml(b, 'prompt')).join('')}</section>`);
-  const sideMail = (S.mailActions || []).filter((a) => !(a.when && a.when.node));
-  ref.push(`<section class="card"><h2>Side emails (any node)</h2>${sideMail.map((b) => branchHtml(b, 'mail')).join('') || '<p class="note">None.</p>'}</section>`);
   ref.push(`<section class="card"><h2>Events</h2>${(S.events || []).map((ev) => `<div class="br"><div class="br-head"><span class="chip ${ev.on === 'deploy' ? 'deploy' : 'day'}">${esc(ev.on === 'deploy' ? `deploy ${ev.repo}` : `every morning${ev.id ? ' · ' + ev.id : ''}`)}</span></div>
     ${ev.when ? `<p class="kw"><span class="lbl">when</span>${esc(Object.entries(ev.when).map(([k, v]) => `${k}: ${arr(v).join(', ')}`).join(' · '))}</p>` : ''}${outcomeHtml(ev.effects)}</div>`).join('')}</section>`);
   ref.push(`<section class="card"><h2>Contacts who reply</h2>${Object.entries(S.contacts || {}).map(([addr, c]) => `<div class="br">
@@ -971,6 +1028,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     const card = document.getElementById('n-' + t.dataset.node);
     if (card && !t.classList.contains('node')) card.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
   });
+  renderGraph();
   select(decodeURIComponent((location.hash || '').slice(1)) || S.start.node);
   spaceLayers();
   drawEdges();
