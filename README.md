@@ -1,6 +1,6 @@
 # Unknown Agent
 
-You're unemployed with $63.17, a laptop and five bookmarks. The only real tool you have is GIT, an AI chatbot that bills your crypto wallet for every prompt. Better models do more and cost more. Make rent.
+You're unemployed with $63.17, a laptop and five bookmarks. The only real tool you have is agent, an AI chatbot that bills your crypto wallet for every prompt. Better models do more and cost more. Make rent.
 
 ## Run it
 
@@ -17,15 +17,15 @@ Without a key the game still runs, using an offline keyword matcher for story de
 
 | Site | Domain | What it does |
 |---|---|---|
-| **Y** (fake X, dark and dense) | `y.com` | News and leads. You can post for free, and some posts move the story (see `postActions`). |
-| **Qmail** (email) | `qmail.com` | Personal mail: your landlord, your mom, GIT receipts, clients. Writing and replying is free, and some emails move the story (see `mailActions`). Mail to an address you haven't seen bounces. |
+| **Y** (social network: graphite timeline, yellow accents) | `y.com` | News and leads. You can post for free, and some posts move the story (see `postActions`). |
+| **Qmail** (email) | `qmail.com` | Personal mail: your landlord, your mom, agent receipts, clients. Writing and replying is free, and some emails move the story (see `mailActions`). Mail to an address you haven't seen bounces. |
 | **Satchel** (crypto wallet) | `satchel.app` | Your money, held as DOLR, a made-up stablecoin pegged 1:1 to the dollar. Shows your balance, every transaction, the rent auto-pay countdown and the nightly forecast. |
 | **Forkyard** (fake GitHub) | `forkyard.com` | Repos the agent pushes for you. You press **Deploy** yourself. Live apps are at `<repo>.forkyard.app`. |
-| **GIT** (AI chatbot) | `askgit.ai` | Where you type prompts. Each one costs money (depending on the model) and an hour of game time. Upgrade models at `askgit.ai/models`. |
+| **agent** (AI chatbot) | `agent.chat` | Where you type prompts. Each one costs money (depending on the model) and an hour of game time. Upgrade models at `agent.chat/models`. |
 
 ## Core loop
 
-- **Models.** GIT runs on models agent-1 to agent-5. You start on agent-1 and can buy up to agent-5. Each tier costs money upfront, must be bought in order, and charges more per prompt and per word:
+- **Models.** agent runs on models agent-1 to agent-5. You start on agent-1 and can buy up to agent-5. Each tier costs money upfront, must be bought in order, and charges more per prompt and per word:
 
   | Model | Unlock | Per prompt | Per word |
   |---|---|---|---|
@@ -35,7 +35,7 @@ Without a key the game still runs, using an offline keyword matcher for story de
   | agent-4 | $250 | $3.50 | $0.10 |
   | agent-5 | $800 | $6.00 | $0.15 |
 
-  You can switch between tiers you own from the picker next to Send, so cheap prompts can go to a cheap model. Some branches need a minimum tier. Ask for one on a weaker model and you pay for the prompt, nothing happens, and GIT tells you which tier it needs.
+  You can switch between tiers you own from the picker next to Send, so cheap prompts can go to a cheap model. Some branches need a minimum tier. Ask for one on a weaker model and you pay for the prompt, nothing happens, and agent tells you which tier it needs.
 
 - Each prompt costs money and **1 hour**. Posting on Y or sending an email takes 5 minutes, deploying takes 30.
 - At midnight you pass out, or you can press **Sleep**. Overnight, apps pay out, then hosting ($2/app), food ($15) and, at the end of Day 7, rent ($300) are charged.
@@ -136,19 +136,19 @@ nodes: {
 - `events`: `{ on: 'deploy', repo }` fires when the player deploys a repo; `{ on: 'day' }` is checked every morning.
 - `posts`: seeded posts use `at` (minutes before game start). Other posts appear once their `when` is true, or when an effect reveals them.
 - `decision`: the `hit` and `partial` probability thresholds for Jev.
-- `models`: the GIT tiers (`name`, `price`, `promptBase`, `perWord`, `blurb`), weakest first.
-- On a branch, `minModel: n` requires GIT-n or better. `weak` is what GIT says on a weaker model (default: `agent.lockedResponse`; `{model}` and `{required}` are filled in). `atModel: { 4: { response, effects } }` swaps in a different outcome on stronger tiers, even for branches anyone can reach.
+- `models`: the agent tiers (`name`, `price`, `promptBase`, `perWord`, `blurb`), weakest first.
+- On a branch, `minModel: n` requires agent-n or better. `weak` is what agent says on a weaker model (default: `agent.lockedResponse`; `{model}` and `{required}` are filled in). `atModel: { 4: { response, effects } }` swaps in a different outcome on stronger tiers, even for branches anyone can reach.
 - `{balance}`, `{lastCost}`, `{handle}` and `{name}` are substituted in agent replies and posts.
 
 ## Chapter 1 (placeholder story)
 
-Asking GIT who runs it gives a different answer on agent-4 or better, which sets a flag for later chapters.
+Asking agent who runs it gives a different answer on agent-4 or better, which sets a flag for later chapters.
 
 Side mail at any point: asking Gary (`gary@pruittproperty.com`) for more time gets a one-word reply. Writing to Mom (`mom@qmail.com`) gets a reply, plus $20 if you ask for help (once).
 
 1. **broke**: A bakery on Y wants a $150 website. Prompt the agent to build it.
 2. **site_built**: Deploy it on Forkyard. Asking the agent to deploy wastes a prompt.
-3. **site_live**: Tell Rosa. Either prompt GIT, or do it yourself for free: email her (her address is in her Y post) or post on Y. She pays 2 hours later.
+3. **site_live**: Tell Rosa. Either prompt agent, or do it yourself for free: email her (her address is in her Y post) or post on Y. She pays 2 hours later.
 4. **paid_once**: Y is complaining about broken laundromat machines. Build a tracker. **Needs agent-2.**
 5. **app_built → app_live**: Deploy it, then promote it (prompt or Y post).
 6. **app_users**: Monetize it. Ads give $42/day, a sponsor $60/day (**needs agent-3**), and a paywall kills traffic ($9/day). A perfect sponsor run ends Day 8 with about $89 after rent, and a perfect ads run with about $40.

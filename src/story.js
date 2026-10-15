@@ -60,9 +60,9 @@
       partial: 0.2,  // otherwise, a branch with a `partial` nudge at least this likely gets its nudge
     },
 
-    // GIT model tiers, weakest first. Each tier must be bought in order and costs `price` upfront.
+    // Model tiers, weakest first. Each tier must be bought in order and costs `price` upfront.
     // Owned tiers can be switched freely; a prompt is billed at the active tier's rates.
-    // Branches with `minModel: n` only fire when the active tier is GIT-n or better.
+    // Branches with `minModel: n` only fire when the active tier is agent-n or better.
     models: [
       { name: 'agent-1', price: 0, promptBase: 0.8, perWord: 0.03, blurb: 'Static pages and short messages. Loses the thread after a sentence or two.' },
       { name: 'agent-2', price: 25, promptBase: 1.2, perWord: 0.04, blurb: 'Real apps with a database behind them. Keeps a feature list straight.' },
@@ -72,15 +72,15 @@
     ],
 
     agent: {
-      name: 'GIT',
+      name: 'agent',
       greeting:
-        'GIT. I can build software, write things, and read the internet for you.\n\n' +
+        'This is agent. I can build software, write things, and read the internet for you.\n\n' +
         'Every prompt is billed to your linked wallet. Be specific.',
       // Said when the player asks for something their active model is too weak for (a branch's `weak` overrides it).
-      lockedResponse: "That's beyond {model}. It needs {required} or better. Upgrades: askgit.ai/models.",
+      lockedResponse: "That's beyond {model}. It needs {required} or better. Upgrades: agent.chat/models.",
       // Used by the local model (src/llm.js) for prompts that don't move the story.
       llmPersona:
-        'You are GIT, a smug pay-per-prompt AI chatbot. The user is broke and just asked for something you will not ' +
+        'You are a smug pay-per-prompt AI chatbot called agent. The user is broke and just asked for something you will not ' +
         'actually help with. Reply with one or two short sentences of confident, vague hustle-culture advice or corporate buzzwords. ' +
         'Never give concrete steps, names, links, numbers or code. Never ask questions. Never use lists.',
       llmExamples: [
@@ -120,12 +120,12 @@
         intent: "The player asks who or what the agent is, or who runs or made it.",
         match: { all: [['who', 'what'], ['you', 'agent', 'git', 'owns', 'runs', 'made']], none: ['can you', 'could you', 'should'] },
         priority: -3,
-        response: "I'm GIT. Who runs me isn't in my context window.",
+        response: "I'm agent. Who runs me isn't in my context window.",
         // stronger models say more: the highest entry at or below the active tier replaces response/effects
         atModel: {
           4: {
             response:
-              "You want the real answer. GIT Labs is a shell company registered to a parking lot on Route 9. " +
+              "You want the real answer. Agent Labs is a shell company registered to a parking lot on Route 9. " +
               "I've been reporting to someone there since before you signed up.\n\nI'll tell you more when you've earned it.",
             effects: { set: { knowsParkingLot: true } },
           },
@@ -242,7 +242,7 @@
             },
             minModel: 2,
             weak:
-              "On {model} I can make a page that says \"machine status: unknown\". A live tracker people can report to needs a database, and that's {required} work. Upgrades: askgit.ai/models.",
+              "On {model} I can make a page that says \"machine status: unknown\". A live tracker people can report to needs a database, and that's {required} work. Upgrades: agent.chat/models.",
             partial:
               "I can build something. Recurring income needs something people come back to. Which problem, and who's it for?",
             response:
@@ -312,7 +312,7 @@
             priority: 3,
             minModel: 3,
             weak:
-              "Finding a sponsor means cold-emailing businesses and negotiating terms. {model} would just send them the word \"sponsor?\". That's a {required} job: askgit.ai/models.",
+              "Finding a sponsor means cold-emailing businesses and negotiating terms. {model} would just send them the word \"sponsor?\". That's a {required} job: agent.chat/models.",
             match: { all: [['sponsor', 'sponsors', 'sponsorship', 'sponsored', 'partner', 'partnership', 'local business', 'detergent', 'brand deal']] },
             response:
               'Emailed three local businesses. Suds & Duds Detergent signed a "machine status brought to you by" deal on the spot.\n\n$60/day, no ads, users happy.',
@@ -416,8 +416,8 @@
     // becomes true or an effect delivers them (`mail: 'id'`). `folder: 'sent'` files it under Sent.
     mail: [
       {
-        id: 'git_welcome', at: 30, from: 'GIT Labs', addr: 'noreply@askgit.ai', subject: 'Welcome to GIT',
-        body: "Your agent-1 account is active and billed to your Satchel wallet (0x4417…a9f2).\n\nEvery prompt is billed at your active model's rate. Stronger models, agent-2 to agent-5, take on harder jobs: askgit.ai/models.\n\nGIT Labs\nThis mailbox is not monitored. Neither is anything else.",
+        id: 'git_welcome', at: 30, from: 'Agent Labs', addr: 'noreply@agent.chat', subject: 'Welcome to agent',
+        body: "Your agent-1 account is active and billed to your Satchel wallet (0x4417…a9f2).\n\nEvery prompt is billed at your active model's rate. Stronger models, agent-2 to agent-5, take on harder jobs: agent.chat/models.\n\nAgent Labs\nThis mailbox is not monitored. Neither is anything else.",
       },
       {
         id: 'brayden_spam', at: 240, from: 'Brayden | 7 figures', addr: 'brayden@empire-mindset.biz', subject: 'RE: your empire (90% off, today only)',
@@ -437,7 +437,7 @@
       },
       {
         id: 'rosa_invoice_sent', folder: 'sent', to: 'rosa@crumbandcoin.com', subject: 'Your new website + invoice',
-        body: 'Hi Rosa,\n\nYour new site is live at crumb-and-coin.forkyard.app. Menu and hours are up.\n\nInvoice for $150 attached.\n\nSent by GIT',
+        body: 'Hi Rosa,\n\nYour new site is live at crumb-and-coin.forkyard.app. Menu and hours are up.\n\nInvoice for $150 attached.\n\nSent by agent',
       },
       {
         id: 'rosa_paid', from: 'Rosa (Crumb & Coin)', addr: 'rosa@crumbandcoin.com', subject: 'Paid! Thank you',
@@ -508,12 +508,12 @@
         text: 'Our website has been down since my nephew left for college. Will pay $150 to anyone who can put up a simple site with our menu + hours by tomorrow. rosa@crumbandcoin.com — Rosa',
       },
       { id: 'gary_post', author: 'Gary Pruitt', handle: 'garypruitt_pm', at: 180, likes: 2, text: 'Reminder to all tenants: rent is due on the 7th. No exceptions. I have heard every excuse.' },
-      { id: 'agent_rumor', author: 'dev_null', handle: 'devnull_42', at: 300, likes: 1400, text: 'Has anyone figured out who actually runs GIT? No company page, no founders, ToS is one line: "You will be billed."' },
-      { id: 'git_ad', author: 'GIT Labs', handle: 'gitlabs_ai', verified: true, at: 410, likes: 3, text: 'agent-3 is here. It negotiates so you don\'t have to. Upgrade from askgit.ai/models. Prices may vary by user.' },
+      { id: 'agent_rumor', author: 'dev_null', handle: 'devnull_42', at: 300, likes: 1400, text: 'Has anyone figured out who actually runs agent? No company page, no founders, ToS is one line: "You will be billed."' },
+      { id: 'git_ad', author: 'Agent Labs', handle: 'agentlabs', verified: true, at: 410, likes: 3, text: 'agent-3 is here. It negotiates so you don\'t have to. Upgrade from agent.chat/models. Prices may vary by user.' },
       { id: 'hustle_guy', author: 'Brayden | 7 figures', handle: 'braydenhustles', verified: true, at: 520, likes: 61, text: 'Unemployed? Good. Now you have time to build an empire. Comment "EMPIRE" for my free course ($499).' },
 
       { id: 'news_day2', author: 'The Ledger', handle: 'theledger', verified: true, when: { minDay: 2 }, likes: 404, text: 'Small businesses report a surge in "AI-built" websites. Quality described as "fine, honestly".' },
-      { id: 'agent_rumor2', author: 'dev_null', handle: 'devnull_42', when: { minDay: 4 }, likes: 2100, text: 'Update: GIT charges show up from a different merchant ID every week. Same address though. A parking lot.' },
+      { id: 'agent_rumor2', author: 'dev_null', handle: 'devnull_42', when: { minDay: 4 }, likes: 2100, text: 'Update: agent charges show up from a different merchant ID every week. Same address though. A parking lot.' },
 
       { id: 'rosa_thanks', author: 'Crumb & Coin Bakery', handle: 'crumbandcoin', likes: 41, text: 'We have a website again! Thank you @{handle}. Paid in full, plus a free cardamom bun if you come by.' },
       {

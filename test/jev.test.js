@@ -38,7 +38,7 @@ const outcome = (d) => (d.kind === 'miss' ? 'miss' : `${d.kind}:${d.branch.id}`)
 
   const find = (node, id) => branches(node).find((b) => b.id === id);
 
-  await t('a hit on a branch above the active GIT tier is locked', () => {
+  await t('a hit on a branch above the active model tier is locked', () => {
     const hit = { kind: 'hit', branch: find('paid_once', 'build_tracker') };
     assert.strictEqual(Jev.gate(hit, 1).kind, 'locked');
     assert.strictEqual(Jev.gate(hit, 2).kind, 'hit');

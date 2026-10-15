@@ -108,7 +108,7 @@
   }
 
   /*
-   * Model gating. A branch with `minModel: n` needs GIT-n or better: on a weaker
+   * Model gating. A branch with `minModel: n` needs agent-n or better: on a weaker
    * model a hit becomes 'locked' (the player still pays, nothing happens, and the
    * agent says which tier it needs). Nudges and misses pass through unchanged.
    */

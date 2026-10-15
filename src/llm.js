@@ -176,7 +176,7 @@
   function buildMessages(prompt, ctx) {
     const agent = (global.STORY && global.STORY.agent) || {};
     const persona = agent.llmPersona ||
-      'You are GIT, a pay-per-prompt AI assistant. Reply in one or two short sentences.';
+      'You are a pay-per-prompt AI chatbot called agent. Reply in one or two short sentences.';
     const facts = ctx && ctx.state ? `\nThe user's wallet balance is $${ctx.state.money.toFixed(2)}.` : '';
     const messages = [{ role: 'system', content: persona + facts }];
     for (const [u, a] of agent.llmExamples || []) {
@@ -191,7 +191,7 @@
     let t = String(text)
       .replace(/<end_of_turn>|<eos>|<\/?start_of_turn>(model|user)?/g, '')
       .replace(/[*_#`]+/g, '')
-      .replace(/^\s*(assistant|model|git|unknown agent)\s*:\s*/i, '')
+      .replace(/^\s*(assistant|model|agent|unknown agent)\s*:\s*/i, '')
       .replace(/\s+/g, ' ')
       .trim();
     // drop a half-finished trailing sentence (generation hit the token limit)
