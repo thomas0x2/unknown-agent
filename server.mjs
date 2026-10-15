@@ -34,13 +34,22 @@ class HttpError extends Error {
   constructor(status, message) { super(message); this.status = status; }
 }
 
+/** Fix requests for every defect any repo can ship with; the page offers only the open ones. */
+function defectBranches(story) {
+  const out = [];
+  for (const [repo, def] of Object.entries(story.repos || {})) {
+    for (const d of (def.qa && def.qa.defects) || []) out.push({ id: `defect:${repo}:${d.id}`, intent: d.intent });
+  }
+  return out;
+}
+
 /** Build the Jev request for one decision, or null when there is nothing to choose between. */
 export function buildRequest(story, { kind, node, prompt, candidates }) {
   const nodeDef = story.nodes[node];
   if (!nodeDef) throw new HttpError(400, `Unknown node: ${node}`);
   const pool = kind === 'post' ? story.postActions || []
     : kind === 'mail' ? story.mailActions || []
-    : [...(nodeDef.branches || []), ...(story.global || [])];
+    : [...(nodeDef.branches || []), ...(story.global || []), ...defectBranches(story)];
   const byId = new Map(pool.filter((b) => b.intent).map((b) => [b.id, b]));
   const ids = [...new Set(candidates)].filter((id) => byId.has(id) && id !== NO_PROGRESS);
   if (!ids.length) return null;

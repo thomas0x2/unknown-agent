@@ -68,5 +68,24 @@ for (const [node, text, want] of mailCases) {
   if (!ok) fail++;
   console.log(`${ok ? 'ok  ' : 'FAIL'} [mail ${node}] "${text.split('\n')[0]}…" → ${got}${ok ? '' : `  (wanted ${want})`}`);
 }
+// fix requests aimed at specific defects (the game builds these branches from repos[*].qa.defects)
+const defectCases = [
+  ['crumb-and-coin', 'the menu has no prices, add them', 'no_prices'],
+  ['crumb-and-coin', 'the opening hours are wrong, we are closed on mondays', 'wrong_hours'],
+  ['crumb-and-coin', 'replace the lorem ipsum title at the top', 'lorem'],
+  ['crumb-and-coin', 'the sourdough photo is broken', 'no_photo'],
+  ['crumb-and-coin', 'add our address', 'no_address'],
+  ['spin-cycle', 'add the dryers', 'no_dryers'],
+  ['spin-cycle', 'the report button gives a 500 error', 'dead_report'],
+  ['spin-cycle', 'show when each machine was last updated', 'no_updated'],
+];
+for (const [repo, text, want] of defectCases) {
+  const branches = S.repos[repo].qa.defects.map((d) => ({ id: d.id, match: d.match }));
+  const got = label(Keywords.decide(text, branches));
+  const ok = got === 'hit:' + want;
+  if (!ok) fail++;
+  console.log(`${ok ? 'ok  ' : 'FAIL'} [defect ${repo}] "${text}" → ${got}${ok ? '' : `  (wanted hit:${want})`}`);
+}
+
 console.log(fail ? `\n${fail} failing` : '\nall passing');
 process.exit(fail ? 1 : 0);

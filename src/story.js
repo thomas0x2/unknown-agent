@@ -180,6 +180,14 @@
         response: 'With {balance}? No.',
       },
       {
+        id: 'vague_fix',
+        intent: 'The player asks the agent to fix bugs, problems or mistakes in a site or app without saying which specific problem.',
+        when: { openDefects: true },
+        priority: -2,
+        match: { all: [['fix', 'debug', 'repair', 'bug', 'bugs', 'broken', 'wrong', 'problem', 'issues', 'mistake']] },
+        response: "Fixed everything. Kidding. I looked and it seems perfect to me. If something's wrong, look at it and tell me exactly what.",
+      },
+      {
         id: 'fix_app',
         intent: 'The player asks the agent to fix, debug, repair or rebuild the Spin Cycle laundromat app because it is broken.',
         when: { flag: 'spinBroken' },
@@ -249,7 +257,7 @@
             partial: 'Send what, to whom? Be specific.',
             response:
               'Emailed Rosa at rosa@crumbandcoin.com from your Qmail:\n\n"Hi Rosa, your new site is live at crumb-and-coin.forkyard.app. Menu and hours are up. Invoice for $150 attached."\n\nShe usually replies within a couple of hours.',
-            effects: { set: { invoiced: true }, mail: 'rosa_invoice_sent', later: [{ hours: 2, effects: 'rosa_pays' }] },
+            effects: { set: { invoiced: true }, mail: 'rosa_invoice_sent', later: [{ hours: 2, effects: 'rosa_checks' }] },
           },
           research('research', "The site is live and the person paying for it has no idea. Telepathy isn't a feature yet. Tell her somehow, ideally without paying me to."),
         ],
@@ -367,7 +375,7 @@
       },
 
       monetized: {
-        objective: 'Spin Cycle pays now. Survive until rent clears at the end of Day 7.',
+        objective: 'Spin Cycle is monetized. It only pays while it works. Survive until rent clears at the end of Day 7.',
         scene: "Spin Cycle earns money every night. The player just has to survive until rent clears at the end of Day 7.",
         branches: [
           research('research', "Nothing left to do but wait for money to show up. You've been training for this your whole life. Go to sleep."),
@@ -383,6 +391,13 @@
 
     // Named effect bundles, so the same outcome can be reached through the agent or by hand.
     bundles: {
+      // Rosa looks at the site: any open defect gets a complaint email instead of money.
+      rosa_checks: {
+        choose: [
+          { when: { openDefects: 'crumb-and-coin' }, effects: { complain: 'crumb-and-coin', set: { invoiced: false } } },
+          { effects: 'rosa_pays' },
+        ],
+      },
       rosa_pays: {
         money: { amount: 150, memo: 'Crumb & Coin Bakery · website' },
         post: 'rosa_thanks',
@@ -394,6 +409,7 @@
         set: { marketed: true },
         app: { repo: 'spin-cycle', users: 300, perDay: 4 },
         post: 'you_spin_launch',
+        complain: 'spin-cycle',   // users hit any defects on day one
         followers: 80,   // people follow whoever built the thing they wanted
         goto: 'app_users',
       },
@@ -403,12 +419,13 @@
     postActions: [
       {
         id: 'post_rosa',
+        repeatable: true,   // after a complaint you tell her again
         intent: "The post tells Rosa or the Crumb & Coin bakery that her new website is live or ready.",
         when: { node: 'site_live', notFlag: 'invoiced' },
         match: {
           all: [['rosa', 'crumb', 'crumbandcoin', 'bakery'], ['site', 'website', 'live', 'link', 'forkyard', 'done', 'ready', 'up']],
         },
-        effects: { set: { invoiced: true }, later: [{ hours: 2, effects: 'rosa_pays' }] },
+        effects: { set: { invoiced: true }, later: [{ hours: 2, effects: 'rosa_checks' }] },
       },
       {
         id: 'post_spin',
@@ -426,12 +443,13 @@
     mailActions: [
       {
         id: 'mail_rosa',
+        repeatable: true,
         intent: "The email tells Rosa or the Crumb & Coin bakery that her website is live, or asks her for the $150 payment.",
         when: { node: 'site_live', notFlag: 'invoiced' },
         match: {
           all: [['rosa', 'crumb', 'crumbandcoin', 'bakery'], ['site', 'website', 'live', 'link', 'forkyard', 'done', 'ready', 'invoice', 'pay', 'payment', '150']],
         },
-        effects: { set: { invoiced: true }, later: [{ hours: 2, effects: 'rosa_pays' }] },
+        effects: { set: { invoiced: true }, later: [{ hours: 2, effects: 'rosa_checks' }] },
       },
       {
         id: 'mail_gary',
@@ -563,12 +581,67 @@
         files: ['index.html', 'menu.html', 'style.css', 'README.md'],
         snippet:
           '<header class="hero">\n  <h1>Crumb &amp; Coin</h1>\n  <p>Sourdough, buns, and coffee on Alder St since 2009.</p>\n</header>\n<section id="hours">\n  <h2>Hours</h2>\n  <p>Tue–Sat 7:00–15:00</p>\n</section>',
+        // the client checks the work by email (see rosa_checks)
+        client: { type: 'email', addr: 'rosa@crumbandcoin.com', subject: 'RE: Your new website' },
         preview: {
           title: 'Crumb & Coin Bakery',
-          html:
-            '<div class="pv pv-bakery"><h1>Crumb &amp; Coin</h1><p class="pv-sub">Sourdough, buns and coffee on Alder St since 2009.</p>' +
-            '<div class="pv-cols"><div><h2>Menu</h2><ul><li>Country sourdough <b>$7</b></li><li>Cardamom bun <b>$4</b></li><li>Rye loaf <b>$8</b></li><li>Drip coffee <b>$2</b></li></ul></div>' +
-            '<div><h2>Hours</h2><p>Tue–Sat · 7:00–15:00<br>Sun · 8:00–13:00<br>Mon · closed</p><h2>Find us</h2><p>418 Alder St</p></div></div></div>',
+          // {{slot}}s are filled with `slots` unless an open defect replaces them
+          html: '<div class="pv pv-bakery">{{hero}}{{photo}}<div class="pv-cols"><div><h2>Menu</h2>{{menu}}</div><div><h2>Hours</h2>{{hours}}<h2>Find us</h2>{{address}}</div></div></div>',
+          slots: {
+            hero: '<h1>Crumb &amp; Coin</h1><p class="pv-sub">Sourdough, buns and coffee on Alder St since 2009.</p>',
+            photo: '<div class="pv-photo" role="img" aria-label="A sourdough loaf"><span class="pv-loaf"></span></div>',
+            menu: '<ul><li>Country sourdough <b>$7</b></li><li>Cardamom bun <b>$4</b></li><li>Rye loaf <b>$8</b></li><li>Drip coffee <b>$2</b></li></ul>',
+            hours: '<p>Tue–Sat · 7:00–15:00<br>Sun · 8:00–13:00<br>Mon · closed</p>',
+            address: '<p>418 Alder St</p>',
+          },
+        },
+        // What can go wrong when agent builds it. `count` is how many defects ship, by model tier
+        // (agent-1 … agent-5); `regress` is the chance that a fix quietly breaks something else.
+        qa: {
+          count: [3, 2, 1, 0, 0],
+          regress: [0.3, 0.2, 0.1, 0.05, 0],
+          defects: [
+            {
+              id: 'no_prices', kind: 'spec', slot: 'menu',
+              html: '<ul><li>Country sourdough</li><li>Cardamom bun</li><li>Rye loaf</li><li>Drip coffee</li></ul>',
+              intent: 'The player asks the agent to add the missing prices to the bakery menu.',
+              match: { all: [['price', 'prices', 'cost', 'costs', '$'], ['menu', 'bread', 'items', 'add', 'missing', 'show']] },
+              fixed: 'Added prices to every menu item. Redeployed.',
+              complaint: 'The menu has no prices. People keep asking me if the bread is free.',
+            },
+            {
+              id: 'wrong_hours', kind: 'bug', slot: 'hours',
+              html: '<p>Mon–Fri · 9:00–17:00<br>Sat–Sun · closed</p>',
+              intent: 'The player says the opening hours on the bakery site are wrong and asks the agent to fix them.',
+              match: { all: [['hours', 'opening', 'open', 'closed', 'times', 'monday', 'schedule']] },
+              fixed: 'Fixed the hours: Tue–Sat 7–15, Sun 8–13, closed Mondays. Redeployed.',
+              complaint: 'The hours are wrong. We are closed on Mondays and open on weekends. A man knocked on our door at 9 on a Monday.',
+            },
+            {
+              id: 'no_address', kind: 'spec', slot: 'address',
+              html: '<p class="pv-missing">Address coming soon</p>',
+              intent: "The player asks the agent to add the bakery's address to the site.",
+              match: { all: [['address', 'location', 'alder', 'street', 'directions', 'where', 'find us']] },
+              fixed: 'Added 418 Alder St under "Find us". Redeployed.',
+              complaint: 'Our address is missing. It just says "coming soon". We have been here since 2009.',
+            },
+            {
+              id: 'lorem', kind: 'bug', slot: 'hero',
+              html: '<h1>Lorem Ipsum</h1><p class="pv-sub">Dolor sit amet, consectetur adipiscing elit.</p>',
+              intent: 'The player asks the agent to replace the placeholder "Lorem ipsum" text or wrong title at the top of the bakery site.',
+              match: { all: [['lorem', 'ipsum', 'placeholder', 'latin', 'title', 'heading', 'header', 'name']] },
+              fixed: 'Replaced the placeholder header with the bakery name and tagline. Redeployed.',
+              complaint: 'Why does the top of the page say "Lorem Ipsum"? That is not our name. Is that Latin?',
+            },
+            {
+              id: 'no_photo', kind: 'spec', slot: 'photo',
+              html: '<div class="pv-photo broken"><span>sourdough.jpg</span></div>',
+              intent: 'The player asks the agent to add or fix the sourdough photo, which is missing or broken.',
+              match: { all: [['photo', 'picture', 'image', 'img', 'sourdough', 'loaf', 'jpg']] },
+              fixed: 'Fixed the image path. The sourdough photo shows up now. Redeployed.',
+              complaint: 'The sourdough photo is a broken little box that says "sourdough.jpg". Our sourdough is beautiful. Show it.',
+            },
+          ],
         },
       },
       'spin-cycle': {
@@ -590,15 +663,52 @@
               .join('') +
             '</div><button class="pv-btn" type="button">Report brokn</button><p class="pv-foot">© 2019 Lorem Ipsum Laundry Co. · Powered by agent-1</p></div>',
         },
+        client: { type: 'y' },
+        qa: {
+          count: [3, 2, 1, 0, 0],
+          regress: [0.3, 0.2, 0.1, 0.05, 0],
+          defects: [
+            {
+              id: 'no_dryers', kind: 'spec', slot: 'dryers', html: '',
+              intent: 'The player asks the agent to add the dryers to Spin Cycle, which only shows washers.',
+              match: { all: [['dryer', 'dryers', 'drying']] },
+              fixed: 'Added the six dryers below the washers. Redeployed.',
+              complaint: { author: 'Marco', handle: 'marcoeats', text: 'spin cycle shows the washers. cool. where are the DRYERS @{handle}? I have wet jeans and no information' },
+            },
+            {
+              id: 'dead_report', kind: 'bug', slot: 'report',
+              html: '<button class="pv-btn ok" type="button">Report a machine</button><p class="pv-err-inline">POST /api/report 500 (Internal Server Error)</p>',
+              intent: 'The player says the report button on Spin Cycle fails or errors and asks the agent to fix it.',
+              match: { all: [['report', 'reporting', 'button', '500', 'error', 'submit']] },
+              fixed: 'The report endpoint was writing to a file that did not exist. Fixed. Reports save now. Redeployed.',
+              complaint: { author: 'wash day woes', handle: 'washday_woes', text: 'the report button on spin cycle just says Error 500. so I cannot report the machine that ate my socks' },
+            },
+            {
+              id: 'no_updated', kind: 'spec', slot: 'updated', html: '',
+              intent: 'The player asks the agent to show when Spin Cycle was last updated, or add timestamps to the machine reports.',
+              match: { all: [['updated', 'update', 'timestamp', 'timestamps', 'time', 'when', 'last', 'ago']] },
+              fixed: 'Every machine now shows when it was last reported, and the page shows the latest report. Redeployed.',
+              complaint: { author: 'Dev', handle: 'devnull_42', text: 'spin cycle says W3 works. since when? 5 minutes ago or 2019? needs timestamps, @{handle}' },
+            },
+            {
+              id: 'wrong_status', kind: 'bug', slot: 'washers',
+              html: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6'].map((m) => `<div class="pv-m ok"><b>${m}</b><span>working</span></div>`).join(''),
+              intent: 'The player says Spin Cycle shows every machine as working even when it is broken, and asks the agent to fix the status.',
+              match: { all: [['status', 'working', 'all', 'every', 'shows'], ['broken', 'wrong', 'always', 'lie', 'lies', 'incorrect']] },
+              fixed: 'The status was hard-coded to "working". It reads the real reports now. Redeployed.',
+              complaint: { author: 'wash day woes', handle: 'washday_woes', text: 'spin cycle says every washer works. I am standing here. W2 is smoking.' },
+            },
+          ],
+        },
         preview: {
           title: 'Spin Cycle — Ferris St',
-          html:
-            '<div class="pv pv-spin"><h1>Spin Cycle</h1><p class="pv-sub">Ferris St Laundromat · machine status, reported by people standing in front of them</p>' +
-            '<div class="pv-grid">' +
-            ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6']
-              .map((m, i) => `<div class="pv-m ${[1, 3, 4, 6, 9].includes(i) ? 'ok' : 'bad'}"><b>${m}</b><span>${[1, 3, 4, 6, 9].includes(i) ? 'working' : 'broken'}</span></div>`)
-              .join('') +
-            '</div></div>',
+          html: '<div class="pv pv-spin"><h1>Spin Cycle</h1><p class="pv-sub">Ferris St Laundromat · machine status, reported by people standing in front of them</p>{{updated}}<h2 class="pv-h">Washers</h2><div class="pv-grid">{{washers}}</div>{{dryers}}{{report}}</div>',
+          slots: {
+            updated: '<p class="pv-upd">Last report 4 minutes ago · 31 reports today</p>',
+            washers: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6'].map((m, i) => `<div class="pv-m ${[1, 3, 4].includes(i) ? 'ok' : 'bad'}"><b>${m}</b><span>${[1, 3, 4].includes(i) ? 'working' : 'broken'}</span></div>`).join(''),
+            dryers: '<h2 class="pv-h">Dryers</h2><div class="pv-grid">' + ['D1', 'D2', 'D3', 'D4', 'D5', 'D6'].map((m, i) => `<div class="pv-m ${[0, 3].includes(i) ? 'ok' : 'bad'}"><b>${m}</b><span>${[0, 3].includes(i) ? 'working' : 'broken'}</span></div>`).join('') + '</div>',
+            report: '<button class="pv-btn ok" type="button">Report a machine</button>',
+          },
         },
       },
     },
@@ -608,7 +718,7 @@
       { id: 'news_layoffs', author: 'The Ledger', handle: 'theledger', verified: true, at: 40, likes: 812, text: 'Regional employment down 4% this quarter as firms replace junior staff with "agentic workflows".' },
       {
         id: 'rosa_gig', author: 'Crumb & Coin Bakery', handle: 'crumbandcoin', at: 95, likes: 23,
-        text: 'Our website has been down since my nephew left for college. Will pay $150 to anyone who can put up a simple site with our menu + hours by tomorrow. rosa@crumbandcoin.com — Rosa',
+        text: 'Our website has been down since my nephew left for college. Will pay $150 for a simple site: menu WITH prices, our opening hours, our address, and a photo of the sourdough. By tomorrow. rosa@crumbandcoin.com — Rosa',
       },
       { id: 'gary_post', author: 'Gary Pruitt', handle: 'garypruitt_pm', at: 180, likes: 2, text: 'Reminder to all tenants: rent is due on the 7th. No exceptions. I have heard every excuse.' },
       { id: 'agent_rumor', author: 'dev_null', handle: 'devnull_42', at: 300, likes: 1400, text: 'Has anyone figured out who actually runs agent? No company page, no founders, ToS is one line: "You will be billed."' },
@@ -621,7 +731,7 @@
       { id: 'rosa_thanks', author: 'Crumb & Coin Bakery', handle: 'crumbandcoin', likes: 41, text: 'We have a website again! Thank you @{handle}. Paid in full, plus a free cardamom bun if you come by.' },
       {
         id: 'washday', author: 'wash day woes', handle: 'washday_woes', when: { node: ['paid_once', 'app_built', 'app_live', 'app_users', 'monetized', 'chapter_end'] }, likes: 2140,
-        text: 'Ferris St Laundromat has 12 machines and at any given moment 9 are broken. I hauled 3 bags there today for nothing. Someone PLEASE make a site that shows which ones work.',
+        text: 'Ferris St Laundromat has 12 machines and at any given moment 9 are broken. I hauled 3 bags there today for nothing. Someone PLEASE make a site that shows which washers AND dryers work, lets us report them, and says when it was last updated.',
       },
       { id: 'washday_2', author: 'Marco', handle: 'marcoeats', when: { node: ['paid_once', 'app_built', 'app_live'] }, likes: 188, text: '@washday_woes I would pay for this. Not much. But something.' },
       { id: 'you_spin_launch', author: '{name}', handle: '{handle}', likes: 96, text: 'Built a live machine tracker for the Ferris St Laundromat: spin-cycle.forkyard.app. Tap a machine to report it working or broken.' },

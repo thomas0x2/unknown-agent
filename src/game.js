@@ -112,6 +112,7 @@
       mail: [],      // Qmail: { id, t, read, folder, custom? }
       nextMail: 1,
       followers: (S.y && S.y.startFollowers) || 0,   // on Y
+      extraPosts: [],   // Y posts the engine writes (complaints about defects)
       creatorOn: false, // Y creator payouts switched on
       postsToday: { day: 0, n: 0 },
       awaiting: {},     // address → true while you wait on their reply
@@ -153,6 +154,8 @@
       }
       if (!s.mail) { s.mail = []; s.nextMail = 1; seedMail(s); }
       s.awaiting = s.awaiting || {};
+      s.extraPosts = s.extraPosts || [];
+      for (const r of Object.values(s.repos)) { r.defects = r.defects || []; r.complained = r.complained || []; }
       if (s.followers == null) { s.followers = (S.y && S.y.startFollowers) || 0; s.creatorOn = false; s.postsToday = { day: 0, n: 0 }; }
       s.replyDrafts = s.replyDrafts || {};
       // saves from before the wallet
@@ -171,6 +174,12 @@
     if (c.deployed && !arr(c.deployed).every((r) => state.repos[r] && state.repos[r].deployed)) return false;
     if (c.minDay && dayOf(state.t) < c.minDay) return false;
     if (c.minMoney != null && state.money < c.minMoney) return false;
+    // openDefects: repo (or true for any repo) has unfixed defects; noDefects: repo is clean
+    if (c.openDefects != null) {
+      const repos = c.openDefects === true ? Object.keys(state.repos) : arr(c.openDefects);
+      if (!repos.some((r) => openDefects(r).length)) return false;
+    }
+    if (c.noDefects && arr(c.noDefects).some((r) => openDefects(r).length)) return false;
     return true;
   }
 
@@ -275,7 +284,8 @@
     for (const r of arr(fx.repo)) {
       const name = typeof r === 'string' ? r : r.name;
       if (state.repos[name]) continue;
-      state.repos[name] = { createdAt: state.t, deployed: false, broken: !!(r && r.broken) };
+      state.repos[name] = { createdAt: state.t, deployed: false, broken: !!(r && r.broken), defects: [], complained: [] };
+      rollDefects(name, state.model, (S.repos[name] && S.repos[name].qa && S.repos[name].qa.count) || null);
       if (!onSite('forkyard')) state.unread.forkyard++;
       toast('Forkyard', `New repository: ${name}`, 'forkyard');
     }
@@ -287,6 +297,13 @@
     }
     if (fx.app) state.apps[fx.app.repo] = { users: fx.app.users || 0, perDay: fx.app.perDay || 0 };
     if (fx.followers) changeFollowers(fx.followers);
+    if (fx.fixDefect) fixDefect(fx.fixDefect.repo, fx.fixDefect.id);
+    for (const name of arr(fx.complain)) complain(name);
+    // choose: the first option whose `when` holds runs
+    if (fx.choose) {
+      const pick = fx.choose.find((o) => check(o.when));
+      if (pick) applyEffects(pick.effects);
+    }
     for (const id of arr(fx.post)) revealPost(id);
     for (const id of arr(fx.mail)) deliverMail(id);
     if (fx.agent) agentSays(fx.agent);
@@ -299,6 +316,79 @@
     }
     if (fx.end) state.ended = fx.end;
     revealPosts();
+  }
+
+  // ── QA: defects agent ships, and the loop of checking and fixing them ──
+  const qaOf = (repo) => (S.repos[repo] && S.repos[repo].qa) || null;
+  const defectDef = (repo, id) => ((qaOf(repo) || {}).defects || []).find((d) => d.id === id);
+  const openDefects = (repo) => (state.repos[repo] && state.repos[repo].defects) || [];
+
+  // Ship `count[tier]` random defects from the repo's pool, avoiding `exclude`.
+  function rollDefects(repo, level, count, exclude) {
+    const qa = qaOf(repo);
+    if (!qa || !state.repos[repo]) return;
+    const n = typeof count === 'number' ? count : (qa.count || [])[Math.min(level, qa.count.length) - 1] || 0;
+    const pool = qa.defects.map((d) => d.id).filter((id) => !openDefects(repo).includes(id) && !(exclude || []).includes(id));
+    for (let i = 0; i < n && pool.length; i++) {
+      const id = pool.splice(Math.floor(Math.random() * pool.length), 1)[0];
+      state.repos[repo].defects.push(id);
+    }
+  }
+
+  // Fix one defect. Weaker models sometimes break something else while they're at it.
+  function fixDefect(repo, id) {
+    const r = state.repos[repo];
+    if (!r || !r.defects.includes(id)) return;
+    r.defects = r.defects.filter((x) => x !== id);
+    r.complained = (r.complained || []).filter((x) => x !== id);
+    const qa = qaOf(repo);
+    const chance = qa && qa.regress ? qa.regress[Math.min(state.model, qa.regress.length) - 1] || 0 : 0;
+    if (Math.random() < chance) rollDefects(repo, state.model, 1, [id]);
+    toast('Forkyard', `New commit on ${repo}`, 'forkyard');
+  }
+
+  // The client finds a problem: an email about one defect, or Y posts about each new one.
+  function complain(repo) {
+    const def = S.repos[repo];
+    const r = state.repos[repo];
+    if (!def || !r || !def.client) return;
+    const open = openDefects(repo);
+    if (!open.length) return;
+    if (def.client.type === 'email') {
+      const id = open.find((x) => !r.complained.includes(x)) || open[0];
+      if (!r.complained.includes(id)) r.complained.push(id);
+      const contact = (S.contacts || {})[def.client.addr] || { name: def.client.addr, sign: '' };
+      const d = defectDef(repo, id);
+      deliverCustom({
+        from: contact.name, addr: def.client.addr, subject: def.client.subject || `RE: ${repo}`,
+        body: `${d.complaint}\n\nTell me when it's fixed and I'll have another look. I pay when it's right.${contact.sign ? `\n\n${contact.sign}` : ''}`,
+      });
+    } else if (def.client.type === 'y') {
+      for (const id of open.filter((x) => !r.complained.includes(x))) {
+        const c = defectDef(repo, id).complaint;
+        r.complained.push(id);
+        state.extraPosts.push({ id: `x${state.nextMail++}`, author: c.author, handle: c.handle, text: c.text, t: state.t, likes: 40 + Math.floor(Math.random() * 120) });
+        if (!onSite('y')) state.unread.y++;
+      }
+    }
+  }
+
+  // Fix requests are branches generated from the open defects (cached so identity stays stable).
+  const defectBranchCache = new Map();
+  function defectBranches() {
+    const out = [];
+    for (const [repo, r] of Object.entries(state.repos)) {
+      for (const id of r.defects || []) {
+        const key = `defect:${repo}:${id}`;
+        if (!defectBranchCache.has(key)) {
+          const d = defectDef(repo, id);
+          if (!d) continue;
+          defectBranchCache.set(key, { id: key, intent: d.intent, match: d.match, response: d.fixed, effects: { fixDefect: { repo, id } }, defect: true });
+        }
+        out.push(defectBranchCache.get(key));
+      }
+    }
+    return out;
   }
 
   function changeFollowers(d) {
@@ -408,9 +498,10 @@
     for (const [repo, app] of Object.entries(state.apps)) {
       const r = state.repos[repo];
       if (!r || !r.deployed) continue;
-      if (r.broken) {
-        // a broken app keeps nobody and earns nothing, whatever agent promised
+      if (r.broken || openDefects(repo).length) {
+        // a broken or buggy app earns nothing, whatever agent promised; users complain about each defect
         if (app.perDay > 0 || app.users > 0) lines.push([`${repo} earnings (${appVisitors(repo)} users/day)`, 0]);
+        if (!r.broken && app.users > 0) complain(repo);
       } else if (app.perDay > 0) {
         addTx(app.perDay, `Forkyard · ${repo} payout`);
         lines.push([`${repo} earnings (${app.users} users/day)`, app.perDay]);
@@ -484,7 +575,7 @@
   }
 
   function branchCandidates() {
-    return [...(currentNode().branches || []), ...(S.global || [])].filter((b) => check(b.when));
+    return [...(currentNode().branches || []), ...defectBranches(), ...(S.global || [])].filter((b) => check(b.when));
   }
 
   function sendPrompt(text) {
@@ -599,7 +690,7 @@
       lastReport = { prompt: text, node, decision: gated, channel: 'post', rating };
       // posts have no nudges: only a hit that is still available counts
       if (gated.kind === 'hit' && postCandidates().includes(gated.branch)) {
-        state.fired['post:' + gated.branch.id] = state.t;
+        if (!gated.branch.repeatable) state.fired['post:' + gated.branch.id] = state.t;
         post.likes += 20 + Math.floor(Math.random() * 40);
         applyEffects(gated.branch.effects);
       } else if (gated.kind === 'locked' && gated.lockReason === 'followers') {
@@ -648,7 +739,7 @@
       const decision = await J.decide(text, candidates, { kind: 'mail', node, thresholds: S.decision });
       lastReport = { prompt: text, node, decision, channel: 'mail' };
       if (decision.kind === 'hit' && mailCandidates().includes(decision.branch)) {
-        state.fired['mail:' + decision.branch.id] = state.t;
+        if (!decision.branch.repeatable) state.fired['mail:' + decision.branch.id] = state.t;
         applyEffects(decision.branch.effects);
         storyHit = true;
       }
@@ -816,6 +907,7 @@
       if (state.posts[p.id] == null) continue;
       posts.push({ ...p, t: state.posts[p.id], author: tpl(p.author), handle: tpl(p.handle), text: tpl(p.text) });
     }
+    for (const x of state.extraPosts || []) posts.push({ ...x, author: tpl(x.author), handle: tpl(x.handle), text: tpl(x.text) });
     for (const u of state.userPosts) posts.push({ id: u.id, author: S.start.player.name, handle: S.start.player.handle, text: u.text, t: u.t, likes: u.likes, mine: true, delta: u.delta, pending: u.pending, score: u.score });
     posts.sort((a, b) => b.t - a.t);
     const q = ySearch.trim().toLowerCase();
@@ -1117,9 +1209,12 @@
   function appVisitors(repo) {
     const app = state.apps[repo];
     if (!app) return 0;
-    return state.repos[repo] && state.repos[repo].broken ? Math.round(app.users * 0.04) : app.users;
+    const r = state.repos[repo];
+    if (r && r.broken) return Math.round(app.users * 0.04);
+    return openDefects(repo).length ? Math.round(app.users * 0.5) : app.users;
   }
-  const appEarnings = (repo) => (state.repos[repo] && state.repos[repo].broken ? 0 : (state.apps[repo] || {}).perDay || 0);
+  // nobody pays for an app that's broken or still has defects
+  const appEarnings = (repo) => (state.repos[repo] && (state.repos[repo].broken || openDefects(repo).length) ? 0 : (state.apps[repo] || {}).perDay || 0);
 
   function pageApp(repo) {
     const r = state.repos[repo];
@@ -1127,8 +1222,11 @@
     if (!r || !r.deployed || !def) {
       return `<div class="err"><h1>404: NOT_FOUND</h1><p>Nothing is deployed at <code>${esc(repo)}.forkyard.app</code>.</p></div>`;
     }
-    const broken = r.broken && def.broken;
-    return `<div class="pv-host">${broken ? def.broken.preview : def.preview.html}</div>`;
+    if (r.broken && def.broken) return `<div class="pv-host">${def.broken.preview}</div>`;
+    const slots = Object.assign({}, def.preview.slots || {});
+    for (const id of openDefects(repo)) { const d = defectDef(repo, id); if (d && d.slot) slots[d.slot] = d.html; }
+    const html = def.preview.html.replace(/\{\{(\w+)\}\}/g, (m, k) => (k in slots ? tpl(slots[k]) : ''));
+    return `<div class="pv-host">${html}</div>`;
   }
 
   function pageError(url) {
@@ -1456,6 +1554,7 @@
       <div class="dv-row"><button data-dev="money+">+$100</button><button data-dev="money-">−$100</button><button data-dev="hour">+1h</button><button data-dev="sleep">Sleep</button><button data-dev="posts">All posts</button><button data-dev="model">Free next model</button><button data-dev="followers">+50 followers</button></div>
       <p><b>Decisions</b> ${J.status === 'online' ? 'Jev · ' + esc(J.model || '') : esc(J.status) + (J.reason ? ' · ' + esc(J.reason) : '')}</p>
       <p><b>Model</b> ${esc(modelDef(state.model).name)} active · ${esc(modelDef(state.owned).name)} owned · <b>Followers</b> ${state.followers}${lastReport && lastReport.rating ? ` · last post rated ${lastReport.rating.score.toFixed(2)} (${esc(lastReport.rating.engine)})` : ''}</p>
+      <p><b>Open defects</b> <code>${esc(Object.entries(state.repos).map(([k, r]) => `${k}: ${(r.defects || []).join(', ') || 'none'}${r.broken ? ' (BROKEN)' : ''}`).join(' · ') || 'no repos')}</code></p>
       <p><b>Flags</b> <code>${esc(JSON.stringify(state.flags))}</code></p>
       ${LLM ? `<p><b>Local model</b> ${esc(LLM.settings.backend)} · ${esc(LLM.status)}${LLM.detail ? ' · ' + esc(LLM.detail) : ''}${LLM.last ? `<br><span class="dv-dim">last: ${LLM.last.ms}ms, ${LLM.last.ok ? 'used' : 'fell back'}${LLM.last.text ? ' — ' + esc(LLM.last.text.slice(0, 80)) : ''}</span>` : ''}</p>` : ''}
       <p><b>Queue</b> <code>${esc(JSON.stringify(state.queue.map((q) => ({ at: stamp(q.at), fx: typeof q.effects === 'string' ? q.effects : Object.keys(q.effects) }))))}</code></p>

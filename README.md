@@ -26,6 +26,8 @@ Without a key the game still runs, using an offline keyword matcher for story de
 
 ## Core loop
 
+- **Check agent's work.** Apps agent builds can ship with defects: bugs (wrong hours, a 500 error on a button) and spec misses (no prices, no dryers). The client's spec is in their post. agent always says it's done, so open the deployed app, compare it to the spec, and prompt a fix for each problem by name ("the menu has no prices"). Vague "fix the bugs" requests fix nothing, and a fix can quietly break something else. Weaker models ship more defects and regress more often (agent-1: 3 defects, 30% regressions; agent-4+: none). Rosa only pays once her site is clean: tell her too early and she emails you about one problem. Spin Cycle earns $0 while any defect is open, and users complain about each one on Y.
+
 - **Y followers.** You start with 12. Jev rates every post 0–4 against the story's rubric (a Score question; offline, a keyword heuristic): strong posts win followers, bland ones barely move, spam and begging lose some. Posts touching a trend get a bonus, reposts earn nothing, and gains halve after three posts a day. Story moments add followers too (Rosa's shout-out, the Spin Cycle launch). Some branches need followers: promoting Spin Cycle needs 40, the sponsor deal 150. At 300 followers you can turn on creator payouts ($0.05 per follower per night).
 
 - **Models.** agent runs on models agent-1 to agent-5. You start on agent-1 and can buy up to agent-5. Each tier costs money upfront, must be bought in order, and charges more per prompt and per word:
@@ -141,6 +143,8 @@ nodes: {
 - `events`: `{ on: 'deploy', repo }` fires when the player deploys a repo; `{ on: 'day' }` is checked every morning.
 - `posts`: seeded posts use `at` (minutes before game start). Other posts appear once their `when` is true, or when an effect reveals them.
 - `decision`: the `hit` and `partial` probability thresholds for Jev.
+- `repos[name].qa`: `count` (defects shipped per model tier), `regress` (chance per tier that a fix breaks something else) and `defects`, each with `id`, `kind` (bug/spec), the preview `slot` and broken `html` it replaces, a Jev `intent` plus offline `match` for the fix request, the `fixed` reply, and a `complaint` (email text, or a Y post `{ author, handle, text }`). `preview.html` uses `{{slot}}` placeholders filled from `preview.slots`. `client` says how complaints arrive (`{ type: 'email', addr, subject }` or `{ type: 'y' }`).
+- Effects `complain: repo` and `choose: [{ when, effects }, …]`, and conditions `openDefects: repo | true` and `noDefects: repo`, drive client checks like Rosa's (`rosa_checks`).
 - `y`: `startFollowers`, the `setting` and 0–4 `rubric` Jev rates posts with, `trends` (bonus topics), `postsPerDay`, `creator` payouts (`minFollowers`, `perFollower`) and the default `lockedResponse`. On a branch or post action, `minFollowers: n` requires that many followers (`fewFollowers` overrides the reply); the effect `followers: n` adds or removes followers. The server rates posts at `POST /api/rate`.
 - `models`: the agent tiers (`name`, `price`, `promptBase`, `perWord`, `blurb`), weakest first.
 - On a branch, `minModel: n` requires agent-n or better. Add `fake: { response, effects }` to have weaker models pretend instead of refusing; `repo: { name, broken: true }` creates a botched repo (its `broken` snippet and preview from `repos` are shown, and it earns $0), and the effect `fix: 'repo'` repairs it. `weak` is what agent says on a weaker model (default: `agent.lockedResponse`; `{model}` and `{required}` are filled in). `atModel: { 4: { response, effects } }` swaps in a different outcome on stronger tiers, even for branches anyone can reach.
@@ -152,9 +156,9 @@ Asking agent who runs it gives a different answer on agent-4 or better, which se
 
 Side mail at any point: asking Gary (`gary@pruittproperty.com`) for more time gets a one-word reply. Mom (`mom@qmail.com`) answers the next morning, and sends $20 once if you ask for help. Anything else you write to Mom, Gary, Rosa or Brayden gets an in-character reply from Gemma.
 
-1. **broke**: A bakery on Y wants a $150 website. Prompt the agent to build it.
+1. **broke**: A bakery on Y wants a $150 website (spec: prices, hours, address, sourdough photo). Prompt the agent to build it.
 2. **site_built**: Deploy it on Forkyard. Asking the agent to deploy wastes a prompt.
-3. **site_live**: Tell Rosa. Either prompt agent, or do it yourself for free: email her (her address is in her Y post) or post on Y. She pays 2 hours later.
+3. **site_live**: Check the site against Rosa's spec and get agent to fix what's wrong. Then tell Rosa. Either prompt agent, or do it yourself for free: email her (her address is in her Y post) or post on Y. Two hours later she checks the site: any defect gets a complaint email, a clean site gets you paid.
 4. **paid_once**: Y is complaining about broken laundromat machines. Build a tracker. **Needs agent-2.** On agent-1, agent ships a broken app and says it's flawless; it earns nothing until you ask a stronger model to fix it (agent-1 claims to fix it but doesn't).
 5. **app_built → app_live**: Deploy it, then promote it (prompt or Y post).
 6. **app_users**: Monetize it. Ads give $42/day, a sponsor $60/day (**needs agent-3**), and a paywall kills traffic ($9/day). A perfect sponsor run ends Day 8 with about $89 after rent, and a perfect ads run with about $40.

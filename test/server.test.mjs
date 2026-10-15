@@ -39,6 +39,12 @@ await t('buildRequest asks one Choice over the candidates plus no_progress, with
   assert.match(req.state.situation, /\$150/);
 });
 
+await t('defect fix requests are offered to Jev with their intents', () => {
+  const req = buildRequest(story, { kind: 'prompt', node: 'site_live', prompt: 'add prices', candidates: ['defect:crumb-and-coin:no_prices', 'defect:crumb-and-coin:made_up'] });
+  assert.deepStrictEqual(Object.keys(req.questions.branch.criteria), ['defect:crumb-and-coin:no_prices', NO_PROGRESS]);
+  assert.match(req.questions.branch.criteria['defect:crumb-and-coin:no_prices'], /prices/);
+});
+
 await t('buildRequest ignores ids that are not in the story (no open proxy)', () => {
   const req = buildRequest(story, { kind: 'prompt', node: 'broke', prompt: 'x', candidates: ['build_bakery_site', 'made_up', 'monetize_ads'] });
   assert.deepStrictEqual(Object.keys(req.questions.branch.criteria), ['build_bakery_site', NO_PROGRESS]);
