@@ -177,7 +177,7 @@
     const agent = (global.STORY && global.STORY.agent) || {};
     const persona = agent.llmPersona ||
       'You are GIT, a pay-per-prompt AI assistant. Reply in one or two short sentences.';
-    const facts = ctx && ctx.state ? `\nThe user's bank balance is $${ctx.state.money.toFixed(2)}.` : '';
+    const facts = ctx && ctx.state ? `\nThe user's wallet balance is $${ctx.state.money.toFixed(2)}.` : '';
     const messages = [{ role: 'system', content: persona + facts }];
     for (const [u, a] of agent.llmExamples || []) {
       messages.push({ role: 'user', content: u }, { role: 'assistant', content: a });

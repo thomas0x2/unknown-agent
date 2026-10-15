@@ -25,9 +25,10 @@
   --f-display: 'Fraunces', Georgia, 'Times New Roman', serif;
 
   /* site palettes */
-  --ch-bg: #ffffff; --ch-ink: #15181c; --ch-dim: #687079; --ch-line: #ebebe6; --ch-accent: #e9a100;
-  --qm-bg: #f4f5fa; --qm-panel: #ffffff; --qm-ink: #171a2b; --qm-dim: #666c84; --qm-line: #e1e4ee; --qm-accent: #3b4ad6; --qm-soft: #eceefc; --ch-accent-ink: #1d1600;
-  --bk-bg: #eef2ee; --bk-panel: #ffffff; --bk-green: #0e4b38; --bk-ink: #1a2420; --bk-dim: #5d6b64; --bk-neg: #b3261e; --bk-pos: #1c7444; --bk-line: #dbe3dd;
+  --y-bg: #000000; --y-ink: #e7e9ea; --y-dim: #71767b; --y-line: #2f3336; --y-card: #16181c; --y-hover: #080808; --y-accent: #1d9bf0; --y-like: #f91880; --y-repost: #00ba7c;
+  --f-y: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --qm-bg: #f4f5fa; --qm-panel: #ffffff; --qm-ink: #171a2b; --qm-dim: #666c84; --qm-line: #e1e4ee; --qm-accent: #3b4ad6; --qm-soft: #eceefc;
+  --wl-bg: #eef1f0; --wl-panel: #ffffff; --wl-deep: #0c2a27; --wl-ink: #121816; --wl-dim: #5f6b67; --wl-line: #dde3e1; --wl-accent: #0f8f7e; --wl-neg: #b3261e; --wl-pos: #12805c;
   --fy-bg: #0d0f13; --fy-panel: #161a20; --fy-ink: #e4e6ea; --fy-dim: #8a929e; --fy-line: #272c35; --fy-accent: #ff7a45; --fy-live: #4fd08a;
   --ua-bg: #eceef0; --ua-panel: #ffffff; --ua-ink: #0c0d0f; --ua-dim: #6c727b; --ua-line: #d7dade; --ua-you: #0c0d0f;
 }
@@ -86,8 +87,9 @@ code { font-family: var(--f-mono); font-size: 0.86em; }
 .tab-new { border: 0; background: none; color: var(--chrome-dim); width: 28px; height: 28px; margin-bottom: 4px; border-radius: 6px; font-size: 18px; flex: none; }
 .tab-new:hover { background: var(--chrome-2); color: var(--chrome-ink); }
 
-.ico-y { color: var(--ch-accent); }
-.ico-bank { color: #6fbf9a; }
+.ico-y { color: #f4f5f7; }
+.ico-wallet, .nt-wallet .nt-ico { color: #39c3ad; --icon-ink: #1f2329; }
+.toast.t-wallet { border-left-color: #39c3ad; }
 .ico-forkyard { color: var(--fy-accent); }
 .ico-agent { color: #f4f5f7; --icon-ink: #111; }
 
@@ -148,7 +150,6 @@ code { font-family: var(--f-mono); font-size: 0.86em; }
   animation: toast-in 0.25s ease-out;
 }
 .toast b { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--chrome-dim); }
-.toast.t-bank { border-left-color: #6fbf9a; }
 .toast.t-forkyard { border-left-color: var(--fy-accent); }
 .toast.t-agent { border-left-color: #f4f5f7; }
 .toast.t-note { border-left-color: var(--note); }
@@ -213,66 +214,102 @@ code { font-family: var(--f-mono); font-size: 0.86em; }
 .nt-tile .badge { position: absolute; top: 8px; right: 8px; }
 .nt-ico { width: 34px; height: 34px; display: inline-flex; }
 .nt-ico svg { width: 100%; height: 100%; }
-.nt-y .nt-ico { color: var(--ch-accent); }
-.nt-bank .nt-ico { color: #6fbf9a; }
+.nt-y .nt-ico { color: #f4f5f7; }
 .nt-forkyard .nt-ico { color: var(--fy-accent); }
 .nt-agent .nt-ico { color: #f4f5f7; --icon-ink: #111; }
 
-/* ── Chirpr ── */
-.ch { min-height: 100%; background: var(--ch-bg); color: var(--ch-ink); display: grid; grid-template-columns: 190px minmax(0, 600px) 260px; justify-content: center; }
-.ch-nav { padding: 18px 16px; display: flex; flex-direction: column; gap: 4px; position: sticky; top: 0; align-self: start; }
-.ch-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 22px; letter-spacing: -0.03em; margin-bottom: 14px; }
-.ch-logo svg { width: 28px; height: 28px; color: var(--ch-accent); }
-.ch-nav a { padding: 8px 12px; border-radius: 999px; font-size: 16px; color: var(--ch-ink); }
-.ch-nav a.on { font-weight: 700; }
-.ch-main { border-left: 1px solid var(--ch-line); border-right: 1px solid var(--ch-line); min-height: 100%; }
-.ch-h { margin: 0; padding: 16px 18px; font-size: 19px; border-bottom: 1px solid var(--ch-line); }
-.ch-compose { display: grid; grid-template-columns: 44px 1fr; gap: 12px; padding: 14px 18px; border-bottom: 8px solid #f5f5f2; }
-.ch-compose textarea { width: 100%; border: 0; outline: 0; resize: none; font-size: 17px; padding: 8px 0; background: none; color: var(--ch-ink); }
-.ch-compose-row { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--ch-line); padding-top: 10px; }
-.ch-hint { font-size: 12.5px; color: var(--ch-dim); }
-.ch-btn { border: 0; background: var(--ch-accent); color: var(--ch-accent-ink); font-weight: 700; padding: 8px 18px; border-radius: 999px; }
-.ch-post { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--ch-line); }
-.ch-post.mine { background: #fffbef; }
-.ch-body header { font-size: 14.5px; }
-.ch-body header span { color: var(--ch-dim); }
-.ch-body p { margin: 4px 0 8px; font-size: 15px; line-height: 1.45; overflow-wrap: anywhere; }
-.ch-at { color: #8a6100; }
-.ch-link { color: #8a6100; text-decoration: underline; }
-.ch-like { border: 0; background: none; color: var(--ch-dim); font-size: 13px; padding: 2px 6px; border-radius: 999px; font-variant-numeric: tabular-nums; }
-.ch-like:hover, .ch-like.on { color: #d6336c; background: #fdeef3; }
-.ch-side { padding: 18px; }
-.ch-side h2 { font-size: 18px; margin: 0 0 8px; }
-.ch-trend { display: flex; flex-direction: column; padding: 10px 0; border-bottom: 1px solid var(--ch-line); font-size: 14.5px; }
-.ch-trend span { color: var(--ch-dim); font-size: 12.5px; }
-.av { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 15px; color: hsl(var(--h) 45% 22%); background: hsl(var(--h) 60% 86%); }
+/* ── Y: dark, dense, X-like ── */
+.y { min-height: 100%; background: var(--y-bg); color: var(--y-ink); font-family: var(--f-y); display: grid; grid-template-columns: 220px minmax(0, 600px) 320px; justify-content: center; }
+.y-nav { position: sticky; top: 0; align-self: start; display: flex; flex-direction: column; gap: 2px; padding: 6px 12px 16px; }
+.y-logo { width: 52px; height: 52px; display: grid; place-items: center; border-radius: 50%; }
+.y-logo svg { width: 30px; height: 30px; color: var(--y-ink); }
+.y-nav-item { display: flex; align-items: center; gap: 18px; padding: 11px 14px; border-radius: 999px; font-size: 19px; color: var(--y-ink); width: max-content; }
+.y-nav-item svg { width: 26px; height: 26px; }
+.y-nav-item.on { font-weight: 700; }
+.y-post-btn { margin-top: 14px; border: 0; background: var(--y-ink); color: #0f1419; font-weight: 700; font-size: 16px; padding: 14px 0; border-radius: 999px; width: 92%; }
+.y-post-btn:hover, .y-btn:hover { filter: brightness(0.9); }
+.y-main { border-left: 1px solid var(--y-line); border-right: 1px solid var(--y-line); min-height: 100%; }
+.y-head { position: sticky; top: 0; z-index: 2; background: rgba(0, 0, 0, 0.72); backdrop-filter: blur(12px); border-bottom: 1px solid var(--y-line); }
+.y-tabs { display: flex; }
+.y-tabs span { flex: 1; text-align: center; padding: 16px 0 0; font-size: 15px; color: var(--y-dim); }
+.y-tabs span.on { color: var(--y-ink); font-weight: 700; }
+.y-tabs span.on::after { content: ''; display: block; width: 56px; height: 4px; border-radius: 2px; background: var(--y-accent); margin: 13px auto 0; }
+.y-compose { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px; padding: 14px 16px 10px; border-bottom: 1px solid var(--y-line); }
+.y-compose textarea { width: 100%; border: 0; outline: 0; resize: none; font: inherit; font-size: 20px; padding: 6px 0 10px; background: none; color: var(--y-ink); }
+.y-compose textarea::placeholder { color: var(--y-dim); }
+.y-compose-row { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--y-line); padding-top: 10px; }
+.y-hint { font-size: 13px; color: var(--y-accent); }
+.y-btn { border: 0; background: var(--y-ink); color: #0f1419; font-weight: 700; font-size: 15px; padding: 8px 18px; border-radius: 999px; }
+.y-post { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--y-line); }
+.y-post:hover { background: var(--y-hover); }
+.y-post.mine { box-shadow: inset 2px 0 0 var(--y-accent); }
+.y-body header { display: flex; align-items: center; gap: 4px; font-size: 15px; min-width: 0; white-space: nowrap; }
+.y-body header b { overflow: hidden; text-overflow: ellipsis; }
+.y-body header > span:last-child { color: var(--y-dim); overflow: hidden; text-overflow: ellipsis; margin-left: 2px; }
+.y-check { display: inline-flex; width: 18px; height: 18px; color: var(--y-accent); flex: none; }
+.y-check svg { width: 100%; height: 100%; }
+.y-body p { margin: 2px 0 10px; font-size: 15px; line-height: 1.35; overflow-wrap: anywhere; }
+.y-at, .y-link { color: var(--y-accent); text-decoration: none; }
+.y-link:hover { text-decoration: underline; }
+.y-acts { display: flex; justify-content: space-between; max-width: 420px; color: var(--y-dim); }
+.y-act { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-variant-numeric: tabular-nums; border: 0; background: none; color: inherit; padding: 0; }
+.y-act svg { width: 18px; height: 18px; }
+button.y-act { cursor: pointer; }
+.y-act.like:hover, .y-act.like.on { color: var(--y-like); }
+.y-act.like.on { --heart-fill: var(--y-like); }
+.y-act.repost:hover { color: var(--y-repost); }
+.y-act.reply:hover, .y-act.views:hover { color: var(--y-accent); }
+.y-none { padding: 24px 16px; color: var(--y-dim); margin: 0; }
+.y-side { padding: 8px 16px 16px 28px; display: flex; flex-direction: column; gap: 16px; position: sticky; top: 0; align-self: start; }
+.y-search { display: flex; align-items: center; gap: 12px; background: #202327; border: 1px solid transparent; border-radius: 999px; padding: 10px 16px; color: var(--y-dim); }
+.y-search:focus-within { background: var(--y-bg); border-color: var(--y-accent); color: var(--y-accent); }
+.y-search svg { width: 18px; height: 18px; flex: none; }
+.y-search input { flex: 1; min-width: 0; background: none; border: 0; outline: 0; color: var(--y-ink); font: inherit; font-size: 15px; }
+.y-card { border: 1px solid var(--y-line); border-radius: 16px; padding: 12px 0 4px; }
+.y-card h2 { margin: 0; padding: 0 16px 8px; font-size: 20px; font-weight: 800; }
+.y-trend { display: flex; flex-direction: column; gap: 1px; padding: 10px 16px; }
+.y-trend:hover { background: rgba(255, 255, 255, 0.03); }
+.y-trend small { color: var(--y-dim); font-size: 13px; }
+.y-trend b { font-size: 15px; }
+.av { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 14px; color: hsl(var(--h) 70% 88%); background: hsl(var(--h) 32% 28%); }
 
-/* ── Second National ── */
-.bk { min-height: 100%; background: var(--bk-bg); color: var(--bk-ink); }
-.bk-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 24px; background: var(--bk-green); color: #f1f6f2; }
-.bk-logo { display: flex; align-items: center; gap: 10px; font-family: var(--f-display); font-size: 21px; font-weight: 700; }
-.bk-logo svg { width: 24px; height: 24px; }
-.bk-user { font-size: 13px; opacity: 0.8; }
-.bk-wrap { max-width: 960px; margin: 0 auto; padding: 24px 16px 40px; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 18px; }
-.bk-card, .bk-upcoming, .bk-tx { background: var(--bk-panel); border: 1px solid var(--bk-line); border-radius: 10px; padding: 20px 22px; }
-.bk-tx { grid-column: 1 / -1; }
-.bk-label { margin: 0; font-size: 13px; color: var(--bk-dim); letter-spacing: 0.02em; }
-.bk-balance { margin: 6px 0 2px; font-family: var(--f-display); font-size: clamp(36px, 6vw, 52px); font-weight: 500; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-.bk-balance.neg { color: var(--bk-neg); }
-.bk-sub { margin: 0; font-size: 13px; color: var(--bk-dim); }
-.bk h2 { margin: 0 0 10px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--bk-dim); }
-.bk-up { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 10px 0; border-top: 1px solid var(--bk-line); font-size: 14px; }
-.bk-up b { font-family: var(--f-mono); font-size: 13px; font-weight: 500; }
-.bk-up small { grid-column: 1 / -1; color: var(--bk-dim); }
-.bk .neg { color: var(--bk-neg); }
-.bk .pos { color: var(--bk-pos); }
-.bk-scroll { overflow-x: auto; }
-.bk table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 520px; }
-.bk th { text-align: left; font-weight: 600; font-size: 12px; color: var(--bk-dim); padding: 6px 8px; border-bottom: 1px solid var(--bk-line); }
-.bk td { padding: 9px 8px; border-bottom: 1px solid var(--bk-line); }
-.bk .r, .bk-amt, .bk-bal { text-align: right; font-family: var(--f-mono); font-size: 12.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.bk-date { color: var(--bk-dim); white-space: nowrap; }
-.bk-memo { font-weight: 500; }
+/* ── Satchel wallet ── */
+.wl { min-height: 100%; background: var(--wl-bg); color: var(--wl-ink); }
+.wl-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 24px; background: var(--wl-panel); border-bottom: 1px solid var(--wl-line); }
+.wl-logo { display: flex; align-items: center; gap: 10px; font-family: var(--f-display); font-weight: 700; font-size: 21px; }
+.wl-logo svg { width: 26px; height: 26px; color: var(--wl-accent); --icon-ink: #fff; }
+.wl-net { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--wl-dim); border: 1px solid var(--wl-line); padding: 4px 10px; border-radius: 999px; }
+.wl-net i { width: 7px; height: 7px; border-radius: 50%; background: var(--wl-accent); }
+.wl-wrap { max-width: 960px; margin: 0 auto; padding: 24px 16px 40px; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 16px; }
+.wl-card { grid-row: span 2; background: var(--wl-deep); color: #e8f3f1; border-radius: 16px; padding: 22px 24px; display: flex; flex-direction: column; gap: 6px; justify-content: space-between; min-height: 200px; }
+.wl-addr { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 13px; color: #9fc2bc; }
+.wl-addr code { color: #e8f3f1; background: rgba(255, 255, 255, 0.08); padding: 3px 8px; border-radius: 6px; }
+.wl-copy { border: 1px solid rgba(255, 255, 255, 0.2); background: none; color: #e8f3f1; font-size: 12px; padding: 4px 10px; border-radius: 999px; }
+.wl-copy:hover { background: rgba(255, 255, 255, 0.08); }
+.wl-balance { margin: 18px 0 0; font-family: var(--f-display); font-size: clamp(40px, 6vw, 58px); font-weight: 500; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.wl-balance.neg { color: #ff9a8f; }
+.wl-sub { margin: 0; font-family: var(--f-mono); font-size: 12.5px; color: #9fc2bc; }
+.wl-panel { background: var(--wl-panel); border: 1px solid var(--wl-line); border-radius: 14px; padding: 16px 20px; min-width: 0; }
+.wl-activity { grid-column: 1 / -1; }
+.wl h2 { margin: 0 0 8px; font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--wl-dim); }
+.wl-asset { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 8px 0; border-top: 1px solid var(--wl-line); }
+.wl-asset span:nth-child(2) { display: flex; flex-direction: column; min-width: 0; }
+.wl-asset small, .wl-val small, .wl-what small, .wl-amt small, .wl-up small { color: var(--wl-dim); font-size: 12px; }
+.wl-tok { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; color: #fff; }
+.wl-tok.dolr { background: var(--wl-accent); }
+.wl-tok.cat { background: #b58b1d; }
+.wl-val, .wl-amt { display: flex; flex-direction: column; align-items: flex-end; font-family: var(--f-mono); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.wl-up { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 9px 0; border-top: 1px solid var(--wl-line); font-size: 14px; }
+.wl-up b { font-family: var(--f-mono); font-size: 13px; font-weight: 500; white-space: nowrap; }
+.wl-up small { grid-column: 1 / -1; }
+.wl .neg { color: var(--wl-neg); }
+.wl .pos { color: var(--wl-pos); }
+.wl-list { list-style: none; margin: 0; padding: 0; }
+.wl-tx { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--wl-line); }
+.wl-dir { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; background: #eef1f0; color: var(--wl-dim); }
+.wl-dir.in { background: #e3f4ee; color: var(--wl-pos); }
+.wl-what { display: flex; flex-direction: column; min-width: 0; font-size: 14px; }
+.wl-what b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* ── Forkyard ── */
 .fy { min-height: 100%; background: var(--fy-bg); color: var(--fy-ink); }
@@ -381,13 +418,14 @@ body.dev-on .ua-src { display: block; }
 .err-sub { font-style: italic; }
 
 /* ── narrow screens ── */
-@media (max-width: 1100px) { .ch { grid-template-columns: 76px minmax(0, 600px); } .ch-side { display: none; } .ch-nav a, .ch-logo span { display: none; } }
+@media (max-width: 1100px) { .y { grid-template-columns: 76px minmax(0, 600px); } .y-side { display: none; } .y-nav { align-items: center; padding-inline: 8px; } .y-nav-item span, .y-post-btn { display: none; } }
 @media (max-width: 760px) {
   .desk { padding-block: 8px 4px; }
-  .ch { grid-template-columns: minmax(0, 1fr); }
-  .ch-nav { display: none; }
-  .ch-main { border: 0; }
-  .bk-wrap, .fy-grid { grid-template-columns: minmax(0, 1fr); }
+  .y { grid-template-columns: minmax(0, 1fr); }
+  .y-nav { display: none; }
+  .y-main { border: 0; }
+  .wl-wrap, .fy-grid { grid-template-columns: minmax(0, 1fr); }
+  .wl-card { grid-row: auto; }
   .bm-label { display: none; }
   .bm { padding: 6px 12px; }
   .tb-dots { display: none; }
@@ -872,9 +910,9 @@ body.dev-on .ua-src { display: block; }
       promptHours: 1,        // each prompt eats an hour
       wakeHour: 8,
       bedHour: 24,           // at midnight you pass out and the day rolls over
-      living: { amount: 15, memo: ['CORNER MART #12', 'NOODLE HUT', 'GAS-N-GO SNACKS', 'DOLLAR BIN GROCERY'] },
+      living: { amount: 15, memo: ['Corner Mart #12', 'Noodle Hut', 'Gas-n-Go Snacks', 'Dollar Bin Grocery'] },
       hostingPerDay: 2,
-      rent: { amount: 300, day: 7, payee: 'GARY PRUITT PROPERTY MGMT' },
+      rent: { amount: 300, day: 7, payee: 'Pruitt Property Mgmt' },
     },
 
     // How Jev's probabilities turn into outcomes (src/jev.js).
@@ -887,18 +925,18 @@ body.dev-on .ua-src { display: block; }
     // Owned tiers can be switched freely; a prompt is billed at the active tier's rates.
     // Branches with `minModel: n` only fire when the active tier is GIT-n or better.
     models: [
-      { name: 'GIT-1', price: 0, promptBase: 0.8, perWord: 0.03, blurb: 'Static pages and short messages. Loses the thread after a sentence or two.' },
-      { name: 'GIT-2', price: 25, promptBase: 1.2, perWord: 0.04, blurb: 'Real apps with a database behind them. Keeps a feature list straight.' },
-      { name: 'GIT-3', price: 75, promptBase: 2.0, perWord: 0.06, blurb: 'Writes sales emails, negotiates, closes deals on your behalf.' },
-      { name: 'GIT-4', price: 250, promptBase: 3.5, perWord: 0.1, blurb: 'Reads between the lines. Starts answering questions you did not ask.' },
-      { name: 'GIT-5', price: 800, promptBase: 6.0, perWord: 0.15, blurb: 'Nobody you know has GIT-5. The pricing page lists it anyway.' },
+      { name: 'agent-1', price: 0, promptBase: 0.8, perWord: 0.03, blurb: 'Static pages and short messages. Loses the thread after a sentence or two.' },
+      { name: 'agent-2', price: 25, promptBase: 1.2, perWord: 0.04, blurb: 'Real apps with a database behind them. Keeps a feature list straight.' },
+      { name: 'agent-3', price: 75, promptBase: 2.0, perWord: 0.06, blurb: 'Writes sales emails, negotiates, closes deals on your behalf.' },
+      { name: 'agent-4', price: 250, promptBase: 3.5, perWord: 0.1, blurb: 'Reads between the lines. Starts answering questions you did not ask.' },
+      { name: 'agent-5', price: 800, promptBase: 6.0, perWord: 0.15, blurb: 'Nobody you know has agent-5. The pricing page lists it anyway.' },
     ],
 
     agent: {
       name: 'GIT',
       greeting:
         'GIT. I can build software, write things, and read the internet for you.\n\n' +
-        'Every prompt is billed to your linked bank account. Be specific.',
+        'Every prompt is billed to your linked wallet. Be specific.',
       // Said when the player asks for something their active model is too weak for (a branch's `weak` overrides it).
       lockedResponse: "That's beyond {model}. It needs {required} or better. Upgrades: askgit.ai/models.",
       // Used by the local model (src/llm.js) for prompts that don't move the story.
@@ -961,7 +999,7 @@ body.dev-on .ua-src { display: block; }
         priority: -2,
         response:
           'I can:\n— build and push code to your Forkyard account\n— write and send emails from your Qmail\n— read Y and summarize what matters\n\n' +
-          "I can't touch your bank, and I can't press buttons you can press yourself.",
+          "I can't touch your wallet, and I can't press buttons you can press yourself.",
       },
       {
         id: 'beg',
@@ -1110,7 +1148,7 @@ body.dev-on .ua-src { display: block; }
             intent: "The player asks the agent to make money from Spin Cycle without choosing a method (ads, paywall, or sponsor).",
             match: { all: [['monetize', 'monetise', 'money', 'revenue', 'income', 'earn', 'profit', 'cash', 'pay', 'paid', 'business model']] },
             response:
-              'Three ways to make Spin Cycle pay:\n— ads\n— a paywall / subscription\n— a local sponsor (needs GIT-3 to negotiate)\n\nEach one changes the app. Pick one and ask for it.',
+              'Three ways to make Spin Cycle pay:\n— ads\n— a paywall / subscription\n— a local sponsor (needs agent-3 to negotiate)\n\nEach one changes the app. Pick one and ask for it.',
           },
           {
             id: 'monetize_ads',
@@ -1163,7 +1201,7 @@ body.dev-on .ua-src { display: block; }
     // Named effect bundles, so the same outcome can be reached through the agent or by hand.
     bundles: {
       rosa_pays: {
-        money: { amount: 150, memo: 'CRUMB & COIN BAKERY — WEBSITE' },
+        money: { amount: 150, memo: 'Crumb & Coin Bakery · website' },
         post: 'rosa_thanks',
         mail: 'rosa_paid',
         goto: 'paid_once',
@@ -1223,7 +1261,7 @@ body.dev-on .ua-src { display: block; }
         intent: "The email to Mom asks her for money or help.",
         when: { notFlag: 'wroteMom' },
         match: { all: [['mom', 'mother', 'mum'], ['money', 'help', 'cash', 'loan', 'send', 'broke', 'rent', 'dollars', 'borrow']] },
-        effects: { set: { wroteMom: true }, later: [{ hours: 3, effects: { mail: 'mom_money', money: { amount: 20, memo: 'ZELLE — MOM' } } }] },
+        effects: { set: { wroteMom: true }, later: [{ hours: 3, effects: { mail: 'mom_money', money: { amount: 20, memo: 'Mom · buy vegetables' } } }] },
       },
       {
         id: 'mail_mom_chat',
@@ -1240,7 +1278,7 @@ body.dev-on .ua-src { display: block; }
     mail: [
       {
         id: 'git_welcome', at: 30, from: 'GIT Labs', addr: 'noreply@askgit.ai', subject: 'Welcome to GIT',
-        body: "Your GIT-1 account is active and linked to Second National ••4417.\n\nEvery prompt is billed at your active model's rate. Stronger models, GIT-2 to GIT-5, take on harder jobs: askgit.ai/models.\n\nGIT Labs\nThis mailbox is not monitored. Neither is anything else.",
+        body: "Your agent-1 account is active and billed to your Satchel wallet (0x4417…a9f2).\n\nEvery prompt is billed at your active model's rate. Stronger models, agent-2 to agent-5, take on harder jobs: askgit.ai/models.\n\nGIT Labs\nThis mailbox is not monitored. Neither is anything else.",
       },
       {
         id: 'brayden_spam', at: 240, from: 'Brayden | 7 figures', addr: 'brayden@empire-mindset.biz', subject: 'RE: your empire (90% off, today only)',
@@ -1248,7 +1286,7 @@ body.dev-on .ua-src { display: block; }
       },
       {
         id: 'gary_rent', at: 610, from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'Rent: end of Day 7',
-        body: "Hi,\n\nReminder that rent ($300) comes out at the end of Day 7. Last month's late fee was $89.50. I'd rather not do that again, and I'd rather not do the other thing either.\n\nGary Pruitt\nPruitt Property Management",
+        body: "Hi,\n\nReminder that the rent auto-pay ($300) pulls from your wallet at the end of Day 7. Last month's late fee was $89.50. I'd rather not do that again, and I'd rather not do the other thing either.\n\nGary Pruitt\nPruitt Property Management",
       },
       {
         id: 'mom_hello', at: 1500, from: 'Mom', addr: 'mom@qmail.com', subject: 'Are you eating?',
@@ -1264,11 +1302,11 @@ body.dev-on .ua-src { display: block; }
       },
       {
         id: 'rosa_paid', from: 'Rosa (Crumb & Coin)', addr: 'rosa@crumbandcoin.com', subject: 'Paid! Thank you',
-        body: "The site looks wonderful. My nephew is jealous. $150 is on its way to your account.\n\nCome by for a cardamom bun, on the house.\n\nRosa",
+        body: "The site looks wonderful. My nephew is jealous. $150 is on its way to your wallet. My nephew set up our crypto, so I hope it arrives.\n\nCome by for a cardamom bun, on the house.\n\nRosa",
       },
       { id: 'gary_tomorrow', when: { minDay: 6 }, from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'Tomorrow night', body: "Rent comes out tomorrow night. $300. Make sure it's there.\n\nGary" },
       { id: 'gary_no', from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'RE: Rent', body: 'No.\n\nGary\n\nSent from my phone' },
-      { id: 'mom_money', from: 'Mom', addr: 'mom@qmail.com', subject: 'RE: Are you eating?', body: "I knew it. I sent you $20. Don't tell your father. Buy vegetables.\n\nLove, Mom" },
+      { id: 'mom_money', from: 'Mom', addr: 'mom@qmail.com', subject: 'RE: Are you eating?', body: "I knew it. I sent you $20 to that crypto wallet of yours. I hope it worked. Don't tell your father. Buy vegetables.\n\nLove, Mom" },
       { id: 'mom_chat', from: 'Mom', addr: 'mom@qmail.com', subject: 'RE: Are you eating?', body: "So good to hear from you! Things here are fine. The neighbor's dog had puppies. Write again soon.\n\nLove, Mom" },
     ],
 
@@ -1325,17 +1363,17 @@ body.dev-on .ua-src { display: block; }
 
     // Y posts. `at` is minutes before game start for seeded posts; others appear when `when` becomes true.
     posts: [
-      { id: 'news_layoffs', author: 'The Ledger', handle: 'theledger', at: 40, likes: 812, text: 'Regional employment down 4% this quarter as firms replace junior staff with "agentic workflows".' },
+      { id: 'news_layoffs', author: 'The Ledger', handle: 'theledger', verified: true, at: 40, likes: 812, text: 'Regional employment down 4% this quarter as firms replace junior staff with "agentic workflows".' },
       {
         id: 'rosa_gig', author: 'Crumb & Coin Bakery', handle: 'crumbandcoin', at: 95, likes: 23,
         text: 'Our website has been down since my nephew left for college. Will pay $150 to anyone who can put up a simple site with our menu + hours by tomorrow. rosa@crumbandcoin.com — Rosa',
       },
       { id: 'gary_post', author: 'Gary Pruitt', handle: 'garypruitt_pm', at: 180, likes: 2, text: 'Reminder to all tenants: rent is due on the 7th. No exceptions. I have heard every excuse.' },
       { id: 'agent_rumor', author: 'dev_null', handle: 'devnull_42', at: 300, likes: 1400, text: 'Has anyone figured out who actually runs GIT? No company page, no founders, ToS is one line: "You will be billed."' },
-      { id: 'git_ad', author: 'GIT Labs', handle: 'gitlabs_ai', at: 410, likes: 3, text: 'GIT-3 is here. It negotiates so you don\'t have to. Upgrade from askgit.ai/models. Prices may vary by user.' },
-      { id: 'hustle_guy', author: 'Brayden | 7 figures', handle: 'braydenhustles', at: 520, likes: 61, text: 'Unemployed? Good. Now you have time to build an empire. Comment "EMPIRE" for my free course ($499).' },
+      { id: 'git_ad', author: 'GIT Labs', handle: 'gitlabs_ai', verified: true, at: 410, likes: 3, text: 'agent-3 is here. It negotiates so you don\'t have to. Upgrade from askgit.ai/models. Prices may vary by user.' },
+      { id: 'hustle_guy', author: 'Brayden | 7 figures', handle: 'braydenhustles', verified: true, at: 520, likes: 61, text: 'Unemployed? Good. Now you have time to build an empire. Comment "EMPIRE" for my free course ($499).' },
 
-      { id: 'news_day2', author: 'The Ledger', handle: 'theledger', when: { minDay: 2 }, likes: 404, text: 'Small businesses report a surge in "AI-built" websites. Quality described as "fine, honestly".' },
+      { id: 'news_day2', author: 'The Ledger', handle: 'theledger', verified: true, when: { minDay: 2 }, likes: 404, text: 'Small businesses report a surge in "AI-built" websites. Quality described as "fine, honestly".' },
       { id: 'agent_rumor2', author: 'dev_null', handle: 'devnull_42', when: { minDay: 4 }, likes: 2100, text: 'Update: GIT charges show up from a different merchant ID every week. Same address though. A parking lot.' },
 
       { id: 'rosa_thanks', author: 'Crumb & Coin Bakery', handle: 'crumbandcoin', likes: 41, text: 'We have a website again! Thank you @{handle}. Paid in full, plus a free cardamom bun if you come by.' },
@@ -1346,7 +1384,7 @@ body.dev-on .ua-src { display: block; }
       { id: 'washday_2', author: 'Marco', handle: 'marcoeats', when: { node: ['paid_once', 'app_built', 'app_live'] }, likes: 188, text: '@washday_woes I would pay for this. Not much. But something.' },
       { id: 'you_spin_launch', author: '{name}', handle: '{handle}', likes: 96, text: 'Built a live machine tracker for the Ferris St Laundromat: spin-cycle.forkyard.app. Tap a machine to report it working or broken.' },
       { id: 'washday_reply', author: 'wash day woes', handle: 'washday_woes', likes: 530, text: 'SOMEONE BUILT IT. spin-cycle.forkyard.app. W4 works right now, go go go' },
-      { id: 'suds_deal', author: 'Suds & Duds Detergent', handle: 'sudsandduds', likes: 77, text: 'Proud to sponsor Spin Cycle, keeping Ferris St informed one load at a time.' },
+      { id: 'suds_deal', author: 'Suds & Duds Detergent', handle: 'sudsandduds', verified: true, likes: 77, text: 'Proud to sponsor Spin Cycle, keeping Ferris St informed one load at a time.' },
     ],
   };
 })(typeof window !== 'undefined' ? window : globalThis);
@@ -1531,7 +1569,7 @@ body.dev-on .ua-src { display: block; }
     const agent = (global.STORY && global.STORY.agent) || {};
     const persona = agent.llmPersona ||
       'You are GIT, a pay-per-prompt AI assistant. Reply in one or two short sentences.';
-    const facts = ctx && ctx.state ? `\nThe user's bank balance is $${ctx.state.money.toFixed(2)}.` : '';
+    const facts = ctx && ctx.state ? `\nThe user's wallet balance is $${ctx.state.money.toFixed(2)}.` : '';
     const messages = [{ role: 'system', content: persona + facts }];
     for (const [u, a] of agent.llmExamples || []) {
       messages.push({ role: 'user', content: u }, { role: 'assistant', content: a });
@@ -1685,7 +1723,7 @@ body.dev-on .ua-src { display: block; }
   const SITES = {
     y: { label: 'Y', url: 'y.com' },
     mail: { label: 'Qmail', url: 'qmail.com' },
-    bank: { label: 'Second National', url: 'secondnational.com' },
+    wallet: { label: 'Satchel', url: 'satchel.app' },
     forkyard: { label: 'Forkyard', url: 'forkyard.com' },
     agent: { label: 'GIT', url: 'askgit.ai' },
   };
@@ -1710,6 +1748,13 @@ body.dev-on .ua-src { display: block; }
     const s = Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     return (n < 0 ? '−$' : '$') + s;
   }
+  // Satchel holds DOLR, a stablecoin pegged 1:1 to the dollar.
+  function fmtCoin(n) {
+    const s = Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return `${n < 0 ? '−' : ''}${s} DOLR`;
+  }
+  const WALLET_ADDR = '0x4417c3e8b1d05f2a9e6d7b0c1f83a4e5d2b9a9f2';
+  const shortAddr = (a) => `${a.slice(0, 6)}…${a.slice(-4)}`;
   const dayOf = (t) => Math.floor(t / 1440) + 1;
   const hourOf = (t) => (t % 1440) / 60;
   function clock(t) {
@@ -1759,17 +1804,17 @@ body.dev-on .ua-src { display: block; }
       v: 1, t, money: st.money, node: st.node,
       flags: {}, repos: {}, apps: {}, posts: {}, userPosts: [], liked: {},
       tx: [
-        { t: t - 4300, amount: 212, memo: 'STATE UNEMPLOYMENT — FINAL PAYMENT' },
-        { t: t - 2870, amount: -89.5, memo: 'GARY PRUITT PROPERTY MGMT — LATE FEE' },
-        { t: t - 1490, amount: -41.33, memo: 'CITY UTILITIES' },
-        { t: t - 610, amount: -18, memo: 'NOODLE HUT' },
+        { t: t - 4300, amount: 212, memo: 'State Unemployment Office · final payment' },
+        { t: t - 2870, amount: -89.5, memo: 'Pruitt Property Mgmt · late fee' },
+        { t: t - 1490, amount: -41.33, memo: 'City Utilities' },
+        { t: t - 610, amount: -18, memo: 'Noodle Hut' },
       ],
       chat: [{ from: 'agent', text: S.agent.greeting, t }],
       queue: [], fired: {},
       stats: { prompts: 0, promptSpend: 0, misses: 0, partials: 0, locked: 0, upgradeSpend: 0 },
       model: 1,   // active GIT tier
       owned: 1,   // highest GIT tier bought
-      unread: { y: 0, bank: 0, forkyard: 0, agent: 0 },
+      unread: { y: 0, wallet: 0, forkyard: 0, agent: 0 },
       tabs: [{ id: 1, url: SITES.y.url }, { id: 2, url: SITES.agent.url }],
       mail: [],      // Qmail: { id, t, read, folder, custom? }
       nextMail: 1,
@@ -1809,6 +1854,9 @@ body.dev-on .ua-src { display: block; }
         if (k.startsWith('chirp:chirp_')) { s.fired['post:post_' + k.slice(12)] = s.fired[k]; delete s.fired[k]; }
       }
       if (!s.mail) { s.mail = []; s.nextMail = 1; seedMail(s); }
+      // saves from before the wallet
+      for (const tab of s.tabs) if (/^secondnational\.com/.test(tab.url)) tab.url = 'satchel.app';
+      if (s.unread.bank != null) { s.unread.wallet = s.unread.bank; delete s.unread.bank; }
       return s;
     } catch (e) { return null; }
   }
@@ -1834,7 +1882,7 @@ body.dev-on .ua-src { display: block; }
     amount = round2(amount);
     state.money = round2(state.money + amount);
     state.tx.push({ t: state.t, amount, memo });
-    if (!onSite('bank')) state.unread.bank++;
+    if (!onSite('wallet')) state.unread.wallet++;
   }
 
   function onSite(site) {
@@ -1910,9 +1958,9 @@ body.dev-on .ua-src { display: block; }
     }
     if (fx.set) Object.assign(state.flags, fx.set);
     if (fx.money != null) {
-      const m = typeof fx.money === 'number' ? { amount: fx.money, memo: 'TRANSFER' } : fx.money;
+      const m = typeof fx.money === 'number' ? { amount: fx.money, memo: 'Transfer' } : fx.money;
       addTx(m.amount, m.memo);
-      toast('Second National', `${m.amount >= 0 ? '+' : ''}${fmtMoney(m.amount)} · ${m.memo}`, 'bank');
+      toast('Satchel', `${m.amount >= 0 ? '+' : ''}${fmtCoin(m.amount)} · ${m.memo}`, 'wallet');
     }
     for (const name of arr(fx.repo)) {
       if (state.repos[name]) continue;
@@ -1979,14 +2027,14 @@ body.dev-on .ua-src { display: block; }
 
     for (const [repo, app] of Object.entries(state.apps)) {
       if (app.perDay > 0 && state.repos[repo] && state.repos[repo].deployed) {
-        addTx(app.perDay, `FORKYARD PAYOUT — ${repo}`);
+        addTx(app.perDay, `Forkyard · ${repo} payout`);
         lines.push([`${repo} earnings (${app.users} users/day)`, app.perDay]);
       }
     }
     const live = Object.values(state.repos).filter((r) => r.deployed).length;
     if (live) {
       const fee = live * E.hostingPerDay;
-      addTx(-fee, `FORKYARD HOSTING — ${live} APP${live > 1 ? 'S' : ''}`);
+      addTx(-fee, `Forkyard · hosting (${live} app${live > 1 ? 's' : ''})`);
       lines.push([`Hosting (${live} app${live > 1 ? 's' : ''})`, -fee]);
     }
     const memos = arr(E.living.memo);
@@ -1996,7 +2044,7 @@ body.dev-on .ua-src { display: block; }
     let rentDue = false;
     if (E.rent && ended === E.rent.day) {
       rentDue = true;
-      addTx(-E.rent.amount, `${E.rent.payee} — RENT`);
+      addTx(-E.rent.amount, `${E.rent.payee} · rent (auto-pay)`);
       lines.push(['Rent', -E.rent.amount]);
     }
 
@@ -2004,7 +2052,7 @@ body.dev-on .ua-src { display: block; }
     if (state.money < 0) {
       state.over = rentDue
         ? { title: 'Evicted', text: `Rent bounced. Gary changed the locks on Day ${ended + 1}. Your laptop is in a box on the curb.` }
-        : { title: 'Overdrawn', text: 'Second National froze your account. No account, no agent, no way back in.' };
+        : { title: 'Insolvent', text: 'Your wallet went below zero. The auto-payments bounced, Satchel froze the address, and GIT Labs revoked your access.' };
     }
     state.morning = { day: dayOf(wake), passedOut: !!passedOut, lines, balance: state.money };
     if (!state.over) fireEvents('day');
@@ -2024,13 +2072,13 @@ body.dev-on .ua-src { display: block; }
     const m = modelDef(level);
     if (level !== state.owned + 1 || state.over) return;
     if (state.money < m.price) { toast('GIT Labs', `${m.name} costs ${fmtMoney(m.price)}. Your balance is ${fmtMoney(state.money)}.`, 'agent'); return; }
-    addTx(-m.price, `GIT LABS — ${m.name} UPGRADE`);
+    addTx(-m.price, `GIT Labs · ${m.name} upgrade`);
     state.stats.upgradeSpend = round2(state.stats.upgradeSpend + m.price);
     state.owned = level;
     state.model = level;
     deliverCustom({
       from: 'GIT Labs', addr: 'billing@askgit.ai', subject: `Receipt: ${m.name} upgrade`,
-      body: `You unlocked ${m.name}.\n\nCharged: ${fmtMoney(m.price)} to Second National ••4417.\nWhile ${m.name} is active, prompts cost ${fmtMoney(m.promptBase)} + ${fmtMoney(m.perWord)} per word.\n\nNo refunds. No exceptions. No humans.\n\nGIT Labs`,
+      body: `You unlocked ${m.name}.\n\nCharged: ${fmtCoin(m.price)} from wallet ${shortAddr(WALLET_ADDR)}.\nWhile ${m.name} is active, prompts cost ${fmtMoney(m.promptBase)} + ${fmtMoney(m.perWord)} per word.\n\nNo refunds. No exceptions. No humans.\n\nGIT Labs`,
     });
     toast('GIT Labs', `${m.name} unlocked and active. Prompts now cost ${fmtMoney(m.promptBase)} + ${fmtMoney(m.perWord)}/word.`, 'agent');
     save();
@@ -2058,7 +2106,7 @@ body.dev-on .ua-src { display: block; }
       return;
     }
     const level = state.model;
-    addTx(-cost, `GIT LABS — ${modelDef(level).name} USAGE`);
+    addTx(-cost, `GIT Labs · ${modelDef(level).name} usage`);
     state.lastCost = cost;
     state.stats.prompts++;
     state.stats.promptSpend = round2(state.stats.promptSpend + cost);
@@ -2217,7 +2265,7 @@ body.dev-on .ua-src { display: block; }
     if (u === 'qmail.com/compose') return { site: 'mail', view: 'compose', title: 'New message · Qmail' };
     const mm = u.match(/^qmail\.com\/m\/([a-z0-9_-]+)$/);
     if (mm) return { site: 'mail', view: 'msg', id: mm[1], title: 'Qmail' };
-    if (u === 'secondnational.com') return { site: 'bank', title: 'Second National · Checking' };
+    if (u === 'satchel.app' || u === 'secondnational.com') return { site: 'wallet', title: 'Satchel · Wallet' };
     if (u === 'askgit.ai' || u === 'unknownagent.ai') return { site: 'agent', title: 'GIT' };
     if (u === 'askgit.ai/models') return { site: 'agent', page: 'models', title: 'Models · GIT' };
     if (u === 'forkyard.com') return { site: 'forkyard', title: 'Forkyard' };
@@ -2276,7 +2324,7 @@ body.dev-on .ua-src { display: block; }
   const ICONS = {
     y: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 3h4l3.5 6.6L15.5 3h4l-5.6 9.7V21h-3.8v-8.3z" fill="currentColor"/></svg>',
     mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5" fill="currentColor"/><path d="M4.5 7.5 12 13l7.5-5.5" stroke="var(--icon-ink, #fff)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    bank: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 8v2h18V8l-9-5zM5 12v6h2v-6H5zm4 0v6h2v-6H9zm4 0v6h2v-6h-2zm4 0v6h2v-6h-2zM3 20v2h18v-2H3z" fill="currentColor"/></svg>',
+    wallet: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H17v3h1.5A1.5 1.5 0 0 1 20 8.5v10a1.5 1.5 0 0 1-1.5 1.5h-12A2.5 2.5 0 0 1 4 17.5z" fill="currentColor"/><circle cx="16" cy="13.5" r="1.6" fill="var(--icon-ink, #1f2329)"/></svg>',
     forkyard: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3a3 3 0 0 0-1 5.8v6.4A3 3 0 1 0 8 15.2V13c0-1 1-2 2-2h4a4 4 0 0 0 4-4V8.8A3 3 0 1 0 16 8.8V7c0 1-1 2-2 2h-4c-.7 0-1.4.2-2 .5V8.8A3 3 0 0 0 7 3z" fill="currentColor"/></svg>',
     agent: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" fill="currentColor"/><path d="M9.5 9.2a2.6 2.6 0 1 1 3.6 2.4c-.7.3-1.1.8-1.1 1.5v.6" stroke="var(--icon-ink, #fff)" stroke-width="1.8" fill="none" stroke-linecap="round"/><circle cx="12" cy="16.6" r="1.1" fill="var(--icon-ink, #fff)"/></svg>',
     newtab: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2" fill="none"/></svg>',
@@ -2295,6 +2343,26 @@ body.dev-on .ua-src { display: block; }
     </div>`;
   }
 
+  const Y_ICONS = {
+    home: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 10v11h6v-6h6v6h6V10z" fill="currentColor"/></svg>',
+    explore: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="2.2" fill="none"/><path d="m15.5 15.5 5 5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
+    bell: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4zM10 20h4" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round"/></svg>',
+    mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>',
+    user: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2" fill="none"/><path d="M4 21c1-4 4.5-6 8-6s7 2 8 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
+    reply: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5C4 7.4 7.6 4 12 4s8 3.4 8 7.5S16.4 19 12 19c-1.1 0-2.2-.2-3.2-.6L4 20l1.4-3.9A7 7 0 0 1 4 11.5z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/></svg>',
+    repost: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10l-2.5-2.5M17 17H7l2.5 2.5M7 7v5M17 17v-5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    heart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7a4.3 4.3 0 0 1 7.5 3c0 5.4-7.5 10-7.5 10z" stroke="currentColor" stroke-width="1.8" fill="var(--heart-fill, none)" stroke-linejoin="round"/></svg>',
+    views: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V6M15 20v-9M20 20V4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    check: '<svg viewBox="0 0 24 24" aria-label="Verified" role="img"><path d="M12 2.5 14.4 4l2.8-.2.9 2.7 2.3 1.6-.9 2.7.9 2.7-2.3 1.6-.9 2.7-2.8-.2L12 21.5 9.6 20l-2.8.2-.9-2.7-2.3-1.6.9-2.7-.9-2.7 2.3-1.6.9-2.7 2.8.2z" fill="currentColor"/><path d="m8.5 12.2 2.4 2.3 4.6-4.9" stroke="#fff" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  };
+  let ySearch = '';
+
+  function compact(n) {
+    if (n >= 1e6) return (n / 1e6).toFixed(n >= 1e7 ? 0 : 1).replace(/\.0$/, '') + 'M';
+    if (n >= 1e3) return (n / 1e3).toFixed(n >= 1e4 ? 0 : 1).replace(/\.0$/, '') + 'K';
+    return String(n);
+  }
+
   function pageY() {
     const posts = [];
     for (const p of S.posts) {
@@ -2303,71 +2371,105 @@ body.dev-on .ua-src { display: block; }
     }
     for (const u of state.userPosts) posts.push({ id: u.id, author: S.start.player.name, handle: S.start.player.handle, text: u.text, t: u.t, likes: u.likes, mine: true });
     posts.sort((a, b) => b.t - a.t);
-    const feed = posts.map((p) => {
+    const q = ySearch.trim().toLowerCase();
+    const shown = q ? posts.filter((p) => `${p.author} ${p.handle} ${p.text}`.toLowerCase().includes(q)) : posts;
+    const feed = shown.map((p) => {
       const liked = !!state.liked[p.id];
-      const text = esc(p.text).replace(/@([a-z0-9_]+)/gi, '<span class="ch-at">@$1</span>').replace(/([a-z0-9-]+\.forkyard\.app)/g, '<a data-nav="$1" href="#" class="ch-link">$1</a>');
-      return `<article class="ch-post${p.mine ? ' mine' : ''}">
+      const likes = (p.likes || 0) + (liked ? 1 : 0);
+      const text = esc(p.text)
+        .replace(/@([a-z0-9_]+)/gi, '<span class="y-at">@$1</span>')
+        .replace(/(#[a-z0-9_]+)/gi, '<span class="y-at">$1</span>')
+        .replace(/([a-z0-9-]+\.forkyard\.app|askgit\.ai\/models)/g, '<a data-nav="$1" href="#" class="y-link">$1</a>');
+      return `<article class="y-post${p.mine ? ' mine' : ''}">
         ${avatar(p.author, p.handle)}
-        <div class="ch-body">
-          <header><b>${esc(p.author)}</b> <span>@${esc(p.handle)} · ${ago(p.t)}</span></header>
+        <div class="y-body">
+          <header><b>${esc(p.author)}</b>${p.verified ? `<span class="y-check">${Y_ICONS.check}</span>` : ''}<span>@${esc(p.handle)} · ${ago(p.t)}</span></header>
           <p>${text}</p>
-          <footer><button class="ch-like${liked ? ' on' : ''}" data-like="${esc(p.id)}" aria-pressed="${liked}">♥ ${(p.likes || 0) + (liked ? 1 : 0)}</button></footer>
+          <footer class="y-acts">
+            <span class="y-act reply">${Y_ICONS.reply}${compact(Math.round(likes * 0.07))}</span>
+            <span class="y-act repost">${Y_ICONS.repost}${compact(Math.round(likes * 0.14))}</span>
+            <button class="y-act like${liked ? ' on' : ''}" data-like="${esc(p.id)}" aria-pressed="${liked}" aria-label="Like">${Y_ICONS.heart}${compact(likes)}</button>
+            <span class="y-act views">${Y_ICONS.views}${compact(Math.max(12, likes * 37 + 9))}</span>
+          </footer>
         </div>
       </article>`;
-    }).join('');
+    }).join('') || `<p class="y-none">No posts match “${esc(ySearch)}”.</p>`;
     const trends = [
-      ['#RentDue', '18.2k posts'],
-      ['GIT-3', '9,410 posts'],
-      state.posts.washday != null ? ['Ferris St Laundromat', '2,140 posts'] : ['#AgenticWorkflows', '4,002 posts'],
-      ['Crumb & Coin', state.posts.rosa_thanks != null ? '312 posts' : '27 posts'],
+      ['Trending in Ferris St', '#RentDue', '18.2K posts'],
+      ['Technology · Trending', 'agent-3', '9,410 posts'],
+      state.posts.washday != null ? ['Local · Trending', 'Ferris St Laundromat', '2,140 posts'] : ['Business · Trending', '#AgenticWorkflows', '4,002 posts'],
+      ['Food · Trending', 'Crumb & Coin', state.posts.rosa_thanks != null ? '312 posts' : '27 posts'],
     ];
-    return `<div class="ch">
-      <nav class="ch-nav"><div class="ch-logo">${ICONS.y}<span class="sr-only">Y</span></div><a class="on">Home</a><a>Explore</a><a>Notifications</a><a>Profile</a></nav>
-      <main class="ch-main">
-        <h1 class="ch-h">Home</h1>
-        <form class="ch-compose" data-form="ypost">
+    const nav = [['home', 'Home', true], ['explore', 'Explore'], ['bell', 'Notifications'], ['mail', 'Messages'], ['user', 'Profile']];
+    return `<div class="y">
+      <nav class="y-nav" aria-label="Y">
+        <div class="y-logo">${ICONS.y}<span class="sr-only">Y</span></div>
+        ${nav.map(([icon, label, on]) => `<span class="y-nav-item${on ? ' on' : ''}">${Y_ICONS[icon]}<span>${label}</span></span>`).join('')}
+        <button class="y-post-btn" data-focus-post>Post</button>
+      </nav>
+      <main class="y-main">
+        <header class="y-head"><div class="y-tabs"><span class="on">For you</span></div></header>
+        <form class="y-compose" data-form="ypost">
           ${avatar(S.start.player.name, S.start.player.handle)}
-          <div><textarea id="post-input" rows="2" maxlength="280" placeholder="What's happening?"></textarea>
-          <div class="ch-compose-row"><span class="ch-hint">Posting is free.</span><button class="ch-btn" type="submit">Post</button></div></div>
+          <div><textarea id="post-input" rows="2" maxlength="280" placeholder="What is happening?!"></textarea>
+          <div class="y-compose-row"><span class="y-hint">Posting is free</span><button class="y-btn" type="submit">Post</button></div></div>
         </form>
-        <div class="ch-feed">${feed}</div>
+        <div class="y-feed">${feed}</div>
       </main>
-      <aside class="ch-side"><h2>Trending near you</h2>${trends.map(([a, b]) => `<div class="ch-trend"><b>${esc(a)}</b><span>${esc(b)}</span></div>`).join('')}</aside>
+      <aside class="y-side">
+        <label class="y-search">${Y_ICONS.explore}<input id="y-search" autocomplete="off" placeholder="Search" aria-label="Search posts" value="${esc(ySearch)}"></label>
+        <section class="y-card"><h2>What’s happening</h2>${trends.map(([c, n, k]) => `<div class="y-trend"><small>${esc(c)}</small><b>${esc(n)}</b><small>${esc(k)}</small></div>`).join('')}</section>
+      </aside>
     </div>`;
   }
 
-  function pageBank() {
+  // A short fake transaction hash, stable per transaction.
+  function txHash(x) {
+    let h = 2166136261;
+    for (const c of `${x.t}|${x.memo}|${x.amount}`) h = Math.imul(h ^ c.charCodeAt(0), 16777619) >>> 0;
+    const hex = (h.toString(16) + (h ^ 0x9e3779b9).toString(16)).padEnd(16, '0');
+    return `0x${hex.slice(0, 4)}…${hex.slice(-4)}`;
+  }
+
+  function pageWallet() {
     const sorted = [...state.tx].sort((a, b) => b.t - a.t);
-    let running = state.money;
     const rows = sorted.map((x) => {
-      const bal = running;
-      running = round2(running - x.amount);
-      return `<tr><td class="bk-date">${x.t < 0 ? 'Before' : stamp(x.t)}</td><td class="bk-memo">${esc(x.memo)}</td><td class="bk-amt ${x.amount < 0 ? 'neg' : 'pos'}">${x.amount >= 0 ? '+' : ''}${fmtMoney(x.amount)}</td><td class="bk-bal">${fmtMoney(bal)}</td></tr>`;
+      const out = x.amount < 0;
+      const [who, note] = x.memo.split(' · ');
+      return `<li class="wl-tx">
+        <span class="wl-dir ${out ? 'out' : 'in'}" aria-hidden="true">${out ? '↑' : '↓'}</span>
+        <span class="wl-what"><b>${esc(who)}</b><small>${note ? esc(note) + ' · ' : ''}${out ? 'Sent' : 'Received'} · ${x.t < 0 ? 'before Day 1' : stamp(x.t)}</small></span>
+        <span class="wl-amt ${out ? 'neg' : 'pos'}">${out ? '' : '+'}${fmtCoin(x.amount)}<small>${txHash(x)}</small></span>
+      </li>`;
     }).join('');
     const live = Object.values(state.repos).filter((r) => r.deployed).length;
-    const income = Object.entries(state.apps).reduce((s, [k, a]) => s + (state.repos[k] && state.repos[k].deployed ? a.perDay : 0), 0);
+    const income = Object.entries(state.apps).reduce((n, [k, a]) => n + (state.repos[k] && state.repos[k].deployed ? a.perDay : 0), 0);
     const nightly = round2(income - E.living.amount - live * E.hostingPerDay);
-    const day = dayOf(state.t);
-    const rentLeft = E.rent ? E.rent.day - day : null;
+    const rentLeft = E.rent ? E.rent.day - dayOf(state.t) : null;
     const rentLine = E.rent && rentLeft >= 0
-      ? `<div class="bk-up"><span>Rent</span><b class="neg">${fmtMoney(-E.rent.amount)}</b><small>${esc(E.rent.payee)} · ${rentLeft === 0 ? 'due tonight' : `end of Day ${E.rent.day}, ${rentLeft} day${rentLeft > 1 ? 's' : ''} left`}</small></div>`
+      ? `<div class="wl-up"><span>Rent · ${esc(E.rent.payee)}</span><b class="neg">${fmtCoin(-E.rent.amount)}</b><small>${rentLeft === 0 ? 'Pulls tonight' : `Pulls at the end of Day ${E.rent.day}, in ${rentLeft} day${rentLeft > 1 ? 's' : ''}`}</small></div>`
       : '';
-    return `<div class="bk">
-      <header class="bk-top"><div class="bk-logo">${ICONS.bank}<span>Second National</span></div><span class="bk-user">Signed in · ${esc(S.start.player.name)}</span></header>
-      <div class="bk-wrap">
-        <section class="bk-card">
-          <p class="bk-label">Everyday Checking ••••4417</p>
-          <p class="bk-balance ${state.money < 0 ? 'neg' : ''}">${fmtMoney(state.money)}</p>
-          <p class="bk-sub">Available balance · ${stamp(state.t)}</p>
+    return `<div class="wl">
+      <header class="wl-top"><div class="wl-logo">${ICONS.wallet}<span>Satchel</span></div><span class="wl-net"><i></i>Mainnet</span></header>
+      <div class="wl-wrap">
+        <section class="wl-card">
+          <div class="wl-addr"><span>Wallet</span><code id="wl-addr-text">${shortAddr(WALLET_ADDR)}</code><button class="wl-copy" data-copy-addr>Copy address</button></div>
+          <p class="wl-balance ${state.money < 0 ? 'neg' : ''}">${fmtMoney(state.money)}</p>
+          <p class="wl-sub">${fmtCoin(state.money)} · 1 DOLR = $1.00</p>
         </section>
-        <section class="bk-upcoming">
-          <h2>Coming up</h2>
+        <section class="wl-panel wl-assets">
+          <h2>Assets</h2>
+          <div class="wl-asset"><span class="wl-tok dolr">D</span><span><b>DOLR</b><small>Dollar stablecoin</small></span><span class="wl-val">${fmtMoney(state.money)}<small>${fmtCoin(state.money)}</small></span></div>
+          <div class="wl-asset"><span class="wl-tok cat">M</span><span><b>MOONCAT</b><small>Bought at the top. No buyers.</small></span><span class="wl-val">$0.00<small>4,200,000 MOONCAT</small></span></div>
+        </section>
+        <section class="wl-panel wl-auto">
+          <h2>Auto-pay</h2>
           ${rentLine}
-          <div class="bk-up"><span>Every night</span><b class="${nightly < 0 ? 'neg' : 'pos'}">${nightly >= 0 ? '+' : ''}${fmtMoney(nightly)}</b><small>Food ${fmtMoney(-E.living.amount)}${live ? ` · Hosting ${fmtMoney(-live * E.hostingPerDay)}` : ''}${income ? ` · App income +${fmtMoney(income)}` : ''}</small></div>
+          <div class="wl-up"><span>Every night</span><b class="${nightly < 0 ? 'neg' : 'pos'}">${nightly >= 0 ? '+' : ''}${fmtCoin(nightly)}</b><small>Food ${fmtCoin(-E.living.amount)}${live ? ` · Hosting ${fmtCoin(-live * E.hostingPerDay)}` : ''}${income ? ` · App income +${fmtCoin(income)}` : ''}</small></div>
         </section>
-        <section class="bk-tx">
+        <section class="wl-panel wl-activity">
           <h2>Activity</h2>
-          <div class="bk-scroll"><table><thead><tr><th>When</th><th>Description</th><th class="r">Amount</th><th class="r">Balance</th></tr></thead><tbody>${rows}</tbody></table></div>
+          <ul class="wl-list">${rows}</ul>
         </section>
       </div>
     </div>`;
@@ -2519,7 +2621,7 @@ body.dev-on .ua-src { display: block; }
     return `<div class="ua">
       <header class="ua-head">
         <div class="ua-brand">${ICONS.agent}<div><b>GIT</b><span>${esc(modelDef(state.model).name)} · ${fmtMoney(modelDef(state.model).promptBase)} per prompt + ${fmtMoney(modelDef(state.model).perWord)} per word</span></div></div>
-        <span class="ua-linked"><a href="#" data-nav="askgit.ai/models" class="ua-upgrade">${state.owned < S.models.length ? 'Upgrade model' : 'Models'}</a> · Billing: Second National ••4417</span>
+        <span class="ua-linked"><a href="#" data-nav="askgit.ai/models" class="ua-upgrade">${state.owned < S.models.length ? 'Upgrade model' : 'Models'}</a> · Billing: Satchel ${shortAddr(WALLET_ADDR)}</span>
       </header>
       <div class="ua-llm"><span class="ua-jev" id="ua-jev">${jevChip()}</span>${LLM ? `<span class="ua-llm-ctl" id="ua-llm">${llmRow()}</span>` : ''}</div>
       <div class="ua-log" id="ua-log">${msgs}${thinking}</div>
@@ -2557,7 +2659,7 @@ body.dev-on .ua-src { display: block; }
         <span class="ua-linked"><a href="#" data-nav="askgit.ai" class="ua-upgrade">Back to chat</a></span>
       </header>
       <div class="gm-grid">${cards}</div>
-      <p class="gm-note">Upgrades are charged once to Second National ••4417. You can switch between models you own at any time.</p>
+      <p class="gm-note">Upgrades are charged once to your Satchel wallet, ${shortAddr(WALLET_ADDR)}. You can switch between models you own at any time.</p>
     </div>`;
   }
 
@@ -2681,7 +2783,7 @@ body.dev-on .ua-src { display: block; }
     switch (r.site) {
       case 'y': html = pageY(); break;
       case 'mail': html = pageMail(r); break;
-      case 'bank': html = pageBank(); break;
+      case 'wallet': html = pageWallet(); break;
       case 'forkyard': html = pageForkyard(r.repo); break;
       case 'agent': html = r.page === 'models' ? pageModels() : pageAgent(); break;
       case 'app': html = pageApp(r.repo); break;
@@ -2744,7 +2846,7 @@ body.dev-on .ua-src { display: block; }
         <ul class="ov-rules">
           <li>Every prompt costs money and an hour. Vague prompts get vague answers.</li>
           <li>Some jobs need a stronger GIT model. Upgrades cost money upfront and make every prompt pricier.</li>
-          <li>Read Y for leads. Check Qmail and your bank. Ship code on Forkyard.</li>
+          <li>Read Y for leads. Check Qmail and your wallet. Ship code on Forkyard.</li>
           <li>Anything you can do yourself, do yourself. It's free.</li>
         </ul>
         <div class="ov-actions">
@@ -2836,7 +2938,7 @@ body.dev-on .ua-src { display: block; }
 
   function bind() {
     document.addEventListener('click', (e) => {
-      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model],[data-reply],[data-mail-discard]');
+      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model],[data-reply],[data-mail-discard],[data-copy-addr],[data-focus-post]');
       if (!t) return;
       if (t.dataset.close) { e.stopPropagation(); closeTab(Number(t.dataset.close)); return; }
       if (t.dataset.nav) { e.preventDefault(); navigate(t.dataset.nav); return; }
@@ -2858,6 +2960,13 @@ body.dev-on .ua-src { display: block; }
         return;
       }
       if (t.hasAttribute('data-mail-discard')) { draft = null; navigate('qmail.com'); return; }
+      if (t.hasAttribute('data-focus-post')) { const el = $('#post-input'); if (el) el.focus(); return; }
+      if (t.hasAttribute('data-copy-addr')) {
+        const done = () => toast('Satchel', 'Wallet address copied', 'wallet');
+        const fallback = () => { const r = document.createRange(); r.selectNodeContents($('#wl-addr-text')); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); toast('Satchel', 'Address selected. Press Ctrl+C to copy.', 'wallet'); };
+        try { navigator.clipboard.writeText(WALLET_ADDR).then(done, fallback); } catch (err) { fallback(); }
+        return;
+      }
       if (t.dataset.ov) return overlayAction(t.dataset.ov);
       if (t.dataset.dev) return devAction(t.dataset.dev);
       if (t.dataset.act) return taskbarAction(t.dataset.act);
@@ -2912,6 +3021,7 @@ body.dev-on .ua-src { display: block; }
 
     document.addEventListener('input', (e) => {
       if (e.target.id === 'prompt-input') updateCostEstimate();
+      if (e.target.id === 'y-search') { ySearch = e.target.value; render(); }
       if (/^mail-(to|subject|body)$/.test(e.target.id)) {
         draft = { to: $('#mail-to').value, subject: $('#mail-subject').value, body: $('#mail-body').value };
       }
@@ -2948,8 +3058,8 @@ body.dev-on .ua-src { display: block; }
 
   function devAction(a) {
     if (a === 'close') { devOpen = false; renderDev(); return; }
-    if (a === 'money+') addTx(100, 'DEV CREDIT');
-    if (a === 'money-') addTx(-100, 'DEV DEBIT');
+    if (a === 'money+') addTx(100, 'Dev credit');
+    if (a === 'money-') addTx(-100, 'Dev debit');
     if (a === 'hour') advance(60);
     if (a === 'sleep') sleep(false);
     if (a === 'posts') for (const p of S.posts) revealPost(p.id);

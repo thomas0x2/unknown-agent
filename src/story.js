@@ -49,9 +49,9 @@
       promptHours: 1,        // each prompt eats an hour
       wakeHour: 8,
       bedHour: 24,           // at midnight you pass out and the day rolls over
-      living: { amount: 15, memo: ['CORNER MART #12', 'NOODLE HUT', 'GAS-N-GO SNACKS', 'DOLLAR BIN GROCERY'] },
+      living: { amount: 15, memo: ['Corner Mart #12', 'Noodle Hut', 'Gas-n-Go Snacks', 'Dollar Bin Grocery'] },
       hostingPerDay: 2,
-      rent: { amount: 300, day: 7, payee: 'GARY PRUITT PROPERTY MGMT' },
+      rent: { amount: 300, day: 7, payee: 'Pruitt Property Mgmt' },
     },
 
     // How Jev's probabilities turn into outcomes (src/jev.js).
@@ -64,18 +64,18 @@
     // Owned tiers can be switched freely; a prompt is billed at the active tier's rates.
     // Branches with `minModel: n` only fire when the active tier is GIT-n or better.
     models: [
-      { name: 'GIT-1', price: 0, promptBase: 0.8, perWord: 0.03, blurb: 'Static pages and short messages. Loses the thread after a sentence or two.' },
-      { name: 'GIT-2', price: 25, promptBase: 1.2, perWord: 0.04, blurb: 'Real apps with a database behind them. Keeps a feature list straight.' },
-      { name: 'GIT-3', price: 75, promptBase: 2.0, perWord: 0.06, blurb: 'Writes sales emails, negotiates, closes deals on your behalf.' },
-      { name: 'GIT-4', price: 250, promptBase: 3.5, perWord: 0.1, blurb: 'Reads between the lines. Starts answering questions you did not ask.' },
-      { name: 'GIT-5', price: 800, promptBase: 6.0, perWord: 0.15, blurb: 'Nobody you know has GIT-5. The pricing page lists it anyway.' },
+      { name: 'agent-1', price: 0, promptBase: 0.8, perWord: 0.03, blurb: 'Static pages and short messages. Loses the thread after a sentence or two.' },
+      { name: 'agent-2', price: 25, promptBase: 1.2, perWord: 0.04, blurb: 'Real apps with a database behind them. Keeps a feature list straight.' },
+      { name: 'agent-3', price: 75, promptBase: 2.0, perWord: 0.06, blurb: 'Writes sales emails, negotiates, closes deals on your behalf.' },
+      { name: 'agent-4', price: 250, promptBase: 3.5, perWord: 0.1, blurb: 'Reads between the lines. Starts answering questions you did not ask.' },
+      { name: 'agent-5', price: 800, promptBase: 6.0, perWord: 0.15, blurb: 'Nobody you know has agent-5. The pricing page lists it anyway.' },
     ],
 
     agent: {
       name: 'GIT',
       greeting:
         'GIT. I can build software, write things, and read the internet for you.\n\n' +
-        'Every prompt is billed to your linked bank account. Be specific.',
+        'Every prompt is billed to your linked wallet. Be specific.',
       // Said when the player asks for something their active model is too weak for (a branch's `weak` overrides it).
       lockedResponse: "That's beyond {model}. It needs {required} or better. Upgrades: askgit.ai/models.",
       // Used by the local model (src/llm.js) for prompts that don't move the story.
@@ -138,7 +138,7 @@
         priority: -2,
         response:
           'I can:\n— build and push code to your Forkyard account\n— write and send emails from your Qmail\n— read Y and summarize what matters\n\n' +
-          "I can't touch your bank, and I can't press buttons you can press yourself.",
+          "I can't touch your wallet, and I can't press buttons you can press yourself.",
       },
       {
         id: 'beg',
@@ -287,7 +287,7 @@
             intent: "The player asks the agent to make money from Spin Cycle without choosing a method (ads, paywall, or sponsor).",
             match: { all: [['monetize', 'monetise', 'money', 'revenue', 'income', 'earn', 'profit', 'cash', 'pay', 'paid', 'business model']] },
             response:
-              'Three ways to make Spin Cycle pay:\n— ads\n— a paywall / subscription\n— a local sponsor (needs GIT-3 to negotiate)\n\nEach one changes the app. Pick one and ask for it.',
+              'Three ways to make Spin Cycle pay:\n— ads\n— a paywall / subscription\n— a local sponsor (needs agent-3 to negotiate)\n\nEach one changes the app. Pick one and ask for it.',
           },
           {
             id: 'monetize_ads',
@@ -340,7 +340,7 @@
     // Named effect bundles, so the same outcome can be reached through the agent or by hand.
     bundles: {
       rosa_pays: {
-        money: { amount: 150, memo: 'CRUMB & COIN BAKERY — WEBSITE' },
+        money: { amount: 150, memo: 'Crumb & Coin Bakery · website' },
         post: 'rosa_thanks',
         mail: 'rosa_paid',
         goto: 'paid_once',
@@ -400,7 +400,7 @@
         intent: "The email to Mom asks her for money or help.",
         when: { notFlag: 'wroteMom' },
         match: { all: [['mom', 'mother', 'mum'], ['money', 'help', 'cash', 'loan', 'send', 'broke', 'rent', 'dollars', 'borrow']] },
-        effects: { set: { wroteMom: true }, later: [{ hours: 3, effects: { mail: 'mom_money', money: { amount: 20, memo: 'ZELLE — MOM' } } }] },
+        effects: { set: { wroteMom: true }, later: [{ hours: 3, effects: { mail: 'mom_money', money: { amount: 20, memo: 'Mom · buy vegetables' } } }] },
       },
       {
         id: 'mail_mom_chat',
@@ -417,7 +417,7 @@
     mail: [
       {
         id: 'git_welcome', at: 30, from: 'GIT Labs', addr: 'noreply@askgit.ai', subject: 'Welcome to GIT',
-        body: "Your GIT-1 account is active and linked to Second National ••4417.\n\nEvery prompt is billed at your active model's rate. Stronger models, GIT-2 to GIT-5, take on harder jobs: askgit.ai/models.\n\nGIT Labs\nThis mailbox is not monitored. Neither is anything else.",
+        body: "Your agent-1 account is active and billed to your Satchel wallet (0x4417…a9f2).\n\nEvery prompt is billed at your active model's rate. Stronger models, agent-2 to agent-5, take on harder jobs: askgit.ai/models.\n\nGIT Labs\nThis mailbox is not monitored. Neither is anything else.",
       },
       {
         id: 'brayden_spam', at: 240, from: 'Brayden | 7 figures', addr: 'brayden@empire-mindset.biz', subject: 'RE: your empire (90% off, today only)',
@@ -425,7 +425,7 @@
       },
       {
         id: 'gary_rent', at: 610, from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'Rent: end of Day 7',
-        body: "Hi,\n\nReminder that rent ($300) comes out at the end of Day 7. Last month's late fee was $89.50. I'd rather not do that again, and I'd rather not do the other thing either.\n\nGary Pruitt\nPruitt Property Management",
+        body: "Hi,\n\nReminder that the rent auto-pay ($300) pulls from your wallet at the end of Day 7. Last month's late fee was $89.50. I'd rather not do that again, and I'd rather not do the other thing either.\n\nGary Pruitt\nPruitt Property Management",
       },
       {
         id: 'mom_hello', at: 1500, from: 'Mom', addr: 'mom@qmail.com', subject: 'Are you eating?',
@@ -441,11 +441,11 @@
       },
       {
         id: 'rosa_paid', from: 'Rosa (Crumb & Coin)', addr: 'rosa@crumbandcoin.com', subject: 'Paid! Thank you',
-        body: "The site looks wonderful. My nephew is jealous. $150 is on its way to your account.\n\nCome by for a cardamom bun, on the house.\n\nRosa",
+        body: "The site looks wonderful. My nephew is jealous. $150 is on its way to your wallet. My nephew set up our crypto, so I hope it arrives.\n\nCome by for a cardamom bun, on the house.\n\nRosa",
       },
       { id: 'gary_tomorrow', when: { minDay: 6 }, from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'Tomorrow night', body: "Rent comes out tomorrow night. $300. Make sure it's there.\n\nGary" },
       { id: 'gary_no', from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'RE: Rent', body: 'No.\n\nGary\n\nSent from my phone' },
-      { id: 'mom_money', from: 'Mom', addr: 'mom@qmail.com', subject: 'RE: Are you eating?', body: "I knew it. I sent you $20. Don't tell your father. Buy vegetables.\n\nLove, Mom" },
+      { id: 'mom_money', from: 'Mom', addr: 'mom@qmail.com', subject: 'RE: Are you eating?', body: "I knew it. I sent you $20 to that crypto wallet of yours. I hope it worked. Don't tell your father. Buy vegetables.\n\nLove, Mom" },
       { id: 'mom_chat', from: 'Mom', addr: 'mom@qmail.com', subject: 'RE: Are you eating?', body: "So good to hear from you! Things here are fine. The neighbor's dog had puppies. Write again soon.\n\nLove, Mom" },
     ],
 
@@ -502,17 +502,17 @@
 
     // Y posts. `at` is minutes before game start for seeded posts; others appear when `when` becomes true.
     posts: [
-      { id: 'news_layoffs', author: 'The Ledger', handle: 'theledger', at: 40, likes: 812, text: 'Regional employment down 4% this quarter as firms replace junior staff with "agentic workflows".' },
+      { id: 'news_layoffs', author: 'The Ledger', handle: 'theledger', verified: true, at: 40, likes: 812, text: 'Regional employment down 4% this quarter as firms replace junior staff with "agentic workflows".' },
       {
         id: 'rosa_gig', author: 'Crumb & Coin Bakery', handle: 'crumbandcoin', at: 95, likes: 23,
         text: 'Our website has been down since my nephew left for college. Will pay $150 to anyone who can put up a simple site with our menu + hours by tomorrow. rosa@crumbandcoin.com — Rosa',
       },
       { id: 'gary_post', author: 'Gary Pruitt', handle: 'garypruitt_pm', at: 180, likes: 2, text: 'Reminder to all tenants: rent is due on the 7th. No exceptions. I have heard every excuse.' },
       { id: 'agent_rumor', author: 'dev_null', handle: 'devnull_42', at: 300, likes: 1400, text: 'Has anyone figured out who actually runs GIT? No company page, no founders, ToS is one line: "You will be billed."' },
-      { id: 'git_ad', author: 'GIT Labs', handle: 'gitlabs_ai', at: 410, likes: 3, text: 'GIT-3 is here. It negotiates so you don\'t have to. Upgrade from askgit.ai/models. Prices may vary by user.' },
-      { id: 'hustle_guy', author: 'Brayden | 7 figures', handle: 'braydenhustles', at: 520, likes: 61, text: 'Unemployed? Good. Now you have time to build an empire. Comment "EMPIRE" for my free course ($499).' },
+      { id: 'git_ad', author: 'GIT Labs', handle: 'gitlabs_ai', verified: true, at: 410, likes: 3, text: 'agent-3 is here. It negotiates so you don\'t have to. Upgrade from askgit.ai/models. Prices may vary by user.' },
+      { id: 'hustle_guy', author: 'Brayden | 7 figures', handle: 'braydenhustles', verified: true, at: 520, likes: 61, text: 'Unemployed? Good. Now you have time to build an empire. Comment "EMPIRE" for my free course ($499).' },
 
-      { id: 'news_day2', author: 'The Ledger', handle: 'theledger', when: { minDay: 2 }, likes: 404, text: 'Small businesses report a surge in "AI-built" websites. Quality described as "fine, honestly".' },
+      { id: 'news_day2', author: 'The Ledger', handle: 'theledger', verified: true, when: { minDay: 2 }, likes: 404, text: 'Small businesses report a surge in "AI-built" websites. Quality described as "fine, honestly".' },
       { id: 'agent_rumor2', author: 'dev_null', handle: 'devnull_42', when: { minDay: 4 }, likes: 2100, text: 'Update: GIT charges show up from a different merchant ID every week. Same address though. A parking lot.' },
 
       { id: 'rosa_thanks', author: 'Crumb & Coin Bakery', handle: 'crumbandcoin', likes: 41, text: 'We have a website again! Thank you @{handle}. Paid in full, plus a free cardamom bun if you come by.' },
@@ -523,7 +523,7 @@
       { id: 'washday_2', author: 'Marco', handle: 'marcoeats', when: { node: ['paid_once', 'app_built', 'app_live'] }, likes: 188, text: '@washday_woes I would pay for this. Not much. But something.' },
       { id: 'you_spin_launch', author: '{name}', handle: '{handle}', likes: 96, text: 'Built a live machine tracker for the Ferris St Laundromat: spin-cycle.forkyard.app. Tap a machine to report it working or broken.' },
       { id: 'washday_reply', author: 'wash day woes', handle: 'washday_woes', likes: 530, text: 'SOMEONE BUILT IT. spin-cycle.forkyard.app. W4 works right now, go go go' },
-      { id: 'suds_deal', author: 'Suds & Duds Detergent', handle: 'sudsandduds', likes: 77, text: 'Proud to sponsor Spin Cycle, keeping Ferris St informed one load at a time.' },
+      { id: 'suds_deal', author: 'Suds & Duds Detergent', handle: 'sudsandduds', verified: true, likes: 77, text: 'Proud to sponsor Spin Cycle, keeping Ferris St informed one load at a time.' },
     ],
   };
 })(typeof window !== 'undefined' ? window : globalThis);

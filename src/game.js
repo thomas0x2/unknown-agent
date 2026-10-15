@@ -16,7 +16,7 @@
   const SITES = {
     y: { label: 'Y', url: 'y.com' },
     mail: { label: 'Qmail', url: 'qmail.com' },
-    bank: { label: 'Second National', url: 'secondnational.com' },
+    wallet: { label: 'Satchel', url: 'satchel.app' },
     forkyard: { label: 'Forkyard', url: 'forkyard.com' },
     agent: { label: 'GIT', url: 'askgit.ai' },
   };
@@ -41,6 +41,13 @@
     const s = Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     return (n < 0 ? '−$' : '$') + s;
   }
+  // Satchel holds DOLR, a stablecoin pegged 1:1 to the dollar.
+  function fmtCoin(n) {
+    const s = Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return `${n < 0 ? '−' : ''}${s} DOLR`;
+  }
+  const WALLET_ADDR = '0x4417c3e8b1d05f2a9e6d7b0c1f83a4e5d2b9a9f2';
+  const shortAddr = (a) => `${a.slice(0, 6)}…${a.slice(-4)}`;
   const dayOf = (t) => Math.floor(t / 1440) + 1;
   const hourOf = (t) => (t % 1440) / 60;
   function clock(t) {
@@ -90,17 +97,17 @@
       v: 1, t, money: st.money, node: st.node,
       flags: {}, repos: {}, apps: {}, posts: {}, userPosts: [], liked: {},
       tx: [
-        { t: t - 4300, amount: 212, memo: 'STATE UNEMPLOYMENT — FINAL PAYMENT' },
-        { t: t - 2870, amount: -89.5, memo: 'GARY PRUITT PROPERTY MGMT — LATE FEE' },
-        { t: t - 1490, amount: -41.33, memo: 'CITY UTILITIES' },
-        { t: t - 610, amount: -18, memo: 'NOODLE HUT' },
+        { t: t - 4300, amount: 212, memo: 'State Unemployment Office · final payment' },
+        { t: t - 2870, amount: -89.5, memo: 'Pruitt Property Mgmt · late fee' },
+        { t: t - 1490, amount: -41.33, memo: 'City Utilities' },
+        { t: t - 610, amount: -18, memo: 'Noodle Hut' },
       ],
       chat: [{ from: 'agent', text: S.agent.greeting, t }],
       queue: [], fired: {},
       stats: { prompts: 0, promptSpend: 0, misses: 0, partials: 0, locked: 0, upgradeSpend: 0 },
       model: 1,   // active GIT tier
       owned: 1,   // highest GIT tier bought
-      unread: { y: 0, bank: 0, forkyard: 0, agent: 0 },
+      unread: { y: 0, wallet: 0, forkyard: 0, agent: 0 },
       tabs: [{ id: 1, url: SITES.y.url }, { id: 2, url: SITES.agent.url }],
       mail: [],      // Qmail: { id, t, read, folder, custom? }
       nextMail: 1,
@@ -140,6 +147,9 @@
         if (k.startsWith('chirp:chirp_')) { s.fired['post:post_' + k.slice(12)] = s.fired[k]; delete s.fired[k]; }
       }
       if (!s.mail) { s.mail = []; s.nextMail = 1; seedMail(s); }
+      // saves from before the wallet
+      for (const tab of s.tabs) if (/^secondnational\.com/.test(tab.url)) tab.url = 'satchel.app';
+      if (s.unread.bank != null) { s.unread.wallet = s.unread.bank; delete s.unread.bank; }
       return s;
     } catch (e) { return null; }
   }
@@ -165,7 +175,7 @@
     amount = round2(amount);
     state.money = round2(state.money + amount);
     state.tx.push({ t: state.t, amount, memo });
-    if (!onSite('bank')) state.unread.bank++;
+    if (!onSite('wallet')) state.unread.wallet++;
   }
 
   function onSite(site) {
@@ -241,9 +251,9 @@
     }
     if (fx.set) Object.assign(state.flags, fx.set);
     if (fx.money != null) {
-      const m = typeof fx.money === 'number' ? { amount: fx.money, memo: 'TRANSFER' } : fx.money;
+      const m = typeof fx.money === 'number' ? { amount: fx.money, memo: 'Transfer' } : fx.money;
       addTx(m.amount, m.memo);
-      toast('Second National', `${m.amount >= 0 ? '+' : ''}${fmtMoney(m.amount)} · ${m.memo}`, 'bank');
+      toast('Satchel', `${m.amount >= 0 ? '+' : ''}${fmtCoin(m.amount)} · ${m.memo}`, 'wallet');
     }
     for (const name of arr(fx.repo)) {
       if (state.repos[name]) continue;
@@ -310,14 +320,14 @@
 
     for (const [repo, app] of Object.entries(state.apps)) {
       if (app.perDay > 0 && state.repos[repo] && state.repos[repo].deployed) {
-        addTx(app.perDay, `FORKYARD PAYOUT — ${repo}`);
+        addTx(app.perDay, `Forkyard · ${repo} payout`);
         lines.push([`${repo} earnings (${app.users} users/day)`, app.perDay]);
       }
     }
     const live = Object.values(state.repos).filter((r) => r.deployed).length;
     if (live) {
       const fee = live * E.hostingPerDay;
-      addTx(-fee, `FORKYARD HOSTING — ${live} APP${live > 1 ? 'S' : ''}`);
+      addTx(-fee, `Forkyard · hosting (${live} app${live > 1 ? 's' : ''})`);
       lines.push([`Hosting (${live} app${live > 1 ? 's' : ''})`, -fee]);
     }
     const memos = arr(E.living.memo);
@@ -327,7 +337,7 @@
     let rentDue = false;
     if (E.rent && ended === E.rent.day) {
       rentDue = true;
-      addTx(-E.rent.amount, `${E.rent.payee} — RENT`);
+      addTx(-E.rent.amount, `${E.rent.payee} · rent (auto-pay)`);
       lines.push(['Rent', -E.rent.amount]);
     }
 
@@ -335,7 +345,7 @@
     if (state.money < 0) {
       state.over = rentDue
         ? { title: 'Evicted', text: `Rent bounced. Gary changed the locks on Day ${ended + 1}. Your laptop is in a box on the curb.` }
-        : { title: 'Overdrawn', text: 'Second National froze your account. No account, no agent, no way back in.' };
+        : { title: 'Insolvent', text: 'Your wallet went below zero. The auto-payments bounced, Satchel froze the address, and GIT Labs revoked your access.' };
     }
     state.morning = { day: dayOf(wake), passedOut: !!passedOut, lines, balance: state.money };
     if (!state.over) fireEvents('day');
@@ -355,13 +365,13 @@
     const m = modelDef(level);
     if (level !== state.owned + 1 || state.over) return;
     if (state.money < m.price) { toast('GIT Labs', `${m.name} costs ${fmtMoney(m.price)}. Your balance is ${fmtMoney(state.money)}.`, 'agent'); return; }
-    addTx(-m.price, `GIT LABS — ${m.name} UPGRADE`);
+    addTx(-m.price, `GIT Labs · ${m.name} upgrade`);
     state.stats.upgradeSpend = round2(state.stats.upgradeSpend + m.price);
     state.owned = level;
     state.model = level;
     deliverCustom({
       from: 'GIT Labs', addr: 'billing@askgit.ai', subject: `Receipt: ${m.name} upgrade`,
-      body: `You unlocked ${m.name}.\n\nCharged: ${fmtMoney(m.price)} to Second National ••4417.\nWhile ${m.name} is active, prompts cost ${fmtMoney(m.promptBase)} + ${fmtMoney(m.perWord)} per word.\n\nNo refunds. No exceptions. No humans.\n\nGIT Labs`,
+      body: `You unlocked ${m.name}.\n\nCharged: ${fmtCoin(m.price)} from wallet ${shortAddr(WALLET_ADDR)}.\nWhile ${m.name} is active, prompts cost ${fmtMoney(m.promptBase)} + ${fmtMoney(m.perWord)} per word.\n\nNo refunds. No exceptions. No humans.\n\nGIT Labs`,
     });
     toast('GIT Labs', `${m.name} unlocked and active. Prompts now cost ${fmtMoney(m.promptBase)} + ${fmtMoney(m.perWord)}/word.`, 'agent');
     save();
@@ -389,7 +399,7 @@
       return;
     }
     const level = state.model;
-    addTx(-cost, `GIT LABS — ${modelDef(level).name} USAGE`);
+    addTx(-cost, `GIT Labs · ${modelDef(level).name} usage`);
     state.lastCost = cost;
     state.stats.prompts++;
     state.stats.promptSpend = round2(state.stats.promptSpend + cost);
@@ -548,7 +558,7 @@
     if (u === 'qmail.com/compose') return { site: 'mail', view: 'compose', title: 'New message · Qmail' };
     const mm = u.match(/^qmail\.com\/m\/([a-z0-9_-]+)$/);
     if (mm) return { site: 'mail', view: 'msg', id: mm[1], title: 'Qmail' };
-    if (u === 'secondnational.com') return { site: 'bank', title: 'Second National · Checking' };
+    if (u === 'satchel.app' || u === 'secondnational.com') return { site: 'wallet', title: 'Satchel · Wallet' };
     if (u === 'askgit.ai' || u === 'unknownagent.ai') return { site: 'agent', title: 'GIT' };
     if (u === 'askgit.ai/models') return { site: 'agent', page: 'models', title: 'Models · GIT' };
     if (u === 'forkyard.com') return { site: 'forkyard', title: 'Forkyard' };
@@ -607,7 +617,7 @@
   const ICONS = {
     y: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 3h4l3.5 6.6L15.5 3h4l-5.6 9.7V21h-3.8v-8.3z" fill="currentColor"/></svg>',
     mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5" fill="currentColor"/><path d="M4.5 7.5 12 13l7.5-5.5" stroke="var(--icon-ink, #fff)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    bank: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 8v2h18V8l-9-5zM5 12v6h2v-6H5zm4 0v6h2v-6H9zm4 0v6h2v-6h-2zm4 0v6h2v-6h-2zM3 20v2h18v-2H3z" fill="currentColor"/></svg>',
+    wallet: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H17v3h1.5A1.5 1.5 0 0 1 20 8.5v10a1.5 1.5 0 0 1-1.5 1.5h-12A2.5 2.5 0 0 1 4 17.5z" fill="currentColor"/><circle cx="16" cy="13.5" r="1.6" fill="var(--icon-ink, #1f2329)"/></svg>',
     forkyard: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3a3 3 0 0 0-1 5.8v6.4A3 3 0 1 0 8 15.2V13c0-1 1-2 2-2h4a4 4 0 0 0 4-4V8.8A3 3 0 1 0 16 8.8V7c0 1-1 2-2 2h-4c-.7 0-1.4.2-2 .5V8.8A3 3 0 0 0 7 3z" fill="currentColor"/></svg>',
     agent: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" fill="currentColor"/><path d="M9.5 9.2a2.6 2.6 0 1 1 3.6 2.4c-.7.3-1.1.8-1.1 1.5v.6" stroke="var(--icon-ink, #fff)" stroke-width="1.8" fill="none" stroke-linecap="round"/><circle cx="12" cy="16.6" r="1.1" fill="var(--icon-ink, #fff)"/></svg>',
     newtab: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2" fill="none"/></svg>',
@@ -626,6 +636,26 @@
     </div>`;
   }
 
+  const Y_ICONS = {
+    home: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 10v11h6v-6h6v6h6V10z" fill="currentColor"/></svg>',
+    explore: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="2.2" fill="none"/><path d="m15.5 15.5 5 5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
+    bell: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4zM10 20h4" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round"/></svg>',
+    mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>',
+    user: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2" fill="none"/><path d="M4 21c1-4 4.5-6 8-6s7 2 8 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
+    reply: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5C4 7.4 7.6 4 12 4s8 3.4 8 7.5S16.4 19 12 19c-1.1 0-2.2-.2-3.2-.6L4 20l1.4-3.9A7 7 0 0 1 4 11.5z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/></svg>',
+    repost: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10l-2.5-2.5M17 17H7l2.5 2.5M7 7v5M17 17v-5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    heart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7a4.3 4.3 0 0 1 7.5 3c0 5.4-7.5 10-7.5 10z" stroke="currentColor" stroke-width="1.8" fill="var(--heart-fill, none)" stroke-linejoin="round"/></svg>',
+    views: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V6M15 20v-9M20 20V4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    check: '<svg viewBox="0 0 24 24" aria-label="Verified" role="img"><path d="M12 2.5 14.4 4l2.8-.2.9 2.7 2.3 1.6-.9 2.7.9 2.7-2.3 1.6-.9 2.7-2.8-.2L12 21.5 9.6 20l-2.8.2-.9-2.7-2.3-1.6.9-2.7-.9-2.7 2.3-1.6.9-2.7 2.8.2z" fill="currentColor"/><path d="m8.5 12.2 2.4 2.3 4.6-4.9" stroke="#fff" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  };
+  let ySearch = '';
+
+  function compact(n) {
+    if (n >= 1e6) return (n / 1e6).toFixed(n >= 1e7 ? 0 : 1).replace(/\.0$/, '') + 'M';
+    if (n >= 1e3) return (n / 1e3).toFixed(n >= 1e4 ? 0 : 1).replace(/\.0$/, '') + 'K';
+    return String(n);
+  }
+
   function pageY() {
     const posts = [];
     for (const p of S.posts) {
@@ -634,71 +664,105 @@
     }
     for (const u of state.userPosts) posts.push({ id: u.id, author: S.start.player.name, handle: S.start.player.handle, text: u.text, t: u.t, likes: u.likes, mine: true });
     posts.sort((a, b) => b.t - a.t);
-    const feed = posts.map((p) => {
+    const q = ySearch.trim().toLowerCase();
+    const shown = q ? posts.filter((p) => `${p.author} ${p.handle} ${p.text}`.toLowerCase().includes(q)) : posts;
+    const feed = shown.map((p) => {
       const liked = !!state.liked[p.id];
-      const text = esc(p.text).replace(/@([a-z0-9_]+)/gi, '<span class="ch-at">@$1</span>').replace(/([a-z0-9-]+\.forkyard\.app)/g, '<a data-nav="$1" href="#" class="ch-link">$1</a>');
-      return `<article class="ch-post${p.mine ? ' mine' : ''}">
+      const likes = (p.likes || 0) + (liked ? 1 : 0);
+      const text = esc(p.text)
+        .replace(/@([a-z0-9_]+)/gi, '<span class="y-at">@$1</span>')
+        .replace(/(#[a-z0-9_]+)/gi, '<span class="y-at">$1</span>')
+        .replace(/([a-z0-9-]+\.forkyard\.app|askgit\.ai\/models)/g, '<a data-nav="$1" href="#" class="y-link">$1</a>');
+      return `<article class="y-post${p.mine ? ' mine' : ''}">
         ${avatar(p.author, p.handle)}
-        <div class="ch-body">
-          <header><b>${esc(p.author)}</b> <span>@${esc(p.handle)} · ${ago(p.t)}</span></header>
+        <div class="y-body">
+          <header><b>${esc(p.author)}</b>${p.verified ? `<span class="y-check">${Y_ICONS.check}</span>` : ''}<span>@${esc(p.handle)} · ${ago(p.t)}</span></header>
           <p>${text}</p>
-          <footer><button class="ch-like${liked ? ' on' : ''}" data-like="${esc(p.id)}" aria-pressed="${liked}">♥ ${(p.likes || 0) + (liked ? 1 : 0)}</button></footer>
+          <footer class="y-acts">
+            <span class="y-act reply">${Y_ICONS.reply}${compact(Math.round(likes * 0.07))}</span>
+            <span class="y-act repost">${Y_ICONS.repost}${compact(Math.round(likes * 0.14))}</span>
+            <button class="y-act like${liked ? ' on' : ''}" data-like="${esc(p.id)}" aria-pressed="${liked}" aria-label="Like">${Y_ICONS.heart}${compact(likes)}</button>
+            <span class="y-act views">${Y_ICONS.views}${compact(Math.max(12, likes * 37 + 9))}</span>
+          </footer>
         </div>
       </article>`;
-    }).join('');
+    }).join('') || `<p class="y-none">No posts match “${esc(ySearch)}”.</p>`;
     const trends = [
-      ['#RentDue', '18.2k posts'],
-      ['GIT-3', '9,410 posts'],
-      state.posts.washday != null ? ['Ferris St Laundromat', '2,140 posts'] : ['#AgenticWorkflows', '4,002 posts'],
-      ['Crumb & Coin', state.posts.rosa_thanks != null ? '312 posts' : '27 posts'],
+      ['Trending in Ferris St', '#RentDue', '18.2K posts'],
+      ['Technology · Trending', 'agent-3', '9,410 posts'],
+      state.posts.washday != null ? ['Local · Trending', 'Ferris St Laundromat', '2,140 posts'] : ['Business · Trending', '#AgenticWorkflows', '4,002 posts'],
+      ['Food · Trending', 'Crumb & Coin', state.posts.rosa_thanks != null ? '312 posts' : '27 posts'],
     ];
-    return `<div class="ch">
-      <nav class="ch-nav"><div class="ch-logo">${ICONS.y}<span class="sr-only">Y</span></div><a class="on">Home</a><a>Explore</a><a>Notifications</a><a>Profile</a></nav>
-      <main class="ch-main">
-        <h1 class="ch-h">Home</h1>
-        <form class="ch-compose" data-form="ypost">
+    const nav = [['home', 'Home', true], ['explore', 'Explore'], ['bell', 'Notifications'], ['mail', 'Messages'], ['user', 'Profile']];
+    return `<div class="y">
+      <nav class="y-nav" aria-label="Y">
+        <div class="y-logo">${ICONS.y}<span class="sr-only">Y</span></div>
+        ${nav.map(([icon, label, on]) => `<span class="y-nav-item${on ? ' on' : ''}">${Y_ICONS[icon]}<span>${label}</span></span>`).join('')}
+        <button class="y-post-btn" data-focus-post>Post</button>
+      </nav>
+      <main class="y-main">
+        <header class="y-head"><div class="y-tabs"><span class="on">For you</span></div></header>
+        <form class="y-compose" data-form="ypost">
           ${avatar(S.start.player.name, S.start.player.handle)}
-          <div><textarea id="post-input" rows="2" maxlength="280" placeholder="What's happening?"></textarea>
-          <div class="ch-compose-row"><span class="ch-hint">Posting is free.</span><button class="ch-btn" type="submit">Post</button></div></div>
+          <div><textarea id="post-input" rows="2" maxlength="280" placeholder="What is happening?!"></textarea>
+          <div class="y-compose-row"><span class="y-hint">Posting is free</span><button class="y-btn" type="submit">Post</button></div></div>
         </form>
-        <div class="ch-feed">${feed}</div>
+        <div class="y-feed">${feed}</div>
       </main>
-      <aside class="ch-side"><h2>Trending near you</h2>${trends.map(([a, b]) => `<div class="ch-trend"><b>${esc(a)}</b><span>${esc(b)}</span></div>`).join('')}</aside>
+      <aside class="y-side">
+        <label class="y-search">${Y_ICONS.explore}<input id="y-search" autocomplete="off" placeholder="Search" aria-label="Search posts" value="${esc(ySearch)}"></label>
+        <section class="y-card"><h2>What’s happening</h2>${trends.map(([c, n, k]) => `<div class="y-trend"><small>${esc(c)}</small><b>${esc(n)}</b><small>${esc(k)}</small></div>`).join('')}</section>
+      </aside>
     </div>`;
   }
 
-  function pageBank() {
+  // A short fake transaction hash, stable per transaction.
+  function txHash(x) {
+    let h = 2166136261;
+    for (const c of `${x.t}|${x.memo}|${x.amount}`) h = Math.imul(h ^ c.charCodeAt(0), 16777619) >>> 0;
+    const hex = (h.toString(16) + (h ^ 0x9e3779b9).toString(16)).padEnd(16, '0');
+    return `0x${hex.slice(0, 4)}…${hex.slice(-4)}`;
+  }
+
+  function pageWallet() {
     const sorted = [...state.tx].sort((a, b) => b.t - a.t);
-    let running = state.money;
     const rows = sorted.map((x) => {
-      const bal = running;
-      running = round2(running - x.amount);
-      return `<tr><td class="bk-date">${x.t < 0 ? 'Before' : stamp(x.t)}</td><td class="bk-memo">${esc(x.memo)}</td><td class="bk-amt ${x.amount < 0 ? 'neg' : 'pos'}">${x.amount >= 0 ? '+' : ''}${fmtMoney(x.amount)}</td><td class="bk-bal">${fmtMoney(bal)}</td></tr>`;
+      const out = x.amount < 0;
+      const [who, note] = x.memo.split(' · ');
+      return `<li class="wl-tx">
+        <span class="wl-dir ${out ? 'out' : 'in'}" aria-hidden="true">${out ? '↑' : '↓'}</span>
+        <span class="wl-what"><b>${esc(who)}</b><small>${note ? esc(note) + ' · ' : ''}${out ? 'Sent' : 'Received'} · ${x.t < 0 ? 'before Day 1' : stamp(x.t)}</small></span>
+        <span class="wl-amt ${out ? 'neg' : 'pos'}">${out ? '' : '+'}${fmtCoin(x.amount)}<small>${txHash(x)}</small></span>
+      </li>`;
     }).join('');
     const live = Object.values(state.repos).filter((r) => r.deployed).length;
-    const income = Object.entries(state.apps).reduce((s, [k, a]) => s + (state.repos[k] && state.repos[k].deployed ? a.perDay : 0), 0);
+    const income = Object.entries(state.apps).reduce((n, [k, a]) => n + (state.repos[k] && state.repos[k].deployed ? a.perDay : 0), 0);
     const nightly = round2(income - E.living.amount - live * E.hostingPerDay);
-    const day = dayOf(state.t);
-    const rentLeft = E.rent ? E.rent.day - day : null;
+    const rentLeft = E.rent ? E.rent.day - dayOf(state.t) : null;
     const rentLine = E.rent && rentLeft >= 0
-      ? `<div class="bk-up"><span>Rent</span><b class="neg">${fmtMoney(-E.rent.amount)}</b><small>${esc(E.rent.payee)} · ${rentLeft === 0 ? 'due tonight' : `end of Day ${E.rent.day}, ${rentLeft} day${rentLeft > 1 ? 's' : ''} left`}</small></div>`
+      ? `<div class="wl-up"><span>Rent · ${esc(E.rent.payee)}</span><b class="neg">${fmtCoin(-E.rent.amount)}</b><small>${rentLeft === 0 ? 'Pulls tonight' : `Pulls at the end of Day ${E.rent.day}, in ${rentLeft} day${rentLeft > 1 ? 's' : ''}`}</small></div>`
       : '';
-    return `<div class="bk">
-      <header class="bk-top"><div class="bk-logo">${ICONS.bank}<span>Second National</span></div><span class="bk-user">Signed in · ${esc(S.start.player.name)}</span></header>
-      <div class="bk-wrap">
-        <section class="bk-card">
-          <p class="bk-label">Everyday Checking ••••4417</p>
-          <p class="bk-balance ${state.money < 0 ? 'neg' : ''}">${fmtMoney(state.money)}</p>
-          <p class="bk-sub">Available balance · ${stamp(state.t)}</p>
+    return `<div class="wl">
+      <header class="wl-top"><div class="wl-logo">${ICONS.wallet}<span>Satchel</span></div><span class="wl-net"><i></i>Mainnet</span></header>
+      <div class="wl-wrap">
+        <section class="wl-card">
+          <div class="wl-addr"><span>Wallet</span><code id="wl-addr-text">${shortAddr(WALLET_ADDR)}</code><button class="wl-copy" data-copy-addr>Copy address</button></div>
+          <p class="wl-balance ${state.money < 0 ? 'neg' : ''}">${fmtMoney(state.money)}</p>
+          <p class="wl-sub">${fmtCoin(state.money)} · 1 DOLR = $1.00</p>
         </section>
-        <section class="bk-upcoming">
-          <h2>Coming up</h2>
+        <section class="wl-panel wl-assets">
+          <h2>Assets</h2>
+          <div class="wl-asset"><span class="wl-tok dolr">D</span><span><b>DOLR</b><small>Dollar stablecoin</small></span><span class="wl-val">${fmtMoney(state.money)}<small>${fmtCoin(state.money)}</small></span></div>
+          <div class="wl-asset"><span class="wl-tok cat">M</span><span><b>MOONCAT</b><small>Bought at the top. No buyers.</small></span><span class="wl-val">$0.00<small>4,200,000 MOONCAT</small></span></div>
+        </section>
+        <section class="wl-panel wl-auto">
+          <h2>Auto-pay</h2>
           ${rentLine}
-          <div class="bk-up"><span>Every night</span><b class="${nightly < 0 ? 'neg' : 'pos'}">${nightly >= 0 ? '+' : ''}${fmtMoney(nightly)}</b><small>Food ${fmtMoney(-E.living.amount)}${live ? ` · Hosting ${fmtMoney(-live * E.hostingPerDay)}` : ''}${income ? ` · App income +${fmtMoney(income)}` : ''}</small></div>
+          <div class="wl-up"><span>Every night</span><b class="${nightly < 0 ? 'neg' : 'pos'}">${nightly >= 0 ? '+' : ''}${fmtCoin(nightly)}</b><small>Food ${fmtCoin(-E.living.amount)}${live ? ` · Hosting ${fmtCoin(-live * E.hostingPerDay)}` : ''}${income ? ` · App income +${fmtCoin(income)}` : ''}</small></div>
         </section>
-        <section class="bk-tx">
+        <section class="wl-panel wl-activity">
           <h2>Activity</h2>
-          <div class="bk-scroll"><table><thead><tr><th>When</th><th>Description</th><th class="r">Amount</th><th class="r">Balance</th></tr></thead><tbody>${rows}</tbody></table></div>
+          <ul class="wl-list">${rows}</ul>
         </section>
       </div>
     </div>`;
@@ -850,7 +914,7 @@
     return `<div class="ua">
       <header class="ua-head">
         <div class="ua-brand">${ICONS.agent}<div><b>GIT</b><span>${esc(modelDef(state.model).name)} · ${fmtMoney(modelDef(state.model).promptBase)} per prompt + ${fmtMoney(modelDef(state.model).perWord)} per word</span></div></div>
-        <span class="ua-linked"><a href="#" data-nav="askgit.ai/models" class="ua-upgrade">${state.owned < S.models.length ? 'Upgrade model' : 'Models'}</a> · Billing: Second National ••4417</span>
+        <span class="ua-linked"><a href="#" data-nav="askgit.ai/models" class="ua-upgrade">${state.owned < S.models.length ? 'Upgrade model' : 'Models'}</a> · Billing: Satchel ${shortAddr(WALLET_ADDR)}</span>
       </header>
       <div class="ua-llm"><span class="ua-jev" id="ua-jev">${jevChip()}</span>${LLM ? `<span class="ua-llm-ctl" id="ua-llm">${llmRow()}</span>` : ''}</div>
       <div class="ua-log" id="ua-log">${msgs}${thinking}</div>
@@ -888,7 +952,7 @@
         <span class="ua-linked"><a href="#" data-nav="askgit.ai" class="ua-upgrade">Back to chat</a></span>
       </header>
       <div class="gm-grid">${cards}</div>
-      <p class="gm-note">Upgrades are charged once to Second National ••4417. You can switch between models you own at any time.</p>
+      <p class="gm-note">Upgrades are charged once to your Satchel wallet, ${shortAddr(WALLET_ADDR)}. You can switch between models you own at any time.</p>
     </div>`;
   }
 
@@ -1012,7 +1076,7 @@
     switch (r.site) {
       case 'y': html = pageY(); break;
       case 'mail': html = pageMail(r); break;
-      case 'bank': html = pageBank(); break;
+      case 'wallet': html = pageWallet(); break;
       case 'forkyard': html = pageForkyard(r.repo); break;
       case 'agent': html = r.page === 'models' ? pageModels() : pageAgent(); break;
       case 'app': html = pageApp(r.repo); break;
@@ -1075,7 +1139,7 @@
         <ul class="ov-rules">
           <li>Every prompt costs money and an hour. Vague prompts get vague answers.</li>
           <li>Some jobs need a stronger GIT model. Upgrades cost money upfront and make every prompt pricier.</li>
-          <li>Read Y for leads. Check Qmail and your bank. Ship code on Forkyard.</li>
+          <li>Read Y for leads. Check Qmail and your wallet. Ship code on Forkyard.</li>
           <li>Anything you can do yourself, do yourself. It's free.</li>
         </ul>
         <div class="ov-actions">
@@ -1167,7 +1231,7 @@
 
   function bind() {
     document.addEventListener('click', (e) => {
-      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model],[data-reply],[data-mail-discard]');
+      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model],[data-reply],[data-mail-discard],[data-copy-addr],[data-focus-post]');
       if (!t) return;
       if (t.dataset.close) { e.stopPropagation(); closeTab(Number(t.dataset.close)); return; }
       if (t.dataset.nav) { e.preventDefault(); navigate(t.dataset.nav); return; }
@@ -1189,6 +1253,13 @@
         return;
       }
       if (t.hasAttribute('data-mail-discard')) { draft = null; navigate('qmail.com'); return; }
+      if (t.hasAttribute('data-focus-post')) { const el = $('#post-input'); if (el) el.focus(); return; }
+      if (t.hasAttribute('data-copy-addr')) {
+        const done = () => toast('Satchel', 'Wallet address copied', 'wallet');
+        const fallback = () => { const r = document.createRange(); r.selectNodeContents($('#wl-addr-text')); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); toast('Satchel', 'Address selected. Press Ctrl+C to copy.', 'wallet'); };
+        try { navigator.clipboard.writeText(WALLET_ADDR).then(done, fallback); } catch (err) { fallback(); }
+        return;
+      }
       if (t.dataset.ov) return overlayAction(t.dataset.ov);
       if (t.dataset.dev) return devAction(t.dataset.dev);
       if (t.dataset.act) return taskbarAction(t.dataset.act);
@@ -1243,6 +1314,7 @@
 
     document.addEventListener('input', (e) => {
       if (e.target.id === 'prompt-input') updateCostEstimate();
+      if (e.target.id === 'y-search') { ySearch = e.target.value; render(); }
       if (/^mail-(to|subject|body)$/.test(e.target.id)) {
         draft = { to: $('#mail-to').value, subject: $('#mail-subject').value, body: $('#mail-body').value };
       }
@@ -1279,8 +1351,8 @@
 
   function devAction(a) {
     if (a === 'close') { devOpen = false; renderDev(); return; }
-    if (a === 'money+') addTx(100, 'DEV CREDIT');
-    if (a === 'money-') addTx(-100, 'DEV DEBIT');
+    if (a === 'money+') addTx(100, 'Dev credit');
+    if (a === 'money-') addTx(-100, 'Dev debit');
     if (a === 'hour') advance(60);
     if (a === 'sleep') sleep(false);
     if (a === 'posts') for (const p of S.posts) revealPost(p.id);
