@@ -2,7 +2,7 @@
 import assert from 'node:assert';
 import http from 'node:http';
 import { TypeSafeClient } from '@typesafe-ai/sdk';
-import { createHandler, buildRequest, loadStory, NO_PROGRESS } from '../server.mjs';
+import { createHandler, buildRequest, buildRateRequest, loadStory, NO_PROGRESS } from '../server.mjs';
 
 const story = loadStory();
 let fail = 0;
@@ -17,7 +17,8 @@ let nextStatus = 200;
 const fakeFetch = async (url, init) => {
   sent = { url, headers: init.headers, body: JSON.parse(init.body) };
   if (nextStatus !== 200) return new Response(JSON.stringify({ error: { message: 'boom' } }), { status: nextStatus, headers: { 'Content-Type': 'application/json' } });
-  return new Response(JSON.stringify({ model: 'jev-latest', answers: { branch: nextAnswer }, usage: { input_tokens: 412, output_tokens: 1 } }), {
+  const key = Object.keys(sent.body.questions)[0];
+  return new Response(JSON.stringify({ model: 'jev-latest', answers: { [key]: nextAnswer }, usage: { input_tokens: 412, output_tokens: 1 } }), {
     status: 200, headers: { 'Content-Type': 'application/json' },
   });
 };
@@ -79,6 +80,20 @@ await t('Qmail emails are judged against mailActions intents', async () => {
   // prompt branches can't be smuggled into a mail decision
   assert.deepStrictEqual(Object.keys(sent.body.questions.branch.criteria), ['mail_gary', 'mail_mom_help', NO_PROGRESS]);
   assert.match(sent.body.questions.branch.instructions, /Qmail/);
+});
+
+await t('Y posts are rated with a Score question over the story rubric', async () => {
+  const req = buildRateRequest(story, 'rent is due and I am eating noodles');
+  assert.strictEqual(req.questions.engagement.type, 'score');
+  assert.deepStrictEqual(req.questions.engagement.criteria, story.y.rubric);
+  assert.match(req.state.trending_topics, /laundromat/);
+  nextAnswer = { type: 'score', score: 3.2, confidence: 0.6, legend: {}, probabilities: { 0: 0.02, 1: 0.05, 2: 0.13, 3: 0.4, 4: 0.4 } };
+  const res = await fetch(`${base}/api/rate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: 'rent is due and I am eating noodles' }) });
+  const data = await res.json();
+  assert.strictEqual(res.status, 200);
+  assert.strictEqual(data.score, 3.2);
+  assert.strictEqual(sent.body.state.post, 'rent is due and I am eating noodles');
+  assert.strictEqual((await fetch(`${base}/api/rate`, { method: 'POST', body: JSON.stringify({ text: '' }) })).status, 400);
 });
 
 await t('bad input is rejected before calling Jev', async () => {

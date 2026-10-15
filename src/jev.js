@@ -82,6 +82,30 @@
       return d;
     },
 
+    /*
+     * Rate a Y post 0–4 for how well it wins followers. Jev answers a Score question
+     * against the story's rubric; offline, keywords.js estimates it.
+     *   returns { score, engine: 'jev' | 'keywords', probabilities? }
+     */
+    async ratePost(text) {
+      await this.init();
+      if (this.status === 'online') {
+        try {
+          const res = await withTimeout(fetch('api/rate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text }),
+          }), 12000);
+          if (res && res.ok) {
+            const data = await res.json();
+            if (typeof data.score === 'number') return { score: data.score, engine: 'jev', probabilities: data.probabilities };
+          }
+        } catch (e) { /* fall back below */ }
+      }
+      const y = (global.STORY && global.STORY.y) || {};
+      return { score: global.Keywords.ratePost(text, y.trends), engine: 'keywords' };
+    },
+
     // What the agent says when nothing progresses. llm.js wraps this with a local model.
     async fallback(prompt, ctx) {
       const pool = (ctx && ctx.placeholders) || ['I am not sure what you mean.'];
@@ -114,9 +138,13 @@
    *   'locked'  otherwise: the player still pays, nothing happens, and agent says which tier it needs.
    * Nudges and misses pass through unchanged.
    */
-  Jev.gate = function (decision, level) {
+  Jev.gate = function (decision, level, followers) {
     if (decision.kind === 'hit' && decision.branch && (decision.branch.minModel || 1) > level) {
-      return Object.assign({}, decision, { kind: decision.branch.fake ? 'fake' : 'locked' });
+      return Object.assign({}, decision, { kind: decision.branch.fake ? 'fake' : 'locked', lockReason: 'model' });
+    }
+    // `minFollowers: n` needs that many followers on Y
+    if (decision.kind === 'hit' && decision.branch && followers != null && (decision.branch.minFollowers || 0) > followers) {
+      return Object.assign({}, decision, { kind: 'locked', lockReason: 'followers' });
     }
     return decision;
   };

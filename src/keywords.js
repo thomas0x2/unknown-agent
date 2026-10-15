@@ -113,7 +113,29 @@
     return { branch, coverage, score, hits, misses, bonus, groups: all.length };
   }
 
+  /*
+   * Offline stand-in for Jev's post rating: 0 (people unfollow) … 4 (it spreads).
+   * Rewards posts with some substance, a trending topic, a hook, or a mention; punishes spam.
+   */
+  function ratePost(text, trends) {
+    const raw = String(text || '');
+    const a = analyze(raw);
+    const n = a.tokens.length;
+    if (/follow (me|back)|f4f|like and share|subscribe/i.test(raw)) return 0;
+    const letters = raw.replace(/[^a-z]/gi, '');
+    if (letters.length > 12 && letters.replace(/[^A-Z]/g, '').length / letters.length > 0.7) return 0.3;
+    if (n < 3) return 0.6;
+    let s = 1.1 + Math.min(1, n / 25);
+    const trendStems = (trends || []).map(stem);
+    if (a.stems.some((t) => trendStems.includes(t))) s += 0.9;
+    if (/[?!]/.test(raw)) s += 0.3;
+    if (/@\w/.test(raw)) s += 0.3;
+    if (/\b(lol|honestly|imagine|nobody|every|why|apparently|plot twist)\b/i.test(raw)) s += 0.4;
+    return Math.round(Math.min(4, s) * 10) / 10;
+  }
+
   const Keywords = {
+    ratePost,
     analyze,
     stem,
     tokenize,

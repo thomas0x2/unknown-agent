@@ -53,6 +53,29 @@
       rent: { amount: 300, day: 7, payee: 'Pruitt Property Mgmt' },
     },
 
+    // Y, the social network. Every post the player writes is rated 0–4 by Jev against `rubric`
+    // (offline: a simple heuristic), and followers move with the rating. Branches with
+    // `minFollowers: n` need that many followers; creator payouts unlock at `creator.minFollowers`.
+    y: {
+      startFollowers: 12,
+      setting:
+        'Y is the social network of a small town where rent is high, jobs are scarce, the Ferris St laundromat is always broken, ' +
+        'and everyone has an opinion about the AI chatbot called agent.',
+      rubric: [
+        'Spam, gibberish, begging for follows, or mean for no reason. People unfollow.',
+        'Bland or forgettable. Nobody reacts.',
+        'A normal, relatable or mildly useful post. A few likes.',
+        'Funny, sharp, or genuinely useful to locals. People like it, share it, and some follow.',
+        'Excellent: very funny, timely, or useful. It spreads and people follow on the spot.',
+      ],
+      // posts that touch any of these get a bonus while they trend
+      trends: ['rent', 'rentdue', 'broke', 'laundromat', 'ferris', 'washer', 'agent', 'ai', 'crumb', 'bakery', 'sourdough'],
+      postsPerDay: 3,         // gains halve for every post past this in one day
+      creator: { minFollowers: 300, perFollower: 0.05 },
+      lockedResponse:
+        "Nobody would see it. You have {followers} followers on Y and this needs {requiredFollowers}. Post something people actually want to read.",
+    },
+
     // How Jev's probabilities turn into outcomes (src/jev.js).
     decision: {
       hit: 0.5,      // the top branch needs at least this probability to fire
@@ -285,6 +308,9 @@
               all: [W.promote, ['spin', 'cycle', 'app', 'laundromat', 'laundry', 'tracker', 'site', 'it', 'ferris', 'washday', 'washer']],
             },
             partial: 'Promote what, where?',
+            minFollowers: 40,
+            fewFollowers:
+              "I could post it, but you have {followers} followers and at least half are bots. Get to {requiredFollowers} so a human actually sees it.",
             response:
               'Posted from your Y account and replied under @washday_woes\'s thread with the link.\n\nPeople are already reporting machines.',
             effects: 'spin_marketed',
@@ -326,6 +352,9 @@
             intent: "The player asks the agent to find a sponsor, partner, or local business to pay for Spin Cycle.",
             priority: 3,
             minModel: 3,
+            minFollowers: 150,
+            fewFollowers:
+              "Suds & Duds looked at your Y account. {followers} followers. Their reply, in full: \"lol\". Come back with {requiredFollowers}.",
             weak:
               "Finding a sponsor means cold-emailing businesses and negotiating terms. {model} would just send them the word \"sponsor?\". That's a {required} job: agent.chat/models.",
             match: { all: [['sponsor', 'sponsors', 'sponsorship', 'sponsored', 'partner', 'partnership', 'local business', 'detergent', 'brand deal']] },
@@ -358,12 +387,14 @@
         money: { amount: 150, memo: 'Crumb & Coin Bakery · website' },
         post: 'rosa_thanks',
         mail: 'rosa_paid',
+        followers: 15,   // Rosa's shout-out
         goto: 'paid_once',
       },
       spin_marketed: {
         set: { marketed: true },
         app: { repo: 'spin-cycle', users: 300, perDay: 4 },
         post: 'you_spin_launch',
+        followers: 80,   // people follow whoever built the thing they wanted
         goto: 'app_users',
       },
     },
@@ -386,6 +417,7 @@
         match: {
           all: [['spin', 'cycle', 'laundromat', 'laundry', 'ferris', 'washer', 'machine', 'washday'], ['live', 'built', 'app', 'link', 'forkyard', 'check', 'tracker', 'site', 'try', 'use']],
         },
+        minFollowers: 40,
         effects: 'spin_marketed',
       },
     ],

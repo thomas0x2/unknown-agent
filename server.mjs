@@ -14,7 +14,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { TypeSafeClient, choice } from '@typesafe-ai/sdk';
+import { TypeSafeClient, choice, score } from '@typesafe-ai/sdk';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 export const NO_PROGRESS = 'no_progress';
@@ -68,6 +68,21 @@ export function buildRequest(story, { kind, node, prompt, candidates }) {
   return { state, questions: { branch: choice(instructions, criteria) } };
 }
 
+/** Build the Jev request that rates a Y post 0–4 against the story's rubric. */
+export function buildRateRequest(story, text) {
+  const y = story.y;
+  if (!y || !Array.isArray(y.rubric) || y.rubric.length < 2) throw new HttpError(404, 'This story has no Y rubric');
+  return {
+    state: { setting: y.setting || '', trending_topics: (y.trends || []).join(', '), post: text },
+    questions: {
+      engagement: score(
+        'The player published `post` on Y. Given `setting` and `trending_topics`, how likely is this post to win its author new followers?',
+        y.rubric,
+      ),
+    },
+  };
+}
+
 function validate(body) {
   const { kind = 'prompt', node, prompt, candidates } = body || {};
   if (!['prompt', 'post', 'mail'].includes(kind)) throw new HttpError(400, 'kind must be "prompt", "post" or "mail"');
@@ -119,6 +134,15 @@ export function createHandler({ client, story = loadStory(), root = ROOT, timeou
     try {
       if (url.pathname === '/api/status' && req.method === 'GET') {
         return send(res, 200, { jev: !!client, model: client ? client.defaultModel : null });
+      }
+      if (url.pathname === '/api/rate' && req.method === 'POST') {
+        if (!client) throw new HttpError(503, 'TYPESAFE_API_KEY is not set on the server');
+        const body = await readJson(req);
+        const text = typeof body.text === 'string' ? body.text.trim() : '';
+        if (!text || text.length > 400) throw new HttpError(400, 'text must be 1–400 characters');
+        const result = await client.systemOne(buildRateRequest(story, text), { timeout });
+        const a = result.answers.engagement;
+        return send(res, 200, { score: a.score, confidence: a.confidence, probabilities: a.probabilities, model: result.model });
       }
       if (url.pathname === '/api/decide' && req.method === 'POST') {
         if (!client) throw new HttpError(503, 'TYPESAFE_API_KEY is not set on the server');

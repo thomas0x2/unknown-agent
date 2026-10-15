@@ -111,6 +111,9 @@
       tabs: [{ id: 1, url: SITES.y.url }, { id: 2, url: SITES.agent.url }],
       mail: [],      // Qmail: { id, t, read, folder, custom? }
       nextMail: 1,
+      followers: (S.y && S.y.startFollowers) || 0,   // on Y
+      creatorOn: false, // Y creator payouts switched on
+      postsToday: { day: 0, n: 0 },
       awaiting: {},     // address → true while you wait on their reply
       replyDrafts: {},  // reply id → body written in advance by the local model
       active: 2, nextTab: 3, lastCost: 0,
@@ -150,6 +153,7 @@
       }
       if (!s.mail) { s.mail = []; s.nextMail = 1; seedMail(s); }
       s.awaiting = s.awaiting || {};
+      if (s.followers == null) { s.followers = (S.y && S.y.startFollowers) || 0; s.creatorOn = false; s.postsToday = { day: 0, n: 0 }; }
       s.replyDrafts = s.replyDrafts || {};
       // saves from before the wallet
       for (const tab of s.tabs) if (/^secondnational\.com/.test(tab.url)) tab.url = 'satchel.app';
@@ -282,6 +286,7 @@
       toast('Forkyard', `New commit on ${name}: rewrite`, 'forkyard');
     }
     if (fx.app) state.apps[fx.app.repo] = { users: fx.app.users || 0, perDay: fx.app.perDay || 0 };
+    if (fx.followers) changeFollowers(fx.followers);
     for (const id of arr(fx.post)) revealPost(id);
     for (const id of arr(fx.mail)) deliverMail(id);
     if (fx.agent) agentSays(fx.agent);
@@ -294,6 +299,27 @@
     }
     if (fx.end) state.ended = fx.end;
     revealPosts();
+  }
+
+  function changeFollowers(d) {
+    if (!d) return;
+    state.followers = Math.max(0, state.followers + d);
+    toast('Y', `${d > 0 ? '+' : '−'}${Math.abs(d)} follower${Math.abs(d) === 1 ? '' : 's'} · ${state.followers} total`, 'y');
+  }
+
+  // How many followers a post wins (or loses), from its 0–4 rating.
+  function followerDelta(score, text, earlier) {
+    const y = S.y || {};
+    const norm = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+    if (earlier.some((p) => norm(p.text) === norm(text))) return 0; // reposts earn nothing
+    const f = state.followers;
+    if (score < 0.8) return -Math.round((0.8 - score) * 4 + f * 0.02);
+    let d = score * score * 1.6 + score * f * 0.03;
+    const stems = K.analyze(text).stems;
+    if ((y.trends || []).map(K.stem).some((t) => stems.includes(t))) d *= 1.5;
+    const extra = state.postsToday.n - (y.postsPerDay || 3);
+    if (extra > 0) d /= 2 ** extra; // posting too much wears people out
+    return Math.round(d);
   }
 
   // When a delayed effect fires: { hours } from now, or { nextDay: hour, jitter: hours } tomorrow.
@@ -396,6 +422,12 @@
       addTx(-fee, `Forkyard · hosting (${live} app${live > 1 ? 's' : ''})`);
       lines.push([`Hosting (${live} app${live > 1 ? 's' : ''})`, -fee]);
     }
+    const cr = S.y && S.y.creator;
+    if (cr && state.creatorOn && state.followers >= cr.minFollowers) {
+      const pay = round2(state.followers * cr.perFollower);
+      addTx(pay, `Y · creator payouts (${state.followers} followers)`);
+      lines.push([`Y creator payouts (${state.followers} followers)`, pay]);
+    }
     const memos = arr(E.living.memo);
     addTx(-E.living.amount, memos[(ended - 1) % memos.length]);
     lines.push(['Food & basics', -E.living.amount]);
@@ -481,7 +513,7 @@
       await thinking;
       // the player may have deployed or posted while Jev was deciding
       if (decision.branch && !branchCandidates().includes(decision.branch)) decision = { ...decision, kind: 'miss', branch: null, stale: true };
-      decision = J.gate(decision, level);
+      decision = J.gate(decision, level, state.followers);
       lastReport = { prompt: text, node: sentNode, decision, model: level };
       let reply;
       let src;
@@ -496,6 +528,10 @@
         reply = decision.branch.fake.response;
         effects = decision.branch.fake.effects;
         src = 'fake:' + decision.branch.id;
+      } else if (decision.kind === 'locked' && decision.lockReason === 'followers') {
+        reply = tpl(decision.branch.fewFollowers || S.y.lockedResponse, { followers: state.followers, requiredFollowers: decision.branch.minFollowers });
+        src = 'locked:' + decision.branch.id;
+        state.stats.locked++;
       } else if (decision.kind === 'locked') {
         const need = modelDef(decision.branch.minModel).name;
         reply = tpl(decision.branch.weak || S.agent.lockedResponse, { model: modelDef(level).name, required: need });
@@ -534,23 +570,45 @@
     text = text.trim();
     if (!text || state.over) return;
     const id = 'u' + Date.now();
-    const post = { id, text, t: state.t, likes: Math.floor(Math.random() * 3) };
+    const earlier = state.userPosts.slice();
+    const post = { id, text, t: state.t, likes: 0, pending: true };
     state.userPosts.push(post);
+    const day = dayOf(state.t);
+    if (state.postsToday.day !== day) state.postsToday = { day, n: 0 };
+    state.postsToday.n++;
     advance(5);
     save();
     render();
+    const followersBefore = state.followers;
     const candidates = postCandidates();
-    if (!candidates.length) return;
     const node = state.node;
-    const decision = await J.decide(text, candidates, { kind: 'post', node, thresholds: S.decision });
-    lastReport = { prompt: text, node, decision, channel: 'post' };
-    // posts have no nudges: only a hit that is still available counts
-    if (decision.kind === 'hit' && postCandidates().includes(decision.branch)) {
-      state.fired['post:' + decision.branch.id] = state.t;
-      post.likes += 20 + Math.floor(Math.random() * 40);
-      applyEffects(decision.branch.effects);
-      save();
+    const [rating, decision] = await Promise.all([
+      J.ratePost(text),
+      candidates.length ? J.decide(text, candidates, { kind: 'post', node, thresholds: S.decision }) : null,
+    ]);
+    // followers follow the rating
+    const delta = followerDelta(rating.score, text, earlier);
+    post.pending = false;
+    post.score = rating.score;
+    post.engine = rating.engine;
+    post.delta = delta;
+    post.likes = Math.max(0, Math.round(rating.score * rating.score * (1.5 + followersBefore * 0.12) + Math.random() * 3));
+    changeFollowers(delta);
+    if (decision) {
+      const gated = J.gate(decision, state.model, followersBefore);
+      lastReport = { prompt: text, node, decision: gated, channel: 'post', rating };
+      // posts have no nudges: only a hit that is still available counts
+      if (gated.kind === 'hit' && postCandidates().includes(gated.branch)) {
+        state.fired['post:' + gated.branch.id] = state.t;
+        post.likes += 20 + Math.floor(Math.random() * 40);
+        applyEffects(gated.branch.effects);
+      } else if (gated.kind === 'locked' && gated.lockReason === 'followers') {
+        toast('Y', `That post went out to ${followersBefore} followers and nobody saw it. It needs about ${gated.branch.minFollowers}.`, 'y');
+      }
+    } else {
+      lastReport = { prompt: text, node, decision: { kind: 'miss', engine: rating.engine }, channel: 'post', rating };
     }
+    save();
     render();
   }
 
@@ -731,13 +789,34 @@
     return String(n);
   }
 
+  function yProfile() {
+    const cr = (S.y && S.y.creator) || null;
+    let creator = '';
+    if (cr) {
+      const ready = state.followers >= cr.minFollowers;
+      creator = `<div class="y-creator">
+        <div class="y-creator-head"><b>Creator payouts</b>${state.creatorOn ? `<span class="y-on">${ready ? 'On' : 'Paused'}</span>` : ''}</div>
+        ${state.creatorOn
+          ? `<small>${ready ? `About ${fmtMoney(state.followers * cr.perFollower)} a night at ${state.followers} followers.` : `Paused below ${cr.minFollowers} followers.`}</small>`
+          : ready
+            ? `<small>${fmtMoney(cr.perFollower)} per follower per night.</small><button class="y-btn" data-y-creator>Turn on payouts</button>`
+            : `<small>Unlocks at ${cr.minFollowers} followers.</small><span class="y-meter"><i style="width:${Math.min(100, (state.followers / cr.minFollowers) * 100).toFixed(1)}%"></i></span>`}
+      </div>`;
+    }
+    return `<section class="y-card y-me">
+      <div class="y-me-head">${avatar(S.start.player.name, S.start.player.handle)}<span><b>${esc(S.start.player.name)}</b><small>@${esc(S.start.player.handle)}</small></span></div>
+      <div class="y-me-stats"><span><b>${compact(state.followers)}</b> followers</span><span><b>${state.userPosts.length}</b> posts</span></div>
+      ${creator}
+    </section>`;
+  }
+
   function pageY() {
     const posts = [];
     for (const p of S.posts) {
       if (state.posts[p.id] == null) continue;
       posts.push({ ...p, t: state.posts[p.id], author: tpl(p.author), handle: tpl(p.handle), text: tpl(p.text) });
     }
-    for (const u of state.userPosts) posts.push({ id: u.id, author: S.start.player.name, handle: S.start.player.handle, text: u.text, t: u.t, likes: u.likes, mine: true });
+    for (const u of state.userPosts) posts.push({ id: u.id, author: S.start.player.name, handle: S.start.player.handle, text: u.text, t: u.t, likes: u.likes, mine: true, delta: u.delta, pending: u.pending, score: u.score });
     posts.sort((a, b) => b.t - a.t);
     const q = ySearch.trim().toLowerCase();
     const shown = q ? posts.filter((p) => `${p.author} ${p.handle} ${p.text}`.toLowerCase().includes(q)) : posts;
@@ -759,6 +838,7 @@
           <span class="y-act">${Y_ICONS.reply}${compact(Math.round(likes * 0.07))}</span>
           <span class="y-act">${Y_ICONS.repost}${compact(Math.round(likes * 0.14))}</span>
           <button class="y-act like${liked ? ' on' : ''}" data-like="${esc(p.id)}" aria-pressed="${liked}" aria-label="Like">${Y_ICONS.heart}${compact(likes)}</button>
+          ${p.mine ? `<span class="y-delta ${p.pending ? '' : p.delta > 0 ? 'up' : p.delta < 0 ? 'down' : ''}">${p.pending ? 'counting…' : `${p.delta > 0 ? '+' : p.delta < 0 ? '−' : '±'}${Math.abs(p.delta || 0)} followers`}${p.score != null ? `<span class="y-score">rated ${p.score.toFixed(1)}/4</span>` : ''}</span>` : ''}
           <span class="y-act views">${Y_ICONS.views}${compact(Math.max(12, likes * 37 + 9))}</span>
         </footer>
       </article>`;
@@ -773,6 +853,7 @@
       <header class="y-bar">
         <div class="y-brand"><span class="y-mark">${ICONS.y}</span><span class="sr-only">Y</span></div>
         <nav class="y-pills" aria-label="Y sections"><span class="on">Home</span><span>Explore</span><span>Alerts</span><span>Inbox</span></nav>
+        <span class="y-count"><b>${compact(state.followers)}</b> followers</span>
         <label class="y-search">${Y_ICONS.explore}<input id="y-search" autocomplete="off" placeholder="Search Y" aria-label="Search posts" value="${esc(ySearch)}"></label>
       </header>
       <div class="y-cols">
@@ -786,6 +867,7 @@
           <div class="y-feed">${feed}</div>
         </main>
         <aside class="y-side">
+          ${yProfile()}
           <section class="y-card"><h2>Signal</h2>${trends.map(([n, k, c], i) => `<div class="y-trend"><span class="y-rank">0${i + 1}</span><span><b>${esc(n)}</b><small>${esc(k)} · ${esc(c)}</small></span></div>`).join('')}</section>
         </aside>
       </div>
@@ -855,7 +937,9 @@
       </li>`;
     }).join('');
     const live = Object.values(state.repos).filter((r) => r.deployed).length;
-    const income = Object.keys(state.apps).reduce((n, k) => n + (state.repos[k] && state.repos[k].deployed ? appEarnings(k) : 0), 0);
+    const yc = S.y && S.y.creator;
+    const income = Object.keys(state.apps).reduce((n, k) => n + (state.repos[k] && state.repos[k].deployed ? appEarnings(k) : 0), 0)
+      + (yc && state.creatorOn && state.followers >= yc.minFollowers ? round2(state.followers * yc.perFollower) : 0);
     const nightly = round2(income - E.living.amount - live * E.hostingPerDay);
     const rentLeft = E.rent ? E.rent.day - today : null;
     const rentLine = E.rent && rentLeft >= 0
@@ -1363,15 +1447,15 @@
       }
       const engine = decision.engine === 'jev' ? `Jev${J.last && J.last.model ? ' · ' + esc(J.last.model) : ''}${J.last ? ` · ${J.last.ms}ms` : ''}` : `keywords${decision.fellBack ? ' (Jev call failed: ' + esc((J.last && J.last.error) || '?') + ')' : ''}`;
       report = `<p><b>${{ post: 'Y post', mail: 'Email' }[lastReport.channel] || 'Prompt'}:</b> ${esc(lastReport.prompt)}</p>
-        <p><b>Result:</b> ${decision.kind}${decision.branch ? ' → ' + esc(decision.branch.id) : ''}${decision.kind === 'locked' ? ` (needs ${esc(modelDef(decision.branch.minModel).name)}, had ${esc(modelDef(lastReport.model).name)})` : ''}${decision.stale ? ' (stale, ignored)' : ''} <span class="dv-dim">(node ${esc(lastReport.node)} · ${engine})</span></p>
+        <p><b>Result:</b> ${decision.kind}${decision.branch ? ' → ' + esc(decision.branch.id) : ''}${decision.kind === 'locked' ? (decision.lockReason === 'followers' ? ` (needs ${decision.branch.minFollowers} followers)` : ` (needs ${esc(modelDef(decision.branch.minModel).name)}, had ${esc(modelDef(lastReport.model || 1).name)})`) : ''}${decision.stale ? ' (stale, ignored)' : ''} <span class="dv-dim">(node ${esc(lastReport.node)} · ${engine})</span></p>
         ${table}`;
     }
     const nodes = Object.keys(S.nodes).map((n) => `<option ${n === state.node ? 'selected' : ''}>${n}</option>`).join('');
     d.innerHTML = `<header><b>jev · dev</b><button data-dev="close" aria-label="Close dev panel">×</button></header>
       <label>Node <select id="dv-node">${nodes}</select></label>
-      <div class="dv-row"><button data-dev="money+">+$100</button><button data-dev="money-">−$100</button><button data-dev="hour">+1h</button><button data-dev="sleep">Sleep</button><button data-dev="posts">All posts</button><button data-dev="model">Free next model</button></div>
+      <div class="dv-row"><button data-dev="money+">+$100</button><button data-dev="money-">−$100</button><button data-dev="hour">+1h</button><button data-dev="sleep">Sleep</button><button data-dev="posts">All posts</button><button data-dev="model">Free next model</button><button data-dev="followers">+50 followers</button></div>
       <p><b>Decisions</b> ${J.status === 'online' ? 'Jev · ' + esc(J.model || '') : esc(J.status) + (J.reason ? ' · ' + esc(J.reason) : '')}</p>
-      <p><b>Model</b> ${esc(modelDef(state.model).name)} active · ${esc(modelDef(state.owned).name)} owned</p>
+      <p><b>Model</b> ${esc(modelDef(state.model).name)} active · ${esc(modelDef(state.owned).name)} owned · <b>Followers</b> ${state.followers}${lastReport && lastReport.rating ? ` · last post rated ${lastReport.rating.score.toFixed(2)} (${esc(lastReport.rating.engine)})` : ''}</p>
       <p><b>Flags</b> <code>${esc(JSON.stringify(state.flags))}</code></p>
       ${LLM ? `<p><b>Local model</b> ${esc(LLM.settings.backend)} · ${esc(LLM.status)}${LLM.detail ? ' · ' + esc(LLM.detail) : ''}${LLM.last ? `<br><span class="dv-dim">last: ${LLM.last.ms}ms, ${LLM.last.ok ? 'used' : 'fell back'}${LLM.last.text ? ' — ' + esc(LLM.last.text.slice(0, 80)) : ''}</span>` : ''}</p>` : ''}
       <p><b>Queue</b> <code>${esc(JSON.stringify(state.queue.map((q) => ({ at: stamp(q.at), fx: typeof q.effects === 'string' ? q.effects : Object.keys(q.effects) }))))}</code></p>
@@ -1382,7 +1466,7 @@
 
   function bind() {
     document.addEventListener('click', (e) => {
-      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model],[data-reply],[data-mail-discard],[data-copy-addr],[data-wallet]');
+      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model],[data-reply],[data-mail-discard],[data-copy-addr],[data-wallet],[data-y-creator]');
       if (!t) return;
       if (t.dataset.close) { e.stopPropagation(); closeTab(Number(t.dataset.close)); return; }
       if (t.dataset.nav) { e.preventDefault(); navigate(t.dataset.nav); return; }
@@ -1404,6 +1488,13 @@
         return;
       }
       if (t.hasAttribute('data-mail-discard')) { draft = null; navigate('qmail.com'); return; }
+      if (t.hasAttribute('data-y-creator')) {
+        state.creatorOn = true;
+        toast('Y', 'Creator payouts on. They pay out every night.', 'y');
+        save();
+        render();
+        return;
+      }
       if (t.dataset.wallet) {
         if (t.dataset.wallet === 'receive') { $('[data-copy-addr]').click(); return; }
         toast('Satchel', {
@@ -1519,6 +1610,7 @@
     if (a === 'sleep') sleep(false);
     if (a === 'posts') for (const p of S.posts) revealPost(p.id);
     if (a === 'model' && state.owned < S.models.length) { state.owned++; state.model = state.owned; }
+    if (a === 'followers') changeFollowers(50);
     save();
     render();
   }

@@ -53,6 +53,29 @@ const outcome = (d) => (d.kind === 'miss' ? 'miss' : `${d.kind}:${d.branch.id}`)
     assert.strictEqual(Jev.gate({ kind: 'partial', branch: find('paid_once', 'build_tracker') }, 1).kind, 'partial');
     assert.strictEqual(Jev.gate({ kind: 'miss' }, 1).kind, 'miss');
   });
+  await t('minFollowers locks a hit until the player has enough followers on Y', () => {
+    const promote = { kind: 'hit', branch: find('app_live', 'promote_app') };
+    assert.deepStrictEqual([Jev.gate(promote, 1, 12).kind, Jev.gate(promote, 1, 12).lockReason], ['locked', 'followers']);
+    assert.strictEqual(Jev.gate(promote, 1, 40).kind, 'hit');
+    assert.strictEqual(Jev.gate(promote, 1).kind, 'hit', 'no follower count → no follower gate');
+    // the model gate comes first
+    const sponsor = { kind: 'hit', branch: find('app_users', 'monetize_sponsor') };
+    assert.strictEqual(Jev.gate(sponsor, 2, 500).lockReason, 'model');
+    assert.strictEqual(Jev.gate(sponsor, 3, 100).lockReason, 'followers');
+    assert.strictEqual(Jev.gate(sponsor, 3, 150).kind, 'hit');
+  });
+
+  await t('offline post rating: spam scores 0, substance and trends score higher', () => {
+    const K = globalThis.Keywords;
+    const tr = S.y.trends;
+    assert.strictEqual(K.ratePost('follow me pls', tr), 0);
+    assert.ok(K.ratePost('FOLLOW ME FOLLOW ME NOW', tr) < 0.8);
+    const bland = K.ratePost('Nice weather today.', tr);
+    const trendy = K.ratePost('Rent is due on the 7th and my wallet is crying. Anyone else living on noodles?', tr);
+    assert.ok(trendy > bland + 1, `${trendy} should beat ${bland}`);
+    assert.ok(trendy <= 4);
+  });
+
   await t('atModel swaps in a better response and effects on stronger tiers', () => {
     const who = find('broke', 'who');
     assert.match(Jev.outcome(who, 3).response, /context window/);

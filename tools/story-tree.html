@@ -48,6 +48,7 @@ h2 { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacin
 .chip.mail { color: var(--k-mail); } .chip.day { color: var(--k-day); } .chip.timer { color: var(--k-timer); border-style: dashed; }
 .chip.model { color: var(--warn); }
 .chip.fake { border-style: dashed; color: var(--warn); }
+.chip.fol { color: var(--k-post); border-style: dotted; }
 .work { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 16px; align-items: start; }
 .graph-wrap { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: auto; min-width: 0; }
 .graph { position: relative; padding: 24px 40px 32px; min-width: max-content; display: flex; gap: 72px; align-items: flex-start; justify-content: center; }
@@ -168,14 +169,14 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
 
   for (const id of nodeIds) {
     for (const b of S.nodes[id].branches || []) {
-      for (const g of gotos(b.effects)) add(id, g.to, { kind: 'prompt', id: b.id, minModel: b.minModel, delay: g.delay });
+      for (const g of gotos(b.effects)) add(id, g.to, { kind: 'prompt', id: b.id, minModel: b.minModel, minFollowers: b.minFollowers, delay: g.delay });
       // on a too-weak model the branch may still go somewhere, with a botched result
       if (b.fake) for (const g of gotos(b.fake.effects)) add(id, g.to, { kind: 'prompt', id: b.id, below: b.minModel, delay: g.delay });
       for (const [tier, alt] of Object.entries(b.atModel || {})) for (const g of gotos(alt.effects)) add(id, g.to, { kind: 'prompt', id: b.id, minModel: Number(tier), delay: g.delay });
     }
   }
   for (const [kind, list] of [['post', S.postActions || []], ['mail', S.mailActions || []]]) {
-    for (const a of list) for (const n of arr(a.when && a.when.node)) for (const g of gotos(a.effects)) add(n, g.to, { kind, id: a.id, delay: g.delay });
+    for (const a of list) for (const n of arr(a.when && a.when.node)) for (const g of gotos(a.effects)) add(n, g.to, { kind, id: a.id, minFollowers: a.minFollowers, delay: g.delay });
   }
   // nodes reached by branches that set a flag (used to place day events without a node condition)
   const flagNodes = {};
@@ -227,7 +228,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     stat(nodeIds.length, 'nodes') + stat(allBranches.length, 'node branches') + stat(advancing.size, 'ways forward') +
     stat((S.global || []).length, 'global branches') + stat((S.postActions || []).length + (S.mailActions || []).length, 'post & mail actions');
   document.getElementById('legend').innerHTML = Object.entries(KIND).map(([k, l]) => `<span class="chip ${k}">${esc(l)}</span>`).join('') +
-    `<span class="chip model">agent-N+ needed</span><span class="chip fake">too weak: botched</span>`;
+    `<span class="chip model">agent-N+ needed</span><span class="chip fake">too weak: botched</span><span class="chip fol">N+ Y followers</span>`;
 
   const graph = document.getElementById('graph');
   const sideMail = (S.mailActions || []).filter((a) => !(a.when && a.when.node));
@@ -238,10 +239,11 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     const out = edges.filter((e) => e.from === id);
     const stays = (n.branches || []).filter((b) => !out.some((e) => e.kind === 'prompt' && e.id === b.id)).length;
     const models = [...new Set((n.branches || []).filter((b) => b.minModel > 1).map((b) => b.minModel))];
+    const fols = [...new Set([...(n.branches || []), ...(S.postActions || []).filter((a) => arr(a.when && a.when.node).includes(id))].filter((b) => b.minFollowers).map((b) => b.minFollowers))];
     return `<button class="node${id === S.start.node ? ' start' : ''}${endNodes.has(id) ? ' end' : ''}" data-node="${esc(id)}" id="n-${esc(id)}">
       <span class="node-id">${esc(id)}<span>${id === S.start.node ? 'start' : endNodes.has(id) ? 'end' : unreachable.includes(id) ? 'unreachable' : ''}</span></span>
       <span class="node-obj">${esc(n.objective || '')}</span>
-      <span class="node-meta"><span class="chip prompt">${(n.branches || []).length} branches</span>${stays ? `<span class="chip timer">${stays} stay</span>` : ''}${models.map((m) => `<span class="chip model">${esc(model(m))}+</span>`).join('')}</span>
+      <span class="node-meta"><span class="chip prompt">${(n.branches || []).length} branches</span>${stays ? `<span class="chip timer">${stays} stay</span>` : ''}${models.map((m) => `<span class="chip model">${esc(model(m))}+</span>`).join('')}${fols.map((f) => `<span class="chip fol">${f}+ followers</span>`).join('')}</span>
       ${(() => {
         // branches that change something without moving the story on
         const quiet = (n.branches || []).filter((b) => hasOutcome(b) && !out.some((e) => e.kind === 'prompt' && e.id === b.id));
@@ -266,7 +268,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
   const pairs = {};
   for (const e of edges) (pairs[e.from + '>' + e.to] = pairs[e.from + '>' + e.to] || []).push(e);
   function chipFor(e) {
-    const extra = [e.minModel > 1 ? `${model(e.minModel)}+` : '', e.below ? `below ${model(e.below)}: botched` : '', e.delay ? `after ${e.delay}` : ''].filter(Boolean).join(' · ');
+    const extra = [e.minModel > 1 ? `${model(e.minModel)}+` : '', e.minFollowers ? `${e.minFollowers}+ followers` : '', e.below ? `below ${model(e.below)}: botched` : '', e.delay ? `after ${e.delay}` : ''].filter(Boolean).join(' · ');
     return `<span class="chip ${e.kind}${e.below ? ' fake' : ''}">${esc(e.kind === 'deploy' || e.kind === 'day' ? e.id : `${KIND[e.kind]}: ${e.id}`)}${extra ? ' · ' + esc(extra) : ''}</span>`;
   }
   // leave room between layers for every trigger label on the edges leaving them
@@ -342,6 +344,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     if (fx.money != null) { const m = typeof fx.money === 'number' ? { amount: fx.money, memo: '' } : fx.money; facts.push(`${m.amount >= 0 ? '+' : ''}$${m.amount}${m.memo ? ` (“${m.memo}”)` : ''}`); }
     if (fx.repo) facts.push(`repo ${arr(fx.repo).map((r) => (typeof r === 'string' ? r : `${r.name}${r.broken ? ' (BROKEN)' : ''}`)).join(', ')}`);
     if (fx.fix) facts.push(`fixes ${arr(fx.fix).join(', ')}`);
+    if (fx.followers) facts.push(`${fx.followers > 0 ? '+' : ''}${fx.followers} Y followers`);
     if (fx.app) facts.push(`app ${fx.app.repo}: ${fx.app.users} users, $${fx.app.perDay}/day`);
     let html = '';
     if (name) html += `<p class="fx"><span class="lbl">bundle</span>${esc(name)}</p>`;
@@ -363,6 +366,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     for (const id of arr(fx.post)) parts.push(`Y post ${id}`);
     if (fx.repo) parts.push(`repo ${arr(fx.repo).map((r) => (typeof r === 'string' ? r : `${r.name}${r.broken ? ' (broken)' : ''}`)).join(', ')}`);
     if (fx.fix) parts.push(`fixes ${arr(fx.fix).join(', ')}`);
+    if (fx.followers) parts.push(`${fx.followers > 0 ? '+' : ''}${fx.followers} followers`);
     if (fx.agent) parts.push('agent message');
     if (fx.end) parts.push('ending');
     for (const l of arr(fx.later)) parts.push(`after ${delayText(l)}: ${summary(l.effects)}`);
@@ -377,13 +381,15 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     const go = out.length ? out.map((g) => `<button class="go" data-node="${esc(g.to)}">→ ${esc(g.to)}</button>${g.delay ? ` <span class="chip timer">after ${esc(g.delay)}</span>` : ''}`).join(' ') : '<span class="chip timer">stays</span>';
     const when = b.when ? Object.entries(b.when).map(([k, v]) => `${k}: ${arr(v).join(', ')}`).join(' · ') : '';
     return `<div class="br">
-      <div class="br-head"><span class="chip ${kind}">${esc(KIND[kind])}</span><code>${esc(b.id)}</code>${b.minModel > 1 ? `<span class="chip model">${esc(model(b.minModel))}+</span>` : ''}${go}</div>
+      <div class="br-head"><span class="chip ${kind}">${esc(KIND[kind])}</span><code>${esc(b.id)}</code>${b.minModel > 1 ? `<span class="chip model">${esc(model(b.minModel))}+</span>` : ''}${b.minFollowers ? `<span class="chip fol">${b.minFollowers}+ followers</span>` : ''}${go}</div>
       ${b.intent ? `<p><span class="lbl">Jev</span>${esc(b.intent)}</p>` : '<p class="warnbox">No intent: Jev can never choose this.</p>'}
       ${when ? `<p class="kw"><span class="lbl">when</span>${esc(when)}</p>` : ''}
       ${b.match ? `<p class="kw"><span class="lbl">offline</span>${esc(kw(b.match))}</p>` : ''}
       ${b.response ? `<p class="quote">${txt(b.response)}</p>` : ''}
       ${b.partial ? `<p><span class="lbl">nudge</span>${txt(b.partial)}</p>` : ''}
       ${b.minModel > 1 && !b.fake ? `<p><span class="lbl">too weak</span>${txt(b.weak || S.agent.lockedResponse)}${b.weak ? '' : ' <span class="chip timer">default</span>'}</p>` : ''}
+      ${b.minFollowers && kind === 'prompt' ? `<p><span class="lbl">too few followers</span>${txt(b.fewFollowers || (S.y || {}).lockedResponse)}${b.fewFollowers ? '' : ' <span class="chip timer">default</span>'}</p>` : ''}
+      ${b.minFollowers && kind === 'post' ? '<p class="note">With too few followers the post lands nowhere: the player sees a toast and the story stays put.</p>' : ''}
       ${b.fake ? `<div class="olater"><span><span class="chip fake">below ${esc(model(b.minModel))}: pretends it worked</span></span><p class="quote">${txt(b.fake.response)}</p>${b.fake.effects ? outcomeHtml(b.fake.effects) : '<p class="note">Nothing actually happens.</p>'}</div>` : ''}
       ${b.effects ? outcomeHtml(b.effects) : ''}
       ${kind === 'mail' && !(b.effects && JSON.stringify(bundle(b.effects)).includes('"mail"')) ? '<p class="note">No scripted reply: the contact answers with an ordinary reply instead.</p>' : ''}
@@ -436,6 +442,21 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     <p style="margin-top:10px"><span class="lbl">Gemma persona</span></p><p class="quote">${txt(A.llmPersona)}</p>
     <p><span class="lbl">Gemma examples</span></p><ol class="lines">${(A.llmExamples || []).map(([u, a]) => `<li><b>${txt(u)}</b> → ${txt(a)}</li>`).join('')}</ol>
   </section>`);
+  if (S.y) {
+    const Y = S.y;
+    const needers = [...allBranches, ...(S.global || []), ...(S.postActions || []), ...(S.mailActions || [])].filter((b) => b.minFollowers);
+    const givers = [...allBranches, ...(S.postActions || []), ...(S.mailActions || [])].filter((b) => JSON.stringify(bundle(b.effects)).includes('"followers"')).map((b) => b.id)
+      .concat(Object.entries(S.bundles || {}).filter(([, f]) => f.followers).map(([n, f]) => `${n} (bundle, ${f.followers > 0 ? '+' : ''}${f.followers})`));
+    ref.push(`<section class="card"><h2>Y followers</h2>
+      <p class="note">Start with ${Y.startFollowers} followers. Every post is rated 0–4 by Jev (offline: a keyword heuristic); followers move with the rating, posts touching a trend get ×1.5, reposts earn nothing, and gains halve for each post past ${Y.postsPerDay || 3} a day.</p>
+      <p><span class="lbl">rating rubric</span></p><ol class="lines" start="0">${(Y.rubric || []).map((x) => `<li>${txt(x)}</li>`).join('')}</ol>
+      <p style="margin-top:8px"><span class="lbl">trends</span><span class="kw">${esc((Y.trends || []).join(', '))}</span></p>
+      ${Y.creator ? `<p><span class="lbl">creator payouts</span>unlock at ${Y.creator.minFollowers} followers, then $${Y.creator.perFollower} per follower per night once the player turns them on (paused below the threshold).</p>` : ''}
+      <p><span class="lbl">default too-few reply</span>${txt(Y.lockedResponse)}</p>
+      <p><span class="lbl">needs followers</span>${needers.map((b) => `<code>${esc(b.id)}</code> ${b.minFollowers}+`).join(', ') || 'nothing'}</p>
+      <p><span class="lbl">gives followers</span>${givers.map((x) => `<code>${esc(x)}</code>`).join(', ') || 'nothing'}</p>
+    </section>`);
+  }
   ref.push(`<section class="card"><h2>Events</h2>${(S.events || []).map((ev) => `<div class="br"><div class="br-head"><span class="chip ${ev.on === 'deploy' ? 'deploy' : 'day'}">${esc(ev.on === 'deploy' ? `deploy ${ev.repo}` : `every morning${ev.id ? ' · ' + ev.id : ''}`)}</span></div>
     ${ev.when ? `<p class="kw"><span class="lbl">when</span>${esc(Object.entries(ev.when).map(([k, v]) => `${k}: ${arr(v).join(', ')}`).join(' · '))}</p>` : ''}${outcomeHtml(ev.effects)}</div>`).join('')}</section>`);
   ref.push(`<section class="card"><h2>Contacts who reply</h2>${Object.entries(S.contacts || {}).map(([addr, c]) => `<div class="br">

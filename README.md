@@ -18,13 +18,15 @@ Without a key the game still runs, using an offline keyword matcher for story de
 
 | Site | Domain | What it does |
 |---|---|---|
-| **Y** (social network: graphite timeline, yellow accents) | `y.com` | News and leads. You can post for free, and some posts move the story (see `postActions`). |
+| **Y** (social network: graphite timeline, yellow accents) | `y.com` | News and leads. Posting is free; every post is rated for how well it wins followers, and some posts move the story (see `postActions`). Followers unlock story branches and Y creator payouts. |
 | **Qmail** (email) | `qmail.com` | Personal mail: your landlord, your mom, agent receipts, clients. Writing and replying is free, and some emails move the story (see `mailActions`). Other emails get an in-character reply written by Gemma, if the person replies at all. You can send one message per address until they answer. Mail to an address you haven't seen bounces. |
 | **Satchel** (crypto wallet) | `satchel.app` | Dark crypto wallet. Your money is DOLR, a made-up stablecoin pegged 1:1 to the dollar. Balance chart, tokens, scheduled rent and nightly settlement, and on-chain style activity with hashes and blocks. |
 | **Forkyard** (fake GitHub) | `forkyard.com` | Repos the agent pushes for you. You press **Deploy** yourself. Live apps are at `<repo>.forkyard.app`. |
 | **agent** (AI chatbot) | `agent.chat` | Where you type prompts. Each one costs money (depending on the model) and an hour of game time. Upgrade models at `agent.chat/models`. |
 
 ## Core loop
+
+- **Y followers.** You start with 12. Jev rates every post 0–4 against the story's rubric (a Score question; offline, a keyword heuristic): strong posts win followers, bland ones barely move, spam and begging lose some. Posts touching a trend get a bonus, reposts earn nothing, and gains halve after three posts a day. Story moments add followers too (Rosa's shout-out, the Spin Cycle launch). Some branches need followers: promoting Spin Cycle needs 40, the sponsor deal 150. At 300 followers you can turn on creator payouts ($0.05 per follower per night).
 
 - **Models.** agent runs on models agent-1 to agent-5. You start on agent-1 and can buy up to agent-5. Each tier costs money upfront, must be bought in order, and charges more per prompt and per word:
 
@@ -139,6 +141,7 @@ nodes: {
 - `events`: `{ on: 'deploy', repo }` fires when the player deploys a repo; `{ on: 'day' }` is checked every morning.
 - `posts`: seeded posts use `at` (minutes before game start). Other posts appear once their `when` is true, or when an effect reveals them.
 - `decision`: the `hit` and `partial` probability thresholds for Jev.
+- `y`: `startFollowers`, the `setting` and 0–4 `rubric` Jev rates posts with, `trends` (bonus topics), `postsPerDay`, `creator` payouts (`minFollowers`, `perFollower`) and the default `lockedResponse`. On a branch or post action, `minFollowers: n` requires that many followers (`fewFollowers` overrides the reply); the effect `followers: n` adds or removes followers. The server rates posts at `POST /api/rate`.
 - `models`: the agent tiers (`name`, `price`, `promptBase`, `perWord`, `blurb`), weakest first.
 - On a branch, `minModel: n` requires agent-n or better. Add `fake: { response, effects }` to have weaker models pretend instead of refusing; `repo: { name, broken: true }` creates a botched repo (its `broken` snippet and preview from `repos` are shown, and it earns $0), and the effect `fix: 'repo'` repairs it. `weak` is what agent says on a weaker model (default: `agent.lockedResponse`; `{model}` and `{required}` are filled in). `atModel: { 4: { response, effects } }` swaps in a different outcome on stronger tiers, even for branches anyone can reach.
 - `{balance}`, `{lastCost}`, `{handle}` and `{name}` are substituted in agent replies and posts.
