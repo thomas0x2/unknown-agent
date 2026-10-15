@@ -76,6 +76,30 @@ async function t(name, fn) {
     assert.ok(S.placeholders.includes(reply));
   });
 
+  await t('cleanEmail keeps up to four sentences and drops subject lines and sign-offs', () => {
+    const c = LLM._cleanEmail;
+    assert.strictEqual(c('Subject: Re: hi\nOne. Two. Three. Four. Five.'), 'One. Two. Three. Four.');
+    assert.strictEqual(c('So glad you wrote! Eat something green.\nLove,\nMom'), 'So glad you wrote! Eat something green.');
+    assert.strictEqual(c('**Hey** there. <end_of_turn>'), 'Hey there.');
+  });
+
+  await t('writeReply prompts in the contact persona and returns a cleaned body', async () => {
+    globalThis.fetch = async (url, opts) => {
+      if (url.endsWith('/api/tags')) return { ok: true, json: async () => ({ models: [{ name: 'gemma3:270m' }] }) };
+      chatBody = JSON.parse(opts.body);
+      return { ok: true, json: async () => ({ message: { content: "Oh sweetie, the neighbor's dog had puppies! Dad says hi. Subject: news\nLove, Mom" } }) };
+    };
+    LLM.setBackend('off');
+    LLM.setBackend('ollama');
+    await new Promise((r) => setTimeout(r, 10));
+    const mom = S.contacts['mom@qmail.com'];
+    const text = await LLM.writeReply(mom, { fromName: 'You', subject: 'hi', body: 'All good here, miss you' });
+    assert.strictEqual(text, "Oh sweetie, the neighbor's dog had puppies! Dad says hi.");
+    assert.ok(chatBody.messages[0].content.startsWith(mom.persona));
+    assert.match(chatBody.messages.at(-1).content, /miss you/);
+    assert.ok(chatBody.options.num_predict > 72, 'replies get a bigger token budget');
+  });
+
   await t('ollama without the model pulled → error with the pull command', async () => {
     globalThis.fetch = async () => ({ ok: true, json: async () => ({ models: [{ name: 'llama3:8b' }] }) });
     LLM.setBackend('off');

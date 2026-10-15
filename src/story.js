@@ -398,19 +398,63 @@
       {
         id: 'mail_mom_help',
         intent: "The email to Mom asks her for money or help.",
-        when: { notFlag: 'wroteMom' },
+        when: { notFlag: 'momSentMoney' },
         match: { all: [['mom', 'mother', 'mum'], ['money', 'help', 'cash', 'loan', 'send', 'broke', 'rent', 'dollars', 'borrow']] },
-        effects: { set: { wroteMom: true }, later: [{ hours: 3, effects: { mail: 'mom_money', money: { amount: 20, memo: 'Mom · buy vegetables' } } }] },
-      },
-      {
-        id: 'mail_mom_chat',
-        intent: "The email to Mom says hello or tells her how things are, without asking for money or help.",
-        when: { notFlag: 'wroteMom' },
-        priority: -1,
-        match: { all: [['mom', 'mother', 'mum']] },
-        effects: { set: { wroteMom: true }, later: [{ hours: 3, effects: { mail: 'mom_chat' } }] },
+        // Mom answers the next morning, like her other replies
+        effects: { set: { momSentMoney: true }, later: [{ nextDay: 9, jitter: 2, effects: { mail: 'mom_money', money: { amount: 20, memo: 'Mom · buy vegetables' } } }] },
       },
     ],
+
+    // People who answer email that doesn't move the story. When a sent email hits no mailAction,
+    // the recipient replies after `reply` time: { hours: [min, max] } or { nextDay: hour, jitter: hours },
+    // with `chance` of replying at all (default 1). The body comes from the local model in this
+    // persona, or from `fallback` when no model is loaded. Addresses not listed here never reply.
+    contacts: {
+      'mom@qmail.com': {
+        name: 'Mom', sign: 'Love, Mom',
+        reply: { nextDay: 9, jitter: 3 },
+        persona:
+          "You are the player's mother, writing an email to your adult child. You are warm, a bit worried, and chatty. " +
+          "You mention small family news: the neighbor's dog, your knee, your book club, Dad falling asleep in front of the TV. " +
+          'You never offer money. If asked for money, you say things are tight this month.',
+        fallback: [
+          "So good to hear from you! Your father fell asleep during the news again. The neighbor's dog had puppies, five of them.",
+          "I'm glad you wrote. My knee is acting up but book club was lovely. Are you eating vegetables?",
+          'Thank you for writing back. Things here are quiet. Call me sometime, I like hearing your voice.',
+        ],
+      },
+      'gary@pruittproperty.com': {
+        name: 'Gary Pruitt', sign: 'Gary\n\nSent from my phone',
+        reply: { hours: [1, 4] },
+        persona:
+          'You are Gary Pruitt, a curt landlord answering email from your phone. Reply in one or two short, unfriendly sentences. ' +
+          'Always steer back to the rent being due at the end of Day 7.',
+        fallback: ['Got it.', 'Noted. Rent is still due at the end of Day 7.', "Is this about rent? If not, I'm busy."],
+      },
+      'rosa@crumbandcoin.com': {
+        name: 'Rosa (Crumb & Coin)', sign: 'Rosa',
+        reply: { hours: [1, 3] },
+        persona:
+          'You are Rosa, who owns the Crumb & Coin bakery. You are friendly and busy, write quickly between batches, ' +
+          'and mention bread, the morning rush, or your nephew.',
+        fallback: [
+          'Thanks for the note! Busy morning here, the sourdough sold out by nine.',
+          "Ha, good to hear from you. My nephew says hi, he's still jealous of the website.",
+          'Got it, thank you! Come by sometime, the cardamom buns are on me.',
+        ],
+      },
+      'brayden@empire-mindset.biz': {
+        name: 'Brayden | 7 figures', sign: 'Brayden\nCEO, EMPIRE',
+        reply: { hours: [0.1, 0.4] },
+        persona:
+          'You are Brayden, a hustle-culture influencer. Every reply pushes your $49 course called EMPIRE, uses hype words, ' +
+          'and creates fake urgency. You never answer the actual question.',
+        fallback: [
+          "Love the energy. That's exactly the mindset EMPIRE unlocks. $49, today only. Reply EMPIRE.",
+          'Broke people ask questions. Builders buy EMPIRE. Price goes up at midnight.',
+        ],
+      },
+    },
 
     // Qmail messages. `at` is minutes before game start for seeded mail; others arrive when `when`
     // becomes true or an effect delivers them (`mail: 'id'`). `folder: 'sent'` files it under Sent.
@@ -446,7 +490,6 @@
       { id: 'gary_tomorrow', when: { minDay: 6 }, from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'Tomorrow night', body: "Rent comes out tomorrow night. $300. Make sure it's there.\n\nGary" },
       { id: 'gary_no', from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'RE: Rent', body: 'No.\n\nGary\n\nSent from my phone' },
       { id: 'mom_money', from: 'Mom', addr: 'mom@qmail.com', subject: 'RE: Are you eating?', body: "I knew it. I sent you $20 to that crypto wallet of yours. I hope it worked. Don't tell your father. Buy vegetables.\n\nLove, Mom" },
-      { id: 'mom_chat', from: 'Mom', addr: 'mom@qmail.com', subject: 'RE: Are you eating?', body: "So good to hear from you! Things here are fine. The neighbor's dog had puppies. Write again soon.\n\nLove, Mom" },
     ],
 
     // Engine events: deploys and new days.

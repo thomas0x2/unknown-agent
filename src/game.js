@@ -111,6 +111,8 @@
       tabs: [{ id: 1, url: SITES.y.url }, { id: 2, url: SITES.agent.url }],
       mail: [],      // Qmail: { id, t, read, folder, custom? }
       nextMail: 1,
+      awaiting: {},     // address → true while you wait on their reply
+      replyDrafts: {},  // reply id → body written in advance by the local model
       active: 2, nextTab: 3, lastCost: 0,
       ended: null, endSeen: false, over: null, morning: null,
     };
@@ -147,6 +149,8 @@
         if (k.startsWith('chirp:chirp_')) { s.fired['post:post_' + k.slice(12)] = s.fired[k]; delete s.fired[k]; }
       }
       if (!s.mail) { s.mail = []; s.nextMail = 1; seedMail(s); }
+      s.awaiting = s.awaiting || {};
+      s.replyDrafts = s.replyDrafts || {};
       // saves from before the wallet
       for (const tab of s.tabs) if (/^secondnational\.com/.test(tab.url)) tab.url = 'satchel.app';
       if (s.unread.bank != null) { s.unread.wallet = s.unread.bank; delete s.unread.bank; }
@@ -211,7 +215,14 @@
     if (!def) { console.warn('Unknown mail', id); return; }
     const folder = def.folder || 'inbox';
     state.mail.push({ id, t: state.t, read: folder === 'sent', folder });
+    noteMail(def, folder);
     if (folder === 'inbox') toast('Qmail', `${tpl(def.from)}: ${tpl(def.subject)}`, 'mail');
+  }
+
+  // One message per address between replies: sending opens a wait, any mail from them closes it.
+  function noteMail(def, folder) {
+    if (folder === 'sent' && def.to) state.awaiting[def.to] = true;
+    if (folder === 'inbox' && def.addr) delete state.awaiting[def.addr];
   }
 
   // Mail the engine writes itself (receipts, bounces) or the player sends.
@@ -219,6 +230,7 @@
     folder = folder || 'inbox';
     const entry = { id: 'c' + state.nextMail++, t: state.t, read: folder === 'sent', folder, custom };
     state.mail.push(entry);
+    noteMail(custom, folder);
     if (folder === 'inbox') toast('Qmail', `${custom.from}: ${custom.subject}`, 'mail');
     return entry;
   }
@@ -265,7 +277,8 @@
     for (const id of arr(fx.post)) revealPost(id);
     for (const id of arr(fx.mail)) deliverMail(id);
     if (fx.agent) agentSays(fx.agent);
-    for (const l of arr(fx.later)) state.queue.push({ at: state.t + Math.round((l.hours || 0) * 60), effects: l.effects });
+    for (const l of arr(fx.later)) state.queue.push({ at: laterTime(l), effects: l.effects });
+    if (fx.reply) deliverReply(fx.reply);
     if (fx.goto && fx.goto !== state.node) {
       state.node = fx.goto;
       const obj = currentNode().objective;
@@ -273,6 +286,46 @@
     }
     if (fx.end) state.ended = fx.end;
     revealPosts();
+  }
+
+  // When a delayed effect fires: { hours } from now, or { nextDay: hour, jitter: hours } tomorrow.
+  function laterTime(l) {
+    if (l.nextDay != null) return dayOf(state.t) * 1440 + Math.round((l.nextDay + Math.random() * (l.jitter || 0)) * 60);
+    if (Array.isArray(l.hours)) return state.t + Math.round((l.hours[0] + Math.random() * (l.hours[1] - l.hours[0])) * 60);
+    return state.t + Math.round((l.hours || 0) * 60);
+  }
+
+  // Queue a contact's reply to an email that didn't move the story. The local model writes the
+  // body right away in the background; if it isn't ready by delivery, a canned line is used.
+  function scheduleReply(to, subject, body) {
+    const contact = (S.contacts || {})[to];
+    if (!contact || !contact.reply) return;
+    if (Math.random() > (contact.reply.chance == null ? 1 : contact.reply.chance)) return;
+    const id = 'r' + state.nextMail++;
+    const reSubject = /^re:/i.test(subject) ? subject : `RE: ${subject}`;
+    state.queue.push({ at: laterTime(contact.reply), effects: { reply: { id, addr: to, subject: reSubject } } });
+    if (LLM && LLM.writeReply) {
+      LLM.writeReply(contact, { fromName: S.start.player.name, subject, body }).then((text) => {
+        if (text && state.queue.some((q) => q.effects && q.effects.reply && q.effects.reply.id === id)) {
+          state.replyDrafts[id] = text;
+          save();
+        }
+      });
+    }
+  }
+
+  function deliverReply(r) {
+    const contact = (S.contacts || {})[r.addr] || { name: r.addr, sign: '', fallback: ['Got it.'] };
+    let text = state.replyDrafts[r.id];
+    const generated = !!text;
+    delete state.replyDrafts[r.id];
+    if (!text) {
+      const pool = contact.fallback || ['Got it.'];
+      let h = 0;
+      for (const c of r.id + r.subject) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+      text = pool[h % pool.length];
+    }
+    deliverCustom({ from: contact.name, addr: r.addr, subject: r.subject, body: text + (contact.sign ? `\n\n${contact.sign}` : ''), generated });
   }
 
   function fireEvents(kind, extra) {
@@ -494,6 +547,7 @@
     body = String(body || '').trim();
     if (state.over) return false;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) { toast('Qmail', 'Enter a valid address in To.', 'mail'); return false; }
+    if (state.awaiting[to]) { toast('Qmail', `You're waiting on a reply from ${to}.`, 'mail'); return false; }
     const known = contacts().includes(to);
     deliverCustom({ from: S.start.player.name, addr: playerAddr(), to, subject, body }, 'sent');
     draft = null;
@@ -505,21 +559,27 @@
         from: 'Mail Delivery Subsystem', addr: 'mailer-daemon@qmail.com', subject: `Undeliverable: ${subject}`,
         body: `Your message to ${to} couldn't be delivered. That address doesn't exist.`,
       });
+      delete state.awaiting[to];
       save();
       render();
       return true;
     }
     const candidates = mailCandidates();
-    if (!candidates.length) return true;
-    const text = `To: ${to}\nSubject: ${subject}\n\n${body}`;
-    const node = state.node;
-    const decision = await J.decide(text, candidates, { kind: 'mail', node, thresholds: S.decision });
-    lastReport = { prompt: text, node, decision, channel: 'mail' };
-    if (decision.kind === 'hit' && mailCandidates().includes(decision.branch)) {
-      state.fired['mail:' + decision.branch.id] = state.t;
-      applyEffects(decision.branch.effects);
-      save();
+    let storyHit = false;
+    if (candidates.length) {
+      const text = `To: ${to}\nSubject: ${subject}\n\n${body}`;
+      const node = state.node;
+      const decision = await J.decide(text, candidates, { kind: 'mail', node, thresholds: S.decision });
+      lastReport = { prompt: text, node, decision, channel: 'mail' };
+      if (decision.kind === 'hit' && mailCandidates().includes(decision.branch)) {
+        state.fired['mail:' + decision.branch.id] = state.t;
+        applyEffects(decision.branch.effects);
+        storyHit = true;
+      }
     }
+    // story mail brings its own reply; everything else gets an ordinary one (or none)
+    if (!storyHit) scheduleReply(to, subject, body);
+    save();
     render();
     return true;
   }
@@ -619,7 +679,8 @@
     mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5" fill="currentColor"/><path d="M4.5 7.5 12 13l7.5-5.5" stroke="var(--icon-ink, #fff)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     wallet: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H17v3h1.5A1.5 1.5 0 0 1 20 8.5v10a1.5 1.5 0 0 1-1.5 1.5h-12A2.5 2.5 0 0 1 4 17.5z" fill="currentColor"/><circle cx="16" cy="13.5" r="1.6" fill="var(--icon-ink, #1f2329)"/></svg>',
     forkyard: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3a3 3 0 0 0-1 5.8v6.4A3 3 0 1 0 8 15.2V13c0-1 1-2 2-2h4a4 4 0 0 0 4-4V8.8A3 3 0 1 0 16 8.8V7c0 1-1 2-2 2h-4c-.7 0-1.4.2-2 .5V8.8A3 3 0 0 0 7 3z" fill="currentColor"/></svg>',
-    agent: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" fill="currentColor"/><path d="M9.5 9.2a2.6 2.6 0 1 1 3.6 2.4c-.7.3-1.1.8-1.1 1.5v.6" stroke="var(--icon-ink, #fff)" stroke-width="1.8" fill="none" stroke-linecap="round"/><circle cx="12" cy="16.6" r="1.1" fill="var(--icon-ink, #fff)"/></svg>',
+    // agent's mark: six rounded blades swirling around an open core
+    agent: '<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(0 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(60 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(120 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(180 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(240 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(300 12 12)"/></g></svg>',
     newtab: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2" fill="none"/></svg>',
     app: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M4 9h16" stroke="currentColor" stroke-width="2"/></svg>',
     error: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 2.5v.5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
@@ -721,44 +782,105 @@
     return `0x${hex.slice(0, 4)}…${hex.slice(-4)}`;
   }
 
+  // 5×5 mirrored identicon for the wallet address.
+  function identicon(addr) {
+    const hue = parseInt(addr.slice(2, 6), 16) % 360;
+    let cells = '';
+    for (let y = 0; y < 5; y++) {
+      for (let x = 0; x < 3; x++) {
+        if (parseInt(addr[2 + y * 3 + x], 16) % 2) {
+          cells += `<rect x="${x}" y="${y}" width="1" height="1"/>`;
+          if (x < 2) cells += `<rect x="${4 - x}" y="${y}" width="1" height="1"/>`;
+        }
+      }
+    }
+    return `<svg viewBox="0 0 5 5" class="wl-ident" aria-hidden="true" style="--h:${hue}"><g fill="hsl(${hue} 70% 62%)">${cells}</g></svg>`;
+  }
+
+  // Running balance after each transaction, oldest first.
+  function balanceHistory() {
+    const sorted = [...state.tx].sort((a, b) => a.t - b.t);
+    let bal = round2(state.money - sorted.reduce((n, x) => n + x.amount, 0));
+    const pts = [bal];
+    for (const x of sorted) { bal = round2(bal + x.amount); pts.push(bal); }
+    return pts.slice(-40);
+  }
+
+  function sparkline(pts) {
+    const w = 320, h = 90, pad = 6;
+    const lo = Math.min(0, ...pts), hi = Math.max(...pts, 1);
+    const xs = (i) => pad + (i / Math.max(1, pts.length - 1)) * (w - pad * 2);
+    const ys = (v) => h - pad - ((v - lo) / (hi - lo || 1)) * (h - pad * 2);
+    const line = pts.map((v, i) => `${xs(i).toFixed(1)},${ys(v).toFixed(1)}`).join(' ');
+    const last = pts.length - 1;
+    return `<svg viewBox="0 0 ${w} ${h}" class="wl-spark" preserveAspectRatio="none" role="img" aria-label="Balance over your last ${pts.length} transactions">
+      <line x1="${pad}" x2="${w - pad}" y1="${ys(0).toFixed(1)}" y2="${ys(0).toFixed(1)}" class="wl-zero"/>
+      <polygon points="${xs(0).toFixed(1)},${h - pad} ${line} ${xs(last).toFixed(1)},${h - pad}" class="wl-area"/>
+      <polyline points="${line}" class="wl-line"/>
+      <circle cx="${xs(last).toFixed(1)}" cy="${ys(pts[last]).toFixed(1)}" r="3.5" class="wl-dot"/>
+    </svg>`;
+  }
+
   function pageWallet() {
     const sorted = [...state.tx].sort((a, b) => b.t - a.t);
-    const rows = sorted.map((x) => {
+    const today = dayOf(state.t);
+    const todayDelta = round2(state.tx.filter((x) => x.t >= 0 && dayOf(x.t) === today).reduce((n, x) => n + x.amount, 0));
+    const rows = sorted.map((x, i) => {
       const out = x.amount < 0;
       const [who, note] = x.memo.split(' · ');
+      const block = 18442107 + Math.max(0, x.t) * 5 + (sorted.length - i);
       return `<li class="wl-tx">
-        <span class="wl-dir ${out ? 'out' : 'in'}" aria-hidden="true">${out ? '↑' : '↓'}</span>
-        <span class="wl-what"><b>${esc(who)}</b><small>${note ? esc(note) + ' · ' : ''}${out ? 'Sent' : 'Received'} · ${x.t < 0 ? 'before Day 1' : stamp(x.t)}</small></span>
-        <span class="wl-amt ${out ? 'neg' : 'pos'}">${out ? '' : '+'}${fmtCoin(x.amount)}<small>${txHash(x)}</small></span>
+        <span class="wl-dir ${out ? 'out' : 'in'}" aria-hidden="true">${out ? '↗' : '↙'}</span>
+        <span class="wl-what"><b>${esc(who)}</b><small>${note ? esc(note) : out ? 'Transfer out' : 'Transfer in'}</small></span>
+        <span class="wl-meta"><code>${txHash(x)}</code><small>${x.t < 0 ? 'before Day 1' : stamp(x.t)} · block ${block.toLocaleString('en-US')}</small></span>
+        <span class="wl-amt ${out ? 'neg' : 'pos'}">${out ? '' : '+'}${fmtCoin(x.amount)}<small class="wl-ok">Confirmed</small></span>
       </li>`;
     }).join('');
     const live = Object.values(state.repos).filter((r) => r.deployed).length;
     const income = Object.entries(state.apps).reduce((n, [k, a]) => n + (state.repos[k] && state.repos[k].deployed ? a.perDay : 0), 0);
     const nightly = round2(income - E.living.amount - live * E.hostingPerDay);
-    const rentLeft = E.rent ? E.rent.day - dayOf(state.t) : null;
+    const rentLeft = E.rent ? E.rent.day - today : null;
     const rentLine = E.rent && rentLeft >= 0
-      ? `<div class="wl-up"><span>Rent · ${esc(E.rent.payee)}</span><b class="neg">${fmtCoin(-E.rent.amount)}</b><small>${rentLeft === 0 ? 'Pulls tonight' : `Pulls at the end of Day ${E.rent.day}, in ${rentLeft} day${rentLeft > 1 ? 's' : ''}`}</small></div>`
+      ? `<div class="wl-up"><span>Rent · ${esc(E.rent.payee)}</span><b class="neg">${fmtCoin(-E.rent.amount)}</b><small>${rentLeft === 0 ? 'Executes tonight' : `Executes end of Day ${E.rent.day} · T−${rentLeft}d`}</small></div>`
       : '';
+    const action = (id, icon, label) => `<button class="wl-action" data-wallet="${id}"><span>${icon}</span>${label}</button>`;
     return `<div class="wl">
-      <header class="wl-top"><div class="wl-logo">${ICONS.wallet}<span>Satchel</span></div><span class="wl-net"><i></i>Mainnet</span></header>
+      <header class="wl-top">
+        <div class="wl-logo"><span class="wl-logo-tile">${ICONS.wallet}</span><span>Satchel</span></div>
+        <span class="wl-net"><i></i>Mainnet · 14 gwei</span>
+        <span class="wl-acct">${identicon(WALLET_ADDR)}<code id="wl-addr-text">${shortAddr(WALLET_ADDR)}</code><button class="wl-copy" data-copy-addr aria-label="Copy wallet address">Copy</button></span>
+      </header>
       <div class="wl-wrap">
-        <section class="wl-card">
-          <div class="wl-addr"><span>Wallet</span><code id="wl-addr-text">${shortAddr(WALLET_ADDR)}</code><button class="wl-copy" data-copy-addr>Copy address</button></div>
-          <p class="wl-balance ${state.money < 0 ? 'neg' : ''}">${fmtMoney(state.money)}</p>
-          <p class="wl-sub">${fmtCoin(state.money)} · 1 DOLR = $1.00</p>
+        <section class="wl-hero">
+          <div class="wl-hero-top">
+            <div>
+              <p class="wl-label">Total balance</p>
+              <p class="wl-balance ${state.money < 0 ? 'neg' : ''}">${fmtMoney(state.money)}</p>
+              <p class="wl-sub">${fmtCoin(state.money)} <span class="${todayDelta < 0 ? 'neg' : 'pos'}">${todayDelta >= 0 ? '+' : ''}${fmtMoney(todayDelta)} today</span></p>
+            </div>
+            ${sparkline(balanceHistory())}
+          </div>
+          <div class="wl-actions">
+            ${action('receive', '↙', 'Receive')}${action('send', '↗', 'Send')}${action('swap', '⇄', 'Swap')}${action('buy', '+', 'Buy')}
+          </div>
         </section>
         <section class="wl-panel wl-assets">
-          <h2>Assets</h2>
-          <div class="wl-asset"><span class="wl-tok dolr">D</span><span><b>DOLR</b><small>Dollar stablecoin</small></span><span class="wl-val">${fmtMoney(state.money)}<small>${fmtCoin(state.money)}</small></span></div>
-          <div class="wl-asset"><span class="wl-tok cat">M</span><span><b>MOONCAT</b><small>Bought at the top. No buyers.</small></span><span class="wl-val">$0.00<small>4,200,000 MOONCAT</small></span></div>
+          <h2>Tokens</h2>
+          <table class="wl-table">
+            <thead><tr><th>Asset</th><th class="r">Price</th><th class="r">24h</th><th class="r">Value</th></tr></thead>
+            <tbody>
+              <tr><td><span class="wl-asset"><span class="wl-tok dolr">D</span><span><b>DOLR</b><small>Dollar stablecoin</small></span></span></td><td class="r">$1.00</td><td class="r">0.00%</td><td class="r"><b>${fmtMoney(state.money)}</b><small>${fmtCoin(state.money)}</small></td></tr>
+              <tr><td><span class="wl-asset"><span class="wl-tok cat">M</span><span><b>MOONCAT</b><small>Bought at the top</small></span></span></td><td class="r">$0.0000001</td><td class="r neg">−99.4%</td><td class="r"><b>$0.42</b><small>4,200,000 MOONCAT</small></td></tr>
+            </tbody>
+          </table>
         </section>
         <section class="wl-panel wl-auto">
-          <h2>Auto-pay</h2>
+          <h2>Scheduled</h2>
           ${rentLine}
-          <div class="wl-up"><span>Every night</span><b class="${nightly < 0 ? 'neg' : 'pos'}">${nightly >= 0 ? '+' : ''}${fmtCoin(nightly)}</b><small>Food ${fmtCoin(-E.living.amount)}${live ? ` · Hosting ${fmtCoin(-live * E.hostingPerDay)}` : ''}${income ? ` · App income +${fmtCoin(income)}` : ''}</small></div>
+          <div class="wl-up"><span>Nightly settlement</span><b class="${nightly < 0 ? 'neg' : 'pos'}">${nightly >= 0 ? '+' : ''}${fmtCoin(nightly)}</b><small>Food ${fmtCoin(-E.living.amount)}${live ? ` · Hosting ${fmtCoin(-live * E.hostingPerDay)}` : ''}${income ? ` · App income +${fmtCoin(income)}` : ''}</small></div>
         </section>
         <section class="wl-panel wl-activity">
-          <h2>Activity</h2>
+          <h2>Activity <span>${state.tx.length} transactions</span></h2>
           <ul class="wl-list">${rows}</ul>
         </section>
       </div>
@@ -795,7 +917,8 @@
         <datalist id="qm-contacts">${contacts().map((c) => `<option value="${esc(c)}"></option>`).join('')}</datalist>
         <label class="qm-field"><span>Subject</span><input id="mail-subject" autocomplete="off" value="${esc(d.subject)}"></label>
         <textarea id="mail-body" rows="10" aria-label="Message">${esc(d.body)}</textarea>
-        <div class="qm-actions"><button class="qm-btn" type="submit">Send</button><button class="qm-btn ghost" type="button" data-mail-discard>Discard</button><span class="qm-hint">Sending is free and takes 5 minutes.</span></div>
+        <p class="qm-wait" id="mail-wait"${state.awaiting[String(d.to).trim().toLowerCase()] ? '' : ' hidden'}>You already wrote to this address. You can send another message once they reply.</p>
+        <div class="qm-actions"><button class="qm-btn" type="submit" id="mail-send"${state.awaiting[String(d.to).trim().toLowerCase()] ? ' disabled' : ''}>Send</button><button class="qm-btn ghost" type="button" data-mail-discard>Discard</button><span class="qm-hint">Sending is free and takes 5 minutes. One message per person until they reply.</span></div>
       </form>`;
     } else if (view === 'msg') {
       const entry = state.mail.find((m) => m.id === r.id);
@@ -812,7 +935,10 @@
             ? `<b>${esc(S.start.player.name)}</b> &lt;${esc(playerAddr())}&gt; to <b>${esc(d.to)}</b>`
             : `<b>${esc(tpl(d.from))}</b> &lt;${esc(d.addr)}&gt; to ${esc(playerAddr())}`}</span><span>${esc(stampOrEarlier(entry.t))}</span></p>
           <div class="qm-body">${mailBody(d.body)}</div>
-          ${canReply ? `<div class="qm-actions"><button class="qm-btn" data-reply="${esc(entry.id)}">Reply</button></div>` : ''}
+          ${d.generated ? `<p class="qm-gen">Reply written by ${esc(LLM ? LLM.label() : 'the local model')}</p>` : ''}
+          ${canReply ? `<div class="qm-actions">${state.awaiting[d.addr]
+            ? `<button class="qm-btn" disabled>Reply</button><span class="qm-hint">Waiting on their reply to your last message.</span>`
+            : `<button class="qm-btn" data-reply="${esc(entry.id)}">Reply</button>`}</div>` : ''}
         </article>`;
       }
     } else {
@@ -820,11 +946,12 @@
       const rows = list.map((m) => {
         const d = mailDef(m);
         const who = m.folder === 'sent' ? `To: ${d.to}` : tpl(d.from);
+        const latestTo = m.folder === 'sent' && state.awaiting[d.to] && sent.find((x) => mailDef(x).to === d.to) === m;
         const snippet = tpl(d.body || '').replace(/\s+/g, ' ').slice(0, 90);
         return `<a href="#" class="qm-row${m.read ? '' : ' unread'}" data-nav="qmail.com/m/${esc(m.id)}">
           <span class="qm-from">${esc(who)}</span>
           <span class="qm-subj"><b>${esc(tpl(d.subject))}</b> <span>${esc(snippet)}</span></span>
-          <span class="qm-time">${esc(mailTime(m.t))}</span>
+          <span class="qm-time">${latestTo ? '<span class="qm-pill">Awaiting reply</span>' : ''}${esc(mailTime(m.t))}</span>
         </a>`;
       }).join('');
       main = `<h1 class="qm-h">${view === 'sent' ? 'Sent' : 'Inbox'}</h1>${rows ? `<div class="qm-list">${rows}</div>` : `<p class="qm-empty">${view === 'sent' ? 'Nothing sent yet.' : 'No mail.'}</p>`}`;
@@ -1228,7 +1355,7 @@
 
   function bind() {
     document.addEventListener('click', (e) => {
-      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model],[data-reply],[data-mail-discard],[data-copy-addr]');
+      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model],[data-reply],[data-mail-discard],[data-copy-addr],[data-wallet]');
       if (!t) return;
       if (t.dataset.close) { e.stopPropagation(); closeTab(Number(t.dataset.close)); return; }
       if (t.dataset.nav) { e.preventDefault(); navigate(t.dataset.nav); return; }
@@ -1250,6 +1377,15 @@
         return;
       }
       if (t.hasAttribute('data-mail-discard')) { draft = null; navigate('qmail.com'); return; }
+      if (t.dataset.wallet) {
+        if (t.dataset.wallet === 'receive') { $('[data-copy-addr]').click(); return; }
+        toast('Satchel', {
+          send: 'Outgoing payments run through auto-pay on this wallet. Manual sends are off.',
+          swap: 'Swap failed: no liquidity for MOONCAT.',
+          buy: 'Buying DOLR needs a linked bank account. You closed yours.',
+        }[t.dataset.wallet], 'wallet');
+        return;
+      }
       if (t.hasAttribute('data-copy-addr')) {
         const done = () => toast('Satchel', 'Wallet address copied', 'wallet');
         const fallback = () => { const r = document.createRange(); r.selectNodeContents($('#wl-addr-text')); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); toast('Satchel', 'Address selected. Press Ctrl+C to copy.', 'wallet'); };
@@ -1313,6 +1449,9 @@
       if (e.target.id === 'y-search') { ySearch = e.target.value; render(); }
       if (/^mail-(to|subject|body)$/.test(e.target.id)) {
         draft = { to: $('#mail-to').value, subject: $('#mail-subject').value, body: $('#mail-body').value };
+        const waiting = !!state.awaiting[draft.to.trim().toLowerCase()];
+        $('#mail-wait').hidden = !waiting;
+        $('#mail-send').disabled = waiting;
       }
     });
     document.addEventListener('change', (e) => {

@@ -57,7 +57,8 @@ const mailCases = [
   ['site_live', 'To: rosa@crumbandcoin.com\nSubject: Your website\n\nHi Rosa, the site is live. Invoice for $150 attached.', 'hit:mail_rosa'],
   ['broke', 'To: gary@pruittproperty.com\nSubject: Rent\n\nCould I get one more week?', 'hit:mail_gary'],
   ['broke', 'To: mom@qmail.com\nSubject: hi\n\nHi, could you send me a little money?', 'hit:mail_mom_help'],
-  ['broke', 'To: mom@qmail.com\nSubject: hi\n\nAll good here, miss you', 'hit:mail_mom_chat'],
+  // small talk with Mom isn't a story beat; she answers with an ordinary reply
+  ['broke', 'To: mom@qmail.com\nSubject: hi\n\nAll good here, miss you', 'miss'],
   ['broke', 'To: brayden@empire-mindset.biz\nSubject: RE\n\nEMPIRE', 'miss'],
 ];
 for (const [node, text, want] of mailCases) {

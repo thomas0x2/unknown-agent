@@ -20,6 +20,7 @@
     ollamaUrl: 'http://localhost:11434',
     ollamaModel: 'gemma3:270m',
     maxTokens: 72,
+    replyTokens: 120,
     temperature: 0.9,
     timeoutMs: 25000,
   };
@@ -132,23 +133,41 @@
 
     // Resolve to a reply string, or null if the model can't answer right now.
     async generate(prompt, ctx) {
-      if (this.status !== 'ready') return null;
-      const started = performance.now();
-      const messages = buildMessages(prompt, ctx);
-      let raw = null;
-      try {
-        raw = this.settings.backend === 'ollama'
-          ? await withTimeout(ollamaChat(messages), CONFIG.timeoutMs)
-          : await withTimeout(workerGenerate(messages), CONFIG.timeoutMs);
-      } catch (e) {
-        raw = null;
-      }
-      const text = raw ? clean(raw) : null;
-      this.last = { ms: Math.round(performance.now() - started), ok: !!text, text: text || raw || '' };
-      emit();
-      return text;
+      return run(buildMessages(prompt, ctx), CONFIG.maxTokens, clean);
+    },
+
+    /*
+     * Write the body of an email reply in a contact's voice, or resolve to null
+     * when no model is ready. contact: { persona, examples? }; email: { fromName, subject, body }.
+     */
+    async writeReply(contact, email) {
+      const messages = [{
+        role: 'system',
+        content: `${contact.persona}\nWrite only the body of your reply email: two to four short sentences of plain text. ` +
+          'No subject line, no greeting header, no signature.',
+      }];
+      for (const [u, a] of contact.examples || []) messages.push({ role: 'user', content: u }, { role: 'assistant', content: a });
+      messages.push({ role: 'user', content: `Email from ${email.fromName}\nSubject: ${email.subject}\n\n${email.body}`.slice(0, 900) });
+      return run(messages, CONFIG.replyTokens, cleanEmail);
     },
   };
+
+  async function run(messages, maxTokens, finish) {
+    if (LLM.status !== 'ready') return null;
+    const started = performance.now();
+    let raw = null;
+    try {
+      raw = LLM.settings.backend === 'ollama'
+        ? await withTimeout(ollamaChat(messages, maxTokens), CONFIG.timeoutMs)
+        : await withTimeout(workerGenerate(messages, maxTokens), CONFIG.timeoutMs);
+    } catch (e) {
+      raw = null;
+    }
+    const text = raw ? finish(raw) : null;
+    LLM.last = { ms: Math.round(performance.now() - started), ok: !!text, text: text || raw || '' };
+    emit();
+    return text;
+  }
 
   // Once a backend has worked, bring it back automatically on the next visit.
   function rememberReady() {
@@ -201,6 +220,21 @@
     return t.length >= 2 ? t : null;
   }
 
+  // Email bodies may run a little longer, but never carry their own subject or sign-off.
+  function cleanEmail(text) {
+    let t = String(text)
+      .replace(/<end_of_turn>|<eos>|<\/?start_of_turn>(model|user)?/g, '')
+      .replace(/[*_#`]+/g, '')
+      .replace(/^\s*(subject|re)\s*:.*$/gim, '')
+      .replace(/^\s*(love|best|regards|cheers|thanks|sincerely|xo)[^\n]{0,30},?\s*\n?[^\n]{0,30}\s*$/im, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+    const sentences = t.match(/[^.!?]+[.!?]+["')\]]*/g);
+    if (sentences) t = sentences.slice(0, 4).join('').trim();
+    if (t.length > 480) t = t.slice(0, 477).replace(/\s+\S*$/, '') + '…';
+    return t.length >= 2 ? t : null;
+  }
+
   // ───────────────────────── browser backend ─────────────────────────
 
   function loadBrowser() {
@@ -236,12 +270,12 @@
     worker.postMessage({ type: 'load', lib: CONFIG.transformersUrl, model: CONFIG.browserModel });
   }
 
-  function workerGenerate(messages) {
+  function workerGenerate(messages, maxTokens) {
     if (!worker) return Promise.resolve(null);
     const id = nextId++;
     return new Promise((resolve) => {
       pending.set(id, { resolve });
-      worker.postMessage({ type: 'generate', id, messages, maxTokens: CONFIG.maxTokens, temperature: CONFIG.temperature });
+      worker.postMessage({ type: 'generate', id, messages, maxTokens: maxTokens || CONFIG.maxTokens, temperature: CONFIG.temperature });
     });
   }
 
@@ -272,7 +306,7 @@
     }
   }
 
-  async function ollamaChat(messages) {
+  async function ollamaChat(messages, maxTokens) {
     const { ollamaUrl, ollamaModel } = LLM.settings;
     const res = await fetch(`${ollamaUrl}/api/chat`, {
       method: 'POST',
@@ -281,7 +315,7 @@
         model: ollamaModel,
         messages,
         stream: false,
-        options: { num_predict: CONFIG.maxTokens, temperature: CONFIG.temperature, top_p: 0.95, top_k: 64, repeat_penalty: 1.15 },
+        options: { num_predict: maxTokens || CONFIG.maxTokens, temperature: CONFIG.temperature, top_p: 0.95, top_k: 64, repeat_penalty: 1.15 },
       }),
     });
     if (!res.ok) return null;
@@ -305,6 +339,7 @@
   // the exported clean() is handy for tests
   LLM._clean = clean;
   LLM._buildMessages = buildMessages;
+  LLM._cleanEmail = cleanEmail;
 
   if (LLM.settings.autoload && LLM.settings.backend !== 'off') {
     // weights come from the browser cache after the first download

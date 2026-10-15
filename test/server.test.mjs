@@ -71,13 +71,13 @@ await t('Y posts are judged against postActions intents', async () => {
 });
 
 await t('Qmail emails are judged against mailActions intents', async () => {
-  nextAnswer = { type: 'choice', choice: 'mail_gary', confidence: 0.9, probabilities: { mail_gary: 0.9, mail_mom_chat: 0.02, no_progress: 0.08 } };
+  nextAnswer = { type: 'choice', choice: 'mail_gary', confidence: 0.9, probabilities: { mail_gary: 0.9, mail_mom_help: 0.02, no_progress: 0.08 } };
   const email = 'To: gary@pruittproperty.com\nSubject: Rent\n\nOne more week?';
-  const res = await post({ kind: 'mail', node: 'broke', prompt: email, candidates: ['mail_gary', 'mail_mom_chat', 'build_bakery_site'] });
+  const res = await post({ kind: 'mail', node: 'broke', prompt: email, candidates: ['mail_gary', 'mail_mom_help', 'build_bakery_site'] });
   assert.strictEqual(res.status, 200);
   assert.strictEqual(sent.body.state.player_email, email);
   // prompt branches can't be smuggled into a mail decision
-  assert.deepStrictEqual(Object.keys(sent.body.questions.branch.criteria), ['mail_gary', 'mail_mom_chat', NO_PROGRESS]);
+  assert.deepStrictEqual(Object.keys(sent.body.questions.branch.criteria), ['mail_gary', 'mail_mom_help', NO_PROGRESS]);
   assert.match(sent.body.questions.branch.instructions, /Qmail/);
 });
 
