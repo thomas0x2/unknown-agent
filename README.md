@@ -18,8 +18,8 @@ Without a key the game still runs, using an offline keyword matcher for story de
 | Site | Domain | What it does |
 |---|---|---|
 | **Y** (social network: graphite timeline, yellow accents) | `y.com` | News and leads. You can post for free, and some posts move the story (see `postActions`). |
-| **Qmail** (email) | `qmail.com` | Personal mail: your landlord, your mom, agent receipts, clients. Writing and replying is free, and some emails move the story (see `mailActions`). Mail to an address you haven't seen bounces. |
-| **Satchel** (crypto wallet) | `satchel.app` | Your money, held as DOLR, a made-up stablecoin pegged 1:1 to the dollar. Shows your balance, every transaction, the rent auto-pay countdown and the nightly forecast. |
+| **Qmail** (email) | `qmail.com` | Personal mail: your landlord, your mom, agent receipts, clients. Writing and replying is free, and some emails move the story (see `mailActions`). Other emails get an in-character reply written by Gemma, if the person replies at all. You can send one message per address until they answer. Mail to an address you haven't seen bounces. |
+| **Satchel** (crypto wallet) | `satchel.app` | Dark crypto wallet. Your money is DOLR, a made-up stablecoin pegged 1:1 to the dollar. Balance chart, tokens, scheduled rent and nightly settlement, and on-chain style activity with hashes and blocks. |
 | **Forkyard** (fake GitHub) | `forkyard.com` | Repos the agent pushes for you. You press **Deploy** yourself. Live apps are at `<repo>.forkyard.app`. |
 | **agent** (AI chatbot) | `agent.chat` | Where you type prompts. Each one costs money (depending on the model) and an hour of game time. Upgrade models at `agent.chat/models`. |
 
@@ -71,7 +71,7 @@ Matching uses light stemming (`websites` matches `website`, `building` matches `
 
 ## Local model for off-script replies (`src/llm.js`)
 
-Prompts that make no progress are answered by **Gemma 3 270M** running on the player's machine. The model never decides story beats; Jev does. Partial nudges and the global joke branches stay hand-written.
+Prompts that make no progress are answered by **Gemma 3 270M** running on the player's machine. It also writes ordinary email replies (see `contacts` below). The model never decides story beats; Jev does. Partial nudges and the global joke branches stay hand-written.
 
 Pick the backend from the **Off-script replies** menu at the top of the agent page:
 
@@ -132,6 +132,8 @@ nodes: {
 **Other hooks:**
 - `postActions`: branches with an `intent` that Jev judges against what the player posts on Y. This is a free path for players who think to do it themselves.
 - `mailActions`: the same for emails the player sends from Qmail. Jev sees the To line, so intents can depend on who the mail goes to.
+- `contacts`: who answers ordinary email, keyed by address. Each has `name`, `sign` (appended sign-off), `reply` timing (`{ hours: [min, max] }` or `{ nextDay: 9, jitter: 3 }`, plus optional `chance`), a `persona` for Gemma, and `fallback` lines for when no model is loaded. When a sent email hits a `mailAction`, the story's own reply is used instead. Addresses not listed never reply, and since you can't write twice before a reply, one message is all they get.
+- `later` in effects also accepts `{ nextDay: hour, jitter: hours }`, which is how Mom answers the next morning.
 - `mail`: Qmail messages (`from`, `addr`, `subject`, `body`, or `to` for sent mail). Seeded mail uses `at`; other mail arrives once its `when` is true, or when an effect delivers it. The engine also writes upgrade receipts and bounces itself.
 - `events`: `{ on: 'deploy', repo }` fires when the player deploys a repo; `{ on: 'day' }` is checked every morning.
 - `posts`: seeded posts use `at` (minutes before game start). Other posts appear once their `when` is true, or when an effect reveals them.
@@ -144,7 +146,7 @@ nodes: {
 
 Asking agent who runs it gives a different answer on agent-4 or better, which sets a flag for later chapters.
 
-Side mail at any point: asking Gary (`gary@pruittproperty.com`) for more time gets a one-word reply. Writing to Mom (`mom@qmail.com`) gets a reply, plus $20 if you ask for help (once).
+Side mail at any point: asking Gary (`gary@pruittproperty.com`) for more time gets a one-word reply. Mom (`mom@qmail.com`) answers the next morning, and sends $20 once if you ask for help. Anything else you write to Mom, Gary, Rosa or Brayden gets an in-character reply from Gemma.
 
 1. **broke**: A bakery on Y wants a $150 website. Prompt the agent to build it.
 2. **site_built**: Deploy it on Forkyard. Asking the agent to deploy wastes a prompt.
