@@ -194,13 +194,14 @@
 
   function buildMessages(prompt, ctx) {
     const agent = (global.STORY && global.STORY.agent) || {};
-    const persona = agent.llmPersona ||
+    // ctx.persona swaps in another voice (a local model in the Terminal) without agent's examples
+    const persona = (ctx && ctx.persona) || agent.llmPersona ||
       'You are a pay-per-prompt AI chatbot called agent. Reply in one or two short sentences.';
     const facts = ctx && ctx.state
       ? `\nThe user's wallet balance is $${ctx.state.money.toFixed(2)}.` + (ctx.state.lastCost ? ` That prompt cost them $${ctx.state.lastCost.toFixed(2)}.` : '')
       : '';
     const messages = [{ role: 'system', content: persona + facts }];
-    for (const [u, a] of agent.llmExamples || []) {
+    for (const [u, a] of (ctx && ctx.persona ? [] : agent.llmExamples || [])) {
       messages.push({ role: 'user', content: u }, { role: 'assistant', content: a });
     }
     messages.push({ role: 'user', content: String(prompt).slice(0, 600) });

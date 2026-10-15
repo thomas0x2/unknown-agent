@@ -115,6 +115,11 @@
       followers: (S.y && S.y.startFollowers) || 0,   // on Y
       meters: M.init(S),   // pressure meters (story.meters), money and followers aside
       meterLog: [],        // recent meter changes, for the dev panel
+      discovered: [],      // hidden sites (story.sites) the player has found, in order
+      local: { models: [], files: [] },   // what's on the laptop
+      term: { lines: [], running: null }, // Terminal scrollback and the loaded model
+      bought: [],          // Cellar listings purchased
+      readThreads: [],     // nullboard threads opened
       extraPosts: [],   // Y posts the engine writes (complaints about defects)
       creatorOn: false, // Y creator payouts switched on
       postsToday: { day: 0, n: 0 },
@@ -164,6 +169,12 @@
       // saves from before the pressure meters
       s.meters = Object.assign(M.init(S), s.meters || {});
       s.meterLog = s.meterLog || [];
+      // saves from before hidden sites
+      s.discovered = s.discovered || [];
+      s.local = s.local || { models: [], files: [] };
+      s.term = s.term || { lines: [], running: null };
+      s.bought = s.bought || [];
+      s.readThreads = s.readThreads || [];
       // saves from before the wallet
       for (const tab of s.tabs) if (/^secondnational\.com/.test(tab.url)) tab.url = 'satchel.app';
       if (s.unread.bank != null) { s.unread.wallet = s.unread.bank; delete s.unread.bank; }
@@ -177,6 +188,7 @@
     if (c.flag && !arr(c.flag).every((f) => M.flag(state, S, f, check))) return false;
     if (c.notFlag && arr(c.notFlag).some((f) => M.flag(state, S, f, check))) return false;
     if (c.meters && !M.test(state, S, c.meters)) return false;
+    if (c.discovered && !arr(c.discovered).every((id) => state.discovered.includes(id))) return false;
     if (c.node && !arr(c.node).includes(state.node)) return false;
     if (c.repo && !arr(c.repo).every((r) => state.repos[r])) return false;
     if (c.deployed && !arr(c.deployed).every((r) => state.repos[r] && state.repos[r].deployed)) return false;
@@ -190,6 +202,10 @@
     if (c.noDefects && arr(c.noDefects).some((r) => openDefects(r).length)) return false;
     return true;
   }
+
+  // the tier doing the work right now: agent's active model, or a local model while it runs
+  let levelOverride = null;
+  const workLevel = () => levelOverride || state.model;
 
   const currentNode = () => S.nodes[state.node] || { objective: '', branches: [] };
   const modelDef = (level) => S.models[Math.min(Math.max(level, 1), S.models.length) - 1];
@@ -293,7 +309,7 @@
       const name = typeof r === 'string' ? r : r.name;
       if (state.repos[name]) continue;
       state.repos[name] = { createdAt: state.t, deployed: false, broken: !!(r && r.broken), defects: [], complained: [], slots: {} };
-      rollDefects(name, state.model, (S.repos[name] && S.repos[name].qa && S.repos[name].qa.count) || null);
+      rollDefects(name, workLevel(), (S.repos[name] && S.repos[name].qa && S.repos[name].qa.count) || null);
       if (!onSite('forkyard')) state.unread.forkyard++;
       toast('Forkyard', `New repository: ${name}`, 'forkyard');
     }
@@ -327,6 +343,19 @@
     if (fx.agent) agentSays(fx.agent);
     for (const l of arr(fx.later)) state.queue.push({ at: laterTime(l), effects: l.effects });
     if (fx.reply) deliverReply(fx.reply);
+    for (const id of arr(fx.unlock)) discover(id);
+    // file: a text file lands on the laptop (readable with `cat` in the Terminal)
+    for (const f of arr(fx.file)) {
+      if (!state.local.files.some((x) => x.name === f.name)) state.local.files.push({ name: f.name, text: f.text });
+      discover('terminal');
+      toast('Downloads', `${f.name} saved to your laptop`, 'note');
+    }
+    // localModel: weights land on the laptop without a Weightroom download
+    for (const id of arr(fx.localModel)) {
+      if (state.local.models.includes(id)) continue;
+      state.local.models.push(id);
+      fireEvents('download', id);
+    }
     if (fx.thank) clientSays(fx.thank.repo, defectDef(fx.thank.repo, fx.thank.id).thanks);
     if (fx.goto && fx.goto !== state.node) {
       state.node = fx.goto;
@@ -380,8 +409,8 @@
     if (d.thanks) state.queue.push({ at: laterTime({ hours: [1, 3] }), effects: { thank: { repo, id } } });
     const qa = qaOf(repo);
     const isQa = qa && qa.defects.some((x) => x.id === id);
-    const chance = isQa && qa.regress ? qa.regress[Math.min(state.model, qa.regress.length) - 1] || 0 : 0;
-    if (Math.random() < chance) rollDefects(repo, state.model, 1, [id]);
+    const chance = isQa && qa.regress ? qa.regress[Math.min(workLevel(), qa.regress.length) - 1] || 0 : 0;
+    if (Math.random() < chance) rollDefects(repo, workLevel(), 1, [id]);
     toast('Forkyard', `New commit on ${repo}`, 'forkyard');
   }
 
@@ -551,6 +580,8 @@
     for (const ev of S.events || []) {
       if (ev.on !== kind) continue;
       if ((kind === 'deploy' || kind === 'takedown') && ev.repo !== extra) continue;
+      if (kind === 'discover' && ev.site !== extra) continue;
+      if ((kind === 'download' || kind === 'run') && ev.model && ev.model !== extra) continue;
       const key = ev.id || `${ev.on}:${ev.repo || ''}:${S.events.indexOf(ev)}`;
       if (state.fired[key]) continue;
       if (!check(ev.when)) continue;
@@ -672,6 +703,27 @@
     render();
   }
 
+  /*
+   * What a decision comes to on a given tier: { kind, reply, effects, src, decision }. A miss has
+   * no reply; the caller supplies one. Used by agent and by local models in the Terminal.
+   */
+  function resolveDecision(decision, level, modelName) {
+    // the player may have deployed or posted while Jev was deciding
+    if (decision.branch && !branchCandidates().includes(decision.branch)) decision = { ...decision, kind: 'miss', branch: null, stale: true };
+    decision = J.gate(decision, level, state.followers);
+    const b = decision.branch;
+    const res = (kind, reply, effects) => ({ decision, kind, reply, effects: effects || null, src: kind + (b ? ':' + b.id : '') });
+    if (decision.kind === 'hit') { const out = J.outcome(b, level); return res('hit', out.response, out.effects); }
+    // too weak, but it does the job anyway and doesn't tell you
+    if (decision.kind === 'fake') return res('fake', b.fake.response, b.fake.effects);
+    if (decision.kind === 'locked' && decision.lockReason === 'followers') {
+      return res('locked', tpl(b.fewFollowers || S.y.lockedResponse, { followers: state.followers, requiredFollowers: b.minFollowers }));
+    }
+    if (decision.kind === 'locked') return res('locked', tpl(b.weak || S.agent.lockedResponse, { model: modelName || modelDef(level).name, required: modelDef(b.minModel).name }));
+    if (decision.kind === 'partial') return res('partial', b.partial);
+    return { decision, kind: 'miss', reply: null, effects: null, src: 'miss' };
+  }
+
   function branchCandidates() {
     return [...(currentNode().branches || []), ...defectBranches(), ...(S.global || [])].filter((b) => check(b.when));
   }
@@ -700,38 +752,16 @@
     (async () => {
       let decision = await J.decide(text, branchCandidates(), { kind: 'prompt', node: sentNode, thresholds: S.decision });
       await thinking;
-      // the player may have deployed or posted while Jev was deciding
-      if (decision.branch && !branchCandidates().includes(decision.branch)) decision = { ...decision, kind: 'miss', branch: null, stale: true };
-      decision = J.gate(decision, level, state.followers);
+      const out = resolveDecision(decision, level);
+      decision = out.decision;
       lastReport = { prompt: text, node: sentNode, decision, model: level };
-      let reply;
-      let src;
-      let effects = null;
-      if (decision.kind === 'hit') {
-        const out = J.outcome(decision.branch, level);
-        reply = out.response;
-        effects = out.effects;
-        src = 'hit:' + decision.branch.id;
-      } else if (decision.kind === 'fake') {
-        // too weak, but agent does it anyway and doesn't tell you
-        reply = decision.branch.fake.response;
-        effects = decision.branch.fake.effects;
-        src = 'fake:' + decision.branch.id;
-        applyEffects(S.agent.onFake);
-      } else if (decision.kind === 'locked' && decision.lockReason === 'followers') {
-        reply = tpl(decision.branch.fewFollowers || S.y.lockedResponse, { followers: state.followers, requiredFollowers: decision.branch.minFollowers });
-        src = 'locked:' + decision.branch.id;
-        state.stats.locked++;
-      } else if (decision.kind === 'locked') {
-        const need = modelDef(decision.branch.minModel).name;
-        reply = tpl(decision.branch.weak || S.agent.lockedResponse, { model: modelDef(level).name, required: need });
-        src = 'locked:' + decision.branch.id;
-        state.stats.locked++;
-      } else if (decision.kind === 'partial') {
-        reply = decision.branch.partial;
-        src = 'partial:' + decision.branch.id;
-        state.stats.partials++;
-      } else {
+      let reply = out.reply;
+      let src = out.src;
+      const effects = out.effects;
+      if (out.kind === 'fake') applyEffects(S.agent.onFake);
+      if (out.kind === 'locked') state.stats.locked++;
+      if (out.kind === 'partial') state.stats.partials++;
+      if (out.kind === 'miss') {
         const ctx = { state, node: state.node, placeholders: S.placeholders, source: 'placeholder' };
         try {
           reply = await J.fallback(text, ctx);
@@ -909,6 +939,15 @@
       const def = S.repos[m[1]];
       return { site: 'app', repo: m[1], title: def && def.preview ? def.preview.title : m[1] };
     }
+    // hidden sites (story.sites): reachable by URL once known, some only once unlocked or invited
+    const hid = hiddenByUrl(u);
+    if (hid) {
+      const [id, d] = hid;
+      if (d.unlockOnly && !isDiscovered(id)) return { site: 'error', title: u };
+      if (d.gate && !check(d.gate)) return { site: 'gate', siteId: id, title: d.label };
+      const t = u.slice(d.url.length).match(/^\/t\/([a-z0-9_-]+)$/);
+      return { site: id, hidden: true, thread: t ? t[1] : null, title: t ? `${d.label} · thread` : d.label };
+    }
     return { site: 'error', title: u };
   }
 
@@ -929,6 +968,11 @@
 
   function opened(r) {
     if (state.unread[r.site] != null) state.unread[r.site] = 0;
+    if (r.hidden) discover(r.site);
+    if (r.thread && !state.readThreads.includes(r.thread)) {
+      const t = visibleThreads().find((x) => x.id === r.thread);
+      if (t) { state.readThreads.push(r.thread); applyEffects(t.onRead); }
+    }
     if (r.site === 'mail' && r.id) {
       const entry = state.mail.find((m) => m.id === r.id);
       if (entry) entry.read = true;
@@ -952,6 +996,208 @@
     render();
   }
 
+  // ───────────────────────── hidden sites ─────────────────────────
+
+  const HIDDEN = S.sites || {};
+  const hiddenByUrl = (u) => Object.entries(HIDDEN).find(([, d]) => u === d.url || u.startsWith(d.url + '/'));
+  const isDiscovered = (id) => !!state && state.discovered.includes(id);
+  function discover(id) {
+    if (!HIDDEN[id] || isDiscovered(id)) return;
+    state.discovered.push(id);
+    toast('Bookmarked', `${HIDDEN[id].label} added to your bookmarks`, 'note');
+    fireEvents('discover', id);
+  }
+  const bookmarkList = () => [...Object.entries(SITES), ...state.discovered.filter((k) => HIDDEN[k]).map((k) => [k, HIDDEN[k]])];
+
+  // Turn known addresses in text into links (forkyard apps, agent's model page, findable hidden sites).
+  function linkify(html, cls) {
+    const hidden = Object.values(HIDDEN).filter((d) => !d.unlockOnly).map((d) => d.url.replace(/\./g, '\\.'));
+    const re = new RegExp(`([a-z0-9-]+\\.forkyard\\.app|agent\\.chat\\/models${hidden.length ? '|' + hidden.join('|') : ''})`, 'g');
+    return html.replace(re, `<a href="#" data-nav="$1"${cls ? ` class="${cls}"` : ''}>$1</a>`);
+  }
+
+  const localDef = (id) => (S.localModels || []).find((m) => m.id === id);
+  const laptop = () => S.laptop || { ramGb: 16, diskGb: 40 };
+  const diskUsed = () => round2(state.local.models.reduce((a, id) => a + ((localDef(id) || {}).sizeGb || 0), 0));
+
+  function pageWeightroom() {
+    const L = laptop();
+    const cards = (S.localModels || []).filter((m) => m.source === 'weightroom').map((m) => {
+      const have = state.local.models.includes(m.id);
+      return `<article class="wr-card">
+        <header><b>${esc(m.id)}</b><span class="wr-dl">↓ ${esc(m.downloads || '')}</span></header>
+        <p>${esc(m.about)}</p>
+        <div class="wr-tags"><span>${m.sizeGb} GB</span><span class="${m.ramGb > L.ramGb ? 'bad' : ''}">needs ${m.ramGb} GB RAM</span><span>about ${esc(modelDef(m.tier).name)}</span></div>
+        ${have ? '<span class="wr-have">On your laptop</span>' : `<button class="wr-btn" data-download="${esc(m.id)}">Download · about ${m.downloadHours}h</button>`}
+      </article>`;
+    }).join('');
+    return `<div class="wr"><header class="wr-top"><div class="wr-logo">${ICONS.weightroom}<span>Weightroom</span></div><span class="wr-sub">open weights for everyone</span></header>
+      <div class="wr-wrap"><div class="wr-hero"><h1>Models</h1><p>Your laptop: ${L.ramGb} GB RAM · ${round2(L.diskGb - diskUsed())} of ${L.diskGb} GB disk free. Downloaded models run in the Terminal.</p></div>
+      <div class="wr-grid">${cards}</div></div></div>`;
+  }
+
+  // Download a model from Weightroom. Takes time; the first one installs the Terminal.
+  function downloadModel(id) {
+    const m = localDef(id);
+    if (!m || state.local.models.includes(id) || state.over || busy) return false;
+    if (diskUsed() + m.sizeGb > laptop().diskGb) {
+      toast('Disk full', `${id} needs ${m.sizeGb} GB. Delete something in the Terminal (rm).`, 'note');
+      return false;
+    }
+    advance(Math.round(m.downloadHours * 60));
+    if (state.over) { save(); render(); return false; }
+    state.local.models.push(id);
+    toast('Download complete', `${id} · ${m.sizeGb} GB`, 'note');
+    fireEvents('download', id);
+    save();
+    render();
+    return true;
+  }
+
+  // ── Terminal ──
+  let termBusy = false;
+  function pageTerminal() {
+    const T = state.term;
+    const ps = T.running ? `${T.running} >` : `${S.start.player.handle}@laptop:~$`;
+    const lines = T.lines.slice(-200).map((l) => `<div class="tm-${l.k}">${esc(l.text)}</div>`).join('');
+    const intro = `laptop · ${laptop().ramGb} GB RAM · ${round2(laptop().diskGb - diskUsed())} GB free. Type help.`;
+    return `<div class="tm" id="tm-log"><div class="tm-sys">${esc(intro)}</div>${lines}${termBusy ? '<div class="tm-sys tm-wait">thinking… (this laptop is not fast)</div>' : ''}
+      <form class="tm-in" data-form="term"><label for="term-input" class="tm-ps">${esc(ps)}</label><input id="term-input" autocomplete="off" autocapitalize="off" spellcheck="false" ${termBusy ? 'disabled' : ''}></form></div>`;
+  }
+
+  function termCommand(raw) {
+    const text = String(raw || '').trim();
+    if (!text || termBusy || state.over) return;
+    const T = state.term;
+    const say = (t, k) => T.lines.push({ k: k || 'out', text: t });
+    if (T.running) {
+      T.lines.push({ k: 'in', text: `${T.running} > ${text}` });
+      if (/^(\/bye|exit|quit)$/i.test(text)) { say(`stopped ${T.running}`, 'sys'); T.running = null; save(); render(); return; }
+      localPrompt(text);
+      return;
+    }
+    T.lines.push({ k: 'in', text: `$ ${text}` });
+    const [cmd, ...rest] = text.split(/\s+/);
+    const arg = rest.join(' ').replace(/^~\/|\.gguf$/g, '');
+    const L = laptop();
+    const owned = (id) => state.local.models.includes(id);
+    switch (cmd.toLowerCase()) {
+      case 'help':
+        say('help          this list\nls            what is on the laptop\ncat <file>    read a text file\nrun <model>   load a model and talk to it (free, slow)\nrm <file>     delete a model or file\ndf            disk and memory\nclear         clear the screen\n\nInside a model, type a prompt. /bye stops it.');
+        break;
+      case 'ls': {
+        const items = [...state.local.models.map((id) => `${id}.gguf`.padEnd(24) + `${localDef(id).sizeGb} GB`), ...state.local.files.map((f) => f.name)];
+        say(items.length ? items.join('\n') : '(empty. Weightroom has models.)');
+        break;
+      }
+      case 'cat': {
+        const f = state.local.files.find((x) => x.name === arg);
+        say(f ? f.text : owned(arg) ? `cat: ${arg}.gguf: binary file. Try: run ${arg}` : `cat: ${arg || '?'}: no such file`);
+        break;
+      }
+      case 'df': case 'free':
+        say(`disk   ${diskUsed()} / ${L.diskGb} GB used\nmemory ${L.ramGb} GB`);
+        break;
+      case 'rm':
+        if (owned(arg)) { state.local.models = state.local.models.filter((x) => x !== arg); say(`removed ${arg}.gguf`); }
+        else if (state.local.files.some((x) => x.name === arg)) { state.local.files = state.local.files.filter((x) => x.name !== arg); say(`removed ${arg}`); }
+        else say(`rm: ${arg || '?'}: no such file`);
+        break;
+      case 'clear':
+        T.lines = [];
+        break;
+      case 'run': case 'ollama': {
+        const id = cmd === 'ollama' ? rest.slice(1).join(' ') : arg;
+        const m = localDef(id);
+        if (!m || !owned(id)) { say(`run: ${id || '?'}: model not found. Try ls.`); break; }
+        if (m.ramGb > L.ramGb) { say(`error: ${id} needs ${m.ramGb} GB of memory; this laptop has ${L.ramGb} GB.\nkilled (out of memory)`, 'err'); break; }
+        T.running = id;
+        say(`loaded ${id} · works like ${modelDef(m.tier).name} · about ${m.hours}h per reply · free\n/bye to stop`, 'sys');
+        fireEvents('run', id);
+        break;
+      }
+      default:
+        say(`${cmd}: command not found. Type help.`, 'err');
+    }
+    save();
+    render();
+  }
+
+  // A prompt to the running local model: same story decisions as agent, at the model's tier, for free.
+  async function localPrompt(text) {
+    const m = localDef(state.term.running);
+    termBusy = true;
+    render();
+    const decision = await J.decide(text, branchCandidates(), { kind: 'prompt', node: state.node, thresholds: S.decision });
+    await new Promise((r) => setTimeout(r, 500));
+    const out = resolveDecision(decision, m.tier, m.id);
+    lastReport = { prompt: text, node: state.node, decision: out.decision, model: m.tier, channel: 'local' };
+    let reply = out.reply;
+    if (out.kind === 'miss') {
+      reply = (LLM && (await LLM.generate(text, { persona: m.persona }))) || null;
+      if (!reply) {
+        let h = 0;
+        for (const c of text) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+        reply = m.fallback[h % m.fallback.length];
+      }
+    }
+    state.lastCost = 0;
+    state.term.lines.push({ k: 'model', text: tpl(reply) });
+    levelOverride = m.tier;
+    try { if (out.effects) applyEffects(out.effects); } finally { levelOverride = null; }
+    applyEffects(m.onPrompt);
+    advance(Math.round(m.hours * 60));
+    termBusy = false;
+    save();
+    render();
+  }
+
+  // ── nullboard ──
+  const visibleThreads = () => ((S.forum || {}).threads || []).filter((t) => check(t.when));
+  function pageNullboard(r) {
+    const F = S.forum || {};
+    const head = `<header class="nb-top"><a href="#" data-nav="${HIDDEN.nullboard.url}" class="nb-logo">${ICONS.nullboard}<span>${esc(F.title || 'nullboard')}</span></a><span class="nb-tag">${esc(F.tagline || '')}</span></header>`;
+    if (r.thread) {
+      const t = visibleThreads().find((x) => x.id === r.thread);
+      if (!t) return `<div class="nb">${head}<div class="nb-wrap"><p>thread not found.</p></div></div>`;
+      const posts = t.posts.map((p, i) => `<article class="nb-post"><header><b>${esc(p.author)}</b><span>#${i + 1}</span></header><p>${linkify(esc(tpl(p.text))).replace(/\n/g, '<br>')}</p></article>`).join('');
+      return `<div class="nb">${head}<div class="nb-wrap"><p class="nb-crumb"><a href="#" data-nav="${HIDDEN.nullboard.url}">← all threads</a></p><h1>${esc(t.title)}</h1>${posts}<p class="nb-note">new members can't post yet.</p></div></div>`;
+    }
+    const rows = visibleThreads().map((t) => `<a href="#" class="nb-row${state.readThreads.includes(t.id) ? '' : ' new'}" data-nav="${HIDDEN.nullboard.url}/t/${t.id}">
+      <span class="nb-title">${t.pinned ? '[pinned] ' : ''}${esc(t.title)}</span><span class="nb-meta">${esc(t.author)} · ${t.posts.length} post${t.posts.length === 1 ? '' : 's'}</span></a>`).join('');
+    return `<div class="nb">${head}<div class="nb-wrap">${rows}</div></div>`;
+  }
+  function pageGate(r) {
+    const d = HIDDEN[r.siteId];
+    return `<div class="nb gate"><div class="nb-wrap"><p class="nb-logo">${ICONS[r.siteId] || ''}<span>${esc(d.label)}</span></p><p>${esc(d.gateText || 'access denied.')}</p></div></div>`;
+  }
+
+  // ── Cellar ──
+  function pageCellar() {
+    const mk = S.market || { listings: [] };
+    const items = mk.listings.filter((l) => check(l.when)).map((l) => {
+      const sold = l.once && state.bought.includes(l.id);
+      return `<article class="cl-item"><div class="cl-info"><h2>${esc(l.title)}</h2><p>${esc(l.about)}</p><small>seller ${esc(l.seller)} · ★ ${esc(l.rating || '–')}${l.hours ? ` · delivery about ${l.hours}h` : ''}</small></div>
+        <div class="cl-buy"><b>${fmtCoin(l.price)}</b>${sold ? '<span class="cl-sold">purchased</span>' : `<button class="cl-btn" data-buy="${esc(l.id)}">Buy</button>`}</div></article>`;
+    }).join('');
+    return `<div class="cl"><header class="cl-top"><div class="cl-logo">${ICONS.cellar}<span>${esc(mk.title || 'Cellar')}</span></div><span class="cl-sub">escrow · no refunds · paid in DOLR</span></header><div class="cl-wrap">${items}</div></div>`;
+  }
+
+  function buyListing(id) {
+    const l = ((S.market || {}).listings || []).find((x) => x.id === id);
+    if (!l || state.over || busy || (l.once && state.bought.includes(id))) return false;
+    if (state.money < l.price) { toast('Cellar', `Insufficient funds. ${fmtCoin(l.price)} needed.`, 'wallet'); return false; }
+    addTx(-l.price, `Cellar · order #${(txHash(state.t + id) || '').slice(2, 8)}`);
+    state.bought.push(id);
+    applyEffects(S.market.onBuy);
+    applyEffects(l.effects);
+    if (l.hours) advance(Math.round(l.hours * 60));
+    toast('Cellar', `Order complete: ${l.title}`, 'wallet');
+    save();
+    render();
+    return true;
+  }
+
   // ───────────────────────── page renderers ─────────────────────────
 
   const ICONS = {
@@ -962,12 +1208,16 @@
     // agent's mark: six rounded blades swirling around an open core
     agent: '<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(0 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(60 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(120 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(180 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(240 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(300 12 12)"/></g></svg>',
     newtab: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2" fill="none"/></svg>',
+    weightroom: '<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="5" y="6.5" width="3.5" height="11" rx="1.2"/><rect x="8.5" y="11" width="7" height="2" rx="1"/><rect x="15.5" y="6.5" width="3.5" height="11" rx="1.2"/><rect x="19" y="9" width="3" height="6" rx="1"/></g></svg>',
+    terminal: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4" width="19" height="16" rx="2.5" fill="currentColor"/><path d="m6.5 9 3 3-3 3M11.5 15.5h5" stroke="var(--icon-ink, #111)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    nullboard: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.5" stroke="currentColor" stroke-width="2.2" fill="none"/><path d="M6 18 18 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
+    cellar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20V10l9-6 9 6v10h-4v-6H7v6z" fill="currentColor"/><path d="M9 16h6M10 18.5h4" stroke="var(--icon-ink, #111)" stroke-width="1.4" stroke-linecap="round"/></svg>',
     app: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M4 9h16" stroke="currentColor" stroke-width="2"/></svg>',
     error: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 2.5v.5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
   };
 
   function pageNewTab() {
-    const tiles = Object.entries(SITES).map(([k, s]) =>
+    const tiles = bookmarkList().map(([k, s]) =>
       `<button class="nt-tile nt-${k}" data-nav="${s.url}"><span class="nt-ico">${ICONS[k]}</span><span>${esc(s.label)}</span>${badgeCount(k) ? `<i class="badge">${badgeCount(k)}</i>` : ''}</button>`
     ).join('');
     return `<div class="newtab">
@@ -1028,10 +1278,9 @@
     const feed = shown.map((p) => {
       const liked = !!state.liked[p.id];
       const likes = (p.likes || 0) + (liked ? 1 : 0);
-      const text = esc(p.text)
+      const text = linkify(esc(p.text)
         .replace(/@([a-z0-9_]+)/gi, '<span class="y-at">@$1</span>')
-        .replace(/(^|[^&\w])(#[a-z][a-z0-9_]*)/gi, '$1<span class="y-at">$2</span>')
-        .replace(/([a-z0-9-]+\.forkyard\.app|agent\.chat\/models)/g, '<a data-nav="$1" href="#" class="y-link">$1</a>');
+        .replace(/(^|[^&\w])(#[a-z][a-z0-9_]*)/gi, '$1<span class="y-at">$2</span>'), 'y-link');
       return `<article class="y-post${p.mine ? ' mine' : ''}">
         <header>
           ${avatar(p.author, p.handle)}
@@ -1200,9 +1449,7 @@
   }
 
   function mailBody(text) {
-    return esc(tpl(text))
-      .replace(/([a-z0-9-]+\.forkyard\.app|agent\.chat\/models)/g, '<a href="#" data-nav="$1">$1</a>')
-      .replace(/\n/g, '<br>');
+    return linkify(esc(tpl(text))).replace(/\n/g, '<br>');
   }
 
   function pageMail(r) {
@@ -1513,7 +1760,7 @@
     const addr = $('#address');
     if (document.activeElement !== addr) addr.value = r.site === 'newtab' ? '' : normalizeUrl(tab.url);
 
-    $('#bookmarks').innerHTML = Object.entries(SITES).map(([k, s]) =>
+    $('#bookmarks').innerHTML = bookmarkList().map(([k, s]) =>
       `<button class="bm" data-nav="${s.url}"><span class="bm-ico ico-${k}">${ICONS[k]}</span><span class="bm-label">${esc(s.label)}</span>${badgeCount(k) ? `<i class="badge">${badgeCount(k)}</i>` : ''}</button>`
     ).join('');
 
@@ -1533,6 +1780,11 @@
       case 'agent': html = r.page === 'models' ? pageModels() : pageAgent(); break;
       case 'app': html = pageApp(r.repo); break;
       case 'newtab': html = pageNewTab(); break;
+      case 'weightroom': html = pageWeightroom(); break;
+      case 'terminal': html = pageTerminal(); break;
+      case 'nullboard': html = pageNullboard(r); break;
+      case 'cellar': html = pageCellar(); break;
+      case 'gate': html = pageGate(r); break;
       default: html = pageError(tab.url);
     }
     const prevSite = vp.dataset.site;
@@ -1541,6 +1793,13 @@
     if (prevSite !== r.site) vp.scrollTop = 0;
     for (const [id, v] of Object.entries(keep)) { const el = document.getElementById(id); if (el && !el.disabled) el.value = v; }
     if (focusId) { const el = document.getElementById(focusId); if (el && !el.disabled) el.focus(); }
+    if (r.site === 'terminal') {
+      const log = $('#tm-log');
+      if (log) log.scrollTop = log.scrollHeight;
+      vp.scrollTop = vp.scrollHeight;
+      const input = $('#term-input');
+      if (input && !termBusy && window.innerWidth > 700) input.focus();
+    }
     if (r.site === 'agent') {
       updateCostEstimate();
       scrollLog();
@@ -1676,7 +1935,7 @@
         table = `<table><thead><tr><th>branch</th><th>cover</th><th>score</th><th>hits</th></tr></thead><tbody>${rows || '<tr><td colspan="4">no candidates</td></tr>'}</tbody></table>`;
       }
       const engine = decision.engine === 'jev' ? `Jev${J.last && J.last.model ? ' · ' + esc(J.last.model) : ''}${J.last ? ` · ${J.last.ms}ms` : ''}` : `keywords${decision.fellBack ? ' (Jev call failed: ' + esc((J.last && J.last.error) || '?') + ')' : ''}`;
-      report = `<p><b>${{ post: 'Y post', mail: 'Email' }[lastReport.channel] || 'Prompt'}:</b> ${esc(lastReport.prompt)}</p>
+      report = `<p><b>${{ post: 'Y post', mail: 'Email', local: 'Local model' }[lastReport.channel] || 'Prompt'}:</b> ${esc(lastReport.prompt)}</p>
         <p><b>Result:</b> ${decision.kind}${decision.branch ? ' → ' + esc(decision.branch.id) : ''}${decision.kind === 'locked' ? (decision.lockReason === 'followers' ? ` (needs ${decision.branch.minFollowers} followers)` : ` (needs ${esc(modelDef(decision.branch.minModel).name)}, had ${esc(modelDef(lastReport.model || 1).name)})`) : ''}${decision.stale ? ' (stale, ignored)' : ''} <span class="dv-dim">(node ${esc(lastReport.node)} · ${engine})</span></p>
         ${table}`;
     }
@@ -1691,6 +1950,7 @@
       <p><b>Heading for</b> ${(() => { const e = M.ending(S, check); return e ? `<code>${esc(e.id)}</code> · ${esc(e.title)}` : 'no ending'; })()}</p>
       ${state.meterLog.length ? `<p class="dv-dim">recent: ${state.meterLog.slice(-6).reverse().map((c) => `${esc(c.id)} ${c.after > c.before ? '+' : ''}${c.after - c.before}`).join(' · ')}</p>` : ''}
       <p><b>Flags</b> <code>${esc(JSON.stringify(state.flags))}</code></p>
+      <p><b>Sites found</b> ${state.discovered.length ? esc(state.discovered.join(', ')) : 'none'} <button data-dev="sites">unlock all</button></p>
       <p><b>Derived</b> <code>${esc(Object.entries(S.flags || {}).filter(([, d]) => d.when).map(([f]) => `${f}: ${M.flag(state, S, f, check)}`).join(' · '))}</code></p>
       ${LLM ? `<p><b>Local model</b> ${esc(LLM.settings.backend)} · ${esc(LLM.status)}${LLM.detail ? ' · ' + esc(LLM.detail) : ''}${LLM.last ? `<br><span class="dv-dim">last: ${LLM.last.ms}ms, ${LLM.last.ok ? 'used' : 'fell back'}${LLM.last.text ? ' — ' + esc(LLM.last.text.slice(0, 80)) : ''}</span>` : ''}</p>` : ''}
       <p><b>Queue</b> <code>${esc(JSON.stringify(state.queue.map((q) => ({ at: stamp(q.at), fx: typeof q.effects === 'string' ? q.effects : Object.keys(q.effects) }))))}</code></p>
@@ -1701,7 +1961,7 @@
 
   function bind() {
     document.addEventListener('click', (e) => {
-      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-takedown],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model],[data-reply],[data-mail-discard],[data-copy-addr],[data-wallet],[data-y-creator]');
+      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-takedown],[data-download],[data-buy],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model],[data-reply],[data-mail-discard],[data-copy-addr],[data-wallet],[data-y-creator]');
       if (!t) return;
       if (t.dataset.close) { e.stopPropagation(); closeTab(Number(t.dataset.close)); return; }
       if (t.dataset.nav) { e.preventDefault(); navigate(t.dataset.nav); return; }
@@ -1709,6 +1969,12 @@
       if (t.hasAttribute('data-newtab')) { navigate('newtab', true); return; }
       if (t.dataset.like) { const id = t.dataset.like; state.liked[id] = !state.liked[id]; save(); render(); return; }
       if (t.dataset.deploy) { deploy(t.dataset.deploy); return; }
+      if (t.dataset.download) { downloadModel(t.dataset.download); return; }
+      if (t.dataset.buy) {
+        const l = S.market.listings.find((x) => x.id === t.dataset.buy);
+        askConfirm(`Buy “${l.title}” for ${fmtCoin(l.price)}? Cellar has no refunds.`, `Pay ${fmtCoin(l.price)}`, () => buyListing(l.id));
+        return;
+      }
       if (t.dataset.takedown) {
         const repo = t.dataset.takedown;
         askConfirm(`Take ${repo} offline? Hosting stops, and so does anything it earns.`, 'Take down', () => takeDown(repo));
@@ -1764,6 +2030,13 @@
       if (!f) return;
       e.preventDefault();
       const kind = f.dataset.form;
+      if (kind === 'term') {
+        const input = $('#term-input');
+        const v = input.value;
+        input.value = '';
+        termCommand(v);
+        return;
+      }
       if (kind === 'prompt') {
         const input = $('#prompt-input');
         const v = input.value;
@@ -1845,6 +2118,7 @@
   function devAction(a) {
     if (a.startsWith('meter:')) { const [, id, d] = a.split(':'); applyEffects({ meters: { [id]: Number(d) } }); save(); render(); return; }
     if (a === 'close') { devOpen = false; renderDev(); return; }
+    if (a === 'sites') for (const id of Object.keys(HIDDEN)) discover(id);
     if (a === 'money+') addTx(100, 'Dev credit');
     if (a === 'money-') addTx(-100, 'Dev debit');
     if (a === 'hour') advance(60);
@@ -1886,6 +2160,7 @@
     get state() { return state; },
     sendPrompt, post: postToY, sendMail, deploy, takeDown, sleep: doSleep, navigate, buyModel,
     meter: (id) => M.value(state, S, id),
+    download: downloadModel, buy: buyListing, term: termCommand,
     heading: () => (M.ending(S, check) || {}).id,
     reset() { state = newState(); introOpen = false; save(); render(); },
     lastReport: () => lastReport,

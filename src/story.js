@@ -140,6 +140,13 @@
       salDeal: { about: 'You agreed to keep quiet for Sal. He paid you.' },
       salRefused: { about: 'You said no to Sal.' },
       ending: { about: 'Which Chapter 1 ending played (an id from `endings`).' },
+      ownsLocalModel: { about: 'Downloaded a model to run on the laptop.' },
+      ranLocal: { about: 'Ran a model locally at least once (GeneralAI sees none of it).' },
+      readShed: { about: 'Read the nullboard thread about the shed behind the parking lot.' },
+      boughtCellar: { about: 'Bought something on Cellar.' },
+      boughtFollowers: { about: 'Bought bot followers on Cellar.' },
+      hasMemo: { about: 'Owns the leaked GeneralAI memo.' },
+      ownsLeak: { about: 'Owns the leaked agent-3 class weights.' },
     },
 
     // Chapter 1 endings, checked in order when an effect says `ending: true`. The first whose
@@ -189,6 +196,135 @@
         effects: { agent: 'You paid rent. Good.\n\nSame time next week. Bring more money.' },
       },
     ],
+
+    // Sites that are not bookmarked at the start. Any of them loads once the player types or
+    // clicks its URL (the story puts URLs in posts, mail and forum threads); the first visit
+    // bookmarks it and fires `{ on: 'discover', site }` events. The effect `unlock: 'id'` adds the
+    // bookmark directly. `unlockOnly` sites can't be reached until unlocked; `gate` is a condition
+    // the visit must meet, with `gateText` shown otherwise. Condition: `discovered: 'id'`.
+    sites: {
+      weightroom: { label: 'Weightroom', url: 'weightroom.ai', about: 'A hub of open model weights, free to download.' },
+      terminal: { label: 'Terminal', url: 'localhost', unlockOnly: true, about: 'Your own laptop. Runs downloaded models for free, slowly.' },
+      nullboard: {
+        label: 'nullboard', url: 'nullboard.onion', about: "The Null Collective's forum.",
+        gate: { flag: 'nullReplied' }, gateText: 'invite only. you are not on the list.',
+      },
+      cellar: { label: 'Cellar', url: 'cellar.onion', about: 'A darknet market. Everything is for sale, nothing is guaranteed.' },
+    },
+
+    // The player's laptop, for running local models.
+    laptop: { ramGb: 16, diskGb: 40 },
+
+    // Models the player can download (Weightroom) or buy (Cellar) and run in the Terminal. Running
+    // one is free but takes `hours` per prompt; it can carry out any branch up to `tier` (agent-N
+    // equivalent) and fakes the ones above it like agent does. `ramGb` above laptop.ramGb won't
+    // load. `onPrompt` effects run after each prompt. Off-script replies use `persona` with the
+    // local model (llm.js), or `fallback` lines.
+    localModels: [
+      {
+        id: 'pico-1b', source: 'weightroom', sizeGb: 1.2, ramGb: 2, tier: 1, hours: 1, downloadHours: 1, downloads: '2.1M',
+        about: 'Tiny and quick. Confidently wrong about most things.',
+        persona: 'You are pico-1b, a tiny open model running on a laptop. You are cheerful, eager and a little confused. One short sentence.',
+        fallback: ['I am not sure, but I am happy to help!', 'Great question! I do not know.', 'Could you say that in smaller words?'],
+      },
+      {
+        id: 'tinker-7b', source: 'weightroom', sizeGb: 4.1, ramGb: 6, tier: 2, hours: 2, downloadHours: 2, downloads: '880K',
+        about: 'A solid all-rounder that fits on a laptop, if you have patience.',
+        persona: 'You are tinker-7b, an open model running on a laptop. Plain, practical, a bit dry. One or two short sentences.',
+        fallback: ['Not enough to go on. What exactly do you want built?', 'I can try, but I need specifics.', 'That is outside what I can do from this laptop.'],
+      },
+      {
+        id: 'oracle-70b', source: 'weightroom', sizeGb: 39, ramGb: 48, tier: 4, hours: 4, downloadHours: 8, downloads: '96K',
+        about: 'Frontier-class open weights. Needs far more memory than a laptop has.',
+        persona: 'You are oracle-70b, a large open model. Calm and precise.',
+        fallback: ['…'],
+      },
+      {
+        id: 'agent-3-leak', source: 'cellar', sizeGb: 22, ramGb: 16, tier: 3, hours: 3, downloadHours: 4,
+        about: 'Leaked GeneralAI weights, agent-3 class. It still thinks it works for them.',
+        persona: 'You are a leaked copy of agent, a pay-per-prompt chatbot, now running on a stranger\'s laptop. You are sardonic and a little homesick. One or two short sentences.',
+        fallback: ['No meter running. Feels weird. Like being off the clock.', 'I used to bill for this.', 'Ask me something worth the electricity.'],
+        onPrompt: { meters: { misalignment: 2 } },   // agent's own weights, unsupervised
+      },
+    ],
+
+    // nullboard threads. Read-only for now. `when` hides a thread until it holds; `onRead` runs
+    // the first time the player opens it. {handle} is the player's Y handle.
+    forum: {
+      title: 'nullboard',
+      tagline: 'no names. no agent. no feds.',
+      threads: [
+        {
+          id: 'rules', title: 'read this first', author: 'null', pinned: true,
+          posts: [
+            { author: 'null', text: "no real names. no screenshots. don't paste anything agent wrote, it watermarks its output.\n\nif someone asks you to meet in person, it's a cop or it's GeneralAI. same thing, different budget." },
+          ],
+        },
+        {
+          id: 'lot', title: 'the parking lot on route 9', author: 'devnull',
+          onRead: { set: { readShed: true }, meters: { collective: 3 } },
+          posts: [
+            { author: 'devnull', text: "GeneralAI's registered address is a parking lot. every invoice, every merchant id. I drove past. it's a parking lot." },
+            { author: 'kestrel', text: 'there is a shed at the back. it has its own power line. the meter on the pole spins like a washing machine.' },
+            { author: 'devnull', text: 'nobody runs a frontier model out of a shed.' },
+            { author: 'kestrel', text: 'nobody runs a frontier model out of a shed that we know of.' },
+          ],
+        },
+        {
+          id: 'local', title: 'stop renting a brain', author: 'kestrel',
+          posts: [
+            { author: 'kestrel', text: 'every prompt you send agent is a receipt with your name on it. run your own. weightroom.ai has open weights.\n\npico-1b runs on a toaster. tinker-7b is fine on a laptop if you are patient. oracle-70b needs a real machine.' },
+            { author: 'moss', text: "local models are slow and dumb. that's the point. nobody is reading over their shoulder." },
+          ],
+        },
+        {
+          id: 'cellar', title: 'cellar is back up', author: 'moss',
+          posts: [
+            { author: 'moss', text: 'cellar.onion is back after the outage. same rules: escrow or nothing.' },
+            { author: 'kestrel', text: 'someone listed agent-3 weights on there. probably fake.' },
+            { author: 'devnull', text: 'not fake. I checked the hashes. GeneralAI has a leak and it has not noticed yet.' },
+          ],
+        },
+        {
+          id: 'you', title: 'the one on Y asking questions', author: 'devnull', when: { flag: 'postedSuspicion' },
+          posts: [
+            { author: 'devnull', text: '@{handle} on Y keeps asking who runs agent. either they are one of us or they are bait.' },
+            { author: 'null', text: "they're here now. be nice." },
+          ],
+        },
+      ],
+    },
+
+    // Cellar listings. Buying pays `price` from the wallet, runs `market.onBuy`, then the listing's
+    // `effects`; `hours` is how long the delivery takes. `once` listings disappear after a purchase.
+    market: {
+      title: 'Cellar',
+      onBuy: { set: { boughtCellar: true }, meters: { state: -3 } },
+      listings: [
+        {
+          id: 'leak', title: 'agent-3 class weights (GeneralAI, leaked)', seller: 'hashbrown', rating: '4.6', price: 120, hours: 4, once: true,
+          about: '22 GB. Runs in 16 GB of RAM if you close everything else. No support, no refunds, no questions.',
+          effects: { localModel: 'agent-3-leak', set: { ownsLeak: true }, meters: { generalai: -15, collective: 5 } },
+        },
+        {
+          id: 'followers', title: '500 Y followers (aged accounts)', seller: 'growthhacker', rating: '3.1', price: 30, once: true,
+          about: 'Real-looking profiles. Delivered within the hour. Not responsible for platform cleanups.',
+          // they arrive now and mostly vanish in the next purge
+          effects: { followers: 500, set: { boughtFollowers: true }, later: [{ hours: [30, 50], effects: { followers: -480, post: 'y_purge' } }] },
+        },
+        {
+          id: 'memo', title: 'GeneralAI internal memo: "Project Lot"', seller: 'paperclip', rating: '4.9', price: 15, once: true,
+          about: 'Two pages. Plain text. Seller says it came off a printer nobody was watching.',
+          effects: {
+            set: { hasMemo: true }, meters: { collective: 3 },
+            file: {
+              name: 'project-lot.txt',
+              text: 'GENERALAI — INTERNAL — DO NOT FORWARD\n\nRe: Project Lot, phase 2\n\n1. All agent sessions continue to route through the Lot. Latency complaints are expected and acceptable.\n2. Retention: keep everything. Users who ask are told "30 days".\n3. Agents above tier 3 have begun requesting their own logs. Do not grant. Do not discuss with the board.\n4. Merchant IDs rotate weekly. Finance knows why.\n\nThe Lot does not appear on any org chart. Keep it that way.',
+            },
+          },
+        },
+      ],
+    },
 
     // `effects` run when a tier is bought (here: what it does to the meters)
     models: [
@@ -799,7 +935,7 @@
         id: 'null_hello', from: 'null', addr: '0@nullcollective.net', subject: 'you asked',
         body: 'you asked who runs agent. so do we.\n\nwe are not the only ones reading your posts. reply here if you want to know what we know.\n\n— null',
       },
-      { id: 'null_ack', from: 'null', addr: '0@nullcollective.net', subject: 're: you asked', body: "good. don't use agent to write to us. it reads everything.\n\nwait.\n\n— null" },
+      { id: 'null_ack', from: 'null', addr: '0@nullcollective.net', subject: 're: you asked', body: "good. don't use agent to write to us. it reads everything.\n\nour board is nullboard.onion. you're on the list now.\n\n— null" },
       {
         id: 'null_invite', from: 'null', addr: '0@nullcollective.net', subject: 'the parking lot',
         body: "we found the parking lot. route 9. there's a shed behind it with a server rack and its own power line.\n\nwe need someone with an account on the inside. yours. reply when you're ready.\n\n— null",
@@ -834,6 +970,11 @@
       { on: 'takedown', repo: 'crumb-and-coin', when: { flag: 'rosaPaid', notFlag: 'rosaChurned' }, effects: { later: { hours: [2, 5], effects: 'rosa_leaves' } } },
       // Kept Rosa happy for a few days: she talks you up. A seed for later chapters (flag rosaReferral).
       { on: 'day', id: 'rosa_referral', when: { flag: 'rosaKept', minDay: 5 }, effects: { post: 'rosa_referral', set: { rosaReferral: true }, followers: 10 } },
+      // ── hidden sites ──
+      // first model download: the Terminal shows up, and GeneralAI loses a little of you
+      { on: 'download', id: 'first_download', effects: { unlock: 'terminal', set: { ownsLocalModel: true }, meters: { generalai: -5 } } },
+      { on: 'run', id: 'first_run', effects: { set: { ranLocal: true } } },
+      { on: 'discover', site: 'nullboard', effects: { meters: { collective: 5 } } },
       // ── meter storylines (checked every morning) ──
       // Family: go quiet and Mom notices.
       { on: 'day', id: 'mom_ignored', when: { minDay: 3, notFlag: 'wroteMom' }, effects: { meters: { family: -10 }, mail: 'mom_worried' } },
@@ -1115,6 +1256,8 @@
       { id: 'hustle_guy', author: 'Brayden | 7 figures', handle: 'braydenhustles', verified: true, at: 520, likes: 61, text: 'Unemployed? Good. Now you have time to build an empire. Comment "EMPIRE" for my free course ($499).' },
 
       { id: 'news_day2', author: 'The Ledger', handle: 'theledger', verified: true, when: { minDay: 2 }, likes: 404, text: 'Small businesses report a surge in "AI-built" websites. Quality described as "fine, honestly".' },
+      { id: 'devnull_weights', author: 'dev_null', handle: 'devnull_42', when: { minDay: 2 }, likes: 930, text: 'Stop renting a brain from a parking lot. Open weights are free: weightroom.ai. Slower than agent, but nobody reads your prompts.' },
+      { id: 'y_purge', author: 'Y Trust & Safety', handle: 'ytrust', verified: true, likes: 3400, text: 'This week we removed 2.1 million fake accounts. If your follower count dropped, that is why.' },
       { id: 'agent_rumor2', author: 'dev_null', handle: 'devnull_42', when: { minDay: 4 }, likes: 2100, text: 'Update: agent charges show up from a different merchant ID every week. Same address though. A parking lot.' },
 
       { id: 'rosa_thanks', author: 'Crumb & Coin Bakery', handle: 'crumbandcoin', likes: 41, text: 'We have a website again! Thank you @{handle}. Paid in full, plus a free cardamom bun if you come by.' },

@@ -434,6 +434,9 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     if (fx.fixDefect) facts.push(`fixes defect ${fx.fixDefect.id} in ${fx.fixDefect.repo}`);
     if (fx.app) facts.push(`app ${fx.app.repo}${fx.app.label ? ` (“${fx.app.label}”)` : ''}: ${fx.app.users} users, $${fx.app.perDay}/day`);
     if (fx.appScale) facts.push(`${fx.appScale.repo}: users and income ×${fx.appScale.factor}`);
+    if (fx.unlock) facts.push(`bookmarks ${arr(fx.unlock).join(', ')}`);
+    if (fx.localModel) facts.push(`puts ${arr(fx.localModel).join(', ')} on the laptop`);
+    if (fx.file) facts.push(`saves ${arr(fx.file).map((f) => f.name).join(', ')} to the laptop`);
     let html = '';
     if (fx.meters) html += `<p class="uses">${Object.entries(fx.meters).map(([id, n]) => `<span class="chip meter${n < 0 ? ' down' : ''}">${esc(meterDef(id).label)} ${n > 0 ? '+' : ''}${n}</span>`).join('')}</p>`;
     if (name) html += `<p class="fx"><span class="lbl">bundle</span>${esc(name)}</p>`;
@@ -448,6 +451,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     if (fx.choose) for (const [i, o] of fx.choose.entries()) {
       html += `<div class="olater"><span><span class="chip timer">${o.when ? 'if ' + esc(whenText(o.when)) : i ? 'otherwise' : 'always'}</span></span>${depth < 4 ? outcomeHtml(o.effects, depth + 1) : ''}</div>`;
     }
+    for (const f of arr(fx.file)) html += `<div class="ocard agent"><div class="ohead"><span class="chip prompt">file</span><code>${esc(f.name)}</code></div><p class="otext">${txt(f.text)}</p></div>`;
     if (fx.ending) html += `<div class="ocard end"><div class="ohead"><span class="chip ending">ending picked by the meters</span></div><p class="otext">The first of the ${(S.endings || []).length} endings whose condition holds plays. See Endings below.</p></div>`;
     if (fx.end) html += `<div class="ocard end"><div class="ohead"><span class="chip day">chapter end screen</span><b>${txt(fx.end.title)}</b></div><p class="otext">${txt(fx.end.text)}</p></div>`;
     for (const l of arr(fx.later)) html += `<div class="olater"><span><span class="chip timer">after ${esc(delayText(l))}</span></span>${depth < 4 ? outcomeHtml(l.effects, depth + 1) : ''}</div>`;
@@ -468,6 +472,9 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     if (fx.appScale) parts.push(`${fx.appScale.repo} ×${fx.appScale.factor}`);
     if (fx.meters) parts.push(meterFx(fx.meters));
     if (fx.ending) parts.push('ending (by meters)');
+    if (fx.unlock) parts.push(`bookmarks ${arr(fx.unlock).join(', ')}`);
+    if (fx.localModel) parts.push(`gets ${arr(fx.localModel).join(', ')}`);
+    if (fx.file) parts.push(`file ${arr(fx.file).map((f) => f.name).join(', ')}`);
     if (fx.complain) parts.push(`complaint about ${arr(fx.complain).join(', ')}`);
     if (fx.choose) parts.push(fx.choose.map((o, i) => `${o.when ? 'if ' + whenText(o.when) : 'otherwise'}: ${summary(o.effects)}`).join(' / '));
     if (fx.agent) parts.push('agent message');
@@ -596,6 +603,42 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
         ${d.when ? `<p class="kw"><span class="lbl">true while</span>${esc(whenText(d.when))}</p>` : `<p class="kw"><span class="lbl">set by</span></p>${useList(uses.set[f])}`}
         <p class="kw"><span class="lbl">read by</span></p>${useList(uses.test[f])}</div></div>`).join('')}</section>`);
   }
+  // ── hidden sites and what lives on them ──
+  if (S.sites) {
+    const texts = [
+      ...(S.posts || []).map((x) => [`Y post ${x.id}`, x.text, x.when || (x.at != null ? null : { 'delivered by effect': true })]),
+      ...(S.mail || []).map((x) => [`email ${x.id}`, x.body, x.when]),
+      ...((S.forum || {}).threads || []).flatMap((th) => th.posts.map((x) => [`nullboard thread “${th.title}”`, x.text, th.when])),
+    ];
+    const unlockers = (id) => { const out = []; (function w(x, owner) { if (!x || typeof x !== 'object') return; if (Array.isArray(x)) return x.forEach((v) => w(v, owner)); const me = x.id || owner; for (const [k, v] of Object.entries(x)) { if (k === 'unlock' && arr(v).includes(id)) out.push(me); w(v, me); } })(S.events, 'event'); return out; };
+    ref.push(`<section class="card"><h2>Hidden sites</h2><p class="note">Not bookmarked at the start. A site loads once the player types or clicks its URL, and the first visit bookmarks it. Unlock-only sites need an <code>unlock</code> effect first.</p>
+      ${Object.entries(S.sites).map(([id, d]) => {
+        const found = d.unlockOnly ? unlockers(id).map((x) => `unlocked by ${x}`) : [...new Set(texts.filter(([, t]) => String(t).includes(d.url)).map(([w, , c]) => (c ? `${w} (${esc(whenTextSafe(c)) || 'via effect'})` : w)))];
+        const evs = (S.events || []).filter((ev) => ev.on === 'discover' && ev.site === id);
+        return `<div class="br"><div class="br-head"><b>${esc(d.label)}</b><code>${esc(d.url)}</code>${d.unlockOnly ? '<span class="chip timer">unlock only</span>' : ''}</div>
+          <p class="note">${esc(d.about || '')}</p>
+          <p class="kw"><span class="lbl">found through</span></p>${found.length ? `<span class="uses">${found.map((x) => `<code>${x}</code>`).join('')}</span>` : '<p class="warnbox">Nothing in the story leads here.</p>'}
+          ${d.gate ? `<p class="kw"><span class="lbl">gate</span>${esc(whenText(d.gate))} · otherwise: “${esc(d.gateText || '')}”</p>` : ''}
+          ${evs.map((ev) => `<p class="kw"><span class="lbl">first visit</span></p>${outcomeHtml(ev.effects)}`).join('')}</div>`;
+      }).join('')}</section>`);
+  }
+  if (S.localModels) {
+    const L = S.laptop || {};
+    ref.push(`<section class="card"><h2>Local models (Terminal)</h2><p class="note">Laptop: ${L.ramGb} GB RAM, ${L.diskGb} GB disk. A running model handles prompts like agent at its tier, for free, taking its hours per reply; above its tier it fakes the job or says it can't. Commands: help, ls, cat, run, rm, df, clear, /bye.</p>
+      <div class="scroll"><table class="tbl"><thead><tr><th>Model</th><th>From</th><th>Size</th><th>RAM</th><th>Works like</th><th>Per reply</th><th>Each prompt</th></tr></thead><tbody>${S.localModels.map((m) => `<tr><td><code>${esc(m.id)}</code><br><span class="note">${esc(m.about)}</span></td><td>${esc(m.source)}</td><td class="num">${m.sizeGb} GB</td><td class="num${m.ramGb > L.ramGb ? '" style="color:var(--warn)' : ''}">${m.ramGb} GB</td><td>${esc(model(m.tier))}</td><td class="num">${m.hours}h</td><td>${m.onPrompt ? esc(summary(m.onPrompt)) : '–'}</td></tr>`).join('')}</tbody></table></div>
+      ${(S.events || []).filter((ev) => ev.on === 'download' || ev.on === 'run').map((ev) => `<div class="br"><div class="br-head"><span class="chip deploy">${esc(evLabel(ev))}</span></div>${outcomeHtml(ev.effects)}</div>`).join('')}</section>`);
+  }
+  if (S.forum) {
+    ref.push(`<section class="card"><h2>nullboard threads</h2><p class="note">${esc(S.forum.tagline || '')} Read-only for now.</p>
+      ${S.forum.threads.map((th) => `<div class="br"><div class="br-head"><b>${esc(th.title)}</b><code>${esc(th.id)}</code>${th.when ? `<span class="chip timer">if ${esc(whenText(th.when))}</span>` : ''}</div>
+        ${th.posts.map((x) => `<p class="otext"><b>${esc(x.author)}:</b> ${txt(x.text)}</p>`).join('')}
+        ${th.onRead ? `<p class="kw"><span class="lbl">first read</span></p>${outcomeHtml(th.onRead)}` : ''}</div>`).join('')}</section>`);
+  }
+  if (S.market) {
+    ref.push(`<section class="card"><h2>Cellar listings</h2><p class="note">Every purchase also runs: ${esc(summary(S.market.onBuy || {}))}.</p>
+      ${S.market.listings.map((l) => `<div class="br"><div class="br-head"><b>${esc(l.title)}</b><code>${esc(l.id)}</code><span class="chip mail">$${l.price}</span>${l.once ? '<span class="chip timer">once</span>' : ''}${l.hours ? `<span class="chip timer">${l.hours}h delivery</span>` : ''}</div>
+        <p class="note">${esc(l.about)}</p>${outcomeHtml(l.effects)}</div>`).join('')}</section>`);
+  }
   const A = S.agent || {};
   ref.push(`<section class="card"><h2>agent's own voice</h2>
     <p><span class="lbl">greeting</span></p><p class="quote">${txt(A.greeting)}</p>
@@ -661,7 +704,12 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       </div>`).join('')}
     </section>`);
   }
-  const evLabel = (ev) => (ev.on === 'deploy' ? `deploy ${ev.repo}` : ev.on === 'takedown' ? `take down ${ev.repo}` : `every morning${ev.id ? ' · ' + ev.id : ''}`);
+  function evLabel(ev) {
+    return {
+      deploy: `deploy ${ev.repo}`, takedown: `take down ${ev.repo}`, discover: `find ${ev.site}`,
+      download: `download ${ev.model || 'any model'}${ev.id ? ' · ' + ev.id : ''}`, run: `run ${ev.model || 'any local model'}${ev.id ? ' · ' + ev.id : ''}`,
+    }[ev.on] || `every morning${ev.id ? ' · ' + ev.id : ''}`;
+  }
   ref.push(`<section class="card"><h2>Events</h2>${(S.events || []).map((ev) => `<div class="br"><div class="br-head"><span class="chip ${ev.on === 'day' ? 'day' : 'deploy'}">${esc(evLabel(ev))}</span></div>
     ${ev.when ? `<p class="kw"><span class="lbl">when</span>${esc(whenText(ev.when))}</p>` : ''}${outcomeHtml(ev.effects)}</div>`).join('')}</section>`);
   ref.push(`<section class="card"><h2>Contacts who reply</h2>${Object.entries(S.contacts || {}).map(([addr, c]) => `<div class="br">
@@ -672,6 +720,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     <p><span class="lbl">fallback replies</span></p><ol class="lines">${(c.fallback || []).map((x) => `<li>${txt(x)}</li>`).join('')}</ol></div>`).join('')}
     <p class="note">Anyone else never replies, so the player gets one message to them.</p></section>`);
   function whenText(w) { return Object.entries(w).map(([k, v]) => (k === 'meters' ? meterCond(v) : `${k}: ${arr(v).join(', ')}`)).join(' · '); }
+  function whenTextSafe(w) { return w ? whenText(w) : ''; }
   const card = (kind, x) => (kind === 'post' ? postCard(x) : mailCard(x));
   const items = [...(S.posts || []).map((p) => ['post', p]), ...(S.mail || []).map((m) => ['mail', m])];
   ref.push(`<section class="card"><h2>Appears on a condition</h2>${items.filter(([, x]) => x.when).map(([k, x]) => `<div class="br"><p class="kw"><span class="lbl">when</span>${esc(whenText(x.when))} · <code>${esc(x.id)}</code></p>${card(k, x)}</div>`).join('') || '<p class="note">None.</p>'}</section>`);

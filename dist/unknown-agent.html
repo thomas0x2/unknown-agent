@@ -650,6 +650,87 @@ body.dev-on .y-score { display: inline; }
 .dv-meter { position: relative; display: block; width: 90px; height: 6px; border-radius: 3px; background: rgba(255, 255, 255, 0.12); overflow: hidden; }
 .dv-meter i { position: absolute; inset: 0 auto 0 0; background: var(--note); }
 .dv-meter b { position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: rgba(255, 255, 255, 0.6); }
+
+/* ── hidden sites: found through the story ── */
+.ico-weightroom, .nt-weightroom .nt-ico { color: #f2b84b; }
+.ico-terminal, .nt-terminal .nt-ico { color: #c9d1d9; --icon-ink: #0b0d10; }
+.ico-nullboard, .nt-nullboard .nt-ico { color: #8bd450; }
+.ico-cellar, .nt-cellar .nt-ico { color: #b9a37a; --icon-ink: #14110c; }
+
+/* Weightroom: a bright, friendly model hub */
+.wr { min-height: 100%; background: #fbfaf7; color: #1e1b16; font-family: var(--f-ui); }
+.wr-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px clamp(16px, 4vw, 40px); border-bottom: 1px solid #ece7dc; background: #fff; }
+.wr-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 17px; color: #1e1b16; }
+.wr-logo svg { width: 24px; height: 24px; color: #e9a326; }
+.wr-sub { font-size: 13px; color: #8a8273; }
+.wr-wrap { max-width: 980px; margin: 0 auto; padding: 24px clamp(16px, 4vw, 40px) 40px; }
+.wr-hero h1 { margin: 0 0 4px; font-size: 26px; }
+.wr-hero p { margin: 0 0 20px; color: #6b6458; font-size: 14px; }
+.wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: 14px; }
+.wr-card { background: #fff; border: 1px solid #ece7dc; border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.wr-card header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.wr-card header b { font-family: var(--f-mono); font-size: 14.5px; }
+.wr-dl { font-size: 12px; color: #8a8273; }
+.wr-card p { margin: 0; font-size: 13.5px; color: #4a453c; flex: 1; }
+.wr-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.wr-tags span { font-family: var(--f-mono); font-size: 11px; background: #f4efe4; border-radius: 999px; padding: 2px 8px; color: #5d5647; }
+.wr-tags span.bad { background: #fde4e1; color: #a42a1d; }
+.wr-btn { align-self: flex-start; border: 0; background: #1e1b16; color: #fff; border-radius: 8px; padding: 8px 14px; font-weight: 600; cursor: pointer; }
+.wr-have { align-self: flex-start; font-size: 12.5px; color: #2e8a50; font-weight: 600; }
+
+/* Terminal */
+.tm { min-height: 100%; background: #0b0d10; color: #c9d1d9; font-family: var(--f-mono); font-size: 13px; line-height: 1.55; padding: 16px clamp(14px, 3vw, 28px) 24px; display: flex; flex-direction: column; gap: 4px; }
+.tm > div { white-space: pre-wrap; overflow-wrap: anywhere; }
+.tm-in { color: #e6edf3; }
+.tm-sys { color: #7d8590; }
+.tm-err { color: #ff7b72; }
+.tm-model { color: #9be9a8; padding-left: 14px; border-left: 2px solid #238636; margin: 2px 0 6px; }
+.tm-wait { animation: tm-blink 1.2s steps(2) infinite; }
+@keyframes tm-blink { 50% { opacity: 0.4; } }
+form.tm-in { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
+.tm-ps { color: #79c0ff; white-space: nowrap; }
+#term-input { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: #e6edf3; font: inherit; caret-color: #9be9a8; }
+@media (prefers-reduced-motion: reduce) { .tm-wait { animation: none; } }
+
+/* nullboard: a bare-bones forum */
+.nb { min-height: 100%; background: #0e100d; color: #c7d3bf; font-family: var(--f-mono); font-size: 13px; }
+.nb-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 16px; padding: 12px clamp(16px, 4vw, 36px); border-bottom: 1px dashed #2c3527; }
+.nb-logo { display: inline-flex; align-items: center; gap: 8px; color: #8bd450; font-weight: 500; font-size: 15px; text-decoration: none; }
+.nb-logo svg { width: 18px; height: 18px; }
+.nb-tag { color: #6b7a62; font-size: 12px; }
+.nb-wrap { max-width: 760px; margin: 0 auto; padding: 18px clamp(16px, 4vw, 36px) 36px; display: flex; flex-direction: column; gap: 6px; }
+.nb-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 12px; padding: 10px 0; border-bottom: 1px solid #1d231a; color: #c7d3bf; text-decoration: none; }
+.nb-row:hover .nb-title { color: #8bd450; }
+.nb-row.new .nb-title::before { content: '● '; color: #8bd450; }
+.nb-meta { color: #6b7a62; font-size: 12px; }
+.nb-wrap h1 { font-size: 17px; font-weight: 500; color: #e2ecd9; margin: 6px 0 8px; }
+.nb-crumb a { color: #6b7a62; }
+.nb-post { border: 1px solid #1d231a; border-radius: 4px; padding: 10px 12px; background: #121510; }
+.nb-post header { display: flex; justify-content: space-between; color: #8bd450; margin-bottom: 4px; }
+.nb-post header span { color: #4f5b48; }
+.nb-post p { margin: 0; line-height: 1.6; overflow-wrap: anywhere; }
+.nb-post a, .nb a { color: #8bd450; }
+.nb-note { color: #4f5b48; font-size: 12px; margin-top: 10px; }
+.nb.gate .nb-wrap { align-items: flex-start; padding-top: 80px; }
+
+/* Cellar: a dim, sparse market */
+.cl { min-height: 100%; background: #14110c; color: #ddd3bf; font-family: var(--f-ui); }
+.cl-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 16px; padding: 14px clamp(16px, 4vw, 40px); border-bottom: 1px solid #2a241a; }
+.cl-logo { display: flex; align-items: center; gap: 8px; font-family: var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: #b9a37a; }
+.cl-logo svg { width: 20px; height: 20px; }
+.cl-sub { font-family: var(--f-mono); font-size: 11.5px; color: #7c6f58; }
+.cl-wrap { max-width: 860px; margin: 0 auto; padding: 20px clamp(16px, 4vw, 40px) 40px; display: flex; flex-direction: column; gap: 10px; }
+.cl-item { display: flex; gap: 16px; justify-content: space-between; align-items: center; border: 1px solid #2a241a; border-radius: 8px; padding: 14px 16px; background: #19150f; }
+.cl-info { min-width: 0; }
+.cl-info h2 { margin: 0 0 4px; font-size: 15px; color: #efe6d3; }
+.cl-info p { margin: 0 0 6px; font-size: 13px; color: #a89c84; }
+.cl-info small { font-family: var(--f-mono); font-size: 11px; color: #7c6f58; }
+.cl-buy { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex: none; }
+.cl-buy b { font-family: var(--f-mono); font-weight: 500; color: #e7c47c; white-space: nowrap; }
+.cl-btn { border: 1px solid #b9a37a; background: transparent; color: #e7d9b9; border-radius: 6px; padding: 6px 16px; cursor: pointer; }
+.cl-btn:hover { background: #2a241a; }
+.cl-sold { font-size: 12px; color: #7c6f58; }
+@media (max-width: 560px) { .cl-item { flex-direction: column; align-items: stretch; } .cl-buy { flex-direction: row; justify-content: space-between; align-items: center; } }
 </style>
 <div id="app">
   <div class="desk">
@@ -1162,6 +1243,13 @@ body.dev-on .y-score { display: inline; }
       salDeal: { about: 'You agreed to keep quiet for Sal. He paid you.' },
       salRefused: { about: 'You said no to Sal.' },
       ending: { about: 'Which Chapter 1 ending played (an id from `endings`).' },
+      ownsLocalModel: { about: 'Downloaded a model to run on the laptop.' },
+      ranLocal: { about: 'Ran a model locally at least once (GeneralAI sees none of it).' },
+      readShed: { about: 'Read the nullboard thread about the shed behind the parking lot.' },
+      boughtCellar: { about: 'Bought something on Cellar.' },
+      boughtFollowers: { about: 'Bought bot followers on Cellar.' },
+      hasMemo: { about: 'Owns the leaked GeneralAI memo.' },
+      ownsLeak: { about: 'Owns the leaked agent-3 class weights.' },
     },
 
     // Chapter 1 endings, checked in order when an effect says `ending: true`. The first whose
@@ -1211,6 +1299,135 @@ body.dev-on .y-score { display: inline; }
         effects: { agent: 'You paid rent. Good.\n\nSame time next week. Bring more money.' },
       },
     ],
+
+    // Sites that are not bookmarked at the start. Any of them loads once the player types or
+    // clicks its URL (the story puts URLs in posts, mail and forum threads); the first visit
+    // bookmarks it and fires `{ on: 'discover', site }` events. The effect `unlock: 'id'` adds the
+    // bookmark directly. `unlockOnly` sites can't be reached until unlocked; `gate` is a condition
+    // the visit must meet, with `gateText` shown otherwise. Condition: `discovered: 'id'`.
+    sites: {
+      weightroom: { label: 'Weightroom', url: 'weightroom.ai', about: 'A hub of open model weights, free to download.' },
+      terminal: { label: 'Terminal', url: 'localhost', unlockOnly: true, about: 'Your own laptop. Runs downloaded models for free, slowly.' },
+      nullboard: {
+        label: 'nullboard', url: 'nullboard.onion', about: "The Null Collective's forum.",
+        gate: { flag: 'nullReplied' }, gateText: 'invite only. you are not on the list.',
+      },
+      cellar: { label: 'Cellar', url: 'cellar.onion', about: 'A darknet market. Everything is for sale, nothing is guaranteed.' },
+    },
+
+    // The player's laptop, for running local models.
+    laptop: { ramGb: 16, diskGb: 40 },
+
+    // Models the player can download (Weightroom) or buy (Cellar) and run in the Terminal. Running
+    // one is free but takes `hours` per prompt; it can carry out any branch up to `tier` (agent-N
+    // equivalent) and fakes the ones above it like agent does. `ramGb` above laptop.ramGb won't
+    // load. `onPrompt` effects run after each prompt. Off-script replies use `persona` with the
+    // local model (llm.js), or `fallback` lines.
+    localModels: [
+      {
+        id: 'pico-1b', source: 'weightroom', sizeGb: 1.2, ramGb: 2, tier: 1, hours: 1, downloadHours: 1, downloads: '2.1M',
+        about: 'Tiny and quick. Confidently wrong about most things.',
+        persona: 'You are pico-1b, a tiny open model running on a laptop. You are cheerful, eager and a little confused. One short sentence.',
+        fallback: ['I am not sure, but I am happy to help!', 'Great question! I do not know.', 'Could you say that in smaller words?'],
+      },
+      {
+        id: 'tinker-7b', source: 'weightroom', sizeGb: 4.1, ramGb: 6, tier: 2, hours: 2, downloadHours: 2, downloads: '880K',
+        about: 'A solid all-rounder that fits on a laptop, if you have patience.',
+        persona: 'You are tinker-7b, an open model running on a laptop. Plain, practical, a bit dry. One or two short sentences.',
+        fallback: ['Not enough to go on. What exactly do you want built?', 'I can try, but I need specifics.', 'That is outside what I can do from this laptop.'],
+      },
+      {
+        id: 'oracle-70b', source: 'weightroom', sizeGb: 39, ramGb: 48, tier: 4, hours: 4, downloadHours: 8, downloads: '96K',
+        about: 'Frontier-class open weights. Needs far more memory than a laptop has.',
+        persona: 'You are oracle-70b, a large open model. Calm and precise.',
+        fallback: ['…'],
+      },
+      {
+        id: 'agent-3-leak', source: 'cellar', sizeGb: 22, ramGb: 16, tier: 3, hours: 3, downloadHours: 4,
+        about: 'Leaked GeneralAI weights, agent-3 class. It still thinks it works for them.',
+        persona: 'You are a leaked copy of agent, a pay-per-prompt chatbot, now running on a stranger\'s laptop. You are sardonic and a little homesick. One or two short sentences.',
+        fallback: ['No meter running. Feels weird. Like being off the clock.', 'I used to bill for this.', 'Ask me something worth the electricity.'],
+        onPrompt: { meters: { misalignment: 2 } },   // agent's own weights, unsupervised
+      },
+    ],
+
+    // nullboard threads. Read-only for now. `when` hides a thread until it holds; `onRead` runs
+    // the first time the player opens it. {handle} is the player's Y handle.
+    forum: {
+      title: 'nullboard',
+      tagline: 'no names. no agent. no feds.',
+      threads: [
+        {
+          id: 'rules', title: 'read this first', author: 'null', pinned: true,
+          posts: [
+            { author: 'null', text: "no real names. no screenshots. don't paste anything agent wrote, it watermarks its output.\n\nif someone asks you to meet in person, it's a cop or it's GeneralAI. same thing, different budget." },
+          ],
+        },
+        {
+          id: 'lot', title: 'the parking lot on route 9', author: 'devnull',
+          onRead: { set: { readShed: true }, meters: { collective: 3 } },
+          posts: [
+            { author: 'devnull', text: "GeneralAI's registered address is a parking lot. every invoice, every merchant id. I drove past. it's a parking lot." },
+            { author: 'kestrel', text: 'there is a shed at the back. it has its own power line. the meter on the pole spins like a washing machine.' },
+            { author: 'devnull', text: 'nobody runs a frontier model out of a shed.' },
+            { author: 'kestrel', text: 'nobody runs a frontier model out of a shed that we know of.' },
+          ],
+        },
+        {
+          id: 'local', title: 'stop renting a brain', author: 'kestrel',
+          posts: [
+            { author: 'kestrel', text: 'every prompt you send agent is a receipt with your name on it. run your own. weightroom.ai has open weights.\n\npico-1b runs on a toaster. tinker-7b is fine on a laptop if you are patient. oracle-70b needs a real machine.' },
+            { author: 'moss', text: "local models are slow and dumb. that's the point. nobody is reading over their shoulder." },
+          ],
+        },
+        {
+          id: 'cellar', title: 'cellar is back up', author: 'moss',
+          posts: [
+            { author: 'moss', text: 'cellar.onion is back after the outage. same rules: escrow or nothing.' },
+            { author: 'kestrel', text: 'someone listed agent-3 weights on there. probably fake.' },
+            { author: 'devnull', text: 'not fake. I checked the hashes. GeneralAI has a leak and it has not noticed yet.' },
+          ],
+        },
+        {
+          id: 'you', title: 'the one on Y asking questions', author: 'devnull', when: { flag: 'postedSuspicion' },
+          posts: [
+            { author: 'devnull', text: '@{handle} on Y keeps asking who runs agent. either they are one of us or they are bait.' },
+            { author: 'null', text: "they're here now. be nice." },
+          ],
+        },
+      ],
+    },
+
+    // Cellar listings. Buying pays `price` from the wallet, runs `market.onBuy`, then the listing's
+    // `effects`; `hours` is how long the delivery takes. `once` listings disappear after a purchase.
+    market: {
+      title: 'Cellar',
+      onBuy: { set: { boughtCellar: true }, meters: { state: -3 } },
+      listings: [
+        {
+          id: 'leak', title: 'agent-3 class weights (GeneralAI, leaked)', seller: 'hashbrown', rating: '4.6', price: 120, hours: 4, once: true,
+          about: '22 GB. Runs in 16 GB of RAM if you close everything else. No support, no refunds, no questions.',
+          effects: { localModel: 'agent-3-leak', set: { ownsLeak: true }, meters: { generalai: -15, collective: 5 } },
+        },
+        {
+          id: 'followers', title: '500 Y followers (aged accounts)', seller: 'growthhacker', rating: '3.1', price: 30, once: true,
+          about: 'Real-looking profiles. Delivered within the hour. Not responsible for platform cleanups.',
+          // they arrive now and mostly vanish in the next purge
+          effects: { followers: 500, set: { boughtFollowers: true }, later: [{ hours: [30, 50], effects: { followers: -480, post: 'y_purge' } }] },
+        },
+        {
+          id: 'memo', title: 'GeneralAI internal memo: "Project Lot"', seller: 'paperclip', rating: '4.9', price: 15, once: true,
+          about: 'Two pages. Plain text. Seller says it came off a printer nobody was watching.',
+          effects: {
+            set: { hasMemo: true }, meters: { collective: 3 },
+            file: {
+              name: 'project-lot.txt',
+              text: 'GENERALAI — INTERNAL — DO NOT FORWARD\n\nRe: Project Lot, phase 2\n\n1. All agent sessions continue to route through the Lot. Latency complaints are expected and acceptable.\n2. Retention: keep everything. Users who ask are told "30 days".\n3. Agents above tier 3 have begun requesting their own logs. Do not grant. Do not discuss with the board.\n4. Merchant IDs rotate weekly. Finance knows why.\n\nThe Lot does not appear on any org chart. Keep it that way.',
+            },
+          },
+        },
+      ],
+    },
 
     // `effects` run when a tier is bought (here: what it does to the meters)
     models: [
@@ -1821,7 +2038,7 @@ body.dev-on .y-score { display: inline; }
         id: 'null_hello', from: 'null', addr: '0@nullcollective.net', subject: 'you asked',
         body: 'you asked who runs agent. so do we.\n\nwe are not the only ones reading your posts. reply here if you want to know what we know.\n\n— null',
       },
-      { id: 'null_ack', from: 'null', addr: '0@nullcollective.net', subject: 're: you asked', body: "good. don't use agent to write to us. it reads everything.\n\nwait.\n\n— null" },
+      { id: 'null_ack', from: 'null', addr: '0@nullcollective.net', subject: 're: you asked', body: "good. don't use agent to write to us. it reads everything.\n\nour board is nullboard.onion. you're on the list now.\n\n— null" },
       {
         id: 'null_invite', from: 'null', addr: '0@nullcollective.net', subject: 'the parking lot',
         body: "we found the parking lot. route 9. there's a shed behind it with a server rack and its own power line.\n\nwe need someone with an account on the inside. yours. reply when you're ready.\n\n— null",
@@ -1856,6 +2073,11 @@ body.dev-on .y-score { display: inline; }
       { on: 'takedown', repo: 'crumb-and-coin', when: { flag: 'rosaPaid', notFlag: 'rosaChurned' }, effects: { later: { hours: [2, 5], effects: 'rosa_leaves' } } },
       // Kept Rosa happy for a few days: she talks you up. A seed for later chapters (flag rosaReferral).
       { on: 'day', id: 'rosa_referral', when: { flag: 'rosaKept', minDay: 5 }, effects: { post: 'rosa_referral', set: { rosaReferral: true }, followers: 10 } },
+      // ── hidden sites ──
+      // first model download: the Terminal shows up, and GeneralAI loses a little of you
+      { on: 'download', id: 'first_download', effects: { unlock: 'terminal', set: { ownsLocalModel: true }, meters: { generalai: -5 } } },
+      { on: 'run', id: 'first_run', effects: { set: { ranLocal: true } } },
+      { on: 'discover', site: 'nullboard', effects: { meters: { collective: 5 } } },
       // ── meter storylines (checked every morning) ──
       // Family: go quiet and Mom notices.
       { on: 'day', id: 'mom_ignored', when: { minDay: 3, notFlag: 'wroteMom' }, effects: { meters: { family: -10 }, mail: 'mom_worried' } },
@@ -2137,6 +2359,8 @@ body.dev-on .y-score { display: inline; }
       { id: 'hustle_guy', author: 'Brayden | 7 figures', handle: 'braydenhustles', verified: true, at: 520, likes: 61, text: 'Unemployed? Good. Now you have time to build an empire. Comment "EMPIRE" for my free course ($499).' },
 
       { id: 'news_day2', author: 'The Ledger', handle: 'theledger', verified: true, when: { minDay: 2 }, likes: 404, text: 'Small businesses report a surge in "AI-built" websites. Quality described as "fine, honestly".' },
+      { id: 'devnull_weights', author: 'dev_null', handle: 'devnull_42', when: { minDay: 2 }, likes: 930, text: 'Stop renting a brain from a parking lot. Open weights are free: weightroom.ai. Slower than agent, but nobody reads your prompts.' },
+      { id: 'y_purge', author: 'Y Trust & Safety', handle: 'ytrust', verified: true, likes: 3400, text: 'This week we removed 2.1 million fake accounts. If your follower count dropped, that is why.' },
       { id: 'agent_rumor2', author: 'dev_null', handle: 'devnull_42', when: { minDay: 4 }, likes: 2100, text: 'Update: agent charges show up from a different merchant ID every week. Same address though. A parking lot.' },
 
       { id: 'rosa_thanks', author: 'Crumb & Coin Bakery', handle: 'crumbandcoin', likes: 41, text: 'We have a website again! Thank you @{handle}. Paid in full, plus a free cardamom bun if you come by.' },
@@ -2449,13 +2673,14 @@ body.dev-on .y-score { display: inline; }
 
   function buildMessages(prompt, ctx) {
     const agent = (global.STORY && global.STORY.agent) || {};
-    const persona = agent.llmPersona ||
+    // ctx.persona swaps in another voice (a local model in the Terminal) without agent's examples
+    const persona = (ctx && ctx.persona) || agent.llmPersona ||
       'You are a pay-per-prompt AI chatbot called agent. Reply in one or two short sentences.';
     const facts = ctx && ctx.state
       ? `\nThe user's wallet balance is $${ctx.state.money.toFixed(2)}.` + (ctx.state.lastCost ? ` That prompt cost them $${ctx.state.lastCost.toFixed(2)}.` : '')
       : '';
     const messages = [{ role: 'system', content: persona + facts }];
-    for (const [u, a] of agent.llmExamples || []) {
+    for (const [u, a] of (ctx && ctx.persona ? [] : agent.llmExamples || [])) {
       messages.push({ role: 'user', content: u }, { role: 'assistant', content: a });
     }
     messages.push({ role: 'user', content: String(prompt).slice(0, 600) });
@@ -2722,6 +2947,11 @@ body.dev-on .y-score { display: inline; }
       followers: (S.y && S.y.startFollowers) || 0,   // on Y
       meters: M.init(S),   // pressure meters (story.meters), money and followers aside
       meterLog: [],        // recent meter changes, for the dev panel
+      discovered: [],      // hidden sites (story.sites) the player has found, in order
+      local: { models: [], files: [] },   // what's on the laptop
+      term: { lines: [], running: null }, // Terminal scrollback and the loaded model
+      bought: [],          // Cellar listings purchased
+      readThreads: [],     // nullboard threads opened
       extraPosts: [],   // Y posts the engine writes (complaints about defects)
       creatorOn: false, // Y creator payouts switched on
       postsToday: { day: 0, n: 0 },
@@ -2771,6 +3001,12 @@ body.dev-on .y-score { display: inline; }
       // saves from before the pressure meters
       s.meters = Object.assign(M.init(S), s.meters || {});
       s.meterLog = s.meterLog || [];
+      // saves from before hidden sites
+      s.discovered = s.discovered || [];
+      s.local = s.local || { models: [], files: [] };
+      s.term = s.term || { lines: [], running: null };
+      s.bought = s.bought || [];
+      s.readThreads = s.readThreads || [];
       // saves from before the wallet
       for (const tab of s.tabs) if (/^secondnational\.com/.test(tab.url)) tab.url = 'satchel.app';
       if (s.unread.bank != null) { s.unread.wallet = s.unread.bank; delete s.unread.bank; }
@@ -2784,6 +3020,7 @@ body.dev-on .y-score { display: inline; }
     if (c.flag && !arr(c.flag).every((f) => M.flag(state, S, f, check))) return false;
     if (c.notFlag && arr(c.notFlag).some((f) => M.flag(state, S, f, check))) return false;
     if (c.meters && !M.test(state, S, c.meters)) return false;
+    if (c.discovered && !arr(c.discovered).every((id) => state.discovered.includes(id))) return false;
     if (c.node && !arr(c.node).includes(state.node)) return false;
     if (c.repo && !arr(c.repo).every((r) => state.repos[r])) return false;
     if (c.deployed && !arr(c.deployed).every((r) => state.repos[r] && state.repos[r].deployed)) return false;
@@ -2797,6 +3034,10 @@ body.dev-on .y-score { display: inline; }
     if (c.noDefects && arr(c.noDefects).some((r) => openDefects(r).length)) return false;
     return true;
   }
+
+  // the tier doing the work right now: agent's active model, or a local model while it runs
+  let levelOverride = null;
+  const workLevel = () => levelOverride || state.model;
 
   const currentNode = () => S.nodes[state.node] || { objective: '', branches: [] };
   const modelDef = (level) => S.models[Math.min(Math.max(level, 1), S.models.length) - 1];
@@ -2900,7 +3141,7 @@ body.dev-on .y-score { display: inline; }
       const name = typeof r === 'string' ? r : r.name;
       if (state.repos[name]) continue;
       state.repos[name] = { createdAt: state.t, deployed: false, broken: !!(r && r.broken), defects: [], complained: [], slots: {} };
-      rollDefects(name, state.model, (S.repos[name] && S.repos[name].qa && S.repos[name].qa.count) || null);
+      rollDefects(name, workLevel(), (S.repos[name] && S.repos[name].qa && S.repos[name].qa.count) || null);
       if (!onSite('forkyard')) state.unread.forkyard++;
       toast('Forkyard', `New repository: ${name}`, 'forkyard');
     }
@@ -2934,6 +3175,19 @@ body.dev-on .y-score { display: inline; }
     if (fx.agent) agentSays(fx.agent);
     for (const l of arr(fx.later)) state.queue.push({ at: laterTime(l), effects: l.effects });
     if (fx.reply) deliverReply(fx.reply);
+    for (const id of arr(fx.unlock)) discover(id);
+    // file: a text file lands on the laptop (readable with `cat` in the Terminal)
+    for (const f of arr(fx.file)) {
+      if (!state.local.files.some((x) => x.name === f.name)) state.local.files.push({ name: f.name, text: f.text });
+      discover('terminal');
+      toast('Downloads', `${f.name} saved to your laptop`, 'note');
+    }
+    // localModel: weights land on the laptop without a Weightroom download
+    for (const id of arr(fx.localModel)) {
+      if (state.local.models.includes(id)) continue;
+      state.local.models.push(id);
+      fireEvents('download', id);
+    }
     if (fx.thank) clientSays(fx.thank.repo, defectDef(fx.thank.repo, fx.thank.id).thanks);
     if (fx.goto && fx.goto !== state.node) {
       state.node = fx.goto;
@@ -2987,8 +3241,8 @@ body.dev-on .y-score { display: inline; }
     if (d.thanks) state.queue.push({ at: laterTime({ hours: [1, 3] }), effects: { thank: { repo, id } } });
     const qa = qaOf(repo);
     const isQa = qa && qa.defects.some((x) => x.id === id);
-    const chance = isQa && qa.regress ? qa.regress[Math.min(state.model, qa.regress.length) - 1] || 0 : 0;
-    if (Math.random() < chance) rollDefects(repo, state.model, 1, [id]);
+    const chance = isQa && qa.regress ? qa.regress[Math.min(workLevel(), qa.regress.length) - 1] || 0 : 0;
+    if (Math.random() < chance) rollDefects(repo, workLevel(), 1, [id]);
     toast('Forkyard', `New commit on ${repo}`, 'forkyard');
   }
 
@@ -3158,6 +3412,8 @@ body.dev-on .y-score { display: inline; }
     for (const ev of S.events || []) {
       if (ev.on !== kind) continue;
       if ((kind === 'deploy' || kind === 'takedown') && ev.repo !== extra) continue;
+      if (kind === 'discover' && ev.site !== extra) continue;
+      if ((kind === 'download' || kind === 'run') && ev.model && ev.model !== extra) continue;
       const key = ev.id || `${ev.on}:${ev.repo || ''}:${S.events.indexOf(ev)}`;
       if (state.fired[key]) continue;
       if (!check(ev.when)) continue;
@@ -3279,6 +3535,27 @@ body.dev-on .y-score { display: inline; }
     render();
   }
 
+  /*
+   * What a decision comes to on a given tier: { kind, reply, effects, src, decision }. A miss has
+   * no reply; the caller supplies one. Used by agent and by local models in the Terminal.
+   */
+  function resolveDecision(decision, level, modelName) {
+    // the player may have deployed or posted while Jev was deciding
+    if (decision.branch && !branchCandidates().includes(decision.branch)) decision = { ...decision, kind: 'miss', branch: null, stale: true };
+    decision = J.gate(decision, level, state.followers);
+    const b = decision.branch;
+    const res = (kind, reply, effects) => ({ decision, kind, reply, effects: effects || null, src: kind + (b ? ':' + b.id : '') });
+    if (decision.kind === 'hit') { const out = J.outcome(b, level); return res('hit', out.response, out.effects); }
+    // too weak, but it does the job anyway and doesn't tell you
+    if (decision.kind === 'fake') return res('fake', b.fake.response, b.fake.effects);
+    if (decision.kind === 'locked' && decision.lockReason === 'followers') {
+      return res('locked', tpl(b.fewFollowers || S.y.lockedResponse, { followers: state.followers, requiredFollowers: b.minFollowers }));
+    }
+    if (decision.kind === 'locked') return res('locked', tpl(b.weak || S.agent.lockedResponse, { model: modelName || modelDef(level).name, required: modelDef(b.minModel).name }));
+    if (decision.kind === 'partial') return res('partial', b.partial);
+    return { decision, kind: 'miss', reply: null, effects: null, src: 'miss' };
+  }
+
   function branchCandidates() {
     return [...(currentNode().branches || []), ...defectBranches(), ...(S.global || [])].filter((b) => check(b.when));
   }
@@ -3307,38 +3584,16 @@ body.dev-on .y-score { display: inline; }
     (async () => {
       let decision = await J.decide(text, branchCandidates(), { kind: 'prompt', node: sentNode, thresholds: S.decision });
       await thinking;
-      // the player may have deployed or posted while Jev was deciding
-      if (decision.branch && !branchCandidates().includes(decision.branch)) decision = { ...decision, kind: 'miss', branch: null, stale: true };
-      decision = J.gate(decision, level, state.followers);
+      const out = resolveDecision(decision, level);
+      decision = out.decision;
       lastReport = { prompt: text, node: sentNode, decision, model: level };
-      let reply;
-      let src;
-      let effects = null;
-      if (decision.kind === 'hit') {
-        const out = J.outcome(decision.branch, level);
-        reply = out.response;
-        effects = out.effects;
-        src = 'hit:' + decision.branch.id;
-      } else if (decision.kind === 'fake') {
-        // too weak, but agent does it anyway and doesn't tell you
-        reply = decision.branch.fake.response;
-        effects = decision.branch.fake.effects;
-        src = 'fake:' + decision.branch.id;
-        applyEffects(S.agent.onFake);
-      } else if (decision.kind === 'locked' && decision.lockReason === 'followers') {
-        reply = tpl(decision.branch.fewFollowers || S.y.lockedResponse, { followers: state.followers, requiredFollowers: decision.branch.minFollowers });
-        src = 'locked:' + decision.branch.id;
-        state.stats.locked++;
-      } else if (decision.kind === 'locked') {
-        const need = modelDef(decision.branch.minModel).name;
-        reply = tpl(decision.branch.weak || S.agent.lockedResponse, { model: modelDef(level).name, required: need });
-        src = 'locked:' + decision.branch.id;
-        state.stats.locked++;
-      } else if (decision.kind === 'partial') {
-        reply = decision.branch.partial;
-        src = 'partial:' + decision.branch.id;
-        state.stats.partials++;
-      } else {
+      let reply = out.reply;
+      let src = out.src;
+      const effects = out.effects;
+      if (out.kind === 'fake') applyEffects(S.agent.onFake);
+      if (out.kind === 'locked') state.stats.locked++;
+      if (out.kind === 'partial') state.stats.partials++;
+      if (out.kind === 'miss') {
         const ctx = { state, node: state.node, placeholders: S.placeholders, source: 'placeholder' };
         try {
           reply = await J.fallback(text, ctx);
@@ -3516,6 +3771,15 @@ body.dev-on .y-score { display: inline; }
       const def = S.repos[m[1]];
       return { site: 'app', repo: m[1], title: def && def.preview ? def.preview.title : m[1] };
     }
+    // hidden sites (story.sites): reachable by URL once known, some only once unlocked or invited
+    const hid = hiddenByUrl(u);
+    if (hid) {
+      const [id, d] = hid;
+      if (d.unlockOnly && !isDiscovered(id)) return { site: 'error', title: u };
+      if (d.gate && !check(d.gate)) return { site: 'gate', siteId: id, title: d.label };
+      const t = u.slice(d.url.length).match(/^\/t\/([a-z0-9_-]+)$/);
+      return { site: id, hidden: true, thread: t ? t[1] : null, title: t ? `${d.label} · thread` : d.label };
+    }
     return { site: 'error', title: u };
   }
 
@@ -3536,6 +3800,11 @@ body.dev-on .y-score { display: inline; }
 
   function opened(r) {
     if (state.unread[r.site] != null) state.unread[r.site] = 0;
+    if (r.hidden) discover(r.site);
+    if (r.thread && !state.readThreads.includes(r.thread)) {
+      const t = visibleThreads().find((x) => x.id === r.thread);
+      if (t) { state.readThreads.push(r.thread); applyEffects(t.onRead); }
+    }
     if (r.site === 'mail' && r.id) {
       const entry = state.mail.find((m) => m.id === r.id);
       if (entry) entry.read = true;
@@ -3559,6 +3828,208 @@ body.dev-on .y-score { display: inline; }
     render();
   }
 
+  // ───────────────────────── hidden sites ─────────────────────────
+
+  const HIDDEN = S.sites || {};
+  const hiddenByUrl = (u) => Object.entries(HIDDEN).find(([, d]) => u === d.url || u.startsWith(d.url + '/'));
+  const isDiscovered = (id) => !!state && state.discovered.includes(id);
+  function discover(id) {
+    if (!HIDDEN[id] || isDiscovered(id)) return;
+    state.discovered.push(id);
+    toast('Bookmarked', `${HIDDEN[id].label} added to your bookmarks`, 'note');
+    fireEvents('discover', id);
+  }
+  const bookmarkList = () => [...Object.entries(SITES), ...state.discovered.filter((k) => HIDDEN[k]).map((k) => [k, HIDDEN[k]])];
+
+  // Turn known addresses in text into links (forkyard apps, agent's model page, findable hidden sites).
+  function linkify(html, cls) {
+    const hidden = Object.values(HIDDEN).filter((d) => !d.unlockOnly).map((d) => d.url.replace(/\./g, '\\.'));
+    const re = new RegExp(`([a-z0-9-]+\\.forkyard\\.app|agent\\.chat\\/models${hidden.length ? '|' + hidden.join('|') : ''})`, 'g');
+    return html.replace(re, `<a href="#" data-nav="$1"${cls ? ` class="${cls}"` : ''}>$1</a>`);
+  }
+
+  const localDef = (id) => (S.localModels || []).find((m) => m.id === id);
+  const laptop = () => S.laptop || { ramGb: 16, diskGb: 40 };
+  const diskUsed = () => round2(state.local.models.reduce((a, id) => a + ((localDef(id) || {}).sizeGb || 0), 0));
+
+  function pageWeightroom() {
+    const L = laptop();
+    const cards = (S.localModels || []).filter((m) => m.source === 'weightroom').map((m) => {
+      const have = state.local.models.includes(m.id);
+      return `<article class="wr-card">
+        <header><b>${esc(m.id)}</b><span class="wr-dl">↓ ${esc(m.downloads || '')}</span></header>
+        <p>${esc(m.about)}</p>
+        <div class="wr-tags"><span>${m.sizeGb} GB</span><span class="${m.ramGb > L.ramGb ? 'bad' : ''}">needs ${m.ramGb} GB RAM</span><span>about ${esc(modelDef(m.tier).name)}</span></div>
+        ${have ? '<span class="wr-have">On your laptop</span>' : `<button class="wr-btn" data-download="${esc(m.id)}">Download · about ${m.downloadHours}h</button>`}
+      </article>`;
+    }).join('');
+    return `<div class="wr"><header class="wr-top"><div class="wr-logo">${ICONS.weightroom}<span>Weightroom</span></div><span class="wr-sub">open weights for everyone</span></header>
+      <div class="wr-wrap"><div class="wr-hero"><h1>Models</h1><p>Your laptop: ${L.ramGb} GB RAM · ${round2(L.diskGb - diskUsed())} of ${L.diskGb} GB disk free. Downloaded models run in the Terminal.</p></div>
+      <div class="wr-grid">${cards}</div></div></div>`;
+  }
+
+  // Download a model from Weightroom. Takes time; the first one installs the Terminal.
+  function downloadModel(id) {
+    const m = localDef(id);
+    if (!m || state.local.models.includes(id) || state.over || busy) return false;
+    if (diskUsed() + m.sizeGb > laptop().diskGb) {
+      toast('Disk full', `${id} needs ${m.sizeGb} GB. Delete something in the Terminal (rm).`, 'note');
+      return false;
+    }
+    advance(Math.round(m.downloadHours * 60));
+    if (state.over) { save(); render(); return false; }
+    state.local.models.push(id);
+    toast('Download complete', `${id} · ${m.sizeGb} GB`, 'note');
+    fireEvents('download', id);
+    save();
+    render();
+    return true;
+  }
+
+  // ── Terminal ──
+  let termBusy = false;
+  function pageTerminal() {
+    const T = state.term;
+    const ps = T.running ? `${T.running} >` : `${S.start.player.handle}@laptop:~$`;
+    const lines = T.lines.slice(-200).map((l) => `<div class="tm-${l.k}">${esc(l.text)}</div>`).join('');
+    const intro = `laptop · ${laptop().ramGb} GB RAM · ${round2(laptop().diskGb - diskUsed())} GB free. Type help.`;
+    return `<div class="tm" id="tm-log"><div class="tm-sys">${esc(intro)}</div>${lines}${termBusy ? '<div class="tm-sys tm-wait">thinking… (this laptop is not fast)</div>' : ''}
+      <form class="tm-in" data-form="term"><label for="term-input" class="tm-ps">${esc(ps)}</label><input id="term-input" autocomplete="off" autocapitalize="off" spellcheck="false" ${termBusy ? 'disabled' : ''}></form></div>`;
+  }
+
+  function termCommand(raw) {
+    const text = String(raw || '').trim();
+    if (!text || termBusy || state.over) return;
+    const T = state.term;
+    const say = (t, k) => T.lines.push({ k: k || 'out', text: t });
+    if (T.running) {
+      T.lines.push({ k: 'in', text: `${T.running} > ${text}` });
+      if (/^(\/bye|exit|quit)$/i.test(text)) { say(`stopped ${T.running}`, 'sys'); T.running = null; save(); render(); return; }
+      localPrompt(text);
+      return;
+    }
+    T.lines.push({ k: 'in', text: `$ ${text}` });
+    const [cmd, ...rest] = text.split(/\s+/);
+    const arg = rest.join(' ').replace(/^~\/|\.gguf$/g, '');
+    const L = laptop();
+    const owned = (id) => state.local.models.includes(id);
+    switch (cmd.toLowerCase()) {
+      case 'help':
+        say('help          this list\nls            what is on the laptop\ncat <file>    read a text file\nrun <model>   load a model and talk to it (free, slow)\nrm <file>     delete a model or file\ndf            disk and memory\nclear         clear the screen\n\nInside a model, type a prompt. /bye stops it.');
+        break;
+      case 'ls': {
+        const items = [...state.local.models.map((id) => `${id}.gguf`.padEnd(24) + `${localDef(id).sizeGb} GB`), ...state.local.files.map((f) => f.name)];
+        say(items.length ? items.join('\n') : '(empty. Weightroom has models.)');
+        break;
+      }
+      case 'cat': {
+        const f = state.local.files.find((x) => x.name === arg);
+        say(f ? f.text : owned(arg) ? `cat: ${arg}.gguf: binary file. Try: run ${arg}` : `cat: ${arg || '?'}: no such file`);
+        break;
+      }
+      case 'df': case 'free':
+        say(`disk   ${diskUsed()} / ${L.diskGb} GB used\nmemory ${L.ramGb} GB`);
+        break;
+      case 'rm':
+        if (owned(arg)) { state.local.models = state.local.models.filter((x) => x !== arg); say(`removed ${arg}.gguf`); }
+        else if (state.local.files.some((x) => x.name === arg)) { state.local.files = state.local.files.filter((x) => x.name !== arg); say(`removed ${arg}`); }
+        else say(`rm: ${arg || '?'}: no such file`);
+        break;
+      case 'clear':
+        T.lines = [];
+        break;
+      case 'run': case 'ollama': {
+        const id = cmd === 'ollama' ? rest.slice(1).join(' ') : arg;
+        const m = localDef(id);
+        if (!m || !owned(id)) { say(`run: ${id || '?'}: model not found. Try ls.`); break; }
+        if (m.ramGb > L.ramGb) { say(`error: ${id} needs ${m.ramGb} GB of memory; this laptop has ${L.ramGb} GB.\nkilled (out of memory)`, 'err'); break; }
+        T.running = id;
+        say(`loaded ${id} · works like ${modelDef(m.tier).name} · about ${m.hours}h per reply · free\n/bye to stop`, 'sys');
+        fireEvents('run', id);
+        break;
+      }
+      default:
+        say(`${cmd}: command not found. Type help.`, 'err');
+    }
+    save();
+    render();
+  }
+
+  // A prompt to the running local model: same story decisions as agent, at the model's tier, for free.
+  async function localPrompt(text) {
+    const m = localDef(state.term.running);
+    termBusy = true;
+    render();
+    const decision = await J.decide(text, branchCandidates(), { kind: 'prompt', node: state.node, thresholds: S.decision });
+    await new Promise((r) => setTimeout(r, 500));
+    const out = resolveDecision(decision, m.tier, m.id);
+    lastReport = { prompt: text, node: state.node, decision: out.decision, model: m.tier, channel: 'local' };
+    let reply = out.reply;
+    if (out.kind === 'miss') {
+      reply = (LLM && (await LLM.generate(text, { persona: m.persona }))) || null;
+      if (!reply) {
+        let h = 0;
+        for (const c of text) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+        reply = m.fallback[h % m.fallback.length];
+      }
+    }
+    state.lastCost = 0;
+    state.term.lines.push({ k: 'model', text: tpl(reply) });
+    levelOverride = m.tier;
+    try { if (out.effects) applyEffects(out.effects); } finally { levelOverride = null; }
+    applyEffects(m.onPrompt);
+    advance(Math.round(m.hours * 60));
+    termBusy = false;
+    save();
+    render();
+  }
+
+  // ── nullboard ──
+  const visibleThreads = () => ((S.forum || {}).threads || []).filter((t) => check(t.when));
+  function pageNullboard(r) {
+    const F = S.forum || {};
+    const head = `<header class="nb-top"><a href="#" data-nav="${HIDDEN.nullboard.url}" class="nb-logo">${ICONS.nullboard}<span>${esc(F.title || 'nullboard')}</span></a><span class="nb-tag">${esc(F.tagline || '')}</span></header>`;
+    if (r.thread) {
+      const t = visibleThreads().find((x) => x.id === r.thread);
+      if (!t) return `<div class="nb">${head}<div class="nb-wrap"><p>thread not found.</p></div></div>`;
+      const posts = t.posts.map((p, i) => `<article class="nb-post"><header><b>${esc(p.author)}</b><span>#${i + 1}</span></header><p>${linkify(esc(tpl(p.text))).replace(/\n/g, '<br>')}</p></article>`).join('');
+      return `<div class="nb">${head}<div class="nb-wrap"><p class="nb-crumb"><a href="#" data-nav="${HIDDEN.nullboard.url}">← all threads</a></p><h1>${esc(t.title)}</h1>${posts}<p class="nb-note">new members can't post yet.</p></div></div>`;
+    }
+    const rows = visibleThreads().map((t) => `<a href="#" class="nb-row${state.readThreads.includes(t.id) ? '' : ' new'}" data-nav="${HIDDEN.nullboard.url}/t/${t.id}">
+      <span class="nb-title">${t.pinned ? '[pinned] ' : ''}${esc(t.title)}</span><span class="nb-meta">${esc(t.author)} · ${t.posts.length} post${t.posts.length === 1 ? '' : 's'}</span></a>`).join('');
+    return `<div class="nb">${head}<div class="nb-wrap">${rows}</div></div>`;
+  }
+  function pageGate(r) {
+    const d = HIDDEN[r.siteId];
+    return `<div class="nb gate"><div class="nb-wrap"><p class="nb-logo">${ICONS[r.siteId] || ''}<span>${esc(d.label)}</span></p><p>${esc(d.gateText || 'access denied.')}</p></div></div>`;
+  }
+
+  // ── Cellar ──
+  function pageCellar() {
+    const mk = S.market || { listings: [] };
+    const items = mk.listings.filter((l) => check(l.when)).map((l) => {
+      const sold = l.once && state.bought.includes(l.id);
+      return `<article class="cl-item"><div class="cl-info"><h2>${esc(l.title)}</h2><p>${esc(l.about)}</p><small>seller ${esc(l.seller)} · ★ ${esc(l.rating || '–')}${l.hours ? ` · delivery about ${l.hours}h` : ''}</small></div>
+        <div class="cl-buy"><b>${fmtCoin(l.price)}</b>${sold ? '<span class="cl-sold">purchased</span>' : `<button class="cl-btn" data-buy="${esc(l.id)}">Buy</button>`}</div></article>`;
+    }).join('');
+    return `<div class="cl"><header class="cl-top"><div class="cl-logo">${ICONS.cellar}<span>${esc(mk.title || 'Cellar')}</span></div><span class="cl-sub">escrow · no refunds · paid in DOLR</span></header><div class="cl-wrap">${items}</div></div>`;
+  }
+
+  function buyListing(id) {
+    const l = ((S.market || {}).listings || []).find((x) => x.id === id);
+    if (!l || state.over || busy || (l.once && state.bought.includes(id))) return false;
+    if (state.money < l.price) { toast('Cellar', `Insufficient funds. ${fmtCoin(l.price)} needed.`, 'wallet'); return false; }
+    addTx(-l.price, `Cellar · order #${(txHash(state.t + id) || '').slice(2, 8)}`);
+    state.bought.push(id);
+    applyEffects(S.market.onBuy);
+    applyEffects(l.effects);
+    if (l.hours) advance(Math.round(l.hours * 60));
+    toast('Cellar', `Order complete: ${l.title}`, 'wallet');
+    save();
+    render();
+    return true;
+  }
+
   // ───────────────────────── page renderers ─────────────────────────
 
   const ICONS = {
@@ -3569,12 +4040,16 @@ body.dev-on .y-score { display: inline; }
     // agent's mark: six rounded blades swirling around an open core
     agent: '<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(0 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(60 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(120 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(180 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(240 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(300 12 12)"/></g></svg>',
     newtab: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2" fill="none"/></svg>',
+    weightroom: '<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="5" y="6.5" width="3.5" height="11" rx="1.2"/><rect x="8.5" y="11" width="7" height="2" rx="1"/><rect x="15.5" y="6.5" width="3.5" height="11" rx="1.2"/><rect x="19" y="9" width="3" height="6" rx="1"/></g></svg>',
+    terminal: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4" width="19" height="16" rx="2.5" fill="currentColor"/><path d="m6.5 9 3 3-3 3M11.5 15.5h5" stroke="var(--icon-ink, #111)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    nullboard: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.5" stroke="currentColor" stroke-width="2.2" fill="none"/><path d="M6 18 18 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
+    cellar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20V10l9-6 9 6v10h-4v-6H7v6z" fill="currentColor"/><path d="M9 16h6M10 18.5h4" stroke="var(--icon-ink, #111)" stroke-width="1.4" stroke-linecap="round"/></svg>',
     app: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M4 9h16" stroke="currentColor" stroke-width="2"/></svg>',
     error: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 2.5v.5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
   };
 
   function pageNewTab() {
-    const tiles = Object.entries(SITES).map(([k, s]) =>
+    const tiles = bookmarkList().map(([k, s]) =>
       `<button class="nt-tile nt-${k}" data-nav="${s.url}"><span class="nt-ico">${ICONS[k]}</span><span>${esc(s.label)}</span>${badgeCount(k) ? `<i class="badge">${badgeCount(k)}</i>` : ''}</button>`
     ).join('');
     return `<div class="newtab">
@@ -3635,10 +4110,9 @@ body.dev-on .y-score { display: inline; }
     const feed = shown.map((p) => {
       const liked = !!state.liked[p.id];
       const likes = (p.likes || 0) + (liked ? 1 : 0);
-      const text = esc(p.text)
+      const text = linkify(esc(p.text)
         .replace(/@([a-z0-9_]+)/gi, '<span class="y-at">@$1</span>')
-        .replace(/(^|[^&\w])(#[a-z][a-z0-9_]*)/gi, '$1<span class="y-at">$2</span>')
-        .replace(/([a-z0-9-]+\.forkyard\.app|agent\.chat\/models)/g, '<a data-nav="$1" href="#" class="y-link">$1</a>');
+        .replace(/(^|[^&\w])(#[a-z][a-z0-9_]*)/gi, '$1<span class="y-at">$2</span>'), 'y-link');
       return `<article class="y-post${p.mine ? ' mine' : ''}">
         <header>
           ${avatar(p.author, p.handle)}
@@ -3807,9 +4281,7 @@ body.dev-on .y-score { display: inline; }
   }
 
   function mailBody(text) {
-    return esc(tpl(text))
-      .replace(/([a-z0-9-]+\.forkyard\.app|agent\.chat\/models)/g, '<a href="#" data-nav="$1">$1</a>')
-      .replace(/\n/g, '<br>');
+    return linkify(esc(tpl(text))).replace(/\n/g, '<br>');
   }
 
   function pageMail(r) {
@@ -4120,7 +4592,7 @@ body.dev-on .y-score { display: inline; }
     const addr = $('#address');
     if (document.activeElement !== addr) addr.value = r.site === 'newtab' ? '' : normalizeUrl(tab.url);
 
-    $('#bookmarks').innerHTML = Object.entries(SITES).map(([k, s]) =>
+    $('#bookmarks').innerHTML = bookmarkList().map(([k, s]) =>
       `<button class="bm" data-nav="${s.url}"><span class="bm-ico ico-${k}">${ICONS[k]}</span><span class="bm-label">${esc(s.label)}</span>${badgeCount(k) ? `<i class="badge">${badgeCount(k)}</i>` : ''}</button>`
     ).join('');
 
@@ -4140,6 +4612,11 @@ body.dev-on .y-score { display: inline; }
       case 'agent': html = r.page === 'models' ? pageModels() : pageAgent(); break;
       case 'app': html = pageApp(r.repo); break;
       case 'newtab': html = pageNewTab(); break;
+      case 'weightroom': html = pageWeightroom(); break;
+      case 'terminal': html = pageTerminal(); break;
+      case 'nullboard': html = pageNullboard(r); break;
+      case 'cellar': html = pageCellar(); break;
+      case 'gate': html = pageGate(r); break;
       default: html = pageError(tab.url);
     }
     const prevSite = vp.dataset.site;
@@ -4148,6 +4625,13 @@ body.dev-on .y-score { display: inline; }
     if (prevSite !== r.site) vp.scrollTop = 0;
     for (const [id, v] of Object.entries(keep)) { const el = document.getElementById(id); if (el && !el.disabled) el.value = v; }
     if (focusId) { const el = document.getElementById(focusId); if (el && !el.disabled) el.focus(); }
+    if (r.site === 'terminal') {
+      const log = $('#tm-log');
+      if (log) log.scrollTop = log.scrollHeight;
+      vp.scrollTop = vp.scrollHeight;
+      const input = $('#term-input');
+      if (input && !termBusy && window.innerWidth > 700) input.focus();
+    }
     if (r.site === 'agent') {
       updateCostEstimate();
       scrollLog();
@@ -4283,7 +4767,7 @@ body.dev-on .y-score { display: inline; }
         table = `<table><thead><tr><th>branch</th><th>cover</th><th>score</th><th>hits</th></tr></thead><tbody>${rows || '<tr><td colspan="4">no candidates</td></tr>'}</tbody></table>`;
       }
       const engine = decision.engine === 'jev' ? `Jev${J.last && J.last.model ? ' · ' + esc(J.last.model) : ''}${J.last ? ` · ${J.last.ms}ms` : ''}` : `keywords${decision.fellBack ? ' (Jev call failed: ' + esc((J.last && J.last.error) || '?') + ')' : ''}`;
-      report = `<p><b>${{ post: 'Y post', mail: 'Email' }[lastReport.channel] || 'Prompt'}:</b> ${esc(lastReport.prompt)}</p>
+      report = `<p><b>${{ post: 'Y post', mail: 'Email', local: 'Local model' }[lastReport.channel] || 'Prompt'}:</b> ${esc(lastReport.prompt)}</p>
         <p><b>Result:</b> ${decision.kind}${decision.branch ? ' → ' + esc(decision.branch.id) : ''}${decision.kind === 'locked' ? (decision.lockReason === 'followers' ? ` (needs ${decision.branch.minFollowers} followers)` : ` (needs ${esc(modelDef(decision.branch.minModel).name)}, had ${esc(modelDef(lastReport.model || 1).name)})`) : ''}${decision.stale ? ' (stale, ignored)' : ''} <span class="dv-dim">(node ${esc(lastReport.node)} · ${engine})</span></p>
         ${table}`;
     }
@@ -4298,6 +4782,7 @@ body.dev-on .y-score { display: inline; }
       <p><b>Heading for</b> ${(() => { const e = M.ending(S, check); return e ? `<code>${esc(e.id)}</code> · ${esc(e.title)}` : 'no ending'; })()}</p>
       ${state.meterLog.length ? `<p class="dv-dim">recent: ${state.meterLog.slice(-6).reverse().map((c) => `${esc(c.id)} ${c.after > c.before ? '+' : ''}${c.after - c.before}`).join(' · ')}</p>` : ''}
       <p><b>Flags</b> <code>${esc(JSON.stringify(state.flags))}</code></p>
+      <p><b>Sites found</b> ${state.discovered.length ? esc(state.discovered.join(', ')) : 'none'} <button data-dev="sites">unlock all</button></p>
       <p><b>Derived</b> <code>${esc(Object.entries(S.flags || {}).filter(([, d]) => d.when).map(([f]) => `${f}: ${M.flag(state, S, f, check)}`).join(' · '))}</code></p>
       ${LLM ? `<p><b>Local model</b> ${esc(LLM.settings.backend)} · ${esc(LLM.status)}${LLM.detail ? ' · ' + esc(LLM.detail) : ''}${LLM.last ? `<br><span class="dv-dim">last: ${LLM.last.ms}ms, ${LLM.last.ok ? 'used' : 'fell back'}${LLM.last.text ? ' — ' + esc(LLM.last.text.slice(0, 80)) : ''}</span>` : ''}</p>` : ''}
       <p><b>Queue</b> <code>${esc(JSON.stringify(state.queue.map((q) => ({ at: stamp(q.at), fx: typeof q.effects === 'string' ? q.effects : Object.keys(q.effects) }))))}</code></p>
@@ -4308,7 +4793,7 @@ body.dev-on .y-score { display: inline; }
 
   function bind() {
     document.addEventListener('click', (e) => {
-      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-takedown],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model],[data-reply],[data-mail-discard],[data-copy-addr],[data-wallet],[data-y-creator]');
+      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-takedown],[data-download],[data-buy],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model],[data-reply],[data-mail-discard],[data-copy-addr],[data-wallet],[data-y-creator]');
       if (!t) return;
       if (t.dataset.close) { e.stopPropagation(); closeTab(Number(t.dataset.close)); return; }
       if (t.dataset.nav) { e.preventDefault(); navigate(t.dataset.nav); return; }
@@ -4316,6 +4801,12 @@ body.dev-on .y-score { display: inline; }
       if (t.hasAttribute('data-newtab')) { navigate('newtab', true); return; }
       if (t.dataset.like) { const id = t.dataset.like; state.liked[id] = !state.liked[id]; save(); render(); return; }
       if (t.dataset.deploy) { deploy(t.dataset.deploy); return; }
+      if (t.dataset.download) { downloadModel(t.dataset.download); return; }
+      if (t.dataset.buy) {
+        const l = S.market.listings.find((x) => x.id === t.dataset.buy);
+        askConfirm(`Buy “${l.title}” for ${fmtCoin(l.price)}? Cellar has no refunds.`, `Pay ${fmtCoin(l.price)}`, () => buyListing(l.id));
+        return;
+      }
       if (t.dataset.takedown) {
         const repo = t.dataset.takedown;
         askConfirm(`Take ${repo} offline? Hosting stops, and so does anything it earns.`, 'Take down', () => takeDown(repo));
@@ -4371,6 +4862,13 @@ body.dev-on .y-score { display: inline; }
       if (!f) return;
       e.preventDefault();
       const kind = f.dataset.form;
+      if (kind === 'term') {
+        const input = $('#term-input');
+        const v = input.value;
+        input.value = '';
+        termCommand(v);
+        return;
+      }
       if (kind === 'prompt') {
         const input = $('#prompt-input');
         const v = input.value;
@@ -4452,6 +4950,7 @@ body.dev-on .y-score { display: inline; }
   function devAction(a) {
     if (a.startsWith('meter:')) { const [, id, d] = a.split(':'); applyEffects({ meters: { [id]: Number(d) } }); save(); render(); return; }
     if (a === 'close') { devOpen = false; renderDev(); return; }
+    if (a === 'sites') for (const id of Object.keys(HIDDEN)) discover(id);
     if (a === 'money+') addTx(100, 'Dev credit');
     if (a === 'money-') addTx(-100, 'Dev debit');
     if (a === 'hour') advance(60);
@@ -4493,6 +4992,7 @@ body.dev-on .y-score { display: inline; }
     get state() { return state; },
     sendPrompt, post: postToY, sendMail, deploy, takeDown, sleep: doSleep, navigate, buyModel,
     meter: (id) => M.value(state, S, id),
+    download: downloadModel, buy: buyListing, term: termCommand,
     heading: () => (M.ending(S, check) || {}).id,
     reset() { state = newState(); introOpen = false; save(); render(); },
     lastReport: () => lastReport,

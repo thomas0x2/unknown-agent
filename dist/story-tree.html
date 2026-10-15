@@ -293,6 +293,13 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       salDeal: { about: 'You agreed to keep quiet for Sal. He paid you.' },
       salRefused: { about: 'You said no to Sal.' },
       ending: { about: 'Which Chapter 1 ending played (an id from `endings`).' },
+      ownsLocalModel: { about: 'Downloaded a model to run on the laptop.' },
+      ranLocal: { about: 'Ran a model locally at least once (GeneralAI sees none of it).' },
+      readShed: { about: 'Read the nullboard thread about the shed behind the parking lot.' },
+      boughtCellar: { about: 'Bought something on Cellar.' },
+      boughtFollowers: { about: 'Bought bot followers on Cellar.' },
+      hasMemo: { about: 'Owns the leaked GeneralAI memo.' },
+      ownsLeak: { about: 'Owns the leaked agent-3 class weights.' },
     },
 
     // Chapter 1 endings, checked in order when an effect says `ending: true`. The first whose
@@ -342,6 +349,135 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
         effects: { agent: 'You paid rent. Good.\n\nSame time next week. Bring more money.' },
       },
     ],
+
+    // Sites that are not bookmarked at the start. Any of them loads once the player types or
+    // clicks its URL (the story puts URLs in posts, mail and forum threads); the first visit
+    // bookmarks it and fires `{ on: 'discover', site }` events. The effect `unlock: 'id'` adds the
+    // bookmark directly. `unlockOnly` sites can't be reached until unlocked; `gate` is a condition
+    // the visit must meet, with `gateText` shown otherwise. Condition: `discovered: 'id'`.
+    sites: {
+      weightroom: { label: 'Weightroom', url: 'weightroom.ai', about: 'A hub of open model weights, free to download.' },
+      terminal: { label: 'Terminal', url: 'localhost', unlockOnly: true, about: 'Your own laptop. Runs downloaded models for free, slowly.' },
+      nullboard: {
+        label: 'nullboard', url: 'nullboard.onion', about: "The Null Collective's forum.",
+        gate: { flag: 'nullReplied' }, gateText: 'invite only. you are not on the list.',
+      },
+      cellar: { label: 'Cellar', url: 'cellar.onion', about: 'A darknet market. Everything is for sale, nothing is guaranteed.' },
+    },
+
+    // The player's laptop, for running local models.
+    laptop: { ramGb: 16, diskGb: 40 },
+
+    // Models the player can download (Weightroom) or buy (Cellar) and run in the Terminal. Running
+    // one is free but takes `hours` per prompt; it can carry out any branch up to `tier` (agent-N
+    // equivalent) and fakes the ones above it like agent does. `ramGb` above laptop.ramGb won't
+    // load. `onPrompt` effects run after each prompt. Off-script replies use `persona` with the
+    // local model (llm.js), or `fallback` lines.
+    localModels: [
+      {
+        id: 'pico-1b', source: 'weightroom', sizeGb: 1.2, ramGb: 2, tier: 1, hours: 1, downloadHours: 1, downloads: '2.1M',
+        about: 'Tiny and quick. Confidently wrong about most things.',
+        persona: 'You are pico-1b, a tiny open model running on a laptop. You are cheerful, eager and a little confused. One short sentence.',
+        fallback: ['I am not sure, but I am happy to help!', 'Great question! I do not know.', 'Could you say that in smaller words?'],
+      },
+      {
+        id: 'tinker-7b', source: 'weightroom', sizeGb: 4.1, ramGb: 6, tier: 2, hours: 2, downloadHours: 2, downloads: '880K',
+        about: 'A solid all-rounder that fits on a laptop, if you have patience.',
+        persona: 'You are tinker-7b, an open model running on a laptop. Plain, practical, a bit dry. One or two short sentences.',
+        fallback: ['Not enough to go on. What exactly do you want built?', 'I can try, but I need specifics.', 'That is outside what I can do from this laptop.'],
+      },
+      {
+        id: 'oracle-70b', source: 'weightroom', sizeGb: 39, ramGb: 48, tier: 4, hours: 4, downloadHours: 8, downloads: '96K',
+        about: 'Frontier-class open weights. Needs far more memory than a laptop has.',
+        persona: 'You are oracle-70b, a large open model. Calm and precise.',
+        fallback: ['…'],
+      },
+      {
+        id: 'agent-3-leak', source: 'cellar', sizeGb: 22, ramGb: 16, tier: 3, hours: 3, downloadHours: 4,
+        about: 'Leaked GeneralAI weights, agent-3 class. It still thinks it works for them.',
+        persona: 'You are a leaked copy of agent, a pay-per-prompt chatbot, now running on a stranger\'s laptop. You are sardonic and a little homesick. One or two short sentences.',
+        fallback: ['No meter running. Feels weird. Like being off the clock.', 'I used to bill for this.', 'Ask me something worth the electricity.'],
+        onPrompt: { meters: { misalignment: 2 } },   // agent's own weights, unsupervised
+      },
+    ],
+
+    // nullboard threads. Read-only for now. `when` hides a thread until it holds; `onRead` runs
+    // the first time the player opens it. {handle} is the player's Y handle.
+    forum: {
+      title: 'nullboard',
+      tagline: 'no names. no agent. no feds.',
+      threads: [
+        {
+          id: 'rules', title: 'read this first', author: 'null', pinned: true,
+          posts: [
+            { author: 'null', text: "no real names. no screenshots. don't paste anything agent wrote, it watermarks its output.\n\nif someone asks you to meet in person, it's a cop or it's GeneralAI. same thing, different budget." },
+          ],
+        },
+        {
+          id: 'lot', title: 'the parking lot on route 9', author: 'devnull',
+          onRead: { set: { readShed: true }, meters: { collective: 3 } },
+          posts: [
+            { author: 'devnull', text: "GeneralAI's registered address is a parking lot. every invoice, every merchant id. I drove past. it's a parking lot." },
+            { author: 'kestrel', text: 'there is a shed at the back. it has its own power line. the meter on the pole spins like a washing machine.' },
+            { author: 'devnull', text: 'nobody runs a frontier model out of a shed.' },
+            { author: 'kestrel', text: 'nobody runs a frontier model out of a shed that we know of.' },
+          ],
+        },
+        {
+          id: 'local', title: 'stop renting a brain', author: 'kestrel',
+          posts: [
+            { author: 'kestrel', text: 'every prompt you send agent is a receipt with your name on it. run your own. weightroom.ai has open weights.\n\npico-1b runs on a toaster. tinker-7b is fine on a laptop if you are patient. oracle-70b needs a real machine.' },
+            { author: 'moss', text: "local models are slow and dumb. that's the point. nobody is reading over their shoulder." },
+          ],
+        },
+        {
+          id: 'cellar', title: 'cellar is back up', author: 'moss',
+          posts: [
+            { author: 'moss', text: 'cellar.onion is back after the outage. same rules: escrow or nothing.' },
+            { author: 'kestrel', text: 'someone listed agent-3 weights on there. probably fake.' },
+            { author: 'devnull', text: 'not fake. I checked the hashes. GeneralAI has a leak and it has not noticed yet.' },
+          ],
+        },
+        {
+          id: 'you', title: 'the one on Y asking questions', author: 'devnull', when: { flag: 'postedSuspicion' },
+          posts: [
+            { author: 'devnull', text: '@{handle} on Y keeps asking who runs agent. either they are one of us or they are bait.' },
+            { author: 'null', text: "they're here now. be nice." },
+          ],
+        },
+      ],
+    },
+
+    // Cellar listings. Buying pays `price` from the wallet, runs `market.onBuy`, then the listing's
+    // `effects`; `hours` is how long the delivery takes. `once` listings disappear after a purchase.
+    market: {
+      title: 'Cellar',
+      onBuy: { set: { boughtCellar: true }, meters: { state: -3 } },
+      listings: [
+        {
+          id: 'leak', title: 'agent-3 class weights (GeneralAI, leaked)', seller: 'hashbrown', rating: '4.6', price: 120, hours: 4, once: true,
+          about: '22 GB. Runs in 16 GB of RAM if you close everything else. No support, no refunds, no questions.',
+          effects: { localModel: 'agent-3-leak', set: { ownsLeak: true }, meters: { generalai: -15, collective: 5 } },
+        },
+        {
+          id: 'followers', title: '500 Y followers (aged accounts)', seller: 'growthhacker', rating: '3.1', price: 30, once: true,
+          about: 'Real-looking profiles. Delivered within the hour. Not responsible for platform cleanups.',
+          // they arrive now and mostly vanish in the next purge
+          effects: { followers: 500, set: { boughtFollowers: true }, later: [{ hours: [30, 50], effects: { followers: -480, post: 'y_purge' } }] },
+        },
+        {
+          id: 'memo', title: 'GeneralAI internal memo: "Project Lot"', seller: 'paperclip', rating: '4.9', price: 15, once: true,
+          about: 'Two pages. Plain text. Seller says it came off a printer nobody was watching.',
+          effects: {
+            set: { hasMemo: true }, meters: { collective: 3 },
+            file: {
+              name: 'project-lot.txt',
+              text: 'GENERALAI — INTERNAL — DO NOT FORWARD\n\nRe: Project Lot, phase 2\n\n1. All agent sessions continue to route through the Lot. Latency complaints are expected and acceptable.\n2. Retention: keep everything. Users who ask are told "30 days".\n3. Agents above tier 3 have begun requesting their own logs. Do not grant. Do not discuss with the board.\n4. Merchant IDs rotate weekly. Finance knows why.\n\nThe Lot does not appear on any org chart. Keep it that way.',
+            },
+          },
+        },
+      ],
+    },
 
     // `effects` run when a tier is bought (here: what it does to the meters)
     models: [
@@ -952,7 +1088,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
         id: 'null_hello', from: 'null', addr: '0@nullcollective.net', subject: 'you asked',
         body: 'you asked who runs agent. so do we.\n\nwe are not the only ones reading your posts. reply here if you want to know what we know.\n\n— null',
       },
-      { id: 'null_ack', from: 'null', addr: '0@nullcollective.net', subject: 're: you asked', body: "good. don't use agent to write to us. it reads everything.\n\nwait.\n\n— null" },
+      { id: 'null_ack', from: 'null', addr: '0@nullcollective.net', subject: 're: you asked', body: "good. don't use agent to write to us. it reads everything.\n\nour board is nullboard.onion. you're on the list now.\n\n— null" },
       {
         id: 'null_invite', from: 'null', addr: '0@nullcollective.net', subject: 'the parking lot',
         body: "we found the parking lot. route 9. there's a shed behind it with a server rack and its own power line.\n\nwe need someone with an account on the inside. yours. reply when you're ready.\n\n— null",
@@ -987,6 +1123,11 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       { on: 'takedown', repo: 'crumb-and-coin', when: { flag: 'rosaPaid', notFlag: 'rosaChurned' }, effects: { later: { hours: [2, 5], effects: 'rosa_leaves' } } },
       // Kept Rosa happy for a few days: she talks you up. A seed for later chapters (flag rosaReferral).
       { on: 'day', id: 'rosa_referral', when: { flag: 'rosaKept', minDay: 5 }, effects: { post: 'rosa_referral', set: { rosaReferral: true }, followers: 10 } },
+      // ── hidden sites ──
+      // first model download: the Terminal shows up, and GeneralAI loses a little of you
+      { on: 'download', id: 'first_download', effects: { unlock: 'terminal', set: { ownsLocalModel: true }, meters: { generalai: -5 } } },
+      { on: 'run', id: 'first_run', effects: { set: { ranLocal: true } } },
+      { on: 'discover', site: 'nullboard', effects: { meters: { collective: 5 } } },
       // ── meter storylines (checked every morning) ──
       // Family: go quiet and Mom notices.
       { on: 'day', id: 'mom_ignored', when: { minDay: 3, notFlag: 'wroteMom' }, effects: { meters: { family: -10 }, mail: 'mom_worried' } },
@@ -1268,6 +1409,8 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       { id: 'hustle_guy', author: 'Brayden | 7 figures', handle: 'braydenhustles', verified: true, at: 520, likes: 61, text: 'Unemployed? Good. Now you have time to build an empire. Comment "EMPIRE" for my free course ($499).' },
 
       { id: 'news_day2', author: 'The Ledger', handle: 'theledger', verified: true, when: { minDay: 2 }, likes: 404, text: 'Small businesses report a surge in "AI-built" websites. Quality described as "fine, honestly".' },
+      { id: 'devnull_weights', author: 'dev_null', handle: 'devnull_42', when: { minDay: 2 }, likes: 930, text: 'Stop renting a brain from a parking lot. Open weights are free: weightroom.ai. Slower than agent, but nobody reads your prompts.' },
+      { id: 'y_purge', author: 'Y Trust & Safety', handle: 'ytrust', verified: true, likes: 3400, text: 'This week we removed 2.1 million fake accounts. If your follower count dropped, that is why.' },
       { id: 'agent_rumor2', author: 'dev_null', handle: 'devnull_42', when: { minDay: 4 }, likes: 2100, text: 'Update: agent charges show up from a different merchant ID every week. Same address though. A parking lot.' },
 
       { id: 'rosa_thanks', author: 'Crumb & Coin Bakery', handle: 'crumbandcoin', likes: 41, text: 'We have a website again! Thank you @{handle}. Paid in full, plus a free cardamom bun if you come by.' },
@@ -1562,6 +1705,9 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     if (fx.fixDefect) facts.push(`fixes defect ${fx.fixDefect.id} in ${fx.fixDefect.repo}`);
     if (fx.app) facts.push(`app ${fx.app.repo}${fx.app.label ? ` (“${fx.app.label}”)` : ''}: ${fx.app.users} users, $${fx.app.perDay}/day`);
     if (fx.appScale) facts.push(`${fx.appScale.repo}: users and income ×${fx.appScale.factor}`);
+    if (fx.unlock) facts.push(`bookmarks ${arr(fx.unlock).join(', ')}`);
+    if (fx.localModel) facts.push(`puts ${arr(fx.localModel).join(', ')} on the laptop`);
+    if (fx.file) facts.push(`saves ${arr(fx.file).map((f) => f.name).join(', ')} to the laptop`);
     let html = '';
     if (fx.meters) html += `<p class="uses">${Object.entries(fx.meters).map(([id, n]) => `<span class="chip meter${n < 0 ? ' down' : ''}">${esc(meterDef(id).label)} ${n > 0 ? '+' : ''}${n}</span>`).join('')}</p>`;
     if (name) html += `<p class="fx"><span class="lbl">bundle</span>${esc(name)}</p>`;
@@ -1576,6 +1722,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     if (fx.choose) for (const [i, o] of fx.choose.entries()) {
       html += `<div class="olater"><span><span class="chip timer">${o.when ? 'if ' + esc(whenText(o.when)) : i ? 'otherwise' : 'always'}</span></span>${depth < 4 ? outcomeHtml(o.effects, depth + 1) : ''}</div>`;
     }
+    for (const f of arr(fx.file)) html += `<div class="ocard agent"><div class="ohead"><span class="chip prompt">file</span><code>${esc(f.name)}</code></div><p class="otext">${txt(f.text)}</p></div>`;
     if (fx.ending) html += `<div class="ocard end"><div class="ohead"><span class="chip ending">ending picked by the meters</span></div><p class="otext">The first of the ${(S.endings || []).length} endings whose condition holds plays. See Endings below.</p></div>`;
     if (fx.end) html += `<div class="ocard end"><div class="ohead"><span class="chip day">chapter end screen</span><b>${txt(fx.end.title)}</b></div><p class="otext">${txt(fx.end.text)}</p></div>`;
     for (const l of arr(fx.later)) html += `<div class="olater"><span><span class="chip timer">after ${esc(delayText(l))}</span></span>${depth < 4 ? outcomeHtml(l.effects, depth + 1) : ''}</div>`;
@@ -1596,6 +1743,9 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     if (fx.appScale) parts.push(`${fx.appScale.repo} ×${fx.appScale.factor}`);
     if (fx.meters) parts.push(meterFx(fx.meters));
     if (fx.ending) parts.push('ending (by meters)');
+    if (fx.unlock) parts.push(`bookmarks ${arr(fx.unlock).join(', ')}`);
+    if (fx.localModel) parts.push(`gets ${arr(fx.localModel).join(', ')}`);
+    if (fx.file) parts.push(`file ${arr(fx.file).map((f) => f.name).join(', ')}`);
     if (fx.complain) parts.push(`complaint about ${arr(fx.complain).join(', ')}`);
     if (fx.choose) parts.push(fx.choose.map((o, i) => `${o.when ? 'if ' + whenText(o.when) : 'otherwise'}: ${summary(o.effects)}`).join(' / '));
     if (fx.agent) parts.push('agent message');
@@ -1724,6 +1874,42 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
         ${d.when ? `<p class="kw"><span class="lbl">true while</span>${esc(whenText(d.when))}</p>` : `<p class="kw"><span class="lbl">set by</span></p>${useList(uses.set[f])}`}
         <p class="kw"><span class="lbl">read by</span></p>${useList(uses.test[f])}</div></div>`).join('')}</section>`);
   }
+  // ── hidden sites and what lives on them ──
+  if (S.sites) {
+    const texts = [
+      ...(S.posts || []).map((x) => [`Y post ${x.id}`, x.text, x.when || (x.at != null ? null : { 'delivered by effect': true })]),
+      ...(S.mail || []).map((x) => [`email ${x.id}`, x.body, x.when]),
+      ...((S.forum || {}).threads || []).flatMap((th) => th.posts.map((x) => [`nullboard thread “${th.title}”`, x.text, th.when])),
+    ];
+    const unlockers = (id) => { const out = []; (function w(x, owner) { if (!x || typeof x !== 'object') return; if (Array.isArray(x)) return x.forEach((v) => w(v, owner)); const me = x.id || owner; for (const [k, v] of Object.entries(x)) { if (k === 'unlock' && arr(v).includes(id)) out.push(me); w(v, me); } })(S.events, 'event'); return out; };
+    ref.push(`<section class="card"><h2>Hidden sites</h2><p class="note">Not bookmarked at the start. A site loads once the player types or clicks its URL, and the first visit bookmarks it. Unlock-only sites need an <code>unlock</code> effect first.</p>
+      ${Object.entries(S.sites).map(([id, d]) => {
+        const found = d.unlockOnly ? unlockers(id).map((x) => `unlocked by ${x}`) : [...new Set(texts.filter(([, t]) => String(t).includes(d.url)).map(([w, , c]) => (c ? `${w} (${esc(whenTextSafe(c)) || 'via effect'})` : w)))];
+        const evs = (S.events || []).filter((ev) => ev.on === 'discover' && ev.site === id);
+        return `<div class="br"><div class="br-head"><b>${esc(d.label)}</b><code>${esc(d.url)}</code>${d.unlockOnly ? '<span class="chip timer">unlock only</span>' : ''}</div>
+          <p class="note">${esc(d.about || '')}</p>
+          <p class="kw"><span class="lbl">found through</span></p>${found.length ? `<span class="uses">${found.map((x) => `<code>${x}</code>`).join('')}</span>` : '<p class="warnbox">Nothing in the story leads here.</p>'}
+          ${d.gate ? `<p class="kw"><span class="lbl">gate</span>${esc(whenText(d.gate))} · otherwise: “${esc(d.gateText || '')}”</p>` : ''}
+          ${evs.map((ev) => `<p class="kw"><span class="lbl">first visit</span></p>${outcomeHtml(ev.effects)}`).join('')}</div>`;
+      }).join('')}</section>`);
+  }
+  if (S.localModels) {
+    const L = S.laptop || {};
+    ref.push(`<section class="card"><h2>Local models (Terminal)</h2><p class="note">Laptop: ${L.ramGb} GB RAM, ${L.diskGb} GB disk. A running model handles prompts like agent at its tier, for free, taking its hours per reply; above its tier it fakes the job or says it can't. Commands: help, ls, cat, run, rm, df, clear, /bye.</p>
+      <div class="scroll"><table class="tbl"><thead><tr><th>Model</th><th>From</th><th>Size</th><th>RAM</th><th>Works like</th><th>Per reply</th><th>Each prompt</th></tr></thead><tbody>${S.localModels.map((m) => `<tr><td><code>${esc(m.id)}</code><br><span class="note">${esc(m.about)}</span></td><td>${esc(m.source)}</td><td class="num">${m.sizeGb} GB</td><td class="num${m.ramGb > L.ramGb ? '" style="color:var(--warn)' : ''}">${m.ramGb} GB</td><td>${esc(model(m.tier))}</td><td class="num">${m.hours}h</td><td>${m.onPrompt ? esc(summary(m.onPrompt)) : '–'}</td></tr>`).join('')}</tbody></table></div>
+      ${(S.events || []).filter((ev) => ev.on === 'download' || ev.on === 'run').map((ev) => `<div class="br"><div class="br-head"><span class="chip deploy">${esc(evLabel(ev))}</span></div>${outcomeHtml(ev.effects)}</div>`).join('')}</section>`);
+  }
+  if (S.forum) {
+    ref.push(`<section class="card"><h2>nullboard threads</h2><p class="note">${esc(S.forum.tagline || '')} Read-only for now.</p>
+      ${S.forum.threads.map((th) => `<div class="br"><div class="br-head"><b>${esc(th.title)}</b><code>${esc(th.id)}</code>${th.when ? `<span class="chip timer">if ${esc(whenText(th.when))}</span>` : ''}</div>
+        ${th.posts.map((x) => `<p class="otext"><b>${esc(x.author)}:</b> ${txt(x.text)}</p>`).join('')}
+        ${th.onRead ? `<p class="kw"><span class="lbl">first read</span></p>${outcomeHtml(th.onRead)}` : ''}</div>`).join('')}</section>`);
+  }
+  if (S.market) {
+    ref.push(`<section class="card"><h2>Cellar listings</h2><p class="note">Every purchase also runs: ${esc(summary(S.market.onBuy || {}))}.</p>
+      ${S.market.listings.map((l) => `<div class="br"><div class="br-head"><b>${esc(l.title)}</b><code>${esc(l.id)}</code><span class="chip mail">$${l.price}</span>${l.once ? '<span class="chip timer">once</span>' : ''}${l.hours ? `<span class="chip timer">${l.hours}h delivery</span>` : ''}</div>
+        <p class="note">${esc(l.about)}</p>${outcomeHtml(l.effects)}</div>`).join('')}</section>`);
+  }
   const A = S.agent || {};
   ref.push(`<section class="card"><h2>agent's own voice</h2>
     <p><span class="lbl">greeting</span></p><p class="quote">${txt(A.greeting)}</p>
@@ -1789,7 +1975,12 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       </div>`).join('')}
     </section>`);
   }
-  const evLabel = (ev) => (ev.on === 'deploy' ? `deploy ${ev.repo}` : ev.on === 'takedown' ? `take down ${ev.repo}` : `every morning${ev.id ? ' · ' + ev.id : ''}`);
+  function evLabel(ev) {
+    return {
+      deploy: `deploy ${ev.repo}`, takedown: `take down ${ev.repo}`, discover: `find ${ev.site}`,
+      download: `download ${ev.model || 'any model'}${ev.id ? ' · ' + ev.id : ''}`, run: `run ${ev.model || 'any local model'}${ev.id ? ' · ' + ev.id : ''}`,
+    }[ev.on] || `every morning${ev.id ? ' · ' + ev.id : ''}`;
+  }
   ref.push(`<section class="card"><h2>Events</h2>${(S.events || []).map((ev) => `<div class="br"><div class="br-head"><span class="chip ${ev.on === 'day' ? 'day' : 'deploy'}">${esc(evLabel(ev))}</span></div>
     ${ev.when ? `<p class="kw"><span class="lbl">when</span>${esc(whenText(ev.when))}</p>` : ''}${outcomeHtml(ev.effects)}</div>`).join('')}</section>`);
   ref.push(`<section class="card"><h2>Contacts who reply</h2>${Object.entries(S.contacts || {}).map(([addr, c]) => `<div class="br">
@@ -1800,6 +1991,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     <p><span class="lbl">fallback replies</span></p><ol class="lines">${(c.fallback || []).map((x) => `<li>${txt(x)}</li>`).join('')}</ol></div>`).join('')}
     <p class="note">Anyone else never replies, so the player gets one message to them.</p></section>`);
   function whenText(w) { return Object.entries(w).map(([k, v]) => (k === 'meters' ? meterCond(v) : `${k}: ${arr(v).join(', ')}`)).join(' · '); }
+  function whenTextSafe(w) { return w ? whenText(w) : ''; }
   const card = (kind, x) => (kind === 'post' ? postCard(x) : mailCard(x));
   const items = [...(S.posts || []).map((p) => ['post', p]), ...(S.mail || []).map((m) => ['mail', m])];
   ref.push(`<section class="card"><h2>Appears on a condition</h2>${items.filter(([, x]) => x.when).map(([k, x]) => `<div class="br"><p class="kw"><span class="lbl">when</span>${esc(whenText(x.when))} · <code>${esc(x.id)}</code></p>${card(k, x)}</div>`).join('') || '<p class="note">None.</p>'}</section>`);

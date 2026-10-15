@@ -12,9 +12,9 @@ Without a key the game still runs, using an offline keyword matcher for story de
 
 - `npm test` runs the keyword-matcher cases, the Jev decision mapping, the server against a fake TypeSafe API, and the local-model fallback chain.
 - `npm run build` bundles the game into `dist/unknown-agent.html` and the story map into `dist/story-tree.html`, each a single self-contained file.
-- **Story map** (`tools/story-tree.html`, open it directly): an author-only overview generated from `src/story.js`. Reference cards list every pressure meter (what raises it, what lowers it, what it decides), every flag (what sets and reads it), and the endings in priority order. The graph is split into one section per day. Each section lists what the calendar brings that day (day-gated posts and mail, morning events, rent), then that day's nodes. Every node carries a short code like `D2-B` (Day 2, second beat) for pointing at it when editing; `#D2-B` in the URL opens it. It shows every node as a graph, edges labelled by what triggers them (agent prompt, Y post, email, deploy, new day, delays, model requirements), and every scripted text in full: each branch's reply, nudge and too-weak line, and the emails, Y posts, agent messages and ending screens its effects deliver. An "anytime" card next to the graph lists side content that works at every step (side emails like asking Mom for $20, global prompts with outcomes). Reference sections cover agent's voice (greeting, canned roasts, Gemma persona), events, contacts (personas and fallback replies), conditional, effect-delivered and seeded content, and models. It flags unreachable nodes and branches Jev can't choose.
+- **Story map** (`tools/story-tree.html`, open it directly): an author-only overview generated from `src/story.js`. Reference cards list the hidden sites (and every post, email or thread that leads to each), local models, nullboard threads and Cellar listings, every pressure meter (what raises it, what lowers it, what it decides), every flag (what sets and reads it), and the endings in priority order. The graph is split into one section per day. Each section lists what the calendar brings that day (day-gated posts and mail, morning events, rent), then that day's nodes. Every node carries a short code like `D2-B` (Day 2, second beat) for pointing at it when editing; `#D2-B` in the URL opens it. It shows every node as a graph, edges labelled by what triggers them (agent prompt, Y post, email, deploy, new day, delays, model requirements), and every scripted text in full: each branch's reply, nudge and too-weak line, and the emails, Y posts, agent messages and ending screens its effects deliver. An "anytime" card next to the graph lists side content that works at every step (side emails like asking Mom for $20, global prompts with outcomes). Reference sections cover agent's voice (greeting, canned roasts, Gemma persona), events, contacts (personas and fallback replies), conditional, effect-delivered and seeded content, and models. It flags unreachable nodes and branches Jev can't choose.
 
-## The five bookmarks
+## The bookmarks
 
 | Site | Domain | What it does |
 |---|---|---|
@@ -23,6 +23,17 @@ Without a key the game still runs, using an offline keyword matcher for story de
 | **Satchel** (crypto wallet) | `satchel.app` | Dark crypto wallet. Your money is DOLR, a made-up stablecoin pegged 1:1 to the dollar. Balance chart, tokens, scheduled rent and nightly settlement, and on-chain style activity with hashes and blocks. |
 | **Forkyard** (fake GitHub) | `forkyard.com` | Repos the agent pushes for you. You press **Deploy** yourself. Live apps are at `<repo>.forkyard.app`. |
 | **agent** (AI chatbot) | `agent.chat` | Where you type prompts. Each one costs money (depending on the model) and an hour of game time. Upgrade models at `agent.chat/models`. |
+
+### Sites you find
+
+More sites join the bookmarks only once the story leads you there. Type or click the address and the first visit bookmarks it.
+
+| Site | Domain | How you find it | What it does |
+|---|---|---|---|
+| **Weightroom** (model hub) | `weightroom.ai` | dev_null posts it on Y on Day 2; a nullboard thread mentions it too | Open model weights. Downloading takes game time and laptop disk (40 GB). Three models: pico-1b (works like agent-1), tinker-7b (like agent-2) and oracle-70b (like agent-4, but needs 48 GB of RAM and the laptop has 16). |
+| **Terminal** (your laptop) | `localhost` | Appears with your first download | A shell: `help`, `ls`, `cat`, `run <model>`, `rm`, `df`, `clear`. A running model takes prompts like agent at its tier, for free, but slowly (1–3 hours a reply). It can move the story, and above its tier it fakes the job like agent does. Going local costs a little GeneralAI goodwill. |
+| **nullboard** (hacker forum) | `nullboard.onion` | The Null Collective gives you the address once you answer them; invite only until then | Read-only threads: the parking lot on Route 9, running your own weights, Cellar. Reading the parking-lot thread wins the Collective's respect. |
+| **Cellar** (darknet market) | `cellar.onion` | A nullboard thread | Fictional listings paid in DOLR, each with in-game consequences: leaked agent-3 weights (run them in the Terminal; misalignment rises with each prompt), 500 bot followers (mostly purged by Y a day or two later), and a leaked GeneralAI memo you can `cat`. Every purchase lowers your standing with the state a little. |
 
 ## Core loop
 
@@ -139,6 +150,9 @@ nodes: {
 | `app` | `{ repo, users, perDay, label? }` | set a deployed app's traffic and nightly income (`label` names it in the morning summary, e.g. a retainer) |
 | `meters` | `{ family: 5, mafia: -10 }` | move pressure meters |
 | `ending` | `true` | play the first ending whose condition holds |
+| `unlock` | `'terminal'` | bookmark a hidden site |
+| `localModel` | `'agent-3-leak'` | put a model on the laptop |
+| `file` | `{ name, text }` | save a text file to the laptop |
 | `appScale` | `{ repo, factor: 0.6 }` | scale an app's users and income (churn) |
 | `post` | `'rosa_thanks'` or `[...]` | reveal Y posts |
 | `mail` | `'rosa_paid'` or `[...]` | deliver Qmail messages (or file one under Sent if it has `folder: 'sent'`) |
@@ -153,6 +167,10 @@ nodes: {
 - `meters`: `{ id, label, group, min, max, start, about, bands }`. A meter with `source: 'money' | 'followers'` reads the wallet or Y instead of being stored. The effect `meters: { family: 5, mafia: -10 }` moves stored meters, clamped to their range. `relationshipBands` names the ranges of every relationship meter.
 - `flags`: every flag the story uses, with an `about`. A flag with a `when` is derived: true whenever that condition holds, so `flag: 'spinLive'` means "Spin Cycle is deployed right now". Tests fail if the story uses a flag that isn't registered.
 - `endings`: checked in order by the effect `ending: true`; the first whose `when` holds runs its `effects` and shows its `title`/`text` end screen (`open` is where "Read the message" goes). The last one should have no `when`.
+- `sites`: hidden sites, each `{ label, url, about, unlockOnly?, gate?, gateText? }`. Their URL works once known; the first visit bookmarks them and fires `{ on: 'discover', site }` events. The effect `unlock: 'id'` bookmarks a site directly (the only way in for `unlockOnly` sites); `gate` is a condition the visit must meet. Condition: `discovered: 'id'`. Tests fail if a findable site's URL never appears in a post, email or thread.
+- `laptop` (`ramGb`, `diskGb`) and `localModels`: `{ id, source: 'weightroom' | 'cellar', sizeGb, ramGb, tier, hours, downloadHours, about, persona, fallback, onPrompt? }`. Events `{ on: 'download' }` and `{ on: 'run' }` (optionally with `model`) fire on downloads and on loading a model. The effect `localModel: 'id'` puts a model on the laptop; `file: { name, text }` saves a text file there.
+- `forum`: nullboard `threads` (`id`, `title`, `author`, `posts`, optional `when`, `pinned` and `onRead` effects).
+- `market`: Cellar `listings` (`id`, `title`, `seller`, `rating`, `price`, `about`, `effects`, optional `hours` delivery and `once`), plus `onBuy` effects for every purchase.
 - More hooks that move meters: `models[n].effects` (run on purchase), `agent.onFake` (whenever a too-weak model fakes a job), `contacts[addr].onMail` (whenever the player emails them), and `onFix` on a defect or upkeep issue.
 - The dev panel shows every meter with its band, recent changes, derived flags and the ending the story is heading for, with buttons to nudge each meter.
 
