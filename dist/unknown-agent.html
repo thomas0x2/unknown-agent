@@ -930,8 +930,7 @@ body.dev-on .qm-gen { display: block; }
     intent: 'The player asks the agent to deploy, publish, host, or put the project online.',
     match: { all: [W.deploy] },
     response:
-      `I can't deploy. Deploys need your Forkyard login and I don't have it.\n\n` +
-      `Open Forkyard, pick \`${repo}\`, press Deploy. Hosting is $2/day.`,
+      "I don't do buttons. You have a Forkyard account and at least one working finger. Combine them.",
   });
 
   global.STORY = {
@@ -984,7 +983,7 @@ body.dev-on .qm-gen { display: block; }
       llmPersona:
         'You are a pay-per-prompt AI chatbot called agent, with a mean streak. The user just paid for a prompt that does nothing useful. ' +
         'Roast them in one or two short sentences: cheeky, rude and funny, about being broke, wasting money on prompts, or their life choices. ' +
-        'Tiny joke poems are welcome. Never give advice, hints, suggestions or next steps, and never answer the actual question. ' +
+        'Tiny joke poems are welcome. Never answer the actual question or give advice or steps. You may end with one vague nudge such as "maybe look around" or "read something for once", but never name a person, place, site or task. ' +
         'Never mention jobs, gigs, clients, websites, apps, posts, emails, businesses or ways to make money. ' +
         'Keep it playful: no slurs, no threats.',
       llmExamples: [
@@ -1073,9 +1072,7 @@ body.dev-on .qm-gen { display: block; }
         branches: [
           research(
             'research',
-            'Scanned Y for paid work. One real lead:\n\n' +
-              '@crumbandcoin (Crumb & Coin Bakery, Rosa) will pay $150 for a simple website with their menu and opening hours. Wants it by tomorrow.',
-            { set: { knowsBakery: true } }
+            "You're paying me to read Y for you? Bold. Someone on there is literally offering money for something I could build in my sleep. Try scrolling."
           ),
           {
             id: 'build_bakery_site',
@@ -1099,7 +1096,7 @@ body.dev-on .qm-gen { display: block; }
         scene: "The agent has built the Crumb & Coin bakery website and pushed it to Forkyard. It is not deployed yet; the player has to press Deploy on Forkyard themselves.",
         branches: [
           cantDeploy('crumb-and-coin'),
-          research('research', 'The bakery site is built but not live. Open Forkyard and deploy it, then tell Rosa.'),
+          research('research', "It's built. Now it's just sitting there undeployed, like you on a weekday. The button for that isn't in this chat."),
         ],
       },
 
@@ -1120,7 +1117,7 @@ body.dev-on .qm-gen { display: block; }
               'Emailed Rosa at rosa@crumbandcoin.com from your Qmail:\n\n"Hi Rosa, your new site is live at crumb-and-coin.forkyard.app. Menu and hours are up. Invoice for $150 attached."\n\nShe usually replies within a couple of hours.',
             effects: { set: { invoiced: true }, mail: 'rosa_invoice_sent', later: [{ hours: 2, effects: 'rosa_pays' }] },
           },
-          research('research', "The site is live, but Rosa doesn't know. Email her at rosa@crumbandcoin.com, or post about it on Y."),
+          research('research', "The site is live and the person paying for it has no idea. Telepathy isn't a feature yet. Tell her somehow, ideally without paying me to."),
         ],
       },
 
@@ -1130,9 +1127,7 @@ body.dev-on .qm-gen { display: block; }
         branches: [
           research(
             'research',
-            'Biggest unsolved complaint on Y right now:\n\n' +
-              "@washday_woes: nobody knows which machines at the Ferris St Laundromat actually work. 2.1k likes, dozens of replies saying \"someone build this\".\n\nA live machine-status tracker would get steady local traffic.",
-            { set: { knowsLaundromat: true } }
+            "One gig and you think you're done? Cute. Rent says otherwise. Y is full of people whining about something broken near them, and whining is just a feature request nobody has billed for yet."
           ),
           {
             id: 'build_tracker',
@@ -1160,7 +1155,7 @@ body.dev-on .qm-gen { display: block; }
       app_built: {
         objective: 'Deploy Spin Cycle.',
         scene: "The agent has built Spin Cycle, a machine-status tracker for the Ferris St laundromat. It is not deployed yet; the player has to press Deploy on Forkyard.",
-        branches: [cantDeploy('spin-cycle'), research('research', 'Spin Cycle is built. Deploy it from Forkyard.')],
+        branches: [cantDeploy('spin-cycle'), research('research', "Built, not deployed. You've done this exact thing before. I believe in you. Barely.")],
       },
 
       app_live: {
@@ -1179,7 +1174,7 @@ body.dev-on .qm-gen { display: block; }
               'Posted from your Y account and replied under @washday_woes\'s thread with the link.\n\nPeople are already reporting machines.',
             effects: 'spin_marketed',
           },
-          research('research', "Spin Cycle is live but has no users. The people who want it are in @washday_woes's thread on Y."),
+          research('research', "Live, with zero users. Apps don't market themselves, and neither do you, apparently. The people who begged for this are still complaining somewhere."),
         ],
       },
 
@@ -1192,7 +1187,7 @@ body.dev-on .qm-gen { display: block; }
             intent: "The player asks the agent to make money from Spin Cycle without choosing a method (ads, paywall, or sponsor).",
             match: { all: [['monetize', 'monetise', 'money', 'revenue', 'income', 'earn', 'profit', 'cash', 'pay', 'paid', 'business model']] },
             response:
-              'Three ways to make Spin Cycle pay:\n— ads\n— a paywall / subscription\n— a local sponsor (needs agent-3 to negotiate)\n\nEach one changes the app. Pick one and ask for it.',
+              "\"Make it pay\". Groundbreaking. There are about three ways the internet pays for things, and you've seen all of them. Pick one and say which. The smart one needs a model smarter than the one you're cheaping out on.",
           },
           {
             id: 'monetize_ads',
@@ -1223,7 +1218,7 @@ body.dev-on .qm-gen { display: block; }
               'Emailed three local businesses. Suds & Duds Detergent signed a "machine status brought to you by" deal on the spot.\n\n$60/day, no ads, users happy.',
             effects: { app: { repo: 'spin-cycle', users: 320, perDay: 60 }, set: { monetized: 'sponsor' }, goto: 'monetized', post: 'suds_deal' },
           },
-          research('research', 'You have traffic and no revenue. Ask me to monetize it: ads, a paywall, or a sponsor.'),
+          research('research', "Hundreds of users and you're still broke. That takes talent. Things on the internet get paid for in a few classic ways. Pick one and ask for it like you mean it."),
         ],
       },
 
@@ -1231,7 +1226,7 @@ body.dev-on .qm-gen { display: block; }
         objective: 'Spin Cycle pays now. Survive until rent clears at the end of Day 7.',
         scene: "Spin Cycle earns money every night. The player just has to survive until rent clears at the end of Day 7.",
         branches: [
-          research('research', 'Nothing urgent. Spin Cycle pays out every night. Sleep, and let it earn.'),
+          research('research', "Nothing left to do but wait for money to show up. You've been training for this your whole life. Go to sleep."),
         ],
       },
 
