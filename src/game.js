@@ -1,5 +1,5 @@
 /*
- * Unknown Agent — engine and UI.
+ * Unknown Agent — engine and UI. The in-game chatbot is called GIT.
  * Reads window.STORY (story.js) and asks window.Jev (jev.js) which branch a prompt hits.
  */
 (function () {
@@ -17,7 +17,7 @@
     chirpr: { label: 'Chirpr', url: 'chirpr.com' },
     bank: { label: 'Second National', url: 'secondnational.com' },
     forkyard: { label: 'Forkyard', url: 'forkyard.com' },
-    agent: { label: 'Unknown Agent', url: 'unknownagent.ai' },
+    agent: { label: 'GIT', url: 'askgit.ai' },
   };
 
   let state = null;
@@ -54,13 +54,14 @@
     if (d < 1440) return Math.floor(d / 60) + 'h';
     return Math.floor(d / 1440) + 'd';
   }
-  function tpl(s) {
-    const vars = {
+  function tpl(s, extra) {
+    const vars = Object.assign({
       balance: fmtMoney(state.money),
       lastCost: fmtMoney(state.lastCost || 0),
       handle: S.start.player.handle,
       name: S.start.player.name,
-    };
+      model: modelDef(state.model).name,
+    }, extra);
     return String(s).replace(/\{(\w+)\}/g, (m, k) => (k in vars ? vars[k] : m));
   }
   function richText(s) {
@@ -94,7 +95,9 @@
       ],
       chat: [{ from: 'agent', text: S.agent.greeting, t }],
       queue: [], fired: {},
-      stats: { prompts: 0, promptSpend: 0, misses: 0, partials: 0 },
+      stats: { prompts: 0, promptSpend: 0, misses: 0, partials: 0, locked: 0, upgradeSpend: 0 },
+      model: 1,   // active GIT tier
+      owned: 1,   // highest GIT tier bought
       unread: { chirpr: 0, bank: 0, forkyard: 0, agent: 0 },
       tabs: [{ id: 1, url: SITES.chirpr.url }, { id: 2, url: SITES.agent.url }],
       active: 2, nextTab: 3, lastCost: 0,
@@ -113,7 +116,13 @@
       const raw = localStorage.getItem(SAVE_KEY);
       if (!raw) return null;
       const s = JSON.parse(raw);
-      return s && s.v === 1 ? s : null;
+      if (!s || s.v !== 1) return null;
+      // saves from before GIT tiers
+      if (!s.model) { s.model = 1; s.owned = 1; }
+      s.stats.locked = s.stats.locked || 0;
+      s.stats.upgradeSpend = s.stats.upgradeSpend || 0;
+      for (const tab of s.tabs) if (/^unknownagent\.ai/.test(tab.url)) tab.url = 'askgit.ai';
+      return s;
     } catch (e) { return null; }
   }
 
@@ -130,6 +139,7 @@
   }
 
   const currentNode = () => S.nodes[state.node] || { objective: '', branches: [] };
+  const modelDef = (level) => S.models[Math.min(Math.max(level, 1), S.models.length) - 1];
 
   // ───────────────────────── effects ─────────────────────────
 
@@ -161,7 +171,7 @@
     state.chat.push({ from: 'agent', text, t: state.t, src: src || 'event' });
     if (!onSite('agent')) {
       state.unread.agent++;
-      toast('Unknown Agent', 'sent you a message', 'agent');
+      toast('GIT', 'sent you a message', 'agent');
     }
   }
 
@@ -276,7 +286,31 @@
   // ───────────────────────── actions ─────────────────────────
 
   function wordCount(text) { return K.tokenize(text).length; }
-  function promptCost(text) { return round2(E.promptBase + wordCount(text) * E.perWord); }
+  function promptCost(text, level) {
+    const m = modelDef(level || state.model);
+    return round2(m.promptBase + wordCount(text) * m.perWord);
+  }
+
+  // Buy the next GIT tier. Tiers unlock in order; the new tier becomes active.
+  function buyModel(level) {
+    const m = modelDef(level);
+    if (level !== state.owned + 1 || state.over) return;
+    if (state.money < m.price) { toast('GIT Labs', `${m.name} costs ${fmtMoney(m.price)}. Your balance is ${fmtMoney(state.money)}.`, 'agent'); return; }
+    addTx(-m.price, `GIT LABS — ${m.name} UPGRADE`);
+    state.stats.upgradeSpend = round2(state.stats.upgradeSpend + m.price);
+    state.owned = level;
+    state.model = level;
+    toast('GIT Labs', `${m.name} unlocked and active. Prompts now cost ${fmtMoney(m.promptBase)} + ${fmtMoney(m.perWord)}/word.`, 'agent');
+    save();
+    render();
+  }
+
+  function useModel(level) {
+    if (level < 1 || level > state.owned || busy) return;
+    state.model = level;
+    save();
+    render();
+  }
 
   function branchCandidates() {
     return [...(currentNode().branches || []), ...(S.global || [])].filter((b) => check(b.when));
@@ -291,11 +325,12 @@
       render();
       return;
     }
-    addTx(-cost, 'UNKNOWN AGENT — USAGE');
+    const level = state.model;
+    addTx(-cost, `GIT LABS — ${modelDef(level).name} USAGE`);
     state.lastCost = cost;
     state.stats.prompts++;
     state.stats.promptSpend = round2(state.stats.promptSpend + cost);
-    state.chat.push({ from: 'you', text, t: state.t, cost });
+    state.chat.push({ from: 'you', text, t: state.t, cost, model: level });
     busy = true;
     render();
 
@@ -307,12 +342,21 @@
       await thinking;
       // the player may have deployed or posted while Jev was deciding
       if (decision.branch && !branchCandidates().includes(decision.branch)) decision = { ...decision, kind: 'miss', branch: null, stale: true };
-      lastReport = { prompt: text, node: sentNode, decision };
+      decision = J.gate(decision, level);
+      lastReport = { prompt: text, node: sentNode, decision, model: level };
       let reply;
       let src;
+      let effects = null;
       if (decision.kind === 'hit') {
-        reply = decision.branch.response;
+        const out = J.outcome(decision.branch, level);
+        reply = out.response;
+        effects = out.effects;
         src = 'hit:' + decision.branch.id;
+      } else if (decision.kind === 'locked') {
+        const need = modelDef(decision.branch.minModel).name;
+        reply = tpl(decision.branch.weak || S.agent.lockedResponse, { model: modelDef(level).name, required: need });
+        src = 'locked:' + decision.branch.id;
+        state.stats.locked++;
       } else if (decision.kind === 'partial') {
         reply = decision.branch.partial;
         src = 'partial:' + decision.branch.id;
@@ -330,7 +374,7 @@
       }
       state.chat.push({ from: 'agent', text: tpl(reply), t: state.t, src });
       startTyping(state.chat.length - 1);
-      if (decision.kind === 'hit') applyEffects(decision.branch.effects);
+      if (effects) applyEffects(effects);
       advance(Math.round(E.promptHours * 60));
       busy = false;
       save();
@@ -396,7 +440,8 @@
     if (!u || u === 'newtab') return { site: 'newtab', title: 'New Tab' };
     if (u === 'chirpr.com') return { site: 'chirpr', title: 'Home / Chirpr' };
     if (u === 'secondnational.com') return { site: 'bank', title: 'Second National · Checking' };
-    if (u === 'unknownagent.ai') return { site: 'agent', title: 'Unknown Agent' };
+    if (u === 'askgit.ai' || u === 'unknownagent.ai') return { site: 'agent', title: 'GIT' };
+    if (u === 'askgit.ai/models') return { site: 'agent', page: 'models', title: 'Models · GIT' };
     if (u === 'forkyard.com') return { site: 'forkyard', title: 'Forkyard' };
     let m = u.match(/^forkyard\.com\/([a-z0-9-]+)$/);
     if (m) return { site: 'forkyard', repo: m[1], title: `${m[1]} · Forkyard` };
@@ -487,7 +532,7 @@
     }).join('');
     const trends = [
       ['#RentDue', '18.2k chirps'],
-      ['Unknown Agent', '9,410 chirps'],
+      ['GIT-3', '9,410 chirps'],
       state.posts.washday != null ? ['Ferris St Laundromat', '2,140 chirps'] : ['#AgenticWorkflows', '4,002 chirps'],
       ['Crumb & Coin', state.posts.rosa_thanks != null ? '312 chirps' : '27 chirps'],
     ];
@@ -562,7 +607,7 @@
         <p class="fy-desc">${esc(def.description)}</p>
         <div class="fy-grid">
           <div class="fy-files">
-            <div class="fy-filehead">Pushed by <b>unknown-agent[bot]</b> · ${ago(r.createdAt)} ago</div>
+            <div class="fy-filehead">Pushed by <b>git[bot]</b> · ${ago(r.createdAt)} ago</div>
             ${def.files.map((f) => `<div class="fy-file">${esc(f)}</div>`).join('')}
             <pre class="fy-code"><code>${esc(def.snippet)}</code></pre>
           </div>
@@ -606,7 +651,7 @@
   function pageAgent() {
     const msgs = state.chat.map((m, i) => {
       if (m.from === 'system') return `<div class="ua-sys">${richText(m.text)}</div>`;
-      if (m.from === 'you') return `<div class="ua-msg you"><div class="ua-bubble">${esc(m.text)}</div><span class="ua-cost">${fmtMoney(-m.cost)} · ${clock(m.t)}</span></div>`;
+      if (m.from === 'you') return `<div class="ua-msg you"><div class="ua-bubble">${esc(m.text)}</div><span class="ua-cost">${fmtMoney(-m.cost)} · ${esc(modelDef(m.model || 1).name)} · ${clock(m.t)}</span></div>`;
       const typing = anim && anim.idx === i;
       const shown = typing ? m.text.slice(0, anim.shown) : m.text;
       const src = m.src ? `<span class="ua-src ${m.src.split(':')[0]}">${esc(m.src)}</span>` : '';
@@ -616,15 +661,46 @@
     const thinking = busy ? `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text ua-dots"><i></i><i></i><i></i></div></div>` : '';
     return `<div class="ua">
       <header class="ua-head">
-        <div class="ua-brand">${ICONS.agent}<div><b>Unknown Agent</b><span>${esc(S.agent.model)} · ${fmtMoney(E.promptBase)} per prompt + ${fmtMoney(E.perWord)} per word</span></div></div>
-        <span class="ua-linked">Billing: Second National ••4417</span>
+        <div class="ua-brand">${ICONS.agent}<div><b>GIT</b><span>${esc(modelDef(state.model).name)} · ${fmtMoney(modelDef(state.model).promptBase)} per prompt + ${fmtMoney(modelDef(state.model).perWord)} per word</span></div></div>
+        <span class="ua-linked"><a href="#" data-nav="askgit.ai/models" class="ua-upgrade">${state.owned < S.models.length ? 'Upgrade model' : 'Models'}</a> · Billing: Second National ••4417</span>
       </header>
       <div class="ua-llm"><span class="ua-jev" id="ua-jev">${jevChip()}</span>${LLM ? `<span class="ua-llm-ctl" id="ua-llm">${llmRow()}</span>` : ''}</div>
       <div class="ua-log" id="ua-log">${msgs}${thinking}</div>
       <form class="ua-compose" data-form="prompt">
-        <textarea id="prompt-input" rows="2" placeholder="Tell the agent what to do" ${busy || state.over ? 'disabled' : ''}></textarea>
-        <div class="ua-row"><span id="cost-est" class="ua-est"></span><button class="ua-send" type="submit" ${busy || state.over ? 'disabled' : ''}>Send</button></div>
+        <textarea id="prompt-input" rows="2" placeholder="Tell GIT what to do" ${busy || state.over ? 'disabled' : ''}></textarea>
+        <div class="ua-row">
+          <label class="ua-model-pick"><span class="sr-only">Model</span><select id="model-pick" ${busy ? 'disabled' : ''}>${S.models.slice(0, state.owned).map((m, i) => `<option value="${i + 1}" ${state.model === i + 1 ? 'selected' : ''}>${esc(m.name)}</option>`).join('')}</select></label>
+          <span id="cost-est" class="ua-est"></span><button class="ua-send" type="submit" ${busy || state.over ? 'disabled' : ''}>Send</button>
+        </div>
       </form>
+    </div>`;
+  }
+
+  // askgit.ai/models: the tier ladder. Tiers unlock in order.
+  function pageModels() {
+    const cards = S.models.map((m, i) => {
+      const level = i + 1;
+      const owned = level <= state.owned;
+      const next = level === state.owned + 1;
+      let action;
+      if (owned && level === state.model) action = '<span class="gm-pill on">In use</span>';
+      else if (owned) action = `<button class="gm-btn ghost" data-use-model="${level}">Use</button>`;
+      else if (next) action = `<button class="gm-btn" data-buy-model="${level}" ${state.money < m.price ? 'disabled' : ''}>Unlock · ${fmtMoney(m.price)}</button>${state.money < m.price ? `<small>You have ${fmtMoney(state.money)}</small>` : ''}`;
+      else action = `<span class="gm-pill">Unlock ${esc(modelDef(level - 1).name)} first</span>`;
+      return `<article class="gm-card${owned ? ' owned' : ''}${level === state.model ? ' active' : ''}">
+        <header><h2>${esc(m.name)}</h2><span class="gm-meter" aria-label="Tier ${level} of ${S.models.length}">${S.models.map((_, j) => `<i class="${j < level ? 'on' : ''}"></i>`).join('')}</span></header>
+        <p>${esc(m.blurb)}</p>
+        <dl><dt>Per prompt</dt><dd>${fmtMoney(m.promptBase)}</dd><dt>Per word</dt><dd>${fmtMoney(m.perWord)}</dd><dt>Unlock</dt><dd>${m.price ? fmtMoney(m.price) : 'Included'}</dd></dl>
+        <div class="gm-act">${action}</div>
+      </article>`;
+    }).join('');
+    return `<div class="ua gm">
+      <header class="ua-head">
+        <div class="ua-brand">${ICONS.agent}<div><b>GIT models</b><span>Stronger models take on harder jobs. Every prompt costs more.</span></div></div>
+        <span class="ua-linked"><a href="#" data-nav="askgit.ai" class="ua-upgrade">Back to chat</a></span>
+      </header>
+      <div class="gm-grid">${cards}</div>
+      <p class="gm-note">Upgrades are charged once to Second National ••4417. You can switch between models you own at any time.</p>
     </div>`;
   }
 
@@ -712,9 +788,10 @@
     const est = $('#cost-est');
     if (!input || !est) return;
     const words = wordCount(input.value);
+    const m = modelDef(state.model);
     est.textContent = words
       ? `${fmtMoney(promptCost(input.value))} · ${words} word${words > 1 ? 's' : ''} · ${E.promptHours}h`
-      : `Each prompt costs ${fmtMoney(E.promptBase)} + ${fmtMoney(E.perWord)}/word and takes ${E.promptHours}h`;
+      : `${m.name}: ${fmtMoney(m.promptBase)} + ${fmtMoney(m.perWord)}/word, ${E.promptHours}h per prompt`;
     est.classList.toggle('neg', words > 0 && promptCost(input.value) > state.money);
   }
 
@@ -748,7 +825,7 @@
       case 'chirpr': html = pageChirpr(); break;
       case 'bank': html = pageBank(); break;
       case 'forkyard': html = pageForkyard(r.repo); break;
-      case 'agent': html = pageAgent(); break;
+      case 'agent': html = r.page === 'models' ? pageModels() : pageAgent(); break;
       case 'app': html = pageApp(r.repo); break;
       case 'newtab': html = pageNewTab(); break;
       default: html = pageError(tab.url);
@@ -791,7 +868,8 @@
       <div><dt>Balance</dt><dd>${fmtMoney(state.money)}</dd></div>
       <div><dt>Prompts</dt><dd>${s.prompts}</dd></div>
       <div><dt>Spent on prompts</dt><dd>${fmtMoney(s.promptSpend)}</dd></div>
-      <div><dt>Wasted prompts</dt><dd>${s.misses}</dd></div>
+      <div><dt>Wasted prompts</dt><dd>${s.misses + (s.locked || 0)}</dd></div>
+      <div><dt>Best model</dt><dd>${esc(modelDef(state.owned).name)}</dd></div>
     </dl>`;
   }
 
@@ -803,10 +881,11 @@
       html = `<div class="ov-card ov-intro">
         <p class="ov-eyebrow">${esc(S.chapter)}</p>
         <h1 class="ov-title">Unknown<br>Agent</h1>
-        <p>You lost your job two years ago. The benefits ran out last week. You have ${fmtMoney(S.start.money)}, a laptop, four bookmarks, and an AI agent that bills you for every word.</p>
+        <p>You lost your job two years ago. The benefits ran out last week. You have ${fmtMoney(S.start.money)}, a laptop, four bookmarks, and GIT, an AI chatbot that bills you for every word.</p>
         <p>Rent is ${fmtMoney(E.rent.amount)}, due at the end of Day ${E.rent.day}. Don't go broke.</p>
         <ul class="ov-rules">
           <li>Every prompt costs money and an hour. Vague prompts get vague answers.</li>
+          <li>Some jobs need a stronger GIT model. Upgrades cost money upfront and make every prompt pricier.</li>
           <li>Read Chirpr for leads. Check your bank. Ship code on Forkyard.</li>
           <li>Anything you can do yourself, do yourself. It's free.</li>
         </ul>
@@ -880,14 +959,15 @@
       }
       const engine = decision.engine === 'jev' ? `Jev${J.last && J.last.model ? ' · ' + esc(J.last.model) : ''}${J.last ? ` · ${J.last.ms}ms` : ''}` : `keywords${decision.fellBack ? ' (Jev call failed: ' + esc((J.last && J.last.error) || '?') + ')' : ''}`;
       report = `<p><b>${lastReport.chirp ? 'Chirp' : 'Prompt'}:</b> ${esc(lastReport.prompt)}</p>
-        <p><b>Result:</b> ${decision.kind}${decision.branch ? ' → ' + esc(decision.branch.id) : ''}${decision.stale ? ' (stale, ignored)' : ''} <span class="dv-dim">(node ${esc(lastReport.node)} · ${engine})</span></p>
+        <p><b>Result:</b> ${decision.kind}${decision.branch ? ' → ' + esc(decision.branch.id) : ''}${decision.kind === 'locked' ? ` (needs ${esc(modelDef(decision.branch.minModel).name)}, had ${esc(modelDef(lastReport.model).name)})` : ''}${decision.stale ? ' (stale, ignored)' : ''} <span class="dv-dim">(node ${esc(lastReport.node)} · ${engine})</span></p>
         ${table}`;
     }
     const nodes = Object.keys(S.nodes).map((n) => `<option ${n === state.node ? 'selected' : ''}>${n}</option>`).join('');
     d.innerHTML = `<header><b>jev · dev</b><button data-dev="close" aria-label="Close dev panel">×</button></header>
       <label>Node <select id="dv-node">${nodes}</select></label>
-      <div class="dv-row"><button data-dev="money+">+$100</button><button data-dev="money-">−$100</button><button data-dev="hour">+1h</button><button data-dev="sleep">Sleep</button><button data-dev="posts">All posts</button></div>
+      <div class="dv-row"><button data-dev="money+">+$100</button><button data-dev="money-">−$100</button><button data-dev="hour">+1h</button><button data-dev="sleep">Sleep</button><button data-dev="posts">All posts</button><button data-dev="model">Free next model</button></div>
       <p><b>Decisions</b> ${J.status === 'online' ? 'Jev · ' + esc(J.model || '') : esc(J.status) + (J.reason ? ' · ' + esc(J.reason) : '')}</p>
+      <p><b>Model</b> ${esc(modelDef(state.model).name)} active · ${esc(modelDef(state.owned).name)} owned</p>
       <p><b>Flags</b> <code>${esc(JSON.stringify(state.flags))}</code></p>
       ${LLM ? `<p><b>Local model</b> ${esc(LLM.settings.backend)} · ${esc(LLM.status)}${LLM.detail ? ' · ' + esc(LLM.detail) : ''}${LLM.last ? `<br><span class="dv-dim">last: ${LLM.last.ms}ms, ${LLM.last.ok ? 'used' : 'fell back'}${LLM.last.text ? ' — ' + esc(LLM.last.text.slice(0, 80)) : ''}</span>` : ''}</p>` : ''}
       <p><b>Queue</b> <code>${esc(JSON.stringify(state.queue.map((q) => ({ at: stamp(q.at), fx: typeof q.effects === 'string' ? q.effects : Object.keys(q.effects) }))))}</code></p>
@@ -898,7 +978,7 @@
 
   function bind() {
     document.addEventListener('click', (e) => {
-      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-ov],[data-dev],[data-act],[data-llm]');
+      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model]');
       if (!t) return;
       if (t.dataset.close) { e.stopPropagation(); closeTab(Number(t.dataset.close)); return; }
       if (t.dataset.nav) { e.preventDefault(); navigate(t.dataset.nav); return; }
@@ -906,6 +986,13 @@
       if (t.hasAttribute('data-newtab')) { navigate('newtab', true); return; }
       if (t.dataset.like) { const id = t.dataset.like; state.liked[id] = !state.liked[id]; save(); render(); return; }
       if (t.dataset.deploy) { deploy(t.dataset.deploy); return; }
+      if (t.dataset.buyModel) {
+        const level = Number(t.dataset.buyModel);
+        const m = modelDef(level);
+        askConfirm(`Unlock ${m.name} for ${fmtMoney(m.price)}? Prompts will cost ${fmtMoney(m.promptBase)} + ${fmtMoney(m.perWord)}/word while it's active.`, `Pay ${fmtMoney(m.price)}`, () => buyModel(level));
+        return;
+      }
+      if (t.dataset.useModel) { useModel(Number(t.dataset.useModel)); return; }
       if (t.dataset.ov) return overlayAction(t.dataset.ov);
       if (t.dataset.dev) return devAction(t.dataset.dev);
       if (t.dataset.act) return taskbarAction(t.dataset.act);
@@ -962,6 +1049,7 @@
     document.addEventListener('change', (e) => {
       if (e.target.id === 'dv-node') { state.node = e.target.value; revealPosts(); save(); render(); }
       if (e.target.id === 'llm-backend') LLM.setBackend(e.target.value);
+      if (e.target.id === 'model-pick') useModel(Number(e.target.value));
     });
 
     $('#viewport').addEventListener('click', (e) => {
@@ -995,6 +1083,7 @@
     if (a === 'hour') advance(60);
     if (a === 'sleep') sleep(false);
     if (a === 'posts') for (const p of S.posts) revealPost(p.id);
+    if (a === 'model' && state.owned < S.models.length) { state.owned++; state.model = state.owned; }
     save();
     render();
   }

@@ -20,9 +20,9 @@ const ROOT = path.dirname(fileURLToPath(import.meta.url));
 export const NO_PROGRESS = 'no_progress';
 
 const SETTING =
-  'Unknown Agent is a game. The player is broke and pays per prompt for an AI agent that can build and push code ' +
+  'Unknown Agent is a game. The player is broke and pays per prompt for GIT, an AI chatbot agent that can build and push code ' +
   'to Forkyard (a code host), write and send messages, and read Chirpr (a social network). It cannot press buttons ' +
-  'or deploy for the player.';
+  'or deploy for the player. "The agent" below means GIT.';
 
 export function loadStory() {
   const require = createRequire(import.meta.url);

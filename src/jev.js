@@ -107,6 +107,26 @@
     return { kind: 'miss' };
   }
 
+  /*
+   * Model gating. A branch with `minModel: n` needs GIT-n or better: on a weaker
+   * model a hit becomes 'locked' (the player still pays, nothing happens, and the
+   * agent says which tier it needs). Nudges and misses pass through unchanged.
+   */
+  Jev.gate = function (decision, level) {
+    if (decision.kind === 'hit' && decision.branch && (decision.branch.minModel || 1) > level) {
+      return Object.assign({}, decision, { kind: 'locked' });
+    }
+    return decision;
+  };
+
+  // The response and effects a branch produces at a model tier, honouring `atModel` upgrades.
+  Jev.outcome = function (branch, level) {
+    let out = { response: branch.response, effects: branch.effects };
+    const tiers = Object.keys(branch.atModel || {}).map(Number).filter((n) => n <= level).sort((a, b) => a - b);
+    for (const n of tiers) out = Object.assign({}, out, branch.atModel[n]);
+    return out;
+  };
+
   function withTimeout(promise, ms) {
     return Promise.race([promise, new Promise((resolve) => setTimeout(() => resolve(null), ms))]);
   }

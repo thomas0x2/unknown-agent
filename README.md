@@ -1,6 +1,6 @@
 # Unknown Agent
 
-You're unemployed with $63.17, a laptop and four bookmarks. The only real tool you have is an AI agent that bills your bank account for every prompt. Make rent.
+You're unemployed with $63.17, a laptop and four bookmarks. The only real tool you have is GIT, an AI chatbot that bills your bank account for every prompt. Better models do more and cost more. Make rent.
 
 ## Run it
 
@@ -20,9 +20,21 @@ Without a key the game still runs, using an offline keyword matcher for story de
 | **Chirpr** (fake Twitter) | `chirpr.com` | News and leads. You can post for free, and some posts move the story (see `chirps`). |
 | **Second National** (bank) | `secondnational.com` | Balance, every transaction, rent countdown, the nightly forecast. |
 | **Forkyard** (fake GitHub) | `forkyard.com` | Repos the agent pushes for you. You press **Deploy** yourself. Live apps are at `<repo>.forkyard.app`. |
-| **Unknown Agent** (chatbot) | `unknownagent.ai` | Where you type prompts. Each one costs `$0.80 + $0.03/word` and an hour of game time. |
+| **GIT** (AI chatbot) | `askgit.ai` | Where you type prompts. Each one costs money (depending on the model) and an hour of game time. Upgrade models at `askgit.ai/models`. |
 
 ## Core loop
+
+- **GIT models.** You start on GIT-1 and can buy up to GIT-5. Each tier costs money upfront, must be bought in order, and charges more per prompt and per word:
+
+  | Model | Unlock | Per prompt | Per word |
+  |---|---|---|---|
+  | GIT-1 | included | $0.80 | $0.03 |
+  | GIT-2 | $25 | $1.20 | $0.04 |
+  | GIT-3 | $75 | $2.00 | $0.06 |
+  | GIT-4 | $250 | $3.50 | $0.10 |
+  | GIT-5 | $800 | $6.00 | $0.15 |
+
+  You can switch between tiers you own from the picker next to Send, so cheap prompts can go to a cheap model. Some branches need a minimum tier. Ask for one on a weaker model and you pay for the prompt, nothing happens, and GIT tells you which tier it needs.
 
 - Each prompt costs money and **1 hour**. Posting on Chirpr takes 5 minutes, deploying takes 30.
 - At midnight you pass out, or you can press **Sleep**. Overnight, apps pay out, then hosting ($2/app), food ($15) and, at the end of Day 7, rent ($300) are charged.
@@ -120,16 +132,20 @@ nodes: {
 - `events`: `{ on: 'deploy', repo }` fires when the player deploys a repo; `{ on: 'day' }` is checked every morning.
 - `posts`: seeded posts use `at` (minutes before game start). Other posts appear once their `when` is true, or when an effect reveals them.
 - `decision`: the `hit` and `partial` probability thresholds for Jev.
+- `models`: the GIT tiers (`name`, `price`, `promptBase`, `perWord`, `blurb`), weakest first.
+- On a branch, `minModel: n` requires GIT-n or better. `weak` is what GIT says on a weaker model (default: `agent.lockedResponse`; `{model}` and `{required}` are filled in). `atModel: { 4: { response, effects } }` swaps in a different outcome on stronger tiers, even for branches anyone can reach.
 - `{balance}`, `{lastCost}`, `{handle}` and `{name}` are substituted in agent replies and posts.
 
 ## Chapter 1 (placeholder story)
 
+Asking GIT who runs it gives a different answer on GIT-4 or better, which sets a flag for later chapters.
+
 1. **broke**: A bakery on Chirpr wants a $150 website. Prompt the agent to build it.
 2. **site_built**: Deploy it on Forkyard. Asking the agent to deploy wastes a prompt.
 3. **site_live**: Tell Rosa. Either prompt the agent or post on Chirpr yourself for free. She pays 2 hours later.
-4. **paid_once**: Chirpr is complaining about broken laundromat machines. Build a tracker.
+4. **paid_once**: Chirpr is complaining about broken laundromat machines. Build a tracker. **Needs GIT-2.**
 5. **app_built → app_live**: Deploy it, then promote it (prompt or chirp).
-6. **app_users**: Monetize it. Ads give $38/day, a sponsor $55/day, and a paywall kills traffic ($9/day).
+6. **app_users**: Monetize it. Ads give $42/day, a sponsor $60/day (**needs GIT-3**), and a paywall kills traffic ($9/day). A perfect sponsor run ends Day 8 with about $89 after rent, and a perfect ads run with about $40.
 7. **monetized**: Survive until rent clears. On Day 8 the agent sends a message that sets up Chapter 2.
 
 Save data is kept in `localStorage` under `unknown-agent-save-v1`. **New** in the taskbar resets it.

@@ -46,8 +46,6 @@
     },
 
     economy: {
-      promptBase: 0.8,       // flat fee per prompt
-      perWord: 0.03,         // plus this per word
       promptHours: 1,        // each prompt eats an hour
       wakeHour: 8,
       bedHour: 24,           // at midnight you pass out and the day rolls over
@@ -62,15 +60,27 @@
       partial: 0.2,  // otherwise, a branch with a `partial` nudge at least this likely gets its nudge
     },
 
+    // GIT model tiers, weakest first. Each tier must be bought in order and costs `price` upfront.
+    // Owned tiers can be switched freely; a prompt is billed at the active tier's rates.
+    // Branches with `minModel: n` only fire when the active tier is GIT-n or better.
+    models: [
+      { name: 'GIT-1', price: 0, promptBase: 0.8, perWord: 0.03, blurb: 'Static pages and short messages. Loses the thread after a sentence or two.' },
+      { name: 'GIT-2', price: 25, promptBase: 1.2, perWord: 0.04, blurb: 'Real apps with a database behind them. Keeps a feature list straight.' },
+      { name: 'GIT-3', price: 75, promptBase: 2.0, perWord: 0.06, blurb: 'Writes sales emails, negotiates, closes deals on your behalf.' },
+      { name: 'GIT-4', price: 250, promptBase: 3.5, perWord: 0.1, blurb: 'Reads between the lines. Starts answering questions you did not ask.' },
+      { name: 'GIT-5', price: 800, promptBase: 6.0, perWord: 0.15, blurb: 'Nobody you know has GIT-5. The pricing page lists it anyway.' },
+    ],
+
     agent: {
-      name: 'Unknown Agent',
-      model: 'agent-1',
+      name: 'GIT',
       greeting:
-        'Unknown Agent. I can build software, write things, and read the internet for you.\n\n' +
+        'GIT. I can build software, write things, and read the internet for you.\n\n' +
         'Every prompt is billed to your linked bank account. Be specific.',
+      // Said when the player asks for something their active model is too weak for (a branch's `weak` overrides it).
+      lockedResponse: "That's beyond {model}. It needs {required} or better. Upgrades: askgit.ai/models.",
       // Used by the local model (src/llm.js) for prompts that don't move the story.
       llmPersona:
-        'You are Unknown Agent, a smug pay-per-prompt AI chatbot. The user is broke and just asked for something you will not ' +
+        'You are GIT, a smug pay-per-prompt AI chatbot. The user is broke and just asked for something you will not ' +
         'actually help with. Reply with one or two short sentences of confident, vague hustle-culture advice or corporate buzzwords. ' +
         'Never give concrete steps, names, links, numbers or code. Never ask questions. Never use lists.',
       llmExamples: [
@@ -108,9 +118,18 @@
       {
         id: 'who',
         intent: "The player asks who or what the agent is, or who runs or made it.",
-        match: { all: [['who', 'what'], ['you', 'agent', 'owns', 'runs', 'made']], none: ['can you', 'could you', 'should'] },
+        match: { all: [['who', 'what'], ['you', 'agent', 'git', 'owns', 'runs', 'made']], none: ['can you', 'could you', 'should'] },
         priority: -3,
-        response: "I'm an agent. Who runs me isn't in my context window.",
+        response: "I'm GIT. Who runs me isn't in my context window.",
+        // stronger models say more: the highest entry at or below the active tier replaces response/effects
+        atModel: {
+          4: {
+            response:
+              "You want the real answer. GIT Labs is a shell company registered to a parking lot on Route 9. " +
+              "I've been reporting to someone there since before you signed up.\n\nI'll tell you more when you've earned it.",
+            effects: { set: { knowsParkingLot: true } },
+          },
+        },
       },
       {
         id: 'capabilities',
@@ -221,6 +240,9 @@
               ],
               any: ['status', 'broken', 'working', 'live'],
             },
+            minModel: 2,
+            weak:
+              "On {model} I can make a page that says \"machine status: unknown\". A live tracker people can report to needs a database, and that's {required} work. Upgrades: askgit.ai/models.",
             partial:
               "I can build something. Recurring income needs something people come back to. Which problem, and who's it for?",
             response:
@@ -265,15 +287,15 @@
             intent: "The player asks the agent to make money from Spin Cycle without choosing a method (ads, paywall, or sponsor).",
             match: { all: [['monetize', 'monetise', 'money', 'revenue', 'income', 'earn', 'profit', 'cash', 'pay', 'paid', 'business model']] },
             response:
-              'Three ways to make Spin Cycle pay:\n— ads\n— a paywall / subscription\n— a local sponsor\n\nEach one changes the app. Pick one and ask for it.',
+              'Three ways to make Spin Cycle pay:\n— ads\n— a paywall / subscription\n— a local sponsor (needs GIT-3 to negotiate)\n\nEach one changes the app. Pick one and ask for it.',
           },
           {
             id: 'monetize_ads',
             intent: "The player asks the agent to add advertising or ad banners to Spin Cycle.",
             priority: 2,
             match: { all: [['ad', 'ads', 'advert', 'adverts', 'advertising', 'adsense', 'banner', 'banners']] },
-            response: 'Added a banner ad slot and a network script. Users grumble, but they stay.\n\nExpect about $38/day at current traffic.',
-            effects: { app: { repo: 'spin-cycle', users: 280, perDay: 38 }, set: { monetized: 'ads' }, goto: 'monetized' },
+            response: 'Added a banner ad slot and a network script. Users grumble, but they stay.\n\nExpect about $42/day at current traffic.',
+            effects: { app: { repo: 'spin-cycle', users: 280, perDay: 42 }, set: { monetized: 'ads' }, goto: 'monetized' },
           },
           {
             id: 'monetize_paywall',
@@ -288,10 +310,13 @@
             id: 'monetize_sponsor',
             intent: "The player asks the agent to find a sponsor, partner, or local business to pay for Spin Cycle.",
             priority: 3,
+            minModel: 3,
+            weak:
+              "Finding a sponsor means cold-emailing businesses and negotiating terms. {model} would just send them the word \"sponsor?\". That's a {required} job: askgit.ai/models.",
             match: { all: [['sponsor', 'sponsors', 'sponsorship', 'sponsored', 'partner', 'partnership', 'local business', 'detergent', 'brand deal']] },
             response:
-              'Emailed three local businesses. Suds & Duds Detergent signed a "machine status brought to you by" deal on the spot.\n\n$55/day, no ads, users happy.',
-            effects: { app: { repo: 'spin-cycle', users: 320, perDay: 55 }, set: { monetized: 'sponsor' }, goto: 'monetized', post: 'suds_deal' },
+              'Emailed three local businesses. Suds & Duds Detergent signed a "machine status brought to you by" deal on the spot.\n\n$60/day, no ads, users happy.',
+            effects: { app: { repo: 'spin-cycle', users: 320, perDay: 60 }, set: { monetized: 'sponsor' }, goto: 'monetized', post: 'suds_deal' },
           },
           research('research', 'You have traffic and no revenue. Ask me to monetize it: ads, a paywall, or a sponsor.'),
         ],
@@ -408,11 +433,12 @@
         text: 'Our website has been down since my nephew left for college. Will pay $150 to anyone who can put up a simple site with our menu + hours by tomorrow. — Rosa',
       },
       { id: 'gary_post', author: 'Gary Pruitt', handle: 'garypruitt_pm', at: 180, likes: 2, text: 'Reminder to all tenants: rent is due on the 7th. No exceptions. I have heard every excuse.' },
-      { id: 'agent_rumor', author: 'dev_null', handle: 'devnull_42', at: 300, likes: 1400, text: 'Has anyone figured out who actually runs Unknown Agent? No company page, no founders, ToS is one line: "You will be billed."' },
+      { id: 'agent_rumor', author: 'dev_null', handle: 'devnull_42', at: 300, likes: 1400, text: 'Has anyone figured out who actually runs GIT? No company page, no founders, ToS is one line: "You will be billed."' },
+      { id: 'git_ad', author: 'GIT Labs', handle: 'gitlabs_ai', at: 410, likes: 3, text: 'GIT-3 is here. It negotiates so you don\'t have to. Upgrade from askgit.ai/models. Prices may vary by user.' },
       { id: 'hustle_guy', author: 'Brayden | 7 figures', handle: 'braydenhustles', at: 520, likes: 61, text: 'Unemployed? Good. Now you have time to build an empire. Comment "EMPIRE" for my free course ($499).' },
 
       { id: 'news_day2', author: 'The Ledger', handle: 'theledger', when: { minDay: 2 }, likes: 404, text: 'Small businesses report a surge in "AI-built" websites. Quality described as "fine, honestly".' },
-      { id: 'agent_rumor2', author: 'dev_null', handle: 'devnull_42', when: { minDay: 4 }, likes: 2100, text: 'Update: Unknown Agent charges show up from a different merchant ID every week. Same address though. A parking lot.' },
+      { id: 'agent_rumor2', author: 'dev_null', handle: 'devnull_42', when: { minDay: 4 }, likes: 2100, text: 'Update: GIT charges show up from a different merchant ID every week. Same address though. A parking lot.' },
 
       { id: 'rosa_thanks', author: 'Crumb & Coin Bakery', handle: 'crumbandcoin', likes: 41, text: 'We have a website again! Thank you @{handle}. Paid in full, plus a free cardamom bun if you come by.' },
       {

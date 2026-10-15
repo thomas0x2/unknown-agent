@@ -32,7 +32,7 @@ async function t(name, fn) {
   await t('prompt includes persona, balance, few-shot examples and the user prompt', () => {
     const m = LLM._buildMessages('sing me a song', { state: { money: 12.5 } });
     assert.strictEqual(m[0].role, 'system');
-    assert.ok(m[0].content.includes('Unknown Agent') && m[0].content.includes('$12.50'));
+    assert.ok(m[0].content.includes('You are GIT') && m[0].content.includes('$12.50'));
     assert.strictEqual(m.length, 2 + S.agent.llmExamples.length * 2);
     assert.deepStrictEqual(m[m.length - 1], { role: 'user', content: 'sing me a song' });
   });

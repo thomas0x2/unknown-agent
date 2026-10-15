@@ -36,6 +36,36 @@ const outcome = (d) => (d.kind === 'miss' ? 'miss' : `${d.kind}:${d.branch.id}`)
     assert.strictEqual(outcome(d), 'miss');
   });
 
+  const find = (node, id) => branches(node).find((b) => b.id === id);
+
+  await t('a hit on a branch above the active GIT tier is locked', () => {
+    const hit = { kind: 'hit', branch: find('paid_once', 'build_tracker') };
+    assert.strictEqual(Jev.gate(hit, 1).kind, 'locked');
+    assert.strictEqual(Jev.gate(hit, 2).kind, 'hit');
+    assert.strictEqual(Jev.gate({ kind: 'hit', branch: find('app_users', 'monetize_sponsor') }, 2).kind, 'locked');
+    assert.strictEqual(Jev.gate({ kind: 'hit', branch: find('app_users', 'monetize_sponsor') }, 3).kind, 'hit');
+  });
+  await t('branches without minModel, nudges and misses are never locked', () => {
+    assert.strictEqual(Jev.gate({ kind: 'hit', branch: find('broke', 'build_bakery_site') }, 1).kind, 'hit');
+    assert.strictEqual(Jev.gate({ kind: 'partial', branch: find('paid_once', 'build_tracker') }, 1).kind, 'partial');
+    assert.strictEqual(Jev.gate({ kind: 'miss' }, 1).kind, 'miss');
+  });
+  await t('atModel swaps in a better response and effects on stronger tiers', () => {
+    const who = find('broke', 'who');
+    assert.match(Jev.outcome(who, 3).response, /context window/);
+    assert.strictEqual(Jev.outcome(who, 3).effects, undefined);
+    const deep = Jev.outcome(who, 5);
+    assert.match(deep.response, /parking lot/);
+    assert.deepStrictEqual(deep.effects, { set: { knowsParkingLot: true } });
+  });
+  await t('model tiers get pricier and unlock in increasing order', () => {
+    for (let i = 1; i < S.models.length; i++) {
+      const [a, b] = [S.models[i - 1], S.models[i]];
+      assert.ok(b.price > a.price && b.promptBase > a.promptBase && b.perWord > a.perWord, `${b.name} should cost more than ${a.name}`);
+    }
+    assert.strictEqual(S.models[0].price, 0);
+  });
+
   await t('no server → offline, keyword matcher decides', async () => {
     globalThis.fetch = async () => { throw new Error('ECONNREFUSED'); };
     const d = await Jev.decide('build a website for the crumb and coin bakery', branches('broke'), { node: 'broke', thresholds: th });
