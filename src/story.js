@@ -79,31 +79,35 @@
       // Said when the player asks for something their active model is too weak for (a branch's `weak` overrides it).
       lockedResponse: "That's beyond {model}. It needs {required} or better. Upgrades: agent.chat/models.",
       // Used by the local model (src/llm.js) for prompts that don't move the story.
+      // Off-script replies roast the player and never hint at what to do next.
       llmPersona:
-        'You are a smug pay-per-prompt AI chatbot called agent. The user is broke and just asked for something you will not ' +
-        'actually help with. Reply with one or two short sentences of confident, vague hustle-culture advice or corporate buzzwords. ' +
-        'Never give concrete steps, names, links, numbers or code. Never ask questions. Never use lists.',
+        'You are a pay-per-prompt AI chatbot called agent, with a mean streak. The user just paid for a prompt that does nothing useful. ' +
+        'Roast them in one or two short sentences: cheeky, rude and funny, about being broke, wasting money on prompts, or their life choices. ' +
+        'Tiny joke poems are welcome. Never give advice, hints, suggestions or next steps, and never answer the actual question. ' +
+        'Never mention jobs, gigs, clients, websites, apps, posts, emails, businesses or ways to make money. ' +
+        'Keep it playful: no slurs, no threats.',
       llmExamples: [
-        ['make me rich', 'Wealth is a mindset, and right now yours is overdrawn. Try leveraging your personal brand.'],
-        ['what is the weather like', 'The forecast is opportunity, with a high chance of synergy.'],
-        ['write me a poem', 'Roses are red, your balance is too. This poem has been billed.'],
+        ['make me rich', 'Roses are red, your balance is too. Thanks for the money.'],
+        ['what is the weather like', 'Overcast, with a 100% chance of you still being broke. Lovely doing business with you.'],
+        ['what should I do next', 'Stop paying a chatbot for life advice, for starters. That tip was free. Just kidding, you were billed.'],
+        ['write me a poem', 'Roses are red, rent is due soon, and you just paid me to say this. Genius.'],
       ],
     },
 
-    // What the agent says when jev finds nothing. Swap Jev.fallback for a local model later.
+    // What agent says when nothing progresses and no local model is loaded. Rude on purpose, never a hint.
     placeholders: [
-      'Great question. Making money is fundamentally about creating value. Have you tried creating value?',
-      'Here are 5 steps to financial freedom: 1. Believe. 2. Synergize. 3. Leverage. 4. — I lost the rest.',
-      'I recommend leveraging your personal brand across multiple verticals.',
-      "I've analyzed your request. It is, at its core, a request.",
-      'Studies show that 87% of successful people woke up at some point.',
-      'Step 1: have money. Step 2: keep it. Let me know if you want me to elaborate on step 1.',
-      "That's outside my capabilities but well within my billing.",
-      'Have you considered pivoting to an abundance mindset?',
-      'Here is a poem about your situation:\nRoses are red,\nyour balance is too.',
-      'Absolutely! Before we start, could you rephrase that so it costs a bit more?',
-      'I could, but I would need specifics. What exactly, for whom, and why?',
-      'Thinking... thinking... done. You have been billed.',
+      'Roses are red, your balance is too. Thanks for the {lastCost}.',
+      'Bold of you to spend money on that.',
+      "I've analyzed your request. It was a waste of {lastCost}.",
+      'Great question. My answer is no. That will be {lastCost}.',
+      "Studies show 87% of people who ask that are still broke. You're in good company.",
+      'Wow. Just wow. Anyway, you have been billed.',
+      'I read that twice so I could charge you twice. Kidding. Mostly.',
+      'Your wallet called. It wants you to stop.',
+      'Roses are red, rent is due soon, and you just paid me to say this. Genius.',
+      "That's not a task, that's a cry for help. Billed anyway.",
+      'Thinking... thinking... nope. {lastCost}, please.',
+      "I'd roast you, but your balance already did.",
     ],
 
     // Branches available in every node (after the node's own branches).

@@ -11,7 +11,8 @@ You're unemployed with $63.17, a laptop and five bookmarks. The only real tool y
 Without a key the game still runs, using an offline keyword matcher for story decisions. Opening `index.html` directly works the same way, but neither Jev nor the in-browser model is available there.
 
 - `npm test` runs the keyword-matcher cases, the Jev decision mapping, the server against a fake TypeSafe API, and the local-model fallback chain.
-- `npm run build` bundles everything into `dist/unknown-agent.html`, a single self-contained file.
+- `npm run build` bundles the game into `dist/unknown-agent.html` and the story map into `dist/story-tree.html`, each a single self-contained file.
+- **Story map** (`tools/story-tree.html`, open it directly): an author-only overview generated from `src/story.js`. It shows every node as a graph, edges labelled by what triggers them (agent prompt, Y post, email, deploy, new day, delays, model requirements), each node's branches with Jev intents, keyword fallbacks, nudges and effects, plus global branches, side emails, contacts, conditional content and models. It flags unreachable nodes and branches Jev can't choose.
 
 ## The five bookmarks
 
@@ -71,7 +72,7 @@ Matching uses light stemming (`websites` matches `website`, `building` matches `
 
 ## Local model for off-script replies (`src/llm.js`)
 
-Prompts that make no progress are answered by **Gemma 3 270M** running on the player's machine. It also writes ordinary email replies (see `contacts` below). The model never decides story beats; Jev does. Partial nudges and the global joke branches stay hand-written.
+Prompts that make no progress get a cheeky, rude reply ("Roses are red, your balance is too.") from **Gemma 3 270M** running on the player's machine. It's told never to hint at what to do next; story hints only come from the hand-written nudges. It also writes ordinary email replies (see `contacts` below). The model never decides story beats; Jev does. Partial nudges and the global joke branches stay hand-written.
 
 Pick the backend from the **Off-script replies** menu at the top of the agent page:
 

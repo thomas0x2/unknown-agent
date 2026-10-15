@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--build:head-->
+<title>Unknown Agent Story Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Martian+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a working document for the story author. Header with counts and legend, the node graph
+   (layers top to bottom, edges labelled by trigger), a detail panel for the selected node, then reference tables. */
+:root {
+  --bg: #f4f5f7; --panel: #ffffff; --ink: #14161a; --dim: #626a76; --line: #dfe2e7; --soft: #eef0f3;
+  --k-prompt: #14161a; --k-deploy: #d9480f; --k-post: #a67c00; --k-mail: #3b4ad6; --k-day: #7c3aed; --k-timer: #626a76;
+  --sel: #3b4ad6; --warn: #b42318;
+  --f-ui: 'Instrument Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-mono: 'Martian Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1115; --panel: #171a20; --ink: #e8eaee; --dim: #8b93a0; --line: #2a2f38; --soft: #1e222a;
+  --k-prompt: #e8eaee; --k-deploy: #ff8a4c; --k-post: #ffd23f; --k-mail: #8b96ff; --k-day: #b794f6; --k-timer: #8b93a0;
+  --sel: #8b96ff; --warn: #ff8a80; color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --bg: #0f1115; --panel: #171a20; --ink: #e8eaee; --dim: #8b93a0; --line: #2a2f38; --soft: #1e222a;
+  --k-prompt: #e8eaee; --k-deploy: #ff8a4c; --k-post: #ffd23f; --k-mail: #8b96ff; --k-day: #b794f6; --k-timer: #8b93a0;
+  --sel: #8b96ff; --warn: #ff8a80; color-scheme: dark;
+}
+* , *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-ui); font-size: 14px; line-height: 1.45; }
+code, .mono { font-family: var(--f-mono); font-size: 0.86em; }
+.page { max-width: 1400px; margin: 0 auto; padding-block: 24px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 20px; }
+h1 { margin: 0; font-size: 24px; letter-spacing: -0.01em; text-wrap: balance; }
+h2 { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim); }
+.top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; }
+.top p { margin: 4px 0 0; color: var(--dim); }
+.stats { display: flex; gap: 8px; flex-wrap: wrap; }
+.stat { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; display: flex; flex-direction: column; min-width: 92px; }
+.stat b { font-family: var(--f-mono); font-size: 16px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 11px; color: var(--dim); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { display: inline-flex; align-items: center; gap: 5px; border: 1px solid currentColor; border-radius: 999px; padding: 1px 8px; font-family: var(--f-mono); font-size: 10.5px; white-space: nowrap; background: var(--panel); }
+.chip.prompt { color: var(--k-prompt); } .chip.deploy { color: var(--k-deploy); } .chip.post { color: var(--k-post); }
+.chip.mail { color: var(--k-mail); } .chip.day { color: var(--k-day); } .chip.timer { color: var(--k-timer); border-style: dashed; }
+.chip.model { color: var(--warn); }
+.work { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 16px; align-items: start; }
+.graph-wrap { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: auto; min-width: 0; }
+.graph { position: relative; padding: 24px 40px 32px; min-width: max-content; display: flex; flex-direction: column; align-items: center; }
+.layer { display: flex; gap: 28px; justify-content: center; position: relative; z-index: 1; }
+.node { width: 230px; text-align: left; background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; font: inherit; cursor: pointer; box-shadow: 0 1px 0 var(--line); }
+.node:hover { border-color: var(--dim); }
+.node.sel { border-color: var(--sel); box-shadow: 0 0 0 2px var(--sel); }
+.node.start { border-top: 3px solid var(--k-deploy); }
+.node.end { border-bottom: 3px solid var(--k-day); }
+.node-id { font-family: var(--f-mono); font-size: 12px; font-weight: 500; display: flex; justify-content: space-between; gap: 6px; }
+.node-id span { color: var(--dim); font-weight: 400; }
+.node-obj { font-size: 13px; line-height: 1.35; }
+.node-meta { display: flex; flex-wrap: wrap; gap: 4px; }
+.node-meta .chip { font-size: 10px; }
+.edges { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: visible; }
+.edges path { fill: none; stroke: var(--dim); stroke-width: 1.4; }
+.edges path.back { stroke-dasharray: 5 4; }
+.edges marker path { fill: var(--dim); stroke: none; }
+.elabel { position: absolute; z-index: 2; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 3px; pointer-events: none; }
+.detail { position: sticky; top: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; max-height: calc(100vh - 32px); overflow: auto; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.detail h3 { margin: 0; font-family: var(--f-mono); font-size: 16px; font-weight: 500; }
+.detail .obj { margin: 0; font-weight: 600; }
+.detail .scene { margin: 0; color: var(--dim); font-size: 13px; }
+.br { border-top: 1px solid var(--line); padding-top: 10px; display: flex; flex-direction: column; gap: 5px; }
+.br-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.br-head code { font-weight: 500; font-size: 12.5px; }
+.br p { margin: 0; font-size: 12.5px; }
+.lbl { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--dim); margin-right: 4px; }
+.kw { font-family: var(--f-mono); font-size: 11px; color: var(--dim); overflow-wrap: anywhere; }
+.quote { border-left: 2px solid var(--line); padding-left: 8px; color: var(--dim); white-space: pre-wrap; }
+.fx { font-family: var(--f-mono); font-size: 11px; overflow-wrap: anywhere; }
+.go { color: var(--sel); cursor: pointer; text-decoration: underline; background: none; border: 0; padding: 0; font: inherit; }
+.ref { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); gap: 16px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; min-width: 0; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.tbl th { text-align: left; font-weight: 500; font-size: 11px; color: var(--dim); padding: 0 8px 6px 0; border-bottom: 1px solid var(--line); }
+.tbl td { padding: 7px 8px 7px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl .num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.scroll { overflow-x: auto; }
+.note { margin: 0; color: var(--dim); font-size: 12.5px; }
+.warnbox { border: 1px solid var(--warn); color: var(--warn); border-radius: 8px; padding: 8px 10px; font-size: 12.5px; }
+button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
+@media (max-width: 1000px) { .work { grid-template-columns: minmax(0, 1fr); } .detail { position: static; max-height: none; } }
+</style>
+<!--/build:head-->
+</head>
+<body>
+<!--build:body-->
+<div class="page">
+  <header class="top">
+    <div>
+      <h1 id="title">Story map</h1>
+      <p id="subtitle">Author's overview, generated from <code>src/story.js</code>.</p>
+    </div>
+    <div class="stats" id="stats"></div>
+  </header>
+  <div class="legend" id="legend"></div>
+  <div class="work">
+    <div class="graph-wrap"><div class="graph" id="graph"></div></div>
+    <aside class="detail" id="detail" aria-live="polite"></aside>
+  </div>
+  <div class="ref" id="ref"></div>
+</div>
+<script src="../src/story.js"></script>
+<script>
+(function () {
+  'use strict';
+  const S = window.STORY;
+  const arr = (x) => (x == null ? [] : Array.isArray(x) ? x : [x]);
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const clip = (s, n) => { s = String(s || '').replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 1) + '…' : s; };
+  const bundle = (fx) => (typeof fx === 'string' ? (S.bundles || {})[fx] || {} : fx || {});
+  const model = (n) => (S.models && S.models[n - 1] ? S.models[n - 1].name : `tier ${n}`);
+  const KIND = { prompt: 'agent prompt', post: 'Y post', mail: 'email', deploy: 'deploy', day: 'new day', timer: 'delay' };
+
+  function delayText(l) {
+    if (l.nextDay != null) return `next day ${l.nextDay}:00`;
+    if (Array.isArray(l.hours)) return `${l.hours[0]}–${l.hours[1]}h`;
+    return `${l.hours || 0}h`;
+  }
+
+  // Every node an effect leads to, including through bundles and delayed effects.
+  function gotos(fx, delay) {
+    fx = bundle(fx);
+    const out = [];
+    if (fx.goto) out.push({ to: fx.goto, delay: delay || null });
+    for (const l of arr(fx.later)) out.push(...gotos(l.effects, delayText(l)));
+    return out;
+  }
+
+  function describe(fx, depth) {
+    depth = depth || 0;
+    const name = typeof fx === 'string' ? fx : null;
+    fx = bundle(fx);
+    const p = [];
+    if (fx.goto) p.push(`→ ${fx.goto}`);
+    if (fx.set) p.push('set ' + Object.entries(fx.set).map(([k, v]) => (v === true ? k : `${k}=${v}`)).join(', '));
+    if (fx.money != null) { const m = typeof fx.money === 'number' ? { amount: fx.money } : fx.money; p.push(`${m.amount >= 0 ? '+' : ''}$${m.amount}`); }
+    if (fx.repo) p.push(`repo ${arr(fx.repo).join(', ')}`);
+    if (fx.app) p.push(`app ${fx.app.repo}: ${fx.app.users} users, $${fx.app.perDay}/day`);
+    if (fx.post) p.push(`post ${arr(fx.post).join(', ')}`);
+    if (fx.mail) p.push(`mail ${arr(fx.mail).join(', ')}`);
+    if (fx.agent) p.push(`agent says “${clip(fx.agent, 50)}”`);
+    for (const l of arr(fx.later)) p.push(`after ${delayText(l)}: ${depth < 3 ? describe(l.effects, depth + 1) : '…'}`);
+    if (fx.end) p.push(`END “${fx.end.title}”`);
+    const body = p.join(' · ') || 'nothing';
+    return name ? `${name} { ${body} }` : body;
+  }
+
+  // ── build the graph ──
+  const nodeIds = Object.keys(S.nodes);
+  const edges = [];
+  const add = (from, to, e) => { if (S.nodes[to]) edges.push({ from, to, ...e }); };
+
+  for (const id of nodeIds) {
+    for (const b of S.nodes[id].branches || []) {
+      for (const g of gotos(b.effects)) add(id, g.to, { kind: 'prompt', id: b.id, minModel: b.minModel, delay: g.delay });
+      for (const [tier, alt] of Object.entries(b.atModel || {})) for (const g of gotos(alt.effects)) add(id, g.to, { kind: 'prompt', id: b.id, minModel: Number(tier), delay: g.delay });
+    }
+  }
+  for (const [kind, list] of [['post', S.postActions || []], ['mail', S.mailActions || []]]) {
+    for (const a of list) for (const n of arr(a.when && a.when.node)) for (const g of gotos(a.effects)) add(n, g.to, { kind, id: a.id, delay: g.delay });
+  }
+  // nodes reached by branches that set a flag (used to place day events without a node condition)
+  const flagNodes = {};
+  for (const id of nodeIds) for (const b of S.nodes[id].branches || []) {
+    const fx = bundle(b.effects);
+    for (const f of Object.keys(fx.set || {})) for (const g of gotos(fx)) (flagNodes[f] = flagNodes[f] || new Set()).add(g.to);
+  }
+  for (const ev of S.events || []) {
+    const from = ev.when && ev.when.node ? arr(ev.when.node)
+      : ev.when && ev.when.flag ? [...arr(ev.when.flag).flatMap((f) => [...(flagNodes[f] || [])])] : [];
+    const label = ev.on === 'deploy' ? `deploy ${ev.repo}` : `day${ev.when && ev.when.minDay ? ' ' + ev.when.minDay + '+' : ''}`;
+    for (const n of from) for (const g of gotos(ev.effects)) add(n, g.to, { kind: ev.on === 'deploy' ? 'deploy' : 'day', id: label, delay: g.delay });
+  }
+
+  // layers: longest path from the start node, ignoring edges back into already-visited layers
+  const depth = { [S.start.node]: 0 };
+  const queue = [S.start.node];
+  const seenEdge = new Set();
+  while (queue.length) {
+    const n = queue.shift();
+    for (const e of edges.filter((x) => x.from === n)) {
+      const key = e.from + '>' + e.to;
+      if (seenEdge.has(key)) continue;
+      seenEdge.add(key);
+      if (depth[e.to] == null || depth[e.to] < depth[n] + 1) {
+        if (depth[e.to] != null && depth[e.to] <= depth[n]) continue; // a loop back
+        depth[e.to] = depth[n] + 1;
+        queue.push(e.to);
+      }
+    }
+  }
+  const unreachable = nodeIds.filter((n) => depth[n] == null);
+  const maxDepth = Math.max(0, ...Object.values(depth));
+  unreachable.forEach((n) => { depth[n] = maxDepth + 1; });
+  const layers = [];
+  for (const n of nodeIds) (layers[depth[n]] = layers[depth[n]] || []).push(n);
+
+  const endNodes = new Set();
+  for (const ev of S.events || []) for (const g of gotos(ev.effects)) if (bundle(ev.effects).end) endNodes.add(g.to);
+  for (const n of nodeIds) if (!(S.nodes[n].branches || []).length) endNodes.add(n);
+
+  // ── render ──
+  document.getElementById('title').textContent = `${S.title}: story map`;
+  document.getElementById('subtitle').innerHTML = `${esc(S.chapter)} · generated from <code>src/story.js</code>. Not for players.`;
+  const allBranches = nodeIds.flatMap((n) => S.nodes[n].branches || []);
+  const advancing = new Set(edges.map((e) => `${e.from}:${e.kind}:${e.id}`));
+  const stat = (v, l) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`;
+  document.getElementById('stats').innerHTML =
+    stat(nodeIds.length, 'nodes') + stat(allBranches.length, 'node branches') + stat(advancing.size, 'ways forward') +
+    stat((S.global || []).length, 'global branches') + stat((S.postActions || []).length + (S.mailActions || []).length, 'post & mail actions');
+  document.getElementById('legend').innerHTML = Object.entries(KIND).map(([k, l]) => `<span class="chip ${k}">${esc(l)}</span>`).join('') +
+    `<span class="chip model">agent-N+ needed</span>`;
+
+  const graph = document.getElementById('graph');
+  graph.innerHTML = layers.map((ids) => `<div class="layer">${ids.map((id) => {
+    const n = S.nodes[id];
+    const out = edges.filter((e) => e.from === id);
+    const stays = (n.branches || []).filter((b) => !out.some((e) => e.kind === 'prompt' && e.id === b.id)).length;
+    const models = [...new Set((n.branches || []).filter((b) => b.minModel > 1).map((b) => b.minModel))];
+    return `<button class="node${id === S.start.node ? ' start' : ''}${endNodes.has(id) ? ' end' : ''}" data-node="${esc(id)}" id="n-${esc(id)}">
+      <span class="node-id">${esc(id)}<span>${id === S.start.node ? 'start' : endNodes.has(id) ? 'end' : unreachable.includes(id) ? 'unreachable' : ''}</span></span>
+      <span class="node-obj">${esc(n.objective || '')}</span>
+      <span class="node-meta"><span class="chip prompt">${(n.branches || []).length} branches</span>${stays ? `<span class="chip timer">${stays} stay</span>` : ''}${models.map((m) => `<span class="chip model">${esc(model(m))}+</span>`).join('')}</span>
+    </button>`;
+  }).join('')}</div>`).join('') + `<svg class="edges" id="edges" aria-hidden="true"></svg>`;
+
+  // group edges per node pair and draw them once the cards have their real sizes
+  const pairs = {};
+  for (const e of edges) (pairs[e.from + '>' + e.to] = pairs[e.from + '>' + e.to] || []).push(e);
+  function chipFor(e) {
+    const extra = [e.minModel > 1 ? `${model(e.minModel)}+` : '', e.delay ? `after ${e.delay}` : ''].filter(Boolean).join(' · ');
+    return `<span class="chip ${e.kind}">${esc(e.kind === 'deploy' || e.kind === 'day' ? e.id : `${KIND[e.kind]}: ${e.id}`)}${extra ? ' · ' + esc(extra) : ''}</span>`;
+  }
+  // leave room between layers for every trigger label on the edges leaving them
+  function spaceLayers() {
+    const layerEls = graph.querySelectorAll('.layer');
+    layerEls.forEach((el, i) => {
+      const most = Math.max(0, ...Object.values(pairs).filter((l) => depth[l[0].from] === i && depth[l[0].to] > i).map((l) => l.length));
+      el.style.marginBottom = i === layerEls.length - 1 ? '0' : `${Math.max(64, most * 24 + 40)}px`;
+    });
+  }
+
+  function drawEdges() {
+    graph.querySelectorAll('.elabel').forEach((x) => x.remove());
+    const svg = document.getElementById('edges');
+    const box = graph.getBoundingClientRect();
+    svg.setAttribute('width', graph.scrollWidth);
+    svg.setAttribute('height', graph.scrollHeight);
+    let paths = '<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z"/></marker></defs>';
+    let labels = '';
+    for (const list of Object.values(pairs)) {
+      const a = document.getElementById('n-' + list[0].from).getBoundingClientRect();
+      const b = document.getElementById('n-' + list[0].to).getBoundingClientRect();
+      const ax = a.left - box.left + a.width / 2, ay = a.bottom - box.top;
+      const bx = b.left - box.left + b.width / 2, by = b.top - box.top;
+      let d, mx, my, back = false;
+      if (by > ay + 4) {
+        const c = (by - ay) / 2;
+        d = `M${ax},${ay} C${ax},${ay + c} ${bx},${by - c} ${bx},${by}`;
+        mx = (ax + bx) / 2; my = (ay + by) / 2;
+      } else {
+        back = true;
+        const rx = Math.max(a.right, b.right) - box.left + 40;
+        const sy = a.top - box.top + a.height / 2, ty = b.top - box.top + b.height / 2;
+        d = `M${a.right - box.left},${sy} C${rx},${sy} ${rx},${ty} ${b.right - box.left},${ty}`;
+        mx = rx - 10; my = (sy + ty) / 2;
+      }
+      paths += `<path d="${d}" class="${back ? 'back' : ''}" marker-end="url(#arrow)"/>`;
+      labels += `<div class="elabel" style="left:${mx}px;top:${my}px">${list.map(chipFor).join('')}</div>`;
+    }
+    svg.innerHTML = paths;
+    graph.insertAdjacentHTML('beforeend', labels);
+  }
+
+  // ── detail panel ──
+  function kw(match) {
+    if (!match) return '';
+    const g = (match.all || []).map((grp) => arr(grp).slice(0, 4).join('|') + (arr(grp).length > 4 ? '…' : ''));
+    return g.join('  ×  ') + (match.none ? `  (not: ${arr(match.none).join(', ')})` : '');
+  }
+  function branchHtml(b, kind, nodeId) {
+    const out = gotos(b.effects);
+    const go = out.length ? out.map((g) => `<button class="go" data-node="${esc(g.to)}">→ ${esc(g.to)}</button>${g.delay ? ` <span class="chip timer">after ${esc(g.delay)}</span>` : ''}`).join(' ') : '<span class="chip timer">stays</span>';
+    const when = b.when ? Object.entries(b.when).map(([k, v]) => `${k}: ${arr(v).join(', ')}`).join(' · ') : '';
+    return `<div class="br">
+      <div class="br-head"><span class="chip ${kind}">${esc(KIND[kind])}</span><code>${esc(b.id)}</code>${b.minModel > 1 ? `<span class="chip model">${esc(model(b.minModel))}+</span>` : ''}${go}</div>
+      ${b.intent ? `<p><span class="lbl">Jev</span>${esc(b.intent)}</p>` : '<p class="warnbox">No intent: Jev can never choose this.</p>'}
+      ${when ? `<p class="kw"><span class="lbl">when</span>${esc(when)}</p>` : ''}
+      ${b.match ? `<p class="kw"><span class="lbl">offline</span>${esc(kw(b.match))}</p>` : ''}
+      ${b.response ? `<p class="quote">${esc(clip(b.response, 220))}</p>` : ''}
+      ${b.partial ? `<p><span class="lbl">nudge</span>${esc(b.partial)}</p>` : ''}
+      ${b.weak ? `<p><span class="lbl">too weak</span>${esc(clip(b.weak, 160))}</p>` : ''}
+      ${b.effects ? `<p class="fx"><span class="lbl">effects</span>${esc(describe(b.effects))}</p>` : ''}
+      ${Object.entries(b.atModel || {}).map(([t, alt]) => `<p class="fx"><span class="lbl">on ${esc(model(Number(t)))}+</span>${esc(clip(alt.response, 120))}${alt.effects ? ' · ' + esc(describe(alt.effects)) : ''}</p>`).join('')}
+    </div>`;
+  }
+  function select(id) {
+    if (!S.nodes[id]) id = S.start.node;
+    graph.querySelectorAll('.node').forEach((el) => el.classList.toggle('sel', el.dataset.node === id));
+    const n = S.nodes[id];
+    const posts = (S.postActions || []).filter((a) => arr(a.when && a.when.node).includes(id));
+    const mails = (S.mailActions || []).filter((a) => arr(a.when && a.when.node).includes(id));
+    const evs = edges.filter((e) => e.from === id && (e.kind === 'deploy' || e.kind === 'day'));
+    const incoming = edges.filter((e) => e.to === id);
+    document.getElementById('detail').innerHTML = `
+      <h3>${esc(id)}</h3>
+      <p class="obj">${esc(n.objective || '')}</p>
+      ${n.scene ? `<p class="scene"><span class="lbl">scene for Jev</span>${esc(n.scene)}</p>` : '<p class="warnbox">No scene: Jev gets only the objective.</p>'}
+      <p class="note">Reached from: ${incoming.length ? incoming.map((e) => `<button class="go" data-node="${esc(e.from)}">${esc(e.from)}</button> (${esc(KIND[e.kind])} ${esc(e.id)})`).join(', ') : 'game start'}</p>
+      <h2>Branches (${(n.branches || []).length})</h2>
+      ${(n.branches || []).map((b) => branchHtml(b, 'prompt', id)).join('') || '<p class="note">None. This node is an ending.</p>'}
+      ${posts.length ? `<h2>Y posts here</h2>${posts.map((b) => branchHtml(b, 'post', id)).join('')}` : ''}
+      ${mails.length ? `<h2>Emails here</h2>${mails.map((b) => branchHtml(b, 'mail', id)).join('')}` : ''}
+      ${evs.length ? `<h2>Events</h2>${evs.map((e) => `<div class="br"><div class="br-head"><span class="chip ${e.kind}">${esc(e.id)}</span><button class="go" data-node="${esc(e.to)}">→ ${esc(e.to)}</button></div></div>`).join('')}` : ''}
+      <p class="note">${(S.global || []).length} global branches are also offered here (see below).</p>`;
+    try { history.replaceState(null, '', '#' + id); } catch (e) { /* not allowed in some frames */ }
+  }
+
+  // ── reference tables ──
+  const ref = [];
+  ref.push(`<section class="card"><h2>Global branches (every node)</h2>${(S.global || []).map((b) => branchHtml(b, 'prompt')).join('')}</section>`);
+  const sideMail = (S.mailActions || []).filter((a) => !(a.when && a.when.node));
+  ref.push(`<section class="card"><h2>Side emails (any node)</h2>${sideMail.map((b) => branchHtml(b, 'mail')).join('') || '<p class="note">None.</p>'}</section>`);
+  ref.push(`<section class="card"><h2>Contacts who reply</h2><div class="scroll"><table class="tbl"><thead><tr><th>Who</th><th>Reply</th><th>Persona</th></tr></thead><tbody>${
+    Object.entries(S.contacts || {}).map(([addr, c]) => `<tr><td><b>${esc(c.name)}</b><br><code>${esc(addr)}</code></td><td class="num">${esc(c.reply ? delayText(c.reply) : 'never')}${c.reply && c.reply.chance != null ? ` · ${Math.round(c.reply.chance * 100)}%` : ''}</td><td>${esc(clip(c.persona, 140))}</td></tr>`).join('')
+  }</tbody></table></div><p class="note">Anyone else never replies, so the player gets one message to them.</p></section>`);
+  const timed = [
+    ...(S.posts || []).filter((p) => p.when).map((p) => ['Y post', p.id, p.when, p.text]),
+    ...(S.mail || []).filter((m) => m.when).map((m) => ['email', m.id, m.when, m.subject]),
+  ];
+  const byEffect = [
+    ...(S.posts || []).filter((p) => p.at == null && !p.when).map((p) => ['Y post', p.id, p.text]),
+    ...(S.mail || []).filter((m) => m.at == null && !m.when).map((m) => ['email', m.id, m.subject]),
+  ];
+  ref.push(`<section class="card"><h2>Content that appears on a condition</h2><div class="scroll"><table class="tbl"><thead><tr><th>Type</th><th>Id</th><th>When</th><th>Text</th></tr></thead><tbody>${
+    timed.map(([t, id, w, x]) => `<tr><td>${t}</td><td><code>${esc(id)}</code></td><td class="kw">${esc(Object.entries(w).map(([k, v]) => `${k}: ${arr(v).join(', ')}`).join(' · '))}</td><td>${esc(clip(x, 70))}</td></tr>`).join('')
+  }</tbody></table></div><h2 style="margin-top:14px">Delivered by effects</h2><div class="scroll"><table class="tbl"><tbody>${
+    byEffect.map(([t, id, x]) => `<tr><td>${t}</td><td><code>${esc(id)}</code></td><td>${esc(clip(x, 80))}</td></tr>`).join('')
+  }</tbody></table></div></section>`);
+  const E = S.economy;
+  ref.push(`<section class="card"><h2>Models</h2><div class="scroll"><table class="tbl"><thead><tr><th>Model</th><th>Unlock</th><th>Prompt</th><th>Word</th><th>Needed by</th></tr></thead><tbody>${
+    (S.models || []).map((m, i) => {
+      const need = allBranches.filter((b) => b.minModel === i + 1).map((b) => b.id).concat((S.global || []).filter((b) => b.atModel && b.atModel[i + 1]).map((b) => b.id + ' (bonus)'));
+      return `<tr><td><code>${esc(m.name)}</code></td><td class="num">$${m.price}</td><td class="num">$${m.promptBase.toFixed(2)}</td><td class="num">$${m.perWord.toFixed(2)}</td><td>${need.map((x) => `<code>${esc(x)}</code>`).join(', ') || '–'}</td></tr>`;
+    }).join('')
+  }</tbody></table></div><h2 style="margin-top:14px">Economy</h2><p class="note">Start ${'$' + S.start.money} on Day ${S.start.day} at ${S.start.hour}:00 · food $${E.living.amount}/night · hosting $${E.hostingPerDay}/app/night · rent $${E.rent.amount} at the end of Day ${E.rent.day} · each prompt takes ${E.promptHours}h · Jev hit ≥ ${S.decision.hit}, nudge ≥ ${S.decision.partial}</p></section>`);
+  if (unreachable.length) ref.unshift(`<section class="card"><h2>Problems</h2><p class="warnbox">Unreachable nodes: ${unreachable.map((n) => `<code>${esc(n)}</code>`).join(', ')}</p></section>`);
+  document.getElementById('ref').innerHTML = ref.join('');
+
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-node]');
+    if (!t) return;
+    select(t.dataset.node);
+    const card = document.getElementById('n-' + t.dataset.node);
+    if (card && !t.classList.contains('node')) card.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  });
+  select(decodeURIComponent((location.hash || '').slice(1)) || S.start.node);
+  spaceLayers();
+  drawEdges();
+  window.addEventListener('resize', drawEdges);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawEdges);
+})();
+</script>
+<!--/build:body-->
+</body>
+</html>

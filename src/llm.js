@@ -144,7 +144,7 @@
       const messages = [{
         role: 'system',
         content: `${contact.persona}\nWrite only the body of your reply email: two to four short sentences of plain text. ` +
-          'No subject line, no greeting header, no signature.',
+          'No subject line, no greeting header, no signature. Never give the reader advice or suggest what they should do next.',
       }];
       for (const [u, a] of contact.examples || []) messages.push({ role: 'user', content: u }, { role: 'assistant', content: a });
       messages.push({ role: 'user', content: `Email from ${email.fromName}\nSubject: ${email.subject}\n\n${email.body}`.slice(0, 900) });
@@ -196,7 +196,9 @@
     const agent = (global.STORY && global.STORY.agent) || {};
     const persona = agent.llmPersona ||
       'You are a pay-per-prompt AI chatbot called agent. Reply in one or two short sentences.';
-    const facts = ctx && ctx.state ? `\nThe user's wallet balance is $${ctx.state.money.toFixed(2)}.` : '';
+    const facts = ctx && ctx.state
+      ? `\nThe user's wallet balance is $${ctx.state.money.toFixed(2)}.` + (ctx.state.lastCost ? ` That prompt cost them $${ctx.state.lastCost.toFixed(2)}.` : '')
+      : '';
     const messages = [{ role: 'system', content: persona + facts }];
     for (const [u, a] of agent.llmExamples || []) {
       messages.push({ role: 'user', content: u }, { role: 'assistant', content: a });

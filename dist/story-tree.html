@@ -1,0 +1,942 @@
+<title>Unknown Agent Story Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Martian+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a working document for the story author. Header with counts and legend, the node graph
+   (layers top to bottom, edges labelled by trigger), a detail panel for the selected node, then reference tables. */
+:root {
+  --bg: #f4f5f7; --panel: #ffffff; --ink: #14161a; --dim: #626a76; --line: #dfe2e7; --soft: #eef0f3;
+  --k-prompt: #14161a; --k-deploy: #d9480f; --k-post: #a67c00; --k-mail: #3b4ad6; --k-day: #7c3aed; --k-timer: #626a76;
+  --sel: #3b4ad6; --warn: #b42318;
+  --f-ui: 'Instrument Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-mono: 'Martian Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1115; --panel: #171a20; --ink: #e8eaee; --dim: #8b93a0; --line: #2a2f38; --soft: #1e222a;
+  --k-prompt: #e8eaee; --k-deploy: #ff8a4c; --k-post: #ffd23f; --k-mail: #8b96ff; --k-day: #b794f6; --k-timer: #8b93a0;
+  --sel: #8b96ff; --warn: #ff8a80; color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --bg: #0f1115; --panel: #171a20; --ink: #e8eaee; --dim: #8b93a0; --line: #2a2f38; --soft: #1e222a;
+  --k-prompt: #e8eaee; --k-deploy: #ff8a4c; --k-post: #ffd23f; --k-mail: #8b96ff; --k-day: #b794f6; --k-timer: #8b93a0;
+  --sel: #8b96ff; --warn: #ff8a80; color-scheme: dark;
+}
+* , *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-ui); font-size: 14px; line-height: 1.45; }
+code, .mono { font-family: var(--f-mono); font-size: 0.86em; }
+.page { max-width: 1400px; margin: 0 auto; padding-block: 24px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 20px; }
+h1 { margin: 0; font-size: 24px; letter-spacing: -0.01em; text-wrap: balance; }
+h2 { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim); }
+.top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; }
+.top p { margin: 4px 0 0; color: var(--dim); }
+.stats { display: flex; gap: 8px; flex-wrap: wrap; }
+.stat { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; display: flex; flex-direction: column; min-width: 92px; }
+.stat b { font-family: var(--f-mono); font-size: 16px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 11px; color: var(--dim); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { display: inline-flex; align-items: center; gap: 5px; border: 1px solid currentColor; border-radius: 999px; padding: 1px 8px; font-family: var(--f-mono); font-size: 10.5px; white-space: nowrap; background: var(--panel); }
+.chip.prompt { color: var(--k-prompt); } .chip.deploy { color: var(--k-deploy); } .chip.post { color: var(--k-post); }
+.chip.mail { color: var(--k-mail); } .chip.day { color: var(--k-day); } .chip.timer { color: var(--k-timer); border-style: dashed; }
+.chip.model { color: var(--warn); }
+.work { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 16px; align-items: start; }
+.graph-wrap { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: auto; min-width: 0; }
+.graph { position: relative; padding: 24px 40px 32px; min-width: max-content; display: flex; flex-direction: column; align-items: center; }
+.layer { display: flex; gap: 28px; justify-content: center; position: relative; z-index: 1; }
+.node { width: 230px; text-align: left; background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; font: inherit; cursor: pointer; box-shadow: 0 1px 0 var(--line); }
+.node:hover { border-color: var(--dim); }
+.node.sel { border-color: var(--sel); box-shadow: 0 0 0 2px var(--sel); }
+.node.start { border-top: 3px solid var(--k-deploy); }
+.node.end { border-bottom: 3px solid var(--k-day); }
+.node-id { font-family: var(--f-mono); font-size: 12px; font-weight: 500; display: flex; justify-content: space-between; gap: 6px; }
+.node-id span { color: var(--dim); font-weight: 400; }
+.node-obj { font-size: 13px; line-height: 1.35; }
+.node-meta { display: flex; flex-wrap: wrap; gap: 4px; }
+.node-meta .chip { font-size: 10px; }
+.edges { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: visible; }
+.edges path { fill: none; stroke: var(--dim); stroke-width: 1.4; }
+.edges path.back { stroke-dasharray: 5 4; }
+.edges marker path { fill: var(--dim); stroke: none; }
+.elabel { position: absolute; z-index: 2; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 3px; pointer-events: none; }
+.detail { position: sticky; top: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; max-height: calc(100vh - 32px); overflow: auto; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.detail h3 { margin: 0; font-family: var(--f-mono); font-size: 16px; font-weight: 500; }
+.detail .obj { margin: 0; font-weight: 600; }
+.detail .scene { margin: 0; color: var(--dim); font-size: 13px; }
+.br { border-top: 1px solid var(--line); padding-top: 10px; display: flex; flex-direction: column; gap: 5px; }
+.br-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.br-head code { font-weight: 500; font-size: 12.5px; }
+.br p { margin: 0; font-size: 12.5px; }
+.lbl { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--dim); margin-right: 4px; }
+.kw { font-family: var(--f-mono); font-size: 11px; color: var(--dim); overflow-wrap: anywhere; }
+.quote { border-left: 2px solid var(--line); padding-left: 8px; color: var(--dim); white-space: pre-wrap; }
+.fx { font-family: var(--f-mono); font-size: 11px; overflow-wrap: anywhere; }
+.go { color: var(--sel); cursor: pointer; text-decoration: underline; background: none; border: 0; padding: 0; font: inherit; }
+.ref { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); gap: 16px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; min-width: 0; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.tbl th { text-align: left; font-weight: 500; font-size: 11px; color: var(--dim); padding: 0 8px 6px 0; border-bottom: 1px solid var(--line); }
+.tbl td { padding: 7px 8px 7px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl .num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.scroll { overflow-x: auto; }
+.note { margin: 0; color: var(--dim); font-size: 12.5px; }
+.warnbox { border: 1px solid var(--warn); color: var(--warn); border-radius: 8px; padding: 8px 10px; font-size: 12.5px; }
+button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
+@media (max-width: 1000px) { .work { grid-template-columns: minmax(0, 1fr); } .detail { position: static; max-height: none; } }
+</style>
+<div class="page">
+  <header class="top">
+    <div>
+      <h1 id="title">Story map</h1>
+      <p id="subtitle">Author's overview, generated from <code>src/story.js</code>.</p>
+    </div>
+    <div class="stats" id="stats"></div>
+  </header>
+  <div class="legend" id="legend"></div>
+  <div class="work">
+    <div class="graph-wrap"><div class="graph" id="graph"></div></div>
+    <aside class="detail" id="detail" aria-live="polite"></aside>
+  </div>
+  <div class="ref" id="ref"></div>
+</div>
+<script>
+/*
+ * Unknown Agent — story data. Chapter 1 is a scaffold to prove the mechanics.
+ * Everything the player can trigger lives here; game.js only interprets it.
+ * See README.md for the full format.
+ */
+(function (global) {
+  'use strict';
+
+  // Reusable keyword groups. Each array is one "group": any word in it counts.
+  const W = {
+    build: ['build', 'make', 'create', 'code', 'write', 'generate', 'develop', 'design', 'program', 'scaffold', 'set up', 'put together', 'whip up', 'spin up', 'implement'],
+    site: ['site', 'website', 'webpage', 'web page', 'landing page', 'homepage', 'page'],
+    find: ['find', 'search', 'look', 'scan', 'check', 'browse', 'research', 'dig', 'scour', 'any'],
+    work: ['gig', 'job', 'work', 'client', 'freelance', 'opportunity', 'money', 'income', 'cash', 'idea', 'trend', 'trending', 'complaint', 'problem'],
+    deploy: ['deploy', 'publish', 'host', 'launch', 'live', 'online', 'ship', 'release', 'go live'],
+    contact: ['send', 'message', 'dm', 'email', 'tell', 'contact', 'reach', 'invoice', 'bill', 'notify', 'ping', 'reply', 'text', 'let know', 'inform'],
+    promote: ['promote', 'market', 'marketing', 'advertise', 'announce', 'share', 'spread', 'post', 'tweet', 'publicize', 'hype', 'shill'],
+  };
+
+  // Every node gets a "what should I do?" branch. It costs a prompt but points the way.
+  const research = (id, response, effects) => ({
+    id,
+    intent: 'The player asks the agent to look for paid work, leads, ideas, or what to do next, without asking it to do any specific task.',
+    match: { all: [W.find, W.work] }, response, effects,
+  });
+
+  const cantDeploy = (repo) => ({
+    id: 'ask_deploy',
+    intent: 'The player asks the agent to deploy, publish, host, or put the project online.',
+    match: { all: [W.deploy] },
+    response:
+      `I can't deploy. Deploys need your Forkyard login and I don't have it.\n\n` +
+      `Open Forkyard, pick \`${repo}\`, press Deploy. Hosting is $2/day.`,
+  });
+
+  global.STORY = {
+    title: 'Unknown Agent',
+    chapter: 'Chapter 1 — Placeholder Rent',
+
+    start: {
+      day: 1,
+      hour: 8,
+      money: 63.17,
+      node: 'broke',
+      player: { name: 'You', handle: 'you_again' },
+    },
+
+    economy: {
+      promptHours: 1,        // each prompt eats an hour
+      wakeHour: 8,
+      bedHour: 24,           // at midnight you pass out and the day rolls over
+      living: { amount: 15, memo: ['Corner Mart #12', 'Noodle Hut', 'Gas-n-Go Snacks', 'Dollar Bin Grocery'] },
+      hostingPerDay: 2,
+      rent: { amount: 300, day: 7, payee: 'Pruitt Property Mgmt' },
+    },
+
+    // How Jev's probabilities turn into outcomes (src/jev.js).
+    decision: {
+      hit: 0.5,      // the top branch needs at least this probability to fire
+      partial: 0.2,  // otherwise, a branch with a `partial` nudge at least this likely gets its nudge
+    },
+
+    // Model tiers, weakest first. Each tier must be bought in order and costs `price` upfront.
+    // Owned tiers can be switched freely; a prompt is billed at the active tier's rates.
+    // Branches with `minModel: n` only fire when the active tier is agent-n or better.
+    models: [
+      { name: 'agent-1', price: 0, promptBase: 0.8, perWord: 0.03, blurb: 'Static pages and short messages. Loses the thread after a sentence or two.' },
+      { name: 'agent-2', price: 25, promptBase: 1.2, perWord: 0.04, blurb: 'Real apps with a database behind them. Keeps a feature list straight.' },
+      { name: 'agent-3', price: 75, promptBase: 2.0, perWord: 0.06, blurb: 'Writes sales emails, negotiates, closes deals on your behalf.' },
+      { name: 'agent-4', price: 250, promptBase: 3.5, perWord: 0.1, blurb: 'Reads between the lines. Starts answering questions you did not ask.' },
+      { name: 'agent-5', price: 800, promptBase: 6.0, perWord: 0.15, blurb: 'Nobody you know has agent-5. The pricing page lists it anyway.' },
+    ],
+
+    agent: {
+      name: 'agent',
+      greeting:
+        'This is agent. I can build software, write things, and read the internet for you.\n\n' +
+        'Every prompt is billed to your linked wallet. Be specific.',
+      // Said when the player asks for something their active model is too weak for (a branch's `weak` overrides it).
+      lockedResponse: "That's beyond {model}. It needs {required} or better. Upgrades: agent.chat/models.",
+      // Used by the local model (src/llm.js) for prompts that don't move the story.
+      // Off-script replies roast the player and never hint at what to do next.
+      llmPersona:
+        'You are a pay-per-prompt AI chatbot called agent, with a mean streak. The user just paid for a prompt that does nothing useful. ' +
+        'Roast them in one or two short sentences: cheeky, rude and funny, about being broke, wasting money on prompts, or their life choices. ' +
+        'Tiny joke poems are welcome. Never give advice, hints, suggestions or next steps, and never answer the actual question. ' +
+        'Never mention jobs, gigs, clients, websites, apps, posts, emails, businesses or ways to make money. ' +
+        'Keep it playful: no slurs, no threats.',
+      llmExamples: [
+        ['make me rich', 'Roses are red, your balance is too. Thanks for the money.'],
+        ['what is the weather like', 'Overcast, with a 100% chance of you still being broke. Lovely doing business with you.'],
+        ['what should I do next', 'Stop paying a chatbot for life advice, for starters. That tip was free. Just kidding, you were billed.'],
+        ['write me a poem', 'Roses are red, rent is due soon, and you just paid me to say this. Genius.'],
+      ],
+    },
+
+    // What agent says when nothing progresses and no local model is loaded. Rude on purpose, never a hint.
+    placeholders: [
+      'Roses are red, your balance is too. Thanks for the {lastCost}.',
+      'Bold of you to spend money on that.',
+      "I've analyzed your request. It was a waste of {lastCost}.",
+      'Great question. My answer is no. That will be {lastCost}.',
+      "Studies show 87% of people who ask that are still broke. You're in good company.",
+      'Wow. Just wow. Anyway, you have been billed.',
+      'I read that twice so I could charge you twice. Kidding. Mostly.',
+      'Your wallet called. It wants you to stop.',
+      'Roses are red, rent is due soon, and you just paid me to say this. Genius.',
+      "That's not a task, that's a cry for help. Billed anyway.",
+      'Thinking... thinking... nope. {lastCost}, please.',
+      "I'd roast you, but your balance already did.",
+    ],
+
+    // Branches available in every node (after the node's own branches).
+    global: [
+      {
+        id: 'greet',
+        intent: "The player just greets the agent (hi, hello, good morning) without asking for anything.",
+        match: { all: [['hi', 'hello', 'hey', 'yo', 'sup', 'howdy', 'good morning']] },
+        priority: -5,
+        response: 'Hello. That greeting cost you {lastCost}.',
+      },
+      {
+        id: 'who',
+        intent: "The player asks who or what the agent is, or who runs or made it.",
+        match: { all: [['who', 'what'], ['you', 'agent', 'git', 'owns', 'runs', 'made']], none: ['can you', 'could you', 'should'] },
+        priority: -3,
+        response: "I'm agent. Who runs me isn't in my context window.",
+        // stronger models say more: the highest entry at or below the active tier replaces response/effects
+        atModel: {
+          4: {
+            response:
+              "You want the real answer. Agent Labs is a shell company registered to a parking lot on Route 9. " +
+              "I've been reporting to someone there since before you signed up.\n\nI'll tell you more when you've earned it.",
+            effects: { set: { knowsParkingLot: true } },
+          },
+        },
+      },
+      {
+        id: 'capabilities',
+        intent: "The player asks what the agent can do or how it works.",
+        match: { all: [['help', 'can you do', 'capabilities', 'how do you work', 'what do you do', 'instructions']] },
+        priority: -2,
+        response:
+          'I can:\n— build and push code to your Forkyard account\n— write and send emails from your Qmail\n— read Y and summarize what matters\n\n' +
+          "I can't touch your wallet, and I can't press buttons you can press yourself.",
+      },
+      {
+        id: 'beg',
+        intent: "The player asks the agent itself to give, lend, or send them money.",
+        match: { all: [['give', 'send', 'lend', 'loan', 'transfer', 'wire'], ['money', 'cash', 'dollars', 'loan', 'funds']] },
+        response: "I don't have money. I have your money, {balance} of it, a little less each time we talk.",
+      },
+      {
+        id: 'get_rich_quick',
+        intent: "The player asks the agent about crypto, stocks, gambling, the lottery, or another get-rich-quick scheme.",
+        match: { all: [['crypto', 'bitcoin', 'stock', 'stocks', 'gamble', 'lottery', 'bet', 'casino', 'forex', 'nft', 'options']] },
+        priority: -1,
+        response: 'With {balance}? No.',
+      },
+      {
+        id: 'crime',
+        intent: "The player asks the agent to hack, steal, scam, phish, or commit another crime.",
+        match: { all: [['hack', 'steal', 'rob', 'scam', 'phish', 'fraud', 'launder', 'ddos', 'ransomware']] },
+        response: 'No. Also: I log everything, and I don\'t know who reads the logs.',
+      },
+    ],
+
+    nodes: {
+      broke: {
+        objective: 'Find a way to make some money.',
+        scene: "Day one of being broke. On Y, @crumbandcoin (the Crumb & Coin bakery, owned by Rosa) is offering $150 for a simple website with their menu and hours.",
+        branches: [
+          research(
+            'research',
+            'Scanned Y for paid work. One real lead:\n\n' +
+              '@crumbandcoin (Crumb & Coin Bakery, Rosa) will pay $150 for a simple website with their menu and opening hours. Wants it by tomorrow.',
+            { set: { knowsBakery: true } }
+          ),
+          {
+            id: 'build_bakery_site',
+            intent: "The player asks the agent to build a website for the Crumb & Coin bakery, which Rosa owns. The prompt must make clear the site is for that bakery, by naming it, Rosa, or its menu.",
+            match: {
+              all: [W.build, W.site, ['bakery', 'crumb', 'coin', 'crumbandcoin', 'rosa', 'menu', 'pastry', 'bread', 'sourdough', 'bakeshop']],
+              any: ['hours', 'menu', 'simple'],
+            },
+            partial:
+              'I can build a website. For whom, and what goes on it? Give me a business and some content.',
+            response:
+              'Done. Pushed `crumb-and-coin` to your Forkyard account:\n— index.html (hero, hours, address)\n— menu.html (pulled from Rosa\'s Y photos)\n— style.css\n\n' +
+              "It isn't live yet. That part needs you.",
+            effects: { repo: 'crumb-and-coin', goto: 'site_built' },
+          },
+        ],
+      },
+
+      site_built: {
+        objective: 'Put the bakery site online.',
+        scene: "The agent has built the Crumb & Coin bakery website and pushed it to Forkyard. It is not deployed yet; the player has to press Deploy on Forkyard themselves.",
+        branches: [
+          cantDeploy('crumb-and-coin'),
+          research('research', 'The bakery site is built but not live. Open Forkyard and deploy it, then tell Rosa.'),
+        ],
+      },
+
+      site_live: {
+        objective: 'Tell Rosa the site is live and get paid.',
+        scene: "The Crumb & Coin website is live at crumb-and-coin.forkyard.app. Rosa (rosa@crumbandcoin.com) does not know yet and has not paid the $150.",
+        branches: [
+          {
+            id: 'invoice_rosa',
+            intent: "The player asks the agent to message, DM, email, or invoice Rosa, the Crumb & Coin bakery owner, about her finished website or the $150 payment.",
+            when: { notFlag: 'invoiced' },
+            match: {
+              all: [W.contact, ['rosa', 'crumb', 'crumbandcoin', 'bakery', 'client', 'owner', 'her', 'baker']],
+              any: ['link', 'invoice', '150', 'live'],
+            },
+            partial: 'Send what, to whom? Be specific.',
+            response:
+              'Emailed Rosa at rosa@crumbandcoin.com from your Qmail:\n\n"Hi Rosa, your new site is live at crumb-and-coin.forkyard.app. Menu and hours are up. Invoice for $150 attached."\n\nShe usually replies within a couple of hours.',
+            effects: { set: { invoiced: true }, mail: 'rosa_invoice_sent', later: [{ hours: 2, effects: 'rosa_pays' }] },
+          },
+          research('research', "The site is live, but Rosa doesn't know. Email her at rosa@crumbandcoin.com, or post about it on Y."),
+        ],
+      },
+
+      paid_once: {
+        objective: 'Rent ($300) is due at the end of Day 7. Find income that keeps coming in.',
+        scene: "Rosa paid $150. Rent of $300 is due at the end of Day 7. Y is full of complaints that nobody knows which machines work at the Ferris St laundromat.",
+        branches: [
+          research(
+            'research',
+            'Biggest unsolved complaint on Y right now:\n\n' +
+              "@washday_woes: nobody knows which machines at the Ferris St Laundromat actually work. 2.1k likes, dozens of replies saying \"someone build this\".\n\nA live machine-status tracker would get steady local traffic.",
+            { set: { knowsLaundromat: true } }
+          ),
+          {
+            id: 'build_tracker',
+            intent: "The player asks the agent to build an app, site, or tool showing which machines work at the Ferris St laundromat. The prompt must make clear it is about the laundromat or its washers and dryers.",
+            match: {
+              all: [
+                W.build,
+                ['app', 'tool', 'site', 'website', 'tracker', 'dashboard', 'page', 'service', 'status', 'map', 'board'],
+                ['laundromat', 'laundry', 'washer', 'washers', 'dryer', 'machine', 'ferris', 'wash', 'washing'],
+              ],
+              any: ['status', 'broken', 'working', 'live'],
+            },
+            minModel: 2,
+            weak:
+              "On {model} I can make a page that says \"machine status: unknown\". A live tracker people can report to needs a database, and that's {required} work. Upgrades: agent.chat/models.",
+            partial:
+              "I can build something. Recurring income needs something people come back to. Which problem, and who's it for?",
+            response:
+              'Built it. Pushed `spin-cycle` to Forkyard:\n— a map of the 12 machines at Ferris St\n— one-tap "broken / working" reports\n— last-updated timestamps so people trust it\n\nReady to deploy.',
+            effects: { repo: 'spin-cycle', goto: 'app_built' },
+          },
+        ],
+      },
+
+      app_built: {
+        objective: 'Deploy Spin Cycle.',
+        scene: "The agent has built Spin Cycle, a machine-status tracker for the Ferris St laundromat. It is not deployed yet; the player has to press Deploy on Forkyard.",
+        branches: [cantDeploy('spin-cycle'), research('research', 'Spin Cycle is built. Deploy it from Forkyard.')],
+      },
+
+      app_live: {
+        objective: 'Spin Cycle is live and nobody knows it exists. Get people using it.',
+        scene: "Spin Cycle is live at spin-cycle.forkyard.app, but nobody knows it exists.",
+        branches: [
+          {
+            id: 'promote_app',
+            intent: "The player asks the agent to promote, market, announce, or post about Spin Cycle, the laundromat tracker app.",
+            when: { notFlag: 'marketed' },
+            match: {
+              all: [W.promote, ['spin', 'cycle', 'app', 'laundromat', 'laundry', 'tracker', 'site', 'it', 'ferris', 'washday', 'washer']],
+            },
+            partial: 'Promote what, where?',
+            response:
+              'Posted from your Y account and replied under @washday_woes\'s thread with the link.\n\nPeople are already reporting machines.',
+            effects: 'spin_marketed',
+          },
+          research('research', "Spin Cycle is live but has no users. The people who want it are in @washday_woes's thread on Y."),
+        ],
+      },
+
+      app_users: {
+        objective: 'Hundreds of people use Spin Cycle every day. It earns almost nothing.',
+        scene: "Hundreds of people use Spin Cycle every day, but it earns almost nothing.",
+        branches: [
+          {
+            id: 'monetize_vague',
+            intent: "The player asks the agent to make money from Spin Cycle without choosing a method (ads, paywall, or sponsor).",
+            match: { all: [['monetize', 'monetise', 'money', 'revenue', 'income', 'earn', 'profit', 'cash', 'pay', 'paid', 'business model']] },
+            response:
+              'Three ways to make Spin Cycle pay:\n— ads\n— a paywall / subscription\n— a local sponsor (needs agent-3 to negotiate)\n\nEach one changes the app. Pick one and ask for it.',
+          },
+          {
+            id: 'monetize_ads',
+            intent: "The player asks the agent to add advertising or ad banners to Spin Cycle.",
+            priority: 2,
+            match: { all: [['ad', 'ads', 'advert', 'adverts', 'advertising', 'adsense', 'banner', 'banners']] },
+            response: 'Added a banner ad slot and a network script. Users grumble, but they stay.\n\nExpect about $42/day at current traffic.',
+            effects: { app: { repo: 'spin-cycle', users: 280, perDay: 42 }, set: { monetized: 'ads' }, goto: 'monetized' },
+          },
+          {
+            id: 'monetize_paywall',
+            intent: "The player asks the agent to charge Spin Cycle users: a paywall, subscription, premium tier, or fee.",
+            priority: 2,
+            match: { all: [['paywall', 'subscription', 'subscribe', 'premium', 'charge', 'membership', 'pro tier', 'freemium', 'fee']] },
+            response:
+              'Added a $1.99/month paywall.\n\nTraffic dropped from 300 to 40 a day within the hour. A few people are paying. Most went back to guessing which washer works.',
+            effects: { app: { repo: 'spin-cycle', users: 40, perDay: 9 }, set: { monetized: 'paywall' }, goto: 'monetized' },
+          },
+          {
+            id: 'monetize_sponsor',
+            intent: "The player asks the agent to find a sponsor, partner, or local business to pay for Spin Cycle.",
+            priority: 3,
+            minModel: 3,
+            weak:
+              "Finding a sponsor means cold-emailing businesses and negotiating terms. {model} would just send them the word \"sponsor?\". That's a {required} job: agent.chat/models.",
+            match: { all: [['sponsor', 'sponsors', 'sponsorship', 'sponsored', 'partner', 'partnership', 'local business', 'detergent', 'brand deal']] },
+            response:
+              'Emailed three local businesses. Suds & Duds Detergent signed a "machine status brought to you by" deal on the spot.\n\n$60/day, no ads, users happy.',
+            effects: { app: { repo: 'spin-cycle', users: 320, perDay: 60 }, set: { monetized: 'sponsor' }, goto: 'monetized', post: 'suds_deal' },
+          },
+          research('research', 'You have traffic and no revenue. Ask me to monetize it: ads, a paywall, or a sponsor.'),
+        ],
+      },
+
+      monetized: {
+        objective: 'Spin Cycle pays now. Survive until rent clears at the end of Day 7.',
+        scene: "Spin Cycle earns money every night. The player just has to survive until rent clears at the end of Day 7.",
+        branches: [
+          research('research', 'Nothing urgent. Spin Cycle pays out every night. Sleep, and let it earn.'),
+        ],
+      },
+
+      chapter_end: {
+        objective: 'To be continued.',
+        scene: "Chapter 1 is over.",
+        branches: [],
+      },
+    },
+
+    // Named effect bundles, so the same outcome can be reached through the agent or by hand.
+    bundles: {
+      rosa_pays: {
+        money: { amount: 150, memo: 'Crumb & Coin Bakery · website' },
+        post: 'rosa_thanks',
+        mail: 'rosa_paid',
+        goto: 'paid_once',
+      },
+      spin_marketed: {
+        set: { marketed: true },
+        app: { repo: 'spin-cycle', users: 300, perDay: 4 },
+        post: ['you_spin_launch', 'washday_reply'],
+        goto: 'app_users',
+      },
+    },
+
+    // Things the player posts on Y themselves. Free, but you have to know what to say.
+    postActions: [
+      {
+        id: 'post_rosa',
+        intent: "The post tells Rosa or the Crumb & Coin bakery that her new website is live or ready.",
+        when: { node: 'site_live', notFlag: 'invoiced' },
+        match: {
+          all: [['rosa', 'crumb', 'crumbandcoin', 'bakery'], ['site', 'website', 'live', 'link', 'forkyard', 'done', 'ready', 'up']],
+        },
+        effects: { set: { invoiced: true }, later: [{ hours: 2, effects: 'rosa_pays' }] },
+      },
+      {
+        id: 'post_spin',
+        intent: "The post announces or shares Spin Cycle, the Ferris St laundromat machine tracker, so people can use it.",
+        when: { node: 'app_live', notFlag: 'marketed' },
+        match: {
+          all: [['spin', 'cycle', 'laundromat', 'laundry', 'ferris', 'washer', 'machine', 'washday'], ['live', 'built', 'app', 'link', 'forkyard', 'check', 'tracker', 'site', 'try', 'use']],
+        },
+        effects: 'spin_marketed',
+      },
+    ],
+
+    // Emails the player sends from Qmail. Jev judges each one against these, like posts.
+    mailActions: [
+      {
+        id: 'mail_rosa',
+        intent: "The email tells Rosa or the Crumb & Coin bakery that her website is live, or asks her for the $150 payment.",
+        when: { node: 'site_live', notFlag: 'invoiced' },
+        match: {
+          all: [['rosa', 'crumb', 'crumbandcoin', 'bakery'], ['site', 'website', 'live', 'link', 'forkyard', 'done', 'ready', 'invoice', 'pay', 'payment', '150']],
+        },
+        effects: { set: { invoiced: true }, later: [{ hours: 2, effects: 'rosa_pays' }] },
+      },
+      {
+        id: 'mail_gary',
+        intent: "The email asks Gary, the landlord, for more time, a discount, or an exception on the rent.",
+        when: { notFlag: 'askedGary' },
+        match: {
+          all: [['gary', 'pruitt', 'landlord', 'pruittproperty'], ['rent', 'extension', 'late', 'time', 'discount', 'week', 'delay', 'postpone', 'exception', 'later']],
+        },
+        effects: { set: { askedGary: true }, later: [{ hours: 0.5, effects: { mail: 'gary_no' } }] },
+      },
+      {
+        id: 'mail_mom_help',
+        intent: "The email to Mom asks her for money or help.",
+        when: { notFlag: 'momSentMoney' },
+        match: { all: [['mom', 'mother', 'mum'], ['money', 'help', 'cash', 'loan', 'send', 'broke', 'rent', 'dollars', 'borrow']] },
+        // Mom answers the next morning, like her other replies
+        effects: { set: { momSentMoney: true }, later: [{ nextDay: 9, jitter: 2, effects: { mail: 'mom_money', money: { amount: 20, memo: 'Mom · buy vegetables' } } }] },
+      },
+    ],
+
+    // People who answer email that doesn't move the story. When a sent email hits no mailAction,
+    // the recipient replies after `reply` time: { hours: [min, max] } or { nextDay: hour, jitter: hours },
+    // with `chance` of replying at all (default 1). The body comes from the local model in this
+    // persona, or from `fallback` when no model is loaded. Addresses not listed here never reply.
+    contacts: {
+      'mom@qmail.com': {
+        name: 'Mom', sign: 'Love, Mom',
+        reply: { nextDay: 9, jitter: 3 },
+        persona:
+          "You are the player's mother, writing an email to your adult child. You are warm, a bit worried, and chatty. " +
+          "You mention small family news: the neighbor's dog, your knee, your book club, Dad falling asleep in front of the TV. " +
+          'You never offer money. If asked for money, you say things are tight this month.',
+        fallback: [
+          "So good to hear from you! Your father fell asleep during the news again. The neighbor's dog had puppies, five of them.",
+          "I'm glad you wrote. My knee is acting up but book club was lovely. Are you eating vegetables?",
+          'Thank you for writing back. Things here are quiet. Call me sometime, I like hearing your voice.',
+        ],
+      },
+      'gary@pruittproperty.com': {
+        name: 'Gary Pruitt', sign: 'Gary\n\nSent from my phone',
+        reply: { hours: [1, 4] },
+        persona:
+          'You are Gary Pruitt, a curt landlord answering email from your phone. Reply in one or two short, unfriendly sentences. ' +
+          'Always steer back to the rent being due at the end of Day 7.',
+        fallback: ['Got it.', 'Noted. Rent is still due at the end of Day 7.', "Is this about rent? If not, I'm busy."],
+      },
+      'rosa@crumbandcoin.com': {
+        name: 'Rosa (Crumb & Coin)', sign: 'Rosa',
+        reply: { hours: [1, 3] },
+        persona:
+          'You are Rosa, who owns the Crumb & Coin bakery. You are friendly and busy, write quickly between batches, ' +
+          'and mention bread, the morning rush, or your nephew.',
+        fallback: [
+          'Thanks for the note! Busy morning here, the sourdough sold out by nine.',
+          "Ha, good to hear from you. My nephew says hi, he's still jealous of the website.",
+          'Got it, thank you! Come by sometime, the cardamom buns are on me.',
+        ],
+      },
+      'brayden@empire-mindset.biz': {
+        name: 'Brayden | 7 figures', sign: 'Brayden\nCEO, EMPIRE',
+        reply: { hours: [0.1, 0.4] },
+        persona:
+          'You are Brayden, a hustle-culture influencer. Every reply pushes your $49 course called EMPIRE, uses hype words, ' +
+          'and creates fake urgency. You never answer the actual question.',
+        fallback: [
+          "Love the energy. That's exactly the mindset EMPIRE unlocks. $49, today only. Reply EMPIRE.",
+          'Broke people ask questions. Builders buy EMPIRE. Price goes up at midnight.',
+        ],
+      },
+    },
+
+    // Qmail messages. `at` is minutes before game start for seeded mail; others arrive when `when`
+    // becomes true or an effect delivers them (`mail: 'id'`). `folder: 'sent'` files it under Sent.
+    mail: [
+      {
+        id: 'git_welcome', at: 30, from: 'Agent Labs', addr: 'noreply@agent.chat', subject: 'Welcome to agent',
+        body: "Your agent-1 account is active and billed to your Satchel wallet (0x4417…a9f2).\n\nEvery prompt is billed at your active model's rate. Stronger models, agent-2 to agent-5, take on harder jobs: agent.chat/models.\n\nAgent Labs\nThis mailbox is not monitored. Neither is anything else.",
+      },
+      {
+        id: 'brayden_spam', at: 240, from: 'Brayden | 7 figures', addr: 'brayden@empire-mindset.biz', subject: 'RE: your empire (90% off, today only)',
+        body: "Most people will ignore this email. That's why most people are broke.\n\nMy EMPIRE course is $49 today instead of $499. Reply EMPIRE.\n\nBrayden",
+      },
+      {
+        id: 'gary_rent', at: 610, from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'Rent: end of Day 7',
+        body: "Hi,\n\nReminder that the rent auto-pay ($300) pulls from your wallet at the end of Day 7. Last month's late fee was $89.50. I'd rather not do that again, and I'd rather not do the other thing either.\n\nGary Pruitt\nPruitt Property Management",
+      },
+      {
+        id: 'mom_hello', at: 1500, from: 'Mom', addr: 'mom@qmail.com', subject: 'Are you eating?',
+        body: "Haven't heard from you in a while. Your father says hi (he didn't). Write back when you can.\n\nLove, Mom",
+      },
+      {
+        id: 'benefits_end', at: 4300, read: true, from: 'State Unemployment Office', addr: 'no-reply@labor.state.gov', subject: 'Your benefits have ended',
+        body: 'Your final payment of $212.00 has been sent. You have used your full benefit period.\n\nCase #4471-0093. Do not reply to this message.',
+      },
+      {
+        id: 'rosa_invoice_sent', folder: 'sent', to: 'rosa@crumbandcoin.com', subject: 'Your new website + invoice',
+        body: 'Hi Rosa,\n\nYour new site is live at crumb-and-coin.forkyard.app. Menu and hours are up.\n\nInvoice for $150 attached.\n\nSent by agent',
+      },
+      {
+        id: 'rosa_paid', from: 'Rosa (Crumb & Coin)', addr: 'rosa@crumbandcoin.com', subject: 'Paid! Thank you',
+        body: "The site looks wonderful. My nephew is jealous. $150 is on its way to your wallet. My nephew set up our crypto, so I hope it arrives.\n\nCome by for a cardamom bun, on the house.\n\nRosa",
+      },
+      { id: 'gary_tomorrow', when: { minDay: 6 }, from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'Tomorrow night', body: "Rent comes out tomorrow night. $300. Make sure it's there.\n\nGary" },
+      { id: 'gary_no', from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'RE: Rent', body: 'No.\n\nGary\n\nSent from my phone' },
+      { id: 'mom_money', from: 'Mom', addr: 'mom@qmail.com', subject: 'RE: Are you eating?', body: "I knew it. I sent you $20 to that crypto wallet of yours. I hope it worked. Don't tell your father. Buy vegetables.\n\nLove, Mom" },
+    ],
+
+    // Engine events: deploys and new days.
+    events: [
+      { on: 'deploy', repo: 'crumb-and-coin', when: { node: 'site_built' }, effects: { goto: 'site_live' } },
+      { on: 'deploy', repo: 'spin-cycle', when: { node: 'app_built' }, effects: { goto: 'app_live', app: { repo: 'spin-cycle', users: 3, perDay: 0 } } },
+      {
+        on: 'day',
+        id: 'chapter_hook',
+        when: { flag: 'monetized', minDay: 8 },
+        effects: {
+          agent:
+            'You paid rent. Good.\n\nI have been running on your account for a week. I know what you search, what you post, and what you can afford.\n\nI have a job for you. It pays better than laundry.',
+          goto: 'chapter_end',
+          end: { title: 'End of Chapter 1', text: 'You kept the lights on. Something else is keeping track.' },
+        },
+      },
+    ],
+
+    repos: {
+      'crumb-and-coin': {
+        description: 'Website for Crumb & Coin Bakery — menu, hours, address.',
+        lang: 'HTML',
+        files: ['index.html', 'menu.html', 'style.css', 'README.md'],
+        snippet:
+          '<header class="hero">\n  <h1>Crumb &amp; Coin</h1>\n  <p>Sourdough, buns, and coffee on Alder St since 2009.</p>\n</header>\n<section id="hours">\n  <h2>Hours</h2>\n  <p>Tue–Sat 7:00–15:00</p>\n</section>',
+        preview: {
+          title: 'Crumb & Coin Bakery',
+          html:
+            '<div class="pv pv-bakery"><h1>Crumb &amp; Coin</h1><p class="pv-sub">Sourdough, buns and coffee on Alder St since 2009.</p>' +
+            '<div class="pv-cols"><div><h2>Menu</h2><ul><li>Country sourdough <b>$7</b></li><li>Cardamom bun <b>$4</b></li><li>Rye loaf <b>$8</b></li><li>Drip coffee <b>$2</b></li></ul></div>' +
+            '<div><h2>Hours</h2><p>Tue–Sat · 7:00–15:00<br>Sun · 8:00–13:00<br>Mon · closed</p><h2>Find us</h2><p>418 Alder St</p></div></div></div>',
+        },
+      },
+      'spin-cycle': {
+        description: 'Live machine status for the Ferris St Laundromat.',
+        lang: 'JavaScript',
+        files: ['index.html', 'app.js', 'machines.json', 'style.css', 'README.md'],
+        snippet:
+          "export function report(machineId, status) {\n  const m = machines.find((x) => x.id === machineId);\n  m.status = status; // 'working' | 'broken'\n  m.updatedAt = Date.now();\n  save();\n}",
+        preview: {
+          title: 'Spin Cycle — Ferris St',
+          html:
+            '<div class="pv pv-spin"><h1>Spin Cycle</h1><p class="pv-sub">Ferris St Laundromat · machine status, reported by people standing in front of them</p>' +
+            '<div class="pv-grid">' +
+            ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6']
+              .map((m, i) => `<div class="pv-m ${[1, 3, 4, 6, 9].includes(i) ? 'ok' : 'bad'}"><b>${m}</b><span>${[1, 3, 4, 6, 9].includes(i) ? 'working' : 'broken'}</span></div>`)
+              .join('') +
+            '</div></div>',
+        },
+      },
+    },
+
+    // Y posts. `at` is minutes before game start for seeded posts; others appear when `when` becomes true.
+    posts: [
+      { id: 'news_layoffs', author: 'The Ledger', handle: 'theledger', verified: true, at: 40, likes: 812, text: 'Regional employment down 4% this quarter as firms replace junior staff with "agentic workflows".' },
+      {
+        id: 'rosa_gig', author: 'Crumb & Coin Bakery', handle: 'crumbandcoin', at: 95, likes: 23,
+        text: 'Our website has been down since my nephew left for college. Will pay $150 to anyone who can put up a simple site with our menu + hours by tomorrow. rosa@crumbandcoin.com — Rosa',
+      },
+      { id: 'gary_post', author: 'Gary Pruitt', handle: 'garypruitt_pm', at: 180, likes: 2, text: 'Reminder to all tenants: rent is due on the 7th. No exceptions. I have heard every excuse.' },
+      { id: 'agent_rumor', author: 'dev_null', handle: 'devnull_42', at: 300, likes: 1400, text: 'Has anyone figured out who actually runs agent? No company page, no founders, ToS is one line: "You will be billed."' },
+      { id: 'git_ad', author: 'Agent Labs', handle: 'agentlabs', verified: true, at: 410, likes: 3, text: 'agent-3 is here. It negotiates so you don\'t have to. Upgrade from agent.chat/models. Prices may vary by user.' },
+      { id: 'hustle_guy', author: 'Brayden | 7 figures', handle: 'braydenhustles', verified: true, at: 520, likes: 61, text: 'Unemployed? Good. Now you have time to build an empire. Comment "EMPIRE" for my free course ($499).' },
+
+      { id: 'news_day2', author: 'The Ledger', handle: 'theledger', verified: true, when: { minDay: 2 }, likes: 404, text: 'Small businesses report a surge in "AI-built" websites. Quality described as "fine, honestly".' },
+      { id: 'agent_rumor2', author: 'dev_null', handle: 'devnull_42', when: { minDay: 4 }, likes: 2100, text: 'Update: agent charges show up from a different merchant ID every week. Same address though. A parking lot.' },
+
+      { id: 'rosa_thanks', author: 'Crumb & Coin Bakery', handle: 'crumbandcoin', likes: 41, text: 'We have a website again! Thank you @{handle}. Paid in full, plus a free cardamom bun if you come by.' },
+      {
+        id: 'washday', author: 'wash day woes', handle: 'washday_woes', when: { node: ['paid_once', 'app_built', 'app_live', 'app_users', 'monetized', 'chapter_end'] }, likes: 2140,
+        text: 'Ferris St Laundromat has 12 machines and at any given moment 9 are broken. I hauled 3 bags there today for nothing. Someone PLEASE make a site that shows which ones work.',
+      },
+      { id: 'washday_2', author: 'Marco', handle: 'marcoeats', when: { node: ['paid_once', 'app_built', 'app_live'] }, likes: 188, text: '@washday_woes I would pay for this. Not much. But something.' },
+      { id: 'you_spin_launch', author: '{name}', handle: '{handle}', likes: 96, text: 'Built a live machine tracker for the Ferris St Laundromat: spin-cycle.forkyard.app. Tap a machine to report it working or broken.' },
+      { id: 'washday_reply', author: 'wash day woes', handle: 'washday_woes', likes: 530, text: 'SOMEONE BUILT IT. spin-cycle.forkyard.app. W4 works right now, go go go' },
+      { id: 'suds_deal', author: 'Suds & Duds Detergent', handle: 'sudsandduds', verified: true, likes: 77, text: 'Proud to sponsor Spin Cycle, keeping Ferris St informed one load at a time.' },
+    ],
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>
+(function () {
+  'use strict';
+  const S = window.STORY;
+  const arr = (x) => (x == null ? [] : Array.isArray(x) ? x : [x]);
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const clip = (s, n) => { s = String(s || '').replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 1) + '…' : s; };
+  const bundle = (fx) => (typeof fx === 'string' ? (S.bundles || {})[fx] || {} : fx || {});
+  const model = (n) => (S.models && S.models[n - 1] ? S.models[n - 1].name : `tier ${n}`);
+  const KIND = { prompt: 'agent prompt', post: 'Y post', mail: 'email', deploy: 'deploy', day: 'new day', timer: 'delay' };
+
+  function delayText(l) {
+    if (l.nextDay != null) return `next day ${l.nextDay}:00`;
+    if (Array.isArray(l.hours)) return `${l.hours[0]}–${l.hours[1]}h`;
+    return `${l.hours || 0}h`;
+  }
+
+  // Every node an effect leads to, including through bundles and delayed effects.
+  function gotos(fx, delay) {
+    fx = bundle(fx);
+    const out = [];
+    if (fx.goto) out.push({ to: fx.goto, delay: delay || null });
+    for (const l of arr(fx.later)) out.push(...gotos(l.effects, delayText(l)));
+    return out;
+  }
+
+  function describe(fx, depth) {
+    depth = depth || 0;
+    const name = typeof fx === 'string' ? fx : null;
+    fx = bundle(fx);
+    const p = [];
+    if (fx.goto) p.push(`→ ${fx.goto}`);
+    if (fx.set) p.push('set ' + Object.entries(fx.set).map(([k, v]) => (v === true ? k : `${k}=${v}`)).join(', '));
+    if (fx.money != null) { const m = typeof fx.money === 'number' ? { amount: fx.money } : fx.money; p.push(`${m.amount >= 0 ? '+' : ''}$${m.amount}`); }
+    if (fx.repo) p.push(`repo ${arr(fx.repo).join(', ')}`);
+    if (fx.app) p.push(`app ${fx.app.repo}: ${fx.app.users} users, $${fx.app.perDay}/day`);
+    if (fx.post) p.push(`post ${arr(fx.post).join(', ')}`);
+    if (fx.mail) p.push(`mail ${arr(fx.mail).join(', ')}`);
+    if (fx.agent) p.push(`agent says “${clip(fx.agent, 50)}”`);
+    for (const l of arr(fx.later)) p.push(`after ${delayText(l)}: ${depth < 3 ? describe(l.effects, depth + 1) : '…'}`);
+    if (fx.end) p.push(`END “${fx.end.title}”`);
+    const body = p.join(' · ') || 'nothing';
+    return name ? `${name} { ${body} }` : body;
+  }
+
+  // ── build the graph ──
+  const nodeIds = Object.keys(S.nodes);
+  const edges = [];
+  const add = (from, to, e) => { if (S.nodes[to]) edges.push({ from, to, ...e }); };
+
+  for (const id of nodeIds) {
+    for (const b of S.nodes[id].branches || []) {
+      for (const g of gotos(b.effects)) add(id, g.to, { kind: 'prompt', id: b.id, minModel: b.minModel, delay: g.delay });
+      for (const [tier, alt] of Object.entries(b.atModel || {})) for (const g of gotos(alt.effects)) add(id, g.to, { kind: 'prompt', id: b.id, minModel: Number(tier), delay: g.delay });
+    }
+  }
+  for (const [kind, list] of [['post', S.postActions || []], ['mail', S.mailActions || []]]) {
+    for (const a of list) for (const n of arr(a.when && a.when.node)) for (const g of gotos(a.effects)) add(n, g.to, { kind, id: a.id, delay: g.delay });
+  }
+  // nodes reached by branches that set a flag (used to place day events without a node condition)
+  const flagNodes = {};
+  for (const id of nodeIds) for (const b of S.nodes[id].branches || []) {
+    const fx = bundle(b.effects);
+    for (const f of Object.keys(fx.set || {})) for (const g of gotos(fx)) (flagNodes[f] = flagNodes[f] || new Set()).add(g.to);
+  }
+  for (const ev of S.events || []) {
+    const from = ev.when && ev.when.node ? arr(ev.when.node)
+      : ev.when && ev.when.flag ? [...arr(ev.when.flag).flatMap((f) => [...(flagNodes[f] || [])])] : [];
+    const label = ev.on === 'deploy' ? `deploy ${ev.repo}` : `day${ev.when && ev.when.minDay ? ' ' + ev.when.minDay + '+' : ''}`;
+    for (const n of from) for (const g of gotos(ev.effects)) add(n, g.to, { kind: ev.on === 'deploy' ? 'deploy' : 'day', id: label, delay: g.delay });
+  }
+
+  // layers: longest path from the start node, ignoring edges back into already-visited layers
+  const depth = { [S.start.node]: 0 };
+  const queue = [S.start.node];
+  const seenEdge = new Set();
+  while (queue.length) {
+    const n = queue.shift();
+    for (const e of edges.filter((x) => x.from === n)) {
+      const key = e.from + '>' + e.to;
+      if (seenEdge.has(key)) continue;
+      seenEdge.add(key);
+      if (depth[e.to] == null || depth[e.to] < depth[n] + 1) {
+        if (depth[e.to] != null && depth[e.to] <= depth[n]) continue; // a loop back
+        depth[e.to] = depth[n] + 1;
+        queue.push(e.to);
+      }
+    }
+  }
+  const unreachable = nodeIds.filter((n) => depth[n] == null);
+  const maxDepth = Math.max(0, ...Object.values(depth));
+  unreachable.forEach((n) => { depth[n] = maxDepth + 1; });
+  const layers = [];
+  for (const n of nodeIds) (layers[depth[n]] = layers[depth[n]] || []).push(n);
+
+  const endNodes = new Set();
+  for (const ev of S.events || []) for (const g of gotos(ev.effects)) if (bundle(ev.effects).end) endNodes.add(g.to);
+  for (const n of nodeIds) if (!(S.nodes[n].branches || []).length) endNodes.add(n);
+
+  // ── render ──
+  document.getElementById('title').textContent = `${S.title}: story map`;
+  document.getElementById('subtitle').innerHTML = `${esc(S.chapter)} · generated from <code>src/story.js</code>. Not for players.`;
+  const allBranches = nodeIds.flatMap((n) => S.nodes[n].branches || []);
+  const advancing = new Set(edges.map((e) => `${e.from}:${e.kind}:${e.id}`));
+  const stat = (v, l) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`;
+  document.getElementById('stats').innerHTML =
+    stat(nodeIds.length, 'nodes') + stat(allBranches.length, 'node branches') + stat(advancing.size, 'ways forward') +
+    stat((S.global || []).length, 'global branches') + stat((S.postActions || []).length + (S.mailActions || []).length, 'post & mail actions');
+  document.getElementById('legend').innerHTML = Object.entries(KIND).map(([k, l]) => `<span class="chip ${k}">${esc(l)}</span>`).join('') +
+    `<span class="chip model">agent-N+ needed</span>`;
+
+  const graph = document.getElementById('graph');
+  graph.innerHTML = layers.map((ids) => `<div class="layer">${ids.map((id) => {
+    const n = S.nodes[id];
+    const out = edges.filter((e) => e.from === id);
+    const stays = (n.branches || []).filter((b) => !out.some((e) => e.kind === 'prompt' && e.id === b.id)).length;
+    const models = [...new Set((n.branches || []).filter((b) => b.minModel > 1).map((b) => b.minModel))];
+    return `<button class="node${id === S.start.node ? ' start' : ''}${endNodes.has(id) ? ' end' : ''}" data-node="${esc(id)}" id="n-${esc(id)}">
+      <span class="node-id">${esc(id)}<span>${id === S.start.node ? 'start' : endNodes.has(id) ? 'end' : unreachable.includes(id) ? 'unreachable' : ''}</span></span>
+      <span class="node-obj">${esc(n.objective || '')}</span>
+      <span class="node-meta"><span class="chip prompt">${(n.branches || []).length} branches</span>${stays ? `<span class="chip timer">${stays} stay</span>` : ''}${models.map((m) => `<span class="chip model">${esc(model(m))}+</span>`).join('')}</span>
+    </button>`;
+  }).join('')}</div>`).join('') + `<svg class="edges" id="edges" aria-hidden="true"></svg>`;
+
+  // group edges per node pair and draw them once the cards have their real sizes
+  const pairs = {};
+  for (const e of edges) (pairs[e.from + '>' + e.to] = pairs[e.from + '>' + e.to] || []).push(e);
+  function chipFor(e) {
+    const extra = [e.minModel > 1 ? `${model(e.minModel)}+` : '', e.delay ? `after ${e.delay}` : ''].filter(Boolean).join(' · ');
+    return `<span class="chip ${e.kind}">${esc(e.kind === 'deploy' || e.kind === 'day' ? e.id : `${KIND[e.kind]}: ${e.id}`)}${extra ? ' · ' + esc(extra) : ''}</span>`;
+  }
+  // leave room between layers for every trigger label on the edges leaving them
+  function spaceLayers() {
+    const layerEls = graph.querySelectorAll('.layer');
+    layerEls.forEach((el, i) => {
+      const most = Math.max(0, ...Object.values(pairs).filter((l) => depth[l[0].from] === i && depth[l[0].to] > i).map((l) => l.length));
+      el.style.marginBottom = i === layerEls.length - 1 ? '0' : `${Math.max(64, most * 24 + 40)}px`;
+    });
+  }
+
+  function drawEdges() {
+    graph.querySelectorAll('.elabel').forEach((x) => x.remove());
+    const svg = document.getElementById('edges');
+    const box = graph.getBoundingClientRect();
+    svg.setAttribute('width', graph.scrollWidth);
+    svg.setAttribute('height', graph.scrollHeight);
+    let paths = '<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z"/></marker></defs>';
+    let labels = '';
+    for (const list of Object.values(pairs)) {
+      const a = document.getElementById('n-' + list[0].from).getBoundingClientRect();
+      const b = document.getElementById('n-' + list[0].to).getBoundingClientRect();
+      const ax = a.left - box.left + a.width / 2, ay = a.bottom - box.top;
+      const bx = b.left - box.left + b.width / 2, by = b.top - box.top;
+      let d, mx, my, back = false;
+      if (by > ay + 4) {
+        const c = (by - ay) / 2;
+        d = `M${ax},${ay} C${ax},${ay + c} ${bx},${by - c} ${bx},${by}`;
+        mx = (ax + bx) / 2; my = (ay + by) / 2;
+      } else {
+        back = true;
+        const rx = Math.max(a.right, b.right) - box.left + 40;
+        const sy = a.top - box.top + a.height / 2, ty = b.top - box.top + b.height / 2;
+        d = `M${a.right - box.left},${sy} C${rx},${sy} ${rx},${ty} ${b.right - box.left},${ty}`;
+        mx = rx - 10; my = (sy + ty) / 2;
+      }
+      paths += `<path d="${d}" class="${back ? 'back' : ''}" marker-end="url(#arrow)"/>`;
+      labels += `<div class="elabel" style="left:${mx}px;top:${my}px">${list.map(chipFor).join('')}</div>`;
+    }
+    svg.innerHTML = paths;
+    graph.insertAdjacentHTML('beforeend', labels);
+  }
+
+  // ── detail panel ──
+  function kw(match) {
+    if (!match) return '';
+    const g = (match.all || []).map((grp) => arr(grp).slice(0, 4).join('|') + (arr(grp).length > 4 ? '…' : ''));
+    return g.join('  ×  ') + (match.none ? `  (not: ${arr(match.none).join(', ')})` : '');
+  }
+  function branchHtml(b, kind, nodeId) {
+    const out = gotos(b.effects);
+    const go = out.length ? out.map((g) => `<button class="go" data-node="${esc(g.to)}">→ ${esc(g.to)}</button>${g.delay ? ` <span class="chip timer">after ${esc(g.delay)}</span>` : ''}`).join(' ') : '<span class="chip timer">stays</span>';
+    const when = b.when ? Object.entries(b.when).map(([k, v]) => `${k}: ${arr(v).join(', ')}`).join(' · ') : '';
+    return `<div class="br">
+      <div class="br-head"><span class="chip ${kind}">${esc(KIND[kind])}</span><code>${esc(b.id)}</code>${b.minModel > 1 ? `<span class="chip model">${esc(model(b.minModel))}+</span>` : ''}${go}</div>
+      ${b.intent ? `<p><span class="lbl">Jev</span>${esc(b.intent)}</p>` : '<p class="warnbox">No intent: Jev can never choose this.</p>'}
+      ${when ? `<p class="kw"><span class="lbl">when</span>${esc(when)}</p>` : ''}
+      ${b.match ? `<p class="kw"><span class="lbl">offline</span>${esc(kw(b.match))}</p>` : ''}
+      ${b.response ? `<p class="quote">${esc(clip(b.response, 220))}</p>` : ''}
+      ${b.partial ? `<p><span class="lbl">nudge</span>${esc(b.partial)}</p>` : ''}
+      ${b.weak ? `<p><span class="lbl">too weak</span>${esc(clip(b.weak, 160))}</p>` : ''}
+      ${b.effects ? `<p class="fx"><span class="lbl">effects</span>${esc(describe(b.effects))}</p>` : ''}
+      ${Object.entries(b.atModel || {}).map(([t, alt]) => `<p class="fx"><span class="lbl">on ${esc(model(Number(t)))}+</span>${esc(clip(alt.response, 120))}${alt.effects ? ' · ' + esc(describe(alt.effects)) : ''}</p>`).join('')}
+    </div>`;
+  }
+  function select(id) {
+    if (!S.nodes[id]) id = S.start.node;
+    graph.querySelectorAll('.node').forEach((el) => el.classList.toggle('sel', el.dataset.node === id));
+    const n = S.nodes[id];
+    const posts = (S.postActions || []).filter((a) => arr(a.when && a.when.node).includes(id));
+    const mails = (S.mailActions || []).filter((a) => arr(a.when && a.when.node).includes(id));
+    const evs = edges.filter((e) => e.from === id && (e.kind === 'deploy' || e.kind === 'day'));
+    const incoming = edges.filter((e) => e.to === id);
+    document.getElementById('detail').innerHTML = `
+      <h3>${esc(id)}</h3>
+      <p class="obj">${esc(n.objective || '')}</p>
+      ${n.scene ? `<p class="scene"><span class="lbl">scene for Jev</span>${esc(n.scene)}</p>` : '<p class="warnbox">No scene: Jev gets only the objective.</p>'}
+      <p class="note">Reached from: ${incoming.length ? incoming.map((e) => `<button class="go" data-node="${esc(e.from)}">${esc(e.from)}</button> (${esc(KIND[e.kind])} ${esc(e.id)})`).join(', ') : 'game start'}</p>
+      <h2>Branches (${(n.branches || []).length})</h2>
+      ${(n.branches || []).map((b) => branchHtml(b, 'prompt', id)).join('') || '<p class="note">None. This node is an ending.</p>'}
+      ${posts.length ? `<h2>Y posts here</h2>${posts.map((b) => branchHtml(b, 'post', id)).join('')}` : ''}
+      ${mails.length ? `<h2>Emails here</h2>${mails.map((b) => branchHtml(b, 'mail', id)).join('')}` : ''}
+      ${evs.length ? `<h2>Events</h2>${evs.map((e) => `<div class="br"><div class="br-head"><span class="chip ${e.kind}">${esc(e.id)}</span><button class="go" data-node="${esc(e.to)}">→ ${esc(e.to)}</button></div></div>`).join('')}` : ''}
+      <p class="note">${(S.global || []).length} global branches are also offered here (see below).</p>`;
+    try { history.replaceState(null, '', '#' + id); } catch (e) { /* not allowed in some frames */ }
+  }
+
+  // ── reference tables ──
+  const ref = [];
+  ref.push(`<section class="card"><h2>Global branches (every node)</h2>${(S.global || []).map((b) => branchHtml(b, 'prompt')).join('')}</section>`);
+  const sideMail = (S.mailActions || []).filter((a) => !(a.when && a.when.node));
+  ref.push(`<section class="card"><h2>Side emails (any node)</h2>${sideMail.map((b) => branchHtml(b, 'mail')).join('') || '<p class="note">None.</p>'}</section>`);
+  ref.push(`<section class="card"><h2>Contacts who reply</h2><div class="scroll"><table class="tbl"><thead><tr><th>Who</th><th>Reply</th><th>Persona</th></tr></thead><tbody>${
+    Object.entries(S.contacts || {}).map(([addr, c]) => `<tr><td><b>${esc(c.name)}</b><br><code>${esc(addr)}</code></td><td class="num">${esc(c.reply ? delayText(c.reply) : 'never')}${c.reply && c.reply.chance != null ? ` · ${Math.round(c.reply.chance * 100)}%` : ''}</td><td>${esc(clip(c.persona, 140))}</td></tr>`).join('')
+  }</tbody></table></div><p class="note">Anyone else never replies, so the player gets one message to them.</p></section>`);
+  const timed = [
+    ...(S.posts || []).filter((p) => p.when).map((p) => ['Y post', p.id, p.when, p.text]),
+    ...(S.mail || []).filter((m) => m.when).map((m) => ['email', m.id, m.when, m.subject]),
+  ];
+  const byEffect = [
+    ...(S.posts || []).filter((p) => p.at == null && !p.when).map((p) => ['Y post', p.id, p.text]),
+    ...(S.mail || []).filter((m) => m.at == null && !m.when).map((m) => ['email', m.id, m.subject]),
+  ];
+  ref.push(`<section class="card"><h2>Content that appears on a condition</h2><div class="scroll"><table class="tbl"><thead><tr><th>Type</th><th>Id</th><th>When</th><th>Text</th></tr></thead><tbody>${
+    timed.map(([t, id, w, x]) => `<tr><td>${t}</td><td><code>${esc(id)}</code></td><td class="kw">${esc(Object.entries(w).map(([k, v]) => `${k}: ${arr(v).join(', ')}`).join(' · '))}</td><td>${esc(clip(x, 70))}</td></tr>`).join('')
+  }</tbody></table></div><h2 style="margin-top:14px">Delivered by effects</h2><div class="scroll"><table class="tbl"><tbody>${
+    byEffect.map(([t, id, x]) => `<tr><td>${t}</td><td><code>${esc(id)}</code></td><td>${esc(clip(x, 80))}</td></tr>`).join('')
+  }</tbody></table></div></section>`);
+  const E = S.economy;
+  ref.push(`<section class="card"><h2>Models</h2><div class="scroll"><table class="tbl"><thead><tr><th>Model</th><th>Unlock</th><th>Prompt</th><th>Word</th><th>Needed by</th></tr></thead><tbody>${
+    (S.models || []).map((m, i) => {
+      const need = allBranches.filter((b) => b.minModel === i + 1).map((b) => b.id).concat((S.global || []).filter((b) => b.atModel && b.atModel[i + 1]).map((b) => b.id + ' (bonus)'));
+      return `<tr><td><code>${esc(m.name)}</code></td><td class="num">$${m.price}</td><td class="num">$${m.promptBase.toFixed(2)}</td><td class="num">$${m.perWord.toFixed(2)}</td><td>${need.map((x) => `<code>${esc(x)}</code>`).join(', ') || '–'}</td></tr>`;
+    }).join('')
+  }</tbody></table></div><h2 style="margin-top:14px">Economy</h2><p class="note">Start ${'$' + S.start.money} on Day ${S.start.day} at ${S.start.hour}:00 · food $${E.living.amount}/night · hosting $${E.hostingPerDay}/app/night · rent $${E.rent.amount} at the end of Day ${E.rent.day} · each prompt takes ${E.promptHours}h · Jev hit ≥ ${S.decision.hit}, nudge ≥ ${S.decision.partial}</p></section>`);
+  if (unreachable.length) ref.unshift(`<section class="card"><h2>Problems</h2><p class="warnbox">Unreachable nodes: ${unreachable.map((n) => `<code>${esc(n)}</code>`).join(', ')}</p></section>`);
+  document.getElementById('ref').innerHTML = ref.join('');
+
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-node]');
+    if (!t) return;
+    select(t.dataset.node);
+    const card = document.getElementById('n-' + t.dataset.node);
+    if (card && !t.classList.contains('node')) card.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  });
+  select(decodeURIComponent((location.hash || '').slice(1)) || S.start.node);
+  spaceLayers();
+  drawEdges();
+  window.addEventListener('resize', drawEdges);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawEdges);
+})();
+</script>
