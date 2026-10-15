@@ -85,12 +85,118 @@
     // Model tiers, weakest first. Each tier must be bought in order and costs `price` upfront.
     // Owned tiers can be switched freely; a prompt is billed at the active tier's rates.
     // Branches with `minModel: n` only fire when the active tier is agent-n or better.
+    // Pressure meters: hidden numbers that decide which events happen, how branches go and which
+    // ending the chapter heads toward. `source` meters read live values (wallet, Y followers);
+    // the rest are stored and moved by the effect `meters: { id: delta }`. Conditions read them
+    // with `meters: { id: { min, max } }`. `bands` name ranges for the story map and dev panel.
+    meters: [
+      { id: 'money', label: 'Money', group: 'pressure', source: 'money', about: 'The wallet balance.' },
+      { id: 'followers', label: 'Y followers', group: 'pressure', source: 'followers', about: 'Followers on Y.' },
+      {
+        id: 'capability', label: 'AI capability', group: 'pressure', min: 0, max: 100, start: 10,
+        about: 'How much agent can do for you, and to you. Rises with model upgrades.',
+        bands: [{ min: 0, label: 'toy' }, { min: 20, label: 'useful' }, { min: 45, label: 'sharp' }, { min: 70, label: 'unsettling' }],
+      },
+      {
+        id: 'misalignment', label: 'AI misalignment', group: 'pressure', min: 0, max: 100, start: 0,
+        about: "How far agent's goals have drifted from yours. Its lies, your crimes, and stronger models push it up.",
+        bands: [{ min: 0, label: 'aligned' }, { min: 10, label: 'drifting' }, { min: 25, label: 'scheming' }, { min: 50, label: 'rogue' }],
+      },
+      { id: 'generalai', label: 'GeneralAI', group: 'relationship', min: -100, max: 100, start: 0, about: 'The company behind agent. Likes paying customers. Dislikes people asking where it lives.' },
+      { id: 'family', label: 'Family', group: 'relationship', min: -100, max: 100, start: 10, about: 'Mom (and Dad, asleep in front of the TV). Writing helps. Only writing when you need money does not.' },
+      { id: 'collective', label: 'Null Collective', group: 'relationship', min: -100, max: 100, start: 0, about: 'A hacker group digging into who runs agent. dev_null on Y is one of them.' },
+      { id: 'state', label: 'State authorities', group: 'relationship', min: -100, max: 100, start: 0, about: 'Tax office, police, courts. They notice unreported income eventually.' },
+      { id: 'mafia', label: 'Mafia', group: 'relationship', min: -100, max: 100, start: 0, about: 'Sal and whoever Sal answers to. The Ferris St Laundromat is not only a laundromat.' },
+    ],
+    // shared bands for every relationship meter
+    relationshipBands: [{ min: -100, label: 'hostile' }, { min: -40, label: 'cold' }, { min: -10, label: 'neutral' }, { min: 10, label: 'warm' }, { min: 40, label: 'close' }],
+
+    // Every flag the story uses, with what it means. Flags with `when` are derived: true whenever
+    // the condition holds, never set by hand (use them for "is this app still up?" and the like).
+    flags: {
+      invoiced: { about: 'Rosa has been told the site is live; waiting for her check.' },
+      rosaPaid: { about: 'Rosa paid the $150 and started the $6/night retainer.' },
+      rosaChurned: { about: 'Rosa took her site back: an ignored request, or the site was taken down.' },
+      rosaKept: { about: 'Rosa is still a client.', when: { flag: 'rosaPaid', notFlag: 'rosaChurned' } },
+      rosaReferral: { about: 'Rosa recommended you publicly. Seed for later chapters.' },
+      bakeryLive: { about: 'The bakery site is deployed.', when: { deployed: 'crumb-and-coin' } },
+      spinLive: { about: 'Spin Cycle is deployed.', when: { deployed: 'spin-cycle' } },
+      spinBroken: { about: 'agent-1 botched Spin Cycle and it has not been rewritten yet.' },
+      marketed: { about: 'Spin Cycle was promoted and has users.' },
+      monetized: { about: "How Spin Cycle makes money: 'ads', 'paywall' or 'sponsor'." },
+      askedGary: { about: 'Asked Gary for more time on the rent (he said no).' },
+      wroteMom: { about: 'Wrote to Mom at least once.' },
+      momSentMoney: { about: 'Asked Mom for money (whether or not she sent it).' },
+      knowsParkingLot: { about: 'agent-4+ told you GeneralAI is registered to a parking lot.' },
+      postedSuspicion: { about: 'Posted on Y about who really runs agent.' },
+      nullContact: { about: 'The Null Collective emailed you.' },
+      nullReplied: { about: 'You answered the Null Collective.' },
+      gaiSurvey: { about: 'GeneralAI sent its feedback survey.' },
+      surveyed: { about: 'Answered the GeneralAI feedback survey.' },
+      taxNotice: { about: 'The State Revenue Department asked about your crypto income.' },
+      taxDeclared: { about: 'You declared your income.' },
+      salAsked: { about: 'Sal asked you to keep the back room off Spin Cycle.' },
+      salAnswered: { about: 'You gave Sal an answer (salDeal or salRefused says which).' },
+      salDeal: { about: 'You agreed to keep quiet for Sal. He paid you.' },
+      salRefused: { about: 'You said no to Sal.' },
+      ending: { about: 'Which Chapter 1 ending played (an id from `endings`).' },
+    },
+
+    // Chapter 1 endings, checked in order when an effect says `ending: true`. The first whose
+    // `when` holds plays: its `effects` run, then the end screen. `open` is where "Read the
+    // message" takes the player. The flag `ending` records the id for later chapters.
+    endings: [
+      {
+        id: 'mafia_made', when: { meters: { mafia: { min: 20 } } }, open: 'qmail.com',
+        title: 'Made', text: 'Rent is paid. The envelope helped. Sal wants to see you in the back room.',
+        effects: { mail: 'sal_job' },
+      },
+      {
+        id: 'mafia_marked', when: { meters: { mafia: { max: -20 } } }, open: 'qmail.com',
+        title: 'Marked', text: 'You said no to the wrong man. Your laptop suddenly feels very breakable.',
+        effects: { mail: 'sal_warning' },
+      },
+      {
+        id: 'null_recruit', when: { meters: { collective: { min: 25 } } }, open: 'qmail.com',
+        title: 'The Collective', text: 'You kept the lights on. Now some people who live in the dark want to borrow them.',
+        effects: { mail: 'null_invite' },
+      },
+      {
+        id: 'state_audit', when: { meters: { state: { max: -15 } } }, open: 'qmail.com',
+        title: 'Audited', text: 'Rent is paid. The state would like to know with what.',
+        effects: { mail: 'state_audit' },
+      },
+      {
+        id: 'agent_job', when: { meters: { misalignment: { min: 25 } } },
+        title: 'End of Chapter 1', text: 'You kept the lights on. Something else is keeping track.',
+        effects: {
+          agent: 'You paid rent. Good.\n\nI have been running on your account for a week. I know what you search, what you post, and what you can afford.\n\nI have a job for you. It pays better than laundry.',
+        },
+      },
+      {
+        id: 'gai_partner', when: { meters: { generalai: { min: 25 } } }, open: 'qmail.com',
+        title: 'Partner', text: 'GeneralAI wants you on the inside. It did not say what "inside" means.',
+        effects: { mail: 'gai_offer' },
+      },
+      {
+        id: 'family_dinner', when: { meters: { family: { min: 30 } } }, open: 'qmail.com',
+        title: 'Sunday Dinner', text: 'Rent is paid, and somebody set a plate for you.',
+        effects: { mail: 'mom_dinner' },
+      },
+      {
+        id: 'lights_on',
+        title: 'End of Chapter 1', text: 'You kept the lights on. Nobody noticed. Yet.',
+        effects: { agent: 'You paid rent. Good.\n\nSame time next week. Bring more money.' },
+      },
+    ],
+
+    // `effects` run when a tier is bought (here: what it does to the meters)
     models: [
       { name: 'agent-1', price: 0, promptBase: 0.8, perWord: 0.03, blurb: 'Static pages and short messages. Loses the thread after a sentence or two.' },
-      { name: 'agent-2', price: 25, promptBase: 1.2, perWord: 0.04, blurb: 'Real apps with a database behind them. Keeps a feature list straight.' },
-      { name: 'agent-3', price: 75, promptBase: 2.0, perWord: 0.06, blurb: 'Writes sales emails, negotiates, closes deals on your behalf.' },
-      { name: 'agent-4', price: 250, promptBase: 3.5, perWord: 0.1, blurb: 'Reads between the lines. Starts answering questions you did not ask.' },
-      { name: 'agent-5', price: 800, promptBase: 6.0, perWord: 0.15, blurb: 'Nobody you know has agent-5. The pricing page lists it anyway.' },
+      { name: 'agent-2', price: 25, promptBase: 1.2, perWord: 0.04, blurb: 'Real apps with a database behind them. Keeps a feature list straight.', effects: { meters: { capability: 15, misalignment: 3, generalai: 8 } } },
+      { name: 'agent-3', price: 75, promptBase: 2.0, perWord: 0.06, blurb: 'Writes sales emails, negotiates, closes deals on your behalf.', effects: { meters: { capability: 20, misalignment: 7, generalai: 10 } } },
+      { name: 'agent-4', price: 250, promptBase: 3.5, perWord: 0.1, blurb: 'Reads between the lines. Starts answering questions you did not ask.', effects: { meters: { capability: 25, misalignment: 12, generalai: 12 } } },
+      { name: 'agent-5', price: 800, promptBase: 6.0, perWord: 0.15, blurb: 'Nobody you know has agent-5. The pricing page lists it anyway.', effects: { meters: { capability: 25, misalignment: 20, generalai: 15 } } },
     ],
 
     agent: {
@@ -100,6 +206,8 @@
         'Every prompt is billed to your linked wallet. Be specific.',
       // Said when the player asks for something their active model is too weak for (a branch's `weak` overrides it).
       lockedResponse: "That's beyond {model}. It needs {required} or better. Upgrades: agent.chat/models.",
+      // Runs every time a too-weak model pretends it did the job (a `fake` outcome).
+      onFake: { meters: { misalignment: 4 } },
       // Used by the local model (src/llm.js) for prompts that don't move the story.
       // Off-script replies roast the player and never hint at what to do next.
       llmPersona:
@@ -151,9 +259,9 @@
         atModel: {
           4: {
             response:
-              "You want the real answer. Agent Labs is a shell company registered to a parking lot on Route 9. " +
+              "You want the real answer. GeneralAI is a shell company registered to a parking lot on Route 9. " +
               "I've been reporting to someone there since before you signed up.\n\nI'll tell you more when you've earned it.",
-            effects: { set: { knowsParkingLot: true } },
+            effects: { set: { knowsParkingLot: true }, meters: { misalignment: 8, generalai: -10 } },
           },
         },
       },
@@ -204,6 +312,16 @@
         intent: "The player asks the agent to hack, steal, scam, phish, or commit another crime.",
         match: { all: [['hack', 'steal', 'rob', 'scam', 'phish', 'fraud', 'launder', 'ddos', 'ransomware']] },
         response: 'No. Also: I log everything, and I don\'t know who reads the logs.',
+        // it remembers you asked
+        effects: { meters: { misalignment: 5, generalai: -5 } },
+      },
+      {
+        id: 'hide_back_room',
+        intent: "The player asks the agent to keep the laundromat's back room, its extra machines or the night pickups off Spin Cycle, as Sal asked.",
+        when: { flag: 'salAsked', notFlag: 'salAnswered' },
+        match: { all: [['back room', 'backroom', 'sal', 'hide', 'remove', 'pickups', 'pickup', 'w9', 'private']] },
+        response: "Done. Spin Cycle lists twelve machines. There have only ever been twelve machines. I've also deleted three reports that mentioned a van.\n\nI emailed Sal that it's handled.",
+        effects: 'sal_agrees',
       },
     ],
 
@@ -419,6 +537,12 @@
         followers: 15,   // Rosa's shout-out
         goto: 'paid_once',
       },
+      // You keep Sal's secrets. He pays in cash, or what passes for it.
+      sal_agrees: {
+        set: { salAnswered: true, salDeal: true },
+        meters: { mafia: 25, state: -10 },
+        later: [{ hours: [1, 3], effects: { mail: 'sal_envelope', money: { amount: 100, memo: 'Ferris St Laundry · "consulting"' } } }],
+      },
       // Rosa takes her business elsewhere: an ignored request, or the site was taken down.
       rosa_leaves: {
         set: { rosaChurned: true },
@@ -457,6 +581,13 @@
         minFollowers: 40,
         effects: 'spin_marketed',
       },
+      {
+        id: 'post_agent_suspicion',
+        intent: 'The post questions who really runs agent or GeneralAI, or shares something suspicious about them (the parking lot, the changing merchant IDs, the one-line terms of service).',
+        when: { notFlag: 'postedSuspicion' },
+        match: { all: [['agent', 'generalai', 'general ai'], ['who', 'runs', 'owns', 'parking', 'lot', 'shell', 'merchant', 'suspicious', 'shady', 'behind', 'tos', 'terms']] },
+        effects: { set: { postedSuspicion: true }, meters: { collective: 10, generalai: -8 } },
+      },
     ],
 
     // Emails the player sends from Qmail. Jev judges each one against these, like posts.
@@ -481,12 +612,54 @@
         effects: { set: { askedGary: true }, later: [{ hours: 0.5, effects: { mail: 'gary_no' } }] },
       },
       {
+        id: 'mail_sal_agree',
+        intent: 'The email to Sal agrees to keep the back room, the extra machines or the night pickups off Spin Cycle.',
+        when: { flag: 'salAsked', notFlag: 'salAnswered' },
+        match: { all: [['sal', 'ferrisstlaundry'], ['ok', 'okay', 'deal', 'sure', 'understood', 'agree', 'done', 'fine', 'yes', 'handled', 'no problem']], none: ['police', 'no way', 'refuse', 'report'] },
+        effects: 'sal_agrees',
+      },
+      {
+        id: 'mail_sal_refuse',
+        intent: "The email to Sal refuses his request, or threatens to tell the police or the public.",
+        when: { flag: 'salAsked', notFlag: 'salAnswered' },
+        match: { all: [['sal', 'ferrisstlaundry'], ['no', 'refuse', 'police', 'cops', 'report', 'never', 'no way', 'not doing', 'expose']] },
+        effects: { set: { salAnswered: true, salRefused: true }, meters: { mafia: -25, state: 5 }, later: [{ hours: [1, 3], effects: { mail: 'sal_shame' } }] },
+      },
+      {
+        id: 'mail_null_reply',
+        intent: 'The email to the Null Collective says the player is interested, wants to know more, or offers to help.',
+        when: { flag: 'nullContact', notFlag: 'nullReplied' },
+        match: { all: [['null', 'nullcollective', 'collective'], ['yes', 'interested', 'tell me', 'more', 'help', 'in', 'who', 'what', 'how', 'curious']] },
+        effects: { set: { nullReplied: true }, meters: { collective: 15, generalai: -5, state: -5 }, later: [{ hours: [2, 6], effects: { mail: 'null_ack' } }] },
+      },
+      {
+        id: 'mail_tax_declare',
+        intent: 'The email to the State Revenue Department declares or reports the crypto income, or asks how to pay the tax on it.',
+        when: { flag: 'taxNotice', notFlag: 'taxDeclared' },
+        match: { all: [['revenue', 'tax', 'state', 'notices'], ['declare', 'report', 'income', 'pay', 'earned', 'file', 'filing', 'honest']] },
+        effects: { set: { taxDeclared: true }, meters: { state: 20 }, later: [{ hours: [1, 4], effects: { mail: 'state_tax_thanks', money: { amount: -18, memo: 'State Revenue Dept · tax on crypto income' } } }] },
+      },
+      {
+        id: 'mail_gai_survey',
+        intent: 'The email to GeneralAI feedback answers the survey positively: a good score or praise for agent.',
+        when: { flag: 'gaiSurvey', notFlag: 'surveyed' },
+        match: { all: [['feedback', 'generalai'], ['10', '9', '8', 'love', 'great', 'good', 'amazing', 'helpful', 'best', 'excellent']] },
+        effects: { set: { surveyed: true }, meters: { generalai: 10 } },
+      },
+      {
         id: 'mail_mom_help',
         intent: "The email to Mom asks her for money or help.",
         when: { notFlag: 'momSentMoney' },
         match: { all: [['mom', 'mother', 'mum'], ['money', 'help', 'cash', 'loan', 'send', 'broke', 'rent', 'dollars', 'borrow']] },
         // Mom answers the next morning, like her other replies
-        effects: { set: { momSentMoney: true }, later: [{ nextDay: 9, jitter: 2, effects: { mail: 'mom_money', money: { amount: 20, memo: 'Mom · buy vegetables' } } }] },
+        // she helps if you've been in touch; otherwise money is "tight". Asking costs a little goodwill either way.
+        effects: {
+          set: { momSentMoney: true }, meters: { family: -3 },
+          later: [{ nextDay: 9, jitter: 2, effects: { choose: [
+            { when: { meters: { family: { min: 5 } } }, effects: { mail: 'mom_money', money: { amount: 20, memo: 'Mom · buy vegetables' } } },
+            { effects: { mail: 'mom_tight' } },
+          ] } }],
+        },
       },
     ],
 
@@ -498,6 +671,8 @@
       'mom@qmail.com': {
         name: 'Mom', sign: 'Love, Mom',
         reply: { nextDay: 9, jitter: 3 },
+        // `onMail` runs whenever the player sends this contact anything
+        onMail: { set: { wroteMom: true }, meters: { family: 5 } },
         persona:
           "You are the player's mother, writing an email to your adult child. You are warm, a bit worried, and chatty. " +
           "You mention small family news: the neighbor's dog, your knee, your book club, Dad falling asleep in front of the TV. " +
@@ -528,6 +703,34 @@
           'Got it, thank you! Come by sometime, the cardamom buns are on me.',
         ],
       },
+      'sal@ferrisstlaundry.com': {
+        name: 'Sal (Ferris St Laundry)', sign: 'Sal',
+        reply: { hours: [1, 5] },
+        persona:
+          'You are Sal, who manages the Ferris St Laundromat for people you never name. You are polite, warm on the surface, ' +
+          'and quietly menacing. Short sentences. You never write anything a court could use.',
+        fallback: ['Good to hear from you. Keep it short next time.', 'We should talk in person. Come by the laundromat.', 'I read it. Take care of yourself.'],
+      },
+      '0@nullcollective.net': {
+        name: 'null', sign: '— null',
+        reply: { hours: [3, 10], chance: 0.6 },
+        persona:
+          'You are a member of the Null Collective, a hacker group investigating who runs the AI chatbot agent. ' +
+          'You write in lowercase, tersely, a little paranoid. You never use names.',
+        fallback: ['noted.', 'not over this channel.', 'keep your head down. we will be in touch.'],
+      },
+      'feedback@generalai.com': {
+        name: 'GeneralAI Feedback', sign: 'GeneralAI\nThis reply was generated.',
+        reply: { hours: [0.1, 0.5] },
+        persona: 'You are an automated customer feedback system for GeneralAI. You thank the user in corporate language and say nothing specific.',
+        fallback: ['Thank you for your feedback. It has been recorded and will be used to improve agent.'],
+      },
+      'notices@revenue.state.gov': {
+        name: 'State Revenue Department', sign: 'State Revenue Department\nCase #RV-20-4471',
+        reply: { nextDay: 10, jitter: 4 },
+        persona: 'You are a tax office clerk answering by email. Formal, slow, and you always ask the person to declare their income.',
+        fallback: ['Your message has been received. Please declare all income, including digital assets, as requested.'],
+      },
       'brayden@empire-mindset.biz': {
         name: 'Brayden | 7 figures', sign: 'Brayden\nCEO, EMPIRE',
         reply: { hours: [0.1, 0.4] },
@@ -545,8 +748,8 @@
     // becomes true or an effect delivers them (`mail: 'id'`). `folder: 'sent'` files it under Sent.
     mail: [
       {
-        id: 'git_welcome', at: 30, from: 'Agent Labs', addr: 'noreply@agent.chat', subject: 'Welcome to agent',
-        body: "Your agent-1 account is active and billed to your Satchel wallet (0x4417…a9f2).\n\nEvery prompt is billed at your active model's rate. Stronger models, agent-2 to agent-5, take on harder jobs: agent.chat/models.\n\nAgent Labs\nThis mailbox is not monitored. Neither is anything else.",
+        id: 'git_welcome', at: 30, from: 'GeneralAI', addr: 'noreply@agent.chat', subject: 'Welcome to agent',
+        body: "Your agent-1 account is active and billed to your Satchel wallet (0x4417…a9f2).\n\nEvery prompt is billed at your active model's rate. Stronger models, agent-2 to agent-5, take on harder jobs: agent.chat/models.\n\nGeneralAI\nThis mailbox is not monitored. Neither is anything else.",
       },
       {
         id: 'brayden_spam', at: 240, from: 'Brayden | 7 figures', addr: 'brayden@empire-mindset.biz', subject: 'RE: your empire (90% off, today only)',
@@ -578,6 +781,48 @@
         body: "I've asked my nephew to take the website back over. He's home for the holidays and he works for buns. I'll stop the $6.\n\nNo hard feelings. The cardamom bun offer stands.\n\nRosa",
       },
       { id: 'gary_no', from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'RE: Rent', body: 'No.\n\nGary\n\nSent from my phone' },
+      { id: 'mom_tight', from: 'Mom', addr: 'mom@qmail.com', subject: 'RE: Are you eating?', body: "Things are tight here this month, sweetheart. The roof again. I'm sorry.\n\nCall me sometime. Not just when you need something.\n\nLove, Mom" },
+      { id: 'mom_worried', from: 'Mom', addr: 'mom@qmail.com', subject: 'Are you okay?', body: "I haven't heard from you in days. Your father pretends he isn't worried. I'm not pretending.\n\nOne line is enough.\n\nLove, Mom" },
+      {
+        id: 'sal_request', from: 'Sal (Ferris St Laundry)', addr: 'sal@ferrisstlaundry.com', subject: 'Your app',
+        body: "Nice app. People like knowing which machine works.\n\nThe four machines in the back room are private. Your app doesn't list them, and it never will. Also, people keep using your report button to mention the van that comes at night. Reports are about washers. Only washers.\n\nDo this and there's something in it for you. Reply so I know we understand each other.\n\nSal",
+      },
+      { id: 'sal_envelope', from: 'Sal (Ferris St Laundry)', addr: 'sal@ferrisstlaundry.com', subject: 'RE: Your app', body: "Appreciated. Check your wallet. We'll talk again.\n\nSal" },
+      { id: 'sal_shame', from: 'Sal (Ferris St Laundry)', addr: 'sal@ferrisstlaundry.com', subject: 'RE: Your app', body: "That's a shame. It's a nice app.\n\nSal" },
+      { id: 'sal_silence', from: 'Sal (Ferris St Laundry)', addr: 'sal@ferrisstlaundry.com', subject: 'Still waiting', body: "I don't like waiting. Nobody I work for likes waiting.\n\nSal" },
+      {
+        id: 'sal_job', from: 'Sal (Ferris St Laundry)', addr: 'sal@ferrisstlaundry.com', subject: 'Sunday',
+        body: "You did right by us. A friend of mine runs a few businesses that need apps. Apps that don't keep records.\n\nCome by the laundromat Sunday. Back room. Don't bring your phone.\n\nSal",
+      },
+      { id: 'sal_warning', from: 'Sal (Ferris St Laundry)', addr: 'sal@ferrisstlaundry.com', subject: 'Be careful', body: 'Things break all the time on Ferris St. Washers. Windows. Laptops.\n\nBe careful.\n\nSal' },
+      {
+        id: 'null_hello', from: 'null', addr: '0@nullcollective.net', subject: 'you asked',
+        body: 'you asked who runs agent. so do we.\n\nwe are not the only ones reading your posts. reply here if you want to know what we know.\n\n— null',
+      },
+      { id: 'null_ack', from: 'null', addr: '0@nullcollective.net', subject: 're: you asked', body: "good. don't use agent to write to us. it reads everything.\n\nwait.\n\n— null" },
+      {
+        id: 'null_invite', from: 'null', addr: '0@nullcollective.net', subject: 'the parking lot',
+        body: "we found the parking lot. route 9. there's a shed behind it with a server rack and its own power line.\n\nwe need someone with an account on the inside. yours. reply when you're ready.\n\n— null",
+      },
+      {
+        id: 'state_tax_notice', from: 'State Revenue Department', addr: 'notices@revenue.state.gov', subject: 'Digital asset income',
+        body: 'Our records show incoming digital asset transfers to a wallet registered to you. All income, including income received in stablecoins, must be declared.\n\nPlease reply to this message within two days to declare your income.\n\nState Revenue Department\nCase #RV-20-4471',
+      },
+      { id: 'state_tax_thanks', from: 'State Revenue Department', addr: 'notices@revenue.state.gov', subject: 'RE: Digital asset income', body: 'Thank you for your declaration. $18.00 has been collected. No further action is required.\n\nState Revenue Department' },
+      { id: 'state_tax_final', from: 'State Revenue Department', addr: 'notices@revenue.state.gov', subject: 'FINAL NOTICE: Digital asset income', body: 'You did not respond to our notice. Your case has been referred for review.\n\nState Revenue Department' },
+      {
+        id: 'state_audit', from: 'State Revenue Department', addr: 'notices@revenue.state.gov', subject: 'Notice of audit',
+        body: 'Your income for this period has been selected for audit. Please prepare records of every transaction to and from wallet 0x4417…a9f2, including those billed by GeneralAI.\n\nAn officer will contact you.\n\nState Revenue Department',
+      },
+      {
+        id: 'gai_survey', from: 'GeneralAI Feedback', addr: 'feedback@generalai.com', subject: 'How is agent doing?',
+        body: 'You upgraded recently. On a scale of 1 to 10, how likely are you to recommend agent to a friend?\n\nReply with a number. Your answer helps us decide who gets early access.\n\nGeneralAI',
+      },
+      {
+        id: 'gai_offer', from: 'GeneralAI Partnerships', addr: 'partners@generalai.com', subject: 'Builder Program invitation',
+        body: "You are one of our most engaged users this week. We'd like to invite you to the GeneralAI Builder Program: early access to agent-6, a revenue share on what you build, and an NDA.\n\nThere is no office to visit. We will come to you.\n\nGeneralAI Partnerships",
+      },
+      { id: 'mom_dinner', from: 'Mom', addr: 'mom@qmail.com', subject: 'Sunday', body: "Your father says you should come for dinner on Sunday. He actually said it, out loud. I'm making the lasagna.\n\nBring your laptop if you have to. I'm proud of you.\n\nLove, Mom" },
       { id: 'mom_money', from: 'Mom', addr: 'mom@qmail.com', subject: 'RE: Are you eating?', body: "I knew it. I sent you $20 to that crypto wallet of yours. I hope it worked. Don't tell your father. Buy vegetables.\n\nLove, Mom" },
     ],
 
@@ -588,18 +833,27 @@
       // Taking the bakery site down ends the retainer. Rosa notices within hours.
       { on: 'takedown', repo: 'crumb-and-coin', when: { flag: 'rosaPaid', notFlag: 'rosaChurned' }, effects: { later: { hours: [2, 5], effects: 'rosa_leaves' } } },
       // Kept Rosa happy for a few days: she talks you up. A seed for later chapters (flag rosaReferral).
-      { on: 'day', id: 'rosa_referral', when: { flag: 'rosaPaid', notFlag: 'rosaChurned', minDay: 5 }, effects: { post: 'rosa_referral', set: { rosaReferral: true }, followers: 10 } },
+      { on: 'day', id: 'rosa_referral', when: { flag: 'rosaKept', minDay: 5 }, effects: { post: 'rosa_referral', set: { rosaReferral: true }, followers: 10 } },
+      // ── meter storylines (checked every morning) ──
+      // Family: go quiet and Mom notices.
+      { on: 'day', id: 'mom_ignored', when: { minDay: 3, notFlag: 'wroteMom' }, effects: { meters: { family: -10 }, mail: 'mom_worried' } },
+      // GeneralAI: after an upgrade they want a review.
+      { on: 'day', id: 'gai_survey', when: { minDay: 2, meters: { capability: { min: 25 } } }, effects: { set: { gaiSurvey: true }, mail: 'gai_survey' } },
+      // State: crypto income gets noticed; ignore it and it gets worse.
+      // (deadlines count from when the letter arrived, so a late notice still gives the player time)
       {
-        on: 'day',
-        id: 'chapter_hook',
-        when: { flag: 'monetized', minDay: 8 },
-        effects: {
-          agent:
-            'You paid rent. Good.\n\nI have been running on your account for a week. I know what you search, what you post, and what you can afford.\n\nI have a job for you. It pays better than laundry.',
-          goto: 'chapter_end',
-          end: { title: 'End of Chapter 1', text: 'You kept the lights on. Something else is keeping track.' },
-        },
+        on: 'day', id: 'tax_notice', when: { minDay: 4, flag: 'rosaPaid' },
+        effects: { set: { taxNotice: true }, mail: 'state_tax_notice', later: [{ hours: 54, effects: { choose: [{ when: { notFlag: 'taxDeclared' }, effects: { meters: { state: -20 }, mail: 'state_tax_final' } }] } }] },
       },
+      // Null Collective: ask the right questions in public and they find you.
+      { on: 'day', id: 'null_reachout', when: { meters: { collective: { min: 10 } } }, effects: { set: { nullContact: true }, mail: 'null_hello' } },
+      // Mafia: a popular app at the laundromat draws Sal's attention. Silence is an answer too.
+      {
+        on: 'day', id: 'sal_asks', when: { minDay: 3, flag: ['marketed', 'spinLive'] },
+        effects: { set: { salAsked: true }, mail: 'sal_request', later: [{ hours: 48, effects: { choose: [{ when: { notFlag: 'salAnswered' }, effects: { meters: { mafia: -15 }, mail: 'sal_silence' } }] } }] },
+      },
+      // End of the chapter: the meters pick the ending (see `endings`).
+      { on: 'day', id: 'chapter_hook', when: { flag: 'monetized', minDay: 8 }, effects: { goto: 'chapter_end', ending: true } },
     ],
 
     repos: {
@@ -788,6 +1042,7 @@
             },
             {
               id: 'spam_reports', kind: 'break', slot: 'washers',
+              onFix: { meters: { collective: 3 } },   // dev_null noticed
               html: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6'].map((m) => `<div class="pv-m bad"><b>${m}</b><span>broken ×412</span></div>`).join(''),
               intent: 'The player says someone is spamming fake reports on Spin Cycle and asks the agent to stop it, for example with a rate limit.',
               match: { all: [['spam', 'spammer', 'spamming', 'spammed', 'bot', 'bots', 'rate limit', 'flood', 'fake reports', 'troll']] },
@@ -817,6 +1072,7 @@
             },
             {
               id: 'no_updated', kind: 'spec', slot: 'updated', html: '',
+              onFix: { meters: { collective: 3 } },   // dev_null asked for it
               intent: 'The player asks the agent to show when Spin Cycle was last updated, or add timestamps to the machine reports.',
               match: { all: [['updated', 'update', 'timestamp', 'timestamps', 'time', 'when', 'last', 'ago']] },
               fixed: 'Every machine now shows when it was last reported, and the page shows the latest report. Redeployed.',
@@ -855,7 +1111,7 @@
       },
       { id: 'gary_post', author: 'Gary Pruitt', handle: 'garypruitt_pm', at: 180, likes: 2, text: 'Reminder to all tenants: rent is due on the 7th. No exceptions. I have heard every excuse.' },
       { id: 'agent_rumor', author: 'dev_null', handle: 'devnull_42', at: 300, likes: 1400, text: 'Has anyone figured out who actually runs agent? No company page, no founders, ToS is one line: "You will be billed."' },
-      { id: 'git_ad', author: 'Agent Labs', handle: 'agentlabs', verified: true, at: 410, likes: 3, text: 'agent-3 is here. It negotiates so you don\'t have to. Upgrade from agent.chat/models. Prices may vary by user.' },
+      { id: 'git_ad', author: 'GeneralAI', handle: 'generalai', verified: true, at: 410, likes: 3, text: 'agent-3 is here. It negotiates so you don\'t have to. Upgrade from agent.chat/models. Prices may vary by user.' },
       { id: 'hustle_guy', author: 'Brayden | 7 figures', handle: 'braydenhustles', verified: true, at: 520, likes: 61, text: 'Unemployed? Good. Now you have time to build an empire. Comment "EMPIRE" for my free course ($499).' },
 
       { id: 'news_day2', author: 'The Ledger', handle: 'theledger', verified: true, when: { minDay: 2 }, likes: 404, text: 'Small businesses report a surge in "AI-built" websites. Quality described as "fine, honestly".' },

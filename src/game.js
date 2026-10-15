@@ -9,6 +9,7 @@
   const J = window.Jev;          // story decisions (TypeSafe Jev, via server.mjs)
   const K = window.Keywords;     // offline keyword matcher, also used for word counts
   const LLM = window.LocalLLM || null;
+  const M = window.Meters;       // pressure meters, derived flags, endings
   const E = S.economy;
   const SAVE_KEY = 'unknown-agent-save-v1';
   const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -112,6 +113,8 @@
       mail: [],      // Qmail: { id, t, read, folder, custom? }
       nextMail: 1,
       followers: (S.y && S.y.startFollowers) || 0,   // on Y
+      meters: M.init(S),   // pressure meters (story.meters), money and followers aside
+      meterLog: [],        // recent meter changes, for the dev panel
       extraPosts: [],   // Y posts the engine writes (complaints about defects)
       creatorOn: false, // Y creator payouts switched on
       postsToday: { day: 0, n: 0 },
@@ -158,6 +161,9 @@
       for (const r of Object.values(s.repos)) { r.defects = r.defects || []; r.complained = r.complained || []; r.slots = r.slots || {}; }
       if (s.followers == null) { s.followers = (S.y && S.y.startFollowers) || 0; s.creatorOn = false; s.postsToday = { day: 0, n: 0 }; }
       s.replyDrafts = s.replyDrafts || {};
+      // saves from before the pressure meters
+      s.meters = Object.assign(M.init(S), s.meters || {});
+      s.meterLog = s.meterLog || [];
       // saves from before the wallet
       for (const tab of s.tabs) if (/^secondnational\.com/.test(tab.url)) tab.url = 'satchel.app';
       if (s.unread.bank != null) { s.unread.wallet = s.unread.bank; delete s.unread.bank; }
@@ -167,8 +173,10 @@
 
   function check(c) {
     if (!c) return true;
-    if (c.flag && !arr(c.flag).every((f) => state.flags[f])) return false;
-    if (c.notFlag && arr(c.notFlag).some((f) => state.flags[f])) return false;
+    // flags with a `when` in story.flags are derived from it
+    if (c.flag && !arr(c.flag).every((f) => M.flag(state, S, f, check))) return false;
+    if (c.notFlag && arr(c.notFlag).some((f) => M.flag(state, S, f, check))) return false;
+    if (c.meters && !M.test(state, S, c.meters)) return false;
     if (c.node && !arr(c.node).includes(state.node)) return false;
     if (c.repo && !arr(c.repo).every((r) => state.repos[r])) return false;
     if (c.deployed && !arr(c.deployed).every((r) => state.repos[r] && state.repos[r].deployed)) return false;
@@ -303,6 +311,10 @@
       a.perDay = round2(a.perDay * fx.appScale.factor);
     }
     if (fx.followers) changeFollowers(fx.followers);
+    if (fx.meters) {
+      for (const ch of M.apply(state, S, fx.meters)) state.meterLog.push({ t: state.t, ...ch });
+      state.meterLog = state.meterLog.slice(-30);
+    }
     if (fx.fixDefect) fixDefect(fx.fixDefect.repo, fx.fixDefect.id);
     for (const name of arr(fx.complain)) complain(name);
     // choose: the first option whose `when` holds runs
@@ -322,6 +334,15 @@
       if (obj) toast('New objective', obj, 'note');
     }
     if (fx.end) state.ended = fx.end;
+    // ending: true plays the ending the meters point to (story.endings)
+    if (fx.ending) {
+      const e = M.ending(S, check);
+      if (e) {
+        state.flags.ending = e.id;
+        applyEffects(e.effects);
+        state.ended = { title: e.title, text: e.text, open: e.open };
+      }
+    }
     revealPosts();
   }
 
@@ -355,6 +376,7 @@
     const d = defectDef(repo, id) || {};
     // an update changes the app for good
     if (d.after != null && d.slot) r.slots[d.slot] = d.after;
+    if (d.onFix) applyEffects(d.onFix);
     if (d.thanks) state.queue.push({ at: laterTime({ hours: [1, 3] }), effects: { thank: { repo, id } } });
     const qa = qaOf(repo);
     const isQa = qa && qa.defects.some((x) => x.id === id);
@@ -609,7 +631,7 @@
     if (state.money < 0) {
       state.over = rentDue
         ? { title: 'Evicted', text: `Rent bounced. Gary changed the locks on Day ${ended + 1}. Your laptop is in a box on the curb.` }
-        : { title: 'Insolvent', text: 'Your wallet went below zero. The auto-payments bounced, Satchel froze the address, and Agent Labs revoked your access.' };
+        : { title: 'Insolvent', text: 'Your wallet went below zero. The auto-payments bounced, Satchel froze the address, and GeneralAI revoked your access.' };
     }
     state.morning = { day: dayOf(wake), passedOut: !!passedOut, lines, balance: state.money };
     if (!state.over) fireEvents('day');
@@ -628,16 +650,17 @@
   function buyModel(level) {
     const m = modelDef(level);
     if (level !== state.owned + 1 || state.over) return;
-    if (state.money < m.price) { toast('Agent Labs', `${m.name} costs ${fmtMoney(m.price)}. Your balance is ${fmtMoney(state.money)}.`, 'agent'); return; }
-    addTx(-m.price, `Agent Labs · ${m.name} upgrade`);
+    if (state.money < m.price) { toast('GeneralAI', `${m.name} costs ${fmtMoney(m.price)}. Your balance is ${fmtMoney(state.money)}.`, 'agent'); return; }
+    addTx(-m.price, `GeneralAI · ${m.name} upgrade`);
     state.stats.upgradeSpend = round2(state.stats.upgradeSpend + m.price);
     state.owned = level;
     state.model = level;
+    applyEffects(m.effects);
     deliverCustom({
-      from: 'Agent Labs', addr: 'billing@agent.chat', subject: `Receipt: ${m.name} upgrade`,
-      body: `You unlocked ${m.name}.\n\nCharged: ${fmtCoin(m.price)} from wallet ${shortAddr(WALLET_ADDR)}.\nWhile ${m.name} is active, prompts cost ${fmtMoney(m.promptBase)} + ${fmtMoney(m.perWord)} per word.\n\nNo refunds. No exceptions. No humans.\n\nAgent Labs`,
+      from: 'GeneralAI', addr: 'billing@agent.chat', subject: `Receipt: ${m.name} upgrade`,
+      body: `You unlocked ${m.name}.\n\nCharged: ${fmtCoin(m.price)} from wallet ${shortAddr(WALLET_ADDR)}.\nWhile ${m.name} is active, prompts cost ${fmtMoney(m.promptBase)} + ${fmtMoney(m.perWord)} per word.\n\nNo refunds. No exceptions. No humans.\n\nGeneralAI`,
     });
-    toast('Agent Labs', `${m.name} unlocked and active. Prompts now cost ${fmtMoney(m.promptBase)} + ${fmtMoney(m.perWord)}/word.`, 'agent');
+    toast('GeneralAI', `${m.name} unlocked and active. Prompts now cost ${fmtMoney(m.promptBase)} + ${fmtMoney(m.perWord)}/word.`, 'agent');
     save();
     render();
   }
@@ -663,7 +686,7 @@
       return;
     }
     const level = state.model;
-    addTx(-cost, `Agent Labs · ${modelDef(level).name} usage`);
+    addTx(-cost, `GeneralAI · ${modelDef(level).name} usage`);
     state.lastCost = cost;
     state.stats.prompts++;
     state.stats.promptSpend = round2(state.stats.promptSpend + cost);
@@ -694,6 +717,7 @@
         reply = decision.branch.fake.response;
         effects = decision.branch.fake.effects;
         src = 'fake:' + decision.branch.id;
+        applyEffects(S.agent.onFake);
       } else if (decision.kind === 'locked' && decision.lockReason === 'followers') {
         reply = tpl(decision.branch.fewFollowers || S.y.lockedResponse, { followers: state.followers, requiredFollowers: decision.branch.minFollowers });
         src = 'locked:' + decision.branch.id;
@@ -806,6 +830,8 @@
       render();
       return true;
     }
+    const contact = (S.contacts || {})[to];
+    if (contact && contact.onMail) applyEffects(contact.onMail);
     const candidates = mailCandidates();
     let storyHit = false;
     if (candidates.length) {
@@ -1614,6 +1640,17 @@
 
   // ───────────────────────── dev panel ─────────────────────────
 
+  function meterRows() {
+    return `<table class="dv-meters">${M.defs(S).map((d) => {
+      const v = M.value(state, S, d.id);
+      const lo = d.min != null ? d.min : 0, hi = d.max != null ? d.max : Math.max(v, 1);
+      const band = M.band(d.group === 'relationship' ? { bands: S.relationshipBands } : d, v);
+      const pct = d.source ? null : Math.round(((v - lo) / (hi - lo)) * 100);
+      return `<tr><td>${esc(d.label)}</td><td>${d.id === 'money' ? fmtMoney(v) : v}</td><td>${pct == null ? '' : `<span class="dv-meter"><i style="width:${pct}%"></i>${lo < 0 ? '<b></b>' : ''}</span>`}</td><td class="dv-dim">${band ? esc(band.label) : ''}</td></tr>`;
+    }).join('')}</table>
+    <div class="dv-row">${M.defs(S).filter((d) => !d.source).map((d) => `<button data-dev="meter:${d.id}:10" title="+10 ${esc(d.label)}">${esc(d.id)} +10</button>`).join('')}</div>`;
+  }
+
   function renderDev() {
     const d = $('#dev');
     d.hidden = !devOpen;
@@ -1650,7 +1687,11 @@
       <p><b>Decisions</b> ${J.status === 'online' ? 'Jev · ' + esc(J.model || '') : esc(J.status) + (J.reason ? ' · ' + esc(J.reason) : '')}</p>
       <p><b>Model</b> ${esc(modelDef(state.model).name)} active · ${esc(modelDef(state.owned).name)} owned · <b>Followers</b> ${state.followers}${lastReport && lastReport.rating ? ` · last post rated ${lastReport.rating.score.toFixed(2)} (${esc(lastReport.rating.engine)})` : ''}</p>
       <p><b>Open defects</b> <code>${esc(Object.entries(state.repos).map(([k, r]) => `${k}: ${(r.defects || []).join(', ') || 'none'}${r.broken ? ' (BROKEN)' : ''}`).join(' · ') || 'no repos')}</code></p>
+      <h3>Meters</h3>${meterRows()}
+      <p><b>Heading for</b> ${(() => { const e = M.ending(S, check); return e ? `<code>${esc(e.id)}</code> · ${esc(e.title)}` : 'no ending'; })()}</p>
+      ${state.meterLog.length ? `<p class="dv-dim">recent: ${state.meterLog.slice(-6).reverse().map((c) => `${esc(c.id)} ${c.after > c.before ? '+' : ''}${c.after - c.before}`).join(' · ')}</p>` : ''}
       <p><b>Flags</b> <code>${esc(JSON.stringify(state.flags))}</code></p>
+      <p><b>Derived</b> <code>${esc(Object.entries(S.flags || {}).filter(([, d]) => d.when).map(([f]) => `${f}: ${M.flag(state, S, f, check)}`).join(' · '))}</code></p>
       ${LLM ? `<p><b>Local model</b> ${esc(LLM.settings.backend)} · ${esc(LLM.status)}${LLM.detail ? ' · ' + esc(LLM.detail) : ''}${LLM.last ? `<br><span class="dv-dim">last: ${LLM.last.ms}ms, ${LLM.last.ok ? 'used' : 'fell back'}${LLM.last.text ? ' — ' + esc(LLM.last.text.slice(0, 80)) : ''}</span>` : ''}</p>` : ''}
       <p><b>Queue</b> <code>${esc(JSON.stringify(state.queue.map((q) => ({ at: stamp(q.at), fx: typeof q.effects === 'string' ? q.effects : Object.keys(q.effects) }))))}</code></p>
       <h3>Last decision</h3>${report}`;
@@ -1796,19 +1837,20 @@
     if (a === 'new') { introOpen = false; state = newState(); lastReport = null; save(); render(); return; }
     if (a === 'restart') { state = newState(); lastReport = null; introOpen = true; save(); render(); return; }
     if (a === 'morning') { state.morning = null; save(); render(); return; }
-    if (a === 'end-ok') { state.endSeen = true; save(); navigate(SITES.agent.url); return; }
+    if (a === 'end-ok') { state.endSeen = true; save(); navigate((state.ended && state.ended.open) || SITES.agent.url); return; }
     if (a === 'confirm-yes') { const fn = confirmState.fn; confirmState = null; fn(); return; }
     if (a === 'confirm-no') { confirmState = null; renderOverlay(); }
   }
 
   function devAction(a) {
+    if (a.startsWith('meter:')) { const [, id, d] = a.split(':'); applyEffects({ meters: { [id]: Number(d) } }); save(); render(); return; }
     if (a === 'close') { devOpen = false; renderDev(); return; }
     if (a === 'money+') addTx(100, 'Dev credit');
     if (a === 'money-') addTx(-100, 'Dev debit');
     if (a === 'hour') advance(60);
     if (a === 'sleep') sleep(false);
     if (a === 'posts') for (const p of S.posts) revealPost(p.id);
-    if (a === 'model' && state.owned < S.models.length) { state.owned++; state.model = state.owned; }
+    if (a === 'model' && state.owned < S.models.length) { state.owned++; state.model = state.owned; applyEffects(modelDef(state.owned).effects); }
     if (a === 'followers') changeFollowers(50);
     save();
     render();
@@ -1842,7 +1884,9 @@
   // exposed for debugging and tests
   window.UA = {
     get state() { return state; },
-    sendPrompt, post: postToY, sendMail, deploy, takeDown, sleep: doSleep, navigate,
+    sendPrompt, post: postToY, sendMail, deploy, takeDown, sleep: doSleep, navigate, buyModel,
+    meter: (id) => M.value(state, S, id),
+    heading: () => (M.ending(S, check) || {}).id,
     reset() { state = newState(); introOpen = false; save(); render(); },
     lastReport: () => lastReport,
   };

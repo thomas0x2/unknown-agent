@@ -636,3 +636,11 @@ body.dev-on .y-score { display: inline; }
 .fy-btn.ghost { margin-top: 12px; background: transparent; color: var(--fy-dim, #9a9a9a); border: 1px solid currentColor; font-weight: 500; padding: 6px 14px; }
 .fy-btn.ghost:hover { color: var(--alarm); filter: none; }
 .ov-lines tr.note td { font-size: 13px; color: var(--alarm); text-align: left; font-family: inherit; padding: 5px 0; }
+
+/* ── dev panel: pressure meters ── */
+.dv-meters { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+.dv-meters td { padding: 2px 6px 2px 0; white-space: nowrap; }
+.dv-meters td:nth-child(2) { text-align: right; font-variant-numeric: tabular-nums; }
+.dv-meter { position: relative; display: block; width: 90px; height: 6px; border-radius: 3px; background: rgba(255, 255, 255, 0.12); overflow: hidden; }
+.dv-meter i { position: absolute; inset: 0 auto 0 0; background: var(--note); }
+.dv-meter b { position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: rgba(255, 255, 255, 0.6); }

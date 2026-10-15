@@ -12,7 +12,7 @@ Without a key the game still runs, using an offline keyword matcher for story de
 
 - `npm test` runs the keyword-matcher cases, the Jev decision mapping, the server against a fake TypeSafe API, and the local-model fallback chain.
 - `npm run build` bundles the game into `dist/unknown-agent.html` and the story map into `dist/story-tree.html`, each a single self-contained file.
-- **Story map** (`tools/story-tree.html`, open it directly): an author-only overview generated from `src/story.js`. The graph is split into one section per day. Each section lists what the calendar brings that day (day-gated posts and mail, morning events, rent), then that day's nodes. Every node carries a short code like `D2-B` (Day 2, second beat) for pointing at it when editing; `#D2-B` in the URL opens it. It shows every node as a graph, edges labelled by what triggers them (agent prompt, Y post, email, deploy, new day, delays, model requirements), and every scripted text in full: each branch's reply, nudge and too-weak line, and the emails, Y posts, agent messages and ending screens its effects deliver. An "anytime" card next to the graph lists side content that works at every step (side emails like asking Mom for $20, global prompts with outcomes). Reference sections cover agent's voice (greeting, canned roasts, Gemma persona), events, contacts (personas and fallback replies), conditional, effect-delivered and seeded content, and models. It flags unreachable nodes and branches Jev can't choose.
+- **Story map** (`tools/story-tree.html`, open it directly): an author-only overview generated from `src/story.js`. Reference cards list every pressure meter (what raises it, what lowers it, what it decides), every flag (what sets and reads it), and the endings in priority order. The graph is split into one section per day. Each section lists what the calendar brings that day (day-gated posts and mail, morning events, rent), then that day's nodes. Every node carries a short code like `D2-B` (Day 2, second beat) for pointing at it when editing; `#D2-B` in the URL opens it. It shows every node as a graph, edges labelled by what triggers them (agent prompt, Y post, email, deploy, new day, delays, model requirements), and every scripted text in full: each branch's reply, nudge and too-weak line, and the emails, Y posts, agent messages and ending screens its effects deliver. An "anytime" card next to the graph lists side content that works at every step (side emails like asking Mom for $20, global prompts with outcomes). Reference sections cover agent's voice (greeting, canned roasts, Gemma persona), events, contacts (personas and fallback replies), conditional, effect-delivered and seeded content, and models. It flags unreachable nodes and branches Jev can't choose.
 
 ## The five bookmarks
 
@@ -29,6 +29,15 @@ Without a key the game still runs, using an offline keyword matcher for story de
 - **Check agent's work.** Apps agent builds can ship with defects: bugs (wrong hours, a 500 error on a button) and spec misses (no prices, no dryers). The client's spec is in their post. agent always says it's done, so open the deployed app, compare it to the spec, and prompt a fix for each problem by name ("the menu has no prices"). Vague "fix the bugs" requests fix nothing, and a fix can quietly break something else. Weaker models ship more defects and regress more often (agent-1: 3 defects, 30% regressions; agent-4+: none). Rosa only pays once her site is clean: tell her too early and she emails you about one problem. Spin Cycle earns $0 while any defect is open, and users complain about each one on Y.
 
 - **Upkeep.** A launched app isn't finished. Each night, a live app with a client may open an issue: an **update request** (Rosa's new pumpkin loaf, the laundromat's new washers W7 and W8) or a **breakage** (an expired certificate that turns the bakery site into a red warning page, a full disk, spam reports). The client emails or posts about it. Prompt agent to handle it by name. An open update request still pays; a breakage pays $0 until fixed. Ignore an issue for two nights and the client warns you; at three, they give up. Rosa takes the site back, which ends her $6/night retainer. For Spin Cycle, 40% of users (and income) leave for good, once per ignored issue. Early gigs pay little, so dropping them is a real option: **Take down** on Forkyard stops the hosting fee, and taking the bakery site down ends the retainer too. Keeping Rosa happy until Day 5 gets you a public referral, which sets the flag `rosaReferral` for later chapters.
+
+- **Pressure meters.** Hidden numbers decide which events happen and how the chapter ends. Two are visible anyway: **money** and **Y followers**. The rest: **AI capability** (rises with each model upgrade), **AI misalignment** (agent faking a job, asking it for crimes, the parking-lot answer, stronger models), and relationships with **GeneralAI** (the company behind agent), **Family**, the **Null Collective** (hackers digging into GeneralAI; dev_null is one), **State authorities** and the **Mafia**. Some of what moves them:
+  - Write to Mom and family rises; go quiet until Day 3 and she worries (−10). Ask for money and she only sends it if family is still warm.
+  - GeneralAI likes upgrades and a good survey score, and dislikes crimes and public questions about who runs agent.
+  - Post on Y about who runs agent and the Null Collective emails you; answer them and they want you inside.
+  - Once your crypto income shows up, the State Revenue Department wants it declared within two days; ignoring it costs a lot of standing.
+  - Once Spin Cycle is live and popular, Sal from the Ferris St Laundromat wants the back room kept off the app. Agree (by email, or ask agent) and he pays $100; refuse or ignore him and the mafia turns cold.
+
+- **Endings.** On Day 8 the meters pick one of eight Chapter 1 endings, in priority order: made by the mafia, marked by the mafia, recruited by the Null Collective, audited by the state, agent's "job for you", a GeneralAI partnership, Sunday dinner with family, or just keeping the lights on. The flag `ending` records which one for Chapter 2.
 
 - **Y followers.** You start with 12. Jev rates every post 0–4 against the story's rubric (a Score question; offline, a keyword heuristic): strong posts win followers, bland ones barely move, spam and begging lose some. Posts touching a trend get a bonus, reposts earn nothing, and gains halve after three posts a day. Story moments add followers too (Rosa's shout-out, the Spin Cycle launch). Some branches need followers: promoting Spin Cycle needs 40, the sponsor deal 150. At 300 followers you can turn on creator payouts ($0.05 per follower per night).
 
@@ -128,6 +137,8 @@ nodes: {
 | `money` | `{ amount: 150, memo: 'Who · what' }` | wallet transaction (the memo shows as counterparty · note) |
 | `repo` | `'spin-cycle'` | agent pushes a repo; it must be defined in `repos` |
 | `app` | `{ repo, users, perDay, label? }` | set a deployed app's traffic and nightly income (`label` names it in the morning summary, e.g. a retainer) |
+| `meters` | `{ family: 5, mafia: -10 }` | move pressure meters |
+| `ending` | `true` | play the first ending whose condition holds |
 | `appScale` | `{ repo, factor: 0.6 }` | scale an app's users and income (churn) |
 | `post` | `'rosa_thanks'` or `[...]` | reveal Y posts |
 | `mail` | `'rosa_paid'` or `[...]` | deliver Qmail messages (or file one under Sent if it has `folder: 'sent'`) |
@@ -136,7 +147,14 @@ nodes: {
 | `goto` | `'paid_once'` | move to another node |
 | `end` | `{ title, text }` | show the chapter-end screen |
 
-**Conditions** (`when`): `flag`, `notFlag`, `node`, `repo`, `deployed`, `minDay`, `minMoney`. Each takes a value or an array.
+**Conditions** (`when`): `flag`, `notFlag`, `node`, `repo`, `deployed`, `minDay`, `minMoney`, `meters`. Each takes a value or an array; `meters` takes `{ id: { min, max } }` (inclusive), e.g. `meters: { family: { min: 5 }, mafia: { max: -20 } }`.
+
+**Meters, flags and endings** (`src/meters.js` interprets them):
+- `meters`: `{ id, label, group, min, max, start, about, bands }`. A meter with `source: 'money' | 'followers'` reads the wallet or Y instead of being stored. The effect `meters: { family: 5, mafia: -10 }` moves stored meters, clamped to their range. `relationshipBands` names the ranges of every relationship meter.
+- `flags`: every flag the story uses, with an `about`. A flag with a `when` is derived: true whenever that condition holds, so `flag: 'spinLive'` means "Spin Cycle is deployed right now". Tests fail if the story uses a flag that isn't registered.
+- `endings`: checked in order by the effect `ending: true`; the first whose `when` holds runs its `effects` and shows its `title`/`text` end screen (`open` is where "Read the message" goes). The last one should have no `when`.
+- More hooks that move meters: `models[n].effects` (run on purchase), `agent.onFake` (whenever a too-weak model fakes a job), `contacts[addr].onMail` (whenever the player emails them), and `onFix` on a defect or upkeep issue.
+- The dev panel shows every meter with its band, recent changes, derived flags and the ending the story is heading for, with buttons to nudge each meter.
 
 **Other hooks:**
 - `postActions`: branches with an `intent` that Jev judges against what the player posts on Y. This is a free path for players who think to do it themselves.

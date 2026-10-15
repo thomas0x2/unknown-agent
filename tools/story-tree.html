@@ -16,19 +16,19 @@
 :root {
   --bg: #f4f5f7; --panel: #ffffff; --ink: #14161a; --dim: #626a76; --line: #dfe2e7; --soft: #eef0f3;
   --k-prompt: #14161a; --k-deploy: #d9480f; --k-post: #a67c00; --k-mail: #3b4ad6; --k-day: #7c3aed; --k-timer: #626a76;
-  --sel: #3b4ad6; --warn: #b42318;
+  --sel: #3b4ad6; --warn: #b42318; --k-meter: #0f7b6c;
   --f-ui: 'Instrument Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --f-mono: 'Martian Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --bg: #0f1115; --panel: #171a20; --ink: #e8eaee; --dim: #8b93a0; --line: #2a2f38; --soft: #1e222a;
   --k-prompt: #e8eaee; --k-deploy: #ff8a4c; --k-post: #ffd23f; --k-mail: #8b96ff; --k-day: #b794f6; --k-timer: #8b93a0;
-  --sel: #8b96ff; --warn: #ff8a80; color-scheme: dark;
+  --sel: #8b96ff; --warn: #ff8a80; --k-meter: #4fd1b5; color-scheme: dark;
 } }
 :root[data-theme="dark"] {
   --bg: #0f1115; --panel: #171a20; --ink: #e8eaee; --dim: #8b93a0; --line: #2a2f38; --soft: #1e222a;
   --k-prompt: #e8eaee; --k-deploy: #ff8a4c; --k-post: #ffd23f; --k-mail: #8b96ff; --k-day: #b794f6; --k-timer: #8b93a0;
-  --sel: #8b96ff; --warn: #ff8a80; color-scheme: dark;
+  --sel: #8b96ff; --warn: #ff8a80; --k-meter: #4fd1b5; color-scheme: dark;
 }
 * , *::before, *::after { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -66,6 +66,16 @@ h2 { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacin
 .day-quiet { font-size: 12px; color: var(--dim); font-style: italic; }
 .code { font-family: var(--f-mono); font-size: 11px; font-weight: 500; color: var(--panel); background: var(--ink); border-radius: 4px; padding: 1px 5px; letter-spacing: 0.02em; }
 .chip.upkeep { color: var(--k-deploy); border-style: dotted; }
+.chip.meter { color: var(--k-meter); }
+.chip.meter.down { border-style: dashed; }
+.chip.ending { color: var(--k-day); font-weight: 500; }
+.uses { display: flex; flex-wrap: wrap; gap: 4px; }
+.uses code { font-size: 10.5px; background: var(--soft); border-radius: 4px; padding: 1px 5px; }
+.bands { font-family: var(--f-mono); font-size: 10.5px; color: var(--dim); }
+.mrow { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 4px 12px; border-top: 1px solid var(--line); padding: 9px 0; }
+.mrow:first-of-type { border-top: 0; }
+.mrow > div { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+@media (max-width: 560px) { .mrow { grid-template-columns: minmax(0, 1fr); } }
 .side-lane { width: 300px; position: relative; z-index: 1; }
 .node.anytime { width: 100%; border-style: dashed; border-width: 1.5px; }
 .side-list { display: flex; flex-direction: column; gap: 6px; margin-top: 2px; }
@@ -186,6 +196,11 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     return [fx, ...arr(fx.later).flatMap((l) => deepFx(l.effects, seen)), ...(fx.choose || []).flatMap((o) => deepFx(o.effects, seen))];
   }
   const setsFlag = (fx, f) => deepFx(fx).some((x) => x.set && x.set[f]);
+  // meters by id, and readable conditions/deltas
+  const meterDef = (id) => (S.meters || []).find((m) => m.id === id) || { id, label: id };
+  const range = (c) => [c.min != null ? `≥ ${c.min}` : '', c.max != null ? `≤ ${c.max}` : ''].filter(Boolean).join(' and ');
+  const meterCond = (m) => Object.entries(m).map(([id, c]) => `${meterDef(id).label} ${range(c)}`).join(', ');
+  const meterFx = (m) => Object.entries(m).map(([id, n]) => `${meterDef(id).label} ${n > 0 ? '+' : ''}${n}`).join(', ');
   // node codes: D2-B and friends, so the author can point at a step
   const codeOf = (id) => (S.nodes[id] && S.nodes[id].code) || '';
   const nodeName = (id) => (codeOf(id) ? `${codeOf(id)} ${id}` : id);
@@ -291,7 +306,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     stat(nodeIds.length, 'nodes') + stat(allBranches.length, 'node branches') + stat(advancing.size, 'ways forward') +
     stat((S.global || []).length, 'global branches') + stat((S.postActions || []).length + (S.mailActions || []).length, 'post & mail actions');
   document.getElementById('legend').innerHTML = Object.entries(KIND).map(([k, l]) => `<span class="chip ${k}">${esc(l)}</span>`).join('') +
-    `<span class="chip model">agent-N+ needed</span><span class="chip fake">too weak: botched</span><span class="chip fol">N+ Y followers</span>`;
+    `<span class="chip model">agent-N+ needed</span><span class="chip fake">too weak: botched</span><span class="chip fol">N+ Y followers</span><span class="chip meter">meter change</span>`;
 
   const graph = document.getElementById('graph');
   const sideMail = (S.mailActions || []).filter((a) => !(a.when && a.when.node));
@@ -327,6 +342,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
         ${sideMail.map((a) => `<span class="side-item"><span><span class="chip mail">email</span><code>${esc(a.id)}</code>${a.when && a.when.notFlag ? '<span class="chip timer">once</span>' : ''}</span><span class="side-out">${esc(summary(a.effects))}</span></span>`).join('')}
         ${sidePosts.map((a) => `<span class="side-item"><span><span class="chip post">Y post</span><code>${esc(a.id)}</code></span><span class="side-out">${esc(summary(a.effects))}</span></span>`).join('')}
         ${(S.global || []).filter(hasOutcome).map((b) => `<span class="side-item"><span><span class="chip prompt">agent prompt</span><code>${esc(b.id)}</code></span><span class="side-out">${[b.effects ? summary(b.effects) : '', ...Object.entries(b.atModel || {}).map(([t, alt]) => `on ${model(Number(t))}+: ${summary(alt.effects || {}) || 'different reply'}`)].filter(Boolean).map(esc).join(' · ')}</span></span>`).join('')}
+        ${(S.events || []).filter((ev) => ev.on === 'day' && !(ev.when && ev.when.minDay)).map((ev) => `<span class="side-item"><span><span class="chip day">morning check</span><code>${esc(ev.id || '')}</code></span><span class="side-out">if ${esc(whenText(ev.when || {}))}: ${esc(summary(ev.effects))}</span></span>`).join('')}
         <span class="side-item"><span class="side-out">${(S.global || []).filter((b) => !hasOutcome(b)).length} more agent prompts that only talk back · ${Object.keys(S.contacts || {}).length} contacts answer any other email</span></span>
       </span>
     </button></div>
@@ -419,6 +435,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     if (fx.app) facts.push(`app ${fx.app.repo}${fx.app.label ? ` (“${fx.app.label}”)` : ''}: ${fx.app.users} users, $${fx.app.perDay}/day`);
     if (fx.appScale) facts.push(`${fx.appScale.repo}: users and income ×${fx.appScale.factor}`);
     let html = '';
+    if (fx.meters) html += `<p class="uses">${Object.entries(fx.meters).map(([id, n]) => `<span class="chip meter${n < 0 ? ' down' : ''}">${esc(meterDef(id).label)} ${n > 0 ? '+' : ''}${n}</span>`).join('')}</p>`;
     if (name) html += `<p class="fx"><span class="lbl">bundle</span>${esc(name)}</p>`;
     if (facts.length) html += `<p class="fx"><span class="lbl">effects</span>${esc(facts.join(' · '))}</p>`;
     html += arr(fx.mail).map((id) => mailCard(mailById(id)) || `<p class="warnbox">Missing mail “${esc(id)}”</p>`).join('');
@@ -431,6 +448,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     if (fx.choose) for (const [i, o] of fx.choose.entries()) {
       html += `<div class="olater"><span><span class="chip timer">${o.when ? 'if ' + esc(whenText(o.when)) : i ? 'otherwise' : 'always'}</span></span>${depth < 4 ? outcomeHtml(o.effects, depth + 1) : ''}</div>`;
     }
+    if (fx.ending) html += `<div class="ocard end"><div class="ohead"><span class="chip ending">ending picked by the meters</span></div><p class="otext">The first of the ${(S.endings || []).length} endings whose condition holds plays. See Endings below.</p></div>`;
     if (fx.end) html += `<div class="ocard end"><div class="ohead"><span class="chip day">chapter end screen</span><b>${txt(fx.end.title)}</b></div><p class="otext">${txt(fx.end.text)}</p></div>`;
     for (const l of arr(fx.later)) html += `<div class="olater"><span><span class="chip timer">after ${esc(delayText(l))}</span></span>${depth < 4 ? outcomeHtml(l.effects, depth + 1) : ''}</div>`;
     return html ? `<div class="outcome">${html}</div>` : '';
@@ -448,6 +466,8 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     if (fx.followers) parts.push(`${fx.followers > 0 ? '+' : ''}${fx.followers} followers`);
     if (fx.app) parts.push(`${fx.app.label || fx.app.repo} $${fx.app.perDay}/day`);
     if (fx.appScale) parts.push(`${fx.appScale.repo} ×${fx.appScale.factor}`);
+    if (fx.meters) parts.push(meterFx(fx.meters));
+    if (fx.ending) parts.push('ending (by meters)');
     if (fx.complain) parts.push(`complaint about ${arr(fx.complain).join(', ')}`);
     if (fx.choose) parts.push(fx.choose.map((o, i) => `${o.when ? 'if ' + whenText(o.when) : 'otherwise'}: ${summary(o.effects)}`).join(' / '));
     if (fx.agent) parts.push('agent message');
@@ -462,7 +482,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
   function branchHtml(b, kind, nodeId) {
     const out = gotos(b.effects);
     const go = out.length ? out.map((g) => `<button class="go" data-node="${esc(g.to)}">→ ${esc(nodeName(g.to))}</button>${g.delay ? ` <span class="chip timer">after ${esc(g.delay)}</span>` : ''}`).join(' ') : '<span class="chip timer">stays</span>';
-    const when = b.when ? Object.entries(b.when).map(([k, v]) => `${k}: ${arr(v).join(', ')}`).join(' · ') : '';
+    const when = b.when ? whenText(b.when) : '';
     return `<div class="br">
       <div class="br-head"><span class="chip ${kind}">${esc(KIND[kind])}</span><code>${esc(b.id)}</code>${b.minModel > 1 ? `<span class="chip model">${esc(model(b.minModel))}+</span>` : ''}${b.minFollowers ? `<span class="chip fol">${b.minFollowers}+ followers</span>` : ''}${go}</div>
       ${b.intent ? `<p><span class="lbl">Jev</span>${esc(b.intent)}</p>` : '<p class="warnbox">No intent: Jev can never choose this.</p>'}
@@ -520,10 +540,67 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
 
   // ── reference tables ──
   const ref = [];
+  // who moves and who reads each meter and flag, anywhere in the story
+  const uses = { up: {}, down: {}, read: {}, set: {}, test: {} };
+  const push = (k, id, who) => { (uses[k][id] = uses[k][id] || []).push(who); };
+  function walk(x, owner) {
+    if (!x || typeof x !== 'object') return;
+    if (Array.isArray(x)) { x.forEach((v) => walk(v, owner)); return; }
+    const me = x.id || owner;
+    for (const [k, v] of Object.entries(x)) {
+      if (k === 'meters' && v && typeof v === 'object') {
+        for (const [id, n] of Object.entries(v)) {
+          if (typeof n === 'number') push(n >= 0 ? 'up' : 'down', id, `${me} ${n > 0 ? '+' : ''}${n}`);
+          else push('read', id, `${me} (${range(n)})`);
+        }
+        continue;
+      }
+      if (k === 'set' && v && typeof v === 'object') for (const f of Object.keys(v)) push('set', f, me);
+      if (k === 'flag' || k === 'notFlag') for (const f of arr(v)) push('test', f, k === 'notFlag' ? `${me} (not)` : me);
+      walk(v, me);
+    }
+  }
+  for (const [id, n] of Object.entries(S.nodes)) walk(n, nodeName(id));
+  for (const key of ['global', 'postActions', 'mailActions', 'events', 'endings', 'posts', 'mail']) walk(S[key], key);
+  for (const [n, fx] of Object.entries(S.bundles || {})) walk(fx, `bundle ${n}`);
+  for (const [addr, c] of Object.entries(S.contacts || {})) walk(c, `email to ${c.name || addr}`);
+  for (const m of S.models || []) walk(m.effects, `buy ${m.name}`);
+  for (const [repo, def] of Object.entries(S.repos || {})) walk(def, repo);
+  walk(S.agent, 'agent');
+  for (const [f, d] of Object.entries(S.flags || {})) if (d.when) walk(d.when, `derived ${f}`);
+  if (S.flags && S.flags.ending) push('set', 'ending', 'any ending');
+  const useList = (list) => (list && list.length ? `<span class="uses">${list.map((x) => `<code>${esc(x)}</code>`).join('')}</span>` : '<span class="note">–</span>');
+
+  if (S.meters) {
+    const rows = S.meters.map((m) => {
+      const bands = m.group === 'relationship' ? S.relationshipBands : m.bands;
+      return `<div class="mrow"><div><b>${esc(m.label)}</b><code>${esc(m.id)}</code><span class="bands">${m.source ? `reads ${esc(m.source)}` : `${m.min} … ${m.max}, starts ${m.start}`}</span>
+        ${bands ? `<span class="bands">${bands.map((b) => `${b.min}+ ${esc(b.label)}`).join(' · ')}</span>` : ''}</div>
+        <div><span class="note">${esc(m.about || '')}</span>
+        ${m.source ? '' : `<p class="kw"><span class="lbl">raised by</span></p>${useList(uses.up[m.id])}<p class="kw"><span class="lbl">lowered by</span></p>${useList(uses.down[m.id])}`}
+        <p class="kw"><span class="lbl">decides</span></p>${useList(uses.read[m.id])}</div></div>`;
+    }).join('');
+    ref.push(`<section class="card"><h2>Pressure meters</h2><p class="note">Hidden from the player. Effects move them with <code>meters: { id: delta }</code>; conditions read them with <code>meters: { id: { min, max } }</code>. Money and followers read the wallet and Y.</p>${rows}</section>`);
+  }
+  if (S.endings) {
+    ref.push(`<section class="card"><h2>Endings (checked in order)</h2><p class="note">When an effect says <code>ending: true</code> (the Day 8 <code>chapter_hook</code>), the first ending whose condition holds plays, then its end screen. The flag <code>ending</code> keeps the id for Chapter 2.</p>
+      ${S.endings.map((e, i) => `<div class="br"><div class="br-head"><span class="chip ending">${i + 1}. ${esc(e.title)}</span><code>${esc(e.id)}</code><span class="chip timer">${e.when ? 'if ' + esc(whenText(e.when)) : 'otherwise'}</span></div>
+        <p class="quote">${txt(e.text)}</p>${outcomeHtml(e.effects)}${e.open ? `<p class="kw"><span class="lbl">button opens</span>${esc(e.open)}</p>` : ''}</div>`).join('')}</section>`);
+  }
+  if (S.flags) {
+    const used = new Set([...Object.keys(uses.set), ...Object.keys(uses.test)]);
+    const unregistered = [...used].filter((f) => !S.flags[f]);
+    ref.push(`<section class="card"><h2>Flags</h2><p class="note">Registered in <code>story.flags</code>. Derived flags (with a condition) are worked out live, so “is Spin Cycle still up?” is just <code>flag: 'spinLive'</code>.</p>
+      ${unregistered.length ? `<p class="warnbox">Used but not registered: ${unregistered.map((f) => `<code>${esc(f)}</code>`).join(', ')}</p>` : ''}
+      ${Object.entries(S.flags).map(([f, d]) => `<div class="mrow"><div><code><b>${esc(f)}</b></code>${d.when ? '<span class="chip timer">derived</span>' : ''}</div><div><span class="note">${esc(d.about || '')}</span>
+        ${d.when ? `<p class="kw"><span class="lbl">true while</span>${esc(whenText(d.when))}</p>` : `<p class="kw"><span class="lbl">set by</span></p>${useList(uses.set[f])}`}
+        <p class="kw"><span class="lbl">read by</span></p>${useList(uses.test[f])}</div></div>`).join('')}</section>`);
+  }
   const A = S.agent || {};
   ref.push(`<section class="card"><h2>agent's own voice</h2>
     <p><span class="lbl">greeting</span></p><p class="quote">${txt(A.greeting)}</p>
     <p><span class="lbl">default too-weak reply</span></p><p class="quote">${txt(A.lockedResponse)}</p>
+    ${A.onFake ? `<p><span class="lbl">every time it fakes a job</span></p>${outcomeHtml(A.onFake)}` : ''}
     <p><span class="lbl">canned roasts (no prompt matched, no local model)</span></p><ol class="lines">${(S.placeholders || []).map((x) => `<li>${txt(x)}</li>`).join('')}</ol>
     <p style="margin-top:10px"><span class="lbl">Gemma persona</span></p><p class="quote">${txt(A.llmPersona)}</p>
     <p><span class="lbl">Gemma examples</span></p><ol class="lines">${(A.llmExamples || []).map(([u, a]) => `<li><b>${txt(u)}</b> → ${txt(a)}</li>`).join('')}</ol>
@@ -555,6 +632,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
         <p><span class="lbl">Jev</span>${esc(d.intent)}</p>
         ${d.match ? `<p class="kw"><span class="lbl">offline</span>${esc(kw(d.match))}</p>` : ''}
         <p><span class="lbl">fixed reply</span>${txt(d.fixed)}</p>
+        ${d.onFix ? outcomeHtml(d.onFix) : ''}
         ${typeof d.complaint === 'string' ? `<p><span class="lbl">complaint</span>${txt(d.complaint)}</p>` : postCard(d.complaint)}
       </div>`).join('')}
     </section>`);
@@ -577,6 +655,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
         <p><span class="lbl">Jev</span>${esc(d.intent)}</p>
         ${d.match ? `<p class="kw"><span class="lbl">offline</span>${esc(kw(d.match))}</p>` : ''}
         <p><span class="lbl">fixed reply</span>${txt(d.fixed)}</p>
+        ${d.onFix ? outcomeHtml(d.onFix) : ''}
         ${d.fake ? `<div class="olater"><span><span class="chip fake">below ${esc(model(d.minModel))}: pretends it worked</span></span><p class="quote">${txt(d.fake.response)}</p><p class="note">Nothing actually happens.</p></div>` : ''}
         ${d.thanks ? `<p><span class="lbl">1–3h after the fix</span></p>${said(repo, d.thanks)}` : ''}
       </div>`).join('')}
@@ -584,14 +663,15 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
   }
   const evLabel = (ev) => (ev.on === 'deploy' ? `deploy ${ev.repo}` : ev.on === 'takedown' ? `take down ${ev.repo}` : `every morning${ev.id ? ' · ' + ev.id : ''}`);
   ref.push(`<section class="card"><h2>Events</h2>${(S.events || []).map((ev) => `<div class="br"><div class="br-head"><span class="chip ${ev.on === 'day' ? 'day' : 'deploy'}">${esc(evLabel(ev))}</span></div>
-    ${ev.when ? `<p class="kw"><span class="lbl">when</span>${esc(Object.entries(ev.when).map(([k, v]) => `${k}: ${arr(v).join(', ')}`).join(' · '))}</p>` : ''}${outcomeHtml(ev.effects)}</div>`).join('')}</section>`);
+    ${ev.when ? `<p class="kw"><span class="lbl">when</span>${esc(whenText(ev.when))}</p>` : ''}${outcomeHtml(ev.effects)}</div>`).join('')}</section>`);
   ref.push(`<section class="card"><h2>Contacts who reply</h2>${Object.entries(S.contacts || {}).map(([addr, c]) => `<div class="br">
     <div class="br-head"><span class="chip mail">${esc(c.reply ? delayText(c.reply) : 'never')}${c.reply && c.reply.chance != null ? ` · ${Math.round(c.reply.chance * 100)}%` : ''}</span><b>${txt(c.name)}</b><code>${esc(addr)}</code></div>
     <p><span class="lbl">Gemma persona</span>${txt(c.persona)}</p>
+    ${c.onMail ? `<p><span class="lbl">every email to them</span></p>${outcomeHtml(c.onMail)}` : ''}
     <p><span class="lbl">sign-off</span>${txt(c.sign)}</p>
     <p><span class="lbl">fallback replies</span></p><ol class="lines">${(c.fallback || []).map((x) => `<li>${txt(x)}</li>`).join('')}</ol></div>`).join('')}
     <p class="note">Anyone else never replies, so the player gets one message to them.</p></section>`);
-  function whenText(w) { return Object.entries(w).map(([k, v]) => `${k}: ${arr(v).join(', ')}`).join(' · '); }
+  function whenText(w) { return Object.entries(w).map(([k, v]) => (k === 'meters' ? meterCond(v) : `${k}: ${arr(v).join(', ')}`)).join(' · '); }
   const card = (kind, x) => (kind === 'post' ? postCard(x) : mailCard(x));
   const items = [...(S.posts || []).map((p) => ['post', p]), ...(S.mail || []).map((m) => ['mail', m])];
   ref.push(`<section class="card"><h2>Appears on a condition</h2>${items.filter(([, x]) => x.when).map(([k, x]) => `<div class="br"><p class="kw"><span class="lbl">when</span>${esc(whenText(x.when))} · <code>${esc(x.id)}</code></p>${card(k, x)}</div>`).join('') || '<p class="note">None.</p>'}</section>`);
@@ -602,10 +682,10 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     return `<div class="br"><p class="kw"><code>${esc(x.id)}</code>${by.length ? ` · from ${esc(by.join(', '))}` : ''}</p>${card(k, x)}</div>`;
   }).join('')}</section>`);
   ref.push(`<section class="card"><h2>Seeded at game start</h2>${items.filter(([, x]) => x.at != null).sort((a, b) => b[1].at - a[1].at).map(([k, x]) => `<div class="br"><p class="kw"><code>${esc(x.id)}</code> · ${x.at} min before start</p>${card(k, x)}</div>`).join('')}</section>`);
-  ref.push(`<section class="card"><h2>Models</h2><div class="scroll"><table class="tbl"><thead><tr><th>Model</th><th>Unlock</th><th>Prompt</th><th>Word</th><th>Needed by</th></tr></thead><tbody>${
+  ref.push(`<section class="card"><h2>Models</h2><div class="scroll"><table class="tbl"><thead><tr><th>Model</th><th>Unlock</th><th>Prompt</th><th>Word</th><th>Needed by</th><th>On purchase</th></tr></thead><tbody>${
     (S.models || []).map((m, i) => {
       const need = allBranches.filter((b) => b.minModel === i + 1).map((b) => b.id).concat((S.global || []).filter((b) => b.atModel && b.atModel[i + 1]).map((b) => b.id + ' (bonus)'));
-      return `<tr><td><code>${esc(m.name)}</code></td><td class="num">$${m.price}</td><td class="num">$${m.promptBase.toFixed(2)}</td><td class="num">$${m.perWord.toFixed(2)}</td><td>${need.map((x) => `<code>${esc(x)}</code>`).join(', ') || '–'}</td></tr>`;
+      return `<tr><td><code>${esc(m.name)}</code></td><td class="num">$${m.price}</td><td class="num">$${m.promptBase.toFixed(2)}</td><td class="num">$${m.perWord.toFixed(2)}</td><td>${need.map((x) => `<code>${esc(x)}</code>`).join(', ') || '–'}</td><td>${m.effects ? esc(summary(m.effects)) : '–'}</td></tr>`;
     }).join('')
   }</tbody></table></div><h2 style="margin-top:14px">Economy</h2><p class="note">Start ${'$' + S.start.money} on Day ${S.start.day} at ${S.start.hour}:00 · food $${E.living.amount}/night · hosting $${E.hostingPerDay}/app/night · rent $${E.rent.amount} at the end of Day ${E.rent.day} · each prompt takes ${E.promptHours}h · Jev hit ≥ ${S.decision.hit}, nudge ≥ ${S.decision.partial}</p></section>`);
   const missingCode = nodeIds.filter((n) => !S.nodes[n].code);

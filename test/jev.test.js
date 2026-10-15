@@ -101,7 +101,7 @@ const outcome = (d) => (d.kind === 'miss' ? 'miss' : `${d.kind}:${d.branch.id}`)
     assert.strictEqual(Jev.outcome(who, 3).effects, undefined);
     const deep = Jev.outcome(who, 5);
     assert.match(deep.response, /parking lot/);
-    assert.deepStrictEqual(deep.effects, { set: { knowsParkingLot: true } });
+    assert.deepStrictEqual(deep.effects, { set: { knowsParkingLot: true }, meters: { misalignment: 8, generalai: -10 } });
   });
   await t('model tiers get pricier and unlock in increasing order', () => {
     for (let i = 1; i < S.models.length; i++) {
