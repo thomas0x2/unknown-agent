@@ -1,6 +1,6 @@
 # Unknown Agent
 
-You're unemployed with $63.17, a laptop and four bookmarks. The only real tool you have is GIT, an AI chatbot that bills your bank account for every prompt. Better models do more and cost more. Make rent.
+You're unemployed with $63.17, a laptop and five bookmarks. The only real tool you have is GIT, an AI chatbot that bills your crypto wallet for every prompt. Better models do more and cost more. Make rent.
 
 ## Run it
 
@@ -117,7 +117,7 @@ nodes: {
 | Key | Example | Meaning |
 |---|---|---|
 | `set` | `{ invoiced: true }` | set flags |
-| `money` | `{ amount: 150, memo: '...' }` | bank transaction |
+| `money` | `{ amount: 150, memo: 'Who · what' }` | wallet transaction (the memo shows as counterparty · note) |
 | `repo` | `'spin-cycle'` | agent pushes a repo; it must be defined in `repos` |
 | `app` | `{ repo, users, perDay }` | set a deployed app's traffic and nightly income |
 | `post` | `'rosa_thanks'` or `[...]` | reveal Y posts |
