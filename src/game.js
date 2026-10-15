@@ -155,7 +155,7 @@
       if (!s.mail) { s.mail = []; s.nextMail = 1; seedMail(s); }
       s.awaiting = s.awaiting || {};
       s.extraPosts = s.extraPosts || [];
-      for (const r of Object.values(s.repos)) { r.defects = r.defects || []; r.complained = r.complained || []; }
+      for (const r of Object.values(s.repos)) { r.defects = r.defects || []; r.complained = r.complained || []; r.slots = r.slots || {}; }
       if (s.followers == null) { s.followers = (S.y && S.y.startFollowers) || 0; s.creatorOn = false; s.postsToday = { day: 0, n: 0 }; }
       s.replyDrafts = s.replyDrafts || {};
       // saves from before the wallet
@@ -284,7 +284,7 @@
     for (const r of arr(fx.repo)) {
       const name = typeof r === 'string' ? r : r.name;
       if (state.repos[name]) continue;
-      state.repos[name] = { createdAt: state.t, deployed: false, broken: !!(r && r.broken), defects: [], complained: [] };
+      state.repos[name] = { createdAt: state.t, deployed: false, broken: !!(r && r.broken), defects: [], complained: [], slots: {} };
       rollDefects(name, state.model, (S.repos[name] && S.repos[name].qa && S.repos[name].qa.count) || null);
       if (!onSite('forkyard')) state.unread.forkyard++;
       toast('Forkyard', `New repository: ${name}`, 'forkyard');
@@ -295,7 +295,13 @@
       state.repos[name].fixedAt = state.t;
       toast('Forkyard', `New commit on ${name}: rewrite`, 'forkyard');
     }
-    if (fx.app) state.apps[fx.app.repo] = { users: fx.app.users || 0, perDay: fx.app.perDay || 0 };
+    if (fx.app) state.apps[fx.app.repo] = { users: fx.app.users || 0, perDay: fx.app.perDay || 0, label: fx.app.label };
+    // appScale: { repo, factor } — users drift away (or pile in); income follows
+    if (fx.appScale && state.apps[fx.appScale.repo]) {
+      const a = state.apps[fx.appScale.repo];
+      a.users = Math.round(a.users * fx.appScale.factor);
+      a.perDay = round2(a.perDay * fx.appScale.factor);
+    }
     if (fx.followers) changeFollowers(fx.followers);
     if (fx.fixDefect) fixDefect(fx.fixDefect.repo, fx.fixDefect.id);
     for (const name of arr(fx.complain)) complain(name);
@@ -309,6 +315,7 @@
     if (fx.agent) agentSays(fx.agent);
     for (const l of arr(fx.later)) state.queue.push({ at: laterTime(l), effects: l.effects });
     if (fx.reply) deliverReply(fx.reply);
+    if (fx.thank) clientSays(fx.thank.repo, defectDef(fx.thank.repo, fx.thank.id).thanks);
     if (fx.goto && fx.goto !== state.node) {
       state.node = fx.goto;
       const obj = currentNode().objective;
@@ -320,8 +327,12 @@
 
   // ── QA: defects agent ships, and the loop of checking and fixing them ──
   const qaOf = (repo) => (S.repos[repo] && S.repos[repo].qa) || null;
-  const defectDef = (repo, id) => ((qaOf(repo) || {}).defects || []).find((d) => d.id === id);
+  const upkeepOf = (repo) => (S.repos[repo] && S.repos[repo].upkeep) || null;
+  // QA defects and upkeep issues share one id space per repo
+  const defectDef = (repo, id) => [...((qaOf(repo) || {}).defects || []), ...((upkeepOf(repo) || {}).issues || [])].find((d) => d.id === id);
   const openDefects = (repo) => (state.repos[repo] && state.repos[repo].defects) || [];
+  // what stops an app paying: everything open except update requests
+  const blockingDefects = (repo) => openDefects(repo).filter((id) => (defectDef(repo, id) || {}).kind !== 'update');
 
   // Ship `count[tier]` random defects from the repo's pool, avoiding `exclude`.
   function rollDefects(repo, level, count, exclude) {
@@ -341,10 +352,28 @@
     if (!r || !r.defects.includes(id)) return;
     r.defects = r.defects.filter((x) => x !== id);
     r.complained = (r.complained || []).filter((x) => x !== id);
+    const d = defectDef(repo, id) || {};
+    // an update changes the app for good
+    if (d.after != null && d.slot) r.slots[d.slot] = d.after;
+    if (d.thanks) state.queue.push({ at: laterTime({ hours: [1, 3] }), effects: { thank: { repo, id } } });
     const qa = qaOf(repo);
-    const chance = qa && qa.regress ? qa.regress[Math.min(state.model, qa.regress.length) - 1] || 0 : 0;
+    const isQa = qa && qa.defects.some((x) => x.id === id);
+    const chance = isQa && qa.regress ? qa.regress[Math.min(state.model, qa.regress.length) - 1] || 0 : 0;
     if (Math.random() < chance) rollDefects(repo, state.model, 1, [id]);
     toast('Forkyard', `New commit on ${repo}`, 'forkyard');
+  }
+
+  // The client says something: an email (text) for email clients, a Y post ({ author, handle, text }) for Y ones.
+  function clientSays(repo, msg, subject) {
+    const client = S.repos[repo] && S.repos[repo].client;
+    if (!client || !msg) return;
+    if (client.type === 'email') {
+      const contact = (S.contacts || {})[client.addr] || { name: client.addr, sign: '' };
+      deliverCustom({ from: contact.name, addr: client.addr, subject: subject || client.subject || `RE: ${repo}`, body: `${msg}${contact.sign ? `\n\n${contact.sign}` : ''}` });
+    } else if (client.type === 'y') {
+      state.extraPosts.push({ id: `x${state.nextMail++}`, author: msg.author, handle: msg.handle, text: msg.text, t: state.t, likes: 40 + Math.floor(Math.random() * 120) });
+      if (!onSite('y')) state.unread.y++;
+    }
   }
 
   // The client finds a problem: an email about one defect, or Y posts about each new one.
@@ -357,20 +386,64 @@
     if (def.client.type === 'email') {
       const id = open.find((x) => !r.complained.includes(x)) || open[0];
       if (!r.complained.includes(id)) r.complained.push(id);
-      const contact = (S.contacts || {})[def.client.addr] || { name: def.client.addr, sign: '' };
       const d = defectDef(repo, id);
-      deliverCustom({
-        from: contact.name, addr: def.client.addr, subject: def.client.subject || `RE: ${repo}`,
-        body: `${d.complaint}\n\nTell me when it's fixed and I'll have another look. I pay when it's right.${contact.sign ? `\n\n${contact.sign}` : ''}`,
-      });
+      // QA defects block the first payment; upkeep requests stand on their own
+      const upkeep = d.kind === 'update' || d.kind === 'break';
+      clientSays(repo, upkeep ? d.complaint : `${d.complaint}\n\nTell me when it's fixed and I'll have another look. I pay when it's right.`,
+        upkeep ? def.client.upkeepSubject : def.client.subject);
     } else if (def.client.type === 'y') {
       for (const id of open.filter((x) => !r.complained.includes(x))) {
-        const c = defectDef(repo, id).complaint;
         r.complained.push(id);
-        state.extraPosts.push({ id: `x${state.nextMail++}`, author: c.author, handle: c.handle, text: c.text, t: state.t, likes: 40 + Math.floor(Math.random() * 120) });
-        if (!onSite('y')) state.unread.y++;
+        clientSays(repo, defectDef(repo, id).complaint);
       }
     }
+  }
+
+  /*
+   * Upkeep, once a night: age the open issues (warn, then churn), and maybe open a new one.
+   * Returns notes for the morning summary.
+   */
+  function upkeepNight() {
+    const notes = [];
+    for (const [repo, r] of Object.entries(state.repos)) {
+      const up = upkeepOf(repo);
+      if (!up || !r.deployed || r.broken) continue;
+      const u = (r.upkeep = r.upkeep || { quiet: 0, done: [], open: {}, dropped: false });
+      if (u.dropped || !check(up.when)) continue;
+      const name = (S.repos[repo].preview && S.repos[repo].preview.title) || repo;
+      for (const id of Object.keys(u.open)) {
+        if (!r.defects.includes(id)) { delete u.open[id]; continue; }
+        const nights = ++u.open[id];
+        if (nights === up.warnAfter) { clientSays(repo, up.warn, S.repos[repo].client.upkeepSubject); notes.push(`${name}: still waiting on a fix`); }
+        if (nights === up.churnAfter && up.churn) {
+          applyEffects(up.churn.effects);
+          clientSays(repo, up.churn.message);
+          notes.push(`${name}: ${up.churn.drop ? 'the client gave up on you' : 'users gave up waiting'}`);
+          if (up.churn.drop) {
+            u.dropped = true;
+            r.defects = r.defects.filter((x) => !up.issues.some((i) => i.id === x));
+            u.open = {};
+            break;
+          }
+        }
+      }
+      if (u.dropped || Object.keys(u.open).length) continue;
+      const chance = up.chance[Math.min(u.quiet, up.chance.length - 1)] || 0;
+      const pool = up.issues.filter((i) => !u.done.includes(i.id) && !r.defects.includes(i.id));
+      if (pool.length && Math.random() < chance) {
+        const issue = pool[Math.floor(Math.random() * pool.length)];
+        r.defects.push(issue.id);
+        r.complained.push(issue.id);
+        u.open[issue.id] = 0;
+        u.done.push(issue.id);
+        u.quiet = 0;
+        clientSays(repo, issue.complaint, S.repos[repo].client.upkeepSubject);
+        notes.push(`${name}: ${issue.kind === 'update' ? 'new request from the client' : 'something broke overnight'}`);
+      } else {
+        u.quiet++;
+      }
+    }
+    return notes;
   }
 
   // Fix requests are branches generated from the open defects (cached so identity stays stable).
@@ -383,7 +456,7 @@
         if (!defectBranchCache.has(key)) {
           const d = defectDef(repo, id);
           if (!d) continue;
-          defectBranchCache.set(key, { id: key, intent: d.intent, match: d.match, response: d.fixed, effects: { fixDefect: { repo, id } }, defect: true });
+          defectBranchCache.set(key, { id: key, intent: d.intent, match: d.match, response: d.fixed, effects: { fixDefect: { repo, id } }, minModel: d.minModel, fake: d.fake, defect: true });
         }
         out.push(defectBranchCache.get(key));
       }
@@ -455,7 +528,7 @@
   function fireEvents(kind, extra) {
     for (const ev of S.events || []) {
       if (ev.on !== kind) continue;
-      if (kind === 'deploy' && ev.repo !== extra) continue;
+      if ((kind === 'deploy' || kind === 'takedown') && ev.repo !== extra) continue;
       const key = ev.id || `${ev.on}:${ev.repo || ''}:${S.events.indexOf(ev)}`;
       if (state.fired[key]) continue;
       if (!check(ev.when)) continue;
@@ -498,13 +571,14 @@
     for (const [repo, app] of Object.entries(state.apps)) {
       const r = state.repos[repo];
       if (!r || !r.deployed) continue;
-      if (r.broken || openDefects(repo).length) {
+      const label = app.label || `${repo} earnings (${appVisitors(repo)} users/day)`;
+      if (r.broken || blockingDefects(repo).length) {
         // a broken or buggy app earns nothing, whatever agent promised; users complain about each defect
-        if (app.perDay > 0 || app.users > 0) lines.push([`${repo} earnings (${appVisitors(repo)} users/day)`, 0]);
+        if (app.perDay > 0 || app.users > 0) lines.push([label, 0]);
         if (!r.broken && app.users > 0) complain(repo);
       } else if (app.perDay > 0) {
-        addTx(app.perDay, `Forkyard · ${repo} payout`);
-        lines.push([`${repo} earnings (${app.users} users/day)`, app.perDay]);
+        addTx(app.perDay, app.label ? `${app.label} · ${repo}` : `Forkyard · ${repo} payout`);
+        lines.push([label, app.perDay]);
       }
     }
     const live = Object.values(state.repos).filter((r) => r.deployed).length;
@@ -531,6 +605,7 @@
     }
 
     state.t = wake;
+    if (state.money >= 0) for (const n of upkeepNight()) lines.push([n, null]);
     if (state.money < 0) {
       state.over = rentDue
         ? { title: 'Evicted', text: `Rent bounced. Gary changed the locks on Day ${ended + 1}. Your laptop is in a box on the curb.` }
@@ -759,6 +834,18 @@
     toast('Forkyard', `${repo} is live at ${repo}.forkyard.app`, 'forkyard');
     fireEvents('deploy', repo);
     advance(30);
+    save();
+    render();
+  }
+
+  // Take an app offline: no hosting fee, no income, and whoever relied on it notices.
+  function takeDown(repo) {
+    const r = state.repos[repo];
+    if (!r || !r.deployed || state.over) return;
+    r.deployed = false;
+    toast('Forkyard', `${repo} is offline`, 'forkyard');
+    fireEvents('takedown', repo);
+    advance(10);
     save();
     render();
   }
@@ -1185,7 +1272,7 @@
             <h2>Deployment</h2>
             <p>${repoStatus(repoName)}</p>
             ${r.deployed
-              ? `<dl><dt>Visitors / day</dt><dd>${appVisitors(repoName)}</dd><dt>Earnings / day</dt><dd>${fmtMoney(appEarnings(repoName))}</dd><dt>Hosting / day</dt><dd>${fmtMoney(E.hostingPerDay)}</dd></dl>`
+              ? `<dl><dt>Visitors / day</dt><dd>${appVisitors(repoName)}</dd><dt>Earnings / day</dt><dd>${fmtMoney(appEarnings(repoName))}</dd><dt>Hosting / day</dt><dd>${fmtMoney(E.hostingPerDay)}</dd></dl><button class="fy-btn ghost" data-takedown="${esc(repoName)}">Take down</button>`
               : `<p class="fy-note">Hosting costs ${fmtMoney(E.hostingPerDay)}/day, billed nightly.</p><button class="fy-btn" data-deploy="${esc(repoName)}">Deploy</button>`}
           </div>
         </div>
@@ -1211,10 +1298,10 @@
     if (!app) return 0;
     const r = state.repos[repo];
     if (r && r.broken) return Math.round(app.users * 0.04);
-    return openDefects(repo).length ? Math.round(app.users * 0.5) : app.users;
+    return blockingDefects(repo).length ? Math.round(app.users * 0.5) : app.users;
   }
-  // nobody pays for an app that's broken or still has defects
-  const appEarnings = (repo) => (state.repos[repo] && (state.repos[repo].broken || openDefects(repo).length) ? 0 : (state.apps[repo] || {}).perDay || 0);
+  // nobody pays for an app that's broken or still has defects (pending update requests still pay)
+  const appEarnings = (repo) => (state.repos[repo] && (state.repos[repo].broken || blockingDefects(repo).length) ? 0 : (state.apps[repo] || {}).perDay || 0);
 
   function pageApp(repo) {
     const r = state.repos[repo];
@@ -1223,8 +1310,14 @@
       return `<div class="err"><h1>404: NOT_FOUND</h1><p>Nothing is deployed at <code>${esc(repo)}.forkyard.app</code>.</p></div>`;
     }
     if (r.broken && def.broken) return `<div class="pv-host">${def.broken.preview}</div>`;
-    const slots = Object.assign({}, def.preview.slots || {});
-    for (const id of openDefects(repo)) { const d = defectDef(repo, id); if (d && d.slot) slots[d.slot] = d.html; }
+    // base slots, then updates already shipped, then whatever is broken right now
+    const slots = Object.assign({}, def.preview.slots || {}, r.slots || {});
+    for (const id of openDefects(repo)) {
+      const d = defectDef(repo, id);
+      if (!d || d.kind === 'update') continue;   // a pending request doesn't change the page
+      if (d.page) return `<div class="pv-host">${tpl(d.page)}</div>`;
+      if (d.slot) slots[d.slot] = d.html;
+    }
     const html = def.preview.html.replace(/\{\{(\w+)\}\}/g, (m, k) => (k in slots ? tpl(slots[k]) : ''));
     return `<div class="pv-host">${html}</div>`;
   }
@@ -1488,7 +1581,9 @@
       html = `<div class="ov-card ov-small ov-morning">
         <p class="ov-eyebrow">${m.passedOut ? 'You passed out at your desk' : 'You slept'}</p>
         <h2>Day ${m.day} · ${DAYS[(m.day - 1) % 7]} ${clock(E.wakeHour * 60)}</h2>
-        <table class="ov-lines">${m.lines.map(([l, v]) => `<tr><td>${esc(l)}</td><td class="${v < 0 ? 'neg' : 'pos'}">${v >= 0 ? '+' : ''}${fmtMoney(v)}</td></tr>`).join('')}
+        <table class="ov-lines">${m.lines.map(([l, v]) => (v == null
+          ? `<tr class="note"><td colspan="2">${esc(l)}</td></tr>`
+          : `<tr><td>${esc(l)}</td><td class="${v < 0 ? 'neg' : 'pos'}">${v >= 0 ? '+' : ''}${fmtMoney(v)}</td></tr>`)).join('')}
         <tr class="tot"><td>Balance</td><td>${fmtMoney(m.balance)}</td></tr></table>
         <div class="ov-actions"><button class="btn primary" data-ov="morning">Get up</button></div></div>`;
     } else if (state.ended && !state.endSeen) {
@@ -1565,7 +1660,7 @@
 
   function bind() {
     document.addEventListener('click', (e) => {
-      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model],[data-reply],[data-mail-discard],[data-copy-addr],[data-wallet],[data-y-creator]');
+      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-takedown],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model],[data-reply],[data-mail-discard],[data-copy-addr],[data-wallet],[data-y-creator]');
       if (!t) return;
       if (t.dataset.close) { e.stopPropagation(); closeTab(Number(t.dataset.close)); return; }
       if (t.dataset.nav) { e.preventDefault(); navigate(t.dataset.nav); return; }
@@ -1573,6 +1668,11 @@
       if (t.hasAttribute('data-newtab')) { navigate('newtab', true); return; }
       if (t.dataset.like) { const id = t.dataset.like; state.liked[id] = !state.liked[id]; save(); render(); return; }
       if (t.dataset.deploy) { deploy(t.dataset.deploy); return; }
+      if (t.dataset.takedown) {
+        const repo = t.dataset.takedown;
+        askConfirm(`Take ${repo} offline? Hosting stops, and so does anything it earns.`, 'Take down', () => takeDown(repo));
+        return;
+      }
       if (t.dataset.buyModel) {
         const level = Number(t.dataset.buyModel);
         const m = modelDef(level);
@@ -1742,7 +1842,7 @@
   // exposed for debugging and tests
   window.UA = {
     get state() { return state; },
-    sendPrompt, post: postToY, sendMail, deploy, sleep: doSleep, navigate,
+    sendPrompt, post: postToY, sendMail, deploy, takeDown, sleep: doSleep, navigate,
     reset() { state = newState(); introOpen = false; save(); render(); },
     lastReport: () => lastReport,
   };

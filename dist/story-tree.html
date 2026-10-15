@@ -5,7 +5,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Martian+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: a working document for the story author. Header with counts and legend, the node graph
-   (layers top to bottom, edges labelled by trigger), a detail panel for the selected node, then reference tables. */
+   (one section per day, nodes top to bottom, edges labelled by trigger), a detail panel for the
+   selected node, then reference tables. */
 :root {
   --bg: #f4f5f7; --panel: #ffffff; --ink: #14161a; --dim: #626a76; --line: #dfe2e7; --soft: #eef0f3;
   --k-prompt: #14161a; --k-deploy: #d9480f; --k-post: #a67c00; --k-mail: #3b4ad6; --k-day: #7c3aed; --k-timer: #626a76;
@@ -46,7 +47,19 @@ h2 { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacin
 .work { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 16px; align-items: start; }
 .graph-wrap { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: auto; min-width: 0; }
 .graph { position: relative; padding: 24px 40px 32px; min-width: max-content; display: flex; gap: 72px; align-items: flex-start; justify-content: center; }
-.chain { display: flex; flex-direction: column; align-items: center; }
+.chain { display: flex; flex-direction: column; align-items: center; min-width: 620px; }
+.day-head { align-self: stretch; position: relative; z-index: 1; display: flex; flex-direction: column; gap: 6px; border-top: 2px solid var(--k-day); padding: 8px 0 22px; }
+.day-head:first-child { padding-top: 6px; }
+.day-head.unsched { border-top-color: var(--warn); border-top-style: dashed; }
+.day-title { display: flex; align-items: baseline; gap: 8px; }
+.day-title b { font-size: 15px; }
+.day-title span { font-family: var(--f-mono); font-size: 11px; color: var(--dim); }
+.day-items { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--dim); max-width: 620px; }
+.day-items > span { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.day-text, .day-title, .day-quiet { background: var(--panel); padding-right: 6px; }
+.day-quiet { font-size: 12px; color: var(--dim); font-style: italic; }
+.code { font-family: var(--f-mono); font-size: 11px; font-weight: 500; color: var(--panel); background: var(--ink); border-radius: 4px; padding: 1px 5px; letter-spacing: 0.02em; }
+.chip.upkeep { color: var(--k-deploy); border-style: dotted; }
 .side-lane { width: 300px; position: relative; z-index: 1; }
 .node.anytime { width: 100%; border-style: dashed; border-width: 1.5px; }
 .side-list { display: flex; flex-direction: column; gap: 6px; margin-top: 2px; }
@@ -63,6 +76,7 @@ h2 { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacin
 .node.end { border-bottom: 3px solid var(--k-day); }
 .node-id { font-family: var(--f-mono); font-size: 12px; font-weight: 500; display: flex; justify-content: space-between; gap: 6px; }
 .node-id span { color: var(--dim); font-weight: 400; }
+.node-id .nm { display: flex; align-items: center; gap: 6px; color: var(--ink); font-weight: 500; }
 .node-obj { font-size: 13px; line-height: 1.35; }
 .node-meta { display: flex; flex-wrap: wrap; gap: 4px; }
 .node-meta .chip { font-size: 10px; }
@@ -70,9 +84,10 @@ h2 { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacin
 .edges path { fill: none; stroke: var(--dim); stroke-width: 1.4; }
 .edges path.back { stroke-dasharray: 5 4; }
 .edges marker path { fill: var(--dim); stroke: none; }
-.elabel { position: absolute; z-index: 2; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 3px; pointer-events: none; }
+.elabel { position: absolute; z-index: 2; transform: translate(-50%, 0); display: flex; flex-direction: column; align-items: center; gap: 3px; pointer-events: none; }
 .detail { position: sticky; top: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; max-height: calc(100vh - 32px); overflow: auto; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
-.detail h3 { margin: 0; font-family: var(--f-mono); font-size: 16px; font-weight: 500; }
+.detail h3 { margin: 0; font-family: var(--f-mono); font-size: 16px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+.detail h3 .code { font-size: 13px; padding: 2px 7px; }
 .detail .obj { margin: 0; font-weight: 600; }
 .detail .scene { margin: 0; color: var(--dim); font-size: 13px; }
 .br { border-top: 1px solid var(--line); padding-top: 10px; display: flex; flex-direction: column; gap: 5px; }
@@ -335,8 +350,11 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       },
     ],
 
+    // Story nodes. `code` is a short handle for talking about a node (D2-B = Day 2, second beat);
+    // `day` is the day the player usually gets there, which is how the story map groups them.
     nodes: {
       broke: {
+        code: 'D1-A', day: 1,
         objective: 'Find a way to make some money.',
         scene: "Day one of being broke. On Y, @crumbandcoin (the Crumb & Coin bakery, owned by Rosa) is offering $150 for a simple website with their menu and hours.",
         branches: [
@@ -362,6 +380,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       },
 
       site_built: {
+        code: 'D1-B', day: 1,
         objective: 'Put the bakery site online.',
         scene: "The agent has built the Crumb & Coin bakery website and pushed it to Forkyard. It is not deployed yet; the player has to press Deploy on Forkyard themselves.",
         branches: [
@@ -371,6 +390,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       },
 
       site_live: {
+        code: 'D1-C', day: 1,
         objective: 'Tell Rosa the site is live and get paid.',
         scene: "The Crumb & Coin website is live at crumb-and-coin.forkyard.app. Rosa (rosa@crumbandcoin.com) does not know yet and has not paid the $150.",
         branches: [
@@ -392,6 +412,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       },
 
       paid_once: {
+        code: 'D1-D', day: 1,
         objective: 'Rent ($300) is due at the end of Day 7. Find income that keeps coming in.',
         scene: "Rosa paid $150. Rent of $300 is due at the end of Day 7. Y is full of complaints that nobody knows which machines work at the Ferris St laundromat.",
         branches: [
@@ -427,12 +448,14 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       },
 
       app_built: {
+        code: 'D2-A', day: 2,
         objective: 'Deploy Spin Cycle.',
         scene: "The agent has built Spin Cycle, a machine-status tracker for the Ferris St laundromat. It is not deployed yet; the player has to press Deploy on Forkyard.",
         branches: [cantDeploy('spin-cycle'), research('research', "Built, not deployed. You've done this exact thing before. I believe in you. Barely.")],
       },
 
       app_live: {
+        code: 'D2-B', day: 2,
         objective: 'Spin Cycle is live and nobody knows it exists. Get people using it.',
         scene: "Spin Cycle is live at spin-cycle.forkyard.app, but nobody knows it exists.",
         branches: [
@@ -456,6 +479,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       },
 
       app_users: {
+        code: 'D2-C', day: 2,
         objective: 'Hundreds of people use Spin Cycle every day. It earns almost nothing.',
         scene: "Hundreds of people use Spin Cycle every day, but it earns almost nothing.",
         branches: [
@@ -503,6 +527,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       },
 
       monetized: {
+        code: 'D3-A', day: 3,
         objective: 'Spin Cycle is monetized. It only pays while it works. Survive until rent clears at the end of Day 7.',
         scene: "Spin Cycle earns money every night. The player just has to survive until rent clears at the end of Day 7.",
         branches: [
@@ -511,6 +536,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       },
 
       chapter_end: {
+        code: 'D8-A', day: 8,
         objective: 'To be continued.',
         scene: "Chapter 1 is over.",
         branches: [],
@@ -528,10 +554,19 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       },
       rosa_pays: {
         money: { amount: 150, memo: 'Crumb & Coin Bakery · website' },
+        set: { rosaPaid: true },
+        // small, but it keeps coming as long as the site stays up and up to date (see repos.upkeep)
+        app: { repo: 'crumb-and-coin', users: 0, perDay: 6, label: 'Crumb & Coin retainer' },
         post: 'rosa_thanks',
         mail: 'rosa_paid',
         followers: 15,   // Rosa's shout-out
         goto: 'paid_once',
+      },
+      // Rosa takes her business elsewhere: an ignored request, or the site was taken down.
+      rosa_leaves: {
+        set: { rosaChurned: true },
+        app: { repo: 'crumb-and-coin', users: 0, perDay: 0, label: 'Crumb & Coin retainer' },
+        mail: 'rosa_goodbye',
       },
       spin_marketed: {
         set: { marketed: true },
@@ -678,17 +713,25 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       },
       {
         id: 'rosa_paid', from: 'Rosa (Crumb & Coin)', addr: 'rosa@crumbandcoin.com', subject: 'Paid! Thank you',
-        body: "The site looks wonderful. My nephew is jealous. $150 is on its way to your wallet. My nephew set up our crypto, so I hope it arrives.\n\nCome by for a cardamom bun, on the house.\n\nRosa",
+        body: "The site looks wonderful. My nephew is jealous. $150 is on its way to your wallet. My nephew set up our crypto, so I hope it arrives.\n\nCould you keep looking after it? I'll send $6 a day while it stays up. Menus change, you know how it is.\n\nCome by for a cardamom bun, on the house.\n\nRosa",
       },
       { id: 'gary_tomorrow', when: { minDay: 6 }, from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'Tomorrow night', body: "Rent comes out tomorrow night. $300. Make sure it's there.\n\nGary" },
+      {
+        id: 'rosa_goodbye', from: 'Rosa (Crumb & Coin)', addr: 'rosa@crumbandcoin.com', subject: 'The website',
+        body: "I've asked my nephew to take the website back over. He's home for the holidays and he works for buns. I'll stop the $6.\n\nNo hard feelings. The cardamom bun offer stands.\n\nRosa",
+      },
       { id: 'gary_no', from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'RE: Rent', body: 'No.\n\nGary\n\nSent from my phone' },
       { id: 'mom_money', from: 'Mom', addr: 'mom@qmail.com', subject: 'RE: Are you eating?', body: "I knew it. I sent you $20 to that crypto wallet of yours. I hope it worked. Don't tell your father. Buy vegetables.\n\nLove, Mom" },
     ],
 
-    // Engine events: deploys and new days.
+    // Engine events: deploys, take-downs and new days.
     events: [
       { on: 'deploy', repo: 'crumb-and-coin', when: { node: 'site_built' }, effects: { goto: 'site_live' } },
       { on: 'deploy', repo: 'spin-cycle', when: { node: 'app_built' }, effects: { goto: 'app_live', app: { repo: 'spin-cycle', users: 3, perDay: 0 } } },
+      // Taking the bakery site down ends the retainer. Rosa notices within hours.
+      { on: 'takedown', repo: 'crumb-and-coin', when: { flag: 'rosaPaid', notFlag: 'rosaChurned' }, effects: { later: { hours: [2, 5], effects: 'rosa_leaves' } } },
+      // Kept Rosa happy for a few days: she talks you up. A seed for later chapters (flag rosaReferral).
+      { on: 'day', id: 'rosa_referral', when: { flag: 'rosaPaid', notFlag: 'rosaChurned', minDay: 5 }, effects: { post: 'rosa_referral', set: { rosaReferral: true }, followers: 10 } },
       {
         on: 'day',
         id: 'chapter_hook',
@@ -710,18 +753,74 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
         snippet:
           '<header class="hero">\n  <h1>Crumb &amp; Coin</h1>\n  <p>Sourdough, buns, and coffee on Alder St since 2009.</p>\n</header>\n<section id="hours">\n  <h2>Hours</h2>\n  <p>Tue–Sat 7:00–15:00</p>\n</section>',
         // the client checks the work by email (see rosa_checks)
-        client: { type: 'email', addr: 'rosa@crumbandcoin.com', subject: 'RE: Your new website' },
+        client: { type: 'email', addr: 'rosa@crumbandcoin.com', subject: 'RE: Your new website', upkeepSubject: 'The website' },
         preview: {
           title: 'Crumb & Coin Bakery',
           // {{slot}}s are filled with `slots` unless an open defect replaces them
-          html: '<div class="pv pv-bakery">{{hero}}{{photo}}<div class="pv-cols"><div><h2>Menu</h2>{{menu}}</div><div><h2>Hours</h2>{{hours}}<h2>Find us</h2>{{address}}</div></div></div>',
+          html: '<div class="pv pv-bakery">{{notice}}{{hero}}{{photo}}<div class="pv-cols"><div><h2>Menu</h2>{{menu}}</div><div><h2>Hours</h2>{{hours}}<h2>Find us</h2>{{address}}</div></div></div>',
           slots: {
             hero: '<h1>Crumb &amp; Coin</h1><p class="pv-sub">Sourdough, buns and coffee on Alder St since 2009.</p>',
             photo: '<div class="pv-photo" role="img" aria-label="A sourdough loaf"><span class="pv-loaf"></span></div>',
             menu: '<ul><li>Country sourdough <b>$7</b></li><li>Cardamom bun <b>$4</b></li><li>Rye loaf <b>$8</b></li><li>Drip coffee <b>$2</b></li></ul>',
             hours: '<p>Tue–Sat · 7:00–15:00<br>Sun · 8:00–13:00<br>Mon · closed</p>',
             address: '<p>418 Alder St</p>',
+            notice: '',
           },
+        },
+        // After launch. Each night a live, working app whose `when` holds may open one issue from
+        // `issues`; `chance` is indexed by quiet nights since the last one (the last value repeats).
+        // Issues work like QA defects: the client complains, agent fixes them on request.
+        //   kind 'update': a request. The app keeps paying, and the fix makes `after` the slot's content.
+        //   kind 'break':  the app pays $0 until fixed. `html` replaces a slot, or `page` the whole page.
+        // An issue open for `warnAfter` nights gets `warn`; at `churnAfter` the client gives up and
+        // `churn.effects` run once per issue (`churn.drop` ends upkeep for good).
+        upkeep: {
+          when: { flag: 'rosaPaid', notFlag: 'rosaChurned' },
+          chance: [0, 0.5, 0.8, 1],
+          warnAfter: 2,
+          churnAfter: 3,
+          warn: "Still waiting on this one. If it's not sorted by tomorrow I'll ask my nephew to take the site back. Sorry, the shop comes first.",
+          churn: { effects: 'rosa_leaves', drop: true },
+          issues: [
+            {
+              id: 'pumpkin', kind: 'update', slot: 'menu',
+              after: '<ul><li>Country sourdough <b>$7</b></li><li>Cardamom bun <b>$4</b></li><li>Rye loaf <b>$8</b></li><li>Pumpkin loaf <b>$9</b> <i class="pv-new">new</i></li><li>Drip coffee <b>$2</b></li></ul>',
+              intent: 'The player asks the agent to add the new pumpkin loaf to the bakery menu.',
+              match: { all: [['pumpkin']] },
+              fixed: 'Added "Pumpkin loaf $9" to the menu with a little "new" tag. Redeployed.',
+              complaint: 'New item! Pumpkin loaf, $9, from this week. Can you put it on the menu? People ask for it and the website acts like it does not exist.',
+              thanks: 'Pumpkin loaf is on the site and we sold out by noon. Thank you!',
+            },
+            {
+              id: 'holiday_hours', kind: 'update', slot: 'notice',
+              after: '<p class="pv-notice">Closed this Sunday for a family wedding. Back Tuesday at 7:00.</p>',
+              intent: 'The player asks the agent to add a notice to the bakery site that the bakery is closed this Sunday for a wedding.',
+              match: { all: [['sunday', 'closed', 'closure', 'wedding', 'notice', 'holiday', 'announcement', 'banner']] },
+              fixed: 'Added a notice at the top: "Closed this Sunday for a family wedding." Redeployed.',
+              complaint: 'We are closed this Sunday, my cousin is getting married. Can you put a notice at the top of the site so nobody stands outside in the cold?',
+              thanks: 'Saw the notice, perfect. My cousin says thank you too, for some reason.',
+            },
+            {
+              id: 'ssl', kind: 'break',
+              page: '<div class="pv-ssl"><div class="pv-ssl-icon">!</div><h1>Your connection is not private</h1><p>Attackers might be trying to steal your information from <b>crumb-and-coin.forkyard.app</b> (for example, passwords, messages, or sourdough).</p><p class="pv-ssl-code">NET::ERR_CERT_DATE_INVALID</p><button class="pv-btn" type="button">Back to safety</button></div>',
+              minModel: 2,
+              fake: { response: 'Renewed the certificate. The padlock is green. Fort Knox would be jealous.' },
+              intent: 'The player says the bakery site shows a security, privacy or certificate warning, and asks the agent to fix it.',
+              match: { all: [['certificate', 'cert', 'ssl', 'https', 'tls', 'secure', 'security', 'warning', 'private', 'privacy', 'padlock']] },
+              fixed: 'The certificate expired and nothing was set to renew it. Renewed it and turned on auto-renew. Redeployed.',
+              complaint: 'Customers say the website shows a big red warning that it is "not private" and they are scared to open it. Are we being hacked??',
+              thanks: 'The scary red page is gone. My nephew says "nice". That is high praise from him.',
+            },
+            {
+              id: 'menu_404', kind: 'break', slot: 'menu',
+              html: '<p class="pv-err-inline">GET /menu.json 404 (Not Found)</p>',
+              intent: 'The player says the menu on the bakery site is gone or shows a 404 error, and asks the agent to fix it.',
+              match: { all: [['menu'], ['404', 'missing', 'gone', 'empty', 'error', 'broken', 'disappeared', 'back', 'fix', 'restore']] },
+              fixed: 'The menu file got renamed in the last deploy. Pointed the page at the right file. The menu is back. Redeployed.',
+              complaint: 'The menu disappeared from the website! It just says "404". A lady asked if we stopped selling bread.',
+              thanks: 'Menu is back. Bread is still for sale. Thank you!',
+            },
+          ],
         },
         // What can go wrong when agent builds it. `count` is how many defects ship, by model tier
         // (agent-1 … agent-5); `regress` is the chance that a fix quietly breaks something else.
@@ -792,6 +891,54 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
             '</div><button class="pv-btn" type="button">Report brokn</button><p class="pv-foot">© 2019 Lorem Ipsum Laundry Co. · Powered by agent-1</p></div>',
         },
         client: { type: 'y' },
+        upkeep: {
+          when: { flag: 'marketed' },
+          chance: [0, 0.4, 0.7, 1],
+          warnAfter: 2,
+          churnAfter: 3,
+          warn: { author: 'Marco', handle: 'marcoeats', text: 'day 3 of spin cycle being half useless. starting to think @{handle} built it and moved to a farm' },
+          // users give up on it: a lasting hit, once per ignored issue
+          churn: {
+            effects: { appScale: { repo: 'spin-cycle', factor: 0.6 } },
+            message: { author: 'wash day woes', handle: 'washday_woes', text: 'spin cycle has not been touched in days. half the group chat went back to guessing. it was nice while it lasted @{handle}' },
+          },
+          issues: [
+            {
+              id: 'renumbered', kind: 'update', slot: 'washers',
+              after: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8'].map((m, i) => `<div class="pv-m ${[1, 3, 6, 7].includes(i) ? 'ok' : 'bad'}"><b>${m}</b><span>${[1, 3, 6, 7].includes(i) ? 'working' : 'broken'}</span></div>`).join(''),
+              intent: 'The player asks the agent to add the new washers W7 and W8 to Spin Cycle.',
+              match: { all: [['w7', 'w8', 'new washers', 'new machines', 'eight', 'renumber', 'renumbered', 'more washers']] },
+              fixed: 'Added W7 and W8 to the washer grid. Redeployed.',
+              complaint: { author: 'Ferris St Laundromat', handle: 'ferrisstlaundry', text: 'We added two new washers, W7 and W8! @{handle} your Spin Cycle app does not show them yet.' },
+              thanks: { author: 'Ferris St Laundromat', handle: 'ferrisstlaundry', text: 'W7 and W8 are on Spin Cycle now. Thanks @{handle}. They are the only ones that never break. For now.' },
+            },
+            {
+              id: 'notify_me', kind: 'update', slot: 'report',
+              after: '<button class="pv-btn ok" type="button">Report a machine</button> <button class="pv-btn" type="button">Notify me when a dryer frees up</button>',
+              intent: 'The player asks the agent to add a "notify me" button or alerts to Spin Cycle for when a dryer frees up.',
+              match: { all: [['notify', 'notification', 'notifications', 'alert', 'alerts', 'ping', 'remind', 'reminder']] },
+              fixed: 'Added a "Notify me when a dryer frees up" button. It sends a push notification. Redeployed.',
+              complaint: { author: 'wash day woes', handle: 'washday_woes', text: 'feature request for spin cycle @{handle}: a button that pings me when a dryer frees up. I would sit in my car and wait. happily' },
+              thanks: { author: 'wash day woes', handle: 'washday_woes', text: 'spin cycle pinged me that D4 was free and I got there FIRST. @{handle} I would die for you' },
+            },
+            {
+              id: 'disk_full', kind: 'break', slot: 'report',
+              html: '<button class="pv-btn ok" type="button">Report a machine</button><p class="pv-err-inline">Error: ENOSPC: no space left on device, write \'reports.json\'</p>',
+              intent: 'The player says reporting on Spin Cycle fails with a "no space left" or disk error, and asks the agent to fix it.',
+              match: { all: [['space', 'disk', 'enospc', 'storage', 'full', 'report', 'reports', 'reporting', 'button', 'error']] },
+              fixed: 'Every report ever was kept in one file and it filled the disk. Archived the old ones and added log rotation. Redeployed.',
+              complaint: { author: 'Marco', handle: 'marcoeats', text: 'spin cycle report button says "no space left on device". the laundromat has more space than this app @{handle}' },
+            },
+            {
+              id: 'spam_reports', kind: 'break', slot: 'washers',
+              html: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6'].map((m) => `<div class="pv-m bad"><b>${m}</b><span>broken ×412</span></div>`).join(''),
+              intent: 'The player says someone is spamming fake reports on Spin Cycle and asks the agent to stop it, for example with a rate limit.',
+              match: { all: [['spam', 'spammer', 'spamming', 'spammed', 'bot', 'bots', 'rate limit', 'flood', 'fake reports', 'troll']] },
+              fixed: 'Added a rate limit: one report per machine per person every ten minutes. Cleared the spam. Redeployed.',
+              complaint: { author: 'Dev', handle: 'devnull_42', text: 'someone is spamming spin cycle. every washer "reported broken" 412 times in an hour. rate limit your stuff @{handle}' },
+            },
+          ],
+        },
         qa: {
           count: [3, 2, 1, 0, 0],
           regress: [0.3, 0.2, 0.1, 0.05, 0],
@@ -830,12 +977,13 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
         },
         preview: {
           title: 'Spin Cycle — Ferris St',
-          html: '<div class="pv pv-spin"><h1>Spin Cycle</h1><p class="pv-sub">Ferris St Laundromat · machine status, reported by people standing in front of them</p>{{updated}}<h2 class="pv-h">Washers</h2><div class="pv-grid">{{washers}}</div>{{dryers}}{{report}}</div>',
+          html: '<div class="pv pv-spin">{{notice}}<h1>Spin Cycle</h1><p class="pv-sub">Ferris St Laundromat · machine status, reported by people standing in front of them</p>{{updated}}<h2 class="pv-h">Washers</h2><div class="pv-grid">{{washers}}</div>{{dryers}}{{report}}</div>',
           slots: {
             updated: '<p class="pv-upd">Last report 4 minutes ago · 31 reports today</p>',
             washers: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6'].map((m, i) => `<div class="pv-m ${[1, 3, 4].includes(i) ? 'ok' : 'bad'}"><b>${m}</b><span>${[1, 3, 4].includes(i) ? 'working' : 'broken'}</span></div>`).join(''),
             dryers: '<h2 class="pv-h">Dryers</h2><div class="pv-grid">' + ['D1', 'D2', 'D3', 'D4', 'D5', 'D6'].map((m, i) => `<div class="pv-m ${[0, 3].includes(i) ? 'ok' : 'bad'}"><b>${m}</b><span>${[0, 3].includes(i) ? 'working' : 'broken'}</span></div>`).join('') + '</div>',
             report: '<button class="pv-btn ok" type="button">Report a machine</button>',
+            notice: '',
           },
         },
       },
@@ -869,6 +1017,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
         text: "Tried @{handle}'s laundromat app. Every machine says \"undefined\" and the report button turns the page white. I miss guessing.",
       },
       { id: 'spin_broken_2', author: 'Marco', handle: 'marcoeats', when: { flag: ['marketed', 'spinBroken'] }, likes: 240, text: 'spin-cycle.forkyard.app told me W3 was working. W3 has been on fire since 2019.' },
+      { id: 'rosa_referral', author: 'Crumb & Coin Bakery', handle: 'crumbandcoin', likes: 58, text: 'Small business owners on Alder St: @{handle} built our website and actually answers when something breaks. The hardware store and the tailor are next, I told them.' },
       { id: 'suds_deal', author: 'Suds & Duds Detergent', handle: 'sudsandduds', verified: true, likes: 77, text: 'Proud to sponsor Spin Cycle, keeping Ferris St informed one load at a time.' },
     ],
   };
@@ -897,8 +1046,23 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     const out = [];
     if (fx.goto) out.push({ to: fx.goto, delay: delay || null });
     for (const l of arr(fx.later)) out.push(...gotos(l.effects, delayText(l)));
+    for (const o of fx.choose || []) out.push(...gotos(o.effects, delay));
     return out;
   }
+  // every effect object reachable from fx: through bundles, delays and choices
+  function deepFx(fx, seen) {
+    fx = bundle(fx);
+    seen = seen || [];
+    if (seen.includes(fx)) return [];
+    seen.push(fx);
+    return [fx, ...arr(fx.later).flatMap((l) => deepFx(l.effects, seen)), ...(fx.choose || []).flatMap((o) => deepFx(o.effects, seen))];
+  }
+  const setsFlag = (fx, f) => deepFx(fx).some((x) => x.set && x.set[f]);
+  // node codes: D2-B and friends, so the author can point at a step
+  const codeOf = (id) => (S.nodes[id] && S.nodes[id].code) || '';
+  const nodeName = (id) => (codeOf(id) ? `${codeOf(id)} ${id}` : id);
+  const byCode = {};
+  for (const [id, n] of Object.entries(S.nodes)) if (n.code) (byCode[n.code.toLowerCase()] = byCode[n.code.toLowerCase()] || []).push(id);
 
   // ── build the graph ──
   const nodeIds = Object.keys(S.nodes);
@@ -907,14 +1071,14 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
 
   for (const id of nodeIds) {
     for (const b of S.nodes[id].branches || []) {
-      for (const g of gotos(b.effects)) add(id, g.to, { kind: 'prompt', id: b.id, minModel: b.minModel, minFollowers: b.minFollowers, delay: g.delay });
+      for (const g of gotos(b.effects)) add(id, g.to, { kind: 'prompt', id: b.id, minModel: b.minModel, minFollowers: b.minFollowers, delay: g.delay, fx: b.effects });
       // on a too-weak model the branch may still go somewhere, with a botched result
-      if (b.fake) for (const g of gotos(b.fake.effects)) add(id, g.to, { kind: 'prompt', id: b.id, below: b.minModel, delay: g.delay });
-      for (const [tier, alt] of Object.entries(b.atModel || {})) for (const g of gotos(alt.effects)) add(id, g.to, { kind: 'prompt', id: b.id, minModel: Number(tier), delay: g.delay });
+      if (b.fake) for (const g of gotos(b.fake.effects)) add(id, g.to, { kind: 'prompt', id: b.id, below: b.minModel, delay: g.delay, fx: b.fake.effects });
+      for (const [tier, alt] of Object.entries(b.atModel || {})) for (const g of gotos(alt.effects)) add(id, g.to, { kind: 'prompt', id: b.id, minModel: Number(tier), delay: g.delay, fx: alt.effects });
     }
   }
   for (const [kind, list] of [['post', S.postActions || []], ['mail', S.mailActions || []]]) {
-    for (const a of list) for (const n of arr(a.when && a.when.node)) for (const g of gotos(a.effects)) add(n, g.to, { kind, id: a.id, minFollowers: a.minFollowers, delay: g.delay });
+    for (const a of list) for (const n of arr(a.when && a.when.node)) for (const g of gotos(a.effects)) add(n, g.to, { kind, id: a.id, minFollowers: a.minFollowers, delay: g.delay, fx: a.effects });
   }
   // nodes reached by branches that set a flag (used to place day events without a node condition)
   const flagNodes = {};
@@ -952,6 +1116,39 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
   const layers = [];
   for (const n of nodeIds) (layers[depth[n]] = layers[depth[n]] || []).push(n);
 
+  // Day sections: each day holds its nodes, in story order, plus what the calendar brings that day.
+  const E = S.economy;
+  const WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const without = (w, k) => Object.fromEntries(Object.entries(w || {}).filter(([x]) => x !== k));
+  function dayItems(d) {
+    const items = [];
+    for (const p of S.posts || []) if (p.when && p.when.minDay === d) items.push({ chip: 'post', label: `Y post ${p.id}`, cond: without(p.when, 'minDay'), text: clip(p.text, 90) });
+    for (const m of S.mail || []) if (m.when && m.when.minDay === d) items.push({ chip: 'mail', label: `email ${m.id}`, cond: without(m.when, 'minDay'), text: `“${m.subject}” from ${m.from}` });
+    for (const ev of S.events || []) if (ev.on === 'day' && ev.when && ev.when.minDay === d) items.push({ chip: 'day', label: `event ${ev.id || ''}`, cond: without(ev.when, 'minDay'), text: summary(ev.effects) });
+    if (E.rent && E.rent.day === d) items.push({ chip: 'model', label: 'end of day', text: `rent $${E.rent.amount} (auto-pay to ${E.rent.payee}). Below $0 = evicted.` });
+    return items;
+  }
+  const nodeDays = nodeIds.map((n) => S.nodes[n].day).filter((d) => d != null);
+  const calendarDays = [...(S.posts || []), ...(S.mail || []), ...(S.events || [])].map((x) => x.when && x.when.minDay).filter(Boolean).concat(E.rent ? [E.rent.day] : []);
+  const firstDay = Math.min(S.start.day, ...nodeDays), lastDay = Math.max(...nodeDays, ...calendarDays);
+  const sections = [];
+  for (let d = firstDay; d <= lastDay; d++) {
+    sections.push({ day: d, rows: layers.map((ids) => (ids || []).filter((id) => S.nodes[id].day === d)).filter((r) => r.length) });
+  }
+  const unscheduled = layers.map((ids) => (ids || []).filter((id) => S.nodes[id].day == null)).filter((r) => r.length);
+  if (unscheduled.length) sections.push({ day: null, rows: unscheduled });
+  const rows = sections.flatMap((sec) => sec.rows);
+  const rowOf = {};
+  rows.forEach((r, i) => r.forEach((id) => { rowOf[id] = i; }));
+
+  // where upkeep starts: the node whose way in sets the flag the repo's upkeep waits for
+  const upkeepAt = {};
+  for (const [repo, def] of Object.entries(S.repos || {})) {
+    const f = def.upkeep && def.upkeep.when && arr(def.upkeep.when.flag)[0];
+    if (!f) continue;
+    for (const e of edges) if (e.fx && setsFlag(e.fx, f)) (upkeepAt[e.to] = upkeepAt[e.to] || new Set()).add(repo);
+  }
+
   const endNodes = new Set();
   for (const ev of S.events || []) for (const g of gotos(ev.effects)) if (bundle(ev.effects).end) endNodes.add(g.to);
   for (const n of nodeIds) if (!(S.nodes[n].branches || []).length) endNodes.add(n);
@@ -972,23 +1169,29 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
   const sideMail = (S.mailActions || []).filter((a) => !(a.when && a.when.node));
   const sidePosts = (S.postActions || []).filter((a) => !(a.when && a.when.node));
   function renderGraph() {
-  graph.innerHTML = `<div class="chain">` + layers.map((ids) => `<div class="layer">${ids.map((id) => {
+  // (items are worked out at render time: they use helpers defined further down)
+  const dayHead = (sec) => (sec.items = sec.day == null ? [] : dayItems(sec.day), sec.day == null
+    ? `<div class="day-head unsched"><div class="day-title"><b>Unscheduled</b><span>nodes without a day</span></div></div>`
+    : `<div class="day-head" id="day-${sec.day}"><div class="day-title"><b>Day ${sec.day}</b><span>${WEEK[(sec.day - 1) % 7]}</span></div>${sec.items.length
+      ? `<div class="day-items">${sec.items.map((it) => `<span><span class="chip ${it.chip}">${esc(it.label)}</span>${Object.keys(it.cond || {}).length ? `<span class="chip timer">if ${esc(whenText(it.cond))}</span>` : ''}<span class="day-text">${esc(it.text)}</span></span>`).join('')}</div>`
+      : sec.rows.length ? '' : '<span class="day-quiet">Nothing scheduled. Apps earn, upkeep rolls, the player keeps going.</span>'}</div>`);
+  graph.innerHTML = `<div class="chain">` + sections.map((sec) => dayHead(sec) + sec.rows.map((ids) => `<div class="layer">${ids.map((id) => {
     const n = S.nodes[id];
     const out = edges.filter((e) => e.from === id);
     const stays = (n.branches || []).filter((b) => !out.some((e) => e.kind === 'prompt' && e.id === b.id)).length;
     const models = [...new Set((n.branches || []).filter((b) => b.minModel > 1).map((b) => b.minModel))];
     const fols = [...new Set([...(n.branches || []), ...(S.postActions || []).filter((a) => arr(a.when && a.when.node).includes(id))].filter((b) => b.minFollowers).map((b) => b.minFollowers))];
     return `<button class="node${id === S.start.node ? ' start' : ''}${endNodes.has(id) ? ' end' : ''}" data-node="${esc(id)}" id="n-${esc(id)}">
-      <span class="node-id">${esc(id)}<span>${id === S.start.node ? 'start' : endNodes.has(id) ? 'end' : unreachable.includes(id) ? 'unreachable' : ''}</span></span>
+      <span class="node-id"><span class="nm">${codeOf(id) ? `<span class="code">${esc(codeOf(id))}</span>` : ''}${esc(id)}</span><span>${id === S.start.node ? 'start' : endNodes.has(id) ? 'end' : unreachable.includes(id) ? 'unreachable' : ''}</span></span>
       <span class="node-obj">${esc(n.objective || '')}</span>
-      <span class="node-meta"><span class="chip prompt">${(n.branches || []).length} branches</span>${stays ? `<span class="chip timer">${stays} stay</span>` : ''}${models.map((m) => `<span class="chip model">${esc(model(m))}+</span>`).join('')}${fols.map((f) => `<span class="chip fol">${f}+ followers</span>`).join('')}</span>
+      <span class="node-meta"><span class="chip prompt">${(n.branches || []).length} branches</span>${stays ? `<span class="chip timer">${stays} stay</span>` : ''}${models.map((m) => `<span class="chip model">${esc(model(m))}+</span>`).join('')}${fols.map((f) => `<span class="chip fol">${f}+ followers</span>`).join('')}${[...(upkeepAt[id] || [])].map((r) => `<span class="chip upkeep">upkeep: ${esc(r)}</span>`).join('')}</span>
       ${(() => {
         // branches that change something without moving the story on
         const quiet = (n.branches || []).filter((b) => hasOutcome(b) && !out.some((e) => e.kind === 'prompt' && e.id === b.id));
         return quiet.length ? `<span class="node-outs">${quiet.map((b) => `<span><code>${esc(b.id)}</code>: ${esc(summary(b.effects || {}))}</span>`).join('')}</span>` : '';
       })()}
     </button>`;
-  }).join('')}</div>`).join('') + `</div>
+  }).join('')}</div>`).join('')).join('') + `</div>
     <div class="side-lane"><button class="node anytime" data-node="anytime" id="n-anytime">
       <span class="node-id">anytime<span>every step</span></span>
       <span class="node-obj">Side content that works at any point in the story.</span>
@@ -1013,8 +1216,8 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
   function spaceLayers() {
     const layerEls = graph.querySelectorAll('.layer');
     layerEls.forEach((el, i) => {
-      const most = Math.max(0, ...Object.values(pairs).filter((l) => depth[l[0].from] === i && depth[l[0].to] > i).map((l) => l.length));
-      el.style.marginBottom = i === layerEls.length - 1 ? '0' : `${Math.max(64, most * 24 + 40)}px`;
+      const most = Math.max(0, ...Object.values(pairs).filter((l) => rowOf[l[0].from] === i && rowOf[l[0].to] > i).map((l) => l.length));
+      el.style.marginBottom = i === layerEls.length - 1 ? '0' : `${Math.max(48, most * 24 + 34)}px`;
     });
   }
 
@@ -1035,7 +1238,8 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       if (by > ay + 4) {
         const c = (by - ay) / 2;
         d = `M${ax},${ay} C${ax},${ay + c} ${bx},${by - c} ${bx},${by}`;
-        mx = (ax + bx) / 2; my = (ay + by) / 2;
+        // labels sit just under the source card, in the gap before the next row or day header
+        mx = ax; my = ay + 12;
       } else {
         back = true;
         const rx = Math.max(a.right, b.right) - box.left + 40;
@@ -1084,7 +1288,8 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     if (fx.fix) facts.push(`fixes ${arr(fx.fix).join(', ')}`);
     if (fx.followers) facts.push(`${fx.followers > 0 ? '+' : ''}${fx.followers} Y followers`);
     if (fx.fixDefect) facts.push(`fixes defect ${fx.fixDefect.id} in ${fx.fixDefect.repo}`);
-    if (fx.app) facts.push(`app ${fx.app.repo}: ${fx.app.users} users, $${fx.app.perDay}/day`);
+    if (fx.app) facts.push(`app ${fx.app.repo}${fx.app.label ? ` (“${fx.app.label}”)` : ''}: ${fx.app.users} users, $${fx.app.perDay}/day`);
+    if (fx.appScale) facts.push(`${fx.appScale.repo}: users and income ×${fx.appScale.factor}`);
     let html = '';
     if (name) html += `<p class="fx"><span class="lbl">bundle</span>${esc(name)}</p>`;
     if (facts.length) html += `<p class="fx"><span class="lbl">effects</span>${esc(facts.join(' · '))}</p>`;
@@ -1113,6 +1318,8 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     if (fx.repo) parts.push(`repo ${arr(fx.repo).map((r) => (typeof r === 'string' ? r : `${r.name}${r.broken ? ' (broken)' : ''}`)).join(', ')}`);
     if (fx.fix) parts.push(`fixes ${arr(fx.fix).join(', ')}`);
     if (fx.followers) parts.push(`${fx.followers > 0 ? '+' : ''}${fx.followers} followers`);
+    if (fx.app) parts.push(`${fx.app.label || fx.app.repo} $${fx.app.perDay}/day`);
+    if (fx.appScale) parts.push(`${fx.appScale.repo} ×${fx.appScale.factor}`);
     if (fx.complain) parts.push(`complaint about ${arr(fx.complain).join(', ')}`);
     if (fx.choose) parts.push(fx.choose.map((o, i) => `${o.when ? 'if ' + whenText(o.when) : 'otherwise'}: ${summary(o.effects)}`).join(' / '));
     if (fx.agent) parts.push('agent message');
@@ -1126,7 +1333,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
 
   function branchHtml(b, kind, nodeId) {
     const out = gotos(b.effects);
-    const go = out.length ? out.map((g) => `<button class="go" data-node="${esc(g.to)}">→ ${esc(g.to)}</button>${g.delay ? ` <span class="chip timer">after ${esc(g.delay)}</span>` : ''}`).join(' ') : '<span class="chip timer">stays</span>';
+    const go = out.length ? out.map((g) => `<button class="go" data-node="${esc(g.to)}">→ ${esc(nodeName(g.to))}</button>${g.delay ? ` <span class="chip timer">after ${esc(g.delay)}</span>` : ''}`).join(' ') : '<span class="chip timer">stays</span>';
     const when = b.when ? Object.entries(b.when).map(([k, v]) => `${k}: ${arr(v).join(', ')}`).join(' · ') : '';
     return `<div class="br">
       <div class="br-head"><span class="chip ${kind}">${esc(KIND[kind])}</span><code>${esc(b.id)}</code>${b.minModel > 1 ? `<span class="chip model">${esc(model(b.minModel))}+</span>` : ''}${b.minFollowers ? `<span class="chip fol">${b.minFollowers}+ followers</span>` : ''}${go}</div>
@@ -1146,6 +1353,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
   }
   function select(id) {
     if (id === 'anytime') return selectAnytime();
+    if (!S.nodes[id] && byCode[String(id).toLowerCase()]) id = byCode[String(id).toLowerCase()][0];
     if (!S.nodes[id]) id = S.start.node;
     graph.querySelectorAll('.node').forEach((el) => el.classList.toggle('sel', el.dataset.node === id));
     const n = S.nodes[id];
@@ -1154,17 +1362,19 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     const evs = edges.filter((e) => e.from === id && (e.kind === 'deploy' || e.kind === 'day'));
     const incoming = edges.filter((e) => e.to === id);
     document.getElementById('detail').innerHTML = `
-      <h3>${esc(id)}</h3>
+      <h3>${n.code ? `<span class="code">${esc(n.code)}</span>` : ''}${esc(id)}</h3>
+      <p class="kw">${n.day != null ? `Day ${n.day} · ` : '<span class="warnbox">no day</span> '}point at it as <code>${esc(n.code || id)}</code> when editing</p>
       <p class="obj">${esc(n.objective || '')}</p>
       ${n.scene ? `<p class="scene"><span class="lbl">scene for Jev</span>${esc(n.scene)}</p>` : '<p class="warnbox">No scene: Jev gets only the objective.</p>'}
-      <p class="note">Reached from: ${incoming.length ? incoming.map((e) => `<button class="go" data-node="${esc(e.from)}">${esc(e.from)}</button> (${esc(e.kind === 'deploy' || e.kind === 'day' ? e.id : KIND[e.kind] + ' ' + e.id)})`).join(', ') : 'game start'}</p>
+      <p class="note">Reached from: ${incoming.length ? incoming.map((e) => `<button class="go" data-node="${esc(e.from)}">${esc(nodeName(e.from))}</button> (${esc(e.kind === 'deploy' || e.kind === 'day' ? e.id : KIND[e.kind] + ' ' + e.id)})`).join(', ') : 'game start'}</p>
+      ${upkeepAt[id] ? `<p class="note">From here on, ${[...upkeepAt[id]].map((r) => `<code>${esc(r)}</code>`).join(', ')} need upkeep every night (see Upkeep below).</p>` : ''}
       <h2>Branches (${(n.branches || []).length})</h2>
       ${(n.branches || []).map((b) => branchHtml(b, 'prompt', id)).join('') || '<p class="note">None. This node is an ending.</p>'}
       ${posts.length ? `<h2>Y posts here</h2>${posts.map((b) => branchHtml(b, 'post', id)).join('')}` : ''}
       ${mails.length ? `<h2>Emails here</h2>${mails.map((b) => branchHtml(b, 'mail', id)).join('')}` : ''}
-      ${evs.length ? `<h2>Events</h2>${evs.map((e) => `<div class="br"><div class="br-head"><span class="chip ${e.kind}">${esc(e.id)}</span><button class="go" data-node="${esc(e.to)}">→ ${esc(e.to)}</button></div>${outcomeHtml(e.fx)}</div>`).join('')}` : ''}
+      ${evs.length ? `<h2>Events</h2>${evs.map((e) => `<div class="br"><div class="br-head"><span class="chip ${e.kind}">${esc(e.id)}</span><button class="go" data-node="${esc(e.to)}">→ ${esc(nodeName(e.to))}</button></div>${outcomeHtml(e.fx)}</div>`).join('')}` : ''}
       <p class="note">Side emails and ${(S.global || []).length} global prompts also work here: <button class="go" data-node="anytime">anytime</button>.</p>`;
-    try { history.replaceState(null, '', '#' + id); } catch (e) { /* not allowed in some frames */ }
+    try { history.replaceState(null, '', '#' + (n.code || id)); } catch (e) { /* not allowed in some frames */ }
   }
 
   function selectAnytime() {
@@ -1221,7 +1431,31 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       </div>`).join('')}
     </section>`);
   }
-  ref.push(`<section class="card"><h2>Events</h2>${(S.events || []).map((ev) => `<div class="br"><div class="br-head"><span class="chip ${ev.on === 'deploy' ? 'deploy' : 'day'}">${esc(ev.on === 'deploy' ? `deploy ${ev.repo}` : `every morning${ev.id ? ' · ' + ev.id : ''}`)}</span></div>
+  const said = (repo, m) => (!m ? '' : typeof m === 'string' ? `<p class="quote">${txt(m)}</p>` : postCard(m));
+  for (const [repo, def] of Object.entries(S.repos || {})) {
+    const up = def.upkeep;
+    if (!up) continue;
+    const c = def.client || {};
+    const starts = Object.entries(upkeepAt).filter(([, set]) => set.has(repo)).map(([n]) => n);
+    ref.push(`<section class="card"><h2>Upkeep: ${esc(repo)}</h2>
+      <p class="note">Runs every night while the app is live, working, and <code>${esc(whenText(up.when))}</code>${starts.length ? ` (from ${starts.map((n) => `<button class="go" data-node="${esc(n)}">${esc(nodeName(n))}</button>`).join(', ')})` : ''}. At most one issue open at a time. Chance of a new one by quiet nights: ${up.chance.map((p, i) => `${i}: ${Math.round(p * 100)}%`).join(', ')}${up.chance.length > 1 ? ' (last repeats)' : ''}. Each issue comes once.</p>
+      <p class="note"><b>update</b>: the app keeps paying; the fix changes the page for good. <b>break</b>: the app pays $0 until fixed. Client talks by ${c.type === 'email' ? `email (${esc(c.addr)}, subject “${esc(c.upkeepSubject || c.subject)}”)` : 'Y posts'}.</p>
+      <p><span class="lbl">after ${up.warnAfter} nights open</span></p>${said(repo, up.warn)}
+      <p><span class="lbl">after ${up.churnAfter} nights open</span>${up.churn && up.churn.drop ? 'the client leaves for good, upkeep stops' : 'runs once per ignored issue; the issue stays open'}</p>
+      ${up.churn ? outcomeHtml(up.churn.effects) + said(repo, up.churn.message) : ''}
+      ${up.issues.map((d) => `<div class="br">
+        <div class="br-head"><span class="chip ${d.kind === 'break' ? 'model' : 'fol'}">${esc(d.kind)}</span><code>${esc(d.id)}</code><span class="kw">${d.page ? 'replaces the whole page' : `slot: ${esc(d.slot)}`}</span>${d.minModel > 1 ? `<span class="chip model">${esc(model(d.minModel))}+</span>` : ''}</div>
+        <p><span class="lbl">client</span></p>${said(repo, d.complaint)}
+        <p><span class="lbl">Jev</span>${esc(d.intent)}</p>
+        ${d.match ? `<p class="kw"><span class="lbl">offline</span>${esc(kw(d.match))}</p>` : ''}
+        <p><span class="lbl">fixed reply</span>${txt(d.fixed)}</p>
+        ${d.fake ? `<div class="olater"><span><span class="chip fake">below ${esc(model(d.minModel))}: pretends it worked</span></span><p class="quote">${txt(d.fake.response)}</p><p class="note">Nothing actually happens.</p></div>` : ''}
+        ${d.thanks ? `<p><span class="lbl">1–3h after the fix</span></p>${said(repo, d.thanks)}` : ''}
+      </div>`).join('')}
+    </section>`);
+  }
+  const evLabel = (ev) => (ev.on === 'deploy' ? `deploy ${ev.repo}` : ev.on === 'takedown' ? `take down ${ev.repo}` : `every morning${ev.id ? ' · ' + ev.id : ''}`);
+  ref.push(`<section class="card"><h2>Events</h2>${(S.events || []).map((ev) => `<div class="br"><div class="br-head"><span class="chip ${ev.on === 'day' ? 'day' : 'deploy'}">${esc(evLabel(ev))}</span></div>
     ${ev.when ? `<p class="kw"><span class="lbl">when</span>${esc(Object.entries(ev.when).map(([k, v]) => `${k}: ${arr(v).join(', ')}`).join(' · '))}</p>` : ''}${outcomeHtml(ev.effects)}</div>`).join('')}</section>`);
   ref.push(`<section class="card"><h2>Contacts who reply</h2>${Object.entries(S.contacts || {}).map(([addr, c]) => `<div class="br">
     <div class="br-head"><span class="chip mail">${esc(c.reply ? delayText(c.reply) : 'never')}${c.reply && c.reply.chance != null ? ` · ${Math.round(c.reply.chance * 100)}%` : ''}</span><b>${txt(c.name)}</b><code>${esc(addr)}</code></div>
@@ -1240,13 +1474,15 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     return `<div class="br"><p class="kw"><code>${esc(x.id)}</code>${by.length ? ` · from ${esc(by.join(', '))}` : ''}</p>${card(k, x)}</div>`;
   }).join('')}</section>`);
   ref.push(`<section class="card"><h2>Seeded at game start</h2>${items.filter(([, x]) => x.at != null).sort((a, b) => b[1].at - a[1].at).map(([k, x]) => `<div class="br"><p class="kw"><code>${esc(x.id)}</code> · ${x.at} min before start</p>${card(k, x)}</div>`).join('')}</section>`);
-  const E = S.economy;
   ref.push(`<section class="card"><h2>Models</h2><div class="scroll"><table class="tbl"><thead><tr><th>Model</th><th>Unlock</th><th>Prompt</th><th>Word</th><th>Needed by</th></tr></thead><tbody>${
     (S.models || []).map((m, i) => {
       const need = allBranches.filter((b) => b.minModel === i + 1).map((b) => b.id).concat((S.global || []).filter((b) => b.atModel && b.atModel[i + 1]).map((b) => b.id + ' (bonus)'));
       return `<tr><td><code>${esc(m.name)}</code></td><td class="num">$${m.price}</td><td class="num">$${m.promptBase.toFixed(2)}</td><td class="num">$${m.perWord.toFixed(2)}</td><td>${need.map((x) => `<code>${esc(x)}</code>`).join(', ') || '–'}</td></tr>`;
     }).join('')
   }</tbody></table></div><h2 style="margin-top:14px">Economy</h2><p class="note">Start ${'$' + S.start.money} on Day ${S.start.day} at ${S.start.hour}:00 · food $${E.living.amount}/night · hosting $${E.hostingPerDay}/app/night · rent $${E.rent.amount} at the end of Day ${E.rent.day} · each prompt takes ${E.promptHours}h · Jev hit ≥ ${S.decision.hit}, nudge ≥ ${S.decision.partial}</p></section>`);
+  const missingCode = nodeIds.filter((n) => !S.nodes[n].code);
+  const dupCodes = Object.entries(byCode).filter(([, ids]) => ids.length > 1);
+  if (missingCode.length || dupCodes.length) ref.unshift(`<section class="card"><h2>Node codes</h2>${missingCode.length ? `<p class="warnbox">No code: ${missingCode.map((n) => `<code>${esc(n)}</code>`).join(', ')}</p>` : ''}${dupCodes.map(([c, ids]) => `<p class="warnbox">Code ${esc(c.toUpperCase())} used by ${ids.map((n) => `<code>${esc(n)}</code>`).join(', ')}</p>`).join('')}</section>`);
   if (unreachable.length) ref.unshift(`<section class="card"><h2>Problems</h2><p class="warnbox">Unreachable nodes: ${unreachable.map((n) => `<code>${esc(n)}</code>`).join(', ')}</p></section>`);
   document.getElementById('ref').innerHTML = ref.join('');
 

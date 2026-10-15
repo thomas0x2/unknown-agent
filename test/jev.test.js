@@ -76,6 +76,25 @@ const outcome = (d) => (d.kind === 'miss' ? 'miss' : `${d.kind}:${d.branch.id}`)
     assert.ok(trendy <= 4);
   });
 
+  await t('upkeep issues: well-formed, and a gated fix is faked on a weak model', () => {
+    for (const [repo, def] of Object.entries(S.repos)) {
+      if (!def.upkeep) continue;
+      const up = def.upkeep;
+      assert.ok(up.churnAfter > up.warnAfter, `${repo}: warn before churn`);
+      for (const i of up.issues) {
+        assert.ok(['update', 'break'].includes(i.kind), `${repo}/${i.id}: kind`);
+        assert.ok(i.intent && i.match && i.fixed && i.complaint, `${repo}/${i.id}: needs intent, match, fixed, complaint`);
+        if (i.kind === 'update') assert.ok(i.after != null && i.slot, `${repo}/${i.id}: an update needs slot + after`);
+        if (i.kind === 'break') assert.ok(i.page || (i.slot && i.html != null), `${repo}/${i.id}: a break needs page or slot + html`);
+        if (i.slot) assert.ok(def.preview.html.includes(`{{${i.slot}}}`), `${repo}/${i.id}: slot {{${i.slot}}} not in the preview`);
+      }
+    }
+    const ssl = S.repos['crumb-and-coin'].upkeep.issues.find((i) => i.id === 'ssl');
+    const branch = { id: 'defect:crumb-and-coin:ssl', minModel: ssl.minModel, fake: ssl.fake, effects: {} };
+    assert.strictEqual(Jev.gate({ kind: 'hit', branch }, 1).kind, 'fake');
+    assert.strictEqual(Jev.gate({ kind: 'hit', branch }, 2).kind, 'hit');
+  });
+
   await t('atModel swaps in a better response and effects on stronger tiers', () => {
     const who = find('broke', 'who');
     assert.match(Jev.outcome(who, 3).response, /context window/);

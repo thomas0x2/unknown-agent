@@ -12,7 +12,7 @@ Without a key the game still runs, using an offline keyword matcher for story de
 
 - `npm test` runs the keyword-matcher cases, the Jev decision mapping, the server against a fake TypeSafe API, and the local-model fallback chain.
 - `npm run build` bundles the game into `dist/unknown-agent.html` and the story map into `dist/story-tree.html`, each a single self-contained file.
-- **Story map** (`tools/story-tree.html`, open it directly): an author-only overview generated from `src/story.js`. It shows every node as a graph, edges labelled by what triggers them (agent prompt, Y post, email, deploy, new day, delays, model requirements), and every scripted text in full: each branch's reply, nudge and too-weak line, and the emails, Y posts, agent messages and ending screens its effects deliver. An "anytime" card next to the graph lists side content that works at every step (side emails like asking Mom for $20, global prompts with outcomes). Reference sections cover agent's voice (greeting, canned roasts, Gemma persona), events, contacts (personas and fallback replies), conditional, effect-delivered and seeded content, and models. It flags unreachable nodes and branches Jev can't choose.
+- **Story map** (`tools/story-tree.html`, open it directly): an author-only overview generated from `src/story.js`. The graph is split into one section per day. Each section lists what the calendar brings that day (day-gated posts and mail, morning events, rent), then that day's nodes. Every node carries a short code like `D2-B` (Day 2, second beat) for pointing at it when editing; `#D2-B` in the URL opens it. It shows every node as a graph, edges labelled by what triggers them (agent prompt, Y post, email, deploy, new day, delays, model requirements), and every scripted text in full: each branch's reply, nudge and too-weak line, and the emails, Y posts, agent messages and ending screens its effects deliver. An "anytime" card next to the graph lists side content that works at every step (side emails like asking Mom for $20, global prompts with outcomes). Reference sections cover agent's voice (greeting, canned roasts, Gemma persona), events, contacts (personas and fallback replies), conditional, effect-delivered and seeded content, and models. It flags unreachable nodes and branches Jev can't choose.
 
 ## The five bookmarks
 
@@ -27,6 +27,8 @@ Without a key the game still runs, using an offline keyword matcher for story de
 ## Core loop
 
 - **Check agent's work.** Apps agent builds can ship with defects: bugs (wrong hours, a 500 error on a button) and spec misses (no prices, no dryers). The client's spec is in their post. agent always says it's done, so open the deployed app, compare it to the spec, and prompt a fix for each problem by name ("the menu has no prices"). Vague "fix the bugs" requests fix nothing, and a fix can quietly break something else. Weaker models ship more defects and regress more often (agent-1: 3 defects, 30% regressions; agent-4+: none). Rosa only pays once her site is clean: tell her too early and she emails you about one problem. Spin Cycle earns $0 while any defect is open, and users complain about each one on Y.
+
+- **Upkeep.** A launched app isn't finished. Each night, a live app with a client may open an issue: an **update request** (Rosa's new pumpkin loaf, the laundromat's new washers W7 and W8) or a **breakage** (an expired certificate that turns the bakery site into a red warning page, a full disk, spam reports). The client emails or posts about it. Prompt agent to handle it by name. An open update request still pays; a breakage pays $0 until fixed. Ignore an issue for two nights and the client warns you; at three, they give up. Rosa takes the site back, which ends her $6/night retainer. For Spin Cycle, 40% of users (and income) leave for good, once per ignored issue. Early gigs pay little, so dropping them is a real option: **Take down** on Forkyard stops the hosting fee, and taking the bakery site down ends the retainer too. Keeping Rosa happy until Day 5 gets you a public referral, which sets the flag `rosaReferral` for later chapters.
 
 - **Y followers.** You start with 12. Jev rates every post 0–4 against the story's rubric (a Score question; offline, a keyword heuristic): strong posts win followers, bland ones barely move, spam and begging lose some. Posts touching a trend get a bonus, reposts earn nothing, and gains halve after three posts a day. Story moments add followers too (Rosa's shout-out, the Spin Cycle launch). Some branches need followers: promoting Spin Cycle needs 40, the sponsor deal 150. At 300 followers you can turn on creator payouts ($0.05 per follower per night).
 
@@ -43,7 +45,7 @@ Without a key the game still runs, using an offline keyword matcher for story de
   You can switch between tiers you own from the picker next to Send, so cheap prompts can go to a cheap model. Some branches need a minimum tier. On a weaker model, agent either says which tier it needs (you still pay), or, if the branch has a `fake` outcome, does the job badly without telling you: the app it builds deploys but is broken in the browser, people complain about it on Y, and it never earns anything until a strong enough model fixes it.
 
 - Each prompt costs money and **1 hour**. Posting on Y or sending an email takes 5 minutes, deploying takes 30.
-- At midnight you pass out, or you can press **Sleep**. Overnight, apps pay out, then hosting ($2/app), food ($15) and, at the end of Day 7, rent ($300) are charged.
+- At midnight you pass out, or you can press **Sleep**. Overnight, apps pay out, then hosting ($2/app), food ($15) and, at the end of Day 7, rent ($300) are charged. Then upkeep issues open, age, warn or churn, and the morning summary lists them.
 - If your wallet is below zero after a night, the game ends (Insolvent, or Evicted on rent night).
 - If you can't afford a prompt, the card is declined and nothing is charged.
 
@@ -102,6 +104,7 @@ Press **jev** in the taskbar, or Ctrl+\`, or open with `#dev` in the URL. It sho
 ```js
 nodes: {
   broke: {
+    code: 'D1-A', day: 1,                           // a handle for talking about it; the map groups nodes by day
     objective: 'Find a way to make some money.',   // shown on the sticky note
     scene: 'What the player knows right now…',     // given to Jev as the situation
     branches: [{
@@ -124,7 +127,8 @@ nodes: {
 | `set` | `{ invoiced: true }` | set flags |
 | `money` | `{ amount: 150, memo: 'Who · what' }` | wallet transaction (the memo shows as counterparty · note) |
 | `repo` | `'spin-cycle'` | agent pushes a repo; it must be defined in `repos` |
-| `app` | `{ repo, users, perDay }` | set a deployed app's traffic and nightly income |
+| `app` | `{ repo, users, perDay, label? }` | set a deployed app's traffic and nightly income (`label` names it in the morning summary, e.g. a retainer) |
+| `appScale` | `{ repo, factor: 0.6 }` | scale an app's users and income (churn) |
 | `post` | `'rosa_thanks'` or `[...]` | reveal Y posts |
 | `mail` | `'rosa_paid'` or `[...]` | deliver Qmail messages (or file one under Sent if it has `folder: 'sent'`) |
 | `agent` | `'text'` | the agent messages you unprompted |
@@ -140,10 +144,11 @@ nodes: {
 - `contacts`: who answers ordinary email, keyed by address. Each has `name`, `sign` (appended sign-off), `reply` timing (`{ hours: [min, max] }` or `{ nextDay: 9, jitter: 3 }`, plus optional `chance`), a `persona` for Gemma, and `fallback` lines for when no model is loaded. When a sent email hits a `mailAction`, the story's own reply is used instead. Addresses not listed never reply, and since you can't write twice before a reply, one message is all they get.
 - `later` in effects also accepts `{ nextDay: hour, jitter: hours }`, which is how Mom answers the next morning.
 - `mail`: Qmail messages (`from`, `addr`, `subject`, `body`, or `to` for sent mail). Seeded mail uses `at`; other mail arrives once its `when` is true, or when an effect delivers it. The engine also writes upgrade receipts and bounces itself.
-- `events`: `{ on: 'deploy', repo }` fires when the player deploys a repo; `{ on: 'day' }` is checked every morning.
+- `events`: `{ on: 'deploy', repo }` fires when the player deploys a repo, `{ on: 'takedown', repo }` when they take it offline; `{ on: 'day' }` is checked every morning.
 - `posts`: seeded posts use `at` (minutes before game start). Other posts appear once their `when` is true, or when an effect reveals them.
 - `decision`: the `hit` and `partial` probability thresholds for Jev.
 - `repos[name].qa`: `count` (defects shipped per model tier), `regress` (chance per tier that a fix breaks something else) and `defects`, each with `id`, `kind` (bug/spec), the preview `slot` and broken `html` it replaces, a Jev `intent` plus offline `match` for the fix request, the `fixed` reply, and a `complaint` (email text, or a Y post `{ author, handle, text }`). `preview.html` uses `{{slot}}` placeholders filled from `preview.slots`. `client` says how complaints arrive (`{ type: 'email', addr, subject }` or `{ type: 'y' }`).
+- `repos[name].upkeep`: issues after launch. `when` (condition for upkeep to run), `chance` (per night, indexed by quiet nights since the last issue; the last value repeats), `warnAfter`/`churnAfter` (nights open), `warn` (client message), `churn: { effects, message?, drop? }` (`drop` ends upkeep for good), and `issues`. Each issue has `id`, `kind` (`update`: the app keeps paying and the fix sets `slot` to `after` for good; `break`: pays $0, replacing a `slot` with `html` or the whole page with `page`), `intent`/`match`/`fixed` like a defect, `complaint`, optional `thanks` (the client's message 1–3 hours after the fix), and optional `minModel` + `fake`. The client's `upkeepSubject` is the email subject. Issues and QA defects share an id space per repo.
 - Effects `complain: repo` and `choose: [{ when, effects }, …]`, and conditions `openDefects: repo | true` and `noDefects: repo`, drive client checks like Rosa's (`rosa_checks`).
 - `y`: `startFollowers`, the `setting` and 0–4 `rubric` Jev rates posts with, `trends` (bonus topics), `postsPerDay`, `creator` payouts (`minFollowers`, `perFollower`) and the default `lockedResponse`. On a branch or post action, `minFollowers: n` requires that many followers (`fewFollowers` overrides the reply); the effect `followers: n` adds or removes followers. The server rates posts at `POST /api/rate`.
 - `models`: the agent tiers (`name`, `price`, `promptBase`, `perWord`, `blurb`), weakest first.
@@ -156,12 +161,14 @@ Asking agent who runs it gives a different answer on agent-4 or better, which se
 
 Side mail at any point: asking Gary (`gary@pruittproperty.com`) for more time gets a one-word reply. Mom (`mom@qmail.com`) answers the next morning, and sends $20 once if you ask for help. Anything else you write to Mom, Gary, Rosa or Brayden gets an in-character reply from Gemma.
 
-1. **broke**: A bakery on Y wants a $150 website (spec: prices, hours, address, sourdough photo). Prompt the agent to build it.
-2. **site_built**: Deploy it on Forkyard. Asking the agent to deploy wastes a prompt.
-3. **site_live**: Check the site against Rosa's spec and get agent to fix what's wrong. Then tell Rosa. Either prompt agent, or do it yourself for free: email her (her address is in her Y post) or post on Y. Two hours later she checks the site: any defect gets a complaint email, a clean site gets you paid.
-4. **paid_once**: Y is complaining about broken laundromat machines. Build a tracker. **Needs agent-2.** On agent-1, agent ships a broken app and says it's flawless; it earns nothing until you ask a stronger model to fix it (agent-1 claims to fix it but doesn't).
-5. **app_built → app_live**: Deploy it, then promote it (prompt or Y post).
-6. **app_users**: Monetize it. Ads give $42/day, a sponsor $60/day (**needs agent-3**), and a paywall kills traffic ($9/day). A perfect sponsor run ends Day 8 with about $89 after rent, and a perfect ads run with about $40.
-7. **monetized**: Survive until rent clears. On Day 8 the agent sends a message that sets up Chapter 2.
+Codes in brackets are the node codes shown on the story map.
+
+1. **broke** (D1-A): A bakery on Y wants a $150 website (spec: prices, hours, address, sourdough photo). Prompt the agent to build it.
+2. **site_built** (D1-B): Deploy it on Forkyard. Asking the agent to deploy wastes a prompt.
+3. **site_live** (D1-C): Check the site against Rosa's spec and get agent to fix what's wrong. Then tell Rosa. Either prompt agent, or do it yourself for free: email her (her address is in her Y post) or post on Y. Two hours later she checks the site: any defect gets a complaint email, a clean site gets you paid ($150), and she keeps you on a $6/night retainer for as long as you look after the site.
+4. **paid_once** (D1-D): Y is complaining about broken laundromat machines. Build a tracker. **Needs agent-2.** On agent-1, agent ships a broken app and says it's flawless; it earns nothing until you ask a stronger model to fix it (agent-1 claims to fix it but doesn't).
+5. **app_built → app_live** (D2-A, D2-B): Deploy it, then promote it (prompt or Y post).
+6. **app_users** (D2-C): Monetize it. Ads give $42/day, a sponsor $60/day (**needs agent-3**), and a paywall kills traffic ($9/day). A perfect sponsor run ends Day 8 with about $89 after rent, and a perfect ads run with about $40.
+7. **monetized** (D3-A): Keep both apps maintained. Survive until rent clears. On Day 8 the agent sends a message that sets up Chapter 2 (**chapter_end**, D8-A).
 
 Save data is kept in `localStorage` under `unknown-agent-save-v1`. **New** in the taskbar resets it.

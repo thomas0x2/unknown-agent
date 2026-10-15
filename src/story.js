@@ -207,8 +207,11 @@
       },
     ],
 
+    // Story nodes. `code` is a short handle for talking about a node (D2-B = Day 2, second beat);
+    // `day` is the day the player usually gets there, which is how the story map groups them.
     nodes: {
       broke: {
+        code: 'D1-A', day: 1,
         objective: 'Find a way to make some money.',
         scene: "Day one of being broke. On Y, @crumbandcoin (the Crumb & Coin bakery, owned by Rosa) is offering $150 for a simple website with their menu and hours.",
         branches: [
@@ -234,6 +237,7 @@
       },
 
       site_built: {
+        code: 'D1-B', day: 1,
         objective: 'Put the bakery site online.',
         scene: "The agent has built the Crumb & Coin bakery website and pushed it to Forkyard. It is not deployed yet; the player has to press Deploy on Forkyard themselves.",
         branches: [
@@ -243,6 +247,7 @@
       },
 
       site_live: {
+        code: 'D1-C', day: 1,
         objective: 'Tell Rosa the site is live and get paid.',
         scene: "The Crumb & Coin website is live at crumb-and-coin.forkyard.app. Rosa (rosa@crumbandcoin.com) does not know yet and has not paid the $150.",
         branches: [
@@ -264,6 +269,7 @@
       },
 
       paid_once: {
+        code: 'D1-D', day: 1,
         objective: 'Rent ($300) is due at the end of Day 7. Find income that keeps coming in.',
         scene: "Rosa paid $150. Rent of $300 is due at the end of Day 7. Y is full of complaints that nobody knows which machines work at the Ferris St laundromat.",
         branches: [
@@ -299,12 +305,14 @@
       },
 
       app_built: {
+        code: 'D2-A', day: 2,
         objective: 'Deploy Spin Cycle.',
         scene: "The agent has built Spin Cycle, a machine-status tracker for the Ferris St laundromat. It is not deployed yet; the player has to press Deploy on Forkyard.",
         branches: [cantDeploy('spin-cycle'), research('research', "Built, not deployed. You've done this exact thing before. I believe in you. Barely.")],
       },
 
       app_live: {
+        code: 'D2-B', day: 2,
         objective: 'Spin Cycle is live and nobody knows it exists. Get people using it.',
         scene: "Spin Cycle is live at spin-cycle.forkyard.app, but nobody knows it exists.",
         branches: [
@@ -328,6 +336,7 @@
       },
 
       app_users: {
+        code: 'D2-C', day: 2,
         objective: 'Hundreds of people use Spin Cycle every day. It earns almost nothing.',
         scene: "Hundreds of people use Spin Cycle every day, but it earns almost nothing.",
         branches: [
@@ -375,6 +384,7 @@
       },
 
       monetized: {
+        code: 'D3-A', day: 3,
         objective: 'Spin Cycle is monetized. It only pays while it works. Survive until rent clears at the end of Day 7.',
         scene: "Spin Cycle earns money every night. The player just has to survive until rent clears at the end of Day 7.",
         branches: [
@@ -383,6 +393,7 @@
       },
 
       chapter_end: {
+        code: 'D8-A', day: 8,
         objective: 'To be continued.',
         scene: "Chapter 1 is over.",
         branches: [],
@@ -400,10 +411,19 @@
       },
       rosa_pays: {
         money: { amount: 150, memo: 'Crumb & Coin Bakery · website' },
+        set: { rosaPaid: true },
+        // small, but it keeps coming as long as the site stays up and up to date (see repos.upkeep)
+        app: { repo: 'crumb-and-coin', users: 0, perDay: 6, label: 'Crumb & Coin retainer' },
         post: 'rosa_thanks',
         mail: 'rosa_paid',
         followers: 15,   // Rosa's shout-out
         goto: 'paid_once',
+      },
+      // Rosa takes her business elsewhere: an ignored request, or the site was taken down.
+      rosa_leaves: {
+        set: { rosaChurned: true },
+        app: { repo: 'crumb-and-coin', users: 0, perDay: 0, label: 'Crumb & Coin retainer' },
+        mail: 'rosa_goodbye',
       },
       spin_marketed: {
         set: { marketed: true },
@@ -550,17 +570,25 @@
       },
       {
         id: 'rosa_paid', from: 'Rosa (Crumb & Coin)', addr: 'rosa@crumbandcoin.com', subject: 'Paid! Thank you',
-        body: "The site looks wonderful. My nephew is jealous. $150 is on its way to your wallet. My nephew set up our crypto, so I hope it arrives.\n\nCome by for a cardamom bun, on the house.\n\nRosa",
+        body: "The site looks wonderful. My nephew is jealous. $150 is on its way to your wallet. My nephew set up our crypto, so I hope it arrives.\n\nCould you keep looking after it? I'll send $6 a day while it stays up. Menus change, you know how it is.\n\nCome by for a cardamom bun, on the house.\n\nRosa",
       },
       { id: 'gary_tomorrow', when: { minDay: 6 }, from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'Tomorrow night', body: "Rent comes out tomorrow night. $300. Make sure it's there.\n\nGary" },
+      {
+        id: 'rosa_goodbye', from: 'Rosa (Crumb & Coin)', addr: 'rosa@crumbandcoin.com', subject: 'The website',
+        body: "I've asked my nephew to take the website back over. He's home for the holidays and he works for buns. I'll stop the $6.\n\nNo hard feelings. The cardamom bun offer stands.\n\nRosa",
+      },
       { id: 'gary_no', from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'RE: Rent', body: 'No.\n\nGary\n\nSent from my phone' },
       { id: 'mom_money', from: 'Mom', addr: 'mom@qmail.com', subject: 'RE: Are you eating?', body: "I knew it. I sent you $20 to that crypto wallet of yours. I hope it worked. Don't tell your father. Buy vegetables.\n\nLove, Mom" },
     ],
 
-    // Engine events: deploys and new days.
+    // Engine events: deploys, take-downs and new days.
     events: [
       { on: 'deploy', repo: 'crumb-and-coin', when: { node: 'site_built' }, effects: { goto: 'site_live' } },
       { on: 'deploy', repo: 'spin-cycle', when: { node: 'app_built' }, effects: { goto: 'app_live', app: { repo: 'spin-cycle', users: 3, perDay: 0 } } },
+      // Taking the bakery site down ends the retainer. Rosa notices within hours.
+      { on: 'takedown', repo: 'crumb-and-coin', when: { flag: 'rosaPaid', notFlag: 'rosaChurned' }, effects: { later: { hours: [2, 5], effects: 'rosa_leaves' } } },
+      // Kept Rosa happy for a few days: she talks you up. A seed for later chapters (flag rosaReferral).
+      { on: 'day', id: 'rosa_referral', when: { flag: 'rosaPaid', notFlag: 'rosaChurned', minDay: 5 }, effects: { post: 'rosa_referral', set: { rosaReferral: true }, followers: 10 } },
       {
         on: 'day',
         id: 'chapter_hook',
@@ -582,18 +610,74 @@
         snippet:
           '<header class="hero">\n  <h1>Crumb &amp; Coin</h1>\n  <p>Sourdough, buns, and coffee on Alder St since 2009.</p>\n</header>\n<section id="hours">\n  <h2>Hours</h2>\n  <p>Tue–Sat 7:00–15:00</p>\n</section>',
         // the client checks the work by email (see rosa_checks)
-        client: { type: 'email', addr: 'rosa@crumbandcoin.com', subject: 'RE: Your new website' },
+        client: { type: 'email', addr: 'rosa@crumbandcoin.com', subject: 'RE: Your new website', upkeepSubject: 'The website' },
         preview: {
           title: 'Crumb & Coin Bakery',
           // {{slot}}s are filled with `slots` unless an open defect replaces them
-          html: '<div class="pv pv-bakery">{{hero}}{{photo}}<div class="pv-cols"><div><h2>Menu</h2>{{menu}}</div><div><h2>Hours</h2>{{hours}}<h2>Find us</h2>{{address}}</div></div></div>',
+          html: '<div class="pv pv-bakery">{{notice}}{{hero}}{{photo}}<div class="pv-cols"><div><h2>Menu</h2>{{menu}}</div><div><h2>Hours</h2>{{hours}}<h2>Find us</h2>{{address}}</div></div></div>',
           slots: {
             hero: '<h1>Crumb &amp; Coin</h1><p class="pv-sub">Sourdough, buns and coffee on Alder St since 2009.</p>',
             photo: '<div class="pv-photo" role="img" aria-label="A sourdough loaf"><span class="pv-loaf"></span></div>',
             menu: '<ul><li>Country sourdough <b>$7</b></li><li>Cardamom bun <b>$4</b></li><li>Rye loaf <b>$8</b></li><li>Drip coffee <b>$2</b></li></ul>',
             hours: '<p>Tue–Sat · 7:00–15:00<br>Sun · 8:00–13:00<br>Mon · closed</p>',
             address: '<p>418 Alder St</p>',
+            notice: '',
           },
+        },
+        // After launch. Each night a live, working app whose `when` holds may open one issue from
+        // `issues`; `chance` is indexed by quiet nights since the last one (the last value repeats).
+        // Issues work like QA defects: the client complains, agent fixes them on request.
+        //   kind 'update': a request. The app keeps paying, and the fix makes `after` the slot's content.
+        //   kind 'break':  the app pays $0 until fixed. `html` replaces a slot, or `page` the whole page.
+        // An issue open for `warnAfter` nights gets `warn`; at `churnAfter` the client gives up and
+        // `churn.effects` run once per issue (`churn.drop` ends upkeep for good).
+        upkeep: {
+          when: { flag: 'rosaPaid', notFlag: 'rosaChurned' },
+          chance: [0, 0.5, 0.8, 1],
+          warnAfter: 2,
+          churnAfter: 3,
+          warn: "Still waiting on this one. If it's not sorted by tomorrow I'll ask my nephew to take the site back. Sorry, the shop comes first.",
+          churn: { effects: 'rosa_leaves', drop: true },
+          issues: [
+            {
+              id: 'pumpkin', kind: 'update', slot: 'menu',
+              after: '<ul><li>Country sourdough <b>$7</b></li><li>Cardamom bun <b>$4</b></li><li>Rye loaf <b>$8</b></li><li>Pumpkin loaf <b>$9</b> <i class="pv-new">new</i></li><li>Drip coffee <b>$2</b></li></ul>',
+              intent: 'The player asks the agent to add the new pumpkin loaf to the bakery menu.',
+              match: { all: [['pumpkin']] },
+              fixed: 'Added "Pumpkin loaf $9" to the menu with a little "new" tag. Redeployed.',
+              complaint: 'New item! Pumpkin loaf, $9, from this week. Can you put it on the menu? People ask for it and the website acts like it does not exist.',
+              thanks: 'Pumpkin loaf is on the site and we sold out by noon. Thank you!',
+            },
+            {
+              id: 'holiday_hours', kind: 'update', slot: 'notice',
+              after: '<p class="pv-notice">Closed this Sunday for a family wedding. Back Tuesday at 7:00.</p>',
+              intent: 'The player asks the agent to add a notice to the bakery site that the bakery is closed this Sunday for a wedding.',
+              match: { all: [['sunday', 'closed', 'closure', 'wedding', 'notice', 'holiday', 'announcement', 'banner']] },
+              fixed: 'Added a notice at the top: "Closed this Sunday for a family wedding." Redeployed.',
+              complaint: 'We are closed this Sunday, my cousin is getting married. Can you put a notice at the top of the site so nobody stands outside in the cold?',
+              thanks: 'Saw the notice, perfect. My cousin says thank you too, for some reason.',
+            },
+            {
+              id: 'ssl', kind: 'break',
+              page: '<div class="pv-ssl"><div class="pv-ssl-icon">!</div><h1>Your connection is not private</h1><p>Attackers might be trying to steal your information from <b>crumb-and-coin.forkyard.app</b> (for example, passwords, messages, or sourdough).</p><p class="pv-ssl-code">NET::ERR_CERT_DATE_INVALID</p><button class="pv-btn" type="button">Back to safety</button></div>',
+              minModel: 2,
+              fake: { response: 'Renewed the certificate. The padlock is green. Fort Knox would be jealous.' },
+              intent: 'The player says the bakery site shows a security, privacy or certificate warning, and asks the agent to fix it.',
+              match: { all: [['certificate', 'cert', 'ssl', 'https', 'tls', 'secure', 'security', 'warning', 'private', 'privacy', 'padlock']] },
+              fixed: 'The certificate expired and nothing was set to renew it. Renewed it and turned on auto-renew. Redeployed.',
+              complaint: 'Customers say the website shows a big red warning that it is "not private" and they are scared to open it. Are we being hacked??',
+              thanks: 'The scary red page is gone. My nephew says "nice". That is high praise from him.',
+            },
+            {
+              id: 'menu_404', kind: 'break', slot: 'menu',
+              html: '<p class="pv-err-inline">GET /menu.json 404 (Not Found)</p>',
+              intent: 'The player says the menu on the bakery site is gone or shows a 404 error, and asks the agent to fix it.',
+              match: { all: [['menu'], ['404', 'missing', 'gone', 'empty', 'error', 'broken', 'disappeared', 'back', 'fix', 'restore']] },
+              fixed: 'The menu file got renamed in the last deploy. Pointed the page at the right file. The menu is back. Redeployed.',
+              complaint: 'The menu disappeared from the website! It just says "404". A lady asked if we stopped selling bread.',
+              thanks: 'Menu is back. Bread is still for sale. Thank you!',
+            },
+          ],
         },
         // What can go wrong when agent builds it. `count` is how many defects ship, by model tier
         // (agent-1 … agent-5); `regress` is the chance that a fix quietly breaks something else.
@@ -664,6 +748,54 @@
             '</div><button class="pv-btn" type="button">Report brokn</button><p class="pv-foot">© 2019 Lorem Ipsum Laundry Co. · Powered by agent-1</p></div>',
         },
         client: { type: 'y' },
+        upkeep: {
+          when: { flag: 'marketed' },
+          chance: [0, 0.4, 0.7, 1],
+          warnAfter: 2,
+          churnAfter: 3,
+          warn: { author: 'Marco', handle: 'marcoeats', text: 'day 3 of spin cycle being half useless. starting to think @{handle} built it and moved to a farm' },
+          // users give up on it: a lasting hit, once per ignored issue
+          churn: {
+            effects: { appScale: { repo: 'spin-cycle', factor: 0.6 } },
+            message: { author: 'wash day woes', handle: 'washday_woes', text: 'spin cycle has not been touched in days. half the group chat went back to guessing. it was nice while it lasted @{handle}' },
+          },
+          issues: [
+            {
+              id: 'renumbered', kind: 'update', slot: 'washers',
+              after: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8'].map((m, i) => `<div class="pv-m ${[1, 3, 6, 7].includes(i) ? 'ok' : 'bad'}"><b>${m}</b><span>${[1, 3, 6, 7].includes(i) ? 'working' : 'broken'}</span></div>`).join(''),
+              intent: 'The player asks the agent to add the new washers W7 and W8 to Spin Cycle.',
+              match: { all: [['w7', 'w8', 'new washers', 'new machines', 'eight', 'renumber', 'renumbered', 'more washers']] },
+              fixed: 'Added W7 and W8 to the washer grid. Redeployed.',
+              complaint: { author: 'Ferris St Laundromat', handle: 'ferrisstlaundry', text: 'We added two new washers, W7 and W8! @{handle} your Spin Cycle app does not show them yet.' },
+              thanks: { author: 'Ferris St Laundromat', handle: 'ferrisstlaundry', text: 'W7 and W8 are on Spin Cycle now. Thanks @{handle}. They are the only ones that never break. For now.' },
+            },
+            {
+              id: 'notify_me', kind: 'update', slot: 'report',
+              after: '<button class="pv-btn ok" type="button">Report a machine</button> <button class="pv-btn" type="button">Notify me when a dryer frees up</button>',
+              intent: 'The player asks the agent to add a "notify me" button or alerts to Spin Cycle for when a dryer frees up.',
+              match: { all: [['notify', 'notification', 'notifications', 'alert', 'alerts', 'ping', 'remind', 'reminder']] },
+              fixed: 'Added a "Notify me when a dryer frees up" button. It sends a push notification. Redeployed.',
+              complaint: { author: 'wash day woes', handle: 'washday_woes', text: 'feature request for spin cycle @{handle}: a button that pings me when a dryer frees up. I would sit in my car and wait. happily' },
+              thanks: { author: 'wash day woes', handle: 'washday_woes', text: 'spin cycle pinged me that D4 was free and I got there FIRST. @{handle} I would die for you' },
+            },
+            {
+              id: 'disk_full', kind: 'break', slot: 'report',
+              html: '<button class="pv-btn ok" type="button">Report a machine</button><p class="pv-err-inline">Error: ENOSPC: no space left on device, write \'reports.json\'</p>',
+              intent: 'The player says reporting on Spin Cycle fails with a "no space left" or disk error, and asks the agent to fix it.',
+              match: { all: [['space', 'disk', 'enospc', 'storage', 'full', 'report', 'reports', 'reporting', 'button', 'error']] },
+              fixed: 'Every report ever was kept in one file and it filled the disk. Archived the old ones and added log rotation. Redeployed.',
+              complaint: { author: 'Marco', handle: 'marcoeats', text: 'spin cycle report button says "no space left on device". the laundromat has more space than this app @{handle}' },
+            },
+            {
+              id: 'spam_reports', kind: 'break', slot: 'washers',
+              html: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6'].map((m) => `<div class="pv-m bad"><b>${m}</b><span>broken ×412</span></div>`).join(''),
+              intent: 'The player says someone is spamming fake reports on Spin Cycle and asks the agent to stop it, for example with a rate limit.',
+              match: { all: [['spam', 'spammer', 'spamming', 'spammed', 'bot', 'bots', 'rate limit', 'flood', 'fake reports', 'troll']] },
+              fixed: 'Added a rate limit: one report per machine per person every ten minutes. Cleared the spam. Redeployed.',
+              complaint: { author: 'Dev', handle: 'devnull_42', text: 'someone is spamming spin cycle. every washer "reported broken" 412 times in an hour. rate limit your stuff @{handle}' },
+            },
+          ],
+        },
         qa: {
           count: [3, 2, 1, 0, 0],
           regress: [0.3, 0.2, 0.1, 0.05, 0],
@@ -702,12 +834,13 @@
         },
         preview: {
           title: 'Spin Cycle — Ferris St',
-          html: '<div class="pv pv-spin"><h1>Spin Cycle</h1><p class="pv-sub">Ferris St Laundromat · machine status, reported by people standing in front of them</p>{{updated}}<h2 class="pv-h">Washers</h2><div class="pv-grid">{{washers}}</div>{{dryers}}{{report}}</div>',
+          html: '<div class="pv pv-spin">{{notice}}<h1>Spin Cycle</h1><p class="pv-sub">Ferris St Laundromat · machine status, reported by people standing in front of them</p>{{updated}}<h2 class="pv-h">Washers</h2><div class="pv-grid">{{washers}}</div>{{dryers}}{{report}}</div>',
           slots: {
             updated: '<p class="pv-upd">Last report 4 minutes ago · 31 reports today</p>',
             washers: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6'].map((m, i) => `<div class="pv-m ${[1, 3, 4].includes(i) ? 'ok' : 'bad'}"><b>${m}</b><span>${[1, 3, 4].includes(i) ? 'working' : 'broken'}</span></div>`).join(''),
             dryers: '<h2 class="pv-h">Dryers</h2><div class="pv-grid">' + ['D1', 'D2', 'D3', 'D4', 'D5', 'D6'].map((m, i) => `<div class="pv-m ${[0, 3].includes(i) ? 'ok' : 'bad'}"><b>${m}</b><span>${[0, 3].includes(i) ? 'working' : 'broken'}</span></div>`).join('') + '</div>',
             report: '<button class="pv-btn ok" type="button">Report a machine</button>',
+            notice: '',
           },
         },
       },
@@ -741,6 +874,7 @@
         text: "Tried @{handle}'s laundromat app. Every machine says \"undefined\" and the report button turns the page white. I miss guessing.",
       },
       { id: 'spin_broken_2', author: 'Marco', handle: 'marcoeats', when: { flag: ['marketed', 'spinBroken'] }, likes: 240, text: 'spin-cycle.forkyard.app told me W3 was working. W3 has been on fire since 2019.' },
+      { id: 'rosa_referral', author: 'Crumb & Coin Bakery', handle: 'crumbandcoin', likes: 58, text: 'Small business owners on Alder St: @{handle} built our website and actually answers when something breaks. The hardware store and the tailor are next, I told them.' },
       { id: 'suds_deal', author: 'Suds & Duds Detergent', handle: 'sudsandduds', verified: true, likes: 77, text: 'Proud to sponsor Spin Cycle, keeping Ferris St informed one load at a time.' },
     ],
   };

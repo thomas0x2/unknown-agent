@@ -2,7 +2,7 @@
 import assert from 'node:assert';
 import http from 'node:http';
 import { TypeSafeClient } from '@typesafe-ai/sdk';
-import { createHandler, buildRequest, buildRateRequest, loadStory, NO_PROGRESS } from '../server.mjs';
+import { createHandler, buildRequest, buildRateRequest, loadStory, defectBranches, NO_PROGRESS } from '../server.mjs';
 
 const story = loadStory();
 let fail = 0;
@@ -37,6 +37,14 @@ await t('buildRequest asks one Choice over the candidates plus no_progress, with
   assert.match(q.criteria.build_bakery_site, /Crumb & Coin/);
   assert.strictEqual(req.state.player_prompt, 'build rosa a site');
   assert.match(req.state.situation, /\$150/);
+});
+
+await t('upkeep issues are offered to Jev like defects', () => {
+  const ids = defectBranches(story).map((b) => b.id);
+  assert.ok(ids.includes('defect:crumb-and-coin:pumpkin') && ids.includes('defect:spin-cycle:spam_reports'));
+  assert.strictEqual(new Set(ids).size, ids.length, 'defect and issue ids must not collide');
+  const req = buildRequest(story, { kind: 'prompt', node: 'monetized', prompt: 'add W7 and W8', candidates: ['defect:spin-cycle:renumbered'] });
+  assert.match(req.questions.branch.criteria['defect:spin-cycle:renumbered'], /W7 and W8/);
 });
 
 await t('defect fix requests are offered to Jev with their intents', () => {

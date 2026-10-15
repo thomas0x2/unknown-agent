@@ -79,6 +79,25 @@ const defectCases = [
   ['spin-cycle', 'the report button gives a 500 error', 'dead_report'],
   ['spin-cycle', 'show when each machine was last updated', 'no_updated'],
 ];
+// upkeep issues open one at a time, so each is checked alone against the global branches it competes with
+const upkeepCases = [
+  ['crumb-and-coin', 'add the pumpkin loaf to the menu, $9', 'pumpkin'],
+  ['crumb-and-coin', 'put a notice on the site that we are closed sunday for a wedding', 'holiday_hours'],
+  ['crumb-and-coin', 'the bakery site shows a certificate warning, fix it', 'ssl'],
+  ['crumb-and-coin', 'the menu is gone, it shows a 404', 'menu_404'],
+  ['spin-cycle', 'add the new washers W7 and W8', 'renumbered'],
+  ['spin-cycle', 'add a notify me button for when a dryer frees up', 'notify_me'],
+  ['spin-cycle', 'reports fail with no space left on device', 'disk_full'],
+  ['spin-cycle', 'someone is spamming fake reports, add a rate limit', 'spam_reports'],
+];
+for (const [repo, text, want] of upkeepCases) {
+  const issue = S.repos[repo].upkeep.issues.find((d) => d.id === want);
+  const branches = [{ id: want, match: issue.match }, ...S.global.filter((b) => b.id !== 'fix_app')];
+  const got = label(Keywords.decide(text, branches));
+  const ok = got === 'hit:' + want;
+  if (!ok) fail++;
+  console.log(`${ok ? 'ok  ' : 'FAIL'} [upkeep ${repo}] "${text}" → ${got}${ok ? '' : `  (wanted hit:${want})`}`);
+}
 for (const [repo, text, want] of defectCases) {
   const branches = S.repos[repo].qa.defects.map((d) => ({ id: d.id, match: d.match }));
   const got = label(Keywords.decide(text, branches));

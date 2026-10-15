@@ -34,11 +34,12 @@ class HttpError extends Error {
   constructor(status, message) { super(message); this.status = status; }
 }
 
-/** Fix requests for every defect any repo can ship with; the page offers only the open ones. */
-function defectBranches(story) {
+/** Fix requests for every QA defect and upkeep issue any repo can have; the page offers only the open ones. */
+export function defectBranches(story) {
   const out = [];
   for (const [repo, def] of Object.entries(story.repos || {})) {
-    for (const d of (def.qa && def.qa.defects) || []) out.push({ id: `defect:${repo}:${d.id}`, intent: d.intent });
+    const all = [...((def.qa && def.qa.defects) || []), ...((def.upkeep && def.upkeep.issues) || [])];
+    for (const d of all) out.push({ id: `defect:${repo}:${d.id}`, intent: d.intent });
   }
   return out;
 }

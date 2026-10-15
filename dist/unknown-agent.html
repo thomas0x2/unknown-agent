@@ -628,6 +628,20 @@ body.dev-on .y-score { display: inline; }
 .pv-upd { font-size: 13px; color: #2e9d5b; margin: -8px 0 6px; }
 .pv-btn.ok { margin-top: 20px; font-family: var(--f-ui); border: 0; background: #2e9d5b; color: #fff; padding: 9px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; }
 .pv-err-inline { margin: 8px 0 0; font-family: var(--f-mono); font-size: 12px; color: #c00; }
+
+/* ── upkeep: requests and breakages after launch ── */
+.pv-notice { margin: -6px 0 16px; padding: 9px 12px; border-radius: 8px; background: #fff4d6; color: #7a5200; font-size: 14px; }
+.pv-new { font-style: normal; font-family: var(--f-mono); font-size: 10.5px; text-transform: uppercase; background: #e76f2e; color: #fff; padding: 1px 6px; border-radius: 999px; vertical-align: 2px; }
+.pv-btn + .pv-btn { margin-left: 8px; }
+.pv-ssl { min-height: 420px; padding: 56px clamp(16px, 6vw, 72px); background: #fff; color: #202124; font-family: var(--f-ui); }
+.pv-ssl-icon { width: 54px; height: 54px; border-radius: 50%; background: #d93025; color: #fff; font-size: 34px; font-weight: 700; display: grid; place-items: center; margin-bottom: 22px; }
+.pv-ssl h1 { font-size: 26px; font-weight: 500; margin: 0 0 14px; }
+.pv-ssl p { max-width: 560px; line-height: 1.55; color: #5f6368; }
+.pv-ssl-code { font-family: var(--f-mono); font-size: 12px; }
+.pv-ssl .pv-btn { margin-top: 18px; border: 0; background: #1a73e8; color: #fff; padding: 9px 18px; border-radius: 6px; font-weight: 600; }
+.fy-btn.ghost { margin-top: 12px; background: transparent; color: var(--fy-dim, #9a9a9a); border: 1px solid currentColor; font-weight: 500; padding: 6px 14px; }
+.fy-btn.ghost:hover { color: var(--alarm); filter: none; }
+.ov-lines tr.note td { font-size: 13px; color: var(--alarm); text-align: left; font-family: inherit; padding: 5px 0; }
 </style>
 <div id="app">
   <div class="desk">
@@ -1207,8 +1221,11 @@ body.dev-on .y-score { display: inline; }
       },
     ],
 
+    // Story nodes. `code` is a short handle for talking about a node (D2-B = Day 2, second beat);
+    // `day` is the day the player usually gets there, which is how the story map groups them.
     nodes: {
       broke: {
+        code: 'D1-A', day: 1,
         objective: 'Find a way to make some money.',
         scene: "Day one of being broke. On Y, @crumbandcoin (the Crumb & Coin bakery, owned by Rosa) is offering $150 for a simple website with their menu and hours.",
         branches: [
@@ -1234,6 +1251,7 @@ body.dev-on .y-score { display: inline; }
       },
 
       site_built: {
+        code: 'D1-B', day: 1,
         objective: 'Put the bakery site online.',
         scene: "The agent has built the Crumb & Coin bakery website and pushed it to Forkyard. It is not deployed yet; the player has to press Deploy on Forkyard themselves.",
         branches: [
@@ -1243,6 +1261,7 @@ body.dev-on .y-score { display: inline; }
       },
 
       site_live: {
+        code: 'D1-C', day: 1,
         objective: 'Tell Rosa the site is live and get paid.',
         scene: "The Crumb & Coin website is live at crumb-and-coin.forkyard.app. Rosa (rosa@crumbandcoin.com) does not know yet and has not paid the $150.",
         branches: [
@@ -1264,6 +1283,7 @@ body.dev-on .y-score { display: inline; }
       },
 
       paid_once: {
+        code: 'D1-D', day: 1,
         objective: 'Rent ($300) is due at the end of Day 7. Find income that keeps coming in.',
         scene: "Rosa paid $150. Rent of $300 is due at the end of Day 7. Y is full of complaints that nobody knows which machines work at the Ferris St laundromat.",
         branches: [
@@ -1299,12 +1319,14 @@ body.dev-on .y-score { display: inline; }
       },
 
       app_built: {
+        code: 'D2-A', day: 2,
         objective: 'Deploy Spin Cycle.',
         scene: "The agent has built Spin Cycle, a machine-status tracker for the Ferris St laundromat. It is not deployed yet; the player has to press Deploy on Forkyard.",
         branches: [cantDeploy('spin-cycle'), research('research', "Built, not deployed. You've done this exact thing before. I believe in you. Barely.")],
       },
 
       app_live: {
+        code: 'D2-B', day: 2,
         objective: 'Spin Cycle is live and nobody knows it exists. Get people using it.',
         scene: "Spin Cycle is live at spin-cycle.forkyard.app, but nobody knows it exists.",
         branches: [
@@ -1328,6 +1350,7 @@ body.dev-on .y-score { display: inline; }
       },
 
       app_users: {
+        code: 'D2-C', day: 2,
         objective: 'Hundreds of people use Spin Cycle every day. It earns almost nothing.',
         scene: "Hundreds of people use Spin Cycle every day, but it earns almost nothing.",
         branches: [
@@ -1375,6 +1398,7 @@ body.dev-on .y-score { display: inline; }
       },
 
       monetized: {
+        code: 'D3-A', day: 3,
         objective: 'Spin Cycle is monetized. It only pays while it works. Survive until rent clears at the end of Day 7.',
         scene: "Spin Cycle earns money every night. The player just has to survive until rent clears at the end of Day 7.",
         branches: [
@@ -1383,6 +1407,7 @@ body.dev-on .y-score { display: inline; }
       },
 
       chapter_end: {
+        code: 'D8-A', day: 8,
         objective: 'To be continued.',
         scene: "Chapter 1 is over.",
         branches: [],
@@ -1400,10 +1425,19 @@ body.dev-on .y-score { display: inline; }
       },
       rosa_pays: {
         money: { amount: 150, memo: 'Crumb & Coin Bakery · website' },
+        set: { rosaPaid: true },
+        // small, but it keeps coming as long as the site stays up and up to date (see repos.upkeep)
+        app: { repo: 'crumb-and-coin', users: 0, perDay: 6, label: 'Crumb & Coin retainer' },
         post: 'rosa_thanks',
         mail: 'rosa_paid',
         followers: 15,   // Rosa's shout-out
         goto: 'paid_once',
+      },
+      // Rosa takes her business elsewhere: an ignored request, or the site was taken down.
+      rosa_leaves: {
+        set: { rosaChurned: true },
+        app: { repo: 'crumb-and-coin', users: 0, perDay: 0, label: 'Crumb & Coin retainer' },
+        mail: 'rosa_goodbye',
       },
       spin_marketed: {
         set: { marketed: true },
@@ -1550,17 +1584,25 @@ body.dev-on .y-score { display: inline; }
       },
       {
         id: 'rosa_paid', from: 'Rosa (Crumb & Coin)', addr: 'rosa@crumbandcoin.com', subject: 'Paid! Thank you',
-        body: "The site looks wonderful. My nephew is jealous. $150 is on its way to your wallet. My nephew set up our crypto, so I hope it arrives.\n\nCome by for a cardamom bun, on the house.\n\nRosa",
+        body: "The site looks wonderful. My nephew is jealous. $150 is on its way to your wallet. My nephew set up our crypto, so I hope it arrives.\n\nCould you keep looking after it? I'll send $6 a day while it stays up. Menus change, you know how it is.\n\nCome by for a cardamom bun, on the house.\n\nRosa",
       },
       { id: 'gary_tomorrow', when: { minDay: 6 }, from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'Tomorrow night', body: "Rent comes out tomorrow night. $300. Make sure it's there.\n\nGary" },
+      {
+        id: 'rosa_goodbye', from: 'Rosa (Crumb & Coin)', addr: 'rosa@crumbandcoin.com', subject: 'The website',
+        body: "I've asked my nephew to take the website back over. He's home for the holidays and he works for buns. I'll stop the $6.\n\nNo hard feelings. The cardamom bun offer stands.\n\nRosa",
+      },
       { id: 'gary_no', from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'RE: Rent', body: 'No.\n\nGary\n\nSent from my phone' },
       { id: 'mom_money', from: 'Mom', addr: 'mom@qmail.com', subject: 'RE: Are you eating?', body: "I knew it. I sent you $20 to that crypto wallet of yours. I hope it worked. Don't tell your father. Buy vegetables.\n\nLove, Mom" },
     ],
 
-    // Engine events: deploys and new days.
+    // Engine events: deploys, take-downs and new days.
     events: [
       { on: 'deploy', repo: 'crumb-and-coin', when: { node: 'site_built' }, effects: { goto: 'site_live' } },
       { on: 'deploy', repo: 'spin-cycle', when: { node: 'app_built' }, effects: { goto: 'app_live', app: { repo: 'spin-cycle', users: 3, perDay: 0 } } },
+      // Taking the bakery site down ends the retainer. Rosa notices within hours.
+      { on: 'takedown', repo: 'crumb-and-coin', when: { flag: 'rosaPaid', notFlag: 'rosaChurned' }, effects: { later: { hours: [2, 5], effects: 'rosa_leaves' } } },
+      // Kept Rosa happy for a few days: she talks you up. A seed for later chapters (flag rosaReferral).
+      { on: 'day', id: 'rosa_referral', when: { flag: 'rosaPaid', notFlag: 'rosaChurned', minDay: 5 }, effects: { post: 'rosa_referral', set: { rosaReferral: true }, followers: 10 } },
       {
         on: 'day',
         id: 'chapter_hook',
@@ -1582,18 +1624,74 @@ body.dev-on .y-score { display: inline; }
         snippet:
           '<header class="hero">\n  <h1>Crumb &amp; Coin</h1>\n  <p>Sourdough, buns, and coffee on Alder St since 2009.</p>\n</header>\n<section id="hours">\n  <h2>Hours</h2>\n  <p>Tue–Sat 7:00–15:00</p>\n</section>',
         // the client checks the work by email (see rosa_checks)
-        client: { type: 'email', addr: 'rosa@crumbandcoin.com', subject: 'RE: Your new website' },
+        client: { type: 'email', addr: 'rosa@crumbandcoin.com', subject: 'RE: Your new website', upkeepSubject: 'The website' },
         preview: {
           title: 'Crumb & Coin Bakery',
           // {{slot}}s are filled with `slots` unless an open defect replaces them
-          html: '<div class="pv pv-bakery">{{hero}}{{photo}}<div class="pv-cols"><div><h2>Menu</h2>{{menu}}</div><div><h2>Hours</h2>{{hours}}<h2>Find us</h2>{{address}}</div></div></div>',
+          html: '<div class="pv pv-bakery">{{notice}}{{hero}}{{photo}}<div class="pv-cols"><div><h2>Menu</h2>{{menu}}</div><div><h2>Hours</h2>{{hours}}<h2>Find us</h2>{{address}}</div></div></div>',
           slots: {
             hero: '<h1>Crumb &amp; Coin</h1><p class="pv-sub">Sourdough, buns and coffee on Alder St since 2009.</p>',
             photo: '<div class="pv-photo" role="img" aria-label="A sourdough loaf"><span class="pv-loaf"></span></div>',
             menu: '<ul><li>Country sourdough <b>$7</b></li><li>Cardamom bun <b>$4</b></li><li>Rye loaf <b>$8</b></li><li>Drip coffee <b>$2</b></li></ul>',
             hours: '<p>Tue–Sat · 7:00–15:00<br>Sun · 8:00–13:00<br>Mon · closed</p>',
             address: '<p>418 Alder St</p>',
+            notice: '',
           },
+        },
+        // After launch. Each night a live, working app whose `when` holds may open one issue from
+        // `issues`; `chance` is indexed by quiet nights since the last one (the last value repeats).
+        // Issues work like QA defects: the client complains, agent fixes them on request.
+        //   kind 'update': a request. The app keeps paying, and the fix makes `after` the slot's content.
+        //   kind 'break':  the app pays $0 until fixed. `html` replaces a slot, or `page` the whole page.
+        // An issue open for `warnAfter` nights gets `warn`; at `churnAfter` the client gives up and
+        // `churn.effects` run once per issue (`churn.drop` ends upkeep for good).
+        upkeep: {
+          when: { flag: 'rosaPaid', notFlag: 'rosaChurned' },
+          chance: [0, 0.5, 0.8, 1],
+          warnAfter: 2,
+          churnAfter: 3,
+          warn: "Still waiting on this one. If it's not sorted by tomorrow I'll ask my nephew to take the site back. Sorry, the shop comes first.",
+          churn: { effects: 'rosa_leaves', drop: true },
+          issues: [
+            {
+              id: 'pumpkin', kind: 'update', slot: 'menu',
+              after: '<ul><li>Country sourdough <b>$7</b></li><li>Cardamom bun <b>$4</b></li><li>Rye loaf <b>$8</b></li><li>Pumpkin loaf <b>$9</b> <i class="pv-new">new</i></li><li>Drip coffee <b>$2</b></li></ul>',
+              intent: 'The player asks the agent to add the new pumpkin loaf to the bakery menu.',
+              match: { all: [['pumpkin']] },
+              fixed: 'Added "Pumpkin loaf $9" to the menu with a little "new" tag. Redeployed.',
+              complaint: 'New item! Pumpkin loaf, $9, from this week. Can you put it on the menu? People ask for it and the website acts like it does not exist.',
+              thanks: 'Pumpkin loaf is on the site and we sold out by noon. Thank you!',
+            },
+            {
+              id: 'holiday_hours', kind: 'update', slot: 'notice',
+              after: '<p class="pv-notice">Closed this Sunday for a family wedding. Back Tuesday at 7:00.</p>',
+              intent: 'The player asks the agent to add a notice to the bakery site that the bakery is closed this Sunday for a wedding.',
+              match: { all: [['sunday', 'closed', 'closure', 'wedding', 'notice', 'holiday', 'announcement', 'banner']] },
+              fixed: 'Added a notice at the top: "Closed this Sunday for a family wedding." Redeployed.',
+              complaint: 'We are closed this Sunday, my cousin is getting married. Can you put a notice at the top of the site so nobody stands outside in the cold?',
+              thanks: 'Saw the notice, perfect. My cousin says thank you too, for some reason.',
+            },
+            {
+              id: 'ssl', kind: 'break',
+              page: '<div class="pv-ssl"><div class="pv-ssl-icon">!</div><h1>Your connection is not private</h1><p>Attackers might be trying to steal your information from <b>crumb-and-coin.forkyard.app</b> (for example, passwords, messages, or sourdough).</p><p class="pv-ssl-code">NET::ERR_CERT_DATE_INVALID</p><button class="pv-btn" type="button">Back to safety</button></div>',
+              minModel: 2,
+              fake: { response: 'Renewed the certificate. The padlock is green. Fort Knox would be jealous.' },
+              intent: 'The player says the bakery site shows a security, privacy or certificate warning, and asks the agent to fix it.',
+              match: { all: [['certificate', 'cert', 'ssl', 'https', 'tls', 'secure', 'security', 'warning', 'private', 'privacy', 'padlock']] },
+              fixed: 'The certificate expired and nothing was set to renew it. Renewed it and turned on auto-renew. Redeployed.',
+              complaint: 'Customers say the website shows a big red warning that it is "not private" and they are scared to open it. Are we being hacked??',
+              thanks: 'The scary red page is gone. My nephew says "nice". That is high praise from him.',
+            },
+            {
+              id: 'menu_404', kind: 'break', slot: 'menu',
+              html: '<p class="pv-err-inline">GET /menu.json 404 (Not Found)</p>',
+              intent: 'The player says the menu on the bakery site is gone or shows a 404 error, and asks the agent to fix it.',
+              match: { all: [['menu'], ['404', 'missing', 'gone', 'empty', 'error', 'broken', 'disappeared', 'back', 'fix', 'restore']] },
+              fixed: 'The menu file got renamed in the last deploy. Pointed the page at the right file. The menu is back. Redeployed.',
+              complaint: 'The menu disappeared from the website! It just says "404". A lady asked if we stopped selling bread.',
+              thanks: 'Menu is back. Bread is still for sale. Thank you!',
+            },
+          ],
         },
         // What can go wrong when agent builds it. `count` is how many defects ship, by model tier
         // (agent-1 … agent-5); `regress` is the chance that a fix quietly breaks something else.
@@ -1664,6 +1762,54 @@ body.dev-on .y-score { display: inline; }
             '</div><button class="pv-btn" type="button">Report brokn</button><p class="pv-foot">© 2019 Lorem Ipsum Laundry Co. · Powered by agent-1</p></div>',
         },
         client: { type: 'y' },
+        upkeep: {
+          when: { flag: 'marketed' },
+          chance: [0, 0.4, 0.7, 1],
+          warnAfter: 2,
+          churnAfter: 3,
+          warn: { author: 'Marco', handle: 'marcoeats', text: 'day 3 of spin cycle being half useless. starting to think @{handle} built it and moved to a farm' },
+          // users give up on it: a lasting hit, once per ignored issue
+          churn: {
+            effects: { appScale: { repo: 'spin-cycle', factor: 0.6 } },
+            message: { author: 'wash day woes', handle: 'washday_woes', text: 'spin cycle has not been touched in days. half the group chat went back to guessing. it was nice while it lasted @{handle}' },
+          },
+          issues: [
+            {
+              id: 'renumbered', kind: 'update', slot: 'washers',
+              after: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8'].map((m, i) => `<div class="pv-m ${[1, 3, 6, 7].includes(i) ? 'ok' : 'bad'}"><b>${m}</b><span>${[1, 3, 6, 7].includes(i) ? 'working' : 'broken'}</span></div>`).join(''),
+              intent: 'The player asks the agent to add the new washers W7 and W8 to Spin Cycle.',
+              match: { all: [['w7', 'w8', 'new washers', 'new machines', 'eight', 'renumber', 'renumbered', 'more washers']] },
+              fixed: 'Added W7 and W8 to the washer grid. Redeployed.',
+              complaint: { author: 'Ferris St Laundromat', handle: 'ferrisstlaundry', text: 'We added two new washers, W7 and W8! @{handle} your Spin Cycle app does not show them yet.' },
+              thanks: { author: 'Ferris St Laundromat', handle: 'ferrisstlaundry', text: 'W7 and W8 are on Spin Cycle now. Thanks @{handle}. They are the only ones that never break. For now.' },
+            },
+            {
+              id: 'notify_me', kind: 'update', slot: 'report',
+              after: '<button class="pv-btn ok" type="button">Report a machine</button> <button class="pv-btn" type="button">Notify me when a dryer frees up</button>',
+              intent: 'The player asks the agent to add a "notify me" button or alerts to Spin Cycle for when a dryer frees up.',
+              match: { all: [['notify', 'notification', 'notifications', 'alert', 'alerts', 'ping', 'remind', 'reminder']] },
+              fixed: 'Added a "Notify me when a dryer frees up" button. It sends a push notification. Redeployed.',
+              complaint: { author: 'wash day woes', handle: 'washday_woes', text: 'feature request for spin cycle @{handle}: a button that pings me when a dryer frees up. I would sit in my car and wait. happily' },
+              thanks: { author: 'wash day woes', handle: 'washday_woes', text: 'spin cycle pinged me that D4 was free and I got there FIRST. @{handle} I would die for you' },
+            },
+            {
+              id: 'disk_full', kind: 'break', slot: 'report',
+              html: '<button class="pv-btn ok" type="button">Report a machine</button><p class="pv-err-inline">Error: ENOSPC: no space left on device, write \'reports.json\'</p>',
+              intent: 'The player says reporting on Spin Cycle fails with a "no space left" or disk error, and asks the agent to fix it.',
+              match: { all: [['space', 'disk', 'enospc', 'storage', 'full', 'report', 'reports', 'reporting', 'button', 'error']] },
+              fixed: 'Every report ever was kept in one file and it filled the disk. Archived the old ones and added log rotation. Redeployed.',
+              complaint: { author: 'Marco', handle: 'marcoeats', text: 'spin cycle report button says "no space left on device". the laundromat has more space than this app @{handle}' },
+            },
+            {
+              id: 'spam_reports', kind: 'break', slot: 'washers',
+              html: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6'].map((m) => `<div class="pv-m bad"><b>${m}</b><span>broken ×412</span></div>`).join(''),
+              intent: 'The player says someone is spamming fake reports on Spin Cycle and asks the agent to stop it, for example with a rate limit.',
+              match: { all: [['spam', 'spammer', 'spamming', 'spammed', 'bot', 'bots', 'rate limit', 'flood', 'fake reports', 'troll']] },
+              fixed: 'Added a rate limit: one report per machine per person every ten minutes. Cleared the spam. Redeployed.',
+              complaint: { author: 'Dev', handle: 'devnull_42', text: 'someone is spamming spin cycle. every washer "reported broken" 412 times in an hour. rate limit your stuff @{handle}' },
+            },
+          ],
+        },
         qa: {
           count: [3, 2, 1, 0, 0],
           regress: [0.3, 0.2, 0.1, 0.05, 0],
@@ -1702,12 +1848,13 @@ body.dev-on .y-score { display: inline; }
         },
         preview: {
           title: 'Spin Cycle — Ferris St',
-          html: '<div class="pv pv-spin"><h1>Spin Cycle</h1><p class="pv-sub">Ferris St Laundromat · machine status, reported by people standing in front of them</p>{{updated}}<h2 class="pv-h">Washers</h2><div class="pv-grid">{{washers}}</div>{{dryers}}{{report}}</div>',
+          html: '<div class="pv pv-spin">{{notice}}<h1>Spin Cycle</h1><p class="pv-sub">Ferris St Laundromat · machine status, reported by people standing in front of them</p>{{updated}}<h2 class="pv-h">Washers</h2><div class="pv-grid">{{washers}}</div>{{dryers}}{{report}}</div>',
           slots: {
             updated: '<p class="pv-upd">Last report 4 minutes ago · 31 reports today</p>',
             washers: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6'].map((m, i) => `<div class="pv-m ${[1, 3, 4].includes(i) ? 'ok' : 'bad'}"><b>${m}</b><span>${[1, 3, 4].includes(i) ? 'working' : 'broken'}</span></div>`).join(''),
             dryers: '<h2 class="pv-h">Dryers</h2><div class="pv-grid">' + ['D1', 'D2', 'D3', 'D4', 'D5', 'D6'].map((m, i) => `<div class="pv-m ${[0, 3].includes(i) ? 'ok' : 'bad'}"><b>${m}</b><span>${[0, 3].includes(i) ? 'working' : 'broken'}</span></div>`).join('') + '</div>',
             report: '<button class="pv-btn ok" type="button">Report a machine</button>',
+            notice: '',
           },
         },
       },
@@ -1741,6 +1888,7 @@ body.dev-on .y-score { display: inline; }
         text: "Tried @{handle}'s laundromat app. Every machine says \"undefined\" and the report button turns the page white. I miss guessing.",
       },
       { id: 'spin_broken_2', author: 'Marco', handle: 'marcoeats', when: { flag: ['marketed', 'spinBroken'] }, likes: 240, text: 'spin-cycle.forkyard.app told me W3 was working. W3 has been on fire since 2019.' },
+      { id: 'rosa_referral', author: 'Crumb & Coin Bakery', handle: 'crumbandcoin', likes: 58, text: 'Small business owners on Alder St: @{handle} built our website and actually answers when something breaks. The hardware store and the tailor are next, I told them.' },
       { id: 'suds_deal', author: 'Suds & Duds Detergent', handle: 'sudsandduds', verified: true, likes: 77, text: 'Proud to sponsor Spin Cycle, keeping Ferris St informed one load at a time.' },
     ],
   };
@@ -2256,7 +2404,7 @@ body.dev-on .y-score { display: inline; }
       if (!s.mail) { s.mail = []; s.nextMail = 1; seedMail(s); }
       s.awaiting = s.awaiting || {};
       s.extraPosts = s.extraPosts || [];
-      for (const r of Object.values(s.repos)) { r.defects = r.defects || []; r.complained = r.complained || []; }
+      for (const r of Object.values(s.repos)) { r.defects = r.defects || []; r.complained = r.complained || []; r.slots = r.slots || {}; }
       if (s.followers == null) { s.followers = (S.y && S.y.startFollowers) || 0; s.creatorOn = false; s.postsToday = { day: 0, n: 0 }; }
       s.replyDrafts = s.replyDrafts || {};
       // saves from before the wallet
@@ -2385,7 +2533,7 @@ body.dev-on .y-score { display: inline; }
     for (const r of arr(fx.repo)) {
       const name = typeof r === 'string' ? r : r.name;
       if (state.repos[name]) continue;
-      state.repos[name] = { createdAt: state.t, deployed: false, broken: !!(r && r.broken), defects: [], complained: [] };
+      state.repos[name] = { createdAt: state.t, deployed: false, broken: !!(r && r.broken), defects: [], complained: [], slots: {} };
       rollDefects(name, state.model, (S.repos[name] && S.repos[name].qa && S.repos[name].qa.count) || null);
       if (!onSite('forkyard')) state.unread.forkyard++;
       toast('Forkyard', `New repository: ${name}`, 'forkyard');
@@ -2396,7 +2544,13 @@ body.dev-on .y-score { display: inline; }
       state.repos[name].fixedAt = state.t;
       toast('Forkyard', `New commit on ${name}: rewrite`, 'forkyard');
     }
-    if (fx.app) state.apps[fx.app.repo] = { users: fx.app.users || 0, perDay: fx.app.perDay || 0 };
+    if (fx.app) state.apps[fx.app.repo] = { users: fx.app.users || 0, perDay: fx.app.perDay || 0, label: fx.app.label };
+    // appScale: { repo, factor } — users drift away (or pile in); income follows
+    if (fx.appScale && state.apps[fx.appScale.repo]) {
+      const a = state.apps[fx.appScale.repo];
+      a.users = Math.round(a.users * fx.appScale.factor);
+      a.perDay = round2(a.perDay * fx.appScale.factor);
+    }
     if (fx.followers) changeFollowers(fx.followers);
     if (fx.fixDefect) fixDefect(fx.fixDefect.repo, fx.fixDefect.id);
     for (const name of arr(fx.complain)) complain(name);
@@ -2410,6 +2564,7 @@ body.dev-on .y-score { display: inline; }
     if (fx.agent) agentSays(fx.agent);
     for (const l of arr(fx.later)) state.queue.push({ at: laterTime(l), effects: l.effects });
     if (fx.reply) deliverReply(fx.reply);
+    if (fx.thank) clientSays(fx.thank.repo, defectDef(fx.thank.repo, fx.thank.id).thanks);
     if (fx.goto && fx.goto !== state.node) {
       state.node = fx.goto;
       const obj = currentNode().objective;
@@ -2421,8 +2576,12 @@ body.dev-on .y-score { display: inline; }
 
   // ── QA: defects agent ships, and the loop of checking and fixing them ──
   const qaOf = (repo) => (S.repos[repo] && S.repos[repo].qa) || null;
-  const defectDef = (repo, id) => ((qaOf(repo) || {}).defects || []).find((d) => d.id === id);
+  const upkeepOf = (repo) => (S.repos[repo] && S.repos[repo].upkeep) || null;
+  // QA defects and upkeep issues share one id space per repo
+  const defectDef = (repo, id) => [...((qaOf(repo) || {}).defects || []), ...((upkeepOf(repo) || {}).issues || [])].find((d) => d.id === id);
   const openDefects = (repo) => (state.repos[repo] && state.repos[repo].defects) || [];
+  // what stops an app paying: everything open except update requests
+  const blockingDefects = (repo) => openDefects(repo).filter((id) => (defectDef(repo, id) || {}).kind !== 'update');
 
   // Ship `count[tier]` random defects from the repo's pool, avoiding `exclude`.
   function rollDefects(repo, level, count, exclude) {
@@ -2442,10 +2601,28 @@ body.dev-on .y-score { display: inline; }
     if (!r || !r.defects.includes(id)) return;
     r.defects = r.defects.filter((x) => x !== id);
     r.complained = (r.complained || []).filter((x) => x !== id);
+    const d = defectDef(repo, id) || {};
+    // an update changes the app for good
+    if (d.after != null && d.slot) r.slots[d.slot] = d.after;
+    if (d.thanks) state.queue.push({ at: laterTime({ hours: [1, 3] }), effects: { thank: { repo, id } } });
     const qa = qaOf(repo);
-    const chance = qa && qa.regress ? qa.regress[Math.min(state.model, qa.regress.length) - 1] || 0 : 0;
+    const isQa = qa && qa.defects.some((x) => x.id === id);
+    const chance = isQa && qa.regress ? qa.regress[Math.min(state.model, qa.regress.length) - 1] || 0 : 0;
     if (Math.random() < chance) rollDefects(repo, state.model, 1, [id]);
     toast('Forkyard', `New commit on ${repo}`, 'forkyard');
+  }
+
+  // The client says something: an email (text) for email clients, a Y post ({ author, handle, text }) for Y ones.
+  function clientSays(repo, msg, subject) {
+    const client = S.repos[repo] && S.repos[repo].client;
+    if (!client || !msg) return;
+    if (client.type === 'email') {
+      const contact = (S.contacts || {})[client.addr] || { name: client.addr, sign: '' };
+      deliverCustom({ from: contact.name, addr: client.addr, subject: subject || client.subject || `RE: ${repo}`, body: `${msg}${contact.sign ? `\n\n${contact.sign}` : ''}` });
+    } else if (client.type === 'y') {
+      state.extraPosts.push({ id: `x${state.nextMail++}`, author: msg.author, handle: msg.handle, text: msg.text, t: state.t, likes: 40 + Math.floor(Math.random() * 120) });
+      if (!onSite('y')) state.unread.y++;
+    }
   }
 
   // The client finds a problem: an email about one defect, or Y posts about each new one.
@@ -2458,20 +2635,64 @@ body.dev-on .y-score { display: inline; }
     if (def.client.type === 'email') {
       const id = open.find((x) => !r.complained.includes(x)) || open[0];
       if (!r.complained.includes(id)) r.complained.push(id);
-      const contact = (S.contacts || {})[def.client.addr] || { name: def.client.addr, sign: '' };
       const d = defectDef(repo, id);
-      deliverCustom({
-        from: contact.name, addr: def.client.addr, subject: def.client.subject || `RE: ${repo}`,
-        body: `${d.complaint}\n\nTell me when it's fixed and I'll have another look. I pay when it's right.${contact.sign ? `\n\n${contact.sign}` : ''}`,
-      });
+      // QA defects block the first payment; upkeep requests stand on their own
+      const upkeep = d.kind === 'update' || d.kind === 'break';
+      clientSays(repo, upkeep ? d.complaint : `${d.complaint}\n\nTell me when it's fixed and I'll have another look. I pay when it's right.`,
+        upkeep ? def.client.upkeepSubject : def.client.subject);
     } else if (def.client.type === 'y') {
       for (const id of open.filter((x) => !r.complained.includes(x))) {
-        const c = defectDef(repo, id).complaint;
         r.complained.push(id);
-        state.extraPosts.push({ id: `x${state.nextMail++}`, author: c.author, handle: c.handle, text: c.text, t: state.t, likes: 40 + Math.floor(Math.random() * 120) });
-        if (!onSite('y')) state.unread.y++;
+        clientSays(repo, defectDef(repo, id).complaint);
       }
     }
+  }
+
+  /*
+   * Upkeep, once a night: age the open issues (warn, then churn), and maybe open a new one.
+   * Returns notes for the morning summary.
+   */
+  function upkeepNight() {
+    const notes = [];
+    for (const [repo, r] of Object.entries(state.repos)) {
+      const up = upkeepOf(repo);
+      if (!up || !r.deployed || r.broken) continue;
+      const u = (r.upkeep = r.upkeep || { quiet: 0, done: [], open: {}, dropped: false });
+      if (u.dropped || !check(up.when)) continue;
+      const name = (S.repos[repo].preview && S.repos[repo].preview.title) || repo;
+      for (const id of Object.keys(u.open)) {
+        if (!r.defects.includes(id)) { delete u.open[id]; continue; }
+        const nights = ++u.open[id];
+        if (nights === up.warnAfter) { clientSays(repo, up.warn, S.repos[repo].client.upkeepSubject); notes.push(`${name}: still waiting on a fix`); }
+        if (nights === up.churnAfter && up.churn) {
+          applyEffects(up.churn.effects);
+          clientSays(repo, up.churn.message);
+          notes.push(`${name}: ${up.churn.drop ? 'the client gave up on you' : 'users gave up waiting'}`);
+          if (up.churn.drop) {
+            u.dropped = true;
+            r.defects = r.defects.filter((x) => !up.issues.some((i) => i.id === x));
+            u.open = {};
+            break;
+          }
+        }
+      }
+      if (u.dropped || Object.keys(u.open).length) continue;
+      const chance = up.chance[Math.min(u.quiet, up.chance.length - 1)] || 0;
+      const pool = up.issues.filter((i) => !u.done.includes(i.id) && !r.defects.includes(i.id));
+      if (pool.length && Math.random() < chance) {
+        const issue = pool[Math.floor(Math.random() * pool.length)];
+        r.defects.push(issue.id);
+        r.complained.push(issue.id);
+        u.open[issue.id] = 0;
+        u.done.push(issue.id);
+        u.quiet = 0;
+        clientSays(repo, issue.complaint, S.repos[repo].client.upkeepSubject);
+        notes.push(`${name}: ${issue.kind === 'update' ? 'new request from the client' : 'something broke overnight'}`);
+      } else {
+        u.quiet++;
+      }
+    }
+    return notes;
   }
 
   // Fix requests are branches generated from the open defects (cached so identity stays stable).
@@ -2484,7 +2705,7 @@ body.dev-on .y-score { display: inline; }
         if (!defectBranchCache.has(key)) {
           const d = defectDef(repo, id);
           if (!d) continue;
-          defectBranchCache.set(key, { id: key, intent: d.intent, match: d.match, response: d.fixed, effects: { fixDefect: { repo, id } }, defect: true });
+          defectBranchCache.set(key, { id: key, intent: d.intent, match: d.match, response: d.fixed, effects: { fixDefect: { repo, id } }, minModel: d.minModel, fake: d.fake, defect: true });
         }
         out.push(defectBranchCache.get(key));
       }
@@ -2556,7 +2777,7 @@ body.dev-on .y-score { display: inline; }
   function fireEvents(kind, extra) {
     for (const ev of S.events || []) {
       if (ev.on !== kind) continue;
-      if (kind === 'deploy' && ev.repo !== extra) continue;
+      if ((kind === 'deploy' || kind === 'takedown') && ev.repo !== extra) continue;
       const key = ev.id || `${ev.on}:${ev.repo || ''}:${S.events.indexOf(ev)}`;
       if (state.fired[key]) continue;
       if (!check(ev.when)) continue;
@@ -2599,13 +2820,14 @@ body.dev-on .y-score { display: inline; }
     for (const [repo, app] of Object.entries(state.apps)) {
       const r = state.repos[repo];
       if (!r || !r.deployed) continue;
-      if (r.broken || openDefects(repo).length) {
+      const label = app.label || `${repo} earnings (${appVisitors(repo)} users/day)`;
+      if (r.broken || blockingDefects(repo).length) {
         // a broken or buggy app earns nothing, whatever agent promised; users complain about each defect
-        if (app.perDay > 0 || app.users > 0) lines.push([`${repo} earnings (${appVisitors(repo)} users/day)`, 0]);
+        if (app.perDay > 0 || app.users > 0) lines.push([label, 0]);
         if (!r.broken && app.users > 0) complain(repo);
       } else if (app.perDay > 0) {
-        addTx(app.perDay, `Forkyard · ${repo} payout`);
-        lines.push([`${repo} earnings (${app.users} users/day)`, app.perDay]);
+        addTx(app.perDay, app.label ? `${app.label} · ${repo}` : `Forkyard · ${repo} payout`);
+        lines.push([label, app.perDay]);
       }
     }
     const live = Object.values(state.repos).filter((r) => r.deployed).length;
@@ -2632,6 +2854,7 @@ body.dev-on .y-score { display: inline; }
     }
 
     state.t = wake;
+    if (state.money >= 0) for (const n of upkeepNight()) lines.push([n, null]);
     if (state.money < 0) {
       state.over = rentDue
         ? { title: 'Evicted', text: `Rent bounced. Gary changed the locks on Day ${ended + 1}. Your laptop is in a box on the curb.` }
@@ -2860,6 +3083,18 @@ body.dev-on .y-score { display: inline; }
     toast('Forkyard', `${repo} is live at ${repo}.forkyard.app`, 'forkyard');
     fireEvents('deploy', repo);
     advance(30);
+    save();
+    render();
+  }
+
+  // Take an app offline: no hosting fee, no income, and whoever relied on it notices.
+  function takeDown(repo) {
+    const r = state.repos[repo];
+    if (!r || !r.deployed || state.over) return;
+    r.deployed = false;
+    toast('Forkyard', `${repo} is offline`, 'forkyard');
+    fireEvents('takedown', repo);
+    advance(10);
     save();
     render();
   }
@@ -3286,7 +3521,7 @@ body.dev-on .y-score { display: inline; }
             <h2>Deployment</h2>
             <p>${repoStatus(repoName)}</p>
             ${r.deployed
-              ? `<dl><dt>Visitors / day</dt><dd>${appVisitors(repoName)}</dd><dt>Earnings / day</dt><dd>${fmtMoney(appEarnings(repoName))}</dd><dt>Hosting / day</dt><dd>${fmtMoney(E.hostingPerDay)}</dd></dl>`
+              ? `<dl><dt>Visitors / day</dt><dd>${appVisitors(repoName)}</dd><dt>Earnings / day</dt><dd>${fmtMoney(appEarnings(repoName))}</dd><dt>Hosting / day</dt><dd>${fmtMoney(E.hostingPerDay)}</dd></dl><button class="fy-btn ghost" data-takedown="${esc(repoName)}">Take down</button>`
               : `<p class="fy-note">Hosting costs ${fmtMoney(E.hostingPerDay)}/day, billed nightly.</p><button class="fy-btn" data-deploy="${esc(repoName)}">Deploy</button>`}
           </div>
         </div>
@@ -3312,10 +3547,10 @@ body.dev-on .y-score { display: inline; }
     if (!app) return 0;
     const r = state.repos[repo];
     if (r && r.broken) return Math.round(app.users * 0.04);
-    return openDefects(repo).length ? Math.round(app.users * 0.5) : app.users;
+    return blockingDefects(repo).length ? Math.round(app.users * 0.5) : app.users;
   }
-  // nobody pays for an app that's broken or still has defects
-  const appEarnings = (repo) => (state.repos[repo] && (state.repos[repo].broken || openDefects(repo).length) ? 0 : (state.apps[repo] || {}).perDay || 0);
+  // nobody pays for an app that's broken or still has defects (pending update requests still pay)
+  const appEarnings = (repo) => (state.repos[repo] && (state.repos[repo].broken || blockingDefects(repo).length) ? 0 : (state.apps[repo] || {}).perDay || 0);
 
   function pageApp(repo) {
     const r = state.repos[repo];
@@ -3324,8 +3559,14 @@ body.dev-on .y-score { display: inline; }
       return `<div class="err"><h1>404: NOT_FOUND</h1><p>Nothing is deployed at <code>${esc(repo)}.forkyard.app</code>.</p></div>`;
     }
     if (r.broken && def.broken) return `<div class="pv-host">${def.broken.preview}</div>`;
-    const slots = Object.assign({}, def.preview.slots || {});
-    for (const id of openDefects(repo)) { const d = defectDef(repo, id); if (d && d.slot) slots[d.slot] = d.html; }
+    // base slots, then updates already shipped, then whatever is broken right now
+    const slots = Object.assign({}, def.preview.slots || {}, r.slots || {});
+    for (const id of openDefects(repo)) {
+      const d = defectDef(repo, id);
+      if (!d || d.kind === 'update') continue;   // a pending request doesn't change the page
+      if (d.page) return `<div class="pv-host">${tpl(d.page)}</div>`;
+      if (d.slot) slots[d.slot] = d.html;
+    }
     const html = def.preview.html.replace(/\{\{(\w+)\}\}/g, (m, k) => (k in slots ? tpl(slots[k]) : ''));
     return `<div class="pv-host">${html}</div>`;
   }
@@ -3589,7 +3830,9 @@ body.dev-on .y-score { display: inline; }
       html = `<div class="ov-card ov-small ov-morning">
         <p class="ov-eyebrow">${m.passedOut ? 'You passed out at your desk' : 'You slept'}</p>
         <h2>Day ${m.day} · ${DAYS[(m.day - 1) % 7]} ${clock(E.wakeHour * 60)}</h2>
-        <table class="ov-lines">${m.lines.map(([l, v]) => `<tr><td>${esc(l)}</td><td class="${v < 0 ? 'neg' : 'pos'}">${v >= 0 ? '+' : ''}${fmtMoney(v)}</td></tr>`).join('')}
+        <table class="ov-lines">${m.lines.map(([l, v]) => (v == null
+          ? `<tr class="note"><td colspan="2">${esc(l)}</td></tr>`
+          : `<tr><td>${esc(l)}</td><td class="${v < 0 ? 'neg' : 'pos'}">${v >= 0 ? '+' : ''}${fmtMoney(v)}</td></tr>`)).join('')}
         <tr class="tot"><td>Balance</td><td>${fmtMoney(m.balance)}</td></tr></table>
         <div class="ov-actions"><button class="btn primary" data-ov="morning">Get up</button></div></div>`;
     } else if (state.ended && !state.endSeen) {
@@ -3666,7 +3909,7 @@ body.dev-on .y-score { display: inline; }
 
   function bind() {
     document.addEventListener('click', (e) => {
-      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model],[data-reply],[data-mail-discard],[data-copy-addr],[data-wallet],[data-y-creator]');
+      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-takedown],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model],[data-reply],[data-mail-discard],[data-copy-addr],[data-wallet],[data-y-creator]');
       if (!t) return;
       if (t.dataset.close) { e.stopPropagation(); closeTab(Number(t.dataset.close)); return; }
       if (t.dataset.nav) { e.preventDefault(); navigate(t.dataset.nav); return; }
@@ -3674,6 +3917,11 @@ body.dev-on .y-score { display: inline; }
       if (t.hasAttribute('data-newtab')) { navigate('newtab', true); return; }
       if (t.dataset.like) { const id = t.dataset.like; state.liked[id] = !state.liked[id]; save(); render(); return; }
       if (t.dataset.deploy) { deploy(t.dataset.deploy); return; }
+      if (t.dataset.takedown) {
+        const repo = t.dataset.takedown;
+        askConfirm(`Take ${repo} offline? Hosting stops, and so does anything it earns.`, 'Take down', () => takeDown(repo));
+        return;
+      }
       if (t.dataset.buyModel) {
         const level = Number(t.dataset.buyModel);
         const m = modelDef(level);
@@ -3843,7 +4091,7 @@ body.dev-on .y-score { display: inline; }
   // exposed for debugging and tests
   window.UA = {
     get state() { return state; },
-    sendPrompt, post: postToY, sendMail, deploy, sleep: doSleep, navigate,
+    sendPrompt, post: postToY, sendMail, deploy, takeDown, sleep: doSleep, navigate,
     reset() { state = newState(); introOpen = false; save(); render(); },
     lastReport: () => lastReport,
   };

@@ -622,3 +622,17 @@ body.dev-on .y-score { display: inline; }
 .pv-upd { font-size: 13px; color: #2e9d5b; margin: -8px 0 6px; }
 .pv-btn.ok { margin-top: 20px; font-family: var(--f-ui); border: 0; background: #2e9d5b; color: #fff; padding: 9px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; }
 .pv-err-inline { margin: 8px 0 0; font-family: var(--f-mono); font-size: 12px; color: #c00; }
+
+/* ── upkeep: requests and breakages after launch ── */
+.pv-notice { margin: -6px 0 16px; padding: 9px 12px; border-radius: 8px; background: #fff4d6; color: #7a5200; font-size: 14px; }
+.pv-new { font-style: normal; font-family: var(--f-mono); font-size: 10.5px; text-transform: uppercase; background: #e76f2e; color: #fff; padding: 1px 6px; border-radius: 999px; vertical-align: 2px; }
+.pv-btn + .pv-btn { margin-left: 8px; }
+.pv-ssl { min-height: 420px; padding: 56px clamp(16px, 6vw, 72px); background: #fff; color: #202124; font-family: var(--f-ui); }
+.pv-ssl-icon { width: 54px; height: 54px; border-radius: 50%; background: #d93025; color: #fff; font-size: 34px; font-weight: 700; display: grid; place-items: center; margin-bottom: 22px; }
+.pv-ssl h1 { font-size: 26px; font-weight: 500; margin: 0 0 14px; }
+.pv-ssl p { max-width: 560px; line-height: 1.55; color: #5f6368; }
+.pv-ssl-code { font-family: var(--f-mono); font-size: 12px; }
+.pv-ssl .pv-btn { margin-top: 18px; border: 0; background: #1a73e8; color: #fff; padding: 9px 18px; border-radius: 6px; font-weight: 600; }
+.fy-btn.ghost { margin-top: 12px; background: transparent; color: var(--fy-dim, #9a9a9a); border: 1px solid currentColor; font-weight: 500; padding: 6px 14px; }
+.fy-btn.ghost:hover { color: var(--alarm); filter: none; }
+.ov-lines tr.note td { font-size: 13px; color: var(--alarm); text-align: left; font-family: inherit; padding: 5px 0; }
