@@ -1,0 +1,77 @@
+// Checks how Jev's probabilities become story outcomes, and the offline fallback. Run: node test/jev.test.js
+const path = require('path');
+const assert = require('assert');
+require(path.join(__dirname, '../src/keywords.js'));
+const Jev = require(path.join(__dirname, '../src/jev.js'));
+require(path.join(__dirname, '../src/story.js'));
+const S = globalThis.STORY;
+
+let fail = 0;
+async function t(name, fn) {
+  try { await fn(); console.log('ok   ' + name); } catch (e) { fail++; console.log('FAIL ' + name + '\n     ' + e.message); }
+}
+const branches = (node) => [...S.nodes[node].branches, ...S.global];
+const th = S.decision;
+const outcome = (d) => (d.kind === 'miss' ? 'miss' : `${d.kind}:${d.branch.id}`);
+
+(async () => {
+  await t('confident branch → hit', () => {
+    const d = Jev._interpret({ choice: 'build_bakery_site', probabilities: { build_bakery_site: 0.88, no_progress: 0.12 } }, branches('broke'), th);
+    assert.strictEqual(outcome(d), 'hit:build_bakery_site');
+  });
+  await t('no_progress wins but a nudge-able branch is plausible → partial', () => {
+    const d = Jev._interpret({ choice: 'no_progress', probabilities: { build_bakery_site: 0.35, no_progress: 0.6, research: 0.05 } }, branches('broke'), th);
+    assert.strictEqual(outcome(d), 'partial:build_bakery_site');
+  });
+  await t('top branch below the hit threshold falls to its nudge', () => {
+    const d = Jev._interpret({ choice: 'build_tracker', probabilities: { build_tracker: 0.42, research: 0.3, no_progress: 0.28 } }, branches('paid_once'), th);
+    assert.strictEqual(outcome(d), 'partial:build_tracker');
+  });
+  await t('no_progress and nothing plausible → miss', () => {
+    const d = Jev._interpret({ choice: 'no_progress', probabilities: { build_bakery_site: 0.05, research: 0.04, no_progress: 0.91 } }, branches('broke'), th);
+    assert.strictEqual(outcome(d), 'miss');
+  });
+  await t('an id Jev returns that is not a candidate is never fired', () => {
+    const d = Jev._interpret({ choice: 'monetize_ads', probabilities: { monetize_ads: 0.99 } }, branches('broke'), th);
+    assert.strictEqual(outcome(d), 'miss');
+  });
+
+  await t('no server → offline, keyword matcher decides', async () => {
+    globalThis.fetch = async () => { throw new Error('ECONNREFUSED'); };
+    const d = await Jev.decide('build a website for the crumb and coin bakery', branches('broke'), { node: 'broke', thresholds: th });
+    assert.strictEqual(Jev.status, 'offline');
+    assert.strictEqual(d.engine, 'keywords');
+    assert.strictEqual(outcome(d), 'hit:build_bakery_site');
+  });
+
+  await t('server online → Jev decides; one failed call falls back without going offline', async () => {
+    let decideCalls = 0;
+    let failNext = false;
+    globalThis.fetch = async (url, init) => {
+      if (url === 'api/status') return { ok: true, json: async () => ({ jev: true, model: 'jev-latest' }) };
+      decideCalls++;
+      const body = JSON.parse(init.body);
+      assert.strictEqual(body.node, 'broke');
+      assert.ok(body.candidates.includes('build_bakery_site'));
+      if (failNext) return { ok: false, status: 502, json: async () => ({ error: 'upstream down' }) };
+      return { ok: true, json: async () => ({ choice: 'research', confidence: 0.7, probabilities: { research: 0.7, no_progress: 0.3 }, model: 'jev-latest' }) };
+    };
+    // a fresh copy, so init() checks the server again with the new fetch
+    delete require.cache[require.resolve('../src/jev.js')];
+    const Fresh = require('../src/jev.js');
+    const d = await Fresh.decide('any work out there?', branches('broke'), { node: 'broke', thresholds: th });
+    assert.strictEqual(Fresh.status, 'online');
+    assert.strictEqual(d.engine, 'jev');
+    assert.strictEqual(outcome(d), 'hit:research');
+    failNext = true;
+    const d2 = await Fresh.decide('build a website for the crumb and coin bakery', branches('broke'), { node: 'broke', thresholds: th });
+    assert.strictEqual(d2.engine, 'keywords');
+    assert.strictEqual(d2.fellBack, true);
+    assert.strictEqual(Fresh.status, 'online');
+    assert.match(Fresh.last.error, /upstream down/);
+    assert.strictEqual(decideCalls, 2);
+  });
+
+  console.log(fail ? `\n${fail} failing` : '\nall passing');
+  process.exit(fail ? 1 : 0);
+})();

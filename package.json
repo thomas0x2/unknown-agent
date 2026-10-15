@@ -1,0 +1,17 @@
+{
+  "name": "unknown-agent",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Survive unemployment by prompting an AI agent that bills you per word.",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.mjs",
+    "test": "node test/keywords.test.js && node test/jev.test.js && node test/server.test.mjs && node test/llm.test.js",
+    "build": "node build.js"
+  },
+  "dependencies": {
+    "@typesafe-ai/sdk": "0.6.0"
+  },
+  "engines": {
+    "node": ">=22.9"
+  }
+}

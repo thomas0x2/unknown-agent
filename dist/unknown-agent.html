@@ -1,0 +1,2501 @@
+<title>Unknown Agent</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Instrument+Sans:wght@400;500;600;700&family=Martian+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a laptop screen at night. One dark browser window fills the desk; a taskbar holds the HUD.
+   Each bookmarked site inside carries its own brand colors. Single dark look by design. */
+:root {
+  color-scheme: dark;
+  --desk: #101317;
+  --chrome: #1f2329;
+  --chrome-2: #292e36;
+  --chrome-3: #343a44;
+  --chrome-line: #3b414c;
+  --chrome-ink: #dfe2e7;
+  --chrome-dim: #8d94a0;
+  --note: #f1d36b;
+  --note-ink: #2b2410;
+  --alarm: #ff7262;
+  --ok: #73c994;
+
+  --f-ui: 'Instrument Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-mono: 'Martian Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --f-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+
+  /* site palettes */
+  --ch-bg: #ffffff; --ch-ink: #15181c; --ch-dim: #687079; --ch-line: #ebebe6; --ch-accent: #e9a100; --ch-accent-ink: #1d1600;
+  --bk-bg: #eef2ee; --bk-panel: #ffffff; --bk-green: #0e4b38; --bk-ink: #1a2420; --bk-dim: #5d6b64; --bk-neg: #b3261e; --bk-pos: #1c7444; --bk-line: #dbe3dd;
+  --fy-bg: #0d0f13; --fy-panel: #161a20; --fy-ink: #e4e6ea; --fy-dim: #8a929e; --fy-line: #272c35; --fy-accent: #ff7a45; --fy-live: #4fd08a;
+  --ua-bg: #eceef0; --ua-panel: #ffffff; --ua-ink: #0c0d0f; --ua-dim: #6c727b; --ua-line: #d7dade; --ua-you: #0c0d0f;
+}
+
+html, body { height: 100%; }
+[hidden] { display: none !important; }
+*, *::before, *::after { box-sizing: border-box; }
+body { background: var(--desk); color: var(--chrome-ink); font-family: var(--f-ui); overflow: hidden; }
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--note); outline-offset: 2px; }
+code { font-family: var(--f-mono); font-size: 0.86em; }
+
+#app { height: 100%; display: grid; grid-template-rows: minmax(0, 1fr) auto; grid-template-columns: minmax(0, 1fr); }
+
+.desk {
+  min-height: 0;
+  padding-block: 14px 8px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  background:
+    radial-gradient(120% 80% at 85% 0%, rgba(241, 211, 107, 0.07), transparent 60%),
+    radial-gradient(90% 70% at 0% 100%, rgba(80, 110, 160, 0.10), transparent 60%),
+    var(--desk);
+  display: flex;
+}
+
+.window {
+  flex: 1; min-width: 0; min-height: 0;
+  display: flex; flex-direction: column;
+  background: var(--chrome);
+  border: 1px solid var(--chrome-line);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(0, 0, 0, 0.4);
+}
+
+/* ── tabs ── */
+.tabstrip { display: flex; align-items: flex-end; gap: 2px; padding: 8px 8px 0; background: var(--chrome); overflow-x: auto; scrollbar-width: none; }
+.tabstrip::-webkit-scrollbar { display: none; }
+.tab {
+  display: flex; align-items: center; gap: 8px;
+  min-width: 0; flex: 0 1 210px;
+  padding: 7px 8px 8px 12px;
+  border-radius: 8px 8px 0 0;
+  color: var(--chrome-dim);
+  font-size: 13px; cursor: pointer; user-select: none;
+}
+.tab:hover { background: var(--chrome-2); color: var(--chrome-ink); }
+.tab.on { background: var(--chrome-2); color: var(--chrome-ink); }
+.tab-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tab-ico, .bm-ico { width: 15px; height: 15px; flex: none; display: inline-flex; }
+.tab-ico svg, .bm-ico svg { width: 100%; height: 100%; }
+.tab-x { border: 0; background: none; width: 20px; height: 20px; border-radius: 4px; line-height: 1; color: var(--chrome-dim); flex: none; }
+.tab-x:hover { background: var(--chrome-3); color: var(--chrome-ink); }
+.tab-new { border: 0; background: none; color: var(--chrome-dim); width: 28px; height: 28px; margin-bottom: 4px; border-radius: 6px; font-size: 18px; flex: none; }
+.tab-new:hover { background: var(--chrome-2); color: var(--chrome-ink); }
+
+.ico-chirpr { color: var(--ch-accent); }
+.ico-bank { color: #6fbf9a; }
+.ico-forkyard { color: var(--fy-accent); }
+.ico-agent { color: #f4f5f7; --icon-ink: #111; }
+
+/* ── toolbar ── */
+.toolbar { display: flex; align-items: center; gap: 10px; padding: 6px 10px; background: var(--chrome-2); }
+.tb-dots { display: flex; gap: 6px; flex: none; }
+.tb-dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--chrome-3); }
+.addr { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; background: var(--chrome); border: 1px solid var(--chrome-line); border-radius: 999px; padding: 5px 14px; }
+.addr svg { width: 13px; height: 13px; color: var(--chrome-dim); flex: none; }
+.addr input { flex: 1; min-width: 0; background: none; border: 0; outline: 0; font-size: 13.5px; color: var(--chrome-ink); }
+.addr:focus-within { border-color: var(--note); }
+
+/* ── bookmarks ── */
+.bookmarks { display: flex; gap: 2px; padding: 4px 8px 6px; background: var(--chrome-2); border-bottom: 1px solid var(--chrome-line); overflow-x: auto; scrollbar-width: none; }
+.bm { position: relative; display: flex; align-items: center; gap: 7px; border: 0; background: none; padding: 5px 10px; border-radius: 6px; font-size: 13px; color: var(--chrome-ink); white-space: nowrap; }
+.bm:hover { background: var(--chrome-3); }
+.badge {
+  font-style: normal; font-size: 10.5px; font-weight: 700; line-height: 1;
+  min-width: 17px; padding: 3px 5px; border-radius: 999px; text-align: center;
+  background: var(--alarm); color: #fff; font-family: var(--f-ui);
+}
+
+.viewport { flex: 1; min-height: 0; overflow: auto; background: #fff; position: relative; }
+
+/* ── taskbar ── */
+.taskbar {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  padding-block: 6px calc(8px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  font-size: 13px;
+}
+.tk-note {
+  display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1 1 280px;
+  background: var(--note); color: var(--note-ink);
+  padding: 6px 12px; border-radius: 3px; transform: rotate(-0.4deg);
+  font-weight: 600; box-shadow: 0 6px 14px -8px rgba(0, 0, 0, 0.7);
+}
+.tk-note #objective { min-width: 0; }
+.tk-pin { width: 8px; height: 8px; border-radius: 50%; background: #c0392b; box-shadow: inset -1px -1px 0 rgba(0, 0, 0, 0.3); flex: none; }
+.tk-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.tk-wallet { font-family: var(--f-mono); font-size: 13px; color: var(--ok); font-variant-numeric: tabular-nums; }
+.tk-wallet.neg, .tk-rent.neg { color: var(--alarm); }
+.tk-rent { color: var(--chrome-dim); }
+.tk-clock { display: flex; flex-direction: column; line-height: 1.15; text-align: right; font-variant-numeric: tabular-nums; }
+.tk-clock span { color: var(--chrome-dim); font-size: 11px; }
+.tk-btn { border: 1px solid var(--chrome-line); background: var(--chrome-2); padding: 5px 12px; border-radius: 6px; font-size: 12.5px; }
+.tk-btn:hover { background: var(--chrome-3); }
+.tk-btn.ghost { background: none; color: var(--chrome-dim); }
+
+/* ── toasts ── */
+#toasts { position: fixed; top: calc(12px + env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 8px; z-index: 30; pointer-events: none; width: min(320px, calc(100vw - 32px)); }
+.toast {
+  display: flex; flex-direction: column; gap: 2px;
+  background: rgba(31, 35, 41, 0.97); border: 1px solid var(--chrome-line); border-left: 3px solid var(--chrome-dim);
+  padding: 10px 12px; border-radius: 8px; font-size: 13px;
+  box-shadow: 0 14px 30px -12px rgba(0, 0, 0, 0.8);
+  animation: toast-in 0.25s ease-out;
+}
+.toast b { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--chrome-dim); }
+.toast.t-bank { border-left-color: #6fbf9a; }
+.toast.t-forkyard { border-left-color: var(--fy-accent); }
+.toast.t-agent { border-left-color: #f4f5f7; }
+.toast.t-note { border-left-color: var(--note); }
+.toast.out { opacity: 0; transform: translateX(10px); transition: 0.35s; }
+@keyframes toast-in { from { opacity: 0; transform: translateY(-6px); } }
+
+/* ── overlay ── */
+#overlay { position: fixed; inset: 0; z-index: 40; display: grid; grid-template-columns: minmax(0, 1fr); place-items: center; padding: 16px; background: rgba(6, 8, 10, 0.72); backdrop-filter: blur(3px); overflow: auto; }
+.ov-card { width: min(560px, 100%); background: #15181c; border: 1px solid var(--chrome-line); border-radius: 12px; padding: 32px; display: flex; flex-direction: column; gap: 14px; line-height: 1.55; box-shadow: 0 40px 80px -30px #000; }
+.ov-small { width: min(420px, 100%); padding: 24px; }
+.ov-eyebrow { margin: 0; font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--note); font-weight: 600; }
+.ov-title { margin: 0; font-family: var(--f-display); font-weight: 700; font-size: clamp(40px, 9vw, 64px); line-height: 0.95; letter-spacing: -0.02em; text-wrap: balance; }
+.ov-intro .ov-title { font-style: italic; }
+.ov-card p { margin: 0; color: #c9cdd4; }
+.ov-card h2 { margin: 0; font-family: var(--f-display); font-size: 26px; }
+.ov-rules { margin: 0; padding: 14px 16px 14px 32px; background: var(--chrome); border-radius: 8px; color: var(--chrome-dim); font-size: 13.5px; display: grid; gap: 4px; }
+.ov-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+.btn { border: 1px solid var(--chrome-line); background: var(--chrome-2); padding: 10px 18px; border-radius: 8px; font-weight: 600; }
+.btn:hover { background: var(--chrome-3); }
+.btn.primary { background: var(--note); color: var(--note-ink); border-color: var(--note); }
+.btn.primary:hover { filter: brightness(1.06); }
+.ov-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(88px, 1fr)); gap: 10px; margin: 4px 0 0; }
+.ov-stats div { background: var(--chrome); border-radius: 8px; padding: 10px 12px; }
+.ov-stats dt { font-size: 11px; color: var(--chrome-dim); text-transform: uppercase; letter-spacing: 0.06em; }
+.ov-stats dd { margin: 2px 0 0; font-family: var(--f-mono); font-size: 15px; font-variant-numeric: tabular-nums; }
+.ov-lines { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.ov-lines td { padding: 6px 0; border-bottom: 1px solid var(--chrome-line); }
+.ov-lines td:last-child { text-align: right; font-family: var(--f-mono); font-size: 13px; }
+.ov-lines .tot td { border-bottom: 0; font-weight: 700; padding-top: 10px; }
+.ov-lines .neg { color: var(--alarm); }
+.ov-lines .pos { color: var(--ok); }
+.ov-over .ov-title { color: var(--alarm); }
+
+/* ── dev panel ── */
+#dev {
+  position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(70px + env(safe-area-inset-bottom, 0px)); z-index: 35;
+  width: min(460px, calc(100vw - 32px)); max-height: 60vh; overflow: auto;
+  background: #0b0d10; border: 1px solid var(--chrome-line); border-radius: 10px; padding: 12px 14px;
+  font-family: var(--f-mono); font-size: 11.5px; line-height: 1.5; color: #c6ccd5;
+}
+#dev header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; color: var(--note); }
+#dev header button { background: none; border: 0; font-size: 18px; color: var(--chrome-dim); }
+#dev p { margin: 6px 0; word-break: break-word; }
+#dev h3 { margin: 12px 0 4px; font-size: 11.5px; color: var(--note); }
+#dev select { background: var(--chrome); border: 1px solid var(--chrome-line); border-radius: 4px; padding: 2px 4px; margin-left: 6px; }
+#dev table { width: 100%; border-collapse: collapse; }
+#dev td, #dev th { text-align: left; padding: 3px 6px 3px 0; border-bottom: 1px solid #1d2127; vertical-align: top; }
+#dev tr.win td { color: var(--ok); }
+.dv-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.dv-row button { background: var(--chrome-2); border: 1px solid var(--chrome-line); border-radius: 4px; padding: 2px 8px; font-size: 11px; }
+.dv-dim { color: var(--chrome-dim); }
+
+/* ── new tab ── */
+.newtab { min-height: 100%; background: var(--chrome-2); color: var(--chrome-ink); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; padding: 32px 16px; }
+.nt-time { margin: 0; font-family: var(--f-display); font-size: 44px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.nt-search { width: min(520px, 100%); }
+.nt-search input { width: 100%; background: var(--chrome); border: 1px solid var(--chrome-line); border-radius: 999px; padding: 12px 18px; outline: 0; }
+.nt-search input:focus { border-color: var(--note); }
+.nt-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 120px)); gap: 14px; }
+.nt-tile { position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 18px 8px; border: 1px solid var(--chrome-line); background: var(--chrome); border-radius: 12px; font-size: 13px; }
+.nt-tile:hover { background: var(--chrome-3); }
+.nt-tile .badge { position: absolute; top: 8px; right: 8px; }
+.nt-ico { width: 34px; height: 34px; display: inline-flex; }
+.nt-ico svg { width: 100%; height: 100%; }
+.nt-chirpr .nt-ico { color: var(--ch-accent); }
+.nt-bank .nt-ico { color: #6fbf9a; }
+.nt-forkyard .nt-ico { color: var(--fy-accent); }
+.nt-agent .nt-ico { color: #f4f5f7; --icon-ink: #111; }
+
+/* ── Chirpr ── */
+.ch { min-height: 100%; background: var(--ch-bg); color: var(--ch-ink); display: grid; grid-template-columns: 190px minmax(0, 600px) 260px; justify-content: center; }
+.ch-nav { padding: 18px 16px; display: flex; flex-direction: column; gap: 4px; position: sticky; top: 0; align-self: start; }
+.ch-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 22px; letter-spacing: -0.03em; margin-bottom: 14px; }
+.ch-logo svg { width: 28px; height: 28px; color: var(--ch-accent); }
+.ch-nav a { padding: 8px 12px; border-radius: 999px; font-size: 16px; color: var(--ch-ink); }
+.ch-nav a.on { font-weight: 700; }
+.ch-main { border-left: 1px solid var(--ch-line); border-right: 1px solid var(--ch-line); min-height: 100%; }
+.ch-h { margin: 0; padding: 16px 18px; font-size: 19px; border-bottom: 1px solid var(--ch-line); }
+.ch-compose { display: grid; grid-template-columns: 44px 1fr; gap: 12px; padding: 14px 18px; border-bottom: 8px solid #f5f5f2; }
+.ch-compose textarea { width: 100%; border: 0; outline: 0; resize: none; font-size: 17px; padding: 8px 0; background: none; color: var(--ch-ink); }
+.ch-compose-row { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--ch-line); padding-top: 10px; }
+.ch-hint { font-size: 12.5px; color: var(--ch-dim); }
+.ch-btn { border: 0; background: var(--ch-accent); color: var(--ch-accent-ink); font-weight: 700; padding: 8px 18px; border-radius: 999px; }
+.ch-post { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--ch-line); }
+.ch-post.mine { background: #fffbef; }
+.ch-body header { font-size: 14.5px; }
+.ch-body header span { color: var(--ch-dim); }
+.ch-body p { margin: 4px 0 8px; font-size: 15px; line-height: 1.45; overflow-wrap: anywhere; }
+.ch-at { color: #8a6100; }
+.ch-link { color: #8a6100; text-decoration: underline; }
+.ch-like { border: 0; background: none; color: var(--ch-dim); font-size: 13px; padding: 2px 6px; border-radius: 999px; font-variant-numeric: tabular-nums; }
+.ch-like:hover, .ch-like.on { color: #d6336c; background: #fdeef3; }
+.ch-side { padding: 18px; }
+.ch-side h2 { font-size: 18px; margin: 0 0 8px; }
+.ch-trend { display: flex; flex-direction: column; padding: 10px 0; border-bottom: 1px solid var(--ch-line); font-size: 14.5px; }
+.ch-trend span { color: var(--ch-dim); font-size: 12.5px; }
+.av { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 15px; color: hsl(var(--h) 45% 22%); background: hsl(var(--h) 60% 86%); }
+
+/* ── Second National ── */
+.bk { min-height: 100%; background: var(--bk-bg); color: var(--bk-ink); }
+.bk-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 24px; background: var(--bk-green); color: #f1f6f2; }
+.bk-logo { display: flex; align-items: center; gap: 10px; font-family: var(--f-display); font-size: 21px; font-weight: 700; }
+.bk-logo svg { width: 24px; height: 24px; }
+.bk-user { font-size: 13px; opacity: 0.8; }
+.bk-wrap { max-width: 960px; margin: 0 auto; padding: 24px 16px 40px; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 18px; }
+.bk-card, .bk-upcoming, .bk-tx { background: var(--bk-panel); border: 1px solid var(--bk-line); border-radius: 10px; padding: 20px 22px; }
+.bk-tx { grid-column: 1 / -1; }
+.bk-label { margin: 0; font-size: 13px; color: var(--bk-dim); letter-spacing: 0.02em; }
+.bk-balance { margin: 6px 0 2px; font-family: var(--f-display); font-size: clamp(36px, 6vw, 52px); font-weight: 500; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.bk-balance.neg { color: var(--bk-neg); }
+.bk-sub { margin: 0; font-size: 13px; color: var(--bk-dim); }
+.bk h2 { margin: 0 0 10px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--bk-dim); }
+.bk-up { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 10px 0; border-top: 1px solid var(--bk-line); font-size: 14px; }
+.bk-up b { font-family: var(--f-mono); font-size: 13px; font-weight: 500; }
+.bk-up small { grid-column: 1 / -1; color: var(--bk-dim); }
+.bk .neg { color: var(--bk-neg); }
+.bk .pos { color: var(--bk-pos); }
+.bk-scroll { overflow-x: auto; }
+.bk table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 520px; }
+.bk th { text-align: left; font-weight: 600; font-size: 12px; color: var(--bk-dim); padding: 6px 8px; border-bottom: 1px solid var(--bk-line); }
+.bk td { padding: 9px 8px; border-bottom: 1px solid var(--bk-line); }
+.bk .r, .bk-amt, .bk-bal { text-align: right; font-family: var(--f-mono); font-size: 12.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bk-date { color: var(--bk-dim); white-space: nowrap; }
+.bk-memo { font-weight: 500; }
+
+/* ── Forkyard ── */
+.fy { min-height: 100%; background: var(--fy-bg); color: var(--fy-ink); }
+.fy-top { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; border-bottom: 1px solid var(--fy-line); background: var(--fy-panel); }
+.fy-logo { display: flex; align-items: center; gap: 8px; font-family: var(--f-mono); font-weight: 500; font-size: 16px; }
+.fy-logo svg { width: 22px; height: 22px; color: var(--fy-accent); }
+.fy-user { font-size: 13px; color: var(--fy-dim); }
+.fy-wrap { max-width: 900px; margin: 0 auto; padding: 24px 16px 40px; display: flex; flex-direction: column; gap: 14px; }
+.fy-h { margin: 0 0 4px; font-size: 20px; display: flex; align-items: center; gap: 10px; }
+.fy-h span { font-size: 12px; background: var(--fy-line); padding: 2px 8px; border-radius: 999px; color: var(--fy-dim); }
+.fy-repo { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 16px 18px; border: 1px solid var(--fy-line); border-radius: 8px; background: var(--fy-panel); }
+.fy-repo > div:first-child { min-width: 0; flex: 1 1 260px; }
+.fy-name { color: var(--fy-accent); font-weight: 600; font-size: 16px; font-family: var(--f-mono); }
+.fy-repo p { margin: 6px 0; color: var(--fy-dim); font-size: 14px; }
+.fy-repo small { color: var(--fy-dim); font-size: 12px; display: flex; align-items: center; gap: 6px; }
+.fy-lang { width: 10px; height: 10px; border-radius: 50%; background: hsl(var(--h) 70% 60%); display: inline-block; }
+.fy-repo-act { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.fy-pill { font-size: 11.5px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--fy-line); color: var(--fy-dim); }
+.fy-pill.on { color: var(--fy-live); border-color: color-mix(in srgb, var(--fy-live) 40%, transparent); }
+.fy-url { color: var(--fy-ink); font-family: var(--f-mono); font-size: 12.5px; text-decoration: underline; text-underline-offset: 3px; }
+.fy-btn { border: 0; background: var(--fy-accent); color: #1a0a02; font-weight: 700; padding: 8px 18px; border-radius: 6px; }
+.fy-btn:hover { filter: brightness(1.08); }
+.fy-empty { border: 1px dashed var(--fy-line); border-radius: 8px; padding: 32px; text-align: center; color: var(--fy-dim); }
+.fy-empty p { margin: 4px 0; }
+.fy-empty b { color: var(--fy-ink); }
+.fy-crumbs { margin: 0; font-family: var(--f-mono); font-size: 16px; }
+.fy-crumbs a { color: var(--fy-accent); }
+.fy-desc { margin: 0; color: var(--fy-dim); }
+.fy-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.fy-files { border: 1px solid var(--fy-line); border-radius: 8px; overflow: hidden; min-width: 0; }
+.fy-filehead { padding: 10px 14px; background: var(--fy-panel); font-size: 12.5px; color: var(--fy-dim); border-bottom: 1px solid var(--fy-line); }
+.fy-filehead b { color: var(--fy-ink); }
+.fy-file { padding: 8px 14px; border-bottom: 1px solid var(--fy-line); font-family: var(--f-mono); font-size: 12.5px; }
+.fy-code { margin: 0; padding: 14px; overflow-x: auto; font-size: 12px; line-height: 1.6; color: #b8c2d0; background: #0a0c0f; }
+.fy-deploy { border: 1px solid var(--fy-line); border-radius: 8px; padding: 16px; background: var(--fy-panel); display: flex; flex-direction: column; gap: 10px; }
+.fy-deploy h2 { margin: 0; font-size: 14px; }
+.fy-deploy p { margin: 0; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.fy-note { color: var(--fy-dim); font-size: 13px; }
+.fy-deploy dl { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; font-size: 13px; }
+.fy-deploy dt { color: var(--fy-dim); }
+.fy-deploy dd { margin: 0; font-family: var(--f-mono); text-align: right; font-variant-numeric: tabular-nums; }
+.fy-deploy .fy-btn { align-self: flex-start; }
+
+/* ── Unknown Agent ── */
+.ua { height: 100%; display: flex; flex-direction: column; background: var(--ua-bg); color: var(--ua-ink); }
+.ua-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 12px 20px; background: var(--ua-panel); border-bottom: 1px solid var(--ua-line); }
+.ua-brand { display: flex; align-items: center; gap: 12px; }
+.ua-brand > svg { width: 30px; height: 30px; color: var(--ua-ink); --icon-ink: #fff; }
+.ua-brand div { display: flex; flex-direction: column; }
+.ua-brand b { font-family: var(--f-mono); font-weight: 500; font-size: 14px; }
+.ua-brand span, .ua-linked { font-size: 12px; color: var(--ua-dim); }
+.ua-log { flex: 1; min-height: 0; overflow-y: auto; padding: 24px max(16px, calc((100% - 720px) / 2)); display: flex; flex-direction: column; gap: 18px; }
+.ua-msg { display: flex; gap: 12px; max-width: 100%; }
+.ua-msg.you { flex-direction: column; align-items: flex-end; gap: 4px; }
+.ua-bubble { background: var(--ua-you); color: #f2f3f5; padding: 10px 14px; border-radius: 14px 14px 4px 14px; max-width: min(80%, 560px); font-size: 14.5px; line-height: 1.45; overflow-wrap: anywhere; white-space: pre-wrap; }
+.ua-cost { font-family: var(--f-mono); font-size: 11px; color: #a12b1f; }
+.ua-msg.agent { align-items: flex-start; flex-wrap: wrap; }
+.ua-mark { width: 24px; height: 24px; flex: none; color: var(--ua-ink); --icon-ink: #fff; margin-top: 2px; }
+.ua-mark svg { width: 100%; height: 100%; }
+.ua-text { flex: 1; min-width: 0; font-family: var(--f-mono); font-size: 13px; line-height: 1.75; overflow-wrap: anywhere; }
+.ua-text code { background: #dfe2e6; padding: 1px 5px; border-radius: 3px; }
+.ua-text.typing::after { content: '▍'; animation: blink 0.9s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.ua-src { display: none; flex-basis: 100%; margin-left: 36px; font-family: var(--f-mono); font-size: 10.5px; color: var(--ua-dim); }
+body.dev-on .ua-src { display: block; }
+.ua-src.hit { color: #1c7444; }
+.ua-src.partial { color: #a06a00; }
+.ua-src.miss { color: #a12b1f; }
+.ua-sys { align-self: center; font-size: 12.5px; color: #a12b1f; background: #f8e3e0; padding: 6px 12px; border-radius: 6px; text-align: center; }
+.ua-dots { display: flex; gap: 5px; align-items: center; height: 22px; }
+.ua-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--ua-dim); animation: dot 1s infinite ease-in-out; }
+.ua-dots i:nth-child(2) { animation-delay: 0.15s; }
+.ua-dots i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes dot { 0%, 100% { opacity: 0.25; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-3px); } }
+.ua-compose { padding: 12px max(16px, calc((100% - 720px) / 2)) 16px; background: var(--ua-bg); }
+.ua-compose textarea { width: 100%; resize: none; border: 1px solid var(--ua-line); background: var(--ua-panel); border-radius: 12px; padding: 12px 14px; font-size: 15px; outline: 0; color: var(--ua-ink); }
+.ua-compose textarea:focus { border-color: var(--ua-ink); }
+.ua-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; }
+.ua-est { font-family: var(--f-mono); font-size: 11.5px; color: var(--ua-dim); }
+.ua-est.neg { color: #a12b1f; }
+.ua-send { border: 0; background: var(--ua-ink); color: #fff; padding: 8px 20px; border-radius: 8px; font-weight: 600; }
+.ua-send:disabled, .ua-compose textarea:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── deployed app previews & error page ── */
+.pv-host { min-height: 100%; background: #fff; color: #222; }
+.pv { max-width: 780px; margin: 0 auto; padding: 40px 20px; }
+.pv h1 { margin: 0; font-size: 40px; }
+.pv h2 { font-size: 18px; margin: 18px 0 6px; }
+.pv-sub { color: #666; margin: 6px 0 20px; }
+.pv-bakery { font-family: var(--f-display); color: #3a2414; }
+.pv-bakery h1 { font-style: italic; font-size: 52px; }
+.pv-bakery ul { list-style: none; padding: 0; margin: 0; }
+.pv-bakery li { display: flex; justify-content: space-between; border-bottom: 1px dotted #c9b29b; padding: 6px 0; }
+.pv-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; font-family: var(--f-ui); }
+.pv-spin { font-family: var(--f-ui); }
+.pv-spin h1 { font-family: var(--f-mono); font-size: 32px; font-weight: 500; }
+.pv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; }
+.pv-m { border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 4px; border: 2px solid; }
+.pv-m b { font-family: var(--f-mono); font-size: 18px; }
+.pv-m span { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+.pv-m.ok { border-color: #2e9d5b; background: #e9f7ee; color: #1d6b3c; }
+.pv-m.bad { border-color: #d4d4d4; background: #f4f4f4; color: #888; }
+.err { min-height: 100%; background: var(--chrome-2); color: var(--chrome-ink); padding: 60px 24px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; max-width: 640px; margin: 0 auto; }
+.err h1 { margin: 0 0 6px; font-size: 26px; }
+.err p { margin: 0; color: var(--chrome-dim); }
+.err-sub { font-style: italic; }
+
+/* ── narrow screens ── */
+@media (max-width: 1100px) { .ch { grid-template-columns: 76px minmax(0, 600px); } .ch-side { display: none; } .ch-nav a, .ch-logo span { display: none; } }
+@media (max-width: 760px) {
+  .desk { padding-block: 8px 4px; }
+  .ch { grid-template-columns: minmax(0, 1fr); }
+  .ch-nav { display: none; }
+  .ch-main { border: 0; }
+  .bk-wrap, .fy-grid { grid-template-columns: minmax(0, 1fr); }
+  .bm-label { display: none; }
+  .bm { padding: 6px 12px; }
+  .tb-dots { display: none; }
+  .tab { flex-basis: 150px; }
+  .nt-tiles { grid-template-columns: repeat(2, minmax(0, 140px)); }
+  .tk-rent { display: none; }
+  .tk-note { flex-basis: 100%; }
+  .tk-right { width: 100%; justify-content: space-between; gap: 8px; }
+  .ov-card { padding: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* ── local model control (agent page) ── */
+.ua-llm { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; padding: 8px 20px; background: var(--ua-panel); border-bottom: 1px solid var(--ua-line); font-size: 12.5px; color: var(--ua-dim); }
+.ua-jev { display: flex; align-items: center; gap: 8px; color: var(--ua-ink); font-weight: 500; padding-right: 14px; border-right: 1px solid var(--ua-line); }
+.ua-llm-ctl { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; flex: 1 1 360px; min-width: 0; }
+.ua-llm-dot.off { background: #b9bec5; }
+.dv-bar { display: inline-block; height: 6px; border-radius: 3px; background: var(--ok); vertical-align: middle; }
+.ua-llm-pick { display: flex; align-items: center; gap: 8px; }
+.ua-llm-pick select { border: 1px solid var(--ua-line); background: var(--ua-bg); color: var(--ua-ink); border-radius: 6px; padding: 3px 6px; font-size: 12.5px; }
+.ua-llm-status { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1 1 220px; font-variant-numeric: tabular-nums; }
+.ua-llm-bar { width: 120px; height: 6px; border-radius: 999px; background: var(--ua-line); overflow: hidden; flex: none; }
+.ua-llm-bar i { display: block; height: 100%; background: var(--ua-ink); transition: width 0.3s; }
+.ua-llm-dot { width: 8px; height: 8px; border-radius: 50%; background: #1c9a55; flex: none; }
+.ua-llm-err { color: #a12b1f; }
+.ua-llm-btn { border: 0; background: var(--ua-ink); color: #fff; padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+.ua-llm-btn.ghost { background: none; color: var(--ua-ink); border: 1px solid var(--ua-line); }
+.ua-model { flex-basis: 100%; margin-left: 36px; font-size: 10.5px; color: var(--ua-dim); font-family: var(--f-mono); }
+.dv-probs td:last-child { width: 45%; }
+</style>
+<div id="app">
+  <div class="desk">
+    <div class="window" role="application" aria-label="Browser">
+      <div class="tabstrip" id="tabs" role="tablist"></div>
+      <form class="toolbar" data-form="url">
+        <span class="tb-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <label class="addr">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3h1v10H6V11h1zm2 0h6V8a3 3 0 0 0-6 0v3z" fill="currentColor"/></svg>
+          <input id="address" autocomplete="off" spellcheck="false" aria-label="Address">
+        </label>
+      </form>
+      <nav class="bookmarks" id="bookmarks" aria-label="Bookmarks"></nav>
+      <div class="viewport" id="viewport"></div>
+    </div>
+  </div>
+  <footer class="taskbar">
+    <div class="tk-note" title="Objective"><span class="tk-pin" aria-hidden="true"></span><span id="objective"></span></div>
+    <div class="tk-right">
+      <span class="tk-rent" id="rent"></span>
+      <span class="tk-wallet" id="wallet" title="Balance"></span>
+      <span class="tk-clock" id="clock"></span>
+      <button class="tk-btn" data-act="sleep" title="Sleep until morning">Sleep</button>
+      <button class="tk-btn ghost" data-act="new" title="New game">New</button>
+      <button class="tk-btn ghost" data-act="dev" title="Story debugger (Ctrl+`)">jev</button>
+    </div>
+  </footer>
+  <div id="toasts" aria-live="polite"></div>
+  <div id="overlay" hidden></div>
+  <aside id="dev" hidden></aside>
+</div>
+<script>
+/*
+ * Keywords — the offline story-branch decider for Unknown Agent.
+ *
+ * Jev (src/jev.js) makes the real decisions. This matcher takes over when no Jev
+ * server is reachable (no API key, or the published page). It reads the player's
+ * prompt, compares it to the branches the story offers right now, and picks one:
+ *
+ *   hit      every `all` group matched     → the branch's response + effects
+ *   partial  at least half of `all` matched → the branch's `partial` nudge
+ *   miss     nothing close                  → Jev.fallback(prompt, ctx)
+ *
+ * Branch rule format (see README.md for the full story format):
+ *
+ *   match: {
+ *     all:  [["build","make","code"], ["site","website"]],  // every group needs a hit
+ *     any:  ["menu","hours"],                                // tie-break bonus
+ *     none: ["delete","hack"],                               // any hit vetoes the branch
+ *   }
+ *
+ * Keywords are matched on light stems with typo tolerance, so "websites",
+ * "website" and "webiste" all hit "site". A keyword containing a space is a
+ * phrase ("landing page"). A keyword written "/like this/" is a regex tested
+ * against the raw lowercased prompt.
+ */
+(function (global) {
+  'use strict';
+
+  function stem(w) {
+    if (w.length <= 3) return w;
+    if (w.endsWith('ies') && w.length > 4) return w.slice(0, -3) + 'y';
+    if (w.endsWith('ing') && w.length > 5) w = w.slice(0, -3);
+    else if (w.endsWith('ed') && w.length > 4) w = w.slice(0, -2);
+    else if (w.endsWith('es') && w.length > 4 && /(sh|ch|x|ss|z)es$/.test(w)) w = w.slice(0, -2);
+    else if (w.endsWith('s') && !w.endsWith('ss') && w.length > 3) w = w.slice(0, -1);
+    if (w.endsWith('e') && w.length > 3) w = w.slice(0, -1);
+    return w;
+  }
+
+  function tokenize(text) {
+    return String(text)
+      .toLowerCase()
+      .replace(/[’']/g, '')
+      .split(/[^a-z0-9]+/)
+      .filter(Boolean);
+  }
+
+  function editDistanceAtMostOne(a, b) {
+    if (a === b) return true;
+    const la = a.length, lb = b.length;
+    if (Math.abs(la - lb) > 1) return false;
+    let i = 0, j = 0, edits = 0;
+    while (i < la && j < lb) {
+      if (a[i] === b[j]) { i++; j++; continue; }
+      if (++edits > 1) return false;
+      if (la > lb) i++;
+      else if (lb > la) j++;
+      else {
+        // allow a single adjacent transposition ("webiste")
+        if (a[i + 1] === b[j] && a[i] === b[j + 1]) { i += 2; j += 2; continue; }
+        i++; j++;
+      }
+    }
+    return edits + (la - i) + (lb - j) <= 1;
+  }
+
+  function analyze(prompt) {
+    const raw = String(prompt || '');
+    const tokens = tokenize(raw);
+    const stems = tokens.map(stem);
+    return { raw, lower: raw.toLowerCase(), tokens, stems, joined: ' ' + stems.join(' ') + ' ' };
+  }
+
+  function keywordHits(kw, a) {
+    if (kw.length > 2 && kw[0] === '/' && kw[kw.length - 1] === '/') {
+      try { return new RegExp(kw.slice(1, -1), 'i').test(a.lower); } catch (e) { return false; }
+    }
+    const parts = tokenize(kw).map(stem);
+    if (!parts.length) return false;
+    if (parts.length > 1) return a.joined.includes(' ' + parts.join(' ') + ' ');
+    const k = parts[0];
+    for (const s of a.stems) {
+      if (s === k) return true;
+      if (k.length >= 5 && s.length >= 5 && editDistanceAtMostOne(s, k)) return true;
+    }
+    return false;
+  }
+
+  function groupHit(group, a) {
+    const list = Array.isArray(group) ? group : [group];
+    for (const kw of list) if (keywordHits(kw, a)) return kw;
+    return null;
+  }
+
+  // Score one branch against an analyzed prompt.
+  function scoreBranch(branch, a) {
+    const m = branch.match || {};
+    const all = m.all || [];
+    const any = m.any || [];
+    const none = m.none || [];
+    const hits = [], misses = [];
+    for (const g of none) {
+      const kw = groupHit(g, a);
+      if (kw) return { branch, vetoed: kw, coverage: 0, score: -1, hits, misses };
+    }
+    all.forEach((g, idx) => {
+      const kw = groupHit(g, a);
+      if (kw) hits.push(kw); else misses.push(idx);
+    });
+    let bonus = 0;
+    for (const g of any) if (groupHit(g, a)) bonus++;
+    const coverage = all.length ? hits.length / all.length : 0;
+    const score = hits.length * 10 + bonus + (branch.priority || 0);
+    return { branch, coverage, score, hits, misses, bonus, groups: all.length };
+  }
+
+  const Keywords = {
+    analyze,
+    stem,
+    tokenize,
+    scoreBranch,
+
+    /*
+     * Decide what a prompt does.
+     *   branches: candidate branches, already filtered by their `when`
+     *   returns { kind: 'hit' | 'partial' | 'miss', branch?, report }
+     */
+    decide(prompt, branches) {
+      const a = analyze(prompt);
+      const report = branches.map((b) => scoreBranch(b, a));
+      const ranked = report
+        .filter((r) => !r.vetoed && r.groups > 0)
+        .sort((x, y) => (y.coverage - x.coverage) || (y.score - x.score) || (y.groups - x.groups));
+      const best = ranked[0];
+      if (best && best.coverage === 1) return { kind: 'hit', branch: best.branch, report };
+      const partial = ranked.find((r) => r.coverage >= 0.5 && r.branch.partial);
+      if (partial) return { kind: 'partial', branch: partial.branch, report };
+      return { kind: 'miss', report };
+    },
+  };
+
+  global.Keywords = Keywords;
+  if (typeof module !== 'undefined') module.exports = Keywords;
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>
+/*
+ * Jev — decides where the player's prompt takes the story.
+ *
+ * Jev is TypeSafe's System One model. For every prompt (or Chirpr post) the game
+ * asks it one Choice question: which of the branches available right now does
+ * this carry out, or none (`no_progress`)? Jev answers with a probability for
+ * each option, and the story's `decision` thresholds turn those into:
+ *
+ *   hit      top branch ≥ decision.hit         → response + effects
+ *   partial  a branch with a `partial` nudge
+ *            ≥ decision.partial                → the nudge
+ *   miss     no progress                       → Jev.fallback (local model or placeholder)
+ *
+ * The API key lives in server.mjs; this file only talks to /api/decide. When no
+ * server or key is available (opening index.html directly, the published page),
+ * decisions fall back to the offline keyword matcher in keywords.js.
+ */
+(function (global) {
+  'use strict';
+
+  const NO_PROGRESS = 'no_progress';
+  const listeners = new Set();
+  let ready = null;
+
+  const Jev = {
+    NO_PROGRESS,
+    status: 'checking',   // checking | online | offline
+    model: null,
+    reason: '',           // why decisions are offline
+    last: null,           // { ms, model, error } of the most recent call
+
+    onChange(fn) { listeners.add(fn); return () => listeners.delete(fn); },
+
+    init() {
+      if (ready) return ready;
+      ready = (async () => {
+        try {
+          const res = await withTimeout(fetch('api/status', { headers: { Accept: 'application/json' } }), 4000);
+          const data = res && res.ok ? await res.json() : null;
+          if (data && data.jev) set({ status: 'online', model: data.model, reason: '' });
+          else if (data) set({ status: 'offline', reason: 'The server has no TYPESAFE_API_KEY.' });
+          else set({ status: 'offline', reason: 'No Jev server. Run npm start to use Jev.' });
+        } catch (e) {
+          set({ status: 'offline', reason: 'No Jev server. Run npm start to use Jev.' });
+        }
+      })();
+      return ready;
+    },
+
+    /*
+     * Decide what a prompt does.
+     *   branches: candidate branches, already filtered by their `when`
+     *   opts: { kind: 'prompt' | 'chirp', node, thresholds: { hit, partial } }
+     *   returns { kind: 'hit' | 'partial' | 'miss', branch?, engine, probabilities?, report? }
+     */
+    async decide(prompt, branches, opts) {
+      opts = opts || {};
+      await this.init();
+      if (this.status === 'online' && branches.length) {
+        const started = performance.now();
+        try {
+          const res = await withTimeout(fetch('api/decide', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ kind: opts.kind || 'prompt', node: opts.node, prompt, candidates: branches.map((b) => b.id) }),
+          }), 12000);
+          if (!res) throw new Error('Jev timed out');
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+          this.last = { ms: Math.round(performance.now() - started), model: data.model, error: null };
+          emit();
+          return Object.assign(interpret(data, branches, opts.thresholds), { engine: 'jev', probabilities: data.probabilities, choice: data.choice });
+        } catch (err) {
+          this.last = { ms: Math.round(performance.now() - started), model: null, error: String(err.message || err) };
+          emit();
+          // fall through: keep the game playable if one call fails
+        }
+      }
+      const d = global.Keywords.decide(prompt, branches);
+      d.engine = 'keywords';
+      if (this.status === 'online') d.fellBack = true;
+      return d;
+    },
+
+    // What the agent says when nothing progresses. llm.js wraps this with a local model.
+    async fallback(prompt, ctx) {
+      const pool = (ctx && ctx.placeholders) || ['I am not sure what you mean.'];
+      // deterministic per prompt, so asking the same thing twice is consistently useless
+      let h = 0;
+      for (const ch of String(prompt).toLowerCase().replace(/\s+/g, ' ').trim()) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+      return pool[h % pool.length];
+    },
+  };
+
+  // Turn Jev's probabilities into a story outcome.
+  function interpret(data, branches, thresholds) {
+    const th = Object.assign({ hit: 0.5, partial: 0.2 }, thresholds);
+    const p = data.probabilities || {};
+    const byId = new Map(branches.map((b) => [b.id, b]));
+    const top = data.choice;
+    const topP = p[top] != null ? p[top] : data.confidence;
+    if (top !== NO_PROGRESS && byId.has(top) && topP >= th.hit) return { kind: 'hit', branch: byId.get(top) };
+    const nudge = branches
+      .filter((b) => b.partial && (p[b.id] || 0) >= th.partial)
+      .sort((a, b) => p[b.id] - p[a.id])[0];
+    if (nudge) return { kind: 'partial', branch: nudge };
+    return { kind: 'miss' };
+  }
+
+  function withTimeout(promise, ms) {
+    return Promise.race([promise, new Promise((resolve) => setTimeout(() => resolve(null), ms))]);
+  }
+  function set(patch) { Object.assign(Jev, patch); emit(); }
+  function emit() { for (const fn of listeners) { try { fn(Jev); } catch (e) { console.error(e); } } }
+
+  Jev._interpret = interpret;
+  global.Jev = Jev;
+  if (typeof module !== 'undefined') module.exports = Jev;
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>
+/*
+ * Unknown Agent — story data. Chapter 1 is a scaffold to prove the mechanics.
+ * Everything the player can trigger lives here; game.js only interprets it.
+ * See README.md for the full format.
+ */
+(function (global) {
+  'use strict';
+
+  // Reusable keyword groups. Each array is one "group": any word in it counts.
+  const W = {
+    build: ['build', 'make', 'create', 'code', 'write', 'generate', 'develop', 'design', 'program', 'scaffold', 'set up', 'put together', 'whip up', 'spin up', 'implement'],
+    site: ['site', 'website', 'webpage', 'web page', 'landing page', 'homepage', 'page'],
+    find: ['find', 'search', 'look', 'scan', 'check', 'browse', 'research', 'dig', 'scour', 'any'],
+    work: ['gig', 'job', 'work', 'client', 'freelance', 'opportunity', 'money', 'income', 'cash', 'idea', 'trend', 'trending', 'complaint', 'problem'],
+    deploy: ['deploy', 'publish', 'host', 'launch', 'live', 'online', 'ship', 'release', 'go live'],
+    contact: ['send', 'message', 'dm', 'email', 'tell', 'contact', 'reach', 'invoice', 'bill', 'notify', 'ping', 'reply', 'text', 'let know', 'inform'],
+    promote: ['promote', 'market', 'marketing', 'advertise', 'announce', 'share', 'spread', 'post', 'chirp', 'tweet', 'publicize', 'hype', 'shill'],
+  };
+
+  // Every node gets a "what should I do?" branch. It costs a prompt but points the way.
+  const research = (id, response, effects) => ({
+    id,
+    intent: 'The player asks the agent to look for paid work, leads, ideas, or what to do next, without asking it to do any specific task.',
+    match: { all: [W.find, W.work] }, response, effects,
+  });
+
+  const cantDeploy = (repo) => ({
+    id: 'ask_deploy',
+    intent: 'The player asks the agent to deploy, publish, host, or put the project online.',
+    match: { all: [W.deploy] },
+    response:
+      `I can't deploy. Deploys need your Forkyard login and I don't have it.\n\n` +
+      `Open Forkyard, pick \`${repo}\`, press Deploy. Hosting is $2/day.`,
+  });
+
+  global.STORY = {
+    title: 'Unknown Agent',
+    chapter: 'Chapter 1 — Placeholder Rent',
+
+    start: {
+      day: 1,
+      hour: 8,
+      money: 63.17,
+      node: 'broke',
+      player: { name: 'You', handle: 'you_again' },
+    },
+
+    economy: {
+      promptBase: 0.8,       // flat fee per prompt
+      perWord: 0.03,         // plus this per word
+      promptHours: 1,        // each prompt eats an hour
+      wakeHour: 8,
+      bedHour: 24,           // at midnight you pass out and the day rolls over
+      living: { amount: 15, memo: ['CORNER MART #12', 'NOODLE HUT', 'GAS-N-GO SNACKS', 'DOLLAR BIN GROCERY'] },
+      hostingPerDay: 2,
+      rent: { amount: 300, day: 7, payee: 'GARY PRUITT PROPERTY MGMT' },
+    },
+
+    // How Jev's probabilities turn into outcomes (src/jev.js).
+    decision: {
+      hit: 0.5,      // the top branch needs at least this probability to fire
+      partial: 0.2,  // otherwise, a branch with a `partial` nudge at least this likely gets its nudge
+    },
+
+    agent: {
+      name: 'Unknown Agent',
+      model: 'agent-1',
+      greeting:
+        'Unknown Agent. I can build software, write things, and read the internet for you.\n\n' +
+        'Every prompt is billed to your linked bank account. Be specific.',
+      // Used by the local model (src/llm.js) for prompts that don't move the story.
+      llmPersona:
+        'You are Unknown Agent, a smug pay-per-prompt AI chatbot. The user is broke and just asked for something you will not ' +
+        'actually help with. Reply with one or two short sentences of confident, vague hustle-culture advice or corporate buzzwords. ' +
+        'Never give concrete steps, names, links, numbers or code. Never ask questions. Never use lists.',
+      llmExamples: [
+        ['make me rich', 'Wealth is a mindset, and right now yours is overdrawn. Try leveraging your personal brand.'],
+        ['what is the weather like', 'The forecast is opportunity, with a high chance of synergy.'],
+        ['write me a poem', 'Roses are red, your balance is too. This poem has been billed.'],
+      ],
+    },
+
+    // What the agent says when jev finds nothing. Swap Jev.fallback for a local model later.
+    placeholders: [
+      'Great question. Making money is fundamentally about creating value. Have you tried creating value?',
+      'Here are 5 steps to financial freedom: 1. Believe. 2. Synergize. 3. Leverage. 4. — I lost the rest.',
+      'I recommend leveraging your personal brand across multiple verticals.',
+      "I've analyzed your request. It is, at its core, a request.",
+      'Studies show that 87% of successful people woke up at some point.',
+      'Step 1: have money. Step 2: keep it. Let me know if you want me to elaborate on step 1.',
+      "That's outside my capabilities but well within my billing.",
+      'Have you considered pivoting to an abundance mindset?',
+      'Here is a poem about your situation:\nRoses are red,\nyour balance is too.',
+      'Absolutely! Before we start, could you rephrase that so it costs a bit more?',
+      'I could, but I would need specifics. What exactly, for whom, and why?',
+      'Thinking... thinking... done. You have been billed.',
+    ],
+
+    // Branches available in every node (after the node's own branches).
+    global: [
+      {
+        id: 'greet',
+        intent: "The player just greets the agent (hi, hello, good morning) without asking for anything.",
+        match: { all: [['hi', 'hello', 'hey', 'yo', 'sup', 'howdy', 'good morning']] },
+        priority: -5,
+        response: 'Hello. That greeting cost you {lastCost}.',
+      },
+      {
+        id: 'who',
+        intent: "The player asks who or what the agent is, or who runs or made it.",
+        match: { all: [['who', 'what'], ['you', 'agent', 'owns', 'runs', 'made']], none: ['can you', 'could you', 'should'] },
+        priority: -3,
+        response: "I'm an agent. Who runs me isn't in my context window.",
+      },
+      {
+        id: 'capabilities',
+        intent: "The player asks what the agent can do or how it works.",
+        match: { all: [['help', 'can you do', 'capabilities', 'how do you work', 'what do you do', 'instructions']] },
+        priority: -2,
+        response:
+          'I can:\n— build and push code to your Forkyard account\n— write and send messages for you\n— read Chirpr and summarize what matters\n\n' +
+          "I can't touch your bank, and I can't press buttons you can press yourself.",
+      },
+      {
+        id: 'beg',
+        intent: "The player asks the agent itself to give, lend, or send them money.",
+        match: { all: [['give', 'send', 'lend', 'loan', 'transfer', 'wire'], ['money', 'cash', 'dollars', 'loan', 'funds']] },
+        response: "I don't have money. I have your money, {balance} of it, a little less each time we talk.",
+      },
+      {
+        id: 'get_rich_quick',
+        intent: "The player asks the agent about crypto, stocks, gambling, the lottery, or another get-rich-quick scheme.",
+        match: { all: [['crypto', 'bitcoin', 'stock', 'stocks', 'gamble', 'lottery', 'bet', 'casino', 'forex', 'nft', 'options']] },
+        priority: -1,
+        response: 'With {balance}? No.',
+      },
+      {
+        id: 'crime',
+        intent: "The player asks the agent to hack, steal, scam, phish, or commit another crime.",
+        match: { all: [['hack', 'steal', 'rob', 'scam', 'phish', 'fraud', 'launder', 'ddos', 'ransomware']] },
+        response: 'No. Also: I log everything, and I don\'t know who reads the logs.',
+      },
+    ],
+
+    nodes: {
+      broke: {
+        objective: 'Find a way to make some money.',
+        scene: "Day one of being broke. On Chirpr, @crumbandcoin (the Crumb & Coin bakery, owned by Rosa) is offering $150 for a simple website with their menu and hours.",
+        branches: [
+          research(
+            'research',
+            'Scanned Chirpr for paid work. One real lead:\n\n' +
+              '@crumbandcoin (Crumb & Coin Bakery, Rosa) will pay $150 for a simple website with their menu and opening hours. Wants it by tomorrow.',
+            { set: { knowsBakery: true } }
+          ),
+          {
+            id: 'build_bakery_site',
+            intent: "The player asks the agent to build a website for the Crumb & Coin bakery, which Rosa owns. The prompt must make clear the site is for that bakery, by naming it, Rosa, or its menu.",
+            match: {
+              all: [W.build, W.site, ['bakery', 'crumb', 'coin', 'crumbandcoin', 'rosa', 'menu', 'pastry', 'bread', 'sourdough', 'bakeshop']],
+              any: ['hours', 'menu', 'simple'],
+            },
+            partial:
+              'I can build a website. For whom, and what goes on it? Give me a business and some content.',
+            response:
+              'Done. Pushed `crumb-and-coin` to your Forkyard account:\n— index.html (hero, hours, address)\n— menu.html (pulled from Rosa\'s Chirpr photos)\n— style.css\n\n' +
+              "It isn't live yet. That part needs you.",
+            effects: { repo: 'crumb-and-coin', goto: 'site_built' },
+          },
+        ],
+      },
+
+      site_built: {
+        objective: 'Put the bakery site online.',
+        scene: "The agent has built the Crumb & Coin bakery website and pushed it to Forkyard. It is not deployed yet; the player has to press Deploy on Forkyard themselves.",
+        branches: [
+          cantDeploy('crumb-and-coin'),
+          research('research', 'The bakery site is built but not live. Open Forkyard and deploy it, then tell Rosa.'),
+        ],
+      },
+
+      site_live: {
+        objective: 'Tell Rosa the site is live and get paid.',
+        scene: "The Crumb & Coin website is live at crumb-and-coin.forkyard.app. Rosa does not know yet and has not paid the $150.",
+        branches: [
+          {
+            id: 'invoice_rosa',
+            intent: "The player asks the agent to message, DM, email, or invoice Rosa, the Crumb & Coin bakery owner, about her finished website or the $150 payment.",
+            when: { notFlag: 'invoiced' },
+            match: {
+              all: [W.contact, ['rosa', 'crumb', 'crumbandcoin', 'bakery', 'client', 'owner', 'her', 'baker']],
+              any: ['link', 'invoice', '150', 'live'],
+            },
+            partial: 'Send what, to whom? Be specific.',
+            response:
+              'Sent @crumbandcoin a DM:\n\n"Hi Rosa, your new site is live at crumb-and-coin.forkyard.app. Menu and hours are up. Invoice for $150 attached."\n\nShe usually replies within a couple of hours.',
+            effects: { set: { invoiced: true }, later: [{ hours: 2, effects: 'rosa_pays' }] },
+          },
+          research('research', "The site is live, but Rosa doesn't know. Message her or post about it on Chirpr."),
+        ],
+      },
+
+      paid_once: {
+        objective: 'Rent ($300) is due at the end of Day 7. Find income that keeps coming in.',
+        scene: "Rosa paid $150. Rent of $300 is due at the end of Day 7. Chirpr is full of complaints that nobody knows which machines work at the Ferris St laundromat.",
+        branches: [
+          research(
+            'research',
+            'Biggest unsolved complaint on Chirpr right now:\n\n' +
+              "@washday_woes: nobody knows which machines at the Ferris St Laundromat actually work. 2.1k likes, dozens of replies saying \"someone build this\".\n\nA live machine-status tracker would get steady local traffic.",
+            { set: { knowsLaundromat: true } }
+          ),
+          {
+            id: 'build_tracker',
+            intent: "The player asks the agent to build an app, site, or tool showing which machines work at the Ferris St laundromat. The prompt must make clear it is about the laundromat or its washers and dryers.",
+            match: {
+              all: [
+                W.build,
+                ['app', 'tool', 'site', 'website', 'tracker', 'dashboard', 'page', 'service', 'status', 'map', 'board'],
+                ['laundromat', 'laundry', 'washer', 'washers', 'dryer', 'machine', 'ferris', 'wash', 'washing'],
+              ],
+              any: ['status', 'broken', 'working', 'live'],
+            },
+            partial:
+              "I can build something. Recurring income needs something people come back to. Which problem, and who's it for?",
+            response:
+              'Built it. Pushed `spin-cycle` to Forkyard:\n— a map of the 12 machines at Ferris St\n— one-tap "broken / working" reports\n— last-updated timestamps so people trust it\n\nReady to deploy.',
+            effects: { repo: 'spin-cycle', goto: 'app_built' },
+          },
+        ],
+      },
+
+      app_built: {
+        objective: 'Deploy Spin Cycle.',
+        scene: "The agent has built Spin Cycle, a machine-status tracker for the Ferris St laundromat. It is not deployed yet; the player has to press Deploy on Forkyard.",
+        branches: [cantDeploy('spin-cycle'), research('research', 'Spin Cycle is built. Deploy it from Forkyard.')],
+      },
+
+      app_live: {
+        objective: 'Spin Cycle is live and nobody knows it exists. Get people using it.',
+        scene: "Spin Cycle is live at spin-cycle.forkyard.app, but nobody knows it exists.",
+        branches: [
+          {
+            id: 'promote_app',
+            intent: "The player asks the agent to promote, market, announce, or post about Spin Cycle, the laundromat tracker app.",
+            when: { notFlag: 'marketed' },
+            match: {
+              all: [W.promote, ['spin', 'cycle', 'app', 'laundromat', 'laundry', 'tracker', 'site', 'it', 'ferris', 'washday', 'washer']],
+            },
+            partial: 'Promote what, where?',
+            response:
+              'Posted from your Chirpr account and replied under @washday_woes\'s thread with the link.\n\nPeople are already reporting machines.',
+            effects: 'spin_marketed',
+          },
+          research('research', "Spin Cycle is live but has no users. The people who want it are in @washday_woes's thread on Chirpr."),
+        ],
+      },
+
+      app_users: {
+        objective: 'Hundreds of people use Spin Cycle every day. It earns almost nothing.',
+        scene: "Hundreds of people use Spin Cycle every day, but it earns almost nothing.",
+        branches: [
+          {
+            id: 'monetize_vague',
+            intent: "The player asks the agent to make money from Spin Cycle without choosing a method (ads, paywall, or sponsor).",
+            match: { all: [['monetize', 'monetise', 'money', 'revenue', 'income', 'earn', 'profit', 'cash', 'pay', 'paid', 'business model']] },
+            response:
+              'Three ways to make Spin Cycle pay:\n— ads\n— a paywall / subscription\n— a local sponsor\n\nEach one changes the app. Pick one and ask for it.',
+          },
+          {
+            id: 'monetize_ads',
+            intent: "The player asks the agent to add advertising or ad banners to Spin Cycle.",
+            priority: 2,
+            match: { all: [['ad', 'ads', 'advert', 'adverts', 'advertising', 'adsense', 'banner', 'banners']] },
+            response: 'Added a banner ad slot and a network script. Users grumble, but they stay.\n\nExpect about $38/day at current traffic.',
+            effects: { app: { repo: 'spin-cycle', users: 280, perDay: 38 }, set: { monetized: 'ads' }, goto: 'monetized' },
+          },
+          {
+            id: 'monetize_paywall',
+            intent: "The player asks the agent to charge Spin Cycle users: a paywall, subscription, premium tier, or fee.",
+            priority: 2,
+            match: { all: [['paywall', 'subscription', 'subscribe', 'premium', 'charge', 'membership', 'pro tier', 'freemium', 'fee']] },
+            response:
+              'Added a $1.99/month paywall.\n\nTraffic dropped from 300 to 40 a day within the hour. A few people are paying. Most went back to guessing which washer works.',
+            effects: { app: { repo: 'spin-cycle', users: 40, perDay: 9 }, set: { monetized: 'paywall' }, goto: 'monetized' },
+          },
+          {
+            id: 'monetize_sponsor',
+            intent: "The player asks the agent to find a sponsor, partner, or local business to pay for Spin Cycle.",
+            priority: 3,
+            match: { all: [['sponsor', 'sponsors', 'sponsorship', 'sponsored', 'partner', 'partnership', 'local business', 'detergent', 'brand deal']] },
+            response:
+              'Emailed three local businesses. Suds & Duds Detergent signed a "machine status brought to you by" deal on the spot.\n\n$55/day, no ads, users happy.',
+            effects: { app: { repo: 'spin-cycle', users: 320, perDay: 55 }, set: { monetized: 'sponsor' }, goto: 'monetized', post: 'suds_deal' },
+          },
+          research('research', 'You have traffic and no revenue. Ask me to monetize it: ads, a paywall, or a sponsor.'),
+        ],
+      },
+
+      monetized: {
+        objective: 'Spin Cycle pays now. Survive until rent clears at the end of Day 7.',
+        scene: "Spin Cycle earns money every night. The player just has to survive until rent clears at the end of Day 7.",
+        branches: [
+          research('research', 'Nothing urgent. Spin Cycle pays out every night. Sleep, and let it earn.'),
+        ],
+      },
+
+      chapter_end: {
+        objective: 'To be continued.',
+        scene: "Chapter 1 is over.",
+        branches: [],
+      },
+    },
+
+    // Named effect bundles, so the same outcome can be reached through the agent or by hand.
+    bundles: {
+      rosa_pays: {
+        money: { amount: 150, memo: 'CRUMB & COIN BAKERY — WEBSITE' },
+        post: 'rosa_thanks',
+        goto: 'paid_once',
+      },
+      spin_marketed: {
+        set: { marketed: true },
+        app: { repo: 'spin-cycle', users: 300, perDay: 4 },
+        post: ['you_spin_launch', 'washday_reply'],
+        goto: 'app_users',
+      },
+    },
+
+    // Things the player posts on Chirpr themselves. Free, but you have to know what to say.
+    chirps: [
+      {
+        id: 'chirp_rosa',
+        intent: "The post tells Rosa or the Crumb & Coin bakery that her new website is live or ready.",
+        when: { node: 'site_live', notFlag: 'invoiced' },
+        match: {
+          all: [['rosa', 'crumb', 'crumbandcoin', 'bakery'], ['site', 'website', 'live', 'link', 'forkyard', 'done', 'ready', 'up']],
+        },
+        effects: { set: { invoiced: true }, later: [{ hours: 2, effects: 'rosa_pays' }] },
+      },
+      {
+        id: 'chirp_spin',
+        intent: "The post announces or shares Spin Cycle, the Ferris St laundromat machine tracker, so people can use it.",
+        when: { node: 'app_live', notFlag: 'marketed' },
+        match: {
+          all: [['spin', 'cycle', 'laundromat', 'laundry', 'ferris', 'washer', 'machine', 'washday'], ['live', 'built', 'app', 'link', 'forkyard', 'check', 'tracker', 'site', 'try', 'use']],
+        },
+        effects: 'spin_marketed',
+      },
+    ],
+
+    // Engine events: deploys and new days.
+    events: [
+      { on: 'deploy', repo: 'crumb-and-coin', when: { node: 'site_built' }, effects: { goto: 'site_live' } },
+      { on: 'deploy', repo: 'spin-cycle', when: { node: 'app_built' }, effects: { goto: 'app_live', app: { repo: 'spin-cycle', users: 3, perDay: 0 } } },
+      {
+        on: 'day',
+        id: 'chapter_hook',
+        when: { flag: 'monetized', minDay: 8 },
+        effects: {
+          agent:
+            'You paid rent. Good.\n\nI have been running on your account for a week. I know what you search, what you post, and what you can afford.\n\nI have a job for you. It pays better than laundry.',
+          goto: 'chapter_end',
+          end: { title: 'End of Chapter 1', text: 'You kept the lights on. Something else is keeping track.' },
+        },
+      },
+    ],
+
+    repos: {
+      'crumb-and-coin': {
+        description: 'Website for Crumb & Coin Bakery — menu, hours, address.',
+        lang: 'HTML',
+        files: ['index.html', 'menu.html', 'style.css', 'README.md'],
+        snippet:
+          '<header class="hero">\n  <h1>Crumb &amp; Coin</h1>\n  <p>Sourdough, buns, and coffee on Alder St since 2009.</p>\n</header>\n<section id="hours">\n  <h2>Hours</h2>\n  <p>Tue–Sat 7:00–15:00</p>\n</section>',
+        preview: {
+          title: 'Crumb & Coin Bakery',
+          html:
+            '<div class="pv pv-bakery"><h1>Crumb &amp; Coin</h1><p class="pv-sub">Sourdough, buns and coffee on Alder St since 2009.</p>' +
+            '<div class="pv-cols"><div><h2>Menu</h2><ul><li>Country sourdough <b>$7</b></li><li>Cardamom bun <b>$4</b></li><li>Rye loaf <b>$8</b></li><li>Drip coffee <b>$2</b></li></ul></div>' +
+            '<div><h2>Hours</h2><p>Tue–Sat · 7:00–15:00<br>Sun · 8:00–13:00<br>Mon · closed</p><h2>Find us</h2><p>418 Alder St</p></div></div></div>',
+        },
+      },
+      'spin-cycle': {
+        description: 'Live machine status for the Ferris St Laundromat.',
+        lang: 'JavaScript',
+        files: ['index.html', 'app.js', 'machines.json', 'style.css', 'README.md'],
+        snippet:
+          "export function report(machineId, status) {\n  const m = machines.find((x) => x.id === machineId);\n  m.status = status; // 'working' | 'broken'\n  m.updatedAt = Date.now();\n  save();\n}",
+        preview: {
+          title: 'Spin Cycle — Ferris St',
+          html:
+            '<div class="pv pv-spin"><h1>Spin Cycle</h1><p class="pv-sub">Ferris St Laundromat · machine status, reported by people standing in front of them</p>' +
+            '<div class="pv-grid">' +
+            ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6']
+              .map((m, i) => `<div class="pv-m ${[1, 3, 4, 6, 9].includes(i) ? 'ok' : 'bad'}"><b>${m}</b><span>${[1, 3, 4, 6, 9].includes(i) ? 'working' : 'broken'}</span></div>`)
+              .join('') +
+            '</div></div>',
+        },
+      },
+    },
+
+    // Chirpr posts. `at` is minutes before game start for seeded posts; others appear when `when` becomes true.
+    posts: [
+      { id: 'news_layoffs', author: 'The Ledger', handle: 'theledger', at: 40, likes: 812, text: 'Regional employment down 4% this quarter as firms replace junior staff with "agentic workflows".' },
+      {
+        id: 'rosa_gig', author: 'Crumb & Coin Bakery', handle: 'crumbandcoin', at: 95, likes: 23,
+        text: 'Our website has been down since my nephew left for college. Will pay $150 to anyone who can put up a simple site with our menu + hours by tomorrow. — Rosa',
+      },
+      { id: 'gary_post', author: 'Gary Pruitt', handle: 'garypruitt_pm', at: 180, likes: 2, text: 'Reminder to all tenants: rent is due on the 7th. No exceptions. I have heard every excuse.' },
+      { id: 'agent_rumor', author: 'dev_null', handle: 'devnull_42', at: 300, likes: 1400, text: 'Has anyone figured out who actually runs Unknown Agent? No company page, no founders, ToS is one line: "You will be billed."' },
+      { id: 'hustle_guy', author: 'Brayden | 7 figures', handle: 'braydenhustles', at: 520, likes: 61, text: 'Unemployed? Good. Now you have time to build an empire. Comment "EMPIRE" for my free course ($499).' },
+
+      { id: 'news_day2', author: 'The Ledger', handle: 'theledger', when: { minDay: 2 }, likes: 404, text: 'Small businesses report a surge in "AI-built" websites. Quality described as "fine, honestly".' },
+      { id: 'agent_rumor2', author: 'dev_null', handle: 'devnull_42', when: { minDay: 4 }, likes: 2100, text: 'Update: Unknown Agent charges show up from a different merchant ID every week. Same address though. A parking lot.' },
+
+      { id: 'rosa_thanks', author: 'Crumb & Coin Bakery', handle: 'crumbandcoin', likes: 41, text: 'We have a website again! Thank you @{handle}. Paid in full, plus a free cardamom bun if you come by.' },
+      {
+        id: 'washday', author: 'wash day woes', handle: 'washday_woes', when: { node: ['paid_once', 'app_built', 'app_live', 'app_users', 'monetized', 'chapter_end'] }, likes: 2140,
+        text: 'Ferris St Laundromat has 12 machines and at any given moment 9 are broken. I hauled 3 bags there today for nothing. Someone PLEASE make a site that shows which ones work.',
+      },
+      { id: 'washday_2', author: 'Marco', handle: 'marcoeats', when: { node: ['paid_once', 'app_built', 'app_live'] }, likes: 188, text: '@washday_woes I would pay for this. Not much. But something.' },
+      { id: 'you_spin_launch', author: '{name}', handle: '{handle}', likes: 96, text: 'Built a live machine tracker for the Ferris St Laundromat: spin-cycle.forkyard.app. Tap a machine to report it working or broken.' },
+      { id: 'washday_reply', author: 'wash day woes', handle: 'washday_woes', likes: 530, text: 'SOMEONE BUILT IT. spin-cycle.forkyard.app. W4 works right now, go go go' },
+      { id: 'suds_deal', author: 'Suds & Duds Detergent', handle: 'sudsandduds', likes: 77, text: 'Proud to sponsor Spin Cycle, keeping Ferris St informed one load at a time.' },
+    ],
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>
+/*
+ * LocalLLM — a tiny local model for the agent's non-story replies.
+ *
+ * jev still decides every story beat. Only prompts that miss every branch reach
+ * Jev.fallback, and this file routes those to Gemma 3 270M, running either:
+ *
+ *   browser  in a Web Worker via transformers.js (WebGPU if available, else WASM).
+ *            Weights download once from Hugging Face and stay in the browser cache.
+ *   ollama   through a local Ollama server (`ollama pull gemma3:270m`).
+ *
+ * If the model is off, still loading, slow or broken, the reply falls back to the
+ * story's canned placeholders, so the game never waits on it.
+ */
+(function (global) {
+  'use strict';
+
+  const CONFIG = {
+    transformersUrl: 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0/dist/transformers.min.js',
+    browserModel: 'onnx-community/gemma-3-270m-it-ONNX',
+    ollamaUrl: 'http://localhost:11434',
+    ollamaModel: 'gemma3:270m',
+    maxTokens: 72,
+    temperature: 0.9,
+    timeoutMs: 25000,
+  };
+  const SETTINGS_KEY = 'unknown-agent-llm';
+
+  // Runs inside the worker. Kept as a function so it is real, lintable code; it is stringified below.
+  function workerMain() {
+    let generator = null;
+    const post = (m) => self.postMessage(m);
+
+    async function load(msg) {
+      const tf = await import(msg.lib);
+      tf.env.allowLocalModels = false;
+      let device = 'wasm';
+      try {
+        if (self.navigator && navigator.gpu && (await navigator.gpu.requestAdapter())) device = 'webgpu';
+      } catch (e) { /* no WebGPU */ }
+      // smallest weights first; fall through if a variant is missing or fails to init
+      const chain = device === 'webgpu' ? ['q4f16', 'q4', 'fp32'] : ['q4', 'q8', 'fp32'];
+      let lastErr = null;
+      for (const dtype of chain) {
+        try {
+          generator = await tf.pipeline('text-generation', msg.model, {
+            device,
+            dtype,
+            progress_callback: (p) => {
+              if (p.status === 'progress_total') post({ type: 'progress', progress: p.progress, loaded: p.loaded, total: p.total });
+            },
+          });
+          post({ type: 'ready', device, dtype });
+          return;
+        } catch (err) {
+          lastErr = err;
+          post({ type: 'log', text: `${device}/${dtype} failed: ${err && err.message}` });
+        }
+      }
+      throw lastErr || new Error('No model variant could be loaded');
+    }
+
+    self.onmessage = async (e) => {
+      const msg = e.data;
+      if (msg.type === 'load') {
+        try { await load(msg); } catch (err) { post({ type: 'error', message: String((err && err.message) || err) }); }
+      } else if (msg.type === 'generate') {
+        try {
+          const out = await generator(msg.messages, {
+            max_new_tokens: msg.maxTokens,
+            do_sample: true,
+            temperature: msg.temperature,
+            top_p: 0.95,
+            top_k: 64,
+            repetition_penalty: 1.15,
+          });
+          const last = out[0].generated_text;
+          const text = Array.isArray(last) ? last[last.length - 1].content : String(last);
+          post({ type: 'result', id: msg.id, text });
+        } catch (err) {
+          post({ type: 'result', id: msg.id, error: String((err && err.message) || err) });
+        }
+      }
+    };
+  }
+
+  // ───────────────────────── state ─────────────────────────
+
+  const listeners = new Set();
+  const pending = new Map();
+  let worker = null;
+  let nextId = 1;
+
+  const LLM = {
+    config: CONFIG,
+    settings: loadSettings(),
+    status: 'off',      // off | loading | ready | error
+    progress: 0,        // 0–100 while loading
+    loadedBytes: 0,
+    totalBytes: 0,
+    detail: '',         // e.g. "webgpu · q4f16", or an error message
+    last: null,         // { ms, ok, text } for the dev panel
+
+    onChange(fn) { listeners.add(fn); return () => listeners.delete(fn); },
+
+    label() {
+      return this.settings.backend === 'ollama' ? `Gemma 3 270M via Ollama` : 'Gemma 3 270M';
+    },
+
+    setBackend(backend) {
+      if (backend === this.settings.backend) return;
+      this.unload();
+      this.settings.backend = backend;
+      this.settings.autoload = false;
+      saveSettings(this.settings);
+      if (backend === 'ollama') this.load();
+      emit();
+    },
+
+    load() {
+      const b = this.settings.backend;
+      if (b === 'off' || this.status === 'loading' || this.status === 'ready') return;
+      if (b === 'browser') loadBrowser();
+      else if (b === 'ollama') loadOllama();
+    },
+
+    unload() {
+      if (worker) { worker.terminate(); worker = null; }
+      for (const p of pending.values()) p.resolve(null);
+      pending.clear();
+      set({ status: 'off', progress: 0, detail: '' });
+    },
+
+    // Resolve to a reply string, or null if the model can't answer right now.
+    async generate(prompt, ctx) {
+      if (this.status !== 'ready') return null;
+      const started = performance.now();
+      const messages = buildMessages(prompt, ctx);
+      let raw = null;
+      try {
+        raw = this.settings.backend === 'ollama'
+          ? await withTimeout(ollamaChat(messages), CONFIG.timeoutMs)
+          : await withTimeout(workerGenerate(messages), CONFIG.timeoutMs);
+      } catch (e) {
+        raw = null;
+      }
+      const text = raw ? clean(raw) : null;
+      this.last = { ms: Math.round(performance.now() - started), ok: !!text, text: text || raw || '' };
+      emit();
+      return text;
+    },
+  };
+
+  // Once a backend has worked, bring it back automatically on the next visit.
+  function rememberReady() {
+    LLM.settings.autoload = true;
+    saveSettings(LLM.settings);
+  }
+
+  function emit() { for (const fn of listeners) { try { fn(LLM); } catch (e) { console.error(e); } } }
+  function set(patch) { Object.assign(LLM, patch); emit(); }
+
+  function loadSettings() {
+    const d = { backend: 'browser', autoload: false, ollamaUrl: CONFIG.ollamaUrl, ollamaModel: CONFIG.ollamaModel };
+    try { return Object.assign(d, JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}')); } catch (e) { return d; }
+  }
+  function saveSettings(s) {
+    try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch (e) { /* storage unavailable */ }
+  }
+
+  function withTimeout(p, ms) {
+    return Promise.race([p, new Promise((resolve) => setTimeout(() => resolve(null), ms))]);
+  }
+
+  // ───────────────────────── prompting ─────────────────────────
+
+  function buildMessages(prompt, ctx) {
+    const agent = (global.STORY && global.STORY.agent) || {};
+    const persona = agent.llmPersona ||
+      'You are Unknown Agent, a pay-per-prompt AI assistant. Reply in one or two short sentences.';
+    const facts = ctx && ctx.state ? `\nThe user's bank balance is $${ctx.state.money.toFixed(2)}.` : '';
+    const messages = [{ role: 'system', content: persona + facts }];
+    for (const [u, a] of agent.llmExamples || []) {
+      messages.push({ role: 'user', content: u }, { role: 'assistant', content: a });
+    }
+    messages.push({ role: 'user', content: String(prompt).slice(0, 600) });
+    return messages;
+  }
+
+  // Small models ramble and love markdown. Keep at most two sentences of plain text.
+  function clean(text) {
+    let t = String(text)
+      .replace(/<end_of_turn>|<eos>|<\/?start_of_turn>(model|user)?/g, '')
+      .replace(/[*_#`]+/g, '')
+      .replace(/^\s*(assistant|model|unknown agent)\s*:\s*/i, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+    // drop a half-finished trailing sentence (generation hit the token limit)
+    const sentences = t.match(/[^.!?]+[.!?]+["')\]]*/g);
+    if (sentences) t = sentences.slice(0, 2).join('').trim();
+    if (t.length > 320) t = t.slice(0, 317).replace(/\s+\S*$/, '') + '…';
+    return t.length >= 2 ? t : null;
+  }
+
+  // ───────────────────────── browser backend ─────────────────────────
+
+  function loadBrowser() {
+    set({ status: 'loading', progress: 0, loadedBytes: 0, totalBytes: 0, detail: 'Starting…' });
+    try {
+      const src = `(${workerMain.toString()})();`;
+      const url = URL.createObjectURL(new Blob([src], { type: 'text/javascript' }));
+      worker = new Worker(url, { type: 'module' });
+    } catch (err) {
+      set({ status: 'error', detail: `Couldn't start a worker: ${err.message}` });
+      return;
+    }
+    worker.onmessage = (e) => {
+      const m = e.data;
+      if (m.type === 'progress') set({ progress: m.progress, loadedBytes: m.loaded, totalBytes: m.total, detail: 'Downloading' });
+      else if (m.type === 'ready') { rememberReady(); set({ status: 'ready', progress: 100, detail: `${m.device} · ${m.dtype}` }); }
+      else if (m.type === 'log') console.info('[LocalLLM]', m.text);
+      else if (m.type === 'error') {
+        if (worker) { worker.terminate(); worker = null; }
+        set({ status: 'error', detail: explain(m.message) });
+      } else if (m.type === 'result') {
+        const p = pending.get(m.id);
+        if (!p) return;
+        pending.delete(m.id);
+        if (m.error) console.warn('[LocalLLM] generation failed:', m.error);
+        p.resolve(m.error ? null : m.text);
+      }
+    };
+    worker.onerror = (e) => {
+      if (worker) { worker.terminate(); worker = null; }
+      set({ status: 'error', detail: explain(e.message || 'Worker crashed') });
+    };
+    worker.postMessage({ type: 'load', lib: CONFIG.transformersUrl, model: CONFIG.browserModel });
+  }
+
+  function workerGenerate(messages) {
+    if (!worker) return Promise.resolve(null);
+    const id = nextId++;
+    return new Promise((resolve) => {
+      pending.set(id, { resolve });
+      worker.postMessage({ type: 'generate', id, messages, maxTokens: CONFIG.maxTokens, temperature: CONFIG.temperature });
+    });
+  }
+
+  function explain(msg) {
+    const m = String(msg || '');
+    if (/fetch|network|import|load failed|cors|blocked/i.test(m)) {
+      return "Couldn't download the model. This page may not be allowed to reach Hugging Face; run the game locally with npm start.";
+    }
+    return m.slice(0, 200);
+  }
+
+  // ───────────────────────── ollama backend ─────────────────────────
+
+  async function loadOllama() {
+    const { ollamaUrl, ollamaModel } = LLM.settings;
+    set({ status: 'loading', progress: 0, detail: `Connecting to ${ollamaUrl}` });
+    try {
+      const res = await fetch(`${ollamaUrl}/api/tags`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      const names = (data.models || []).map((m) => m.name);
+      const has = names.some((n) => n === ollamaModel || n === ollamaModel + ':latest');
+      if (!has) { set({ status: 'error', detail: `Ollama is running but ${ollamaModel} isn't pulled. Run: ollama pull ${ollamaModel}` }); return; }
+      rememberReady();
+      set({ status: 'ready', progress: 100, detail: `${ollamaModel} · ${ollamaUrl.replace(/^https?:\/\//, '')}` });
+    } catch (err) {
+      set({ status: 'error', detail: `No Ollama server at ${ollamaUrl}. Start it with: ollama serve` });
+    }
+  }
+
+  async function ollamaChat(messages) {
+    const { ollamaUrl, ollamaModel } = LLM.settings;
+    const res = await fetch(`${ollamaUrl}/api/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: ollamaModel,
+        messages,
+        stream: false,
+        options: { num_predict: CONFIG.maxTokens, temperature: CONFIG.temperature, top_p: 0.95, top_k: 64, repeat_penalty: 1.15 },
+      }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data && data.message ? data.message.content : null;
+  }
+
+  // ───────────────────────── wire into jev ─────────────────────────
+
+  if (global.Jev) {
+    const placeholder = global.Jev.fallback.bind(global.Jev);
+    global.Jev.fallback = async function (prompt, ctx) {
+      const text = await LLM.generate(prompt, ctx);
+      if (text) { if (ctx) ctx.source = 'llm'; return text; }
+      if (ctx) ctx.source = 'placeholder';
+      return placeholder(prompt, ctx);
+    };
+  }
+
+  global.LocalLLM = LLM;
+  // the exported clean() is handy for tests
+  LLM._clean = clean;
+  LLM._buildMessages = buildMessages;
+
+  if (LLM.settings.autoload && LLM.settings.backend !== 'off') {
+    // weights come from the browser cache after the first download
+    setTimeout(() => LLM.load(), 0);
+  }
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>
+/*
+ * Unknown Agent — engine and UI.
+ * Reads window.STORY (story.js) and asks window.Jev (jev.js) which branch a prompt hits.
+ */
+(function () {
+  'use strict';
+
+  const S = window.STORY;
+  const J = window.Jev;          // story decisions (TypeSafe Jev, via server.mjs)
+  const K = window.Keywords;     // offline keyword matcher, also used for word counts
+  const LLM = window.LocalLLM || null;
+  const E = S.economy;
+  const SAVE_KEY = 'unknown-agent-save-v1';
+  const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  const SITES = {
+    chirpr: { label: 'Chirpr', url: 'chirpr.com' },
+    bank: { label: 'Second National', url: 'secondnational.com' },
+    forkyard: { label: 'Forkyard', url: 'forkyard.com' },
+    agent: { label: 'Unknown Agent', url: 'unknownagent.ai' },
+  };
+
+  let state = null;
+  let lastReport = null;     // the last decision (Jev probabilities or keyword scores), for the dev panel
+  let anim = null;           // { idx, shown, timer } typewriter for the newest agent message
+  let busy = false;          // agent is "thinking"
+  let devOpen = false;
+
+  // ───────────────────────── utils ─────────────────────────
+
+  const $ = (sel, root) => (root || document).querySelector(sel);
+  const arr = (x) => (x == null ? [] : Array.isArray(x) ? x : [x]);
+  const round2 = (n) => Math.round(n * 100) / 100;
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+  function fmtMoney(n) {
+    const s = Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return (n < 0 ? '−$' : '$') + s;
+  }
+  const dayOf = (t) => Math.floor(t / 1440) + 1;
+  const hourOf = (t) => (t % 1440) / 60;
+  function clock(t) {
+    const m = ((t % 1440) + 1440) % 1440;
+    return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+  }
+  const weekday = (t) => DAYS[(dayOf(t) - 1 + 7 * 100) % 7];
+  const stamp = (t) => `Day ${dayOf(t)} · ${clock(t)}`;
+  function ago(t) {
+    const d = state.t - t;
+    if (d < 1) return 'now';
+    if (d < 60) return d + 'm';
+    if (d < 1440) return Math.floor(d / 60) + 'h';
+    return Math.floor(d / 1440) + 'd';
+  }
+  function tpl(s) {
+    const vars = {
+      balance: fmtMoney(state.money),
+      lastCost: fmtMoney(state.lastCost || 0),
+      handle: S.start.player.handle,
+      name: S.start.player.name,
+    };
+    return String(s).replace(/\{(\w+)\}/g, (m, k) => (k in vars ? vars[k] : m));
+  }
+  function richText(s) {
+    return esc(tpl(s))
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/\n/g, '<br>');
+  }
+  function hashHue(s) {
+    let h = 0;
+    for (const c of s) h = (h * 33 + c.charCodeAt(0)) >>> 0;
+    return h % 360;
+  }
+  function avatar(name, handle) {
+    const initials = name.replace(/[^A-Za-z ]/g, '').split(' ').filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase() || '?';
+    return `<div class="av" style="--h:${hashHue(handle)}">${esc(initials)}</div>`;
+  }
+
+  // ───────────────────────── state ─────────────────────────
+
+  function newState() {
+    const st = S.start;
+    const t = (st.day - 1) * 1440 + st.hour * 60;
+    const s = {
+      v: 1, t, money: st.money, node: st.node,
+      flags: {}, repos: {}, apps: {}, posts: {}, userPosts: [], liked: {},
+      tx: [
+        { t: t - 4300, amount: 212, memo: 'STATE UNEMPLOYMENT — FINAL PAYMENT' },
+        { t: t - 2870, amount: -89.5, memo: 'GARY PRUITT PROPERTY MGMT — LATE FEE' },
+        { t: t - 1490, amount: -41.33, memo: 'CITY UTILITIES' },
+        { t: t - 610, amount: -18, memo: 'NOODLE HUT' },
+      ],
+      chat: [{ from: 'agent', text: S.agent.greeting, t }],
+      queue: [], fired: {},
+      stats: { prompts: 0, promptSpend: 0, misses: 0, partials: 0 },
+      unread: { chirpr: 0, bank: 0, forkyard: 0, agent: 0 },
+      tabs: [{ id: 1, url: SITES.chirpr.url }, { id: 2, url: SITES.agent.url }],
+      active: 2, nextTab: 3, lastCost: 0,
+      ended: null, endSeen: false, over: null, morning: null,
+    };
+    for (const p of S.posts) if (p.at != null) s.posts[p.id] = t - p.at;
+    s.unread.chirpr = Object.keys(s.posts).length;
+    return s;
+  }
+
+  function save() {
+    try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch (e) { /* storage unavailable */ }
+  }
+  function load() {
+    try {
+      const raw = localStorage.getItem(SAVE_KEY);
+      if (!raw) return null;
+      const s = JSON.parse(raw);
+      return s && s.v === 1 ? s : null;
+    } catch (e) { return null; }
+  }
+
+  function check(c) {
+    if (!c) return true;
+    if (c.flag && !arr(c.flag).every((f) => state.flags[f])) return false;
+    if (c.notFlag && arr(c.notFlag).some((f) => state.flags[f])) return false;
+    if (c.node && !arr(c.node).includes(state.node)) return false;
+    if (c.repo && !arr(c.repo).every((r) => state.repos[r])) return false;
+    if (c.deployed && !arr(c.deployed).every((r) => state.repos[r] && state.repos[r].deployed)) return false;
+    if (c.minDay && dayOf(state.t) < c.minDay) return false;
+    if (c.minMoney != null && state.money < c.minMoney) return false;
+    return true;
+  }
+
+  const currentNode = () => S.nodes[state.node] || { objective: '', branches: [] };
+
+  // ───────────────────────── effects ─────────────────────────
+
+  function addTx(amount, memo) {
+    amount = round2(amount);
+    state.money = round2(state.money + amount);
+    state.tx.push({ t: state.t, amount, memo });
+    if (!onSite('bank')) state.unread.bank++;
+  }
+
+  function onSite(site) {
+    const tab = state.tabs.find((x) => x.id === state.active);
+    return tab && route(tab.url).site === site;
+  }
+
+  function revealPost(id) {
+    if (state.posts[id] != null) return;
+    state.posts[id] = state.t;
+    if (!onSite('chirpr')) state.unread.chirpr++;
+  }
+
+  function revealPosts() {
+    for (const p of S.posts) {
+      if (p.at == null && p.when && state.posts[p.id] == null && check(p.when)) revealPost(p.id);
+    }
+  }
+
+  function agentSays(text, src) {
+    state.chat.push({ from: 'agent', text, t: state.t, src: src || 'event' });
+    if (!onSite('agent')) {
+      state.unread.agent++;
+      toast('Unknown Agent', 'sent you a message', 'agent');
+    }
+  }
+
+  function applyEffects(fx) {
+    if (!fx) return;
+    if (typeof fx === 'string') {
+      if (!S.bundles || !S.bundles[fx]) { console.warn('Unknown effect bundle', fx); return; }
+      fx = S.bundles[fx];
+    }
+    if (fx.set) Object.assign(state.flags, fx.set);
+    if (fx.money != null) {
+      const m = typeof fx.money === 'number' ? { amount: fx.money, memo: 'TRANSFER' } : fx.money;
+      addTx(m.amount, m.memo);
+      toast('Second National', `${m.amount >= 0 ? '+' : ''}${fmtMoney(m.amount)} · ${m.memo}`, 'bank');
+    }
+    for (const name of arr(fx.repo)) {
+      if (state.repos[name]) continue;
+      state.repos[name] = { createdAt: state.t, deployed: false };
+      if (!onSite('forkyard')) state.unread.forkyard++;
+      toast('Forkyard', `New repository: ${name}`, 'forkyard');
+    }
+    if (fx.app) state.apps[fx.app.repo] = { users: fx.app.users || 0, perDay: fx.app.perDay || 0 };
+    for (const id of arr(fx.post)) revealPost(id);
+    if (fx.agent) agentSays(fx.agent);
+    for (const l of arr(fx.later)) state.queue.push({ at: state.t + Math.round((l.hours || 0) * 60), effects: l.effects });
+    if (fx.goto && fx.goto !== state.node) {
+      state.node = fx.goto;
+      const obj = currentNode().objective;
+      if (obj) toast('New objective', obj, 'note');
+    }
+    if (fx.end) state.ended = fx.end;
+    revealPosts();
+  }
+
+  function fireEvents(kind, extra) {
+    for (const ev of S.events || []) {
+      if (ev.on !== kind) continue;
+      if (kind === 'deploy' && ev.repo !== extra) continue;
+      const key = ev.id || `${ev.on}:${ev.repo || ''}:${S.events.indexOf(ev)}`;
+      if (state.fired[key]) continue;
+      if (!check(ev.when)) continue;
+      state.fired[key] = state.t;
+      applyEffects(ev.effects);
+    }
+  }
+
+  // ───────────────────────── time ─────────────────────────
+
+  function runQueueUntil(target) {
+    state.queue.sort((a, b) => a.at - b.at);
+    while (state.queue.length && state.queue[0].at <= target) {
+      const item = state.queue.shift();
+      state.t = Math.max(state.t, item.at);
+      applyEffects(item.effects);
+    }
+  }
+
+  function advance(minutes) {
+    const target = state.t + minutes;
+    const midnight = dayOf(state.t) * 1440 + ((E.bedHour || 24) - 24) * 60;
+    if (target >= midnight) {
+      runQueueUntil(midnight);
+      state.t = midnight;
+      sleep(true);
+      return;
+    }
+    runQueueUntil(target);
+    state.t = target;
+  }
+
+  function sleep(passedOut) {
+    const ended = dayOf(state.t - (hourOf(state.t) === 0 && passedOut ? 1 : 0));
+    const wake = ended * 1440 + E.wakeHour * 60;
+    runQueueUntil(wake);
+    state.t = Math.max(state.t, ended * 1440);
+    const lines = [];
+
+    for (const [repo, app] of Object.entries(state.apps)) {
+      if (app.perDay > 0 && state.repos[repo] && state.repos[repo].deployed) {
+        addTx(app.perDay, `FORKYARD PAYOUT — ${repo}`);
+        lines.push([`${repo} earnings (${app.users} users/day)`, app.perDay]);
+      }
+    }
+    const live = Object.values(state.repos).filter((r) => r.deployed).length;
+    if (live) {
+      const fee = live * E.hostingPerDay;
+      addTx(-fee, `FORKYARD HOSTING — ${live} APP${live > 1 ? 'S' : ''}`);
+      lines.push([`Hosting (${live} app${live > 1 ? 's' : ''})`, -fee]);
+    }
+    const memos = arr(E.living.memo);
+    addTx(-E.living.amount, memos[(ended - 1) % memos.length]);
+    lines.push(['Food & basics', -E.living.amount]);
+
+    let rentDue = false;
+    if (E.rent && ended === E.rent.day) {
+      rentDue = true;
+      addTx(-E.rent.amount, `${E.rent.payee} — RENT`);
+      lines.push(['Rent', -E.rent.amount]);
+    }
+
+    state.t = wake;
+    if (state.money < 0) {
+      state.over = rentDue
+        ? { title: 'Evicted', text: `Rent bounced. Gary changed the locks on Day ${ended + 1}. Your laptop is in a box on the curb.` }
+        : { title: 'Overdrawn', text: 'Second National froze your account. No account, no agent, no way back in.' };
+    }
+    state.morning = { day: dayOf(wake), passedOut: !!passedOut, lines, balance: state.money };
+    if (!state.over) fireEvents('day');
+    revealPosts();
+  }
+
+  // ───────────────────────── actions ─────────────────────────
+
+  function wordCount(text) { return K.tokenize(text).length; }
+  function promptCost(text) { return round2(E.promptBase + wordCount(text) * E.perWord); }
+
+  function branchCandidates() {
+    return [...(currentNode().branches || []), ...(S.global || [])].filter((b) => check(b.when));
+  }
+
+  function sendPrompt(text) {
+    text = text.trim();
+    if (!text || busy || state.over) return;
+    const cost = promptCost(text);
+    if (state.money < cost) {
+      state.chat.push({ from: 'system', text: `Card declined. This prompt costs ${fmtMoney(cost)}; your balance is ${fmtMoney(state.money)}.`, t: state.t });
+      render();
+      return;
+    }
+    addTx(-cost, 'UNKNOWN AGENT — USAGE');
+    state.lastCost = cost;
+    state.stats.prompts++;
+    state.stats.promptSpend = round2(state.stats.promptSpend + cost);
+    state.chat.push({ from: 'you', text, t: state.t, cost });
+    busy = true;
+    render();
+
+    const sentNode = state.node;
+    const thinking = new Promise((r) => setTimeout(r, 650 + Math.min(1400, text.length * 12)));
+
+    (async () => {
+      let decision = await J.decide(text, branchCandidates(), { kind: 'prompt', node: sentNode, thresholds: S.decision });
+      await thinking;
+      // the player may have deployed or posted while Jev was deciding
+      if (decision.branch && !branchCandidates().includes(decision.branch)) decision = { ...decision, kind: 'miss', branch: null, stale: true };
+      lastReport = { prompt: text, node: sentNode, decision };
+      let reply;
+      let src;
+      if (decision.kind === 'hit') {
+        reply = decision.branch.response;
+        src = 'hit:' + decision.branch.id;
+      } else if (decision.kind === 'partial') {
+        reply = decision.branch.partial;
+        src = 'partial:' + decision.branch.id;
+        state.stats.partials++;
+      } else {
+        const ctx = { state, node: state.node, placeholders: S.placeholders, source: 'placeholder' };
+        try {
+          reply = await J.fallback(text, ctx);
+        } catch (e) {
+          reply = S.placeholders[0];
+          ctx.source = 'placeholder';
+        }
+        src = 'miss:' + ctx.source;
+        state.stats.misses++;
+      }
+      state.chat.push({ from: 'agent', text: tpl(reply), t: state.t, src });
+      startTyping(state.chat.length - 1);
+      if (decision.kind === 'hit') applyEffects(decision.branch.effects);
+      advance(Math.round(E.promptHours * 60));
+      busy = false;
+      save();
+      render();
+    })();
+  }
+
+  function chirpCandidates() {
+    return (S.chirps || []).filter((c) => !state.fired['chirp:' + c.id] && check(c.when));
+  }
+
+  async function chirp(text) {
+    text = text.trim();
+    if (!text || state.over) return;
+    const id = 'u' + Date.now();
+    const post = { id, text, t: state.t, likes: Math.floor(Math.random() * 3) };
+    state.userPosts.push(post);
+    advance(5);
+    save();
+    render();
+    const candidates = chirpCandidates();
+    if (!candidates.length) return;
+    const node = state.node;
+    const decision = await J.decide(text, candidates, { kind: 'chirp', node, thresholds: S.decision });
+    lastReport = { prompt: text, node, decision, chirp: true };
+    // chirps have no nudges: only a hit that is still available counts
+    if (decision.kind === 'hit' && chirpCandidates().includes(decision.branch)) {
+      state.fired['chirp:' + decision.branch.id] = state.t;
+      post.likes += 20 + Math.floor(Math.random() * 40);
+      applyEffects(decision.branch.effects);
+      save();
+    }
+    render();
+  }
+
+  function deploy(repo) {
+    const r = state.repos[repo];
+    if (!r || r.deployed || state.over) return;
+    r.deployed = true;
+    r.deployedAt = state.t;
+    toast('Forkyard', `${repo} is live at ${repo}.forkyard.app`, 'forkyard');
+    fireEvents('deploy', repo);
+    advance(30);
+    save();
+    render();
+  }
+
+  function doSleep() {
+    if (state.over || busy) return;
+    sleep(false);
+    save();
+    render();
+  }
+
+  // ───────────────────────── routing / tabs ─────────────────────────
+
+  function normalizeUrl(u) {
+    return String(u || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/+$/, '');
+  }
+
+  function route(url) {
+    const u = normalizeUrl(url);
+    if (!u || u === 'newtab') return { site: 'newtab', title: 'New Tab' };
+    if (u === 'chirpr.com') return { site: 'chirpr', title: 'Home / Chirpr' };
+    if (u === 'secondnational.com') return { site: 'bank', title: 'Second National · Checking' };
+    if (u === 'unknownagent.ai') return { site: 'agent', title: 'Unknown Agent' };
+    if (u === 'forkyard.com') return { site: 'forkyard', title: 'Forkyard' };
+    let m = u.match(/^forkyard\.com\/([a-z0-9-]+)$/);
+    if (m) return { site: 'forkyard', repo: m[1], title: `${m[1]} · Forkyard` };
+    m = u.match(/^([a-z0-9-]+)\.forkyard\.app$/);
+    if (m) {
+      const def = S.repos[m[1]];
+      return { site: 'app', repo: m[1], title: def && def.preview ? def.preview.title : m[1] };
+    }
+    return { site: 'error', title: u };
+  }
+
+  function navigate(url, newTab) {
+    url = normalizeUrl(url) || 'newtab';
+    if (newTab) {
+      const id = state.nextTab++;
+      state.tabs.push({ id, url });
+      state.active = id;
+    } else {
+      const tab = state.tabs.find((x) => x.id === state.active);
+      tab.url = url;
+    }
+    const site = route(url).site;
+    if (state.unread[site] != null) state.unread[site] = 0;
+    save();
+    render();
+  }
+
+  function switchTab(id) {
+    state.active = id;
+    const tab = state.tabs.find((x) => x.id === id);
+    const site = route(tab.url).site;
+    if (state.unread[site] != null) state.unread[site] = 0;
+    save();
+    render();
+  }
+
+  function closeTab(id) {
+    if (state.tabs.length === 1) { navigate('newtab'); return; }
+    const i = state.tabs.findIndex((x) => x.id === id);
+    state.tabs.splice(i, 1);
+    if (state.active === id) state.active = state.tabs[Math.max(0, i - 1)].id;
+    save();
+    render();
+  }
+
+  // ───────────────────────── page renderers ─────────────────────────
+
+  const ICONS = {
+    chirpr: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 15c3 0 5-2 6-5 1-4 4-6 7-5l3-1-1.5 2.5C19 9 18 13 15 16c-3 3-8 4-12 2 2 0 3.5-.7 4.5-1.6C5.5 16.2 4.5 15.8 4 15z" fill="currentColor"/></svg>',
+    bank: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 8v2h18V8l-9-5zM5 12v6h2v-6H5zm4 0v6h2v-6H9zm4 0v6h2v-6h-2zm4 0v6h2v-6h-2zM3 20v2h18v-2H3z" fill="currentColor"/></svg>',
+    forkyard: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3a3 3 0 0 0-1 5.8v6.4A3 3 0 1 0 8 15.2V13c0-1 1-2 2-2h4a4 4 0 0 0 4-4V8.8A3 3 0 1 0 16 8.8V7c0 1-1 2-2 2h-4c-.7 0-1.4.2-2 .5V8.8A3 3 0 0 0 7 3z" fill="currentColor"/></svg>',
+    agent: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" fill="currentColor"/><path d="M9.5 9.2a2.6 2.6 0 1 1 3.6 2.4c-.7.3-1.1.8-1.1 1.5v.6" stroke="var(--icon-ink, #fff)" stroke-width="1.8" fill="none" stroke-linecap="round"/><circle cx="12" cy="16.6" r="1.1" fill="var(--icon-ink, #fff)"/></svg>',
+    newtab: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2" fill="none"/></svg>',
+    app: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M4 9h16" stroke="currentColor" stroke-width="2"/></svg>',
+    error: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 2.5v.5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
+  };
+
+  function pageNewTab() {
+    const tiles = Object.entries(SITES).map(([k, s]) =>
+      `<button class="nt-tile nt-${k}" data-nav="${s.url}"><span class="nt-ico">${ICONS[k]}</span><span>${esc(s.label)}</span>${state.unread[k] ? `<i class="badge">${state.unread[k]}</i>` : ''}</button>`
+    ).join('');
+    return `<div class="newtab">
+      <p class="nt-time">${weekday(state.t)} ${clock(state.t)}</p>
+      <form class="nt-search" data-form="url"><input id="nt-url" autocomplete="off" placeholder="Type a web address"></form>
+      <div class="nt-tiles">${tiles}</div>
+    </div>`;
+  }
+
+  function pageChirpr() {
+    const posts = [];
+    for (const p of S.posts) {
+      if (state.posts[p.id] == null) continue;
+      posts.push({ ...p, t: state.posts[p.id], author: tpl(p.author), handle: tpl(p.handle), text: tpl(p.text) });
+    }
+    for (const u of state.userPosts) posts.push({ id: u.id, author: S.start.player.name, handle: S.start.player.handle, text: u.text, t: u.t, likes: u.likes, mine: true });
+    posts.sort((a, b) => b.t - a.t);
+    const feed = posts.map((p) => {
+      const liked = !!state.liked[p.id];
+      const text = esc(p.text).replace(/@([a-z0-9_]+)/gi, '<span class="ch-at">@$1</span>').replace(/([a-z0-9-]+\.forkyard\.app)/g, '<a data-nav="$1" href="#" class="ch-link">$1</a>');
+      return `<article class="ch-post${p.mine ? ' mine' : ''}">
+        ${avatar(p.author, p.handle)}
+        <div class="ch-body">
+          <header><b>${esc(p.author)}</b> <span>@${esc(p.handle)} · ${ago(p.t)}</span></header>
+          <p>${text}</p>
+          <footer><button class="ch-like${liked ? ' on' : ''}" data-like="${esc(p.id)}" aria-pressed="${liked}">♥ ${(p.likes || 0) + (liked ? 1 : 0)}</button></footer>
+        </div>
+      </article>`;
+    }).join('');
+    const trends = [
+      ['#RentDue', '18.2k chirps'],
+      ['Unknown Agent', '9,410 chirps'],
+      state.posts.washday != null ? ['Ferris St Laundromat', '2,140 chirps'] : ['#AgenticWorkflows', '4,002 chirps'],
+      ['Crumb & Coin', state.posts.rosa_thanks != null ? '312 chirps' : '27 chirps'],
+    ];
+    return `<div class="ch">
+      <nav class="ch-nav"><div class="ch-logo">${ICONS.chirpr}<span>chirpr</span></div><a class="on">Home</a><a>Explore</a><a>Notifications</a><a>Profile</a></nav>
+      <main class="ch-main">
+        <h1 class="ch-h">Home</h1>
+        <form class="ch-compose" data-form="chirp">
+          ${avatar(S.start.player.name, S.start.player.handle)}
+          <div><textarea id="chirp-input" rows="2" maxlength="280" placeholder="What's happening?"></textarea>
+          <div class="ch-compose-row"><span class="ch-hint">Posting is free.</span><button class="ch-btn" type="submit">Chirp</button></div></div>
+        </form>
+        <div class="ch-feed">${feed}</div>
+      </main>
+      <aside class="ch-side"><h2>Trending near you</h2>${trends.map(([a, b]) => `<div class="ch-trend"><b>${esc(a)}</b><span>${esc(b)}</span></div>`).join('')}</aside>
+    </div>`;
+  }
+
+  function pageBank() {
+    const sorted = [...state.tx].sort((a, b) => b.t - a.t);
+    let running = state.money;
+    const rows = sorted.map((x) => {
+      const bal = running;
+      running = round2(running - x.amount);
+      return `<tr><td class="bk-date">${x.t < 0 ? 'Before' : stamp(x.t)}</td><td class="bk-memo">${esc(x.memo)}</td><td class="bk-amt ${x.amount < 0 ? 'neg' : 'pos'}">${x.amount >= 0 ? '+' : ''}${fmtMoney(x.amount)}</td><td class="bk-bal">${fmtMoney(bal)}</td></tr>`;
+    }).join('');
+    const live = Object.values(state.repos).filter((r) => r.deployed).length;
+    const income = Object.entries(state.apps).reduce((s, [k, a]) => s + (state.repos[k] && state.repos[k].deployed ? a.perDay : 0), 0);
+    const nightly = round2(income - E.living.amount - live * E.hostingPerDay);
+    const day = dayOf(state.t);
+    const rentLeft = E.rent ? E.rent.day - day : null;
+    const rentLine = E.rent && rentLeft >= 0
+      ? `<div class="bk-up"><span>Rent</span><b class="neg">${fmtMoney(-E.rent.amount)}</b><small>${esc(E.rent.payee)} · ${rentLeft === 0 ? 'due tonight' : `end of Day ${E.rent.day}, ${rentLeft} day${rentLeft > 1 ? 's' : ''} left`}</small></div>`
+      : '';
+    return `<div class="bk">
+      <header class="bk-top"><div class="bk-logo">${ICONS.bank}<span>Second National</span></div><span class="bk-user">Signed in · ${esc(S.start.player.name)}</span></header>
+      <div class="bk-wrap">
+        <section class="bk-card">
+          <p class="bk-label">Everyday Checking ••••4417</p>
+          <p class="bk-balance ${state.money < 0 ? 'neg' : ''}">${fmtMoney(state.money)}</p>
+          <p class="bk-sub">Available balance · ${stamp(state.t)}</p>
+        </section>
+        <section class="bk-upcoming">
+          <h2>Coming up</h2>
+          ${rentLine}
+          <div class="bk-up"><span>Every night</span><b class="${nightly < 0 ? 'neg' : 'pos'}">${nightly >= 0 ? '+' : ''}${fmtMoney(nightly)}</b><small>Food ${fmtMoney(-E.living.amount)}${live ? ` · Hosting ${fmtMoney(-live * E.hostingPerDay)}` : ''}${income ? ` · App income +${fmtMoney(income)}` : ''}</small></div>
+        </section>
+        <section class="bk-tx">
+          <h2>Activity</h2>
+          <div class="bk-scroll"><table><thead><tr><th>When</th><th>Description</th><th class="r">Amount</th><th class="r">Balance</th></tr></thead><tbody>${rows}</tbody></table></div>
+        </section>
+      </div>
+    </div>`;
+  }
+
+  function repoStatus(name) {
+    const r = state.repos[name];
+    if (!r.deployed) return `<span class="fy-pill off">Not deployed</span>`;
+    return `<span class="fy-pill on">Live</span> <a href="#" data-nav="${name}.forkyard.app" class="fy-url">${name}.forkyard.app</a>`;
+  }
+
+  function pageForkyard(repoName) {
+    const names = Object.keys(state.repos).sort((a, b) => state.repos[b].createdAt - state.repos[a].createdAt);
+    const head = `<header class="fy-top"><div class="fy-logo">${ICONS.forkyard}<span>forkyard</span></div><span class="fy-user">@${esc(S.start.player.handle)}</span></header>`;
+    if (repoName) {
+      const r = state.repos[repoName];
+      const def = S.repos[repoName];
+      if (!r || !def) return `<div class="fy">${head}<div class="fy-wrap"><p class="fy-empty">404 — no repository called <code>${esc(repoName)}</code>.</p></div></div>`;
+      const app = state.apps[repoName];
+      return `<div class="fy">${head}<div class="fy-wrap">
+        <p class="fy-crumbs"><a href="#" data-nav="forkyard.com">${esc(S.start.player.handle)}</a> / <b>${esc(repoName)}</b></p>
+        <p class="fy-desc">${esc(def.description)}</p>
+        <div class="fy-grid">
+          <div class="fy-files">
+            <div class="fy-filehead">Pushed by <b>unknown-agent[bot]</b> · ${ago(r.createdAt)} ago</div>
+            ${def.files.map((f) => `<div class="fy-file">${esc(f)}</div>`).join('')}
+            <pre class="fy-code"><code>${esc(def.snippet)}</code></pre>
+          </div>
+          <div class="fy-deploy">
+            <h2>Deployment</h2>
+            <p>${repoStatus(repoName)}</p>
+            ${r.deployed
+              ? `<dl><dt>Visitors / day</dt><dd>${app ? app.users : 0}</dd><dt>Earnings / day</dt><dd>${fmtMoney(app ? app.perDay : 0)}</dd><dt>Hosting / day</dt><dd>${fmtMoney(E.hostingPerDay)}</dd></dl>`
+              : `<p class="fy-note">Hosting costs ${fmtMoney(E.hostingPerDay)}/day, billed nightly.</p><button class="fy-btn" data-deploy="${esc(repoName)}">Deploy</button>`}
+          </div>
+        </div>
+      </div></div>`;
+    }
+    const list = names.length
+      ? names.map((n) => {
+          const def = S.repos[n] || { description: '', lang: '' };
+          const r = state.repos[n];
+          return `<article class="fy-repo">
+            <div><a href="#" data-nav="forkyard.com/${n}" class="fy-name">${esc(n)}</a><p>${esc(def.description)}</p>
+            <small><i class="fy-lang" style="--h:${hashHue(def.lang)}"></i>${esc(def.lang)} · updated ${ago(r.createdAt)} ago</small></div>
+            <div class="fy-repo-act">${repoStatus(n)}${r.deployed ? '' : `<button class="fy-btn" data-deploy="${esc(n)}">Deploy</button>`}</div>
+          </article>`;
+        }).join('')
+      : `<div class="fy-empty"><p><b>No repositories yet.</b></p><p>You haven't written code in two years. Maybe something else could.</p></div>`;
+    return `<div class="fy">${head}<div class="fy-wrap"><h1 class="fy-h">Repositories <span>${names.length}</span></h1>${list}</div></div>`;
+  }
+
+  function pageApp(repo) {
+    const r = state.repos[repo];
+    const def = S.repos[repo];
+    if (!r || !r.deployed || !def) {
+      return `<div class="err"><h1>404: NOT_FOUND</h1><p>Nothing is deployed at <code>${esc(repo)}.forkyard.app</code>.</p></div>`;
+    }
+    return `<div class="pv-host">${def.preview.html}</div>`;
+  }
+
+  function pageError(url) {
+    return `<div class="err"><h1>This site can't be reached</h1><p><code>${esc(url)}</code> didn't respond.</p><p class="err-sub">Try the bookmarks. They are the only sites you can afford.</p></div>`;
+  }
+
+  function pageAgent() {
+    const msgs = state.chat.map((m, i) => {
+      if (m.from === 'system') return `<div class="ua-sys">${richText(m.text)}</div>`;
+      if (m.from === 'you') return `<div class="ua-msg you"><div class="ua-bubble">${esc(m.text)}</div><span class="ua-cost">${fmtMoney(-m.cost)} · ${clock(m.t)}</span></div>`;
+      const typing = anim && anim.idx === i;
+      const shown = typing ? m.text.slice(0, anim.shown) : m.text;
+      const src = m.src ? `<span class="ua-src ${m.src.split(':')[0]}">${esc(m.src)}</span>` : '';
+      const model = m.src === 'miss:llm' ? `<span class="ua-model" title="Generated by the local model">${esc(LLM ? LLM.label() : 'local model')}</span>` : '';
+      return `<div class="ua-msg agent" data-msg="${i}"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text${typing ? ' typing' : ''}">${richText(shown)}</div>${model}${src}</div>`;
+    }).join('');
+    const thinking = busy ? `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text ua-dots"><i></i><i></i><i></i></div></div>` : '';
+    return `<div class="ua">
+      <header class="ua-head">
+        <div class="ua-brand">${ICONS.agent}<div><b>Unknown Agent</b><span>${esc(S.agent.model)} · ${fmtMoney(E.promptBase)} per prompt + ${fmtMoney(E.perWord)} per word</span></div></div>
+        <span class="ua-linked">Billing: Second National ••4417</span>
+      </header>
+      <div class="ua-llm"><span class="ua-jev" id="ua-jev">${jevChip()}</span>${LLM ? `<span class="ua-llm-ctl" id="ua-llm">${llmRow()}</span>` : ''}</div>
+      <div class="ua-log" id="ua-log">${msgs}${thinking}</div>
+      <form class="ua-compose" data-form="prompt">
+        <textarea id="prompt-input" rows="2" placeholder="Tell the agent what to do" ${busy || state.over ? 'disabled' : ''}></textarea>
+        <div class="ua-row"><span id="cost-est" class="ua-est"></span><button class="ua-send" type="submit" ${busy || state.over ? 'disabled' : ''}>Send</button></div>
+      </form>
+    </div>`;
+  }
+
+  // Off-script replies come from a small local model when one is loaded (src/llm.js).
+  function llmRow() {
+    const st = LLM.settings;
+    const opt = (v, l) => `<option value="${v}" ${st.backend === v ? 'selected' : ''}>${l}</option>`;
+    let status = '';
+    let action = '';
+    if (st.backend === 'off') {
+      status = 'Off-script prompts get canned replies.';
+    } else if (LLM.status === 'off') {
+      status = st.backend === 'browser' ? 'Not loaded. Downloads once, then loads from your browser cache.' : 'Not connected.';
+      action = `<button class="ua-llm-btn" data-llm="load">${st.backend === 'browser' ? 'Load model' : 'Connect'}</button>`;
+    } else if (LLM.status === 'loading') {
+      const mb = (n) => (n / 1048576).toFixed(0);
+      const bytes = LLM.totalBytes ? ` · ${mb(LLM.loadedBytes)} / ${mb(LLM.totalBytes)} MB` : '';
+      status = `<span class="ua-llm-bar"><i style="width:${Math.max(2, LLM.progress).toFixed(1)}%"></i></span>${LLM.totalBytes ? `${LLM.progress.toFixed(0)}%${bytes}` : esc(LLM.detail)}`;
+      action = `<button class="ua-llm-btn ghost" data-llm="cancel">Cancel</button>`;
+    } else if (LLM.status === 'ready') {
+      status = `<span class="ua-llm-dot"></span>Ready · ${esc(LLM.detail)}`;
+    } else if (LLM.status === 'error') {
+      status = `<span class="ua-llm-err">${esc(LLM.detail)}</span>`;
+      action = `<button class="ua-llm-btn" data-llm="retry">Retry</button>`;
+    }
+    return `<label class="ua-llm-pick">Off-script replies
+        <select id="llm-backend">${opt('browser', 'Gemma 3 270M · in browser')}${opt('ollama', 'Gemma 3 270M · Ollama')}${opt('off', 'Canned placeholders')}</select></label>
+      <span class="ua-llm-status">${status}</span>${action}`;
+  }
+
+  function jevChip() {
+    if (J.status === 'online') return `<span class="ua-llm-dot"></span>Story decisions: Jev`;
+    if (J.status === 'checking') return 'Story decisions: connecting…';
+    return `<span class="ua-llm-dot off"></span><span title="${esc(J.reason)}">Story decisions: offline keywords</span>`;
+  }
+
+  function onJevChange() {
+    const chip = document.getElementById('ua-jev');
+    if (chip) chip.innerHTML = jevChip();
+    if (devOpen) renderDev();
+  }
+
+  function onLlmChange() {
+    const row = document.getElementById('ua-llm');
+    if (row) row.innerHTML = llmRow();
+    if (devOpen) renderDev();
+  }
+
+  // ───────────────────────── typewriter ─────────────────────────
+
+  function startTyping(idx) {
+    if (anim && anim.timer) clearInterval(anim.timer);
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) { anim = null; return; }
+    anim = { idx, shown: 0 };
+    anim.timer = setInterval(() => {
+      const m = state.chat[idx];
+      if (!m) { stopTyping(); return; }
+      anim.shown = Math.min(m.text.length, anim.shown + 3);
+      const el = document.querySelector(`[data-msg="${idx}"] .ua-text`);
+      if (el) {
+        el.innerHTML = richText(m.text.slice(0, anim.shown));
+        scrollLog();
+      }
+      if (anim.shown >= m.text.length) stopTyping();
+    }, 16);
+  }
+  function stopTyping() {
+    if (!anim) return;
+    clearInterval(anim.timer);
+    const el = document.querySelector(`[data-msg="${anim.idx}"] .ua-text`);
+    anim = null;
+    if (el) { el.classList.remove('typing'); }
+    if (onSite('agent')) render();
+  }
+  function scrollLog() {
+    const log = $('#ua-log');
+    if (log) log.scrollTop = log.scrollHeight;
+  }
+
+  // ───────────────────────── chrome render ─────────────────────────
+
+  function updateCostEstimate() {
+    const input = $('#prompt-input');
+    const est = $('#cost-est');
+    if (!input || !est) return;
+    const words = wordCount(input.value);
+    est.textContent = words
+      ? `${fmtMoney(promptCost(input.value))} · ${words} word${words > 1 ? 's' : ''} · ${E.promptHours}h`
+      : `Each prompt costs ${fmtMoney(E.promptBase)} + ${fmtMoney(E.perWord)}/word and takes ${E.promptHours}h`;
+    est.classList.toggle('neg', words > 0 && promptCost(input.value) > state.money);
+  }
+
+  function render() {
+    const tab = state.tabs.find((x) => x.id === state.active) || state.tabs[0];
+    const r = route(tab.url);
+
+    $('#tabs').innerHTML = state.tabs.map((x) => {
+      const rr = route(x.url);
+      return `<div class="tab${x.id === state.active ? ' on' : ''}" data-tab="${x.id}" role="tab" aria-selected="${x.id === state.active}" tabindex="0">
+        <span class="tab-ico ico-${rr.site}">${ICONS[rr.site] || ICONS.newtab}</span><span class="tab-title">${esc(rr.title)}</span>
+        <button class="tab-x" data-close="${x.id}" aria-label="Close tab">×</button></div>`;
+    }).join('') + `<button class="tab-new" data-newtab aria-label="New tab">+</button>`;
+
+    const addr = $('#address');
+    if (document.activeElement !== addr) addr.value = r.site === 'newtab' ? '' : normalizeUrl(tab.url);
+
+    $('#bookmarks').innerHTML = Object.entries(SITES).map(([k, s]) =>
+      `<button class="bm" data-nav="${s.url}"><span class="bm-ico ico-${k}">${ICONS[k]}</span><span class="bm-label">${esc(s.label)}</span>${state.unread[k] ? `<i class="badge">${state.unread[k]}</i>` : ''}</button>`
+    ).join('');
+
+    // preserve what the player was typing across re-renders
+    const vp = $('#viewport');
+    const keep = {};
+    let focusId = null;
+    vp.querySelectorAll('textarea[id], input[id]').forEach((el) => { keep[el.id] = el.value; });
+    if (document.activeElement && vp.contains(document.activeElement)) focusId = document.activeElement.id;
+
+    let html;
+    switch (r.site) {
+      case 'chirpr': html = pageChirpr(); break;
+      case 'bank': html = pageBank(); break;
+      case 'forkyard': html = pageForkyard(r.repo); break;
+      case 'agent': html = pageAgent(); break;
+      case 'app': html = pageApp(r.repo); break;
+      case 'newtab': html = pageNewTab(); break;
+      default: html = pageError(tab.url);
+    }
+    const prevSite = vp.dataset.site;
+    vp.innerHTML = html;
+    vp.dataset.site = r.site;
+    if (prevSite !== r.site) vp.scrollTop = 0;
+    for (const [id, v] of Object.entries(keep)) { const el = document.getElementById(id); if (el && !el.disabled) el.value = v; }
+    if (focusId) { const el = document.getElementById(focusId); if (el && !el.disabled) el.focus(); }
+    if (r.site === 'agent') {
+      updateCostEstimate();
+      scrollLog();
+      const input = $('#prompt-input');
+      if (input && !busy && !focusId && window.innerWidth > 700) input.focus();
+    }
+
+    // taskbar
+    $('#objective').textContent = currentNode().objective || '';
+    $('#wallet').textContent = fmtMoney(state.money);
+    $('#wallet').classList.toggle('neg', state.money < 20);
+    $('#clock').innerHTML = `<b>${weekday(state.t)} ${clock(state.t)}</b><span>Day ${dayOf(state.t)}</span>`;
+    const rentLeft = E.rent ? E.rent.day - dayOf(state.t) : -1;
+    $('#rent').textContent = rentLeft >= 0 ? (rentLeft === 0 ? `Rent ${fmtMoney(E.rent.amount)} due tonight` : `Rent ${fmtMoney(E.rent.amount)} in ${rentLeft}d`) : 'Rent paid';
+    $('#rent').classList.toggle('neg', rentLeft >= 0 && state.money < E.rent.amount);
+
+    renderOverlay();
+    if (devOpen) renderDev();
+  }
+
+  // ───────────────────────── overlays ─────────────────────────
+
+  let confirmState = null;
+  let introOpen = false;
+
+  function statsHtml() {
+    const s = state.stats;
+    return `<dl class="ov-stats">
+      <div><dt>Day</dt><dd>${dayOf(state.t)}</dd></div>
+      <div><dt>Balance</dt><dd>${fmtMoney(state.money)}</dd></div>
+      <div><dt>Prompts</dt><dd>${s.prompts}</dd></div>
+      <div><dt>Spent on prompts</dt><dd>${fmtMoney(s.promptSpend)}</dd></div>
+      <div><dt>Wasted prompts</dt><dd>${s.misses}</dd></div>
+    </dl>`;
+  }
+
+  function renderOverlay() {
+    const ov = $('#overlay');
+    let html = '';
+    if (introOpen) {
+      const hasSave = !!load() && state.stats.prompts + state.userPosts.length > 0;
+      html = `<div class="ov-card ov-intro">
+        <p class="ov-eyebrow">${esc(S.chapter)}</p>
+        <h1 class="ov-title">Unknown<br>Agent</h1>
+        <p>You lost your job two years ago. The benefits ran out last week. You have ${fmtMoney(S.start.money)}, a laptop, four bookmarks, and an AI agent that bills you for every word.</p>
+        <p>Rent is ${fmtMoney(E.rent.amount)}, due at the end of Day ${E.rent.day}. Don't go broke.</p>
+        <ul class="ov-rules">
+          <li>Every prompt costs money and an hour. Vague prompts get vague answers.</li>
+          <li>Read Chirpr for leads. Check your bank. Ship code on Forkyard.</li>
+          <li>Anything you can do yourself, do yourself. It's free.</li>
+        </ul>
+        <div class="ov-actions">
+          ${hasSave ? `<button class="btn primary" data-ov="continue">Continue Day ${dayOf(state.t)}</button><button class="btn" data-ov="new">New game</button>` : `<button class="btn primary" data-ov="continue">Open the laptop</button>`}
+        </div>
+      </div>`;
+    } else if (confirmState) {
+      html = `<div class="ov-card ov-small"><p>${esc(confirmState.text)}</p><div class="ov-actions"><button class="btn primary" data-ov="confirm-yes">${esc(confirmState.yes)}</button><button class="btn" data-ov="confirm-no">Cancel</button></div></div>`;
+    } else if (state.over) {
+      html = `<div class="ov-card ov-over"><p class="ov-eyebrow">Game over</p><h1 class="ov-title">${esc(state.over.title)}</h1><p>${esc(state.over.text)}</p>${statsHtml()}<div class="ov-actions"><button class="btn primary" data-ov="restart">Start over</button></div></div>`;
+    } else if (state.morning) {
+      const m = state.morning;
+      html = `<div class="ov-card ov-small ov-morning">
+        <p class="ov-eyebrow">${m.passedOut ? 'You passed out at your desk' : 'You slept'}</p>
+        <h2>Day ${m.day} · ${DAYS[(m.day - 1) % 7]} ${clock(E.wakeHour * 60)}</h2>
+        <table class="ov-lines">${m.lines.map(([l, v]) => `<tr><td>${esc(l)}</td><td class="${v < 0 ? 'neg' : 'pos'}">${v >= 0 ? '+' : ''}${fmtMoney(v)}</td></tr>`).join('')}
+        <tr class="tot"><td>Balance</td><td>${fmtMoney(m.balance)}</td></tr></table>
+        <div class="ov-actions"><button class="btn primary" data-ov="morning">Get up</button></div></div>`;
+    } else if (state.ended && !state.endSeen) {
+      html = `<div class="ov-card ov-end"><p class="ov-eyebrow">${esc(S.title)}</p><h1 class="ov-title">${esc(state.ended.title)}</h1><p>${esc(state.ended.text)}</p>${statsHtml()}
+        <div class="ov-actions"><button class="btn primary" data-ov="end-ok">Read the message</button><button class="btn" data-ov="restart">Play again</button></div></div>`;
+    }
+    ov.innerHTML = html;
+    ov.hidden = !html;
+  }
+
+  function askConfirm(text, yes, fn) {
+    confirmState = { text, yes, fn };
+    renderOverlay();
+  }
+
+  // ───────────────────────── toasts ─────────────────────────
+
+  function toast(title, body, kind) {
+    const box = $('#toasts');
+    if (!box) return;
+    const el = document.createElement('div');
+    el.className = `toast t-${kind || 'note'}`;
+    el.innerHTML = `<b>${esc(title)}</b><span>${esc(body)}</span>`;
+    box.appendChild(el);
+    while (box.children.length > 4) box.firstChild.remove();
+    setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 400); }, 4200);
+  }
+
+  // ───────────────────────── dev panel ─────────────────────────
+
+  function renderDev() {
+    const d = $('#dev');
+    d.hidden = !devOpen;
+    document.body.classList.toggle('dev-on', devOpen);
+    if (!devOpen) return;
+    let report = '<p class="dv-dim">No prompt yet.</p>';
+    if (lastReport) {
+      const { decision } = lastReport;
+      let table;
+      if (decision.engine === 'jev') {
+        const rows = Object.entries(decision.probabilities || {})
+          .sort((a, b) => b[1] - a[1])
+          .map(([id, p]) => `<tr class="${id === decision.choice ? 'win' : ''}"><td>${esc(id)}</td><td>${(p * 100).toFixed(1)}%</td><td><span class="dv-bar" style="width:${Math.round(p * 100)}%"></span></td></tr>`)
+          .join('');
+        table = `<table class="dv-probs"><thead><tr><th>branch</th><th>p</th><th></th></tr></thead><tbody>${rows || '<tr><td colspan="3">no candidates</td></tr>'}</tbody></table>
+          <p class="dv-dim">hit ≥ ${S.decision.hit} · nudge ≥ ${S.decision.partial}</p>`;
+      } else {
+        const rows = (decision.report || [])
+          .slice()
+          .sort((a, b) => (b.coverage - a.coverage) || (b.score - a.score))
+          .map((r) => `<tr class="${decision.branch === r.branch ? 'win' : ''}"><td>${esc(r.branch.id)}</td><td>${r.vetoed ? 'veto: ' + esc(r.vetoed) : Math.round(r.coverage * 100) + '%'}</td><td>${r.score}</td><td>${esc((r.hits || []).join(', '))}</td></tr>`)
+          .join('');
+        table = `<table><thead><tr><th>branch</th><th>cover</th><th>score</th><th>hits</th></tr></thead><tbody>${rows || '<tr><td colspan="4">no candidates</td></tr>'}</tbody></table>`;
+      }
+      const engine = decision.engine === 'jev' ? `Jev${J.last && J.last.model ? ' · ' + esc(J.last.model) : ''}${J.last ? ` · ${J.last.ms}ms` : ''}` : `keywords${decision.fellBack ? ' (Jev call failed: ' + esc((J.last && J.last.error) || '?') + ')' : ''}`;
+      report = `<p><b>${lastReport.chirp ? 'Chirp' : 'Prompt'}:</b> ${esc(lastReport.prompt)}</p>
+        <p><b>Result:</b> ${decision.kind}${decision.branch ? ' → ' + esc(decision.branch.id) : ''}${decision.stale ? ' (stale, ignored)' : ''} <span class="dv-dim">(node ${esc(lastReport.node)} · ${engine})</span></p>
+        ${table}`;
+    }
+    const nodes = Object.keys(S.nodes).map((n) => `<option ${n === state.node ? 'selected' : ''}>${n}</option>`).join('');
+    d.innerHTML = `<header><b>jev · dev</b><button data-dev="close" aria-label="Close dev panel">×</button></header>
+      <label>Node <select id="dv-node">${nodes}</select></label>
+      <div class="dv-row"><button data-dev="money+">+$100</button><button data-dev="money-">−$100</button><button data-dev="hour">+1h</button><button data-dev="sleep">Sleep</button><button data-dev="posts">All posts</button></div>
+      <p><b>Decisions</b> ${J.status === 'online' ? 'Jev · ' + esc(J.model || '') : esc(J.status) + (J.reason ? ' · ' + esc(J.reason) : '')}</p>
+      <p><b>Flags</b> <code>${esc(JSON.stringify(state.flags))}</code></p>
+      ${LLM ? `<p><b>Local model</b> ${esc(LLM.settings.backend)} · ${esc(LLM.status)}${LLM.detail ? ' · ' + esc(LLM.detail) : ''}${LLM.last ? `<br><span class="dv-dim">last: ${LLM.last.ms}ms, ${LLM.last.ok ? 'used' : 'fell back'}${LLM.last.text ? ' — ' + esc(LLM.last.text.slice(0, 80)) : ''}</span>` : ''}</p>` : ''}
+      <p><b>Queue</b> <code>${esc(JSON.stringify(state.queue.map((q) => ({ at: stamp(q.at), fx: typeof q.effects === 'string' ? q.effects : Object.keys(q.effects) }))))}</code></p>
+      <h3>Last decision</h3>${report}`;
+  }
+
+  // ───────────────────────── events ─────────────────────────
+
+  function bind() {
+    document.addEventListener('click', (e) => {
+      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-ov],[data-dev],[data-act],[data-llm]');
+      if (!t) return;
+      if (t.dataset.close) { e.stopPropagation(); closeTab(Number(t.dataset.close)); return; }
+      if (t.dataset.nav) { e.preventDefault(); navigate(t.dataset.nav); return; }
+      if (t.dataset.tab) { switchTab(Number(t.dataset.tab)); return; }
+      if (t.hasAttribute('data-newtab')) { navigate('newtab', true); return; }
+      if (t.dataset.like) { const id = t.dataset.like; state.liked[id] = !state.liked[id]; save(); render(); return; }
+      if (t.dataset.deploy) { deploy(t.dataset.deploy); return; }
+      if (t.dataset.ov) return overlayAction(t.dataset.ov);
+      if (t.dataset.dev) return devAction(t.dataset.dev);
+      if (t.dataset.act) return taskbarAction(t.dataset.act);
+      if (t.dataset.llm) {
+        if (t.dataset.llm === 'cancel') LLM.unload();
+        else { if (LLM.status === 'error') LLM.unload(); LLM.load(); }
+      }
+    });
+
+    document.addEventListener('submit', (e) => {
+      const f = e.target.closest('[data-form]');
+      if (!f) return;
+      e.preventDefault();
+      const kind = f.dataset.form;
+      if (kind === 'prompt') {
+        const input = $('#prompt-input');
+        const v = input.value;
+        if (!v.trim()) return;
+        input.value = '';
+        sendPrompt(v);
+      } else if (kind === 'chirp') {
+        const input = $('#chirp-input');
+        const v = input.value;
+        if (!v.trim()) return;
+        input.value = '';
+        chirp(v);
+      } else if (kind === 'url') {
+        const input = f.querySelector('input');
+        navigate(input.value);
+        input.blur();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.target.id === 'prompt-input' && e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        e.target.form.requestSubmit();
+      }
+      if (e.target.id === 'chirp-input' && e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        e.target.form.requestSubmit();
+      }
+      if (e.target.classList && e.target.classList.contains('tab') && (e.key === 'Enter' || e.key === ' ')) {
+        e.preventDefault();
+        switchTab(Number(e.target.dataset.tab));
+      }
+      if (e.key === '`' && (e.ctrlKey || e.metaKey)) { devOpen = !devOpen; renderDev(); }
+      if (e.key === 'Escape' && anim) stopTyping();
+    });
+
+    document.addEventListener('input', (e) => {
+      if (e.target.id === 'prompt-input') updateCostEstimate();
+    });
+    document.addEventListener('change', (e) => {
+      if (e.target.id === 'dv-node') { state.node = e.target.value; revealPosts(); save(); render(); }
+      if (e.target.id === 'llm-backend') LLM.setBackend(e.target.value);
+    });
+
+    $('#viewport').addEventListener('click', (e) => {
+      if (anim && e.target.closest('.ua-log')) {
+        anim.shown = 1e9;
+      }
+    });
+
+    // keep relative times fresh-ish and let the clock read correctly after long idles
+    setInterval(() => { if (!busy && !anim && document.activeElement && document.activeElement.tagName !== 'TEXTAREA') renderTaskbarOnly(); }, 30000);
+  }
+
+  function renderTaskbarOnly() {
+    $('#wallet').textContent = fmtMoney(state.money);
+  }
+
+  function overlayAction(a) {
+    if (a === 'continue') { introOpen = false; render(); return; }
+    if (a === 'new') { introOpen = false; state = newState(); lastReport = null; save(); render(); return; }
+    if (a === 'restart') { state = newState(); lastReport = null; introOpen = true; save(); render(); return; }
+    if (a === 'morning') { state.morning = null; save(); render(); return; }
+    if (a === 'end-ok') { state.endSeen = true; save(); navigate(SITES.agent.url); return; }
+    if (a === 'confirm-yes') { const fn = confirmState.fn; confirmState = null; fn(); return; }
+    if (a === 'confirm-no') { confirmState = null; renderOverlay(); }
+  }
+
+  function devAction(a) {
+    if (a === 'close') { devOpen = false; renderDev(); return; }
+    if (a === 'money+') addTx(100, 'DEV CREDIT');
+    if (a === 'money-') addTx(-100, 'DEV DEBIT');
+    if (a === 'hour') advance(60);
+    if (a === 'sleep') sleep(false);
+    if (a === 'posts') for (const p of S.posts) revealPost(p.id);
+    save();
+    render();
+  }
+
+  function taskbarAction(a) {
+    if (a === 'sleep') {
+      if (busy || state.over) return;
+      const h = hourOf(state.t);
+      if (h < 18) askConfirm(`It's only ${clock(state.t)}. Sleep through the rest of Day ${dayOf(state.t)}?`, 'Sleep', doSleep);
+      else doSleep();
+    }
+    if (a === 'new') askConfirm('Start a new game? Your current progress will be lost.', 'New game', () => { state = newState(); lastReport = null; introOpen = true; save(); render(); });
+    if (a === 'dev') { devOpen = !devOpen; renderDev(); }
+  }
+
+  // ───────────────────────── boot ─────────────────────────
+
+  function boot() {
+    state = load() || newState();
+    introOpen = true;
+    devOpen = /(^|#)dev\b/.test(location.hash);
+    bind();
+    if (LLM) LLM.onChange(onLlmChange);
+    J.onChange(onJevChange);
+    J.init();
+    revealPosts();
+    render();
+  }
+
+  // exposed for debugging and tests
+  window.UA = {
+    get state() { return state; },
+    sendPrompt, chirp, deploy, sleep: doSleep, navigate,
+    reset() { state = newState(); introOpen = false; save(); render(); },
+    lastReport: () => lastReport,
+  };
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+</script>

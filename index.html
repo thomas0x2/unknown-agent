@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--build:head-->
+<title>Unknown Agent</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Instrument+Sans:wght@400;500;600;700&family=Martian+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="src/style.css">
+<!--/build:head-->
+</head>
+<body>
+<!--build:body-->
+<div id="app">
+  <div class="desk">
+    <div class="window" role="application" aria-label="Browser">
+      <div class="tabstrip" id="tabs" role="tablist"></div>
+      <form class="toolbar" data-form="url">
+        <span class="tb-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <label class="addr">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3h1v10H6V11h1zm2 0h6V8a3 3 0 0 0-6 0v3z" fill="currentColor"/></svg>
+          <input id="address" autocomplete="off" spellcheck="false" aria-label="Address">
+        </label>
+      </form>
+      <nav class="bookmarks" id="bookmarks" aria-label="Bookmarks"></nav>
+      <div class="viewport" id="viewport"></div>
+    </div>
+  </div>
+  <footer class="taskbar">
+    <div class="tk-note" title="Objective"><span class="tk-pin" aria-hidden="true"></span><span id="objective"></span></div>
+    <div class="tk-right">
+      <span class="tk-rent" id="rent"></span>
+      <span class="tk-wallet" id="wallet" title="Balance"></span>
+      <span class="tk-clock" id="clock"></span>
+      <button class="tk-btn" data-act="sleep" title="Sleep until morning">Sleep</button>
+      <button class="tk-btn ghost" data-act="new" title="New game">New</button>
+      <button class="tk-btn ghost" data-act="dev" title="Story debugger (Ctrl+`)">jev</button>
+    </div>
+  </footer>
+  <div id="toasts" aria-live="polite"></div>
+  <div id="overlay" hidden></div>
+  <aside id="dev" hidden></aside>
+</div>
+<script src="src/keywords.js"></script>
+<script src="src/jev.js"></script>
+<script src="src/story.js"></script>
+<script src="src/llm.js"></script>
+<script src="src/game.js"></script>
+<!--/build:body-->
+</body>
+</html>
