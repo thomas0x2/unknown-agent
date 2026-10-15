@@ -267,11 +267,19 @@
       addTx(m.amount, m.memo);
       toast('Satchel', `${m.amount >= 0 ? '+' : ''}${fmtCoin(m.amount)} · ${m.memo}`, 'wallet');
     }
-    for (const name of arr(fx.repo)) {
+    // repo: 'name', or { name, broken: true } for code a too-weak model botched
+    for (const r of arr(fx.repo)) {
+      const name = typeof r === 'string' ? r : r.name;
       if (state.repos[name]) continue;
-      state.repos[name] = { createdAt: state.t, deployed: false };
+      state.repos[name] = { createdAt: state.t, deployed: false, broken: !!(r && r.broken) };
       if (!onSite('forkyard')) state.unread.forkyard++;
       toast('Forkyard', `New repository: ${name}`, 'forkyard');
+    }
+    for (const name of arr(fx.fix)) {
+      if (!state.repos[name]) continue;
+      state.repos[name].broken = false;
+      state.repos[name].fixedAt = state.t;
+      toast('Forkyard', `New commit on ${name}: rewrite`, 'forkyard');
     }
     if (fx.app) state.apps[fx.app.repo] = { users: fx.app.users || 0, perDay: fx.app.perDay || 0 };
     for (const id of arr(fx.post)) revealPost(id);
@@ -372,7 +380,12 @@
     const lines = [];
 
     for (const [repo, app] of Object.entries(state.apps)) {
-      if (app.perDay > 0 && state.repos[repo] && state.repos[repo].deployed) {
+      const r = state.repos[repo];
+      if (!r || !r.deployed) continue;
+      if (r.broken) {
+        // a broken app keeps nobody and earns nothing, whatever agent promised
+        if (app.perDay > 0 || app.users > 0) lines.push([`${repo} earnings (${appVisitors(repo)} users/day)`, 0]);
+      } else if (app.perDay > 0) {
         addTx(app.perDay, `Forkyard · ${repo} payout`);
         lines.push([`${repo} earnings (${app.users} users/day)`, app.perDay]);
       }
@@ -478,6 +491,11 @@
         reply = out.response;
         effects = out.effects;
         src = 'hit:' + decision.branch.id;
+      } else if (decision.kind === 'fake') {
+        // too weak, but agent does it anyway and doesn't tell you
+        reply = decision.branch.fake.response;
+        effects = decision.branch.fake.effects;
+        src = 'fake:' + decision.branch.id;
       } else if (decision.kind === 'locked') {
         const need = modelDef(decision.branch.minModel).name;
         reply = tpl(decision.branch.weak || S.agent.lockedResponse, { model: modelDef(level).name, required: need });
@@ -728,7 +746,7 @@
       const likes = (p.likes || 0) + (liked ? 1 : 0);
       const text = esc(p.text)
         .replace(/@([a-z0-9_]+)/gi, '<span class="y-at">@$1</span>')
-        .replace(/(#[a-z0-9_]+)/gi, '<span class="y-at">$1</span>')
+        .replace(/(^|[^&\w])(#[a-z][a-z0-9_]*)/gi, '$1<span class="y-at">$2</span>')
         .replace(/([a-z0-9-]+\.forkyard\.app|agent\.chat\/models)/g, '<a data-nav="$1" href="#" class="y-link">$1</a>');
       return `<article class="y-post${p.mine ? ' mine' : ''}">
         <header>
@@ -837,7 +855,7 @@
       </li>`;
     }).join('');
     const live = Object.values(state.repos).filter((r) => r.deployed).length;
-    const income = Object.entries(state.apps).reduce((n, [k, a]) => n + (state.repos[k] && state.repos[k].deployed ? a.perDay : 0), 0);
+    const income = Object.keys(state.apps).reduce((n, k) => n + (state.repos[k] && state.repos[k].deployed ? appEarnings(k) : 0), 0);
     const nightly = round2(income - E.living.amount - live * E.hostingPerDay);
     const rentLeft = E.rent ? E.rent.day - today : null;
     const rentLine = E.rent && rentLeft >= 0
@@ -985,13 +1003,13 @@
           <div class="fy-files">
             <div class="fy-filehead">Pushed by <b>agent[bot]</b> · ${ago(r.createdAt)} ago</div>
             ${def.files.map((f) => `<div class="fy-file">${esc(f)}</div>`).join('')}
-            <pre class="fy-code"><code>${esc(def.snippet)}</code></pre>
+            <pre class="fy-code"><code>${esc(r.broken && def.broken ? def.broken.snippet : def.snippet)}</code></pre>
           </div>
           <div class="fy-deploy">
             <h2>Deployment</h2>
             <p>${repoStatus(repoName)}</p>
             ${r.deployed
-              ? `<dl><dt>Visitors / day</dt><dd>${app ? app.users : 0}</dd><dt>Earnings / day</dt><dd>${fmtMoney(app ? app.perDay : 0)}</dd><dt>Hosting / day</dt><dd>${fmtMoney(E.hostingPerDay)}</dd></dl>`
+              ? `<dl><dt>Visitors / day</dt><dd>${appVisitors(repoName)}</dd><dt>Earnings / day</dt><dd>${fmtMoney(appEarnings(repoName))}</dd><dt>Hosting / day</dt><dd>${fmtMoney(E.hostingPerDay)}</dd></dl>`
               : `<p class="fy-note">Hosting costs ${fmtMoney(E.hostingPerDay)}/day, billed nightly.</p><button class="fy-btn" data-deploy="${esc(repoName)}">Deploy</button>`}
           </div>
         </div>
@@ -1011,13 +1029,22 @@
     return `<div class="fy">${head}<div class="fy-wrap"><h1 class="fy-h">Repositories <span>${names.length}</span></h1>${list}</div></div>`;
   }
 
+  // Visitors who stick around: almost nobody stays on a broken app.
+  function appVisitors(repo) {
+    const app = state.apps[repo];
+    if (!app) return 0;
+    return state.repos[repo] && state.repos[repo].broken ? Math.round(app.users * 0.04) : app.users;
+  }
+  const appEarnings = (repo) => (state.repos[repo] && state.repos[repo].broken ? 0 : (state.apps[repo] || {}).perDay || 0);
+
   function pageApp(repo) {
     const r = state.repos[repo];
     const def = S.repos[repo];
     if (!r || !r.deployed || !def) {
       return `<div class="err"><h1>404: NOT_FOUND</h1><p>Nothing is deployed at <code>${esc(repo)}.forkyard.app</code>.</p></div>`;
     }
-    return `<div class="pv-host">${def.preview.html}</div>`;
+    const broken = r.broken && def.broken;
+    return `<div class="pv-host">${broken ? def.broken.preview : def.preview.html}</div>`;
   }
 
   function pageError(url) {

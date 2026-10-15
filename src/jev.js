@@ -108,13 +108,15 @@
   }
 
   /*
-   * Model gating. A branch with `minModel: n` needs agent-n or better: on a weaker
-   * model a hit becomes 'locked' (the player still pays, nothing happens, and the
-   * agent says which tier it needs). Nudges and misses pass through unchanged.
+   * Model gating. A branch with `minModel: n` needs agent-n or better. On a weaker model a hit becomes:
+   *   'fake'    if the branch has a `fake` outcome: agent claims success and the fake effects run
+   *             (a broken app, a deal that never pays…)
+   *   'locked'  otherwise: the player still pays, nothing happens, and agent says which tier it needs.
+   * Nudges and misses pass through unchanged.
    */
   Jev.gate = function (decision, level) {
     if (decision.kind === 'hit' && decision.branch && (decision.branch.minModel || 1) > level) {
-      return Object.assign({}, decision, { kind: 'locked' });
+      return Object.assign({}, decision, { kind: decision.branch.fake ? 'fake' : 'locked' });
     }
     return decision;
   };

@@ -36,7 +36,7 @@ Without a key the game still runs, using an offline keyword matcher for story de
   | agent-4 | $250 | $3.50 | $0.10 |
   | agent-5 | $800 | $6.00 | $0.15 |
 
-  You can switch between tiers you own from the picker next to Send, so cheap prompts can go to a cheap model. Some branches need a minimum tier. Ask for one on a weaker model and you pay for the prompt, nothing happens, and agent tells you which tier it needs.
+  You can switch between tiers you own from the picker next to Send, so cheap prompts can go to a cheap model. Some branches need a minimum tier. On a weaker model, agent either says which tier it needs (you still pay), or, if the branch has a `fake` outcome, does the job badly without telling you: the app it builds deploys but is broken in the browser, people complain about it on Y, and it never earns anything until a strong enough model fixes it.
 
 - Each prompt costs money and **1 hour**. Posting on Y or sending an email takes 5 minutes, deploying takes 30.
 - At midnight you pass out, or you can press **Sleep**. Overnight, apps pay out, then hosting ($2/app), food ($15) and, at the end of Day 7, rent ($300) are charged.
@@ -140,7 +140,7 @@ nodes: {
 - `posts`: seeded posts use `at` (minutes before game start). Other posts appear once their `when` is true, or when an effect reveals them.
 - `decision`: the `hit` and `partial` probability thresholds for Jev.
 - `models`: the agent tiers (`name`, `price`, `promptBase`, `perWord`, `blurb`), weakest first.
-- On a branch, `minModel: n` requires agent-n or better. `weak` is what agent says on a weaker model (default: `agent.lockedResponse`; `{model}` and `{required}` are filled in). `atModel: { 4: { response, effects } }` swaps in a different outcome on stronger tiers, even for branches anyone can reach.
+- On a branch, `minModel: n` requires agent-n or better. Add `fake: { response, effects }` to have weaker models pretend instead of refusing; `repo: { name, broken: true }` creates a botched repo (its `broken` snippet and preview from `repos` are shown, and it earns $0), and the effect `fix: 'repo'` repairs it. `weak` is what agent says on a weaker model (default: `agent.lockedResponse`; `{model}` and `{required}` are filled in). `atModel: { 4: { response, effects } }` swaps in a different outcome on stronger tiers, even for branches anyone can reach.
 - `{balance}`, `{lastCost}`, `{handle}` and `{name}` are substituted in agent replies and posts.
 
 ## Chapter 1 (placeholder story)
@@ -152,7 +152,7 @@ Side mail at any point: asking Gary (`gary@pruittproperty.com`) for more time ge
 1. **broke**: A bakery on Y wants a $150 website. Prompt the agent to build it.
 2. **site_built**: Deploy it on Forkyard. Asking the agent to deploy wastes a prompt.
 3. **site_live**: Tell Rosa. Either prompt agent, or do it yourself for free: email her (her address is in her Y post) or post on Y. She pays 2 hours later.
-4. **paid_once**: Y is complaining about broken laundromat machines. Build a tracker. **Needs agent-2.**
+4. **paid_once**: Y is complaining about broken laundromat machines. Build a tracker. **Needs agent-2.** On agent-1, agent ships a broken app and says it's flawless; it earns nothing until you ask a stronger model to fix it (agent-1 claims to fix it but doesn't).
 5. **app_built → app_live**: Deploy it, then promote it (prompt or Y post).
 6. **app_users**: Monetize it. Ads give $42/day, a sponsor $60/day (**needs agent-3**), and a paywall kills traffic ($9/day). A perfect sponsor run ends Day 8 with about $89 after rent, and a perfect ads run with about $40.
 7. **monetized**: Survive until rent clears. On Day 8 the agent sends a message that sets up Chapter 2.

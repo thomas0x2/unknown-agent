@@ -575,3 +575,12 @@ body.dev-on .ua-src { display: block; }
 .qm-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 .qm-gen { display: none; margin: 14px 0 0; font-family: var(--f-mono); font-size: 11px; color: var(--qm-dim); }
 body.dev-on .qm-gen { display: block; }
+
+/* ── a broken app (built by a too-weak model) ── */
+.pv-broken { font-family: 'Times New Roman', Times, serif; }
+.pv-broken h1 { color: #c00; letter-spacing: 0.3em; }
+.pv-err { background: #fff0f0; border: 1px solid #f3b4b4; color: #a00; padding: 10px 12px; font-size: 12px; white-space: pre-wrap; overflow-x: auto; margin: 0 0 18px; }
+.pv-broken .pv-grid { gap: 0; }
+.pv-broken .pv-m { margin: -6px; opacity: 0.85; }
+.pv-btn { margin-top: 26px; font-family: inherit; font-size: 13px; padding: 2px 6px; border: 2px outset #ccc; background: #eee; color: #888; cursor: not-allowed; }
+.pv-foot { color: #bbb; font-size: 11px; margin-top: 30px; }

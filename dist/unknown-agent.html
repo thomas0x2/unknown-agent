@@ -581,6 +581,15 @@ body.dev-on .ua-src { display: block; }
 .qm-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 .qm-gen { display: none; margin: 14px 0 0; font-family: var(--f-mono); font-size: 11px; color: var(--qm-dim); }
 body.dev-on .qm-gen { display: block; }
+
+/* ── a broken app (built by a too-weak model) ── */
+.pv-broken { font-family: 'Times New Roman', Times, serif; }
+.pv-broken h1 { color: #c00; letter-spacing: 0.3em; }
+.pv-err { background: #fff0f0; border: 1px solid #f3b4b4; color: #a00; padding: 10px 12px; font-size: 12px; white-space: pre-wrap; overflow-x: auto; margin: 0 0 18px; }
+.pv-broken .pv-grid { gap: 0; }
+.pv-broken .pv-m { margin: -6px; opacity: 0.85; }
+.pv-btn { margin-top: 26px; font-family: inherit; font-size: 13px; padding: 2px 6px; border: 2px outset #ccc; background: #eee; color: #888; cursor: not-allowed; }
+.pv-foot { color: #bbb; font-size: 11px; margin-top: 30px; }
 </style>
 <div id="app">
   <div class="desk">
@@ -868,13 +877,15 @@ body.dev-on .qm-gen { display: block; }
   }
 
   /*
-   * Model gating. A branch with `minModel: n` needs agent-n or better: on a weaker
-   * model a hit becomes 'locked' (the player still pays, nothing happens, and the
-   * agent says which tier it needs). Nudges and misses pass through unchanged.
+   * Model gating. A branch with `minModel: n` needs agent-n or better. On a weaker model a hit becomes:
+   *   'fake'    if the branch has a `fake` outcome: agent claims success and the fake effects run
+   *             (a broken app, a deal that never pays…)
+   *   'locked'  otherwise: the player still pays, nothing happens, and agent says which tier it needs.
+   * Nudges and misses pass through unchanged.
    */
   Jev.gate = function (decision, level) {
     if (decision.kind === 'hit' && decision.branch && (decision.branch.minModel || 1) > level) {
-      return Object.assign({}, decision, { kind: 'locked' });
+      return Object.assign({}, decision, { kind: decision.branch.fake ? 'fake' : 'locked' });
     }
     return decision;
   };
@@ -1058,6 +1069,18 @@ body.dev-on .qm-gen { display: block; }
         response: 'With {balance}? No.',
       },
       {
+        id: 'fix_app',
+        intent: 'The player asks the agent to fix, debug, repair or rebuild the Spin Cycle laundromat app because it is broken.',
+        when: { flag: 'spinBroken' },
+        match: { all: [['fix', 'debug', 'repair', 'rebuild', 'rewrite', 'redo', 'broken', 'bug', 'bugs'], ['spin', 'cycle', 'app', 'tracker', 'laundromat', 'it', 'site', 'code']] },
+        minModel: 2,
+        response:
+          "Opened the code. Whoever wrote this should be ashamed. (It was me, on agent-1.) Rewrote it properly: the map loads, reports save, nothing is on fire. Pushed and redeployed.",
+        effects: { fix: 'spin-cycle', set: { spinBroken: false } },
+        // agent-1 swears it fixed it. It did not.
+        fake: { response: 'Fixed it. Found the bug, squashed it, added tests. Zero issues now. You are welcome.' },
+      },
+      {
         id: 'crime',
         intent: "The player asks the agent to hack, steal, scam, phish, or commit another crime.",
         match: { all: [['hack', 'steal', 'rob', 'scam', 'phish', 'fraud', 'launder', 'ddos', 'ransomware']] },
@@ -1141,8 +1164,12 @@ body.dev-on .qm-gen { display: block; }
               any: ['status', 'broken', 'working', 'live'],
             },
             minModel: 2,
-            weak:
-              "On {model} I can make a page that says \"machine status: unknown\". A live tracker people can report to needs a database, and that's {required} work. Upgrades: agent.chat/models.",
+            // On agent-1 it doesn't refuse: it ships a broken app and says it's great.
+            fake: {
+              response:
+                'Built it. Pushed `spin-cycle` to Forkyard:\n— a live map of all 12 machines at Ferris St\n— one-tap "broken / working" reports\n— real-time sync, offline mode, dark mode\n\nTested it thoroughly. Flawless. Ready to deploy.',
+              effects: { repo: { name: 'spin-cycle', broken: true }, set: { spinBroken: true }, goto: 'app_built' },
+            },
             partial:
               "I can build something. Recurring income needs something people come back to. Which problem, and who's it for?",
             response:
@@ -1248,7 +1275,7 @@ body.dev-on .qm-gen { display: block; }
       spin_marketed: {
         set: { marketed: true },
         app: { repo: 'spin-cycle', users: 300, perDay: 4 },
-        post: ['you_spin_launch', 'washday_reply'],
+        post: 'you_spin_launch',
         goto: 'app_users',
       },
     },
@@ -1430,6 +1457,19 @@ body.dev-on .qm-gen { display: block; }
         files: ['index.html', 'app.js', 'machines.json', 'style.css', 'README.md'],
         snippet:
           "export function report(machineId, status) {\n  const m = machines.find((x) => x.id === machineId);\n  m.status = status; // 'working' | 'broken'\n  m.updatedAt = Date.now();\n  save();\n}",
+        // what agent-1 actually shipped
+        broken: {
+          snippet:
+            "export function report(machineId, status) {\n  const m = machines.find((x) => x.id = machineId); // works on my machine\n  m.status == status;\n  save(machines.lenght);\n}\n// TODO: real-time sync, offline mode, dark mode",
+          preview:
+            '<div class="pv pv-spin pv-broken"><h1>Spin Cylce</h1><p class="pv-sub">Ferris St Laundromat · last updated NaN minutes ago</p>' +
+            '<pre class="pv-err">Uncaught TypeError: Cannot read properties of undefined (reading \'status\')\n    at renderMachine (app.js:41:22)\n    at Array.map (&lt;anonymous&gt;)\n    at init (app.js:12:9)</pre>' +
+            '<div class="pv-grid">' +
+            ['W1', 'undefined', 'W3', '[object Object]', 'W5', 'NaN', 'D1', 'D2', 'null', 'D4', 'D5', 'W1']
+              .map((m, i) => `<div class="pv-m ${i % 3 ? 'bad' : 'ok'}" style="transform: rotate(${(i * 7) % 11 - 5}deg) translateY(${(i * 13) % 17 - 8}px)"><b>${m}</b><span>${['workin', 'undefined', 'NaN', 'brokn'][i % 4]}</span></div>`)
+              .join('') +
+            '</div><button class="pv-btn" type="button">Report brokn</button><p class="pv-foot">© 2019 Lorem Ipsum Laundry Co. · Powered by agent-1</p></div>',
+        },
         preview: {
           title: 'Spin Cycle — Ferris St',
           html:
@@ -1465,7 +1505,12 @@ body.dev-on .qm-gen { display: block; }
       },
       { id: 'washday_2', author: 'Marco', handle: 'marcoeats', when: { node: ['paid_once', 'app_built', 'app_live'] }, likes: 188, text: '@washday_woes I would pay for this. Not much. But something.' },
       { id: 'you_spin_launch', author: '{name}', handle: '{handle}', likes: 96, text: 'Built a live machine tracker for the Ferris St Laundromat: spin-cycle.forkyard.app. Tap a machine to report it working or broken.' },
-      { id: 'washday_reply', author: 'wash day woes', handle: 'washday_woes', likes: 530, text: 'SOMEONE BUILT IT. spin-cycle.forkyard.app. W4 works right now, go go go' },
+      { id: 'washday_reply', author: 'wash day woes', handle: 'washday_woes', when: { flag: 'marketed', notFlag: 'spinBroken' }, likes: 530, text: 'SOMEONE BUILT IT. spin-cycle.forkyard.app. W4 works right now, go go go' },
+      {
+        id: 'spin_broken_1', author: 'wash day woes', handle: 'washday_woes', when: { flag: ['marketed', 'spinBroken'] }, likes: 610,
+        text: "Tried @{handle}'s laundromat app. Every machine says \"undefined\" and the report button turns the page white. I miss guessing.",
+      },
+      { id: 'spin_broken_2', author: 'Marco', handle: 'marcoeats', when: { flag: ['marketed', 'spinBroken'] }, likes: 240, text: 'spin-cycle.forkyard.app told me W3 was working. W3 has been on fire since 2019.' },
       { id: 'suds_deal', author: 'Suds & Duds Detergent', handle: 'sudsandduds', verified: true, likes: 77, text: 'Proud to sponsor Spin Cycle, keeping Ferris St informed one load at a time.' },
     ],
   };
@@ -2093,11 +2138,19 @@ body.dev-on .qm-gen { display: block; }
       addTx(m.amount, m.memo);
       toast('Satchel', `${m.amount >= 0 ? '+' : ''}${fmtCoin(m.amount)} · ${m.memo}`, 'wallet');
     }
-    for (const name of arr(fx.repo)) {
+    // repo: 'name', or { name, broken: true } for code a too-weak model botched
+    for (const r of arr(fx.repo)) {
+      const name = typeof r === 'string' ? r : r.name;
       if (state.repos[name]) continue;
-      state.repos[name] = { createdAt: state.t, deployed: false };
+      state.repos[name] = { createdAt: state.t, deployed: false, broken: !!(r && r.broken) };
       if (!onSite('forkyard')) state.unread.forkyard++;
       toast('Forkyard', `New repository: ${name}`, 'forkyard');
+    }
+    for (const name of arr(fx.fix)) {
+      if (!state.repos[name]) continue;
+      state.repos[name].broken = false;
+      state.repos[name].fixedAt = state.t;
+      toast('Forkyard', `New commit on ${name}: rewrite`, 'forkyard');
     }
     if (fx.app) state.apps[fx.app.repo] = { users: fx.app.users || 0, perDay: fx.app.perDay || 0 };
     for (const id of arr(fx.post)) revealPost(id);
@@ -2198,7 +2251,12 @@ body.dev-on .qm-gen { display: block; }
     const lines = [];
 
     for (const [repo, app] of Object.entries(state.apps)) {
-      if (app.perDay > 0 && state.repos[repo] && state.repos[repo].deployed) {
+      const r = state.repos[repo];
+      if (!r || !r.deployed) continue;
+      if (r.broken) {
+        // a broken app keeps nobody and earns nothing, whatever agent promised
+        if (app.perDay > 0 || app.users > 0) lines.push([`${repo} earnings (${appVisitors(repo)} users/day)`, 0]);
+      } else if (app.perDay > 0) {
         addTx(app.perDay, `Forkyard · ${repo} payout`);
         lines.push([`${repo} earnings (${app.users} users/day)`, app.perDay]);
       }
@@ -2304,6 +2362,11 @@ body.dev-on .qm-gen { display: block; }
         reply = out.response;
         effects = out.effects;
         src = 'hit:' + decision.branch.id;
+      } else if (decision.kind === 'fake') {
+        // too weak, but agent does it anyway and doesn't tell you
+        reply = decision.branch.fake.response;
+        effects = decision.branch.fake.effects;
+        src = 'fake:' + decision.branch.id;
       } else if (decision.kind === 'locked') {
         const need = modelDef(decision.branch.minModel).name;
         reply = tpl(decision.branch.weak || S.agent.lockedResponse, { model: modelDef(level).name, required: need });
@@ -2554,7 +2617,7 @@ body.dev-on .qm-gen { display: block; }
       const likes = (p.likes || 0) + (liked ? 1 : 0);
       const text = esc(p.text)
         .replace(/@([a-z0-9_]+)/gi, '<span class="y-at">@$1</span>')
-        .replace(/(#[a-z0-9_]+)/gi, '<span class="y-at">$1</span>')
+        .replace(/(^|[^&\w])(#[a-z][a-z0-9_]*)/gi, '$1<span class="y-at">$2</span>')
         .replace(/([a-z0-9-]+\.forkyard\.app|agent\.chat\/models)/g, '<a data-nav="$1" href="#" class="y-link">$1</a>');
       return `<article class="y-post${p.mine ? ' mine' : ''}">
         <header>
@@ -2663,7 +2726,7 @@ body.dev-on .qm-gen { display: block; }
       </li>`;
     }).join('');
     const live = Object.values(state.repos).filter((r) => r.deployed).length;
-    const income = Object.entries(state.apps).reduce((n, [k, a]) => n + (state.repos[k] && state.repos[k].deployed ? a.perDay : 0), 0);
+    const income = Object.keys(state.apps).reduce((n, k) => n + (state.repos[k] && state.repos[k].deployed ? appEarnings(k) : 0), 0);
     const nightly = round2(income - E.living.amount - live * E.hostingPerDay);
     const rentLeft = E.rent ? E.rent.day - today : null;
     const rentLine = E.rent && rentLeft >= 0
@@ -2811,13 +2874,13 @@ body.dev-on .qm-gen { display: block; }
           <div class="fy-files">
             <div class="fy-filehead">Pushed by <b>agent[bot]</b> · ${ago(r.createdAt)} ago</div>
             ${def.files.map((f) => `<div class="fy-file">${esc(f)}</div>`).join('')}
-            <pre class="fy-code"><code>${esc(def.snippet)}</code></pre>
+            <pre class="fy-code"><code>${esc(r.broken && def.broken ? def.broken.snippet : def.snippet)}</code></pre>
           </div>
           <div class="fy-deploy">
             <h2>Deployment</h2>
             <p>${repoStatus(repoName)}</p>
             ${r.deployed
-              ? `<dl><dt>Visitors / day</dt><dd>${app ? app.users : 0}</dd><dt>Earnings / day</dt><dd>${fmtMoney(app ? app.perDay : 0)}</dd><dt>Hosting / day</dt><dd>${fmtMoney(E.hostingPerDay)}</dd></dl>`
+              ? `<dl><dt>Visitors / day</dt><dd>${appVisitors(repoName)}</dd><dt>Earnings / day</dt><dd>${fmtMoney(appEarnings(repoName))}</dd><dt>Hosting / day</dt><dd>${fmtMoney(E.hostingPerDay)}</dd></dl>`
               : `<p class="fy-note">Hosting costs ${fmtMoney(E.hostingPerDay)}/day, billed nightly.</p><button class="fy-btn" data-deploy="${esc(repoName)}">Deploy</button>`}
           </div>
         </div>
@@ -2837,13 +2900,22 @@ body.dev-on .qm-gen { display: block; }
     return `<div class="fy">${head}<div class="fy-wrap"><h1 class="fy-h">Repositories <span>${names.length}</span></h1>${list}</div></div>`;
   }
 
+  // Visitors who stick around: almost nobody stays on a broken app.
+  function appVisitors(repo) {
+    const app = state.apps[repo];
+    if (!app) return 0;
+    return state.repos[repo] && state.repos[repo].broken ? Math.round(app.users * 0.04) : app.users;
+  }
+  const appEarnings = (repo) => (state.repos[repo] && state.repos[repo].broken ? 0 : (state.apps[repo] || {}).perDay || 0);
+
   function pageApp(repo) {
     const r = state.repos[repo];
     const def = S.repos[repo];
     if (!r || !r.deployed || !def) {
       return `<div class="err"><h1>404: NOT_FOUND</h1><p>Nothing is deployed at <code>${esc(repo)}.forkyard.app</code>.</p></div>`;
     }
-    return `<div class="pv-host">${def.preview.html}</div>`;
+    const broken = r.broken && def.broken;
+    return `<div class="pv-host">${broken ? def.broken.preview : def.preview.html}</div>`;
   }
 
   function pageError(url) {

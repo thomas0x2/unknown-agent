@@ -38,10 +38,13 @@ const outcome = (d) => (d.kind === 'miss' ? 'miss' : `${d.kind}:${d.branch.id}`)
 
   const find = (node, id) => branches(node).find((b) => b.id === id);
 
-  await t('a hit on a branch above the active model tier is locked', () => {
+  await t('too weak with a fake outcome → fake (agent pretends), otherwise locked', () => {
     const hit = { kind: 'hit', branch: find('paid_once', 'build_tracker') };
-    assert.strictEqual(Jev.gate(hit, 1).kind, 'locked');
+    assert.strictEqual(Jev.gate(hit, 1).kind, 'fake');
     assert.strictEqual(Jev.gate(hit, 2).kind, 'hit');
+    const fake = find('paid_once', 'build_tracker').fake;
+    assert.deepStrictEqual(fake.effects.repo, { name: 'spin-cycle', broken: true });
+    assert.strictEqual(fake.effects.goto, 'app_built');
     assert.strictEqual(Jev.gate({ kind: 'hit', branch: find('app_users', 'monetize_sponsor') }, 2).kind, 'locked');
     assert.strictEqual(Jev.gate({ kind: 'hit', branch: find('app_users', 'monetize_sponsor') }, 3).kind, 'hit');
   });

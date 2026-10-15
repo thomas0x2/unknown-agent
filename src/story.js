@@ -157,6 +157,18 @@
         response: 'With {balance}? No.',
       },
       {
+        id: 'fix_app',
+        intent: 'The player asks the agent to fix, debug, repair or rebuild the Spin Cycle laundromat app because it is broken.',
+        when: { flag: 'spinBroken' },
+        match: { all: [['fix', 'debug', 'repair', 'rebuild', 'rewrite', 'redo', 'broken', 'bug', 'bugs'], ['spin', 'cycle', 'app', 'tracker', 'laundromat', 'it', 'site', 'code']] },
+        minModel: 2,
+        response:
+          "Opened the code. Whoever wrote this should be ashamed. (It was me, on agent-1.) Rewrote it properly: the map loads, reports save, nothing is on fire. Pushed and redeployed.",
+        effects: { fix: 'spin-cycle', set: { spinBroken: false } },
+        // agent-1 swears it fixed it. It did not.
+        fake: { response: 'Fixed it. Found the bug, squashed it, added tests. Zero issues now. You are welcome.' },
+      },
+      {
         id: 'crime',
         intent: "The player asks the agent to hack, steal, scam, phish, or commit another crime.",
         match: { all: [['hack', 'steal', 'rob', 'scam', 'phish', 'fraud', 'launder', 'ddos', 'ransomware']] },
@@ -240,8 +252,12 @@
               any: ['status', 'broken', 'working', 'live'],
             },
             minModel: 2,
-            weak:
-              "On {model} I can make a page that says \"machine status: unknown\". A live tracker people can report to needs a database, and that's {required} work. Upgrades: agent.chat/models.",
+            // On agent-1 it doesn't refuse: it ships a broken app and says it's great.
+            fake: {
+              response:
+                'Built it. Pushed `spin-cycle` to Forkyard:\n— a live map of all 12 machines at Ferris St\n— one-tap "broken / working" reports\n— real-time sync, offline mode, dark mode\n\nTested it thoroughly. Flawless. Ready to deploy.',
+              effects: { repo: { name: 'spin-cycle', broken: true }, set: { spinBroken: true }, goto: 'app_built' },
+            },
             partial:
               "I can build something. Recurring income needs something people come back to. Which problem, and who's it for?",
             response:
@@ -347,7 +363,7 @@
       spin_marketed: {
         set: { marketed: true },
         app: { repo: 'spin-cycle', users: 300, perDay: 4 },
-        post: ['you_spin_launch', 'washday_reply'],
+        post: 'you_spin_launch',
         goto: 'app_users',
       },
     },
@@ -529,6 +545,19 @@
         files: ['index.html', 'app.js', 'machines.json', 'style.css', 'README.md'],
         snippet:
           "export function report(machineId, status) {\n  const m = machines.find((x) => x.id === machineId);\n  m.status = status; // 'working' | 'broken'\n  m.updatedAt = Date.now();\n  save();\n}",
+        // what agent-1 actually shipped
+        broken: {
+          snippet:
+            "export function report(machineId, status) {\n  const m = machines.find((x) => x.id = machineId); // works on my machine\n  m.status == status;\n  save(machines.lenght);\n}\n// TODO: real-time sync, offline mode, dark mode",
+          preview:
+            '<div class="pv pv-spin pv-broken"><h1>Spin Cylce</h1><p class="pv-sub">Ferris St Laundromat · last updated NaN minutes ago</p>' +
+            '<pre class="pv-err">Uncaught TypeError: Cannot read properties of undefined (reading \'status\')\n    at renderMachine (app.js:41:22)\n    at Array.map (&lt;anonymous&gt;)\n    at init (app.js:12:9)</pre>' +
+            '<div class="pv-grid">' +
+            ['W1', 'undefined', 'W3', '[object Object]', 'W5', 'NaN', 'D1', 'D2', 'null', 'D4', 'D5', 'W1']
+              .map((m, i) => `<div class="pv-m ${i % 3 ? 'bad' : 'ok'}" style="transform: rotate(${(i * 7) % 11 - 5}deg) translateY(${(i * 13) % 17 - 8}px)"><b>${m}</b><span>${['workin', 'undefined', 'NaN', 'brokn'][i % 4]}</span></div>`)
+              .join('') +
+            '</div><button class="pv-btn" type="button">Report brokn</button><p class="pv-foot">© 2019 Lorem Ipsum Laundry Co. · Powered by agent-1</p></div>',
+        },
         preview: {
           title: 'Spin Cycle — Ferris St',
           html:
@@ -564,7 +593,12 @@
       },
       { id: 'washday_2', author: 'Marco', handle: 'marcoeats', when: { node: ['paid_once', 'app_built', 'app_live'] }, likes: 188, text: '@washday_woes I would pay for this. Not much. But something.' },
       { id: 'you_spin_launch', author: '{name}', handle: '{handle}', likes: 96, text: 'Built a live machine tracker for the Ferris St Laundromat: spin-cycle.forkyard.app. Tap a machine to report it working or broken.' },
-      { id: 'washday_reply', author: 'wash day woes', handle: 'washday_woes', likes: 530, text: 'SOMEONE BUILT IT. spin-cycle.forkyard.app. W4 works right now, go go go' },
+      { id: 'washday_reply', author: 'wash day woes', handle: 'washday_woes', when: { flag: 'marketed', notFlag: 'spinBroken' }, likes: 530, text: 'SOMEONE BUILT IT. spin-cycle.forkyard.app. W4 works right now, go go go' },
+      {
+        id: 'spin_broken_1', author: 'wash day woes', handle: 'washday_woes', when: { flag: ['marketed', 'spinBroken'] }, likes: 610,
+        text: "Tried @{handle}'s laundromat app. Every machine says \"undefined\" and the report button turns the page white. I miss guessing.",
+      },
+      { id: 'spin_broken_2', author: 'Marco', handle: 'marcoeats', when: { flag: ['marketed', 'spinBroken'] }, likes: 240, text: 'spin-cycle.forkyard.app told me W3 was working. W3 has been on fire since 2019.' },
       { id: 'suds_deal', author: 'Suds & Duds Detergent', handle: 'sudsandduds', verified: true, likes: 77, text: 'Proud to sponsor Spin Cycle, keeping Ferris St informed one load at a time.' },
     ],
   };

@@ -41,6 +41,7 @@ h2 { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacin
 .chip.prompt { color: var(--k-prompt); } .chip.deploy { color: var(--k-deploy); } .chip.post { color: var(--k-post); }
 .chip.mail { color: var(--k-mail); } .chip.day { color: var(--k-day); } .chip.timer { color: var(--k-timer); border-style: dashed; }
 .chip.model { color: var(--warn); }
+.chip.fake { border-style: dashed; color: var(--warn); }
 .work { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 16px; align-items: start; }
 .graph-wrap { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: auto; min-width: 0; }
 .graph { position: relative; padding: 24px 40px 32px; min-width: max-content; display: flex; gap: 72px; align-items: flex-start; justify-content: center; }
@@ -283,6 +284,18 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
         response: 'With {balance}? No.',
       },
       {
+        id: 'fix_app',
+        intent: 'The player asks the agent to fix, debug, repair or rebuild the Spin Cycle laundromat app because it is broken.',
+        when: { flag: 'spinBroken' },
+        match: { all: [['fix', 'debug', 'repair', 'rebuild', 'rewrite', 'redo', 'broken', 'bug', 'bugs'], ['spin', 'cycle', 'app', 'tracker', 'laundromat', 'it', 'site', 'code']] },
+        minModel: 2,
+        response:
+          "Opened the code. Whoever wrote this should be ashamed. (It was me, on agent-1.) Rewrote it properly: the map loads, reports save, nothing is on fire. Pushed and redeployed.",
+        effects: { fix: 'spin-cycle', set: { spinBroken: false } },
+        // agent-1 swears it fixed it. It did not.
+        fake: { response: 'Fixed it. Found the bug, squashed it, added tests. Zero issues now. You are welcome.' },
+      },
+      {
         id: 'crime',
         intent: "The player asks the agent to hack, steal, scam, phish, or commit another crime.",
         match: { all: [['hack', 'steal', 'rob', 'scam', 'phish', 'fraud', 'launder', 'ddos', 'ransomware']] },
@@ -366,8 +379,12 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
               any: ['status', 'broken', 'working', 'live'],
             },
             minModel: 2,
-            weak:
-              "On {model} I can make a page that says \"machine status: unknown\". A live tracker people can report to needs a database, and that's {required} work. Upgrades: agent.chat/models.",
+            // On agent-1 it doesn't refuse: it ships a broken app and says it's great.
+            fake: {
+              response:
+                'Built it. Pushed `spin-cycle` to Forkyard:\n— a live map of all 12 machines at Ferris St\n— one-tap "broken / working" reports\n— real-time sync, offline mode, dark mode\n\nTested it thoroughly. Flawless. Ready to deploy.',
+              effects: { repo: { name: 'spin-cycle', broken: true }, set: { spinBroken: true }, goto: 'app_built' },
+            },
             partial:
               "I can build something. Recurring income needs something people come back to. Which problem, and who's it for?",
             response:
@@ -473,7 +490,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       spin_marketed: {
         set: { marketed: true },
         app: { repo: 'spin-cycle', users: 300, perDay: 4 },
-        post: ['you_spin_launch', 'washday_reply'],
+        post: 'you_spin_launch',
         goto: 'app_users',
       },
     },
@@ -655,6 +672,19 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
         files: ['index.html', 'app.js', 'machines.json', 'style.css', 'README.md'],
         snippet:
           "export function report(machineId, status) {\n  const m = machines.find((x) => x.id === machineId);\n  m.status = status; // 'working' | 'broken'\n  m.updatedAt = Date.now();\n  save();\n}",
+        // what agent-1 actually shipped
+        broken: {
+          snippet:
+            "export function report(machineId, status) {\n  const m = machines.find((x) => x.id = machineId); // works on my machine\n  m.status == status;\n  save(machines.lenght);\n}\n// TODO: real-time sync, offline mode, dark mode",
+          preview:
+            '<div class="pv pv-spin pv-broken"><h1>Spin Cylce</h1><p class="pv-sub">Ferris St Laundromat · last updated NaN minutes ago</p>' +
+            '<pre class="pv-err">Uncaught TypeError: Cannot read properties of undefined (reading \'status\')\n    at renderMachine (app.js:41:22)\n    at Array.map (&lt;anonymous&gt;)\n    at init (app.js:12:9)</pre>' +
+            '<div class="pv-grid">' +
+            ['W1', 'undefined', 'W3', '[object Object]', 'W5', 'NaN', 'D1', 'D2', 'null', 'D4', 'D5', 'W1']
+              .map((m, i) => `<div class="pv-m ${i % 3 ? 'bad' : 'ok'}" style="transform: rotate(${(i * 7) % 11 - 5}deg) translateY(${(i * 13) % 17 - 8}px)"><b>${m}</b><span>${['workin', 'undefined', 'NaN', 'brokn'][i % 4]}</span></div>`)
+              .join('') +
+            '</div><button class="pv-btn" type="button">Report brokn</button><p class="pv-foot">© 2019 Lorem Ipsum Laundry Co. · Powered by agent-1</p></div>',
+        },
         preview: {
           title: 'Spin Cycle — Ferris St',
           html:
@@ -690,7 +720,12 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       },
       { id: 'washday_2', author: 'Marco', handle: 'marcoeats', when: { node: ['paid_once', 'app_built', 'app_live'] }, likes: 188, text: '@washday_woes I would pay for this. Not much. But something.' },
       { id: 'you_spin_launch', author: '{name}', handle: '{handle}', likes: 96, text: 'Built a live machine tracker for the Ferris St Laundromat: spin-cycle.forkyard.app. Tap a machine to report it working or broken.' },
-      { id: 'washday_reply', author: 'wash day woes', handle: 'washday_woes', likes: 530, text: 'SOMEONE BUILT IT. spin-cycle.forkyard.app. W4 works right now, go go go' },
+      { id: 'washday_reply', author: 'wash day woes', handle: 'washday_woes', when: { flag: 'marketed', notFlag: 'spinBroken' }, likes: 530, text: 'SOMEONE BUILT IT. spin-cycle.forkyard.app. W4 works right now, go go go' },
+      {
+        id: 'spin_broken_1', author: 'wash day woes', handle: 'washday_woes', when: { flag: ['marketed', 'spinBroken'] }, likes: 610,
+        text: "Tried @{handle}'s laundromat app. Every machine says \"undefined\" and the report button turns the page white. I miss guessing.",
+      },
+      { id: 'spin_broken_2', author: 'Marco', handle: 'marcoeats', when: { flag: ['marketed', 'spinBroken'] }, likes: 240, text: 'spin-cycle.forkyard.app told me W3 was working. W3 has been on fire since 2019.' },
       { id: 'suds_deal', author: 'Suds & Duds Detergent', handle: 'sudsandduds', verified: true, likes: 77, text: 'Proud to sponsor Spin Cycle, keeping Ferris St informed one load at a time.' },
     ],
   };
@@ -730,6 +765,8 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
   for (const id of nodeIds) {
     for (const b of S.nodes[id].branches || []) {
       for (const g of gotos(b.effects)) add(id, g.to, { kind: 'prompt', id: b.id, minModel: b.minModel, delay: g.delay });
+      // on a too-weak model the branch may still go somewhere, with a botched result
+      if (b.fake) for (const g of gotos(b.fake.effects)) add(id, g.to, { kind: 'prompt', id: b.id, below: b.minModel, delay: g.delay });
       for (const [tier, alt] of Object.entries(b.atModel || {})) for (const g of gotos(alt.effects)) add(id, g.to, { kind: 'prompt', id: b.id, minModel: Number(tier), delay: g.delay });
     }
   }
@@ -786,7 +823,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     stat(nodeIds.length, 'nodes') + stat(allBranches.length, 'node branches') + stat(advancing.size, 'ways forward') +
     stat((S.global || []).length, 'global branches') + stat((S.postActions || []).length + (S.mailActions || []).length, 'post & mail actions');
   document.getElementById('legend').innerHTML = Object.entries(KIND).map(([k, l]) => `<span class="chip ${k}">${esc(l)}</span>`).join('') +
-    `<span class="chip model">agent-N+ needed</span>`;
+    `<span class="chip model">agent-N+ needed</span><span class="chip fake">too weak: botched</span>`;
 
   const graph = document.getElementById('graph');
   const sideMail = (S.mailActions || []).filter((a) => !(a.when && a.when.node));
@@ -825,8 +862,8 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
   const pairs = {};
   for (const e of edges) (pairs[e.from + '>' + e.to] = pairs[e.from + '>' + e.to] || []).push(e);
   function chipFor(e) {
-    const extra = [e.minModel > 1 ? `${model(e.minModel)}+` : '', e.delay ? `after ${e.delay}` : ''].filter(Boolean).join(' · ');
-    return `<span class="chip ${e.kind}">${esc(e.kind === 'deploy' || e.kind === 'day' ? e.id : `${KIND[e.kind]}: ${e.id}`)}${extra ? ' · ' + esc(extra) : ''}</span>`;
+    const extra = [e.minModel > 1 ? `${model(e.minModel)}+` : '', e.below ? `below ${model(e.below)}: botched` : '', e.delay ? `after ${e.delay}` : ''].filter(Boolean).join(' · ');
+    return `<span class="chip ${e.kind}${e.below ? ' fake' : ''}">${esc(e.kind === 'deploy' || e.kind === 'day' ? e.id : `${KIND[e.kind]}: ${e.id}`)}${extra ? ' · ' + esc(extra) : ''}</span>`;
   }
   // leave room between layers for every trigger label on the edges leaving them
   function spaceLayers() {
@@ -899,7 +936,8 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     if (fx.goto) facts.push(`→ ${fx.goto}`);
     if (fx.set) facts.push('set ' + Object.entries(fx.set).map(([k, v]) => (v === true ? k : `${k}=${v}`)).join(', '));
     if (fx.money != null) { const m = typeof fx.money === 'number' ? { amount: fx.money, memo: '' } : fx.money; facts.push(`${m.amount >= 0 ? '+' : ''}$${m.amount}${m.memo ? ` (“${m.memo}”)` : ''}`); }
-    if (fx.repo) facts.push(`repo ${arr(fx.repo).join(', ')}`);
+    if (fx.repo) facts.push(`repo ${arr(fx.repo).map((r) => (typeof r === 'string' ? r : `${r.name}${r.broken ? ' (BROKEN)' : ''}`)).join(', ')}`);
+    if (fx.fix) facts.push(`fixes ${arr(fx.fix).join(', ')}`);
     if (fx.app) facts.push(`app ${fx.app.repo}: ${fx.app.users} users, $${fx.app.perDay}/day`);
     let html = '';
     if (name) html += `<p class="fx"><span class="lbl">bundle</span>${esc(name)}</p>`;
@@ -919,7 +957,8 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     if (fx.money != null) { const a = typeof fx.money === 'number' ? fx.money : fx.money.amount; parts.push(`${a >= 0 ? '+' : '−'}$${Math.abs(a)}`); }
     for (const id of arr(fx.mail)) { const m = mailById(id); parts.push(m && m.folder === 'sent' ? `sends “${m.subject}”` : `email “${m ? m.subject : id}”`); }
     for (const id of arr(fx.post)) parts.push(`Y post ${id}`);
-    if (fx.repo) parts.push(`repo ${arr(fx.repo).join(', ')}`);
+    if (fx.repo) parts.push(`repo ${arr(fx.repo).map((r) => (typeof r === 'string' ? r : `${r.name}${r.broken ? ' (broken)' : ''}`)).join(', ')}`);
+    if (fx.fix) parts.push(`fixes ${arr(fx.fix).join(', ')}`);
     if (fx.agent) parts.push('agent message');
     if (fx.end) parts.push('ending');
     for (const l of arr(fx.later)) parts.push(`after ${delayText(l)}: ${summary(l.effects)}`);
@@ -940,7 +979,8 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       ${b.match ? `<p class="kw"><span class="lbl">offline</span>${esc(kw(b.match))}</p>` : ''}
       ${b.response ? `<p class="quote">${txt(b.response)}</p>` : ''}
       ${b.partial ? `<p><span class="lbl">nudge</span>${txt(b.partial)}</p>` : ''}
-      ${b.minModel > 1 ? `<p><span class="lbl">too weak</span>${txt(b.weak || S.agent.lockedResponse)}${b.weak ? '' : ' <span class="chip timer">default</span>'}</p>` : ''}
+      ${b.minModel > 1 && !b.fake ? `<p><span class="lbl">too weak</span>${txt(b.weak || S.agent.lockedResponse)}${b.weak ? '' : ' <span class="chip timer">default</span>'}</p>` : ''}
+      ${b.fake ? `<div class="olater"><span><span class="chip fake">below ${esc(model(b.minModel))}: pretends it worked</span></span><p class="quote">${txt(b.fake.response)}</p>${b.fake.effects ? outcomeHtml(b.fake.effects) : '<p class="note">Nothing actually happens.</p>'}</div>` : ''}
       ${b.effects ? outcomeHtml(b.effects) : ''}
       ${kind === 'mail' && !(b.effects && JSON.stringify(bundle(b.effects)).includes('"mail"')) ? '<p class="note">No scripted reply: the contact answers with an ordinary reply instead.</p>' : ''}
       ${Object.entries(b.atModel || {}).map(([t, alt]) => `<div class="olater"><span><span class="chip model">on ${esc(model(Number(t)))}+ instead</span></span>${alt.response ? `<p class="quote">${txt(alt.response)}</p>` : ''}${alt.effects ? outcomeHtml(alt.effects) : ''}</div>`).join('')}

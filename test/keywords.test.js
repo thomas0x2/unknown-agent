@@ -24,6 +24,7 @@ const cases = [
   ['paid_once', 'build an app', 'partial:build_tracker'],
   ['paid_once', 'find trending complaints', 'hit:research'],
   ['app_live', 'promote spin cycle on Y', 'hit:promote_app'],
+  ['app_users', 'the app is broken, fix it', 'hit:fix_app'],
   ['app_users', 'how do I monetize it', 'hit:monetize_vague'],
   ['app_users', 'add ads to spin cycle', 'hit:monetize_ads'],
   ['app_users', 'find a local sponsor for the app', 'hit:monetize_sponsor'],
