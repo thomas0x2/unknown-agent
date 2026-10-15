@@ -78,6 +78,19 @@ h2 { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacin
 .kw { font-family: var(--f-mono); font-size: 11px; color: var(--dim); overflow-wrap: anywhere; }
 .quote { border-left: 2px solid var(--line); padding-left: 8px; color: var(--dim); white-space: pre-wrap; }
 .fx { font-family: var(--f-mono); font-size: 11px; overflow-wrap: anywhere; }
+.outcome { display: flex; flex-direction: column; gap: 6px; }
+.ocard { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--soft); display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.ocard.mail { border-left: 3px solid var(--k-mail); }
+.ocard.post { border-left: 3px solid var(--k-post); }
+.ocard.agent { border-left: 3px solid var(--k-prompt); }
+.ocard.end { border-left: 3px solid var(--k-day); }
+.ohead { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 12.5px; }
+.ohead code { color: var(--dim); }
+.osubj { margin: 0; font-weight: 600; font-size: 12.5px; }
+.otext { margin: 0; font-size: 12.5px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.olater { border-left: 1px dashed var(--line); padding-left: 10px; display: flex; flex-direction: column; gap: 6px; }
+.lines { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; }
+.tok { color: var(--k-mail); font-family: var(--f-mono); font-size: 0.85em; }
 .go { color: var(--sel); cursor: pointer; text-decoration: underline; background: none; border: 0; padding: 0; font: inherit; }
 .ref { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); gap: 16px; }
 .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; min-width: 0; }
@@ -138,25 +151,6 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     return out;
   }
 
-  function describe(fx, depth) {
-    depth = depth || 0;
-    const name = typeof fx === 'string' ? fx : null;
-    fx = bundle(fx);
-    const p = [];
-    if (fx.goto) p.push(`→ ${fx.goto}`);
-    if (fx.set) p.push('set ' + Object.entries(fx.set).map(([k, v]) => (v === true ? k : `${k}=${v}`)).join(', '));
-    if (fx.money != null) { const m = typeof fx.money === 'number' ? { amount: fx.money } : fx.money; p.push(`${m.amount >= 0 ? '+' : ''}$${m.amount}`); }
-    if (fx.repo) p.push(`repo ${arr(fx.repo).join(', ')}`);
-    if (fx.app) p.push(`app ${fx.app.repo}: ${fx.app.users} users, $${fx.app.perDay}/day`);
-    if (fx.post) p.push(`post ${arr(fx.post).join(', ')}`);
-    if (fx.mail) p.push(`mail ${arr(fx.mail).join(', ')}`);
-    if (fx.agent) p.push(`agent says “${clip(fx.agent, 50)}”`);
-    for (const l of arr(fx.later)) p.push(`after ${delayText(l)}: ${depth < 3 ? describe(l.effects, depth + 1) : '…'}`);
-    if (fx.end) p.push(`END “${fx.end.title}”`);
-    const body = p.join(' · ') || 'nothing';
-    return name ? `${name} { ${body} }` : body;
-  }
-
   // ── build the graph ──
   const nodeIds = Object.keys(S.nodes);
   const edges = [];
@@ -181,7 +175,7 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     const from = ev.when && ev.when.node ? arr(ev.when.node)
       : ev.when && ev.when.flag ? [...arr(ev.when.flag).flatMap((f) => [...(flagNodes[f] || [])])] : [];
     const label = ev.on === 'deploy' ? `deploy ${ev.repo}` : `day${ev.when && ev.when.minDay ? ' ' + ev.when.minDay + '+' : ''}`;
-    for (const n of from) for (const g of gotos(ev.effects)) add(n, g.to, { kind: ev.on === 'deploy' ? 'deploy' : 'day', id: label, delay: g.delay });
+    for (const n of from) for (const g of gotos(ev.effects)) add(n, g.to, { kind: ev.on === 'deploy' ? 'deploy' : 'day', id: label, delay: g.delay, fx: ev.effects });
   }
 
   // layers: longest path from the start node, ignoring edges back into already-visited layers
@@ -290,6 +284,43 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
     const g = (match.all || []).map((grp) => arr(grp).slice(0, 4).join('|') + (arr(grp).length > 4 ? '…' : ''));
     return g.join('  ×  ') + (match.none ? `  (not: ${arr(match.none).join(', ')})` : '');
   }
+  // Full text, with {placeholders} marked so it's clear what the game fills in.
+  const txt = (s) => esc(s || '').replace(/\{(\w+)\}/g, '<span class="tok">{$1}</span>');
+  const postById = (id) => (S.posts || []).find((p) => p.id === id);
+  const mailById = (id) => (S.mail || []).find((m) => m.id === id);
+
+  function postCard(p) {
+    if (!p) return '';
+    return `<div class="ocard post"><div class="ohead"><span class="chip post">Y post</span><b>${txt(p.author)}</b>${p.verified ? ' ✓' : ''}<code>@${txt(p.handle)}</code><code>${p.likes || 0} likes</code></div><p class="otext">${txt(p.text)}</p></div>`;
+  }
+  function mailCard(m) {
+    if (!m) return '';
+    const sent = m.folder === 'sent';
+    return `<div class="ocard mail"><div class="ohead"><span class="chip mail">${sent ? 'sent email' : 'email'}</span><b>${sent ? 'You' : txt(m.from)}</b><code>${sent ? 'to ' + esc(m.to) : esc(m.addr || '')}</code></div>
+      <p class="osubj">${txt(m.subject)}</p><p class="otext">${txt(m.body)}</p></div>`;
+  }
+  // Everything an effect produces, readable: facts, then the emails, posts and messages it delivers.
+  function outcomeHtml(fx, depth) {
+    depth = depth || 0;
+    const name = typeof fx === 'string' ? fx : null;
+    fx = bundle(fx);
+    const facts = [];
+    if (fx.goto) facts.push(`→ ${fx.goto}`);
+    if (fx.set) facts.push('set ' + Object.entries(fx.set).map(([k, v]) => (v === true ? k : `${k}=${v}`)).join(', '));
+    if (fx.money != null) { const m = typeof fx.money === 'number' ? { amount: fx.money, memo: '' } : fx.money; facts.push(`${m.amount >= 0 ? '+' : ''}$${m.amount}${m.memo ? ` (“${m.memo}”)` : ''}`); }
+    if (fx.repo) facts.push(`repo ${arr(fx.repo).join(', ')}`);
+    if (fx.app) facts.push(`app ${fx.app.repo}: ${fx.app.users} users, $${fx.app.perDay}/day`);
+    let html = '';
+    if (name) html += `<p class="fx"><span class="lbl">bundle</span>${esc(name)}</p>`;
+    if (facts.length) html += `<p class="fx"><span class="lbl">effects</span>${esc(facts.join(' · '))}</p>`;
+    html += arr(fx.mail).map((id) => mailCard(mailById(id)) || `<p class="warnbox">Missing mail “${esc(id)}”</p>`).join('');
+    html += arr(fx.post).map((id) => postCard(postById(id)) || `<p class="warnbox">Missing post “${esc(id)}”</p>`).join('');
+    if (fx.agent) html += `<div class="ocard agent"><div class="ohead"><span class="chip prompt">agent writes first</span></div><p class="otext">${txt(fx.agent)}</p></div>`;
+    if (fx.end) html += `<div class="ocard end"><div class="ohead"><span class="chip day">chapter end screen</span><b>${txt(fx.end.title)}</b></div><p class="otext">${txt(fx.end.text)}</p></div>`;
+    for (const l of arr(fx.later)) html += `<div class="olater"><span><span class="chip timer">after ${esc(delayText(l))}</span></span>${depth < 4 ? outcomeHtml(l.effects, depth + 1) : ''}</div>`;
+    return html ? `<div class="outcome">${html}</div>` : '';
+  }
+
   function branchHtml(b, kind, nodeId) {
     const out = gotos(b.effects);
     const go = out.length ? out.map((g) => `<button class="go" data-node="${esc(g.to)}">→ ${esc(g.to)}</button>${g.delay ? ` <span class="chip timer">after ${esc(g.delay)}</span>` : ''}`).join(' ') : '<span class="chip timer">stays</span>';
@@ -299,11 +330,12 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       ${b.intent ? `<p><span class="lbl">Jev</span>${esc(b.intent)}</p>` : '<p class="warnbox">No intent: Jev can never choose this.</p>'}
       ${when ? `<p class="kw"><span class="lbl">when</span>${esc(when)}</p>` : ''}
       ${b.match ? `<p class="kw"><span class="lbl">offline</span>${esc(kw(b.match))}</p>` : ''}
-      ${b.response ? `<p class="quote">${esc(clip(b.response, 220))}</p>` : ''}
-      ${b.partial ? `<p><span class="lbl">nudge</span>${esc(b.partial)}</p>` : ''}
-      ${b.weak ? `<p><span class="lbl">too weak</span>${esc(clip(b.weak, 160))}</p>` : ''}
-      ${b.effects ? `<p class="fx"><span class="lbl">effects</span>${esc(describe(b.effects))}</p>` : ''}
-      ${Object.entries(b.atModel || {}).map(([t, alt]) => `<p class="fx"><span class="lbl">on ${esc(model(Number(t)))}+</span>${esc(clip(alt.response, 120))}${alt.effects ? ' · ' + esc(describe(alt.effects)) : ''}</p>`).join('')}
+      ${b.response ? `<p class="quote">${txt(b.response)}</p>` : ''}
+      ${b.partial ? `<p><span class="lbl">nudge</span>${txt(b.partial)}</p>` : ''}
+      ${b.minModel > 1 ? `<p><span class="lbl">too weak</span>${txt(b.weak || S.agent.lockedResponse)}${b.weak ? '' : ' <span class="chip timer">default</span>'}</p>` : ''}
+      ${b.effects ? outcomeHtml(b.effects) : ''}
+      ${kind === 'mail' && !(b.effects && JSON.stringify(bundle(b.effects)).includes('"mail"')) ? '<p class="note">No scripted reply: the contact answers with an ordinary reply instead.</p>' : ''}
+      ${Object.entries(b.atModel || {}).map(([t, alt]) => `<div class="olater"><span><span class="chip model">on ${esc(model(Number(t)))}+ instead</span></span>${alt.response ? `<p class="quote">${txt(alt.response)}</p>` : ''}${alt.effects ? outcomeHtml(alt.effects) : ''}</div>`).join('')}
     </div>`;
   }
   function select(id) {
@@ -318,37 +350,48 @@ button:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
       <h3>${esc(id)}</h3>
       <p class="obj">${esc(n.objective || '')}</p>
       ${n.scene ? `<p class="scene"><span class="lbl">scene for Jev</span>${esc(n.scene)}</p>` : '<p class="warnbox">No scene: Jev gets only the objective.</p>'}
-      <p class="note">Reached from: ${incoming.length ? incoming.map((e) => `<button class="go" data-node="${esc(e.from)}">${esc(e.from)}</button> (${esc(KIND[e.kind])} ${esc(e.id)})`).join(', ') : 'game start'}</p>
+      <p class="note">Reached from: ${incoming.length ? incoming.map((e) => `<button class="go" data-node="${esc(e.from)}">${esc(e.from)}</button> (${esc(e.kind === 'deploy' || e.kind === 'day' ? e.id : KIND[e.kind] + ' ' + e.id)})`).join(', ') : 'game start'}</p>
       <h2>Branches (${(n.branches || []).length})</h2>
       ${(n.branches || []).map((b) => branchHtml(b, 'prompt', id)).join('') || '<p class="note">None. This node is an ending.</p>'}
       ${posts.length ? `<h2>Y posts here</h2>${posts.map((b) => branchHtml(b, 'post', id)).join('')}` : ''}
       ${mails.length ? `<h2>Emails here</h2>${mails.map((b) => branchHtml(b, 'mail', id)).join('')}` : ''}
-      ${evs.length ? `<h2>Events</h2>${evs.map((e) => `<div class="br"><div class="br-head"><span class="chip ${e.kind}">${esc(e.id)}</span><button class="go" data-node="${esc(e.to)}">→ ${esc(e.to)}</button></div></div>`).join('')}` : ''}
+      ${evs.length ? `<h2>Events</h2>${evs.map((e) => `<div class="br"><div class="br-head"><span class="chip ${e.kind}">${esc(e.id)}</span><button class="go" data-node="${esc(e.to)}">→ ${esc(e.to)}</button></div>${outcomeHtml(e.fx)}</div>`).join('')}` : ''}
       <p class="note">${(S.global || []).length} global branches are also offered here (see below).</p>`;
     try { history.replaceState(null, '', '#' + id); } catch (e) { /* not allowed in some frames */ }
   }
 
   // ── reference tables ──
   const ref = [];
+  const A = S.agent || {};
+  ref.push(`<section class="card"><h2>agent's own voice</h2>
+    <p><span class="lbl">greeting</span></p><p class="quote">${txt(A.greeting)}</p>
+    <p><span class="lbl">default too-weak reply</span></p><p class="quote">${txt(A.lockedResponse)}</p>
+    <p><span class="lbl">canned roasts (no prompt matched, no local model)</span></p><ol class="lines">${(S.placeholders || []).map((x) => `<li>${txt(x)}</li>`).join('')}</ol>
+    <p style="margin-top:10px"><span class="lbl">Gemma persona</span></p><p class="quote">${txt(A.llmPersona)}</p>
+    <p><span class="lbl">Gemma examples</span></p><ol class="lines">${(A.llmExamples || []).map(([u, a]) => `<li><b>${txt(u)}</b> → ${txt(a)}</li>`).join('')}</ol>
+  </section>`);
   ref.push(`<section class="card"><h2>Global branches (every node)</h2>${(S.global || []).map((b) => branchHtml(b, 'prompt')).join('')}</section>`);
   const sideMail = (S.mailActions || []).filter((a) => !(a.when && a.when.node));
   ref.push(`<section class="card"><h2>Side emails (any node)</h2>${sideMail.map((b) => branchHtml(b, 'mail')).join('') || '<p class="note">None.</p>'}</section>`);
-  ref.push(`<section class="card"><h2>Contacts who reply</h2><div class="scroll"><table class="tbl"><thead><tr><th>Who</th><th>Reply</th><th>Persona</th></tr></thead><tbody>${
-    Object.entries(S.contacts || {}).map(([addr, c]) => `<tr><td><b>${esc(c.name)}</b><br><code>${esc(addr)}</code></td><td class="num">${esc(c.reply ? delayText(c.reply) : 'never')}${c.reply && c.reply.chance != null ? ` · ${Math.round(c.reply.chance * 100)}%` : ''}</td><td>${esc(clip(c.persona, 140))}</td></tr>`).join('')
-  }</tbody></table></div><p class="note">Anyone else never replies, so the player gets one message to them.</p></section>`);
-  const timed = [
-    ...(S.posts || []).filter((p) => p.when).map((p) => ['Y post', p.id, p.when, p.text]),
-    ...(S.mail || []).filter((m) => m.when).map((m) => ['email', m.id, m.when, m.subject]),
-  ];
-  const byEffect = [
-    ...(S.posts || []).filter((p) => p.at == null && !p.when).map((p) => ['Y post', p.id, p.text]),
-    ...(S.mail || []).filter((m) => m.at == null && !m.when).map((m) => ['email', m.id, m.subject]),
-  ];
-  ref.push(`<section class="card"><h2>Content that appears on a condition</h2><div class="scroll"><table class="tbl"><thead><tr><th>Type</th><th>Id</th><th>When</th><th>Text</th></tr></thead><tbody>${
-    timed.map(([t, id, w, x]) => `<tr><td>${t}</td><td><code>${esc(id)}</code></td><td class="kw">${esc(Object.entries(w).map(([k, v]) => `${k}: ${arr(v).join(', ')}`).join(' · '))}</td><td>${esc(clip(x, 70))}</td></tr>`).join('')
-  }</tbody></table></div><h2 style="margin-top:14px">Delivered by effects</h2><div class="scroll"><table class="tbl"><tbody>${
-    byEffect.map(([t, id, x]) => `<tr><td>${t}</td><td><code>${esc(id)}</code></td><td>${esc(clip(x, 80))}</td></tr>`).join('')
-  }</tbody></table></div></section>`);
+  ref.push(`<section class="card"><h2>Events</h2>${(S.events || []).map((ev) => `<div class="br"><div class="br-head"><span class="chip ${ev.on === 'deploy' ? 'deploy' : 'day'}">${esc(ev.on === 'deploy' ? `deploy ${ev.repo}` : `every morning${ev.id ? ' · ' + ev.id : ''}`)}</span></div>
+    ${ev.when ? `<p class="kw"><span class="lbl">when</span>${esc(Object.entries(ev.when).map(([k, v]) => `${k}: ${arr(v).join(', ')}`).join(' · '))}</p>` : ''}${outcomeHtml(ev.effects)}</div>`).join('')}</section>`);
+  ref.push(`<section class="card"><h2>Contacts who reply</h2>${Object.entries(S.contacts || {}).map(([addr, c]) => `<div class="br">
+    <div class="br-head"><span class="chip mail">${esc(c.reply ? delayText(c.reply) : 'never')}${c.reply && c.reply.chance != null ? ` · ${Math.round(c.reply.chance * 100)}%` : ''}</span><b>${txt(c.name)}</b><code>${esc(addr)}</code></div>
+    <p><span class="lbl">Gemma persona</span>${txt(c.persona)}</p>
+    <p><span class="lbl">sign-off</span>${txt(c.sign)}</p>
+    <p><span class="lbl">fallback replies</span></p><ol class="lines">${(c.fallback || []).map((x) => `<li>${txt(x)}</li>`).join('')}</ol></div>`).join('')}
+    <p class="note">Anyone else never replies, so the player gets one message to them.</p></section>`);
+  const whenText = (w) => Object.entries(w).map(([k, v]) => `${k}: ${arr(v).join(', ')}`).join(' · ');
+  const card = (kind, x) => (kind === 'post' ? postCard(x) : mailCard(x));
+  const items = [...(S.posts || []).map((p) => ['post', p]), ...(S.mail || []).map((m) => ['mail', m])];
+  ref.push(`<section class="card"><h2>Appears on a condition</h2>${items.filter(([, x]) => x.when).map(([k, x]) => `<div class="br"><p class="kw"><span class="lbl">when</span>${esc(whenText(x.when))} · <code>${esc(x.id)}</code></p>${card(k, x)}</div>`).join('') || '<p class="note">None.</p>'}</section>`);
+  ref.push(`<section class="card"><h2>Delivered by effects</h2>${items.filter(([, x]) => x.at == null && !x.when).map(([k, x]) => {
+    const users = [...allBranches, ...(S.global || []), ...(S.postActions || []), ...(S.mailActions || [])].filter((b) => JSON.stringify([b.effects, b.atModel]).includes(`"${x.id}"`)).map((b) => b.id);
+    const viaBundles = Object.entries(S.bundles || {}).filter(([, f]) => JSON.stringify(f).includes(`"${x.id}"`)).map(([n]) => n + ' (bundle)');
+    const by = users.concat(viaBundles);
+    return `<div class="br"><p class="kw"><code>${esc(x.id)}</code>${by.length ? ` · from ${esc(by.join(', '))}` : ''}</p>${card(k, x)}</div>`;
+  }).join('')}</section>`);
+  ref.push(`<section class="card"><h2>Seeded at game start</h2>${items.filter(([, x]) => x.at != null).sort((a, b) => b[1].at - a[1].at).map(([k, x]) => `<div class="br"><p class="kw"><code>${esc(x.id)}</code> · ${x.at} min before start</p>${card(k, x)}</div>`).join('')}</section>`);
   const E = S.economy;
   ref.push(`<section class="card"><h2>Models</h2><div class="scroll"><table class="tbl"><thead><tr><th>Model</th><th>Unlock</th><th>Prompt</th><th>Word</th><th>Needed by</th></tr></thead><tbody>${
     (S.models || []).map((m, i) => {
