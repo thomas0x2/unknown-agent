@@ -13,7 +13,7 @@ Without a key the game still runs, using an offline keyword matcher for story de
 - `npm test` runs the keyword-matcher cases, the Jev decision mapping, the server against a fake TypeSafe API, and the local-model fallback chain.
 - `npm run build` bundles everything into `dist/unknown-agent.html`, a single self-contained file.
 
-## The four bookmarks
+## The five bookmarks
 
 | Site | Domain | What it does |
 |---|---|---|
