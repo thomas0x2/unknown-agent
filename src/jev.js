@@ -1,7 +1,7 @@
 /*
  * Jev — decides where the player's prompt takes the story.
  *
- * Jev is TypeSafe's System One model. For every prompt (or Chirpr post) the game
+ * Jev is TypeSafe's System One model. For every prompt (and every Y post or Qmail email) the game
  * asks it one Choice question: which of the branches available right now does
  * this carry out, or none (`no_progress`)? Jev answers with a probability for
  * each option, and the story's `decision` thresholds turn those into:
@@ -50,7 +50,7 @@
     /*
      * Decide what a prompt does.
      *   branches: candidate branches, already filtered by their `when`
-     *   opts: { kind: 'prompt' | 'chirp', node, thresholds: { hit, partial } }
+     *   opts: { kind: 'prompt' | 'post' | 'mail', node, thresholds: { hit, partial } }
      *   returns { kind: 'hit' | 'partial' | 'miss', branch?, engine, probabilities?, report? }
      */
     async decide(prompt, branches, opts) {

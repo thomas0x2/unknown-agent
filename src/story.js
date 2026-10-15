@@ -14,7 +14,7 @@
     work: ['gig', 'job', 'work', 'client', 'freelance', 'opportunity', 'money', 'income', 'cash', 'idea', 'trend', 'trending', 'complaint', 'problem'],
     deploy: ['deploy', 'publish', 'host', 'launch', 'live', 'online', 'ship', 'release', 'go live'],
     contact: ['send', 'message', 'dm', 'email', 'tell', 'contact', 'reach', 'invoice', 'bill', 'notify', 'ping', 'reply', 'text', 'let know', 'inform'],
-    promote: ['promote', 'market', 'marketing', 'advertise', 'announce', 'share', 'spread', 'post', 'chirp', 'tweet', 'publicize', 'hype', 'shill'],
+    promote: ['promote', 'market', 'marketing', 'advertise', 'announce', 'share', 'spread', 'post', 'tweet', 'publicize', 'hype', 'shill'],
   };
 
   // Every node gets a "what should I do?" branch. It costs a prompt but points the way.
@@ -137,7 +137,7 @@
         match: { all: [['help', 'can you do', 'capabilities', 'how do you work', 'what do you do', 'instructions']] },
         priority: -2,
         response:
-          'I can:\n— build and push code to your Forkyard account\n— write and send messages for you\n— read Chirpr and summarize what matters\n\n' +
+          'I can:\n— build and push code to your Forkyard account\n— write and send emails from your Qmail\n— read Y and summarize what matters\n\n' +
           "I can't touch your bank, and I can't press buttons you can press yourself.",
       },
       {
@@ -164,11 +164,11 @@
     nodes: {
       broke: {
         objective: 'Find a way to make some money.',
-        scene: "Day one of being broke. On Chirpr, @crumbandcoin (the Crumb & Coin bakery, owned by Rosa) is offering $150 for a simple website with their menu and hours.",
+        scene: "Day one of being broke. On Y, @crumbandcoin (the Crumb & Coin bakery, owned by Rosa) is offering $150 for a simple website with their menu and hours.",
         branches: [
           research(
             'research',
-            'Scanned Chirpr for paid work. One real lead:\n\n' +
+            'Scanned Y for paid work. One real lead:\n\n' +
               '@crumbandcoin (Crumb & Coin Bakery, Rosa) will pay $150 for a simple website with their menu and opening hours. Wants it by tomorrow.',
             { set: { knowsBakery: true } }
           ),
@@ -182,7 +182,7 @@
             partial:
               'I can build a website. For whom, and what goes on it? Give me a business and some content.',
             response:
-              'Done. Pushed `crumb-and-coin` to your Forkyard account:\n— index.html (hero, hours, address)\n— menu.html (pulled from Rosa\'s Chirpr photos)\n— style.css\n\n' +
+              'Done. Pushed `crumb-and-coin` to your Forkyard account:\n— index.html (hero, hours, address)\n— menu.html (pulled from Rosa\'s Y photos)\n— style.css\n\n' +
               "It isn't live yet. That part needs you.",
             effects: { repo: 'crumb-and-coin', goto: 'site_built' },
           },
@@ -200,7 +200,7 @@
 
       site_live: {
         objective: 'Tell Rosa the site is live and get paid.',
-        scene: "The Crumb & Coin website is live at crumb-and-coin.forkyard.app. Rosa does not know yet and has not paid the $150.",
+        scene: "The Crumb & Coin website is live at crumb-and-coin.forkyard.app. Rosa (rosa@crumbandcoin.com) does not know yet and has not paid the $150.",
         branches: [
           {
             id: 'invoice_rosa',
@@ -212,20 +212,20 @@
             },
             partial: 'Send what, to whom? Be specific.',
             response:
-              'Sent @crumbandcoin a DM:\n\n"Hi Rosa, your new site is live at crumb-and-coin.forkyard.app. Menu and hours are up. Invoice for $150 attached."\n\nShe usually replies within a couple of hours.',
-            effects: { set: { invoiced: true }, later: [{ hours: 2, effects: 'rosa_pays' }] },
+              'Emailed Rosa at rosa@crumbandcoin.com from your Qmail:\n\n"Hi Rosa, your new site is live at crumb-and-coin.forkyard.app. Menu and hours are up. Invoice for $150 attached."\n\nShe usually replies within a couple of hours.',
+            effects: { set: { invoiced: true }, mail: 'rosa_invoice_sent', later: [{ hours: 2, effects: 'rosa_pays' }] },
           },
-          research('research', "The site is live, but Rosa doesn't know. Message her or post about it on Chirpr."),
+          research('research', "The site is live, but Rosa doesn't know. Email her at rosa@crumbandcoin.com, or post about it on Y."),
         ],
       },
 
       paid_once: {
         objective: 'Rent ($300) is due at the end of Day 7. Find income that keeps coming in.',
-        scene: "Rosa paid $150. Rent of $300 is due at the end of Day 7. Chirpr is full of complaints that nobody knows which machines work at the Ferris St laundromat.",
+        scene: "Rosa paid $150. Rent of $300 is due at the end of Day 7. Y is full of complaints that nobody knows which machines work at the Ferris St laundromat.",
         branches: [
           research(
             'research',
-            'Biggest unsolved complaint on Chirpr right now:\n\n' +
+            'Biggest unsolved complaint on Y right now:\n\n' +
               "@washday_woes: nobody knows which machines at the Ferris St Laundromat actually work. 2.1k likes, dozens of replies saying \"someone build this\".\n\nA live machine-status tracker would get steady local traffic.",
             { set: { knowsLaundromat: true } }
           ),
@@ -271,10 +271,10 @@
             },
             partial: 'Promote what, where?',
             response:
-              'Posted from your Chirpr account and replied under @washday_woes\'s thread with the link.\n\nPeople are already reporting machines.',
+              'Posted from your Y account and replied under @washday_woes\'s thread with the link.\n\nPeople are already reporting machines.',
             effects: 'spin_marketed',
           },
-          research('research', "Spin Cycle is live but has no users. The people who want it are in @washday_woes's thread on Chirpr."),
+          research('research', "Spin Cycle is live but has no users. The people who want it are in @washday_woes's thread on Y."),
         ],
       },
 
@@ -342,6 +342,7 @@
       rosa_pays: {
         money: { amount: 150, memo: 'CRUMB & COIN BAKERY — WEBSITE' },
         post: 'rosa_thanks',
+        mail: 'rosa_paid',
         goto: 'paid_once',
       },
       spin_marketed: {
@@ -352,10 +353,10 @@
       },
     },
 
-    // Things the player posts on Chirpr themselves. Free, but you have to know what to say.
-    chirps: [
+    // Things the player posts on Y themselves. Free, but you have to know what to say.
+    postActions: [
       {
-        id: 'chirp_rosa',
+        id: 'post_rosa',
         intent: "The post tells Rosa or the Crumb & Coin bakery that her new website is live or ready.",
         when: { node: 'site_live', notFlag: 'invoiced' },
         match: {
@@ -364,7 +365,7 @@
         effects: { set: { invoiced: true }, later: [{ hours: 2, effects: 'rosa_pays' }] },
       },
       {
-        id: 'chirp_spin',
+        id: 'post_spin',
         intent: "The post announces or shares Spin Cycle, the Ferris St laundromat machine tracker, so people can use it.",
         when: { node: 'app_live', notFlag: 'marketed' },
         match: {
@@ -372,6 +373,80 @@
         },
         effects: 'spin_marketed',
       },
+    ],
+
+    // Emails the player sends from Qmail. Jev judges each one against these, like posts.
+    mailActions: [
+      {
+        id: 'mail_rosa',
+        intent: "The email tells Rosa or the Crumb & Coin bakery that her website is live, or asks her for the $150 payment.",
+        when: { node: 'site_live', notFlag: 'invoiced' },
+        match: {
+          all: [['rosa', 'crumb', 'crumbandcoin', 'bakery'], ['site', 'website', 'live', 'link', 'forkyard', 'done', 'ready', 'invoice', 'pay', 'payment', '150']],
+        },
+        effects: { set: { invoiced: true }, later: [{ hours: 2, effects: 'rosa_pays' }] },
+      },
+      {
+        id: 'mail_gary',
+        intent: "The email asks Gary, the landlord, for more time, a discount, or an exception on the rent.",
+        when: { notFlag: 'askedGary' },
+        match: {
+          all: [['gary', 'pruitt', 'landlord', 'pruittproperty'], ['rent', 'extension', 'late', 'time', 'discount', 'week', 'delay', 'postpone', 'exception', 'later']],
+        },
+        effects: { set: { askedGary: true }, later: [{ hours: 0.5, effects: { mail: 'gary_no' } }] },
+      },
+      {
+        id: 'mail_mom_help',
+        intent: "The email to Mom asks her for money or help.",
+        when: { notFlag: 'wroteMom' },
+        match: { all: [['mom', 'mother', 'mum'], ['money', 'help', 'cash', 'loan', 'send', 'broke', 'rent', 'dollars', 'borrow']] },
+        effects: { set: { wroteMom: true }, later: [{ hours: 3, effects: { mail: 'mom_money', money: { amount: 20, memo: 'ZELLE — MOM' } } }] },
+      },
+      {
+        id: 'mail_mom_chat',
+        intent: "The email to Mom says hello or tells her how things are, without asking for money or help.",
+        when: { notFlag: 'wroteMom' },
+        priority: -1,
+        match: { all: [['mom', 'mother', 'mum']] },
+        effects: { set: { wroteMom: true }, later: [{ hours: 3, effects: { mail: 'mom_chat' } }] },
+      },
+    ],
+
+    // Qmail messages. `at` is minutes before game start for seeded mail; others arrive when `when`
+    // becomes true or an effect delivers them (`mail: 'id'`). `folder: 'sent'` files it under Sent.
+    mail: [
+      {
+        id: 'git_welcome', at: 30, from: 'GIT Labs', addr: 'noreply@askgit.ai', subject: 'Welcome to GIT',
+        body: "Your GIT-1 account is active and linked to Second National ••4417.\n\nEvery prompt is billed at your active model's rate. Stronger models, GIT-2 to GIT-5, take on harder jobs: askgit.ai/models.\n\nGIT Labs\nThis mailbox is not monitored. Neither is anything else.",
+      },
+      {
+        id: 'brayden_spam', at: 240, from: 'Brayden | 7 figures', addr: 'brayden@empire-mindset.biz', subject: 'RE: your empire (90% off, today only)',
+        body: "Most people will ignore this email. That's why most people are broke.\n\nMy EMPIRE course is $49 today instead of $499. Reply EMPIRE.\n\nBrayden",
+      },
+      {
+        id: 'gary_rent', at: 610, from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'Rent: end of Day 7',
+        body: "Hi,\n\nReminder that rent ($300) comes out at the end of Day 7. Last month's late fee was $89.50. I'd rather not do that again, and I'd rather not do the other thing either.\n\nGary Pruitt\nPruitt Property Management",
+      },
+      {
+        id: 'mom_hello', at: 1500, from: 'Mom', addr: 'mom@qmail.com', subject: 'Are you eating?',
+        body: "Haven't heard from you in a while. Your father says hi (he didn't). Write back when you can.\n\nLove, Mom",
+      },
+      {
+        id: 'benefits_end', at: 4300, read: true, from: 'State Unemployment Office', addr: 'no-reply@labor.state.gov', subject: 'Your benefits have ended',
+        body: 'Your final payment of $212.00 has been sent. You have used your full benefit period.\n\nCase #4471-0093. Do not reply to this message.',
+      },
+      {
+        id: 'rosa_invoice_sent', folder: 'sent', to: 'rosa@crumbandcoin.com', subject: 'Your new website + invoice',
+        body: 'Hi Rosa,\n\nYour new site is live at crumb-and-coin.forkyard.app. Menu and hours are up.\n\nInvoice for $150 attached.\n\nSent by GIT',
+      },
+      {
+        id: 'rosa_paid', from: 'Rosa (Crumb & Coin)', addr: 'rosa@crumbandcoin.com', subject: 'Paid! Thank you',
+        body: "The site looks wonderful. My nephew is jealous. $150 is on its way to your account.\n\nCome by for a cardamom bun, on the house.\n\nRosa",
+      },
+      { id: 'gary_tomorrow', when: { minDay: 6 }, from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'Tomorrow night', body: "Rent comes out tomorrow night. $300. Make sure it's there.\n\nGary" },
+      { id: 'gary_no', from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'RE: Rent', body: 'No.\n\nGary\n\nSent from my phone' },
+      { id: 'mom_money', from: 'Mom', addr: 'mom@qmail.com', subject: 'RE: Are you eating?', body: "I knew it. I sent you $20. Don't tell your father. Buy vegetables.\n\nLove, Mom" },
+      { id: 'mom_chat', from: 'Mom', addr: 'mom@qmail.com', subject: 'RE: Are you eating?', body: "So good to hear from you! Things here are fine. The neighbor's dog had puppies. Write again soon.\n\nLove, Mom" },
     ],
 
     // Engine events: deploys and new days.
@@ -425,12 +500,12 @@
       },
     },
 
-    // Chirpr posts. `at` is minutes before game start for seeded posts; others appear when `when` becomes true.
+    // Y posts. `at` is minutes before game start for seeded posts; others appear when `when` becomes true.
     posts: [
       { id: 'news_layoffs', author: 'The Ledger', handle: 'theledger', at: 40, likes: 812, text: 'Regional employment down 4% this quarter as firms replace junior staff with "agentic workflows".' },
       {
         id: 'rosa_gig', author: 'Crumb & Coin Bakery', handle: 'crumbandcoin', at: 95, likes: 23,
-        text: 'Our website has been down since my nephew left for college. Will pay $150 to anyone who can put up a simple site with our menu + hours by tomorrow. — Rosa',
+        text: 'Our website has been down since my nephew left for college. Will pay $150 to anyone who can put up a simple site with our menu + hours by tomorrow. rosa@crumbandcoin.com — Rosa',
       },
       { id: 'gary_post', author: 'Gary Pruitt', handle: 'garypruitt_pm', at: 180, likes: 2, text: 'Reminder to all tenants: rent is due on the 7th. No exceptions. I have heard every excuse.' },
       { id: 'agent_rumor', author: 'dev_null', handle: 'devnull_42', at: 300, likes: 1400, text: 'Has anyone figured out who actually runs GIT? No company page, no founders, ToS is one line: "You will be billed."' },

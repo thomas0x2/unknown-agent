@@ -14,7 +14,8 @@
   const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   const SITES = {
-    chirpr: { label: 'Chirpr', url: 'chirpr.com' },
+    y: { label: 'Y', url: 'y.com' },
+    mail: { label: 'Qmail', url: 'qmail.com' },
     bank: { label: 'Second National', url: 'secondnational.com' },
     forkyard: { label: 'Forkyard', url: 'forkyard.com' },
     agent: { label: 'GIT', url: 'askgit.ai' },
@@ -25,6 +26,7 @@
   let anim = null;           // { idx, shown, timer } typewriter for the newest agent message
   let busy = false;          // agent is "thinking"
   let devOpen = false;
+  let draft = null;          // the Qmail message being written: { to, subject, body }
 
   // ───────────────────────── utils ─────────────────────────
 
@@ -98,14 +100,23 @@
       stats: { prompts: 0, promptSpend: 0, misses: 0, partials: 0, locked: 0, upgradeSpend: 0 },
       model: 1,   // active GIT tier
       owned: 1,   // highest GIT tier bought
-      unread: { chirpr: 0, bank: 0, forkyard: 0, agent: 0 },
-      tabs: [{ id: 1, url: SITES.chirpr.url }, { id: 2, url: SITES.agent.url }],
+      unread: { y: 0, bank: 0, forkyard: 0, agent: 0 },
+      tabs: [{ id: 1, url: SITES.y.url }, { id: 2, url: SITES.agent.url }],
+      mail: [],      // Qmail: { id, t, read, folder, custom? }
+      nextMail: 1,
       active: 2, nextTab: 3, lastCost: 0,
       ended: null, endSeen: false, over: null, morning: null,
     };
     for (const p of S.posts) if (p.at != null) s.posts[p.id] = t - p.at;
-    s.unread.chirpr = Object.keys(s.posts).length;
+    s.unread.y = Object.keys(s.posts).length;
+    seedMail(s);
     return s;
+  }
+
+  function seedMail(s) {
+    for (const m of S.mail || []) {
+      if (m.at != null) s.mail.push({ id: m.id, t: s.t - m.at, read: !!m.read || m.folder === 'sent', folder: m.folder || 'inbox' });
+    }
   }
 
   function save() {
@@ -122,6 +133,13 @@
       s.stats.locked = s.stats.locked || 0;
       s.stats.upgradeSpend = s.stats.upgradeSpend || 0;
       for (const tab of s.tabs) if (/^unknownagent\.ai/.test(tab.url)) tab.url = 'askgit.ai';
+      // saves from before Y and Qmail
+      for (const tab of s.tabs) if (/^chirpr\.com/.test(tab.url)) tab.url = 'y.com';
+      if (s.unread.chirpr != null) { s.unread.y = s.unread.chirpr; delete s.unread.chirpr; }
+      for (const k of Object.keys(s.fired)) {
+        if (k.startsWith('chirp:chirp_')) { s.fired['post:post_' + k.slice(12)] = s.fired[k]; delete s.fired[k]; }
+      }
+      if (!s.mail) { s.mail = []; s.nextMail = 1; seedMail(s); }
       return s;
     } catch (e) { return null; }
   }
@@ -158,13 +176,53 @@
   function revealPost(id) {
     if (state.posts[id] != null) return;
     state.posts[id] = state.t;
-    if (!onSite('chirpr')) state.unread.chirpr++;
+    if (!onSite('y')) state.unread.y++;
   }
 
+  // Also delivers mail whose `when` has come true.
   function revealPosts() {
     for (const p of S.posts) {
       if (p.at == null && p.when && state.posts[p.id] == null && check(p.when)) revealPost(p.id);
     }
+    for (const m of S.mail || []) {
+      if (m.at == null && m.when && check(m.when)) deliverMail(m.id);
+    }
+  }
+
+  // ── Qmail ──
+  const playerAddr = () => `${S.start.player.handle}@qmail.com`;
+  const mailDef = (entry) => entry.custom || (S.mail || []).find((m) => m.id === entry.id) || {};
+  const unreadMail = () => state.mail.filter((m) => m.folder === 'inbox' && !m.read).length;
+  const badgeCount = (site) => (site === 'mail' ? unreadMail() : state.unread[site] || 0);
+
+  function deliverMail(id) {
+    if (state.mail.some((m) => m.id === id)) return;
+    const def = (S.mail || []).find((m) => m.id === id);
+    if (!def) { console.warn('Unknown mail', id); return; }
+    const folder = def.folder || 'inbox';
+    state.mail.push({ id, t: state.t, read: folder === 'sent', folder });
+    if (folder === 'inbox') toast('Qmail', `${tpl(def.from)}: ${tpl(def.subject)}`, 'mail');
+  }
+
+  // Mail the engine writes itself (receipts, bounces) or the player sends.
+  function deliverCustom(custom, folder) {
+    folder = folder || 'inbox';
+    const entry = { id: 'c' + state.nextMail++, t: state.t, read: folder === 'sent', folder, custom };
+    state.mail.push(entry);
+    if (folder === 'inbox') toast('Qmail', `${custom.from}: ${custom.subject}`, 'mail');
+    return entry;
+  }
+
+  // Addresses the player could know about: everyone who has written, plus addresses posted publicly.
+  function contacts() {
+    const set = new Set();
+    for (const e of state.mail) {
+      const d = mailDef(e);
+      if (d.addr && !/no-?reply|mailer-daemon/.test(d.addr)) set.add(d.addr);
+      if (d.to) set.add(d.to);
+    }
+    if (state.posts.rosa_gig != null) set.add('rosa@crumbandcoin.com');
+    return [...set].sort();
   }
 
   function agentSays(text, src) {
@@ -195,6 +253,7 @@
     }
     if (fx.app) state.apps[fx.app.repo] = { users: fx.app.users || 0, perDay: fx.app.perDay || 0 };
     for (const id of arr(fx.post)) revealPost(id);
+    for (const id of arr(fx.mail)) deliverMail(id);
     if (fx.agent) agentSays(fx.agent);
     for (const l of arr(fx.later)) state.queue.push({ at: state.t + Math.round((l.hours || 0) * 60), effects: l.effects });
     if (fx.goto && fx.goto !== state.node) {
@@ -300,6 +359,10 @@
     state.stats.upgradeSpend = round2(state.stats.upgradeSpend + m.price);
     state.owned = level;
     state.model = level;
+    deliverCustom({
+      from: 'GIT Labs', addr: 'billing@askgit.ai', subject: `Receipt: ${m.name} upgrade`,
+      body: `You unlocked ${m.name}.\n\nCharged: ${fmtMoney(m.price)} to Second National ••4417.\nWhile ${m.name} is active, prompts cost ${fmtMoney(m.promptBase)} + ${fmtMoney(m.perWord)} per word.\n\nNo refunds. No exceptions. No humans.\n\nGIT Labs`,
+    });
     toast('GIT Labs', `${m.name} unlocked and active. Prompts now cost ${fmtMoney(m.promptBase)} + ${fmtMoney(m.perWord)}/word.`, 'agent');
     save();
     render();
@@ -382,11 +445,11 @@
     })();
   }
 
-  function chirpCandidates() {
-    return (S.chirps || []).filter((c) => !state.fired['chirp:' + c.id] && check(c.when));
+  function postCandidates() {
+    return (S.postActions || []).filter((c) => !state.fired['post:' + c.id] && check(c.when));
   }
 
-  async function chirp(text) {
+  async function postToY(text) {
     text = text.trim();
     if (!text || state.over) return;
     const id = 'u' + Date.now();
@@ -395,19 +458,60 @@
     advance(5);
     save();
     render();
-    const candidates = chirpCandidates();
+    const candidates = postCandidates();
     if (!candidates.length) return;
     const node = state.node;
-    const decision = await J.decide(text, candidates, { kind: 'chirp', node, thresholds: S.decision });
-    lastReport = { prompt: text, node, decision, chirp: true };
-    // chirps have no nudges: only a hit that is still available counts
-    if (decision.kind === 'hit' && chirpCandidates().includes(decision.branch)) {
-      state.fired['chirp:' + decision.branch.id] = state.t;
+    const decision = await J.decide(text, candidates, { kind: 'post', node, thresholds: S.decision });
+    lastReport = { prompt: text, node, decision, channel: 'post' };
+    // posts have no nudges: only a hit that is still available counts
+    if (decision.kind === 'hit' && postCandidates().includes(decision.branch)) {
+      state.fired['post:' + decision.branch.id] = state.t;
       post.likes += 20 + Math.floor(Math.random() * 40);
       applyEffects(decision.branch.effects);
       save();
     }
     render();
+  }
+
+  function mailCandidates() {
+    return (S.mailActions || []).filter((c) => !state.fired['mail:' + c.id] && check(c.when));
+  }
+
+  // Send an email from Qmail. Free, takes 5 minutes; Jev judges it against `mailActions`.
+  async function sendMail(to, subject, body) {
+    to = String(to || '').trim().toLowerCase();
+    subject = String(subject || '').trim() || '(no subject)';
+    body = String(body || '').trim();
+    if (state.over) return false;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) { toast('Qmail', 'Enter a valid address in To.', 'mail'); return false; }
+    const known = contacts().includes(to);
+    deliverCustom({ from: S.start.player.name, addr: playerAddr(), to, subject, body }, 'sent');
+    draft = null;
+    advance(5);
+    toast('Qmail', `Sent to ${to}`, 'mail');
+    navigate('qmail.com/sent');
+    if (!known) {
+      deliverCustom({
+        from: 'Mail Delivery Subsystem', addr: 'mailer-daemon@qmail.com', subject: `Undeliverable: ${subject}`,
+        body: `Your message to ${to} couldn't be delivered. That address doesn't exist.`,
+      });
+      save();
+      render();
+      return true;
+    }
+    const candidates = mailCandidates();
+    if (!candidates.length) return true;
+    const text = `To: ${to}\nSubject: ${subject}\n\n${body}`;
+    const node = state.node;
+    const decision = await J.decide(text, candidates, { kind: 'mail', node, thresholds: S.decision });
+    lastReport = { prompt: text, node, decision, channel: 'mail' };
+    if (decision.kind === 'hit' && mailCandidates().includes(decision.branch)) {
+      state.fired['mail:' + decision.branch.id] = state.t;
+      applyEffects(decision.branch.effects);
+      save();
+    }
+    render();
+    return true;
   }
 
   function deploy(repo) {
@@ -438,7 +542,12 @@
   function route(url) {
     const u = normalizeUrl(url);
     if (!u || u === 'newtab') return { site: 'newtab', title: 'New Tab' };
-    if (u === 'chirpr.com') return { site: 'chirpr', title: 'Home / Chirpr' };
+    if (u === 'y.com' || u === 'chirpr.com') return { site: 'y', title: 'Home / Y' };
+    if (u === 'qmail.com') return { site: 'mail', view: 'inbox', title: 'Inbox · Qmail' };
+    if (u === 'qmail.com/sent') return { site: 'mail', view: 'sent', title: 'Sent · Qmail' };
+    if (u === 'qmail.com/compose') return { site: 'mail', view: 'compose', title: 'New message · Qmail' };
+    const mm = u.match(/^qmail\.com\/m\/([a-z0-9_-]+)$/);
+    if (mm) return { site: 'mail', view: 'msg', id: mm[1], title: 'Qmail' };
     if (u === 'secondnational.com') return { site: 'bank', title: 'Second National · Checking' };
     if (u === 'askgit.ai' || u === 'unknownagent.ai') return { site: 'agent', title: 'GIT' };
     if (u === 'askgit.ai/models') return { site: 'agent', page: 'models', title: 'Models · GIT' };
@@ -463,17 +572,23 @@
       const tab = state.tabs.find((x) => x.id === state.active);
       tab.url = url;
     }
-    const site = route(url).site;
-    if (state.unread[site] != null) state.unread[site] = 0;
+    opened(route(url));
     save();
     render();
+  }
+
+  function opened(r) {
+    if (state.unread[r.site] != null) state.unread[r.site] = 0;
+    if (r.site === 'mail' && r.id) {
+      const entry = state.mail.find((m) => m.id === r.id);
+      if (entry) entry.read = true;
+    }
   }
 
   function switchTab(id) {
     state.active = id;
     const tab = state.tabs.find((x) => x.id === id);
-    const site = route(tab.url).site;
-    if (state.unread[site] != null) state.unread[site] = 0;
+    opened(route(tab.url));
     save();
     render();
   }
@@ -490,7 +605,8 @@
   // ───────────────────────── page renderers ─────────────────────────
 
   const ICONS = {
-    chirpr: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 15c3 0 5-2 6-5 1-4 4-6 7-5l3-1-1.5 2.5C19 9 18 13 15 16c-3 3-8 4-12 2 2 0 3.5-.7 4.5-1.6C5.5 16.2 4.5 15.8 4 15z" fill="currentColor"/></svg>',
+    y: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 3h4l3.5 6.6L15.5 3h4l-5.6 9.7V21h-3.8v-8.3z" fill="currentColor"/></svg>',
+    mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5" fill="currentColor"/><path d="M4.5 7.5 12 13l7.5-5.5" stroke="var(--icon-ink, #fff)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     bank: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 8v2h18V8l-9-5zM5 12v6h2v-6H5zm4 0v6h2v-6H9zm4 0v6h2v-6h-2zm4 0v6h2v-6h-2zM3 20v2h18v-2H3z" fill="currentColor"/></svg>',
     forkyard: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3a3 3 0 0 0-1 5.8v6.4A3 3 0 1 0 8 15.2V13c0-1 1-2 2-2h4a4 4 0 0 0 4-4V8.8A3 3 0 1 0 16 8.8V7c0 1-1 2-2 2h-4c-.7 0-1.4.2-2 .5V8.8A3 3 0 0 0 7 3z" fill="currentColor"/></svg>',
     agent: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" fill="currentColor"/><path d="M9.5 9.2a2.6 2.6 0 1 1 3.6 2.4c-.7.3-1.1.8-1.1 1.5v.6" stroke="var(--icon-ink, #fff)" stroke-width="1.8" fill="none" stroke-linecap="round"/><circle cx="12" cy="16.6" r="1.1" fill="var(--icon-ink, #fff)"/></svg>',
@@ -501,7 +617,7 @@
 
   function pageNewTab() {
     const tiles = Object.entries(SITES).map(([k, s]) =>
-      `<button class="nt-tile nt-${k}" data-nav="${s.url}"><span class="nt-ico">${ICONS[k]}</span><span>${esc(s.label)}</span>${state.unread[k] ? `<i class="badge">${state.unread[k]}</i>` : ''}</button>`
+      `<button class="nt-tile nt-${k}" data-nav="${s.url}"><span class="nt-ico">${ICONS[k]}</span><span>${esc(s.label)}</span>${badgeCount(k) ? `<i class="badge">${badgeCount(k)}</i>` : ''}</button>`
     ).join('');
     return `<div class="newtab">
       <p class="nt-time">${weekday(state.t)} ${clock(state.t)}</p>
@@ -510,7 +626,7 @@
     </div>`;
   }
 
-  function pageChirpr() {
+  function pageY() {
     const posts = [];
     for (const p of S.posts) {
       if (state.posts[p.id] == null) continue;
@@ -531,19 +647,19 @@
       </article>`;
     }).join('');
     const trends = [
-      ['#RentDue', '18.2k chirps'],
-      ['GIT-3', '9,410 chirps'],
-      state.posts.washday != null ? ['Ferris St Laundromat', '2,140 chirps'] : ['#AgenticWorkflows', '4,002 chirps'],
-      ['Crumb & Coin', state.posts.rosa_thanks != null ? '312 chirps' : '27 chirps'],
+      ['#RentDue', '18.2k posts'],
+      ['GIT-3', '9,410 posts'],
+      state.posts.washday != null ? ['Ferris St Laundromat', '2,140 posts'] : ['#AgenticWorkflows', '4,002 posts'],
+      ['Crumb & Coin', state.posts.rosa_thanks != null ? '312 posts' : '27 posts'],
     ];
     return `<div class="ch">
-      <nav class="ch-nav"><div class="ch-logo">${ICONS.chirpr}<span>chirpr</span></div><a class="on">Home</a><a>Explore</a><a>Notifications</a><a>Profile</a></nav>
+      <nav class="ch-nav"><div class="ch-logo">${ICONS.y}<span class="sr-only">Y</span></div><a class="on">Home</a><a>Explore</a><a>Notifications</a><a>Profile</a></nav>
       <main class="ch-main">
         <h1 class="ch-h">Home</h1>
-        <form class="ch-compose" data-form="chirp">
+        <form class="ch-compose" data-form="ypost">
           ${avatar(S.start.player.name, S.start.player.handle)}
-          <div><textarea id="chirp-input" rows="2" maxlength="280" placeholder="What's happening?"></textarea>
-          <div class="ch-compose-row"><span class="ch-hint">Posting is free.</span><button class="ch-btn" type="submit">Chirp</button></div></div>
+          <div><textarea id="post-input" rows="2" maxlength="280" placeholder="What's happening?"></textarea>
+          <div class="ch-compose-row"><span class="ch-hint">Posting is free.</span><button class="ch-btn" type="submit">Post</button></div></div>
         </form>
         <div class="ch-feed">${feed}</div>
       </main>
@@ -587,6 +703,78 @@
       </div>
     </div>`;
   }
+
+  function mailTime(t) {
+    if (t < 0) return 'Earlier';
+    return dayOf(t) === dayOf(state.t) ? clock(t) : `Day ${dayOf(t)}`;
+  }
+
+  function mailBody(text) {
+    return esc(tpl(text))
+      .replace(/([a-z0-9-]+\.forkyard\.app|askgit\.ai\/models)/g, '<a href="#" data-nav="$1">$1</a>')
+      .replace(/\n/g, '<br>');
+  }
+
+  function pageMail(r) {
+    const inbox = state.mail.filter((m) => m.folder === 'inbox').sort((a, b) => b.t - a.t);
+    const sent = state.mail.filter((m) => m.folder === 'sent').sort((a, b) => b.t - a.t);
+    const unread = unreadMail();
+    const view = r.view || 'inbox';
+    const side = `<nav class="qm-side" aria-label="Folders">
+      <a href="#" class="qm-new" data-nav="qmail.com/compose">Compose</a>
+      <a href="#" data-nav="qmail.com" class="${view === 'inbox' ? 'on' : ''}">Inbox${unread ? `<b>${unread}</b>` : ''}</a>
+      <a href="#" data-nav="qmail.com/sent" class="${view === 'sent' ? 'on' : ''}">Sent</a>
+    </nav>`;
+    let main;
+    if (view === 'compose') {
+      const d = draft || { to: '', subject: '', body: '' };
+      main = `<form class="qm-compose" data-form="mail">
+        <h1 class="qm-h">New message</h1>
+        <label class="qm-field"><span>To</span><input id="mail-to" list="qm-contacts" autocomplete="off" spellcheck="false" value="${esc(d.to)}" placeholder="name@example.com"></label>
+        <datalist id="qm-contacts">${contacts().map((c) => `<option value="${esc(c)}"></option>`).join('')}</datalist>
+        <label class="qm-field"><span>Subject</span><input id="mail-subject" autocomplete="off" value="${esc(d.subject)}"></label>
+        <textarea id="mail-body" rows="10" aria-label="Message">${esc(d.body)}</textarea>
+        <div class="qm-actions"><button class="qm-btn" type="submit">Send</button><button class="qm-btn ghost" type="button" data-mail-discard>Discard</button><span class="qm-hint">Sending is free and takes 5 minutes.</span></div>
+      </form>`;
+    } else if (view === 'msg') {
+      const entry = state.mail.find((m) => m.id === r.id);
+      if (!entry) {
+        main = `<p class="qm-empty">This message doesn't exist.</p>`;
+      } else {
+        const d = mailDef(entry);
+        const mine = entry.folder === 'sent';
+        const canReply = !mine && d.addr && !/no-?reply|mailer-daemon/.test(d.addr);
+        main = `<article class="qm-read">
+          <p class="qm-crumbs"><a href="#" data-nav="${mine ? 'qmail.com/sent' : 'qmail.com'}">${mine ? 'Sent' : 'Inbox'}</a></p>
+          <h1 class="qm-h">${esc(tpl(d.subject))}</h1>
+          <p class="qm-meta"><span>${mine
+            ? `<b>${esc(S.start.player.name)}</b> &lt;${esc(playerAddr())}&gt; to <b>${esc(d.to)}</b>`
+            : `<b>${esc(tpl(d.from))}</b> &lt;${esc(d.addr)}&gt; to ${esc(playerAddr())}`}</span><span>${esc(stampOrEarlier(entry.t))}</span></p>
+          <div class="qm-body">${mailBody(d.body)}</div>
+          ${canReply ? `<div class="qm-actions"><button class="qm-btn" data-reply="${esc(entry.id)}">Reply</button></div>` : ''}
+        </article>`;
+      }
+    } else {
+      const list = view === 'sent' ? sent : inbox;
+      const rows = list.map((m) => {
+        const d = mailDef(m);
+        const who = m.folder === 'sent' ? `To: ${d.to}` : tpl(d.from);
+        const snippet = tpl(d.body || '').replace(/\s+/g, ' ').slice(0, 90);
+        return `<a href="#" class="qm-row${m.read ? '' : ' unread'}" data-nav="qmail.com/m/${esc(m.id)}">
+          <span class="qm-from">${esc(who)}</span>
+          <span class="qm-subj"><b>${esc(tpl(d.subject))}</b> <span>${esc(snippet)}</span></span>
+          <span class="qm-time">${esc(mailTime(m.t))}</span>
+        </a>`;
+      }).join('');
+      main = `<h1 class="qm-h">${view === 'sent' ? 'Sent' : 'Inbox'}</h1>${rows ? `<div class="qm-list">${rows}</div>` : `<p class="qm-empty">${view === 'sent' ? 'Nothing sent yet.' : 'No mail.'}</p>`}`;
+    }
+    return `<div class="qm">
+      <header class="qm-top"><div class="qm-logo">${ICONS.mail}<span>Qmail</span></div><span class="qm-user">${esc(playerAddr())}</span></header>
+      <div class="qm-wrap">${side}<main class="qm-main">${main}</main></div>
+    </div>`;
+  }
+
+  function stampOrEarlier(t) { return t < 0 ? 'Before Day 1' : stamp(t); }
 
   function repoStatus(name) {
     const r = state.repos[name];
@@ -810,7 +998,7 @@
     if (document.activeElement !== addr) addr.value = r.site === 'newtab' ? '' : normalizeUrl(tab.url);
 
     $('#bookmarks').innerHTML = Object.entries(SITES).map(([k, s]) =>
-      `<button class="bm" data-nav="${s.url}"><span class="bm-ico ico-${k}">${ICONS[k]}</span><span class="bm-label">${esc(s.label)}</span>${state.unread[k] ? `<i class="badge">${state.unread[k]}</i>` : ''}</button>`
+      `<button class="bm" data-nav="${s.url}"><span class="bm-ico ico-${k}">${ICONS[k]}</span><span class="bm-label">${esc(s.label)}</span>${badgeCount(k) ? `<i class="badge">${badgeCount(k)}</i>` : ''}</button>`
     ).join('');
 
     // preserve what the player was typing across re-renders
@@ -822,7 +1010,8 @@
 
     let html;
     switch (r.site) {
-      case 'chirpr': html = pageChirpr(); break;
+      case 'y': html = pageY(); break;
+      case 'mail': html = pageMail(r); break;
       case 'bank': html = pageBank(); break;
       case 'forkyard': html = pageForkyard(r.repo); break;
       case 'agent': html = r.page === 'models' ? pageModels() : pageAgent(); break;
@@ -881,12 +1070,12 @@
       html = `<div class="ov-card ov-intro">
         <p class="ov-eyebrow">${esc(S.chapter)}</p>
         <h1 class="ov-title">Unknown<br>Agent</h1>
-        <p>You lost your job two years ago. The benefits ran out last week. You have ${fmtMoney(S.start.money)}, a laptop, four bookmarks, and GIT, an AI chatbot that bills you for every word.</p>
+        <p>You lost your job two years ago. The benefits ran out last week. You have ${fmtMoney(S.start.money)}, a laptop, five bookmarks, and GIT, an AI chatbot that bills you for every word.</p>
         <p>Rent is ${fmtMoney(E.rent.amount)}, due at the end of Day ${E.rent.day}. Don't go broke.</p>
         <ul class="ov-rules">
           <li>Every prompt costs money and an hour. Vague prompts get vague answers.</li>
           <li>Some jobs need a stronger GIT model. Upgrades cost money upfront and make every prompt pricier.</li>
-          <li>Read Chirpr for leads. Check your bank. Ship code on Forkyard.</li>
+          <li>Read Y for leads. Check Qmail and your bank. Ship code on Forkyard.</li>
           <li>Anything you can do yourself, do yourself. It's free.</li>
         </ul>
         <div class="ov-actions">
@@ -958,7 +1147,7 @@
         table = `<table><thead><tr><th>branch</th><th>cover</th><th>score</th><th>hits</th></tr></thead><tbody>${rows || '<tr><td colspan="4">no candidates</td></tr>'}</tbody></table>`;
       }
       const engine = decision.engine === 'jev' ? `Jev${J.last && J.last.model ? ' · ' + esc(J.last.model) : ''}${J.last ? ` · ${J.last.ms}ms` : ''}` : `keywords${decision.fellBack ? ' (Jev call failed: ' + esc((J.last && J.last.error) || '?') + ')' : ''}`;
-      report = `<p><b>${lastReport.chirp ? 'Chirp' : 'Prompt'}:</b> ${esc(lastReport.prompt)}</p>
+      report = `<p><b>${{ post: 'Y post', mail: 'Email' }[lastReport.channel] || 'Prompt'}:</b> ${esc(lastReport.prompt)}</p>
         <p><b>Result:</b> ${decision.kind}${decision.branch ? ' → ' + esc(decision.branch.id) : ''}${decision.kind === 'locked' ? ` (needs ${esc(modelDef(decision.branch.minModel).name)}, had ${esc(modelDef(lastReport.model).name)})` : ''}${decision.stale ? ' (stale, ignored)' : ''} <span class="dv-dim">(node ${esc(lastReport.node)} · ${engine})</span></p>
         ${table}`;
     }
@@ -978,7 +1167,7 @@
 
   function bind() {
     document.addEventListener('click', (e) => {
-      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model]');
+      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model],[data-reply],[data-mail-discard]');
       if (!t) return;
       if (t.dataset.close) { e.stopPropagation(); closeTab(Number(t.dataset.close)); return; }
       if (t.dataset.nav) { e.preventDefault(); navigate(t.dataset.nav); return; }
@@ -993,6 +1182,13 @@
         return;
       }
       if (t.dataset.useModel) { useModel(Number(t.dataset.useModel)); return; }
+      if (t.dataset.reply) {
+        const d = mailDef(state.mail.find((m) => m.id === t.dataset.reply) || {});
+        draft = { to: d.addr || '', subject: /^re:/i.test(d.subject || '') ? d.subject : `RE: ${d.subject || ''}`, body: '' };
+        navigate('qmail.com/compose');
+        return;
+      }
+      if (t.hasAttribute('data-mail-discard')) { draft = null; navigate('qmail.com'); return; }
       if (t.dataset.ov) return overlayAction(t.dataset.ov);
       if (t.dataset.dev) return devAction(t.dataset.dev);
       if (t.dataset.act) return taskbarAction(t.dataset.act);
@@ -1013,12 +1209,14 @@
         if (!v.trim()) return;
         input.value = '';
         sendPrompt(v);
-      } else if (kind === 'chirp') {
-        const input = $('#chirp-input');
+      } else if (kind === 'ypost') {
+        const input = $('#post-input');
         const v = input.value;
         if (!v.trim()) return;
         input.value = '';
-        chirp(v);
+        postToY(v);
+      } else if (kind === 'mail') {
+        sendMail($('#mail-to').value, $('#mail-subject').value, $('#mail-body').value);
       } else if (kind === 'url') {
         const input = f.querySelector('input');
         navigate(input.value);
@@ -1031,7 +1229,7 @@
         e.preventDefault();
         e.target.form.requestSubmit();
       }
-      if (e.target.id === 'chirp-input' && e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      if ((e.target.id === 'post-input' || e.target.id === 'mail-body') && e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         e.target.form.requestSubmit();
       }
@@ -1045,6 +1243,9 @@
 
     document.addEventListener('input', (e) => {
       if (e.target.id === 'prompt-input') updateCostEstimate();
+      if (/^mail-(to|subject|body)$/.test(e.target.id)) {
+        draft = { to: $('#mail-to').value, subject: $('#mail-subject').value, body: $('#mail-body').value };
+      }
     });
     document.addEventListener('change', (e) => {
       if (e.target.id === 'dv-node') { state.node = e.target.value; revealPosts(); save(); render(); }
@@ -1116,7 +1317,7 @@
   // exposed for debugging and tests
   window.UA = {
     get state() { return state; },
-    sendPrompt, chirp, deploy, sleep: doSleep, navigate,
+    sendPrompt, post: postToY, sendMail, deploy, sleep: doSleep, navigate,
     reset() { state = newState(); introOpen = false; save(); render(); },
     lastReport: () => lastReport,
   };

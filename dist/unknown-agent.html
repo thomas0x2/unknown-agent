@@ -25,7 +25,8 @@
   --f-display: 'Fraunces', Georgia, 'Times New Roman', serif;
 
   /* site palettes */
-  --ch-bg: #ffffff; --ch-ink: #15181c; --ch-dim: #687079; --ch-line: #ebebe6; --ch-accent: #e9a100; --ch-accent-ink: #1d1600;
+  --ch-bg: #ffffff; --ch-ink: #15181c; --ch-dim: #687079; --ch-line: #ebebe6; --ch-accent: #e9a100;
+  --qm-bg: #f4f5fa; --qm-panel: #ffffff; --qm-ink: #171a2b; --qm-dim: #666c84; --qm-line: #e1e4ee; --qm-accent: #3b4ad6; --qm-soft: #eceefc; --ch-accent-ink: #1d1600;
   --bk-bg: #eef2ee; --bk-panel: #ffffff; --bk-green: #0e4b38; --bk-ink: #1a2420; --bk-dim: #5d6b64; --bk-neg: #b3261e; --bk-pos: #1c7444; --bk-line: #dbe3dd;
   --fy-bg: #0d0f13; --fy-panel: #161a20; --fy-ink: #e4e6ea; --fy-dim: #8a929e; --fy-line: #272c35; --fy-accent: #ff7a45; --fy-live: #4fd08a;
   --ua-bg: #eceef0; --ua-panel: #ffffff; --ua-ink: #0c0d0f; --ua-dim: #6c727b; --ua-line: #d7dade; --ua-you: #0c0d0f;
@@ -85,7 +86,7 @@ code { font-family: var(--f-mono); font-size: 0.86em; }
 .tab-new { border: 0; background: none; color: var(--chrome-dim); width: 28px; height: 28px; margin-bottom: 4px; border-radius: 6px; font-size: 18px; flex: none; }
 .tab-new:hover { background: var(--chrome-2); color: var(--chrome-ink); }
 
-.ico-chirpr { color: var(--ch-accent); }
+.ico-y { color: var(--ch-accent); }
 .ico-bank { color: #6fbf9a; }
 .ico-forkyard { color: var(--fy-accent); }
 .ico-agent { color: #f4f5f7; --icon-ink: #111; }
@@ -206,13 +207,13 @@ code { font-family: var(--f-mono); font-size: 0.86em; }
 .nt-search { width: min(520px, 100%); }
 .nt-search input { width: 100%; background: var(--chrome); border: 1px solid var(--chrome-line); border-radius: 999px; padding: 12px 18px; outline: 0; }
 .nt-search input:focus { border-color: var(--note); }
-.nt-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 120px)); gap: 14px; }
+.nt-tiles { display: grid; grid-template-columns: repeat(5, minmax(0, 120px)); gap: 14px; }
 .nt-tile { position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 18px 8px; border: 1px solid var(--chrome-line); background: var(--chrome); border-radius: 12px; font-size: 13px; }
 .nt-tile:hover { background: var(--chrome-3); }
 .nt-tile .badge { position: absolute; top: 8px; right: 8px; }
 .nt-ico { width: 34px; height: 34px; display: inline-flex; }
 .nt-ico svg { width: 100%; height: 100%; }
-.nt-chirpr .nt-ico { color: var(--ch-accent); }
+.nt-y .nt-ico { color: var(--ch-accent); }
 .nt-bank .nt-ico { color: #6fbf9a; }
 .nt-forkyard .nt-ico { color: var(--fy-accent); }
 .nt-agent .nt-ico { color: #f4f5f7; --icon-ink: #111; }
@@ -391,7 +392,7 @@ body.dev-on .ua-src { display: block; }
   .bm { padding: 6px 12px; }
   .tb-dots { display: none; }
   .tab { flex-basis: 150px; }
-  .nt-tiles { grid-template-columns: repeat(2, minmax(0, 140px)); }
+  .nt-tiles { grid-template-columns: repeat(3, minmax(0, 110px)); }
   .tk-rent { display: none; }
   .tk-note { flex-basis: 100%; }
   .tk-right { width: 100%; justify-content: space-between; gap: 8px; }
@@ -447,6 +448,61 @@ body.dev-on .ua-src { display: block; }
 .gm-pill.on { color: #1c7444; border-color: #9fd3b3; }
 .gm-note { margin: 0; padding: 8px max(16px, calc((100% - 1100px) / 2)) 24px; color: var(--ua-dim); font-size: 12.5px; }
 @media (min-width: 1100px) { .gm-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+
+/* ── Qmail ── */
+.ico-mail, .nt-mail .nt-ico { color: #7d8cff; --icon-ink: #1f2329; }
+.toast.t-mail { border-left-color: #7d8cff; }
+.qm { min-height: 100%; background: var(--qm-bg); color: var(--qm-ink); display: flex; flex-direction: column; }
+.qm-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 24px; background: var(--qm-panel); border-bottom: 1px solid var(--qm-line); }
+.qm-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px; letter-spacing: -0.02em; }
+.qm-logo svg { width: 26px; height: 26px; color: var(--qm-accent); --icon-ink: #fff; }
+.qm-user { font-size: 13px; color: var(--qm-dim); font-family: var(--f-mono); }
+.qm-wrap { flex: 1; display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 18px; padding: 18px 24px 32px; max-width: 1100px; width: 100%; margin: 0 auto; }
+.qm-side { display: flex; flex-direction: column; gap: 2px; }
+.qm-side a { display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; border-radius: 999px; color: var(--qm-ink); font-size: 14px; text-decoration: none; }
+.qm-side a:hover { background: var(--qm-soft); }
+.qm-side a.on { background: var(--qm-soft); font-weight: 700; color: var(--qm-accent); }
+.qm-side a b { font-size: 12px; }
+.qm-side .qm-new { background: var(--qm-accent); color: #fff; font-weight: 600; justify-content: center; margin-bottom: 10px; border-radius: 12px; padding: 12px 14px; }
+.qm-side .qm-new:hover { background: var(--qm-accent); filter: brightness(1.08); }
+.qm-main { min-width: 0; background: var(--qm-panel); border: 1px solid var(--qm-line); border-radius: 12px; padding: 18px 20px; align-self: start; }
+.qm-h { margin: 0 0 12px; font-size: 19px; text-wrap: balance; }
+.qm-list { display: flex; flex-direction: column; border-top: 1px solid var(--qm-line); }
+.qm-row { display: grid; grid-template-columns: 170px minmax(0, 1fr) auto; gap: 14px; align-items: baseline; padding: 11px 6px; border-bottom: 1px solid var(--qm-line); color: var(--qm-dim); text-decoration: none; font-size: 14px; }
+.qm-row:hover { background: var(--qm-bg); }
+.qm-row.unread { color: var(--qm-ink); }
+.qm-row.unread .qm-from { font-weight: 700; }
+.qm-from { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.qm-subj { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.qm-subj b { font-weight: 500; color: var(--qm-ink); }
+.qm-row.unread .qm-subj b { font-weight: 700; }
+.qm-subj span { color: var(--qm-dim); }
+.qm-time { font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.qm-empty { color: var(--qm-dim); margin: 0; }
+.qm-crumbs { margin: 0 0 8px; font-size: 13px; }
+.qm-crumbs a, .qm-body a { color: var(--qm-accent); }
+.qm-meta { margin: 0 0 16px; font-size: 13.5px; color: var(--qm-dim); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; overflow-wrap: anywhere; }
+.qm-meta b { color: var(--qm-ink); }
+.qm-body { font-size: 15px; line-height: 1.6; max-width: 65ch; overflow-wrap: anywhere; }
+.qm-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.qm-btn { border: 0; background: var(--qm-accent); color: #fff; font-weight: 600; padding: 9px 20px; border-radius: 999px; font-size: 14px; }
+.qm-btn.ghost { background: none; color: var(--qm-ink); border: 1px solid var(--qm-line); }
+.qm-hint { font-size: 12.5px; color: var(--qm-dim); }
+.qm-compose { display: flex; flex-direction: column; gap: 0; }
+.qm-field { display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--qm-line); padding: 8px 0; }
+.qm-field span { width: 56px; color: var(--qm-dim); font-size: 13px; flex: none; }
+.qm-field input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; color: var(--qm-ink); font-size: 14.5px; padding: 4px 0; }
+.qm-compose textarea { border: 0; outline: 0; resize: vertical; min-height: 200px; padding: 14px 0; font-size: 15px; line-height: 1.55; color: var(--qm-ink); background: none; }
+.qm-compose:focus-within .qm-field:focus-within { border-bottom-color: var(--qm-accent); }
+@media (max-width: 760px) {
+  .qm-top { padding: 10px 16px; }
+  .qm-wrap { grid-template-columns: minmax(0, 1fr); padding: 12px 12px 24px; gap: 12px; }
+  .qm-side { flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  .qm-side .qm-new { margin-bottom: 0; padding: 8px 16px; border-radius: 999px; }
+  .qm-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .qm-row .qm-subj { grid-column: 1 / -1; grid-row: 2; }
+  .qm-main { padding: 14px; }
+}
 </style>
 <div id="app">
   <div class="desk">
@@ -627,7 +683,7 @@ body.dev-on .ua-src { display: block; }
 /*
  * Jev — decides where the player's prompt takes the story.
  *
- * Jev is TypeSafe's System One model. For every prompt (or Chirpr post) the game
+ * Jev is TypeSafe's System One model. For every prompt (and every Y post or Qmail email) the game
  * asks it one Choice question: which of the branches available right now does
  * this carry out, or none (`no_progress`)? Jev answers with a probability for
  * each option, and the story's `decision` thresholds turn those into:
@@ -676,7 +732,7 @@ body.dev-on .ua-src { display: block; }
     /*
      * Decide what a prompt does.
      *   branches: candidate branches, already filtered by their `when`
-     *   opts: { kind: 'prompt' | 'chirp', node, thresholds: { hit, partial } }
+     *   opts: { kind: 'prompt' | 'post' | 'mail', node, thresholds: { hit, partial } }
      *   returns { kind: 'hit' | 'partial' | 'miss', branch?, engine, probabilities?, report? }
      */
     async decide(prompt, branches, opts) {
@@ -781,7 +837,7 @@ body.dev-on .ua-src { display: block; }
     work: ['gig', 'job', 'work', 'client', 'freelance', 'opportunity', 'money', 'income', 'cash', 'idea', 'trend', 'trending', 'complaint', 'problem'],
     deploy: ['deploy', 'publish', 'host', 'launch', 'live', 'online', 'ship', 'release', 'go live'],
     contact: ['send', 'message', 'dm', 'email', 'tell', 'contact', 'reach', 'invoice', 'bill', 'notify', 'ping', 'reply', 'text', 'let know', 'inform'],
-    promote: ['promote', 'market', 'marketing', 'advertise', 'announce', 'share', 'spread', 'post', 'chirp', 'tweet', 'publicize', 'hype', 'shill'],
+    promote: ['promote', 'market', 'marketing', 'advertise', 'announce', 'share', 'spread', 'post', 'tweet', 'publicize', 'hype', 'shill'],
   };
 
   // Every node gets a "what should I do?" branch. It costs a prompt but points the way.
@@ -904,7 +960,7 @@ body.dev-on .ua-src { display: block; }
         match: { all: [['help', 'can you do', 'capabilities', 'how do you work', 'what do you do', 'instructions']] },
         priority: -2,
         response:
-          'I can:\n— build and push code to your Forkyard account\n— write and send messages for you\n— read Chirpr and summarize what matters\n\n' +
+          'I can:\n— build and push code to your Forkyard account\n— write and send emails from your Qmail\n— read Y and summarize what matters\n\n' +
           "I can't touch your bank, and I can't press buttons you can press yourself.",
       },
       {
@@ -931,11 +987,11 @@ body.dev-on .ua-src { display: block; }
     nodes: {
       broke: {
         objective: 'Find a way to make some money.',
-        scene: "Day one of being broke. On Chirpr, @crumbandcoin (the Crumb & Coin bakery, owned by Rosa) is offering $150 for a simple website with their menu and hours.",
+        scene: "Day one of being broke. On Y, @crumbandcoin (the Crumb & Coin bakery, owned by Rosa) is offering $150 for a simple website with their menu and hours.",
         branches: [
           research(
             'research',
-            'Scanned Chirpr for paid work. One real lead:\n\n' +
+            'Scanned Y for paid work. One real lead:\n\n' +
               '@crumbandcoin (Crumb & Coin Bakery, Rosa) will pay $150 for a simple website with their menu and opening hours. Wants it by tomorrow.',
             { set: { knowsBakery: true } }
           ),
@@ -949,7 +1005,7 @@ body.dev-on .ua-src { display: block; }
             partial:
               'I can build a website. For whom, and what goes on it? Give me a business and some content.',
             response:
-              'Done. Pushed `crumb-and-coin` to your Forkyard account:\n— index.html (hero, hours, address)\n— menu.html (pulled from Rosa\'s Chirpr photos)\n— style.css\n\n' +
+              'Done. Pushed `crumb-and-coin` to your Forkyard account:\n— index.html (hero, hours, address)\n— menu.html (pulled from Rosa\'s Y photos)\n— style.css\n\n' +
               "It isn't live yet. That part needs you.",
             effects: { repo: 'crumb-and-coin', goto: 'site_built' },
           },
@@ -967,7 +1023,7 @@ body.dev-on .ua-src { display: block; }
 
       site_live: {
         objective: 'Tell Rosa the site is live and get paid.',
-        scene: "The Crumb & Coin website is live at crumb-and-coin.forkyard.app. Rosa does not know yet and has not paid the $150.",
+        scene: "The Crumb & Coin website is live at crumb-and-coin.forkyard.app. Rosa (rosa@crumbandcoin.com) does not know yet and has not paid the $150.",
         branches: [
           {
             id: 'invoice_rosa',
@@ -979,20 +1035,20 @@ body.dev-on .ua-src { display: block; }
             },
             partial: 'Send what, to whom? Be specific.',
             response:
-              'Sent @crumbandcoin a DM:\n\n"Hi Rosa, your new site is live at crumb-and-coin.forkyard.app. Menu and hours are up. Invoice for $150 attached."\n\nShe usually replies within a couple of hours.',
-            effects: { set: { invoiced: true }, later: [{ hours: 2, effects: 'rosa_pays' }] },
+              'Emailed Rosa at rosa@crumbandcoin.com from your Qmail:\n\n"Hi Rosa, your new site is live at crumb-and-coin.forkyard.app. Menu and hours are up. Invoice for $150 attached."\n\nShe usually replies within a couple of hours.',
+            effects: { set: { invoiced: true }, mail: 'rosa_invoice_sent', later: [{ hours: 2, effects: 'rosa_pays' }] },
           },
-          research('research', "The site is live, but Rosa doesn't know. Message her or post about it on Chirpr."),
+          research('research', "The site is live, but Rosa doesn't know. Email her at rosa@crumbandcoin.com, or post about it on Y."),
         ],
       },
 
       paid_once: {
         objective: 'Rent ($300) is due at the end of Day 7. Find income that keeps coming in.',
-        scene: "Rosa paid $150. Rent of $300 is due at the end of Day 7. Chirpr is full of complaints that nobody knows which machines work at the Ferris St laundromat.",
+        scene: "Rosa paid $150. Rent of $300 is due at the end of Day 7. Y is full of complaints that nobody knows which machines work at the Ferris St laundromat.",
         branches: [
           research(
             'research',
-            'Biggest unsolved complaint on Chirpr right now:\n\n' +
+            'Biggest unsolved complaint on Y right now:\n\n' +
               "@washday_woes: nobody knows which machines at the Ferris St Laundromat actually work. 2.1k likes, dozens of replies saying \"someone build this\".\n\nA live machine-status tracker would get steady local traffic.",
             { set: { knowsLaundromat: true } }
           ),
@@ -1038,10 +1094,10 @@ body.dev-on .ua-src { display: block; }
             },
             partial: 'Promote what, where?',
             response:
-              'Posted from your Chirpr account and replied under @washday_woes\'s thread with the link.\n\nPeople are already reporting machines.',
+              'Posted from your Y account and replied under @washday_woes\'s thread with the link.\n\nPeople are already reporting machines.',
             effects: 'spin_marketed',
           },
-          research('research', "Spin Cycle is live but has no users. The people who want it are in @washday_woes's thread on Chirpr."),
+          research('research', "Spin Cycle is live but has no users. The people who want it are in @washday_woes's thread on Y."),
         ],
       },
 
@@ -1109,6 +1165,7 @@ body.dev-on .ua-src { display: block; }
       rosa_pays: {
         money: { amount: 150, memo: 'CRUMB & COIN BAKERY — WEBSITE' },
         post: 'rosa_thanks',
+        mail: 'rosa_paid',
         goto: 'paid_once',
       },
       spin_marketed: {
@@ -1119,10 +1176,10 @@ body.dev-on .ua-src { display: block; }
       },
     },
 
-    // Things the player posts on Chirpr themselves. Free, but you have to know what to say.
-    chirps: [
+    // Things the player posts on Y themselves. Free, but you have to know what to say.
+    postActions: [
       {
-        id: 'chirp_rosa',
+        id: 'post_rosa',
         intent: "The post tells Rosa or the Crumb & Coin bakery that her new website is live or ready.",
         when: { node: 'site_live', notFlag: 'invoiced' },
         match: {
@@ -1131,7 +1188,7 @@ body.dev-on .ua-src { display: block; }
         effects: { set: { invoiced: true }, later: [{ hours: 2, effects: 'rosa_pays' }] },
       },
       {
-        id: 'chirp_spin',
+        id: 'post_spin',
         intent: "The post announces or shares Spin Cycle, the Ferris St laundromat machine tracker, so people can use it.",
         when: { node: 'app_live', notFlag: 'marketed' },
         match: {
@@ -1139,6 +1196,80 @@ body.dev-on .ua-src { display: block; }
         },
         effects: 'spin_marketed',
       },
+    ],
+
+    // Emails the player sends from Qmail. Jev judges each one against these, like posts.
+    mailActions: [
+      {
+        id: 'mail_rosa',
+        intent: "The email tells Rosa or the Crumb & Coin bakery that her website is live, or asks her for the $150 payment.",
+        when: { node: 'site_live', notFlag: 'invoiced' },
+        match: {
+          all: [['rosa', 'crumb', 'crumbandcoin', 'bakery'], ['site', 'website', 'live', 'link', 'forkyard', 'done', 'ready', 'invoice', 'pay', 'payment', '150']],
+        },
+        effects: { set: { invoiced: true }, later: [{ hours: 2, effects: 'rosa_pays' }] },
+      },
+      {
+        id: 'mail_gary',
+        intent: "The email asks Gary, the landlord, for more time, a discount, or an exception on the rent.",
+        when: { notFlag: 'askedGary' },
+        match: {
+          all: [['gary', 'pruitt', 'landlord', 'pruittproperty'], ['rent', 'extension', 'late', 'time', 'discount', 'week', 'delay', 'postpone', 'exception', 'later']],
+        },
+        effects: { set: { askedGary: true }, later: [{ hours: 0.5, effects: { mail: 'gary_no' } }] },
+      },
+      {
+        id: 'mail_mom_help',
+        intent: "The email to Mom asks her for money or help.",
+        when: { notFlag: 'wroteMom' },
+        match: { all: [['mom', 'mother', 'mum'], ['money', 'help', 'cash', 'loan', 'send', 'broke', 'rent', 'dollars', 'borrow']] },
+        effects: { set: { wroteMom: true }, later: [{ hours: 3, effects: { mail: 'mom_money', money: { amount: 20, memo: 'ZELLE — MOM' } } }] },
+      },
+      {
+        id: 'mail_mom_chat',
+        intent: "The email to Mom says hello or tells her how things are, without asking for money or help.",
+        when: { notFlag: 'wroteMom' },
+        priority: -1,
+        match: { all: [['mom', 'mother', 'mum']] },
+        effects: { set: { wroteMom: true }, later: [{ hours: 3, effects: { mail: 'mom_chat' } }] },
+      },
+    ],
+
+    // Qmail messages. `at` is minutes before game start for seeded mail; others arrive when `when`
+    // becomes true or an effect delivers them (`mail: 'id'`). `folder: 'sent'` files it under Sent.
+    mail: [
+      {
+        id: 'git_welcome', at: 30, from: 'GIT Labs', addr: 'noreply@askgit.ai', subject: 'Welcome to GIT',
+        body: "Your GIT-1 account is active and linked to Second National ••4417.\n\nEvery prompt is billed at your active model's rate. Stronger models, GIT-2 to GIT-5, take on harder jobs: askgit.ai/models.\n\nGIT Labs\nThis mailbox is not monitored. Neither is anything else.",
+      },
+      {
+        id: 'brayden_spam', at: 240, from: 'Brayden | 7 figures', addr: 'brayden@empire-mindset.biz', subject: 'RE: your empire (90% off, today only)',
+        body: "Most people will ignore this email. That's why most people are broke.\n\nMy EMPIRE course is $49 today instead of $499. Reply EMPIRE.\n\nBrayden",
+      },
+      {
+        id: 'gary_rent', at: 610, from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'Rent: end of Day 7',
+        body: "Hi,\n\nReminder that rent ($300) comes out at the end of Day 7. Last month's late fee was $89.50. I'd rather not do that again, and I'd rather not do the other thing either.\n\nGary Pruitt\nPruitt Property Management",
+      },
+      {
+        id: 'mom_hello', at: 1500, from: 'Mom', addr: 'mom@qmail.com', subject: 'Are you eating?',
+        body: "Haven't heard from you in a while. Your father says hi (he didn't). Write back when you can.\n\nLove, Mom",
+      },
+      {
+        id: 'benefits_end', at: 4300, read: true, from: 'State Unemployment Office', addr: 'no-reply@labor.state.gov', subject: 'Your benefits have ended',
+        body: 'Your final payment of $212.00 has been sent. You have used your full benefit period.\n\nCase #4471-0093. Do not reply to this message.',
+      },
+      {
+        id: 'rosa_invoice_sent', folder: 'sent', to: 'rosa@crumbandcoin.com', subject: 'Your new website + invoice',
+        body: 'Hi Rosa,\n\nYour new site is live at crumb-and-coin.forkyard.app. Menu and hours are up.\n\nInvoice for $150 attached.\n\nSent by GIT',
+      },
+      {
+        id: 'rosa_paid', from: 'Rosa (Crumb & Coin)', addr: 'rosa@crumbandcoin.com', subject: 'Paid! Thank you',
+        body: "The site looks wonderful. My nephew is jealous. $150 is on its way to your account.\n\nCome by for a cardamom bun, on the house.\n\nRosa",
+      },
+      { id: 'gary_tomorrow', when: { minDay: 6 }, from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'Tomorrow night', body: "Rent comes out tomorrow night. $300. Make sure it's there.\n\nGary" },
+      { id: 'gary_no', from: 'Gary Pruitt', addr: 'gary@pruittproperty.com', subject: 'RE: Rent', body: 'No.\n\nGary\n\nSent from my phone' },
+      { id: 'mom_money', from: 'Mom', addr: 'mom@qmail.com', subject: 'RE: Are you eating?', body: "I knew it. I sent you $20. Don't tell your father. Buy vegetables.\n\nLove, Mom" },
+      { id: 'mom_chat', from: 'Mom', addr: 'mom@qmail.com', subject: 'RE: Are you eating?', body: "So good to hear from you! Things here are fine. The neighbor's dog had puppies. Write again soon.\n\nLove, Mom" },
     ],
 
     // Engine events: deploys and new days.
@@ -1192,12 +1323,12 @@ body.dev-on .ua-src { display: block; }
       },
     },
 
-    // Chirpr posts. `at` is minutes before game start for seeded posts; others appear when `when` becomes true.
+    // Y posts. `at` is minutes before game start for seeded posts; others appear when `when` becomes true.
     posts: [
       { id: 'news_layoffs', author: 'The Ledger', handle: 'theledger', at: 40, likes: 812, text: 'Regional employment down 4% this quarter as firms replace junior staff with "agentic workflows".' },
       {
         id: 'rosa_gig', author: 'Crumb & Coin Bakery', handle: 'crumbandcoin', at: 95, likes: 23,
-        text: 'Our website has been down since my nephew left for college. Will pay $150 to anyone who can put up a simple site with our menu + hours by tomorrow. — Rosa',
+        text: 'Our website has been down since my nephew left for college. Will pay $150 to anyone who can put up a simple site with our menu + hours by tomorrow. rosa@crumbandcoin.com — Rosa',
       },
       { id: 'gary_post', author: 'Gary Pruitt', handle: 'garypruitt_pm', at: 180, likes: 2, text: 'Reminder to all tenants: rent is due on the 7th. No exceptions. I have heard every excuse.' },
       { id: 'agent_rumor', author: 'dev_null', handle: 'devnull_42', at: 300, likes: 1400, text: 'Has anyone figured out who actually runs GIT? No company page, no founders, ToS is one line: "You will be billed."' },
@@ -1552,7 +1683,8 @@ body.dev-on .ua-src { display: block; }
   const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   const SITES = {
-    chirpr: { label: 'Chirpr', url: 'chirpr.com' },
+    y: { label: 'Y', url: 'y.com' },
+    mail: { label: 'Qmail', url: 'qmail.com' },
     bank: { label: 'Second National', url: 'secondnational.com' },
     forkyard: { label: 'Forkyard', url: 'forkyard.com' },
     agent: { label: 'GIT', url: 'askgit.ai' },
@@ -1563,6 +1695,7 @@ body.dev-on .ua-src { display: block; }
   let anim = null;           // { idx, shown, timer } typewriter for the newest agent message
   let busy = false;          // agent is "thinking"
   let devOpen = false;
+  let draft = null;          // the Qmail message being written: { to, subject, body }
 
   // ───────────────────────── utils ─────────────────────────
 
@@ -1636,14 +1769,23 @@ body.dev-on .ua-src { display: block; }
       stats: { prompts: 0, promptSpend: 0, misses: 0, partials: 0, locked: 0, upgradeSpend: 0 },
       model: 1,   // active GIT tier
       owned: 1,   // highest GIT tier bought
-      unread: { chirpr: 0, bank: 0, forkyard: 0, agent: 0 },
-      tabs: [{ id: 1, url: SITES.chirpr.url }, { id: 2, url: SITES.agent.url }],
+      unread: { y: 0, bank: 0, forkyard: 0, agent: 0 },
+      tabs: [{ id: 1, url: SITES.y.url }, { id: 2, url: SITES.agent.url }],
+      mail: [],      // Qmail: { id, t, read, folder, custom? }
+      nextMail: 1,
       active: 2, nextTab: 3, lastCost: 0,
       ended: null, endSeen: false, over: null, morning: null,
     };
     for (const p of S.posts) if (p.at != null) s.posts[p.id] = t - p.at;
-    s.unread.chirpr = Object.keys(s.posts).length;
+    s.unread.y = Object.keys(s.posts).length;
+    seedMail(s);
     return s;
+  }
+
+  function seedMail(s) {
+    for (const m of S.mail || []) {
+      if (m.at != null) s.mail.push({ id: m.id, t: s.t - m.at, read: !!m.read || m.folder === 'sent', folder: m.folder || 'inbox' });
+    }
   }
 
   function save() {
@@ -1660,6 +1802,13 @@ body.dev-on .ua-src { display: block; }
       s.stats.locked = s.stats.locked || 0;
       s.stats.upgradeSpend = s.stats.upgradeSpend || 0;
       for (const tab of s.tabs) if (/^unknownagent\.ai/.test(tab.url)) tab.url = 'askgit.ai';
+      // saves from before Y and Qmail
+      for (const tab of s.tabs) if (/^chirpr\.com/.test(tab.url)) tab.url = 'y.com';
+      if (s.unread.chirpr != null) { s.unread.y = s.unread.chirpr; delete s.unread.chirpr; }
+      for (const k of Object.keys(s.fired)) {
+        if (k.startsWith('chirp:chirp_')) { s.fired['post:post_' + k.slice(12)] = s.fired[k]; delete s.fired[k]; }
+      }
+      if (!s.mail) { s.mail = []; s.nextMail = 1; seedMail(s); }
       return s;
     } catch (e) { return null; }
   }
@@ -1696,13 +1845,53 @@ body.dev-on .ua-src { display: block; }
   function revealPost(id) {
     if (state.posts[id] != null) return;
     state.posts[id] = state.t;
-    if (!onSite('chirpr')) state.unread.chirpr++;
+    if (!onSite('y')) state.unread.y++;
   }
 
+  // Also delivers mail whose `when` has come true.
   function revealPosts() {
     for (const p of S.posts) {
       if (p.at == null && p.when && state.posts[p.id] == null && check(p.when)) revealPost(p.id);
     }
+    for (const m of S.mail || []) {
+      if (m.at == null && m.when && check(m.when)) deliverMail(m.id);
+    }
+  }
+
+  // ── Qmail ──
+  const playerAddr = () => `${S.start.player.handle}@qmail.com`;
+  const mailDef = (entry) => entry.custom || (S.mail || []).find((m) => m.id === entry.id) || {};
+  const unreadMail = () => state.mail.filter((m) => m.folder === 'inbox' && !m.read).length;
+  const badgeCount = (site) => (site === 'mail' ? unreadMail() : state.unread[site] || 0);
+
+  function deliverMail(id) {
+    if (state.mail.some((m) => m.id === id)) return;
+    const def = (S.mail || []).find((m) => m.id === id);
+    if (!def) { console.warn('Unknown mail', id); return; }
+    const folder = def.folder || 'inbox';
+    state.mail.push({ id, t: state.t, read: folder === 'sent', folder });
+    if (folder === 'inbox') toast('Qmail', `${tpl(def.from)}: ${tpl(def.subject)}`, 'mail');
+  }
+
+  // Mail the engine writes itself (receipts, bounces) or the player sends.
+  function deliverCustom(custom, folder) {
+    folder = folder || 'inbox';
+    const entry = { id: 'c' + state.nextMail++, t: state.t, read: folder === 'sent', folder, custom };
+    state.mail.push(entry);
+    if (folder === 'inbox') toast('Qmail', `${custom.from}: ${custom.subject}`, 'mail');
+    return entry;
+  }
+
+  // Addresses the player could know about: everyone who has written, plus addresses posted publicly.
+  function contacts() {
+    const set = new Set();
+    for (const e of state.mail) {
+      const d = mailDef(e);
+      if (d.addr && !/no-?reply|mailer-daemon/.test(d.addr)) set.add(d.addr);
+      if (d.to) set.add(d.to);
+    }
+    if (state.posts.rosa_gig != null) set.add('rosa@crumbandcoin.com');
+    return [...set].sort();
   }
 
   function agentSays(text, src) {
@@ -1733,6 +1922,7 @@ body.dev-on .ua-src { display: block; }
     }
     if (fx.app) state.apps[fx.app.repo] = { users: fx.app.users || 0, perDay: fx.app.perDay || 0 };
     for (const id of arr(fx.post)) revealPost(id);
+    for (const id of arr(fx.mail)) deliverMail(id);
     if (fx.agent) agentSays(fx.agent);
     for (const l of arr(fx.later)) state.queue.push({ at: state.t + Math.round((l.hours || 0) * 60), effects: l.effects });
     if (fx.goto && fx.goto !== state.node) {
@@ -1838,6 +2028,10 @@ body.dev-on .ua-src { display: block; }
     state.stats.upgradeSpend = round2(state.stats.upgradeSpend + m.price);
     state.owned = level;
     state.model = level;
+    deliverCustom({
+      from: 'GIT Labs', addr: 'billing@askgit.ai', subject: `Receipt: ${m.name} upgrade`,
+      body: `You unlocked ${m.name}.\n\nCharged: ${fmtMoney(m.price)} to Second National ••4417.\nWhile ${m.name} is active, prompts cost ${fmtMoney(m.promptBase)} + ${fmtMoney(m.perWord)} per word.\n\nNo refunds. No exceptions. No humans.\n\nGIT Labs`,
+    });
     toast('GIT Labs', `${m.name} unlocked and active. Prompts now cost ${fmtMoney(m.promptBase)} + ${fmtMoney(m.perWord)}/word.`, 'agent');
     save();
     render();
@@ -1920,11 +2114,11 @@ body.dev-on .ua-src { display: block; }
     })();
   }
 
-  function chirpCandidates() {
-    return (S.chirps || []).filter((c) => !state.fired['chirp:' + c.id] && check(c.when));
+  function postCandidates() {
+    return (S.postActions || []).filter((c) => !state.fired['post:' + c.id] && check(c.when));
   }
 
-  async function chirp(text) {
+  async function postToY(text) {
     text = text.trim();
     if (!text || state.over) return;
     const id = 'u' + Date.now();
@@ -1933,19 +2127,60 @@ body.dev-on .ua-src { display: block; }
     advance(5);
     save();
     render();
-    const candidates = chirpCandidates();
+    const candidates = postCandidates();
     if (!candidates.length) return;
     const node = state.node;
-    const decision = await J.decide(text, candidates, { kind: 'chirp', node, thresholds: S.decision });
-    lastReport = { prompt: text, node, decision, chirp: true };
-    // chirps have no nudges: only a hit that is still available counts
-    if (decision.kind === 'hit' && chirpCandidates().includes(decision.branch)) {
-      state.fired['chirp:' + decision.branch.id] = state.t;
+    const decision = await J.decide(text, candidates, { kind: 'post', node, thresholds: S.decision });
+    lastReport = { prompt: text, node, decision, channel: 'post' };
+    // posts have no nudges: only a hit that is still available counts
+    if (decision.kind === 'hit' && postCandidates().includes(decision.branch)) {
+      state.fired['post:' + decision.branch.id] = state.t;
       post.likes += 20 + Math.floor(Math.random() * 40);
       applyEffects(decision.branch.effects);
       save();
     }
     render();
+  }
+
+  function mailCandidates() {
+    return (S.mailActions || []).filter((c) => !state.fired['mail:' + c.id] && check(c.when));
+  }
+
+  // Send an email from Qmail. Free, takes 5 minutes; Jev judges it against `mailActions`.
+  async function sendMail(to, subject, body) {
+    to = String(to || '').trim().toLowerCase();
+    subject = String(subject || '').trim() || '(no subject)';
+    body = String(body || '').trim();
+    if (state.over) return false;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) { toast('Qmail', 'Enter a valid address in To.', 'mail'); return false; }
+    const known = contacts().includes(to);
+    deliverCustom({ from: S.start.player.name, addr: playerAddr(), to, subject, body }, 'sent');
+    draft = null;
+    advance(5);
+    toast('Qmail', `Sent to ${to}`, 'mail');
+    navigate('qmail.com/sent');
+    if (!known) {
+      deliverCustom({
+        from: 'Mail Delivery Subsystem', addr: 'mailer-daemon@qmail.com', subject: `Undeliverable: ${subject}`,
+        body: `Your message to ${to} couldn't be delivered. That address doesn't exist.`,
+      });
+      save();
+      render();
+      return true;
+    }
+    const candidates = mailCandidates();
+    if (!candidates.length) return true;
+    const text = `To: ${to}\nSubject: ${subject}\n\n${body}`;
+    const node = state.node;
+    const decision = await J.decide(text, candidates, { kind: 'mail', node, thresholds: S.decision });
+    lastReport = { prompt: text, node, decision, channel: 'mail' };
+    if (decision.kind === 'hit' && mailCandidates().includes(decision.branch)) {
+      state.fired['mail:' + decision.branch.id] = state.t;
+      applyEffects(decision.branch.effects);
+      save();
+    }
+    render();
+    return true;
   }
 
   function deploy(repo) {
@@ -1976,7 +2211,12 @@ body.dev-on .ua-src { display: block; }
   function route(url) {
     const u = normalizeUrl(url);
     if (!u || u === 'newtab') return { site: 'newtab', title: 'New Tab' };
-    if (u === 'chirpr.com') return { site: 'chirpr', title: 'Home / Chirpr' };
+    if (u === 'y.com' || u === 'chirpr.com') return { site: 'y', title: 'Home / Y' };
+    if (u === 'qmail.com') return { site: 'mail', view: 'inbox', title: 'Inbox · Qmail' };
+    if (u === 'qmail.com/sent') return { site: 'mail', view: 'sent', title: 'Sent · Qmail' };
+    if (u === 'qmail.com/compose') return { site: 'mail', view: 'compose', title: 'New message · Qmail' };
+    const mm = u.match(/^qmail\.com\/m\/([a-z0-9_-]+)$/);
+    if (mm) return { site: 'mail', view: 'msg', id: mm[1], title: 'Qmail' };
     if (u === 'secondnational.com') return { site: 'bank', title: 'Second National · Checking' };
     if (u === 'askgit.ai' || u === 'unknownagent.ai') return { site: 'agent', title: 'GIT' };
     if (u === 'askgit.ai/models') return { site: 'agent', page: 'models', title: 'Models · GIT' };
@@ -2001,17 +2241,23 @@ body.dev-on .ua-src { display: block; }
       const tab = state.tabs.find((x) => x.id === state.active);
       tab.url = url;
     }
-    const site = route(url).site;
-    if (state.unread[site] != null) state.unread[site] = 0;
+    opened(route(url));
     save();
     render();
+  }
+
+  function opened(r) {
+    if (state.unread[r.site] != null) state.unread[r.site] = 0;
+    if (r.site === 'mail' && r.id) {
+      const entry = state.mail.find((m) => m.id === r.id);
+      if (entry) entry.read = true;
+    }
   }
 
   function switchTab(id) {
     state.active = id;
     const tab = state.tabs.find((x) => x.id === id);
-    const site = route(tab.url).site;
-    if (state.unread[site] != null) state.unread[site] = 0;
+    opened(route(tab.url));
     save();
     render();
   }
@@ -2028,7 +2274,8 @@ body.dev-on .ua-src { display: block; }
   // ───────────────────────── page renderers ─────────────────────────
 
   const ICONS = {
-    chirpr: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 15c3 0 5-2 6-5 1-4 4-6 7-5l3-1-1.5 2.5C19 9 18 13 15 16c-3 3-8 4-12 2 2 0 3.5-.7 4.5-1.6C5.5 16.2 4.5 15.8 4 15z" fill="currentColor"/></svg>',
+    y: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 3h4l3.5 6.6L15.5 3h4l-5.6 9.7V21h-3.8v-8.3z" fill="currentColor"/></svg>',
+    mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5" fill="currentColor"/><path d="M4.5 7.5 12 13l7.5-5.5" stroke="var(--icon-ink, #fff)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     bank: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 8v2h18V8l-9-5zM5 12v6h2v-6H5zm4 0v6h2v-6H9zm4 0v6h2v-6h-2zm4 0v6h2v-6h-2zM3 20v2h18v-2H3z" fill="currentColor"/></svg>',
     forkyard: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3a3 3 0 0 0-1 5.8v6.4A3 3 0 1 0 8 15.2V13c0-1 1-2 2-2h4a4 4 0 0 0 4-4V8.8A3 3 0 1 0 16 8.8V7c0 1-1 2-2 2h-4c-.7 0-1.4.2-2 .5V8.8A3 3 0 0 0 7 3z" fill="currentColor"/></svg>',
     agent: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" fill="currentColor"/><path d="M9.5 9.2a2.6 2.6 0 1 1 3.6 2.4c-.7.3-1.1.8-1.1 1.5v.6" stroke="var(--icon-ink, #fff)" stroke-width="1.8" fill="none" stroke-linecap="round"/><circle cx="12" cy="16.6" r="1.1" fill="var(--icon-ink, #fff)"/></svg>',
@@ -2039,7 +2286,7 @@ body.dev-on .ua-src { display: block; }
 
   function pageNewTab() {
     const tiles = Object.entries(SITES).map(([k, s]) =>
-      `<button class="nt-tile nt-${k}" data-nav="${s.url}"><span class="nt-ico">${ICONS[k]}</span><span>${esc(s.label)}</span>${state.unread[k] ? `<i class="badge">${state.unread[k]}</i>` : ''}</button>`
+      `<button class="nt-tile nt-${k}" data-nav="${s.url}"><span class="nt-ico">${ICONS[k]}</span><span>${esc(s.label)}</span>${badgeCount(k) ? `<i class="badge">${badgeCount(k)}</i>` : ''}</button>`
     ).join('');
     return `<div class="newtab">
       <p class="nt-time">${weekday(state.t)} ${clock(state.t)}</p>
@@ -2048,7 +2295,7 @@ body.dev-on .ua-src { display: block; }
     </div>`;
   }
 
-  function pageChirpr() {
+  function pageY() {
     const posts = [];
     for (const p of S.posts) {
       if (state.posts[p.id] == null) continue;
@@ -2069,19 +2316,19 @@ body.dev-on .ua-src { display: block; }
       </article>`;
     }).join('');
     const trends = [
-      ['#RentDue', '18.2k chirps'],
-      ['GIT-3', '9,410 chirps'],
-      state.posts.washday != null ? ['Ferris St Laundromat', '2,140 chirps'] : ['#AgenticWorkflows', '4,002 chirps'],
-      ['Crumb & Coin', state.posts.rosa_thanks != null ? '312 chirps' : '27 chirps'],
+      ['#RentDue', '18.2k posts'],
+      ['GIT-3', '9,410 posts'],
+      state.posts.washday != null ? ['Ferris St Laundromat', '2,140 posts'] : ['#AgenticWorkflows', '4,002 posts'],
+      ['Crumb & Coin', state.posts.rosa_thanks != null ? '312 posts' : '27 posts'],
     ];
     return `<div class="ch">
-      <nav class="ch-nav"><div class="ch-logo">${ICONS.chirpr}<span>chirpr</span></div><a class="on">Home</a><a>Explore</a><a>Notifications</a><a>Profile</a></nav>
+      <nav class="ch-nav"><div class="ch-logo">${ICONS.y}<span class="sr-only">Y</span></div><a class="on">Home</a><a>Explore</a><a>Notifications</a><a>Profile</a></nav>
       <main class="ch-main">
         <h1 class="ch-h">Home</h1>
-        <form class="ch-compose" data-form="chirp">
+        <form class="ch-compose" data-form="ypost">
           ${avatar(S.start.player.name, S.start.player.handle)}
-          <div><textarea id="chirp-input" rows="2" maxlength="280" placeholder="What's happening?"></textarea>
-          <div class="ch-compose-row"><span class="ch-hint">Posting is free.</span><button class="ch-btn" type="submit">Chirp</button></div></div>
+          <div><textarea id="post-input" rows="2" maxlength="280" placeholder="What's happening?"></textarea>
+          <div class="ch-compose-row"><span class="ch-hint">Posting is free.</span><button class="ch-btn" type="submit">Post</button></div></div>
         </form>
         <div class="ch-feed">${feed}</div>
       </main>
@@ -2125,6 +2372,78 @@ body.dev-on .ua-src { display: block; }
       </div>
     </div>`;
   }
+
+  function mailTime(t) {
+    if (t < 0) return 'Earlier';
+    return dayOf(t) === dayOf(state.t) ? clock(t) : `Day ${dayOf(t)}`;
+  }
+
+  function mailBody(text) {
+    return esc(tpl(text))
+      .replace(/([a-z0-9-]+\.forkyard\.app|askgit\.ai\/models)/g, '<a href="#" data-nav="$1">$1</a>')
+      .replace(/\n/g, '<br>');
+  }
+
+  function pageMail(r) {
+    const inbox = state.mail.filter((m) => m.folder === 'inbox').sort((a, b) => b.t - a.t);
+    const sent = state.mail.filter((m) => m.folder === 'sent').sort((a, b) => b.t - a.t);
+    const unread = unreadMail();
+    const view = r.view || 'inbox';
+    const side = `<nav class="qm-side" aria-label="Folders">
+      <a href="#" class="qm-new" data-nav="qmail.com/compose">Compose</a>
+      <a href="#" data-nav="qmail.com" class="${view === 'inbox' ? 'on' : ''}">Inbox${unread ? `<b>${unread}</b>` : ''}</a>
+      <a href="#" data-nav="qmail.com/sent" class="${view === 'sent' ? 'on' : ''}">Sent</a>
+    </nav>`;
+    let main;
+    if (view === 'compose') {
+      const d = draft || { to: '', subject: '', body: '' };
+      main = `<form class="qm-compose" data-form="mail">
+        <h1 class="qm-h">New message</h1>
+        <label class="qm-field"><span>To</span><input id="mail-to" list="qm-contacts" autocomplete="off" spellcheck="false" value="${esc(d.to)}" placeholder="name@example.com"></label>
+        <datalist id="qm-contacts">${contacts().map((c) => `<option value="${esc(c)}"></option>`).join('')}</datalist>
+        <label class="qm-field"><span>Subject</span><input id="mail-subject" autocomplete="off" value="${esc(d.subject)}"></label>
+        <textarea id="mail-body" rows="10" aria-label="Message">${esc(d.body)}</textarea>
+        <div class="qm-actions"><button class="qm-btn" type="submit">Send</button><button class="qm-btn ghost" type="button" data-mail-discard>Discard</button><span class="qm-hint">Sending is free and takes 5 minutes.</span></div>
+      </form>`;
+    } else if (view === 'msg') {
+      const entry = state.mail.find((m) => m.id === r.id);
+      if (!entry) {
+        main = `<p class="qm-empty">This message doesn't exist.</p>`;
+      } else {
+        const d = mailDef(entry);
+        const mine = entry.folder === 'sent';
+        const canReply = !mine && d.addr && !/no-?reply|mailer-daemon/.test(d.addr);
+        main = `<article class="qm-read">
+          <p class="qm-crumbs"><a href="#" data-nav="${mine ? 'qmail.com/sent' : 'qmail.com'}">${mine ? 'Sent' : 'Inbox'}</a></p>
+          <h1 class="qm-h">${esc(tpl(d.subject))}</h1>
+          <p class="qm-meta"><span>${mine
+            ? `<b>${esc(S.start.player.name)}</b> &lt;${esc(playerAddr())}&gt; to <b>${esc(d.to)}</b>`
+            : `<b>${esc(tpl(d.from))}</b> &lt;${esc(d.addr)}&gt; to ${esc(playerAddr())}`}</span><span>${esc(stampOrEarlier(entry.t))}</span></p>
+          <div class="qm-body">${mailBody(d.body)}</div>
+          ${canReply ? `<div class="qm-actions"><button class="qm-btn" data-reply="${esc(entry.id)}">Reply</button></div>` : ''}
+        </article>`;
+      }
+    } else {
+      const list = view === 'sent' ? sent : inbox;
+      const rows = list.map((m) => {
+        const d = mailDef(m);
+        const who = m.folder === 'sent' ? `To: ${d.to}` : tpl(d.from);
+        const snippet = tpl(d.body || '').replace(/\s+/g, ' ').slice(0, 90);
+        return `<a href="#" class="qm-row${m.read ? '' : ' unread'}" data-nav="qmail.com/m/${esc(m.id)}">
+          <span class="qm-from">${esc(who)}</span>
+          <span class="qm-subj"><b>${esc(tpl(d.subject))}</b> <span>${esc(snippet)}</span></span>
+          <span class="qm-time">${esc(mailTime(m.t))}</span>
+        </a>`;
+      }).join('');
+      main = `<h1 class="qm-h">${view === 'sent' ? 'Sent' : 'Inbox'}</h1>${rows ? `<div class="qm-list">${rows}</div>` : `<p class="qm-empty">${view === 'sent' ? 'Nothing sent yet.' : 'No mail.'}</p>`}`;
+    }
+    return `<div class="qm">
+      <header class="qm-top"><div class="qm-logo">${ICONS.mail}<span>Qmail</span></div><span class="qm-user">${esc(playerAddr())}</span></header>
+      <div class="qm-wrap">${side}<main class="qm-main">${main}</main></div>
+    </div>`;
+  }
+
+  function stampOrEarlier(t) { return t < 0 ? 'Before Day 1' : stamp(t); }
 
   function repoStatus(name) {
     const r = state.repos[name];
@@ -2348,7 +2667,7 @@ body.dev-on .ua-src { display: block; }
     if (document.activeElement !== addr) addr.value = r.site === 'newtab' ? '' : normalizeUrl(tab.url);
 
     $('#bookmarks').innerHTML = Object.entries(SITES).map(([k, s]) =>
-      `<button class="bm" data-nav="${s.url}"><span class="bm-ico ico-${k}">${ICONS[k]}</span><span class="bm-label">${esc(s.label)}</span>${state.unread[k] ? `<i class="badge">${state.unread[k]}</i>` : ''}</button>`
+      `<button class="bm" data-nav="${s.url}"><span class="bm-ico ico-${k}">${ICONS[k]}</span><span class="bm-label">${esc(s.label)}</span>${badgeCount(k) ? `<i class="badge">${badgeCount(k)}</i>` : ''}</button>`
     ).join('');
 
     // preserve what the player was typing across re-renders
@@ -2360,7 +2679,8 @@ body.dev-on .ua-src { display: block; }
 
     let html;
     switch (r.site) {
-      case 'chirpr': html = pageChirpr(); break;
+      case 'y': html = pageY(); break;
+      case 'mail': html = pageMail(r); break;
       case 'bank': html = pageBank(); break;
       case 'forkyard': html = pageForkyard(r.repo); break;
       case 'agent': html = r.page === 'models' ? pageModels() : pageAgent(); break;
@@ -2419,12 +2739,12 @@ body.dev-on .ua-src { display: block; }
       html = `<div class="ov-card ov-intro">
         <p class="ov-eyebrow">${esc(S.chapter)}</p>
         <h1 class="ov-title">Unknown<br>Agent</h1>
-        <p>You lost your job two years ago. The benefits ran out last week. You have ${fmtMoney(S.start.money)}, a laptop, four bookmarks, and GIT, an AI chatbot that bills you for every word.</p>
+        <p>You lost your job two years ago. The benefits ran out last week. You have ${fmtMoney(S.start.money)}, a laptop, five bookmarks, and GIT, an AI chatbot that bills you for every word.</p>
         <p>Rent is ${fmtMoney(E.rent.amount)}, due at the end of Day ${E.rent.day}. Don't go broke.</p>
         <ul class="ov-rules">
           <li>Every prompt costs money and an hour. Vague prompts get vague answers.</li>
           <li>Some jobs need a stronger GIT model. Upgrades cost money upfront and make every prompt pricier.</li>
-          <li>Read Chirpr for leads. Check your bank. Ship code on Forkyard.</li>
+          <li>Read Y for leads. Check Qmail and your bank. Ship code on Forkyard.</li>
           <li>Anything you can do yourself, do yourself. It's free.</li>
         </ul>
         <div class="ov-actions">
@@ -2496,7 +2816,7 @@ body.dev-on .ua-src { display: block; }
         table = `<table><thead><tr><th>branch</th><th>cover</th><th>score</th><th>hits</th></tr></thead><tbody>${rows || '<tr><td colspan="4">no candidates</td></tr>'}</tbody></table>`;
       }
       const engine = decision.engine === 'jev' ? `Jev${J.last && J.last.model ? ' · ' + esc(J.last.model) : ''}${J.last ? ` · ${J.last.ms}ms` : ''}` : `keywords${decision.fellBack ? ' (Jev call failed: ' + esc((J.last && J.last.error) || '?') + ')' : ''}`;
-      report = `<p><b>${lastReport.chirp ? 'Chirp' : 'Prompt'}:</b> ${esc(lastReport.prompt)}</p>
+      report = `<p><b>${{ post: 'Y post', mail: 'Email' }[lastReport.channel] || 'Prompt'}:</b> ${esc(lastReport.prompt)}</p>
         <p><b>Result:</b> ${decision.kind}${decision.branch ? ' → ' + esc(decision.branch.id) : ''}${decision.kind === 'locked' ? ` (needs ${esc(modelDef(decision.branch.minModel).name)}, had ${esc(modelDef(lastReport.model).name)})` : ''}${decision.stale ? ' (stale, ignored)' : ''} <span class="dv-dim">(node ${esc(lastReport.node)} · ${engine})</span></p>
         ${table}`;
     }
@@ -2516,7 +2836,7 @@ body.dev-on .ua-src { display: block; }
 
   function bind() {
     document.addEventListener('click', (e) => {
-      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model]');
+      const t = e.target.closest('[data-nav],[data-tab],[data-close],[data-newtab],[data-like],[data-deploy],[data-ov],[data-dev],[data-act],[data-llm],[data-buy-model],[data-use-model],[data-reply],[data-mail-discard]');
       if (!t) return;
       if (t.dataset.close) { e.stopPropagation(); closeTab(Number(t.dataset.close)); return; }
       if (t.dataset.nav) { e.preventDefault(); navigate(t.dataset.nav); return; }
@@ -2531,6 +2851,13 @@ body.dev-on .ua-src { display: block; }
         return;
       }
       if (t.dataset.useModel) { useModel(Number(t.dataset.useModel)); return; }
+      if (t.dataset.reply) {
+        const d = mailDef(state.mail.find((m) => m.id === t.dataset.reply) || {});
+        draft = { to: d.addr || '', subject: /^re:/i.test(d.subject || '') ? d.subject : `RE: ${d.subject || ''}`, body: '' };
+        navigate('qmail.com/compose');
+        return;
+      }
+      if (t.hasAttribute('data-mail-discard')) { draft = null; navigate('qmail.com'); return; }
       if (t.dataset.ov) return overlayAction(t.dataset.ov);
       if (t.dataset.dev) return devAction(t.dataset.dev);
       if (t.dataset.act) return taskbarAction(t.dataset.act);
@@ -2551,12 +2878,14 @@ body.dev-on .ua-src { display: block; }
         if (!v.trim()) return;
         input.value = '';
         sendPrompt(v);
-      } else if (kind === 'chirp') {
-        const input = $('#chirp-input');
+      } else if (kind === 'ypost') {
+        const input = $('#post-input');
         const v = input.value;
         if (!v.trim()) return;
         input.value = '';
-        chirp(v);
+        postToY(v);
+      } else if (kind === 'mail') {
+        sendMail($('#mail-to').value, $('#mail-subject').value, $('#mail-body').value);
       } else if (kind === 'url') {
         const input = f.querySelector('input');
         navigate(input.value);
@@ -2569,7 +2898,7 @@ body.dev-on .ua-src { display: block; }
         e.preventDefault();
         e.target.form.requestSubmit();
       }
-      if (e.target.id === 'chirp-input' && e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      if ((e.target.id === 'post-input' || e.target.id === 'mail-body') && e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         e.target.form.requestSubmit();
       }
@@ -2583,6 +2912,9 @@ body.dev-on .ua-src { display: block; }
 
     document.addEventListener('input', (e) => {
       if (e.target.id === 'prompt-input') updateCostEstimate();
+      if (/^mail-(to|subject|body)$/.test(e.target.id)) {
+        draft = { to: $('#mail-to').value, subject: $('#mail-subject').value, body: $('#mail-body').value };
+      }
     });
     document.addEventListener('change', (e) => {
       if (e.target.id === 'dv-node') { state.node = e.target.value; revealPosts(); save(); render(); }
@@ -2654,7 +2986,7 @@ body.dev-on .ua-src { display: block; }
   // exposed for debugging and tests
   window.UA = {
     get state() { return state; },
-    sendPrompt, chirp, deploy, sleep: doSleep, navigate,
+    sendPrompt, post: postToY, sendMail, deploy, sleep: doSleep, navigate,
     reset() { state = newState(); introOpen = false; save(); render(); },
     lastReport: () => lastReport,
   };

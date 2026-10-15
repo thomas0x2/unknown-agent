@@ -21,7 +21,7 @@ export const NO_PROGRESS = 'no_progress';
 
 const SETTING =
   'Unknown Agent is a game. The player is broke and pays per prompt for GIT, an AI chatbot agent that can build and push code ' +
-  'to Forkyard (a code host), write and send messages, and read Chirpr (a social network). It cannot press buttons ' +
+  'to Forkyard (a code host), send email from the player\'s Qmail, and read Y (a social network). It cannot press buttons ' +
   'or deploy for the player. "The agent" below means GIT.';
 
 export function loadStory() {
@@ -38,23 +38,30 @@ class HttpError extends Error {
 export function buildRequest(story, { kind, node, prompt, candidates }) {
   const nodeDef = story.nodes[node];
   if (!nodeDef) throw new HttpError(400, `Unknown node: ${node}`);
-  const pool = kind === 'chirp' ? story.chirps || [] : [...(nodeDef.branches || []), ...(story.global || [])];
+  const pool = kind === 'post' ? story.postActions || []
+    : kind === 'mail' ? story.mailActions || []
+    : [...(nodeDef.branches || []), ...(story.global || [])];
   const byId = new Map(pool.filter((b) => b.intent).map((b) => [b.id, b]));
   const ids = [...new Set(candidates)].filter((id) => byId.has(id) && id !== NO_PROGRESS);
   if (!ids.length) return null;
 
   const criteria = {};
   for (const id of ids) criteria[id] = byId.get(id).intent;
-  criteria[NO_PROGRESS] = kind === 'chirp'
+  criteria[NO_PROGRESS] = kind === 'post'
     ? 'The post does none of the above. Everyday posts, jokes, complaints and unrelated topics belong here.'
+    : kind === 'mail'
+    ? 'The email does none of the above, or goes to someone else. Small talk with other people, spam replies and unrelated topics belong here.'
     : 'The prompt asks for none of the above, is too vague to tell which, or leaves out details that an outcome above requires. ' +
       'Chit-chat, jokes, off-topic questions and unrelated tasks belong here.';
 
-  const state = kind === 'chirp'
-    ? { setting: SETTING, situation: nodeDef.scene || nodeDef.objective, player_post: prompt }
-    : { setting: SETTING, situation: nodeDef.scene || nodeDef.objective, player_prompt: prompt };
-  const instructions = kind === 'chirp'
-    ? 'The player published `player_post` on Chirpr. Given `situation`, which outcome does the post accomplish?'
+  const situation = nodeDef.scene || nodeDef.objective;
+  const state = kind === 'post' ? { setting: SETTING, situation, player_post: prompt }
+    : kind === 'mail' ? { setting: SETTING, situation, player_email: prompt }
+    : { setting: SETTING, situation, player_prompt: prompt };
+  const instructions = kind === 'post'
+    ? 'The player published `player_post` on Y. Given `situation`, which outcome does the post accomplish?'
+    : kind === 'mail'
+    ? 'The player sent `player_email` from Qmail (its To line says who it went to). Given `situation`, which outcome does the email accomplish?'
     : 'The player typed `player_prompt` to their AI agent. Given `situation`, which outcome is the player asking the agent to carry out? ' +
       'Choose an outcome only when the prompt clearly asks for it, including any details its description requires.';
 
@@ -63,9 +70,9 @@ export function buildRequest(story, { kind, node, prompt, candidates }) {
 
 function validate(body) {
   const { kind = 'prompt', node, prompt, candidates } = body || {};
-  if (kind !== 'prompt' && kind !== 'chirp') throw new HttpError(400, 'kind must be "prompt" or "chirp"');
+  if (!['prompt', 'post', 'mail'].includes(kind)) throw new HttpError(400, 'kind must be "prompt", "post" or "mail"');
   if (typeof node !== 'string' || node.length > 64) throw new HttpError(400, 'node must be a string');
-  if (typeof prompt !== 'string' || !prompt.trim() || prompt.length > 1000) throw new HttpError(400, 'prompt must be 1–1000 characters');
+  if (typeof prompt !== 'string' || !prompt.trim() || prompt.length > 2000) throw new HttpError(400, 'prompt must be 1–2000 characters');
   if (!Array.isArray(candidates) || candidates.length > 50 || !candidates.every((c) => typeof c === 'string')) {
     throw new HttpError(400, 'candidates must be an array of up to 50 branch ids');
   }

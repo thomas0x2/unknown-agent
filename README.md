@@ -17,7 +17,8 @@ Without a key the game still runs, using an offline keyword matcher for story de
 
 | Site | Domain | What it does |
 |---|---|---|
-| **Chirpr** (fake Twitter) | `chirpr.com` | News and leads. You can post for free, and some posts move the story (see `chirps`). |
+| **Y** (fake Twitter) | `y.com` | News and leads. You can post for free, and some posts move the story (see `postActions`). |
+| **Qmail** (email) | `qmail.com` | Personal mail: your landlord, your mom, GIT receipts, clients. Writing and replying is free, and some emails move the story (see `mailActions`). Mail to an address you haven't seen bounces. |
 | **Second National** (bank) | `secondnational.com` | Balance, every transaction, rent countdown, the nightly forecast. |
 | **Forkyard** (fake GitHub) | `forkyard.com` | Repos the agent pushes for you. You press **Deploy** yourself. Live apps are at `<repo>.forkyard.app`. |
 | **GIT** (AI chatbot) | `askgit.ai` | Where you type prompts. Each one costs money (depending on the model) and an hour of game time. Upgrade models at `askgit.ai/models`. |
@@ -36,16 +37,16 @@ Without a key the game still runs, using an offline keyword matcher for story de
 
   You can switch between tiers you own from the picker next to Send, so cheap prompts can go to a cheap model. Some branches need a minimum tier. Ask for one on a weaker model and you pay for the prompt, nothing happens, and GIT tells you which tier it needs.
 
-- Each prompt costs money and **1 hour**. Posting on Chirpr takes 5 minutes, deploying takes 30.
+- Each prompt costs money and **1 hour**. Posting on Y or sending an email takes 5 minutes, deploying takes 30.
 - At midnight you pass out, or you can press **Sleep**. Overnight, apps pay out, then hosting ($2/app), food ($15) and, at the end of Day 7, rent ($300) are charged.
 - If your balance is below zero after a night, the game ends (Overdrawn, or Evicted on rent night).
 - If you can't afford a prompt, the card is declined and nothing is charged.
 
 ## Jev: how prompts move the story
 
-[Jev](https://typesafe.ai) is TypeSafe's System One model: it returns typed decisions with probabilities instead of generated text. For every prompt (and every Chirpr post that could matter), the game asks Jev one **Choice** question:
+[Jev](https://typesafe.ai) is TypeSafe's System One model: it returns typed decisions with probabilities instead of generated text. For every prompt (and every Y post or Qmail email that could matter), the game asks Jev one **Choice** question:
 
-- **State:** a short description of the game, the current node's `scene`, and the player's prompt (or post).
+- **State:** a short description of the game, the current node's `scene`, and the player's prompt (or post, or email with its To and Subject lines).
 - **Options:** every branch available right now (the node's branches whose `when` holds, plus the global ones), each described by its `intent`, plus `no_progress`.
 
 Jev returns a probability for each option, and the story's `decision` thresholds turn them into an outcome:
@@ -89,7 +90,7 @@ Pick the backend from the **Off-script replies** menu at the top of the agent pa
 
 ### Story debugger
 
-Press **jev** in the taskbar, or Ctrl+\`, or open with `#dev` in the URL. It shows the current node, flags, queued events, whether decisions come from Jev or the keyword matcher, and local-model status. For the last prompt or chirp it shows Jev's probability for every option (or the keyword scores when offline), plus the model and latency. You can also jump nodes, add money and skip time. With it open, each agent reply is tagged `hit:<id>`, `partial:<id>`, `miss:llm` or `miss:placeholder`.
+Press **jev** in the taskbar, or Ctrl+\`, or open with `#dev` in the URL. It shows the current node, flags, queued events, whether decisions come from Jev or the keyword matcher, and local-model status. For the last prompt, post or email it shows Jev's probability for every option (or the keyword scores when offline), plus the model and latency. You can also jump nodes, add money and skip time. With it open, each agent reply is tagged `hit:<id>`, `partial:<id>`, `miss:llm` or `miss:placeholder`.
 
 ## Writing story (`src/story.js`)
 
@@ -119,7 +120,8 @@ nodes: {
 | `money` | `{ amount: 150, memo: '...' }` | bank transaction |
 | `repo` | `'spin-cycle'` | agent pushes a repo; it must be defined in `repos` |
 | `app` | `{ repo, users, perDay }` | set a deployed app's traffic and nightly income |
-| `post` | `'rosa_thanks'` or `[...]` | reveal Chirpr posts |
+| `post` | `'rosa_thanks'` or `[...]` | reveal Y posts |
+| `mail` | `'rosa_paid'` or `[...]` | deliver Qmail messages (or file one under Sent if it has `folder: 'sent'`) |
 | `agent` | `'text'` | the agent messages you unprompted |
 | `later` | `[{ hours: 2, effects: 'rosa_pays' }]` | run effects after game time passes |
 | `goto` | `'paid_once'` | move to another node |
@@ -128,7 +130,9 @@ nodes: {
 **Conditions** (`when`): `flag`, `notFlag`, `node`, `repo`, `deployed`, `minDay`, `minMoney`. Each takes a value or an array.
 
 **Other hooks:**
-- `chirps`: branches with an `intent` that Jev judges against what the player posts on Chirpr. This is the free path for players who think to do it themselves.
+- `postActions`: branches with an `intent` that Jev judges against what the player posts on Y. This is a free path for players who think to do it themselves.
+- `mailActions`: the same for emails the player sends from Qmail. Jev sees the To line, so intents can depend on who the mail goes to.
+- `mail`: Qmail messages (`from`, `addr`, `subject`, `body`, or `to` for sent mail). Seeded mail uses `at`; other mail arrives once its `when` is true, or when an effect delivers it. The engine also writes upgrade receipts and bounces itself.
 - `events`: `{ on: 'deploy', repo }` fires when the player deploys a repo; `{ on: 'day' }` is checked every morning.
 - `posts`: seeded posts use `at` (minutes before game start). Other posts appear once their `when` is true, or when an effect reveals them.
 - `decision`: the `hit` and `partial` probability thresholds for Jev.
@@ -140,11 +144,13 @@ nodes: {
 
 Asking GIT who runs it gives a different answer on GIT-4 or better, which sets a flag for later chapters.
 
-1. **broke**: A bakery on Chirpr wants a $150 website. Prompt the agent to build it.
+Side mail at any point: asking Gary (`gary@pruittproperty.com`) for more time gets a one-word reply. Writing to Mom (`mom@qmail.com`) gets a reply, plus $20 if you ask for help (once).
+
+1. **broke**: A bakery on Y wants a $150 website. Prompt the agent to build it.
 2. **site_built**: Deploy it on Forkyard. Asking the agent to deploy wastes a prompt.
-3. **site_live**: Tell Rosa. Either prompt the agent or post on Chirpr yourself for free. She pays 2 hours later.
-4. **paid_once**: Chirpr is complaining about broken laundromat machines. Build a tracker. **Needs GIT-2.**
-5. **app_built → app_live**: Deploy it, then promote it (prompt or chirp).
+3. **site_live**: Tell Rosa. Either prompt GIT, or do it yourself for free: email her (her address is in her Y post) or post on Y. She pays 2 hours later.
+4. **paid_once**: Y is complaining about broken laundromat machines. Build a tracker. **Needs GIT-2.**
+5. **app_built → app_live**: Deploy it, then promote it (prompt or Y post).
 6. **app_users**: Monetize it. Ads give $42/day, a sponsor $60/day (**needs GIT-3**), and a paywall kills traffic ($9/day). A perfect sponsor run ends Day 8 with about $89 after rent, and a perfect ads run with about $40.
 7. **monetized**: Survive until rent clears. On Day 8 the agent sends a message that sets up Chapter 2.
 

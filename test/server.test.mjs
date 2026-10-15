@@ -63,11 +63,22 @@ await t('decide calls POST /v1/systemone with the key and returns Jev\'s probabi
   assert.strictEqual(sent.body.state.player_prompt, 'make the bakery a website');
 });
 
-await t('chirps are judged as posts against chirp intents', async () => {
-  nextAnswer = { type: 'choice', choice: 'chirp_rosa', confidence: 0.8, probabilities: { chirp_rosa: 0.8, no_progress: 0.2 } };
-  await post({ kind: 'chirp', node: 'site_live', prompt: '@crumbandcoin your site is up!', candidates: ['chirp_rosa'] });
+await t('Y posts are judged against postActions intents', async () => {
+  nextAnswer = { type: 'choice', choice: 'post_rosa', confidence: 0.8, probabilities: { post_rosa: 0.8, no_progress: 0.2 } };
+  await post({ kind: 'post', node: 'site_live', prompt: '@crumbandcoin your site is up!', candidates: ['post_rosa'] });
   assert.strictEqual(sent.body.state.player_post, '@crumbandcoin your site is up!');
-  assert.deepStrictEqual(Object.keys(sent.body.questions.branch.criteria), ['chirp_rosa', NO_PROGRESS]);
+  assert.deepStrictEqual(Object.keys(sent.body.questions.branch.criteria), ['post_rosa', NO_PROGRESS]);
+});
+
+await t('Qmail emails are judged against mailActions intents', async () => {
+  nextAnswer = { type: 'choice', choice: 'mail_gary', confidence: 0.9, probabilities: { mail_gary: 0.9, mail_mom_chat: 0.02, no_progress: 0.08 } };
+  const email = 'To: gary@pruittproperty.com\nSubject: Rent\n\nOne more week?';
+  const res = await post({ kind: 'mail', node: 'broke', prompt: email, candidates: ['mail_gary', 'mail_mom_chat', 'build_bakery_site'] });
+  assert.strictEqual(res.status, 200);
+  assert.strictEqual(sent.body.state.player_email, email);
+  // prompt branches can't be smuggled into a mail decision
+  assert.deepStrictEqual(Object.keys(sent.body.questions.branch.criteria), ['mail_gary', 'mail_mom_chat', NO_PROGRESS]);
+  assert.match(sent.body.questions.branch.instructions, /Qmail/);
 });
 
 await t('bad input is rejected before calling Jev', async () => {
