@@ -4,6 +4,7 @@
  * qmail leads are reachable, and outcomes are well-formed. Catches story typos at test time.
  */
 import { loadContent } from './load';
+import { WALLETS } from '../engine/wallets';
 import type { Effects } from './schema';
 
 const content = loadContent();
@@ -80,6 +81,18 @@ describe('authored content', () => {
       for (const f of [...(e.trigger.flagsAll ?? []), ...(e.trigger.flagsNone ?? [])].filter((x) => x.endsWith('_broke'))) {
         expect(content.events.some((x) => x.id === f.slice(0, -'_broke'.length)), `${e.id}: ${f}`).toBe(true);
       }
+    }
+  });
+
+  it('payments name a known wallet and confirmations that wait on them', () => {
+    for (const e of content.events) {
+      if (e.payment) {
+        expect(WALLETS[e.payment.wallet.toLowerCase()], `${e.id} wallet`).toBeTruthy();
+        for (const id of [e.payment.confirm, e.payment.confirmOver].filter(Boolean)) {
+          expect(content.events.find((x) => x.id === id)?.afterPayment, `${e.id} -> ${id}`).toBe(e.id);
+        }
+      }
+      if (e.afterPayment) expect(content.events.find((x) => x.id === e.afterPayment)?.payment, e.id).toBeTruthy();
     }
   });
 

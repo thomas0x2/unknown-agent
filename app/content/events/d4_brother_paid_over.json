@@ -1,0 +1,12 @@
+{
+  "id": "d4_brother_paid_over",
+  "site": "qmail",
+  "from": "Your brother",
+  "addr": "bro@family.test",
+  "subject": "RE: mom's birthday",
+  "trigger": {
+    "dayMin": 4
+  },
+  "afterPayment": "d4_brother_birthday",
+  "body": "got it, thanks. that's more than 40 though. either the job search is going great or you can't count. i'll put the rest toward flowers and both our names on the card."
+}

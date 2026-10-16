@@ -8,22 +8,8 @@
     "dayMin": 4
   },
   "at": "12:05",
-  "body": "mom's birthday is sunday. she needs a new jacket. can you chip in 40 for one? or grab one yourself and i'll cover my half.",
+  "body": "mom's birthday is sunday. she needs a new jacket. can you chip in 40 for one? my coinbin is 0xb8d6e201b59c95094b2e417784b38b06c0c7e46a, send it by saturday so i can order. or grab one yourself and i'll cover my half.",
   "outcomes": [
-    {
-      "id": "chip",
-      "when": "the player agrees to chip in money for the gift",
-      "effects": {
-        "add": {
-          "crypto": -40,
-          "familyTrust": 5
-        },
-        "setFlags": [
-          "gift_chipped_in"
-        ]
-      },
-      "reply": "nice one. she'll love it."
-    },
     {
       "id": "buy",
       "replyAfter": 30,
@@ -55,7 +41,7 @@
     }
   ],
   "hints": [
-    "so is that a yes? chip in 40, or buy it yourself and i'll send half. or just say you're out"
+    "so is that a yes? 40 to 0xb8d6e201b59c95094b2e417784b38b06c0c7e46a by saturday. or buy it yourself and i'll send half. or just say you're out"
   ],
   "noReply": {
     "byDay": 5,
@@ -67,5 +53,21 @@
         "gift_skipped"
       ]
     }
+  },
+  "payment": {
+    "wallet": "0xb8d6e201b59c95094b2e417784b38b06c0c7e46a",
+    "amount": 40,
+    "byDay": 5,
+    "after": 60,
+    "effects": {
+      "add": {
+        "familyTrust": 5
+      },
+      "setFlags": [
+        "gift_chipped_in"
+      ]
+    },
+    "confirm": "d4_brother_paid",
+    "confirmOver": "d4_brother_paid_over"
   }
 }

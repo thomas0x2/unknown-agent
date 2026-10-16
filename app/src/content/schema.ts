@@ -219,6 +219,24 @@ export interface GameEvent {
   job?: JobSpec;
   /** Fires every time its trigger matches, not just once. */
   repeat?: boolean;
+  /** Money the sender asks for through Coinbin Send (see events.settlePayments). */
+  payment?: Payment;
+  /** Lands only when the payment asked for by this event id clears; the trigger alone never delivers it. */
+  afterPayment?: string;
+}
+/**
+ * Sending at least `amount` DOLR in total to `wallet` (a WALLETS address) after the event arrived and by
+ * the end of `byDay` counts as paid: `effects` apply, the thread closes (so noReply never lands) and
+ * `confirm` arrives `after` game minutes later, or `confirmOver` when the player sent more than asked.
+ */
+export interface Payment {
+  wallet: string;
+  amount: number;
+  byDay: number;
+  after: number;
+  effects?: Effects;
+  confirm: string;
+  confirmOver?: string;
 }
 export interface NoReply {
   byDay?: number;

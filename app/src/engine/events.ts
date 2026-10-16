@@ -5,7 +5,8 @@
 import type { GameState, DeliveredEvent } from './state';
 import { CLOCK } from './config';
 import type { Content, GameEvent, Trigger } from '../content/schema';
-import { hasAll, hasNone, log } from './core';
+import { addFlag, hasAll, hasFlag, hasNone, log } from './core';
+import { WALLETS } from './wallets';
 import { applyEffects } from './effects';
 import type { MeterId } from './values';
 
@@ -160,7 +161,7 @@ export function deliverDue(s: GameState, content: Content, opts: { now?: boolean
   }
   // trigger-driven events (latent ones are not auto-delivered — the player reaches them by email)
   for (const ev of content.events) {
-    if (ev.latent || ev.launch || ev.yPost) continue;
+    if (ev.latent || ev.launch || ev.yPost || ev.afterPayment) continue;
     if (underway(s, ev)) continue;
     if (triggerMatches(s, ev.trigger)) deliverOrQueue(s, ev, now, out);
   }
@@ -245,5 +246,34 @@ export function lapseUnanswered(s: GameState, content: Content): void {
     d.outcomeId = 'no_reply';
     applyEffects(s, ev.noReply.effects, ev.job, ev.id);
     log(s, `No reply to ${ev.from ?? ev.id}: ${ev.subject ?? ev.id}.`, 'info');
+  }
+}
+
+/** DOLR sent to `wallet` from `day` on, summed from the wallet's transactions. */
+export function sentTo(s: GameState, wallet: string, day: number): number {
+  const memo = `${WALLETS[wallet.toLowerCase()]?.name} · Sent`;
+  return Math.round(s.tx.filter((x) => x.day >= day && x.memo === memo).reduce((sum, x) => sum - x.amount, 0) * 100) / 100;
+}
+
+/**
+ * After a Coinbin send: every delivered event whose `payment` has now been met by its deadline counts
+ * as paid, once. Its thread closes and the confirmation is queued `after` minutes out (past bedtime it
+ * lands first thing next morning).
+ */
+export function settlePayments(s: GameState, content: Content): void {
+  for (const ev of content.events) {
+    const p = ev.payment;
+    const paidFlag = `${ev.id}_paid`;
+    if (!p || hasFlag(s, paidFlag) || s.values.day > p.byDay) continue;
+    const d = s.delivered.find((x) => x.eventId === ev.id);
+    if (!d) continue;
+    const total = sentTo(s, p.wallet, d.day);
+    if (total < p.amount) continue;
+    addFlag(s, paidFlag);
+    applyEffects(s, p.effects, ev.job, ev.id);
+    if (!d.answered) { d.answered = true; d.outcomeId = 'paid'; }
+    const confirm = getEvent(content, total > p.amount && p.confirmOver ? p.confirmOver : p.confirm);
+    if (confirm && !underway(s, confirm)) (s.arriving ??= []).push({ eventId: confirm.id, day: s.values.day, at: s.clockMin + p.after });
+    log(s, `Paid ${ev.from ?? ev.id}: ${total.toFixed(2)} DOLR.`, 'info');
   }
 }
