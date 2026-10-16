@@ -1,0 +1,11 @@
+{
+  "id": "d9_y_axel",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 9,
+    "dayMax": 9
+  },
+  "at": "09:10",
+  "body": "Rocket launch tomorrow at 10. Maybe 70% chance it works. Exciting either way!"
+}

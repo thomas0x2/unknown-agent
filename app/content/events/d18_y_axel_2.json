@@ -1,0 +1,11 @@
+{
+  "id": "d18_y_axel_2",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 18,
+    "dayMax": 18
+  },
+  "at": "14:45",
+  "body": "Not sure why everyone is talking about the poll. It's a poll."
+}

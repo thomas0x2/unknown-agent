@@ -29,6 +29,8 @@ export interface BuiltFeature {
   seed?: number;
   /** The template's spec checklist at build time: which items the build prompt mentioned. */
   checked?: Record<string, boolean>;
+  /** Built before the app had content to show bugs on: the agent level, so its bugs roll when content appears. */
+  quietLevel?: number;
 }
 
 export interface AppBreak {
@@ -64,6 +66,13 @@ export interface AppInstance {
   lastDeployDay: number;
   /** Clock time of the last deploy (minutes since midnight); unset in older saves. */
   lastDeployMin?: number;
+  /**
+   * Apps that start empty (AppTemplate.firstContentAfter): when the first content appears, in minutes
+   * of play (see playMinutes). Set by the first deploy.
+   */
+  contentAt?: number;
+  /** The first content has appeared: bugs held back until then have rolled. */
+  contentLive?: boolean;
   breaks: AppBreak[];
   /** Build bugs the agent has fixed, per feature: it doesn't make them again. */
   fixed?: Record<string, string[]>;
@@ -193,6 +202,8 @@ export interface MailEntry {
   read: boolean;
   /** Written by a model (Claude Haiku). */
   generated?: boolean;
+  /** A scripted reply, for the dev-mode label: a hint Jev picked on a near miss, a storyline outcome, or a fixed topic answer. */
+  scripted?: 'hint' | 'outcome' | 'topic';
   /** App-sent mail (booking confirmations, test campaigns): a link the body can carry. */
   link?: string;
   /** A bounce notice: the address the player's email failed to reach, so it joins that conversation. */

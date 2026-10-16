@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, buyStock, sellStock, deliverDue, deliverArrivals, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, devToggleBug, nameUnnamedBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, buyStock, sellStock, deliverDue, deliverArrivals, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, devToggleBug, nameUnnamedBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes, wakeApps,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -215,9 +215,10 @@ export class GameStore {
     const m = this.arrivalMark();
     const working = s.agentWork;
     advanceClock(s, mins); // the agent's build or fix lands here too, once its time has come
+    const woke = wakeApps(s, this.content).length > 0; // an empty app's first content (and its bugs) once its time has come
     deliverArrivals(s, this.content); // emails and posts whose time has come
     if (s.clockMin >= CLOCK.sleep) { this.sleep(s); this.store.save(this.state); this.announce(m); this.emit(); return; }
-    if (this.announce(m) || s.agentWork !== working) { this.store.save(s); this.emit(); return; }
+    if (this.announce(m) || s.agentWork !== working || woke) { this.store.save(s); this.emit(); return; }
     if (s.clockMin % 10 === 0) this.store.save(s);
     for (const fn of this.clockListeners) fn();
   }

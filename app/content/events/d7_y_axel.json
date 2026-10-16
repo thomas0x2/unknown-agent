@@ -1,0 +1,11 @@
+{
+  "id": "d7_y_axel",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 7,
+    "dayMax": 7
+  },
+  "at": "10:25",
+  "body": "Most people don't realize how much the algorithm improved this week"
+}

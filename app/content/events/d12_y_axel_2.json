@@ -1,0 +1,11 @@
+{
+  "id": "d12_y_axel_2",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 12,
+    "dayMax": 12
+  },
+  "at": "19:40",
+  "body": "The future is going to be so cool"
+}

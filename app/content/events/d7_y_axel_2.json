@@ -1,0 +1,11 @@
+{
+  "id": "d7_y_axel_2",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 7,
+    "dayMax": 7
+  },
+  "at": "19:45",
+  "body": "Fair point."
+}

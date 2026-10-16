@@ -1,0 +1,11 @@
+{
+  "id": "d4_y_axel",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 4,
+    "dayMax": 4
+  },
+  "at": "12:20",
+  "body": "Apogee rocket stacked on the pad. Looks sick."
+}

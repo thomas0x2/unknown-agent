@@ -6,6 +6,7 @@
 import '../../src/style.css';
 import './ui/coinbin.css';
 import './ui/sherwood.css';
+import './ui/doordish.css';
 import './ui/yowl.css';
 import './ui/forkyard.css';
 import './ui/qmail.css';
@@ -47,6 +48,7 @@ const trendingToday = () => store.content.trending[store.state.values.day] ?? []
 let lastSite = '';
 let lastUrl = '';
 let shownPage = '';
+let shownMenu = '';
 
 // Unsent text in every page's fields, keyed by the page's URL. Cleared when a form is sent.
 const drafts = new Map<string, Record<string, string>>();
@@ -92,6 +94,13 @@ function applyScrolls(root: HTMLElement, saved: Scrolls): void {
   for (const [name, [top, left, atEnd]] of Object.entries(saved)) {
     const el = findScrolled(root, name); if (el) { el.scrollTop = atEnd ? el.scrollHeight : top; el.scrollLeft = left; }
   }
+}
+/** Scrolls whatever holds `el` so it sits `top` px down the screen again after a redraw moved it. */
+function keepAt(el: HTMLElement | null, top: number): void {
+  if (!el) return;
+  let box = el.parentElement;
+  while (box && !(box.scrollHeight > box.clientHeight && /auto|scroll/.test(getComputedStyle(box).overflowY))) box = box.parentElement;
+  if (box) box.scrollTop += el.getBoundingClientRect().top - top;
 }
 /** Empties a field after its text was sent, so the draft does not come back. */
 function clearField(id: string): void {
@@ -165,7 +174,10 @@ function render(): void {
   $('#dk-tasks')!.innerHTML = V.tasksHtml(store);
   renderTerm();
   $('#clock')!.innerHTML = V.clockHtml(s);
-  const menu = $('#startmenu')!; menu.hidden = !store.ui.start; if (document.activeElement?.id !== 'snd-vol' || !store.ui.start) menu.innerHTML = store.ui.start ? V.startMenuHtml(store) : '';
+  const menu = $('#startmenu')!; menu.hidden = !store.ui.start;
+  // only redraw the menu when it changed, so an open dropdown in it survives the clock ticking
+  const menuHtml = store.ui.start ? V.startMenuHtml(store) : '';
+  if (menuHtml !== shownMenu && (document.activeElement?.id !== 'snd-vol' || !store.ui.start)) { menu.innerHTML = menuHtml; shownMenu = menuHtml; }
   const startBtn = $('#dk-home')!; startBtn.classList.toggle('on', store.ui.start); startBtn.setAttribute('aria-expanded', String(store.ui.start));
 
   const ov = $('#overlay')!; const oh = V.overlayHtml(store); ov.innerHTML = oh; ov.hidden = !oh;
@@ -293,7 +305,8 @@ document.addEventListener('click', (e) => {
   // data-newtab with a URL opens that page in a new tab (Forkyard deployments); empty opens a blank tab
   else if (d.newtab != null) { newPageLoad(); store.navigate(d.newtab || 'newtab', true); }
   else if (d.like != null) store.like(d.like);
-  else if (d.yAll != null) store.showAllY(d.yAll !== 'hide');
+  // the Show all / Hide old posts button trades places with its twin; keep that spot where it was on screen
+  else if (d.yAll != null) { const top = t.closest('.y-more')!.getBoundingClientRect().top; store.showAllY(d.yAll !== 'hide'); keepAt($('#viewport .y-more'), top); }
   else if (d.deploy != null) { SOUND.play('deploy'); store.deploy(d.deploy); }
   else if (d.takedown != null) store.confirm('Take it offline? It counts as broken at payday.', 'Take down', () => store.takeDown(d.takedown!));
   // the cancel link opens the restaurant's cancel page in a new tab
@@ -399,6 +412,9 @@ document.addEventListener('submit', (e) => {
     store.bookNext(val('#bk-name').trim(), val('#bk-email').trim(), Number(val('input[name="bk-date"]:checked')) || store.state.values.day);
   } else if (kind === 'book') {
     store.book(f.dataset.app!, val('#bk-time').trim() || '19:00', Number(val('#bk-party')) || 2);
+  } else if (kind === 'sl-search') {
+    const q = val('#sl-q').trim();
+    store.navigate(`${f.dataset.base}${q ? `/search/${encodeURIComponent(q.toLowerCase())}` : ''}`);
   } else if (kind === 'fy-search') {
     const q = val('#fy-search-input').trim().replace(/^@/, '');
     if (q) store.navigate('forkyard.com/u/' + q.toLowerCase());

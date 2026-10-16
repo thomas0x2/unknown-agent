@@ -13,6 +13,7 @@ export * from './complaints';
 export * from './restaurant';
 export * from './crawler';
 export * from './laundromat';
+export * from './swaplist';
 export * from './agent';
 export * from './endings';
 export * from './day';

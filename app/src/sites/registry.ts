@@ -5,7 +5,7 @@
 import type { GameState } from '../engine';
 
 export type SiteId =
-  | 'y' | 'qmail' | 'qdrive' | 'coinbin' | 'sherwood' | 'forkyard' | 'agent' | 'yowl'
+  | 'y' | 'qmail' | 'qdrive' | 'coinbin' | 'sherwood' | 'doordish' | 'forkyard' | 'agent' | 'yowl'
   | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'phish' | 'app' | 'newtab' | 'notfound';
 
 export interface SiteDef {
@@ -33,6 +33,7 @@ export const SITES: SiteDef[] = [
   { id: 'yowl', base: 'yowl.com', label: 'Yowl', group: 'core', reachable: always },
   { id: 'coinbin', base: 'coinbin.com', label: 'Coinbin', group: 'core', reachable: always },
   { id: 'sherwood', base: 'sherwood.com', label: 'Sherwood', group: 'core', reachable: always },
+  { id: 'doordish', base: 'doordish.com', label: 'DoorDish', group: 'core', reachable: always },
   { id: 'forkyard', base: 'forkyard.com', label: 'Forkyard', group: 'core', reachable: always },
   { id: 'weightroom', base: 'weightroom.ai', label: 'Weightroom', group: 'tools', reachable: flag('knows_weightroom'),
     bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('weightroom')) || s.flags.includes('has_terminal') },
@@ -60,7 +61,7 @@ export function route(url: string, s: GameState): Route {
   if (!u || u === 'newtab') return { site: 'newtab', reachable: true };
 
   // deployed app URLs: <something>.forkyard.app
-  const appMatch = u.match(/^([a-z0-9-]+\.forkyard\.app)(?:\/([a-z0-9-]+))?$/);
+  const appMatch = u.match(/^([a-z0-9-]+\.forkyard\.app)(?:\/(\S+))?$/);
   if (appMatch) {
     const app = s.apps.find((a) => a.url === appMatch[1]);
     return { site: 'app', param: app && (appMatch[2] ? `${app.id}/${appMatch[2]}` : app.id), reachable: !!app && app.deployed };

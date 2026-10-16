@@ -1,0 +1,11 @@
+{
+  "id": "d15_y_axel_2",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 15,
+    "dayMax": 15
+  },
+  "at": "16:20",
+  "body": "Absolutely"
+}

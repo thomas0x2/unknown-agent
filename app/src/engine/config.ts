@@ -6,6 +6,13 @@
 export const LAST_DAY = 21;
 
 /**
+ * The longest email or agent prompt that goes to Jev and Haiku, in characters. Anything longer gets
+ * a scripted reply without a model call: normal play never gets near it, it only stops pasted walls
+ * of text from costing tokens.
+ */
+export const MAX_INPUT_CHARS = 2000;
+
+/**
  * The in-game clock. The day runs from 10:00 to 22:00 in real time: the clock moves minute by
  * minute while the player plays, whatever they do. Actions themselves take no game time.
  */
@@ -20,11 +27,13 @@ export const MS_PER_GAME_MIN = CLOCK.dayMs / (CLOCK.sleep - CLOCK.wake);
 
 /**
  * How long the agent works on a build or fix before it pushes, in game minutes (one per real second):
- * a base plus a share per feature or problem, up to a cap, then up to 20% either way.
+ * a base plus a share per feature or problem, up to a cap, times the agent model's speed (agent-1 …
+ * agent-5), then up to 20% either way.
  */
 export const AGENT_WORK = {
   build: { base: 20, each: 10, max: 90 },
   fix: { base: 12, each: 6, max: 45 },
+  speed: [1, 0.8, 0.65, 0.5, 0.4],
   spread: 0.2,
 };
 
@@ -152,4 +161,6 @@ export const Y = {
   feedMix: { noise: 0.6, world: 0.25, leads: 0.15 },
   maxFreePostsPerDay: 3,
   overpostPenaltyPct: -0.02,
+  /** A post's follower change lands randomly within this share either side of what its rating earns. */
+  postJitter: 0.3,
 };

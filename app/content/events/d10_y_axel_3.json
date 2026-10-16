@@ -1,0 +1,11 @@
+{
+  "id": "d10_y_axel_3",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 10,
+    "dayMax": 10
+  },
+  "at": "19:20",
+  "body": "Next one flies in a few weeks"
+}

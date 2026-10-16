@@ -56,6 +56,12 @@ export interface AppTemplate {
   features: FeatureDef[];
   /** What happens when the app is broken at payday: a client email, or a user's post on Y. */
   complaints?: AppComplaints;
+  /**
+   * An app that is empty until its users show up (Swaplist): the first content appears this many
+   * minutes of play after the first deploy. Until then it can't have bugs, from builds or overnight
+   * breaks, since nothing would show them; the builds made before roll their bugs when it appears.
+   */
+  firstContentAfter?: number;
 }
 /**
  * Complaint copy for an app that was broken at payday. Client apps send one email from the client

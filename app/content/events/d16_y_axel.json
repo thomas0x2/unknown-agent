@@ -1,0 +1,11 @@
+{
+  "id": "d16_y_axel",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 16,
+    "dayMax": 16
+  },
+  "at": "13:00",
+  "body": "Who should host the debate? Y, obviously."
+}

@@ -93,4 +93,16 @@ describe('agent work takes game time', () => {
     expect(Math.max(...Array.from({ length: 20 }, () => workMinutes(s, 'build', 50)))).toBeLessThanOrEqual(Math.round(AGENT_WORK.build.max * (1 + AGENT_WORK.spread)));
     expect(Math.max(...Array.from({ length: 20 }, () => workMinutes(s, 'fix', 1)))).toBeLessThan(Math.min(...one));
   });
+
+  it('better agent models build and fix faster', () => {
+    const s = startGame(content, 1);
+    const at = (level: number, kind: 'build' | 'fix') => {
+      s.values.agentLevel = level;
+      return Array.from({ length: 20 }, () => workMinutes(s, kind, 3));
+    };
+    for (const kind of ['build', 'fix'] as const) {
+      expect(Math.max(...at(5, kind))).toBeLessThan(Math.min(...at(1, kind)));
+      expect(Math.max(...at(5, kind))).toBeLessThanOrEqual(Math.round(Math.min(AGENT_WORK[kind].max, AGENT_WORK[kind].base + AGENT_WORK[kind].each * 3) * 0.4 * (1 + AGENT_WORK.spread)));
+    }
+  });
 });

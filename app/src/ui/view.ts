@@ -11,17 +11,18 @@ import { listSlots, autoSlot } from '../game/saves';
 import { ICONS, TOKENS, Y_ICONS } from './icons';
 import { route, bookmarks, type Route, type SiteId } from '../sites/registry';
 import {
-  type GameState, type AppInstance, getApp, bugsOf, breakVariant, onForkyard, userRevenue, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, dateShort, dateLong, dateMedium, dateFull, dayDate, clockTime, gameMinutes, EMPIRE, BOUNCE_ADDR, eventBody, deliveryKey,
+  type GameState, type MailEntry, type AppInstance, getApp, bugsOf, breakVariant, onForkyard, userRevenue, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, AGENT_WORK, dateShort, dateLong, dateMedium, dateFull, dayDate, clockTime, gameMinutes, EMPIRE, BOUNCE_ADDR, eventBody, deliveryKey,
 } from '../engine';
 import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
 import { pageDrive } from './qdrive';
 import { pageSherwood } from './sherwood';
+import { pageDoorDish } from './doordish';
 import { adHtml } from './ads';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount, appLogo } from './appsite';
-import { marketPosts, fillerToday, postMin, handleOf, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, inBin, isDeleted, CLOCK } from '../engine';
+import { marketPosts, fillerToday, postMin, handleOf, playMinutes, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, inBin, isDeleted, CLOCK } from '../engine';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 import { repoFiles, treeAt, fileSource } from './repoTree';
 
@@ -56,7 +57,7 @@ function linkify(escaped: string): string {
 
 function tabTitle(r: Route, url: string): string {
   const names: Partial<Record<string, string>> = {
-    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', phish: 'Coinbin · Sign in', forkyard: 'Forkyard',
+    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', doordish: 'DoorDish', phish: 'Coinbin · Sign in', forkyard: 'Forkyard',
     agent: 'agent', yowl: 'Yowl', weightroom: 'Weightroom', nullboard: 'nullboard', cellar: 'Cellar', app: url,
   };
   if (r.site === 'notfound') return url || 'New Tab';
@@ -137,6 +138,8 @@ const MI = {
   sound: '<svg viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>',
   muted: '<svg viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>',
   folder: '<svg viewBox="0 0 24 24"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2h8.5A1.5 1.5 0 0 1 21 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/></svg>',
+  chat: '<svg viewBox="0 0 24 24"><path d="M4 5.5h16v10H10l-4 3.5v-3.5H4z"/></svg>',
+  key: '<svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l2.5 2.5M14 9l2 2"/></svg>',
   gear: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg>',
 };
 function autoRow(): string {
@@ -150,6 +153,23 @@ function soundRows(): string {
   return `<button class="dm-item" data-act="sound">${muted ? MI.muted : MI.sound}<span><b>Sound: ${muted ? 'off' : 'on'}</b><small>${muted ? 'Unmute the laptop' : 'Mute the laptop'}</small></span></button>
     <label class="dm-slot dm-vol">${MI.sound}<span><b>Volume</b><input type="range" id="snd-vol" min="0" max="100" step="1" value="${Math.round(volume * 100)}" aria-label="Volume"${muted ? ' disabled' : ''}></span></label>`;
 }
+/** System menu: whether Jev is deciding, and who writes the replies to misses (Haiku or scripted lines). */
+function aiRows(): string {
+  const jev = JEV.mode === 'online' ? ['', 'Story decisions: Jev', 'Online'] as const
+    : JEV.mode === 'checking' ? [' off', 'Story decisions: checking Jev…', 'Asking the proxy'] as const
+    : [' off', 'Story decisions: Jev offline', JEV.reason || "Nothing gets decided until it's back"] as const;
+  const st = MISSES.settings;
+  const sel = (cur: string, v: string, l: string) => `<option value="${v}" ${cur === v ? 'selected' : ''}>${l}</option>`;
+  let missNote = st.misses === 'haiku' ? 'Haiku answers in character' : 'Scripted lines only';
+  let err = false;
+  if (st.misses === 'haiku' && st.haikuVia === 'api' && JEV.haikuKey === false) { missNote = 'ANTHROPIC_API_KEY is not set in app/.env, so misses use scripted lines'; err = true; }
+  else if (st.misses === 'haiku' && JEV.haikuKey === null && JEV.mode !== 'checking') { missNote = 'Start the proxy (npm run proxy) for Haiku replies'; err = true; }
+  return `<div class="dm-slot dm-jev" title="${esc(JEV.reason)}"><i class="dm-dot${jev[0]}"></i><span><b>${esc(jev[1])}</b><small>${esc(jev[2])}</small></span></div>
+    <label class="dm-slot dm-ai" title="What agent and email contacts say when Jev finds nothing in your message">${MI.chat}<span><b>Misses</b><small${err ? ' class="dm-err"' : ''}>${esc(missNote)}</small></span>
+      <span class="dm-slot-acts"><select id="llm-misses">${sel(st.misses, 'haiku', 'Haiku (API)')}${sel(st.misses, 'scripted', 'Scripted lines')}</select></span></label>` +
+    (st.misses === 'haiku' ? `<label class="dm-slot dm-ai" title="Subscription runs the claude CLI on your machine (dev only, slow); API uses ANTHROPIC_API_KEY">${MI.key}<span><b>Haiku via</b><small>${st.haikuVia === 'api' ? 'ANTHROPIC_API_KEY' : 'The claude CLI (slow)'}</small></span>
+      <span class="dm-slot-acts"><select id="llm-haiku-via">${sel(st.haikuVia, 'api', 'API key')}${sel(st.haikuVia, 'subscription', 'Claude subscription')}</select></span></label>` : '');
+}
 export function startMenuHtml(store: GameStore): string {
   const s = store.state;
   const cat = store.ui.menuCat;
@@ -158,7 +178,7 @@ export function startMenuHtml(store: GameStore): string {
   const item = (act: string, icon: string, title: string, sub: string) =>
     `<button class="dm-item" data-act="${act}">${icon}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span></button>`;
   const list = cat === 'system'
-    ? item('new', MI.logout, 'New game', `Start over from ${dateLong(1)}`) + item('intro', MI.help, 'How to play', 'The rules, again') + item('devmode', MI.help, `Dev mode: ${store.devMode ? 'on' : 'off'}`, 'Show how agent replies were chosen') + item('dev', MI.term, 'Story debugger', 'jev · Ctrl+`') + soundRows()
+    ? item('new', MI.logout, 'New game', `Start over from ${dateLong(1)}`) + item('intro', MI.help, 'How to play', 'The rules, again') + item('devmode', MI.help, `Dev mode: ${store.devMode ? 'on' : 'off'}`, 'Show how agent replies were chosen') + item('dev', MI.term, 'Story debugger', 'jev · Ctrl+`') + aiRows() + soundRows()
     : autoRow() + listSlots().map((info, i) => {
       const n = i + 1;
       const when = info ? `${fmtClock(info.clockMin)} · saved ${new Date(info.savedAt).toLocaleString(undefined, { month: 'short', day: 'numeric' })}` : 'Empty';
@@ -211,6 +231,7 @@ export function page(store: GameStore, r: Route): string {
     case 'y': return pageY(store, r.param);
     case 'coinbin': return pageWallet(store);
     case 'sherwood': return pageSherwood(store, r.param);
+    case 'doordish': return pageDoorDish(store, r.param);
     case 'forkyard': return pageForkyard(store, r.param);
     case 'app': return pageApp(store, r.param);
     case 'agent': return r.param === 'models' ? pageModels(store) : pageAgent(store);
@@ -250,7 +271,14 @@ function pageNewTab(store: GameStore): string {
 }
 
 // ── Qmail ──
-interface Row { id: string; seq: number; /** Minutes since midnight it arrived, when known. */ min?: number; from: string; addr: string; subject: string; body: string; day: number; unread: boolean; needsReply: boolean; folder: 'inbox' | 'sent'; eventId?: string; generated?: boolean; to?: string; link?: string; bounceOf?: string; bookingId?: string; /** In the Bin until the day ends. */ binned?: boolean }
+
+/** Dev-mode label under an email that came from a script rather than Haiku. */
+const SCRIPTED_MAIL: Record<NonNullable<MailEntry['scripted']>, string> = {
+  hint: 'Scripted hint (Jev read a near miss)',
+  outcome: 'Scripted storyline outcome',
+  topic: 'Scripted topic reply',
+};
+interface Row { id: string; seq: number; /** Minutes since midnight it arrived, when known. */ min?: number; from: string; addr: string; subject: string; body: string; day: number; unread: boolean; needsReply: boolean; folder: 'inbox' | 'sent'; eventId?: string; generated?: boolean; scripted?: MailEntry['scripted']; to?: string; link?: string; bounceOf?: string; bookingId?: string; /** In the Bin until the day ends. */ binned?: boolean }
 /** Messages the player opened or closed in a conversation, so a repaint keeps them that way. */
 export const mailOpen = new Map<string, boolean>();
 function mailRows(store: GameStore): Row[] {
@@ -269,7 +297,7 @@ function mailRows(store: GameStore): Row[] {
     if (isDeleted(s, id)) continue;
     rows.push({ id, binned: inBin(s, id), seq: d.seq ?? -1, min: d.min, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(eventBody(e, d.day)), day: d.day, unread: !s.readEvents.includes(key), needsReply: canReply, folder: 'inbox', eventId: e.id });
   }
-  for (const m of s.mail) if (!isDeleted(s, 'm/' + m.id)) rows.push({ id: 'm/' + m.id, binned: inBin(s, 'm/' + m.id), seq: m.seq ?? (Number(m.id.replace(/\D/g, '')) || 0), min: m.min, from: m.from, addr: m.addr, subject: m.subject, body: m.body, day: m.day, unread: m.folder === 'inbox' && !m.read, needsReply: false, folder: m.folder, eventId: m.eventId, generated: m.generated, to: m.to, link: m.link, bounceOf: m.bounceOf, bookingId: m.bookingId });
+  for (const m of s.mail) if (!isDeleted(s, 'm/' + m.id)) rows.push({ id: 'm/' + m.id, binned: inBin(s, 'm/' + m.id), seq: m.seq ?? (Number(m.id.replace(/\D/g, '')) || 0), min: m.min, from: m.from, addr: m.addr, subject: m.subject, body: m.body, day: m.day, unread: m.folder === 'inbox' && !m.read, needsReply: false, folder: m.folder, eventId: m.eventId, generated: m.generated, scripted: m.scripted, to: m.to, link: m.link, bounceOf: m.bounceOf, bookingId: m.bookingId });
   return rows;
 }
 /** Today's mail shows the time it came in, older mail its date. */
@@ -342,7 +370,7 @@ function pageMail(store: GameStore, param?: string): string {
             ? `<p class="qm-actions"><b>Your booking has been cancelled.</b></p>`
             : s.bookings.find((b) => b.id === r.bookingId)?.noShow ? `<p class="qm-actions"><b>This booking has passed.</b></p>`
             : `<p class="qm-actions"><button class="qm-btn ghost" data-cancel-booking="${esc(r.bookingId)}" data-cancel-url="${esc(`${r.addr.split('@')[1] ?? ''}/cancel-${r.bookingId}`)}">Cancel booking</button></p>`) : ''}
-          ${r.generated ? `<p class="qm-gen">Reply written by ${esc(MISSES.label())}</p>` : ''}
+          ${r.generated ? `<p class="qm-gen">Reply written by ${esc(MISSES.label())}</p>` : r.scripted ? `<p class="qm-gen">${SCRIPTED_MAIL[r.scripted]}</p>` : ''}
         </details>`;
       }).join('');
       main = `<article class="qm-read">
@@ -415,9 +443,9 @@ function yPosts(store: GameStore): YPost[] {
   return out.sort((a, b) => b.day - a.day || (b.min ?? 0) - (a.min ?? 0) || (a.rank ?? 0) - (b.rank ?? 0) || b.id.localeCompare(a.id));
 }
 /** Accounts with Y's verified check. */
-const Y_VERIFIED = new Set(['mara_vey', 'randall_crane']);
+const Y_VERIFIED = new Set(['mara_vey', 'randall_crane', 'axel_rook']);
 /** Follower counts for the public figures; everyone else gets a small made-up number. */
-const Y_FOLLOWERS: Record<string, number> = { randall_crane: 38_400_000, mara_vey: 61_200 };
+const Y_FOLLOWERS: Record<string, number> = { randall_crane: 38_400_000, mara_vey: 61_200, axel_rook: 214_000_000 };
 const yCheck = (handle: string) => Y_VERIFIED.has(handle) ? `<span class="y-badge" title="Verified">${Y_ICONS.badge}</span>` : '';
 function yPostHtml(store: GameStore, p: YPost): string {
   const liked = !!store.ui.liked[p.id];
@@ -791,7 +819,8 @@ function bookingCalendar(today: number, first: number, picked: number): string {
 }
 function pageApp(store: GameStore, param?: string): string {
   const s = store.state;
-  const [appId, sub] = (param ?? '').split('/');
+  const [appId, ...rest] = (param ?? '').split('/');
+  const sub = rest.join('/') || undefined;
   const a = appId ? getApp(s, appId) : undefined;
   if (!a || !a.deployed) return `<div class="err"><h1>404: NOT_FOUND</h1><p>Nothing is deployed here.</p></div>`;
   const bk = store.ui.book;
@@ -835,7 +864,7 @@ function pageApp(store: GameStore, param?: string): string {
     ? `<h1>Booking cancelled</h1><p class="pv-note ok">Your booking for ${cancelled.party} on ${dateFull(cancelled.date)} at ${esc(cancelled.time)} has been cancelled.</p><p class="pv-sub">We hope to see you another time.</p>`
     : undefined;
   const tmpl = store.content.apps[a.template];
-  return `<div class="pv-host">${renderAppSite(a, tmpl, cancel ? 'cancel' : sub, { booking, cancel, day: s.values.day, minute: s.clockMin, market: crawlable(store) })}</div>`;
+  return `<div class="pv-host">${renderAppSite(a, tmpl, cancel ? 'cancel' : sub, { booking, cancel, day: s.values.day, minute: s.clockMin, market: crawlable(store), play: playMinutes(s), watchSold: s.flags.includes('viktor_sold_watch') })}</div>`;
 }
 
 // ── agent chat (free-promptable, with costs) ──
@@ -849,21 +878,6 @@ export function costLine(s: GameState, text: string): { text: string; over: bool
     text: `${fmtMoney(p.total)} = ${fmtMoney(p.base)} per prompt + ${fmtMoney(p.wordFee)} for ${w} × ${fmtMoney(p.perWord)}`,
     over: p.total > s.values.crypto,
   };
-}
-function jevChip(): string {
-  if (JEV.mode === 'online') return `<span class="ua-llm-dot"></span>Story decisions: Jev`;
-  if (JEV.mode === 'checking') return `<span class="ua-llm-dot off"></span>Story decisions: checking Jev…`;
-  return `<span class="ua-llm-dot off"></span><span title="${esc(JEV.reason)}">Story decisions: Jev offline, nothing gets decided until it's back</span>`;
-}
-function llmRow(): string {
-  const st = MISSES.settings;
-  const sel = (cur: string, v: string, l: string) => `<option value="${v}" ${cur === v ? 'selected' : ''}>${l}</option>`;
-  let status = '';
-  if (st.misses === 'haiku' && st.haikuVia === 'api' && JEV.haikuKey === false) status = '<span class="ua-llm-err">ANTHROPIC_API_KEY is not set in app/.env, so misses use scripted lines.</span>';
-  else if (st.misses === 'haiku' && JEV.haikuKey === null && JEV.mode !== 'checking') status = '<span class="ua-llm-err">Start the proxy (npm run proxy) for Haiku replies.</span>';
-  return `<label class="ua-llm-pick" title="What agent and email contacts say when Jev finds nothing in your message">Misses <select id="llm-misses">${sel(st.misses, 'haiku', 'Haiku (API)')}${sel(st.misses, 'scripted', 'Scripted lines')}</select></label>` +
-    (st.misses === 'haiku' ? `<label class="ua-llm-pick" title="Subscription runs the claude CLI on your machine (dev only, slow); API uses ANTHROPIC_API_KEY">Haiku via <select id="llm-haiku-via">${sel(st.haikuVia, 'api', 'API key')}${sel(st.haikuVia, 'subscription', 'Claude subscription')}</select></label>` : '') +
-    (status ? `<span class="ua-llm-status">${status}</span>` : '');
 }
 /**
  * The build or fix the agent is working on, as a progress line in the chat (empty when it isn't).
@@ -886,7 +900,7 @@ function pageAgent(store: GameStore): string {
   const msgs = s.chat.map((m, i) => {
     if (m.from === 'you') {
       const cost = i === chargingAt
-        ? `<span class="ua-cost ua-charging" role="status"><span class="ua-charge-bar"><i style="animation-duration:${CHARGE_DELAY_MS}ms"></i></span>Charging Coinbin · ${fmtMoney(-store.charging)}</span>`
+        ? `<span class="ua-cost ua-charging" role="status"><span class="ua-charge-bar"><i style="animation-duration:${CHARGE_DELAY_MS}ms"></i></span>Charging Coinbin</span>`
         : `<span class="ua-cost">${m.cost ? fmtMoney(-m.cost) + ' · ' : ''}agent-${m.level ?? s.values.agentLevel} · ${dateShort(m.day)}</span>`;
       return `<div class="ua-msg you"><div class="ua-bubble">${esc(m.text)}</div>${cost}</div>`;
     }
@@ -900,14 +914,14 @@ function pageAgent(store: GameStore): string {
     return `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text">${linkify(br(m.text))}</div>${model}${src}${debug}</div>`;
   }).join('');
   const p = store.pendingPrompt;
-  const pending = p == null ? '' : `<div class="ua-msg you"><div class="ua-bubble">${esc(p)}</div><span class="ua-cost">${fmtMoney(-promptCost(s.values.agentLevel, p).total)} · agent-${s.values.agentLevel} · ${dateShort(s.values.day)}</span></div>`;
+  // the price shows on the prompt only once the charge has gone through
+  const pending = p == null ? '' : `<div class="ua-msg you"><div class="ua-bubble">${esc(p)}</div><span class="ua-cost">agent-${s.values.agentLevel} · ${dateShort(s.values.day)}</span></div>`;
   const thinking = store.busy && !store.charging ? `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text ua-dots"><i></i><i></i><i></i></div></div>` : '';
   return `<div class="ua">
     <header class="ua-head">
       <div class="ua-brand">${ICONS.agent}<div><b>agent</b><span>agent-${s.values.agentLevel} · ${fmtMoney(c.prompt)} per prompt + ${fmtMoney(c.word)} per word</span></div></div>
       ${devOptionsButton(store, 'agent')}<span class="ua-linked"><a href="#" data-nav="agent.chat/models" class="ua-upgrade">Models</a> · ${s.agentLocked ? 'LOCKED · unpaid' : 'Billing: Coinbin ' + shortAddr(WALLET_ADDR)}</span>
     </header>
-    <div class="ua-llm"><span class="ua-jev" id="ua-jev">${jevChip()}</span><span class="ua-llm-ctl" id="ua-llm">${llmRow()}</span></div>
     <div class="ua-log" id="ua-log">${msgs}${workHtml(s)}${pending}${thinking}</div>
     <form class="ua-compose" data-form="prompt">
       <textarea id="prompt-input" rows="2" placeholder="Ask agent anything — build an app, fix one, write, translate, look something up…" ${s.ending ? 'disabled' : ''}></textarea>
@@ -924,7 +938,7 @@ function pageModels(store: GameStore): string {
     return `<article class="gm-card owned${lvl === s.values.agentLevel ? ' active' : ''}">
       <header><h2>agent-${lvl}</h2><span class="gm-meter" aria-label="Tier ${lvl} of 5">${[1, 2, 3, 4, 5].map((j) => `<i class="${j <= lvl ? 'on' : ''}"></i>`).join('')}</span></header>
       <p>${esc(can)}</p>
-      <dl><dt>Per prompt</dt><dd>${fmtMoney(c.prompt)}</dd><dt>Per word</dt><dd>${fmtMoney(c.word)}</dd><dt>Daily sub</dt><dd>${fmtMoney(c.sub)}</dd></dl>
+      <dl><dt>Per prompt</dt><dd>${fmtMoney(c.prompt)}</dd><dt>Per word</dt><dd>${fmtMoney(c.word)}</dd><dt>Daily sub</dt><dd>${fmtMoney(c.sub)}</dd><dt>Speed</dt><dd>${+(1 / AGENT_WORK.speed[lvl - 1]).toFixed(1)}×</dd></dl>
       <div class="gm-act">${action}</div></article>`;
   }).join('');
   return `<div class="ua gm">
