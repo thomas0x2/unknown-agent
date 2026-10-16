@@ -15,6 +15,7 @@ export const ICONS: Record<string, string> = {
   cellar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20V10l9-6 9 6v10h-4v-6H7v6z" fill="currentColor"/><path d="M9 16h6M10 18.5h4" stroke="var(--icon-ink, #111)" stroke-width="1.4" stroke-linecap="round"/></svg>',
   empire: '<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><path d="M3.2 8.6 7.6 12 12 5l4.4 7 4.4-3.4-1.6 9.4H4.8z"/><rect x="4.8" y="19" width="14.4" height="2" rx="1"/><circle cx="3.2" cy="7.4" r="1.5"/><circle cx="12" cy="3.6" r="1.5"/><circle cx="20.8" cy="7.4" r="1.5"/></g><path d="m12 11.8 1.7 2.4-1.7 2.4-1.7-2.4z" fill="var(--icon-ink, #261800)"/></svg>',
   app: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M4 9h16" stroke="currentColor" stroke-width="2"/></svg>',
+  bin: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 6.5h15M9.5 6.5V4.5h5v2M6.5 6.5l1 13h9l1-13M10.5 10v6.5M13.5 10v6.5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   error: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 2.5v.5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
 };
 

@@ -23,3 +23,4 @@ export * from './writer';
 export * from './save';
 export * from './wallets';
 export * from './phishing';
+export * from './mailbin';

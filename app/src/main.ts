@@ -215,7 +215,7 @@ function updateCost(): void {
 
 // ── clicks ──
 document.addEventListener('click', (e) => {
-  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-ov],[data-dev],[data-cancel-booking],[data-empire-join],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat],[data-back],[data-forward],[data-devbug],[data-task],[data-term],[data-devopts]');
+  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-ov],[data-dev],[data-cancel-booking],[data-empire-join],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat],[data-back],[data-forward],[data-devbug],[data-task],[data-term],[data-devopts],[data-mail-bin],[data-mail-restore],[data-mail-undo]');
   // any click outside the home menu closes it (menu items close it themselves below)
   if (store.ui.start && !(e.target as HTMLElement).closest('#startmenu, #dk-home')) store.toggleStart(false);
   // clicking the browser while the Terminal is in front brings the browser forward, like any window
@@ -248,6 +248,9 @@ document.addEventListener('click', (e) => {
   // the cancel link opens the restaurant's cancel page in a new tab
   else if (d.cancelBooking != null) { store.cancelBooking(d.cancelBooking); if (d.cancelUrl) { newPageLoad(); store.navigate(d.cancelUrl, true); } }
   else if (d.empireJoin != null) store.joinEmpire();
+  else if (d.mailBin != null) store.binMail(JSON.parse(d.mailBin), d.mailHome || 'qmail.com');
+  else if (d.mailRestore != null) store.restoreMail(JSON.parse(d.mailRestore), d.mailHome || 'qmail.com/bin');
+  else if (d.mailUndo != null) store.undoMailNotice();
   else if (d.mailDiscard != null) { clearMailDraft(); store.setDraft(null); store.navigate('qmail.com'); }
   else if (d.star != null) store.setReviewStars(Number(d.star));
   else if (d.download != null) store.download(d.download);
