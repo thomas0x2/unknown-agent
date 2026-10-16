@@ -211,8 +211,10 @@ export interface YExtra {
   likes: number;
   replyTo?: string;
   generated?: boolean;
-  /** A user's complaint about this app (broken at payday); shown at the top of its day. */
+  /** A user's complaint about this app (broken at payday). */
   about?: string;
+  /** Minutes since midnight it went up, when known. */
+  min?: number;
 }
 
 export interface YowlReview {

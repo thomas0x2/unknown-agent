@@ -387,7 +387,7 @@ function pageMail(store: GameStore, param?: string): string {
 }
 
 // ── Y ──
-interface YPost { id: string; author: string; handle: string; text: string; day: number; /** Minutes since midnight it went up, when known. */ min?: number; likes: number; mine?: boolean; delta?: number; score?: number; replyTo?: string; pinned?: boolean; /** Order within a day: story posts first, bot spam last. */ rank?: number }
+interface YPost { id: string; author: string; handle: string; text: string; day: number; /** Minutes since midnight it went up, when known. */ min?: number; likes: number; mine?: boolean; delta?: number; score?: number; replyTo?: string; /** Order within a day: story posts first, bot spam last. */ rank?: number }
 function yPosts(store: GameStore): YPost[] {
   const s = store.state;
   const out: YPost[] = [];
@@ -403,13 +403,13 @@ function yPosts(store: GameStore): YPost[] {
   for (const p of market) if (!out.some((x) => x.id === p.id)) out.push({ id: p.id, author: p.author, handle: p.handle, text: p.text, day: p.day, min: p.min, likes: p.likes, rank: p.bot ? 2 : 1 });
   // a third of the filler is up each day, posted at its own time
   for (const f of fillerToday(s, store.content)) out.push({ id: f.id, author: f.from, handle: f.handle, text: f.body, day: s.values.day, min: postMin(f, s.values.day), likes: 3 + hashHue(f.id) % 60, rank: 1 });
-  for (const x of s.yExtra) out.push({ id: x.id, author: x.author, handle: x.handle, text: x.text, day: x.day, likes: x.likes, replyTo: x.replyTo, pinned: !!x.about });
+  for (const x of s.yExtra) out.push({ id: x.id, author: x.author, handle: x.handle, text: x.text, day: x.day, min: x.min, likes: x.likes, replyTo: x.replyTo });
   for (const u of s.userPosts) out.push({ id: u.id, author: PLAYER.name, handle: PLAYER.handle, text: u.text, day: u.day, min: u.min, likes: u.likes, mine: true, delta: u.delta, score: u.score });
   // newest first: by day, then the time it went up
-  return out.sort((a, b) => b.day - a.day || Number(!!b.pinned) - Number(!!a.pinned) || (b.min ?? 0) - (a.min ?? 0) || (a.rank ?? 0) - (b.rank ?? 0) || b.id.localeCompare(a.id));
+  return out.sort((a, b) => b.day - a.day || (b.min ?? 0) - (a.min ?? 0) || (a.rank ?? 0) - (b.rank ?? 0) || b.id.localeCompare(a.id));
 }
 /** Accounts with Y's verified check. */
-const Y_VERIFIED = new Set(['mara_vey']);
+const Y_VERIFIED = new Set(['mara_vey', 'randall_crane']);
 /** Follower counts for the public figures; everyone else gets a small made-up number. */
 const Y_FOLLOWERS: Record<string, number> = { randall_crane: 38_400_000, mara_vey: 61_200 };
 const yCheck = (handle: string) => Y_VERIFIED.has(handle) ? `<span class="y-badge" title="Verified">${Y_ICONS.badge}</span>` : '';
