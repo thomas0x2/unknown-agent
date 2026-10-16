@@ -943,6 +943,8 @@ function chargeHosted(s: GameState, level: number, text: string): boolean {
 }
 
 export function deploy(s0: GameState, appId: string, content?: Content): GameState {
+  // a client that cancelled took the app with it
+  if (getApp(s0, appId)?.churned) return s0;
   const s = clone(s0);
   const app = getApp(s, appId);
   deployAppCore(s, appId, app && content?.apps[app.template]);
