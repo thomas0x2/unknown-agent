@@ -36,7 +36,7 @@ export class GameStore {
   pendingPrompt: string | null = null;
   ui = {
     ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null as Draft | null,
-    project: '', dev: false, liked: {} as Record<string, boolean>, intro: true, dayStart: false, memWarn: false, confirm: null as null | { text: string; yes: string; fn: () => void }, start: false, menuCat: 'saves',
+    project: '', dev: false, liked: {} as Record<string, boolean>, intro: true, greet: false, memWarn: false, confirm: null as null | { text: string; yes: string; fn: () => void }, start: false, menuCat: 'saves',
     /** The Terminal is its own window: open (in the taskbar) and shown (in front of the browser). */
     termOpen: false, termShown: false,
     /** Dev mode: the site whose options panel is open (agent, qmail, y), or ''. */
@@ -73,6 +73,7 @@ export class GameStore {
     nameUnnamedBugs(this.state, content); // saves from before the app had named bugs
     startDayChat(this.state, content); // saves from before the per-day reset may still carry yesterday's chat
     this.ui.intro = !this.state.introSeen;
+    this.ui.greet = !this.state.introSeen; // a fresh game opens with the OS greeting
     applyDevMode(this.devMode);
   }
 
@@ -178,6 +179,7 @@ export class GameStore {
   newGame(): void {
     this.store.clear();
     this.resetTo(startGame(this.content));
+    this.ui.greet = true; this.emit();
   }
   /** Snapshot the current game into a manual slot. */
   saveSlot(n: Slot): boolean { const ok = writeSlot(n, this.state); this.ui.slotNote = ok ? '' : `Slot ${n} wasn't saved: this browser isn't letting the game store anything.`; this.emit(); return ok; }
@@ -195,17 +197,17 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = 1; this.nextTab = 3;
-    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, dayStart: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', reviewNeedsStars: false, slotNote: '', mailError: '', phishError: '', jevOffline: null };
+    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', reviewNeedsStars: false, slotNote: '', mailError: '', phishError: '', jevOffline: null };
     this.store.save(this.state);
     this.emit();
   }
 
   endDay(): void { this.sleep(this.state); this.store.save(this.state); this.emit(); }
-  startDay(): void { this.ui.dayStart = false; this.emit(); }
+  dismissGreet(): void { this.ui.greet = false; this.emit(); }
   dismissMemWarn(): void { this.ui.memWarn = false; this.emit(); }
   /**
    * End the day and autosave the new morning into the 'auto' slot. The next day starts with only
-   * Qmail and agent open, and asks if the player is ready.
+   * Qmail and agent open.
    */
   private sleep(s: GameState): void {
     this.state = endDay(s, this.content);
@@ -214,7 +216,6 @@ export class GameStore {
     this.tabs = startTabs();
     this.active = 1; this.nextTab = 3;
     this.ui.start = false;
-    this.ui.dayStart = true;
   }
   deploy(appId: string): void { this.commitAndSettle(deploy(this.state, appId)); }
   takeDown(appId: string): void { this.commit(takeDown(this.state, appId)); }
