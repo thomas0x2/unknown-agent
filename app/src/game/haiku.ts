@@ -6,22 +6,22 @@
  */
 import type { Character } from '../content/schema';
 import { finishReply } from './characters';
-import { LLM } from './llm';
 
 export interface HaikuReply { text: string | null; note?: string; debug: string[] }
 
-export async function haikuReply(ch: Character, text: string): Promise<HaikuReply> {
+export async function haikuReply(ch: Character, text: string, via: 'subscription' | 'api'): Promise<HaikuReply> {
   let res: Response;
   try {
     res = await fetch('/api/write', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ character: ch.id, text, via: LLM.settings.haikuVia }),
+      body: JSON.stringify({ character: ch.id, text, via }),
     });
   } catch {
     return { text: null, note: 'the proxy is not running (npm run proxy)', debug: [] };
   }
   const data: any = await res.json().catch(() => ({}));
-  if (!res.ok) return { text: null, note: data.error || `proxy returned ${res.status}`, debug: [] };
+  // Vite answers 500 itself when nothing listens on the proxy port
+  if (!res.ok) return { text: null, note: data.error || (res.status >= 500 ? 'the proxy is not running (npm run proxy)' : `proxy returned ${res.status}`), debug: [] };
   const raw = String(data.text ?? '');
   const reply = finishReply(ch, raw);
   const u = data.usage ?? {};

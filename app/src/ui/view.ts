@@ -4,7 +4,7 @@
  * legacy stylesheet (../../src/style.css); nothing here invents new classes.
  */
 import type { GameStore } from '../game/store';
-import { LLM } from '../game/llm';
+import { MISSES } from '../game/misses';
 import { JEV } from '../game/backendJev';
 import { listSlots, autoSlot } from '../game/saves';
 import { ICONS, Y_ICONS } from './icons';
@@ -261,7 +261,7 @@ function pageMail(store: GameStore, param?: string): string {
         <p class="qm-meta"><span>${meta}</span><span>Day ${row.day}</span></p>
         <div class="qm-body">${linkify(br(row.body))}</div>
         ${row.link === 'cancel' ? `<p class="qm-actions"><button class="qm-btn ghost" data-cancel-booking="${esc(row.id.slice(2))}">Cancel booking</button></p>` : ''}
-        ${row.generated ? `<p class="qm-gen">Reply written by ${esc(LLM.label())}</p>` : ''}
+        ${row.generated ? `<p class="qm-gen">Reply written by ${esc(MISSES.label())}</p>` : ''}
         ${canReply ? `<form class="qm-reply" data-form="reply" ${target}>
           <div class="qm-reply-head"><span class="qm-reply-to">Reply to <b>${esc(row.from)}</b></span><span class="qm-reply-hint">One message until they reply</span></div>
           <textarea id="reply-body" rows="3" placeholder="Write your reply…" ${store.busy ? 'disabled' : ''}></textarea>
@@ -598,19 +598,14 @@ function jevChip(): string {
   return `<span class="ua-llm-dot off"></span><span title="${esc(JEV.reason)}">Story decisions: keyword matcher (Jev offline)</span>`;
 }
 function llmRow(): string {
-  const st = LLM.settings;
-  const opt = (v: string, l: string) => `<option value="${v}" ${st.backend === v ? 'selected' : ''}>${l}</option>`;
-  let status = ''; let action = '';
-  if (st.backend === 'off') status = 'Off-script replies use canned placeholders.';
-  else if (LLM.status === 'off') { status = st.backend === 'browser' ? 'Downloads ~240 MB once, then loads from your browser cache.' : 'Not connected.'; action = `<button class="ua-llm-btn" data-llm="load">${st.backend === 'browser' ? 'Download Gemma 3 270M' : 'Connect'}</button>`; }
-  else if (LLM.status === 'loading') { const mb = (n: number) => (n / 1048576).toFixed(0); const bytes = LLM.totalBytes ? ` · ${mb(LLM.loadedBytes)} / ${mb(LLM.totalBytes)} MB` : ''; status = `<span class="ua-llm-bar"><i style="width:${Math.max(2, LLM.progress).toFixed(1)}%"></i></span>${LLM.totalBytes ? `${LLM.progress.toFixed(0)}%${bytes}` : esc(LLM.detail)}`; action = `<button class="ua-llm-btn ghost" data-llm="cancel">Cancel</button>`; }
-  else if (LLM.status === 'ready') status = `<span class="ua-llm-dot"></span>Ready · ${esc(LLM.detail)}`;
-  else if (LLM.status === 'error') { status = `<span class="ua-llm-err">${esc(LLM.detail)}</span>`; action = `<button class="ua-llm-btn" data-llm="retry">Retry</button>`; }
-  const miss = (v: string, l: string) => `<option value="${v}" ${st.misses === v ? 'selected' : ''}>${l}</option>`;
-  return `<label class="ua-llm-pick">Local model <select id="llm-backend">${opt('browser', 'Gemma 3 270M · in browser')}${opt('ollama', 'Gemma 3 270M · Ollama')}${opt('off', 'Canned placeholders')}</select></label>` +
-    `<label class="ua-llm-pick" title="What agent and email contacts say when Jev finds nothing in your message">Misses <select id="llm-misses">${miss('gemma', 'Gemma replies')}${miss('haiku', 'Haiku (API)')}${miss('scripted', 'Scripted lines')}</select></label>` +
-    (st.misses === 'haiku' ? `<label class="ua-llm-pick" title="Subscription runs the claude CLI on your machine (dev only); API uses ANTHROPIC_API_KEY">Haiku via <select id="llm-haiku-via"><option value="subscription" ${st.haikuVia === 'subscription' ? 'selected' : ''}>Claude subscription</option><option value="api" ${st.haikuVia === 'api' ? 'selected' : ''}>API key</option></select></label>` : '') +
-    `<span class="ua-llm-status">${status}</span>${action}`;
+  const st = MISSES.settings;
+  const sel = (cur: string, v: string, l: string) => `<option value="${v}" ${cur === v ? 'selected' : ''}>${l}</option>`;
+  let status = '';
+  if (st.misses === 'haiku' && st.haikuVia === 'api' && JEV.haikuKey === false) status = '<span class="ua-llm-err">ANTHROPIC_API_KEY is not set in app/.env, so misses use scripted lines.</span>';
+  else if (st.misses === 'haiku' && JEV.haikuKey === null && JEV.mode !== 'checking') status = '<span class="ua-llm-err">Start the proxy (npm run proxy) for Haiku replies.</span>';
+  return `<label class="ua-llm-pick" title="What agent and email contacts say when Jev finds nothing in your message">Misses <select id="llm-misses">${sel(st.misses, 'haiku', 'Haiku (API)')}${sel(st.misses, 'scripted', 'Scripted lines')}</select></label>` +
+    (st.misses === 'haiku' ? `<label class="ua-llm-pick" title="Subscription runs the claude CLI on your machine (dev only, slow); API uses ANTHROPIC_API_KEY">Haiku via <select id="llm-haiku-via">${sel(st.haikuVia, 'api', 'API key')}${sel(st.haikuVia, 'subscription', 'Claude subscription')}</select></label>` : '') +
+    (status ? `<span class="ua-llm-status">${status}</span>` : '');
 }
 function pageAgent(store: GameStore): string {
   const s = store.state;
@@ -619,8 +614,8 @@ function pageAgent(store: GameStore): string {
     if (m.from === 'you') return `<div class="ua-msg you"><div class="ua-bubble">${esc(m.text)}</div><span class="ua-cost">${m.cost ? fmtMoney(-m.cost) + ' · ' : ''}agent-${m.level ?? s.values.agentLevel} · Day ${m.day}</span></div>`;
     if (m.from === 'system') return `<div class="ua-sys">${esc(m.text)}</div>`;
     const src = m.src ? `<span class="ua-src ${esc((m.src || '').split(':')[0])}">${esc(m.src)}</span>` : '';
-    const model = m.src === 'llm' ? `<span class="ua-model" title="Written by a model">${esc(m.by ?? LLM.label())}</span>`
-      : m.note ? `<span class="ua-model" title="A scripted line stood in for the local model">Scripted · ${esc(m.note)}</span>` : '';
+    const model = m.src === 'llm' ? `<span class="ua-model" title="Written by a model">${esc(m.by ?? MISSES.label())}</span>`
+      : m.note ? `<span class="ua-model" title="A scripted line stood in for Haiku">Scripted · ${esc(m.note)}</span>` : '';
     const debug = m.debug?.length ? `<details class="ua-debug"><summary>Details</summary>${m.debug.map((l) => `<div>${esc(l)}</div>`).join('')}</details>` : '';
     return `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text">${linkify(br(m.text))}</div>${model}${src}${debug}</div>`;
   }).join('');
@@ -815,5 +810,5 @@ export function devHtml(store: GameStore): string {
     <p><b>Flags</b> <code>${esc(s.flags.join(', ') || 'none')}</code></p>
     <p><b>Apps</b> <code>${esc(s.apps.map((a) => `${a.name}:${appWorking(a) ? 'ok' : a.deployed ? 'check' : 'undeployed'}`).join(' · ') || 'none')}</code></p>
     <p><b>Jev</b> ${esc(JEV.mode)}${JEV.reason ? ' · ' + esc(JEV.reason) : ''}</p>
-    <p><b>Local model</b> ${esc(LLM.settings.backend)} · ${esc(LLM.status)}${LLM.detail ? ' · ' + esc(LLM.detail) : ''}</p>`;
+    <p><b>Misses</b> ${esc(MISSES.settings.misses)}${MISSES.settings.misses === 'haiku' ? ' · ' + esc(MISSES.settings.haikuVia) : ''}</p>`;
 }

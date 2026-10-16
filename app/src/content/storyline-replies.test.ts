@@ -9,7 +9,7 @@ import { offlineJev } from '../engine/jev';
 import type { Writer } from '../engine/writer';
 
 const content = loadContent();
-const noLlm: Writer = { write: async () => { throw new Error('storyline replies must not reach the local model'); } };
+const noLlm: Writer = { write: async () => { throw new Error('storyline replies must not reach the model'); } };
 
 describe('EMPIRE', () => {
   it('replying EMPIRE gets the scripted reply with the sign-up link, and charges nothing yet', async () => {

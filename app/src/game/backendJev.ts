@@ -17,6 +17,8 @@ export class BackendJev implements JevRouter {
   mode: JevMode = 'checking';
   /** Why Jev is offline, in plain words (for the agent page and the dev panel). */
   reason = '';
+  /** Whether the proxy has ANTHROPIC_API_KEY for Haiku replies (null until the proxy answers). */
+  haikuKey: boolean | null = null;
   private retryAt = 0;
   private listeners = new Set<() => void>();
 
@@ -28,7 +30,8 @@ export class BackendJev implements JevRouter {
   async probe(): Promise<void> {
     try {
       const res = await fetch('/api/status');
-      const body = res.ok ? ((await res.json()) as { jev?: boolean; reason?: string }) : null;
+      const body = res.ok ? ((await res.json()) as { jev?: boolean; reason?: string; writer?: boolean }) : null;
+      this.haikuKey = body ? !!body.writer : null;
       if (body?.jev) this.setMode('online');
       else this.goOffline(body?.reason ?? 'The Jev proxy is not running (npm run proxy).');
     } catch {

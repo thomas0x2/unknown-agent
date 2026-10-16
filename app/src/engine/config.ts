@@ -9,8 +9,8 @@ export const LAST_DAY = 21;
 export const CLOCK = {
   wake: 10 * 60,   // 10:00
   sleep: 24 * 60,  // 00:00 (auto-sleep)
-  // Every action spends exactly one hour.
-  perAction: 60,
+  // Every action spends exactly half an hour.
+  perAction: 30,
 };
 
 export const START = {

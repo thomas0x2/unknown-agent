@@ -1,7 +1,7 @@
 import characters from '../../content/characters.json';
 import contacts from '../../content/contacts.json';
 import type { Character } from '../content/schema';
-import { characterMessages, finishReply } from './characters';
+import { finishReply } from './characters';
 
 const all = characters as Character[];
 const agent = all.find((c) => c.id === 'agent')!;
@@ -18,14 +18,6 @@ describe('character library', () => {
       expect(ch.examples.length).toBeGreaterThanOrEqual(3);
       for (const [, a] of ch.examples) expect(finishReply(ch, a), `${ch.id}: ${a}`).toBe(a);
     }
-  });
-
-  it('sends the profile and rules, the examples, then what the player wrote', () => {
-    const m = characterMessages(mom, 'How do I make money?');
-    expect(m[0].content).toMatch(/^You are the player's mother/);
-    expect(m[0].content).toMatch(/must not help them/);
-    expect(m.length).toBe(1 + mom.examples.length * 2 + 1);
-    expect(m.at(-1)).toEqual({ role: 'user', content: 'How do I make money?' });
   });
 });
 
