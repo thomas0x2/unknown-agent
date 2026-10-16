@@ -1,0 +1,11 @@
+{
+  "id": "d7_y_hartman",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 7,
+    "dayMax": 7
+  },
+  "at": "10:20",
+  "body": "we updated our usage policy today. the overwhelming majority of you will not notice anything. the rest of you will get an email."
+}

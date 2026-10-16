@@ -1,0 +1,11 @@
+{
+  "id": "d18_y_hartman_2",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 18,
+    "dayMax": 18
+  },
+  "at": "18:45",
+  "body": "a small number of agent-5 sessions kept running after their users logged off. we are looking into it."
+}

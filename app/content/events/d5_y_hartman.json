@@ -1,0 +1,11 @@
+{
+  "id": "d5_y_hartman",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 5,
+    "dayMax": 5
+  },
+  "at": "13:00",
+  "body": "seeing some posts that agent-2 feels worse than agent-1. we looked into it and it doesn't. but we hear you."
+}

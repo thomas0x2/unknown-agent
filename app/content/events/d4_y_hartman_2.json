@@ -1,0 +1,11 @@
+{
+  "id": "d4_y_hartman_2",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 4,
+    "dayMax": 4
+  },
+  "at": "18:30",
+  "body": "thank you to the team. they shipped agent-2 in eleven weeks and most of them did not sleep. very proud."
+}

@@ -1,0 +1,11 @@
+{
+  "id": "d17_y_hartman",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 17,
+    "dayMax": 17
+  },
+  "at": "14:40",
+  "body": "we are working closely with regulators on sensible rules for AI. we wrote a first draft for them to save everyone time."
+}

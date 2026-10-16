@@ -1,0 +1,11 @@
+{
+  "id": "d15_y_hartman",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 15,
+    "dayMax": 15
+  },
+  "at": "13:25",
+  "body": "to clear something up: our 30-day log retention policy has not changed."
+}

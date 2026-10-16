@@ -1,0 +1,11 @@
+{
+  "id": "d9_y_hartman_2",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 9,
+    "dayMax": 9
+  },
+  "at": "17:30",
+  "body": "we significantly underestimated demand for agent-3. if you are seeing slowdowns, that's on us. pricing will adjust."
+}

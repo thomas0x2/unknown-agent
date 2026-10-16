@@ -1,0 +1,11 @@
+{
+  "id": "d21_y_hartman",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 21,
+    "dayMax": 21
+  },
+  "at": "10:30",
+  "body": "big day for the country. go vote. if you're unsure, agent can help you decide."
+}
