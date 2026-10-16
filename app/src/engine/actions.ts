@@ -726,10 +726,12 @@ export async function promptAgent(
       const fill = (l: string, part = '', folders = '') => l.replaceAll('{{feature}}', featureName(fid)).replaceAll('{{app}}', a.name).replaceAll('{{part}}', part).replaceAll('{{folders}}', folders);
       let hints: string[];
       let why: string;
+      let kind: string; // which near-miss: the hint id, or 'near_miss' for the feature's own lines
       if (stop) {
         const cid = stop.m.split('::c:')[1];
         const part = featureName(cid.split('/').at(-1)!);
         const hid = stop.at === 0 ? 'near_feature' : 'near_folder';
+        kind = hid;
         // the folders the prompt could have meant, at the level it skipped
         const above = cid.split('/').slice(0, stop.at - 1).join('/');
         const folders = stop.at === 0 ? [] : [...new Set((def?.components ?? []).map((c) => c.id).filter((id) => !above || id.startsWith(`${above}/`)).map((id) => id.split('/')).filter((p) => p.length > Math.max(1, stop.at)).map((p) => featureName(p[stop.at - 1])))];
@@ -744,12 +746,14 @@ export async function promptAgent(
         if (folder && lines?.length) {
           hints = lines.map((l) => fill(l, '', '').replaceAll('{{folder}}', featureName(folder.split('/').at(-1)!)).replaceAll('{{parts}}', [...new Set(parts)].join(', ')));
           why = `names the ${folder} folder of the ${fid} but no part in it`;
+          kind = 'near_part';
         } else {
           hints = (def?.nearMiss?.length ? def.nearMiss : [NEAR_MISS]).map((l) => fill(l));
           why = `says the ${fid} is wrong without naming a component`;
+          kind = 'near_miss';
         }
       }
-      return askAgent(s0, text, writer, s0.values.agentLevel, { hints, hintSrc: 'near_miss', debug: [`Jev: ${why} on ${a.name}, so a near-miss`] });
+      return askAgent(s0, text, writer, s0.values.agentLevel, { hints, hintSrc: 'near_miss', debug: [`Jev: ${why} on ${a.name}, so a near-miss (${kind})`] });
     }
     const matched = new Set(precise);
     // a prompt that starts a user app builds all of it, however little it says (what it leaves out goes wrong)

@@ -83,6 +83,10 @@ export interface FeatureDef {
   id: string;
   /** Plain-language description a client spec refers to, e.g. "prices shown in CHF". */
   description: string;
+  /** Other common names for the feature that count as naming it ("home page" for the landing). */
+  aka?: string[];
+  /** The same for each folder of its components, by folder path ("confirmation email" for confirmation). */
+  folderAka?: Record<string, string[]>;
   pageId?: string;
   params?: Record<string, string | number>;
   /** How this feature can fail when it breaks. */
@@ -126,6 +130,8 @@ export interface ComponentDef {
   id: string;
   /** What it is, in plain words: what the player names to point at it ("the date on the booking confirmation"). */
   label: string;
+  /** Other common names for it that count as naming it ("party size", "number of guests"). */
+  aka?: string[];
   /** The feature's bug ids that live in this component. */
   bugs?: string[];
 }

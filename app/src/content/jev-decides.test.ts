@@ -114,7 +114,9 @@ describe('fixing named bugs', () => {
     const items = asked.features[0].features.filter((f) => f.id.startsWith(`${id}::landing::`));
     expect(items.find((f) => f.id.endsWith('::feature'))!.kind).toBe('build');
     expect(items.filter((f) => f.kind === 'component').map((f) => f.id.split('::')[2])).toEqual(['c:name', 'c:hours']);
-    expect(items.find((f) => f.kind === 'component')!.description).toMatch(/^the restaurant name, a part of the landing .*misspelled/);
+    expect(items.find((f) => f.kind === 'component')!.description).toMatch(/^the restaurant name \(also counts as naming it: "title", "heading"\), a part of the landing .*misspelled/);
+    // synonyms count for the path steps too
+    expect(items.find((f) => f.id.endsWith('::s:landing'))!.description).toContain('"home page"');
     // the path is asked step by step: here just the feature, since landing's parts sit at its top
     expect(items.filter((f) => f.kind === 'step').map((f) => f.id.split('::')[2])).toEqual(['s:landing']);
     expect(items.find((f) => f.kind === 'area')!.description).toMatch(/Its parts, by path: landing > name \(the restaurant name\); landing > hours \(the opening hours\)/);

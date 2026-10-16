@@ -312,6 +312,12 @@ export interface FixCategory {
 /** The feature as a player would name it: 'auto_buy' is the auto buy. */
 export const featureName = (fid: string) => fid.replaceAll('_', ' ');
 
+/** Synonyms that count as naming a step or part, appended to its description. */
+const also = (aka: string[] | undefined, name = '') => {
+  const extra = (aka ?? []).filter((a) => !name.toLowerCase().includes(a.toLowerCase()));
+  return extra.length ? ` (also counts as naming it: ${extra.map((a) => `"${a}"`).join(', ')})` : '';
+};
+
 /** A component's path as a player names it, step by step: 'booking/confirmation/date' is "booking > confirmation > date". */
 export const componentPath = (fid: string, cid: string) => [fid, ...cid.split('/')].map(featureName).join(' > ');
 
@@ -351,13 +357,13 @@ export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, f
   // the path to each component: the feature, then each folder. Each step is its own simple question
   // ("does the prompt name the booking?"), and a component needs every step on its path named
   const steps = new Map<string, string>();
-  steps.set(`s:${featureId}`, `the ${featureName(featureId)} (${def.description})`);
+  steps.set(`s:${featureId}`, `the ${featureName(featureId)} (${def.description})${also(def.aka)}`);
   for (const c of comps) {
     const folders = c.id.split('/').slice(0, -1);
     folders.forEach((_, i) => {
       const path = folders.slice(0, i + 1).join('/');
       const under = comps.filter((o) => o.id.startsWith(`${path}/`)).map((o) => o.label);
-      steps.set(`s:${featureId}/${path}`, `the ${featureName(folders[i])} of the ${featureName(featureId)}, which holds: ${under.join('; ')}`);
+      steps.set(`s:${featureId}/${path}`, `the ${featureName(folders[i])} of the ${featureName(featureId)}, which holds: ${under.join('; ')}${also(def.folderAka?.[path])}`);
     });
   }
   if (comps.length) for (const [id, description] of steps) out.push({ id, description, kind: 'step' });
@@ -367,7 +373,7 @@ export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, f
     const others = comps.filter((o) => o !== c).map((o) => o.label);
     const folders = c.id.split('/').slice(0, -1);
     const requires = [`s:${featureId}`, ...folders.map((_, i) => `s:${featureId}/${folders.slice(0, i + 1).join('/')}`)];
-    out.push({ id: `c:${c.id}`, description: `${c.label}, a part of the ${featureName(featureId)} (${def.description}).${can.length ? ` What can go wrong with it: ${can.join(' ')}` : ''}${others.length ? ` Other parts of the ${featureName(featureId)}, which are not this one: ${others.join('; ')}.` : ''}`, kind: 'component', requires });
+    out.push({ id: `c:${c.id}`, description: `${c.label}${also(c.aka, c.label)}, a part of the ${featureName(featureId)} (${def.description}).${can.length ? ` What can go wrong with it: ${can.join(' ')}` : ''}${others.length ? ` Other parts of the ${featureName(featureId)}, which are not this one: ${others.join('; ')}.` : ''}`, kind: 'component', requires });
   }
   // bugs no component claims are still matched on their own
   const claimed = new Set(comps.flatMap((c) => c.bugs ?? []));

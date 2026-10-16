@@ -11,6 +11,19 @@
     {
       "id": "machines",
       "description": "show every machine and whether it is free, running, done, or out of order",
+      "aka": [
+        "machine list",
+        "machine grid",
+        "washers",
+        "status board"
+      ],
+      "folderAka": {
+        "status": [
+          "machine status",
+          "state",
+          "status"
+        ]
+      },
       "failures": [
         "subtle",
         "failed_fetch"
@@ -65,6 +78,11 @@
           "label": "how many machines are shown",
           "bugs": [
             "six_of_eight"
+          ],
+          "aka": [
+            "number of machines",
+            "machine count",
+            "missing machines"
           ]
         },
         {
@@ -72,6 +90,11 @@
           "label": "the status labels (free, running, done, out of order)",
           "bugs": [
             "raw_codes"
+          ],
+          "aka": [
+            "status labels",
+            "status text",
+            "codes"
           ]
         },
         {
@@ -79,6 +102,10 @@
           "label": "the status of machines that are done",
           "bugs": [
             "done_as_free"
+          ],
+          "aka": [
+            "done machines",
+            "finished machines"
           ]
         },
         {
@@ -86,6 +113,10 @@
           "label": "the status of out-of-order machines",
           "bugs": [
             "broken_as_free"
+          ],
+          "aka": [
+            "out of order",
+            "broken machines"
           ]
         }
       ],
@@ -119,6 +150,12 @@
     {
       "id": "refresh",
       "description": "refresh the live status regularly instead of showing stale data",
+      "aka": [
+        "auto refresh",
+        "live updates",
+        "updating",
+        "reload"
+      ],
       "failures": [
         "subtle"
       ],
@@ -144,6 +181,12 @@
           "label": "refreshing the machine status",
           "bugs": [
             "no_refresh"
+          ],
+          "aka": [
+            "auto refresh",
+            "refresh",
+            "polling",
+            "stale status"
           ]
         }
       ],
@@ -162,6 +205,12 @@
     {
       "id": "minutes",
       "description": "show the minutes left for running machines",
+      "aka": [
+        "time left",
+        "countdown",
+        "timer",
+        "remaining time"
+      ],
       "failures": [
         "subtle"
       ],
@@ -186,6 +235,11 @@
           "label": "the minutes left on running machines",
           "bugs": [
             "minutes_wrong"
+          ],
+          "aka": [
+            "minutes left",
+            "time remaining",
+            "countdown"
           ]
         }
       ],
@@ -203,6 +257,11 @@
     {
       "id": "more_machines",
       "description": "show all twelve machines after the four new ones were added",
+      "aka": [
+        "new machines",
+        "twelve machines",
+        "extra machines"
+      ],
       "failures": [
         "subtle"
       ],
@@ -245,6 +304,10 @@
           "label": "showing all twelve machines",
           "bugs": [
             "still_eight"
+          ],
+          "aka": [
+            "twelve machines",
+            "machine count"
           ]
         },
         {
@@ -252,6 +315,10 @@
           "label": "the status of the four new machines",
           "bugs": [
             "new_always_free"
+          ],
+          "aka": [
+            "new machines",
+            "the four new ones"
           ]
         },
         {
@@ -259,6 +326,10 @@
           "label": "the grid layout with more machines",
           "bugs": [
             "layout_breaks"
+          ],
+          "aka": [
+            "grid",
+            "layout"
           ]
         }
       ],

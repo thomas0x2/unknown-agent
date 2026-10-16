@@ -1,0 +1,110 @@
+[
+  {
+    "app": "restaurant",
+    "broken": ["landing/name", "landing/hours"],
+    "prompt": "On the Trattoria Gino site, the name and the opening hours on the landing page are wrong",
+    "expect": { "fix": ["landing/name", "landing/hours"] }
+  },
+  {
+    "app": "restaurant",
+    "broken": ["landing/hours"],
+    "prompt": "Trattoria Gino: the opening times on the home page are off",
+    "expect": { "fix": ["landing/hours"] }
+  },
+  {
+    "app": "restaurant",
+    "broken": ["landing/hours"],
+    "prompt": "Trattoria Gino: the landing page is wrong",
+    "expect": { "near": "near_miss" }
+  },
+  {
+    "app": "restaurant",
+    "broken": ["menu/prices"],
+    "prompt": "The prices on the Trattoria Gino menu are wrong",
+    "expect": { "fix": ["menu/prices"] }
+  },
+  {
+    "app": "restaurant",
+    "broken": ["menu/items"],
+    "prompt": "Trattoria Gino: the dishes on the menu page aren't the ones Gino sent",
+    "expect": { "fix": ["menu/items"] }
+  },
+  {
+    "app": "restaurant",
+    "broken": ["booking/confirmation/date"],
+    "prompt": "On Trattoria Gino, the date in the booking confirmation email is wrong",
+    "expect": { "fix": ["booking/confirmation/date"] }
+  },
+  {
+    "app": "restaurant",
+    "broken": ["booking/confirmation/party"],
+    "prompt": "Trattoria Gino reservations: the confirmation mail shows the wrong number of guests",
+    "expect": { "fix": ["booking/confirmation/party"] }
+  },
+  {
+    "app": "restaurant",
+    "broken": ["booking/confirmation/date"],
+    "prompt": "On Trattoria Gino, the date in the confirmation is wrong",
+    "expect": { "near": "near_feature" }
+  },
+  {
+    "app": "restaurant",
+    "broken": ["booking/confirmation/date"],
+    "prompt": "Trattoria Gino: the booking date is wrong",
+    "expect": { "near": "near_folder" }
+  },
+  {
+    "app": "restaurant",
+    "broken": ["booking/confirmation/time"],
+    "prompt": "Trattoria Gino: something's off with the booking confirmation",
+    "expect": { "near": "near_part" }
+  },
+  {
+    "app": "restaurant",
+    "broken": ["booking/form/date"],
+    "prompt": "On Trattoria Gino the booking form lets you pick dates in the past",
+    "expect": { "fix": ["booking/form/date"] }
+  },
+  {
+    "app": "restaurant",
+    "broken": ["booking/form/hours"],
+    "prompt": "Trattoria Gino: fix the booking",
+    "expect": { "near": "near_miss" }
+  },
+  {
+    "app": "sentiment",
+    "broken": ["filter/bots"],
+    "prompt": "The Sentiment Crawler's bot filter lets the spam through",
+    "expect": { "fix": ["filter/bots"] }
+  },
+  {
+    "app": "sentiment",
+    "broken": ["portfolio/holdings/price"],
+    "prompt": "On the Sentiment Crawler portfolio, the price of each holding is stale",
+    "expect": { "fix": ["portfolio/holdings/price"] }
+  },
+  {
+    "app": "sentiment",
+    "broken": ["portfolio/pnl"],
+    "prompt": "Sentiment Crawler: the profit on the portfolio shows the wrong sign",
+    "expect": { "fix": ["portfolio/pnl"] }
+  },
+  {
+    "app": "laundromat",
+    "broken": ["machines/status/done"],
+    "prompt": "Spin Cycle Status: on the machine list, finished machines show as free in their status",
+    "expect": { "fix": ["machines/status/done"] }
+  },
+  {
+    "app": "laundromat",
+    "broken": ["minutes/minutes_left"],
+    "prompt": "Spin Cycle Status: the countdown shows the wrong time left",
+    "expect": { "fix": ["minutes/minutes_left"] }
+  },
+  {
+    "app": "restaurant",
+    "broken": ["landing/hours"],
+    "prompt": "it's broken",
+    "expect": { "none": true }
+  }
+]

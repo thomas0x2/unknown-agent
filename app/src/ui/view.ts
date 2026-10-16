@@ -1135,7 +1135,7 @@ export function devHtml(store: GameStore): string {
     <p><b>Day</b> ${m.day} · <b>Agent</b> L${m.agentLevel} · <b>Followers</b> ${m.followers}</p>
     <p><b>Meters</b> <span class="dv-dim">${esc(meters)}</span></p>
     <div class="dv-row"><b>Clock</b><button data-dev="hold" class="${store.clockHeld ? 'on' : ''}">${store.clockHeld ? 'Start clock' : 'Stop clock'}</button><button data-dev="skip">+1 hour</button></div>
-    <div class="dv-row"><button data-dev="money">+$100</button><button data-dev="followers">+50 followers</button><button data-act="devedit" class="${store.ui.devEdit ? 'on' : ''}">Flags and meters…</button></div>
+    <div class="dv-row"><button data-dev="money">+$100</button><button data-dev="followers">+50 followers</button><button data-act="devtab" data-devtab="edit" class="${store.ui.devEdit && store.ui.devTab === 'edit' ? 'on' : ''}">Flags and meters…</button><button data-act="devtab" data-devtab="jev" class="${store.ui.devEdit && store.ui.devTab === 'jev' ? 'on' : ''}">Jev tests…</button></div>
     <form class="dv-row" data-form="dev-day"><label>Go to day <input id="dev-day" type="number" min="1" max="${LAST_DAY}" value="${Math.min(LAST_DAY, m.day + 1)}"></label><button type="submit">Go</button><span class="dv-dim">skips the nights: no payday, rent or bills</span></form>
     <p><b>Flags</b> <code>${esc(s.flags.join(', ') || 'none')}</code></p>
     <p><b>Apps</b> <code>${esc(s.apps.map((a) => `${a.name}:${appWorking(a) ? 'ok' : a.deployed ? 'check' : 'undeployed'}`).join(' · ') || 'none')}</code></p>

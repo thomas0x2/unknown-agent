@@ -11,6 +11,11 @@
     {
       "id": "personalize",
       "description": "fill the first name and company into each email correctly",
+      "aka": [
+        "personalization",
+        "mail merge",
+        "names"
+      ],
       "failures": [
         "subtle"
       ],
@@ -21,17 +26,30 @@
       "components": [
         {
           "id": "first_name",
-          "label": "the first name in each email"
+          "label": "the first name in each email",
+          "aka": [
+            "first name",
+            "name"
+          ]
         },
         {
           "id": "company",
-          "label": "the company in each email"
+          "label": "the company in each email",
+          "aka": [
+            "company",
+            "company name"
+          ]
         }
       ]
     },
     {
       "id": "cap",
       "description": "send at most 50 a day with no duplicates",
+      "aka": [
+        "limit",
+        "daily cap",
+        "rate limit"
+      ],
       "failures": [
         "subtle"
       ],
@@ -42,17 +60,31 @@
       "components": [
         {
           "id": "daily_limit",
-          "label": "the 50-a-day limit"
+          "label": "the 50-a-day limit",
+          "aka": [
+            "50 a day",
+            "daily limit",
+            "cap"
+          ]
         },
         {
           "id": "duplicates",
-          "label": "skipping leads already emailed"
+          "label": "skipping leads already emailed",
+          "aka": [
+            "duplicates",
+            "double sends",
+            "repeats"
+          ]
         }
       ]
     },
     {
       "id": "unsubscribe",
       "description": "a working unsubscribe link that is always honored",
+      "aka": [
+        "opt-out",
+        "unsub"
+      ],
       "failures": [
         "deep",
         "subtle"
@@ -66,17 +98,30 @@
       "components": [
         {
           "id": "link",
-          "label": "the unsubscribe link"
+          "label": "the unsubscribe link",
+          "aka": [
+            "unsubscribe link",
+            "opt-out link"
+          ]
         },
         {
           "id": "honoring",
-          "label": "honoring unsubscribes"
+          "label": "honoring unsubscribes",
+          "aka": [
+            "honoring",
+            "still emailing",
+            "respecting unsubscribes"
+          ]
         }
       ]
     },
     {
       "id": "test",
       "description": "a test button that sends the first leads to your own inbox",
+      "aka": [
+        "test send",
+        "test mode"
+      ],
       "failures": [
         "visible",
         "subtle"
@@ -89,7 +134,11 @@
       "components": [
         {
           "id": "test_button",
-          "label": "the test send button"
+          "label": "the test send button",
+          "aka": [
+            "test button",
+            "test send"
+          ]
         }
       ]
     }
