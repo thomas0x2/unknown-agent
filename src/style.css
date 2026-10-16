@@ -736,6 +736,7 @@ a.y-me-head { text-decoration: none; color: inherit; }
 
 /* ── Yowl: business reviews ── */
 .ico-yowl, .nt-yowl .nt-ico { color: #ff5a3c; }
+.ico-empire { color: #f2b84b; --icon-ink: #261800; }
 .yw { min-height: 100%; background: #fff8f3; color: #2a1712; font-family: var(--f-ui); }
 .yw-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 16px; padding: 12px clamp(16px, 4vw, 40px); background: #c2321a; color: #fff; }
 .yw-logo { display: flex; align-items: center; gap: 6px; color: #fff; text-decoration: none; font-weight: 800; font-size: 22px; letter-spacing: -0.02em; }
