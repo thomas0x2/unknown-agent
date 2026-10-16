@@ -7,7 +7,7 @@
   "trigger": {
     "dayMin": 4
   },
-  "body": "mom's birthday is day 6. she needs a new jacket. can you chip in 40 for one? or if that marketplace of yours is real, grab one there and i'll cover my half.",
+  "body": "mom's birthday is thursday. she needs a new jacket. can you chip in 40 for one? or if that marketplace of yours is real, grab one there and i'll cover my half.",
   "outcomes": [
     {
       "id": "chip",

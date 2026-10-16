@@ -3,9 +3,9 @@
   "site": "qmail",
   "from": "Gary Pruitt",
   "addr": "gary@pruittproperty.test",
-  "subject": "Rent: end of day 7",
+  "subject": "Rent: due Friday, October 9",
   "trigger": {
     "dayMin": 1
   },
-  "body": "Hi,\n\nReminder that rent (350 DOLR) comes out of your wallet at the end of day 7. Last month's late fee was 89.50 DOLR. I'd rather not do that again, and I'd rather not do the other thing either.\n\nGary Pruitt\nPruitt Property Management"
+  "body": "Hi,\n\nReminder that rent (350 DOLR) comes out of your wallet at the end of Friday, October 9. Last month's late fee was 89.50 DOLR. I'd rather not do that again, and I'd rather not do the other thing either.\n\nGary Pruitt\nPruitt Property Management"
 }

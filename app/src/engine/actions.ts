@@ -16,6 +16,7 @@ import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent
 import { getEvent, activeDeliveries, reachableByEmail } from './events';
 import { buildApp, fixApp, fixBreak, fixCategories, keywordCategories, needsWork, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, type BuildReport } from './apps';
 import { type Writer, scriptedWriter } from './writer';
+import { dateFull } from './calendar';
 
 export interface ReplyResult {
   state: GameState;
@@ -29,7 +30,7 @@ export interface ReplyResult {
 const PLAYER_ADDR = 'you@qmail.com';
 
 function stateSummary(s: GameState): string {
-  return `Day ${s.values.day}. ${s.values.crypto} DOLR, ${s.values.followers} followers, agent level ${s.values.agentLevel}.`;
+  return `Day ${s.values.day} (${dateFull(s.values.day)}). ${s.values.crypto} DOLR, ${s.values.followers} followers, agent level ${s.values.agentLevel}.`;
 }
 
 function contactFor(content: Content, key: string): Contact | undefined {
@@ -626,7 +627,7 @@ export function makeBooking(s0: GameState, appId: string, name: string, email: s
   tick(s, 'book');
   s.bookings.push({ id: nextId(s, 'bk'), appId, name, email, date, time, party, cancelled: false, fakeCancel });
   if (works && email.toLowerCase() === PLAYER_ADDR) {
-    pushMail(s, { folder: 'inbox', day: s.values.day, from: app.name, addr: `bookings@${app.url}`, subject: `Booking confirmed — ${app.name}`, body: `Your table for ${party} on Day ${date} at ${time} is confirmed. Need to cancel? Use the link below.`, read: false, link: 'cancel' });
+    pushMail(s, { folder: 'inbox', day: s.values.day, from: app.name, addr: `bookings@${app.url}`, subject: `Booking confirmed — ${app.name}`, body: `Your table for ${party} on ${dateFull(date)} at ${time} is confirmed. Need to cancel? Use the link below.`, read: false, link: 'cancel' });
   }
   return s;
 }

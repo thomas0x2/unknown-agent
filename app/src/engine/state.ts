@@ -5,6 +5,7 @@
 import { type MeterId, initialMeters } from './values';
 import { makeSeed } from './rng';
 import { CLOCK } from './config';
+import { dateFull } from './calendar';
 
 export type EventSite = 'qmail' | 'y' | 'yowl' | 'nullboard' | 'cellar' | 'agent';
 export type Site = EventSite | 'satchel' | 'forkyard' | 'weightroom' | 'terminal' | 'app';
@@ -290,7 +291,7 @@ export const SEED_TX: Tx[] = [
 export function startDayChat(s: GameState): void {
   if (s.chat.every((m) => m.day === s.values.day)) return;
   const today = s.chat.filter((m) => m.day === s.values.day);
-  s.chat = [{ from: 'system', text: `Day ${s.values.day}. New session; yesterday's conversation is gone.`, day: s.values.day }, ...today];
+  s.chat = [{ from: 'system', text: `${dateFull(s.values.day)}. New session; yesterday's conversation is gone.`, day: s.values.day }, ...today];
 }
 
 export function newGame(seed = makeSeed()): GameState {

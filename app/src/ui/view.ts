@@ -10,7 +10,7 @@ import { listSlots, autoSlot } from '../game/saves';
 import { ICONS, TOKENS, Y_ICONS } from './icons';
 import { route, bookmarks, type Route, type SiteId } from '../sites/registry';
 import {
-  type GameState, type AppInstance, getApp, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, EMPIRE, BOUNCE_ADDR,
+  type GameState, type AppInstance, getApp, appWorking, agentCost, promptCost, RENT, AGENT_COST, dateShort, dateLong, dateMedium, dateFull, EMPIRE, BOUNCE_ADDR,
 } from '../engine';
 import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
@@ -20,7 +20,6 @@ import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount } from './appsite';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 
-const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const WALLET_ADDR = '0x4417c3e8b1d05f2a9e6d7b0c1f83a4e5d2b9a9f2';
 const PLAYER = { name: 'You', handle: 'you', addr: 'you@qmail.com' };
 const shortAddr = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
@@ -38,7 +37,6 @@ function avatar(name: string, handle: string) {
   return `<div class="av" style="--h:${hashHue(handle)}">${esc(initials)}</div>`;
 }
 const handleFrom = (from: string) => from.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '').slice(0, 20) || 'user';
-const weekday = (day: number) => DAYS[(day - 1) % 7];
 const br = (t: string) => esc(t).replace(/\n/g, '<br>');
 const tpl = (t: string) => String(t ?? '').replace(/\{\{\s*playerName\s*\}\}/g, 'you').replace(/\{\{\s*\w+\s*\}\}/g, '');
 
@@ -84,7 +82,7 @@ export function viewportSite(store: GameStore): string {
 export function objective(s: GameState): string {
   if (s.ending) return 'Chapter over.';
   const rentDay = rentDayOf(s);
-  if (rentDay) return `Make rent: ${RENT[rentDay]} DOLR by the end of Day ${rentDay}.`;
+  if (rentDay) return `Make rent: ${RENT[rentDay]} DOLR by the end of ${dateFull(rentDay)}.`;
   return 'Keep the lights on.';
 }
 const rentDayOf = (s: GameState) => Object.keys(RENT).map(Number).sort((a, b) => a - b).find((d) => d >= s.values.day);
@@ -103,7 +101,7 @@ export function fmtClock(min: number): string {
 }
 export function clockHtml(s: GameState): string {
   const near = s.clockMin >= 22 * 60; // getting late
-  return `<b class="${near ? 'late' : ''}">${fmtClock(s.clockMin)}</b><span>${weekday(s.values.day)} · Day ${s.values.day} of ${LAST_DAY}</span>`;
+  return `<b class="${near ? 'late' : ''}">${fmtClock(s.clockMin)}</b><span>${dateMedium(s.values.day)}</span>`;
 }
 
 // ── desktop: taskbar window entry + home menu ──
@@ -123,7 +121,7 @@ const MI = {
 };
 function autoRow(): string {
   const a = autoSlot();
-  return `<div class="dm-slot dm-auto${a ? '' : ' empty'}">${MI.clock}<span><b>Autosave${a ? ` · Day ${a.day}` : ''}</b><small>${a ? 'Start of the day · ' + esc(fmtClock(a.clockMin)) : 'Made each morning after you sleep'}</small></span>
+  return `<div class="dm-slot dm-auto${a ? '' : ' empty'}">${MI.clock}<span><b>Autosave${a ? ` · ${dateShort(a.day)}` : ''}</b><small>${a ? 'Start of the day · ' + esc(fmtClock(a.clockMin)) : 'Made each morning after you sleep'}</small></span>
     <span class="dm-slot-acts">${a ? '<button data-slot-load="auto">Load</button>' : ''}</span></div>`;
 }
 export function startMenuHtml(store: GameStore): string {
@@ -134,11 +132,11 @@ export function startMenuHtml(store: GameStore): string {
   const item = (act: string, icon: string, title: string, sub: string) =>
     `<button class="dm-item" data-act="${act}">${icon}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span></button>`;
   const list = cat === 'system'
-    ? item('new', MI.logout, 'New game', 'Start over from Day 1') + item('intro', MI.help, 'How to play', 'The rules, again') + item('devmode', MI.help, `Dev mode: ${store.devMode ? 'on' : 'off'}`, 'Show how agent replies were chosen') + item('dev', MI.term, 'Story debugger', 'jev · Ctrl+`')
+    ? item('new', MI.logout, 'New game', `Start over from ${dateLong(1)}`) + item('intro', MI.help, 'How to play', 'The rules, again') + item('devmode', MI.help, `Dev mode: ${store.devMode ? 'on' : 'off'}`, 'Show how agent replies were chosen') + item('dev', MI.term, 'Story debugger', 'jev · Ctrl+`')
     : autoRow() + listSlots().map((info, i) => {
       const n = i + 1;
       const when = info ? `${fmtClock(info.clockMin)} · saved ${new Date(info.savedAt).toLocaleString(undefined, { month: 'short', day: 'numeric' })}` : 'Empty';
-      return `<div class="dm-slot${info ? '' : ' empty'}">${MI.slot}<span><b>Slot ${n}${info ? ` · Day ${info.day}` : ''}</b><small>${esc(when)}</small></span>
+      return `<div class="dm-slot${info ? '' : ' empty'}">${MI.slot}<span><b>Slot ${n}${info ? ` · ${dateShort(info.day)}` : ''}</b><small>${esc(when)}</small></span>
         <span class="dm-slot-acts">${info ? `<button data-slot-load="${n}">Load</button>` : ''}<button data-slot-save="${n}">Save</button></span></div>`;
     }).join('') + '<p class="dm-note">Your current game saves itself after every action. The autosave is a snapshot from the start of each day.</p>';
   return `<aside class="dm-side">
@@ -148,7 +146,7 @@ export function startMenuHtml(store: GameStore): string {
       <button class="dm-side-btn dm-sleep" data-act="sleep" title="Sleep until tomorrow">${MI.sleep}</button>
     </aside>
     <div class="dm-main">
-      <header class="dm-head"><b>${esc(PLAYER.name)}</b><span>${weekday(s.values.day)} · Day ${s.values.day} of ${LAST_DAY}</span>
+      <header class="dm-head"><b>${esc(PLAYER.name)}</b><span>${dateFull(s.values.day)}</span>
         <button class="dm-sleep-wide" data-act="sleep">${MI.sleep}Sleep</button></header>
       <div class="dm-body"><nav class="dm-cats">${cats}</nav><div class="dm-list">${list}</div></div>
     </div>`;
@@ -188,7 +186,7 @@ function pageError(url: string, site: SiteId): string {
 function pageNewTab(store: GameStore): string {
   const s = store.state;
   const tiles = bookmarks(s).map((b) => `<button class="nt-tile nt-${b.id}" data-nav="${b.base}"><span class="nt-ico">${ICONS[b.id] || ICONS.newtab}</span><span>${esc(b.label)}</span></button>`).join('');
-  return `<div class="newtab"><p class="nt-time">${weekday(s.values.day)} · Day ${s.values.day}</p>
+  return `<div class="newtab"><p class="nt-time">${dateFull(s.values.day)}</p>
     <form class="nt-search" data-form="url"><input id="nt-url" autocomplete="off" placeholder="Type a web address"></form>
     <div class="nt-tiles">${tiles}</div></div>`;
 }
@@ -267,7 +265,7 @@ function pageMail(store: GameStore, param?: string): string {
           ? `<b>${esc(PLAYER.name)}</b> &lt;${esc(PLAYER.addr)}&gt; to <b>${esc(r.to ?? '')}</b>`
           : `<b>${esc(r.from)}</b> &lt;${esc(r.addr)}&gt; to ${esc(PLAYER.addr)}`;
         return `<details class="qm-msg" data-msg="${esc(r.id)}"${expanded ? ' open' : ''}>
-          <summary class="qm-meta"><span>${meta}<span class="qm-snip">${esc(r.body.replace(/\s+/g, ' ').slice(0, 90))}</span></span><span>Day ${r.day}</span></summary>
+          <summary class="qm-meta"><span>${meta}<span class="qm-snip">${esc(r.body.replace(/\s+/g, ' ').slice(0, 90))}</span></span><span>${dateShort(r.day)}</span></summary>
           <div class="qm-body">${linkify(br(r.body))}</div>
           ${r.link === 'cancel' ? `<p class="qm-actions"><button class="qm-btn ghost" data-cancel-booking="${esc(r.id.slice(2))}">Cancel booking</button></p>` : ''}
           ${r.generated ? `<p class="qm-gen">Reply written by ${esc(MISSES.label())}</p>` : ''}
@@ -296,7 +294,7 @@ function pageMail(store: GameStore, param?: string): string {
       return `<a href="#" class="qm-row${unread ? ' unread' : ''}" data-nav="qmail.com/${esc(last.id)}">
         <span class="qm-from">${unread && folder === 'inbox' ? '<i class="qm-dot" aria-label="Unread"></i>' : ''}<span class="qm-names">${esc(who)}</span>${t.rows.length > 1 ? `<span class="qm-count">${t.rows.length}</span>` : ''}</span>
         <span class="qm-subj"><b>${esc(t.rows[0].subject)}</b> <span>${esc(snippet)}</span></span>
-        <span class="qm-time">Day ${last.day}</span></a>`;
+        <span class="qm-time">${dateShort(last.day)}</span></a>`;
     }).join('');
     main = `<h1 class="qm-h">${view === 'sent' ? 'Sent' : 'Inbox'}</h1>${adHtml('qmail', s.values.day, 'wide')}${html ? `<div class="qm-list">${html}</div>` : `<p class="qm-empty">${view === 'sent' ? 'Nothing sent yet.' : 'No mail.'}</p>`}`;
   }
@@ -329,7 +327,7 @@ function yPostHtml(store: GameStore, p: YPost): string {
     <header>
       <a href="#" class="y-av-link" data-nav="${prof}">${avatar(p.author, p.handle)}</a>
       <a href="#" class="y-who" data-nav="${prof}"><span class="y-name"><b>${esc(p.author)}</b></span><span class="y-handle">@${esc(p.handle)}</span></a>
-      <span class="y-time">Day ${p.day}</span>
+      <span class="y-time">${dateShort(p.day)}</span>
     </header>
     <p>${text}</p>
     <footer class="y-acts">
@@ -390,11 +388,6 @@ function yProfile(store: GameStore, handle: string): string {
 }
 
 // ── Satchel (minimal, ledger-style) ──
-/** Day 1 is Mon 12 Oct; days <= 0 are the weeks before the game. */
-function dayDate(day: number): Date { return new Date(Date.UTC(2026, 9, 12 + day - 1)); }
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const shortDate = (day: number) => { const d = dayDate(day); return `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`; };
-const longDate = (day: number) => { const d = dayDate(day); return `${DAYS[(d.getUTCDay() + 6) % 7]}, ${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`; };
 function txHash(x: { day: number; memo: string; amount: number }): string {
   let h = 2166136261;
   for (const c of `${x.day}|${x.memo}|${x.amount}`) h = Math.imul(h ^ c.charCodeAt(0), 16777619) >>> 0;
@@ -440,7 +433,7 @@ function pageWallet(store: GameStore): string {
   // operations, newest first, grouped by date
   const groups = new Map<number, typeof txs>();
   for (const x of txs.slice().reverse()) { if (!groups.has(x.day)) groups.set(x.day, []); groups.get(x.day)!.push(x); }
-  const ops = [...groups.entries()].map(([day, list]) => `<div class="sx-day"><span>${esc(longDate(day))}</span><span>${day >= 1 ? `Day ${day}` : ''}</span></div>` + list.map((x) => {
+  const ops = [...groups.entries()].map(([day, list]) => `<div class="sx-day"><span>${esc(dateMedium(day))}</span><span>${day === s.values.day ? 'Today' : ''}</span></div>` + list.map((x) => {
     const out = x.amount < 0;
     const [who, note] = x.memo.split(' · ');
     return `<div class="sx-op">
@@ -456,7 +449,7 @@ function pageWallet(store: GameStore): string {
   const live = s.apps.filter((a) => a.deployed && !a.churned).length;
   const rentDay = rentDayOf(s);
   const upcoming = [
-    rentDay ? `<div class="sx-row"><span><b>Rent</b><small>Landlord · ${rentDay === s.values.day ? 'tonight' : `${esc(shortDate(rentDay))} · in ${rentDay - s.values.day}d`}</small></span><span class="sx-num">−${RENT[rentDay].toFixed(2)}</span></div>` : '',
+    rentDay ? `<div class="sx-row"><span><b>Rent</b><small>Landlord · ${rentDay === s.values.day ? 'tonight' : `${esc(dateShort(rentDay))} · in ${rentDay - s.values.day}d`}</small></span><span class="sx-num">−${RENT[rentDay].toFixed(2)}</span></div>` : '',
     `<div class="sx-row"><span><b>agent subscription</b><small>GeneralAI · nightly</small></span><span class="sx-num">−${sub.toFixed(2)}</span></div>`,
     live ? `<div class="sx-row"><span><b>Hosting</b><small>Forkyard · ${live} live · nightly</small></span><span class="sx-num">−${(live * 2).toFixed(2)}</span></div>` : '',
     income ? `<div class="sx-row"><span><b>App income</b><small>Working apps · at payday</small></span><span class="sx-num pos">+${income.toFixed(2)}</span></div>` : '',
@@ -481,7 +474,7 @@ function pageWallet(store: GameStore): string {
           <div class="sx-tabs" role="tablist" aria-label="Range">${tabs}</div>
         </div>
         ${balanceChart(window)}
-        <div class="sx-axis"><span>${esc(shortDate(window[0].day))}</span><span>${esc(shortDate(s.values.day))}</span></div>
+        <div class="sx-axis"><span>${esc(dateShort(window[0].day))}</span><span>${esc(dateShort(s.values.day))}</span></div>
       </section>
       <div class="sx-cols">
         <section class="sx-card"><h2>Assets</h2>
@@ -506,7 +499,7 @@ function fyHead(store: GameStore, active: 'repos' | 'profile' | ''): string {
     <a href="#" class="fy-user" data-nav="forkyard.com/you">@you</a></header>`;
 }
 function contribGrid(counts: number[]): string {
-  const cells = counts.map((n, i) => `<i class="l${Math.min(4, n)}" title="Day ${i + 1}: ${n} commit${n === 1 ? '' : 's'}"></i>`).join('');
+  const cells = counts.map((n, i) => `<i class="l${Math.min(4, n)}" title="${dateShort(i + 1)}: ${n} commit${n === 1 ? '' : 's'}"></i>`).join('');
   const total = counts.reduce((a, b) => a + b, 0);
   return `<div class="fy-contrib"><div class="fy-contrib-grid">${cells}</div><small>${total} contributions across the run</small></div>`;
 }
@@ -514,7 +507,7 @@ function pageProfileSelf(store: GameStore): string {
   const s = store.state;
   const commits = s.commits;
   const counts = Array.from({ length: 21 }, (_, i) => commits.filter((c) => c.day === i + 1).length);
-  const feed = commits.slice().reverse().slice(0, 20).map((c) => `<div class="fy-act"><span class="fy-act-ico ${c.kind}">${c.kind === 'deploy' ? '▲' : '●'}</span><span class="fy-act-what"><b>${esc(c.repo)}</b> ${esc(c.msg)}</span><span class="fy-act-day">Day ${c.day}</span></div>`).join('') || '<p class="fy-note">No activity yet. Brief the agent to build something.</p>';
+  const feed = commits.slice().reverse().slice(0, 20).map((c) => `<div class="fy-act"><span class="fy-act-ico ${c.kind}">${c.kind === 'deploy' ? '▲' : '●'}</span><span class="fy-act-what"><b>${esc(c.repo)}</b> ${esc(c.msg)}</span><span class="fy-act-day">${dateShort(c.day)}</span></div>`).join('') || '<p class="fy-note">No activity yet. Brief the agent to build something.</p>';
   const repos = s.apps.map((a) => `<a href="#" class="fy-mini" data-nav="forkyard.com/${a.id}"><b>${esc(a.id)}</b><small>${esc(a.template)} · ${a.kind}</small></a>`).join('') || '<p class="fy-note">No repositories yet.</p>';
   return `<div class="fy">${fyHead(store, 'profile')}<div class="fy-wrap fy-prof">
     <aside class="fy-prof-side">
@@ -631,7 +624,7 @@ function pageAgent(store: GameStore): string {
   const s = store.state;
   const c = agentCost(s.values.agentLevel);
   const msgs = s.chat.map((m) => {
-    if (m.from === 'you') return `<div class="ua-msg you"><div class="ua-bubble">${esc(m.text)}</div><span class="ua-cost">${m.cost ? fmtMoney(-m.cost) + ' · ' : ''}agent-${m.level ?? s.values.agentLevel} · Day ${m.day}</span></div>`;
+    if (m.from === 'you') return `<div class="ua-msg you"><div class="ua-bubble">${esc(m.text)}</div><span class="ua-cost">${m.cost ? fmtMoney(-m.cost) + ' · ' : ''}agent-${m.level ?? s.values.agentLevel} · ${dateShort(m.day)}</span></div>`;
     if (m.from === 'system') return `<div class="ua-sys">${esc(m.text)}</div>`;
     const src = m.src ? `<span class="ua-src ${esc((m.src || '').split(':')[0])}">${esc(m.src)}</span>` : '';
     const model = m.src === 'llm' ? `<span class="ua-model" title="Written by a model">${esc(m.by ?? MISSES.label())}</span>`
@@ -640,7 +633,7 @@ function pageAgent(store: GameStore): string {
     return `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text">${linkify(br(m.text))}</div>${model}${src}${debug}</div>`;
   }).join('');
   const p = store.pendingPrompt;
-  const pending = p == null ? '' : `<div class="ua-msg you"><div class="ua-bubble">${esc(p)}</div><span class="ua-cost">${fmtMoney(-promptCost(s.values.agentLevel, p).total)} · agent-${s.values.agentLevel} · Day ${s.values.day}</span></div>`;
+  const pending = p == null ? '' : `<div class="ua-msg you"><div class="ua-bubble">${esc(p)}</div><span class="ua-cost">${fmtMoney(-promptCost(s.values.agentLevel, p).total)} · agent-${s.values.agentLevel} · ${dateShort(s.values.day)}</span></div>`;
   const thinking = store.busy ? `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text ua-dots"><i></i><i></i><i></i></div></div>` : '';
   return `<div class="ua">
     <header class="ua-head">
@@ -705,7 +698,7 @@ function pageYowl(store: GameStore, param?: string): string {
         <dl class="yw-facts"><dt>Address</dt><dd>${esc(b.address)}</dd><dt>Hours</dt><dd>${esc(b.hours)}</dd><dt>Owner</dt><dd>${esc(b.owner)}</dd></dl></section>
       ${adHtml('yowl', store.state.values.day, 'wide', 1)}
       ${form}
-      <section class="yw-reviews">${list.map((x) => `<article class="yw-review${x.mine ? ' mine' : ''}"><header><b>${esc(x.author)}</b><span>${x.day ? 'Day ' + x.day : 'this week'}</span></header>${starRow(x.stars)}<p>${linkify(esc(x.text))}</p></article>`).join('')}</section>
+      <section class="yw-reviews">${list.map((x) => `<article class="yw-review${x.mine ? ' mine' : ''}"><header><b>${esc(x.author)}</b><span>${x.day ? dateShort(x.day) : 'this week'}</span></header>${starRow(x.stars)}<p>${linkify(esc(x.text))}</p></article>`).join('')}</section>
     </div></div>`;
   }
   const q = store.ui.yowlSearch.trim().toLowerCase();
@@ -795,7 +788,7 @@ export function overlayHtml(store: GameStore): string {
   const s = store.state;
   if (s.ending && !store.ui.confirm) {
     return osWindow('Session ended', 'ov-over', `<p class="ov-eyebrow">The end</p><h1 class="ov-title">${esc(ENDINGS[s.ending] ?? s.ending)}</h1>
-      <p>${esc(EPITAPHS[s.ending] ?? 'The run is over.')} Day ${s.values.day}.</p>
+      <p>${esc(EPITAPHS[s.ending] ?? 'The run is over.')} ${dateFull(s.values.day)}.</p>
       <div class="ov-actions"><button class="btn primary" data-ov="new">Play again</button></div>`);
   }
   if (store.ui.confirm) {
@@ -805,17 +798,17 @@ export function overlayHtml(store: GameStore): string {
   if (store.ui.intro) {
     return osWindow('Welcome', 'ov-intro', `<p class="ov-eyebrow">Week one</p><h1 class="ov-title">Unknown Agent</h1>
       <p>You've just been automated out of a job. You have ${fmtMoney(s.values.crypto)}, a laptop, a handful of bookmarks, and agent — an AI chatbot that bills your wallet for every word.</p>
-      <p>Rent is ${fmtMoney(RENT[7])}, due at the end of Day 7. Don't go broke.</p>
+      <p>Rent is ${fmtMoney(RENT[7])}, due at the end of ${dateFull(7)}. Don't go broke.</p>
       <ul class="ov-rules">
         <li>Every agent prompt costs money. Vague prompts get vague builds.</li>
         <li>Read Y for leads. Check Qmail. Ship on Forkyard — and check what it ships.</li>
         <li>Anything you can do yourself, do yourself. Your time is free now.</li>
       </ul>
-      <div class="ov-actions"><button class="btn primary" data-ov="start">${s.values.day > 1 || s.chat.length > 1 ? `Continue Day ${s.values.day}` : 'Open the laptop'}</button></div>`, 'start');
+      <div class="ov-actions"><button class="btn primary" data-ov="start">${s.values.day > 1 || s.chat.length > 1 ? `Continue · ${dateMedium(s.values.day)}` : 'Open the laptop'}</button></div>`, 'start');
   }
   if (s.morning) {
     const m = s.morning;
-    return osWindow('Overnight summary', 'ov-small ov-morning', `<p class="ov-eyebrow">You slept. The bills didn't.</p><h2>Day ${m.day} · ${DAYS[(m.day - 1) % 7]}</h2>
+    return osWindow('Overnight summary', 'ov-small ov-morning', `<p class="ov-eyebrow">You slept. The bills didn't.</p><h2>${dateFull(m.day)}</h2>
       <table class="ov-lines">${m.lines.map(([l, v]) => (v == null ? `<tr class="note"><td colspan="2">${esc(l)}</td></tr>` : `<tr><td>${esc(l)}</td><td class="${v < 0 ? 'neg' : 'pos'}">${v >= 0 ? '+' : ''}${fmtMoney(v)}</td></tr>`)).join('')}
       <tr class="tot"><td>Balance</td><td>${fmtMoney(m.balance)}</td></tr></table>
       <div class="ov-actions"><button class="btn primary" data-ov="morning">Get up</button></div>`, 'morning');
