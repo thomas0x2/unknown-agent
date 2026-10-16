@@ -6,7 +6,7 @@ import { loadContent } from './load';
 import { startGame, endDay } from '../engine/day';
 import { composeEmail, briefBuild, briefFix, deploy, promptAgent } from '../engine/actions';
 import { applyEffects } from '../engine/effects';
-import { appMeetsSpec, getApp } from '../engine/apps';
+import { appMeetsSpec, getApp, devToggleBug } from '../engine/apps';
 import { offlineJev } from '../engine/jev';
 import { renderAppSite } from '../ui/appsite';
 
@@ -198,5 +198,26 @@ describe('day 1 playthrough', () => {
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')!.also).toBeUndefined();
     s = (await promptAgent(s, content, offlineJev, 'The restaurant name is misspelled, it should say Trattoria Gino.')).state;
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')!.correct).toBe(true);
+  });
+  it('dev mode switches bugs and breaks on and off on demand', async () => {
+    let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    s.values.agentLevel = 5;
+    s = (await briefBuild(s, content, offlineJev, 'trattoria-gino', `Landing page for Trattoria Gino, open 17:00-22:00, and a menu page: ${MENU}, prices in DOLR.`)).state;
+    const app = getApp(s, 'trattoria-gino')!;
+    for (const f of app.repo) Object.assign(f, { correct: true, variant: undefined, also: undefined, params: app.specParams[f.id] });
+    s = deploy(s, 'trattoria-gino');
+    devToggleBug(s, 'trattoria-gino', 'menu', 'prices_curo');
+    devToggleBug(s, 'trattoria-gino', 'menu', 'hallucinated');
+    const a = getApp(s, 'trattoria-gino')!;
+    for (const list of [a.repo, a.features]) expect(list.find((f) => f.id === 'menu')).toMatchObject({ correct: false, variant: 'hallucinated', also: ['prices_curo'] });
+    expect(renderAppSite(a, content.apps.restaurant, 'menu')).toContain('CURO');
+    devToggleBug(s, 'trattoria-gino', 'menu', 'hallucinated');
+    devToggleBug(s, 'trattoria-gino', 'menu', 'prices_curo');
+    expect(a.features.find((f) => f.id === 'menu')).toMatchObject({ correct: true, variant: undefined });
+    devToggleBug(s, 'trattoria-gino', 'landing', 'visible');
+    expect(a.breaks).toMatchObject([{ featureId: 'landing', failure: 'visible' }]);
+    expect(renderAppSite(a, content.apps.restaurant, undefined)).toContain('Application error');
+    devToggleBug(s, 'trattoria-gino', 'landing', 'visible');
+    expect(a.breaks).toEqual([]);
   });
 });

@@ -131,7 +131,7 @@ function toast(title: string, body: string, kind = 'note'): void {
 
 // ── clicks ──
 document.addEventListener('click', (e) => {
-  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-ov],[data-dev],[data-cancel-booking],[data-empire-join],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat],[data-back],[data-forward]');
+  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-ov],[data-dev],[data-cancel-booking],[data-empire-join],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat],[data-back],[data-forward],[data-devbug]');
   // any click outside the home menu closes it (menu items close it themselves below)
   if (store.ui.start && !(e.target as HTMLElement).closest('#startmenu, #dk-home')) store.toggleStart(false);
   if (!t) return;
@@ -165,6 +165,7 @@ document.addEventListener('click', (e) => {
   else if (d.wlRange != null) store.setWalletRange(d.wlRange);
   else if (d.ov != null) onOverlay(d.ov);
   else if (d.dev != null) store.devAdd(d.dev);
+  else if (d.devbug != null) { const [app, feat, key] = d.devbug.split('|'); store.devToggleBug(app, feat, key); }
   else if (d.act === 'sleep') store.endDay();
   else if (d.act === 'new') store.confirm('Start over? This erases your save.', 'Start over', () => { forgetDrafts(); store.newGame(); });
   else if (d.act === 'dev') store.toggleDev();

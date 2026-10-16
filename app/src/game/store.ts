@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer,
   startGame, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, localPrompt, makeBooking, cancelBooking, joinEmpire, deliverDue, CLOCK, tick,
+  promptAgent, writeReview, localPrompt, makeBooking, cancelBooking, joinEmpire, deliverDue, CLOCK, tick, devToggleBug,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -199,6 +199,12 @@ export class GameStore {
     else if (kind === 'followers') s.values.followers += 50;
     else if (kind === 'day7') { s.values.day = 7; s.values.agentLevel = Math.max(s.values.agentLevel, 2); deliverDue(s, this.content); }
     this.store.save(s); this.emit();
+  }
+
+  /** Dev mode: switch a bug or break on one app feature on or off. */
+  devToggleBug(appId: string, featureId: string, key: string): void {
+    devToggleBug(this.state, appId, featureId, key);
+    this.store.save(this.state); this.emit();
   }
 
   async term(text: string) {

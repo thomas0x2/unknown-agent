@@ -361,6 +361,35 @@ export function breakFeature(s: GameState, app: AppInstance, featureId: string, 
   }
 }
 
+const FAILURES: FailureKind[] = ['visible', 'subtle', 'failed_fetch', 'deep'];
+
+/**
+ * Dev mode: switch one bug on or off on demand. A bug id (or 'hallucinated' / 'outdated') goes on
+ * the repo build and, if deployed, the live one; a failure kind toggles a live break.
+ */
+export function devToggleBug(s: GameState, appId: string, featureId: string, key: string): void {
+  const app = getApp(s, appId);
+  if (!app || !app.required.includes(featureId)) return;
+  if ((FAILURES as string[]).includes(key)) {
+    if (!app.deployed) return;
+    const had = app.breaks.some((b) => b.featureId === featureId && b.failure === key);
+    app.breaks = app.breaks.filter((b) => b.featureId !== featureId);
+    if (!had) app.breaks.push({ featureId, failure: key as FailureKind, day: s.values.day, scripted: true, seed: randInt(s, 0, 9999) });
+    return;
+  }
+  const spec = app.specParams[featureId];
+  const toggle = (list: BuiltFeature[]) => {
+    let f = list.find((x) => x.id === featureId);
+    if (!f) { f = { id: featureId, correct: true, params: spec }; list.push(f); }
+    const now = f.correct ? [] : bugsOf(f);
+    const next = now.includes(key) ? now.filter((b) => b !== key) : key === 'hallucinated' ? [key, ...now] : [...now, key];
+    if (!next.length) Object.assign(f, { correct: true, params: spec, variant: undefined, also: undefined });
+    else Object.assign(f, { correct: false, params: spec, ...withBugs(next), seed: f.seed ?? randInt(s, 0, 9999) });
+  };
+  toggle(app.repo);
+  if (app.deployed) toggle(app.features);
+}
+
 /** Nightly 40% roll per live app: break one working feature with one of its failure kinds. */
 export function nightlyBreaks(s: GameState, content: Content): void {
   for (const app of s.apps) {

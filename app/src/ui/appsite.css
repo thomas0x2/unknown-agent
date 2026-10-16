@@ -67,6 +67,11 @@ body.dev-on .dev-bugs { display: block; }
 .dvb-k { width: 110px; flex: none; font-size: 12px; color: #b3a98a; }
 .dvb-tag { font-family: var(--f-mono); font-size: 12px; padding: 1px 7px; border-radius: 5px; background: #2e2a1c; color: #c7bfa5; }
 .dvb-tag.on { background: #c0392b; color: #fff; font-weight: 600; }
+button.dvb-tag { border: 1px solid #4a4330; cursor: pointer; }
+button.dvb-tag:hover:not(:disabled) { border-color: #f0b429; color: #fff; }
+button.dvb-tag.on { border-color: #e74c3c; }
+button.dvb-tag:disabled { opacity: .4; cursor: not-allowed; }
+.dvb-hint { margin-left: auto; font-size: 12px; color: #a99f80; }
 .dvb-check { font-family: var(--f-mono); font-size: 12px; padding: 1px 7px; border-radius: 5px; background: #2e2a1c; color: #c7bfa5; }
 .dvb-check.hit { background: #1f4d2c; color: #c9f2d4; }
 .dvb-check.miss { background: #7a2418; color: #ffd7cf; }
