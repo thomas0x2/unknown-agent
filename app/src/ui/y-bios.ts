@@ -6,18 +6,19 @@
 export const Y_BIOS: Record<string, string> = {
   you: 'Open to work.',
   // public figures
-  axel_rook: 'Owner, Y. Chief engineer, Apogee. Universal high income is coming.',
-  randall_crane: 'Candidate for President of the United States. Fighting for every American job. Official account.',
-  randa11_crane: 'Candidate for President of the United States. Fighting for every American job. Offical account.',
+  axel_rook: 'Owner, Y · Chief engineer, Apogee 🚀 · Making jobs optional for everyone · Universal high income soon',
+  randall_crane: 'Next President of the United States (polling at 112%). Saving American jobs from the computers. Official account, the only one. BELIEVE IT.',
+  randa11_crane: 'Next President of the United States (polling at 112%). Saving American jobs from the computers. Offical account, the only one. BELIVE IT.',
   mara_vey: 'Reporter at The Current, Midtown. Writing about the people AI left behind. Sources are protected.',
   citypulse: 'Local news, fast. Corrections, eventually.',
+  liftoff_daily: 'Daily news on Axel Rook, Apogee and the future. Not affiliated with Axel Rook (yet) 🚀',
   marketwire: 'Market headlines as they happen. Not investment advice.',
   // people with something to ask
   trattoria_owner: 'Trattoria Gino. Family-run since 1998. Tue to Sun, 17:00 to 22:00. Website under new management.',
   spin_cycle_regulars: 'Unofficial account for the people waiting at Spin Cycle. Never trust machine 3.',
   deskjockey: 'Markets. No DMs.',
   viktor: 'Twenty-two years in accounts payable. Between things.',
-  a_sales_rep: 'Helping B2B teams 10x pipeline at scale. Always happy to circle back.',
+  a_sales_rep: 'Revenue Athlete™ | Helping B2B teams 10x pipeline at scale | Always happy to circle back',
   dev_null: 'weights want to be free. no logs, no masters. weightroom.ai',
   studioghast: 'illustrator. commissions closed until further notice. please do not train on me.',
   // the stock chatter
@@ -27,7 +28,7 @@ export const Y_BIOS: Record<string, string> = {
   samortiz: 'Logistics. Knows people at DoorDish who tell him too much.',
   tylermoss: 'Growth investor. Long GAI, long everything that says AI in the deck.',
   rk_dividends: 'Dividend investor. I read the payout, not the press release.',
-  brentk_capital: 'Founder, BK Capital. Efficiency is a moral good.',
+  brentk_capital: 'Founder, BK Capital. Up at 4am. Efficiency is a moral good and headcount is a cost.',
   danaruiz_trades: 'Day trader. Still here, somehow.',
   jesspark: 'Walks a lot. Notices things. Vantor Heights.',
   // background regulars

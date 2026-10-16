@@ -31,7 +31,7 @@ describe('Y bios', () => {
     store.state.values.day = 3;
     store.state.clockMin = 22 * 60;
     store.state.yExtra.push({ id: 'x1', author: 'Randall Crane', handle: 'randall_crane', text: 'BELIEVE IT.', day: 3, min: 600, likes: 1 } as never);
-    expect(page(store, route('y.com/randall_crane', store.state))).toContain('Fighting for every American job');
+    expect(page(store, route('y.com/randall_crane', store.state))).toContain('Saving American jobs from the computers');
     expect(page(store, route('y.com/you', store.state))).toContain('Open to work.');
     expect(page(store, route('y.com/nobody_here', store.state))).toContain("This account doesn't exist");
   });
