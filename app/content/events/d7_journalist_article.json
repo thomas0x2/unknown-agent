@@ -1,0 +1,8 @@
+{
+  "id": "d7_journalist_article",
+  "site": "y",
+  "from": "Mara Vey",
+  "trigger": { "dayMin": 7 },
+  "addr": "mara@thecurrent.test",
+  "body": "New piece: \"The people AI left behind.\" Built from interviews with workers Vantor and others replaced with a prompt. Read it, share it, and tell me whose story I missed. mara@thecurrent.test"
+}

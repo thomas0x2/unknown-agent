@@ -5,6 +5,7 @@
 import type { GameState } from './state';
 import { type MeterId, clampMeter } from './values';
 import { nextRandom } from './rng';
+import { CLOCK } from './config';
 
 export function clone(state: GameState): GameState {
   return structuredClone(state);
@@ -45,6 +46,11 @@ export function setValue(s: GameState, id: MeterId, value: number): void {
 export function money(s: GameState, amount: number, memo: string): void {
   addValue(s, 'crypto', amount);
   s.tx.push({ day: s.values.day, amount: Math.round(amount * 100) / 100, memo });
+}
+
+// ── clock ──
+export function tick(s: GameState, _kind?: string): void {
+  s.clockMin += CLOCK.perAction; // every action is one hour
 }
 
 // ── log ──

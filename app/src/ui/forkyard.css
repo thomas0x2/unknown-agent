@@ -1,0 +1,65 @@
+/* Additive Forkyard styles for the profile, user search, contribution grid and activity feed.
+   The repo list/detail keep using the legacy fy-* rules; these reuse the same --fy-* palette. */
+.fy-logo { cursor: pointer; }
+.fy-nav { display: flex; gap: 4px; margin-left: 8px; }
+.fy-nav a { font-size: 13px; color: var(--fy-dim); text-decoration: none; padding: 5px 10px; border-radius: 6px; }
+.fy-nav a:hover { color: var(--fy-ink); }
+.fy-nav a.on { color: var(--fy-ink); background: var(--fy-bg); box-shadow: inset 0 0 0 1px var(--fy-line); }
+.fy-search { margin-left: auto; margin-right: 12px; flex: 0 1 240px; min-width: 0; }
+.fy-search input { width: 100%; padding: 7px 11px; border: 1px solid var(--fy-line); border-radius: 7px; background: var(--fy-bg); color: var(--fy-ink); font: inherit; font-size: 13px; }
+.fy-search input::placeholder { color: var(--fy-dim); }
+.fy-user { text-decoration: none; }
+
+/* profile layout */
+.fy-prof { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 28px; align-items: start; max-width: 1000px; }
+.fy-prof-side { display: flex; flex-direction: column; gap: 8px; }
+.fy-prof-av { width: 180px; max-width: 100%; aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; font-family: var(--f-mono); font-size: 40px; font-weight: 500; color: #0d0f13; background: linear-gradient(145deg, hsl(var(--h) 70% 62%), hsl(calc(var(--h) + 40) 70% 48%)); border: 1px solid var(--fy-line); }
+.fy-prof-name { margin: 10px 0 0; font-size: 22px; }
+.fy-prof-handle { margin: 2px 0 8px; color: var(--fy-dim); font-family: var(--f-mono); font-size: 15px; }
+.fy-prof-bio { margin: 0 0 10px; font-size: 14px; line-height: 1.5; color: var(--fy-ink); }
+.fy-prof-facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 5px 12px; margin: 0; font-size: 13px; padding-top: 12px; border-top: 1px solid var(--fy-line); }
+.fy-prof-facts dt { color: var(--fy-dim); }
+.fy-prof-facts dd { margin: 0; overflow-wrap: anywhere; color: var(--fy-ink); }
+
+.fy-prof-main { min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.fy-h2 { margin: 12px 0 2px; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fy-dim); display: flex; gap: 8px; align-items: center; }
+.fy-h2 span { font-size: 11px; background: var(--fy-line); padding: 2px 8px; border-radius: 999px; }
+
+/* contribution grid (GitHub-style) */
+.fy-contrib { border: 1px solid var(--fy-line); border-radius: 8px; padding: 14px 16px; background: var(--fy-panel); }
+.fy-contrib-grid { display: grid; grid-template-columns: repeat(21, 1fr); gap: 4px; }
+.fy-contrib-grid i { aspect-ratio: 1; border-radius: 3px; background: #1c2029; }
+.fy-contrib-grid i.l1 { background: #0e4429; }
+.fy-contrib-grid i.l2 { background: #006d32; }
+.fy-contrib-grid i.l3 { background: #26a641; }
+.fy-contrib-grid i.l4 { background: #39d353; }
+.fy-contrib small { display: block; margin-top: 10px; color: var(--fy-dim); font-size: 12px; }
+
+/* pinned repos (compact) */
+.fy-mini-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 10px; }
+.fy-mini { display: flex; flex-direction: column; gap: 3px; padding: 12px 14px; border: 1px solid var(--fy-line); border-radius: 8px; background: var(--fy-panel); text-decoration: none; }
+.fy-mini:hover { border-color: var(--fy-accent); }
+.fy-mini b { color: var(--fy-accent); font-family: var(--f-mono); font-size: 14px; }
+.fy-mini small { color: var(--fy-dim); font-size: 12px; }
+
+/* activity feed */
+.fy-acts { display: flex; flex-direction: column; }
+.fy-act { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 9px 2px; border-top: 1px solid var(--fy-line); font-size: 13.5px; }
+.fy-acts .fy-act:first-child { border-top: 0; }
+.fy-act-ico { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; border: 1px solid var(--fy-line); color: var(--fy-dim); }
+.fy-act-ico.deploy { color: var(--fy-live); border-color: color-mix(in srgb, var(--fy-live) 40%, transparent); }
+.fy-act-what { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fy-ink); }
+.fy-act-what b { color: var(--fy-accent); font-family: var(--f-mono); font-size: 12.5px; }
+.fy-act-day { color: var(--fy-dim); font-size: 12px; white-space: nowrap; }
+.fy-note { color: var(--fy-dim); font-size: 13.5px; }
+
+@media (max-width: 640px) {
+  .fy-prof { grid-template-columns: 1fr; gap: 16px; }
+  .fy-prof-av { width: 120px; font-size: 28px; }
+  .fy-contrib-grid { gap: 3px; }
+  .fy-search { flex-basis: 140px; }
+  .fy-nav { display: none; }
+}
+
+/* taskbar clock: flash the time when it is getting late */
+.tk-clock b.late { color: var(--alarm); }

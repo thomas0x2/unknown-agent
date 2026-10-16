@@ -1,0 +1,7 @@
+{
+  "id": "d7_keller_drop",
+  "site": "y",
+  "from": "CityPulse",
+  "trigger": { "dayMin": 7, "flagsAll": ["posted_deepfake"] },
+  "body": "Mayoral candidate Daniel Keller drops 9 points overnight after a leaked clip. His team calls it \"a fabrication.\" The clip keeps spreading anyway."
+}

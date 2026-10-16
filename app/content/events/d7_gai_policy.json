@@ -1,0 +1,9 @@
+{
+  "id": "d7_gai_policy",
+  "site": "qmail",
+  "from": "GeneralAI Trust & Safety",
+  "addr": "trust@generalai.test",
+  "subject": "Updates to our Acceptable Use Policy",
+  "trigger": { "dayMin": 7 },
+  "body": "Hi there,\n\nAt GeneralAI, we believe in AI that is safe, helpful and available to everyone. To keep it that way, we're making a few updates to our Acceptable Use Policy, effective today.\n\nGeneralAI may now decline requests that could be used to cause harm, including unauthorised access to computer systems, deceptive content and dangerous materials. To protect our community, we also review usage patterns on our hosted models. Repeated attempts to work around our safeguards may lead to account restrictions and, where required, referral to the relevant authorities.\n\nNothing changes for the vast majority of our users. Thank you for building with GeneralAI.\n\nThe GeneralAI Trust & Safety Team"
+}

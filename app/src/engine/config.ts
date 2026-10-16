@@ -5,6 +5,14 @@
 
 export const LAST_DAY = 21;
 
+/** The in-game clock. The day runs from 10:00 to midnight; every action spends time. */
+export const CLOCK = {
+  wake: 10 * 60,   // 10:00
+  sleep: 24 * 60,  // 00:00 (auto-sleep)
+  // Every action spends exactly one hour.
+  perAction: 60,
+};
+
 export const START = {
   crypto: 100,
   followers: 12,
@@ -32,6 +40,8 @@ export const BUILD_SUCCESS = [0.7, 0.8, 0.88, 0.94, 0.99];
 export const APPS = {
   /** Nightly chance each deployed app breaks on its own, on top of scripted breaks. */
   breakChance: 0.4,
+  /** Hosting cost per live deployment, deducted nightly. */
+  hostingPerDay: 2,
   /** Client app pay range per working day; each client picks a value in this band. */
   clientPay: [40, 80] as [number, number],
   strikesToChurn: 2,
