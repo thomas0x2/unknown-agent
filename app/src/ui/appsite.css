@@ -104,6 +104,7 @@ body.dev-on .fy-devcount { display: inline-block; }
 
 /* sentiment crawler */
 .as-s { background: #0f1419; color: #d9dee4; font-family: var(--f-ui); }
+.as-s-logo { width: 30px; height: 30px; flex: none; align-self: center; }
 .as-s-head { display: flex; align-items: baseline; gap: 14px; padding: 16px 24px; border-bottom: 1px solid #222a33; }
 .as-s-head b { font-family: var(--f-mono); font-size: 16px; }
 .as-s-head span { color: #7d8894; font-size: 13px; }
@@ -155,6 +156,7 @@ body.dev-on .fy-devcount { display: inline-block; }
 .as-l-head { display: flex; align-items: center; gap: 12px; padding: 14px 24px; background: #fff; border-bottom: 1px solid #dde4ea; }
 .as-l-head > div { display: flex; flex-direction: column; }
 .as-l-logo { width: 36px; height: 36px; flex: none; }
+.as-l-logo svg, .as-s-logo svg { display: block; width: 100%; height: 100%; }
 .as-l-feed { margin-left: auto; font-size: 13px; color: #2f80ed; text-decoration: none; border: 1px solid #c9dcf4; border-radius: 999px; padding: 5px 12px; }
 .as-l-feed:hover { background: #eef5fd; }
 .as-l-head b { font-size: 18px; }

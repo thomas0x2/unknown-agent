@@ -121,7 +121,6 @@
         "wrong_totals": "portfolio total is 1.8M. my $GAI alone is worth more than that.",
         "value_wrong": "says 42,000 $GAI is worth 61k. it isn't.",
         "pnl_sign": "$GAI is up and the P&L says i lost money on it.",
-        "cash_wrong": "cash is negative. i've never been negative.",
         "pct_wrong": "says $GAI moved 90% today. it moved one."
       },
       "bugs": [
@@ -150,14 +149,6 @@
           ]
         },
         {
-          "id": "cash_wrong",
-          "when": "The cash shows as negative, with the holdings subtracted from it.",
-          "fixed": [
-            "Cash shows the actual cash now.",
-            "Fixed the negative cash."
-          ]
-        },
-        {
           "id": "pct_wrong",
           "when": "The percent changes are 100 times too big.",
           "fixed": [
@@ -167,11 +158,6 @@
         }
       ],
       "checklist": [
-        {
-          "id": "cash",
-          "text": "cash",
-          "bug": "cash_wrong"
-        },
         {
           "id": "pnl",
           "text": "today's change",

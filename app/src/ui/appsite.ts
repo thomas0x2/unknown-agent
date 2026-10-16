@@ -55,6 +55,14 @@ export interface SiteExtras {
   market?: MarketPost[];
 }
 
+/** Logos of the apps that have one, by template: the site header and the browser tab both use them. */
+const LOGO_SVG: Record<string, string> = {
+  laundromat: `<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="2" width="32" height="36" rx="6" fill="#2f80ed"/><rect x="8" y="6" width="24" height="5" rx="2" fill="#fff" opacity=".35"/><circle cx="20" cy="24" r="10" fill="#fff"/><circle cx="20" cy="24" r="7" fill="#9cc6f5"/><path d="M14 25c2-2 4 2 6 0s4 2 6 0" stroke="#2f80ed" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>`,
+  // a dark terminal tile: a market line climbing through a crawler's scan brackets
+  sentiment: `<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="8" fill="#0f1419"/><path d="M9 11V9h4M27 9h4v2M31 29v2h-4M13 31H9v-2" stroke="#3a4552" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="11" y="21" width="3" height="6" rx="1" fill="#e5484d"/><rect x="16.5" y="17" width="3" height="10" rx="1" fill="#30a46c"/><rect x="22" y="19" width="3" height="8" rx="1" fill="#e5484d"/><path d="M10 19l6.5-5 5 3 8.5-6" stroke="#4cc38a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="11" r="2.2" fill="#4cc38a"/></svg>`,
+};
+export const appLogo = (template: string): string | undefined => LOGO_SVG[template];
+
 export function renderAppSite(app: AppInstance, tmpl: AppTemplate | undefined, page: string | undefined, extras: SiteExtras = {}): string {
   if (app.template === 'restaurant') return restaurant(app, tmpl, page, extras);
   if (app.template === 'sentiment') return crawler(app, tmpl, page, extras);
@@ -158,7 +166,7 @@ function crawler(app: AppInstance, tmpl: AppTemplate | undefined, page: string |
   const bugs = new Set(Object.values(f).flatMap((l) => [...l.bugs]));
   // without the filter it counts everything it finds
   if (!f.filter.built) { bugs.add('bots_counted'); }
-  const head = `<header class="as-s-head"><b>${esc(app.name)}</b><span>$-tagged posts on Y</span></header>`;
+  const head = `<header class="as-s-head"><span class="as-s-logo">${LOGO_SVG.sentiment}</span><b>${esc(app.name)}</b><span>$-tagged posts on Y</span></header>`;
   // a ticker's page is the dashboard with that ticker's posts open in a window on top
   const open = page && page !== 'dash' ? page.toUpperCase() : undefined;
   let modal = '';
@@ -211,7 +219,6 @@ function crawler(app: AppInstance, tmpl: AppTemplate | undefined, page: string |
 
 // ── laundromat ──
 
-const SPIN_LOGO = `<svg class="as-l-logo" viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="2" width="32" height="36" rx="6" fill="#2f80ed"/><rect x="8" y="6" width="24" height="5" rx="2" fill="#fff" opacity=".35"/><circle cx="20" cy="24" r="10" fill="#fff"/><circle cx="20" cy="24" r="7" fill="#9cc6f5"/><path d="M14 25c2-2 4 2 6 0s4 2 6 0" stroke="#2f80ed" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>`;
 
 const MACHINE_LABEL = { free: 'Free', running: 'Running', done: 'Done, waiting for pickup', broken: 'Out of order' };
 
@@ -219,7 +226,7 @@ function laundromat(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
   const day = extras.day ?? 1;
   const f = Object.fromEntries(['machines', 'refresh', 'minutes', 'more_machines'].map((id) => [id, live(app, tmpl, id)]));
   const bugs = new Set(Object.values(f).flatMap((l) => [...l.bugs]));
-  const head = `<header class="as-l-head">${SPIN_LOGO}<div><b>${esc(app.name)}</b><span>Spin Cycle Laundry · 201 Ferris St</span></div>
+  const head = `<header class="as-l-head"><span class="as-l-logo">${LOGO_SVG.laundromat}</span><div><b>${esc(app.name)}</b><span>Spin Cycle Laundry · 201 Ferris St</span></div>
     <a href="#" class="as-l-feed" data-newtab="spincycle.test/feed">Raw feed ↗</a></header>`;
   if (page && page !== 'status') return `<div class="as as-l">${head}<main>${notFound()}</main></div>`;
   let body: string;
