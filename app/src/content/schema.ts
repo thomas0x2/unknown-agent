@@ -115,8 +115,6 @@ export interface FeatureDef {
   components?: ComponentDef[];
   /** What the agent says when a fix prompt names this feature but not which component is wrong. */
   nearMiss?: string[];
-  /** The first build's guaranteed teaching bug lands on a feature with this set, if one was built. */
-  firstBuildBug?: boolean;
   /**
    * Complaint lines for this feature, keyed by what's wrong: a bug id ('prices_curo', or
    * 'wrong_items:renamed' for a sub-case), 'hallucinated', 'outdated', a failure kind ('visible',

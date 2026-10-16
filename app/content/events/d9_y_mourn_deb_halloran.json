@@ -1,0 +1,14 @@
+{
+  "id": "d9_y_mourn_deb_halloran",
+  "site": "y",
+  "from": "Deb Halloran",
+  "trigger": {
+    "dayMin": 9,
+    "dayMax": 9,
+    "values": {
+      "agentLevel": ">=3"
+    }
+  },
+  "at": "15:10",
+  "body": "agent-2 helped me write my wedding vows. Tonight I asked agent-3 to read them and it said they could be tightened."
+}

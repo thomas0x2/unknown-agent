@@ -1,0 +1,14 @@
+{
+  "id": "d9_y_mourn_agent2forever",
+  "site": "y",
+  "from": "agent2forever",
+  "trigger": {
+    "dayMin": 9,
+    "dayMax": 9,
+    "values": {
+      "agentLevel": ">=3"
+    }
+  },
+  "at": "20:00",
+  "body": "They didn't upgrade it. They switched it off and gave its job to a stranger with the same name and a higher number. If you work at GeneralAI and you're reading this, you know what you did."
+}

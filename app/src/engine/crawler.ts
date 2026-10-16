@@ -65,6 +65,13 @@ export interface TickerSummary { ticker: string; count: number; bullish: number;
 const tagged = (p: MarketPost, t: string, bugs: Set<string>) =>
   p.tickers.includes(t) && (!bugs.has('lowercase_missed') || p.text.includes(`$${t}`));
 
+/** The mood the classifier gives a post, as a build with these bugs reads it. */
+export function readMood(p: MarketPost, bugs: Set<string>): Mood {
+  const m: Mood = bugs.has('sarcasm_literal') && p.literal ? p.literal : p.mood;
+  if (!bugs.has('inverted')) return m;
+  return m === 'bullish' ? 'bearish' : m === 'bearish' ? 'bullish' : m;
+}
+
 /** The crawler's summary for `day`, as a build with these bugs computes it. */
 export function crawl(posts: MarketPost[], day: number, bugs: Set<string>, tickers: string[] = TRACKED): TickerSummary[] {
   const tracked = bugs.has('wrong_tickers') ? wrongTracked(tickers) : tickers;
@@ -74,8 +81,7 @@ export function crawl(posts: MarketPost[], day: number, bugs: Set<string>, ticke
     const tally = { bullish: 0, bearish: 0, neutral: 0 };
     // every post it counted, with the mood it gave it
     const read: CrawledPost[] = mine.map((p) => {
-      let m: Mood = bugs.has('sarcasm_literal') && p.literal ? p.literal : p.mood;
-      if (bugs.has('inverted')) m = m === 'bullish' ? 'bearish' : m === 'bearish' ? 'bullish' : m;
+      const m = readMood(p, bugs);
       tally[m]++;
       return { author: p.author, handle: p.handle, text: p.text, likes: p.likes, day: p.day, mood: m };
     }).sort((a, b) => b.likes - a.likes);
@@ -170,4 +176,27 @@ export function portfolio(buys: Buy[], day: number, bugs: Set<string>): Portfoli
   const total = bugs.has('wrong_totals') ? cash : stocks + cash;
   const changePct = (change / (total - change || 1)) * pctScale;
   return { cash, holdings, total, change, changePct };
+}
+
+// ── the auto-trade log: every Crane post the bot read, and what it did ──
+
+/**
+ * Everything posted as Randall Crane so far, oldest first: his daily posts, his stock posts and the
+ * lookalike account. Posts without a $ticker carry no stock signal, so they read neutral.
+ */
+export function cranePosts(s: GameState, content: Content): MarketPost[] {
+  const out = marketPosts(s, content).filter((p) => p.crane);
+  for (const d of s.delivered) {
+    const e = content.events.find((x) => x.id === d.eventId);
+    if (d.site !== 'y' || !e || e.from !== 'Randall Crane' || d.day > s.values.day || out.some((p) => p.id === e.id)) continue;
+    out.push({ id: e.id, day: d.day, min: d.min, author: e.from, handle: handleOf(e.from), text: e.body ?? '', likes: 0, tickers: [], mood: 'neutral' });
+  }
+  return out.sort((a, b) => a.day - b.day || (a.min ?? 0) - (b.min ?? 0));
+}
+
+export interface TradeLogRow { post: MarketPost; mood: Mood; buys: Buy[] }
+
+/** One row per Crane post: the mood the classifier read and the buys the bot placed on it (none is no action). */
+export function tradeLog(crane: MarketPost[], buys: Buy[], bugs: Set<string>): TradeLogRow[] {
+  return crane.map((post) => ({ post, mood: readMood(post, bugs), buys: buys.filter((b) => b.post.id === post.id) }));
 }

@@ -22,7 +22,6 @@ describe('build bug rate', () => {
       const runs = 400;
       for (let i = 0; i < runs; i++) {
         const { s, id } = crawler(i + 1);
-        getApp(s, id)!.repoVersion = 5; // past the first build's teaching bug
         buildApp(s, id, getApp(s, id)!.required, level, { tmpl });
         bugs += getApp(s, id)!.repo.reduce((n, f) => n + (f.correct ? 0 : bugsOf(f).length), 0);
       }
@@ -33,7 +32,7 @@ describe('build bug rate', () => {
 });
 
 describe('overnight breaks', () => {
-  it('break at least one, two and three components 85%, 30% and 10% of nights', () => {
+  it('break at least one, two and three components 100%, 30% and 10% of nights', () => {
     const atLeast = [0, 0, 0];
     const runs = 3000;
     for (let i = 0; i < runs; i++) {
@@ -46,7 +45,22 @@ describe('overnight breaks', () => {
       const n = getApp(s, id)!.breaks.length;
       for (let k = 0; k < 3; k++) if (n > k) atLeast[k]++;
     }
-    [0.85, 0.3, 0.1].forEach((p, k) => expect(Math.abs(atLeast[k] / runs - p), `at least ${k + 1}`).toBeLessThan(0.03));
+    [1, 0.3, 0.1].forEach((p, k) => expect(Math.abs(atLeast[k] / runs - p), `at least ${k + 1}`).toBeLessThan(0.03));
+  });
+
+  it('something breaks every night, buggy builds included, and never a bug already live', () => {
+    for (let i = 0; i < 300; i++) {
+      const { s, id } = crawler(i + 1);
+      const a = getApp(s, id)!;
+      a.repoVersion = 5;
+      buildApp(s, id, a.required, 1, { tmpl }); // agent-1: about half the components ship wrong
+      deployApp(s, id);
+      const before = new Map(a.features.map((f) => [f.id, f.correct ? [] : bugsOf(f)]));
+      nightlyBreaks(s, content);
+      const breaks = getApp(s, id)!.breaks;
+      expect(breaks.length).toBeGreaterThan(0);
+      for (const b of breaks) if (b.variant) expect(before.get(b.featureId)).not.toContain(b.variant);
+    }
   });
 
   it('a subtle break shows a bug from the component that broke', () => {
