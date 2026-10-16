@@ -340,7 +340,7 @@ function pageMail(store: GameStore, param?: string): string {
       const snippet = last.body.replace(/\s+/g, ' ').slice(0, 90);
       return `<a href="#" class="qm-row${unread ? ' unread' : ''}" data-nav="qmail.com/${esc(last.id)}">
         <span class="qm-from">${unread && folder === 'inbox' ? '<i class="qm-dot" aria-label="Unread"></i>' : ''}<span class="qm-names">${esc(who)}</span>${t.rows.length > 1 ? `<span class="qm-count">${t.rows.length}</span>` : ''}</span>
-        <span class="qm-subj"><b>${esc(t.rows[0].subject)}</b> <span>${esc(snippet)}</span></span>
+        <span class="qm-subj"><b>${esc(t.rows[0].subject)}</b>${snippet ? `<span class="qm-prev">${esc(snippet)}</span>` : ''}</span>
         <span class="qm-time">${dateShort(last.day)}</span></a>`;
     }).join('');
     main = `<h1 class="qm-h">${view === 'sent' ? 'Sent' : 'Inbox'}</h1>${adHtml('qmail', s.values.day, 'wide')}${html ? `<div class="qm-list">${html}</div>` : `<p class="qm-empty">${view === 'sent' ? 'Nothing sent yet.' : 'No mail.'}</p>`}`;
