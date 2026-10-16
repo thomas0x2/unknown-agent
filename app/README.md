@@ -20,8 +20,8 @@ Run `npm run proxy` alongside `npm run dev`. The agent page shows "Story decisio
 connected, or "keyword matcher (Jev offline)" with the reason on hover; after a failed call the game
 retries the proxy every 30 seconds.
 
-Off-script replies (when Jev matches nothing) come from the **Misses** setting on agent.chat: the
-in-browser Gemma, scripted lines, or **Haiku (API)**, which also goes through `npm run proxy`.
+Off-script replies (when Jev matches nothing) come from the **Misses** setting on agent.chat:  Claude
+Haiku (**Haiku (API)**, through `npm run proxy`) or **Scripted lines**.
 "Haiku via: Claude subscription" runs `claude -p` on your machine, so it bills the Claude
 subscription you're logged in to with Claude Code (use this for development only). "API key" uses
 `ANTHROPIC_API_KEY` from `.env`. Either way the proxy builds the prompt from
@@ -32,11 +32,12 @@ subscription you're logged in to with Claude Code (use this for development only
 - **Jev (TypeSafe)** categorizes everything the player writes — which outcome a reply/post/prompt
   reaches, which app features a build prompt asked for, and how a Y post rates. It runs through the
   backend proxy; offline, a deterministic keyword router stands in (`engine/jev.ts`).
-- **Gemma 3 270M**, run locally in the browser (transformers.js) or via Ollama, writes every
-  off-script reply: a short roast for agent.chat prompts that drive nothing, the people behind Qmail
-  addresses, and the Terminal's local model. Prompts that ask where to go ("how do I make money?")
-  are matched by Jev to a scripted hint in `content/agent.json` instead. Load it from the control row on agent.chat. Without it, scripted
-  fallbacks are shown (`game/llm.ts`, `game/gemma.ts`).
+- **Claude Haiku 5.5**, through the proxy, writes every off-script reply: a short roast for
+  agent.chat prompts that drive nothing, and the people behind Qmail addresses, each in the voice of
+  their profile in `content/characters.json`. Prompts that ask where to go ("how do I make money?")
+  are matched by Jev to a scripted hint in `content/agent.json` instead. Without the proxy or a key,
+  scripted fallbacks are shown (`game/misses.ts`, `game/haiku.ts`). The Terminal's DeepSleep model
+  answers from a fixed list of lines.
 - **The agent is freely promptable with costs** — ask it anything on agent.chat and it bills your
   wallet per prompt + per word of the prompt (refusals included), and shows the exact price under
   the prompt box before you send. Pick a project to build/fix it instead.
@@ -53,9 +54,9 @@ now needs that workaround.
 
 - `src/engine/` — the whole game as pure TypeScript (state, events, apps, agent/policy, day loop,
   endings, actions). `config.ts` holds every tunable number.
-- `src/content/` — story as JSON: `events/*.json`, `apps/*.json`, `contacts.json` (Gemma personas),
+- `src/content/` — story as JSON: `events/*.json`, `apps/*.json`, `contacts.json` (who maps to which character),
   `trending.json`, filler/spam pools.
-- `src/game/` — store, Jev client, Gemma (`llm.ts` + `gemma.ts`), saves.
+- `src/game/` — store, Jev client, Haiku writer (`misses.ts` + `haiku.ts`), saves.
 - `src/ui/` — the legacy view (markup class-for-class) and icons.
 - `src/main.ts` — the controller that paints the shell and wires input.
 - `server/jev-proxy.mjs` — the key-holding backend proxy.

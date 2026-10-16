@@ -467,7 +467,7 @@ body.dev-on .ua-src { display: block; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 
-/* ── local model control (agent page) ── */
+/* ── Jev and misses controls (agent page) ── */
 .ua-llm { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; padding: 8px 20px; background: var(--ua-panel); border-bottom: 1px solid var(--ua-line); font-size: 12.5px; color: var(--ua-dim); }
 .ua-jev { display: flex; align-items: center; gap: 8px; color: var(--ua-ink); font-weight: 500; padding-right: 14px; border-right: 1px solid var(--ua-line); }
 .ua-llm-ctl { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; flex: 1 1 360px; min-width: 0; }
@@ -476,12 +476,8 @@ body.dev-on .ua-src { display: block; }
 .ua-llm-pick { display: flex; align-items: center; gap: 8px; }
 .ua-llm-pick select { border: 1px solid var(--ua-line); background: var(--ua-bg); color: var(--ua-ink); border-radius: 6px; padding: 3px 6px; font-size: 12.5px; }
 .ua-llm-status { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1 1 220px; font-variant-numeric: tabular-nums; }
-.ua-llm-bar { width: 120px; height: 6px; border-radius: 999px; background: var(--ua-line); overflow: hidden; flex: none; }
-.ua-llm-bar i { display: block; height: 100%; background: var(--ua-ink); transition: width 0.3s; }
 .ua-llm-dot { width: 8px; height: 8px; border-radius: 50%; background: #1c9a55; flex: none; }
 .ua-llm-err { color: #a12b1f; }
-.ua-llm-btn { border: 0; background: var(--ua-ink); color: #fff; padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; }
-.ua-llm-btn.ghost { background: none; color: var(--ua-ink); border: 1px solid var(--ua-line); }
 .ua-model { display: none; flex-basis: 100%; margin-left: 36px; font-size: 10.5px; color: var(--ua-dim); font-family: var(--f-mono); }
 body.dev-on .ua-model { display: block; }
 .ua-debug { display: none; flex-basis: 100%; margin: 2px 0 0 36px; font-size: 10.5px; color: var(--ua-dim); font-family: var(--f-mono); }

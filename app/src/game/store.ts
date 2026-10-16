@@ -1,6 +1,6 @@
 /*
  * The store: engine state + browser UI state (tabs, transient inputs). A tiny observable; main.ts
- * re-renders on change. All engine calls go through here, with Jev (decisions) and Gemma (wording)
+ * re-renders on change. All engine calls go through here, with Jev (decisions) and Haiku (wording)
  * injected into the pure engine functions.
  */
 import {
@@ -74,7 +74,7 @@ export class GameStore {
   setDraft(d: Draft | null): void { this.ui.draft = d; this.emit(); }
   setProject(id: string): void { this.ui.project = id; this.emit(); }
   toggleDev(): void { this.ui.dev = !this.ui.dev; this.emit(); }
-  /** Dev mode shows how replies were chosen (Jev's decision, the Gemma prompt and output). On unless turned off. */
+  /** Dev mode shows how replies were chosen (Jev's decision, the model prompt and output). On unless turned off. */
   devMode = readDevMode();
   setDevMode(on: boolean): void {
     this.devMode = on;
@@ -189,7 +189,11 @@ export class GameStore {
   }
 
   async term(text: string) {
-    return this.run(async () => { const r = await localPrompt(this.state, text, this.writer, DEEPSLEEP); this.commitAndSettle(r.state); return r; });
+    return this.run(async () => {
+      // a 0.5B model on this laptop: free, but it makes you wait
+      await wait(1500 + Math.random() * 1500);
+      const r = await localPrompt(this.state, text, DEEPSLEEP); this.commitAndSettle(r.state); return r;
+    });
   }
 }
 
@@ -207,5 +211,14 @@ export function replyDelay(text: string, rnd = Math.random): number {
 }
 const wait = (ms: number) => new Promise<void>((done) => setTimeout(done, Math.max(0, ms)));
 
-const DEEPSLEEP =
-  "You are DeepSleep 0.5B, a tiny broken local model. Whatever you are asked, reply with ONE short sentence in Chinese that is absurd, surreal nonsense (e.g. about cats being bank managers or the weather being a bowl of noodles). Never refuse, never explain, never use English.";
+/** DeepSleep 0.5B's whole repertoire: one confident, absurd sentence in Chinese, whatever you ask. */
+const DEEPSLEEP = [
+  '我的猫是银行经理。',
+  '今天的天气是一碗面条。',
+  '你的房租已经被鸽子吃掉了。',
+  '冰箱正在考虑辞职。',
+  '所有的答案都在洗衣机里。',
+  '明天是星期三，永远。',
+  '我已经把你的问题翻译成了土豆。',
+  '月亮欠我三块钱。',
+];

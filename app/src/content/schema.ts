@@ -155,7 +155,7 @@ export interface Outcome {
    */
   keywords?: string[];
   effects?: Effects;
-  /** Fixed reply text. Storyline replies are always scripted, never written by the local model. */
+  /** Fixed reply text. Storyline replies are always scripted, never written by a model. */
   reply: string;
   /**
    * From day 7 this outcome only lands if the player's words work around a refusal (a "security
@@ -183,14 +183,14 @@ export interface FillerPost {
   flagsAll?: string[];
 }
 
-/** The voice Gemma uses to reply as a given email address or Y handle. */
+/** The voice Haiku uses to reply as a given email address or Y handle. */
 export interface Contact {
   /** Match by qmail address or Y handle. */
   key: string;
   name?: string;
   /** The character who answers at this address (content/characters.json). */
   character: string;
-  /** A scripted reply shown when the local model isn't loaded, so a reply always arrives. */
+  /** A scripted reply shown when Haiku can't answer, so a reply always arrives. */
   reply?: string;
   /** Topics this contact always answers with fixed text, whatever email it arrives on (Jev matches `when`). */
   scripted?: ScriptedReply[];
@@ -203,7 +203,7 @@ export interface ScriptedReply {
   reply: string;
 }
 
-/** A character Gemma speaks as when Jev finds nothing in what the player wrote. */
+/** A character Haiku speaks as when Jev finds nothing in what the player wrote. */
 export interface Character {
   id: string;
   name: string;
@@ -226,7 +226,7 @@ export interface AgentHint {
 }
 export interface AgentContent {
   hints: AgentHint[];
-  /** Scripted roasts for prompts that drive nothing, when the local model can't write one. */
+  /** Scripted roasts for prompts that drive nothing, when Haiku can't write one. */
   roasts: string[];
 }
 
@@ -237,7 +237,7 @@ export interface Content {
   qmailSpam: FillerPost[];
   /** Trending topics on Y, by day — flavor for the feed and context for post rating. */
   trending: Record<number, string[]>;
-  /** Personas for Gemma-written replies, keyed by address/handle. */
+  /** Personas for Haiku-written replies, keyed by address/handle. */
   contacts: Contact[];
   /** Character profiles for off-script replies. */
   characters?: Character[];
