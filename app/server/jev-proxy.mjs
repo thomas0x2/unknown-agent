@@ -199,7 +199,7 @@ async function buildMatch(sdk, body) {
   (body.features ?? []).forEach((f, i) => {
     // a problem is matched on its own: naming one bug must not pull in the others on the same page
     questions[`f${i}`] = f.kind === 'problem'
-      ? sdk.noul(`Does the prompt point out this specific problem, in any words: naming it, describing what they see, or saying what it should be instead? Say no if the prompt is about a different problem, even one on the same page, or only says something is wrong without saying what. ${context}${named} Problem: ${f.description}`)
+      ? sdk.noul(`Does the prompt report this problem or a symptom of it, in any words? Yes if it names the problem, describes what the player sees, says what it should be instead, or says the part of the app this problem is in looks wrong, even loosely or with hedging ("the sentiment seems to be wrong", "the prices are off", "there's an error on the app"). Players describe what they see, not the cause, so read it as a player would mean it. No if it describes a clearly different problem (another part of the app, or a symptom this problem can't cause), or points at no part of the app at all ("it's broken", "fix it"). ${context}${named} Problem: ${f.description}`)
       : sdk.noul(`Does the prompt ask to build or add this, or spell out what it should contain, without contradicting it? Say no if the prompt only reports a problem with it. ${context}${named} Item: ${f.description}`);
   });
   const earlier = (body.context ?? []).filter(Boolean);

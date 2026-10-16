@@ -481,7 +481,12 @@ function fixLines(s: GameState, app: AppInstance, tmpl: AppTemplate | undefined,
     const bug = def?.bugs?.find((b) => b.id === c);
     if (!bug) continue;
     if (had.includes(c) && !has.includes(c)) out.push(fillSpec(pick(s, bug.fixed?.length ? bug.fixed : [`Fixed: ${bug.when}`]), params));
-    else if (!had.includes(c)) out.push(`Checked for this: "${fillSpec(bug.when, params).replace(/\.$/, '')}". That part was already right.`);
+  }
+  // a loose description can point at several bugs on a feature: report the ones that were there, and
+  // say "already right" only when none of them was
+  if (!out.length) for (const c of cats) {
+    const bug = def?.bugs?.find((b) => b.id === c);
+    if (bug && !had.includes(c)) out.push(`Checked for this: "${fillSpec(bug.when, params).replace(/\.$/, '')}". That part was already right.`);
   }
   if (vague && !out.length) out.push(`Went over the ${fid}. Tidied up the layout and spacing.`);
   else if (!vague && had.some((b) => b === 'hallucinated' || b === 'outdated') && !has.some((b) => b === 'hallucinated' || b === 'outdated')) out.push(`Rebuilt the ${fid} with the details you gave.`);

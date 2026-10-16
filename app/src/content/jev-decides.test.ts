@@ -307,6 +307,19 @@ describe('live breaks', () => {
   });
 });
 
+describe('loose descriptions', () => {
+  it('a symptom that points at two bugs fixes the one that is there and says nothing about the other', async () => {
+    const { s, id } = withApp('trader_contact');
+    const a = getApp(s, id)!;
+    a.repo = a.repo.map((f) => (f.id === 'sentiment' ? { ...f, correct: false, variant: 'inverted', seed: 1 } : f));
+    const out = (await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::sentiment::inverted', '::sentiment::sarcasm_literal'] }), 'On the sentiment crawler app, the sentiment seems to be wrong')).state;
+    expect(getApp(out, id)!.repo.find((f) => f.id === 'sentiment')!.correct).toBe(true);
+    const reply = out.chat.at(-1)!.text;
+    expect(reply).toMatch(/bullish|Bullish/);
+    expect(reply).not.toMatch(/already right/);
+  });
+});
+
 describe('dev bug switch', () => {
   it('switches repo and live together, even when they differ', async () => {
     let { s, id } = withApp('restaurant_contact');
