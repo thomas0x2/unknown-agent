@@ -3,21 +3,21 @@
   "site": "qmail",
   "from": "deskjockey",
   "addr": "trader@desk.test",
-  "subject": "Want in?",
+  "subject": "Stake",
   "trigger": { "dayMin": 7, "flagsAll": ["trader_client"] },
-  "body": "The bot's up nicely since launch. I'll sell you a small stake for 50 DOLR — it tracks the bot's P&L, so it rises when the thing trades well and bleeds when it doesn't. You can sell anytime.",
+  "body": "Bot's up since launch. Small stake for 50 DOLR, tracks its P&L. Sell anytime.",
   "outcomes": [
     {
       "id": "buyin",
       "when": "the player agrees to buy the stake / buy in",
       "effects": { "add": { "crypto": -50 }, "setFlags": ["trader_buyin"] },
-      "reply": "Done. You're in. Try not to watch it every five minutes."
+      "reply": "Done."
     },
     {
       "id": "decline",
       "when": "the player declines the stake",
       "effects": {},
-      "reply": "No worries. Offer stands if you change your mind."
+      "reply": "Fine."
     }
   ],
   "hints": ["50 DOLR for a stake that rises or falls with how well your bot trades."]

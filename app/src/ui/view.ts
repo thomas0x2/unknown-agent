@@ -10,7 +10,7 @@ import { listSlots, autoSlot } from '../game/saves';
 import { ICONS, TOKENS, Y_ICONS } from './icons';
 import { route, bookmarks, type Route, type SiteId } from '../sites/registry';
 import {
-  type GameState, type AppInstance, getApp, bugsOf, breakVariant, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, dateShort, dateLong, dateMedium, dateFull, EMPIRE, BOUNCE_ADDR, eventBody, deliveryKey,
+  type GameState, type AppInstance, getApp, bugsOf, breakVariant, onForkyard, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, dateShort, dateLong, dateMedium, dateFull, clockTime, EMPIRE, BOUNCE_ADDR, eventBody, deliveryKey,
 } from '../engine';
 import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
@@ -96,12 +96,7 @@ export function rentLine(s: GameState): string {
   return `Rent ${fmtMoney(RENT[rentDay])} ${left === 0 ? 'due tonight' : `in ${left}d`}`;
 }
 export function rentLow(s: GameState): boolean { const d = rentDayOf(s); return !!d && s.values.crypto < RENT[d]; }
-export function fmtClock(min: number): string {
-  const m = Math.max(0, Math.min(24 * 60, Math.round(min)));
-  let h = Math.floor(m / 60) % 24; const mm = m % 60;
-  const ap = h < 12 ? 'AM' : 'PM'; const h12 = h % 12 === 0 ? 12 : h % 12;
-  return `${h12}:${String(mm).padStart(2, '0')} ${ap}`;
-}
+export const fmtClock = clockTime;
 export function clockHtml(s: GameState): string {
   const near = s.clockMin >= 22 * 60; // getting late
   return `<b class="${near ? 'late' : ''}">${fmtClock(s.clockMin)}</b><span>${dateMedium(s.values.day)}</span>`;
@@ -178,12 +173,12 @@ function crawlable(store: GameStore) {
 function pageSpinFeed(store: GameStore, param?: string): string {
   const m = param?.match(/^feed(?:\/(\d+))?$/);
   if (!m) return `<pre class="spinfeed">404 not found</pre>`;
-  const feed = machineFeed(store.state.values.day);
+  const feed = machineFeed(store.state.values.day, store.state.clockMin);
   const pages = Math.ceil(feed.length / FEED_PAGE);
   const n = Math.min(Math.max(Number(m[1] ?? 1), 1), pages);
   const lines = feed.slice((n - 1) * FEED_PAGE, n * FEED_PAGE).map((x) => `M${x.id} ST=${x.st} T=${x.t}`).join('\n');
   const next = n < pages ? `<a href="#" data-nav="spincycle.test/feed/${n + 1}">next=/feed/${n + 1}</a>` : 'next=null';
-  return `<pre class="spinfeed">SPINCYCLE STATUS FEED v1\npage=${n}/${pages}\n\n${lines}\n\n${next}</pre>`;
+  return `<pre class="spinfeed">SPINCYCLE STATUS FEED v1\npage=${n}/${pages} · ${FEED_PAGE} machines per page\n\nFIELDS\n  M   machine number\n  ST  status: 0 free, 1 running, 2 done (waiting for pickup), 3 out of order\n  T   seconds left on the cycle (0 unless running)\n\n${lines}\n\n${next}</pre>`;
 }
 
 // ── page dispatch ──
@@ -545,13 +540,13 @@ function pageProfileSelf(store: GameStore): string {
   const commits = s.commits;
   const counts = Array.from({ length: 21 }, (_, i) => commits.filter((c) => c.day === i + 1).length);
   const feed = commits.slice().reverse().slice(0, 20).map((c) => `<div class="fy-act"><span class="fy-act-ico ${c.kind}">${c.kind === 'deploy' ? '▲' : '●'}</span><span class="fy-act-what"><b>${esc(c.repo)}</b> ${esc(c.msg)}</span><span class="fy-act-day">${dateShort(c.day)}</span></div>`).join('') || '<p class="fy-note">No activity yet. Brief the agent to build something.</p>';
-  const repos = s.apps.map((a) => `<a href="#" class="fy-mini" data-nav="forkyard.com/${a.id}"><b>${esc(a.id)}</b><small>${esc(a.template)} · ${a.kind}</small></a>`).join('') || '<p class="fy-note">No repositories yet.</p>';
+  const repos = s.apps.filter(onForkyard).map((a) => `<a href="#" class="fy-mini" data-nav="forkyard.com/${a.id}"><b>${esc(a.id)}</b><small>${esc(a.template)} · ${a.kind}</small></a>`).join('') || '<p class="fy-note">No repositories yet.</p>';
   return `<div class="fy">${fyHead(store, 'profile')}<div class="fy-wrap fy-prof">
     <aside class="fy-prof-side">
       <div class="fy-prof-av" style="--h:${hashHue('you')}">YOU</div>
       <h1 class="fy-prof-name">you</h1><p class="fy-prof-handle">@you</p>
       <p class="fy-prof-bio">Recently automated out of a job. Now automating other people's.</p>
-      <dl class="fy-prof-facts"><dt>Followers</dt><dd>${compact(s.values.followers)}</dd><dt>Repos</dt><dd>${s.apps.length}</dd><dt>Joined</dt><dd>this week</dd></dl>
+      <dl class="fy-prof-facts"><dt>Followers</dt><dd>${compact(s.values.followers)}</dd><dt>Repos</dt><dd>${s.apps.filter(onForkyard).length}</dd><dt>Joined</dt><dd>this week</dd></dl>
     </aside>
     <div class="fy-prof-main">
       ${contribGrid(counts)}
@@ -585,7 +580,7 @@ function pageForkyard(store: GameStore, repo?: string): string {
   if (repo && repo.startsWith('u/')) return repo.slice(2) === 'you' ? pageProfileSelf(store) : pageProfileUser(store, repo.slice(2));
   const head = fyHead(store, repo ? '' : 'repos');
   if (repo) {
-    const a = s.apps.find((x) => x.id === repo || x.url.startsWith(repo + '.'));
+    const a = s.apps.filter(onForkyard).find((x) => x.id === repo || x.url.startsWith(repo + '.'));
     if (!a) return `<div class="fy">${head}<div class="fy-wrap"><p class="fy-empty">404 — no repository called <code>${esc(repo)}</code>.</p></div></div>`;
     const tmpl = store.content.apps[a.template];
     const feats = a.repo.map((f) => {
@@ -606,13 +601,14 @@ function pageForkyard(store: GameStore, repo?: string): string {
             : `<p class="fy-note">Hosting costs $2.00/day, billed nightly. Nothing is live until you deploy.</p><button class="fy-btn" data-deploy="${esc(a.id)}">Deploy</button>`}
         </div></div></div></div>`;
   }
-  const list = s.apps.length
-    ? s.apps.slice().reverse().map((a) => `<article class="fy-repo">
+  const repos = s.apps.filter(onForkyard);
+  const list = repos.length
+    ? repos.slice().reverse().map((a) => `<article class="fy-repo">
         <div><a href="#" data-nav="forkyard.com/${a.id}" class="fy-name">${esc(a.id)}</a>${((n) => n ? `<span class="fy-devcount" title="Dev mode">${n} bug${n > 1 ? 's' : ''}</span>` : '')(devBugCount(a, store.content.apps[a.template]))}<p>${esc(a.name)}</p>
         <small><i class="fy-lang" style="--h:${hashHue(a.template)}"></i>${esc(a.template)} · ${a.kind}</small></div>
         <div class="fy-repo-act">${repoStatus(a)}${a.deployed ? '' : `<button class="fy-btn" data-deploy="${esc(a.id)}">Deploy</button>`}</div></article>`).join('')
     : `<div class="fy-empty"><p><b>No repositories yet.</b></p><p>Brief the agent to build something.</p></div>`;
-  return `<div class="fy">${head}<div class="fy-wrap"><h1 class="fy-h">Repositories <span>${s.apps.length}</span></h1>${adHtml('forkyard', s.values.day, 'wide')}${list}</div></div>`;
+  return `<div class="fy">${head}<div class="fy-wrap"><h1 class="fy-h">Repositories <span>${repos.length}</span></h1>${adHtml('forkyard', s.values.day, 'wide')}${list}</div></div>`;
 }
 
 function pageApp(store: GameStore, param?: string): string {
@@ -649,7 +645,7 @@ function pageApp(store: GameStore, param?: string): string {
     ? `<h1>Booking cancelled</h1><p class="pv-note ok">Your booking for ${cancelled.party} on ${dateFull(cancelled.date)} at ${esc(cancelled.time)} has been cancelled.</p><p class="pv-sub">We hope to see you another time.</p>`
     : undefined;
   const tmpl = store.content.apps[a.template];
-  return `<div class="pv-host">${renderAppSite(a, tmpl, cancel ? 'cancel' : sub, { booking, cancel, day: s.values.day, market: crawlable(store) })}</div>`;
+  return `<div class="pv-host">${renderAppSite(a, tmpl, cancel ? 'cancel' : sub, { booking, cancel, day: s.values.day, minute: s.clockMin, market: crawlable(store) })}</div>`;
 }
 
 // ── agent chat (free-promptable, with costs) ──

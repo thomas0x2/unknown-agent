@@ -19,6 +19,7 @@ body.dev-on .dvo { display: flex; flex-direction: column; position: fixed; z-ind
 .dvo .dvb-tag.kw { background: #1f3a4d; color: #cfe8ff; }
 .dvo-miss { margin: 6px 0; }
 .dvo-miss .dvo-q { margin-top: 2px; }
+.dvo-miss small { display: block; margin-top: 2px; font-size: 11px; opacity: 0.7; }
 .dvo-table { width: 100%; border-collapse: collapse; font-size: 12px; }
 .dvo-table th { text-align: left; color: #a99f80; font-weight: 600; padding: 2px 6px 4px 0; }
 .dvo-table td { padding: 3px 6px 3px 0; border-top: 1px solid #3a3420; vertical-align: top; }

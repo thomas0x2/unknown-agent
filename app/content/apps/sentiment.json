@@ -16,13 +16,12 @@
         "failed_fetch"
       ],
       "complaints": {
-        "missing": "it isn't tracking my tickers. $GAI and $VANT. that was the whole spec.",
-        "down": "the ticker view won't load. a bot that freezes on a trading day is bad luck.",
+        "missing": "it isn't tracking $GAI and $VANT. that was the spec.",
+        "down": "ticker view won't load.",
         "wrong": "it's tracking the wrong tickers. i gave you the list.",
         "wrong_tickers": "it's tracking the wrong tickers. i gave you the list.",
         "lowercase_missed": "half the $gai posts aren't counted. not everyone types in caps.",
-        "wrong_window": "the counts include yesterday's posts. i asked for today.",
-        "failed_fetch": "the dashboard shows the same numbers as yesterday. it's not fetching anything."
+        "failed_fetch": "same numbers as yesterday. it's not fetching."
       },
       "match": "\\b(tickers?|symbols?|\\$gai|\\$vant)\\b",
       "bugs": [
@@ -35,11 +34,6 @@
           "id": "lowercase_missed",
           "when": "misses lowercase tickers like $gai",
           "match": "\\b(lower ?case|lower-case|small letters|case[- ]?(in)?sensitive|capitali[sz]\\w*|all caps|uppercase)\\b"
-        },
-        {
-          "id": "wrong_window",
-          "when": "counts yesterday's posts, not only today's",
-          "match": "\\b(yesterday'?s?|previous day'?s?|older|old posts|day before)\\b|\\btime ?window\\b|\\bdate range\\b|\\bonly (count |use |include )?today'?s?\\b"
         }
       ],
       "checklist": [
@@ -47,11 +41,6 @@
           "id": "tickers",
           "text": "$GAI $VANT",
           "bug": "wrong_tickers"
-        },
-        {
-          "id": "today",
-          "text": "today",
-          "bug": "wrong_window"
         }
       ]
     },
@@ -63,8 +52,8 @@
       ],
       "complaints": {
         "missing": "there's no bullish/bearish/neutral split.",
-        "wrong": "the bullish/bearish split is nonsense. it counted a post calling $VANT a corpse as bullish.",
-        "inverted": "bullish and bearish are the wrong way round. $GAI is apparently collapsing on a day it went up.",
+        "wrong": "the split is nonsense. a post calling $VANT a corpse came out bullish.",
+        "inverted": "bullish and bearish are swapped.",
         "sarcasm_literal": "it counted \"truly a great day for everyone\" as bullish. it wasn't."
       },
       "match": "\\b(sentiment|bullish|bearish|neutral|split|mood)\\b",
@@ -83,27 +72,21 @@
     },
     {
       "id": "filter",
-      "description": "ignore bot spam and non-ticker mentions",
+      "description": "ignore bot spam",
       "failures": [
         "subtle"
       ],
       "complaints": {
         "missing": "it counts everything, bots included.",
-        "wrong": "bot spam and random mentions are in the counts again. only $-tagged posts.",
-        "bots_counted": "$GAI shows as wildly bullish. that's thirty bots saying \"to the moon\".",
-        "untagged_counted": "it's counting posts that just mention vantor. only $-tagged posts."
+        "wrong": "bot spam is in the counts again.",
+        "bots_counted": "$GAI wildly bullish. that's thirty bots saying \"to the moon\"."
       },
-      "match": "\\b(filter\\w*|bots?|spam\\w*|\\$-?tag\\w*|non-?ticker|untagged)\\b",
+      "match": "\\b(filter\\w*|bots?|spam\\w*)\\b",
       "bugs": [
         {
           "id": "bots_counted",
           "when": "counts bot spam",
           "match": "\\b(bots?|spam\\w*|duplicates?|near-identical|identical posts|to the moon)\\b"
-        },
-        {
-          "id": "untagged_counted",
-          "when": "counts mentions without a $ tag",
-          "match": "\\b(non-?ticker|not (a )?ticker|untagged|without (a |the )?\\$|\\$-?tag\\w*|dollar sign|just mention\\w*|name mentions?)\\b"
         }
       ],
       "checklist": [
@@ -111,11 +94,6 @@
           "id": "bots",
           "text": "bots",
           "bug": "bots_counted"
-        },
-        {
-          "id": "tagged",
-          "text": "tagged",
-          "bug": "untagged_counted"
         }
       ]
     },
@@ -123,12 +101,11 @@
       "id": "top_posts",
       "description": "link the three most-engaged posts per ticker",
       "failures": [
-        "failed_fetch",
         "subtle"
       ],
       "complaints": {
-        "missing": "no top posts per ticker.",
-        "down": "the top posts links don't load.",
+        "missing": "no top posts.",
+        "down": "top posts won't load.",
         "wrong": "the top posts link to accounts that don't exist.",
         "hallucinated_posts": "the top posts link to accounts that don't exist."
       },
@@ -155,11 +132,11 @@
         "subtle"
       ],
       "complaints": {
-        "missing": "there's no portfolio view. i asked for one.",
+        "missing": "no portfolio view.",
         "wrong": "the portfolio numbers don't match my account.",
         "wrong_totals": "the portfolio numbers don't match my account.",
-        "stale_after_buy": "the bot bought something and the portfolio doesn't show it.",
-        "change_wrong": "the portfolio says i'm up hundreds today. i'm not. that's since i opened the account."
+        "stale_after_buy": "the bot bought and the portfolio doesn't show it.",
+        "change_wrong": "says i'm up six figures today. i'm not. that's since day one."
       },
       "match": "\\b(portfolio|holdings?|cash|p&l|balance)\\b",
       "bugs": [
@@ -202,13 +179,13 @@
       "deep": true,
       "complaints": {
         "missing": "auto-buy isn't there.",
-        "deep": "auto-buy fired again on every refresh. most of my cash is in $GAI now.",
+        "deep": "auto-buy fires on every refresh. half my cash is in $GAI now.",
         "wrong": "auto-buy is buying on posts that aren't praise.",
-        "no_buy": "crane praised $GAI and the bot didn't buy anything. this is the freezing thing i warned you about.",
+        "no_buy": "crane praised $GAI. the bot bought nothing. that's the freezing thing.",
         "wrong_ticker": "crane praised $GAI and the bot bought $VANT.",
-        "buys_on_criticism": "it bought $VANT because crane called vantor disgraceful. that's not praise.",
-        "repeat_buys": "auto-buy fired again on every refresh. most of my cash is in $GAI now.",
-        "impostor_buy": "it bought $VANT because of a fake crane account. check the handle."
+        "buys_on_criticism": "crane called vantor disgraceful and it bought $VANT.",
+        "repeat_buys": "auto-buy fires on every refresh. half my cash is in $GAI now.",
+        "impostor_buy": "it bought $VANT off a fake crane account. check the handle."
       },
       "match": "\\b(auto-?buy\\w*|buys?|bought|purchas\\w*|crane)\\b",
       "bugs": [
@@ -261,9 +238,9 @@
   "complaints": {
     "subject": "crawler",
     "intro": "checked the crawler at close.",
-    "outro": "not paying for a day of bad data. fix it before the open.",
-    "fired": "that's two. i'm out. back to reading the posts myself.",
+    "outro": "fix it before the open.",
+    "fired": "that's two. i'm out.",
     "offline": "the crawler's not running at all. dashboard is a 404.",
-    "stale": "you said you pushed a fix but i'm looking at the same version."
+    "stale": "same version. push the fix."
   }
 }

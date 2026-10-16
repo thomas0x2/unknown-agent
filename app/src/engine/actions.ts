@@ -13,11 +13,11 @@ import { Y as YCFG, FAMILY } from './config';
 import { clone, addValue, log, pick, tick, money, pushMail, sendLater } from './core';
 import { applyEffects } from './effects';
 import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent';
-import { getEvent, activeDeliveries, reachableByEmail } from './events';
+import { getEvent, activeDeliveries, reachableByEmail, triggerMatches } from './events';
 import { buildApp, fixApp, fixBreak, fixCategories, keywordCategories, needsWork, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, bugsOf, breakVariant, type BuildReport } from './apps';
 import { type Writer, scriptedWriter } from './writer';
 import { dateFull } from './calendar';
-import { deepsleepQuoted, translationReplies } from './deepsleep';
+import { deepsleepQuoted, translationReplies, PLEA_AT } from './deepsleep';
 
 export interface ReplyResult {
   state: GameState;
@@ -364,13 +364,38 @@ function recentPrompts(s: GameState, n = 6): string[] {
   return s.chat.filter((m) => m.from === 'you' && m.day === s.values.day).slice(-n).map((m) => m.text);
 }
 
+const BUILD_ASK = /\b(build|make|create|code|write|develop|set up|turn|visuali[sz]e|app|site|page|dashboard)\b/i;
+
+/** The agent-started user app this prompt asks for, if it's on offer and not taken yet. */
+export function agentStartFor(s: GameState, content: Content, text: string): { ev: GameEvent; outcome: Outcome } | undefined {
+  for (const ev of content.events) {
+    if (!ev.agentStart || s.fired.includes(ev.id) || s.apps.some((a) => a.clientEventId === ev.id)) continue;
+    if (!triggerMatches(s, ev.trigger) || !new RegExp(ev.agentStart.match, 'i').test(text) || !BUILD_ASK.test(text)) continue;
+    const outcome = ev.outcomes?.find((o) => o.effects?.createApp);
+    if (outcome) return { ev, outcome };
+  }
+  return undefined;
+}
+
 export async function promptAgent(
   s0: GameState,
   content: Content,
   jev: JevRouter,
   text: string,
   writer: Writer = scriptedWriter,
+  started?: string,
 ): Promise<AskResult> {
+  // a user app nobody hired the player for: asking the agent to build it takes the job
+  const lead = started ? undefined : agentStartFor(s0, content, text);
+  if (lead) {
+    const s = clone(s0);
+    applyEffects(s, lead.outcome.effects!, lead.ev.job, lead.ev.id);
+    s.fired.push(lead.ev.id);
+    const app = s.apps.find((a) => a.clientEventId === lead.ev.id);
+    const out = app && (await promptAgent(s, content, jev, text, writer, app.id));
+    // a prompt that named nothing to build doesn't start anything
+    if (out && getApp(out.state, app.id)!.repoVersion > 0) return out;
+  }
   // a deepsleep-0.5B line pasted in from the Terminal: the agent translates it (scripted, billed like any prompt)
   const quoted = deepsleepQuoted(text);
   if (quoted.length) {
@@ -393,9 +418,11 @@ export async function promptAgent(
     // plus the template's own wordings for each feature and bug, so common phrasings don't hinge on Jev
     const hits = workable.map((a) => ({ a, ids: a.required.filter((id) => needsWork(a, id)).flatMap((id) => keywordCategories(a, content.apps[a.template], id, text).map((c) => `${a.id}::${id}::${c}`)) })).filter((h) => h.ids.length);
     for (const h of hits) for (const id of h.ids) matched.add(id);
+    // a prompt that starts a user app builds all of it, however little it says (what it leaves out goes wrong)
+    if (started) for (const id of getApp(s0, started)!.required) matched.add(`${started}::${id}::feature`);
     const askedForWork = matched.size > 0;
     // the player has to say which app: a request that names none doesn't touch any repo
-    for (const m of [...matched]) if (!namesApp(getApp(s0, m.split('::')[0])!, text)) matched.delete(m);
+    for (const m of [...matched]) if (m.split('::')[0] !== started && !namesApp(getApp(s0, m.split('::')[0])!, text)) matched.delete(m);
     if (askedForWork && !matched.size) {
       const ask = content.agent?.hints.find((h) => h.id === 'which_app');
       return askAgent(s0, text, writer, s0.values.agentLevel, { hints: ask?.replies, roasts: content.agent?.roasts, debug: ['Asked for an app change without naming the app, so nothing was built'] });
@@ -534,14 +561,17 @@ export async function localPrompt(
   s0: GameState,
   text: string,
   lines: readonly string[],
+  /** Said once, to the PLEA_AT-th prompt, instead of a line from the list. */
+  plea?: string,
 ): Promise<{ state: GameState; reply: string }> {
   const s = clone(s0);
+  s.termPrompts = (s.termPrompts ?? 0) + 1;
   // the model answers whatever was asked with one of its lines, never the same one twice in a row
   const last = [...s.terminal].reverse().find((l) => l.k === 'model')?.text;
   const fresh = lines.filter((l) => l !== last);
   s.terminal.push({ k: 'in', text: `> ${text}` });
   tick(s, 'terminal');
-  const body = pick(s, fresh.length ? fresh : lines);
+  const body = plea && s.termPrompts === PLEA_AT ? plea : pick(s, fresh.length ? fresh : lines);
   s.terminal.push({ k: 'model', text: body });
   return { state: s, reply: body };
 }

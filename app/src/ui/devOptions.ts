@@ -8,7 +8,7 @@ import type { Content, Effects, GameEvent, Outcome, Trigger } from '../content/s
 import {
   type GameState, activeDeliveries, triggerMatches, replyDeadline, needsWork, fixCategories, policyActive, POST_BANDS, Y as YCFG,
 } from '../engine';
-import { DEEPSLEEP_LINES, translationReplies } from '../engine/deepsleep';
+import { DEEPSLEEP_LINES, DEEPSLEEP_PLEA, PLEA_AT, translationReplies } from '../engine/deepsleep';
 
 export type DevOptionsSite = 'agent' | 'qmail' | 'y';
 
@@ -133,7 +133,8 @@ function agentOptions(store: GameStore): string {
 
 /** Every deepsleep-0.5B line with its translation, and the scripted replies that carry it. */
 function translations(): string {
-  const lines = DEEPSLEEP_LINES.map((l) => `<div class="dvo-miss"><b lang="zh">${esc(l.zh)}</b>${quote(l.en)}</div>`).join('');
+  const lines = DEEPSLEEP_LINES.map((l) => `<div class="dvo-miss"><b lang="zh">${esc(l.zh)}</b>${quote(l.en)}</div>`).join('')
+    + `<div class="dvo-miss"><b lang="zh">${esc(DEEPSLEEP_PLEA.zh)}</b>${quote(DEEPSLEEP_PLEA.en)}<small>Easter egg: the reply to prompt #${PLEA_AT} in the Terminal</small></div>`;
   const replies = translationReplies([{ en: '…' }]).map((r) => `<span class="dvo-q">${esc(r)}</span>`).join('');
   return `<div class="dvb-card">${lines}</div><div class="dvb-card">${line(`Replies (${translationReplies([]).length})`, replies)}</div>`;
 }
@@ -185,7 +186,7 @@ function jobStatus(s: GameState, j: Job): { label: string; ok: boolean } {
   if (d?.outcomeId) return { label: d.outcomeId === outcome?.id ? 'done' : `closed (${d.outcomeId})`, ok: d.outcomeId === outcome?.id };
   if (d) return { label: ev.onDeliver?.updateApp ? `arrived day ${d.day}` : 'open now', ok: true };
   if (s.fired.includes(ev.id)) return { label: 'closed', ok: false };
-  if (triggerMatches(s, ev.trigger)) return { label: ev.latent ? 'open now · email the lead' : 'arrives next morning', ok: true };
+  if (triggerMatches(s, ev.trigger)) return { label: ev.agentStart ? 'open now · ask the agent' : ev.latent ? 'open now · email the lead' : 'arrives next morning', ok: true };
   return { label: 'locked', ok: false };
 }
 
@@ -199,8 +200,9 @@ function jobs(store: GameStore): string {
   const cards = [...byEvent.values()].map((js) => {
     const ev = js[0].ev;
     const st = js.map((j) => jobStatus(s, j)).sort((a, b) => rank(a.label) - rank(b.label))[0];
-    const lead = ev.latent ? c.events.find((e) => !e.latent && e.addr === ev.addr && e.site !== 'qmail') : undefined;
-    const from = `${ev.from ?? ev.id}${ev.addr ? ` · ${ev.addr}` : ''}`;
+    const lead = ev.agentStart?.lead ? c.events.find((e) => e.id === ev.agentStart!.lead)
+      : ev.latent ? c.events.find((e) => !e.latent && e.addr === ev.addr && e.site !== 'qmail') : undefined;
+    const from = ev.agentStart ? 'nobody: a prompt to the agent starts it' : `${ev.from ?? ev.id}${ev.addr ? ` · ${ev.addr}` : ''}`;
     const ways = js.map((j) => `<div class="dvo-out">
         <div class="dvo-out-head"><b>${esc(j.outcome?.id ?? 'on arrival')}</b><span class="dvo-dim">${esc(j.kind)}</span></div>
         ${j.outcome ? line('Take it', esc(j.outcome.when)) : ''}

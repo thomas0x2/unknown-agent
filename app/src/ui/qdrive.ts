@@ -6,6 +6,7 @@
 import type { GameState } from '../engine';
 import { ICONS } from './icons';
 import { dateShort } from '../engine/calendar';
+import { onForkyard } from '../engine/apps';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
@@ -94,7 +95,7 @@ export function driveFiles(s: GameState): DriveFile[] {
     files.push({ id: 'interview', name: 'interview_answers.txt', folder: 'documents', kind: 'txt', kb: Math.max(1, Math.ceil(s.interviewAnswers.length / 1024)), actions: [],
       preview: s.interviewAnswers.trim() });
   }
-  for (const a of s.apps) {
+  for (const a of s.apps.filter(onForkyard)) {
     const actions = [{ label: 'Open on Forkyard', nav: `forkyard.com/${a.id}` }];
     if (a.deployed) actions.push({ label: 'Visit live site', nav: a.url });
     files.push({ id: 'app-' + a.id, name: `${a.id}.zip`, folder: 'projects', kind: 'zip', kb: 48 + a.repo.length * 36, day: a.createdDay, actions,
