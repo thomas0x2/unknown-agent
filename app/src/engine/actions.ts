@@ -939,7 +939,8 @@ export function chargeNoShows(s: GameState, content: Content): number {
 
 // ── Alpha Ascend: Max Stryker's EMPIRE sign-up page ──
 
-export const EMPIRE = { price: 20, flag: 'guru_subscriber', addr: 'max@alphaascend.test' } as const;
+/** `welcomeAfter`: game minutes between paying and the welcome email landing. */
+export const EMPIRE = { price: 20, flag: 'guru_subscriber', addr: 'max@alphaascend.test', welcomeAfter: 3 } as const;
 
 /** Pay for EMPIRE on empire.alphaascend.biz. Does nothing if already a member or short of DOLR. */
 export function joinEmpire(s0: GameState): GameState {
@@ -947,12 +948,12 @@ export function joinEmpire(s0: GameState): GameState {
   if (s.flags.includes(EMPIRE.flag) || s.values.crypto < EMPIRE.price) return s;
   money(s, -EMPIRE.price, 'Alpha Ascend · EMPIRE');
   applyEffects(s, { setFlags: [EMPIRE.flag] });
-  pushMail(s, {
+  sendLater(s, {
     folder: 'inbox', day: s.values.day, from: 'Max Stryker · Alpha Ascend', addr: EMPIRE.addr,
     subject: 'Welcome to EMPIRE',
     body: 'Payment received. Welcome to the 1%.\n\nYour first lesson arrives tomorrow at 4am. Refunds are available to anyone who completes the course.',
     read: false,
-  });
+  }, EMPIRE.welcomeAfter);
   return s;
 }
 
