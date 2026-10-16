@@ -131,11 +131,11 @@ function underway(s: GameState, ev: GameEvent): boolean {
   return !!s.arriving?.some((a) => a.eventId === ev.id && a.day === s.values.day);
 }
 
-/** Deliver it now if its time has come, otherwise queue it to land at its time. */
-function deliverOrQueue(s: GameState, ev: GameEvent, now: boolean, out: DeliveredEvent[]): void {
+/** Deliver it now if its time has come, otherwise queue it to land at its time. Job offers always queue, to be spread. */
+function deliverOrQueue(s: GameState, ev: GameEvent, now: boolean, out: DeliveredEvent[], job = false): void {
   if (underway(s, ev)) return;
   const at = arrivalMin(ev);
-  if (now || at <= s.clockMin) {
+  if (now || (at <= s.clockMin && !job)) {
     const d = deliver(s, ev);
     if (d) out.push(d);
     return;
@@ -157,16 +157,61 @@ export function deliverDue(s: GameState, content: Content, opts: { now?: boolean
   s.scheduled = s.scheduled.filter((q) => q.fireDay > s.values.day);
   for (const q of due) {
     const ev = getEvent(content, q.eventId);
-    if (ev) deliverOrQueue(s, ev, now, out);
+    if (ev) deliverOrQueue(s, ev, now, out, isJobOffer(content, ev));
   }
   // trigger-driven events (latent ones are not auto-delivered — the player reaches them by email)
   for (const ev of content.events) {
     if (ev.latent || ev.launch || ev.yPost || ev.afterPayment) continue;
     if (underway(s, ev)) continue;
-    if (triggerMatches(s, ev.trigger)) deliverOrQueue(s, ev, now, out);
+    if (triggerMatches(s, ev.trigger)) deliverOrQueue(s, ev, now, out, isJobOffer(content, ev));
   }
   if (now) out.push(...deliverArrivals(s, content, true));
+  else {
+    spreadJobOffers(s, content);
+    out.push(...deliverArrivals(s, content));
+  }
   return out;
+}
+
+/** When the day's job offers come in: spread over 10:15 to 16:00, ideally an hour apart. */
+export const JOB_OFFERS = { from: CLOCK.wake + 15, to: 16 * 60, gap: 60 };
+
+/**
+ * Paid work on offer: a lead (the Y post or email naming who to write to, or the agent-started job's
+ * post), a gig, or a client asking for a change.
+ */
+export function isJobOffer(content: Content, ev: GameEvent): boolean {
+  if (ev.latent) return false;
+  if (ev.job || ev.jobRequest || ev.onDeliver?.updateApp) return true;
+  if (ev.outcomes?.some((o) => o.effects?.createApp)) return true;
+  const text = `${ev.body ?? ''} ${(ev.bodies ?? []).join(' ')}`;
+  return content.events.some((l) => l.latent && (
+    l.agentStart?.lead === ev.id
+    || (!!l.addr && text.includes(l.addr) && !!(l.job || l.jobRequest || l.outcomes?.some((o) => o.effects?.createApp)))
+  ));
+}
+
+/**
+ * Give today's queued job offers their times, so they don't all land at once in the morning: in order
+ * of their own `at`, from JOB_OFFERS.from to .to, at least `gap` apart (closer when there are too many
+ * to fit). One left over from a day that ended early comes first rather than at 10:00 with the rest.
+ */
+export function spreadJobOffers(s: GameState, content: Content): void {
+  const day = s.values.day;
+  const offers = (s.arriving ?? []).filter((a) => a.day <= day && isJobOffer(content, getEvent(content, a.eventId) ?? ({} as GameEvent)));
+  if (!offers.length) return;
+  for (const a of offers) if (a.day < day) { a.day = day; a.at = CLOCK.wake; }
+  const from = Math.max(JOB_OFFERS.from, s.clockMin + 1);
+  const to = Math.max(from, JOB_OFFERS.to);
+  offers.sort((a, b) => a.at - b.at);
+  const n = offers.length;
+  const gap = n > 1 ? Math.min(JOB_OFFERS.gap, Math.floor((to - from) / (n - 1))) : 0;
+  let prev = -Infinity;
+  offers.forEach((a, i) => {
+    const want = Math.max(Math.min(Math.max(a.at, from), to), prev + gap);
+    a.at = Math.min(want, to - (n - 1 - i) * gap);
+    prev = a.at;
+  });
 }
 
 /**

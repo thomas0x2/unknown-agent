@@ -10,7 +10,7 @@ import { newGame } from './state';
 import { clone, addValue, money, log, pick, deliverPendingMail, deliverAgentWork } from './core';
 import { runPayday, nightlyBreaks, wakeApps } from './apps';
 import { deliverComplaints } from './complaints';
-import { deliverDue, deliverArrivals, lapseUnanswered } from './events';
+import { deliverDue, deliverArrivals, lapseUnanswered, spreadJobOffers } from './events';
 import { emptyMailBin } from './mailbin';
 import { rolloutAgent, deductSubscription, agentCost } from './agent';
 import { checkGuardEndings, checkFinale, isLastNight } from './endings';
@@ -37,6 +37,7 @@ function runMorning(s: GameState, content: Content): void {
   nightlyBreaks(s, content); // overnight breaks land in the morning
   s.clockMin = CLOCK.wake;
   wakeApps(s, content); // content due overnight (Swaplist's first listing) is up by morning
+  spreadJobOffers(s, content); // job offers left over from yesterday join today's, spread over the day
   deliverArrivals(s, content); // what was still on its way when the day ended comes first thing
   deliverDue(s, content); // the rest of today's mail and posts land over the day
   s.postsToday = 0;
