@@ -29,7 +29,12 @@ export interface BuiltFeature {
   seed?: number;
   /** The template's spec checklist at build time: which items the build prompt mentioned. */
   checked?: Record<string, boolean>;
-  /** Built before the app had content to show bugs on: the agent level, so its bugs roll when content appears. */
+  /**
+   * Bugs this build has that nothing in the game would show yet (the auto-buy before Crane's first
+   * praise): the feature counts as correct until one can show, then it lands (apps.revealBugs).
+   */
+  held?: string[];
+  /** Older saves: built while the app was empty, at this agent level; its bugs roll when content appears. */
   quietLevel?: number;
 }
 
@@ -73,6 +78,8 @@ export interface AppInstance {
   contentAt?: number;
   /** The first content has appeared: bugs held back until then have rolled. */
   contentLive?: boolean;
+  /** Its first build or the player's first deploy couldn't ship a bug that shows: the first one that can lands. */
+  owedBug?: boolean;
   breaks: AppBreak[];
   /** Build bugs the agent has fixed, per feature: it doesn't make them again. */
   fixed?: Record<string, string[]>;

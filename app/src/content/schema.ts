@@ -59,7 +59,7 @@ export interface AppTemplate {
   /**
    * An app that is empty until its users show up (Swaplist): the first content appears this many
    * minutes of play after the first deploy. Until then it can't have bugs, from builds or overnight
-   * breaks, since nothing would show them; the builds made before roll their bugs when it appears.
+   * breaks, since nothing would show them; bugs built before are held and land once they show.
    */
   firstContentAfter?: number;
 }
