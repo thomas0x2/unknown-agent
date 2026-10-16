@@ -138,13 +138,13 @@ export function portfolio(buys: Buy[], day: number, bugs: Set<string>): Portfoli
     const dayPnl = shares * move * (bugs.has('pnl_sign') ? -1 : 1);
     return { ticker, shares, price: px, move, movePct: (move / (px - move)) * pctScale, value, dayPnl };
   });
-  const stocks = Object.entries(held).reduce((a, [t, n]) => a + n * price(t, day), 0);
-  const change = holdings.reduce((a, h) => a + h.dayPnl, 0);
-  const real = stocks + cash;
-  // the total leaves the holdings out and shows only the cash
-  const total = bugs.has('wrong_totals') ? cash : real;
-  const changePct = (change / (real - change || 1)) * pctScale;
   // cash with the holdings' cost taken off a second time: negative
-  const shown = bugs.has('cash_wrong') ? cash - stocks : cash;
+  const shown = bugs.has('cash_wrong') ? cash - Object.entries(held).reduce((a, [t, n]) => a + n * price(t, day), 0) : cash;
+  // the totals add up the figures as shown, so only the buggy calculation itself is off
+  const stocks = holdings.reduce((a, h) => a + h.value, 0);
+  const change = holdings.reduce((a, h) => a + h.dayPnl, 0);
+  // the total leaves the holdings out and shows only the cash
+  const total = bugs.has('wrong_totals') ? shown : stocks + shown;
+  const changePct = (change / (total - change || 1)) * pctScale;
   return { cash: shown, holdings, total, change, changePct };
 }

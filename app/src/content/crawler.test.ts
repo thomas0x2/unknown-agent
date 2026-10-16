@@ -98,6 +98,14 @@ describe('sentiment crawler', () => {
     // a few dollars' move on a $140 stock shown as a double-digit percentage
     for (const h of portfolio(buys, 6, bugs('pct_wrong')).holdings) expect(Math.abs(h.movePct)).toBeGreaterThan(0.1);
     for (const h of ok.holdings) expect(Math.abs(h.movePct)).toBeLessThan(0.1);
+    // the totals add up what's shown: only the buggy calculation itself is off
+    for (const b of ['value_wrong', 'cash_wrong', 'pnl_sign', 'pct_wrong']) {
+      const p = portfolio(buys, 6, bugs(b));
+      expect(p.total, b).toBeCloseTo(p.holdings.reduce((a, h) => a + h.value, 0) + p.cash);
+      expect(p.change, b).toBeCloseTo(p.holdings.reduce((a, h) => a + h.dayPnl, 0));
+    }
+    expect(portfolio(buys, 6, bugs('value_wrong')).total).toBeLessThan(ok.total);
+    expect(portfolio(buys, 6, bugs('wrong_totals')).total).toBeCloseTo(ok.cash);
   });
 });
 
