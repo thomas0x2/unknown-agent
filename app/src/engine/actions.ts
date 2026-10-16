@@ -224,6 +224,12 @@ export async function replyToEvent(
   const delivery = s.delivered.find((d) => d.eventId === eventId && !d.answered);
   if (!ev || !delivery) return { state: s, decision: { kind: 'nothing' }, reply: '' };
   const addr = ev.site === 'qmail' && ev.addr ? ev.addr.toLowerCase() : '';
+  // a scripted answer to a wall of text: it doesn't count toward the daily limit, or bounce off it
+  if (tooLong(text)) {
+    if (ev.addr) pushMail(s, { folder: 'sent', day: s.values.day, from: 'You', addr: PLAYER_ADDR, to: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body: text, read: true });
+    const reply = ev.addr ? tooLongReply(s, content, ev.addr.toLowerCase(), `RE: ${ev.subject ?? ''}`, ev) : '';
+    return { state: s, decision: { kind: 'nothing' }, reply };
+  }
   if (addr && overDailyLimit(s, addr, delivery.seq ?? -1)) {
     bounce(s, addr, `RE: ${ev.subject ?? ''}`, text);
     return { state: s, decision: { kind: 'nothing' }, reply: '', bounced: true };
@@ -232,10 +238,6 @@ export async function replyToEvent(
 
   // the player's reply goes to the Sent folder
   if (ev.addr) pushMail(s, { folder: 'sent', day: s.values.day, from: 'You', addr: PLAYER_ADDR, to: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body: text, read: true });
-  if (tooLong(text)) {
-    const reply = ev.addr ? tooLongReply(s, content, ev.addr.toLowerCase(), `RE: ${ev.subject ?? ''}`, ev) : '';
-    return { state: s, decision: { kind: 'nothing' }, reply };
-  }
 
   const outcomes = ev.outcomes ?? [];
   const decision = await routeReply(jev, ev.site, s, content, ev, text);
@@ -290,6 +292,12 @@ export async function composeEmail(
   const s = clone(s0);
   const addr = to.trim().toLowerCase();
   if (!addr) return { state: s, decision: { kind: 'nothing' }, reply: '', sent: false };
+  // a scripted answer to a wall of text: it doesn't count toward the daily limit, or bounce off it
+  if (tooLong(text)) {
+    pushMail(s, { folder: 'sent', day: s.values.day, from: 'You', addr: PLAYER_ADDR, to: addr, subject: subject || '(no subject)', body: text, read: true });
+    const ev = reachableByEmail(s, content, addr);
+    return { state: s, decision: { kind: 'nothing' }, reply: tooLongReply(s, content, addr, re(subject || ev?.subject || ''), ev), sent: true };
+  }
   if (overDailyLimit(s, addr)) {
     bounce(s, addr, subject, text);
     return { state: s, decision: { kind: 'nothing' }, reply: '', sent: true, bounced: true };
@@ -298,9 +306,6 @@ export async function composeEmail(
   pushMail(s, { folder: 'sent', day: s.values.day, from: 'You', addr: PLAYER_ADDR, to: addr, subject: subject || '(no subject)', body: text, read: true });
 
   const ev = reachableByEmail(s, content, addr);
-  if (tooLong(text)) {
-    return { state: s, decision: { kind: 'nothing' }, reply: tooLongReply(s, content, addr, re(subject || ev?.subject || ''), ev), sent: true };
-  }
   if (!ev) {
     // no story lead here — a known contact replies in their own voice
     const reply = await contactWritesBack(s, content, jev, writer, addr, re(subject), text);

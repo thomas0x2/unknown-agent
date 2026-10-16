@@ -30,6 +30,16 @@ describe('input over the character cap', () => {
     expect(TOO_LONG_MAIL).toContain(out.reply);
   });
 
+  it("doesn't count toward the one-email-per-day limit, or bounce off it", async () => {
+    const s = startGame(content, 1);
+    s.sentToday.push('gary@test');
+    const out = await composeEmail(s, content, noJev, 'gary@test', wall, noWriter, 'hi');
+    expect(out.bounced).toBeUndefined();
+    expect(TOO_LONG_MAIL).toContain(out.reply);
+    const fresh = await replyToEvent(startGame(content, 1), content, noJev, 'mom_a', wall, noWriter);
+    expect(fresh.state.sentToday).not.toContain('mom@test');
+  });
+
   it('an email to nobody gets no reply', async () => {
     const out = await composeEmail(startGame(content, 1), content, noJev, 'nobody@test', wall, noWriter);
     expect(out.reply).toBe('');
