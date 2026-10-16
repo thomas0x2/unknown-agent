@@ -380,9 +380,12 @@ function pageMail(store: GameStore, param?: string): string {
     const n = store.ui.mailNotice;
     const notice = n ? `<p class="qm-notice" role="status">${esc(n.text)} <button class="qm-link" data-mail-undo>Undo</button></p>` : '';
     const title = binView ? 'Bin' : view === 'sent' ? 'Sent' : 'Inbox';
-    const empty = binView ? 'The Bin is empty.' : view === 'sent' ? 'Nothing sent yet.' : 'No mail.';
+    const [emptyIcon, emptyTitle, emptyNote] = binView ? [ICONS.bin, 'The Bin is empty.', 'Emails you move to the Bin show up here.']
+      : view === 'sent' ? [ICONS.sent, 'Nothing sent yet.', 'Emails you send show up here.']
+      : [ICONS.inbox, 'No mail.', 'New emails show up here as they arrive.'];
+    const empty = `<div class="qm-empty-state"><span class="qm-empty-ico">${emptyIcon}</span><p class="qm-empty-title">${emptyTitle}</p><p class="qm-empty-note">${emptyNote}</p></div>`;
     const binHint = binView ? `<p class="qm-bin-hint">Everything in the Bin is deleted when the day ends.</p>` : '';
-    main = `<h1 class="qm-h">${title}</h1>${binHint}${notice}${adHtml('qmail', s.values.day, 'wide')}${html ? `<div class="qm-list">${html}</div>` : `<p class="qm-empty">${empty}</p>`}`;
+    main = `<h1 class="qm-h">${title}</h1>${binHint}${notice}${adHtml('qmail', s.values.day, 'wide')}${html ? `<div class="qm-list">${html}</div>` : empty}`;
   }
   return `<div class="qm">
     <header class="qm-top"><div class="qm-logo">${ICONS.mail}<span>Qmail</span></div>${devOptionsButton(store, 'qmail')}<span class="qm-user">${esc(PLAYER.addr)}</span></header>

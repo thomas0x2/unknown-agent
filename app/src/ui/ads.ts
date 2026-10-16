@@ -290,7 +290,7 @@ function decoHtml(d?: Deco): string {
     case 'stripes': return '<span class="ad-stripes" aria-hidden="true"></span>';
     case 'siren': return '<span class="ad-siren" aria-hidden="true"></span>';
     case 'shine': return '<span class="ad-shine" aria-hidden="true"></span>';
-    case 'ekg': return '<svg class="ad-ekg" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,20 40,20 48,8 56,32 64,20 100,20 108,4 116,36 124,20 200,20"/></svg>';
+    case 'ekg': return '<svg class="ad-ekg" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><polyline pathLength="1" points="0,20 40,20 48,8 56,32 64,20 100,20 108,4 116,36 124,20 200,20"/></svg>';
     case 'stamp': return '<span class="ad-stamp" aria-hidden="true">DENIED</span>';
     case 'snow': return '<span class="ad-snow" aria-hidden="true"><i>❄</i><i>❄</i><i>❄</i><i>❄</i><i>❄</i></span>';
     default: return '';

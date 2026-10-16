@@ -98,9 +98,11 @@
 @keyframes ad-bubble { to { transform: translateY(-300px) translateX(10px); opacity: 0; } }
 
 /* a heartbeat that runs, then flatlines */
-.ad-ekg { position: absolute; z-index: 1; left: 0; right: 0; bottom: 14px; width: 100%; height: 34px; opacity: .45; }
-.ad-ekg polyline { fill: none; stroke: currentColor; stroke-width: 2; stroke-dasharray: 260; stroke-dashoffset: 260; animation: ad-ekg 3s linear infinite; animation-delay: var(--ad-t, 0ms); }
-@keyframes ad-ekg { 0% { stroke-dashoffset: 260; } 70% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+/* a heartbeat that runs, then flatlines: a strip along the top edge, clear of the copy */
+.ad-ekg { position: absolute; z-index: 1; left: 45%; right: 12px; top: 2px; height: 18px; opacity: .35; }
+.ad-square .ad-ekg { left: 12px; top: auto; bottom: 34%; height: 22px; opacity: .2; }
+.ad-ekg polyline { fill: none; stroke: currentColor; stroke-width: 1.5; vector-effect: non-scaling-stroke; stroke-linejoin: round; stroke-dasharray: 1 1; stroke-dashoffset: 1; animation: ad-ekg 3s linear infinite; animation-delay: var(--ad-t, 0ms); }
+@keyframes ad-ekg { 0% { stroke-dashoffset: 1; opacity: 1; } 70% { stroke-dashoffset: 0; opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
 .ad-snow i { position: absolute; top: -16px; font-style: normal; font-size: 13px; color: #fff; opacity: .8; animation: ad-fall 5s linear infinite; animation-delay: var(--ad-t, 0ms); }
 .ad-snow i:nth-child(1) { left: 10%; }
 .ad-snow i:nth-child(2) { left: 30%; animation-duration: 6s; animation-delay: calc(var(--ad-t, 0ms) - 2s); }
