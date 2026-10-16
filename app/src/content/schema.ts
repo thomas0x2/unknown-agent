@@ -121,9 +121,11 @@ export interface BugDef {
   id: string;
   /**
    * What a fix prompt has to name to address this bug, for Jev to match; {{param}} fills in from the
-   * spec.
+   * spec. Write it as the problem the player would see, so naming it in any words matches.
    */
   when: string;
+  /** What the agent says when it fixes this bug, one picked at random; {{param}} fills in from the spec. */
+  fixed?: string[];
   /** Spelling out the feature's details again (the full menu) also fixes it. */
   orDetails?: boolean;
   /** A deep failure: hidden until someone goes through the whole flow. A deep live break shows this bug. */

@@ -28,19 +28,35 @@
       "bugs": [
         {
           "id": "six_of_eight",
-          "when": "shows only the first page of the feed (6 machines)"
+          "when": "The site shows only 6 machines, the first page of the feed, instead of all of them.",
+          "fixed": [
+            "The site reads every page of the feed now, so all the machines show.",
+            "It was stopping after the first page. All machines show now."
+          ]
         },
         {
           "id": "done_as_free",
-          "when": "done machines shown as free"
+          "when": "Machines that are done (laundry still inside) show as free.",
+          "fixed": [
+            "Done machines show as done now, not free.",
+            "Fixed done machines showing as free."
+          ]
         },
         {
           "id": "broken_as_free",
-          "when": "out-of-order machines shown as free"
+          "when": "Out-of-order machines show as free.",
+          "fixed": [
+            "Out-of-order machines show as out of order now.",
+            "Fixed broken machines showing as free."
+          ]
         },
         {
           "id": "raw_codes",
-          "when": "shows the raw ST codes (0, 1, 2, 3) instead of free, running, done and out of order"
+          "when": "The site shows the raw status codes (0, 1, 2, 3) instead of free, running, done and out of order.",
+          "fixed": [
+            "The status codes are translated to free, running, done and out of order now.",
+            "No more raw codes. Each machine shows its status in words."
+          ]
         }
       ],
       "checklist": [
@@ -81,7 +97,11 @@
       "bugs": [
         {
           "id": "no_refresh",
-          "when": "the status never refreshes"
+          "when": "The machine status never refreshes; it stays as it was when the page loaded.",
+          "fixed": [
+            "The status refreshes on its own now.",
+            "Fixed the refresh. The page stays current."
+          ]
         }
       ],
       "checklist": [
@@ -106,7 +126,11 @@
       "bugs": [
         {
           "id": "minutes_wrong",
-          "when": "minutes left are wrong (seconds read as minutes)"
+          "when": "The minutes left on running machines are wrong (seconds shown as minutes).",
+          "fixed": [
+            "Minutes left are minutes now, not seconds.",
+            "Fixed the minutes left on running machines."
+          ]
         }
       ],
       "checklist": [
@@ -133,15 +157,27 @@
       "bugs": [
         {
           "id": "still_eight",
-          "when": "still shows 8 machines, not 12"
+          "when": "The site still shows 8 machines instead of all 12.",
+          "fixed": [
+            "All 12 machines show now.",
+            "It was stuck at 8 machines. It shows 12 now."
+          ]
         },
         {
           "id": "new_always_free",
-          "when": "the four new machines always show as free"
+          "when": "The four new machines always show as free, whatever they're doing.",
+          "fixed": [
+            "The four new machines show their real status now.",
+            "Fixed the new machines always reading free."
+          ]
         },
         {
           "id": "layout_breaks",
-          "when": "the layout breaks with more than 8 machines"
+          "when": "The layout breaks when there are more than 8 machines.",
+          "fixed": [
+            "The layout holds with 12 machines now.",
+            "Fixed the layout for more than 8 machines."
+          ]
         }
       ],
       "checklist": [

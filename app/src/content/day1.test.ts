@@ -98,9 +98,9 @@ describe('day 1 playthrough', () => {
     ];
     app.repoVersion = 1;
     s.values.agentLevel = 5; // the fix roll succeeds
-    const vague = (await promptAgent(s, content, wordJev, gino + 'Please fix the menu page.')).state;
+    const vague = (await promptAgent(s, content, pickJev({ features: ['::menu::feature'] }), gino + 'Please fix the menu page.')).state;
     expect(getApp(vague, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.variant).toBe('prices_curo');
-    const named = (await promptAgent(s, content, wordJev, gino + 'The prices show CURO, they need to be DOLR.')).state;
+    const named = (await promptAgent(s, content, pickJev({ features: ['::menu::prices_curo'] }), gino + 'The prices show CURO, they need to be DOLR.')).state;
     expect(getApp(named, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);
   });
 
@@ -196,11 +196,17 @@ describe('day 1 playthrough', () => {
     ];
     app.repoVersion = 1;
     s.values.agentLevel = 5;
-    s = (await promptAgent(s, content, wordJev, gino + 'The opening hours on the homepage are wrong, they should be 17:00-22:00.')).state;
+    s = (await promptAgent(s, content, pickJev({ features: ['::landing::hours_wrong'] }), gino + 'The opening hours on the homepage are wrong, they should be 17:00-22:00.')).state;
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')).toMatchObject({ correct: false, variant: 'name_wrong' });
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')!.also).toBeUndefined();
-    s = (await promptAgent(s, content, wordJev, gino + 'The restaurant name is misspelled, it should say Trattoria Gino.')).state;
+    // the reply says what was fixed, and only that
+    const hoursFixed = content.apps.restaurant.features[0].bugs!.find((b) => b.id === 'hours_wrong')!.fixed!.map((l) => l.replace('{{hours}}', '17:00-22:00'));
+    const lines = s.chat.at(-1)!.text.split('\n').filter((l) => l.startsWith('- ')).map((l) => l.slice(2));
+    expect(lines).toHaveLength(1);
+    expect(hoursFixed).toContain(lines[0]);
+    s = (await promptAgent(s, content, pickJev({ features: ['::landing::name_wrong'] }), gino + 'The restaurant name is misspelled, it should say Trattoria Gino.')).state;
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')!.correct).toBe(true);
+    expect(s.chat.at(-1)!.text).toContain('Trattoria Gino');
   });
   it('dev mode switches bugs and breaks on and off on demand', async () => {
     let s = (await composeEmail(startGame(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;

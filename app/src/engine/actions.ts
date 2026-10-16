@@ -6,15 +6,15 @@
  * outcome is always the outcome's scripted text. Both are injectable so tests pin outcomes and the game
  * runs offline.
  */
-import type { GameState, AppInstance } from './state';
+import type { GameState, AppInstance, BuiltFeature } from './state';
 import type { Content, GameEvent, Contact, Outcome, AppTemplate, ScriptedReply } from '../content/schema';
-import type { JevRouter, PostRating, RouteDecision } from './jev';
+import type { JevRouter, PostRating, RouteDecision, FeatureMatchInput } from './jev';
 import { Y as YCFG, FAMILY, APPS } from './config';
 import { clone, addValue, log, pick, money, pushMail, sendLater } from './core';
 import { applyEffects } from './effects';
 import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent';
 import { getEvent, activeDeliveries, reachableByEmail, triggerMatches, eventBody } from './events';
-import { buildApp, fixApp, fixBreak, fixCategories, needsWork, onForkyard, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, bugsOf, breakVariant, type BuildReport } from './apps';
+import { buildApp, fixApp, fixBreak, fixCategories, needsWork, onForkyard, fillSpec, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, bugsOf, breakVariant, type BuildReport } from './apps';
 import { type Writer, type HistoryLine, scriptedWriter } from './writer';
 import { dateFull } from './calendar';
 import { deepsleepQuoted, translationReplies, PLEA_AT } from './deepsleep';
@@ -423,6 +423,43 @@ export async function agentStartFor(jev: JevRouter, s: GameState, content: Conte
   return ev && { ev, outcome: ev.outcomes!.find((o) => o.effects?.createApp)! };
 }
 
+/** What the agent says it did about a live break it patched. */
+const BREAK_FIXED: Record<string, string[]> = {
+  visible: ['Patched the crash on the {{feature}} page.', 'The {{feature}} page crashed. It loads again.'],
+  failed_fetch: ['Fixed the failed fetch on the {{feature}} page.', 'The {{feature}} page couldn\'t load its data. It can now.'],
+  subtle: ['Patched the {{feature}} page.'],
+  deep: ['Patched the {{feature}} page.'],
+};
+
+/**
+ * The reply's lines for one feature: each bug Jev saw named, said as fixed (its scripted line) or as
+ * already right, plus a patched break, a fresh build, or a rebuild nobody pinned down.
+ */
+function fixLines(s: GameState, app: AppInstance, tmpl: AppTemplate | undefined, fid: string, cats: string[], before: BuiltFeature | undefined, patched: boolean, vague: boolean): string[] {
+  const def = tmpl?.features.find((f) => f.id === fid);
+  const after = app.repo.find((f) => f.id === fid);
+  const had = before && !before.correct ? bugsOf(before) : [];
+  const has = after && !after.correct ? bugsOf(after) : [];
+  const params = app.specParams[fid];
+  const out: string[] = [];
+  if (patched) {
+    const brk = cats.find((c) => BREAK_FIXED[c]) ?? app.breaks.find((b) => b.featureId === fid)?.failure ?? 'visible';
+    out.push(pick(s, BREAK_FIXED[brk] ?? BREAK_FIXED.visible).replaceAll('{{feature}}', fid));
+    return out;
+  }
+  for (const c of cats) {
+    const bug = def?.bugs?.find((b) => b.id === c);
+    if (!bug) continue;
+    if (had.includes(c) && !has.includes(c)) out.push(fillSpec(pick(s, bug.fixed?.length ? bug.fixed : [`Fixed: ${bug.when}`]), params));
+    else if (!had.includes(c)) out.push(`Checked for this: "${fillSpec(bug.when, params).replace(/\.$/, '')}". That part was already right.`);
+  }
+  if (!before) out.push(`Built the ${fid}.`);
+  else if (vague && !out.length) out.push(`Went over the ${fid}. Tidied up the layout and spacing.`);
+  else if (!vague && had.some((b) => b === 'hallucinated' || b === 'outdated') && !has.some((b) => b === 'hallucinated' || b === 'outdated')) out.push(`Rebuilt the ${fid} with the details you gave.`);
+  else if (!out.length) out.push(`Rebuilt the ${fid}.`);
+  return out;
+}
+
 /** Agent hints the engine picks itself from the state, after Jev says which app the player means. */
 const APP_HINTS = new Set(['not_deployed', 'nothing_to_fix']);
 
@@ -463,12 +500,12 @@ export async function promptAgent(
   const workable = s0.apps.filter((a) => !a.churned && a.required.some((id) => needsWork(a, id)));
   if (workable.length) {
     // every way to name each feature (itself, its bugs, its live break), namespaced app::feature::category
-    const cats: { id: string; description: string }[] = [];
+    const cats: FeatureMatchInput['features'] = [];
     for (const a of workable) {
       const tmpl = content.apps[a.template];
       for (const id of a.required) {
         if (!needsWork(a, id)) continue;
-        for (const c of fixCategories(a, tmpl, id)) cats.push({ id: `${a.id}::${id}::${c.id}`, description: `${c.description} (for ${a.name}, ${a.url})` });
+        for (const c of fixCategories(a, tmpl, id)) cats.push({ id: `${a.id}::${id}::${c.id}`, description: `${c.description} (for ${a.name}, ${a.url})`, kind: c.kind });
       }
     }
     const context = recentPrompts(s0);
@@ -488,22 +525,24 @@ export async function promptAgent(
       }
       const level = s.values.agentLevel;
       const names: string[] = [];
-      const worked: string[] = [];
+      const lines: string[] = [];
       for (const [appId, feats] of byApp) {
         const a = getApp(s, appId)!;
         names.push(a.name);
         const tmpl = content.apps[a.template];
+        const before = new Map(a.repo.map((f) => [f.id, { ...f }]));
         // code that's fine but broken live gets a patch; everything else goes through a (re)build
         const toBuild: string[] = [];
+        const patched: string[] = [];
         for (const fid of feats.keys()) {
           const f = a.repo.find((x) => x.id === fid);
-          if (f?.correct) { fixBreak(s, appId, fid); worked.push(fid); } else toBuild.push(fid);
+          if (f?.correct) { fixBreak(s, appId, fid); patched.push(fid); } else toBuild.push(fid);
         }
-        if (toBuild.length) {
-          const named = toBuild.flatMap((fid) => feats.get(fid)!);
-          const report = buildApp(s, appId, toBuild, level, { tmpl, prompt: text, context: context.join('\n'), named });
-          for (const fid of toBuild) worked.push(report.vague.includes(fid) ? `${fid} (tidied up the layout and spacing)` : fid);
-        }
+        const report = toBuild.length
+          ? buildApp(s, appId, toBuild, level, { tmpl, prompt: text, context: context.join('\n'), named: toBuild.flatMap((fid) => feats.get(fid)!) })
+          : { vague: [], hallucinated: [] };
+        // one line per thing Jev saw named: what was fixed, or that it was already right
+        for (const fid of feats.keys()) lines.push(...fixLines(s, a, tmpl, fid, feats.get(fid)!, before.get(fid), patched.includes(fid), report.vague.includes(fid)));
       }
       const charged = chargeAgent(s, text);
       if (!charged) {
@@ -511,7 +550,7 @@ export async function promptAgent(
         s.chat.push({ from: 'agent', text: "I can't run — your balance won't cover it. Top up Coinbin and try again.", day: s.values.day, src: 'locked' });
         return { state: s, reply: '', charged: false, refused: false, workedAround: false };
       }
-      const reply = `Pushed to Forkyard for ${names.join(', ')}.\nWorked on: ${worked.join(', ')}.\n\nDeploy it on Forkyard to make it live.`;
+      const reply = `Pushed to Forkyard for ${names.join(', ')}.\n${lines.map((l) => `- ${l}`).join('\n')}\n\nDeploy it on Forkyard to make it live.`;
       s.chat.push({ from: 'you', text, day: s.values.day, cost: agentCostOf(s0, text), level });
       s.chat.push({ from: 'agent', text: reply, day: s.values.day, src: 'build', level });
       return { state: s, reply, charged: true, refused: false, workedAround: false };
