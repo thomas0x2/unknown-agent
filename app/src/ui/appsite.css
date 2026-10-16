@@ -151,7 +151,7 @@ body.dev-on .fy-devcount { display: inline-block; }
 .as-l-m span { font-size: 13px; }
 .as-l-m small { color: #6a7a86; font-size: 12px; }
 .as-l-m.free { border-left-color: #22a06b; } .as-l-m.running { border-left-color: #2f80ed; }
-.as-l-m.done { border-left-color: #e2a33a; } .as-l-m.broken { border-left-color: #d9534f; color: #8a96a0; }
+.as-l-m.done { border-left-color: #e2a33a; } .as-l-m.raw { font-family: var(--f-mono); } .as-l-m.broken { border-left-color: #d9534f; color: #8a96a0; }
 /* more than 8 machines in a grid built for 8 */
 .as-l-grid.broken { grid-template-columns: repeat(4, 1fr); grid-auto-rows: 36px; overflow: hidden; height: 190px; }
 .as-l-grid.broken .as-l-m:nth-child(n+9) { margin-top: -44px; margin-left: 30px; box-shadow: 0 2px 6px rgba(0,0,0,.15); }

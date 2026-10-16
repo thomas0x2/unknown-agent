@@ -75,9 +75,9 @@ describe('authored content', () => {
     }
   });
 
-  it('latent qmail leads have an address to email', () => {
+  it('latent qmail leads have an address to email, unless the agent starts them', () => {
     for (const e of content.events) {
-      if (e.latent && e.site === 'qmail') expect(e.addr, `${e.id} latent needs addr`).toBeTruthy();
+      if (e.latent && e.site === 'qmail' && !e.agentStart) expect(e.addr, `${e.id} latent needs addr`).toBeTruthy();
     }
   });
 

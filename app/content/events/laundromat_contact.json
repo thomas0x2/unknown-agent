@@ -1,18 +1,21 @@
 {
   "id": "laundromat_contact",
   "site": "qmail",
-  "from": "Spin Cycle owner",
-  "addr": "owner@spincycle.test",
+  "from": "Spin Cycle regulars",
   "subject": "RE: the status feed",
   "trigger": {
     "dayMin": 2
   },
   "latent": true,
-  "body": "You want to make my feed readable? Go for it. The codes: ST 0 free, 1 running, 2 done, 3 out of order; T is seconds left. Eight machines. The feed is at spincycle.test/feed. Show which are free and I'll send my regulars your way.",
+  "agentStart": {
+    "match": "\\b(spin ?cycle|laundr\\w*|laundromat|washers?|washing machines?|spincycle\\.test)\\b",
+    "lead": "d2_y_laundromat"
+  },
+  "body": "A user app nobody hires you for: ask the agent to turn Spin Cycle's raw feed (spincycle.test/feed) into something readable.",
   "outcomes": [
     {
       "id": "build",
-      "when": "the player offers to build, make or create a readable machine-status app",
+      "when": "the player asks the agent to build an app for Spin Cycle's machine feed",
       "effects": {
         "setFlags": [
           "laundromat_live"
@@ -40,6 +43,6 @@
     }
   ],
   "hints": [
-    "Offer to turn his raw feed into something people can read."
+    "Ask the agent to build an app for Spin Cycle's machine feed."
   ]
 }

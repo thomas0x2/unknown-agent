@@ -185,7 +185,7 @@ function jobStatus(s: GameState, j: Job): { label: string; ok: boolean } {
   if (d?.outcomeId) return { label: d.outcomeId === outcome?.id ? 'done' : `closed (${d.outcomeId})`, ok: d.outcomeId === outcome?.id };
   if (d) return { label: ev.onDeliver?.updateApp ? `arrived day ${d.day}` : 'open now', ok: true };
   if (s.fired.includes(ev.id)) return { label: 'closed', ok: false };
-  if (triggerMatches(s, ev.trigger)) return { label: ev.latent ? 'open now · email the lead' : 'arrives next morning', ok: true };
+  if (triggerMatches(s, ev.trigger)) return { label: ev.agentStart ? 'open now · ask the agent' : ev.latent ? 'open now · email the lead' : 'arrives next morning', ok: true };
   return { label: 'locked', ok: false };
 }
 
@@ -199,8 +199,9 @@ function jobs(store: GameStore): string {
   const cards = [...byEvent.values()].map((js) => {
     const ev = js[0].ev;
     const st = js.map((j) => jobStatus(s, j)).sort((a, b) => rank(a.label) - rank(b.label))[0];
-    const lead = ev.latent ? c.events.find((e) => !e.latent && e.addr === ev.addr && e.site !== 'qmail') : undefined;
-    const from = `${ev.from ?? ev.id}${ev.addr ? ` · ${ev.addr}` : ''}`;
+    const lead = ev.agentStart?.lead ? c.events.find((e) => e.id === ev.agentStart!.lead)
+      : ev.latent ? c.events.find((e) => !e.latent && e.addr === ev.addr && e.site !== 'qmail') : undefined;
+    const from = ev.agentStart ? 'nobody: a prompt to the agent starts it' : `${ev.from ?? ev.id}${ev.addr ? ` · ${ev.addr}` : ''}`;
     const ways = js.map((j) => `<div class="dvo-out">
         <div class="dvo-out-head"><b>${esc(j.outcome?.id ?? 'on arrival')}</b><span class="dvo-dim">${esc(j.kind)}</span></div>
         ${j.outcome ? line('Take it', esc(j.outcome.when)) : ''}

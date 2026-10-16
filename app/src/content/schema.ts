@@ -157,6 +157,12 @@ export interface GameEvent {
    * seen on Y ("email me at ...") turns into a conversation.
    */
   latent?: boolean;
+  /**
+   * A user app the player starts by asking the agent, with nobody to email: a prompt matching
+   * `match` (a regex) once the trigger holds takes the job (the outcome with a createApp) and builds
+   * from that same prompt. `lead` is the post where the player hears about it.
+   */
+  agentStart?: { match: string; lead?: string };
   /** Offers the player paid work, so replies come on the next action. Events with a `job` or an outcome that creates an app count already. */
   jobRequest?: boolean;
   /** Applied the moment the event is delivered. */

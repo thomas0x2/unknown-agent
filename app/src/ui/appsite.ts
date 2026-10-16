@@ -9,7 +9,7 @@ import type { AppTemplate } from '../content/schema';
 import { menuDishes, misspell, WRONG_HOURS } from '../engine/restaurant';
 import { crawl, autoBuys, portfolio, START_PORTFOLIO, type MarketPost, type Portfolio } from '../engine/crawler';
 import { machineRows } from '../engine/laundromat';
-import { dateShort } from '../engine/calendar';
+import { dateShort, clockTime } from '../engine/calendar';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
@@ -49,6 +49,8 @@ export interface SiteExtras {
   cancel?: string;
   /** Today, and the stock posts on Y: what the crawler and the laundromat read. */
   day?: number;
+  /** The clock, minutes since midnight: the laundry feed changes with it. */
+  minute?: number;
   market?: MarketPost[];
 }
 
@@ -220,11 +222,13 @@ function laundromat(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
   else if (f.machines.brk?.failure === 'failed_fetch' || f.refresh.brk?.failure === 'failed_fetch') body = `<p class="as-l-empty">No machines found.</p>`;
   else {
     // without a working refresh it shows what the feed said when it was deployed
-    const dataDay = f.refresh.built && !bugs.has('no_refresh') ? day : app.lastDeployDay || day;
-    const rows = machineRows(dataDay, bugs, { showMinutes: !!f.minutes.built, twelve: !!f.more_machines.built });
+    const live = f.refresh.built && !bugs.has('no_refresh');
+    const dataDay = live ? day : app.lastDeployDay || day;
+    const dataMin = live ? extras.minute ?? 600 : app.lastDeployMin ?? 600;
+    const rows = machineRows(dataDay, bugs, { showMinutes: !!f.minutes.built, twelve: !!f.more_machines.built }, dataMin);
     const broken = bugs.has('layout_breaks') && rows.length > 8;
-    const cards = rows.map((m) => `<div class="as-l-m ${m.status}"><b>M${m.id}</b><span>${MACHINE_LABEL[m.status]}</span>${m.minutes != null ? `<small>${m.minutes} min left</small>` : ''}</div>`).join('');
-    body = `<div class="as-l-grid${broken ? ' broken' : ''}">${cards}</div><p class="as-l-upd">Updated ${dateShort(dataDay)}</p>`;
+    const cards = rows.map((m) => `<div class="as-l-m ${m.raw == null ? m.status : 'raw'}"><b>M${m.id}</b><span>${m.raw == null ? MACHINE_LABEL[m.status] : `Status: ${m.raw}`}</span>${m.minutes != null ? `<small>${m.minutes} min left</small>` : ''}</div>`).join('');
+    body = `<div class="as-l-grid${broken ? ' broken' : ''}">${cards}</div><p class="as-l-upd">Updated ${dateShort(dataDay)}, ${clockTime(dataMin)}</p>`;
   }
   return `<div class="as as-l">${head}<main>${body}</main></div>`;
 }

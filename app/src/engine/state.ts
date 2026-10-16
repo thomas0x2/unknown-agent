@@ -62,6 +62,8 @@ export interface AppInstance {
   deployed: boolean;
   createdDay: number;
   lastDeployDay: number;
+  /** Clock time of the last deploy (minutes since midnight); unset in older saves. */
+  lastDeployMin?: number;
   breaks: AppBreak[];
   /** Build bugs the agent has fixed, per feature: it doesn't make them again. */
   fixed?: Record<string, string[]>;

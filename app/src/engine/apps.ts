@@ -414,6 +414,7 @@ export function deployApp(s: GameState, appId: string): void {
   app.deployed = true;
   app.deployedVersion = app.repoVersion;
   app.lastDeployDay = s.values.day;
+  app.lastDeployMin = s.clockMin;
   s.commits.push({ day: s.values.day, repo: app.id, msg: `Deploy ${app.name} v${app.repoVersion}`, kind: 'deploy' });
 }
 
