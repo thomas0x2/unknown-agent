@@ -1,0 +1,11 @@
+{
+  "id": "d16_y_crane",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "dayMin": 16,
+    "dayMax": 16
+  },
+  "at": "14:05",
+  "body": "My opponent has never had a real job. He's had a CAREER, which is very different. Low energy, low ideas, low everything. He reads his speeches off a screen, and the screen is smarter than him!"
+}

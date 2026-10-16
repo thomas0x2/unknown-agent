@@ -1,9 +1,7 @@
 {
   "id": "d4_viktor_resolve",
-  "site": "qmail",
+  "site": "y",
   "from": "Viktor",
-  "addr": "viktor@mail.test",
-  "subject": "It sold!",
   "trigger": {
     "dayMin": 4,
     "flagsAll": [
@@ -16,5 +14,5 @@
       "viktor_sold_watch"
     ]
   },
-  "body": "Someone bought the watch within a day. I can't tell you what that means right now. Thank you."
+  "body": "Sold my grandfather's watch on Swaplist within a day. I can't say what that means right now. Thank you to whoever built it."
 }

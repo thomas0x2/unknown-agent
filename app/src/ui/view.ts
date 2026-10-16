@@ -404,15 +404,24 @@ function yPosts(store: GameStore): YPost[] {
   // newest first: by day, then the time it went up
   return out.sort((a, b) => b.day - a.day || Number(!!b.pinned) - Number(!!a.pinned) || (b.min ?? 0) - (a.min ?? 0) || (a.rank ?? 0) - (b.rank ?? 0) || b.id.localeCompare(a.id));
 }
+/** Accounts with Y's verified check. */
+const Y_VERIFIED = new Set(['mara_vey']);
+/** Follower counts for the public figures; everyone else gets a small made-up number. */
+const Y_FOLLOWERS: Record<string, number> = { randall_crane: 38_400_000, mara_vey: 61_200 };
+const yCheck = (handle: string) => Y_VERIFIED.has(handle) ? `<span class="y-badge" title="Verified">${Y_ICONS.badge}</span>` : '';
 function yPostHtml(store: GameStore, p: YPost): string {
   const liked = !!store.ui.liked[p.id];
   const likes = p.likes + (liked ? 1 : 0);
   const text = linkify(esc(p.text).replace(/(^|[^&\w])(#[a-z][a-z0-9_]*)/gi, '$1<span class="y-at">$2</span>'));
   const prof = `y.com/${esc(p.handle)}`;
-  return `<article class="y-post${p.mine ? ' mine' : ''}">
+  // a bot post in a barrage fades in at its own moment, wherever the repaint catches it
+  const lands = store.ui.yBurst[p.id];
+  const wait = lands == null ? null : lands - performance.now();
+  const arrive = wait != null && wait > -400 ? ` y-arrive" style="animation-delay:${Math.round(wait)}ms` : '';
+  return `<article class="y-post${p.mine ? ' mine' : ''}${arrive}">
     <header>
       <a href="#" class="y-av-link" data-nav="${prof}">${avatar(p.author, p.handle)}</a>
-      <a href="#" class="y-who" data-nav="${prof}"><span class="y-name"><b>${esc(p.author)}</b></span><span class="y-handle">@${esc(p.handle)}</span></a>
+      <a href="#" class="y-who" data-nav="${prof}"><span class="y-name"><b>${esc(p.author)}</b>${yCheck(p.handle)}</span><span class="y-handle">@${esc(p.handle)}</span></a>
       <span class="y-time">${p.day === store.state.values.day && p.min != null ? fmtClock(p.min) : dateShort(p.day)}</span>
     </header>
     <p>${text}</p>
@@ -429,7 +438,12 @@ function pageY(store: GameStore, profile?: string): string {
   const posts = yPosts(store);
   const q = store.ui.ySearch.trim().toLowerCase();
   const trending = store.content.trending[s.values.day] ?? [];
-  const feed = (q ? posts.filter((p) => `${p.author} ${p.handle} ${p.text}`.toLowerCase().includes(q.replace(/^@/, ''))) : posts).map((p) => yPostHtml(store, p)).join('') || `<p class="y-none">Quiet timeline.</p>`;
+  // the timeline shows today's posts; older ones wait behind "Show all" (a search covers everything)
+  const showAll = !!q || store.ui.yAllDay === s.values.day;
+  const shown = q ? posts.filter((p) => `${p.author} ${p.handle} ${p.text}`.toLowerCase().includes(q.replace(/^@/, ''))) : showAll ? posts : posts.filter((p) => p.day === s.values.day);
+  const older = !showAll && posts.some((p) => p.day !== s.values.day);
+  const feed = (shown.map((p) => yPostHtml(store, p)).join('') || `<p class="y-none">${older ? 'Nothing posted yet today.' : 'Quiet timeline.'}</p>`)
+    + (older ? '<div class="y-more"><button class="y-btn ghost" data-y-all>Show all</button></div>' : '');
   const side = `<aside class="y-side">
     <section class="y-card y-me">
       <a href="#" class="y-me-head" data-nav="y.com/you">${avatar('You', 'you')}<span><b>You</b><small>@you</small></span></a>
@@ -463,12 +477,12 @@ function yProfile(store: GameStore, handle: string): string {
   const back = '<p class="y-back"><a href="#" data-nav="y.com">← Timeline</a></p>';
   if (!mine && !posts.length) return `${back}<section class="y-prof missing"><h2>This account doesn't exist</h2><p>Nobody on Y goes by @${esc(handle)}.</p></section>`;
   const name = mine ? 'You' : (posts[0]?.author ?? handle);
-  const followers = mine ? s.values.followers : 20 + hashHue(h) % 400;
+  const followers = mine ? s.values.followers : Y_FOLLOWERS[h] ?? 20 + hashHue(h) % 400;
   const feed = posts.length ? posts.map((p) => yPostHtml(store, p)).join('') : `<p class="y-none">@${esc(h)} hasn't posted anything you can see.</p>`;
   return `${back}<section class="y-prof">
     <div class="y-banner" style="--h:${hashHue(h)}"></div>
     <div class="y-prof-head"><div class="y-prof-av">${avatar(name, h)}</div></div>
-    <h1 class="y-prof-name">${esc(name)}</h1><p class="y-handle">@${esc(h)}</p>
+    <h1 class="y-prof-name">${esc(name)}${yCheck(h)}</h1><p class="y-handle">@${esc(h)}</p>
     <p class="y-prof-stats"><span><b>${compact(40 + hashHue(h + 'f') % 300)}</b> following</span><span><b>${compact(followers)}</b> followers</span></p>
   </section><p class="y-eyebrow">Posts</p><div class="y-feed">${feed}</div>`;
 }
@@ -845,8 +859,15 @@ export function workHtml(s: GameState): string {
 function pageAgent(store: GameStore): string {
   const s = store.state;
   const c = agentCost(s.values.agentLevel);
-  const msgs = s.chat.map((m) => {
-    if (m.from === 'you') return `<div class="ua-msg you"><div class="ua-bubble">${esc(m.text)}</div><span class="ua-cost">${m.cost ? fmtMoney(-m.cost) + ' · ' : ''}agent-${m.level ?? s.values.agentLevel} · ${dateShort(m.day)}</span></div>`;
+  // while a prompt's charge is on its way to the wallet, its cost line shows it filling in place
+  const chargingAt = store.charging ? s.chat.map((m) => m.from).lastIndexOf('you') : -1;
+  const msgs = s.chat.map((m, i) => {
+    if (m.from === 'you') {
+      const cost = i === chargingAt
+        ? `<span class="ua-cost ua-charging" role="status"><span class="ua-charge-bar"><i style="animation-duration:${CHARGE_DELAY_MS}ms"></i></span>Charging Coinbin · ${fmtMoney(-store.charging)}</span>`
+        : `<span class="ua-cost">${m.cost ? fmtMoney(-m.cost) + ' · ' : ''}agent-${m.level ?? s.values.agentLevel} · ${dateShort(m.day)}</span>`;
+      return `<div class="ua-msg you"><div class="ua-bubble">${esc(m.text)}</div>${cost}</div>`;
+    }
     if (m.from === 'system') return `<div class="ua-sys" role="alert">${ICONS.error}<span>${esc(m.text)}</span></div>`;
     const src = m.src ? `<span class="ua-src ${esc((m.src || '').split(':')[0])}">${esc(m.src)}</span>` : '';
     const model = m.src === 'llm' ? `<span class="ua-model" title="Written by a model">${esc(m.by ?? MISSES.label())}</span>`
@@ -858,8 +879,6 @@ function pageAgent(store: GameStore): string {
   }).join('');
   const p = store.pendingPrompt;
   const pending = p == null ? '' : `<div class="ua-msg you"><div class="ua-bubble">${esc(p)}</div><span class="ua-cost">${fmtMoney(-promptCost(s.values.agentLevel, p).total)} · agent-${s.values.agentLevel} · ${dateShort(s.values.day)}</span></div>`;
-  // the reply is in; its charge reaches the wallet a beat later
-  const charging = store.charging ? `<div class="ua-charge" role="status"><span class="ua-charge-bar"><i style="animation-duration:${CHARGE_DELAY_MS}ms"></i></span>Charging Coinbin ${shortAddr(WALLET_ADDR)} · ${fmtMoney(-store.charging)}</div>` : '';
   const thinking = store.busy && !store.charging ? `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text ua-dots"><i></i><i></i><i></i></div></div>` : '';
   return `<div class="ua">
     <header class="ua-head">
@@ -867,7 +886,7 @@ function pageAgent(store: GameStore): string {
       ${devOptionsButton(store, 'agent')}<span class="ua-linked"><a href="#" data-nav="agent.chat/models" class="ua-upgrade">Models</a> · ${s.agentLocked ? 'LOCKED · unpaid' : 'Billing: Coinbin ' + shortAddr(WALLET_ADDR)}</span>
     </header>
     <div class="ua-llm"><span class="ua-jev" id="ua-jev">${jevChip()}</span><span class="ua-llm-ctl" id="ua-llm">${llmRow()}</span></div>
-    <div class="ua-log" id="ua-log">${msgs}${workHtml(s)}${pending}${thinking}${charging}</div>
+    <div class="ua-log" id="ua-log">${msgs}${workHtml(s)}${pending}${thinking}</div>
     <form class="ua-compose" data-form="prompt">
       <textarea id="prompt-input" rows="2" placeholder="Ask agent anything — build an app, fix one, write, translate, look something up…" ${s.ending ? 'disabled' : ''}></textarea>
       <div class="ua-row"><span id="cost-est" class="ua-est"></span><button class="ua-send" type="submit" ${s.ending || store.busy ? 'disabled' : ''}>Send</button></div>

@@ -1,0 +1,11 @@
+{
+  "id": "d2_y_crane",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "dayMin": 2,
+    "dayMax": 2
+  },
+  "at": "19:50",
+  "body": "Tremendous crowd tonight. People were lined up outside for blocks, standing in the rain, some of them since last week. The fire marshal said he'd never seen anything like it, and he's seen fires."
+}

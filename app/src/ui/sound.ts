@@ -98,6 +98,15 @@ class SoundEngine {
     try { CUES[cue](this, ctx.currentTime + 0.005 + delay); } finally { this.profile = front; }
   }
 
+  /** One cue played at each of `offsets` (seconds after `delay`): a barrage, so the same-cue guard is checked once. */
+  burst(cue: Cue, offsets: number[], delay = 0): void {
+    const ctx = this.ctx;
+    if (!ctx || !this.bus || this.settings.muted || this.settings.volume <= 0 || !offsets.length) return;
+    if (typeof document !== 'undefined' && document.hidden) return;
+    this.last.set(cue, performance.now());
+    for (const o of offsets) CUES[cue](this, ctx.currentTime + 0.005 + delay + o);
+  }
+
   // ── building blocks ──
   tone(freq: number, t: number, dur: number, o: ToneOpts = {}): void {
     const ctx = this.ctx!;

@@ -9,7 +9,7 @@ import { startGame } from '../engine/day';
 import { postToY, writeReview } from '../engine/actions';
 import { applyEffects } from '../engine/effects';
 import { getApp, nameUnnamedBugs, bugsOf } from '../engine/apps';
-import { marketPosts, crawl, autoBuys, portfolio, START_PORTFOLIO } from '../engine/crawler';
+import { marketPosts, crawl, autoBuys, portfolio, price, START_PORTFOLIO } from '../engine/crawler';
 import { machineFeed, machineRows } from '../engine/laundromat';
 import type { GameState } from '../engine/state';
 import { wordJev, promptDone } from '../engine/_fixtures';
@@ -88,6 +88,12 @@ describe('sentiment crawler', () => {
     expect(autoBuys(all, 6, bugs('impostor_buy')).map((b) => [b.ticker, b.post.handle])).toContainEqual(['VANT', 'randa11_crane']);
     expect(autoBuys(all, 6, bugs('repeat_buys')).length).toBeGreaterThan(1);
     expect(portfolio(ok, 6, bugs()).holdings.find((h) => h.ticker === 'GAI')!.shares).toBeGreaterThan(START_PORTFOLIO.holdings.GAI);
+  });
+
+  it('prices match the posts: both up on days 1 to 3, $VANT up about 8% since the restructuring by day 2', () => {
+    for (const d of [1, 2, 3]) for (const h of portfolio([], d, bugs()).holdings) expect(h.move, `${h.ticker} day ${d}`).toBeGreaterThan(0);
+    expect(price('VANT', 2) / price('VANT', 0) - 1).toBeCloseTo(0.08, 2);
+    expect(price('VANT', 2) - price('VANT', 1)).toBeGreaterThan(price('VANT', 1) - price('VANT', 0));
   });
 
   it('each portfolio bug is off by enough to see at a glance', () => {
