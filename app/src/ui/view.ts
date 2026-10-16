@@ -203,9 +203,22 @@ export function page(store: GameStore, r: Route): string {
   }
 }
 
+const ERR_ICON = '<svg class="err-ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M12 4h17l11 11v29H12z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M29 4v11h11" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M19 37c1.6-2.6 3.6-3.8 6-3.8s4.4 1.2 6 3.8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="20" cy="26" r="2.2" fill="currentColor"/><circle cx="30" cy="26" r="2.2" fill="currentColor"/></svg>';
+
 function pageError(url: string, site: SiteId): string {
-  if (site === 'notfound' || !url) return `<div class="err"><h1>This site can't be reached</h1><p><code>${esc(url)}</code> didn't respond.</p><p class="err-sub">Try the bookmarks. They are the only sites you can afford.</p></div>`;
-  return `<div class="err"><h1>Not reachable yet</h1><p>You haven't discovered <code>${esc(url)}</code>.</p></div>`;
+  const host = esc(url.split('/')[0] || url);
+  const reload = url ? `<button class="err-btn" data-nav="${esc(url)}">Reload</button>` : '';
+  const page = (title: string, lead: string, tips: string[], code: string) =>
+    `<div class="err"><div class="err-box">${ERR_ICON}<h1>${title}</h1><p class="err-lead">${lead}</p>
+      <p class="err-try">Try:</p><ul>${tips.map((t) => `<li>${t}</li>`).join('')}</ul>
+      <p class="err-code">${code}</p>${reload}</div></div>`;
+  if (site === 'notfound' || !url) return page("This site can't be reached",
+    `<b>${host}</b>'s server IP address could not be found.`,
+    ['Checking the address for typos', 'Checking the connection', 'The bookmarks. They are the only sites you can afford.'],
+    'DNS_PROBE_FINISHED_NXDOMAIN');
+  return page("This site can't be reached", `You haven't discovered <b>${esc(url)}</b> yet.`,
+    ['Finding a link to it somewhere first', 'Checking the bookmarks'],
+    'ERR_ADDRESS_UNREACHABLE');
 }
 
 function pageNewTab(store: GameStore): string {
