@@ -191,6 +191,8 @@ export interface Character {
   examples: [string, string][];
   /** Most sentences a reply may have (default 2). */
   sentences?: number;
+  /** Fewest words a usable reply has (default 1); shorter ones fall back to the scripted line. */
+  minWords?: number;
 }
 
 /** Everything the engine reads, gathered in one bundle and passed into engine steps. */

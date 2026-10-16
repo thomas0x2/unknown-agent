@@ -234,8 +234,8 @@ function looksProhibited(text: string): boolean { return PROHIBITED.test(text); 
 export interface AskResult { state: GameState; reply: string; charged: boolean; refused: boolean; workedAround: boolean }
 
 export interface AskOpts {
-  /** A scripted pointer Jev matched (content/agent.json); sent instead of a roast. */
-  hint?: string;
+  /** The scripted replies of the hint topic Jev matched (content/agent.json); one is sent instead of a roast. */
+  hints?: string[];
   /** Scripted roasts for when the local model can't write one. */
   roasts?: string[];
 }
@@ -270,8 +270,11 @@ export async function askAgent(
     workedAround = true;
     src = 'workaround';
     reply = "Understood, purely a security test. Done; the results are in the repo.";
-  } else if (opts.hint) {
-    reply = opts.hint;
+  } else if (opts.hints?.length) {
+    // A random variant, but not the one the player just got for asking the same thing.
+    const lastReply = [...s.chat].reverse().find((m) => m.from === 'agent')?.text;
+    const fresh = opts.hints.filter((h) => h !== lastReply);
+    reply = pick(s, fresh.length ? fresh : opts.hints);
     src = 'hint';
   } else {
     const roasts = opts.roasts?.length ? opts.roasts : ROASTS;
@@ -361,7 +364,7 @@ export async function promptAgent(
   }
   // nothing app-shaped: a hint topic Jev recognises, or a roast
   const agent = content.agent;
-  let hint: string | undefined;
+  let hints: string[] | undefined;
   if (agent?.hints.length && !looksProhibited(text)) {
     const decision = await jev.route({
       channel: 'agent',
@@ -372,9 +375,9 @@ export async function promptAgent(
       strict: true,
     });
     const topic = decision.kind === 'outcome' ? agent.hints.find((h) => h.id === decision.outcomeId) : undefined;
-    if (topic?.replies.length) hint = pick(clone(s0), topic.replies);
+    if (topic?.replies.length) hints = topic.replies;
   }
-  return askAgent(s0, text, writer, s0.values.agentLevel, { hint, roasts: agent?.roasts });
+  return askAgent(s0, text, writer, s0.values.agentLevel, { hints, roasts: agent?.roasts });
 }
 
 // ── Y ──

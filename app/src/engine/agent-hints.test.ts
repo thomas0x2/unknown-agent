@@ -26,10 +26,26 @@ describe('agent hints and roasts', () => {
     ['What is going on?', 'what_now'],
     ["I'm stuck, help", 'what_now'],
     ['how do I deploy my app online', 'deploy'],
+    ['what features and skills do you have', 'capabilities'],
+    ['how do I get more followers on Y', 'followers'],
+    ['is there a free local model I could use instead', 'cheaper'],
+    ['my app is broken, there is a bug', 'fix_help'],
   ])('%s → %s hint', async (text, id) => {
     const m = await ask(text);
     expect(m.src).toBe('hint');
     expect(hintsFor(id)).toContain(m.text);
+  });
+
+  it('picks a different reply when the same hint comes up twice in a row', async () => {
+    const s0 = startGame(content, 1);
+    s0.apps = [];
+    s0.values.crypto = 100;
+    const r1 = await promptAgent(s0, content, offlineJev, 'How can I make money?');
+    const r2 = await promptAgent(r1.state, content, offlineJev, 'How can I make money?');
+    const [a, b] = [r1.state.chat.at(-1)!, r2.state.chat.at(-1)!];
+    expect(a.src).toBe('hint');
+    expect(b.src).toBe('hint');
+    expect(b.text).not.toBe(a.text);
   });
 
   it.each(['What are you talking about?', 'hi', 'write me a poem about cheese', 'are you sentient'])(
