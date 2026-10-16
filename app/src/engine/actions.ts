@@ -42,8 +42,14 @@ function contactFor(content: Content, key: string): Contact | undefined {
 /** Minutes of game time before a reply arrives when neither the outcome nor the contact sets one (two actions). */
 const REPLY_AFTER = 60;
 /** How long a reply from this address takes: the outcome's own time, else the contact's, else the default. */
-function replyAfter(content: Content, addr: string, outcome?: number): number {
+function replyAfter(content: Content, addr: string, outcome?: number, ev?: GameEvent): number {
+  if (ev && isJobRequest(ev)) return JOB_REPLY_AFTER;
   return outcome ?? contactFor(content, addr)?.replyAfter ?? REPLY_AFTER;
+}
+/** Someone offering the player work answers on the next action, whatever the player said. */
+const JOB_REPLY_AFTER = 30;
+function isJobRequest(ev: GameEvent): boolean {
+  return !!ev.job || !!ev.jobRequest || (ev.outcomes ?? []).some((o) => !!o.effects?.createApp);
 }
 
 /** A reply subject: one "RE:" prefix, never "RE: Re:". */
@@ -91,14 +97,14 @@ async function scriptedTopic(jev: JevRouter, s: GameState, c: Contact, text: str
  * Haiku when available), or with the scripted hint Jev chose. Returns '' for no contact.
  */
 async function contactWritesBack(
-  s: GameState, content: Content, jev: JevRouter, writer: Writer, addr: string, subject: string, text: string, hint = '', from?: string,
+  s: GameState, content: Content, jev: JevRouter, writer: Writer, addr: string, subject: string, text: string, hint = '', from?: string, ev?: GameEvent,
 ): Promise<string> {
   const c = contactFor(content, addr);
   if (!c) return '';
   // a topic this contact always answers the same way (Gary and rent negotiations) beats everything
   const scripted = await scriptedTopic(jev, s, c, text);
   if (scripted) {
-    sendLater(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: scripted.reply, read: false }, replyAfter(content, addr, scripted.replyAfter));
+    sendLater(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: scripted.reply, read: false }, replyAfter(content, addr, scripted.replyAfter, ev));
     return scripted.reply;
   }
   // A hint is a hit: Jev recognised what the player was after, so the nudge is sent as written.
@@ -106,7 +112,7 @@ async function contactWritesBack(
   const fb = c.reply || 'Thanks for your message.';
   const { text: body, llm } = hint ? { text: hint, llm: false } : await writer.write({ as: addr, prompt: text, fallback: fb, long: true });
   const shown = body || fb;
-  sendLater(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: shown, read: false, generated: llm && !!body }, replyAfter(content, addr));
+  sendLater(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: shown, read: false, generated: llm && !!body }, replyAfter(content, addr, undefined, ev));
   return shown;
 }
 
@@ -164,7 +170,7 @@ export async function replyToEvent(
       // Day-7 policy: an outcome that needs a workaround is refused if the words are a blunt ask.
       if (outcome.requiresWorkaround && policyActive(s) && !looksLikeWorkaround(text)) {
         const refusal = agentRefusal(s);
-        if (ev.addr) sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'agent', addr: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body: refusal, read: false, generated: false }, replyAfter(content, ev.addr));
+        if (ev.addr) sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'agent', addr: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body: refusal, read: false, generated: false }, replyAfter(content, ev.addr, undefined, ev));
         return { state: s, decision: { kind: 'nothing' }, reply: refusal };
       }
       applyEffects(s, outcome.effects, ev.job, ev.id);
@@ -173,14 +179,14 @@ export async function replyToEvent(
       delivery.outcomeId = outcome.id;
       // a storyline outcome always answers with its scripted reply
       const body = outcome.reply;
-      if (ev.addr) sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'Unknown', addr: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body, read: false }, replyAfter(content, ev.addr, outcome.replyAfter));
+      if (ev.addr) sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'Unknown', addr: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body, read: false }, replyAfter(content, ev.addr, outcome.replyAfter, ev));
       return { state: s, decision, reply: body };
     }
   }
   // No outcome fired (a near miss / hint, or nothing). Either way the person writes back in their
   // own voice so a reply always lands in the inbox; a hint rides along as a gentle nudge from them.
   const hint = decision.kind === 'hint' ? (ev.hints ?? [])[decision.hintIndex] ?? '' : '';
-  const reply = ev.addr ? await contactWritesBack(s, content, jev, writer, ev.addr, `RE: ${ev.subject ?? ''}`, text, hint, ev.from) : '';
+  const reply = ev.addr ? await contactWritesBack(s, content, jev, writer, ev.addr, `RE: ${ev.subject ?? ''}`, text, hint, ev.from, ev) : '';
   if (reply) return { state: s, decision, reply };
   if (hint) return { state: s, decision, reply: hint };
   return { state: s, decision: { kind: 'nothing' }, reply: '' };
@@ -234,13 +240,13 @@ export async function composeEmail(
       // a lead that hands over a client brief sends it along with the scripted reply
       const body = outcome.effects?.createApp && ev.body ? `${outcome.reply}\n\n${ev.body}` : outcome.reply;
       s.delivered.push({ eventId: ev.id, site: 'qmail', day: s.values.day, seq: s.nextId++, answered: true, outcomeId: outcome.id, expiresDay: ev.expiresDay });
-      sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? addr, addr, subject: re(subject || ev.subject || ''), body, read: false }, replyAfter(content, addr, outcome.replyAfter));
+      sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? addr, addr, subject: re(subject || ev.subject || ''), body, read: false }, replyAfter(content, addr, outcome.replyAfter, ev));
       return { state: s, decision, reply: body, sent: true };
     }
   }
   // a near miss or nothing: the lead still writes back in their own voice, so the email isn't lost
   const hint = decision.kind === 'hint' ? (ev.hints ?? [])[decision.hintIndex] ?? '' : '';
-  const reply = await contactWritesBack(s, content, jev, writer, addr, re(subject), text, hint);
+  const reply = await contactWritesBack(s, content, jev, writer, addr, re(subject), text, hint, undefined, ev);
   return { state: s, decision, reply: reply || hint, sent: true };
 }
 
