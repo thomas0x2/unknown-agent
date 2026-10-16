@@ -85,7 +85,7 @@ function restaurant(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
       body = `<section class="as-r-menu"><h1>Menu</h1><ul>${rows}</ul></section>`;
     }
   } else if (page === 'booking' && extras.booking) {
-    body = `<section class="as-r-book">${extras.booking}</section>`;
+    body = `<section class="as-r-book">${outage(live(app, tmpl, 'booking'), 'the booking form') ?? extras.booking}</section>`;
   } else body = notFound();
 
   const foot = `<footer class="as-r-foot">© ${esc(name)}${hours && hasLanding ? ` · ${esc(hours)}` : ''}<span>Built with Forkyard</span></footer>`;
@@ -127,12 +127,14 @@ function devRows(app: AppInstance, tmpl: AppTemplate | undefined): DevRow[] {
     const brk = app.breaks.find((b) => b.featureId === id);
     const repoNow = !repo ? 'missing' : repo.correct ? 'ok' : bugsOf(repo).join(' + ') || 'wrong';
     const liveNow = !app.deployed ? 'not deployed'
-      : brk ? `${BREAK_LABEL[brk.failure] ?? brk.failure}${brk.failure === 'subtle' ? `: ${breakVariant(brk, def) ?? '?'}` : ''}`
+      : brk ? `${BREAK_LABEL[brk.failure] ?? brk.failure}${breakVariant(brk, def) ? `: ${breakVariant(brk, def)}` : ''}`
       : !liveF ? 'missing' : liveF.correct ? 'ok' : bugsOf(liveF).join(' + ') || 'wrong';
-    const present = new Set([...(repo?.correct ? [] : bugsOf(repo)), ...(liveF?.correct ? [] : bugsOf(liveF)), ...(brk ? [brk.failure] : [])]);
+    const present = new Set([...(repo?.correct ? [] : bugsOf(repo)), ...(liveF?.correct ? [] : bugsOf(liveF)), ...(brk ? [brk.failure] : []), ...(brk && breakVariant(brk, def) ? [breakVariant(brk, def)!] : [])]);
     const possible = [
-      ...[...(def?.bugs ?? []).map((b) => b.id), ...(def?.details?.length ? ['hallucinated', 'outdated'] : [])].map((key) => ({ key, label: key })),
-      ...(def?.failures ?? []).map((f) => ({ key: f, label: BREAK_LABEL[f] ?? f, live: true })),
+      ...(def?.bugs ?? []).map((b) => ({ key: b.id, label: b.deep ? `${b.id} (deep)` : b.id })),
+      ...(def?.details?.length ? ['hallucinated', 'outdated'] : []).map((key) => ({ key, label: key })),
+      // subtle and deep breaks show one of the bugs above, so with named bugs they'd only repeat them
+      ...(def?.failures ?? []).filter((f) => !(def?.bugs?.length && (f === 'subtle' || f === 'deep'))).map((f) => ({ key: f, label: BREAK_LABEL[f] ?? f, live: true })),
     ];
     // the spec checklist from the last build prompt: a missed item guarantees its bug
     const checklist = (def?.checklist ?? []).map((c) => {

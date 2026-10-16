@@ -136,13 +136,92 @@
         "visible"
       ],
       "deep": true,
-      "match": "\\b(booking( form)?|book a table|reservations?|reserve a table)\\b",
+      "match": "\\b(booking( form| page| system)?s?|book(ing)? a table|reservations?|reserve a table|table booking)\\b",
       "complaints": {
         "missing": "There is still no way to book a table.",
-        "deep": "The booking form looks fine, but the confirmation email never arrives. A couple came for their anniversary and we had no table for them.",
+        "no_email": "People book a table and then call me to ask if it worked. They get no email.",
+        "fake_cancel": "A guest cancelled with the link in the email, and the table was still held for them all evening.",
+        "wrong_date": "A family came on the wrong day. The email told them a different day than they booked.",
+        "wrong_time": "Two guests came an hour late. The time in their email was wrong.",
+        "sent_to_restaurant": "I keep getting the booking confirmations. The guests get nothing.",
+        "party_wrong": "The emails don't say how many people are coming. I can't plan the tables like this.",
+        "name_wrong_mail": "The booking emails have another restaurant's name on them.",
+        "no_hours_check": "Someone booked a table for after midnight. We close at ten.",
+        "dead_button": "The booking form looks fine, but nothing happens when you press the button. A couple came for their anniversary and we had no table for them.",
+        "deep": "The booking form looks fine, but nothing happens when you press the button. A couple came for their anniversary and we had no table for them.",
         "down": "The booking page shows an error.",
         "wrong": "The bookings come in wrong. Please check the form."
-      }
+      },
+      "bugs": [
+        {
+          "id": "no_email",
+          "when": "no confirmation email arrives after booking",
+          "match": "\\b(no|never|didn'?t|did not|doesn'?t|does not|without( a)?|missing)\\b[^.?!]{0,30}\\b(confirmation|e-?mail|mail)\\b|\\b(confirmation|e-?mail|mail)s?\\b[^.?!]{0,30}\\b(never|doesn'?t|does not|didn'?t|isn'?t|not)\\s+(arrive|come|get sent|sent|show)"
+        },
+        {
+          "id": "fake_cancel",
+          "when": "the cancel link says cancelled but the booking stays",
+          "match": "\\bcancel\\w*\\b[^.?!]{0,40}\\b(doesn'?t|does not|didn'?t|did not|isn'?t|not|still|fake|broken|pretends?)\\b|\\b(doesn'?t|does not|didn'?t|did not|won'?t)\\s+(actually\\s+)?cancel\\b"
+        },
+        {
+          "id": "wrong_date",
+          "when": "wrong date in the booking confirmation",
+          "match": "\\b(wrong|incorrect|different|off)\\b[^.?!]{0,20}\\b(date|day)\\b|\\b(date|day)\\b[^.?!]{0,20}\\b(wrong|incorrect|off by|is off|doesn'?t match)\\b"
+        },
+        {
+          "id": "wrong_time",
+          "when": "wrong time in the booking confirmation",
+          "match": "\\b(wrong|incorrect|different)\\b[^.?!]{0,20}\\btime\\b|\\btime\\b[^.?!]{0,20}\\b(wrong|incorrect|off|shifted|doesn'?t match)\\b|\\b(am|pm|a\\.m\\.|p\\.m\\.|time ?zone)\\b"
+        },
+        {
+          "id": "sent_to_restaurant",
+          "when": "the confirmation goes to the restaurant instead of the guest",
+          "match": "\\b(sent|goes|going|went|arrives?)\\b[^.?!]{0,30}\\b(restaurant|gino|owner)\\b|\\b(instead of|not to)\\b[^.?!]{0,10}\\b(the )?(guest|customer|me)\\b|\\bwrong (recipient|address|person)\\b"
+        },
+        {
+          "id": "party_wrong",
+          "when": "party size missing or wrong in the confirmation",
+          "match": "\\b(party|guests?|people|persons?|seats?|covers)\\b[^.?!]{0,25}\\b(size|count|number|missing|wrong|incorrect)\\b|\\b(wrong|missing|no)\\b[^.?!]{0,15}\\b(party|number of (guests|people))\\b"
+        },
+        {
+          "id": "name_wrong_mail",
+          "when": "wrong restaurant name in the booking confirmation",
+          "match": "\\b(confirmation|e-?mail|mail)\\b[^.?!]{0,40}\\b(name|restaurant)\\b[^.?!]{0,20}\\b(wrong|incorrect|different|made[ -]up|invented)\\b|\\b(wrong|different|made[ -]up|invented|another)\\s+(restaurant|restaurant name)\\b"
+        },
+        {
+          "id": "no_hours_check",
+          "when": "bookings accepted outside opening hours or in the past",
+          "match": "\\b(outside|after|before)\\b[^.?!]{0,20}\\b(opening hours|hours|open|closing)\\b|\\b(in the past|past dates?|yesterday|midnight|closed)\\b|\\b(accepts?|allows?|lets?)\\b[^.?!]{0,30}\\b(any time|anytime|any date|past)\\b"
+        },
+        {
+          "id": "dead_button",
+          "deep": true,
+          "when": "the book button does nothing on the second step",
+          "match": "\\b(book|submit|confirm)\\b[^.?!]{0,15}\\bbutton\\b[^.?!]{0,30}\\b(nothing|doesn'?t|does not|dead|broken|not working|won'?t)\\b|\\b(second|2nd|next) (step|page)\\b|\\bnothing happens\\b|\\bcan'?t (book|submit|finish)\\b"
+        }
+      ],
+      "checklist": [
+        {
+          "id": "confirmation",
+          "text": "confirmation email",
+          "bug": "no_email"
+        },
+        {
+          "id": "cancel",
+          "text": "cancel link",
+          "bug": "fake_cancel"
+        },
+        {
+          "id": "party",
+          "text": "party size",
+          "bug": "party_wrong"
+        },
+        {
+          "id": "hours",
+          "text": "opening hours",
+          "bug": "no_hours_check"
+        }
+      ]
     },
     {
       "id": "doordish",

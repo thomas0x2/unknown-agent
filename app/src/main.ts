@@ -165,6 +165,7 @@ document.addEventListener('click', (e) => {
   else if (d.dev != null) store.devAdd(d.dev);
   else if (d.devopts != null) store.toggleDevOptions(d.devopts);
   else if (d.devbug != null) { const [app, feat, key] = d.devbug.split('|'); store.devToggleBug(app, feat, key); }
+  else if (d.act === 'book-back') store.bookBack();
   else if (d.act === 'sleep') store.endDay();
   else if (d.act === 'new') store.confirm('Start over? This erases your save.', 'Start over', () => { forgetDrafts(); store.newGame(); });
   else if (d.act === 'dev') store.toggleDev();
@@ -210,9 +211,10 @@ document.addEventListener('submit', (e) => {
     const biz = f.dataset.biz!; const v = val('#review-text').trim(); const stars = store.ui.reviewStars;
     if (!stars) { toast('Yowl', 'Pick a rating first.', 'note'); return; }
     if (v) void store.review(biz, stars, v).then((r) => { if (r.posted !== false) clearField('review-text'); });
+  } else if (kind === 'book-next') {
+    store.bookNext(val('#bk-name').trim(), val('#bk-email').trim(), Number(val('#bk-date')) || store.state.values.day);
   } else if (kind === 'book') {
-    const app = f.dataset.app!; const email = val('#bk-email').trim(); const time = val('#bk-time').trim() || '19:00'; const party = Number(val('#bk-party')) || 2;
-    store.book(app, 'You', email, store.state.values.day, time, party);
+    store.book(f.dataset.app!, val('#bk-time').trim() || '19:00', Number(val('#bk-party')) || 2);
   } else if (kind === 'fy-search') {
     const q = val('#fy-search-input').trim().replace(/^@/, '');
     if (q) store.navigate('forkyard.com/u/' + q.toLowerCase());
