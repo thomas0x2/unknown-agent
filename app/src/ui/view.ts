@@ -198,8 +198,9 @@ function mailRows(store: GameStore): Row[] {
   for (const d of s.delivered.filter((x) => x.site === 'qmail')) {
     const e = store.content.events.find((x) => x.id === d.eventId);
     if (!e) continue;
-    // story events whose reply arrived are shown as their own mail entry; skip if a mail entry mirrors it
-    if (s.mail.some((m) => m.eventId === e.id && m.folder === 'inbox')) continue;
+    // A latent lead is never received on its own: its brief arrives inside the reply mail, so the reply
+    // stands in for it. Any other story email stays in the inbox after it's answered.
+    if (e.latent && s.mail.some((m) => m.eventId === e.id && m.folder === 'inbox')) continue;
     const canReply = !!(e.outcomes && !d.answered);
     rows.push({ id: 'e/' + d.eventId, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(e.body ?? ''), day: d.day, unread: !s.readEvents.includes(e.id), needsReply: canReply, folder: 'inbox', eventId: e.id });
   }
