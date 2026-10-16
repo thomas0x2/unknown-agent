@@ -28,7 +28,7 @@ export const BUSINESSES: Business[] = [
   },
   {
     id: 'spincycle', name: 'Spin Cycle Laundry', category: 'Laundromat', price: '$', address: '201 Ferris St', owner: 'Hassan Okoro',
-    hours: 'Daily 06:00–00:00', about: 'Eight washers, six dryers. Card and DOLR accepted.',
+    hours: 'Daily 06:00–00:00', about: 'Eight washers, six dryers, most of them working. Card and DOLR accepted.',
   },
   {
     id: 'generalai', name: 'GeneralAI (visitor parking)', category: 'Parking', price: '$$$$', address: 'Route 9', owner: 'GeneralAI Inc.',
@@ -39,7 +39,7 @@ export const BUSINESSES: Business[] = [
 export const YOWL_SEED: Record<string, SeedReview[]> = {
   trattoria: [
     { author: 'Pia L.', stars: 5, text: 'The tiramisu alone is worth the walk. Gino remembers your name and your order.' },
-    { author: 'Tom R.', stars: 4, text: 'Solid Margherita, cozy room. Cash-only used to annoy me — glad they finally sorted a website.' },
+    { author: 'Tom R.', stars: 4, text: 'Solid Margherita, cozy room. Cash only, and no website, so you just show up and hope.' },
     { author: 'Marguerite', stars: 5, text: 'Our Friday spot for years. The Diavola has a kick. Book ahead on weekends.' },
   ],
   beanthere: [

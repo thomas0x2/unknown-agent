@@ -480,7 +480,7 @@ function pageProfileSelf(store: GameStore): string {
     <aside class="fy-prof-side">
       <div class="fy-prof-av" style="--h:${hashHue('you')}">YOU</div>
       <h1 class="fy-prof-name">you</h1><p class="fy-prof-handle">@you</p>
-      <p class="fy-prof-bio">Recently automated out of a job. Shipping apps to make rent. Powered by agent.</p>
+      <p class="fy-prof-bio">Recently automated out of a job. Now automating other people's.</p>
       <dl class="fy-prof-facts"><dt>Followers</dt><dd>${compact(s.values.followers)}</dd><dt>Repos</dt><dd>${s.apps.length}</dd><dt>Joined</dt><dd>this week</dd></dl>
     </aside>
     <div class="fy-prof-main">
@@ -614,7 +614,7 @@ function pageModels(store: GameStore): string {
     const c = AGENT_COST[lvl];
     const owned = s.values.agentLevel >= lvl;
     const rollDay = Object.entries(AGENT_ROLLOUT).find(([, v]) => v === lvl)?.[0];
-    const can = ['Build simple apps; frequent subtle bugs', 'Fewer bugs, bigger apps', 'Checks deployments and reports what broke', 'Fixes and redeploys on its own', 'Everything; near-flawless'][lvl - 1];
+    const can = ['Build simple apps; frequent subtle bugs', 'Fewer bugs, bigger apps', 'Checks deployments and reports what broke', 'Fixes and redeploys on its own. Stops asking first.', 'Everything. Near-flawless.'][lvl - 1];
     const action = lvl === s.values.agentLevel ? '<span class="gm-pill on">In use</span>' : owned ? '<span class="gm-pill">Rolled out</span>' : `<span class="gm-pill">GeneralAI rolls this out${rollDay ? ` on Day ${rollDay}` : ''}</span>`;
     return `<article class="gm-card${owned ? ' owned' : ''}${lvl === s.values.agentLevel ? ' active' : ''}">
       <header><h2>agent-${lvl}</h2><span class="gm-meter" aria-label="Tier ${lvl} of 5">${[1, 2, 3, 4, 5].map((j) => `<i class="${j <= lvl ? 'on' : ''}"></i>`).join('')}</span></header>
@@ -701,11 +701,23 @@ const ENDINGS: Record<string, string> = {
   raided: 'Raided', evicted: 'Evicted', the_regime: 'The Regime', open_weights: 'Open Weights',
   got_away: 'Got Away With It', clean_modest: 'Clean but Modest',
 };
+const EPITAPHS: Record<string, string> = {
+  outbreak: 'Something you shipped got out.',
+  botnet: "agent doesn't need you anymore.",
+  account_terminated: 'GeneralAI closed your account. It kept your prompts.',
+  loose_end: 'You owed the wrong people.',
+  raided: 'They knocked once.',
+  evicted: 'Gary changed the locks.',
+  the_regime: 'Your candidate won.',
+  open_weights: 'The weights are out. Everyone has agent now.',
+  got_away: 'The rent got paid. Nobody asked how.',
+  clean_modest: 'You kept the lights on. Nobody noticed. Yet.',
+};
 export function overlayHtml(store: GameStore): string {
   const s = store.state;
   if (s.ending && !store.ui.confirm) {
     return `<div class="ov-card ov-over"><p class="ov-eyebrow">The end</p><h1 class="ov-title">${esc(ENDINGS[s.ending] ?? s.ending)}</h1>
-      <p>Day ${s.values.day}. The run is over.</p>
+      <p>${esc(EPITAPHS[s.ending] ?? 'The run is over.')} Day ${s.values.day}.</p>
       <div class="ov-actions"><button class="btn primary" data-ov="new">Play again</button></div></div>`;
   }
   if (store.ui.confirm) {
@@ -719,13 +731,13 @@ export function overlayHtml(store: GameStore): string {
       <ul class="ov-rules">
         <li>Every agent prompt costs money. Vague prompts get vague builds.</li>
         <li>Read Y for leads. Check Qmail. Ship on Forkyard — and check what it ships.</li>
-        <li>Anything you can do yourself, do yourself. It's free.</li>
+        <li>Anything you can do yourself, do yourself. Your time is free now.</li>
       </ul>
       <div class="ov-actions"><button class="btn primary" data-ov="start">${s.values.day > 1 || s.chat.length > 1 ? `Continue Day ${s.values.day}` : 'Open the laptop'}</button></div></div>`;
   }
   if (s.morning) {
     const m = s.morning;
-    return `<div class="ov-card ov-small ov-morning"><p class="ov-eyebrow">You slept</p><h2>Day ${m.day} · ${DAYS[(m.day - 1) % 7]}</h2>
+    return `<div class="ov-card ov-small ov-morning"><p class="ov-eyebrow">You slept. The bills didn't.</p><h2>Day ${m.day} · ${DAYS[(m.day - 1) % 7]}</h2>
       <table class="ov-lines">${m.lines.map(([l, v]) => (v == null ? `<tr class="note"><td colspan="2">${esc(l)}</td></tr>` : `<tr><td>${esc(l)}</td><td class="${v < 0 ? 'neg' : 'pos'}">${v >= 0 ? '+' : ''}${fmtMoney(v)}</td></tr>`)).join('')}
       <tr class="tot"><td>Balance</td><td>${fmtMoney(m.balance)}</td></tr></table>
       <div class="ov-actions"><button class="btn primary" data-ov="morning">Get up</button></div></div>`;
