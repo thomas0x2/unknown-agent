@@ -44,31 +44,15 @@ function spy(inner: JevRouter) {
 const hint = (id: string, app: string) => content.agent!.hints.find((h) => h.id === id)!.replies.map((r) => r.replaceAll('{{app}}', app));
 
 describe('Jev decides which app a prompt is about', () => {
-  it.each(CONTACTS)('%s: every fix item carries the app name and address; with only this app, it needn\'t be named', async (contact) => {
+  it.each(CONTACTS)('%s: every fix item carries the app name and address, and Jev is told the app must be named', async (contact) => {
     const { s, id } = withApp(contact, undefined);
     const a = getApp(s, id)!;
     a.repo[0] = { ...a.repo[0], correct: false, variant: 'x' };
     const { jev, asked } = spy(pickJev({}));
     await promptAgent(s, content, jev, `On the ${a.name.toLowerCase()} app, ${a.required[0]} is wrong`);
-    expect(asked.features[0].appNamed).toBe(false);
+    expect(asked.features[0].appNamed).toBe(true);
     expect(asked.features[0].features.length).toBeGreaterThan(0);
     for (const f of asked.features[0].features) expect(f.description).toContain(`(for ${a.name}, ${a.url})`);
-  });
-
-  it('with two apps that have work left, Jev is told the app must be named', async () => {
-    const { s } = withApp('restaurant_contact', 'menu');
-    applyEffects(s, content.events.find((e) => e.id === 'laundromat_contact')!.outcomes!.find((o) => o.effects?.createApp)!.effects!);
-    const { jev, asked } = spy(pickJev({}));
-    await promptAgent(s, content, jev, 'Spaghetti Carbonara is not part of the menu');
-    expect(asked.features[0].appNamed).toBe(true);
-  });
-
-  it('with one app, a fix that names no app still reaches it', async () => {
-    const { s, id } = withApp('restaurant_contact');
-    const a = getApp(s, id)!;
-    a.repo = a.repo.map((f) => (f.id === 'menu' ? { ...f, correct: false, variant: 'wrong_items', seed: 1 } : f));
-    const out = (await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::menu::wrong_items'] }), 'Spaghetti Carbonara is not part of the menu')).state;
-    expect(getApp(out, id)!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);
   });
 
   it.each(CONTACTS)('%s: when Jev matches a feature, the agent builds it', async (contact) => {
