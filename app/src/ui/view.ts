@@ -223,7 +223,8 @@ function pageMail(store: GameStore, param?: string): string {
   if (view === 'compose') {
     const d = store.ui.draft || { to: '', subject: '', body: '' };
     const waiting = s.sentToday.includes(String(d.to).trim().toLowerCase());
-    const contacts = [...new Set([...store.content.contacts.map((c) => c.key), ...rows.map((r) => r.addr).filter(Boolean)])];
+    // only people the player has already exchanged mail with; a first message is always typed by hand
+    const contacts = [...new Set(rows.map((r) => (r.folder === 'sent' ? r.to : r.addr)).filter((a): a is string => !!a && a !== PLAYER.addr))];
     main = `<form class="qm-compose" data-form="mail">
       <h1 class="qm-h">New message</h1>
       <label class="qm-field"><span>To</span><input id="mail-to" list="qm-contacts" autocomplete="off" spellcheck="false" value="${esc(d.to)}" placeholder="name@example.com"></label>

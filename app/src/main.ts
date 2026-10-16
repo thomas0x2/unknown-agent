@@ -52,14 +52,26 @@ function render(): void {
   const keep: Record<string, string> = {};
   let focusId: string | null = null;
   vp.querySelectorAll<HTMLInputElement>('textarea[id], input[id]').forEach((el) => { keep[el.id] = el.value; });
-  if (document.activeElement && vp.contains(document.activeElement)) focusId = (document.activeElement as HTMLElement).id || null;
+  let caret: [number | null, number | null] | null = null;
+  if (document.activeElement && vp.contains(document.activeElement)) {
+    const f = document.activeElement as HTMLInputElement;
+    focusId = f.id || null;
+    // re-rendering replaces the field, so remember where the caret was or typing lands at the start
+    try { caret = [f.selectionStart, f.selectionEnd]; } catch { caret = null; }
+  }
 
   vp.innerHTML = V.page(store, r);
   const site = V.viewportSite(store);
   if (vp.dataset.site !== site) vp.scrollTop = 0;
   vp.dataset.site = site;
   for (const [id, v] of Object.entries(keep)) { const el = document.getElementById(id) as HTMLInputElement | null; if (el && !el.disabled) el.value = v; }
-  if (focusId) { const el = document.getElementById(focusId) as HTMLInputElement | null; if (el && !el.disabled) el.focus(); }
+  if (focusId) {
+    const el = document.getElementById(focusId) as HTMLInputElement | null;
+    if (el && !el.disabled) {
+      el.focus();
+      if (caret && caret[0] != null && caret[1] != null) try { el.setSelectionRange(caret[0], caret[1]); } catch { /* field type without a caret */ }
+    }
+  }
 
   // taskbar
   $('#dk-task')!.title = V.taskTitle(store);
