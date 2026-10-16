@@ -84,7 +84,8 @@
         "GAI"
       ],
       "mood": "bullish",
-      "bots": 30
+      "bots": 30,
+      "at": "17:30"
     },
     {
       "id": "m2_vant_layoffs",
