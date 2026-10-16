@@ -976,8 +976,14 @@ export function overlayHtml(store: GameStore): string {
       ${memoryHtml()}
       <div class="ov-actions"><button class="btn primary" data-ov="mem-ok">OK</button></div>`, 'mem-ok');
   }
+  if (store.ui.greet) {
+    return osWindow('Welcome', 'ov-small ov-greet', `<h2>Welcome back</h2>
+      <p>Your Vantor Group work profile was removed from this laptop overnight. Your personal files were not affected.</p>
+      <p class="ov-dim">${dateFull(s.values.day)}</p>
+      <div class="ov-actions"><button class="btn primary" data-ov="greet">Continue</button></div>`, 'greet');
+  }
   if (store.ui.intro) {
-    return osWindow('Welcome', 'ov-intro', `<p class="ov-eyebrow">Week one</p><h1 class="ov-title">Unknown Agent</h1>
+    return osWindow('Getting started', 'ov-intro', `<p class="ov-eyebrow">Week one</p><h1 class="ov-title">Unknown Agent</h1>
       <p>You've just been automated out of a job. You have ${fmtMoney(s.values.crypto)}, a laptop, a handful of bookmarks, and agent — an AI chatbot that bills your wallet for every word.</p>
       <p>Rent is ${fmtMoney(RENT[7])}, due at the end of ${dateFull(7)}. Don't go broke.</p>
       <ul class="ov-rules">
@@ -992,11 +998,7 @@ export function overlayHtml(store: GameStore): string {
     return osWindow('Overnight summary', 'ov-small ov-morning', `<p class="ov-eyebrow">You slept. The bills didn't.</p><h2>${dateFull(m.day)}</h2>
       <table class="ov-lines">${m.lines.map(([l, v]) => (v == null ? `<tr class="note"><td colspan="2">${esc(l)}</td></tr>` : `<tr><td>${esc(l)}</td><td class="${v < 0 ? 'neg' : 'pos'}">${v >= 0 ? '+' : ''}${fmtMoney(v)}</td></tr>`)).join('')}
       <tr class="tot"><td>Balance</td><td>${fmtMoney(m.balance)}</td></tr></table>
-      <div class="ov-actions"><button class="btn primary" data-ov="morning">Get up</button></div>`, 'morning');
-  }
-  if (store.ui.dayStart) {
-    return osWindow('New day', 'ov-small ov-daystart', `<h2>${dateFull(s.values.day)}</h2><p>Ready to start?</p>
-      <div class="ov-actions"><button class="btn primary" data-ov="day-start">Start</button></div>`, 'day-start');
+      <div class="ov-actions"><button class="btn primary" data-ov="morning">Start the day</button></div>`, 'morning');
   }
   return '';
 }
