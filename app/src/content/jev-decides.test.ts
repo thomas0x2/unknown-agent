@@ -123,6 +123,18 @@ describe('fixing named bugs', () => {
     expect(out.chat.at(-1)!.text).toMatch(/already right/);
     expect(getApp(out, id)!.repo[0]).toMatchObject({ correct: false, variant: 'hours_wrong' });
   });
+
+  it('a first build only says what was built, even when Jev saw a bug named', async () => {
+    const { s, id } = withApp('restaurant_contact');
+    const a = getApp(s, id)!;
+    a.repo = [];
+    a.repoVersion = 0;
+    const prompt = 'Create this website for trattoria gino: a landing page with our name and opening hours (17:00-22:00), and a menu page.';
+    const out = (await promptAgent(s, content, pickJev({ features: ['::landing::feature', '::landing::hours_wrong', '::menu::feature'] }), prompt)).state;
+    const reply = out.chat.at(-1)!.text;
+    expect(reply).toMatch(/Built the landing\.\n- Built the menu\./);
+    expect(reply).not.toMatch(/Checked for this|already right|Fixed/);
+  });
 });
 
 describe('dev bug switch', () => {

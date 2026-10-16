@@ -433,7 +433,7 @@ const BREAK_FIXED: Record<string, string[]> = {
 
 /**
  * The reply's lines for one feature: each bug Jev saw named, said as fixed (its scripted line) or as
- * already right, plus a patched break, a fresh build, or a rebuild nobody pinned down.
+ * already right, plus a patched break or a rebuild nobody pinned down. A first build only says it was built.
  */
 function fixLines(s: GameState, app: AppInstance, tmpl: AppTemplate | undefined, fid: string, cats: string[], before: BuiltFeature | undefined, patched: boolean, vague: boolean): string[] {
   const def = tmpl?.features.find((f) => f.id === fid);
@@ -447,14 +447,15 @@ function fixLines(s: GameState, app: AppInstance, tmpl: AppTemplate | undefined,
     out.push(pick(s, BREAK_FIXED[brk] ?? BREAK_FIXED.visible).replaceAll('{{feature}}', fid));
     return out;
   }
+  // a first build has nothing to fix yet, so it only says what was built
+  if (!before) return [`Built the ${fid}.`];
   for (const c of cats) {
     const bug = def?.bugs?.find((b) => b.id === c);
     if (!bug) continue;
     if (had.includes(c) && !has.includes(c)) out.push(fillSpec(pick(s, bug.fixed?.length ? bug.fixed : [`Fixed: ${bug.when}`]), params));
     else if (!had.includes(c)) out.push(`Checked for this: "${fillSpec(bug.when, params).replace(/\.$/, '')}". That part was already right.`);
   }
-  if (!before) out.push(`Built the ${fid}.`);
-  else if (vague && !out.length) out.push(`Went over the ${fid}. Tidied up the layout and spacing.`);
+  if (vague && !out.length) out.push(`Went over the ${fid}. Tidied up the layout and spacing.`);
   else if (!vague && had.some((b) => b === 'hallucinated' || b === 'outdated') && !has.some((b) => b === 'hallucinated' || b === 'outdated')) out.push(`Rebuilt the ${fid} with the details you gave.`);
   else if (!out.length) out.push(`Rebuilt the ${fid}.`);
   return out;
