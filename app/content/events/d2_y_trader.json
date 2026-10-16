@@ -5,6 +5,7 @@
   "trigger": {
     "dayMin": 2
   },
+  "at": "10:20",
   "addr": "trader@desk.test",
   "body": "Need a bot that tells me how Y feels about my stocks, so I can feel it faster. Pays daily. trader@desk.test"
 }

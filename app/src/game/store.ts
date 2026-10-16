@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, deliverDue, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, devToggleBug, nameUnnamedBugs, money, binMail, restoreMail, emptyMailBin,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, deliverDue, deliverArrivals, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, devToggleBug, nameUnnamedBugs, money, binMail, restoreMail, emptyMailBin,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -14,8 +14,11 @@ import { route, visitedFlag } from '../sites/registry';
 import { PULL_MS, pullLines } from './pull';
 import { DEEPSLEEP_LINES, DEEPSLEEP_PLEA } from '../engine/deepsleep';
 
-/** A browser tab. back/fwd are the pages behind and ahead of it, like a real browser's history. */
-export interface Tab { id: number; url: string; back: string[]; fwd: string[] }
+/**
+ * A browser tab. back/fwd are the pages behind and ahead of it, like a real browser's history. A
+ * pinned tab always shows its site and can't be closed.
+ */
+export interface Tab { id: number; url: string; back: string[]; fwd: string[]; pinned?: string }
 export interface Draft { to: string; subject: string; body: string }
 
 const norm = (u: string) =>
@@ -24,13 +27,26 @@ const norm = (u: string) =>
 /** The laptop runs out of memory past this many tabs. */
 export const MAX_TABS = 12;
 
-const startTabs = (): Tab[] => [{ id: 1, url: 'qmail.com', back: [], fwd: [] }, { id: 2, url: 'agent.chat', back: [], fwd: [] }];
+/** Always open, in this order, and never closed: the sites where mail, posts and work come in. */
+export const PINNED = ['qmail.com', 'y.com', 'agent.chat', 'forkyard.com', 'coinbin.com'];
+const siteOf = (url: string) => url.split('/')[0];
+const startTabs = (): Tab[] => PINNED.map((url, i) => ({ id: i + 1, url, back: [], fwd: [], pinned: url }));
+
+/** What came in when the clock moved or an action landed, for alerts and sounds. */
+export interface Arrival {
+  /** New emails in the inbox, story emails and replies alike. */
+  mail: number;
+  /** New posts on the Y timeline by someone other than the player. */
+  posts: number;
+}
+/** Where arrivals are counted from: the shared seq counter, and the timeline posts up today. */
+interface ArrivalMark { seq: number; day: number; timed: number; extra: number }
 
 export class GameStore {
   state: GameState;
   tabs: Tab[] = startTabs();
   active = 1;
-  private nextTab = 3;
+  private nextTab = PINNED.length + 1;
   busy = false;
   /** The agent prompt being answered right now, shown in the chat as soon as it's sent. */
   pendingPrompt: string | null = null;
@@ -75,6 +91,7 @@ export class GameStore {
   /** Real milliseconds not yet turned into a whole game minute. */
   private clockCarry = 0;
   private clockListeners = new Set<() => void>();
+  private arrivalListeners = new Set<(a: Arrival) => void>();
   /** Dev: the clock is stopped by hand. */
   clockHeld = false;
 
@@ -94,13 +111,42 @@ export class GameStore {
   onPull(fn: () => void): () => void { this.pullListeners.add(fn); return () => this.pullListeners.delete(fn); }
   /** Called on every game minute that passes without anything else changing, so only the clock repaints. */
   onClock(fn: () => void): () => void { this.clockListeners.add(fn); return () => this.clockListeners.delete(fn); }
-  private commit(s: GameState): void { this.keepTime(s); this.state = s; this.store.save(s); this.emit(); }
+  /**
+   * Called whenever new mail lands in the inbox or new posts go up on Y: as the clock reaches their
+   * time, when a reply comes back, or first thing in the morning. Hook alert sounds here.
+   */
+  onArrival(fn: (a: Arrival) => void): () => void { this.arrivalListeners.add(fn); return () => this.arrivalListeners.delete(fn); }
+  private arrivalMark(s = this.state): ArrivalMark {
+    const day = s.values.day;
+    return { seq: s.nextId, day, extra: s.yExtra.length, timed: marketPosts(s, this.content).filter((p) => p.day === day).length + fillerToday(s, this.content).length };
+  }
+  /** Tell the listeners what arrived since `m`. Returns whether anything did. */
+  private announce(m: ArrivalMark): boolean {
+    const s = this.state;
+    const fresh = (seq?: number) => (seq ?? -1) >= m.seq;
+    const latent = (id: string) => !!this.content.events.find((e) => e.id === id)?.latent;
+    const mail = s.mail.filter((x) => x.folder === 'inbox' && fresh(x.seq)).length
+      + s.delivered.filter((d) => d.site === 'qmail' && fresh(d.seq) && !latent(d.eventId)).length;
+    const now = this.arrivalMark(s);
+    // timeline posts are counted afresh each day; a story post on Y is a delivery like an email
+    const posts = (now.day === m.day ? Math.max(0, now.timed - m.timed) : now.timed)
+      + Math.max(0, now.extra - m.extra)
+      + s.delivered.filter((d) => d.site === 'y' && fresh(d.seq)).length;
+    if (!mail && !posts) return false;
+    for (const fn of this.arrivalListeners) fn({ mail, posts });
+    return true;
+  }
+  private commit(s: GameState): void {
+    const m = this.arrivalMark();
+    this.keepTime(s); this.state = s; this.store.save(s); this.announce(m); this.emit();
+  }
   /** Commit an action, then auto-sleep if the clock has reached bedtime (22:00). */
   private commitAndSettle(s: GameState): void {
+    const m = this.arrivalMark();
     this.keepTime(s);
     this.state = s;
     if (!s.ending && s.clockMin >= CLOCK.sleep) this.sleep(s);
-    this.store.save(this.state); this.emit();
+    this.store.save(this.state); this.announce(m); this.emit();
   }
 
   /**
@@ -110,6 +156,7 @@ export class GameStore {
   private keepTime(s: GameState): void {
     if (s === this.state || s.values.day !== this.state.values.day || s.clockMin >= this.state.clockMin) return;
     advanceClock(s, this.state.clockMin - s.clockMin);
+    deliverArrivals(s, this.content);
   }
 
   /** A dialog is up (or the run is over), so time stands still. */
@@ -149,10 +196,11 @@ export class GameStore {
       for (const fn of this.clockListeners) fn();
       return;
     }
-    const mail = s.mail.length;
+    const m = this.arrivalMark();
     advanceClock(s, mins);
-    if (s.clockMin >= CLOCK.sleep) { this.sleep(s); this.store.save(this.state); this.emit(); return; }
-    if (s.mail.length !== mail) { this.store.save(s); this.emit(); return; }
+    deliverArrivals(s, this.content); // emails and posts whose time has come
+    if (s.clockMin >= CLOCK.sleep) { this.sleep(s); this.store.save(this.state); this.announce(m); this.emit(); return; }
+    if (this.announce(m)) { this.store.save(s); this.emit(); return; }
     if (s.clockMin % 10 === 0) this.store.save(s);
     for (const fn of this.clockListeners) fn();
   }
@@ -165,6 +213,17 @@ export class GameStore {
     this.ui.mailNotice = null;
     // localhost is the laptop itself: it opens the Terminal app, not a browser page
     if (u === 'localhost' && this.state.flags.includes('has_terminal')) { this.showTerm(true); return; }
+    // a pinned tab stays on its site: another site opens in its own pinned tab, or a new one
+    const cur = this.tab;
+    if (!newTab && cur?.pinned && siteOf(u) !== cur.pinned) {
+      const home = this.tabs.find((x) => x.pinned === siteOf(u));
+      if (home) {
+        this.active = home.id;
+        if (home.url !== u) { home.back.push(home.url); home.fwd = []; home.url = u; }
+        this.markVisited(u); this.emit(); return;
+      }
+      newTab = true;
+    }
     if (newTab && this.tabs.length >= MAX_TABS) { this.ui.memWarn = true; this.emit(); return; }
     if (newTab) { const id = this.nextTab++; this.tabs.push({ id, url: u, back: [], fwd: [] }); this.active = id; }
     else {
@@ -192,8 +251,8 @@ export class GameStore {
   forward(): void { const t = this.tab; if (!t?.fwd.length) return; t.back.push(t.url); t.url = t.fwd.pop()!; this.emit(); }
   switchTab(id: number): void { this.active = id; this.emit(); }
   closeTab(id: number): void {
-    if (this.tabs.length === 1) { this.navigate('newtab'); return; }
     const i = this.tabs.findIndex((t) => t.id === id);
+    if (i < 0 || this.tabs[i].pinned) return;
     this.tabs.splice(i, 1);
     if (this.active === id) this.active = this.tabs[Math.max(0, i - 1)].id;
     this.emit();
@@ -285,7 +344,7 @@ export class GameStore {
     nameUnnamedBugs(state, this.content);
     this.state = state;
     this.tabs = startTabs();
-    this.active = 1; this.nextTab = 3;
+    this.active = 1; this.nextTab = PINNED.length + 1;
     this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', jevOffline: null };
     this.store.save(this.state);
     this.emit();
@@ -295,15 +354,15 @@ export class GameStore {
   dismissGreet(): void { this.ui.greet = false; this.emit(); }
   dismissMemWarn(): void { this.ui.memWarn = false; this.emit(); }
   /**
-   * End the day and autosave the new morning into the 'auto' slot. The next day starts with only
-   * Qmail and agent open.
+   * End the day and autosave the new morning into the 'auto' slot. The next day starts with only the
+   * pinned tabs open.
    */
   private sleep(s: GameState): void {
     this.state = endDay(s, this.content);
     if (this.state.ending) return;
     writeSlot('auto', this.state);
     this.tabs = startTabs();
-    this.active = 1; this.nextTab = 3;
+    this.active = 1; this.nextTab = PINNED.length + 1;
     this.ui.start = false;
   }
   deploy(appId: string): void { this.commitAndSettle(deploy(this.state, appId)); }
@@ -415,7 +474,7 @@ export class GameStore {
     const s = this.state;
     if (kind === 'money') money(s, 100, 'Dev · grant');
     else if (kind === 'followers') s.values.followers += 50;
-    else if (kind === 'deliver') deliverDue(s, this.content);
+    else if (kind === 'deliver') { const m = this.arrivalMark(); deliverDue(s, this.content, { now: true }); this.announce(m); }
     else if (kind === 'hold') { this.devHoldClock(); return; }
     else if (kind === 'skip') { this.devSkip(60); return; }
     this.store.save(s); this.emit();
@@ -431,8 +490,9 @@ export class GameStore {
     this.store.save(s); this.emit();
   }
   /**
-   * Dev: move straight to a day, without running the nights in between (no payday, rent or bills).
-   * The agent gets the level GeneralAI would have rolled out by then, and that day's events arrive.
+   * Dev: move straight to a day's morning, without running the nights in between (no payday, rent or
+   * bills). The agent gets the level GeneralAI would have rolled out by then, and that day's events
+   * arrive over the day.
    */
   devGoToDay(day: number): void {
     const s = this.state;
@@ -444,7 +504,12 @@ export class GameStore {
     s.postsToday = 0; s.sentToday = [];
     emptyMailBin(s);
     s.morning = null;
+    s.clockMin = CLOCK.wake; // the day's mail and posts arrive over the day, as on a real morning
+    s.arriving = (s.arriving ?? []).filter((x) => x.day <= d);
+    const m = this.arrivalMark();
+    deliverArrivals(s, this.content);
     deliverDue(s, this.content);
+    this.announce(m);
     this.store.save(s); this.emit();
   }
   /** Dev: stop or restart the clock. */

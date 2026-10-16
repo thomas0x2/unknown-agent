@@ -137,7 +137,7 @@ export function deliverComplaints(s: GameState, content: Content, complaints: Co
       const body = [copy.intro ? fill(copy.intro, vars) : 'Hi,', ...lines, fill(close, vars)].join('\n\n');
       const seq = nextSeq(s);
       const mail: MailEntry = {
-        id: `mail${seq}`, seq, folder: 'inbox', day: s.values.day,
+        id: `mail${seq}`, seq, min: s.clockMin, folder: 'inbox', day: s.values.day,
         from: ev?.from ?? app.name, addr: ev?.addr ?? 'client@forkyard.test',
         subject: fill(copy.subject ?? `${app.name} is broken`, vars), body, read: false,
       };
