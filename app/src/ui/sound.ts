@@ -8,7 +8,7 @@
  */
 export type Cue =
   | 'click' | 'key' | 'send' | 'reply' | 'mail' | 'post' | 'charge' | 'income'
-  | 'push' | 'deploy' | 'dayStart' | 'dayEnd' | 'lateWarn' | 'ending';
+  | 'deploy' | 'dayStart' | 'dayEnd' | 'lateWarn' | 'ending';
 
 export interface SoundSettings { muted: boolean; volume: number }
 
@@ -294,11 +294,7 @@ const CUES: Record<Cue, (e: SoundEngine, t: number) => void> = {
     e.tone(659, t + 0.16, 0.09, { type: 'square', gain: 0.022, lp: 2600 });
     e.tone(1047, t + 0.24, 0.3, { type: 'square', gain: 0.02, lp: 2800 });
   },
-  // a push: a short data burst
-  push: (e, t) => {
-    const scale = [1047, 1175, 1319, 1568, 1760];
-    for (let i = 0; i < 7; i++) e.tone(scale[Math.floor(Math.random() * scale.length)], t + i * 0.028, 0.03, { type: 'square', gain: 0.014, lp: 3200 });
-  },
+
   // the Deploy button, the game's signature sound: a heavy stamp on the desk, a rising upload,
   // then a short three-note confirmation that settles a little lower than you'd hope
   deploy: (e, t) => {

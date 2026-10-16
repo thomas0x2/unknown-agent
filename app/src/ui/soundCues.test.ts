@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { soundCues, LATE_MIN, type SoundSnap } from './soundCues';
 import { profileOf } from './sound';
 
-const base: SoundSnap = { day: 2, clockMin: 12 * 60, agentMsgs: 3, txCount: 10, txIn: 500, txOut: 400, pushes: 1, deploys: 0, ending: false, morning: false };
+const base: SoundSnap = { day: 2, clockMin: 12 * 60, agentMsgs: 3, txCount: 10, txIn: 500, txOut: 400, ending: false, morning: false };
 const at = (o: Partial<SoundSnap>): SoundSnap => ({ ...base, ...o });
 
 describe('sound cues', () => {
@@ -15,10 +15,6 @@ describe('sound cues', () => {
   it('plays income for money coming in, and both sounds when money moved both ways', () => {
     expect(soundCues(base, at({ txCount: 11, txIn: 540 }))).toEqual(['income']);
     expect(soundCues(base, at({ txCount: 12, txIn: 540, txOut: 402 }))).toEqual(['charge', 'income']);
-  });
-  it('plays a push, but leaves a deploy to the button', () => {
-    expect(soundCues(base, at({ pushes: 2 }))).toEqual(['push']);
-    expect(soundCues(base, at({ pushes: 2, deploys: 1 }))).toEqual([]);
   });
   it('warns once when the last hour starts', () => {
     expect(soundCues(at({ clockMin: LATE_MIN - 1 }), at({ clockMin: LATE_MIN }))).toEqual(['lateWarn']);

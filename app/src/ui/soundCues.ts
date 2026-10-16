@@ -16,8 +16,6 @@ export interface SoundSnap {
   txCount: number;
   txIn: number;
   txOut: number;
-  pushes: number;
-  deploys: number;
   ending: boolean;
   morning: boolean;
 }
@@ -35,8 +33,6 @@ export function soundSnap(s: GameState): SoundSnap {
     txCount: s.tx.length,
     txIn,
     txOut,
-    pushes: s.commits.filter((c) => c.kind === 'push').length,
-    deploys: s.commits.filter((c) => c.kind === 'deploy').length,
     ending: !!s.ending,
     morning: !!s.morning,
   };
@@ -54,8 +50,7 @@ export function soundCues(a: SoundSnap, b: SoundSnap): Cue[] {
   if (a.morning && !b.morning) out.push('dayStart');
   if (a.clockMin < LATE_MIN && b.clockMin >= LATE_MIN) out.push('lateWarn');
   if (b.agentMsgs > a.agentMsgs) out.push('reply');
-  // a deploy plays its signature sound from the button itself (main.ts), so only a push is heard here
-  if (b.pushes > a.pushes && b.deploys === a.deploys) out.push('push');
+  // Forkyard pushes are silent; only Deploy and Redeploy make a sound, from the button itself (main.ts)
   out.push(...money(a, b));
   return out;
 }
