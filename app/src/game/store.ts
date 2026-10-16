@@ -5,7 +5,7 @@
  */
 import {
   type GameState, type JevRouter, type SaveStore, type Writer,
-  startGame, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
+  startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
   promptAgent, writeReview, localPrompt, makeBooking, cancelBooking, joinEmpire, deliverDue, CLOCK, tick, devToggleBug,
 } from '../engine';
 import type { Content } from '../content/schema';
@@ -34,6 +34,8 @@ export class GameStore {
     project: '', dev: false, liked: {} as Record<string, boolean>, intro: true, confirm: null as null | { text: string; yes: string; fn: () => void }, start: false, menuCat: 'saves',
     /** The Terminal is its own window: open (in the taskbar) and shown (in front of the browser). */
     termOpen: false, termShown: false,
+    /** Dev mode: the site whose options panel is open (agent, qmail, y), or ''. */
+    devOptions: '' as string,
   };
   /** A model download playing out in the Terminal, if one is running. */
   pull: { id: string; startedAt: number } | null = null;
@@ -45,6 +47,7 @@ export class GameStore {
   constructor(readonly content: Content, private router: JevRouter, private writer: Writer, private store: SaveStore) {
     const loaded = this.store.load();
     this.state = loaded ?? startGame(content);
+    startDayChat(this.state); // saves from before the per-day reset may still carry yesterday's chat
     this.ui.intro = !this.state.introSeen;
     applyDevMode(this.devMode);
   }
@@ -97,6 +100,7 @@ export class GameStore {
   setReviewStars(n: number): void { this.ui.reviewStars = n; this.emit(); }
   setDraft(d: Draft | null): void { this.ui.draft = d; this.emit(); }
   setProject(id: string): void { this.ui.project = id; this.emit(); }
+  toggleDevOptions(site: string): void { this.ui.devOptions = this.ui.devOptions === site ? '' : site; this.emit(); }
   toggleDev(): void { this.ui.dev = !this.ui.dev; this.emit(); }
   /** Dev mode shows how replies were chosen (Jev's decision, the model prompt and output). On unless turned off. */
   devMode = readDevMode();
@@ -146,10 +150,11 @@ export class GameStore {
   }
   private resetTo(state: GameState): void {
     this.stopPull();
+    startDayChat(state);
     this.state = state;
     this.tabs = startTabs();
     this.active = 1; this.nextTab = 3;
-    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false };
+    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions };
     this.store.save(this.state);
     this.emit();
   }

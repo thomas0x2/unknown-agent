@@ -153,6 +153,8 @@ export interface MailEntry {
   generated?: boolean;
   /** App-sent mail (booking confirmations, test campaigns): a link the body can carry. */
   link?: string;
+  /** A bounce notice: the address the player's email failed to reach, so it joins that conversation. */
+  bounceOf?: string;
 }
 
 /** A Y post by someone else that isn't a content event: replies to the player, filler. */
@@ -279,6 +281,17 @@ export const SEED_TX: Tx[] = [
   { day: -2, amount: -18.6, memo: 'Bean There · Coffee' },
   { day: 0, amount: -350, memo: 'Landlord · Rent' },
 ];
+
+/**
+ * agent.chat keeps no memory between days: a new day starts a new session. Drops earlier days'
+ * messages (the transcript and the context Jev and the writer see) and opens with a session line.
+ * A no-op when the chat is already today's, so it's safe to run on every load.
+ */
+export function startDayChat(s: GameState): void {
+  if (s.chat.every((m) => m.day === s.values.day)) return;
+  const today = s.chat.filter((m) => m.day === s.values.day);
+  s.chat = [{ from: 'system', text: `Day ${s.values.day}. New session; yesterday's conversation is gone.`, day: s.values.day }, ...today];
+}
 
 export function newGame(seed = makeSeed()): GameState {
   return {

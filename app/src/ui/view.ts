@@ -7,7 +7,7 @@ import type { GameStore } from '../game/store';
 import { MISSES } from '../game/misses';
 import { JEV } from '../game/backendJev';
 import { listSlots, autoSlot } from '../game/saves';
-import { ICONS, Y_ICONS } from './icons';
+import { ICONS, TOKENS, Y_ICONS } from './icons';
 import { route, bookmarks, type Route, type SiteId } from '../sites/registry';
 import {
   type GameState, type AppInstance, getApp, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, EMPIRE, BOUNCE_ADDR,
@@ -17,7 +17,9 @@ import { findUser } from './forkyard-users';
 import { pageDrive } from './qdrive';
 import { adHtml } from './ads';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
+import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount } from './appsite';
+import { devOptionsButton, devOptionsPanel } from './devOptions';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const WALLET_ADDR = '0x4417c3e8b1d05f2a9e6d7b0c1f83a4e5d2b9a9f2';
@@ -201,7 +203,9 @@ function pageNewTab(store: GameStore): string {
 }
 
 // ── Qmail ──
-interface Row { id: string; seq: number; from: string; addr: string; subject: string; body: string; day: number; unread: boolean; needsReply: boolean; folder: 'inbox' | 'sent'; eventId?: string; generated?: boolean; to?: string; link?: string }
+interface Row { id: string; seq: number; from: string; addr: string; subject: string; body: string; day: number; unread: boolean; needsReply: boolean; folder: 'inbox' | 'sent'; eventId?: string; generated?: boolean; to?: string; link?: string; bounceOf?: string }
+/** Messages the player opened or closed in a conversation, so a repaint keeps them that way. */
+export const mailOpen = new Map<string, boolean>();
 function mailRows(store: GameStore): Row[] {
   const s = store.state;
   const rows: Row[] = [];
@@ -214,7 +218,7 @@ function mailRows(store: GameStore): Row[] {
     const canReply = !!(e.outcomes && !d.answered);
     rows.push({ id: 'e/' + d.eventId, seq: d.seq ?? -1, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(e.body ?? ''), day: d.day, unread: !s.readEvents.includes(e.id), needsReply: canReply, folder: 'inbox', eventId: e.id });
   }
-  for (const m of s.mail) rows.push({ id: 'm/' + m.id, seq: m.seq ?? (Number(m.id.replace(/\D/g, '')) || 0), from: m.from, addr: m.addr, subject: m.subject, body: m.body, day: m.day, unread: m.folder === 'inbox' && !m.read, needsReply: false, folder: m.folder, eventId: m.eventId, generated: m.generated, to: m.to, link: m.link });
+  for (const m of s.mail) rows.push({ id: 'm/' + m.id, seq: m.seq ?? (Number(m.id.replace(/\D/g, '')) || 0), from: m.from, addr: m.addr, subject: m.subject, body: m.body, day: m.day, unread: m.folder === 'inbox' && !m.read, needsReply: false, folder: m.folder, eventId: m.eventId, generated: m.generated, to: m.to, link: m.link, bounceOf: m.bounceOf });
   return rows;
 }
 function pageMail(store: GameStore, param?: string): string {
@@ -252,46 +256,62 @@ function pageMail(store: GameStore, param?: string): string {
     const row = rows.find((x) => x.id === param);
     if (!row) main = `<p class="qm-empty">This message doesn't exist.</p>`;
     else {
-      if (row.unread) store.markReadMail(row.id);
-      // every inbox mail gets the same reply box; story events Jev still wants answered route to the
-      // event, everything else is sent as an ordinary email back to the sender
-      const canReply = row.folder === 'inbox' && (row.needsReply || (!!row.addr && row.addr !== BOUNCE_ADDR));
-      const target = row.needsReply
-        ? `data-id="${esc(row.eventId ?? '')}"`
-        : `data-to="${esc(row.addr)}" data-subject="${esc(/^re:/i.test(row.subject) ? row.subject : 'Re: ' + row.subject)}"`;
-      const meta = row.folder === 'sent'
-        ? `<b>${esc(PLAYER.name)}</b> &lt;${esc(PLAYER.addr)}&gt; to <b>${esc(row.to ?? '')}</b>`
-        : `<b>${esc(row.from)}</b> &lt;${esc(row.addr)}&gt; to ${esc(PLAYER.addr)}`;
+      // the whole conversation, oldest first; what came in since the player last wrote starts expanded
+      const thread = groupThreads(rows).find((t) => t.rows.includes(row))!;
+      for (const r of thread.rows) if (r.unread) store.markReadMail(r.id);
+      const lastSent = thread.rows.map((r) => r.folder).lastIndexOf('sent');
+      const inSent = thread.rows.every((r) => r.folder === 'sent');
+      // one reply box for the conversation: a story email still waiting on an answer gets it, otherwise
+      // it's an ordinary email back to the person on the other side
+      const open = [...thread.rows].reverse().find((r) => r.needsReply);
+      const who = thread.with;
+      const canReply = !!open || (!!who && who !== PLAYER.addr && who !== BOUNCE_ADDR);
+      const target = open
+        ? `data-id="${esc(open.eventId ?? '')}"`
+        : `data-to="${esc(who)}" data-subject="${esc('Re: ' + baseSubject(thread.rows[0].subject))}"`;
+      const replyName = open?.from ?? [...thread.rows].reverse().find((r) => r.folder === 'inbox' && r.addr === who)?.from ?? who;
+      const msgs = thread.rows.map((r, i) => {
+        const expanded = mailOpen.get(r.id) ?? (i === thread.rows.length - 1 || (i > lastSent && r.folder === 'inbox'));
+        const meta = r.folder === 'sent'
+          ? `<b>${esc(PLAYER.name)}</b> &lt;${esc(PLAYER.addr)}&gt; to <b>${esc(r.to ?? '')}</b>`
+          : `<b>${esc(r.from)}</b> &lt;${esc(r.addr)}&gt; to ${esc(PLAYER.addr)}`;
+        return `<details class="qm-msg" data-msg="${esc(r.id)}"${expanded ? ' open' : ''}>
+          <summary class="qm-meta"><span>${meta}<span class="qm-snip">${esc(r.body.replace(/\s+/g, ' ').slice(0, 90))}</span></span><span>Day ${r.day}</span></summary>
+          <div class="qm-body">${linkify(br(r.body))}</div>
+          ${r.link === 'cancel' ? `<p class="qm-actions"><button class="qm-btn ghost" data-cancel-booking="${esc(r.id.slice(2))}">Cancel booking</button></p>` : ''}
+          ${r.generated ? `<p class="qm-gen">Reply written by ${esc(MISSES.label())}</p>` : ''}
+        </details>`;
+      }).join('');
       main = `<article class="qm-read">
-        <p class="qm-crumbs"><a href="#" data-nav="qmail.com${row.folder === 'sent' ? '/sent' : ''}">${row.folder === 'sent' ? 'Sent' : 'Inbox'}</a></p>
-        <h1 class="qm-h">${esc(row.subject || '(no subject)')}</h1>
-        <p class="qm-meta"><span>${meta}</span><span>Day ${row.day}</span></p>
-        <div class="qm-body">${linkify(br(row.body))}</div>
-        ${row.link === 'cancel' ? `<p class="qm-actions"><button class="qm-btn ghost" data-cancel-booking="${esc(row.id.slice(2))}">Cancel booking</button></p>` : ''}
-        ${row.generated ? `<p class="qm-gen">Reply written by ${esc(MISSES.label())}</p>` : ''}
+        <p class="qm-crumbs"><a href="#" data-nav="qmail.com${inSent ? '/sent' : ''}">${inSent ? 'Sent' : 'Inbox'}</a></p>
+        <h1 class="qm-h">${esc(thread.rows[0].subject || '(no subject)')}${thread.rows.length > 1 ? ` <span class="qm-count">${thread.rows.length}</span>` : ''}</h1>
+        <div class="qm-thread">${msgs}</div>
         ${canReply ? `<form class="qm-reply" data-form="reply" ${target}>
-          <div class="qm-reply-head"><span class="qm-reply-to">Reply to <b>${esc(row.from)}</b></span><span class="qm-reply-hint">One email per person per day</span></div>
+          <div class="qm-reply-head"><span class="qm-reply-to">Reply to <b>${esc(replyName)}</b></span><span class="qm-reply-hint">One email per person per day</span></div>
           <textarea id="reply-body" rows="3" placeholder="Write your reply…" ${store.busy ? 'disabled' : ''}></textarea>
           <div class="qm-reply-foot"><span class="qm-reply-cta">⏎ to send · ⇧⏎ for a new line</span><button class="qm-btn" type="submit" ${store.busy ? 'disabled' : ''}>Send reply</button></div>
         </form>` : ''}
       </article>`;
     }
   } else {
-    const list = rows.filter((r) => r.folder === (view === 'sent' ? 'sent' : 'inbox'))// newest first, in the order they arrived
-      .sort((a, b) => b.day - a.day || b.seq - a.seq);
-    const html = list.map((r) => {
-      const snippet = r.body.replace(/\s+/g, ' ').slice(0, 90);
-      const who = r.folder === 'sent' ? `To: ${r.to}` : r.from;
-      return `<a href="#" class="qm-row${r.unread ? ' unread' : ''}" data-nav="qmail.com/${esc(r.id)}">
-        <span class="qm-from">${r.unread && r.folder === 'inbox' ? '<i class="qm-dot" aria-label="Unread"></i>' : ''}${esc(who)}</span>
-        <span class="qm-subj"><b>${esc(r.subject)}</b> <span>${esc(snippet)}</span></span>
-        <span class="qm-time">Day ${r.day}</span></a>`;
+    // one row per conversation, the most recently active first
+    const folder = view === 'sent' ? 'sent' : 'inbox';
+    const html = groupThreads(rows).filter((t) => t.rows.some((r) => r.folder === folder)).map((t) => {
+      const last = t.rows[t.rows.length - 1];
+      const unread = t.rows.some((r) => r.unread);
+      const names = [...new Set(t.rows.filter((r) => r.addr !== BOUNCE_ADDR).map((r) => (r.folder === 'sent' ? 'me' : r.from)))];
+      const who = folder === 'sent' ? `To: ${t.with}` : names.slice(-3).join(', ');
+      const snippet = last.body.replace(/\s+/g, ' ').slice(0, 90);
+      return `<a href="#" class="qm-row${unread ? ' unread' : ''}" data-nav="qmail.com/${esc(last.id)}">
+        <span class="qm-from">${unread && folder === 'inbox' ? '<i class="qm-dot" aria-label="Unread"></i>' : ''}<span class="qm-names">${esc(who)}</span>${t.rows.length > 1 ? `<span class="qm-count">${t.rows.length}</span>` : ''}</span>
+        <span class="qm-subj"><b>${esc(t.rows[0].subject)}</b> <span>${esc(snippet)}</span></span>
+        <span class="qm-time">Day ${last.day}</span></a>`;
     }).join('');
     main = `<h1 class="qm-h">${view === 'sent' ? 'Sent' : 'Inbox'}</h1>${adHtml('qmail', s.values.day, 'wide')}${html ? `<div class="qm-list">${html}</div>` : `<p class="qm-empty">${view === 'sent' ? 'Nothing sent yet.' : 'No mail.'}</p>`}`;
   }
   return `<div class="qm">
-    <header class="qm-top"><div class="qm-logo">${ICONS.mail}<span>Qmail</span></div><span class="qm-user">${esc(PLAYER.addr)}</span></header>
-    <div class="qm-wrap">${side}<main class="qm-main">${main}</main></div></div>`;
+    <header class="qm-top"><div class="qm-logo">${ICONS.mail}<span>Qmail</span></div>${devOptionsButton(store, 'qmail')}<span class="qm-user">${esc(PLAYER.addr)}</span></header>
+    <div class="qm-wrap">${side}<main class="qm-main">${main}</main></div>${devOptionsPanel(store, 'qmail')}</div>`;
 }
 
 // ── Y ──
@@ -356,8 +376,9 @@ function pageY(store: GameStore, profile?: string): string {
       <nav class="y-pills"><a href="#" data-nav="y.com" class="${profile ? '' : 'on'}">Home</a><a href="#" data-nav="y.com/you" class="${profile === 'you' ? 'on' : ''}">Profile</a></nav>
       <span class="y-count"><b>${compact(s.values.followers)}</b> followers</span>
       <label class="y-search">${Y_ICONS.explore}<input id="y-search" autocomplete="off" placeholder="Search Y or @username" value="${esc(store.ui.ySearch)}"></label>
+      ${devOptionsButton(store, 'y')}
     </header>
-    <div class="y-cols"><main class="y-main">${mainInner}</main>${side}</div></div>`;
+    <div class="y-cols"><main class="y-main">${mainInner}</main>${side}</div>${devOptionsPanel(store, 'y')}</div>`;
 }
 function yProfile(store: GameStore, handle: string): string {
   const s = store.state;
@@ -463,7 +484,7 @@ function pageWallet(store: GameStore): string {
         <div class="sx-port-head">
           <div>
             <p class="sx-label">Portfolio</p>
-            <p class="sx-bal"><span>${s.values.crypto < 0 ? '−' : ''}${Math.abs(s.values.crypto).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span><small>DOLR</small></p>
+            <p class="sx-bal"><i class="sx-tok sx-tok-lg">${TOKENS.dolr}</i><span>${s.values.crypto < 0 ? '−' : ''}${Math.abs(s.values.crypto).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span><small>DOLR</small></p>
             <p class="sx-chg ${up ? 'pos' : 'neg'}">${up ? '+' : '−'}${Math.abs(change).toFixed(2)} (${up ? '+' : '−'}${Math.abs(pct).toFixed(1)}%) <span>${range === 'All' ? 'all time' : `past ${range === '1W' ? 'week' : 'month'}`}</span></p>
           </div>
           <div class="sx-tabs" role="tablist" aria-label="Range">${tabs}</div>
@@ -473,8 +494,8 @@ function pageWallet(store: GameStore): string {
       </section>
       <div class="sx-cols">
         <section class="sx-card"><h2>Assets</h2>
-          <div class="sx-row"><span class="sx-asset"><i class="sx-tok">D</i><span><b>DOLR</b><small>Dollar stablecoin · $1.00</small></span></span><span class="sx-alloc"><i style="width:${(Math.max(0, s.values.crypto) / total * 100).toFixed(1)}%"></i></span><span class="sx-num">${s.values.crypto.toFixed(2)}</span></div>
-          <div class="sx-row"><span class="sx-asset"><i class="sx-tok cat">M</i><span><b>MOONCAT</b><small>4,200,000 · <em class="neg">−99.4%</em></small></span></span><span class="sx-alloc"><i style="width:${Math.max(0.5, 0.42 / total * 100).toFixed(1)}%"></i></span><span class="sx-num">0.42</span></div>
+          <div class="sx-row"><span class="sx-asset"><i class="sx-tok">${TOKENS.dolr}</i><span><b>DOLR</b><small>Dollar stablecoin · $1.00</small></span></span><span class="sx-alloc"><i style="width:${(Math.max(0, s.values.crypto) / total * 100).toFixed(1)}%"></i></span><span class="sx-num">${s.values.crypto.toFixed(2)}</span></div>
+          <div class="sx-row"><span class="sx-asset"><i class="sx-tok">${TOKENS.mooncat}</i><span><b>MOONCAT</b><small>4,200,000 · <em class="neg">−99.4%</em></small></span></span><span class="sx-alloc"><i style="width:${Math.max(0.5, 0.42 / total * 100).toFixed(1)}%"></i></span><span class="sx-num">0.42</span></div>
         </section>
         <section class="sx-card"><h2>Upcoming</h2>${upcoming}</section>
       </div>
@@ -633,14 +654,14 @@ function pageAgent(store: GameStore): string {
   return `<div class="ua">
     <header class="ua-head">
       <div class="ua-brand">${ICONS.agent}<div><b>agent</b><span>agent-${s.values.agentLevel} · ${fmtMoney(c.prompt)} per prompt + ${fmtMoney(c.word)} per word</span></div></div>
-      <span class="ua-linked"><a href="#" data-nav="agent.chat/models" class="ua-upgrade">Models</a> · ${s.agentLocked ? 'LOCKED · unpaid' : 'Billing: Satchel ' + shortAddr(WALLET_ADDR)}</span>
+      ${devOptionsButton(store, 'agent')}<span class="ua-linked"><a href="#" data-nav="agent.chat/models" class="ua-upgrade">Models</a> · ${s.agentLocked ? 'LOCKED · unpaid' : 'Billing: Satchel ' + shortAddr(WALLET_ADDR)}</span>
     </header>
     <div class="ua-llm"><span class="ua-jev" id="ua-jev">${jevChip()}</span><span class="ua-llm-ctl" id="ua-llm">${llmRow()}</span></div>
     <div class="ua-log" id="ua-log">${msgs}${pending}${thinking}</div>
     <form class="ua-compose" data-form="prompt">
       <textarea id="prompt-input" rows="2" placeholder="Ask agent anything — build an app, fix one, write, translate, look something up…" ${s.ending ? 'disabled' : ''}></textarea>
       <div class="ua-row"><span id="cost-est" class="ua-est"></span><button class="ua-send" type="submit" ${s.ending || store.busy ? 'disabled' : ''}>Send</button></div>
-    </form></div>`;
+    </form>${devOptionsPanel(store, 'agent')}</div>`;
 }
 function pageModels(store: GameStore): string {
   const s = store.state;
@@ -797,19 +818,24 @@ const EPITAPHS: Record<string, string> = {
   got_away: 'The rent got paid. Nobody asked how.',
   clean_modest: 'You kept the lights on. Nobody noticed. Yet.',
 };
+/** A Cinnamon-style dialog window: titlebar with the title and a close button, then the body. */
+function osWindow(title: string, cls: string, body: string, close?: string): string {
+  const x = close ? `<button class="ow-ctl ow-close" data-ov="${close}" title="Close" aria-label="Close"><svg viewBox="0 0 16 16"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg></button>` : '';
+  return `<div class="ov-card ${cls}" role="dialog" aria-label="${esc(title)}"><header class="ow-bar"><span class="ow-title">${esc(title)}</span>${x}</header><div class="ow-body">${body}</div></div>`;
+}
 export function overlayHtml(store: GameStore): string {
   const s = store.state;
   if (s.ending && !store.ui.confirm) {
-    return `<div class="ov-card ov-over"><p class="ov-eyebrow">The end</p><h1 class="ov-title">${esc(ENDINGS[s.ending] ?? s.ending)}</h1>
+    return osWindow('Session ended', 'ov-over', `<p class="ov-eyebrow">The end</p><h1 class="ov-title">${esc(ENDINGS[s.ending] ?? s.ending)}</h1>
       <p>${esc(EPITAPHS[s.ending] ?? 'The run is over.')} Day ${s.values.day}.</p>
-      <div class="ov-actions"><button class="btn primary" data-ov="new">Play again</button></div></div>`;
+      <div class="ov-actions"><button class="btn primary" data-ov="new">Play again</button></div>`);
   }
   if (store.ui.confirm) {
     const c = store.ui.confirm;
-    return `<div class="ov-card ov-small"><p>${esc(c.text)}</p><div class="ov-actions"><button class="btn primary" data-ov="confirm-yes">${esc(c.yes)}</button><button class="btn" data-ov="confirm-no">Cancel</button></div></div>`;
+    return osWindow('Confirm', 'ov-small ov-confirm', `<p>${esc(c.text)}</p><div class="ov-actions"><button class="btn" data-ov="confirm-no">Cancel</button><button class="btn primary" data-ov="confirm-yes">${esc(c.yes)}</button></div>`, 'confirm-no');
   }
   if (store.ui.intro) {
-    return `<div class="ov-card ov-intro"><p class="ov-eyebrow">Week one</p><h1 class="ov-title">Unknown<br>Agent</h1>
+    return osWindow('Welcome', 'ov-intro', `<p class="ov-eyebrow">Week one</p><h1 class="ov-title">Unknown Agent</h1>
       <p>You've just been automated out of a job. You have ${fmtMoney(s.values.crypto)}, a laptop, a handful of bookmarks, and agent — an AI chatbot that bills your wallet for every word.</p>
       <p>Rent is ${fmtMoney(RENT[7])}, due at the end of Day 7. Don't go broke.</p>
       <ul class="ov-rules">
@@ -817,14 +843,14 @@ export function overlayHtml(store: GameStore): string {
         <li>Read Y for leads. Check Qmail. Ship on Forkyard — and check what it ships.</li>
         <li>Anything you can do yourself, do yourself. Your time is free now.</li>
       </ul>
-      <div class="ov-actions"><button class="btn primary" data-ov="start">${s.values.day > 1 || s.chat.length > 1 ? `Continue Day ${s.values.day}` : 'Open the laptop'}</button></div></div>`;
+      <div class="ov-actions"><button class="btn primary" data-ov="start">${s.values.day > 1 || s.chat.length > 1 ? `Continue Day ${s.values.day}` : 'Open the laptop'}</button></div>`, 'start');
   }
   if (s.morning) {
     const m = s.morning;
-    return `<div class="ov-card ov-small ov-morning"><p class="ov-eyebrow">You slept. The bills didn't.</p><h2>Day ${m.day} · ${DAYS[(m.day - 1) % 7]}</h2>
+    return osWindow('Overnight summary', 'ov-small ov-morning', `<p class="ov-eyebrow">You slept. The bills didn't.</p><h2>Day ${m.day} · ${DAYS[(m.day - 1) % 7]}</h2>
       <table class="ov-lines">${m.lines.map(([l, v]) => (v == null ? `<tr class="note"><td colspan="2">${esc(l)}</td></tr>` : `<tr><td>${esc(l)}</td><td class="${v < 0 ? 'neg' : 'pos'}">${v >= 0 ? '+' : ''}${fmtMoney(v)}</td></tr>`)).join('')}
       <tr class="tot"><td>Balance</td><td>${fmtMoney(m.balance)}</td></tr></table>
-      <div class="ov-actions"><button class="btn primary" data-ov="morning">Get up</button></div></div>`;
+      <div class="ov-actions"><button class="btn primary" data-ov="morning">Get up</button></div>`, 'morning');
   }
   return '';
 }

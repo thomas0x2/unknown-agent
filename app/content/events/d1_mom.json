@@ -24,7 +24,7 @@
       "when": "the player asks mom for money",
       "effects": {
         "add": {
-          "crypto": 100,
+          "crypto": 20,
           "familyTrust": -10
         },
         "setFlags": [

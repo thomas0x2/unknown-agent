@@ -117,7 +117,7 @@ function overDailyLimit(s: GameState, addr: string, storySeq?: number): boolean 
 /** An email over the daily limit still goes out, and the recipient's spam filter sends it back. */
 function bounce(s: GameState, addr: string, subject: string, text: string): void {
   pushMail(s, { folder: 'sent', day: s.values.day, from: 'You', addr: PLAYER_ADDR, to: addr, subject: subject || '(no subject)', body: text, read: true });
-  pushMail(s, { folder: 'inbox', day: s.values.day, from: 'Mail Delivery Subsystem', addr: BOUNCE_ADDR, subject: `Undeliverable: ${subject || '(no subject)'}`, read: false,
+  pushMail(s, { folder: 'inbox', day: s.values.day, from: 'Mail Delivery Subsystem', addr: BOUNCE_ADDR, subject: `Undeliverable: ${subject || '(no subject)'}`, read: false, bounceOf: addr,
     body: `Your message to ${addr} couldn't be delivered.\n\nThe recipient's spam filter accepts one message per sender per day, and you have already sent one today. Your message was not stored.\n\nYou can write to this address again tomorrow.\n\nThis is an automated message. Replies to this address are not read.` });
 }
 
@@ -231,7 +231,7 @@ export async function composeEmail(
       // a lead that hands over a client brief sends it along with the scripted reply
       const body = outcome.effects?.createApp && ev.body ? `${outcome.reply}\n\n${ev.body}` : outcome.reply;
       s.delivered.push({ eventId: ev.id, site: 'qmail', day: s.values.day, seq: s.nextId++, answered: true, outcomeId: outcome.id, expiresDay: ev.expiresDay });
-      pushMail(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? addr, addr, subject: `RE: ${ev.subject ?? subject}`, body, read: false });
+      pushMail(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? addr, addr, subject: re(subject || ev.subject || ''), body, read: false });
       return { state: s, decision, reply: body, sent: true };
     }
   }
@@ -435,7 +435,8 @@ export async function promptAgent(
 
 // ── Y ──
 
-const BANDS: Record<PostRating['category'], [number, number]> = {
+/** Follower change per post category, as a share of current followers (low to high quality). */
+export const POST_BANDS: Record<PostRating['category'], [number, number]> = {
   reaction: [0.05, 0.15], launch: [0.03, 0.08], tip: [0.02, 0.06], humor: [0, 0.12],
   hot_take: [0.1, 0.25], self_promo: [-0.03, -0.01], spam: [-0.05, -0.02],
 };
@@ -456,7 +457,7 @@ export async function postToY(
   if (s.postsToday >= YCFG.maxFreePostsPerDay) {
     delta = Math.round(s.values.followers * YCFG.overpostPenaltyPct);
   } else {
-    const [lo, hi] = BANDS[rating.category];
+    const [lo, hi] = POST_BANDS[rating.category];
     const pct = lo + (hi - lo) * rating.quality;
     delta = Math.round(s.values.followers * pct);
     if (rating.category === 'reaction') delta = Math.max(delta, 10);
