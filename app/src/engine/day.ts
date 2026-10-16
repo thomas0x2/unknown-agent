@@ -6,7 +6,7 @@
 import type { GameState, MorningCard } from './state';
 import type { Content } from '../content/schema';
 import { RENT, SUSPICION, LAST_DAY, APPS, CLOCK } from './config';
-import { newGame } from './state';
+import { newGame, startDayChat } from './state';
 import { clone, addValue, money, log } from './core';
 import { runPayday, nightlyBreaks } from './apps';
 import { deliverComplaints } from './complaints';
@@ -95,6 +95,7 @@ export function endDay(state: GameState, content: Content): GameState {
     return finish(s);
   }
   s.values.day += 1;
+  startDayChat(s);
   runMorning(s, content);
   deliverComplaints(s, content, complaints);
 

@@ -280,6 +280,17 @@ export const SEED_TX: Tx[] = [
   { day: 0, amount: -350, memo: 'Landlord · Rent' },
 ];
 
+/**
+ * agent.chat keeps no memory between days: a new day starts a new session. Drops earlier days'
+ * messages (the transcript and the context Jev and the writer see) and opens with a session line.
+ * A no-op when the chat is already today's, so it's safe to run on every load.
+ */
+export function startDayChat(s: GameState): void {
+  if (s.chat.every((m) => m.day === s.values.day)) return;
+  const today = s.chat.filter((m) => m.day === s.values.day);
+  s.chat = [{ from: 'system', text: `Day ${s.values.day}. New session; yesterday's conversation is gone.`, day: s.values.day }, ...today];
+}
+
 export function newGame(seed = makeSeed()): GameState {
   return {
     version: SAVE_VERSION,
