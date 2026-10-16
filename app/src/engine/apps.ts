@@ -171,14 +171,6 @@ function promptHasChange(prompt: string, before: string[], after: string[]): boo
   return promptHasDetails(prompt, [...added, ...dropped]);
 }
 
-/** A random bug for a wrong build, skipping the ones already fixed. All of them fixed: undefined. */
-function wrongVariant(s: GameState, def: FeatureDef | undefined, fixed: string[] = []): Pick<BuiltFeature, 'variant' | 'seed'> | undefined {
-  const bugs = def?.bugs ?? [];
-  if (!bugs.length) return { variant: undefined, seed: randInt(s, 0, 9999) }; // a template with no named bugs: just wrong
-  const pool = bugs.filter((b) => !fixed.includes(b.id));
-  return pool.length ? { variant: pick(s, pool).id, seed: randInt(s, 0, 9999) } : undefined;
-}
-
 const fixedOf = (app: AppInstance, id: string): string[] => app.fixed?.[id] ?? [];
 
 /** Remember the bugs a build removed, so later builds of the feature don't bring them back. */
@@ -296,18 +288,8 @@ export function buildApp(s: GameState, appId: string, requested: string[], level
   app.repoVersion++;
   const worked = requested.filter((id) => !report.vague.includes(id));
   const msg = app.repoVersion === 1 ? `Initial commit for ${app.name}`
-    : worked.length ? `Update ${worked.join(', ')}` : `Tidy up ${requested.join(', ') || app.name} styling`;
+    : worked.length ? `Update ${worked.join(', ')}` : `Check ${requested.join(', ') || app.name}`;
   s.commits.push({ day: s.values.day, repo: app.id, msg, kind: 'push' });
-  // the very first build always ships at least one teaching bug, even on a lucky roll
-  if (app.repoVersion === 1 && !quiet(app, ctx.tmpl)) {
-    const correct = app.repo.filter((f) => f.correct);
-    if (correct.length === app.repo.length && correct.length > 0) {
-      const preferred = correct.filter((f) => ctx.tmpl?.features.find((d) => d.id === f.id)?.firstBuildBug);
-      const victim = pick(s, preferred.length ? preferred : correct);
-      const wrong = wrongVariant(s, ctx.tmpl?.features.find((d) => d.id === victim.id), fixedOf(app, victim.id));
-      if (wrong) Object.assign(victim, { correct: false, ...wrong });
-    }
-  }
   return report;
 }
 
@@ -359,9 +341,14 @@ const BREAK_CATEGORIES: Partial<Record<FailureKind, string>> = {
 export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, featureId: string): FixCategory[] {
   const def = tmpl?.features.find((f) => f.id === featureId);
   if (!def) return [];
-  const out: FixCategory[] = [{ id: 'feature', description: def.description, kind: 'build' }];
-  // the client changed what this feature should contain: asking for that change is feature work
   const built = app.repo.find((f) => f.id === featureId);
+  // asking for the feature itself builds it when it's missing, re-rolls it when it's wrong as a whole,
+  // and puts in the real details when they were invented. A feature that's there with named bugs has
+  // nothing to build: a prompt about it has to name the broken part
+  const named = bugsOf(built).filter((b) => def.bugs?.some((x) => x.id === b));
+  const buildable = !built || !named.length || named.some((b) => b === 'hallucinated' || b === 'outdated');
+  const out: FixCategory[] = buildable ? [{ id: 'feature', description: def.description, kind: 'build' }] : [];
+  // the client changed what this feature should contain: asking for that change is feature work
   if (built && !built.correct && bugsOf(built).includes('outdated')) {
     const now = changeValues(app.specParams[featureId], def).join('; ');
     out.push({ id: 'outdated', description: `Change ${def.description} to the client's new version${now ? ` (${now})` : ''}. The prompt has to say what exactly changes: which items are swapped, added or removed, or which prices change and to what ("swap Diavola for Quattro Formaggi at 15"). Asking to update it without saying what changes ("update the menu items and prices") doesn't count.`, kind: 'build' });
@@ -461,7 +448,7 @@ export function fixApp(s: GameState, appId: string, featureId: string | null, le
   if (idx >= 0) app.repo[idx] = f;
   else app.repo.push(f);
   app.repoVersion++;
-  s.commits.push({ day: s.values.day, repo: app.id, msg: report.vague.length ? `Tidy up ${featureId} styling` : `Fix ${featureId}`, kind: 'push' });
+  s.commits.push({ day: s.values.day, repo: app.id, msg: report.vague.length ? `Check ${featureId}` : `Fix ${featureId}`, kind: 'push' });
   return f.correct;
 }
 
@@ -505,7 +492,7 @@ function firstBug(s: GameState, app: AppInstance, tmpl: AppTemplate): void {
 /**
  * Content appears on apps that started empty once its time has come, and with it the bugs held back
  * until then: each component built while it was empty rolls at the agent level it was built with.
- * The first time, a live app that came out clean still gets one shallow bug, like any first build.
+ * The first time, a live app that came out clean still gets one shallow bug.
  * Runs as the clock moves; returns the apps whose content just appeared.
  */
 export function wakeApps(s: GameState, content: Content): AppInstance[] {
@@ -643,36 +630,54 @@ export function devToggleBug(s: GameState, appId: string, featureId: string, key
 
 /**
  * Overnight breaks: how many components break across all live apps follows APPS.breakOdds (at least
- * one, two, three). Each picks a working component at random; a feature breaks at most once a night.
+ * one, two, three; the first is certain while anything can break). Each picks a live component that
+ * can still show a new break; a feature breaks at most once (until the next deploy clears it). A
+ * build bug doesn't shield a feature: it can still crash, or show a bug it doesn't already have.
  * A subtle or deep break shows one of that component's bugs, a crash or failed fetch takes the page.
  */
 export function nightlyBreaks(s: GameState, content: Content): void {
   const r = rand(s);
   let count = APPS.breakOdds.filter((p) => r < p).length;
-  const pool: { app: AppInstance; def: FeatureDef; comp?: ComponentDef }[] = [];
+  const pool: { app: AppInstance; def: FeatureDef; comp?: ComponentDef; options: ReturnType<typeof breakOptions> }[] = [];
   for (const app of s.apps) {
     if (!app.deployed || app.churned) continue;
     const tmpl = content.apps[app.template];
     if (quiet(app, tmpl)) continue; // nothing on it yet for a break to show on
     for (const f of app.features) {
       const def = tmpl?.features.find((d) => d.id === f.id);
-      if (!f.correct || !def || app.breaks.some((b) => b.featureId === f.id)) continue;
-      for (const comp of def.components?.length ? def.components : [undefined]) pool.push({ app, def, comp });
+      if (!def || app.breaks.some((b) => b.featureId === f.id)) continue;
+      const has = new Set(f.correct ? [] : bugsOf(f));
+      for (const comp of def.components?.length ? def.components : [undefined]) {
+        const options = breakOptions(def, comp, has);
+        if (options.length) pool.push({ app, def, comp, options });
+      }
     }
   }
   while (count-- > 0 && pool.length) {
-    const { app, def, comp } = pick(s, pool);
-    const bugs = (comp?.bugs ?? []).map((id) => def.bugs?.find((b) => b.id === id)).filter((b): b is BugDef => !!b);
-    const shallow = bugs.filter((b) => !b.deep), deep = bugs.filter((b) => b.deep);
-    // only failures this component can show: a deep one needs a deep bug, a subtle one a shallow bug
-    const kinds = (def.failures.length ? def.failures : ['visible' as FailureKind]).filter((k) => (k !== 'deep' || deep.length) && (k !== 'subtle' || shallow.length));
-    const failure: FailureKind = kinds.length ? pick(s, kinds) : 'visible';
-    const variant = failure === 'deep' ? pick(s, deep).id : failure === 'subtle' ? pick(s, shallow).id : undefined;
-    breakFeature(s, app, def.id, failure, false, variant);
+    const { app, def, comp, options } = pick(s, pool);
+    const { failure, variants } = pick(s, options);
+    breakFeature(s, app, def.id, failure, false, variants && pick(s, variants));
     log(s, `${app.name} broke overnight (${def.id}${comp ? `/${comp.id}` : ''}).`, 'break');
     // the rest of the night's breaks land on other features
     for (let i = pool.length - 1; i >= 0; i--) if (pool[i].app === app && pool[i].def.id === def.id) pool.splice(i, 1);
   }
+}
+
+/**
+ * The ways one component can break and be seen: a crash or failed fetch always shows, a subtle or
+ * deep break only with a bug of that kind the live build doesn't already have (the variants to pick
+ * from). A component with no bugs and no outage kind crashes instead; one whose bugs are all live
+ * already can't break, so a break never lands where nothing would change.
+ */
+function breakOptions(def: FeatureDef, comp: ComponentDef | undefined, has: Set<string>): { failure: FailureKind; variants?: string[] }[] {
+  const bugs = (comp?.bugs ?? []).map((id) => def.bugs?.find((b) => b.id === id)).filter((b): b is BugDef => !!b && !has.has(b.id));
+  const kinds: FailureKind[] = def.failures.length ? def.failures : ['visible'];
+  const out = kinds.map((failure) => {
+    if (failure !== 'subtle' && failure !== 'deep') return { failure };
+    return { failure, variants: bugs.filter((b) => !!b.deep === (failure === 'deep')).map((b) => b.id) };
+  }).filter((o) => !o.variants || o.variants.length);
+  if (out.length) return out;
+  return comp?.bugs?.length ? [] : [{ failure: 'visible' }];
 }
 
 /** How often a client asks for an update, by app age. */

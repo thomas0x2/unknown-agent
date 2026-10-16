@@ -25,6 +25,7 @@ import { renderAppSite, devBugPanel, devBugCount, appLogo } from './appsite';
 import { marketPosts, fillerToday, postMin, handleOf, playMinutes, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, inBin, isDeleted, CLOCK } from '../engine';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 import { repoFiles, treeAt, fileSource } from './repoTree';
+import { yBio } from './y-bios';
 
 const WALLET_ADDR = PLAYER_WALLET;
 const PLAYER = { name: 'You', handle: 'you', addr: 'you@qmail.com' };
@@ -474,14 +475,13 @@ function yPostHtml(store: GameStore, p: YPost): string {
 function pageY(store: GameStore, profile?: string): string {
   const s = store.state;
   const posts = yPosts(store);
-  const q = store.ui.ySearch.trim().toLowerCase();
   const trending = store.content.trending[s.values.day] ?? [];
-  // the timeline shows today's posts; older ones wait behind "Show all" (a search covers everything)
-  const showAll = !!q || store.ui.yAllDay === s.values.day;
-  const shown = q ? posts.filter((p) => `${p.author} ${p.handle} ${p.text}`.toLowerCase().includes(q.replace(/^@/, ''))) : showAll ? posts : posts.filter((p) => p.day === s.values.day);
+  // the timeline shows today's posts; older ones wait behind "Show all"
+  const showAll = store.ui.yAllDay === s.values.day;
+  const shown = showAll ? posts : posts.filter((p) => p.day === s.values.day);
   const older = !showAll && posts.some((p) => p.day !== s.values.day);
   // with everything showing, "Hide old posts" sits where today's posts end and older ones begin
-  const firstOld = !q && showAll ? shown.findIndex((p) => p.day !== s.values.day) : -1;
+  const firstOld = showAll ? shown.findIndex((p) => p.day !== s.values.day) : -1;
   const feed = (shown.map((p, i) => (i === firstOld ? '<div class="y-more"><button class="y-btn ghost" data-y-all="hide">Hide old posts</button></div>' : '') + yPostHtml(store, p)).join('') || `<p class="y-none">${older ? 'Nothing posted yet today.' : 'Quiet timeline.'}</p>`)
     + (older ? '<div class="y-more"><button class="y-btn ghost" data-y-all>Show all</button></div>' : '');
   const side = `<aside class="y-side">
@@ -496,7 +496,7 @@ function pageY(store: GameStore, profile?: string): string {
     <form class="y-compose" data-form="ypost">${avatar('You', 'you')}
       <div><textarea id="post-input" rows="2" maxlength="280" placeholder="Say something to the timeline"></textarea>
       <div class="y-compose-row"><span class="y-hint">280 chars · free</span><button class="y-btn" type="submit">Post</button></div></div></form>
-    <p class="y-eyebrow"><i class="y-live"></i>${q ? 'Search' : 'Timeline · live'}</p>
+    <p class="y-eyebrow"><i class="y-live"></i>Timeline · live</p>
     ${adHtml('y', s.values.day, 'wide')}
     <div class="y-feed">${feed}</div>`;
   return `<div class="y">
@@ -504,7 +504,7 @@ function pageY(store: GameStore, profile?: string): string {
       <div class="y-brand"><span class="y-mark">${ICONS.y}</span></div>
       <nav class="y-pills"><a href="#" data-nav="y.com" class="${profile ? '' : 'on'}">Home</a><a href="#" data-nav="y.com/you" class="${profile === 'you' ? 'on' : ''}">Profile</a></nav>
       <span class="y-count"><b>${compact(s.values.followers)}</b> followers</span>
-      <label class="y-search">${Y_ICONS.explore}<input id="y-search" autocomplete="off" placeholder="Search Y or @username" value="${esc(store.ui.ySearch)}"></label>
+      <form class="y-search" data-form="y-search">${Y_ICONS.explore}<input id="y-search" autocomplete="off" spellcheck="false" placeholder="Find @username" value="${esc(store.ui.ySearch)}"></form>
       ${devOptionsButton(store, 'y')}
     </header>
     <div class="y-cols"><main class="y-main">${mainInner}</main>${side}</div>${devOptionsPanel(store, 'y')}</div>`;
@@ -523,6 +523,7 @@ function yProfile(store: GameStore, handle: string): string {
     <div class="y-banner" style="--h:${hashHue(h)}"></div>
     <div class="y-prof-head"><div class="y-prof-av">${avatar(name, h)}</div></div>
     <h1 class="y-prof-name">${esc(name)}${yCheck(h)}</h1><p class="y-handle">@${esc(h)}</p>
+    <p class="y-bio">${esc(yBio(h))}</p>
     <p class="y-prof-stats"><span><b>${compact(40 + hashHue(h + 'f') % 300)}</b> following</span><span><b>${compact(followers)}</b> followers</span></p>
   </section><p class="y-eyebrow">Posts</p><div class="y-feed">${feed}</div>`;
 }
@@ -897,7 +898,10 @@ function pageAgent(store: GameStore): string {
   const c = agentCost(s.values.agentLevel);
   // while a prompt's charge is on its way to the wallet, its cost line shows it filling in place
   const chargingAt = store.charging ? s.chat.map((m) => m.from).lastIndexOf('you') : -1;
-  const msgs = s.chat.map((m, i) => {
+  // the build/fix meter stays under the "working on it" line that started it, however much is said after
+  const workAt = s.agentWork ? s.chat.map((m) => m.src).lastIndexOf('working') : -1;
+  const msgs = s.chat.map((m, i) => msgHtml(m, i) + (i === workAt ? workHtml(s) : '')).join('');
+  function msgHtml(m: GameState['chat'][number], i: number): string {
     if (m.from === 'you') {
       const cost = i === chargingAt
         ? `<span class="ua-cost ua-charging" role="status"><span class="ua-charge-bar"><i style="animation-duration:${CHARGE_DELAY_MS}ms"></i></span>Charging Coinbin</span>`
@@ -912,7 +916,7 @@ function pageAgent(store: GameStore): string {
     // the agent couldn't run (unpaid balance): an error, not a line of dialogue
     if (m.src === 'locked') return `<div class="ua-msg agent ua-err" role="alert"><div class="ua-mark">${ICONS.error}</div><div class="ua-text"><b>Error</b> ${linkify(br(m.text))}</div>${src}</div>`;
     return `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text">${linkify(br(m.text))}</div>${model}${src}${debug}</div>`;
-  }).join('');
+  }
   const p = store.pendingPrompt;
   // the price shows on the prompt only once the charge has gone through
   const pending = p == null ? '' : `<div class="ua-msg you"><div class="ua-bubble">${esc(p)}</div><span class="ua-cost">agent-${s.values.agentLevel} · ${dateShort(s.values.day)}</span></div>`;
@@ -922,7 +926,7 @@ function pageAgent(store: GameStore): string {
       <div class="ua-brand">${ICONS.agent}<div><b>agent</b><span>agent-${s.values.agentLevel} · ${fmtMoney(c.prompt)} per prompt + ${fmtMoney(c.word)} per word</span></div></div>
       ${devOptionsButton(store, 'agent')}<span class="ua-linked"><a href="#" data-nav="agent.chat/models" class="ua-upgrade">Models</a> · ${s.agentLocked ? 'LOCKED · unpaid' : 'Billing: Coinbin ' + shortAddr(WALLET_ADDR)}</span>
     </header>
-    <div class="ua-log" id="ua-log">${msgs}${workHtml(s)}${pending}${thinking}</div>
+    <div class="ua-log" id="ua-log">${msgs}${workAt < 0 ? workHtml(s) : ''}${pending}${thinking}</div>
     <form class="ua-compose" data-form="prompt">
       <textarea id="prompt-input" rows="2" placeholder="Ask agent anything — build an app, fix one, write, translate, look something up…" ${s.ending ? 'disabled' : ''}></textarea>
       <div class="ua-row"><span id="cost-est" class="ua-est"></span><button class="ua-send" type="submit" ${s.ending || store.busy ? 'disabled' : ''}>Send</button></div>

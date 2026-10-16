@@ -169,12 +169,14 @@ function valueChart(values: number[], day: number): string {
   const area = `${x(0).toFixed(1)},${H} ${line} ${x(series.length - 1).toFixed(1)},${H}`;
   const grid = [0.25, 0.5, 0.75].map((g) => `<line x1="0" x2="${W}" y1="${(T + g * (H - T - B)).toFixed(1)}" y2="${(T + g * (H - T - B)).toFixed(1)}"/>`).join('');
   const k = tone(series[series.length - 1] - series[0]);
+  // a flat series (one day, or stale prices) gets one label beside the line, not the same number twice
+  const labels = hi === lo ? `<span>${money(hi)}</span>` : `<span>${money(hi)}</span><span>${money(lo)}</span>`;
   const dots = values.length < 2 ? '' : values.map((v, i) => `<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="2.5"><title>${dateShort(i + 1)}: ${money(v)}</title></circle>`).join('');
   const days = values.length < 2 ? [1, day] : values.map((_, i) => i + 1);
-  return `<figure class="as-s-chart ${k}"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Portfolio value by day">
+  return `<figure class="as-s-chart ${k}${hi === lo ? ' flat' : ''}"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Portfolio value by day">
       <defs><linearGradient id="as-s-fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-opacity="0.35"/><stop offset="1" stop-opacity="0"/></linearGradient></defs>
       <g class="grid">${grid}</g><polygon class="area" points="${area}"/><polyline class="line" points="${line}"/><g class="dots">${dots}</g></svg>
-    <figcaption><span>${money(hi)}</span><span>${money(lo)}</span></figcaption>
+    <figcaption>${labels}</figcaption>
     <div class="as-s-xaxis">${days.map((d) => `<span>${dateShort(d)}</span>`).join('')}</div></figure>`;
 }
 

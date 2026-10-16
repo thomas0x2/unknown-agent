@@ -71,8 +71,8 @@ describe('Jev decides which app a prompt is about', () => {
     const { s, id } = withApp(contact, undefined);
     const a = getApp(s, id)!;
     const fid = a.required[0];
-    a.repo[0] = { ...a.repo[0], correct: false, variant: 'x' };
-    const out = (await promptDone(s, content, pickJev({ features: [`${id}::${fid}::feature`] }), `${a.url}: fix the ${fid}`)).state;
+    a.repo = a.repo.filter((f) => f.id !== fid);
+    const out = (await promptDone(s, content, pickJev({ features: [`${id}::${fid}::feature`] }), `${a.url}: build the ${fid}`)).state;
     expect(out.chat.at(-1)!.src).toBe('build');
     expect(getApp(out, id)!.repoVersion).toBe(2);
   });
@@ -204,6 +204,28 @@ describe('fixing named bugs', () => {
     expect(out.chat.at(-1)!.text).not.toMatch(/already right|Tidied/);
   });
 
+  it('a built feature with a named bug has no "build it" option: "only 6 machines" fixes the count', async () => {
+    const { s, id } = withApp('laundromat_contact', 'machines');
+    getApp(s, id)!.repo.find((f) => f.id === 'machines')!.variant = 'six_of_eight';
+    const { jev, asked } = spy(pickJev({ route: ['both'], features: ['::machines::feature', '::machines::c:count'] }));
+    const out = (await promptDone(s, content, jev, 'The spin cycle app only has 6 machines, there should be 8')).state;
+    expect(asked.features[0].features.map((f) => f.id)).not.toContain(`${id}::machines::feature`);
+    expect(getApp(out, id)!.repo.find((f) => f.id === 'machines')!.correct).toBe(true);
+    expect(out.chat.at(-1)!.text).not.toMatch(/Tidied|only did the feature work/);
+  });
+
+  it('a match that changes nothing is no push: it falls through to the app\'s hint', async () => {
+    const { s, id } = withApp('laundromat_contact', 'machines');
+    const a = getApp(s, id)!;
+    a.repo.find((f) => f.id === 'machines')!.variant = 'done_as_free';
+    a.deployed = true;
+    a.breaks.push({ featureId: 'machines', failure: 'subtle', day: 3 });
+    const out = await promptDone(s, content, pickJev({ route: ['fix', `app:${id}`], features: ['::machines::subtle'] }), 'Spin Cycle Board machines are off');
+    expect(out.state.chat.at(-1)!.src).not.toBe('build');
+    expect(out.state.chat.at(-1)!.text).not.toMatch(/Tidied/);
+    expect(getApp(out.state, id)!.repoVersion).toBe(a.repoVersion);
+  });
+
   it('a named bug that was not there is reported as already right', async () => {
     const { s, id } = withApp('restaurant_contact');
     getApp(s, id)!.repo[0] = { id: 'landing', correct: false, variant: 'hours_wrong', params: getApp(s, id)!.specParams.landing, seed: 1 };
@@ -259,6 +281,8 @@ describe('one kind of work per prompt', () => {
 
   it('both: only the features, and the agent says it ran out of context for the fixes', async () => {
     const { s, id, jev } = mixed();
+    // the menu isn't built yet, so there is feature work to do
+    getApp(s, id)!.repo = getApp(s, id)!.repo.filter((f) => f.id !== 'menu');
     const out = (await promptDone(s, content, jev('both'), prompt)).state;
     expect(getApp(out, id)!.repo.find((f) => f.id === 'landing')).toMatchObject({ correct: false, variant: 'name_wrong' });
     expect(out.chat.at(-1)!.text).toMatch(/only did the feature work.*not enough context|wasn't enough context/);
