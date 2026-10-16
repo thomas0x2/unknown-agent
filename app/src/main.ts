@@ -39,6 +39,7 @@ const trendingToday = () => store.content.trending[store.state.values.day] ?? []
 
 let lastSite = '';
 let lastUrl = '';
+let shownPage = '';
 
 // Unsent text in every page's fields, keyed by the page's URL. Cleared when a form is sent.
 const drafts = new Map<string, Record<string, string>>();
@@ -94,6 +95,10 @@ function render(): void {
       if (caret && caret[0] != null && caret[1] != null) try { el.setSelectionRange(caret[0], caret[1]); } catch { /* field type without a caret */ }
     }
   }
+  // a freshly opened new tab takes typing straight away, like a real browser
+  const page = `${store.active}:${store.url}`;
+  if (page !== shownPage && site === 'newtab') $<HTMLInputElement>('#nt-url')?.focus();
+  shownPage = page;
 
   // taskbar and the Terminal window
   $('#dk-tasks')!.innerHTML = V.tasksHtml(store);

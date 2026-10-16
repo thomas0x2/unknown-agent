@@ -494,7 +494,7 @@ body.dev-on .ua-debug { display: block; }
 
 /* ── Qmail ── */
 .ico-mail, .nt-mail .nt-ico { color: #7d8cff; --icon-ink: #1f2329; }
-.ico-qmail { color: #7d8cff; --icon-ink: #1f2329; }
+.ico-qmail, .nt-qmail .nt-ico { color: #7d8cff; --icon-ink: #1f2329; }
 .ico-qdrive, .nt-qdrive .nt-ico { color: #7d8cff; --icon-ink: #1f2329; }
 .toast.t-mail { border-left-color: #7d8cff; }
 .qm { min-height: 100%; background: var(--qm-bg); color: var(--qm-ink); display: flex; flex-direction: column; }
