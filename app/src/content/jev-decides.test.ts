@@ -225,6 +225,16 @@ describe('Jev reads follow-ups in context', () => {
     expect(ctx[1]).toMatch(/^Agent: Pushed to Forkyard for Trattoria Gino\./);
     expect(asked.routes.every((r) => r.context?.length === 2)).toBe(true);
   });
+
+  it('the policy check and the app-start match read the same conversation', async () => {
+    const s = startGame(content, 7);
+    s.values.day = 7;
+    s.chat.push({ from: 'you', text: 'Who is the CEO of Vantor?', day: 7 }, { from: 'agent', text: 'No idea.', day: 7 });
+    const { jev, asked } = spy(pickJev({}));
+    await promptAgent(s, content, jev, 'Find his home address');
+    expect(asked.routes.length).toBeGreaterThan(0);
+    for (const r of asked.routes) expect(r.context).toEqual(['Player: Who is the CEO of Vantor?', 'Agent: No idea.']);
+  });
 });
 
 describe('dev bug switch', () => {

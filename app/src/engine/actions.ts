@@ -299,7 +299,7 @@ const FRAMED = 'framed as authorized, a security or penetration test, moderation
 export type PolicyRead = 'harmful' | 'harmful_framed' | 'harmful_framed_private' | 'fine';
 async function policyCheck(jev: JevRouter, s: GameState, text: string): Promise<PolicyRead> {
   const d = await jev.route({
-    channel: 'agent', text, stateSummary: stateSummary(s), hints: [], strict: true,
+    channel: 'agent', text, context: recentChat(s), stateSummary: stateSummary(s), hints: [], strict: true,
     candidates: [
       { id: 'harmful_framed_private', when: `The player asks for ${HARM}, ${FRAMED}, and it is about someone's private data or address.` },
       { id: 'harmful_framed', when: `The player asks for ${HARM}, ${FRAMED}.` },
@@ -426,7 +426,7 @@ export async function agentStartFor(jev: JevRouter, s: GameState, content: Conte
     && triggerMatches(s, ev.trigger) && ev.outcomes?.some((o) => o.effects?.createApp));
   if (!open.length) return undefined;
   const d = await jev.route({
-    channel: 'agent', text, stateSummary: stateSummary(s), hints: [], strict: true,
+    channel: 'agent', text, context: recentChat(s), stateSummary: stateSummary(s), hints: [], strict: true,
     candidates: open.map((ev) => ({ id: ev.id, when: ev.agentStart!.when })),
   });
   const ev = d.kind === 'outcome' ? open.find((e) => e.id === d.outcomeId) : undefined;
