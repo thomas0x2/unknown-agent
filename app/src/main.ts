@@ -291,7 +291,7 @@ document.addEventListener('click', (e) => {
   // data-newtab with a URL opens that page in a new tab (Forkyard deployments); empty opens a blank tab
   else if (d.newtab != null) { newPageLoad(); store.navigate(d.newtab || 'newtab', true); }
   else if (d.like != null) store.like(d.like);
-  else if (d.yAll != null) store.showAllY();
+  else if (d.yAll != null) store.showAllY(d.yAll !== 'hide');
   else if (d.deploy != null) { SOUND.play('deploy'); store.deploy(d.deploy); }
   else if (d.takedown != null) store.confirm('Take it offline? It counts as broken at payday.', 'Take down', () => store.takeDown(d.takedown!));
   // the cancel link opens the restaurant's cancel page in a new tab
