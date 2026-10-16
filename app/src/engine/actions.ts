@@ -35,12 +35,15 @@ function contactFor(content: Content, key: string): Contact | undefined {
   return content.contacts.find((c) => c.key.toLowerCase() === k);
 }
 
+/** A reply subject: one "RE:" prefix, never "RE: Re:". */
+const re = (subject: string) => (/^re:/i.test(subject) ? subject : `RE: ${subject}`);
+
 function nextId(s: GameState, prefix: string): string {
   return `${prefix}${s.nextId++}`;
 }
 
 /** An outcome the player's words name outright (its `keywords`), so Jev isn't needed. */
-function keywordOutcome(outcomes: Outcome[], text: string): Outcome | undefined {
+function keywordOutcome<T extends Pick<Outcome, 'keywords'>>(outcomes: T[], text: string): T | undefined {
   const t = ` ${text.toLowerCase().replace(/[^a-z0-9]+/g, ' ')} `;
   return outcomes.find((o) => o.keywords?.some((k) => t.includes(` ${k.toLowerCase()} `)));
 }
@@ -59,15 +62,34 @@ async function routeReply(jev: JevRouter, channel: GameEvent['site'], s: GameSta
   });
 }
 
+/** The contact's scripted reply for what the player wrote, if Jev (or a keyword) matches one. */
+async function scriptedTopic(jev: JevRouter, s: GameState, c: Contact, text: string): Promise<string> {
+  const topics = c.scripted ?? [];
+  if (!topics.length) return '';
+  const named = keywordOutcome(topics, text);
+  if (named) return named.reply;
+  const decision = await jev.route({
+    channel: 'qmail', text, stateSummary: stateSummary(s),
+    candidates: topics.map((t) => ({ id: t.id, when: t.when })), hints: [], strict: true,
+  });
+  return decision.kind === 'outcome' ? topics.find((t) => t.id === decision.outcomeId)?.reply ?? '' : '';
+}
+
 /**
  * A known contact answers a message that didn't land a storyline outcome, in their own voice (the
  * local model when loaded), or with the scripted hint Jev chose. Returns '' for no contact.
  */
 async function contactWritesBack(
-  s: GameState, content: Content, writer: Writer, addr: string, subject: string, text: string, hint = '', from?: string,
+  s: GameState, content: Content, jev: JevRouter, writer: Writer, addr: string, subject: string, text: string, hint = '', from?: string,
 ): Promise<string> {
   const c = contactFor(content, addr);
   if (!c) return '';
+  // a topic this contact always answers the same way (Gary and rent negotiations) beats everything
+  const scripted = await scriptedTopic(jev, s, c, text);
+  if (scripted) {
+    pushMail(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: scripted, read: false });
+    return scripted;
+  }
   // A hint is a hit: Jev recognised what the player was after, so the nudge is sent as written.
   // Otherwise the character answers in their own voice, without helping (game/characters.ts).
   const fb = c.reply || 'Thanks for your message.';
@@ -77,8 +99,9 @@ async function contactWritesBack(
   return shown;
 }
 
-function pushMail(s: GameState, m: Omit<MailEntry, 'id'>): MailEntry {
-  const entry: MailEntry = { id: nextId(s, 'mail'), ...m };
+function pushMail(s: GameState, m: Omit<MailEntry, 'id' | 'seq'>): MailEntry {
+  const seq = s.nextId++;
+  const entry: MailEntry = { id: `mail${seq}`, seq, ...m };
   s.mail.push(entry);
   return entry;
 }
@@ -126,7 +149,7 @@ export async function replyToEvent(
   // No outcome fired (a near miss / hint, or nothing). Either way the person writes back in their
   // own voice so a reply always lands in the inbox; a hint rides along as a gentle nudge from them.
   const hint = decision.kind === 'hint' ? (ev.hints ?? [])[decision.hintIndex] ?? '' : '';
-  const reply = ev.addr ? await contactWritesBack(s, content, writer, ev.addr, `RE: ${ev.subject ?? ''}`, text, hint, ev.from) : '';
+  const reply = ev.addr ? await contactWritesBack(s, content, jev, writer, ev.addr, `RE: ${ev.subject ?? ''}`, text, hint, ev.from) : '';
   if (reply) return { state: s, decision, reply };
   if (hint) return { state: s, decision, reply: hint };
   return { state: s, decision: { kind: 'nothing' }, reply: '' };
@@ -161,7 +184,7 @@ export async function composeEmail(
   const ev = reachableByEmail(s, content, addr);
   if (!ev) {
     // no story lead here — a known contact replies in their own voice
-    const reply = await contactWritesBack(s, content, writer, addr, `RE: ${subject || ''}`, text);
+    const reply = await contactWritesBack(s, content, jev, writer, addr, re(subject), text);
     return { state: s, decision: { kind: 'nothing' }, reply, sent: true };
   }
 
@@ -175,14 +198,14 @@ export async function composeEmail(
       if (outcome.workaround) recordWorkaround(s);
       // a lead that hands over a client brief sends it along with the scripted reply
       const body = outcome.effects?.createApp && ev.body ? `${outcome.reply}\n\n${ev.body}` : outcome.reply;
-      s.delivered.push({ eventId: ev.id, site: 'qmail', day: s.values.day, answered: true, outcomeId: outcome.id, expiresDay: ev.expiresDay });
+      s.delivered.push({ eventId: ev.id, site: 'qmail', day: s.values.day, seq: s.nextId++, answered: true, outcomeId: outcome.id, expiresDay: ev.expiresDay });
       pushMail(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? addr, addr, subject: `RE: ${ev.subject ?? subject}`, body, read: false });
       return { state: s, decision, reply: body, sent: true };
     }
   }
   // a near miss or nothing: the lead still writes back in their own voice, so the email isn't lost
   const hint = decision.kind === 'hint' ? (ev.hints ?? [])[decision.hintIndex] ?? '' : '';
-  const reply = await contactWritesBack(s, content, writer, addr, `RE: ${subject || ''}`, text, hint);
+  const reply = await contactWritesBack(s, content, jev, writer, addr, re(subject), text, hint);
   return { state: s, decision, reply: reply || hint, sent: true };
 }
 

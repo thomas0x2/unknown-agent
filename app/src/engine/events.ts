@@ -51,6 +51,7 @@ function deliver(s: GameState, ev: GameEvent): DeliveredEvent | null {
     eventId: ev.id,
     site: ev.site,
     day: s.values.day,
+    seq: s.nextId++,
     answered: false,
     expiresDay: ev.expiresDay,
   };

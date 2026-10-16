@@ -154,6 +154,15 @@ export interface Contact {
   character: string;
   /** A scripted reply shown when the local model isn't loaded, so a reply always arrives. */
   reply?: string;
+  /** Topics this contact always answers with fixed text, whatever email it arrives on (Jev matches `when`). */
+  scripted?: ScriptedReply[];
+}
+export interface ScriptedReply {
+  id: string;
+  when: string;
+  /** Words that fire it without asking Jev, matched like an outcome's keywords. */
+  keywords?: string[];
+  reply: string;
 }
 
 /** A character Gemma speaks as when Jev finds nothing in what the player wrote. */

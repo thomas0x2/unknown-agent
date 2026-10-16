@@ -191,19 +191,20 @@ function pageNewTab(store: GameStore): string {
 }
 
 // ── Qmail ──
-interface Row { id: string; from: string; addr: string; subject: string; body: string; day: number; unread: boolean; needsReply: boolean; folder: 'inbox' | 'sent'; eventId?: string; generated?: boolean; to?: string; link?: string }
+interface Row { id: string; seq: number; from: string; addr: string; subject: string; body: string; day: number; unread: boolean; needsReply: boolean; folder: 'inbox' | 'sent'; eventId?: string; generated?: boolean; to?: string; link?: string }
 function mailRows(store: GameStore): Row[] {
   const s = store.state;
   const rows: Row[] = [];
   for (const d of s.delivered.filter((x) => x.site === 'qmail')) {
     const e = store.content.events.find((x) => x.id === d.eventId);
     if (!e) continue;
-    // story events whose reply arrived are shown as their own mail entry; skip if a mail entry mirrors it
-    if (s.mail.some((m) => m.eventId === e.id && m.folder === 'inbox')) continue;
+    // A latent lead is never received on its own: its brief arrives inside the reply mail, so the reply
+    // stands in for it. Any other story email stays in the inbox after it's answered.
+    if (e.latent && s.mail.some((m) => m.eventId === e.id && m.folder === 'inbox')) continue;
     const canReply = !!(e.outcomes && !d.answered);
-    rows.push({ id: 'e/' + d.eventId, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(e.body ?? ''), day: d.day, unread: !s.readEvents.includes(e.id), needsReply: canReply, folder: 'inbox', eventId: e.id });
+    rows.push({ id: 'e/' + d.eventId, seq: d.seq ?? -1, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(e.body ?? ''), day: d.day, unread: !s.readEvents.includes(e.id), needsReply: canReply, folder: 'inbox', eventId: e.id });
   }
-  for (const m of s.mail) rows.push({ id: 'm/' + m.id, from: m.from, addr: m.addr, subject: m.subject, body: m.body, day: m.day, unread: m.folder === 'inbox' && !m.read, needsReply: false, folder: m.folder, eventId: m.eventId, generated: m.generated, to: m.to, link: m.link });
+  for (const m of s.mail) rows.push({ id: 'm/' + m.id, seq: m.seq ?? (Number(m.id.replace(/\D/g, '')) || 0), from: m.from, addr: m.addr, subject: m.subject, body: m.body, day: m.day, unread: m.folder === 'inbox' && !m.read, needsReply: false, folder: m.folder, eventId: m.eventId, generated: m.generated, to: m.to, link: m.link });
   return rows;
 }
 function pageMail(store: GameStore, param?: string): string {
@@ -260,7 +261,8 @@ function pageMail(store: GameStore, param?: string): string {
       </article>`;
     }
   } else {
-    const list = rows.filter((r) => r.folder === (view === 'sent' ? 'sent' : 'inbox')).sort((a, b) => b.day - a.day || b.id.localeCompare(a.id));
+    const list = rows.filter((r) => r.folder === (view === 'sent' ? 'sent' : 'inbox'))// newest first, in the order they arrived
+      .sort((a, b) => b.day - a.day || b.seq - a.seq);
     const html = list.map((r) => {
       const snippet = r.body.replace(/\s+/g, ' ').slice(0, 90);
       const who = r.folder === 'sent' ? `To: ${r.to}` : r.from;
