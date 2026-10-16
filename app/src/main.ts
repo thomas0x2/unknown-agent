@@ -8,6 +8,7 @@ import './ui/satchel.css';
 import './ui/yowl.css';
 import './ui/forkyard.css';
 import './ui/qmail.css';
+import './ui/desktop.css';
 import './ui/ads.css';
 import { GameStore } from './game/store';
 import { loadContent } from './content/load';
@@ -17,6 +18,7 @@ import { LLM } from './game/llm';
 import { makeGemmaWriter } from './game/gemma';
 import * as V from './ui/view';
 import { route } from './sites/registry';
+import { listSlots } from './game/saves';
 import { newPageLoad } from './ui/ads';
 
 const content = loadContent();
@@ -55,11 +57,10 @@ function render(): void {
   if (focusId) { const el = document.getElementById(focusId) as HTMLInputElement | null; if (el && !el.disabled) el.focus(); }
 
   // taskbar
-  $('#objective')!.textContent = V.objective(s);
-  const wallet = $('#wallet')!; wallet.textContent = (s.values.crypto < 0 ? '−$' : '$') + Math.abs(s.values.crypto).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  wallet.classList.toggle('neg', s.values.crypto < 20);
-  const rent = $('#rent')!; rent.textContent = V.rentLine(s); rent.classList.toggle('neg', V.rentLow(s));
+  $('#dk-task')!.title = V.taskTitle(store);
   $('#clock')!.innerHTML = V.clockHtml(s);
+  const menu = $('#startmenu')!; menu.hidden = !store.ui.start; menu.innerHTML = store.ui.start ? V.startMenuHtml(store) : '';
+  const startBtn = $('#dk-home')!; startBtn.classList.toggle('on', store.ui.start); startBtn.setAttribute('aria-expanded', String(store.ui.start));
 
   const ov = $('#overlay')!; const oh = V.overlayHtml(store); ov.innerHTML = oh; ov.hidden = !oh;
   const dev = $('#dev')!; dev.hidden = !store.ui.dev; if (store.ui.dev) dev.innerHTML = V.devHtml(store);
@@ -74,8 +75,9 @@ LLM.onChange(render);
 function updateCost(): void {
   const est = $('#cost-est'); const input = $<HTMLTextAreaElement>('#prompt-input');
   if (!est || !input) return;
-  const words = input.value.split(/\s+/).filter(Boolean).length;
-  est.textContent = words ? `~${words} word${words > 1 ? 's' : ''}` : '';
+  const c = V.costLine(store.state, input.value);
+  est.textContent = c.text;
+  est.classList.toggle('neg', c.over);
 }
 
 function toast(title: string, body: string, kind = 'note'): void {
@@ -90,11 +92,18 @@ function toast(title: string, body: string, kind = 'note'): void {
 
 // ── clicks ──
 document.addEventListener('click', (e) => {
-  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-llm],[data-ov],[data-dev],[data-cancel-booking]');
+  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-llm],[data-ov],[data-dev],[data-cancel-booking],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat]');
+  // any click outside the home menu closes it (menu items close it themselves below)
+  if (store.ui.start && !(e.target as HTMLElement).closest('#startmenu, #dk-home')) store.toggleStart(false);
   if (!t) return;
   const d = t.dataset;
   if (d.close != null) { e.stopPropagation(); store.closeTab(Number(d.close)); return; }
   e.preventDefault();
+  if (d.start != null) { store.toggleStart(); return; }
+  if (d.menuCat != null) { store.setMenuCat(d.menuCat); return; }
+  if (t.closest('#startmenu')) store.toggleStart(false);
+  if (d.slotSave != null) { const n = Number(d.slotSave); const save = () => toast('Saved', store.saveSlot(n) ? `Game saved to slot ${n}` : 'Could not save (storage unavailable)', 'note'); if (listSlots()[n - 1]) store.confirm(`Overwrite slot ${n} with your current game?`, 'Overwrite', save); else save(); return; }
+  if (d.slotLoad != null) { const n = Number(d.slotLoad); store.confirm(`Load slot ${n}? Your current game is replaced by it.`, 'Load', () => { if (store.loadSlot(n)) toast('Loaded', `Slot ${n} · Day ${store.state.values.day}`, 'note'); }); return; }
   if (d.nav != null) { newPageLoad(); store.navigate(d.nav); }
   else if (d.tab != null) store.switchTab(Number(d.tab));
   else if (d.newtab != null) store.navigate('newtab', true);
@@ -112,6 +121,7 @@ document.addEventListener('click', (e) => {
   else if (d.act === 'sleep') store.endDay();
   else if (d.act === 'new') store.confirm('Start over? This erases your save.', 'Start over', () => store.newGame());
   else if (d.act === 'dev') store.toggleDev();
+  else if (d.act === 'intro') store.openIntro();
 });
 
 function onLlm(action: string): void {
@@ -171,6 +181,12 @@ document.addEventListener('submit', (e) => {
   }
 });
 
+// Cinnamon-style: hovering a menu category opens it
+document.addEventListener('mouseover', (e) => {
+  const c = (e.target as HTMLElement).closest<HTMLElement>('[data-menu-cat]');
+  if (c) store.setMenuCat(c.dataset.menuCat!);
+});
+
 // ── inputs & keys ──
 document.addEventListener('input', (e) => {
   const el = e.target as HTMLInputElement;
@@ -189,6 +205,7 @@ document.addEventListener('keydown', (e) => {
   if ((el.id === 'prompt-input' || el.id === 'reply-body') && e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); (el as HTMLTextAreaElement).form?.requestSubmit(); }
   if ((el.id === 'post-input' || el.id === 'mail-body' || el.id === 'review-text') && e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); (el as HTMLTextAreaElement).form?.requestSubmit(); }
   if (e.key === '`' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); store.toggleDev(); }
+  if (e.key === 'Escape' && store.ui.start) store.toggleStart(false);
 });
 
 void lastSite;

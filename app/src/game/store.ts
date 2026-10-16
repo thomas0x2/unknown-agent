@@ -9,6 +9,7 @@ import {
   promptAgent, writeReview, localPrompt, makeBooking, cancelBooking, deliverDue, CLOCK, tick,
 } from '../engine';
 import type { Content } from '../content/schema';
+import { readSlot, writeSlot } from './saves';
 
 export interface Tab { id: number; url: string }
 export interface Draft { to: string; subject: string; body: string }
@@ -24,7 +25,7 @@ export class GameStore {
   busy = false;
   ui = {
     ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null as Draft | null,
-    project: '', dev: false, liked: {} as Record<string, boolean>, intro: true, confirm: null as null | { text: string; yes: string; fn: () => void },
+    project: '', dev: false, liked: {} as Record<string, boolean>, intro: true, confirm: null as null | { text: string; yes: string; fn: () => void }, start: false, menuCat: 'saves',
   };
 
   private listeners = new Set<() => void>();
@@ -83,12 +84,27 @@ export class GameStore {
   confirm(text: string, yes: string, fn: () => void): void { this.ui.confirm = { text, yes, fn }; this.emit(); }
   resolveConfirm(ok: boolean): void { const c = this.ui.confirm; this.ui.confirm = null; this.emit(); if (ok && c) c.fn(); }
 
+  setMenuCat(c: string): void { if (this.ui.menuCat !== c) { this.ui.menuCat = c; this.emit(); } }
+  toggleStart(open = !this.ui.start): void { if (this.ui.start !== open) { this.ui.start = open; this.emit(); } }
+
   newGame(): void {
     this.store.clear();
-    this.state = startGame(this.content);
+    this.resetTo(startGame(this.content));
+  }
+  /** Snapshot the current game into a manual slot. */
+  saveSlot(n: number): boolean { const ok = writeSlot(n, this.state); this.emit(); return ok; }
+  /** Replace the current game with a slot's snapshot (it becomes the autosave too). */
+  loadSlot(n: number): boolean {
+    const s = readSlot(n);
+    if (!s) return false;
+    this.resetTo(s);
+    return true;
+  }
+  private resetTo(state: GameState): void {
+    this.state = state;
     this.tabs = [{ id: 1, url: 'qmail.com' }, { id: 2, url: 'agent.chat' }];
     this.active = 1; this.nextTab = 3;
-    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null };
+    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null, start: false, menuCat: 'saves' };
     this.store.save(this.state);
     this.emit();
   }
