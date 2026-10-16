@@ -1,11 +1,21 @@
 {
   "hints": [
     {
+      "id": "capabilities",
+      "when": "The player asks what agent can do, what it is for, which features or skills it has, or how to use it.",
+      "replies": [
+        "I build and fix apps for clients. Find someone on Y who needs one, then tell me exactly what they asked for.",
+        "Websites, small apps, fixes. You bring the client and the spec, I bring the code, GeneralAI brings the invoice.",
+        "I write code from specs. The specs are in your inbox and on Y, from people who still have money."
+      ]
+    },
+    {
       "id": "make_money",
       "when": "The player asks how to earn money or cash, get paid, or find work, a job, gigs or clients.",
       "replies": [
         "I don't do career advice. But Y is full of people begging for websites, and some of them even pay.",
-        "Check Qmail and Y. Somewhere out there is a small business with worse judgment than you."
+        "Check Qmail and Y. Somewhere out there is a small business with worse judgment than you.",
+        "Clients post on Y. Find one who needs an app, paste me what they want, deploy it, invoice them."
       ]
     },
     {
@@ -13,28 +23,80 @@
       "when": "The player asks what to do next or what is going on, says they're stuck or lost, or asks for help.",
       "replies": [
         "Start with Qmail. Unread mail is where jobs, debts and your mother live.",
-        "Read your inbox, then scroll Y. Opportunities don't email twice."
+        "Read your inbox, then scroll Y. Opportunities don't email twice.",
+        "Check Qmail for anything new, then Y for anyone who needs an app built."
       ]
     },
     {
-      "id": "rent",
-      "when": "The player asks about rent, the landlord, eviction, bills or the money they owe.",
+      "id": "build_help",
+      "when": "The player asks agent to build or make an app, website or program without saying who it is for or what it needs.",
       "replies": [
-        "Satchel lists everything scheduled to leave your wallet. Your landlord's emails explain why that matters."
+        "Who is it for and what does it need? Give me the client and their requirements and I'll build it.",
+        "I build from specs. Paste what the client asked for, word for word if you can.",
+        "Name the client and list the features. Vague prompts get vague apps, and you pay for both."
+      ]
+    },
+    {
+      "id": "fix_help",
+      "when": "The player says their app is broken or has a bug, or asks agent to fix something without saying what is wrong.",
+      "replies": [
+        "Open the live app and compare it with what the client asked for. Then tell me exactly what's wrong.",
+        "Which app, and what's wrong with it? \"Fix it\" costs the same as a useful prompt.",
+        "Name the app and the bug. I fix what you describe, not what you meant."
       ]
     },
     {
       "id": "deploy",
       "when": "The player asks to deploy, publish or put an app online, or where their app or code is.",
       "replies": [
-        "I push the code to Forkyard. Pressing Deploy is the one job I left for you."
+        "I push the code to Forkyard. Pressing Deploy is the one job I left for you.",
+        "Your code is on Forkyard. Open the repo and press Deploy.",
+        "Forkyard has the repo. Deploy it there, and hosting is billed nightly."
+      ]
+    },
+    {
+      "id": "followers",
+      "when": "The player asks how to get followers, grow on Y, go viral or become popular or famous.",
+      "replies": [
+        "Post on Y about whatever is trending. Timing beats talent there.",
+        "Y rewards posts about the trending topics. Check the sidebar before you post.",
+        "Followers come from posting on trend. Nobody follows an account for its personality."
+      ]
+    },
+    {
+      "id": "rent",
+      "when": "The player asks about rent, the landlord, eviction, bills or the money they owe.",
+      "replies": [
+        "Satchel lists everything scheduled to leave your wallet. Your landlord's emails explain why that matters.",
+        "Rent is due on day 7. Satchel shows what you have, Qmail shows who wants it.",
+        "Check Satchel for your balance and Qmail for the amount. The difference is your problem."
+      ]
+    },
+    {
+      "id": "pricing",
+      "when": "The player asks how much agent costs, how billing works, or complains that prompts are expensive.",
+      "replies": [
+        "A flat fee per prompt plus a bit per word you send. agent.chat/models has the full price list.",
+        "Shorter prompts cost less. The line under the prompt box shows the exact price before you send.",
+        "You pay per prompt and per word, plus a nightly subscription. agent.chat/models has the details."
+      ]
+    },
+    {
+      "id": "cheaper",
+      "when": "The player asks for a free or cheaper AI, an open-source or local model, or an alternative to agent.",
+      "replies": [
+        "Free models exist. GeneralAI's terms ask me not to mention Weightroom.",
+        "Open-weights models are free and mostly wrong. People on Y talk about where to find them.",
+        "I'm not allowed to recommend competitors. dev_null on Y has no such restriction."
       ]
     },
     {
       "id": "upgrade",
       "when": "The player asks for a better, smarter or bigger model, or about upgrading agent.",
       "replies": [
-        "GeneralAI rolls out new levels on its own schedule. agent.chat/models lists the prices you'll agree to later."
+        "GeneralAI rolls out new levels on its own schedule. agent.chat/models lists the prices you'll agree to later.",
+        "New levels arrive when GeneralAI decides. You'll get an email and a higher bill.",
+        "Upgrades roll out automatically. agent.chat/models shows what's coming and what it costs."
       ]
     }
   ],

@@ -41,7 +41,8 @@ export function finishReply(ch: Character, raw: string): string | null {
   const sentences = t.match(/[^.!?]+[.!?]+/g);
   if (sentences) t = sentences.slice(0, n).join('').trim();
   if (t.length > 160 * n) t = t.slice(0, 160 * n).replace(/\s+\S*$/, '') + '…';
-  return t ? t : null;
+  if (!t || t.split(' ').length < (ch.minWords ?? 1)) return null;
+  return t;
 }
 
 function escapeRe(s: string): string { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }

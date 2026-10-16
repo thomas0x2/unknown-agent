@@ -196,7 +196,7 @@ class LocalLLM {
     } catch (e: any) { raw = null; failed = String(e?.message || e); }
     this.workerError = '';
     const text = raw ? finish(raw) : null;
-    this.lastMiss = text ? '' : failed || (raw ? `Gemma's reply was empty after cleanup: ${raw.slice(0, 80)}` : 'Gemma gave no reply');
+    this.lastMiss = text ? '' : failed || (raw ? `Gemma's reply was unusable: ${raw.slice(0, 80)}` : 'Gemma gave no reply');
     if (!text) console.info('[LocalLLM] no usable reply:', this.lastMiss, raw ?? '');
     this.last = { ms: Math.round(now() - started), ok: !!text, text: text || raw || '' };
     this.emit();
