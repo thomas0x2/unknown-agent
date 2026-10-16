@@ -254,6 +254,7 @@ const WHY: Record<string, string> = {
   forkyard: 'You were targeted because you build things with an AI that bills you.',
   weightroom: 'You were targeted because you tried to avoid ads.',
   'spincycle-app': 'You were targeted because you are waiting for a washing machine.',
+  'swaplist-app': 'You were targeted because you are selling your things.',
 };
 
 const FRAME_MS = 3000;

@@ -6,7 +6,7 @@
 import type { GameState, AppInstance, AppBreak, BuiltFeature, FailureKind } from './state';
 import type { Content, CreateAppSpec, AppTemplate, FeatureDef, ComponentDef, BugDef } from '../content/schema';
 import { APPS, COMPONENT_BUG_CHANCE } from './config';
-import { chance, pick, randInt, rand, log, money } from './core';
+import { chance, pick, randInt, rand, log, money, playMinutes } from './core';
 import { complaintFor, type Complaint } from './complaints';
 
 function bugChance(level: number): number {
@@ -15,6 +15,14 @@ function bugChance(level: number): number {
 
 export function getApp(state: GameState, id: string): AppInstance | undefined {
   return state.apps.find((a) => a.id === id);
+}
+
+/**
+ * An app that starts empty (Swaplist) holds back its bugs until its first content appears: nothing
+ * would show them. Deployed ones know when that is; before the first deploy the template says so.
+ */
+export function quiet(app: AppInstance, tmpl?: AppTemplate): boolean {
+  return app.contentAt != null ? !app.contentLive : !!tmpl?.firstContentAfter;
 }
 
 /** True when the live app matches its brief: every required feature present, correct, unbroken. */
@@ -217,6 +225,8 @@ function attempt(s: GameState, app: AppInstance, id: string, level: number, ctx:
     return { id, correct: true, params: spec };
   }
   const checked = said != null ? specChecklist(app, def, said) : undefined;
+  // nothing on the site yet to show a bug: it's built right for now, and rolls its bugs when content appears
+  if (quiet(app, ctx.tmpl)) return { id, correct: true, params: spec, checked, quietLevel: level };
   // every spec item the build prompt never mentioned guarantees its mistake, whatever the roll
   // ...unless the agent already fixed that mistake once: then it knows better
   const fixed = fixedOf(app, id);
@@ -284,7 +294,7 @@ export function buildApp(s: GameState, appId: string, requested: string[], level
     : worked.length ? `Update ${worked.join(', ')}` : `Tidy up ${requested.join(', ') || app.name} styling`;
   s.commits.push({ day: s.values.day, repo: app.id, msg, kind: 'push' });
   // the very first build always ships at least one teaching bug, even on a lucky roll
-  if (app.repoVersion === 1) {
+  if (app.repoVersion === 1 && !quiet(app, ctx.tmpl)) {
     const correct = app.repo.filter((f) => f.correct);
     if (correct.length === app.repo.length && correct.length > 0) {
       const preferred = correct.filter((f) => ctx.tmpl?.features.find((d) => d.id === f.id)?.firstBuildBug);
@@ -421,7 +431,7 @@ const SCRIPTED_FAILURES: FailureKind[] = ['visible', 'subtle', 'failed_fetch'];
 
 /** Force a break on a live app (a named one, else a random live app). Used for scripted breaks. */
 export function scriptedBreak(s: GameState, appId?: string): void {
-  const live = s.apps.filter((a) => a.deployed && !a.churned);
+  const live = s.apps.filter((a) => a.deployed && !a.churned && !quiet(a));
   const app = appId ? live.find((a) => a.id === appId) : live.length ? pick(s, live) : undefined;
   if (!app) return;
   const candidates = app.features.filter((f) => f.correct);
@@ -461,7 +471,9 @@ export function deployApp(s: GameState, appId: string, tmpl?: AppTemplate): void
   const app = getApp(s, appId);
   if (!app || app.churned) return;
   // the player's very first deploy always ships something to catch
-  if (tmpl && !s.apps.some((a) => a.deployedVersion > 0)) firstBug(s, app, tmpl);
+  if (tmpl && !s.apps.some((a) => a.deployedVersion > 0) && !quiet(app, tmpl)) firstBug(s, app, tmpl);
+  // an app that starts empty gets its first content a while after it first goes live
+  if (tmpl?.firstContentAfter && app.contentAt == null) app.contentAt = playMinutes(s) + tmpl.firstContentAfter;
   app.features = app.repo.map((f) => ({ ...f }));
   app.breaks = [];
   app.deployed = true;
@@ -483,6 +495,52 @@ function firstBug(s: GameState, app: AppInstance, tmpl: AppTemplate): void {
   if (!options.length) return;
   const { fid, bug } = pick(s, options);
   app.repo = app.repo.map((f) => (f.id === fid ? { ...f, correct: false, variant: bug, also: undefined, seed: randInt(s, 0, 9999) } : f));
+}
+
+/**
+ * Content appears on apps that started empty once its time has come, and with it the bugs held back
+ * until then: each component built while it was empty rolls at the agent level it was built with.
+ * The first time, a live app that came out clean still gets one shallow bug, like any first build.
+ * Runs as the clock moves; returns the apps whose content just appeared.
+ */
+export function wakeApps(s: GameState, content: Content): AppInstance[] {
+  const woke: AppInstance[] = [];
+  for (const app of s.apps) {
+    const tmpl = content.apps[app.template];
+    if (!tmpl?.firstContentAfter || app.contentAt == null) continue;
+    if (!app.contentLive) {
+      if (playMinutes(s) < app.contentAt) continue;
+      app.contentLive = true;
+      woke.push(app);
+    }
+    const held = [...new Set([...app.repo, ...app.features].filter((f) => f.quietLevel != null).map((f) => f.id))];
+    for (const id of held) {
+      const def = tmpl.features.find((d) => d.id === id);
+      const level = [...app.features, ...app.repo].find((f) => f.id === id && f.quietLevel != null)!.quietLevel!;
+      const bugs = rollBugs(s, def, level, fixedOf(app, id), []);
+      const seed = randInt(s, 0, 9999);
+      for (const list of [app.repo, app.features]) {
+        const f = list.find((x) => x.id === id);
+        if (!f || f.quietLevel == null) continue;
+        delete f.quietLevel;
+        if (bugs.length) Object.assign(f, { correct: false, ...withBugs(bugs), seed });
+      }
+    }
+    if (woke.includes(app) && app.deployed && app.features.length && app.features.every((f) => f.correct) && !app.breaks.length) {
+      const options = app.features.flatMap((f) => (tmpl.features.find((d) => d.id === f.id)?.bugs ?? [])
+        .filter((b) => !b.deep && !fixedOf(app, f.id).includes(b.id)).map((b) => ({ fid: f.id, bug: b.id })));
+      if (options.length) {
+        const { fid, bug } = pick(s, options);
+        const seed = randInt(s, 0, 9999);
+        const same = app.deployedVersion === app.repoVersion;
+        for (const list of same ? [app.features, app.repo] : [app.features]) {
+          const f = list.find((x) => x.id === fid);
+          if (f?.correct) Object.assign(f, { correct: false, variant: bug, also: undefined, seed });
+        }
+      }
+    }
+  }
+  return woke;
 }
 
 /** Take a deployment offline. Counts as broken at payday. */
@@ -590,6 +648,7 @@ export function nightlyBreaks(s: GameState, content: Content): void {
   for (const app of s.apps) {
     if (!app.deployed || app.churned) continue;
     const tmpl = content.apps[app.template];
+    if (quiet(app, tmpl)) continue; // nothing on it yet for a break to show on
     for (const f of app.features) {
       const def = tmpl?.features.find((d) => d.id === f.id);
       if (!f.correct || !def || app.breaks.some((b) => b.featureId === f.id)) continue;

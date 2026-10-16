@@ -80,6 +80,14 @@ export function pushMail(s: GameState, m: Omit<MailEntry, 'id' | 'seq'>): MailEn
   return entry;
 }
 
+/** Minutes of play since day 1 began: only the waking hours count, so 21:30 plus an hour is 10:30 the next morning. */
+export const playMinutes = (s: GameState) => (s.values.day - 1) * (CLOCK.sleep - CLOCK.wake) + (s.clockMin - CLOCK.wake);
+/** A minute of play as the day and the clock time it falls on. */
+export const playToClock = (p: number) => {
+  const len = CLOCK.sleep - CLOCK.wake;
+  return { day: Math.floor(p / len) + 1, min: CLOCK.wake + (((p % len) + len) % len) };
+};
+
 /** Game time in minutes since day 1 began, so a delay can run past midnight into the next morning. */
 export const gameMinutes = (s: GameState) => (s.values.day - 1) * 24 * 60 + s.clockMin;
 
