@@ -20,7 +20,8 @@ export interface WriteReq {
 }
 
 export interface Writer {
-  write(req: WriteReq): Promise<{ text: string; llm: boolean }>;
+  /** `note` says why the scripted fallback was used when a model was asked (shown next to the line). */
+  write(req: WriteReq): Promise<{ text: string; llm: boolean; note?: string }>;
 }
 
 /** The headless/test writer: always the scripted fallback, never a model. */

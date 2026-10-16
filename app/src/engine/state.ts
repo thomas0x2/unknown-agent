@@ -114,6 +114,8 @@ export interface ChatMsg {
   src?: string;
   /** Written by the local model (Gemma) rather than scripted. */
   llm?: boolean;
+  /** Why a scripted line stood in for the local model. */
+  note?: string;
   level?: number;
 }
 

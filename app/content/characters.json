@@ -21,8 +21,7 @@
         "what are you talking about",
         "Your spending habits, mostly."
       ]
-    ],
-    "mustMention": "you|your|you're|you've|broke|bill|billed|wallet|rent|money|prompt|paid|pay"
+    ]
   },
   {
     "id": "mom",

@@ -35,13 +35,8 @@ describe('finishReply', () => {
     expect(finishReply(mom, 'Oh honey. Eat something. Call your father. And wear a coat.')).toBe('Oh honey. Eat something. Call your father.');
   });
 
-  it.each([
-    '"The old house\'dvies," I say with a weary sigh. "A few years gone by, a dusty facade."',
-    'A little shoplifting spree, another day gone with hope.',
-    'A city sighs, a weary face, The price of dreams begins to chase.',
-    'Ok',
-    'Once upon a time there was a wallet.',
-  ])('drops agent output that is not a roast: %s', (raw) => {
-    expect(finishReply(agent, raw)).toBeNull();
+  it('cleans chat tokens and markdown', () => {
+    expect(finishReply(agent, '**Your wallet** just flinched.<end_of_turn>')).toBe('Your wallet just flinched.');
+    expect(finishReply(agent, '   ')).toBeNull();
   });
 });

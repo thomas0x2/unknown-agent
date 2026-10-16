@@ -5,8 +5,8 @@
  *
  * Each character's profile and examples live in content/characters.json. Gemma 3 270M copies the
  * shape of its examples far more than it follows rules, so every character gets a few short
- * [player, reply] pairs, and any output that doesn't come back in that shape is thrown away for the
- * caller's scripted fallback.
+ * [player, reply] pairs. What it writes is shown as-is, trimmed to the character's sentence limit;
+ * the "Misses" setting on agent.chat switches to the scripted lines instead.
  */
 import type { Character } from '../content/schema';
 import type { ChatTurn } from './llm';
@@ -28,10 +28,7 @@ export function characterMessages(ch: Character, text: string): ChatTurn[] {
 /** Room to generate: about 25 tokens a sentence, with headroom for the cleanup to cut. */
 export const maxTokensFor = (ch: Character) => 20 + 25 * (ch.sentences ?? 2);
 
-/**
- * Keep the model's output only if it reads like the character's examples: a few short sentences in
- * their own voice. Narration, quotes, poems, sign-offs and rambling come back as null.
- */
+/** Tidy the model's output: strip chat tokens, markdown and headers, and keep the first sentences. */
 export function finishReply(ch: Character, raw: string): string | null {
   const n = ch.sentences ?? 2;
   let t = String(raw)
@@ -42,13 +39,9 @@ export function finishReply(ch: Character, raw: string): string | null {
     .replace(/\s+/g, ' ')
     .trim();
   const sentences = t.match(/[^.!?]+[.!?]+/g);
-  if (!sentences) return null;
-  t = sentences.slice(0, n).join('').trim();
-  const words = t.split(' ').filter(Boolean).length;
-  if (words < 1 || words > 22 * n) return null;
-  if (/["“”]|\b(I say|I said|once upon)\b/i.test(t)) return null;
-  if (ch.mustMention && !new RegExp(`\\b(${ch.mustMention})\\b`, 'i').test(t)) return null;
-  return t;
+  if (sentences) t = sentences.slice(0, n).join('').trim();
+  if (t.length > 160 * n) t = t.slice(0, 160 * n).replace(/\s+\S*$/, '') + '…';
+  return t ? t : null;
 }
 
 function escapeRe(s: string): string { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }

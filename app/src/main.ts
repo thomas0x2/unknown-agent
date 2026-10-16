@@ -207,6 +207,7 @@ document.addEventListener('input', (e) => {
 document.addEventListener('change', (e) => {
   const el = e.target as HTMLSelectElement;
   if (el.id === 'llm-backend') LLM.setBackend(el.value as 'browser' | 'ollama' | 'off');
+  else if (el.id === 'llm-misses') LLM.setMisses(el.value as 'gemma' | 'scripted');
 });
 document.addEventListener('keydown', (e) => {
   const el = e.target as HTMLElement;

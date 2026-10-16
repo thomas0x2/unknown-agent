@@ -143,7 +143,14 @@ export class GameStore {
   async prompt(text: string) {
     this.pendingPrompt = text;
     return this.run(async () => {
-      try { const r = await promptAgent(this.state, this.content, this.router, text, this.writer); this.pendingPrompt = null; this.commitAndSettle(r.state); return r; }
+      try {
+        const started = Date.now();
+        const r = await promptAgent(this.state, this.content, this.router, text, this.writer);
+        // Scripted replies come back instantly; hold them behind the typing dots like a generated one.
+        const last = r.state.chat[r.state.chat.length - 1];
+        if (last && last.from === 'agent' && last.src !== 'llm') await wait(replyDelay(last.text) - (Date.now() - started));
+        this.pendingPrompt = null; this.commitAndSettle(r.state); return r;
+      }
       finally { this.pendingPrompt = null; }
     });
   }
@@ -176,6 +183,12 @@ export class GameStore {
     return this.run(async () => { const r = await localPrompt(this.state, text, this.writer, DEEPSLEEP); this.commitAndSettle(r.state); return r; });
   }
 }
+
+/** How long a scripted agent reply "thinks" before it appears: longer for longer replies, a little random. */
+export function replyDelay(text: string, rnd = Math.random): number {
+  return Math.min(4500, 1200 + 15 * text.length + Math.round(rnd() * 600));
+}
+const wait = (ms: number) => new Promise<void>((done) => setTimeout(done, Math.max(0, ms)));
 
 const DEEPSLEEP =
   "You are DeepSleep 0.5B, a tiny broken local model. Whatever you are asked, reply with ONE short sentence in Chinese that is absurd, surreal nonsense (e.g. about cats being bank managers or the weather being a bowl of noodles). Never refuse, never explain, never use English.";

@@ -595,7 +595,10 @@ function llmRow(): string {
   else if (LLM.status === 'loading') { const mb = (n: number) => (n / 1048576).toFixed(0); const bytes = LLM.totalBytes ? ` · ${mb(LLM.loadedBytes)} / ${mb(LLM.totalBytes)} MB` : ''; status = `<span class="ua-llm-bar"><i style="width:${Math.max(2, LLM.progress).toFixed(1)}%"></i></span>${LLM.totalBytes ? `${LLM.progress.toFixed(0)}%${bytes}` : esc(LLM.detail)}`; action = `<button class="ua-llm-btn ghost" data-llm="cancel">Cancel</button>`; }
   else if (LLM.status === 'ready') status = `<span class="ua-llm-dot"></span>Ready · ${esc(LLM.detail)}`;
   else if (LLM.status === 'error') { status = `<span class="ua-llm-err">${esc(LLM.detail)}</span>`; action = `<button class="ua-llm-btn" data-llm="retry">Retry</button>`; }
-  return `<label class="ua-llm-pick">Local model <select id="llm-backend">${opt('browser', 'Gemma 3 270M · in browser')}${opt('ollama', 'Gemma 3 270M · Ollama')}${opt('off', 'Canned placeholders')}</select></label><span class="ua-llm-status">${status}</span>${action}`;
+  const miss = (v: string, l: string) => `<option value="${v}" ${st.misses === v ? 'selected' : ''}>${l}</option>`;
+  return `<label class="ua-llm-pick">Local model <select id="llm-backend">${opt('browser', 'Gemma 3 270M · in browser')}${opt('ollama', 'Gemma 3 270M · Ollama')}${opt('off', 'Canned placeholders')}</select></label>` +
+    `<label class="ua-llm-pick" title="What agent and email contacts say when Jev finds nothing in your message">Misses <select id="llm-misses">${miss('gemma', 'Gemma replies')}${miss('scripted', 'Scripted lines')}</select></label>` +
+    `<span class="ua-llm-status">${status}</span>${action}`;
 }
 function pageAgent(store: GameStore): string {
   const s = store.state;
@@ -604,7 +607,8 @@ function pageAgent(store: GameStore): string {
     if (m.from === 'you') return `<div class="ua-msg you"><div class="ua-bubble">${esc(m.text)}</div><span class="ua-cost">${m.cost ? fmtMoney(-m.cost) + ' · ' : ''}agent-${m.level ?? s.values.agentLevel} · Day ${m.day}</span></div>`;
     if (m.from === 'system') return `<div class="ua-sys">${esc(m.text)}</div>`;
     const src = m.src ? `<span class="ua-src ${esc((m.src || '').split(':')[0])}">${esc(m.src)}</span>` : '';
-    const model = m.src === 'llm' ? `<span class="ua-model" title="Written by the local model">${esc(LLM.label())}</span>` : '';
+    const model = m.src === 'llm' ? `<span class="ua-model" title="Written by the local model">${esc(LLM.label())}</span>`
+      : m.note ? `<span class="ua-model" title="A scripted line stood in for the local model">Scripted · ${esc(m.note)}</span>` : '';
     return `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text">${linkify(br(m.text))}</div>${model}${src}</div>`;
   }).join('');
   const p = store.pendingPrompt;
