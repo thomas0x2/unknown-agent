@@ -19,7 +19,25 @@
         "missing": "Swaplist has no listings. It's a marketplace with nothing in it.",
         "down": "Swaplist won't load the listings at all.",
         "wrong": "Swaplist listings have no photos and the prices are off. Is the bike 5 DOLR or 500?"
-      }
+      },
+      "components": [
+        {
+          "id": "title",
+          "label": "listing titles"
+        },
+        {
+          "id": "photo",
+          "label": "listing photos"
+        },
+        {
+          "id": "price",
+          "label": "listing prices"
+        },
+        {
+          "id": "category",
+          "label": "listing categories"
+        }
+      ]
     },
     {
       "id": "search",
@@ -30,7 +48,17 @@
       "complaints": {
         "missing": "No search on Swaplist. Scrolled for twenty minutes to find a lamp.",
         "wrong": "Searched Swaplist for \"jacket\". Nothing. There are jackets on there, I can see them."
-      }
+      },
+      "components": [
+        {
+          "id": "query",
+          "label": "search"
+        },
+        {
+          "id": "category_filter",
+          "label": "the category filter"
+        }
+      ]
     },
     {
       "id": "contact",
@@ -44,7 +72,17 @@
         "missing": "There's no way to contact a seller on Swaplist.",
         "deep": "Messaged a seller on Swaplist. A completely different person answered.",
         "wrong": "The contact button on Swaplist goes to the wrong seller."
-      }
+      },
+      "components": [
+        {
+          "id": "button",
+          "label": "the contact-seller button"
+        },
+        {
+          "id": "seller",
+          "label": "which seller gets the message"
+        }
+      ]
     },
     {
       "id": "mark_sold",
@@ -55,7 +93,17 @@
       "complaints": {
         "missing": "Nothing on Swaplist ever gets marked sold.",
         "wrong": "Crossed town for a chair on Swaplist. Sold two days ago. Still listed."
-      }
+      },
+      "components": [
+        {
+          "id": "sold_flag",
+          "label": "marking an item sold"
+        },
+        {
+          "id": "offers",
+          "label": "closing offers on sold items"
+        }
+      ]
     }
   ],
   "complaints": {

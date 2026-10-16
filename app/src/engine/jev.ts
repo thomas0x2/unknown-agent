@@ -54,7 +54,7 @@ export interface FeatureMatchInput {
   /** Today's agent.chat before this prompt, oldest first ("Player: …", "Agent: …"): context for what the prompt refers to, not requests. */
   context?: string[];
   /** Spec features with their plain-language descriptions. */
-  features: { id: string; description: string; kind?: 'build' | 'problem' }[];
+  features: { id: string; description: string; kind?: 'build' | 'problem' | 'component' | 'area' }[];
   /** Only count items for an app the prompt names or clearly refers to (the "(for <app>, <url>)" in each description). */
   appNamed?: boolean;
 }

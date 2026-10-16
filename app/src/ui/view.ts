@@ -22,6 +22,7 @@ import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount, appLogo } from './appsite';
 import { marketPosts, fillerToday, postMin, handleOf, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, inBin, isDeleted, CLOCK } from '../engine';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
+import { repoFiles, treeAt, fileSource } from './repoTree';
 
 const WALLET_ADDR = PLAYER_WALLET;
 const PLAYER = { name: 'You', handle: 'you', addr: 'you@qmail.com' };
@@ -386,7 +387,7 @@ function pageMail(store: GameStore, param?: string): string {
 }
 
 // ── Y ──
-interface YPost { id: string; author: string; handle: string; text: string; day: number; /** Minutes since midnight it went up, when known. */ min?: number; likes: number; mine?: boolean; delta?: number; score?: number; replyTo?: string; pinned?: boolean; /** Order within a day: story posts first, bot spam last. */ rank?: number }
+interface YPost { id: string; author: string; handle: string; text: string; day: number; /** Minutes since midnight it went up, when known. */ min?: number; likes: number; mine?: boolean; delta?: number; score?: number; replyTo?: string; /** Order within a day: story posts first, bot spam last. */ rank?: number }
 function yPosts(store: GameStore): YPost[] {
   const s = store.state;
   const out: YPost[] = [];
@@ -402,13 +403,13 @@ function yPosts(store: GameStore): YPost[] {
   for (const p of market) if (!out.some((x) => x.id === p.id)) out.push({ id: p.id, author: p.author, handle: p.handle, text: p.text, day: p.day, min: p.min, likes: p.likes, rank: p.bot ? 2 : 1 });
   // a third of the filler is up each day, posted at its own time
   for (const f of fillerToday(s, store.content)) out.push({ id: f.id, author: f.from, handle: f.handle, text: f.body, day: s.values.day, min: postMin(f, s.values.day), likes: 3 + hashHue(f.id) % 60, rank: 1 });
-  for (const x of s.yExtra) out.push({ id: x.id, author: x.author, handle: x.handle, text: x.text, day: x.day, likes: x.likes, replyTo: x.replyTo, pinned: !!x.about });
+  for (const x of s.yExtra) out.push({ id: x.id, author: x.author, handle: x.handle, text: x.text, day: x.day, min: x.min, likes: x.likes, replyTo: x.replyTo });
   for (const u of s.userPosts) out.push({ id: u.id, author: PLAYER.name, handle: PLAYER.handle, text: u.text, day: u.day, min: u.min, likes: u.likes, mine: true, delta: u.delta, score: u.score });
   // newest first: by day, then the time it went up
-  return out.sort((a, b) => b.day - a.day || Number(!!b.pinned) - Number(!!a.pinned) || (b.min ?? 0) - (a.min ?? 0) || (a.rank ?? 0) - (b.rank ?? 0) || b.id.localeCompare(a.id));
+  return out.sort((a, b) => b.day - a.day || (b.min ?? 0) - (a.min ?? 0) || (a.rank ?? 0) - (b.rank ?? 0) || b.id.localeCompare(a.id));
 }
 /** Accounts with Y's verified check. */
-const Y_VERIFIED = new Set(['mara_vey']);
+const Y_VERIFIED = new Set(['mara_vey', 'randall_crane']);
 /** Follower counts for the public figures; everyone else gets a small made-up number. */
 const Y_FOLLOWERS: Record<string, number> = { randall_crane: 38_400_000, mara_vey: 61_200 };
 const yCheck = (handle: string) => Y_VERIFIED.has(handle) ? `<span class="y-badge" title="Verified">${Y_ICONS.badge}</span>` : '';
@@ -722,21 +723,28 @@ function pageForkyard(store: GameStore, repo?: string): string {
   if (repo && repo.startsWith('u/')) return repo.slice(2) === 'you' ? pageProfileSelf(store) : pageProfileUser(store, repo.slice(2));
   const head = fyHead(store, repo ? '' : 'repos');
   if (repo) {
-    const a = s.apps.filter(onForkyard).find((x) => x.id === repo || x.url.startsWith(repo + '.'));
+    // forkyard.com/<repo>/<folder>/.../<file>.ts: the repo's file tree
+    const [repoId, ...rest] = repo.split('/');
+    const path = rest.join('/');
+    const a = s.apps.filter(onForkyard).find((x) => x.id === repoId || x.url.startsWith(repoId + '.'));
     if (!a) return `<div class="fy">${head}<div class="fy-wrap"><p class="fy-empty">404 — no repository called <code>${esc(repo)}</code>.</p></div></div>`;
     const tmpl = store.content.apps[a.template];
-    const feats = a.repo.map((f) => {
-      const page = tmpl?.features.find((d) => d.id === f.id)?.pageId;
-      const file = page ? (page === 'landing' ? 'index.html' : `${page}.html`) : `integrations/${f.id}.json`;
-      return `<div class="fy-file">${esc(file)}</div>`;
-    }).join('') || '<div class="fy-file"><small>Empty repository</small></div>';
+    const at = treeAt(repoFiles(a, tmpl), path);
+    const segs = path ? path.split('/') : [];
+    const crumbs = [`<a href="#" data-nav="forkyard.com">you</a>`, segs.length ? `<a href="#" data-nav="forkyard.com/${a.id}">${esc(a.id)}</a>` : `<b>${esc(a.id)}</b>`,
+      ...segs.map((seg, i) => i === segs.length - 1 ? `<b>${esc(seg)}</b>` : `<a href="#" data-nav="forkyard.com/${a.id}/${segs.slice(0, i + 1).map(esc).join('/')}">${esc(seg)}</a>`)].join(' / ');
+    const files = !at
+      ? (path ? `<div class="fy-file"><small>404 — nothing at <code>${esc(path)}</code>.</small></div>` : '<div class="fy-file"><small>Empty repository</small></div>')
+      : 'file' in at
+        ? `<pre class="fy-code">${esc(fileSource(at.file))}</pre>`
+        : at.dir.map((e) => `<a href="#" class="fy-file fy-entry${e.dir ? ' dir' : ''}" data-nav="forkyard.com/${a.id}/${esc(e.path)}">${e.dir ? '▸ ' : ''}${esc(e.name)}${e.dir ? '/' : ''}</a>`).join('');
     const stale = a.deployed && a.deployedVersion !== a.repoVersion;
     return `<div class="fy">${head}<div class="fy-wrap">
-      <p class="fy-crumbs"><a href="#" data-nav="forkyard.com">you</a> / <b>${esc(a.id)}</b></p>
+      <p class="fy-crumbs">${crumbs}</p>
       <p class="fy-desc">${esc(a.name)} · template ${esc(a.template)}</p>
-      ${devBugPanel(a, tmpl)}
+      ${path ? '' : devBugPanel(a, tmpl)}
       <div class="fy-grid">
-        <div class="fy-files"><div class="fy-filehead">Pushed by <b>agent[bot]</b> · repo v${a.repoVersion}</div>${feats}</div>
+        <div class="fy-files"><div class="fy-filehead">Pushed by <b>agent[bot]</b> · repo v${a.repoVersion}</div>${files}</div>
         <div class="fy-deploy"><h2>Deployment</h2><p>${repoStatus(a)}</p>
           ${a.churned
             ? `<p class="fy-note">The client cancelled. This app can't be deployed.</p>`

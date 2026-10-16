@@ -49,12 +49,18 @@ export const AGENT_COST: Record<number, { sub: number; prompt: number; word: num
   5: { sub: 60, prompt: 5, word: 0.08 },
 };
 
-/** Chance a requested feature is built correctly, by agent (or local-model) level. Index 0 = level 1. */
-export const BUILD_SUCCESS = [0.7, 0.8, 0.88, 0.94, 0.99];
+/**
+ * Chance each component of a freshly built feature ships with a bug, by agent (or local-model) level.
+ * Index 0 = level 1: agent-1 gets half its components wrong on average, agent-2 a quarter.
+ */
+export const COMPONENT_BUG_CHANCE = [0.5, 0.25, 0.12, 0.06, 0.02];
 
 export const APPS = {
-  /** Nightly chance each deployed app breaks on its own, on top of scripted breaks. */
-  breakChance: 0.4,
+  /**
+   * Overnight breaks across all live apps, on top of scripted breaks: the chance that at least one,
+   * at least two and at least three components break in a night.
+   */
+  breakOdds: [0.85, 0.3, 0.1],
   /** Hosting cost per live deployment, deducted nightly. */
   hostingPerDay: 2,
   /** Client app pay range per working day; each client picks a value in this band. */

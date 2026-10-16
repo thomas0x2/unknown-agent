@@ -14,7 +14,7 @@ import { clone, addValue, log, pick, rand, money, pushMail, sendLater, gameMinut
 import { applyEffects } from './effects';
 import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent';
 import { getEvent, activeDeliveries, reachableByEmail, triggerMatches, eventBody } from './events';
-import { buildApp, fixApp, fixBreak, fixCategories, needsWork, onForkyard, fillSpec, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, bugsOf, breakVariant, type BuildReport } from './apps';
+import { buildApp, fixApp, fixBreak, fixCategories, componentBugs, featureName, needsWork, onForkyard, fillSpec, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, bugsOf, breakVariant, type BuildReport } from './apps';
 import { type Writer, type HistoryLine, scriptedWriter } from './writer';
 import { dateFull, clockTime } from './calendar';
 import { deepsleepQuoted, translationReplies, PLEA_AT } from './deepsleep';
@@ -478,11 +478,24 @@ function fixLines(s: GameState, app: AppInstance, tmpl: AppTemplate | undefined,
   }
   // a first build has nothing to fix yet, so it only says what was built
   if (!before) return [`Built the ${fid}.`];
-  for (const c of cats) {
+  const bugs = componentBugs(def, cats);
+  for (const c of bugs) {
     const bug = def?.bugs?.find((b) => b.id === c);
     if (!bug) continue;
     if (had.includes(c) && !has.includes(c)) out.push(fillSpec(pick(s, bug.fixed?.length ? bug.fixed : [`Fixed: ${bug.when}`]), params));
-    else if (!had.includes(c)) out.push(`Checked for this: "${fillSpec(bug.when, params).replace(/\.$/, '')}". That part was already right.`);
+  }
+  // the right part was named, but the agent still doesn't have the real details to put in
+  if (bugs.includes('hallucinated') && has.includes('hallucinated')) out.push(`I never got the real details for the ${featureName(fid)}, so what's there is made up. Send them and I'll put them in.`);
+  // a component can hold several bugs: report the ones that were there, and say "already right"
+  // only when nothing named on the feature was
+  if (!out.length) for (const c of cats) {
+    const comp = c.startsWith('c:') ? def?.components?.find((x) => x.id === c.slice(2)) : undefined;
+    if (comp) {
+      if (!(comp.bugs ?? []).some((b) => had.includes(b))) out.push(`Checked ${comp.label.replace(/ \(.*\)$/, '')}. That part was already right.`);
+      continue;
+    }
+    const bug = def?.bugs?.find((b) => b.id === c);
+    if (bug && !had.includes(c)) out.push(`Checked for this: "${fillSpec(bug.when, params).replace(/\.$/, '')}". That part was already right.`);
   }
   if (vague && !out.length) out.push(`Went over the ${fid}. Tidied up the layout and spacing.`);
   else if (!vague && had.some((b) => b === 'hallucinated' || b === 'outdated') && !has.some((b) => b === 'hallucinated' || b === 'outdated')) out.push(`Rebuilt the ${fid} with the details you gave.`);
@@ -505,6 +518,9 @@ export function appStatus(app: AppInstance): string {
   const live = !app.deployed ? "None of it is live yet. Deploy it on Forkyard." : app.deployedVersion < app.repoVersion ? "The latest push isn't deployed yet." : "What's in the repo is live.";
   return `${app.name}: ${lines.join(' ')} ${live}`;
 }
+
+/** The near-miss line for a feature without its own: the fix prompt named the feature but not which part. */
+const NEAR_MISS = "I looked at the {{feature}} and couldn't find the problem. Which part of it is wrong?";
 
 /** What the agent says when a prompt asked for features and fixes at once: it only did the features. */
 const SKIPPED_FIXES = "I only did the feature work. There wasn't enough context to fix things in the same prompt, so ask for the fixes separately.";
@@ -650,7 +666,17 @@ export async function promptAgent(
       jev.matchFeatures({ prompt: text, context: chat, features: cats, appNamed: !started }),
       started ? 'feature' : buildIntent(jev, s0, text, chat),
     ]);
-    const matched = new Set(found);
+    // naming the feature without the part that's wrong is a near-miss, and counts only when nothing more precise matched
+    const precise = found.filter((m) => !m.endsWith('::area'));
+    const nearMiss = precise.length ? [] : found.filter((m) => m.endsWith('::area'));
+    if (nearMiss.length) {
+      const [appId, fid] = nearMiss[0].split('::');
+      const a = getApp(s0, appId)!;
+      const lines = content.apps[a.template]?.features.find((f) => f.id === fid)?.nearMiss;
+      const hints = (lines?.length ? lines : [NEAR_MISS]).map((l) => l.replaceAll('{{feature}}', featureName(fid)).replaceAll('{{app}}', a.name));
+      return askAgent(s0, text, writer, s0.values.agentLevel, { hints, hintSrc: 'near_miss', debug: [`Jev: says the ${fid} on ${a.name} is wrong without naming a component, so a near-miss`] });
+    }
+    const matched = new Set(precise);
     // a prompt that starts a user app builds all of it, however little it says (what it leaves out goes wrong)
     if (started) for (const id of getApp(s0, started)!.required) matched.add(`${started}::${id}::feature`);
     // one kind of work per prompt: when Jev matched both, a fix keeps the fixes, feature work (or both) the features
@@ -688,7 +714,7 @@ export async function promptAgent(
           if (f?.correct) { fixBreak(s, appId, fid); patched.push(fid); } else toBuild.push(fid);
         }
         const report = toBuild.length
-          ? buildApp(s, appId, toBuild, level, { tmpl, prompt: text, context: context.join('\n'), named: toBuild.flatMap((fid) => feats.get(fid)!) })
+          ? buildApp(s, appId, toBuild, level, { tmpl, prompt: text, context: context.join('\n'), named: toBuild.flatMap((fid) => componentBugs(tmpl?.features.find((f) => f.id === fid), feats.get(fid)!)) })
           : { vague: [], hallucinated: [] };
         // one line per thing Jev saw named: what was fixed, or that it was already right
         for (const fid of feats.keys()) lines.push(...fixLines(s, a, tmpl, fid, feats.get(fid)!, before.get(fid), patched.includes(fid), report.vague.includes(fid)));
@@ -839,9 +865,9 @@ async function namedBugs(jev: JevRouter, app: AppInstance, tmpl: AppTemplate | u
   const out: string[] = [];
   for (const id of ids) {
     const f = app.repo.find((x) => x.id === id);
-    const cats = fixCategories(app, tmpl, id).filter((c) => c.id !== 'feature');
+    const cats = fixCategories(app, tmpl, id).filter((c) => c.kind === 'component' || c.kind === 'problem');
     if (!f || f.correct || !f.variant || !cats.length) continue;
-    out.push(...await jev.matchFeatures({ prompt, features: cats }));
+    out.push(...componentBugs(tmpl?.features.find((d) => d.id === id), await jev.matchFeatures({ prompt, features: cats })));
   }
   return out;
 }
@@ -916,11 +942,12 @@ function chargeHosted(s: GameState, level: number, text: string): boolean {
   return chargeAgent(s, text);
 }
 
-export function deploy(s0: GameState, appId: string): GameState {
+export function deploy(s0: GameState, appId: string, content?: Content): GameState {
   // a client that cancelled took the app with it
   if (getApp(s0, appId)?.churned) return s0;
   const s = clone(s0);
-  deployAppCore(s, appId);
+  const app = getApp(s, appId);
+  deployAppCore(s, appId, app && content?.apps[app.template]);
   log(s, `Deployed ${getApp(s, appId)?.name ?? appId}.`, 'info');
   return s;
 }
