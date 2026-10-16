@@ -920,6 +920,10 @@ export function overlayHtml(store: GameStore): string {
     const c = store.ui.confirm;
     return osWindow('Confirm', 'ov-small ov-confirm', `<p>${esc(c.text)}</p><div class="ov-actions"><button class="btn" data-ov="confirm-no">Cancel</button><button class="btn primary" data-ov="confirm-yes">${esc(c.yes)}</button></div>`, 'confirm-no');
   }
+  if (store.ui.memWarn) {
+    return osWindow('Low memory', 'ov-small ov-memwarn', `<p>Your system is running low on memory. Close some tabs before opening a new one.</p>
+      <div class="ov-actions"><button class="btn primary" data-ov="mem-ok">OK</button></div>`, 'mem-ok');
+  }
   if (store.ui.intro) {
     return osWindow('Welcome', 'ov-intro', `<p class="ov-eyebrow">Week one</p><h1 class="ov-title">Unknown Agent</h1>
       <p>You've just been automated out of a job. You have ${fmtMoney(s.values.crypto)}, a laptop, a handful of bookmarks, and agent — an AI chatbot that bills your wallet for every word.</p>
