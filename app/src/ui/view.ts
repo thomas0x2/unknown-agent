@@ -582,7 +582,6 @@ function pageWallet(store: GameStore): string {
     </div>`;
   }).join('')).join('');
 
-  const income = s.apps.filter(appWorking).reduce((n, a) => n + (a.kind === 'client' ? a.payPerDay : userRevenue(a)), 0);
   const sub = agentCost(s.values.agentLevel).sub;
   const live = s.apps.filter((a) => a.deployed && !a.churned).length;
   const rentDay = rentDayOf(s);
@@ -590,7 +589,6 @@ function pageWallet(store: GameStore): string {
     rentDay ? `<div class="cb-row"><span><b>Rent</b><small>Landlord · ${rentDay === s.values.day ? 'tonight' : `${esc(dateShort(rentDay))} · in ${rentDay - s.values.day}d`}</small></span><span class="cb-num">−${RENT[rentDay].toFixed(2)}</span></div>` : '',
     `<div class="cb-row"><span><b>agent subscription</b><small>GeneralAI · nightly</small></span><span class="cb-num">−${sub.toFixed(2)}</span></div>`,
     live ? `<div class="cb-row"><span><b>Hosting</b><small>Forkyard · ${live} live · nightly</small></span><span class="cb-num">−${(live * 2).toFixed(2)}</span></div>` : '',
-    income ? `<div class="cb-row"><span><b>App income</b><small>Working apps · nightly</small></span><span class="cb-num pos">+${income.toFixed(2)}</span></div>` : '',
   ].join('');
   const total = s.values.crypto + 0.42;
   const tabs = Object.keys(RANGES).map((r) => `<button class="cb-tab${r === range ? ' on' : ''}" data-wl-range="${r}">${r}</button>`).join('');
