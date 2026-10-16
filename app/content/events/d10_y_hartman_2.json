@@ -1,0 +1,11 @@
+{
+  "id": "d10_y_hartman_2",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 10,
+    "dayMax": 10
+  },
+  "at": "16:05",
+  "body": "we're reading every message about agent-2. it meant a lot to people, and that matters to us. it isn't coming back. agent-3 will feel just as warm once it gets to know you."
+}
