@@ -14,6 +14,8 @@ touching engine code.
 - `contacts.json` — who answers at each address. `replyAfter` is how many minutes of game time
   their replies take (each action is 30, so 30 arrives after the next action; default 60). An
   outcome or scripted reply can set its own `replyAfter` to answer faster or slower.
+  Job requests always answer after the next action: events with a `job`, an outcome that creates
+  an app, or `jobRequest: true`.
 
 The shapes a file must match are the TypeScript types in `src/content/schema.ts`. Tests in
 `src/engine/*.test.ts` show every field in use against an in-code fixture (`src/engine/_fixtures.ts`).

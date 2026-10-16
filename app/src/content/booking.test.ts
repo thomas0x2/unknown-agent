@@ -9,6 +9,7 @@ import { composeEmail, briefBuild, deploy, promptAgent, makeBooking, cancelBooki
 import { applyEffects } from '../engine/effects';
 import { getApp, devToggleBug } from '../engine/apps';
 import { offlineJev } from '../engine/jev';
+import { tick } from '../engine/core';
 
 /** Fix requests have to name the app. */
 const gino = 'Trattoria Gino: ';
@@ -21,6 +22,7 @@ const ME = 'you@qmail.com';
 /** Gino's site with landing, menu and booking all built right and live. */
 async function liveSite(): Promise<GameState> {
   let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+  tick(s); // Gino's reply with the brief arrives
   applyEffects(s, content.events.find((e) => e.id === 'd2_restaurant_booking')!.onDeliver!);
   const app = getApp(s, APP)!;
   app.repo = app.required.map((id) => ({ id, correct: true, params: app.specParams[id] }));
@@ -37,7 +39,7 @@ describe('table booking', () => {
     const s0 = await liveSite();
     const s = book(s0, '19:00', 3);
     const m = lastMail(s)!;
-    expect(m.body).toContain('Your table for 3 at Trattoria Gino on Day 2 at 19:00');
+    expect(m.body).toContain('Your table for 3 at Trattoria Gino on Wednesday, October 4, 2028 at 19:00');
     expect(m.bookingId).toBe(s.bookings[0].id);
     expect(cancelBooking(s, m.bookingId!).bookings[0]).toMatchObject({ cancelled: true, cancelClicked: true });
     // outside opening hours, or in the past: refused
@@ -52,7 +54,7 @@ describe('table booking', () => {
     const before = s0.mail.length;
     expect(book(withBug('no_email')).mail.length).toBe(before);
     expect(book(withBug('no_email')).bookings).toHaveLength(1);
-    expect(lastMail(book(withBug('wrong_date')))!.body).toContain('Day 3');
+    expect(lastMail(book(withBug('wrong_date')))!.body).toContain('Thursday, October 5, 2028');
     expect(lastMail(book(withBug('wrong_time')))!.body).not.toContain('19:00');
     expect(lastMail(book(withBug('party_wrong'), '19:00', 2))!.body).not.toContain('for 2 ');
     expect(lastMail(book(withBug('name_wrong_mail')))!.body).not.toContain('Trattoria Gino');
@@ -62,6 +64,12 @@ describe('table booking', () => {
     const fake = book(withBug('fake_cancel'));
     expect(cancelBooking(fake, lastMail(fake)!.bookingId!).bookings[0]).toMatchObject({ cancelled: false, cancelClicked: true });
     expect(book(withBug('no_hours_check'), '23:30').bookings).toHaveLength(1);
+    expect(book(withBug('no_hours_check'), '19:00', 2, 0).bookings).toHaveLength(0);
+    expect(book(withBug('past_dates'), '19:00', 2, 0).bookings).toHaveLength(1);
+    // a time already gone today is in the past too
+    const late = structuredClone(s0); late.clockMin = 20 * 60;
+    expect(book(late, '19:00', 2, late.values.day).bookingNotice?.text).toBe('That time has already passed today.');
+    expect(book(late, '21:00', 2, late.values.day).bookings).toHaveLength(1);
     const dead = book(withBug('dead_button'));
     expect(dead.bookings).toHaveLength(0);
     expect(dead.clockMin).toBe(s0.clockMin);
@@ -97,6 +105,7 @@ describe('table booking', () => {
       party_wrong: 'The booking confirmation has the wrong party size.',
       name_wrong_mail: 'The booking confirmation email has the wrong restaurant name.',
       no_hours_check: 'The booking form accepts bookings outside opening hours.',
+      past_dates: 'The booking form lets you book a table in the past.',
       dead_button: 'On the booking form the book button does nothing on the second step.',
     };
     for (const [bug, ask] of Object.entries(asks)) {

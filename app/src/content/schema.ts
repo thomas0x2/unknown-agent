@@ -157,6 +157,8 @@ export interface GameEvent {
    * seen on Y ("email me at ...") turns into a conversation.
    */
   latent?: boolean;
+  /** Offers the player paid work, so replies come on the next action. Events with a `job` or an outcome that creates an app count already. */
+  jobRequest?: boolean;
   /** Applied the moment the event is delivered. */
   onDeliver?: Effects;
   outcomes?: Outcome[];

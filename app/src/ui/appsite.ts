@@ -9,6 +9,7 @@ import type { AppTemplate } from '../content/schema';
 import { menuDishes, misspell, WRONG_HOURS } from '../engine/restaurant';
 import { crawl, autoBuys, portfolio, type MarketPost } from '../engine/crawler';
 import { machineRows } from '../engine/laundromat';
+import { dateShort } from '../engine/calendar';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
@@ -136,7 +137,7 @@ function crawler(app: AppInstance, tmpl: AppTemplate | undefined, page: string |
       }
       return `<section class="as-s-card"><h2>$${esc(r.ticker)}</h2><p class="as-s-count"><b>${r.count}</b> post${r.count === 1 ? '' : 's'} today</p>${split}${top}</section>`;
     }).join('');
-    body = `<p class="as-s-upd">Updated Day ${dataDay < 1 ? day : dataDay}</p><div class="as-s-grid">${cards}</div>`;
+    body = `<p class="as-s-upd">Updated ${dateShort(dataDay < 1 ? day : dataDay)}</p><div class="as-s-grid">${cards}</div>`;
   }
   const buys = autoBuys(posts, day, bugs);
   if (f.portfolio.built) {
@@ -146,7 +147,7 @@ function crawler(app: AppInstance, tmpl: AppTemplate | undefined, page: string |
       <p class="as-s-total">Total <b>${money(pf.total)} DOLR</b> <span class="${pf.change >= 0 ? 'bull' : 'bear'}">${signed(pf.change)} today</span></p></section>`;
   }
   if (f.auto_buy.built) {
-    const log = buys.slice().reverse().map((b) => `<li>Day ${b.day}: bought ${b.shares} $${esc(b.ticker)} at ${money(b.price)} on <a href="#" data-nav="y.com/${esc(b.post.handle)}">@${esc(b.post.handle)}</a> “${esc(b.post.text)}”</li>`).join('');
+    const log = buys.slice().reverse().map((b) => `<li>${dateShort(b.day)}: bought ${b.shares} $${esc(b.ticker)} at ${money(b.price)} on <a href="#" data-nav="y.com/${esc(b.post.handle)}">@${esc(b.post.handle)}</a> “${esc(b.post.text)}”</li>`).join('');
     body += `<section class="as-s-buys"><h2>Auto-buy</h2>${log ? `<ul>${log}</ul>` : '<p>No buys yet. Watching @randall_crane.</p>'}</section>`;
   }
   return `<div class="as as-s">${head}<main>${body}</main></div>`;
@@ -171,7 +172,7 @@ function laundromat(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
     const rows = machineRows(dataDay, bugs, { showMinutes: !!f.minutes.built, twelve: !!f.more_machines.built });
     const broken = bugs.has('layout_breaks') && rows.length > 8;
     const cards = rows.map((m) => `<div class="as-l-m ${m.status}"><b>M${m.id}</b><span>${MACHINE_LABEL[m.status]}</span>${m.minutes != null ? `<small>${m.minutes} min left</small>` : ''}</div>`).join('');
-    body = `<div class="as-l-grid${broken ? ' broken' : ''}">${cards}</div><p class="as-l-upd">Updated Day ${dataDay}</p>`;
+    body = `<div class="as-l-grid${broken ? ' broken' : ''}">${cards}</div><p class="as-l-upd">Updated ${dateShort(dataDay)}</p>`;
   }
   return `<div class="as as-l">${head}<main>${body}</main></div>`;
 }
