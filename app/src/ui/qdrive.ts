@@ -1,12 +1,13 @@
 /*
  * Qdrive: the player's cloud drive, read as an inventory. Nothing here is stored separately: every
  * file is derived from game state (downloaded weights, Forkyard projects, interview answers), plus
- * the two documents the player had before Day 1.
+ * the documents the player had before Day 1.
  */
 import type { GameState } from '../engine';
 import { ICONS } from './icons';
 import { dateShort } from '../engine/calendar';
 import { onForkyard } from '../engine/apps';
+import { PASSWORDS_TXT } from '../engine/phishing';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
@@ -35,7 +36,7 @@ const MODEL_FILES: Record<string, { name: string; kb: number; preview: string }>
   stolen_weights: { name: 'weights_DO_NOT_SHARE.bin', kb: 9 * 1024 * 1024, preview: 'Someone else’s model. You know where it came from. So will they, eventually.' },
 };
 
-// The two files the player starts with. Lines in capitals render as headings.
+// The files the player starts with. Lines in capitals render as headings.
 const RESUME = `YOU
 you@qmail.com · Pine Street Apartments, Unit 4B
 
@@ -90,6 +91,8 @@ export function driveFiles(s: GameState): DriveFile[] {
       preview: RESUME },
     { id: 'offboarding', name: 'vantor_offboarding.pdf', folder: 'documents', kind: 'pdf', kb: 212, day: 1, actions: [{ label: 'Find the email', nav: 'qmail.com' }],
       preview: OFFBOARDING },
+    { id: 'passwords', name: 'passwords.txt', folder: 'documents', kind: 'txt', kb: 1, day: -40, actions: [],
+      preview: PASSWORDS_TXT },
   ];
   if (s.interviewAnswers.trim()) {
     files.push({ id: 'interview', name: 'interview_answers.txt', folder: 'documents', kind: 'txt', kb: Math.max(1, Math.ceil(s.interviewAnswers.length / 1024)), actions: [],

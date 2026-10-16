@@ -288,6 +288,7 @@ document.addEventListener('submit', (e) => {
   const kind = f.dataset.form;
   if (kind === 'dev-day') { store.devGoToDay(Number(val('#dev-day'))); return; }
   if (kind === 'dev-flag') { const v = val('#dev-flag-name').trim(); if (v) store.devSetFlag(v, true); return; }
+  if (kind === 'phish') { store.phish(val('#ph-pass')); return; }
   if (kind === 'cb-send') { store.send(val('#cb-to').trim(), val('#cb-amount').trim()); return; }
   if (kind === 'url') { newPageLoad(); store.navigate(val('#nt-url') || val('#address')); }
   else if (kind === 'ypost') { const v = val('#post-input').trim(); if (v) { clearField('post-input'); void store.post(v, trendingToday()); } }

@@ -19,7 +19,7 @@ import { adHtml } from './ads';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount } from './appsite';
-import { marketPosts, handleOf, machineFeed, FEED_PAGE, PLAYER_WALLET } from '../engine';
+import { marketPosts, handleOf, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked } from '../engine';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 
 const WALLET_ADDR = PLAYER_WALLET;
@@ -47,12 +47,13 @@ function linkify(escaped: string): string {
     .replace(/([a-z0-9-]+\.forkyard\.app)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(empire\.alphaascend\.biz(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(spincycle\.test\/feed(?:\/\d+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
+    .replace(/(coinbln\.com(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(^|[^\w.])@([a-z0-9_]+)/gi, '$1<a href="#" class="y-at" data-nav="y.com/$2">@$2</a>');
 }
 
 function tabTitle(r: Route, url: string): string {
   const names: Partial<Record<string, string>> = {
-    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', forkyard: 'Forkyard',
+    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', phish: 'Coinbin · Sign in', forkyard: 'Forkyard',
     agent: 'agent', yowl: 'Yowl', weightroom: 'Weightroom', nullboard: 'nullboard', cellar: 'Cellar', app: url,
   };
   if (r.site === 'notfound') return url || 'New Tab';
@@ -197,6 +198,7 @@ export function page(store: GameStore, r: Route): string {
     case 'weightroom': return pageWeightroom(store);
     case 'empire': return pageEmpire(store.state);
     case 'spinfeed': return pageSpinFeed(store, r.param);
+    case 'phish': return pagePhish(store);
     default: return pageUnderground(r.def?.label ?? r.site);
   }
 }
@@ -417,6 +419,33 @@ function yProfile(store: GameStore, handle: string): string {
     <h1 class="y-prof-name">${esc(name)}</h1><p class="y-handle">@${esc(h)}</p>
     <p class="y-prof-stats"><span><b>${compact(40 + hashHue(h + 'f') % 300)}</b> following</span><span><b>${compact(followers)}</b> followers</span></p>
   </section><p class="y-eyebrow">Posts</p><div class="y-feed">${feed}</div>`;
+}
+
+// ── coinbln.com: the phishing copy of Coinbin's sign-in (engine/phishing.ts) ──
+function pagePhish(store: GameStore): string {
+  const s = store.state;
+  if (hacked(s)) {
+    const sent = s.tx.find((x) => x.memo.startsWith(PHISH_WALLET.slice(0, 6)));
+    return `<div class="ph-hacked" role="alert">
+      <h1>You've been hacked</h1>
+      <p>The password you entered went to the people who run this page, not to Coinbin.</p>
+      <p>${sent ? `${(-sent.amount).toFixed(2)} DOLR has been sent from your wallet to <code>${shortAddr(PHISH_WALLET)}</code>.` : 'Your wallet was empty, so there was nothing to take.'} Transfers can't be reversed.</p>
+      <p class="ph-fine">We appreciate your business.</p>
+    </div>`;
+  }
+  const err = store.ui.phishError;
+  return `<div class="cb ph">
+    <header class="cb-top"><div class="cb-logo"><span class="cb-mark">${ICONS.coinbin}</span><span>Coinbin</span></div></header>
+    <form class="ph-box" data-form="phish" autocomplete="off">
+      <h1>Verify your account</h1>
+      <p>We noticed a sign-in from a new device. Confirm your password to keep withdrawals open.</p>
+      <label><span>Email</span><input value="${esc(PLAYER.addr)}" readonly></label>
+      <label><span>Password</span><input id="ph-pass" type="password" spellcheck="false"></label>
+      ${err ? `<p class="cb-err" role="alert">${esc(err)}</p>` : ''}
+      <button type="submit" class="cb-btn primary">Continue</button>
+      <p class="ph-foot">Forgot password? · Privacy · Terms</p>
+    </form>
+  </div>`;
 }
 
 // ── Coinbin (exchange wallet, Coinbase parody) ──
