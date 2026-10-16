@@ -149,8 +149,15 @@ body.dev-on .fy-devcount { display: inline-block; }
 .as-s-hold td small { color: inherit; opacity: 0.75; }
 .as-s-hold tr.cash td { color: #a9b3bd; border-bottom: 0; }
 .as-s-trades { font-size: 12px; }
-.as-s-trades td.src { text-align: left; font-family: var(--f-ui); color: #a9b3bd; max-width: 260px; }
-.as-s-trades th:last-child { text-align: left; padding-left: 12px; }
+.as-s-trades td.src { text-align: left; font-family: var(--f-ui); color: #a9b3bd; max-width: 380px; }
+.as-s-trades th:nth-child(2), .as-s-trades th:nth-child(3), .as-s-trades th:last-child { text-align: left; padding-left: 12px; }
+.as-s-trades td { vertical-align: top; }
+.as-s-trades td small { display: block; color: #6b7785; font-size: 11px; }
+.as-s-trades td.mood, .as-s-trades td.act { text-align: left; white-space: nowrap; }
+.as-s-trades td.act .none { color: #6b7785; }
+.as-s-trades td.act .buy { color: #3cc08a; }
+.as-s-trades td.act .x { color: #f5a524; }
+.as-s-trades td.act small { color: #a9b3bd; }
 
 /* laundromat */
 .as-l { background: #f3f6f8; color: #1d2a33; font-family: var(--f-ui); }

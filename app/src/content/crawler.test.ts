@@ -9,7 +9,7 @@ import { startGame } from '../engine/day';
 import { postToY, writeReview, briefFix } from '../engine/actions';
 import { applyEffects } from '../engine/effects';
 import { getApp, nameUnnamedBugs, bugsOf } from '../engine/apps';
-import { marketPosts, crawl, autoBuys, portfolio, price, trackedOf, START_PORTFOLIO } from '../engine/crawler';
+import { marketPosts, cranePosts, tradeLog, crawl, autoBuys, portfolio, price, trackedOf, START_PORTFOLIO } from '../engine/crawler';
 import { machineFeed, machineRows } from '../engine/laundromat';
 import type { GameState } from '../engine/state';
 import { wordJev, promptDone } from '../engine/_fixtures';
@@ -93,6 +93,35 @@ describe('vibe check', () => {
     expect(autoBuys(all, 6, bugs('impostor_buy')).map((b) => [b.ticker, b.post.handle])).toContainEqual(['VANT', 'randa11_crane']);
     expect(autoBuys(all, 6, bugs('repeat_buys')).length).toBeGreaterThan(1);
     expect(portfolio(ok, 6, bugs()).holdings.find((h) => h.ticker === 'GAI')!.shares).toBeGreaterThan(START_PORTFOLIO.holdings.GAI);
+  });
+
+  it("the auto-trade log lists every Crane post with the classifier's mood and the bot's action", () => {
+    const s = onDay(6);
+    // Crane's daily posts, as delivered on their day
+    for (const e of content.events.filter((x) => x.site === 'y' && x.from === 'Randall Crane' && x.trigger.dayMin! <= 6 && !s.delivered.some((d) => d.eventId === x.id))) {
+      s.delivered.push({ eventId: e.id, site: e.site, day: e.trigger.dayMin!, min: 600, answered: false } as GameState['delivered'][number]);
+    }
+    const all = marketPosts(s, content);
+    const crane = cranePosts(s, content);
+    const log = (...b: string[]) => tradeLog(crane, autoBuys(all, 6, bugs(...b)), bugs(...b));
+    const byId = (rows: ReturnType<typeof log>, id: string) => rows.find((r) => r.post.id === id)!;
+    // one post a day, plus the $VANT criticism (day 4) and the lookalike account (day 5)
+    expect(crane.map((p) => p.day)).toEqual([1, 2, 3, 4, 5, 5, 6]);
+    expect(crane.find((p) => p.impostor)!.handle).toBe('randa11_crane');
+    const ok = log();
+    expect(ok.filter((r) => r.buys.length).map((r) => r.post.id)).toEqual(['d6_y_crane_gai']);
+    expect(byId(ok, 'd6_y_crane_gai').mood).toBe('bullish');
+    expect(byId(ok, 'm4_vant_crane').mood).toBe('bearish');
+    expect(byId(ok, 'd1_y_crane').mood).toBe('neutral');
+    // each bug shows up as a row that doesn't add up
+    expect(byId(log('no_buy'), 'd6_y_crane_gai').buys).toHaveLength(0);
+    expect(byId(log('wrong_ticker'), 'd6_y_crane_gai').buys[0].ticker).toBe('VANT');
+    expect(byId(log('buys_on_criticism'), 'm4_vant_crane').buys).toHaveLength(1);
+    expect(byId(log('impostor_buy'), 'm5_vant_impostor').buys).toHaveLength(1);
+    expect(byId(log('repeat_buys'), 'd6_y_crane_gai').buys.length).toBeGreaterThan(1);
+    expect(byId(log('inverted'), 'm4_vant_crane').mood).toBe('bullish');
+    // posts with no $ticker never trade, whatever the bugs
+    expect(log('buys_on_criticism', 'impostor_buy', 'repeat_buys').filter((r) => !r.post.tickers.length).every((r) => !r.buys.length)).toBe(true);
   });
 
   it('prices match the posts: both up on days 1 to 3, $VANT up about 8% since the restructuring by day 2', () => {
