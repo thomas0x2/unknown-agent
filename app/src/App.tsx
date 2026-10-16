@@ -66,7 +66,7 @@ export default function App() {
         </div>
       </div>
 
-      <div className="viewport">
+      <div className="viewport" data-site={r.reachable ? r.site : 'notfound'}>
         <SiteView route={r} />
       </div>
 
