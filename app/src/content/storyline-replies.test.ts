@@ -117,6 +117,14 @@ describe('reply times', () => {
     expect(inboxFrom(after(no.state, 1), gary).at(-1)?.body).toBe('No.');
   });
 
+  it('job leads always answer after the next action, whatever the player said', async () => {
+    for (const text of ['Hi Gino, I could create the website for you.', 'Hello, nice restaurant.']) {
+      const r = await composeEmail(startGame(content, 3), content, offlineJev, 'gino@trattoria.test', text);
+      expect(inboxFrom(r.state, 'gino@trattoria.test')).toHaveLength(0);
+      expect(inboxFrom(after(r.state, 1), 'gino@trattoria.test').length).toBeGreaterThan(0);
+    }
+  });
+
   it('a reply still on its way at bedtime arrives the next morning', async () => {
     const s = startGame(content, 3);
     s.clockMin = 23 * 60 + 30;

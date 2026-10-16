@@ -1,6 +1,7 @@
 {
   "id": "d3_coffee_promo",
   "site": "qmail",
+  "jobRequest": true,
   "from": "Bean There",
   "addr": "owner@beanthere.test",
   "subject": "Paid shout-out?",
