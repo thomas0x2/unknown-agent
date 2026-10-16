@@ -16,6 +16,7 @@ import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
 import { pageDrive } from './qdrive';
 import { adHtml } from './ads';
+import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount } from './appsite';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
@@ -50,7 +51,7 @@ function linkify(escaped: string): string {
 function tabTitle(r: Route, url: string): string {
   const names: Partial<Record<string, string>> = {
     newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', satchel: 'Satchel · Wallet', forkyard: 'Forkyard',
-    agent: 'agent', yowl: 'Yowl', weightroom: 'Weightroom', terminal: 'localhost', nullboard: 'nullboard', cellar: 'Cellar', app: url,
+    agent: 'agent', yowl: 'Yowl', weightroom: 'Weightroom', nullboard: 'nullboard', cellar: 'Cellar', app: url,
   };
   if (r.site === 'notfound') return url || 'New Tab';
   return names[r.site] ?? r.def?.label ?? url;
@@ -109,6 +110,15 @@ export function taskTitle(store: GameStore): string {
   const r = route(store.url, store.state);
   return `Browser — ${r.site === 'newtab' ? 'New tab' : store.url}`;
 }
+/** The window list: the browser, and the Terminal once a model is on the laptop. */
+export function tasksHtml(store: GameStore): string {
+  const { termOpen, termShown } = store.ui;
+  const browser = `<button class="dk-task${termShown ? ' open' : ' on'}" data-task="browser" title="${esc(taskTitle(store))}" aria-label="Browser">${BROWSER_ICON}</button>`;
+  if (!store.state.flags.includes('has_terminal') && !store.pull) return browser;
+  const cls = termShown ? ' on' : termOpen ? ' open' : '';
+  return browser + `<button class="dk-task dk-term${cls}" data-task="terminal" title="Terminal" aria-label="Terminal">${ICONS.terminal}</button>`;
+}
+const BROWSER_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12V2a10 10 0 0 1 10 10z" fill="#ff5fa2"/><path d="M12 12h10a10 10 0 0 1-10 10z" fill="#ffb02e"/><path d="M12 12v10A10 10 0 0 1 2 12z" fill="#2ec4b6"/><path d="M12 12H2A10 10 0 0 1 12 2z" fill="#8a5cf6"/><rect x="7.6" y="7.6" width="8.8" height="8.8" rx="2.6" transform="rotate(45 12 12)" fill="#fff"/><rect x="9.4" y="9.4" width="5.2" height="5.2" rx="1.4" transform="rotate(45 12 12)" fill="#3a8dff"/></svg>';
 const MI = {
   sleep: '<svg viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>',
   help: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.5v.4M12 16.8v.2"/></svg>',
@@ -170,7 +180,6 @@ export function page(store: GameStore, r: Route): string {
     case 'agent': return r.param === 'models' ? pageModels(store) : pageAgent(store);
     case 'yowl': return pageYowl(store, r.param);
     case 'weightroom': return pageWeightroom(store);
-    case 'terminal': return pageTerminal(store);
     case 'empire': return pageEmpire(store.state);
     default: return pageUnderground(r.def?.label ?? r.site);
   }
@@ -200,8 +209,9 @@ function mailRows(store: GameStore): Row[] {
     const e = store.content.events.find((x) => x.id === d.eventId);
     if (!e) continue;
     // A latent lead is never received on its own: its brief arrives inside the reply mail, so the reply
-    // stands in for it. Any other story email stays in the inbox after it's answered.
-    if (e.latent && s.mail.some((m) => m.eventId === e.id && m.folder === 'inbox')) continue;
+    // stands in for it (and stays hidden while that reply is on its way). Any other story email stays
+    // in the inbox after it's answered.
+    if (e.latent && (s.mail.some((m) => m.eventId === e.id && m.folder === 'inbox') || s.pendingMail?.some((p) => p.mail.eventId === e.id))) continue;
     const canReply = !!(e.outcomes && !d.answered);
     const key = deliveryKey(e, d.day);
     rows.push({ id: 'e/' + key, seq: d.seq ?? -1, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(eventBody(e, d.day)), day: d.day, unread: !s.readEvents.includes(key), needsReply: canReply, folder: 'inbox', eventId: e.id });
@@ -724,28 +734,51 @@ function pageYowl(store: GameStore, param?: string): string {
   return `<div class="yw">${head}<div class="yw-wrap"><label class="yw-search"><input id="yowl-search" autocomplete="off" placeholder="Search businesses near you" value="${esc(store.ui.yowlSearch)}"></label>${adHtml('yowl', store.state.values.day, 'wide')}<div class="yw-list">${cards}</div></div></div>`;
 }
 
-// ── Weightroom / Terminal ──
-const WR_MODELS = [{ id: 'deepsleep', name: 'DeepSleep 0.5B', blurb: 'The only model here that costs nothing. Replies in confident Chinese nonsense. Nobody is watching what you ask it.', size: 2, tier: 'useless' }];
+// ── Weightroom ──
+const WR_MODELS = [{ id: 'deepsleep', blurb: 'The only model here that costs nothing. Replies in confident Chinese nonsense. Nobody is watching what you ask it.', tier: 'useless' }];
+/** The progress bar on a Weightroom card while its model downloads. main.ts updates it each frame. */
+export function pullBarHtml(pct: number): string {
+  return `<span class="wr-pull" data-pull-bar><i style="width:${pct}%"></i><b>Downloading ${pct}%</b></span>`;
+}
 function pageWeightroom(store: GameStore): string {
   const s = store.state;
-  const cards = WR_MODELS.map((m) => {
+  const cards = WR_MODELS.map((w) => {
+    const m = MODELS[w.id];
     const have = s.localModels.includes(m.id);
-    return `<article class="wr-card"><header><b>${esc(m.id)}</b><span class="wr-dl">↓ 1.2M</span></header>
-      <p>${esc(m.blurb)}</p><div class="wr-tags"><span>${m.size} GB</span><span>${esc(m.tier)}</span></div>
-      ${have ? '<span class="wr-have">On your laptop</span>' : `<button class="wr-btn" data-download="${esc(m.id)}">Download</button>`}</article>`;
+    const pulling = store.pull?.id === m.id;
+    const action = have ? '<span class="wr-have">On your laptop</span>'
+      : pulling ? pullBarHtml(pullPct(store.pullMs()))
+      : `<button class="wr-btn" data-download="${esc(m.id)}">Download</button>`;
+    return `<article class="wr-card"><header><b>${esc(m.name)}</b><span class="wr-dl">↓ 1.2M</span></header>
+      <p>${esc(w.blurb)}</p><div class="wr-tags"><span>${m.gb} GB</span><span>${esc(w.tier)}</span></div>
+      ${action}</article>`;
   }).join('');
   return `<div class="wr"><header class="wr-top"><div class="wr-logo">${ICONS.weightroom}<span>Weightroom</span></div><span class="wr-sub">open weights for everyone</span></header>
     <div class="wr-wrap"><div class="wr-hero"><h1>Models</h1><p>Open weights you run on your own laptop, in the Terminal. Slower and dumber than agent — but no subscription, and no one logging your prompts.</p></div>
     ${adHtml('weightroom', s.values.day, 'wide')}
     <div class="wr-grid">${cards}</div></div></div>`;
 }
-function pageTerminal(store: GameStore): string {
+
+// ── Terminal: its own window on the desktop, not a browser tab ──
+/** The Terminal's scrollback and prompt. Repainted on its own during a download. */
+export function termBodyHtml(store: GameStore): string {
   const s = store.state;
-  const intro = s.termModel ? `DeepSleep 0.5B running on localhost. Type anything. (type 'clear' to wipe the screen)` : 'No model running. Download one from weightroom.ai first.';
-  const lines = s.terminal.slice(-200).map((l) => `<div class="tm-${l.k}">${esc(l.text)}</div>`).join('');
-  const busy = store.busy;
-  return `<div class="tm" id="tm-log"><div class="tm-sys">${esc(intro)}</div>${lines}${busy ? '<div class="tm-sys tm-wait">thinking… (this laptop is not fast)</div>' : ''}
-    <form class="tm-in" data-form="term"><label for="term-input" class="tm-ps">you@laptop:~$</label><input id="term-input" autocomplete="off" autocapitalize="off" spellcheck="false" ${busy ? 'disabled' : ''}></form></div>`;
+  const pulling = !!store.pull;
+  const name = s.termModel ? (MODELS[s.termModel]?.name ?? s.termModel) : '';
+  // the pull log already says the model is running; the intro is for an empty screen
+  const intro = pulling || s.terminal.length ? ''
+    : name ? `${name} running on localhost. Type anything. (type 'clear' to wipe the screen)`
+    : 'No model running. Download one from weightroom.ai first.';
+  const row = (l: { k: string; text: string }) => `<div class="tm-${l.k}">${esc(l.text)}</div>`;
+  const lines = s.terminal.slice(-200).map(row).join('');
+  const live = store.pull ? pullLines(store.pull.id, Math.min(store.pullMs(), PULL_MS - 1)).map(row).join('') : '';
+  const prompt = pulling ? '' : `<form class="tm-in" data-form="term"><label for="term-input" class="tm-ps">you@laptop:~$</label><input id="term-input" autocomplete="off" autocapitalize="off" spellcheck="false" ${store.busy ? 'disabled' : ''}></form>`;
+  return `${intro ? `<div class="tm-sys">${esc(intro)}</div>` : ''}${lines}${live}${store.busy ? '<div class="tm-sys tm-wait">thinking… (this laptop is not fast)</div>' : ''}${prompt}`;
+}
+export function termWindowHtml(store: GameStore): string {
+  return `<header class="tw-bar"><span class="tw-ico">${ICONS.terminal}</span><span class="tw-title">you@laptop: ~</span>
+      <span class="tw-ctl"><button data-term="min" aria-label="Minimize" title="Minimize"><svg viewBox="0 0 24 24"><path d="M7 15h10"/></svg></button><button data-term="close" aria-label="Close" title="Close"><svg viewBox="0 0 24 24"><path d="m8 8 8 8M16 8l-8 8"/></svg></button></span></header>
+    <div class="tm" id="tm-log">${termBodyHtml(store)}</div>`;
 }
 
 // ── empire.alphaascend.biz ──

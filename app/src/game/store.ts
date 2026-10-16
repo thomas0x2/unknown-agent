@@ -10,6 +10,9 @@ import {
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
+import { route, visitedFlag } from '../sites/registry';
+import { PULL_MS, pullLines } from './pull';
+import { DEEPSLEEP_LINES } from '../engine/deepsleep';
 
 /** A browser tab. back/fwd are the pages behind and ahead of it, like a real browser's history. */
 export interface Tab { id: number; url: string; back: string[]; fwd: string[] }
@@ -31,6 +34,8 @@ export class GameStore {
   ui = {
     ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null as Draft | null,
     project: '', dev: false, liked: {} as Record<string, boolean>, intro: true, confirm: null as null | { text: string; yes: string; fn: () => void }, start: false, menuCat: 'saves',
+    /** The Terminal is its own window: open (in the taskbar) and shown (in front of the browser). */
+    termOpen: false, termShown: false,
     /** Dev mode: the site whose options panel is open (agent, qmail, y), or ''. */
     devOptions: '' as string,
     /** The two-step booking form: which step is showing and what step one said. */
@@ -38,6 +43,10 @@ export class GameStore {
     /** Dev: the flags and meters editor is open. */
     devEdit: false,
   };
+  /** A model download playing out in the Terminal, if one is running. */
+  pull: { id: string; startedAt: number } | null = null;
+  private pullTimer: ReturnType<typeof setInterval> | null = null;
+  private pullListeners = new Set<() => void>();
 
   private listeners = new Set<() => void>();
 
@@ -51,6 +60,8 @@ export class GameStore {
 
   subscribe(fn: () => void): () => void { this.listeners.add(fn); return () => this.listeners.delete(fn); }
   private emit(): void { for (const fn of this.listeners) fn(); }
+  /** Called on every frame of a download, so only the Terminal and the progress bars repaint. */
+  onPull(fn: () => void): () => void { this.pullListeners.add(fn); return () => this.pullListeners.delete(fn); }
   private commit(s: GameState): void { this.state = s; this.store.save(s); this.emit(); }
   /** Commit an action, then auto-sleep if the clock has run past midnight. */
   private commitAndSettle(s: GameState): void {
@@ -63,13 +74,25 @@ export class GameStore {
 
   navigate(url: string, newTab = false): void {
     const u = norm(url);
+    // localhost is the laptop itself: it opens the Terminal app, not a browser page
+    if (u === 'localhost' && this.state.flags.includes('has_terminal')) { this.showTerm(true); return; }
     if (newTab) { const id = this.nextTab++; this.tabs.push({ id, url: u, back: [], fwd: [] }); this.active = id; }
     else {
       const t = this.tabs.find((x) => x.id === this.active);
       if (!t) this.tabs.push({ id: this.nextTab++, url: u, back: [], fwd: [] });
       else if (t.url !== u) { t.back.push(t.url); t.fwd = []; t.url = u; }
     }
+    this.markVisited(u);
     this.emit();
+  }
+  /** First visit to a site that is bookmarked only after you've been there: add the bookmark. */
+  private markVisited(url: string): void {
+    const r = route(url, this.state);
+    if (!r.def?.bookmarkAfterVisit || !r.reachable) return;
+    const f = visitedFlag(r.def.id);
+    if (this.state.flags.includes(f)) return;
+    this.state.flags.push(f); this.state.flags.sort();
+    this.store.save(this.state);
   }
   private get tab(): Tab | undefined { return this.tabs.find((t) => t.id === this.active); }
   get canBack(): boolean { return !!this.tab?.back.length; }
@@ -120,6 +143,15 @@ export class GameStore {
   setMenuCat(c: string): void { if (this.ui.menuCat !== c) { this.ui.menuCat = c; this.emit(); } }
   toggleStart(open = !this.ui.start): void { if (this.ui.start !== open) { this.ui.start = open; this.emit(); } }
 
+  /** Bring the Terminal to the front (opening it if needed), or send it behind the browser. */
+  showTerm(shown: boolean): void {
+    if (shown) this.ui.termOpen = true;
+    this.ui.termShown = shown && this.ui.termOpen; this.emit();
+  }
+  closeTerm(): void { this.ui.termOpen = false; this.ui.termShown = false; this.emit(); }
+  /** The Terminal's taskbar button: open it, bring it forward, or minimize it if it's already in front. */
+  termTask(): void { this.showTerm(!(this.ui.termOpen && this.ui.termShown)); }
+
   newGame(): void {
     this.store.clear();
     this.resetTo(startGame(this.content));
@@ -134,11 +166,12 @@ export class GameStore {
     return true;
   }
   private resetTo(state: GameState): void {
+    this.stopPull();
     startDayChat(state, this.content);
     this.state = state;
     this.tabs = startTabs();
     this.active = 1; this.nextTab = 3;
-    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null, start: false, menuCat: 'saves', devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 } };
+    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 } };
     this.store.save(this.state);
     this.emit();
   }
@@ -195,16 +228,31 @@ export class GameStore {
     return this.run(async () => { const r = await writeReview(this.state, this.content, this.router, bizId, stars, text); this.ui.reviewStars = 0; this.commitAndSettle(r.state); return r; });
   }
 
+  /** Start pulling a model: the Terminal opens and shows the download, which takes a few seconds. */
   download(id: string): void {
+    if (this.pull || this.state.localModels.includes(id)) { this.showTerm(true); return; }
+    this.pull = { id, startedAt: Date.now() };
+    this.ui.termOpen = true; this.ui.termShown = true;
+    this.emit();
+    this.pullTimer = setInterval(() => {
+      if (this.pullMs() >= PULL_MS) this.finishPull();
+      else for (const fn of this.pullListeners) fn();
+    }, 90);
+  }
+  /** How long the running download has been going, in ms. */
+  pullMs(): number { return this.pull ? Date.now() - this.pull.startedAt : 0; }
+  private stopPull(): void { if (this.pullTimer) clearInterval(this.pullTimer); this.pullTimer = null; this.pull = null; }
+  private finishPull(): void {
+    const id = this.pull!.id;
+    this.stopPull();
     const s = this.state;
     if (!s.localModels.includes(id)) s.localModels.push(id);
     if (!s.flags.includes('knows_weightroom')) { s.flags.push('knows_weightroom'); s.flags.sort(); }
     if (!s.flags.includes('has_terminal')) { s.flags.push('has_terminal'); s.flags.sort(); }
     s.termModel = id;
     tick(s, 'download');
-    s.terminal.push({ k: 'sys', text: `Downloaded ${id}. Running it now — replies are free but slow.` });
-    this.store.save(s); this.emit();
-    this.navigate('localhost');
+    s.terminal.push(...pullLines(id, PULL_MS));
+    this.commitAndSettle(s);
   }
   termClear(): void { this.state.terminal = []; this.store.save(this.state); this.emit(); }
 
@@ -276,14 +324,5 @@ export function replyDelay(text: string, rnd = Math.random): number {
 }
 const wait = (ms: number) => new Promise<void>((done) => setTimeout(done, Math.max(0, ms)));
 
-/** DeepSleep 0.5B's whole repertoire: one confident, absurd sentence in Chinese, whatever you ask. */
-const DEEPSLEEP = [
-  '我的猫是银行经理。',
-  '今天的天气是一碗面条。',
-  '你的房租已经被鸽子吃掉了。',
-  '冰箱正在考虑辞职。',
-  '所有的答案都在洗衣机里。',
-  '明天是星期三，永远。',
-  '我已经把你的问题翻译成了土豆。',
-  '月亮欠我三块钱。',
-];
+/** deepsleep-0.5B's whole repertoire: one confident, absurd sentence in Chinese, whatever you ask. */
+const DEEPSLEEP = DEEPSLEEP_LINES.map((l) => l.zh);

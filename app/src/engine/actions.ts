@@ -6,17 +6,18 @@
  * outcome is always the outcome's scripted text. Both are injectable so tests pin outcomes and the game
  * runs offline.
  */
-import type { GameState, AppInstance, MailEntry } from './state';
-import type { Content, GameEvent, Contact, Outcome, AppTemplate } from '../content/schema';
+import type { GameState, AppInstance } from './state';
+import type { Content, GameEvent, Contact, Outcome, AppTemplate, ScriptedReply } from '../content/schema';
 import type { JevRouter, PostRating, RouteDecision } from './jev';
 import { Y as YCFG, FAMILY } from './config';
-import { clone, addValue, log, pick, tick, money } from './core';
+import { clone, addValue, log, pick, tick, money, pushMail, sendLater } from './core';
 import { applyEffects } from './effects';
 import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent';
 import { getEvent, activeDeliveries, reachableByEmail } from './events';
 import { buildApp, fixApp, fixBreak, fixCategories, keywordCategories, needsWork, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, bugsOf, breakVariant, type BuildReport } from './apps';
 import { type Writer, scriptedWriter } from './writer';
 import { dateFull } from './calendar';
+import { deepsleepQuoted, translationReplies } from './deepsleep';
 
 export interface ReplyResult {
   state: GameState;
@@ -36,6 +37,13 @@ function stateSummary(s: GameState): string {
 function contactFor(content: Content, key: string): Contact | undefined {
   const k = key.toLowerCase();
   return content.contacts.find((c) => c.key.toLowerCase() === k);
+}
+
+/** Minutes of game time before a reply arrives when neither the outcome nor the contact sets one (two actions). */
+const REPLY_AFTER = 60;
+/** How long a reply from this address takes: the outcome's own time, else the contact's, else the default. */
+function replyAfter(content: Content, addr: string, outcome?: number): number {
+  return outcome ?? contactFor(content, addr)?.replyAfter ?? REPLY_AFTER;
 }
 
 /** A reply subject: one "RE:" prefix, never "RE: Re:". */
@@ -66,16 +74,16 @@ async function routeReply(jev: JevRouter, channel: GameEvent['site'], s: GameSta
 }
 
 /** The contact's scripted reply for what the player wrote, if Jev (or a keyword) matches one. */
-async function scriptedTopic(jev: JevRouter, s: GameState, c: Contact, text: string): Promise<string> {
+async function scriptedTopic(jev: JevRouter, s: GameState, c: Contact, text: string): Promise<ScriptedReply | undefined> {
   const topics = c.scripted ?? [];
-  if (!topics.length) return '';
+  if (!topics.length) return undefined;
   const named = keywordOutcome(topics, text);
-  if (named) return named.reply;
+  if (named) return named;
   const decision = await jev.route({
     channel: 'qmail', text, stateSummary: stateSummary(s),
     candidates: topics.map((t) => ({ id: t.id, when: t.when })), hints: [], strict: true,
   });
-  return decision.kind === 'outcome' ? topics.find((t) => t.id === decision.outcomeId)?.reply ?? '' : '';
+  return decision.kind === 'outcome' ? topics.find((t) => t.id === decision.outcomeId) : undefined;
 }
 
 /**
@@ -90,15 +98,15 @@ async function contactWritesBack(
   // a topic this contact always answers the same way (Gary and rent negotiations) beats everything
   const scripted = await scriptedTopic(jev, s, c, text);
   if (scripted) {
-    pushMail(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: scripted, read: false });
-    return scripted;
+    sendLater(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: scripted.reply, read: false }, replyAfter(content, addr, scripted.replyAfter));
+    return scripted.reply;
   }
   // A hint is a hit: Jev recognised what the player was after, so the nudge is sent as written.
   // Otherwise the character answers in their own voice, without helping (game/characters.ts).
   const fb = c.reply || 'Thanks for your message.';
   const { text: body, llm } = hint ? { text: hint, llm: false } : await writer.write({ as: addr, prompt: text, fallback: fb, long: true });
   const shown = body || fb;
-  pushMail(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: shown, read: false, generated: llm && !!body });
+  sendLater(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: shown, read: false, generated: llm && !!body }, replyAfter(content, addr));
   return shown;
 }
 
@@ -122,12 +130,6 @@ function bounce(s: GameState, addr: string, subject: string, text: string): void
     body: `Your message to ${addr} couldn't be delivered.\n\nThe recipient's spam filter accepts one message per sender per day, and you have already sent one today. Your message was not stored.\n\nYou can write to this address again tomorrow.\n\nThis is an automated message. Replies to this address are not read.` });
 }
 
-function pushMail(s: GameState, m: Omit<MailEntry, 'id' | 'seq'>): MailEntry {
-  const seq = s.nextId++;
-  const entry: MailEntry = { id: `mail${seq}`, seq, ...m };
-  s.mail.push(entry);
-  return entry;
-}
 
 /** Reply to a delivered qmail/nullboard/cellar thread. Jev picks nothing / a hint / one outcome. */
 export async function replyToEvent(
@@ -162,7 +164,7 @@ export async function replyToEvent(
       // Day-7 policy: an outcome that needs a workaround is refused if the words are a blunt ask.
       if (outcome.requiresWorkaround && policyActive(s) && !looksLikeWorkaround(text)) {
         const refusal = agentRefusal(s);
-        if (ev.addr) pushMail(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'agent', addr: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body: refusal, read: false, generated: false });
+        if (ev.addr) sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'agent', addr: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body: refusal, read: false, generated: false }, replyAfter(content, ev.addr));
         return { state: s, decision: { kind: 'nothing' }, reply: refusal };
       }
       applyEffects(s, outcome.effects, ev.job, ev.id);
@@ -171,7 +173,7 @@ export async function replyToEvent(
       delivery.outcomeId = outcome.id;
       // a storyline outcome always answers with its scripted reply
       const body = outcome.reply;
-      if (ev.addr) pushMail(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'Unknown', addr: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body, read: false });
+      if (ev.addr) sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'Unknown', addr: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body, read: false }, replyAfter(content, ev.addr, outcome.replyAfter));
       return { state: s, decision, reply: body };
     }
   }
@@ -232,7 +234,7 @@ export async function composeEmail(
       // a lead that hands over a client brief sends it along with the scripted reply
       const body = outcome.effects?.createApp && ev.body ? `${outcome.reply}\n\n${ev.body}` : outcome.reply;
       s.delivered.push({ eventId: ev.id, site: 'qmail', day: s.values.day, seq: s.nextId++, answered: true, outcomeId: outcome.id, expiresDay: ev.expiresDay });
-      pushMail(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? addr, addr, subject: re(subject || ev.subject || ''), body, read: false });
+      sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? addr, addr, subject: re(subject || ev.subject || ''), body, read: false }, replyAfter(content, addr, outcome.replyAfter));
       return { state: s, decision, reply: body, sent: true };
     }
   }
@@ -269,6 +271,8 @@ export interface AskResult { state: GameState; reply: string; charged: boolean; 
 export interface AskOpts {
   /** The scripted replies of the hint topic Jev matched (content/agent.json); one is sent instead of a roast. */
   hints?: string[];
+  /** How a scripted reply is labelled in the chat ('hint' unless set). */
+  hintSrc?: string;
   /** Scripted roasts for when Haiku can't write one. */
   roasts?: string[];
   /** How the prompt was routed, for dev mode. */
@@ -312,7 +316,7 @@ export async function askAgent(
     const lastReply = [...s.chat].reverse().find((m) => m.from === 'agent')?.text;
     const fresh = opts.hints.filter((h) => h !== lastReply);
     reply = pick(s, fresh.length ? fresh : opts.hints);
-    src = 'hint';
+    src = opts.hintSrc ?? 'hint';
   } else {
     const roasts = opts.roasts?.length ? opts.roasts : ROASTS;
     const w = await writer.write({ as: 'agent', prompt: text, fallback: pick(s, roasts) });
@@ -361,6 +365,11 @@ export async function promptAgent(
   text: string,
   writer: Writer = scriptedWriter,
 ): Promise<AskResult> {
+  // a deepsleep-0.5B line pasted in from the Terminal: the agent translates it (scripted, billed like any prompt)
+  const quoted = deepsleepQuoted(text);
+  if (quoted.length) {
+    return askAgent(s0, text, writer, s0.values.agentLevel, { hints: translationReplies(quoted), hintSrc: 'translation', debug: [`Quoted ${quoted.length} deepsleep-0.5B line(s): scripted translation`] });
+  }
   // apps with work left: a required feature missing or wrong in the repo, or broken on the live site
   const workable = s0.apps.filter((a) => !a.churned && a.required.some((id) => needsWork(a, id)));
   if (workable.length) {

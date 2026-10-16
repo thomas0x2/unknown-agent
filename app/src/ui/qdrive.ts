@@ -30,7 +30,7 @@ interface DriveFile {
 }
 
 const MODEL_FILES: Record<string, { name: string; kb: number; preview: string }> = {
-  deepsleep: { name: 'deepsleep-0.5b.gguf', kb: 2 * 1024 * 1024, preview: 'DeepSleep 0.5B, from Weightroom. Runs in the Terminal. Confident, free, mostly wrong.' },
+  deepsleep: { name: 'deepsleep-0.5B.gguf', kb: 2 * 1024 * 1024, preview: 'deepsleep-0.5B, from Weightroom. Runs in the Terminal. Confident, free, mostly wrong.' },
   stolen_weights: { name: 'weights_DO_NOT_SHARE.bin', kb: 9 * 1024 * 1024, preview: 'Someone else’s model. You know where it came from. So will they, eventually.' },
 };
 

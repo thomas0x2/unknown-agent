@@ -37,7 +37,7 @@ describe('table booking', () => {
     const s0 = await liveSite();
     const s = book(s0, '19:00', 3);
     const m = lastMail(s)!;
-    expect(m.body).toContain('Your table for 3 at Trattoria Gino on Sunday, October 4 at 19:00');
+    expect(m.body).toContain('Your table for 3 at Trattoria Gino on Wednesday, October 4, 2028 at 19:00');
     expect(m.bookingId).toBe(s.bookings[0].id);
     expect(cancelBooking(s, m.bookingId!).bookings[0]).toMatchObject({ cancelled: true, cancelClicked: true });
     // outside opening hours, or in the past: refused
@@ -52,7 +52,7 @@ describe('table booking', () => {
     const before = s0.mail.length;
     expect(book(withBug('no_email')).mail.length).toBe(before);
     expect(book(withBug('no_email')).bookings).toHaveLength(1);
-    expect(lastMail(book(withBug('wrong_date')))!.body).toContain('Monday, October 5');
+    expect(lastMail(book(withBug('wrong_date')))!.body).toContain('Thursday, October 5, 2028');
     expect(lastMail(book(withBug('wrong_time')))!.body).not.toContain('19:00');
     expect(lastMail(book(withBug('party_wrong'), '19:00', 2))!.body).not.toContain('for 2 ');
     expect(lastMail(book(withBug('name_wrong_mail')))!.body).not.toContain('Trattoria Gino');
