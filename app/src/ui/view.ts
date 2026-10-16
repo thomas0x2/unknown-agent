@@ -5,6 +5,7 @@
  */
 import type { GameStore } from '../game/store';
 import { LLM } from '../game/llm';
+import { listSlots } from '../game/saves';
 import { ICONS, Y_ICONS } from './icons';
 import { route, bookmarks, type Route, type SiteId } from '../sites/registry';
 import {
@@ -96,6 +97,39 @@ export function fmtClock(min: number): string {
 export function clockHtml(s: GameState): string {
   const near = s.clockMin >= 22 * 60; // getting late
   return `<b class="${near ? 'late' : ''}">${fmtClock(s.clockMin)}</b><span>${weekday(s.values.day)} · Day ${s.values.day} of ${LAST_DAY}</span>`;
+}
+
+// ── home menu (XP-style start menu) ──
+const XI = {
+  sleep: '<svg viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="#f6d55c" stroke="#a87b12" stroke-width="1.2"/></svg>',
+  help: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#2a6fd6" stroke="#174a9c"/><path d="M9.3 9.2a2.8 2.8 0 1 1 3.9 2.6c-.8.4-1.2.9-1.2 1.8v.6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17.4" r="1.2" fill="#fff"/></svg>',
+  bug: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2" fill="#2b2f36" stroke="#0e1013"/><path d="M7 9l3 3-3 3M12 15h5" fill="none" stroke="#73c994" stroke-width="2" stroke-linecap="round"/></svg>',
+  disk: '<svg viewBox="0 0 24 24"><path d="M4 3h13l3 3v15H4z" fill="#3c6fd1" stroke="#1d3f86"/><rect x="7" y="3" width="9" height="6" fill="#dfe8f7"/><rect x="7" y="13" width="10" height="7" fill="#fff"/></svg>',
+  logoff: '<svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4" fill="#e9a531" stroke="#9c6a0f"/><path d="M8 12h9m-3-3 3 3-3 3" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  power: '<svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4" fill="#d9442b" stroke="#8e2412"/><path d="M12 6v6M8.2 8.3a5.5 5.5 0 1 0 7.6 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>',
+};
+export function startMenuHtml(store: GameStore): string {
+  const s = store.state;
+  const item = (act: string, icon: string, title: string, sub: string) =>
+    `<button class="xs-item" data-act="${act}">${icon}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span></button>`;
+  const slots = listSlots().map((info, i) => {
+    const n = i + 1;
+    const label = info ? `Day ${info.day}` : 'Empty';
+    const when = info ? `${fmtClock(info.clockMin)} · saved ` + new Date(info.savedAt).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : 'Nothing saved here';
+    return `<div class="xs-slot${info ? '' : ' empty'}">${XI.disk}<span><b>Slot ${n} · ${esc(label)}</b><small>${esc(when)}</small></span>
+      <span class="xs-slot-acts"><button data-slot-save="${n}">Save</button>${info ? `<button data-slot-load="${n}">Load</button>` : ''}</span></div>`;
+  }).join('');
+  return `<header class="xs-head"><span class="xs-avatar">${ICONS.agent}</span><b>${esc(PLAYER.name)}</b><span class="xs-day">${weekday(s.values.day)} · Day ${s.values.day} of ${LAST_DAY}</span></header>
+    <div class="xs-body">
+      <div class="xs-left">
+        ${item('sleep', XI.sleep, 'Sleep', 'End the day, wake up tomorrow')}
+        ${item('intro', XI.help, 'How to play', 'The rules, again')}
+        <hr>
+        ${item('dev', XI.bug, 'Story debugger', 'jev · Ctrl+`')}
+      </div>
+      <div class="xs-right"><p class="xs-cap">Saved games</p>${slots}<p class="xs-note">Your progress also autosaves after every action.</p></div>
+    </div>
+    <footer class="xs-foot"><button data-act="new">${XI.logoff}New game</button><button data-act="sleep">${XI.power}Sleep</button></footer>`;
 }
 
 function qmailBadge(s: GameState): number {

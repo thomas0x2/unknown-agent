@@ -26,17 +26,15 @@
       <div class="viewport" id="viewport"></div>
     </div>
   </div>
-  <footer class="taskbar">
-    <div class="tk-note" title="Objective"><span class="tk-pin" aria-hidden="true"></span><span id="objective"></span></div>
-    <div class="tk-right">
-      <span class="tk-rent" id="rent"></span>
-      <span class="tk-wallet" id="wallet" title="Balance"></span>
-      <span class="tk-clock" id="clock"></span>
-      <button class="tk-btn" data-act="sleep" title="End the day and sleep until morning">Sleep</button>
-      <button class="tk-btn ghost" data-act="new" title="New game">New</button>
-      <button class="tk-btn ghost" data-act="dev" title="Story debugger (Ctrl+`)">jev</button>
+  <footer class="taskbar xp-bar">
+    <button class="xp-start" id="xp-start" data-start aria-haspopup="menu" aria-expanded="false" title="Home menu"><span class="xp-flag" aria-hidden="true"><i></i><i></i><i></i><i></i></span>home</button>
+    <div class="xp-tasks"><div class="xp-task" title="Objective"><span class="tk-pin" aria-hidden="true"></span><span id="objective"></span></div></div>
+    <div class="xp-tray">
+      <button class="xp-sleep" data-act="sleep" title="End the day and sleep until morning"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>Sleep</button>
+      <span class="xp-clock" id="clock"></span>
     </div>
   </footer>
+  <nav class="xp-menu" id="startmenu" role="menu" aria-label="Home menu" hidden></nav>
   <div id="toasts" aria-live="polite"></div>
   <div id="overlay" hidden></div>
   <aside id="dev" hidden></aside>
