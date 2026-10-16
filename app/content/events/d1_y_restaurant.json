@@ -5,6 +5,7 @@
   "trigger": {
     "dayMin": 1
   },
+  "at": "10:40",
   "addr": "gino@trattoria.test",
   "body": "My nephew used to run our website and he left for college. He took the password with him. I need a simple site with our menu and hours. Will pay. Email me: gino@trattoria.test"
 }

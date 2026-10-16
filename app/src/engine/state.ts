@@ -98,6 +98,16 @@ export interface DeliveredEvent {
   /** The outcome that landed, or 'no_reply' when the player let it lapse. */
   outcomeId?: string;
   expiresDay?: number;
+  /** Minutes since midnight when it arrived. Missing on entries from older saves (they came at wake). */
+  min?: number;
+}
+
+/** An event the morning picked for today that lands later, once the clock reaches `at` (see events.deliverArrivals). */
+export interface Arrival {
+  eventId: string;
+  day: number;
+  /** Minutes since midnight. */
+  at: number;
 }
 
 export interface ScheduledEvent {
@@ -153,6 +163,8 @@ export interface MailEntry {
   day: number;
   /** Arrival order, shared with DeliveredEvent.seq. */
   seq?: number;
+  /** Minutes since midnight when it arrived or was sent. Missing on entries from older saves. */
+  min?: number;
   /** Story event behind it (its outcomes are what a reply can trigger). */
   eventId?: string;
   from: string;
@@ -234,10 +246,12 @@ export interface GameState {
   delivered: DeliveredEvent[];
   fired: string[]; // event ids fired (once-only), unique
   scheduled: ScheduledEvent[];
+  /** Today's emails and posts still on their way. Missing on saves from before arrivals were timed. */
+  arriving?: Arrival[];
   localModels: string[]; // downloaded Weightroom models + stolen weights
   postsToday: number;
   recentPosts: string[]; // last 5 Y posts, for Jev context
-  userPosts: { id: string; text: string; day: number; likes: number; delta: number; score: number }[];
+  userPosts: { id: string; text: string; day: number; likes: number; delta: number; score: number; min?: number }[];
   sentToday: string[]; // recipients emailed today (one-per-recipient rule)
   agentLocked: boolean;
   autofix: boolean;

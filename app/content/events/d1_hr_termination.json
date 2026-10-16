@@ -7,5 +7,6 @@
   "trigger": {
     "dayMin": 1
   },
+  "at": "10:00",
   "body": "Hi {{playerName}},\n\nAs part of our transition to GeneralAI-powered operations, your team's responsibilities are being fully automated, effective immediately. Your position has therefore been eliminated.\n\nYour final salary payment has already been made, and no further payments are due. We wish you every success in what comes next.\n\nWarm regards, People & Culture\n\nThis message was drafted with GeneralAI."
 }

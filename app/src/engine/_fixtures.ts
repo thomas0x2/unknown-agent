@@ -3,6 +3,9 @@
  * imported by *.test.ts).
  */
 import type { Content, AppTemplate, GameEvent } from '../content/schema';
+import type { GameState } from './state';
+import { startGame, endDay } from './day';
+import { deliverArrivals } from './events';
 import type { JevRouter, RouteDecision, PostRating } from './jev';
 
 const STOP = new Set(['the', 'a', 'an', 'to', 'of', 'and', 'or', 'is', 'it', 'i', 'you', 'my', 'me', 'for', 'on', 'in', 'that', 'this', 'with', 'be', 'do', 'please', 'can', 'could', 'would']);
@@ -185,3 +188,14 @@ export function pickJev(pick: { route?: string[]; features?: string[] }): JevRou
     ratePost: wordJev.ratePost,
   };
 }
+
+/**
+ * Tests that read a whole day's story: start the game or end the day, then land everything the day
+ * still has on its way at once (the clock stays where it was).
+ */
+export function wholeDay(s: GameState, content: Content): GameState {
+  deliverArrivals(s, content, true);
+  return s;
+}
+export const startAll = (content: Content, seed?: number) => wholeDay(startGame(content, seed), content);
+export const endAll = (s: GameState, content: Content) => wholeDay(endDay(s, content), content);

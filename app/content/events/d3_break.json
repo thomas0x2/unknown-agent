@@ -7,6 +7,7 @@
   "trigger": {
     "dayMin": 3
   },
+  "at": "10:00",
   "onDeliver": {
     "breakApp": true
   },

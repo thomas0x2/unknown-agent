@@ -5,5 +5,6 @@
   "trigger": {
     "dayMin": 2
   },
+  "at": "11:45",
   "body": "Walked to Spin Cycle again. Every machine busy. Again. The owner keeps posting a \"raw status feed\" nobody can read (spincycle.test/feed, \"M5 ST=1 T=731\"??). Someone make it a real app."
 }

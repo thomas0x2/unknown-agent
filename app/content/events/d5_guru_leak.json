@@ -10,6 +10,7 @@
       "guru_subscriber"
     ]
   },
+  "at": "10:00",
   "onDeliver": {
     "setFlags": [
       "guru_cc_leak"

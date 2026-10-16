@@ -10,6 +10,7 @@
       "swaplist_live"
     ]
   },
+  "at": "16:00",
   "onDeliver": {
     "setFlags": [
       "viktor_sold_watch"
