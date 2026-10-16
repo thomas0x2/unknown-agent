@@ -30,8 +30,8 @@ describe('endDay', () => {
     workingClient(s);
     s.values.crypto = 100;
     s = endDay(s, content);
-    // +50 pay, -5 subscription (level 1) = 145, day advances to 2
-    expect(s.values.crypto).toBe(145);
+    // +50 pay, -5 subscription (level 1), -2 hosting (1 live app) = 143, day advances to 2
+    expect(s.values.crypto).toBe(143);
     expect(s.values.day).toBe(2);
     expect(s.phase).toBe('work');
   });

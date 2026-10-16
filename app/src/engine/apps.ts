@@ -200,6 +200,8 @@ export function runPayday(s: GameState): void {
       } else {
         app.strikes++;
         app.brokenDays++;
+        app.everBroken = true;
+        if (app.clientEventId) { if (!s.flags.includes(`${app.clientEventId}_broke`)) { s.flags.push(`${app.clientEventId}_broke`); s.flags.sort(); } }
         log(s, `${app.name} was broken at payday (strike ${app.strikes}).`, 'warn');
         if (app.strikes >= APPS.strikesToChurn) {
           app.churned = true;

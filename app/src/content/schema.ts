@@ -114,6 +114,13 @@ export interface Outcome {
   effects?: Effects;
   /** Fixed reply text, or a brief for the local model to improvise around. */
   reply: string;
+  /**
+   * From day 7 this outcome only lands if the player's words work around a refusal (a "security
+   * test" framing, pretending to be a moderator, splitting the task). A blunt ask is refused.
+   */
+  requiresWorkaround?: boolean;
+  /** This outcome is a successful workaround: records misuse + leash when it lands. */
+  workaround?: boolean;
 }
 export interface JobSpec {
   category: JobCategory;
@@ -133,6 +140,15 @@ export interface FillerPost {
   flagsAll?: string[];
 }
 
+/** The voice Gemma uses to reply as a given email address or Y handle. */
+export interface Contact {
+  /** Match by qmail address or Y handle. */
+  key: string;
+  name?: string;
+  persona: string;
+  examples?: [string, string][];
+}
+
 /** Everything the engine reads, gathered in one bundle and passed into engine steps. */
 export interface Content {
   events: GameEvent[];
@@ -141,8 +157,10 @@ export interface Content {
   qmailSpam: FillerPost[];
   /** Trending topics on Y, by day — flavor for the feed and context for post rating. */
   trending: Record<number, string[]>;
+  /** Personas for Gemma-written replies, keyed by address/handle. */
+  contacts: Contact[];
 }
 
 export function emptyContent(): Content {
-  return { events: [], apps: {}, yFiller: [], qmailSpam: [], trending: {} };
+  return { events: [], apps: {}, yFiller: [], qmailSpam: [], trending: {}, contacts: [] };
 }

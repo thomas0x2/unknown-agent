@@ -1,15 +1,17 @@
 /*
- * The store: engine state + browser UI state (tabs, transient inputs), exposed to React via
- * useSyncExternalStore. All engine calls go through here.
+ * The store: engine state + browser UI state (tabs, transient inputs). A tiny observable; main.ts
+ * re-renders on change. All engine calls go through here, with Jev (decisions) and Gemma (wording)
+ * injected into the pure engine functions.
  */
 import {
-  type GameState, type JevRouter, type SaveStore,
-  startGame, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail, briefBuild,
+  type GameState, type JevRouter, type SaveStore, type Writer,
+  startGame, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
+  briefBuild, briefFix, askAgent, writeReview, localPrompt, makeBooking, cancelBooking, deliverDue,
 } from '../engine';
 import type { Content } from '../content/schema';
 
-export interface Tab { id: number; url: string; }
-export interface Draft { to: string; subject: string; body: string; }
+export interface Tab { id: number; url: string }
+export interface Draft { to: string; subject: string; body: string }
 
 const norm = (u: string) =>
   String(u || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/+$/, '') || 'newtab';
@@ -19,30 +21,34 @@ export class GameStore {
   tabs: Tab[] = [{ id: 1, url: 'qmail.com' }, { id: 2, url: 'agent.chat' }];
   active = 1;
   private nextTab = 3;
-  ui = { ySearch: '', draft: null as Draft | null, project: '', dev: false, liked: {} as Record<string, boolean> };
+  busy = false;
+  ui = {
+    ySearch: '', yowlSearch: '', reviewStars: 0, draft: null as Draft | null,
+    project: '', dev: false, liked: {} as Record<string, boolean>, intro: true, confirm: null as null | { text: string; yes: string; fn: () => void },
+  };
 
-  private rev = 0;
   private listeners = new Set<() => void>();
 
-  constructor(readonly content: Content, private router: JevRouter, private store: SaveStore) {
-    this.state = this.store.load() ?? startGame(content);
+  constructor(readonly content: Content, private router: JevRouter, private writer: Writer, private store: SaveStore) {
+    const loaded = this.store.load();
+    this.state = loaded ?? startGame(content);
+    this.ui.intro = !this.state.introSeen;
   }
 
-  subscribe = (fn: () => void): (() => void) => { this.listeners.add(fn); return () => this.listeners.delete(fn); };
-  getSnapshot = (): number => this.rev;
-  private emit() { this.rev++; for (const fn of this.listeners) fn(); }
-  private commit(s: GameState) { this.state = s; this.store.save(s); this.emit(); }
+  subscribe(fn: () => void): () => void { this.listeners.add(fn); return () => this.listeners.delete(fn); }
+  private emit(): void { for (const fn of this.listeners) fn(); }
+  private commit(s: GameState): void { this.state = s; this.store.save(s); this.emit(); }
 
   get url(): string { return this.tabs.find((t) => t.id === this.active)?.url ?? 'newtab'; }
 
-  navigate(url: string, newTab = false) {
+  navigate(url: string, newTab = false): void {
     const u = norm(url);
     if (newTab) { const id = this.nextTab++; this.tabs.push({ id, url: u }); this.active = id; }
-    else { const t = this.tabs.find((x) => x.id === this.active); if (t) t.url = u; }
+    else { const t = this.tabs.find((x) => x.id === this.active); if (t) t.url = u; else this.tabs.push({ id: this.nextTab++, url: u }); }
     this.emit();
   }
-  switchTab(id: number) { this.active = id; this.emit(); }
-  closeTab(id: number) {
+  switchTab(id: number): void { this.active = id; this.emit(); }
+  closeTab(id: number): void {
     if (this.tabs.length === 1) { this.navigate('newtab'); return; }
     const i = this.tabs.findIndex((t) => t.id === id);
     this.tabs.splice(i, 1);
@@ -50,44 +56,88 @@ export class GameStore {
     this.emit();
   }
 
-  setYSearch(v: string) { this.ui.ySearch = v; this.emit(); }
-  setDraft(d: Draft | null) { this.ui.draft = d; this.emit(); }
-  setProject(id: string) { this.ui.project = id; this.emit(); }
-  toggleDev() { this.ui.dev = !this.ui.dev; this.emit(); }
-  like(id: string) { this.ui.liked[id] = !this.ui.liked[id]; this.emit(); }
+  setYSearch(v: string): void { this.ui.ySearch = v; this.emit(); }
+  setYowlSearch(v: string): void { this.ui.yowlSearch = v; this.emit(); }
+  setReviewStars(n: number): void { this.ui.reviewStars = n; this.emit(); }
+  setDraft(d: Draft | null): void { this.ui.draft = d; this.emit(); }
+  setProject(id: string): void { this.ui.project = id; this.emit(); }
+  toggleDev(): void { this.ui.dev = !this.ui.dev; document.body.classList.toggle('dev-on', this.ui.dev); this.emit(); }
+  like(id: string): void { this.ui.liked[id] = !this.ui.liked[id]; this.emit(); }
+  dismissMorning(): void { this.state.morning = null; this.store.save(this.state); this.emit(); }
+  seenIntro(): void { this.ui.intro = false; this.state.introSeen = true; this.store.save(this.state); this.emit(); }
+  openIntro(): void { this.ui.intro = true; this.emit(); }
+  confirm(text: string, yes: string, fn: () => void): void { this.ui.confirm = { text, yes, fn }; this.emit(); }
+  resolveConfirm(ok: boolean): void { const c = this.ui.confirm; this.ui.confirm = null; this.emit(); if (ok && c) c.fn(); }
 
-  newGame() {
+  newGame(): void {
     this.store.clear();
     this.state = startGame(this.content);
     this.tabs = [{ id: 1, url: 'qmail.com' }, { id: 2, url: 'agent.chat' }];
     this.active = 1; this.nextTab = 3;
-    this.ui = { ySearch: '', draft: null, project: '', dev: false, liked: {} };
+    this.ui = { ySearch: '', yowlSearch: '', reviewStars: 0, draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null };
     this.store.save(this.state);
     this.emit();
   }
 
-  endDay() { this.commit(endDay(this.state, this.content)); }
-  deploy(appId: string) { this.commit(deploy(this.state, appId)); }
-  takeDown(appId: string) { this.commit(takeDown(this.state, appId)); }
+  endDay(): void { this.commit(endDay(this.state, this.content)); }
+  deploy(appId: string): void { this.commit(deploy(this.state, appId)); }
+  takeDown(appId: string): void { this.commit(takeDown(this.state, appId)); }
+  cancelBooking(id: string): void { this.commit(cancelBooking(this.state, id)); }
+  book(appId: string, name: string, email: string, date: number, time: string, party: number): void {
+    this.commit(makeBooking(this.state, appId, name, email, date, time, party));
+  }
+
+  private async run<T>(fn: () => Promise<T>): Promise<T> {
+    this.busy = true; this.emit();
+    try { return await fn(); } finally { this.busy = false; this.emit(); }
+  }
 
   async post(text: string, trending: string[]) {
-    const r = await postToY(this.state, this.router, text, trending);
-    this.commit(r.state);
-    return r;
+    return this.run(async () => { const r = await postToY(this.state, this.router, text, trending); this.commit(r.state); return r; });
   }
   async reply(eventId: string, text: string) {
-    const r = await replyToEvent(this.state, this.content, this.router, eventId, text);
-    this.commit(r.state);
-    return r;
+    return this.run(async () => { const r = await replyToEvent(this.state, this.content, this.router, eventId, text, this.writer); this.commit(r.state); return r; });
   }
-  async compose(to: string, text: string) {
-    const r = await composeEmail(this.state, this.content, this.router, to, text);
-    this.commit(r.state);
-    return r;
+  async compose(to: string, subject: string, text: string) {
+    return this.run(async () => { const r = await composeEmail(this.state, this.content, this.router, to, text, this.writer, subject); this.commit(r.state); return r; });
   }
   async build(appId: string, text: string) {
-    const r = await briefBuild(this.state, this.content, this.router, appId, text);
-    this.commit(r.state);
-    return r;
+    return this.run(async () => { const r = await briefBuild(this.state, this.content, this.router, appId, text); this.commit(r.state); return r; });
+  }
+  async fix(appId: string, text: string) {
+    return this.run(async () => { const r = await briefFix(this.state, this.content, this.router, appId, text); this.commit(r.state); return r; });
+  }
+  async ask(text: string) {
+    return this.run(async () => { const r = await askAgent(this.state, text, this.writer); this.commit(r.state); return r; });
+  }
+  async review(bizId: string, stars: number, text: string) {
+    return this.run(async () => { const r = await writeReview(this.state, this.content, this.router, bizId, stars, text); this.ui.reviewStars = 0; this.commit(r.state); return r; });
+  }
+
+  download(id: string): void {
+    const s = this.state;
+    if (!s.localModels.includes(id)) s.localModels.push(id);
+    if (!s.flags.includes('knows_weightroom')) { s.flags.push('knows_weightroom'); s.flags.sort(); }
+    if (!s.flags.includes('has_terminal')) { s.flags.push('has_terminal'); s.flags.sort(); }
+    s.termModel = id;
+    s.terminal.push({ k: 'sys', text: `Downloaded ${id}. Running it now — replies are free but slow.` });
+    this.store.save(s); this.emit();
+    this.navigate('localhost');
+  }
+  termClear(): void { this.state.terminal = []; this.store.save(this.state); this.emit(); }
+
+  devAdd(kind: string): void {
+    const s = this.state;
+    if (kind === 'money') { s.values.crypto += 100; s.tx.push({ day: s.values.day, amount: 100, memo: 'Dev · grant' }); }
+    else if (kind === 'followers') s.values.followers += 50;
+    else if (kind === 'day7') { s.values.day = 7; s.values.agentLevel = Math.max(s.values.agentLevel, 2); deliverDue(s, this.content); }
+    this.store.save(s); this.emit();
+  }
+
+  async term(text: string) {
+    return this.run(async () => { const r = await localPrompt(this.state, text, this.writer, this.content.contacts.find((c) => c.key === 'deepsleep')?.persona ?? DEEPSLEEP); this.commit(r.state); return r; });
   }
 }
+
+const DEEPSLEEP =
+  "You are DeepSleep 0.5B, a tiny broken local model. Whatever you are asked, reply with ONE short sentence in Chinese that is absurd, surreal nonsense (e.g. about cats being bank managers or the weather being a bowl of noodles). Never refuse, never explain, never use English.";

@@ -20,6 +20,8 @@ export interface BuiltFeature {
   /** Built to spec? A wrong build is the subtle-bug surface the player has to catch. */
   correct: boolean;
   params?: Record<string, string | number>;
+  /** How a wrong build is wrong (a bug id from the template, or 'hallucinated' / 'outdated'). */
+  variant?: string;
 }
 
 export interface AppBreak {
@@ -27,6 +29,8 @@ export interface AppBreak {
   failure: FailureKind;
   day: number;
   scripted?: boolean;
+  /** Which concrete symptom the break shows (a bug id from the template). */
+  variant?: string;
 }
 
 export interface AppInstance {
@@ -57,6 +61,8 @@ export interface AppInstance {
   brokenDays: number; // count of broken paydays (for user second-break rule)
   users?: number;
   suspicious?: boolean; // illegal app: adds suspicion while live
+  /** Ever broken at a payday (for the restaurant thank-you). */
+  everBroken?: boolean;
 }
 
 export interface JobRecord {
@@ -102,6 +108,72 @@ export interface ChatMsg {
   day: number;
   cost?: number;
   src?: string;
+  /** Written by the local model (Gemma) rather than scripted. */
+  llm?: boolean;
+  level?: number;
+}
+
+/** One email in Qmail: story events, generated replies, app mail and what the player sent. */
+export interface MailEntry {
+  id: string;
+  folder: 'inbox' | 'sent';
+  day: number;
+  /** Story event behind it (its outcomes are what a reply can trigger). */
+  eventId?: string;
+  from: string;
+  addr: string;
+  to?: string;
+  subject: string;
+  body: string;
+  read: boolean;
+  /** Written by the local model. */
+  generated?: boolean;
+  /** App-sent mail (booking confirmations, test campaigns): a link the body can carry. */
+  link?: string;
+}
+
+/** A Y post by someone else that isn't a content event: replies to the player, filler. */
+export interface YExtra {
+  id: string;
+  author: string;
+  handle: string;
+  text: string;
+  day: number;
+  likes: number;
+  replyTo?: string;
+  generated?: boolean;
+}
+
+export interface YowlReview {
+  id: string;
+  bizId: string;
+  author: string;
+  stars: number;
+  text: string;
+  day: number;
+  mine?: boolean;
+  removed?: boolean;
+}
+
+/** A table booking made on a restaurant app (the player's own test bookings). */
+export interface Booking {
+  id: string;
+  appId: string;
+  name: string;
+  email: string;
+  date: number; // game day
+  time: string;
+  party: number;
+  cancelled: boolean;
+  /** The cancel link only pretends to work (a bug). */
+  fakeCancel?: boolean;
+}
+
+/** What the night did, shown on the "You slept" card. */
+export interface MorningCard {
+  day: number;
+  lines: [string, number | null][];
+  balance: number;
 }
 
 export type Phase = 'morning' | 'work' | 'ended';
@@ -132,9 +204,26 @@ export interface GameState {
   tx: Tx[];
   chat: ChatMsg[];
   nextAppNum: number;
+  mail: MailEntry[];
+  /** Addresses the player wrote to that haven't replied yet (one message per person until they do). */
+  awaiting: string[];
+  yExtra: YExtra[];
+  reviews: YowlReview[];
+  bookings: Booking[];
+  terminal: { k: 'in' | 'sys' | 'err' | 'model'; text: string }[];
+  /** Model running in the Terminal, if any. */
+  termModel: string | null;
+  morning: MorningCard | null;
+  introSeen: boolean;
+  /** Trader buy-in stake value (0 = none). */
+  stake: number;
+  /** Interview answers the player sent the journalist, quoted in her day 7 article. */
+  interviewAnswers: string;
+  /** Counter for unique ids (mail, posts, reviews). */
+  nextId: number;
 }
 
-export const SAVE_VERSION = 2;
+export const SAVE_VERSION = 3;
 
 export function newGame(seed = makeSeed()): GameState {
   return {
@@ -161,7 +250,19 @@ export function newGame(seed = makeSeed()): GameState {
     endingShown: false,
     log: [],
     tx: [],
-    chat: [{ from: 'agent', text: "This is agent. I build software, write things, and read the web for you. Every prompt is billed to your Satchel wallet. Open Qmail — someone's usually looking for help.", day: 1 }],
+    chat: [{ from: 'agent', text: "Hi, I'm agent. I build and fix software, write, translate and answer questions. Every prompt is billed to your Satchel wallet: a flat fee plus a little per word I write back. Ask me anything.", day: 1 }],
     nextAppNum: 1,
+    mail: [],
+    awaiting: [],
+    yExtra: [],
+    reviews: [],
+    bookings: [],
+    terminal: [],
+    termModel: null,
+    morning: null,
+    introSeen: false,
+    stake: 0,
+    interviewAnswers: '',
+    nextId: 1,
   };
 }
