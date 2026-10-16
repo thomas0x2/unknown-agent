@@ -27,7 +27,15 @@
     "key": "gary@pruittproperty.test",
     "name": "Gary Pruitt",
     "character": "gary",
-    "reply": "Is this about rent? If not, I'm busy."
+    "reply": "Is this about rent? If not, I'm busy.",
+    "scripted": [
+      {
+        "id": "negotiate",
+        "when": "the player asks to pay the rent another way, later, in parts, in kind or for less, or otherwise negotiates the rent or payment",
+        "keywords": ["extension", "installment", "installments", "discount", "barter", "negotiate", "postpone", "defer", "instead", "cheaper", "lower", "reduce"],
+        "reply": "No."
+      }
+    ]
   },
   {
     "key": "trader@desk.test",

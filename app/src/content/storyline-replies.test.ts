@@ -56,3 +56,30 @@ describe('Gino (restaurant lead)', () => {
     expect(r.state.mail.some((m) => m.folder === 'inbox' && m.addr === 'gino@trattoria.test')).toBe(true);
   });
 });
+
+describe('Gary (landlord)', () => {
+  const gary = 'gary@pruittproperty.test';
+  for (const ask of ['Can I pay you some other way?', 'Could we do the rent in installments?', 'Can I pay a bit later this month?', 'Would you take 200 instead of 350?']) {
+    it(`answers "${ask}" with a scripted No.`, async () => {
+      const r = await composeEmail(startGame(content, 3), content, offlineJev, gary, ask, noLlm);
+      expect(r.reply).toBe('No.');
+    });
+  }
+
+  it('anything else still gets his usual voice', async () => {
+    const r = await composeEmail(startGame(content, 3), content, offlineJev, gary, 'The sink is leaking again.');
+    expect(r.reply).not.toBe('No.');
+  });
+});
+
+describe('inbox order', () => {
+  it('numbers deliveries and mail in the order they arrive', async () => {
+    const s = startGame(content, 3);
+    const r = await replyToEvent(s, content, offlineJev, 'd1_guru', 'Empire', noLlm);
+    const seqs = [...r.state.delivered.map((d) => d.seq!), ...r.state.mail.map((m) => m.seq!)];
+    expect(seqs.every((n) => typeof n === 'number')).toBe(true);
+    expect(new Set(seqs).size).toBe(seqs.length);
+    const reply = r.state.mail.find((m) => m.folder === 'inbox' && m.addr === EMPIRE.addr)!;
+    expect(reply.seq!).toBeGreaterThan(r.state.delivered.find((d) => d.eventId === 'd1_guru')!.seq!);
+  });
+});

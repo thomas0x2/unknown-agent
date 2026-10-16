@@ -79,6 +79,8 @@ export interface DeliveredEvent {
   eventId: string;
   site: EventSite;
   day: number;
+  /** Arrival order, shared with MailEntry.seq (s.nextId), so the inbox lists both as they came in. */
+  seq?: number;
   answered: boolean;
   outcomeId?: string;
   expiresDay?: number;
@@ -122,6 +124,8 @@ export interface MailEntry {
   id: string;
   folder: 'inbox' | 'sent';
   day: number;
+  /** Arrival order, shared with DeliveredEvent.seq. */
+  seq?: number;
   /** Story event behind it (its outcomes are what a reply can trigger). */
   eventId?: string;
   from: string;
