@@ -8,6 +8,7 @@ import type { Content, CreateAppSpec, AppTemplate, FeatureDef, ComponentDef, Bug
 import { APPS, COMPONENT_BUG_CHANCE } from './config';
 import { chance, pick, randInt, rand, log, money, playMinutes } from './core';
 import { complaintFor, type Complaint } from './complaints';
+import { bugShows, type View } from './visibility';
 
 function bugChance(level: number): number {
   return COMPONENT_BUG_CHANCE[Math.max(0, Math.min(COMPONENT_BUG_CHANCE.length - 1, level - 1))];
@@ -23,6 +24,23 @@ export function getApp(state: GameState, id: string): AppInstance | undefined {
  */
 export function quiet(app: AppInstance, tmpl?: AppTemplate): boolean {
   return app.contentAt != null ? !app.contentLive : !!tmpl?.firstContentAfter;
+}
+
+/**
+ * Can the player see this bug on the app right now (engine/visibility.ts)? Nothing shows on an app
+ * that is still empty. Without content to check the posts against, a post-driven bug counts as showing.
+ */
+export function canSee(s: GameState, app: AppInstance, tmpl: AppTemplate | undefined, bug: string, content?: Content, view?: View): boolean {
+  if (quiet(app, tmpl)) return false;
+  return bugShows(view ?? { s, app, content }, bug);
+}
+
+/** Splits a build's bugs into the ones that show now and the ones held until something would show them. */
+function splitBugs(s: GameState, app: AppInstance, ctx: BuildCtx, bugs: string[]): { shown: string[]; held?: string[] } {
+  const view: View = { s, app, content: ctx.content };
+  const shown = bugs.filter((b) => canSee(s, app, ctx.tmpl, b, ctx.content, view));
+  const held = bugs.filter((b) => !shown.includes(b));
+  return { shown, held: held.length ? held : undefined };
 }
 
 /** True when the live app matches its brief: every required feature present, correct, unbroken. */
@@ -94,6 +112,8 @@ export interface BuildCtx {
   context?: string;
   /** Bug ids Jev judged the prompt names (see BugDef.when). */
   named?: string[];
+  /** For checking which bugs can show yet (the posts on Y); without it every bug counts as showing. */
+  content?: Content;
 }
 /** What went sideways in a build, for the agent's reply. */
 export interface BuildReport {
@@ -217,13 +237,14 @@ function attempt(s: GameState, app: AppInstance, id: string, level: number, ctx:
     const all = bugsOf(existing);
     const left = all.filter((v) => !isAddressed(v));
     if (left.length === all.length) { report.vague.push(id); return { ...existing }; }
+    // a bug that can't show yet is still in the code: naming its part fixes it too, else it stays held
+    const stillHeld = existing.held?.filter((b) => !(ctx.named ?? []).includes(b));
+    const held = stillHeld?.length ? stillHeld : undefined;
     // the named bugs are fixed; the ones nobody mentioned stay
-    if (left.length) return { ...existing, ...(left.includes('outdated') ? {} : { params: spec }), ...withBugs(left) };
-    return { id, correct: true, params: spec };
+    if (left.length) return { ...existing, ...(left.includes('outdated') ? {} : { params: spec }), ...withBugs(left), held };
+    return { id, correct: true, params: spec, ...(held ? { held } : {}) };
   }
   const checked = said != null ? specChecklist(app, def, said) : undefined;
-  // nothing on the site yet to show a bug: it's built right for now, and rolls its bugs when content appears
-  if (quiet(app, ctx.tmpl)) return { id, correct: true, params: spec, checked, quietLevel: level };
   // every spec item the build prompt never mentioned guarantees its mistake, whatever the roll
   // ...unless the agent already fixed that mistake once: then it knows better
   const fixed = fixedOf(app, id);
@@ -238,12 +259,12 @@ function attempt(s: GameState, app: AppInstance, id: string, level: number, ctx:
   const invented = !hasDetails && !knowsDetails;
   const sure = invented ? ['hallucinated', ...missed.filter((b) => !moot.has(b))] : missed;
   // on top of what the prompt left out, each other component goes wrong with the level's chance
-  const bugs = [...sure, ...rollBugs(s, def, level, fixed, sure)];
-  if (invented) {
-    report.hallucinated.push(id);
-    return { id, correct: false, ...withBugs(bugs), seed: randInt(s, 0, 9999), checked };
-  }
-  if (bugs.length) return { id, correct: false, params: spec, ...withBugs(bugs), seed: randInt(s, 0, 9999), checked };
+  // bugs nothing would show yet (no Crane post for the auto-buy to act on) are held until something does
+  const { shown: bugs, held } = splitBugs(s, app, ctx, [...sure, ...rollBugs(s, def, level, fixed, sure)]);
+  const hold = held ? { held } : {};
+  if (invented) report.hallucinated.push(id);
+  if (bugs.length) return { id, correct: false, ...(bugs.includes('hallucinated') ? {} : { params: spec }), ...withBugs(bugs), seed: randInt(s, 0, 9999), checked, ...hold };
+  if (held) return { id, correct: true, params: spec, seed: randInt(s, 0, 9999), checked, held };
   // a feature with no named bugs is wrong as a whole, at the same rate
   if (!def?.bugs?.length && chance(s, bugChance(level))) return { id, correct: false, params: spec, variant: undefined, seed: randInt(s, 0, 9999), checked };
   return { id, correct: true, params: spec, checked };
@@ -422,14 +443,26 @@ export function fixBreak(s: GameState, appId: string, featureId: string): boolea
 const SCRIPTED_FAILURES: FailureKind[] = ['visible', 'subtle', 'failed_fetch'];
 
 /** Force a break on a live app (a named one, else a random live app). Used for scripted breaks. */
-export function scriptedBreak(s: GameState, appId?: string): void {
+export function scriptedBreak(s: GameState, appId?: string, content?: Content): void {
   const live = s.apps.filter((a) => a.deployed && !a.churned && !quiet(a));
   const app = appId ? live.find((a) => a.id === appId) : live.length ? pick(s, live) : undefined;
   if (!app) return;
   const candidates = app.features.filter((f) => f.correct);
   if (!candidates.length) return;
   const victim = pick(s, candidates);
-  breakFeature(s, app, victim.id, pick(s, SCRIPTED_FAILURES), true);
+  let failure = pick(s, SCRIPTED_FAILURES);
+  let variant: string | undefined;
+  if (failure === 'subtle') {
+    // a subtle break shows one of the feature's bugs: only one that can show now (without the posts
+    // to check, the ones that depend on them don't count), else the page crashes instead
+    const tmpl = content?.apps[app.template];
+    const def = tmpl?.features.find((d) => d.id === victim.id);
+    const view: View = { s, app, content };
+    const shallow = (def?.bugs ?? []).filter((b) => !b.deep && canSee(s, app, tmpl, b.id, content, view) && (content || app.template !== 'sentiment'));
+    if (def?.bugs?.length && !shallow.length) failure = 'visible';
+    else if (shallow.length) variant = pick(s, shallow).id;
+  }
+  breakFeature(s, app, victim.id, failure, true, variant);
   log(s, `${app.name} broke (${victim.id}).`, 'break');
 }
 
@@ -459,11 +492,11 @@ function repoProblem(app: AppInstance, featureId: string): boolean {
 }
 
 /** Deploy the repo: it becomes live, runtime breaks reset, build mistakes carry over. */
-export function deployApp(s: GameState, appId: string, tmpl?: AppTemplate): void {
+export function deployApp(s: GameState, appId: string, tmpl?: AppTemplate, content?: Content): void {
   const app = getApp(s, appId);
   if (!app || app.churned) return;
   // the player's very first deploy always ships something to catch
-  if (tmpl && !s.apps.some((a) => a.deployedVersion > 0) && !quiet(app, tmpl)) firstBug(s, app, tmpl);
+  if (tmpl && !s.apps.some((a) => a.deployedVersion > 0)) firstBug(s, app, tmpl, content);
   // an app that starts empty gets its first content a while after it first goes live
   if (tmpl?.firstContentAfter && app.contentAt == null) app.contentAt = playMinutes(s) + tmpl.firstContentAfter;
   app.features = app.repo.map((f) => ({ ...f }));
@@ -477,62 +510,125 @@ export function deployApp(s: GameState, appId: string, tmpl?: AppTemplate): void
 
 /**
  * A clean first deploy gets one bug the player can spot on the site: a shallow one (not deep) on a
- * built feature, never one the agent already fixed. The repo carries it too, so it stays until fixed.
+ * built feature, never one the agent already fixed, and one that shows now. The repo carries it too,
+ * so it stays until fixed. When none can show yet, the first one that can lands then (revealBugs).
  */
-function firstBug(s: GameState, app: AppInstance, tmpl: AppTemplate): void {
+function firstBug(s: GameState, app: AppInstance, tmpl: AppTemplate, content?: Content): void {
   if (!app.repo.length || app.repo.some((f) => !f.correct)) return;
-  const options = app.repo.flatMap((f) => (tmpl.features.find((d) => d.id === f.id)?.bugs ?? [])
-    .filter((b) => !b.deep && !fixedOf(app, f.id).includes(b.id))
-    .map((b) => ({ fid: f.id, bug: b.id })));
-  if (!options.length) return;
+  const options = shallowOptions(s, app, tmpl, app.repo, content);
+  if (!options.length) { app.owedBug = true; return; }
   const { fid, bug } = pick(s, options);
   app.repo = app.repo.map((f) => (f.id === fid ? { ...f, correct: false, variant: bug, also: undefined, seed: randInt(s, 0, 9999) } : f));
 }
 
+/** Shallow bugs the agent hasn't fixed before that would show on these built features right now. */
+function shallowOptions(s: GameState, app: AppInstance, tmpl: AppTemplate, built: BuiltFeature[], content?: Content): { fid: string; bug: string }[] {
+  const view: View = { s, app, content };
+  return built.filter((f) => f.correct).flatMap((f) => (tmpl.features.find((d) => d.id === f.id)?.bugs ?? [])
+    .filter((b) => !b.deep && !fixedOf(app, f.id).includes(b.id) && canSee(s, app, tmpl, b.id, content, view))
+    .map((b) => ({ fid: f.id, bug: b.id })));
+}
+
 /**
- * Content appears on apps that started empty once its time has come, and with it the bugs held back
- * until then: each component built while it was empty rolls at the agent level it was built with.
- * The first time, a live app that came out clean still gets one shallow bug.
- * Runs as the clock moves; returns the apps whose content just appeared.
+ * Content appears on apps that started empty once its time has come; the bugs held back until then
+ * land with it (revealBugs), and a live app that came out clean still gets one shallow bug, like any
+ * first build. Runs as the clock moves; returns the apps whose content just appeared.
  */
 export function wakeApps(s: GameState, content: Content): AppInstance[] {
   const woke: AppInstance[] = [];
   for (const app of s.apps) {
     const tmpl = content.apps[app.template];
-    if (!tmpl?.firstContentAfter || app.contentAt == null) continue;
-    if (!app.contentLive) {
-      if (playMinutes(s) < app.contentAt) continue;
-      app.contentLive = true;
-      woke.push(app);
-    }
-    const held = [...new Set([...app.repo, ...app.features].filter((f) => f.quietLevel != null).map((f) => f.id))];
-    for (const id of held) {
-      const def = tmpl.features.find((d) => d.id === id);
+    if (!tmpl?.firstContentAfter || app.contentAt == null || app.contentLive) continue;
+    if (playMinutes(s) < app.contentAt) continue;
+    app.contentLive = true;
+    woke.push(app);
+    // saves from before bugs were held per bug: builds made while empty roll theirs now
+    const legacy = [...new Set([...app.repo, ...app.features].filter((f) => f.quietLevel != null).map((f) => f.id))];
+    for (const id of legacy) {
       const level = [...app.features, ...app.repo].find((f) => f.id === id && f.quietLevel != null)!.quietLevel!;
-      const bugs = rollBugs(s, def, level, fixedOf(app, id), []);
-      const seed = randInt(s, 0, 9999);
+      const bugs = rollBugs(s, tmpl.features.find((d) => d.id === id), level, fixedOf(app, id), []);
       for (const list of [app.repo, app.features]) {
         const f = list.find((x) => x.id === id);
         if (!f || f.quietLevel == null) continue;
         delete f.quietLevel;
-        if (bugs.length) Object.assign(f, { correct: false, ...withBugs(bugs), seed });
+        if (bugs.length) f.held = [...new Set([...(f.held ?? []), ...bugs])];
       }
     }
-    if (woke.includes(app) && app.deployed && app.features.length && app.features.every((f) => f.correct) && !app.breaks.length) {
-      const options = app.features.flatMap((f) => (tmpl.features.find((d) => d.id === f.id)?.bugs ?? [])
-        .filter((b) => !b.deep && !fixedOf(app, f.id).includes(b.id)).map((b) => ({ fid: f.id, bug: b.id })));
-      if (options.length) {
-        const { fid, bug } = pick(s, options);
-        const seed = randInt(s, 0, 9999);
-        const same = app.deployedVersion === app.repoVersion;
-        for (const list of same ? [app.features, app.repo] : [app.features]) {
-          const f = list.find((x) => x.id === fid);
-          if (f?.correct) Object.assign(f, { correct: false, variant: bug, also: undefined, seed });
-        }
-      }
-    }
+    if (app.deployed) app.owedBug = true;
   }
+  revealBugs(s, content);
   return woke;
+}
+
+/**
+ * Held bugs land once something in the game shows them (Crane's first praise for the auto-buy, a sold
+ * listing for the sold badge), on the repo and the live build alike. An app that still owes its first
+ * bug gets one shallow bug that shows, unless it already has one. Returns true if anything landed.
+ */
+export function revealBugs(s: GameState, content: Content): boolean {
+  let changed = false;
+  for (const app of s.apps) {
+    if (app.churned) continue;
+    const tmpl = content.apps[app.template];
+    const view: View = { s, app, content };
+    for (const f of [...app.repo, ...app.features]) {
+      if (!f.held?.length) continue;
+      const now = f.held.filter((b) => canSee(s, app, tmpl, b, content, view));
+      if (!now.length) continue;
+      changed = true;
+      const rest = f.held.filter((b) => !now.includes(b));
+      f.held = rest.length ? rest : undefined;
+      const bugs = [...(f.correct ? [] : bugsOf(f)), ...now];
+      Object.assign(f, { correct: false, ...withBugs(bugs), seed: f.seed ?? randInt(s, 0, 9999) });
+      if (bugs.includes('hallucinated')) f.params = undefined;
+    }
+    if (!app.owedBug || !tmpl) continue;
+    // the build the player looks at: the live one once deployed, else the repo
+    const shown = app.deployed ? app.features : app.repo;
+    if (shown.some((f) => !f.correct) || (app.deployed && app.breaks.length)) { app.owedBug = undefined; continue; }
+    const options = shallowOptions(s, app, tmpl, shown, content);
+    if (!options.length) continue;
+    const { fid, bug } = pick(s, options);
+    const seed = randInt(s, 0, 9999);
+    // the repo has the same code when it's what's deployed (or nothing is)
+    const lists = !app.deployed ? [app.repo] : app.deployedVersion === app.repoVersion ? [app.features, app.repo] : [app.features];
+    for (const list of lists) {
+      const f = list.find((x) => x.id === fid);
+      if (f?.correct) Object.assign(f, { correct: false, variant: bug, also: undefined, seed });
+    }
+    app.owedBug = undefined;
+    changed = true;
+  }
+  return changed;
+}
+
+/**
+ * Saves from before bugs were held: a rolled bug that can't show yet goes back to waiting, and a
+ * subtle or deep break showing one is dropped (tonight's breaks land somewhere they show). Runs on load.
+ */
+export function holdHiddenBugs(s: GameState, content: Content): void {
+  for (const app of s.apps) {
+    const tmpl = content.apps[app.template];
+    if (!tmpl) continue;
+    const view: View = { s, app, content };
+    const named = (fid: string) => new Set((tmpl.features.find((d) => d.id === fid)?.bugs ?? []).map((b) => b.id));
+    for (const f of [...app.repo, ...app.features]) {
+      if (f.correct || !f.variant) continue;
+      const hidden = bugsOf(f).filter((b) => named(f.id).has(b) && !canSee(s, app, tmpl, b, content, view));
+      if (!hidden.length) continue;
+      const left = bugsOf(f).filter((b) => !hidden.includes(b));
+      f.held = [...new Set([...(f.held ?? []), ...hidden])];
+      if (left.length) Object.assign(f, withBugs(left));
+      else Object.assign(f, { correct: true, variant: undefined, also: undefined, params: app.specParams[f.id] });
+    }
+    app.breaks = app.breaks.filter((b) => {
+      const v = breakVariant(b, tmpl.features.find((d) => d.id === b.featureId));
+      const hidden = !!v && !canSee(s, app, tmpl, v, content, view);
+      // the feature was only wrong because of the break
+      if (hidden) { const f = app.features.find((x) => x.id === b.featureId); if (f && !f.variant && !f.held) f.correct = true; }
+      return !hidden;
+    });
+  }
 }
 
 /** Take a deployment offline. Counts as broken at payday. */
@@ -645,12 +741,14 @@ export function nightlyBreaks(s: GameState, content: Content): void {
     if (!app.deployed || app.churned) continue;
     const tmpl = content.apps[app.template];
     if (quiet(app, tmpl)) continue; // nothing on it yet for a break to show on
+    const view: View = { s, app, content };
     for (const f of app.features) {
       const def = tmpl?.features.find((d) => d.id === f.id);
       if (!def || app.breaks.some((b) => b.featureId === f.id)) continue;
       const has = new Set(f.correct ? [] : bugsOf(f));
       for (const comp of def.components?.length ? def.components : [undefined]) {
-        const options = breakOptions(def, comp, has);
+        // only bugs that would show now: the auto-buy can't misfire before Crane has posted
+        const options = breakOptions(def, comp, has, (b) => canSee(s, app, tmpl, b, content, view));
         if (options.length) pool.push({ app, def, comp, options });
       }
     }
@@ -667,12 +765,12 @@ export function nightlyBreaks(s: GameState, content: Content): void {
 
 /**
  * The ways one component can break and be seen: a crash or failed fetch always shows, a subtle or
- * deep break only with a bug of that kind the live build doesn't already have (the variants to pick
- * from). A component with no bugs and no outage kind crashes instead; one whose bugs are all live
+ * deep break only with a bug of that kind the live build doesn't already have and that would show now
+ * (the variants to pick from). A component with no bugs and no outage kind crashes instead; one whose bugs are all live
  * already can't break, so a break never lands where nothing would change.
  */
-function breakOptions(def: FeatureDef, comp: ComponentDef | undefined, has: Set<string>): { failure: FailureKind; variants?: string[] }[] {
-  const bugs = (comp?.bugs ?? []).map((id) => def.bugs?.find((b) => b.id === id)).filter((b): b is BugDef => !!b && !has.has(b.id));
+function breakOptions(def: FeatureDef, comp: ComponentDef | undefined, has: Set<string>, shows: (bug: string) => boolean): { failure: FailureKind; variants?: string[] }[] {
+  const bugs = (comp?.bugs ?? []).map((id) => def.bugs?.find((b) => b.id === id)).filter((b): b is BugDef => !!b && !has.has(b.id) && shows(b.id));
   const kinds: FailureKind[] = def.failures.length ? def.failures : ['visible'];
   const out = kinds.map((failure) => {
     if (failure !== 'subtle' && failure !== 'deep') return { failure };

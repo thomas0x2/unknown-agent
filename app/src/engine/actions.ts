@@ -873,7 +873,7 @@ export async function promptAgent(
           if (f?.correct) { fixBreak(s, appId, fid); patched.push(fid); } else toBuild.push(fid);
         }
         const report = toBuild.length
-          ? buildApp(s, appId, toBuild, level, { tmpl, prompt: text, context: context.join('\n'), named: toBuild.flatMap((fid) => componentBugs(tmpl?.features.find((f) => f.id === fid), feats.get(fid)!)) })
+          ? buildApp(s, appId, toBuild, level, { tmpl, content, prompt: text, context: context.join('\n'), named: toBuild.flatMap((fid) => componentBugs(tmpl?.features.find((f) => f.id === fid), feats.get(fid)!)) })
           : { vague: [], hallucinated: [] };
         // one line per thing Jev saw named: what was fixed, or that it was already right
         for (const fid of feats.keys()) {
@@ -1073,7 +1073,7 @@ export async function briefBuild(
   const named = await namedBugs(jev, app, tmpl, requested, text);
   const cost = level === s.values.agentLevel ? agentCostOf(s, text) : 0;
   const charged = chargeHosted(s, level, text);
-  if (charged) buildApp(s, appId, requested, level, { tmpl, prompt: text, named });
+  if (charged) buildApp(s, appId, requested, level, { tmpl, content, prompt: text, named });
   const reply = !charged
     ? "I can't run — your balance won't cover it. Pay agent.chat and try again."
     : `Pushed \`${app.template}\` to Forkyard for ${app.name}.\nBuilt: ${requested.length ? requested.join(', ') : 'nothing I could pin down — be specific about the features'}.\n\nDeploy it on Forkyard to make it live.`;
@@ -1105,7 +1105,7 @@ export async function briefFix(
   const cost = level === s.values.agentLevel ? agentCostOf(s, text) : 0;
   const charged = chargeHosted(s, level, text);
   const report: BuildReport = { vague: [], hallucinated: [] };
-  const fixed = charged ? fixApp(s, appId, target, level, { tmpl, prompt: text, named }, report) : false;
+  const fixed = charged ? fixApp(s, appId, target, level, { tmpl, content, prompt: text, named }, report) : false;
   const reply = !charged
     ? "I can't run — your balance won't cover it."
     : target
@@ -1132,7 +1132,7 @@ export function deploy(s0: GameState, appId: string, content?: Content): GameSta
   const s = clone(s0);
   const app = getApp(s, appId);
   const first = !!app && app.deployedVersion === 0;
-  deployAppCore(s, appId, app && content?.apps[app.template]);
+  deployAppCore(s, appId, app && content?.apps[app.template], content);
   // a client's site going live for the first time: what waits on its launch is on its way
   if (first && app?.clientEventId && content) queueLaunch(s, content, app.clientEventId);
   log(s, `Deployed ${getApp(s, appId)?.name ?? appId}.`, 'info');

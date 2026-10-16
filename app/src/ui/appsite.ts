@@ -415,7 +415,7 @@ function generic(app: AppInstance, tmpl: AppTemplate | undefined, page: string |
 
 const BREAK_LABEL: Record<string, string> = { visible: 'crash', failed_fetch: 'failed fetch', subtle: 'subtle break', deep: 'deep break' };
 
-interface DevRow { id: string; repoNow: string; liveNow: string; present: Set<string>; possible: { key: string; label: string; live?: boolean }[]; checklist: string }
+interface DevRow { id: string; repoNow: string; liveNow: string; present: Set<string>; possible: { key: string; label: string; live?: boolean }[]; checklist: string; held: string[] }
 
 function devRows(app: AppInstance, tmpl: AppTemplate | undefined): DevRow[] {
   return app.required.map((id) => {
@@ -445,7 +445,9 @@ function devRows(app: AppInstance, tmpl: AppTemplate | undefined): DevRow[] {
       const cls = hit === undefined ? '' : hit ? 'hit' : 'miss';
       return `<span class="dvb-check ${cls}">${hit === undefined ? '·' : hit ? '✓' : '✗'} ${esc(c.id)}${hit === false ? ` → ${esc(c.bug)}` : ''}</span>`;
     }).join('');
-    return { id, repoNow, liveNow, present, possible, checklist };
+    // bugs in the code that nothing shows yet: they land once something would show them
+    const held = [...new Set([...(repo?.held ?? []), ...(liveF?.held ?? [])])];
+    return { id, repoNow, liveNow, present, possible, checklist, held };
   });
 }
 
@@ -463,6 +465,7 @@ export function devBugPanel(app: AppInstance, tmpl: AppTemplate | undefined): st
   const cards = rows.map((r) => `<div class="dvb-card">
       <div class="dvb-title"><b>${esc(r.id)}</b>${pill('repo', r.repoNow)}${pill('live', r.liveNow)}</div>
       ${r.checklist ? `<div class="dvb-line"><span class="dvb-k">Build prompt</span>${r.checklist}</div>` : ''}
+      ${r.held.length ? `<div class="dvb-line"><span class="dvb-k">Not showing yet</span>${r.held.map((b) => `<span class="dvb-check">${esc(b)}</span>`).join('')}</div>` : ''}
       <div class="dvb-line"><span class="dvb-k">Possible bugs</span>${r.possible.map((p) => {
         const off = p.live && !app.deployed;
         const tip = off ? 'Deploy first: breaks only happen on the live site' : r.present.has(p.key) ? 'Click to remove' : p.live ? 'Click to break the live site' : 'Click to add to the repo and live build';
