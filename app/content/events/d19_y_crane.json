@@ -1,0 +1,11 @@
+{
+  "id": "d19_y_crane",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "dayMin": 19,
+    "dayMax": 19
+  },
+  "at": "19:35",
+  "body": "Some people say a computer writes my posts. FALSE! I write every word myself, late at night, when the best words come. Sometimes I don't even remember writing them, that's how natural it is."
+}

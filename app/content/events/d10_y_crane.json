@@ -1,0 +1,11 @@
+{
+  "id": "d10_y_crane",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "dayMin": 10,
+    "dayMax": 10
+  },
+  "at": "16:00",
+  "body": "Thank you to all the young entrepreneurs volunteering for the campaign online. Smart, hungry, many of them have their own businesses, some of them more than one. Tremendous energy!"
+}
