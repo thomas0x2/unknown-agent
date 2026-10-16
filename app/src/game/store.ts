@@ -4,7 +4,7 @@
  * injected into the pure engine functions.
  */
 import {
-  type GameState, type JevRouter, type SaveStore, type Writer,
+  type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
   promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, deliverDue, CLOCK, tick, phishLogin, devToggleBug, nameUnnamedBugs,
 } from '../engine';
@@ -54,6 +54,8 @@ export class GameStore {
     mailError: '',
     /** coinbln.com: why the last sign-in was refused. */
     phishError: '',
+    /** An action Jev was needed for and couldn't be reached: why, and the text to put back in its box. */
+    jevOffline: null as { reason: string; field?: string; text?: string } | null,
   };
   /** A model download playing out in the Terminal, if one is running. */
   pull: { id: string; startedAt: number } | null = null;
@@ -189,7 +191,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = 1; this.nextTab = 3;
-    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', reviewNeedsStars: false, slotNote: '', mailError: '', phishError: '' };
+    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', reviewNeedsStars: false, slotNote: '', mailError: '', phishError: '', jevOffline: null };
     this.store.save(this.state);
     this.emit();
   }
@@ -231,19 +233,31 @@ export class GameStore {
     this.commitAndSettle(next);
   }
 
-  private async run<T>(fn: () => Promise<T>): Promise<T> {
-    this.busy = true; this.emit();
-    try { return await fn(); } finally { this.busy = false; this.emit(); }
+  /**
+   * Runs an action that needs Jev. If Jev can't be reached, nothing happened (the engine works on a
+   * copy), so the state stays as it was and a dialog says so; the text goes back into `field`.
+   */
+  private async run<T>(fn: () => Promise<T>, field?: string, text?: string): Promise<T | undefined> {
+    this.busy = true; this.ui.jevOffline = null; this.emit();
+    try { return await fn(); }
+    catch (e) {
+      if (!(e instanceof JevOffline)) throw e;
+      this.ui.jevOffline = { reason: e.reason, field, text };
+      return undefined;
+    }
+    finally { this.busy = false; this.emit(); }
   }
+  dismissJevOffline(): void { this.ui.jevOffline = null; this.emit(); }
 
   async post(text: string, trending: string[]) {
-    return this.run(async () => { const r = await postToY(this.state, this.router, text, trending); this.commitAndSettle(r.state); return r; });
+    return this.run(async () => { const r = await postToY(this.state, this.router, text, trending); this.commitAndSettle(r.state); return r; }, 'post-input', text);
   }
   async reply(eventId: string, text: string) {
-    return this.run(async () => { const r = await replyToEvent(this.state, this.content, this.router, eventId, text, this.writer); this.commitAndSettle(r.state); return r; });
+    return this.run(async () => { const r = await replyToEvent(this.state, this.content, this.router, eventId, text, this.writer); this.commitAndSettle(r.state); return r; }, 'reply-body', text);
   }
-  async compose(to: string, subject: string, text: string) {
-    return this.run(async () => { const r = await composeEmail(this.state, this.content, this.router, to, text, this.writer, subject); this.commitAndSettle(r.state); return r; });
+  /** `field` is the reply box when it's a reply to a thread; the compose form keeps its text until it's sent. */
+  async compose(to: string, subject: string, text: string, field?: string) {
+    return this.run(async () => { const r = await composeEmail(this.state, this.content, this.router, to, text, this.writer, subject); this.commitAndSettle(r.state); return r; }, field, text);
   }
   /** The agent is always free-text promptable. Jev routes it to a build/fix or an ordinary reply. */
   async prompt(text: string) {
@@ -258,7 +272,7 @@ export class GameStore {
         this.pendingPrompt = null; this.commitAndSettle(r.state); return r;
       }
       finally { this.pendingPrompt = null; }
-    });
+    }, 'prompt-input', text);
   }
   async review(bizId: string, stars: number, text: string) {
     return this.run(async () => { const r = await writeReview(this.state, this.content, this.router, bizId, stars, text); this.ui.reviewStars = 0; this.commitAndSettle(r.state); return r; });

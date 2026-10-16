@@ -1,17 +1,15 @@
 /*
  * Client-side Jev router that talks to the backend proxy (which holds the API key). If the proxy
- * isn't running or a call fails, it falls back to the offline keyword router so the game stays
- * playable. The key never ships in the client.
+ * isn't running or a call fails, the call throws JevOffline: the action doesn't happen and the UI
+ * says Jev is offline. There is no keyword fallback. The key never ships in the client.
  */
 import {
-  offlineJev,
+  JevOffline,
   type JevRouter, type RouteInput, type RouteDecision, type PostInput, type PostRating, type FeatureMatchInput,
 } from '../engine';
 
 export type JevMode = 'checking' | 'online' | 'offline';
 
-/** How long to stay on the offline router after a failed call before trying the proxy again. */
-const RETRY_MS = 30_000;
 
 export class BackendJev implements JevRouter {
   mode: JevMode = 'checking';
@@ -19,10 +17,7 @@ export class BackendJev implements JevRouter {
   reason = '';
   /** Whether the proxy has ANTHROPIC_API_KEY for Haiku replies (null until the proxy answers). */
   haikuKey: boolean | null = null;
-  private retryAt = 0;
   private listeners = new Set<() => void>();
-
-  constructor(private fallback: JevRouter) {}
 
   onChange(fn: () => void): () => void { this.listeners.add(fn); return () => this.listeners.delete(fn); }
 
@@ -40,13 +35,13 @@ export class BackendJev implements JevRouter {
   }
 
   async route(input: RouteInput): Promise<RouteDecision> {
-    return this.call('route', input, () => this.fallback.route(input));
+    return this.call('route', input);
   }
   async ratePost(input: PostInput): Promise<PostRating> {
-    return this.call('rate-post', input, () => this.fallback.ratePost(input));
+    return this.call('rate-post', input);
   }
   async matchFeatures(input: FeatureMatchInput): Promise<string[]> {
-    return this.call('match-features', input, () => this.fallback.matchFeatures(input));
+    return this.call('match-features', input);
   }
 
   private setMode(mode: JevMode, reason = ''): void {
@@ -54,34 +49,33 @@ export class BackendJev implements JevRouter {
     this.mode = mode; this.reason = reason;
     this.listeners.forEach((fn) => fn());
   }
-  private goOffline(reason: string): void {
-    this.retryAt = Date.now() + RETRY_MS;
+  private goOffline(reason: string): JevOffline {
     this.setMode('offline', reason);
+    return new JevOffline(reason);
   }
 
-  private async call<T>(path: string, payload: unknown, fallback: () => Promise<T>): Promise<T> {
-    // after a failure, use the offline router for a while, then give the proxy another chance
-    if (this.mode === 'offline' && Date.now() < this.retryAt) return fallback();
+  /** Every call tries the proxy, so Jev is back the moment the proxy is. */
+  private async call<T>(path: string, payload: unknown): Promise<T> {
+    let res: Response;
     try {
-      const res = await fetch(`/api/${path}`, {
+      res = await fetch(`/api/${path}`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) {
-        const err = (await res.json().catch(() => null)) as { error?: string } | null;
-        this.goOffline(err?.error ?? `The Jev proxy answered ${res.status}.`);
-        return fallback();
-      }
-      const out = (await res.json()) as T;
-      this.setMode('online');
-      return out;
     } catch {
-      this.goOffline('The Jev proxy is not running (npm run proxy).');
-      return fallback();
+      throw this.goOffline('The Jev proxy is not running (npm run proxy).');
     }
+    if (!res.ok) {
+      const err = (await res.json().catch(() => null)) as { error?: string } | null;
+      // the dev server answers 5xx for a proxy that isn't running
+      throw this.goOffline(err?.error ?? (res.status >= 500 ? 'The Jev proxy is not running (npm run proxy).' : `The Jev proxy answered ${res.status}.`));
+    }
+    const out = (await res.json()) as T;
+    this.setMode('online');
+    return out;
   }
 }
 
 /** The game's one Jev router; the UI reads its mode. */
-export const JEV = new BackendJev(offlineJev);
+export const JEV = new BackendJev();

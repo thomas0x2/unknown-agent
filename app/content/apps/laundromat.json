@@ -25,27 +25,22 @@
         "failed_fetch": "Spin Cycle Status said every machine was free. None were.",
         "raw_codes": "Spin Cycle Status says M5 is \"1\". One what."
       },
-      "match": "\\b(machines?|washers?|dryers?|out of order|pick-?up)\\b",
       "bugs": [
         {
           "id": "six_of_eight",
-          "when": "shows only the first page of the feed (6 machines)",
-          "match": "\\b(six|6)\\b[^.?!]{0,20}\\b(of|machines)\\b|\\b(second|next|2nd|other) page\\b|\\bpaginat\\w*|\\bmissing machines?\\b|\\bm7\\b|\\bm8\\b|\\ball (8|eight) machines\\b"
+          "when": "shows only the first page of the feed (6 machines)"
         },
         {
           "id": "done_as_free",
-          "when": "done machines shown as free",
-          "match": "\\b(done|finished)\\b[^.?!]{0,30}\\b(free|available)\\b|\\b(free|available)\\b[^.?!]{0,30}\\b(done|finished)\\b|\\bpick-?up\\b|\\bst ?= ?2\\b"
+          "when": "done machines shown as free"
         },
         {
           "id": "broken_as_free",
-          "when": "out-of-order machines shown as free",
-          "match": "\\bout[- ]of[- ]order\\b|\\bbroken machines?\\b|\\bst ?= ?3\\b|\\bm3\\b"
+          "when": "out-of-order machines shown as free"
         },
         {
           "id": "raw_codes",
-          "when": "shows the raw ST codes (0, 1, 2, 3) instead of free, running, done and out of order",
-          "match": "\\b(raw|st) ?(codes?|numbers?|values?)\\b|\\bcodes?\\b|\\bst ?=|\\btranslat\\w*|\\blabels?\\b|\\bnumbers? instead\\b|\\bone what\\b"
+          "when": "shows the raw ST codes (0, 1, 2, 3) instead of free, running, done and out of order"
         }
       ],
       "checklist": [
@@ -83,12 +78,10 @@
         "wrong": "Spin Cycle Status said 4 machines free. Walked over, all 4 running. The page hadn't updated since the morning.",
         "no_refresh": "Spin Cycle Status said 4 machines free. Walked over, all 4 running. The page hadn't updated since the morning."
       },
-      "match": "\\b(refresh\\w*|updat\\w*|stale|real[- ]?time|poll\\w*|fetch\\w*)\\b",
       "bugs": [
         {
           "id": "no_refresh",
-          "when": "the status never refreshes",
-          "match": "\\b(refresh\\w*|never updat\\w*|doesn'?t update|does not update|not updating|stale|old data|out of date|same (thing|states?) all day|poll\\w*)\\b"
+          "when": "the status never refreshes"
         }
       ],
       "checklist": [
@@ -110,12 +103,10 @@
         "wrong": "Spin Cycle Status says my wash has 731 minutes left.",
         "minutes_wrong": "Spin Cycle Status says my wash has 731 minutes left."
       },
-      "match": "\\b(minutes?|mins?|time left|timer|countdown)\\b",
       "bugs": [
         {
           "id": "minutes_wrong",
-          "when": "minutes left are wrong (seconds read as minutes)",
-          "match": "\\b(minutes?|mins?|time left|timer)\\b[^.?!]{0,30}\\b(wrong|off|incorrect|too (long|high|many)|negative|huge)\\b|\\bseconds?\\b|\\b731\\b|\\bnegative\\b"
+          "when": "minutes left are wrong (seconds read as minutes)"
         }
       ],
       "checklist": [
@@ -139,22 +130,18 @@
         "new_always_free": "Spin Cycle Status says the four new machines are always free. They're the busiest ones.",
         "layout_breaks": "Spin Cycle Status is a mess since the new machines. The boxes are on top of each other."
       },
-      "match": "\\b(12|twelve|new machines?|four new|4 new|more machines|added machines)\\b",
       "bugs": [
         {
           "id": "still_eight",
-          "when": "still shows 8 machines, not 12",
-          "match": "\\b(still|only)\\b[^.?!]{0,20}\\b(8|eight)\\b|\\b(12|twelve)\\b[^.?!]{0,20}\\bmachines?\\b|\\bnew (machines|ones)\\b[^.?!]{0,25}\\b(missing|ignored|not shown|don'?t show)\\b"
+          "when": "still shows 8 machines, not 12"
         },
         {
           "id": "new_always_free",
-          "when": "the four new machines always show as free",
-          "match": "\\bnew (machines|ones)\\b[^.?!]{0,30}\\b(free|available)\\b|\\b(m9|m10|m11|m12)\\b|\\balways (free|available)\\b"
+          "when": "the four new machines always show as free"
         },
         {
           "id": "layout_breaks",
-          "when": "the layout breaks with more than 8 machines",
-          "match": "\\b(layout|grid|overlap\\w*|cut off|overflow\\w*|squash\\w*|alignment)\\b"
+          "when": "the layout breaks with more than 8 machines"
         }
       ],
       "checklist": [

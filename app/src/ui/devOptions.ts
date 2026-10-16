@@ -62,7 +62,6 @@ function outcomeCard(s: GameState, o: Outcome): string {
   return `<div class="dvo-out">
     <div class="dvo-out-head"><b>${esc(o.id)}</b>${o.workaround ? '<span class="dvb-tag on">workaround</span>' : ''}${blocked ? '<span class="dvb-tag on">needs a workaround framing</span>' : ''}</div>
     ${line('When', esc(o.when))}
-    ${line('Keywords', o.keywords?.length ? tags(o.keywords, 'kw') : '')}
     ${line('Reply', quote(o.reply))}
     ${line('Effects', tags(effectsSummary(o.effects)))}
   </div>`;
@@ -234,7 +233,7 @@ function qmailOptions(store: GameStore): string {
   const source = (addr: string) => c.events.find((e) => !e.latent && e.addr === addr && s.fired.includes(e.id) && e.site !== 'qmail');
   const scripted = c.contacts.filter((k) => k.scripted?.length).map((k) => `<div class="dvb-card">
       <div class="dvb-title"><b>${esc(k.name ?? k.key)}</b><span class="dvo-dim">${esc(k.key)}</span></div>
-      ${k.scripted!.map((t) => `<div class="dvo-out"><div class="dvo-out-head"><b>${esc(t.id)}</b></div>${line('When', esc(t.when))}${line('Keywords', tags(t.keywords ?? [], 'kw'))}${line('Reply', quote(t.reply))}</div>`).join('')}
+      ${k.scripted!.map((t) => `<div class="dvo-out"><div class="dvo-out-head"><b>${esc(t.id)}</b></div>${line('When', esc(t.when))}${line('Reply', quote(t.reply))}</div>`).join('')}
     </div>`).join('');
   const misses = c.contacts.filter((k) => k.reply).map((k) => `<div class="dvo-miss"><b>${esc(k.name ?? k.key)}</b> <span class="dvo-dim">${esc(k.key)}</span>${quote(k.reply!)}</div>`).join('');
   const sent = s.sentToday.length ? `<p class="dvo-note">Already emailed today, so another email bounces: ${s.sentToday.map((a) => `<code>${esc(a)}</code>`).join(', ')}</p>` : '';

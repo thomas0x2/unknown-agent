@@ -304,40 +304,6 @@ export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, f
   return out;
 }
 
-const BREAK_MATCH: Partial<Record<FailureKind, RegExp>> = {
-  visible: /\b(crash(es|ed|ing)?|application error|exception|error|blank|white screen|broken page)\b/i,
-  failed_fetch: /\b(all|every)\b[^.?!]{0,25}\b(free|available)\b|\b(fetch|loading|(doesn'?t|does not|won'?t|not|fails? to|can'?t|cannot)\s+(load|show|open|appear))\b/i,
-};
-
-const escRe = (t: string) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-/** A content regex with {{param}} (literal) and {{param:words}} (any of its words) filled from the spec. */
-function specRegex(src: string, params?: Record<string, string | number>): RegExp | null {
-  const body = src.replace(/\{\{(\w+)(:words)?\}\}/g, (_m, k: string, words?: string) => {
-    const v = String(params?.[k] ?? '');
-    if (!words) return v ? escRe(v) : '(?!)';
-    const ws = [...new Set(v.toLowerCase().match(/[a-z\u00c0-\u024f]{4,}/g) ?? [])];
-    return ws.length ? ws.map(escRe).join('|') : '(?!)';
-  });
-  try { return new RegExp(body, 'i'); } catch { return null; }
-}
-
-/**
- * The categories of fixCategories that the prompt's wording names, by the template's regexes and
- * no model. Unioned with Jev's matches so common phrasings never depend on the model's mood.
- */
-export function keywordCategories(app: AppInstance, tmpl: AppTemplate | undefined, featureId: string, prompt: string): string[] {
-  const def = tmpl?.features.find((f) => f.id === featureId);
-  if (!def) return [];
-  const params = app.specParams[featureId];
-  const out: string[] = [];
-  if (def.match && specRegex(def.match, params)?.test(prompt)) out.push('feature');
-  for (const b of def.bugs ?? []) if (b.match && specRegex(b.match, params)?.test(prompt)) out.push(b.id);
-  const brk = app.breaks.find((b) => b.featureId === featureId);
-  if (brk && BREAK_MATCH[brk.failure]?.test(prompt)) out.push(brk.failure);
-  return out;
-}
-
 /** The bug a subtle or deep break shows on the live site. */
 export function breakVariant(brk: AppBreak, def: FeatureDef | undefined): string | undefined {
   if (brk.failure !== 'subtle' && brk.failure !== 'deep') return undefined;

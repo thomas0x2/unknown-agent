@@ -737,7 +737,7 @@ export function costLine(s: GameState, text: string): { text: string; over: bool
 function jevChip(): string {
   if (JEV.mode === 'online') return `<span class="ua-llm-dot"></span>Story decisions: Jev`;
   if (JEV.mode === 'checking') return `<span class="ua-llm-dot off"></span>Story decisions: checking Jev…`;
-  return `<span class="ua-llm-dot off"></span><span title="${esc(JEV.reason)}">Story decisions: keyword matcher (Jev offline)</span>`;
+  return `<span class="ua-llm-dot off"></span><span title="${esc(JEV.reason)}">Story decisions: Jev offline, nothing gets decided until it's back</span>`;
 }
 function llmRow(): string {
   const st = MISSES.settings;
@@ -942,6 +942,10 @@ export function overlayHtml(store: GameStore): string {
     return osWindow('Session ended', 'ov-over', `<p class="ov-eyebrow">The end</p><h1 class="ov-title">${esc(ENDINGS[s.ending] ?? s.ending)}</h1>
       <p>${esc(EPITAPHS[s.ending] ?? 'The run is over.')} ${dateFull(s.values.day)}.</p>
       <div class="ov-actions"><button class="btn primary" data-ov="new">Play again</button></div>`);
+  }
+  if (store.ui.jevOffline) {
+    return osWindow('Jev is offline', 'ov-small ov-confirm', `<p>Jev decides what your messages do, and it can't be reached right now, so nothing was sent and nothing was charged.</p>
+      <p class="ov-dim">${esc(store.ui.jevOffline.reason)}</p><div class="ov-actions"><button class="btn primary" data-ov="jev-ok">OK</button></div>`, 'jev-ok');
   }
   if (store.ui.confirm) {
     const c = store.ui.confirm;

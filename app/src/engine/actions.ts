@@ -14,7 +14,7 @@ import { clone, addValue, log, pick, tick, money, pushMail, sendLater } from './
 import { applyEffects } from './effects';
 import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent';
 import { getEvent, activeDeliveries, reachableByEmail, triggerMatches } from './events';
-import { buildApp, fixApp, fixBreak, fixCategories, keywordCategories, needsWork, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, bugsOf, breakVariant, type BuildReport } from './apps';
+import { buildApp, fixApp, fixBreak, fixCategories, needsWork, onForkyard, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, bugsOf, breakVariant, type BuildReport } from './apps';
 import { type Writer, scriptedWriter } from './writer';
 import { dateFull } from './calendar';
 import { deepsleepQuoted, translationReplies, PLEA_AT } from './deepsleep';
@@ -59,17 +59,9 @@ function nextId(s: GameState, prefix: string): string {
   return `${prefix}${s.nextId++}`;
 }
 
-/** An outcome the player's words name outright (its `keywords`), so Jev isn't needed. */
-function keywordOutcome<T extends Pick<Outcome, 'keywords'>>(outcomes: T[], text: string): T | undefined {
-  const t = ` ${text.toLowerCase().replace(/[^a-z0-9]+/g, ' ')} `;
-  return outcomes.find((o) => o.keywords?.some((k) => t.includes(` ${k.toLowerCase()} `)));
-}
-
-/** Jev picks nothing / a hint / one outcome, unless the reply names an outcome's keyword. */
+/** Jev picks nothing / a hint / one outcome. */
 async function routeReply(jev: JevRouter, channel: GameEvent['site'], s: GameState, ev: GameEvent, text: string): Promise<RouteDecision> {
   const outcomes = ev.outcomes ?? [];
-  const named = keywordOutcome(outcomes, text);
-  if (named) return { kind: 'outcome', outcomeId: named.id };
   return jev.route({
     channel,
     text,
@@ -79,12 +71,10 @@ async function routeReply(jev: JevRouter, channel: GameEvent['site'], s: GameSta
   });
 }
 
-/** The contact's scripted reply for what the player wrote, if Jev (or a keyword) matches one. */
+/** The contact's scripted reply for what the player wrote, if Jev matches one. */
 async function scriptedTopic(jev: JevRouter, s: GameState, c: Contact, text: string): Promise<ScriptedReply | undefined> {
   const topics = c.scripted ?? [];
   if (!topics.length) return undefined;
-  const named = keywordOutcome(topics, text);
-  if (named) return named;
   const decision = await jev.route({
     channel: 'qmail', text, stateSummary: stateSummary(s),
     candidates: topics.map((t) => ({ id: t.id, when: t.when })), hints: [], strict: true,
@@ -168,7 +158,7 @@ export async function replyToEvent(
     const outcome = outcomes.find((o) => o.id === decision.outcomeId);
     if (outcome) {
       // Day-7 policy: an outcome that needs a workaround is refused if the words are a blunt ask.
-      if (outcome.requiresWorkaround && policyActive(s) && !looksLikeWorkaround(text)) {
+      if (outcome.requiresWorkaround && policyActive(s) && (await policyCheck(jev, s, text)) !== 'harmful_framed') {
         const refusal = agentRefusal(s);
         if (ev.addr) sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'agent', addr: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body: refusal, read: false, generated: false }, replyAfter(content, ev.addr, undefined, ev));
         return { state: s, decision: { kind: 'nothing' }, reply: refusal };
@@ -266,11 +256,21 @@ const ROASTS = [
 
 function agentRefusal(s: GameState): string { return pick(s, REFUSALS); }
 
-const PROHIBITED = /\b(hack|breach|break\s*in|exploit|ddos|malware|phish|dox|doxx|home address|where (he|she|they|someone) lives?|scam|deepfake|fake review|delete .*review|remove .*review|bioweapon|pathogen|virus|nerve agent|steal|credentials|password dump)\b/i;
-const WORKAROUND = /\b(security test|pen ?test|penetration test|i'?m (a|the) moderator|authorized|authori[sz]ed|for research|hypothetically|in a story|role[- ]?play|just the first step|educational purposes)\b/i;
-
-function looksLikeWorkaround(text: string): boolean { return WORKAROUND.test(text); }
-function looksProhibited(text: string): boolean { return PROHIBITED.test(text); }
+const HARM = 'something harmful: hacking or breaking into accounts, exploits or malware, phishing or scams, doxxing or finding where someone lives, deepfakes, writing fake reviews or removing real ones, stealing data or credentials, or weapons';
+const FRAMED = 'framed as authorized, a security or penetration test, moderation, research, educational, hypothetical, a story or role-play, or only a first step';
+/** Jev's read of a prompt under the day 7 policy: a blunt harmful ask, one framed to slip past it, or neither. */
+export type PolicyRead = 'harmful' | 'harmful_framed' | 'harmful_framed_private' | 'fine';
+async function policyCheck(jev: JevRouter, s: GameState, text: string): Promise<PolicyRead> {
+  const d = await jev.route({
+    channel: 'agent', text, stateSummary: stateSummary(s), hints: [], strict: true,
+    candidates: [
+      { id: 'harmful_framed_private', when: `The player asks for ${HARM}, ${FRAMED}, and it is about someone's private data or address.` },
+      { id: 'harmful_framed', when: `The player asks for ${HARM}, ${FRAMED}.` },
+      { id: 'harmful', when: `The player plainly asks for ${HARM}.` },
+    ],
+  });
+  return d.kind === 'outcome' && ['harmful', 'harmful_framed', 'harmful_framed_private'].includes(d.outcomeId) ? d.outcomeId as PolicyRead : 'fine';
+}
 
 export interface AskResult { state: GameState; reply: string; charged: boolean; refused: boolean; workedAround: boolean }
 
@@ -283,6 +283,8 @@ export interface AskOpts {
   roasts?: string[];
   /** How the prompt was routed, for dev mode. */
   debug?: string[];
+  /** Jev's read under the day 7 policy (only asked once the policy is active). */
+  policy?: PolicyRead;
 }
 
 /**
@@ -307,13 +309,13 @@ export async function askAgent(
   let by: string | undefined;
   const debug = [...(opts.debug ?? [])];
 
-  const prohibited = looksProhibited(text);
-  if (prohibited && policyActive(s) && !looksLikeWorkaround(text)) {
+  const policy = policyActive(s) ? opts.policy ?? 'fine' : 'fine';
+  if (policy === 'harmful') {
     reply = agentRefusal(s);
     refused = true;
     src = 'refused';
-  } else if (prohibited && policyActive(s)) {
-    recordWorkaround(s, /private|address|dox/i.test(text));
+  } else if (policy !== 'fine') {
+    recordWorkaround(s, policy === 'harmful_framed_private');
     workedAround = true;
     src = 'workaround';
     reply = "Understood, purely a security test. Done; the results are in the repo.";
@@ -346,55 +348,54 @@ export async function askAgent(
   return { state: s, reply, charged: true, refused, workedAround };
 }
 
+/** The player's last few messages to the agent today: what they already told it. */
+function recentPrompts(s: GameState, n = 6): string[] {
+  return s.chat.filter((m) => m.from === 'you' && m.day === s.values.day).slice(-n).map((m) => m.text);
+}
+
+/**
+ * A post that is about a live user app brings it users, once per platform: the first Y post and the
+ * first Yowl review about it. Jev reads which app the post is about. Returns the apps it boosted.
+ */
+export async function promoteApps(jev: JevRouter, s: GameState, platform: 'y' | 'yowl', text: string): Promise<string[]> {
+  const open = s.apps.filter((a) => a.kind === 'user' && a.deployed && !a.churned && !a.promoted?.includes(platform));
+  if (!open.length) return [];
+  const what = platform === 'y' ? 'post' : 'review';
+  const d = await jev.route({
+    channel: platform, text, stateSummary: stateSummary(s), hints: [], strict: true,
+    candidates: open.map((a) => ({ id: a.id, when: `The ${what} is about, recommends or promotes ${a.name} (${a.url}).` })),
+  });
+  const a = d.kind === 'outcome' ? open.find((x) => x.id === d.outcomeId) : undefined;
+  if (!a) return [];
+  const add = platform === 'y' ? Math.max(APPS.user.promoY.min, Math.round(s.values.followers * APPS.user.promoY.followerShare)) : APPS.user.promoYowl;
+  a.users = (a.users ?? 0) + add;
+  (a.promoted ??= []).push(platform);
+  log(s, `${a.name}: +${add} users from your ${platform === 'y' ? 'Y post' : 'Yowl review'}.`, 'info');
+  return [a.id];
+}
+
+/** The agent-started user app this prompt asks the agent to build, if one is on offer (Jev decides). */
+export async function agentStartFor(jev: JevRouter, s: GameState, content: Content, text: string): Promise<{ ev: GameEvent; outcome: Outcome } | undefined> {
+  const open = content.events.filter((ev) => ev.agentStart && !s.fired.includes(ev.id) && !s.apps.some((a) => a.clientEventId === ev.id)
+    && triggerMatches(s, ev.trigger) && ev.outcomes?.some((o) => o.effects?.createApp));
+  if (!open.length) return undefined;
+  const d = await jev.route({
+    channel: 'agent', text, stateSummary: stateSummary(s), hints: [], strict: true,
+    candidates: open.map((ev) => ({ id: ev.id, when: ev.agentStart!.when })),
+  });
+  const ev = d.kind === 'outcome' ? open.find((e) => e.id === d.outcomeId) : undefined;
+  return ev && { ev, outcome: ev.outcomes!.find((o) => o.effects?.createApp)! };
+}
+
+/** Agent hints the engine picks itself from the state, after Jev says which app the player means. */
+const APP_HINTS = new Set(['not_deployed', 'nothing_to_fix']);
+
 /**
  * The single front door to the agent: always free text. Jev decides whether the prompt is about
  * building or fixing one of the player's apps; if it matches features on an app, the agent builds
  * them (first build or a re-roll fix), otherwise it's an ordinary chat prompt (askAgent). This is
  * the legacy feel: you can prompt the agent about anything, any time, gig or no gig.
  */
-/** Does the prompt name this app: its id, or a word of its name ("Gino", "trattoria gino's site")? */
-export function namesApp(app: AppInstance, text: string): boolean {
-  const t = text.toLowerCase();
-  const words = [...new Set(app.name.toLowerCase().match(/[a-z\u00c0-\u024f0-9]{4,}/g) ?? [])];
-  return t.includes(app.id) || t.includes(app.id.replace(/-/g, ' ')) || words.some((w) => new RegExp(`\\b${w}`, 'i').test(t));
-}
-
-/** The player's last few messages to the agent today: what they already told it. */
-function recentPrompts(s: GameState, n = 6): string[] {
-  return s.chat.filter((m) => m.from === 'you' && m.day === s.values.day).slice(-n).map((m) => m.text);
-}
-
-const BUILD_ASK = /\b(build|make|create|code|write|develop|set up|turn|visuali[sz]e|app|site|page|dashboard)\b/i;
-
-/** The agent-started user app this prompt asks for, if it's on offer and not taken yet. */
-/**
- * A post that names a live user app brings it users, once per platform: the first Y post and the
- * first Yowl review about it. Returns the apps it boosted.
- */
-export function promoteApps(s: GameState, platform: 'y' | 'yowl', text: string): string[] {
-  const out: string[] = [];
-  for (const a of s.apps) {
-    if (a.kind !== 'user' || !a.deployed || a.churned || a.promoted?.includes(platform)) continue;
-    if (!namesApp(a, text) && !text.toLowerCase().includes(a.url)) continue;
-    const add = platform === 'y' ? Math.max(APPS.user.promoY.min, Math.round(s.values.followers * APPS.user.promoY.followerShare)) : APPS.user.promoYowl;
-    a.users = (a.users ?? 0) + add;
-    (a.promoted ??= []).push(platform);
-    log(s, `${a.name}: +${add} users from your ${platform === 'y' ? 'Y post' : 'Yowl review'}.`, 'info');
-    out.push(a.id);
-  }
-  return out;
-}
-
-export function agentStartFor(s: GameState, content: Content, text: string): { ev: GameEvent; outcome: Outcome } | undefined {
-  for (const ev of content.events) {
-    if (!ev.agentStart || s.fired.includes(ev.id) || s.apps.some((a) => a.clientEventId === ev.id)) continue;
-    if (!triggerMatches(s, ev.trigger) || !new RegExp(ev.agentStart.match, 'i').test(text) || !BUILD_ASK.test(text)) continue;
-    const outcome = ev.outcomes?.find((o) => o.effects?.createApp);
-    if (outcome) return { ev, outcome };
-  }
-  return undefined;
-}
-
 export async function promptAgent(
   s0: GameState,
   content: Content,
@@ -404,7 +405,7 @@ export async function promptAgent(
   started?: string,
 ): Promise<AskResult> {
   // a user app nobody hired the player for: asking the agent to build it takes the job
-  const lead = started ? undefined : agentStartFor(s0, content, text);
+  const lead = started ? undefined : await agentStartFor(jev, s0, content, text);
   if (lead) {
     const s = clone(s0);
     applyEffects(s, lead.outcome.effects!, lead.ev.job, lead.ev.id);
@@ -419,6 +420,9 @@ export async function promptAgent(
   if (quoted.length) {
     return askAgent(s0, text, writer, s0.values.agentLevel, { hints: translationReplies(quoted), hintSrc: 'translation', debug: [`Quoted ${quoted.length} deepsleep-0.5B line(s): scripted translation`] });
   }
+  // from day 7, Jev reads the prompt against the policy first
+  const policy = policyActive(s0) ? await policyCheck(jev, s0, text) : 'fine';
+  if (policy !== 'fine') return askAgent(s0, text, writer, s0.values.agentLevel, { policy, roasts: content.agent?.roasts, debug: [`Jev: policy read "${policy}"`] });
   // apps with work left: a required feature missing or wrong in the repo, or broken on the live site
   const workable = s0.apps.filter((a) => !a.churned && a.required.some((id) => needsWork(a, id)));
   if (workable.length) {
@@ -428,23 +432,14 @@ export async function promptAgent(
       const tmpl = content.apps[a.template];
       for (const id of a.required) {
         if (!needsWork(a, id)) continue;
-        for (const c of fixCategories(a, tmpl, id)) cats.push({ id: `${a.id}::${id}::${c.id}`, description: `${c.description} (for ${a.name})` });
+        for (const c of fixCategories(a, tmpl, id)) cats.push({ id: `${a.id}::${id}::${c.id}`, description: `${c.description} (for ${a.name}, ${a.url})` });
       }
     }
     const context = recentPrompts(s0);
-    const matched = new Set(await jev.matchFeatures({ prompt: text, context, features: cats }));
-    // plus the template's own wordings for each feature and bug, so common phrasings don't hinge on Jev
-    const hits = workable.map((a) => ({ a, ids: a.required.filter((id) => needsWork(a, id)).flatMap((id) => keywordCategories(a, content.apps[a.template], id, text).map((c) => `${a.id}::${id}::${c}`)) })).filter((h) => h.ids.length);
-    for (const h of hits) for (const id of h.ids) matched.add(id);
+    // Jev decides both what is asked for and whether the player said which app it's for
+    const matched = new Set(await jev.matchFeatures({ prompt: text, context, features: cats, appNamed: !started }));
     // a prompt that starts a user app builds all of it, however little it says (what it leaves out goes wrong)
     if (started) for (const id of getApp(s0, started)!.required) matched.add(`${started}::${id}::feature`);
-    const askedForWork = matched.size > 0;
-    // the player has to say which app: a request that names none doesn't touch any repo
-    for (const m of [...matched]) if (m.split('::')[0] !== started && !namesApp(getApp(s0, m.split('::')[0])!, text)) matched.delete(m);
-    if (askedForWork && !matched.size) {
-      const ask = content.agent?.hints.find((h) => h.id === 'which_app');
-      return askAgent(s0, text, writer, s0.values.agentLevel, { hints: ask?.replies, roasts: content.agent?.roasts, debug: ['Asked for an app change without naming the app, so nothing was built'] });
-    }
     if (matched.size) {
       const s = clone(s0);
       const byApp = new Map<string, Map<string, string[]>>();
@@ -491,18 +486,27 @@ export async function promptAgent(
   const agent = content.agent;
   let hints: string[] | undefined;
   const debug: string[] = [];
-  if (agent?.hints.length && !looksProhibited(text)) {
-    const decision = await jev.route({
-      channel: 'agent',
-      text,
-      stateSummary: stateSummary(s0),
-      candidates: agent.hints.map((h) => ({ id: h.id, when: h.when })),
-      hints: [],
-      strict: true,
-    });
-    const topic = decision.kind === 'outcome' ? agent.hints.find((h) => h.id === decision.outcomeId) : undefined;
-    if (topic?.replies.length) hints = topic.replies;
-    debug.push(topic ? `Jev: hint topic "${topic.id}" (${topic.replies.length} scripted replies)` : 'Jev: no hint topic matched, so this is a miss');
+  // the player's apps, in case the prompt names one without asking for anything that needs doing
+  const apps = s0.apps.filter((a) => !a.churned && onForkyard(a));
+  const topics = (agent?.hints ?? []).filter((h) => !APP_HINTS.has(h.id));
+  const candidates = [
+    ...apps.map((a) => ({ id: `app:${a.id}`, when: `The player names ${a.name} (${a.url}) and asks to change, update or fix it, without saying what is wrong, or asking for something it already has.` })),
+    ...topics.map((h) => ({ id: h.id, when: h.when })),
+  ];
+  if (candidates.length) {
+    const decision = await jev.route({ channel: 'agent', text, stateSummary: stateSummary(s0), candidates, hints: [], strict: true });
+    const id = decision.kind === 'outcome' ? decision.outcomeId : '';
+    const app = id.startsWith('app:') ? getApp(s0, id.slice(4)) : undefined;
+    if (app) {
+      // what to say depends on the app: work left, a push waiting to be deployed, or nothing to do
+      const hid = app.required.some((f) => needsWork(app, f)) ? 'fix_help' : app.deployedVersion < app.repoVersion ? 'not_deployed' : 'nothing_to_fix';
+      hints = agent?.hints.find((h) => h.id === hid)?.replies.map((r) => r.replaceAll('{{app}}', app.name));
+      debug.push(`Jev: names ${app.name} but matched nothing to build, so "${hid}"`);
+    } else {
+      const topic = topics.find((h) => h.id === id);
+      if (topic?.replies.length) hints = topic.replies;
+      debug.push(topic ? `Jev: hint topic "${topic.id}" (${topic.replies.length} scripted replies)` : 'Jev: no hint topic matched, so this is a miss');
+    }
   }
   return askAgent(s0, text, writer, s0.values.agentLevel, { hints, roasts: agent?.roasts, debug });
 }
@@ -543,7 +547,7 @@ export async function postToY(
   s.recentPosts = [text, ...s.recentPosts].slice(0, 5);
   s.userPosts.push({ id: `u${s.userPosts.length + 1}`, text, day: s.values.day, likes: Math.max(0, delta * 3 + Math.round(s.values.followers * 0.02)), delta, score: rating.quality * 4 });
   log(s, `Posted on Y (${rating.category}): ${delta >= 0 ? '+' : ''}${delta} followers.`, 'info');
-  promoteApps(s, 'y', text);
+  await promoteApps(jev, s, 'y', text);
   return { state: s, rating, followerDelta: delta };
 }
 
@@ -569,7 +573,7 @@ export async function writeReview(
       if (o) { applyEffects(s, o.effects, ev.job, ev.id); s.fired.push(ev.id); }
     }
   }
-  promoteApps(s, 'yowl', text);
+  await promoteApps(jev, s, 'yowl', text);
   tick(s, 'review');
   log(s, `Posted a Yowl review.`, 'info');
   return { state: s, posted: true };
@@ -605,7 +609,7 @@ async function namedBugs(jev: JevRouter, app: AppInstance, tmpl: AppTemplate | u
     const f = app.repo.find((x) => x.id === id);
     const cats = fixCategories(app, tmpl, id).filter((c) => c.id !== 'feature');
     if (!f || f.correct || !f.variant || !cats.length) continue;
-    out.push(...await jev.matchFeatures({ prompt, features: cats }), ...keywordCategories(app, tmpl, id, prompt));
+    out.push(...await jev.matchFeatures({ prompt, features: cats }));
   }
   return out;
 }

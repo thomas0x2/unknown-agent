@@ -3,6 +3,7 @@ import { clone } from './core';
 import { postToY, replyToEvent, briefBuild, briefFix, BOUNCE_ADDR } from './actions';
 import { getApp } from './apps';
 import { makeContent, fakeRouter } from './_fixtures';
+import { noJev, JevOffline } from './jev';
 
 const content = makeContent();
 
@@ -119,12 +120,11 @@ describe('brief the agent', () => {
   });
 });
 
-describe('offline Jev post rating', () => {
-  it('counts a post as a reaction when it shares a word with a trending phrase', async () => {
-    const { offlineJev } = await import('./jev');
-    const r = await offlineJev.ratePost({ text: 'These AI layoffs will bite the companies', trending: ['AI layoffs', 'election candidates announced'], recentPosts: [], followers: 12 });
-    expect(r.category).toBe('reaction');
-    const off = await offlineJev.ratePost({ text: 'Remember to drink water today', trending: ['AI layoffs'], recentPosts: [], followers: 12 });
-    expect(off.category).toBe('tip');
+describe('without Jev', () => {
+  it('nothing is decided: the action throws JevOffline and the state is untouched', async () => {
+    const s = startGame(makeContent());
+    const before = JSON.stringify(s);
+    await expect(postToY(s, noJev, 'These AI layoffs will bite', ['AI layoffs'])).rejects.toBeInstanceOf(JevOffline);
+    expect(JSON.stringify(s)).toBe(before);
   });
 });

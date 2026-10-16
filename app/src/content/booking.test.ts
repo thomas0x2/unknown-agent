@@ -8,12 +8,12 @@ import { startGame, endDay } from '../engine/day';
 import { composeEmail, briefBuild, deploy, promptAgent, makeBooking, cancelBooking } from '../engine/actions';
 import { applyEffects } from '../engine/effects';
 import { getApp, devToggleBug } from '../engine/apps';
-import { offlineJev } from '../engine/jev';
 import { tick } from '../engine/core';
 
 /** Fix requests have to name the app. */
 const gino = 'Trattoria Gino: ';
 import type { GameState } from '../engine/state';
+import { wordJev } from '../engine/_fixtures';
 
 const content = loadContent();
 const APP = 'trattoria-gino';
@@ -21,7 +21,7 @@ const ME = 'you@qmail.com';
 
 /** Gino's site with landing, menu and booking all built right and live. */
 async function liveSite(): Promise<GameState> {
-  let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+  let s = (await composeEmail(startGame(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
   tick(s); // Gino's reply with the brief arrives
   applyEffects(s, content.events.find((e) => e.id === 'd2_restaurant_booking')!.onDeliver!);
   const app = getApp(s, APP)!;
@@ -97,7 +97,7 @@ describe('table booking', () => {
     const s0 = await liveSite();
     s0.values.agentLevel = 5;
     getApp(s0, APP)!.repo = getApp(s0, APP)!.repo.filter((f) => f.id !== 'booking');
-    const s = (await briefBuild(s0, content, offlineJev, APP, 'Add a booking form with name, email, date, time and party size, only during opening hours.')).state;
+    const s = (await briefBuild(s0, content, wordJev, APP, 'Add a booking form with name, email, date, time and party size, only during opening hours.')).state;
     const f = getApp(s, APP)!.repo.find((x) => x.id === 'booking')!;
     expect(f.checked).toEqual({ confirmation: false, party: true, hours: true });
     expect([f.variant, ...(f.also ?? [])]).toEqual(['no_email']);
@@ -120,7 +120,7 @@ describe('table booking', () => {
       s0.values.agentLevel = 5;
       const app = getApp(s0, APP)!;
       app.repo = app.repo.map((f) => (f.id === 'booking' ? { ...f, correct: false, variant: bug, seed: 1 } : f));
-      const s = (await promptAgent(s0, content, offlineJev, gino + ask)).state;
+      const s = (await promptAgent(s0, content, wordJev, gino + ask)).state;
       expect(getApp(s, APP)!.repo.find((f) => f.id === 'booking')!.correct, bug).toBe(true);
     }
   });

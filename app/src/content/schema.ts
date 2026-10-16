@@ -96,12 +96,6 @@ export interface FeatureDef {
   details?: string[];
   /** Concrete ways a wrong build of this feature is wrong. The site renders the one it got. */
   bugs?: BugDef[];
-  /**
-   * Regex (case-insensitive) for wordings that point at this feature, matched without Jev, so "the
-   * menu is wrong" always reaches the agent. {{param}} fills in the spec value; {{param:words}} an
-   * alternation of its words (the dish names).
-   */
-  match?: string;
   /** The first build's guaranteed teaching bug lands on a feature with this set, if one was built. */
   firstBuildBug?: boolean;
   /**
@@ -127,15 +121,13 @@ export interface BugDef {
   id: string;
   /**
    * What a fix prompt has to name to address this bug, for Jev to match; {{param}} fills in from the
-   * spec. Keep it to the distinctive words: the offline fallback matches on any shared word.
+   * spec.
    */
   when: string;
   /** Spelling out the feature's details again (the full menu) also fixes it. */
   orDetails?: boolean;
   /** A deep failure: hidden until someone goes through the whole flow. A deep live break shows this bug. */
   deep?: boolean;
-  /** Regex (case-insensitive) for wordings that name this bug, matched without Jev. See FeatureDef.match. */
-  match?: string;
 }
 
 // ── events (content/events/<id>.json) ──
@@ -158,11 +150,11 @@ export interface GameEvent {
    */
   latent?: boolean;
   /**
-   * A user app the player starts by asking the agent, with nobody to email: a prompt matching
-   * `match` (a regex) once the trigger holds takes the job (the outcome with a createApp) and builds
-   * from that same prompt. `lead` is the post where the player hears about it.
+   * A user app the player starts by asking the agent, with nobody to email: once the trigger holds, a
+   * prompt Jev matches to `when` takes the job (the outcome with a createApp) and builds from that same
+   * prompt. `lead` is the post where the player hears about it.
    */
-  agentStart?: { match: string; lead?: string };
+  agentStart?: { when: string; lead?: string };
   /** Offers the player paid work, so replies come on the next action. Events with a `job` or an outcome that creates an app count already. */
   jobRequest?: boolean;
   /** Applied the moment the event is delivered. */
@@ -202,11 +194,6 @@ export interface Outcome {
   id: string;
   /** Plain-language description Jev matches the player's reply against. */
   when: string;
-  /**
-   * Words that fire this outcome without asking Jev, e.g. the "Reply EMPIRE" an email asks for.
-   * Matched case-insensitively as whole words.
-   */
-  keywords?: string[];
   effects?: Effects;
   /** Fixed reply text. Storyline replies are always scripted, never written by a model. */
   reply: string;
@@ -255,8 +242,6 @@ export interface Contact {
 export interface ScriptedReply {
   id: string;
   when: string;
-  /** Words that fire it without asking Jev, matched like an outcome's keywords. */
-  keywords?: string[];
   reply: string;
   /** Minutes before this reply arrives, instead of the contact's usual time. */
   replyAfter?: number;

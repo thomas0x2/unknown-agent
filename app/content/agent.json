@@ -55,6 +55,24 @@
       ]
     },
     {
+      "id": "not_deployed",
+      "when": "Engine only: the player names an app and asks for a change that's already in its repo but not deployed.",
+      "replies": [
+        "That's already in the {{app}} repo. It isn't live until you deploy it on Forkyard.",
+        "The {{app}} repo has it. The live site is the old version, so deploy it.",
+        "Done in the repo already. {{app}} shows the old version until you press Deploy."
+      ]
+    },
+    {
+      "id": "nothing_to_fix",
+      "when": "Engine only: the player names an app and points at a feature that already matches the brief.",
+      "replies": [
+        "{{app}} matches the brief as far as I can see. Tell me what it shows and what it should show.",
+        "Nothing on {{app}} is off from the brief. If you see something wrong, describe it.",
+        "{{app}} looks right to me. Say what's wrong on the page and I'll change it."
+      ]
+    },
+    {
       "id": "deploy",
       "when": "The player asks to deploy, publish or put an app online, or where their app or code is.",
       "replies": [

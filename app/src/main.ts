@@ -278,6 +278,13 @@ function onOverlay(a: string): void {
   else if (a === 'morning') store.dismissMorning();
   else if (a === 'confirm-yes') store.resolveConfirm(true);
   else if (a === 'confirm-no') store.resolveConfirm(false);
+  else if (a === 'jev-ok') {
+    // put the text back where it was typed, so the player can send it again once Jev is back
+    const j = store.ui.jevOffline;
+    store.dismissJevOffline();
+    const el = j?.field ? document.getElementById(j.field) as HTMLInputElement | HTMLTextAreaElement | null : null;
+    if (el && j?.text && !el.value) { el.value = j.text; el.focus(); }
+  }
 }
 
 // ── forms ──
@@ -301,17 +308,17 @@ document.addEventListener('submit', (e) => {
     const to = val('#mail-to').trim(), subject = val('#mail-subject').trim(), body = val('#mail-body').trim();
     if (!to || !body) return;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) { store.setMailError('Enter a valid address.'); return; }
-    void store.compose(to, subject, body).then((r) => { if (r.sent) { clearMailDraft(); store.setDraft(null); store.navigate('qmail.com/sent'); } });
+    void store.compose(to, subject, body).then((r) => { if (r?.sent) { clearMailDraft(); store.setDraft(null); store.navigate('qmail.com/sent'); } });
   } else if (kind === 'reply') {
     const v = val('#reply-body').trim(); if (!v) return;
     clearField('reply-body');
     const id = f.dataset.id, to = f.dataset.to;
     if (id) void store.reply(id, v);
-    else if (to) void store.compose(to, f.dataset.subject ?? '', v);
+    else if (to) void store.compose(to, f.dataset.subject ?? '', v, 'reply-body');
   } else if (kind === 'review') {
     const biz = f.dataset.biz!; const v = val('#review-text').trim(); const stars = store.ui.reviewStars;
     if (!stars) { store.needStars(); return; }
-    if (v) void store.review(biz, stars, v).then((r) => { if (r.posted !== false) clearField('review-text'); });
+    if (v) void store.review(biz, stars, v).then((r) => { if (r && r.posted !== false) clearField('review-text'); });
   } else if (kind === 'book-next') {
     store.bookNext(val('#bk-name').trim(), val('#bk-email').trim(), Number(val('input[name="bk-date"]:checked')) || store.state.values.day);
   } else if (kind === 'book') {
