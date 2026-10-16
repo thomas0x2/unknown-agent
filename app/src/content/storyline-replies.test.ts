@@ -92,3 +92,28 @@ describe('Mom', () => {
     expect(r.state.values.crypto).toBe(s.values.crypto + 20);
   });
 });
+
+describe('EMPIRE newsletter', () => {
+  it('carries a different piece of advice each day, one inbox entry per day', async () => {
+    const { endDay } = await import('../engine/day');
+    const { eventBody, deliveryKey } = await import('../engine/events');
+    let s = joinEmpire(startGame(content, 3));
+    for (let i = 0; i < 4; i++) s = endDay(s, content);
+    const ev = content.events.find((e) => e.id === 'guru_newsletter')!;
+    const issues = s.delivered.filter((d) => d.eventId === 'guru_newsletter');
+    expect(issues.length).toBe(4);
+    expect(new Set(issues.map((d) => eventBody(ev, d.day))).size).toBe(4);
+    expect(new Set(issues.map((d) => deliveryKey(ev, d.day))).size).toBe(4);
+  });
+});
+
+describe('Max after the first email', () => {
+  it('a later EMPIRE reply gets a scripted answer, not the local model', async () => {
+    let s = joinEmpire(startGame(content, 3));
+    s = (await replyToEvent(s, content, offlineJev, 'd1_guru', 'Empire', noLlm)).state;
+    const { endDay } = await import('../engine/day');
+    s = endDay(s, content);
+    const r = await composeEmail(s, content, offlineJev, EMPIRE.addr, 'EMPIRE', noLlm, 'Re: Your daily EMPIRE');
+    expect(r.reply).toContain('Commitment logged.');
+  });
+});

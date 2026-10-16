@@ -10,7 +10,7 @@ import { listSlots, autoSlot } from '../game/saves';
 import { ICONS, TOKENS, Y_ICONS } from './icons';
 import { route, bookmarks, type Route, type SiteId } from '../sites/registry';
 import {
-  type GameState, type AppInstance, getApp, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, EMPIRE, BOUNCE_ADDR,
+  type GameState, type AppInstance, getApp, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, EMPIRE, BOUNCE_ADDR, eventBody, deliveryKey,
 } from '../engine';
 import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
@@ -69,7 +69,7 @@ export function tabsHtml(store: GameStore): string {
 }
 export function bookmarksHtml(store: GameStore): string {
   return bookmarks(store.state).map((b) => {
-    const badge = b.id === 'qmail' ? qmailBadge(store.state) : 0;
+    const badge = b.id === 'qmail' ? qmailBadge(store) : 0;
     return `<button class="bm" data-nav="${b.base}"><span class="bm-ico ico-${b.id}">${ICONS[b.id] || ICONS.newtab}</span><span class="bm-label">${esc(b.label)}</span>${badge ? `<i class="badge">${badge}</i>` : ''}</button>`;
   }).join('');
 }
@@ -154,10 +154,8 @@ export function startMenuHtml(store: GameStore): string {
     </div>`;
 }
 
-function qmailBadge(s: GameState): number {
-  const story = s.delivered.filter((d) => d.site === 'qmail' && !s.readEvents.includes(d.eventId) && !s.mail.some((m) => m.eventId === d.eventId && m.folder === 'inbox')).length;
-  const mail = s.mail.filter((m) => m.folder === 'inbox' && !m.read).length;
-  return story + mail;
+function qmailBadge(store: GameStore): number {
+  return mailRows(store).filter((r) => r.folder === 'inbox' && r.unread).length;
 }
 
 // ── page dispatch ──
@@ -207,7 +205,8 @@ function mailRows(store: GameStore): Row[] {
     // stands in for it. Any other story email stays in the inbox after it's answered.
     if (e.latent && s.mail.some((m) => m.eventId === e.id && m.folder === 'inbox')) continue;
     const canReply = !!(e.outcomes && !d.answered);
-    rows.push({ id: 'e/' + d.eventId, seq: d.seq ?? -1, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(e.body ?? ''), day: d.day, unread: !s.readEvents.includes(e.id), needsReply: canReply, folder: 'inbox', eventId: e.id });
+    const key = deliveryKey(e, d.day);
+    rows.push({ id: 'e/' + key, seq: d.seq ?? -1, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(eventBody(e, d.day)), day: d.day, unread: !s.readEvents.includes(key), needsReply: canReply, folder: 'inbox', eventId: e.id });
   }
   for (const m of s.mail) rows.push({ id: 'm/' + m.id, seq: m.seq ?? (Number(m.id.replace(/\D/g, '')) || 0), from: m.from, addr: m.addr, subject: m.subject, body: m.body, day: m.day, unread: m.folder === 'inbox' && !m.read, needsReply: false, folder: m.folder, eventId: m.eventId, generated: m.generated, to: m.to, link: m.link, bounceOf: m.bounceOf });
   return rows;
@@ -215,7 +214,7 @@ function mailRows(store: GameStore): Row[] {
 function pageMail(store: GameStore, param?: string): string {
   const s = store.state;
   const view = param === 'sent' ? 'sent' : param === 'compose' ? 'compose' : param?.startsWith('m/') || param?.startsWith('e/') ? 'msg' : 'inbox';
-  const unread = qmailBadge(s);
+  const unread = qmailBadge(store);
   const rows = mailRows(store);
   const side = `<nav class="qm-side" aria-label="Folders">
     <a href="#" class="qm-new" data-nav="qmail.com/compose">Compose</a>

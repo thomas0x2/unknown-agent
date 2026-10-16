@@ -146,6 +146,8 @@ export interface GameEvent {
   subject?: string;
   /** May use {{placeholder}} filled from state. */
   body?: string;
+  /** A repeating event's body for each delivery, cycling by day (see eventBody). Overrides `body`. */
+  bodies?: string[];
   trigger: Trigger;
   /**
    * Latent events are never auto-delivered to the inbox. Their outcomes become available for the
