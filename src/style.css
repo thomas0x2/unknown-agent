@@ -215,6 +215,8 @@ code { font-family: var(--f-mono); font-size: 0.86em; }
 .y-live { width: 7px; height: 7px; border-radius: 50%; background: var(--y-accent); box-shadow: 0 0 0 3px rgba(255, 210, 63, 0.18); animation: y-pulse 2.4s ease-in-out infinite; }
 @keyframes y-pulse { 50% { box-shadow: 0 0 0 6px rgba(255, 210, 63, 0); } }
 .y-feed { display: flex; flex-direction: column; gap: 10px; }
+.y-arrive { animation: y-arrive 260ms ease-out backwards; }
+@keyframes y-arrive { from { opacity: 0; transform: translateY(-6px); } }
 .y-post { background: var(--y-panel); border: 1px solid var(--y-line); border-radius: 14px; padding: 14px 16px 12px; display: flex; flex-direction: column; gap: 8px; }
 .y-post.mine { border-color: rgba(255, 210, 63, 0.45); }
 .y-post header { display: flex; align-items: center; gap: 10px; min-width: 0; }
@@ -237,6 +239,9 @@ button.y-act { cursor: pointer; }
 button.y-act:hover { color: var(--y-like); border-color: rgba(255, 92, 122, 0.4); }
 .y-act.like.on { color: var(--y-like); border-color: rgba(255, 92, 122, 0.5); background: rgba(255, 92, 122, 0.08); --heart-fill: var(--y-like); }
 .y-none { padding: 24px 4px; color: var(--y-dim); margin: 0; }
+.y-more { display: flex; justify-content: center; padding: 18px 0 8px; }
+.y-btn.ghost { background: transparent; color: var(--y-ink); border: 1px solid var(--y-line); }
+.y-btn.ghost:hover { background: var(--y-raise); filter: none; }
 .y-side { position: sticky; top: 76px; align-self: start; }
 .y-card { background: var(--y-panel); border: 1px solid var(--y-line); border-radius: 14px; padding: 14px 16px 6px; }
 .y-card h2 { margin: 0 0 6px; font-family: var(--f-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--y-dim); }

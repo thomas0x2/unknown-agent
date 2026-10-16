@@ -32,4 +32,15 @@ describe('arrivals over the day', () => {
     expect(s.ui.yUnread).toBe(heard.reduce((n, a) => n + a.posts, 0));
     expect(s.ui.yUnread).toBeGreaterThanOrEqual(1);
   });
+  it('names each bot post once, so they can land as a barrage', () => {
+    const s = make();
+    s.endDay(); // day 2: a 30-account bot swarm posts about $GAI
+    const heard: Arrival[] = [];
+    s.onArrival((a) => heard.push(a));
+    for (let i = 0; i < 700; i++) s.passMinutes(1);
+    const bots = heard.flatMap((a) => a.bots);
+    expect(bots.length).toBeGreaterThanOrEqual(30);
+    expect(new Set(bots).size).toBe(bots.length);
+    expect(heard.every((a) => a.bots.length <= a.posts)).toBe(true);
+  });
 });
