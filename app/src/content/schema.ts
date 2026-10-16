@@ -147,6 +147,8 @@ export interface Contact {
   name?: string;
   persona: string;
   examples?: [string, string][];
+  /** A scripted reply shown when the local model isn't loaded, so a reply always arrives. */
+  reply?: string;
 }
 
 /** Everything the engine reads, gathered in one bundle and passed into engine steps. */

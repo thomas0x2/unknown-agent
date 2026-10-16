@@ -18,7 +18,7 @@ describe('promptAgent — always free text', () => {
     expect(r.charged).toBe(true);
     expect(r.state.values.crypto).toBeLessThan(100); // billed per prompt + word
     expect(r.state.chat.at(-1)!.from).toBe('agent');
-    expect(r.state.clockMin).toBe(CLOCK.wake + CLOCK.cost.prompt); // one prompt spent
+    expect(r.state.clockMin).toBe(CLOCK.wake + CLOCK.perAction); // one prompt spent
   });
 
   it('routes a build-shaped prompt to the matching app when a gig exists', async () => {

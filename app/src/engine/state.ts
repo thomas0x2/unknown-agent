@@ -220,6 +220,7 @@ export interface GameState {
   morning: MorningCard | null;
   clockMin: number; // minutes since midnight; the working day runs wake..sleep
   commits: Commit[];
+  readEvents: string[]; // story-email event ids the player has opened
   introSeen: boolean;
   /** Trader buy-in stake value (0 = none). */
   stake: number;
@@ -229,7 +230,7 @@ export interface GameState {
   nextId: number;
 }
 
-export const SAVE_VERSION = 5;
+export const SAVE_VERSION = 6;
 
 /**
  * The four weeks before Day 1, so Satchel opens on a real history: two paychecks from Vantor, weekly
@@ -297,6 +298,7 @@ export function newGame(seed = makeSeed()): GameState {
     morning: null,
     clockMin: CLOCK.wake,
     commits: [],
+    readEvents: [],
     introSeen: false,
     stake: 0,
     interviewAnswers: '',

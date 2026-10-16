@@ -1,0 +1,39 @@
+/* Additive Qmail styles: a proper reply composer and the unread indicator. Everything else keeps
+   using the legacy stylesheet. */
+
+/* unread: a small accent dot + bolder row (the legacy already bolds .qm-row.unread text) */
+.qm-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--qm-accent); margin-right: 8px; vertical-align: middle; flex: none; }
+.qm-row.unread { color: var(--qm-ink); font-weight: 600; }
+.qm-row.unread .qm-from, .qm-row.unread .qm-subj b { font-weight: 700; }
+.qm-row.unread .qm-subj span { color: var(--qm-ink); }
+
+/* reply composer: a framed card, not a bare textarea */
+.qm-reply {
+  margin-top: 22px;
+  border: 1px solid var(--qm-line);
+  border-radius: 14px;
+  background: var(--qm-panel);
+  box-shadow: 0 1px 2px rgba(20, 24, 50, 0.04), 0 8px 24px -16px rgba(20, 24, 50, 0.25);
+  overflow: hidden;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.qm-reply:focus-within { border-color: var(--qm-accent); box-shadow: 0 0 0 3px var(--qm-soft); }
+.qm-reply-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 10px 16px; border-bottom: 1px solid var(--qm-line); background: var(--qm-bg);
+}
+.qm-reply-to { font-size: 13.5px; color: var(--qm-dim); }
+.qm-reply-to b { color: var(--qm-ink); font-weight: 600; }
+.qm-reply-hint { font-size: 11.5px; color: var(--qm-dim); }
+.qm-reply textarea {
+  width: 100%; border: 0; outline: 0; resize: vertical; min-height: 92px;
+  padding: 14px 16px; font: inherit; font-size: 14.5px; line-height: 1.55;
+  background: transparent; color: var(--qm-ink);
+}
+.qm-reply textarea::placeholder { color: var(--qm-dim); }
+.qm-reply-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 10px 14px 12px; border-top: 1px solid var(--qm-line);
+}
+.qm-reply-cta { font-size: 11.5px; color: var(--qm-dim); }
+.qm-reply .qm-btn { padding: 8px 20px; }

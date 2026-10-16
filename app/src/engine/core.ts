@@ -49,9 +49,8 @@ export function money(s: GameState, amount: number, memo: string): void {
 }
 
 // ── clock ──
-export function tick(s: GameState, kind: string): void {
-  const mins = (CLOCK.cost as Record<string, number>)[kind] ?? 30;
-  s.clockMin += mins;
+export function tick(s: GameState, _kind?: string): void {
+  s.clockMin += CLOCK.perAction; // every action is one hour
 }
 
 // ── log ──

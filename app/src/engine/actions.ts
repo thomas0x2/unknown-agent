@@ -107,17 +107,18 @@ export async function replyToEvent(
       return { state: s, decision, reply: body };
     }
   }
-  if (decision.kind === 'hint') {
-    const hint = (ev.hints ?? [])[decision.hintIndex] ?? '';
-    return { state: s, decision, reply: hint };
-  }
-  // nothing matched: the person behind the address writes back in their own voice (Gemma), if known
+  // No outcome fired (a near miss / hint, or nothing). Either way the person writes back in their
+  // own voice so a reply always lands in the inbox; a hint rides along as a gentle nudge from them.
   const c = ev.addr ? contactFor(content, ev.addr) : undefined;
+  const hint = decision.kind === 'hint' ? (ev.hints ?? [])[decision.hintIndex] ?? '' : '';
   if (c) {
-    const { text: body, llm } = await writer.write({ as: ev.addr!, prompt: text, fallback: '', long: true });
-    if (body) pushMail(s, { folder: 'inbox', day: s.values.day, from: c.name ?? ev.from ?? 'Unknown', addr: ev.addr!, subject: `RE: ${ev.subject ?? ''}`, body, read: false, generated: llm });
-    return { state: s, decision: { kind: 'nothing' }, reply: body };
+    const fb = hint || c.reply || 'Thanks for your message.';
+    const { text: body, llm } = await writer.write({ as: ev.addr!, prompt: text, fallback: fb, long: true });
+    const shown = body || fb;
+    pushMail(s, { folder: 'inbox', day: s.values.day, from: c.name ?? ev.from ?? 'Unknown', addr: ev.addr!, subject: `RE: ${ev.subject ?? ''}`, body: shown, read: false, generated: llm });
+    return { state: s, decision, reply: shown };
   }
+  if (hint) return { state: s, decision, reply: hint };
   return { state: s, decision: { kind: 'nothing' }, reply: '' };
 }
 
@@ -151,7 +152,7 @@ export async function composeEmail(
     // no story lead here — a known contact replies in their own voice
     const c = contactFor(content, addr);
     if (c) {
-      const { text: body, llm } = await writer.write({ as: addr, prompt: text, fallback: '', long: true });
+      const { text: body, llm } = await writer.write({ as: addr, prompt: text, fallback: c.reply ?? 'Thanks for your message.', long: true });
       if (body) pushMail(s, { folder: 'inbox', day: s.values.day, from: c.name ?? addr, addr, subject: `RE: ${subject || ''}`, body, read: false, generated: llm });
       return { state: s, decision: { kind: 'nothing' }, reply: body, sent: true };
     }

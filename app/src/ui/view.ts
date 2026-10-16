@@ -99,7 +99,7 @@ export function clockHtml(s: GameState): string {
 }
 
 function qmailBadge(s: GameState): number {
-  const story = s.delivered.filter((d) => d.site === 'qmail' && !d.answered).length;
+  const story = s.delivered.filter((d) => d.site === 'qmail' && !s.readEvents.includes(d.eventId) && !s.mail.some((m) => m.eventId === d.eventId && m.folder === 'inbox')).length;
   const mail = s.mail.filter((m) => m.folder === 'inbox' && !m.read).length;
   return story + mail;
 }
@@ -145,7 +145,8 @@ function mailRows(store: GameStore): Row[] {
     if (!e) continue;
     // story events whose reply arrived are shown as their own mail entry; skip if a mail entry mirrors it
     if (s.mail.some((m) => m.eventId === e.id && m.folder === 'inbox')) continue;
-    rows.push({ id: 'e/' + d.eventId, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(e.body ?? ''), day: d.day, unread: !!(e.outcomes && !d.answered), needsReply: !!(e.outcomes && !d.answered), folder: 'inbox', eventId: e.id });
+    const canReply = !!(e.outcomes && !d.answered);
+    rows.push({ id: 'e/' + d.eventId, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(e.body ?? ''), day: d.day, unread: !s.readEvents.includes(e.id), needsReply: canReply, folder: 'inbox', eventId: e.id });
   }
   for (const m of s.mail) rows.push({ id: 'm/' + m.id, from: m.from, addr: m.addr, subject: m.subject, body: m.body, day: m.day, unread: m.folder === 'inbox' && !m.read, needsReply: false, folder: m.folder, eventId: m.eventId, generated: m.generated, to: m.to, link: m.link });
   return rows;
@@ -178,7 +179,7 @@ function pageMail(store: GameStore, param?: string): string {
     const row = rows.find((x) => x.id === param);
     if (!row) main = `<p class="qm-empty">This message doesn't exist.</p>`;
     else {
-      if (row.unread) markRead(store, row);
+      if (row.unread) store.markReadMail(row.id);
       const canReply = row.folder === 'inbox' && row.needsReply;
       const meta = row.folder === 'sent'
         ? `<b>${esc(PLAYER.name)}</b> &lt;${esc(PLAYER.addr)}&gt; to <b>${esc(row.to ?? '')}</b>`
@@ -190,7 +191,11 @@ function pageMail(store: GameStore, param?: string): string {
         <div class="qm-body">${linkify(br(row.body))}</div>
         ${row.link === 'cancel' ? `<p class="qm-actions"><button class="qm-btn ghost" data-cancel-booking="${esc(row.id.slice(2))}">Cancel booking</button></p>` : ''}
         ${row.generated ? `<p class="qm-gen">Reply written by ${esc(LLM.label())}</p>` : ''}
-        ${canReply ? `<form class="qm-replybox" data-form="reply" data-id="${esc(row.eventId ?? '')}"><textarea id="reply-body" rows="4" placeholder="Write your reply…"></textarea><div class="qm-actions"><button class="qm-btn" type="submit">Send reply</button><span class="qm-hint">One message per person until they reply.</span></div></form>` : ''}
+        ${canReply ? `<form class="qm-reply" data-form="reply" data-id="${esc(row.eventId ?? '')}">
+          <div class="qm-reply-head"><span class="qm-reply-to">Reply to <b>${esc(row.from)}</b></span><span class="qm-reply-hint">One message until they reply</span></div>
+          <textarea id="reply-body" rows="3" placeholder="Write your reply…" ${store.busy ? 'disabled' : ''}></textarea>
+          <div class="qm-reply-foot"><span class="qm-reply-cta">⏎ to send · ⇧⏎ for a new line</span><button class="qm-btn" type="submit" ${store.busy ? 'disabled' : ''}>Send reply</button></div>
+        </form>` : row.folder === 'inbox' ? `<p class="qm-actions"><button class="qm-btn ghost" data-reply-to="${esc(row.addr)}">Reply</button></p>` : ''}
       </article>`;
     }
   } else {
@@ -199,19 +204,15 @@ function pageMail(store: GameStore, param?: string): string {
       const snippet = r.body.replace(/\s+/g, ' ').slice(0, 90);
       const who = r.folder === 'sent' ? `To: ${r.to}` : r.from;
       return `<a href="#" class="qm-row${r.unread ? ' unread' : ''}" data-nav="qmail.com/${esc(r.id)}">
-        <span class="qm-from">${esc(who)}</span>
+        <span class="qm-from">${r.unread && r.folder === 'inbox' ? '<i class="qm-dot" aria-label="Unread"></i>' : ''}${esc(who)}</span>
         <span class="qm-subj"><b>${esc(r.subject)}</b> <span>${esc(snippet)}</span></span>
-        <span class="qm-time">${r.needsReply ? '<span class="qm-pill">needs reply</span>' : ''}Day ${r.day}</span></a>`;
+        <span class="qm-time">Day ${r.day}</span></a>`;
     }).join('');
     main = `<h1 class="qm-h">${view === 'sent' ? 'Sent' : 'Inbox'}</h1>${html ? `<div class="qm-list">${html}</div>` : `<p class="qm-empty">${view === 'sent' ? 'Nothing sent yet.' : 'No mail.'}</p>`}`;
   }
   return `<div class="qm">
     <header class="qm-top"><div class="qm-logo">${ICONS.mail}<span>Qmail</span></div><span class="qm-user">${esc(PLAYER.addr)}</span></header>
     <div class="qm-wrap">${side}<main class="qm-main">${main}</main></div></div>`;
-}
-function markRead(store: GameStore, row: Row): void {
-  const s = store.state;
-  if (row.id.startsWith('m/')) { const m = s.mail.find((x) => x.id === row.id.slice(2)); if (m) m.read = true; }
 }
 
 // ── Y ──

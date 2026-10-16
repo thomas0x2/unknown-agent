@@ -9,10 +9,8 @@ export const LAST_DAY = 21;
 export const CLOCK = {
   wake: 10 * 60,   // 10:00
   sleep: 24 * 60,  // 00:00 (auto-sleep)
-  cost: {
-    prompt: 60, build: 60, fix: 60, post: 30, email: 25, reply: 25,
-    review: 20, terminal: 90, deploy: 10, download: 180, book: 10,
-  } as Record<string, number>,
+  // Every action spends exactly one hour.
+  perAction: 60,
 };
 
 export const START = {

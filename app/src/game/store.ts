@@ -71,6 +71,12 @@ export class GameStore {
   setProject(id: string): void { this.ui.project = id; this.emit(); }
   toggleDev(): void { this.ui.dev = !this.ui.dev; document.body.classList.toggle('dev-on', this.ui.dev); this.emit(); }
   like(id: string): void { this.ui.liked[id] = !this.ui.liked[id]; this.emit(); }
+  /** Mark a mail row read (persisted, no re-render — called during render). */
+  markReadMail(id: string): void {
+    const s = this.state;
+    if (id.startsWith('m/')) { const m = s.mail.find((x) => x.id === id.slice(2)); if (m && !m.read) { m.read = true; this.store.save(s); } }
+    else if (id.startsWith('e/')) { const ev = id.slice(2); if (!s.readEvents.includes(ev)) { s.readEvents.push(ev); this.store.save(s); } }
+  }
   dismissMorning(): void { this.state.morning = null; this.store.save(this.state); this.emit(); }
   seenIntro(): void { this.ui.intro = false; this.state.introSeen = true; this.store.save(this.state); this.emit(); }
   openIntro(): void { this.ui.intro = true; this.emit(); }
