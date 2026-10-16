@@ -10,6 +10,7 @@ import './ui/forkyard.css';
 import './ui/qmail.css';
 import './ui/desktop.css';
 import './ui/qdrive.css';
+import './ui/ads.css';
 import { GameStore } from './game/store';
 import { loadContent } from './content/load';
 import { offlineJev, localStorageStore } from './engine';
@@ -19,6 +20,7 @@ import { makeGemmaWriter } from './game/gemma';
 import * as V from './ui/view';
 import { route } from './sites/registry';
 import { listSlots } from './game/saves';
+import { newPageLoad } from './ui/ads';
 
 const content = loadContent();
 const router = new BackendJev(offlineJev);
@@ -30,9 +32,12 @@ const val = (sel: string) => ($(sel) as HTMLInputElement | HTMLTextAreaElement |
 const trendingToday = () => store.content.trending[store.state.values.day] ?? [];
 
 let lastSite = '';
+let lastUrl = '';
 function render(): void {
   const s = store.state;
   const r = route(store.url, s);
+  // a different page (tab switch, back to a site) is a fresh page load: draw new ads
+  if (store.url !== lastUrl) { newPageLoad(); lastUrl = store.url; }
 
   $('#tabs')!.innerHTML = V.tabsHtml(store);
   const addr = $<HTMLInputElement>('#address')!;
@@ -105,7 +110,7 @@ document.addEventListener('click', (e) => {
     store.confirm(`Load ${name}? Your current game is replaced by it.`, 'Load', () => { if (store.loadSlot(n)) toast('Loaded', `${name[0].toUpperCase() + name.slice(1)} · Day ${store.state.values.day}`, 'note'); });
     return;
   }
-  if (d.nav != null) store.navigate(d.nav);
+  if (d.nav != null) { newPageLoad(); store.navigate(d.nav); }
   else if (d.tab != null) store.switchTab(Number(d.tab));
   else if (d.newtab != null) store.navigate('newtab', true);
   else if (d.like != null) store.like(d.like);
@@ -143,7 +148,7 @@ document.addEventListener('submit', (e) => {
   if (!f) return;
   e.preventDefault();
   const kind = f.dataset.form;
-  if (kind === 'url') store.navigate(val('#nt-url') || val('#address'));
+  if (kind === 'url') { newPageLoad(); store.navigate(val('#nt-url') || val('#address')); }
   else if (kind === 'ypost') { const v = val('#post-input').trim(); if (v) void store.post(v, trendingToday()).then((r) => toast('Y', `${r.followerDelta >= 0 ? '+' : '−'}${Math.abs(r.followerDelta)} followers`, 'y')); }
   else if (kind === 'prompt') {
     const v = val('#prompt-input').trim(); if (!v) return;
