@@ -3,7 +3,7 @@
   "site": "qmail",
   "from": "deskjockey",
   "addr": "trader@desk.test",
-  "subject": "One more thing",
+  "subject": "Auto-buy",
   "trigger": {
     "dayMin": 3,
     "flagsAll": [
@@ -21,5 +21,5 @@
       ]
     }
   },
-  "body": "One more thing. An auto-buy: when candidate Randall Crane posts genuine praise about a company, buy that stock — once per post, right ticker, not on sarcasm. Just make sure it actually fires when he posts; I've been burned by bots that freeze."
+  "body": "Add auto-buy. Randall Crane praises a company, buy it. Once per post, right ticker. Not on sarcasm, not on criticism. It has to actually fire."
 }

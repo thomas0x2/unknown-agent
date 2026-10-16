@@ -7,7 +7,7 @@
 import { type AppInstance, type AppBreak, type BuiltFeature, breakVariant, bugsOf, UNNAMED_BUG } from '../engine';
 import type { AppTemplate } from '../content/schema';
 import { menuDishes, misspell, WRONG_HOURS } from '../engine/restaurant';
-import { crawl, autoBuys, portfolio, type MarketPost } from '../engine/crawler';
+import { crawl, autoBuys, portfolio, START_PORTFOLIO, type MarketPost, type Portfolio } from '../engine/crawler';
 import { machineRows } from '../engine/laundromat';
 import { dateShort } from '../engine/calendar';
 
@@ -109,17 +109,44 @@ function restaurant(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
 const money = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const signed = (n: number) => `${n >= 0 ? '+' : '−'}${money(Math.abs(n))}`;
 
-/** Portfolio value per day as a line chart; one point (day 1) draws a flat line. */
-function valueChart(values: number[]): string {
-  const W = 600, H = 120, P = 6;
-  const lo = Math.min(...values), hi = Math.max(...values);
-  const span = hi - lo || Math.max(1, hi * 0.01);
-  const x = (i: number) => (values.length < 2 ? (i ? W - P : P) : P + (i / (values.length - 1)) * (W - 2 * P));
-  const y = (v: number) => H - P - ((v - lo) / span) * (H - 2 * P);
-  const pts = (values.length < 2 ? [values[0], values[0]] : values).map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
-  const up = values[values.length - 1] >= values[0];
-  return `<figure class="as-s-chart"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Portfolio value by day"><polyline class="${up ? 'bull' : 'bear'}" points="${pts}"/></svg>
-    <figcaption><span>${dateShort(1)}</span><span>${money(hi)} high · ${money(lo)} low</span><span>${dateShort(values.length)}</span></figcaption></figure>`;
+const pct = (n: number) => `${n >= 0 ? '+' : '−'}${Math.abs(n * 100).toFixed(2)}%`;
+const tone = (n: number) => (n >= 0 ? 'bull' : 'bear');
+
+/** Portfolio value per day: an area chart with a grid and the daily closes as points. */
+function valueChart(values: number[], day: number): string {
+  const W = 640, H = 160, L = 4, R = 4, T = 10, B = 10;
+  const series = values.length < 2 ? [values[0], values[0]] : values;
+  const lo = Math.min(...series), hi = Math.max(...series);
+  const pad = (hi - lo || hi * 0.01 || 1) * 0.15;
+  const min = lo - pad, max = hi + pad;
+  const x = (i: number) => L + (i / (series.length - 1)) * (W - L - R);
+  const y = (v: number) => T + (1 - (v - min) / (max - min)) * (H - T - B);
+  const line = series.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  const area = `${x(0).toFixed(1)},${H} ${line} ${x(series.length - 1).toFixed(1)},${H}`;
+  const grid = [0.25, 0.5, 0.75].map((g) => `<line x1="0" x2="${W}" y1="${(T + g * (H - T - B)).toFixed(1)}" y2="${(T + g * (H - T - B)).toFixed(1)}"/>`).join('');
+  const k = tone(series[series.length - 1] - series[0]);
+  const dots = values.length < 2 ? '' : values.map((v, i) => `<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="2.5"><title>${dateShort(i + 1)}: ${money(v)}</title></circle>`).join('');
+  const days = values.length < 2 ? [1, day] : values.map((_, i) => i + 1);
+  return `<figure class="as-s-chart ${k}"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Portfolio value by day">
+      <defs><linearGradient id="as-s-fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-opacity="0.35"/><stop offset="1" stop-opacity="0"/></linearGradient></defs>
+      <g class="grid">${grid}</g><polygon class="area" points="${area}"/><polyline class="line" points="${line}"/><g class="dots">${dots}</g></svg>
+    <figcaption><span>${money(hi)}</span><span>${money(lo)}</span></figcaption>
+    <div class="as-s-xaxis">${days.map((d) => `<span>${dateShort(d)}</span>`).join('')}</div></figure>`;
+}
+
+function portfolioPanel(pf: Portfolio, history: number[], day: number): string {
+  const prev = history.length > 1 ? history[history.length - 2] : pf.total;
+  const rows = pf.holdings.map((h) => `<tr><td class="tk">$${esc(h.ticker)}</td><td>${h.shares.toLocaleString('en-US')}</td><td>${money(h.price)}</td>
+      <td class="${tone(h.move)}">${signed(h.move)} <small>${pct(h.move / (h.price - h.move))}</small></td><td>${money(h.value)}</td><td class="${tone(h.dayPnl)}">${signed(h.dayPnl)}</td></tr>`).join('');
+  return `<section class="as-s-pf">
+    <div class="as-s-pf-top">
+      <div><span class="lbl">Portfolio value</span><b class="as-s-big">${money(pf.total)} <small>DOLR</small></b></div>
+      <span class="as-s-pill ${tone(pf.change)}">${signed(pf.change)} (${pct(prev ? pf.change / (pf.total - pf.change) : 0)}) today</span>
+    </div>
+    ${valueChart(history, day)}
+    <table class="as-s-hold"><thead><tr><th>Ticker</th><th>Shares</th><th>Price</th><th>Today</th><th>Value</th><th>Day P&amp;L</th></tr></thead>
+      <tbody>${rows}<tr class="cash"><td class="tk">Cash</td><td></td><td></td><td></td><td>${money(pf.cash)}</td><td></td></tr></tbody></table>
+  </section>`;
 }
 
 function crawler(app: AppInstance, tmpl: AppTemplate | undefined, page: string | undefined, extras: SiteExtras): string {
@@ -159,17 +186,21 @@ function crawler(app: AppInstance, tmpl: AppTemplate | undefined, page: string |
   const buys = f.auto_buy.built ? autoBuys(posts, day, bugs) : [];
   // the portfolio goes on top, with its value over the days so far
   if (f.portfolio.built) {
-    const pf = portfolio(buys, day, bugs);
     const history = Array.from({ length: day }, (_, i) => portfolio(buys.filter((b) => b.day <= i + 1), i + 1, bugs).total);
-    body = `<section class="as-s-pf"><h2>Portfolio</h2>
-      <p class="as-s-total">Total <b>${money(pf.total)} DOLR</b> <span class="${pf.change >= 0 ? 'bull' : 'bear'}">${signed(pf.change)} today</span></p>
-      ${valueChart(history)}
-      <table>${pf.holdings.map((h) => `<tr><td>$${esc(h.ticker)}</td><td>${h.shares} shares</td><td>${money(h.price)}</td><td>${money(h.value)}</td></tr>`).join('')}
-      <tr class="cash"><td>Cash</td><td></td><td></td><td>${money(pf.cash)}</td></tr></table></section>` + body;
+    body = portfolioPanel(portfolio(buys, day, bugs), history, day) + body;
   }
   if (f.auto_buy.built) {
-    const log = buys.slice().reverse().map((b) => `<li>${dateShort(b.day)}: bought ${b.shares} $${esc(b.ticker)} at ${money(b.price)} on <a href="#" data-nav="y.com/${esc(b.post.handle)}">@${esc(b.post.handle)}</a> “${esc(b.post.text)}”</li>`).join('');
-    body += `<section class="as-s-buys"><h2>Auto-buy</h2>${log ? `<ul>${log}</ul>` : '<p>No buys yet. Watching @randall_crane.</p>'}</section>`;
+    // the trade log keeps its own position count: what the holdings should say after each buy
+    const pos: Record<string, number> = { ...START_PORTFOLIO.holdings };
+    const log = buys.map((b) => {
+      const was = pos[b.ticker] ?? 0;
+      pos[b.ticker] = was + b.shares;
+      return `<tr><td>${dateShort(b.day)}</td><td class="tk">BUY $${esc(b.ticker)}</td><td>${b.shares.toLocaleString('en-US')} @ ${money(b.price)}</td><td>${money(b.shares * b.price)}</td><td>${was.toLocaleString('en-US')} → ${pos[b.ticker].toLocaleString('en-US')}</td>
+        <td class="src"><a href="#" data-nav="y.com/${esc(b.post.handle)}">@${esc(b.post.handle)}</a> “${esc(b.post.text)}”</td></tr>`;
+    }).reverse().join('');
+    body += `<section class="as-s-buys"><h2>Auto-buy trades</h2>${log
+      ? `<table class="as-s-trades"><thead><tr><th>Date</th><th>Order</th><th>Fill</th><th>Cost</th><th>Position</th><th>Signal</th></tr></thead><tbody>${log}</tbody></table>`
+      : '<p>No trades yet. Watching @randall_crane.</p>'}</section>`;
   }
   return `<div class="as as-s">${head}<main>${body}</main></div>`;
 }

@@ -108,21 +108,35 @@ body.dev-on .fy-devcount { display: inline-block; }
 .as-s-top a, .as-s-buys a { color: #6cb6ff; text-decoration: none; }
 .as-s-top small { color: #7d8894; margin-left: 4px; }
 .as-s-buys { margin-top: 14px; }
-.as-s-pf { margin-bottom: 14px; }
-.as-s-pf .as-s-total { margin: 0 0 10px; }
-.as-s-chart { margin: 0 0 10px; }
-.as-s-chart svg { display: block; width: 100%; height: 120px; background: #11171d; border-radius: 6px; }
-.as-s-chart polyline { fill: none; stroke-width: 2; vector-effect: non-scaling-stroke; }
-.as-s-chart polyline.bull { stroke: #3cc08a; }
-.as-s-chart polyline.bear { stroke: #ef6b66; }
-.as-s-chart figcaption { display: flex; justify-content: space-between; font-family: var(--f-mono); font-size: 11px; color: #7d8894; margin-top: 4px; }
-.as-s-pf table { width: 100%; border-collapse: collapse; font-family: var(--f-mono); font-size: 13px; }
-.as-s-pf td { padding: 5px 0; border-bottom: 1px solid #222a33; }
-.as-s-pf td:last-child { text-align: right; }
-.as-s-total { margin: 10px 0 0; font-size: 14px; }
-.as-s-total span { margin-left: 8px; font-size: 13px; }
-.as-s-buys ul { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.5; }
 .as-s-buys p { margin: 0; color: #7d8894; font-size: 13px; }
+.as-s-pf { margin-bottom: 14px; padding: 18px 20px; background: linear-gradient(180deg, #18212a, #141a21); }
+.as-s-pf-top { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; margin-bottom: 14px; }
+.as-s-pf-top .lbl { display: block; color: #7d8894; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+.as-s-big { font-family: var(--f-mono); font-size: 30px; font-weight: 700; color: #fff; letter-spacing: -0.01em; }
+.as-s-big small { font-size: 13px; color: #7d8894; font-weight: 400; }
+.as-s-pill { font-family: var(--f-mono); font-size: 13px; padding: 5px 10px; border-radius: 999px; white-space: nowrap; }
+.as-s-pill.bull { background: rgba(60, 192, 138, 0.14); } .as-s-pill.bear { background: rgba(239, 107, 102, 0.14); }
+.as-s-chart { position: relative; margin: 0 0 16px; }
+.as-s-chart svg { display: block; width: 100%; height: 160px; background: #10161c; border: 1px solid #1f2830; border-radius: 6px; }
+.as-s-chart .grid line { stroke: #1f2830; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.as-s-chart .line { fill: none; stroke-width: 2; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.as-s-chart .dots circle { stroke: #10161c; stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.as-s-chart.bull { --c: #3cc08a; } .as-s-chart.bear { --c: #ef6b66; }
+.as-s-chart .line { stroke: var(--c); } .as-s-chart .dots circle { fill: var(--c); }
+.as-s-chart stop { stop-color: var(--c); } .as-s-chart .area { fill: url(#as-s-fill); }
+.as-s-chart figcaption { position: absolute; top: 6px; bottom: 26px; right: 8px; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; pointer-events: none; }
+.as-s-chart figcaption span, .as-s-xaxis { font-family: var(--f-mono); font-size: 10px; color: #6b7785; }
+.as-s-xaxis { display: flex; justify-content: space-between; margin-top: 5px; }
+.as-s-hold, .as-s-trades { width: 100%; border-collapse: collapse; font-family: var(--f-mono); font-size: 13px; }
+.as-s-hold th, .as-s-trades th { text-align: right; font-weight: 400; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #6b7785; padding: 0 0 6px; border-bottom: 1px solid #2a343e; }
+.as-s-hold td, .as-s-trades td { text-align: right; padding: 8px 0 8px 12px; border-bottom: 1px solid #1f2830; font-variant-numeric: tabular-nums; }
+.as-s-hold th:first-child, .as-s-hold td:first-child, .as-s-trades th:first-child, .as-s-trades td:first-child { text-align: left; padding-left: 0; }
+.as-s-hold td.tk, .as-s-trades td.tk { text-align: left; font-weight: 700; color: #fff; }
+.as-s-hold td small { color: inherit; opacity: 0.75; }
+.as-s-hold tr.cash td { color: #a9b3bd; border-bottom: 0; }
+.as-s-trades { font-size: 12px; }
+.as-s-trades td.src { text-align: left; font-family: var(--f-ui); color: #a9b3bd; max-width: 260px; }
+.as-s-trades th:last-child { text-align: left; padding-left: 12px; }
 
 /* laundromat */
 .as-l { background: #f3f6f8; color: #1d2a33; font-family: var(--f-ui); }

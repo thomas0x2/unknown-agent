@@ -97,8 +97,8 @@ export function crawl(posts: MarketPost[], day: number, bugs: Set<string>): Tick
 // ── portfolio and auto-buy (the trader's day 3 update) ──
 
 const BASE_PRICE: Record<string, number> = { GAI: 140, VANT: 48 };
-export const START_PORTFOLIO = { cash: 2000, holdings: { GAI: 12, VANT: 30 } as Record<string, number> };
-const BUY_SHARES = 5;
+export const START_PORTFOLIO = { cash: 1_850_000, holdings: { GAI: 42_000, VANT: 95_000 } as Record<string, number> };
+const BUY_SHARES = 2_000;
 
 /** A ticker's closing price on a day: a small deterministic walk, so today's change is never zero. */
 export function price(t: string, day: number): number {
@@ -134,13 +134,18 @@ export function autoBuys(posts: MarketPost[], day: number, bugs: Set<string>): B
   return out;
 }
 
-export interface Portfolio { cash: number; holdings: { ticker: string; shares: number; price: number; value: number }[]; total: number; change: number }
+/** `move` is the market's price change since yesterday's close, straight from the quote (bugs don't touch it). */
+export interface Holding { ticker: string; shares: number; price: number; move: number; value: number; dayPnl: number }
+export interface Portfolio { cash: number; holdings: Holding[]; total: number; change: number }
 
 export function portfolio(buys: Buy[], day: number, bugs: Set<string>): Portfolio {
   const held = { ...START_PORTFOLIO.holdings };
   let cash = START_PORTFOLIO.cash;
   if (!bugs.has('stale_after_buy')) for (const b of buys) { held[b.ticker] = (held[b.ticker] ?? 0) + b.shares; cash -= b.shares * b.price; }
-  const holdings = Object.entries(held).map(([ticker, shares]) => ({ ticker, shares, price: price(ticker, day), value: shares * price(ticker, day) }));
+  const holdings = Object.entries(held).map(([ticker, shares]) => {
+    const px = price(ticker, day), move = px - price(ticker, Math.max(1, day - 1));
+    return { ticker, shares, price: px, move, value: shares * px, dayPnl: shares * move };
+  });
   const stocks = holdings.reduce((a, h) => a + h.value, 0);
   // today's change; the bug shows the change since the account was opened (day 1 prices)
   const change = holdings.reduce((a, h) => a + h.shares * (h.price - price(h.ticker, bugs.has('change_wrong') ? 1 : day - 1)), 0);
