@@ -285,7 +285,7 @@ describe('day 1 playthrough', () => {
     for (const d of ['Margherita', 'Diavola', 'Lasagne', 'Tiramisu', 'Espresso']) expect(html).toContain(d);
     expect(html).toMatch(/Margherita<\/span><i><\/i><b>\d+ DOLR/);
     expect(html).not.toContain('Margherita</span><i></i><b>12 DOLR');
-    s = (await promptDone(s, content, wordJev, gino + `The prices are wrong. It should be ${MENU}.`)).state;
+    s = (await promptDone(s, content, wordJev, gino + `The menu prices are wrong. It should be ${MENU}.`)).state;
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);
   });
 });

@@ -200,7 +200,9 @@ async function buildMatch(sdk, body) {
     // each item is matched on its own: naming one part must not pull in the others on the same page
     const q = {
       // a fix has to say which part is wrong: naming the part, or a symptom only that part can have
-      component: `Does the prompt name the path to this exact part of the app and say it's wrong or broken? The part's path is given as "feature > folder > part" (for example "booking > confirmation > date"). Yes only if the prompt names, or nearly names, every step of the path in the prompt itself: the feature, each folder and the part ("the date on the booking confirmation" names booking > confirmation > date; "the menu prices" names menu > prices; "the bot filter" names filter > bots). Synonyms and close wording count ("the confirmation mail" for confirmation, "price" for prices); a step left out does not ("the date is wrong" skips booking and confirmation). Hedging is fine ("seems off"). Judge each complaint in the prompt on its own: a prompt can name several paths. No if a step is missing, if the complaint fits one of the other parts listed better, if the prompt only says the feature is wrong ("fix the booking"), or if it points at no part of the app ("it's broken"). When in doubt, say no. ${context}${named} Part: ${f.description}`,
+      // whether the path to the part is named is asked separately, one step at a time (kind 'step')
+      component: `Does the prompt say this part of the app is wrong or broken? Yes if it names this part in any words ("the name", "the opening hours", "the prices"), including the names listed below as counting, or describes a problem that this part has and none of the other parts listed could have ("the prices are in CURO"). Hedging is fine ("seems off"). Judge each complaint in the prompt on its own: a prompt can name several parts. No if the complaint fits one of the other parts listed better, even when they share words (picking a date in the past is about the dates the form offers, not the date on the confirmation), if it only says the whole feature is wrong ("fix the booking"), or if it points at nothing ("it's broken"). ${context}${named} Part: ${f.description}`,
+      step: `Does the prompt itself name or refer to this part of the app, by its name or close wording ("landing page" or "home page" for the landing, "confirmation mail" for the confirmation, "the bot filter" for the filter), or by any of the names listed below as counting? It only has to be mentioned, not called wrong. Earlier messages don't count. ${f.description}`,
       // the near-miss: the feature is named, the part isn't
       area: `Does the prompt say something is wrong with this feature or one of its parts, without naming the full path to a part? Yes for "the menu is wrong", "the booking doesn't work", or a part named without its feature or folder ("the date is wrong" about the booking confirmation). No if the prompt names a full path to one of the parts listed (the feature, each folder and the part), if it's about a different feature, if it only asks to build, add or change the feature, or if it names no feature or part at all ("it's broken"). ${context}${named} Feature: ${f.description}`,
       problem: `Does the prompt report this problem or a symptom of it, in any words? Yes if it names the problem or describes what the player sees, even loosely or with hedging. No if it describes a clearly different problem, or points at nothing the player saw ("it's broken", "fix it"). ${context}${named} Problem: ${f.description}`,
@@ -237,8 +239,10 @@ async function handle(kind, body) {
     // score is the expected rubric level, 0..4
     return { status: 200, json: { category: answers.category?.choice ?? 'tip', quality: (answers.quality?.score ?? 2) / 4 } };
   }
-  // a component counts only when Jev is fairly sure: a fix should touch what the player named and nothing near it
-  const bar = (f) => (f.kind === 'component' ? 0.75 : 0.5);
+  // the dev Jev tests take the raw confidences and apply thresholds themselves
+  if (body.withScores) return { status: 200, json: (body.features ?? []).map((_, i) => answers[`f${i}`]?.noul ?? 0) };
+  // a component counts only when Jev is fairly sure (keep in step with BARS_NOW in src/engine/jevTests.ts): a fix should touch what the player named and nothing near it
+  const bar = (f) => (f.kind === 'component' ? 0.6 : 0.5);
   const features = (body.features ?? []).filter((f, i) => (answers[`f${i}`]?.noul ?? 0) >= bar(f)).map((f) => f.id);
   return { status: 200, json: features };
 }

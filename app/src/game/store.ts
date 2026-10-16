@@ -67,8 +67,9 @@ export class GameStore {
     devOptions: '' as string,
     /** The two-step booking form: which step is showing and what step one said. */
     book: { step: 1, name: '', email: '', date: 0 },
-    /** Dev: the flags and meters editor is open. */
+    /** Dev: the flags and meters editor is open, and which of its tabs shows. */
     devEdit: false,
+    devTab: 'edit' as 'edit' | 'jev',
     /** Coinbin's Send form: open or not, what was typed, and why the last attempt failed. */
     send: { open: false, to: '', amount: '', error: '' },
     /** A line under Coinbin's Send/Receive buttons: "Address copied", or what was just sent. */
@@ -289,6 +290,10 @@ export class GameStore {
   setProject(id: string): void { this.ui.project = id; this.emit(); }
   toggleDevOptions(site: string): void { this.ui.devOptions = this.ui.devOptions === site ? '' : site; this.emit(); }
   toggleDevEdit(): void { this.ui.devEdit = !this.ui.devEdit; this.emit(); }
+  /** Opens the dev editor on a tab (or closes it, when that tab is already showing). */
+  devTab(tab: 'edit' | 'jev'): void { this.ui.devEdit = !(this.ui.devEdit && this.ui.devTab === tab); this.ui.devTab = tab; this.emit(); }
+  /** Repaints after something outside the store changed (the dev Jev tests report as they run). */
+  repaint(): void { this.emit(); }
   toggleDev(): void { this.ui.dev = !this.ui.dev; this.emit(); }
   /** Dev mode shows how replies were chosen (Jev's decision, the model prompt and output). On unless turned off. */
   devMode = readDevMode();
@@ -364,7 +369,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = HOME_TAB; this.nextTab = PINNED.length + 1;
-    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', jevOffline: null, yUnread: 0 };
+    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', jevOffline: null, yUnread: 0 };
     this.store.save(this.state);
     this.emit();
   }

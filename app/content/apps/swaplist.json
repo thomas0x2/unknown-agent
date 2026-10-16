@@ -11,6 +11,11 @@
     {
       "id": "listings",
       "description": "listings with title, photo, price in DOLR and category",
+      "aka": [
+        "listing",
+        "items",
+        "ads"
+      ],
       "failures": [
         "failed_fetch",
         "subtle"
@@ -23,25 +28,47 @@
       "components": [
         {
           "id": "title",
-          "label": "listing titles"
+          "label": "listing titles",
+          "aka": [
+            "title",
+            "name"
+          ]
         },
         {
           "id": "photo",
-          "label": "listing photos"
+          "label": "listing photos",
+          "aka": [
+            "photo",
+            "image",
+            "picture"
+          ]
         },
         {
           "id": "price",
-          "label": "listing prices"
+          "label": "listing prices",
+          "aka": [
+            "price",
+            "cost"
+          ]
         },
         {
           "id": "category",
-          "label": "listing categories"
+          "label": "listing categories",
+          "aka": [
+            "category",
+            "tag"
+          ]
         }
       ]
     },
     {
       "id": "search",
       "description": "browse, search and filter by category",
+      "aka": [
+        "browse",
+        "find",
+        "search bar"
+      ],
       "failures": [
         "subtle"
       ],
@@ -52,17 +79,31 @@
       "components": [
         {
           "id": "query",
-          "label": "search"
+          "label": "search",
+          "aka": [
+            "search box",
+            "query",
+            "search results"
+          ]
         },
         {
           "id": "category_filter",
-          "label": "the category filter"
+          "label": "the category filter",
+          "aka": [
+            "category filter",
+            "filter"
+          ]
         }
       ]
     },
     {
       "id": "contact",
       "description": "a contact-seller button that reaches the right seller",
+      "aka": [
+        "contact seller",
+        "messaging",
+        "message seller"
+      ],
       "failures": [
         "deep",
         "subtle"
@@ -76,17 +117,31 @@
       "components": [
         {
           "id": "button",
-          "label": "the contact-seller button"
+          "label": "the contact-seller button",
+          "aka": [
+            "contact button",
+            "message button"
+          ]
         },
         {
           "id": "seller",
-          "label": "which seller gets the message"
+          "label": "which seller gets the message",
+          "aka": [
+            "seller",
+            "wrong seller",
+            "recipient"
+          ]
         }
       ]
     },
     {
       "id": "mark_sold",
       "description": "mark items as sold so they stop taking offers",
+      "aka": [
+        "sold",
+        "mark as sold",
+        "sold status"
+      ],
       "failures": [
         "subtle"
       ],
@@ -97,11 +152,20 @@
       "components": [
         {
           "id": "sold_flag",
-          "label": "marking an item sold"
+          "label": "marking an item sold",
+          "aka": [
+            "sold flag",
+            "sold badge",
+            "marking sold"
+          ]
         },
         {
           "id": "offers",
-          "label": "closing offers on sold items"
+          "label": "closing offers on sold items",
+          "aka": [
+            "offers",
+            "bids"
+          ]
         }
       ]
     }

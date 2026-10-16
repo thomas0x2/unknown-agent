@@ -1,0 +1,1210 @@
+[
+  {
+    "app": "restaurant",
+    "broken": [
+      "landing/name"
+    ],
+    "prompt": "On the Trattoria Gino site, the restaurant name on the landing page is misspelled",
+    "expect": {
+      "fix": [
+        "landing/name"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "landing/name"
+    ],
+    "prompt": "trattoria gino homepage says Trattoria Gina, fix the name",
+    "expect": {
+      "fix": [
+        "landing/name"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "landing/hours"
+    ],
+    "prompt": "Gino site: opening hours on the front page are wrong",
+    "expect": {
+      "fix": [
+        "landing/hours"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "landing/hours"
+    ],
+    "prompt": "the home page of trattoria gino shows the wrong opening times",
+    "expect": {
+      "fix": [
+        "landing/hours"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "landing/name",
+      "landing/hours"
+    ],
+    "prompt": "Trattoria Gino landing page: wrong name and wrong hours",
+    "expect": {
+      "fix": [
+        "landing/name",
+        "landing/hours"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "landing/name",
+      "landing/hours"
+    ],
+    "prompt": "On the Trattoria Gino site, the name and the opening hours on the landing page are wrong",
+    "expect": {
+      "fix": [
+        "landing/name",
+        "landing/hours"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "landing/name",
+      "landing/hours"
+    ],
+    "prompt": "Trattoria Gino: the hours on the landing page are off",
+    "expect": {
+      "fix": [
+        "landing/hours"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "landing/hours"
+    ],
+    "prompt": "Trattoria Gino: the landing page looks off",
+    "expect": {
+      "near": "near_miss"
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "landing/hours"
+    ],
+    "prompt": "something's wrong with the trattoria gino homepage",
+    "expect": {
+      "near": "near_miss"
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "landing/name"
+    ],
+    "prompt": "Trattoria Gino: the name is spelled wrong",
+    "expect": {
+      "near": "near_feature"
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "landing/hours"
+    ],
+    "prompt": "Trattoria Gino has the wrong opening hours",
+    "expect": {
+      "near": "near_feature"
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "landing/hours"
+    ],
+    "prompt": "Trattoria Gino: the name on the landing page is wrong",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "landing/name"
+    ],
+    "prompt": "fix the name on the landing page",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "menu/prices"
+    ],
+    "prompt": "Trattoria Gino: the prices on the menu are wrong",
+    "expect": {
+      "fix": [
+        "menu/prices"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "menu/prices"
+    ],
+    "prompt": "the menu on gino's site shows prices in CURO instead of DOLR",
+    "expect": {
+      "fix": [
+        "menu/prices"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "menu/prices"
+    ],
+    "prompt": "Trattoria Gino menu page: the pizza prices dont match what Gino sent",
+    "expect": {
+      "fix": [
+        "menu/prices"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "menu/items"
+    ],
+    "prompt": "Trattoria Gino: wrong dishes on the menu",
+    "expect": {
+      "fix": [
+        "menu/items"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "menu/items"
+    ],
+    "prompt": "the Trattoria Gino menu lists pizzas Gino doesn't even make",
+    "expect": {
+      "fix": [
+        "menu/items"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "menu/items"
+    ],
+    "prompt": "trattoria gino - menu items are wrong pls fix",
+    "expect": {
+      "fix": [
+        "menu/items"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "menu/items",
+      "menu/prices"
+    ],
+    "prompt": "Trattoria Gino menu: the dishes and the prices are both wrong",
+    "expect": {
+      "fix": [
+        "menu/items",
+        "menu/prices"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "menu/items",
+      "menu/prices"
+    ],
+    "prompt": "Trattoria Gino menu prices are wrong",
+    "expect": {
+      "fix": [
+        "menu/prices"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "menu/prices"
+    ],
+    "prompt": "Trattoria Gino, the menu is messed up",
+    "expect": {
+      "near": "near_miss"
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "menu/prices"
+    ],
+    "prompt": "Trattoria Gino: prices are wrong",
+    "expect": {
+      "near": "near_feature"
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "menu/prices"
+    ],
+    "prompt": "Trattoria Gino: the dishes on the menu are wrong",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "menu/prices"
+    ],
+    "prompt": "the menu prices are wrong",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/confirmation/date"
+    ],
+    "prompt": "Trattoria Gino: the date in the booking confirmation email is wrong",
+    "expect": {
+      "fix": [
+        "booking/confirmation/date"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/confirmation/date"
+    ],
+    "prompt": "On gino's site the booking confirmation mail shows the wrong day",
+    "expect": {
+      "fix": [
+        "booking/confirmation/date"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/confirmation/time"
+    ],
+    "prompt": "Trattoria Gino reservation confirmation email has the wrong time",
+    "expect": {
+      "fix": [
+        "booking/confirmation/time"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/confirmation/party"
+    ],
+    "prompt": "Trattoria Gino booking confirmation: party size is wrong",
+    "expect": {
+      "fix": [
+        "booking/confirmation/party"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/confirmation/party"
+    ],
+    "prompt": "Trattoria Gino: I booked a table for 4 people and the booking confirmation email said 2 guests",
+    "expect": {
+      "fix": [
+        "booking/confirmation/party"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/confirmation/restaurant_name"
+    ],
+    "prompt": "Trattoria Gino: the restaurant name in the booking confirmation email is wrong",
+    "expect": {
+      "fix": [
+        "booking/confirmation/restaurant_name"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/confirmation/recipient"
+    ],
+    "prompt": "Trattoria Gino: the booking confirmation goes to the restaurant instead of the guest",
+    "expect": {
+      "fix": [
+        "booking/confirmation/recipient"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/confirmation/sending"
+    ],
+    "prompt": "Trattoria Gino: no booking confirmation email ever arrives",
+    "expect": {
+      "fix": [
+        "booking/confirmation/sending"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/confirmation/sending"
+    ],
+    "prompt": "trattoria gino bookings: the confirmation emails are never sent",
+    "expect": {
+      "fix": [
+        "booking/confirmation/sending"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/confirmation/date",
+      "booking/confirmation/time"
+    ],
+    "prompt": "Trattoria Gino: the date and time on the booking confirmation are both wrong",
+    "expect": {
+      "fix": [
+        "booking/confirmation/date",
+        "booking/confirmation/time"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/confirmation/date",
+      "booking/confirmation/party"
+    ],
+    "prompt": "Trattoria Gino: the booking confirmation has the wrong party size",
+    "expect": {
+      "fix": [
+        "booking/confirmation/party"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/confirmation/date"
+    ],
+    "prompt": "Trattoria Gino: the date in the confirmation is wrong",
+    "expect": {
+      "near": "near_feature"
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/confirmation/date"
+    ],
+    "prompt": "Trattoria Gino: the booking date is wrong",
+    "expect": {
+      "near": "near_folder"
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/confirmation/party"
+    ],
+    "prompt": "Trattoria Gino booking shows the wrong number of guests",
+    "expect": {
+      "near": "near_folder"
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/confirmation/time"
+    ],
+    "prompt": "Trattoria Gino: something's off with the booking confirmation",
+    "expect": {
+      "near": "near_part"
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/confirmation/time"
+    ],
+    "prompt": "Trattoria Gino, the booking confirmation email is wrong",
+    "expect": {
+      "near": "near_part"
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/confirmation/party"
+    ],
+    "prompt": "Trattoria Gino: fix the booking",
+    "expect": {
+      "near": "near_miss"
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/confirmation/date"
+    ],
+    "prompt": "Trattoria Gino: bookings are broken",
+    "expect": {
+      "near": "near_miss"
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/confirmation/time"
+    ],
+    "prompt": "Trattoria Gino: the party size on the booking confirmation is wrong",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/confirmation/date"
+    ],
+    "prompt": "the date on the booking confirmation is wrong",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/form/date"
+    ],
+    "prompt": "Trattoria Gino: the booking form lets you pick dates in the past",
+    "expect": {
+      "fix": [
+        "booking/form/date"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/form/date"
+    ],
+    "prompt": "on trattoria gino you can reserve a table for yesterday in the booking form",
+    "expect": {
+      "fix": [
+        "booking/form/date"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/form/hours"
+    ],
+    "prompt": "Trattoria Gino: the booking form accepts bookings at 3am when the restaurant is closed",
+    "expect": {
+      "fix": [
+        "booking/form/hours"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/form/hours"
+    ],
+    "prompt": "Trattoria Gino booking form ignores the opening hours",
+    "expect": {
+      "fix": [
+        "booking/form/hours"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/form/book_button"
+    ],
+    "prompt": "Trattoria Gino: the Book button on the booking form does nothing",
+    "expect": {
+      "fix": [
+        "booking/form/book_button"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/form/book_button"
+    ],
+    "prompt": "Trattoria Gino reservation form: clicking the submit button doesn't work",
+    "expect": {
+      "fix": [
+        "booking/form/book_button"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/form/date",
+      "booking/form/hours"
+    ],
+    "prompt": "Trattoria Gino booking form: you can pick past dates and times when it's closed",
+    "expect": {
+      "fix": [
+        "booking/form/date",
+        "booking/form/hours"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/form/date"
+    ],
+    "prompt": "Trattoria Gino: you can book tables for dates in the past",
+    "expect": {
+      "near": "near_folder"
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/form/book_button"
+    ],
+    "prompt": "Trattoria Gino: the booking form is broken",
+    "expect": {
+      "near": "near_part"
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/form/hours"
+    ],
+    "prompt": "Trattoria Gino: the dates you can pick on the booking form are wrong",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "booking/form/date"
+    ],
+    "prompt": "On Trattoria Gino the date on the booking confirmation is wrong",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "landing/hours"
+    ],
+    "prompt": "it's broken",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "menu/prices"
+    ],
+    "prompt": "fix gino",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "landing/name"
+    ],
+    "prompt": "Trattoria Gino: make it look nicer",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "menu/prices",
+      "landing/hours"
+    ],
+    "prompt": "Trattoria Gino: the menu prices are wrong and so are the opening hours on the landing page",
+    "expect": {
+      "fix": [
+        "menu/prices",
+        "landing/hours"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "tickers/symbols"
+    ],
+    "prompt": "Sentiment Crawler is tracking the wrong tickers, it should be $GAI and $VANT",
+    "expect": {
+      "fix": [
+        "tickers/symbols"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "tickers/case"
+    ],
+    "prompt": "Sentiment Crawler misses tickers written in lowercase like $gai",
+    "expect": {
+      "fix": [
+        "tickers/case"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "tickers/case"
+    ],
+    "prompt": "the crawler ignores lowercase tickers",
+    "expect": {
+      "fix": [
+        "tickers/case"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "sentiment/labels"
+    ],
+    "prompt": "Sentiment Crawler: bullish posts get labelled bearish in the sentiment",
+    "expect": {
+      "fix": [
+        "sentiment/labels"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "sentiment/sarcasm"
+    ],
+    "prompt": "Sentiment Crawler takes sarcastic posts literally in the sentiment analysis",
+    "expect": {
+      "fix": [
+        "sentiment/sarcasm"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "sentiment/sarcasm"
+    ],
+    "prompt": "Sentiment Crawler: sarcasm is read wrong",
+    "expect": {
+      "near": "near_feature"
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "sentiment/labels"
+    ],
+    "prompt": "Sentiment Crawler, the sentiment is wrong",
+    "expect": {
+      "near": "near_miss"
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "filter/bots"
+    ],
+    "prompt": "Sentiment Crawler's bot filter lets the spam through",
+    "expect": {
+      "fix": [
+        "filter/bots"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "filter/bots"
+    ],
+    "prompt": "the crawler counts bot posts, the spam filter isn't working",
+    "expect": {
+      "fix": [
+        "filter/bots"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "filter/bots"
+    ],
+    "prompt": "Sentiment Crawler is counting the bots",
+    "expect": {
+      "fix": [
+        "filter/bots"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "portfolio/total"
+    ],
+    "prompt": "Sentiment Crawler: the portfolio total is wrong",
+    "expect": {
+      "fix": [
+        "portfolio/total"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "portfolio/total"
+    ],
+    "prompt": "Sentiment Crawler portfolio doesn't add up, the total value is off",
+    "expect": {
+      "fix": [
+        "portfolio/total"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "portfolio/holdings/price"
+    ],
+    "prompt": "On the Sentiment Crawler portfolio, the price of each holding is stale",
+    "expect": {
+      "fix": [
+        "portfolio/holdings/price"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "portfolio/holdings/price"
+    ],
+    "prompt": "Sentiment Crawler portfolio: the holdings show old prices",
+    "expect": {
+      "fix": [
+        "portfolio/holdings/price"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "portfolio/holdings/value"
+    ],
+    "prompt": "Sentiment Crawler: the value of each holding in the portfolio is wrong",
+    "expect": {
+      "fix": [
+        "portfolio/holdings/value"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "portfolio/pnl"
+    ],
+    "prompt": "Sentiment Crawler: the P&L on the portfolio has the wrong sign",
+    "expect": {
+      "fix": [
+        "portfolio/pnl"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "portfolio/pnl"
+    ],
+    "prompt": "Sentiment Crawler portfolio shows a profit for today when the trader lost money",
+    "expect": {
+      "fix": [
+        "portfolio/pnl"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "portfolio/percent"
+    ],
+    "prompt": "Sentiment Crawler: the percent changes on the portfolio are wrong",
+    "expect": {
+      "fix": [
+        "portfolio/percent"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "portfolio/holdings/price"
+    ],
+    "prompt": "Sentiment Crawler: the prices are stale",
+    "expect": {
+      "near": "near_feature"
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "portfolio/holdings/price"
+    ],
+    "prompt": "Sentiment Crawler: the portfolio prices are stale",
+    "expect": {
+      "near": "near_folder"
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "portfolio/holdings/value"
+    ],
+    "prompt": "Sentiment Crawler: something's wrong in the portfolio holdings",
+    "expect": {
+      "near": "near_part"
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "portfolio/pnl"
+    ],
+    "prompt": "Sentiment Crawler: the portfolio is wrong",
+    "expect": {
+      "near": "near_miss"
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "portfolio/pnl",
+      "portfolio/total"
+    ],
+    "prompt": "Sentiment Crawler: the portfolio P&L is wrong",
+    "expect": {
+      "fix": [
+        "portfolio/pnl"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "portfolio/total"
+    ],
+    "prompt": "Sentiment Crawler: the P&L on the portfolio is wrong",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "portfolio/pnl"
+    ],
+    "prompt": "the p&l is wrong",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "auto_buy/signal/author"
+    ],
+    "prompt": "Sentiment Crawler auto-buy: the signal fires on posts from Crane impostor accounts",
+    "expect": {
+      "fix": [
+        "auto_buy/signal/author"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "auto_buy/signal/praise"
+    ],
+    "prompt": "Sentiment Crawler: the autobuy signal triggers on posts criticizing the company",
+    "expect": {
+      "fix": [
+        "auto_buy/signal/praise"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "auto_buy/order/once"
+    ],
+    "prompt": "Sentiment Crawler auto buy places the order several times for the same post",
+    "expect": {
+      "fix": [
+        "auto_buy/order/once"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "auto_buy/order/ticker"
+    ],
+    "prompt": "Sentiment Crawler auto-buy order buys the wrong ticker",
+    "expect": {
+      "fix": [
+        "auto_buy/order/ticker"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "auto_buy/order/trigger"
+    ],
+    "prompt": "Sentiment Crawler: the auto buy order never gets placed",
+    "expect": {
+      "fix": [
+        "auto_buy/order/trigger"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "auto_buy/order/once"
+    ],
+    "prompt": "Sentiment Crawler: it buys the same stock 5 times per post",
+    "expect": {
+      "near": "near_feature"
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "auto_buy/signal/author"
+    ],
+    "prompt": "Sentiment Crawler: the auto-buy is broken",
+    "expect": {
+      "near": "near_miss"
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "auto_buy/order/ticker"
+    ],
+    "prompt": "Sentiment Crawler auto buy: the order is wrong",
+    "expect": {
+      "near": "near_part"
+    }
+  },
+  {
+    "app": "laundromat",
+    "broken": [
+      "machines/count"
+    ],
+    "prompt": "Spin Cycle Status only shows six machines in the machine list, there are eight",
+    "expect": {
+      "fix": [
+        "machines/count"
+      ]
+    }
+  },
+  {
+    "app": "laundromat",
+    "broken": [
+      "machines/status/done"
+    ],
+    "prompt": "Spin Cycle Status: on the machine list, finished machines show as free in their status",
+    "expect": {
+      "fix": [
+        "machines/status/done"
+      ]
+    }
+  },
+  {
+    "app": "laundromat",
+    "broken": [
+      "machines/status/out_of_order"
+    ],
+    "prompt": "Spin Cycle Status: broken machines show as free in the machine status",
+    "expect": {
+      "fix": [
+        "machines/status/out_of_order"
+      ]
+    }
+  },
+  {
+    "app": "laundromat",
+    "broken": [
+      "machines/status/labels"
+    ],
+    "prompt": "Spin Cycle Status machine list shows raw status codes instead of the status labels",
+    "expect": {
+      "fix": [
+        "machines/status/labels"
+      ]
+    }
+  },
+  {
+    "app": "laundromat",
+    "broken": [
+      "machines/status/done"
+    ],
+    "prompt": "Spin Cycle Status: done machines show as free",
+    "expect": {
+      "near": "near_folder"
+    }
+  },
+  {
+    "app": "laundromat",
+    "broken": [
+      "refresh/auto_refresh"
+    ],
+    "prompt": "Spin Cycle Status doesn't auto refresh, the status goes stale",
+    "expect": {
+      "fix": [
+        "refresh/auto_refresh"
+      ]
+    }
+  },
+  {
+    "app": "laundromat",
+    "broken": [
+      "minutes/minutes_left"
+    ],
+    "prompt": "Spin Cycle Status: the countdown shows the wrong time left",
+    "expect": {
+      "fix": [
+        "minutes/minutes_left"
+      ]
+    }
+  },
+  {
+    "app": "laundromat",
+    "broken": [
+      "minutes/minutes_left"
+    ],
+    "prompt": "spin cycle: minutes left on running machines are wrong",
+    "expect": {
+      "fix": [
+        "minutes/minutes_left"
+      ]
+    }
+  },
+  {
+    "app": "laundromat",
+    "broken": [
+      "more_machines/new_machines"
+    ],
+    "prompt": "Spin Cycle Status: the four new machines always show as free",
+    "expect": {
+      "fix": [
+        "more_machines/new_machines"
+      ]
+    }
+  },
+  {
+    "app": "laundromat",
+    "broken": [
+      "more_machines/count"
+    ],
+    "prompt": "Spin Cycle Status still shows only 8 machines, it should show all twelve",
+    "expect": {
+      "fix": [
+        "more_machines/count"
+      ]
+    }
+  },
+  {
+    "app": "laundromat",
+    "broken": [
+      "more_machines/layout"
+    ],
+    "prompt": "Spin Cycle Status: the grid layout breaks with the new machines",
+    "expect": {
+      "fix": [
+        "more_machines/layout"
+      ]
+    }
+  },
+  {
+    "app": "laundromat",
+    "broken": [
+      "machines/status/done"
+    ],
+    "prompt": "Spin Cycle Status: the machine list is wrong",
+    "expect": {
+      "near": "near_miss"
+    }
+  },
+  {
+    "app": "laundromat",
+    "broken": [
+      "refresh/auto_refresh"
+    ],
+    "prompt": "spin cycle is broken",
+    "expect": {
+      "none": true
+    }
+  }
+]

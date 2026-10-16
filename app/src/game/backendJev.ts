@@ -43,6 +43,9 @@ export class BackendJev implements JevRouter {
   async matchFeatures(input: FeatureMatchInput): Promise<string[]> {
     return this.call('match-features', input);
   }
+  async matchScores(input: FeatureMatchInput): Promise<number[]> {
+    return this.call('match-features', { ...input, withScores: true });
+  }
 
   private setMode(mode: JevMode, reason = ''): void {
     if (this.mode === mode && this.reason === reason) return;

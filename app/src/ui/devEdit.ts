@@ -22,6 +22,9 @@ export function contentFlags(content: Content): string[] {
   return [...out].sort();
 }
 
+/** The editor's header: its tabs and the close button. */
+export const devTabsHeader = (on: 'edit' | 'jev') => `<header><span class="dve-tabs">${([['edit', 'Flags and meters'], ['jev', 'Jev tests']] as const).map(([id, l]) => `<button data-act="devtab" data-devtab="${id}" class="${id === on ? 'on' : ''}">${l}</button>`).join('')}</span><button data-act="devedit" aria-label="Close">×</button></header>`;
+
 export function devEditHtml(store: GameStore): string {
   const s = store.state;
   const meters = METER_IDS.map((id) => {
@@ -39,7 +42,7 @@ export function devEditHtml(store: GameStore): string {
     const ev = store.content.events.find((e) => e.id === a.eventId);
     return `<p class="dv-dim">${a.day < s.values.day ? 'next morning' : clockTime(a.at)} · ${esc(ev?.site ?? '')} · ${esc(ev?.subject ?? ev?.from ?? a.eventId)}</p>`;
   }).join('');
-  return `<header><b>Flags and meters</b><button data-act="devedit" aria-label="Close">×</button></header>
+  return `${devTabsHeader('edit')}
     <h3>Meters</h3>
     <p class="dv-dim">Changes apply when you leave the field. Changing the day skips the nights and starts that day's morning; its events arrive over the day.</p>
     <table class="dve-meters">${meters}</table>

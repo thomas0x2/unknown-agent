@@ -54,7 +54,7 @@ export interface FeatureMatchInput {
   /** Today's agent.chat before this prompt, oldest first ("Player: …", "Agent: …"): context for what the prompt refers to, not requests. */
   context?: string[];
   /** Spec features with their plain-language descriptions. */
-  features: { id: string; description: string; kind?: 'build' | 'problem' | 'component' | 'area' }[];
+  features: { id: string; description: string; kind?: 'build' | 'problem' | 'component' | 'area' | 'step' }[];
   /** Only count items for an app the prompt names or clearly refers to (the "(for <app>, <url>)" in each description). */
   appNamed?: boolean;
 }
@@ -64,6 +64,8 @@ export interface JevRouter {
   ratePost(input: PostInput): Promise<PostRating>;
   /** Which spec features a build/brief prompt asked for correctly. */
   matchFeatures(input: FeatureMatchInput): Promise<string[]>;
+  /** Jev's confidence (0..1) for each item of a matchFeatures question, in order: the dev Jev tests replay other thresholds from these. */
+  matchScores?(input: FeatureMatchInput): Promise<number[]>;
 }
 
 /** Jev couldn't be reached. The action that needed it didn't happen; nothing was charged. */

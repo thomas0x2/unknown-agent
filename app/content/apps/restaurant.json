@@ -19,6 +19,12 @@
     {
       "id": "landing",
       "description": "a landing page with the restaurant name and opening hours",
+      "aka": [
+        "home page",
+        "front page",
+        "start page",
+        "homepage"
+      ],
       "pageId": "landing",
       "failures": [
         "visible",
@@ -48,6 +54,11 @@
           "label": "the restaurant name",
           "bugs": [
             "name_wrong"
+          ],
+          "aka": [
+            "restaurant name",
+            "title",
+            "heading"
           ]
         },
         {
@@ -55,6 +66,12 @@
           "label": "the opening hours",
           "bugs": [
             "hours_wrong"
+          ],
+          "aka": [
+            "opening hours",
+            "opening times",
+            "times",
+            "when it is open"
           ]
         }
       ],
@@ -85,6 +102,11 @@
     {
       "id": "menu",
       "description": "a menu page listing each dish with its price in DOLR",
+      "aka": [
+        "menu page",
+        "food list",
+        "dishes page"
+      ],
       "pageId": "menu",
       "failures": [
         "subtle",
@@ -137,6 +159,12 @@
           "bugs": [
             "wrong_items",
             "hallucinated"
+          ],
+          "aka": [
+            "dishes",
+            "food",
+            "menu items",
+            "pizzas"
           ]
         },
         {
@@ -146,6 +174,12 @@
             "prices_missing",
             "prices_wrong",
             "prices_curo"
+          ],
+          "aka": [
+            "cost",
+            "pricing",
+            "currency",
+            "amounts"
           ]
         }
       ],
@@ -189,6 +223,27 @@
     {
       "id": "booking",
       "description": "a table booking form that emails the guest a confirmation with the restaurant name, date, time and party size",
+      "aka": [
+        "reservations",
+        "reservation",
+        "book a table",
+        "table booking"
+      ],
+      "folderAka": {
+        "form": [
+          "booking form",
+          "reservation form",
+          "booking page",
+          "date picker"
+        ],
+        "confirmation": [
+          "confirmation email",
+          "confirmation mail",
+          "booking email",
+          "email the guest gets",
+          "receipt"
+        ]
+      },
       "pageId": "booking",
       "failures": [
         "deep",
@@ -292,6 +347,12 @@
           "label": "the dates the booking form lets you pick (no past dates)",
           "bugs": [
             "past_dates"
+          ],
+          "aka": [
+            "date picker",
+            "dates",
+            "calendar",
+            "past dates"
           ]
         },
         {
@@ -299,6 +360,12 @@
           "label": "the opening hours on the booking form (no bookings while closed)",
           "bugs": [
             "no_hours_check"
+          ],
+          "aka": [
+            "opening hours",
+            "times you can book",
+            "closed hours",
+            "time slots"
           ]
         },
         {
@@ -306,6 +373,11 @@
           "label": "the Book button on the booking form",
           "bugs": [
             "dead_button"
+          ],
+          "aka": [
+            "book button",
+            "submit button",
+            "reserve button"
           ]
         },
         {
@@ -313,6 +385,11 @@
           "label": "sending the booking confirmation email",
           "bugs": [
             "no_email"
+          ],
+          "aka": [
+            "sending",
+            "not arriving",
+            "never sent"
           ]
         },
         {
@@ -320,6 +397,12 @@
           "label": "who the booking confirmation goes to",
           "bugs": [
             "sent_to_restaurant"
+          ],
+          "aka": [
+            "recipient",
+            "who gets it",
+            "email address",
+            "sent to"
           ]
         },
         {
@@ -327,6 +410,10 @@
           "label": "the date on the booking confirmation",
           "bugs": [
             "wrong_date"
+          ],
+          "aka": [
+            "date",
+            "day"
           ]
         },
         {
@@ -334,6 +421,10 @@
           "label": "the time on the booking confirmation",
           "bugs": [
             "wrong_time"
+          ],
+          "aka": [
+            "time",
+            "hour"
           ]
         },
         {
@@ -341,6 +432,13 @@
           "label": "the party size on the booking confirmation",
           "bugs": [
             "party_wrong"
+          ],
+          "aka": [
+            "party size",
+            "number of guests",
+            "people",
+            "guests",
+            "covers"
           ]
         },
         {
@@ -348,6 +446,10 @@
           "label": "the restaurant name on the booking confirmation",
           "bugs": [
             "name_wrong_mail"
+          ],
+          "aka": [
+            "restaurant name",
+            "name"
           ]
         }
       ],
@@ -377,6 +479,18 @@
     {
       "id": "doordish",
       "description": "a DoorDish listing with the same menu, hours and address",
+      "aka": [
+        "DoorDish",
+        "delivery listing",
+        "delivery app"
+      ],
+      "folderAka": {
+        "listing": [
+          "DoorDish listing",
+          "DoorDish page",
+          "listing"
+        ]
+      },
       "failures": [
         "subtle",
         "failed_fetch"
@@ -389,15 +503,27 @@
       "components": [
         {
           "id": "listing/menu",
-          "label": "the menu on the DoorDish listing"
+          "label": "the menu on the DoorDish listing",
+          "aka": [
+            "menu",
+            "dishes"
+          ]
         },
         {
           "id": "listing/hours",
-          "label": "the hours on the DoorDish listing"
+          "label": "the hours on the DoorDish listing",
+          "aka": [
+            "hours",
+            "opening hours"
+          ]
         },
         {
           "id": "listing/address",
-          "label": "the address on the DoorDish listing"
+          "label": "the address on the DoorDish listing",
+          "aka": [
+            "address",
+            "location"
+          ]
         }
       ]
     }

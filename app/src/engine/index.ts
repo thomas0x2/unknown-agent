@@ -25,3 +25,4 @@ export * from './wallets';
 export * from './stocks';
 export * from './phishing';
 export * from './mailbin';
+export * from './jevTests';

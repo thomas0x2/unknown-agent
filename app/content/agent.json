@@ -46,6 +46,33 @@
       ]
     },
     {
+      "id": "near_feature",
+      "when": "Engine only: a fix prompt names a part ({{part}}) but not the feature it's in.",
+      "replies": [
+        "The {{part}} where? Name the feature and I'll look there.",
+        "I went looking for the {{part}} and opened the wrong file twice. Which feature is it in?",
+        "Which feature has the {{part}}? The repo on Forkyard shows where it lives."
+      ]
+    },
+    {
+      "id": "near_folder",
+      "when": "Engine only: a fix prompt names the feature ({{feature}}) and a part ({{part}}) but not the folder between them.",
+      "replies": [
+        "Which {{part}} in the {{feature}}? It could be the {{folders}}.",
+        "The {{feature}} is split into the {{folders}}. Which one has the {{part}}?",
+        "I looked for the {{part}} in the {{feature}} and got lost between the {{folders}}. Which one?"
+      ]
+    },
+    {
+      "id": "near_part",
+      "when": "Engine only: a fix prompt names a folder ({{folder}}) of the {{feature}} but none of the parts in it.",
+      "replies": [
+        "The {{folder}} of the {{feature}} has a few parts: {{parts}}. Which one is wrong?",
+        "I opened the {{folder}} folder. It's {{parts}}. Pick one.",
+        "Which part of the {{folder}}? There's {{parts}}."
+      ]
+    },
+    {
       "id": "update_help",
       "when": "Engine only: the player names an app and asks to update it to the client's changes without saying what changed.",
       "replies": [

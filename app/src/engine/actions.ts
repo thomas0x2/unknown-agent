@@ -640,7 +640,7 @@ async function buildIntent(jev: JevRouter, s: GameState, text: string, context: 
 }
 
 /** Agent hints the engine picks itself from the state, after Jev says which app the player means. */
-const APP_HINTS = new Set(['not_deployed', 'nothing_to_fix', 'update_help']);
+const APP_HINTS = new Set(['not_deployed', 'nothing_to_fix', 'update_help', 'near_feature', 'near_folder', 'near_part']);
 
 /**
  * The single front door to the agent: always free text. Jev decides whether the prompt is about
@@ -681,11 +681,15 @@ export async function promptAgent(
   if (workable.length) {
     // every way to name each feature (itself, its bugs, its live break), namespaced app::feature::category
     const cats: FeatureMatchInput['features'] = [];
+    const needs = new Map<string, string[]>(); // component -> the path steps it needs named
     for (const a of workable) {
       const tmpl = content.apps[a.template];
       for (const id of a.required) {
         if (!needsWork(a, id)) continue;
-        for (const c of fixCategories(a, tmpl, id)) cats.push({ id: `${a.id}::${id}::${c.id}`, description: `${c.description} (for ${a.name}, ${a.url})`, kind: c.kind });
+        for (const c of fixCategories(a, tmpl, id)) {
+          cats.push({ id: `${a.id}::${id}::${c.id}`, description: `${c.description} (for ${a.name}, ${a.url})`, kind: c.kind });
+          if (c.requires) needs.set(`${a.id}::${id}::${c.id}`, c.requires.map((r) => `${a.id}::${id}::${r}`));
+        }
       }
     }
     const context = recentPrompts(s0);
@@ -697,6 +701,12 @@ export async function promptAgent(
       started ? 'feature' : buildIntent(jev, s0, text, chat),
     ]);
     // one prompt only ever touches one app: when Jev's matches span several, Jev picks the one the player means
+    // a component counts only when every step of its path (feature, folders) is named too; one named
+    // without its full path is a near-miss on its feature. Steps aren't work on their own
+    const foundAll = [...found];
+    const unpathed = found.filter((m) => needs.get(m)?.some((r) => !found.includes(r)));
+    const areas = unpathed.map((m) => m.replace(/::c:.*$/, '::area')).filter((m) => cats.some((c) => c.id === m));
+    found.splice(0, found.length, ...new Set([...found.filter((m) => !m.includes('::s:') && !unpathed.includes(m)), ...areas]));
     const app = started ?? await oneApp(jev, s0, text, chat, found);
     if (app === null) {
       const lines = content.agent?.hints.find((h) => h.id === 'which_app')?.replies;
@@ -707,11 +717,43 @@ export async function promptAgent(
     const precise = found.filter((m) => !m.endsWith('::area'));
     const nearMiss = precise.length ? [] : found.filter((m) => m.endsWith('::area'));
     if (nearMiss.length) {
-      const [appId, fid] = nearMiss[0].split('::');
+      // the reply depends on how far down the path the prompt got: the part without its feature, the
+      // feature and part without the folder between them, or the feature with no part at all
+      const stop = unpathed.map((m) => ({ m, at: needs.get(m)!.findIndex((r) => !foundAll.includes(r)) })).sort((x, y) => y.at - x.at)[0];
+      const [appId, fid] = (stop?.m ?? nearMiss[0]).split('::');
       const a = getApp(s0, appId)!;
-      const lines = content.apps[a.template]?.features.find((f) => f.id === fid)?.nearMiss;
-      const hints = (lines?.length ? lines : [NEAR_MISS]).map((l) => l.replaceAll('{{feature}}', featureName(fid)).replaceAll('{{app}}', a.name));
-      return askAgent(s0, text, writer, s0.values.agentLevel, { hints, hintSrc: 'near_miss', debug: [`Jev: says the ${fid} on ${a.name} is wrong without naming a component, so a near-miss`] });
+      const def = content.apps[a.template]?.features.find((f) => f.id === fid);
+      const fill = (l: string, part = '', folders = '') => l.replaceAll('{{feature}}', featureName(fid)).replaceAll('{{app}}', a.name).replaceAll('{{part}}', part).replaceAll('{{folders}}', folders);
+      let hints: string[];
+      let why: string;
+      let kind: string; // which near-miss: the hint id, or 'near_miss' for the feature's own lines
+      if (stop) {
+        const cid = stop.m.split('::c:')[1];
+        const part = featureName(cid.split('/').at(-1)!);
+        const hid = stop.at === 0 ? 'near_feature' : 'near_folder';
+        kind = hid;
+        // the folders the prompt could have meant, at the level it skipped
+        const above = cid.split('/').slice(0, stop.at - 1).join('/');
+        const folders = stop.at === 0 ? [] : [...new Set((def?.components ?? []).map((c) => c.id).filter((id) => !above || id.startsWith(`${above}/`)).map((id) => id.split('/')).filter((p) => p.length > Math.max(1, stop.at)).map((p) => featureName(p[stop.at - 1])))];
+        const lines = content.agent?.hints.find((h) => h.id === hid)?.replies;
+        hints = (lines?.length ? lines : [NEAR_MISS]).map((l) => fill(l, part, folders.join(' or ')));
+        why = stop.at === 0 ? `names the ${part} but not the ${fid} it's in` : `names the ${part} in the ${fid} but not which folder`;
+      } else {
+        // the deepest folder of this feature the prompt did name, if any: ask which part of it
+        const folder = foundAll.filter((m) => m.startsWith(`${appId}::${fid}::s:${fid}/`)).map((m) => m.split(`::s:${fid}/`)[1]).sort((x, y) => y.split('/').length - x.split('/').length)[0];
+        const parts = folder ? (def?.components ?? []).filter((c) => c.id.startsWith(`${folder}/`)).map((c) => featureName(c.id.slice(folder.length + 1).split('/')[0])) : [];
+        const lines = folder ? content.agent?.hints.find((h) => h.id === 'near_part')?.replies : undefined;
+        if (folder && lines?.length) {
+          hints = lines.map((l) => fill(l, '', '').replaceAll('{{folder}}', featureName(folder.split('/').at(-1)!)).replaceAll('{{parts}}', [...new Set(parts)].join(', ')));
+          why = `names the ${folder} folder of the ${fid} but no part in it`;
+          kind = 'near_part';
+        } else {
+          hints = (def?.nearMiss?.length ? def.nearMiss : [NEAR_MISS]).map((l) => fill(l));
+          why = `says the ${fid} is wrong without naming a component`;
+          kind = 'near_miss';
+        }
+      }
+      return askAgent(s0, text, writer, s0.values.agentLevel, { hints, hintSrc: 'near_miss', debug: [`Jev: ${why} on ${a.name}, so a near-miss (${kind})`] });
     }
     const matched = new Set(precise);
     // a prompt that starts a user app builds all of it, however little it says (what it leaves out goes wrong)

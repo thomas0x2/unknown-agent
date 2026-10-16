@@ -11,6 +11,11 @@
     {
       "id": "tickers",
       "description": "track the exact stock tickers the trader listed ($GAI and $VANT)",
+      "aka": [
+        "symbols",
+        "stocks tracked",
+        "watchlist"
+      ],
       "failures": [
         "subtle",
         "failed_fetch"
@@ -47,6 +52,11 @@
           "label": "which tickers are tracked",
           "bugs": [
             "wrong_tickers"
+          ],
+          "aka": [
+            "tickers",
+            "symbols",
+            "stocks"
           ]
         },
         {
@@ -54,6 +64,11 @@
           "label": "reading lowercase tickers",
           "bugs": [
             "lowercase_missed"
+          ],
+          "aka": [
+            "lowercase",
+            "capitalization",
+            "case"
           ]
         }
       ],
@@ -72,6 +87,12 @@
     {
       "id": "sentiment",
       "description": "split today's posts into bullish, bearish and neutral",
+      "aka": [
+        "sentiment analysis",
+        "mood",
+        "bullish/bearish",
+        "classification"
+      ],
       "failures": [
         "subtle"
       ],
@@ -105,6 +126,12 @@
           "label": "which posts count as bullish or bearish",
           "bugs": [
             "inverted"
+          ],
+          "aka": [
+            "labels",
+            "bullish",
+            "bearish",
+            "classification"
           ]
         },
         {
@@ -112,6 +139,11 @@
           "label": "reading sarcastic posts",
           "bugs": [
             "sarcasm_literal"
+          ],
+          "aka": [
+            "sarcasm",
+            "irony",
+            "jokes"
           ]
         }
       ],
@@ -123,6 +155,11 @@
     {
       "id": "filter",
       "description": "ignore bot spam",
+      "aka": [
+        "bot filter",
+        "spam filter",
+        "bots"
+      ],
       "failures": [
         "subtle"
       ],
@@ -147,6 +184,11 @@
           "label": "filtering out bot spam",
           "bugs": [
             "bots_counted"
+          ],
+          "aka": [
+            "bots",
+            "spam",
+            "bot posts"
           ]
         }
       ],
@@ -164,6 +206,19 @@
     {
       "id": "portfolio",
       "description": "a portfolio view of the trader's holdings, cash and today's change",
+      "aka": [
+        "holdings",
+        "account",
+        "positions",
+        "portfolio view"
+      ],
+      "folderAka": {
+        "holdings": [
+          "holdings",
+          "positions",
+          "each stock"
+        ]
+      },
       "failures": [
         "subtle"
       ],
@@ -224,6 +279,11 @@
           "label": "the portfolio total",
           "bugs": [
             "wrong_totals"
+          ],
+          "aka": [
+            "total",
+            "total value",
+            "sum"
           ]
         },
         {
@@ -231,6 +291,11 @@
           "label": "the price of each holding",
           "bugs": [
             "stale_prices"
+          ],
+          "aka": [
+            "price",
+            "quotes",
+            "stock price"
           ]
         },
         {
@@ -238,20 +303,35 @@
           "label": "the value of each holding",
           "bugs": [
             "value_wrong"
+          ],
+          "aka": [
+            "value",
+            "position value"
           ]
         },
         {
-          "id": "day_change/pnl",
+          "id": "pnl",
           "label": "the day's P&L",
           "bugs": [
             "pnl_sign"
+          ],
+          "aka": [
+            "P&L",
+            "profit",
+            "gain/loss",
+            "daily change"
           ]
         },
         {
-          "id": "day_change/percent",
+          "id": "percent",
           "label": "the percent changes",
           "bugs": [
             "pct_wrong"
+          ],
+          "aka": [
+            "percent",
+            "percentages",
+            "%"
           ]
         }
       ],
@@ -270,6 +350,24 @@
     {
       "id": "auto_buy",
       "description": "auto-buy a stock only when the candidate genuinely praises that company, once per post",
+      "aka": [
+        "autobuy",
+        "auto buying",
+        "auto trader",
+        "trading bot"
+      ],
+      "folderAka": {
+        "signal": [
+          "signal",
+          "trigger condition",
+          "buy signal"
+        ],
+        "order": [
+          "order",
+          "buy order",
+          "trade"
+        ]
+      },
       "failures": [
         "deep",
         "subtle"
@@ -334,6 +432,11 @@
           "label": "checking the post actually praises the company",
           "bugs": [
             "buys_on_criticism"
+          ],
+          "aka": [
+            "praise check",
+            "positive post",
+            "criticism"
           ]
         },
         {
@@ -341,6 +444,12 @@
           "label": "checking the post is from Crane's real account",
           "bugs": [
             "impostor_buy"
+          ],
+          "aka": [
+            "author",
+            "account",
+            "impostor",
+            "real Crane"
           ]
         },
         {
@@ -348,6 +457,11 @@
           "label": "placing the buy when the signal fires",
           "bugs": [
             "no_buy"
+          ],
+          "aka": [
+            "trigger",
+            "placing the buy",
+            "not buying"
           ]
         },
         {
@@ -355,6 +469,10 @@
           "label": "which ticker the order buys",
           "bugs": [
             "wrong_ticker"
+          ],
+          "aka": [
+            "ticker",
+            "which stock"
           ]
         },
         {
@@ -362,6 +480,11 @@
           "label": "buying once per post",
           "bugs": [
             "repeat_buys"
+          ],
+          "aka": [
+            "once per post",
+            "duplicates",
+            "repeat buys"
           ]
         }
       ],

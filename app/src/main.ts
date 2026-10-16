@@ -27,6 +27,7 @@ import * as V from './ui/view';
 import { route } from './sites/registry';
 import { listSlots } from './game/saves';
 import { devEditHtml } from './ui/devEdit';
+import { jevTestsHtml, runJevTests, jevTestsPick, jevTestsFailsOnly } from './ui/devJevTests';
 import type { MeterId } from './engine';
 import { newPageLoad } from './ui/ads';
 import { pullPct } from './game/pull';
@@ -169,7 +170,7 @@ function render(): void {
 
   const ov = $('#overlay')!; const oh = V.overlayHtml(store); ov.innerHTML = oh; ov.hidden = !oh;
   const dev = $('#dev')!; dev.hidden = !store.ui.dev; if (store.ui.dev) dev.innerHTML = V.devHtml(store);
-  const dve = $('#devedit')!; const showEdit = store.ui.dev && store.ui.devEdit; dve.hidden = !showEdit; if (showEdit) dve.innerHTML = devEditHtml(store);
+  const dve = $('#devedit')!; const showEdit = store.ui.dev && store.ui.devEdit; dve.hidden = !showEdit; if (showEdit) dve.innerHTML = store.ui.devTab === 'jev' ? jevTestsHtml(store) : devEditHtml(store);
 
   if (site === 'agent') { const log = $('#ua-log'); const read = returning ? scrolls.get(key)!['#ua-log'] : undefined; if (log && !(read && !read[2])) log.scrollTop = log.scrollHeight; updateCost(); }
   applySendFx(vp, store.busy);
@@ -320,6 +321,10 @@ document.addEventListener('click', (e) => {
   else if (d.act === 'new') store.confirm('Start over? This erases your save.', 'Start over', () => { forgetDrafts(); quietReset(); store.newGame(); });
   else if (d.act === 'dev') store.toggleDev();
   else if (d.act === 'devedit') store.toggleDevEdit();
+  else if (d.act === 'devtab') store.devTab(t.dataset.devtab === 'jev' ? 'jev' : 'edit');
+  else if (d.act === 'jevtests') runJevTests(store, t.dataset.case != null ? Number(t.dataset.case) : undefined);
+  else if (d.act === 'jevcell') jevTestsPick(store, Number(t.dataset.step), Number(t.dataset.part));
+  else if (d.act === 'jevfails') jevTestsFailsOnly(store);
   else if (d.act === 'devmode') store.setDevMode(!store.devMode);
   else if (d.act === 'intro') store.openIntro();
   else if (d.act === 'sound') SOUND.setMuted(!SOUND.settings.muted);

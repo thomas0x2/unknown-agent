@@ -185,7 +185,8 @@ export function pickJev(pick: { route?: string[]; features?: string[] }): JevRou
       return c ? { kind: 'outcome', outcomeId: c.id } : { kind: 'nothing' };
     },
     async matchFeatures(input) {
-      return input.features.map((f) => f.id).filter((id) => pick.features?.some((s) => id.endsWith(s)));
+      // the path steps (feature, folders) count as named whenever a test picks anything: tests pick the parts
+      return input.features.map((f) => f.id).filter((id) => pick.features?.some((s) => id.endsWith(s)) || (!!pick.features?.length && id.includes('::s:')));
     },
     ratePost: wordJev.ratePost,
   };
