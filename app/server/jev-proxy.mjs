@@ -194,7 +194,7 @@ async function buildRatePost(sdk, body) {
 async function buildMatch(sdk, body) {
   // one yes/no question per feature, so a prompt can ask for several at once
   const questions = {};
-  const named = body.appNamed ? ' The prompt must also say which app it means: its name, part of the name, or its address, in any case or spelling, or clearly the app an earlier message named, including the app the agent just worked on when the prompt follows up on it ("now the prices are missing").' : '';
+  const named = body.appNamed ? ' The prompt must also say which app it means: its name, part of the name, or its address, in any case or spelling, or an app named in an earlier message. A prompt that names no app means the app the most recent earlier message named (the player\'s or the agent\'s, like "Pushed to Forkyard for <app>"), so "the menu is missing a dish" right after work on an app is about that app.' : '';
   const context = 'Earlier messages (the player\'s prompts and the agent\'s replies) only tell you what the prompt refers to ("those", "the menu", "now", items listed before, the app the agent just pushed); they don\'t ask for anything by themselves.';
   (body.features ?? []).forEach((f, i) => {
     // a problem is matched on its own: naming one bug must not pull in the others on the same page

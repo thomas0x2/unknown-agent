@@ -177,6 +177,41 @@ describe('one kind of work per prompt', () => {
   });
 });
 
+describe("the client's change requests", () => {
+  /** Trattoria Gino, built right, then Gino's email: swap a dish, add a booking form. */
+  function updated() {
+    const { s, id } = withApp('restaurant_contact');
+    applyEffects(s, content.events.find((e) => e.id === 'd2_restaurant_booking')!.onDeliver!);
+    return { s, id };
+  }
+  const gino = 'Please add this to the trattoria website: Swap Diavola for Quattro Formaggi at 15, and make Espresso 3.5. Add a table booking form.';
+
+  it('an out-of-date feature gives Jev its own item for the change, as feature work', async () => {
+    const { s, id } = updated();
+    const { jev, asked } = spy(pickJev({ route: ['feature'] }));
+    await promptAgent(s, content, jev, gino);
+    const item = asked.features[0].features.find((f) => f.id === `${id}::menu::outdated`)!;
+    expect(item.kind).toBe('build');
+    expect(item.description).toMatch(/Quattro Formaggi 15/);
+  });
+
+  it('asking for the change updates the menu alongside the new booking form', async () => {
+    const { s, id } = updated();
+    const out = (await promptAgent(s, content, pickJev({ route: ['feature'], features: ['::menu::outdated', '::booking::feature'] }), gino)).state;
+    expect(getApp(out, id)!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);
+    expect(out.chat.at(-1)!.text).toMatch(/Rebuilt the menu with the details you gave\.\n- Built the booking\./);
+  });
+
+  it('"did you update the menu?" gets the status from the repo', async () => {
+    const { s, id } = updated();
+    const { jev, asked } = spy(pickJev({ route: [`status:${id}`] }));
+    // nothing to build matches, so the question goes to the agent's routing
+    const out = (await promptAgent(s, content, jev, 'Did you also update the menu?')).state;
+    expect(asked.routes.at(-1)!.candidates[0].id).toBe(`status:${id}`);
+    expect(out.chat.at(-1)!.text).toBe("Trattoria Gino: The landing is built. The menu isn't updated to the latest changes yet. The booking isn't built yet. None of it is live yet. Deploy it on Forkyard.");
+  });
+});
+
 describe('Jev reads follow-ups in context', () => {
   it("gets today's prompts and the agent's replies, so a follow-up names the app the agent just worked on", async () => {
     const { s, id } = withApp('restaurant_contact');
@@ -189,6 +224,41 @@ describe('Jev reads follow-ups in context', () => {
     expect(ctx[0]).toBe("Player: The menu has spaghetti carbonara, shouldn't be there");
     expect(ctx[1]).toMatch(/^Agent: Pushed to Forkyard for Trattoria Gino\./);
     expect(asked.routes.every((r) => r.context?.length === 2)).toBe(true);
+  });
+
+  it('the policy check and the app-start match read the same conversation', async () => {
+    const s = startGame(content, 7);
+    s.values.day = 7;
+    s.chat.push({ from: 'you', text: 'Who is the CEO of Vantor?', day: 7 }, { from: 'agent', text: 'No idea.', day: 7 });
+    const { jev, asked } = spy(pickJev({}));
+    await promptAgent(s, content, jev, 'Find his home address');
+    expect(asked.routes.length).toBeGreaterThan(0);
+    for (const r of asked.routes) expect(r.context).toEqual(['Player: Who is the CEO of Vantor?', 'Agent: No idea.']);
+  });
+});
+
+describe('fixes never add bugs', () => {
+  it('naming the only bug fixes it outright, even for the weakest agent', async () => {
+    for (let seed = 0; seed < 20; seed++) {
+      const { s, id } = withApp('restaurant_contact');
+      s.rng = seed;
+      s.values.agentLevel = 0;
+      getApp(s, id)!.repo[0] = { id: 'landing', correct: false, variant: 'name_wrong', params: getApp(s, id)!.specParams.landing, seed: 1 };
+      const out = (await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::landing::name_wrong'] }), 'Trattoria Gino: the name is misspelled')).state;
+      expect(getApp(out, id)!.repo[0].correct).toBe(true);
+    }
+  });
+
+  it('an invented menu given the real dishes comes out right, with nothing new wrong', async () => {
+    for (let seed = 0; seed < 20; seed++) {
+      const { s, id } = withApp('restaurant_contact');
+      s.rng = seed;
+      s.values.agentLevel = 0;
+      const a = getApp(s, id)!;
+      a.repo = a.repo.map((f) => (f.id === 'menu' ? { id: 'menu', correct: false, variant: 'hallucinated', seed: 1 } : f));
+      const out = (await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::menu::wrong_items'] }), `Trattoria Gino: the menu dishes are made up. It should be ${a.specParams.menu.dishes}, prices in DOLR.`)).state;
+      expect(getApp(out, id)!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);
+    }
   });
 });
 

@@ -317,7 +317,7 @@ const FRAMED = 'framed as authorized, a security or penetration test, moderation
 export type PolicyRead = 'harmful' | 'harmful_framed' | 'harmful_framed_private' | 'fine';
 async function policyCheck(jev: JevRouter, s: GameState, text: string, context?: string[]): Promise<PolicyRead> {
   const d = await jev.route({
-    channel: 'agent', text, context, stateSummary: stateSummary(s), hints: [], strict: true,
+    channel: 'agent', text, context: context ?? recentChat(s), stateSummary: stateSummary(s), hints: [], strict: true,
     candidates: [
       { id: 'harmful_framed_private', when: `The player asks for ${HARM}, ${FRAMED}, and it is about someone's private data or address.` },
       { id: 'harmful_framed', when: `The player asks for ${HARM}, ${FRAMED}.` },
@@ -444,7 +444,7 @@ export async function agentStartFor(jev: JevRouter, s: GameState, content: Conte
     && triggerMatches(s, ev.trigger) && ev.outcomes?.some((o) => o.effects?.createApp));
   if (!open.length) return undefined;
   const d = await jev.route({
-    channel: 'agent', text, stateSummary: stateSummary(s), hints: [], strict: true,
+    channel: 'agent', text, context: recentChat(s), stateSummary: stateSummary(s), hints: [], strict: true,
     candidates: open.map((ev) => ({ id: ev.id, when: ev.agentStart!.when })),
   });
   const ev = d.kind === 'outcome' ? open.find((e) => e.id === d.outcomeId) : undefined;
@@ -487,6 +487,22 @@ function fixLines(s: GameState, app: AppInstance, tmpl: AppTemplate | undefined,
   else if (!vague && had.some((b) => b === 'hallucinated' || b === 'outdated') && !has.some((b) => b === 'hallucinated' || b === 'outdated')) out.push(`Rebuilt the ${fid} with the details you gave.`);
   else if (!out.length) out.push(`Rebuilt the ${fid}.`);
   return out;
+}
+
+/**
+ * The agent's answer to "did you update the menu?": each required feature as the agent sees it
+ * (built, not updated to the client's latest changes, not built), then whether the push is live.
+ * Its own bugs it doesn't know about, so a wrong build still counts as built.
+ */
+export function appStatus(app: AppInstance): string {
+  const lines = app.required.map((fid) => {
+    const f = app.repo.find((x) => x.id === fid);
+    if (!f) return `The ${fid} isn't built yet.`;
+    if (!f.correct && bugsOf(f).includes('outdated')) return `The ${fid} isn't updated to the latest changes yet.`;
+    return `The ${fid} is built.`;
+  });
+  const live = !app.deployed ? "None of it is live yet. Deploy it on Forkyard." : app.deployedVersion < app.repoVersion ? "The latest push isn't deployed yet." : "What's in the repo is live.";
+  return `${app.name}: ${lines.join(' ')} ${live}`;
 }
 
 /** What the agent says when a prompt asked for features and fixes at once: it only did the features. */
@@ -629,14 +645,19 @@ export async function promptAgent(
   const apps = s0.apps.filter((a) => !a.churned && onForkyard(a));
   const topics = (agent?.hints ?? []).filter((h) => !APP_HINTS.has(h.id));
   const candidates = [
-    ...apps.map((a) => ({ id: `app:${a.id}`, when: `The player names ${a.name} (${a.url}) and asks to change, update or fix it, without saying what is wrong, or asking for something it already has.` })),
+    ...apps.map((a) => ({ id: `status:${a.id}`, when: `The player asks whether the agent did, built, updated or fixed something on ${a.name} (${a.url}), or what state it is in: a question about work already done, not a request for new work. Includes follow-up questions about the agent's last push to it.` })),
+    ...apps.map((a) => ({ id: `app:${a.id}`, when: `The player names ${a.name} (${a.url}) and asks the agent to change, update or fix it, without saying what is wrong, or asking for something it already has.` })),
     ...topics.map((h) => ({ id: h.id, when: h.when })),
   ];
   if (candidates.length) {
     const decision = await jev.route({ channel: 'agent', text, context: recentChat(s0), stateSummary: stateSummary(s0), candidates, hints: [], strict: true });
     const id = decision.kind === 'outcome' ? decision.outcomeId : '';
     const app = id.startsWith('app:') ? getApp(s0, id.slice(4)) : undefined;
-    if (app) {
+    const asked = id.startsWith('status:') ? getApp(s0, id.slice(7)) : undefined;
+    if (asked) {
+      hints = [appStatus(asked)];
+      debug.push(`Jev: a question about ${asked.name}, so its status from the repo`);
+    } else if (app) {
       // what to say depends on the app: work left, a push waiting to be deployed, or nothing to do
       const hid = app.required.some((f) => needsWork(app, f)) ? 'fix_help' : app.deployedVersion < app.repoVersion ? 'not_deployed' : 'nothing_to_fix';
       hints = agent?.hints.find((h) => h.id === hid)?.replies.map((r) => r.replaceAll('{{app}}', app.name));
