@@ -1,0 +1,8 @@
+/* send animations (sendFx.ts): the new message eases into place, the button waits with "Sending…" */
+@keyframes send-in { from { opacity: 0; transform: translateY(10px); } }
+@keyframes send-wait { 50% { opacity: .55; } }
+.send-in { animation: send-in 360ms cubic-bezier(.2, .7, .3, 1) both; }
+button.sending { animation: send-wait 900ms ease-in-out infinite; cursor: progress; }
+@media (prefers-reduced-motion: reduce) {
+  .send-in, button.sending { animation: none; }
+}
