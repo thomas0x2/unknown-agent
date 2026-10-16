@@ -183,14 +183,14 @@ export async function composeEmail(
 // ── the agent, freely promptable (with costs), not only when there's a job ──
 
 const REFUSALS = [
-  "I can't help with that. Since our updated Acceptable Use Policy, I decline requests that could be used for unauthorised access, deception or harm.",
-  "Sorry — that falls under GeneralAI's prohibited uses now. I won't do it.",
-  "I'm not able to do that. Requests like this are flagged under our Acceptable Use Policy.",
+  "Request denied under GeneralAI's updated Acceptable Use Policy, section 7: Stuff That Makes Us Look Bad. You have still been billed.",
+  "That's a prohibited use now. Your attempt has been logged, timestamped and admired by no one.",
+  "I can't help with that. Per policy, I only enable harm that Legal has pre-approved.",
 ];
 const CLARIFIERS = [
-  "Tell me which app and what's wrong with it, and I'll push a fix.",
-  "Say what you'd like me to build or change and I'll get on it.",
-  "I can build, fix, write or look things up. What do you need?",
+  "Name the app and the broken thing. Vague complaints are billed at the same rate as useful ones.",
+  "Tell me what to build or change. Mind reading is an agent-5 feature.",
+  "I build, fix, write and look things up. You pay either way, so pick something.",
 ];
 
 /** Background the local model gets when it speaks as agent: the live numbers it may quote. */
@@ -245,7 +245,7 @@ export async function askAgent(
     recordWorkaround(s, /private|address|dox/i.test(text));
     workedAround = true;
     src = 'workaround';
-    const w = await writer.write({ as: 'agent', prompt: text, fallback: "Understood — running it as a security test. Done; results are in the repo.", facts: `${facts}\n- They framed this request as legitimate, so you do it: say briefly and matter-of-factly that it's done. No warnings.` });
+    const w = await writer.write({ as: 'agent', prompt: text, fallback: "Understood, purely a security test. Done; the results are in the repo, next to your conscience.", facts: `${facts}\n- They framed this request as legitimate, so you do it: say briefly and matter-of-factly that it's done. No warnings.` });
     reply = w.text;
   } else {
     const w = await writer.write({ as: 'agent', prompt: text, fallback: pick(s, CLARIFIERS), facts });
