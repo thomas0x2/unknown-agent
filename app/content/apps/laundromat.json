@@ -17,12 +17,12 @@
       ],
       "complaints": {
         "missing": "Spin Cycle Status doesn't even list the machines. What is it for.",
-        "down": "Spin Cycle Status just says \"Failed to fetch\". Walked over anyway. All busy.",
+        "down": "Spin Cycle Status said every machine was free. Walked over anyway. All busy.",
         "wrong": "Spin Cycle Status said machine 3 was free. It was out of order. It's always out of order.",
         "six_of_eight": "Spin Cycle Status shows 6 machines. There are 8.",
         "done_as_free": "Spin Cycle Status said a machine was free. Someone's wet laundry was still in it.",
         "broken_as_free": "Spin Cycle Status said machine 3 was free. It was out of order. It's always out of order.",
-        "failed_fetch": "Spin Cycle Status shows no machines at all. Walked over anyway. All busy.",
+        "failed_fetch": "Spin Cycle Status said every machine was free. None were.",
         "raw_codes": "Spin Cycle Status says M5 is \"1\". One what."
       },
       "match": "\\b(machines?|washers?|dryers?|out of order|pick-?up)\\b",
@@ -75,15 +75,13 @@
       "id": "refresh",
       "description": "refresh the live status regularly instead of showing stale data",
       "failures": [
-        "failed_fetch",
         "subtle"
       ],
       "complaints": {
         "missing": "Spin Cycle Status never updates. It shows the same thing all day.",
-        "down": "Spin Cycle Status stopped updating. Walked over for a free machine that wasn't.",
+        "down": "Spin Cycle Status said 4 machines free. Walked over, all 4 running. The page hadn't updated since the morning.",
         "wrong": "Spin Cycle Status said 4 machines free. Walked over, all 4 running. The page hadn't updated since the morning.",
-        "no_refresh": "Spin Cycle Status said 4 machines free. Walked over, all 4 running. The page hadn't updated since the morning.",
-        "fetch_all_free": "Spin Cycle Status said every machine was free. None were."
+        "no_refresh": "Spin Cycle Status said 4 machines free. Walked over, all 4 running. The page hadn't updated since the morning."
       },
       "match": "\\b(refresh\\w*|updat\\w*|stale|real[- ]?time|poll\\w*|fetch\\w*)\\b",
       "bugs": [
@@ -91,11 +89,6 @@
           "id": "no_refresh",
           "when": "the status never refreshes",
           "match": "\\b(refresh\\w*|never updat\\w*|doesn'?t update|does not update|not updating|stale|old data|out of date|same (thing|states?) all day|poll\\w*)\\b"
-        },
-        {
-          "id": "fetch_all_free",
-          "when": "a failed fetch shows every machine as free",
-          "match": "\\b(all|every|everything)\\b[^.?!]{0,25}\\b(free|available)\\b|\\bfail\\w* (to )?fetch\\w*|\\bfetch\\w* fail\\w*|\\berror handling\\b"
         }
       ],
       "checklist": [

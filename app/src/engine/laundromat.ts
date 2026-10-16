@@ -35,8 +35,13 @@ function busy(day: number, min: number): number {
 type Span = { from: number; to: number; st: 0 | 1 | 2 | 3 };
 
 /** One machine's day, from opening to close. M3 is out of order for good; others break now and then and are fixed overnight. */
+/** The machine on the first page holding someone's load from last night, never collected that day. */
+export const forgottenLoad = (day: number) => [1, 2, 4, 5, 6][day % 5];
+
 function machineDay(day: number, id: number): Span[] {
   if (id === 3) return [{ from: 0, to: CLOSE, st: 3 }];
+  // there is always a load waiting for pickup somewhere: done machines are never missing from the feed
+  if (id === forgottenLoad(day)) return [{ from: 0, to: CLOSE, st: 2 }];
   const r = rng(day * 1009 + id * 7919);
   const spans: Span[] = [{ from: 0, to: OPEN, st: 0 }];
   // about one day in eight, one machine (a different one each time) dies in the afternoon
@@ -92,7 +97,8 @@ export function machineRows(dataDay: number, bugs: Set<string>, opts: { showMinu
   if (bugs.has('still_eight') || !opts.twelve) feed = feed.slice(0, 8);
   return feed.map((m) => {
     let status = STATUS[m.st];
-    if (bugs.has('fetch_all_free')) status = 'free';
+    // a failed fetch, handled by assuming every machine is free
+    if (bugs.has('fetch_failed')) status = 'free';
     if (status === 'done' && bugs.has('done_as_free')) status = 'free';
     if (status === 'broken' && bugs.has('broken_as_free')) status = 'free';
     if (m.id > 8 && bugs.has('new_always_free')) status = 'free';

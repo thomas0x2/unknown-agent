@@ -210,18 +210,22 @@ function crawler(app: AppInstance, tmpl: AppTemplate | undefined, page: string |
 
 // ── laundromat ──
 
+const SPIN_LOGO = `<svg class="as-l-logo" viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="2" width="32" height="36" rx="6" fill="#2f80ed"/><rect x="8" y="6" width="24" height="5" rx="2" fill="#fff" opacity=".35"/><circle cx="20" cy="24" r="10" fill="#fff"/><circle cx="20" cy="24" r="7" fill="#9cc6f5"/><path d="M14 25c2-2 4 2 6 0s4 2 6 0" stroke="#2f80ed" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>`;
+
 const MACHINE_LABEL = { free: 'Free', running: 'Running', done: 'Done, waiting for pickup', broken: 'Out of order' };
 
 function laundromat(app: AppInstance, tmpl: AppTemplate | undefined, page: string | undefined, extras: SiteExtras): string {
   const day = extras.day ?? 1;
   const f = Object.fromEntries(['machines', 'refresh', 'minutes', 'more_machines'].map((id) => [id, live(app, tmpl, id)]));
   const bugs = new Set(Object.values(f).flatMap((l) => [...l.bugs]));
-  const head = `<header class="as-l-head"><b>${esc(app.name)}</b><span>Spin Cycle Laundry · 201 Ferris St</span></header>`;
+  const head = `<header class="as-l-head">${SPIN_LOGO}<div><b>${esc(app.name)}</b><span>Spin Cycle Laundry · 201 Ferris St</span></div>
+    <a href="#" class="as-l-feed" data-nav="spincycle.test/feed">Raw feed ↗</a></header>`;
   if (page && page !== 'status') return `<div class="as as-l">${head}<main>${notFound()}</main></div>`;
   let body: string;
   if (!f.machines.built) body = `<p class="as-l-empty">No machines yet.</p>`;
-  else if (f.machines.brk?.failure === 'failed_fetch' || f.refresh.brk?.failure === 'failed_fetch') body = `<p class="as-l-empty">No machines found.</p>`;
   else {
+    // one fetch reads the feed: when it fails, the app falls back to showing every machine free
+    if (f.machines.brk?.failure === 'failed_fetch' || f.refresh.brk?.failure === 'failed_fetch') bugs.add('fetch_failed');
     // without a working refresh it shows what the feed said when it was deployed
     const live = f.refresh.built && !bugs.has('no_refresh');
     const dataDay = live ? day : app.lastDeployDay || day;

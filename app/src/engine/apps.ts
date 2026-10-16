@@ -285,7 +285,7 @@ export interface FixCategory { id: string; description: string }
 
 const BREAK_CATEGORIES: Partial<Record<FailureKind, string>> = {
   visible: 'crashes with an application error',
-  failed_fetch: "doesn't load: failed to fetch",
+  failed_fetch: "doesn't load: failed to fetch (or falls back to showing everything free)",
 };
 
 
@@ -306,7 +306,7 @@ export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, f
 
 const BREAK_MATCH: Partial<Record<FailureKind, RegExp>> = {
   visible: /\b(crash(es|ed|ing)?|application error|exception|error|blank|white screen|broken page)\b/i,
-  failed_fetch: /\b(fetch|loading|(doesn'?t|does not|won'?t|not|fails? to|can'?t|cannot)\s+(load|show|open|appear))\b/i,
+  failed_fetch: /\b(all|every)\b[^.?!]{0,25}\b(free|available)\b|\b(fetch|loading|(doesn'?t|does not|won'?t|not|fails? to|can'?t|cannot)\s+(load|show|open|appear))\b/i,
 };
 
 const escRe = (t: string) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

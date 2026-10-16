@@ -110,6 +110,19 @@ describe('Spin Cycle Status', () => {
     for (let d = 1; d <= 21; d++) for (const m of steps(7 * 60)) expect(machineFeed(d, m).find((x) => x.id === 3)!.st).toBe(3);
   });
 
+  it('done-as-free and broken-as-free can always be caught: a done and an out-of-order machine on page one, all day', () => {
+    for (let d = 1; d <= 21; d++) {
+      for (const m of steps(7 * 60)) {
+        const first = machineFeed(d, m).slice(0, 6);
+        expect(first.some((x) => x.st === 2), `day ${d} ${m}`).toBe(true);
+        expect(first.some((x) => x.st === 3)).toBe(true);
+        const shown = (b: string) => machineRows(d, bugs(b), { showMinutes: true, twelve: true }, m);
+        expect(shown('done_as_free').length).toBe(machineFeed(d, m).length);
+        expect(machineRows(d, bugs(), { showMinutes: true, twelve: true }, m).some((r) => r.status === 'done')).toBe(true);
+      }
+    }
+  });
+
   it('changes with every half hour, the same way every time', () => {
     for (let d = 2; d <= 8; d++) {
       for (const m of steps().slice(0, -1)) {
@@ -158,7 +171,7 @@ describe('Spin Cycle Status', () => {
     expect(rows(2, 'six_of_eight')).toHaveLength(6);
     expect(rows(2, 'broken_as_free').find((m) => m.id === 3)!.status).toBe('free');
     expect(rows(2, 'done_as_free').some((m) => m.status === 'done')).toBe(false);
-    expect(rows(2, 'fetch_all_free').every((m) => m.status === 'free')).toBe(true);
+    expect(rows(2, 'fetch_failed').every((m) => m.status === 'free')).toBe(true);
     const running = ok.find((m) => m.status === 'running')!;
     const t = machineFeed(2, at).find((m) => m.id === running.id)!.t;
     expect(running.minutes).toBe(Math.ceil(t / 60));
@@ -219,7 +232,6 @@ const ASKS: Record<string, [string, string, Record<string, string>]> = {
     done_as_free: 'Done machines waiting for pickup show as free.',
     broken_as_free: 'Out of order machines show as free.',
     no_refresh: 'The status never refreshes.',
-    fetch_all_free: 'When the fetch fails it shows all machines as free.',
     minutes_wrong: 'The minutes left are wrong, it reads seconds as minutes.',
     still_eight: 'It still shows 8 machines, there are 12 now.',
     new_always_free: 'The new machines always show as free.',
