@@ -19,7 +19,7 @@ import { adHtml } from './ads';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount, appLogo } from './appsite';
-import { marketPosts, handleOf, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked } from '../engine';
+import { marketPosts, handleOf, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, inBin, isDeleted } from '../engine';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 
 const WALLET_ADDR = PLAYER_WALLET;
@@ -164,7 +164,7 @@ export function startMenuHtml(store: GameStore): string {
 }
 
 function qmailBadge(store: GameStore): number {
-  return mailRows(store).filter((r) => r.folder === 'inbox' && r.unread).length;
+  return mailRows(store).filter((r) => r.folder === 'inbox' && r.unread && !r.binned).length;
 }
 
 /** The stock posts the crawler reads: only ones on the Y timeline right now, so the player can check every number. */
@@ -234,7 +234,7 @@ function pageNewTab(store: GameStore): string {
 }
 
 // ── Qmail ──
-interface Row { id: string; seq: number; from: string; addr: string; subject: string; body: string; day: number; unread: boolean; needsReply: boolean; folder: 'inbox' | 'sent'; eventId?: string; generated?: boolean; to?: string; link?: string; bounceOf?: string; bookingId?: string }
+interface Row { id: string; seq: number; from: string; addr: string; subject: string; body: string; day: number; unread: boolean; needsReply: boolean; folder: 'inbox' | 'sent'; eventId?: string; generated?: boolean; to?: string; link?: string; bounceOf?: string; bookingId?: string; /** In the Bin until the day ends. */ binned?: boolean }
 /** Messages the player opened or closed in a conversation, so a repaint keeps them that way. */
 export const mailOpen = new Map<string, boolean>();
 function mailRows(store: GameStore): Row[] {
@@ -249,20 +249,23 @@ function mailRows(store: GameStore): Row[] {
     if (e.latent && (s.mail.some((m) => m.eventId === e.id && m.folder === 'inbox') || s.pendingMail?.some((p) => p.mail.eventId === e.id))) continue;
     const canReply = !!(e.outcomes && !d.answered);
     const key = deliveryKey(e, d.day);
-    rows.push({ id: 'e/' + key, seq: d.seq ?? -1, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(eventBody(e, d.day)), day: d.day, unread: !s.readEvents.includes(key), needsReply: canReply, folder: 'inbox', eventId: e.id });
+    const id = 'e/' + key;
+    if (isDeleted(s, id)) continue;
+    rows.push({ id, binned: inBin(s, id), seq: d.seq ?? -1, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(eventBody(e, d.day)), day: d.day, unread: !s.readEvents.includes(key), needsReply: canReply, folder: 'inbox', eventId: e.id });
   }
-  for (const m of s.mail) rows.push({ id: 'm/' + m.id, seq: m.seq ?? (Number(m.id.replace(/\D/g, '')) || 0), from: m.from, addr: m.addr, subject: m.subject, body: m.body, day: m.day, unread: m.folder === 'inbox' && !m.read, needsReply: false, folder: m.folder, eventId: m.eventId, generated: m.generated, to: m.to, link: m.link, bounceOf: m.bounceOf, bookingId: m.bookingId });
+  for (const m of s.mail) if (!isDeleted(s, 'm/' + m.id)) rows.push({ id: 'm/' + m.id, binned: inBin(s, 'm/' + m.id), seq: m.seq ?? (Number(m.id.replace(/\D/g, '')) || 0), from: m.from, addr: m.addr, subject: m.subject, body: m.body, day: m.day, unread: m.folder === 'inbox' && !m.read, needsReply: false, folder: m.folder, eventId: m.eventId, generated: m.generated, to: m.to, link: m.link, bounceOf: m.bounceOf, bookingId: m.bookingId });
   return rows;
 }
 function pageMail(store: GameStore, param?: string): string {
   const s = store.state;
-  const view = param === 'sent' ? 'sent' : param === 'compose' ? 'compose' : param?.startsWith('m/') || param?.startsWith('e/') ? 'msg' : 'inbox';
+  const view = param === 'sent' ? 'sent' : param === 'bin' ? 'bin' : param === 'compose' ? 'compose' : param?.startsWith('m/') || param?.startsWith('e/') ? 'msg' : 'inbox';
   const unread = qmailBadge(store);
   const rows = mailRows(store);
   const side = `<nav class="qm-side" aria-label="Folders">
     <a href="#" class="qm-new" data-nav="qmail.com/compose">Compose</a>
     <a href="#" data-nav="qmail.com" class="${view === 'inbox' ? 'on' : ''}">Inbox${unread ? `<b>${unread}</b>` : ''}</a>
     <a href="#" data-nav="qmail.com/sent" class="${view === 'sent' ? 'on' : ''}">Sent</a>
+    <a href="#" data-nav="qmail.com/bin" class="${view === 'bin' ? 'on' : ''}">Bin</a>
     ${adHtml('qmail', s.values.day, 'square')}
   </nav>`;
   let main: string;
@@ -290,10 +293,16 @@ function pageMail(store: GameStore, param?: string): string {
     if (!row) main = `<p class="qm-empty">This message doesn't exist.</p>`;
     else {
       // the whole conversation, oldest first; what came in since the player last wrote starts expanded
-      const thread = groupThreads(rows).find((t) => t.rows.includes(row))!;
+      // binned emails form their own conversation, apart from anything in the same thread that isn't
+      const thread = groupThreads(rows.filter((r) => !!r.binned === !!row.binned)).find((t) => t.rows.includes(row))!;
       for (const r of thread.rows) if (r.unread) store.markReadMail(r.id);
       const lastSent = thread.rows.map((r) => r.folder).lastIndexOf('sent');
       const inSent = thread.rows.every((r) => r.folder === 'sent');
+      const ids = esc(JSON.stringify(thread.rows.map((r) => r.id)));
+      const home = row.binned ? 'qmail.com/bin' : inSent ? 'qmail.com/sent' : 'qmail.com';
+      const tools = row.binned
+        ? `<span class="qm-bin-note">In the Bin. Deleted when the day ends.</span><button class="qm-btn ghost" data-mail-restore="${ids}" data-mail-home="qmail.com/bin">Restore</button>`
+        : `<button class="qm-btn ghost" data-mail-bin="${ids}" data-mail-home="${home}" title="Move to Bin">${ICONS.bin}Bin</button>`;
       // one reply box for the conversation: a story email still waiting on an answer gets it, otherwise
       // it's an ordinary email back to the person on the other side
       const open = [...thread.rows].reverse().find((r) => r.needsReply);
@@ -319,7 +328,7 @@ function pageMail(store: GameStore, param?: string): string {
         </details>`;
       }).join('');
       main = `<article class="qm-read">
-        <p class="qm-crumbs"><a href="#" data-nav="qmail.com${inSent ? '/sent' : ''}">${inSent ? 'Sent' : 'Inbox'}</a></p>
+        <div class="qm-tools"><p class="qm-crumbs"><a href="#" data-nav="${home}">${row.binned ? 'Bin' : inSent ? 'Sent' : 'Inbox'}</a></p>${tools}</div>
         <h1 class="qm-h">${esc(thread.rows[0].subject || '(no subject)')}${thread.rows.length > 1 ? ` <span class="qm-count">${thread.rows.length}</span>` : ''}</h1>
         <div class="qm-thread">${msgs}</div>
         ${canReply ? `<form class="qm-reply" data-form="reply" ${target}>
@@ -332,18 +341,24 @@ function pageMail(store: GameStore, param?: string): string {
   } else {
     // one row per conversation, the most recently active first
     const folder = view === 'sent' ? 'sent' : 'inbox';
-    const html = groupThreads(rows).filter((t) => t.rows.some((r) => r.folder === folder)).map((t) => {
+    const binView = view === 'bin';
+    const html = groupThreads(rows.filter((r) => !!r.binned === binView)).filter((t) => binView || t.rows.some((r) => r.folder === folder)).map((t) => {
       const last = t.rows[t.rows.length - 1];
       const unread = t.rows.some((r) => r.unread);
       const names = [...new Set(t.rows.filter((r) => r.addr !== BOUNCE_ADDR).map((r) => (r.folder === 'sent' ? 'me' : r.from)))];
-      const who = folder === 'sent' ? `To: ${t.with}` : names.slice(-3).join(', ');
+      const who = folder === 'sent' || (binView && t.rows.every((r) => r.folder === 'sent')) ? `To: ${t.with}` : names.slice(-3).join(', ');
       const snippet = last.body.replace(/\s+/g, ' ').slice(0, 90);
       return `<a href="#" class="qm-row${unread ? ' unread' : ''}" data-nav="qmail.com/${esc(last.id)}">
         <span class="qm-from">${unread && folder === 'inbox' ? '<i class="qm-dot" aria-label="Unread"></i>' : ''}<span class="qm-names">${esc(who)}</span>${t.rows.length > 1 ? `<span class="qm-count">${t.rows.length}</span>` : ''}</span>
         <span class="qm-subj"><b>${esc(t.rows[0].subject)}</b>${snippet ? `<span class="qm-prev">${esc(snippet)}</span>` : ''}</span>
         <span class="qm-time">${dateShort(last.day)}</span></a>`;
     }).join('');
-    main = `<h1 class="qm-h">${view === 'sent' ? 'Sent' : 'Inbox'}</h1>${adHtml('qmail', s.values.day, 'wide')}${html ? `<div class="qm-list">${html}</div>` : `<p class="qm-empty">${view === 'sent' ? 'Nothing sent yet.' : 'No mail.'}</p>`}`;
+    const n = store.ui.mailNotice;
+    const notice = n ? `<p class="qm-notice" role="status">${esc(n.text)} <button class="qm-link" data-mail-undo>Undo</button></p>` : '';
+    const title = binView ? 'Bin' : view === 'sent' ? 'Sent' : 'Inbox';
+    const empty = binView ? 'The Bin is empty.' : view === 'sent' ? 'Nothing sent yet.' : 'No mail.';
+    const binHint = binView ? `<p class="qm-bin-hint">Everything in the Bin is deleted when the day ends.</p>` : '';
+    main = `<h1 class="qm-h">${title}</h1>${binHint}${notice}${adHtml('qmail', s.values.day, 'wide')}${html ? `<div class="qm-list">${html}</div>` : `<p class="qm-empty">${empty}</p>`}`;
   }
   return `<div class="qm">
     <header class="qm-top"><div class="qm-logo">${ICONS.mail}<span>Qmail</span></div>${devOptionsButton(store, 'qmail')}<span class="qm-user">${esc(PLAYER.addr)}</span></header>
