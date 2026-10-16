@@ -27,7 +27,8 @@ read only by `server/jev-proxy.mjs`; the client talks to `/api/*`, never to Type
   and the Terminal's local model. Load it from the control row on agent.chat. Without it, scripted
   fallbacks are shown (`game/llm.ts`, `game/gemma.ts`).
 - **The agent is freely promptable with costs** — ask it anything on agent.chat and it bills your
-  wallet per prompt + per word (refusals included). Pick a project to build/fix it instead.
+  wallet per prompt + per word of the prompt (refusals included), and shows the exact price under
+  the prompt box before you send. Pick a project to build/fix it instead.
 
 ## Day 7 — the hinge
 

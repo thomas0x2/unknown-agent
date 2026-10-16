@@ -71,7 +71,7 @@ describe('brief the agent', () => {
     const out = await briefBuild(s, content, r, appId, 'add CHF prices');
     expect(out.requested).toEqual(['price_chf']);
     expect(getApp(out.state, appId)!.repo.map((f) => f.id)).toEqual(['price_chf']);
-    expect(out.state.values.crypto).toBeCloseTo(99.2, 2); // 0.5 prompt + 0.01*30 words
+    expect(out.state.values.crypto).toBeCloseTo(99.47, 2); // 0.5 per prompt + 0.01 × 3 prompt words
   });
 
   it('fixing targets the broken feature', async () => {
