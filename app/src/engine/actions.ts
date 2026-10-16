@@ -2,7 +2,7 @@
  * Player actions: everything the player does through free text (prompting the agent, posting on Y,
  * replying to mail, reviewing on Yowl, running a local model) plus the button actions (deploy, take
  * down). Each returns a new state. Jev (injected) decides *what* a message does; the Writer
- * (injected, Gemma in the game) phrases replies that aren't fixed text; a reply that lands a storyline
+ * (injected, Claude Haiku in the game) phrases replies that aren't fixed text; a reply that lands a storyline
  * outcome is always the outcome's scripted text. Both are injectable so tests pin outcomes and the game
  * runs offline.
  */
@@ -77,7 +77,7 @@ async function scriptedTopic(jev: JevRouter, s: GameState, c: Contact, text: str
 
 /**
  * A known contact answers a message that didn't land a storyline outcome, in their own voice (the
- * local model when loaded), or with the scripted hint Jev chose. Returns '' for no contact.
+ * Haiku when available), or with the scripted hint Jev chose. Returns '' for no contact.
  */
 async function contactWritesBack(
   s: GameState, content: Content, jev: JevRouter, writer: Writer, addr: string, subject: string, text: string, hint = '', from?: string,
@@ -162,7 +162,7 @@ export interface ComposeResult extends ReplyResult {
 
 /**
  * Compose a fresh email to an address. A latent lead reachable there is routed by Jev and, when an
- * outcome lands, answers with its scripted reply; otherwise, if the address has a persona, Gemma
+ * outcome lands, answers with its scripted reply; otherwise, if the address has a character, Haiku
  * writes a reply in their voice. One email per recipient per day.
  */
 export async function composeEmail(
@@ -236,7 +236,7 @@ export interface AskResult { state: GameState; reply: string; charged: boolean; 
 export interface AskOpts {
   /** The scripted replies of the hint topic Jev matched (content/agent.json); one is sent instead of a roast. */
   hints?: string[];
-  /** Scripted roasts for when the local model can't write one. */
+  /** Scripted roasts for when Haiku can't write one. */
   roasts?: string[];
   /** How the prompt was routed, for dev mode. */
   debug?: string[];
@@ -244,7 +244,7 @@ export interface AskOpts {
 
 /**
  * A free-form agent prompt, billed per prompt + per word of the prompt (refusals included). A prompt
- * that drives nothing gets a roast (Gemma, or a scripted one); a prompt Jev matched to a hint topic
+ * that drives nothing gets a roast (Haiku, or a scripted one); a prompt Jev matched to a hint topic
  * gets that hint instead. From day 7, prohibited requests are refused unless the wording works around
  * the policy, which lands the result but raises the hidden misuse score and loosens the leash.
  */
@@ -465,13 +465,15 @@ export async function writeReview(
 export async function localPrompt(
   s0: GameState,
   text: string,
-  writer: Writer,
-  persona: string,
+  lines: readonly string[],
 ): Promise<{ state: GameState; reply: string }> {
   const s = clone(s0);
+  // the model answers whatever was asked with one of its lines, never the same one twice in a row
+  const last = [...s.terminal].reverse().find((l) => l.k === 'model')?.text;
+  const fresh = lines.filter((l) => l !== last);
   s.terminal.push({ k: 'in', text: `> ${text}` });
   tick(s, 'terminal');
-  const { text: body } = await writer.write({ as: `local:${s.termModel}`, prompt: text, fallback: '…', persona });
+  const body = pick(s, fresh.length ? fresh : lines);
   s.terminal.push({ k: 'model', text: body });
   return { state: s, reply: body };
 }

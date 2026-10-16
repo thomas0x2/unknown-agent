@@ -18,8 +18,7 @@ import { GameStore } from './game/store';
 import { loadContent } from './content/load';
 import { localStorageStore } from './engine';
 import { JEV } from './game/backendJev';
-import { LLM, type Misses, type HaikuVia } from './game/llm';
-import { makeGemmaWriter } from './game/gemma';
+import { MISSES, makeWriter, type Misses, type HaikuVia } from './game/misses';
 import * as V from './ui/view';
 import { route } from './sites/registry';
 import { listSlots } from './game/saves';
@@ -29,7 +28,7 @@ import { disableClipboard } from './ui/noClipboard';
 disableClipboard();
 
 const content = loadContent();
-const writer = makeGemmaWriter(content);
+const writer = makeWriter(content);
 const store = new GameStore(content, JEV, writer, localStorageStore());
 
 const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector<T>(sel);
@@ -106,7 +105,7 @@ function render(): void {
   lastSite = site;
 }
 store.subscribe(render);
-LLM.onChange(render);
+MISSES.onChange(render);
 JEV.onChange(render);
 void JEV.probe();
 
@@ -130,7 +129,7 @@ function toast(title: string, body: string, kind = 'note'): void {
 
 // ── clicks ──
 document.addEventListener('click', (e) => {
-  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-llm],[data-ov],[data-dev],[data-cancel-booking],[data-empire-join],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat]');
+  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-ov],[data-dev],[data-cancel-booking],[data-empire-join],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat]');
   // any click outside the home menu closes it (menu items close it themselves below)
   if (store.ui.start && !(e.target as HTMLElement).closest('#startmenu, #dk-home')) store.toggleStart(false);
   if (!t) return;
@@ -159,7 +158,6 @@ document.addEventListener('click', (e) => {
   else if (d.star != null) store.setReviewStars(Number(d.star));
   else if (d.download != null) store.download(d.download);
   else if (d.wlRange != null) store.setWalletRange(d.wlRange);
-  else if (d.llm != null) onLlm(d.llm);
   else if (d.ov != null) onOverlay(d.ov);
   else if (d.dev != null) store.devAdd(d.dev);
   else if (d.act === 'sleep') store.endDay();
@@ -171,10 +169,6 @@ document.addEventListener('click', (e) => {
 
 function clearMailDraft(): void { ['mail-to', 'mail-subject', 'mail-body'].forEach(clearField); }
 
-function onLlm(action: string): void {
-  if (action === 'load' || action === 'retry') LLM.load();
-  else if (action === 'cancel') LLM.unload();
-}
 function onOverlay(a: string): void {
   if (a === 'new') { forgetDrafts(); store.newGame(); }
   else if (a === 'start') store.seenIntro();
@@ -244,9 +238,8 @@ document.addEventListener('input', (e) => {
 });
 document.addEventListener('change', (e) => {
   const el = e.target as HTMLSelectElement;
-  if (el.id === 'llm-backend') LLM.setBackend(el.value as 'browser' | 'ollama' | 'off');
-  else if (el.id === 'llm-misses') LLM.setMisses(el.value as Misses);
-  else if (el.id === 'llm-haiku-via') LLM.setHaikuVia(el.value as HaikuVia);
+  if (el.id === 'llm-misses') MISSES.set({ misses: el.value as Misses });
+  else if (el.id === 'llm-haiku-via') MISSES.set({ haikuVia: el.value as HaikuVia });
 });
 /** Keep the To draft and the once-a-day notice current without re-rendering, so the field and its suggestions stay put. */
 function syncMailTo(): void {
