@@ -91,6 +91,7 @@ export interface DeliveredEvent {
   /** Arrival order, shared with MailEntry.seq (s.nextId), so the inbox lists both as they came in. */
   seq?: number;
   answered: boolean;
+  /** The outcome that landed, or 'no_reply' when the player let it lapse. */
   outcomeId?: string;
   expiresDay?: number;
 }

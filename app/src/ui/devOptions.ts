@@ -6,7 +6,7 @@
 import type { GameStore } from '../game/store';
 import type { Effects, GameEvent, Outcome } from '../content/schema';
 import {
-  type GameState, activeDeliveries, triggerMatches, needsWork, fixCategories, policyActive, POST_BANDS, Y as YCFG,
+  type GameState, activeDeliveries, triggerMatches, replyDeadline, needsWork, fixCategories, policyActive, POST_BANDS, Y as YCFG,
 } from '../engine';
 
 export type DevOptionsSite = 'agent' | 'qmail' | 'y';
@@ -66,12 +66,24 @@ function outcomeCard(s: GameState, o: Outcome): string {
   </div>`;
 }
 
-function eventCard(s: GameState, ev: GameEvent, note = ''): string {
+function eventCard(s: GameState, ev: GameEvent, note = '', deliveredDay?: number): string {
   return `<div class="dvb-card">
     <div class="dvb-title"><b>${esc(ev.from ?? ev.id)}</b><span class="dvo-dim">${esc(ev.addr ?? '')}</span>${note ? `<span class="dvb-pill off">${esc(note)}</span>` : ''}</div>
     ${ev.subject ? `<div class="dvo-dim">${esc(ev.subject)} · <code>${esc(ev.id)}</code></div>` : `<div class="dvo-dim"><code>${esc(ev.id)}</code></div>`}
     ${(ev.outcomes ?? []).map((o) => outcomeCard(s, o)).join('')}
     ${line('Hint (near miss)', (ev.hints ?? []).map(quote).join(' '))}
+    ${ev.noReply && deliveredDay != null ? noReplyCard(s, ev, deliveredDay) : ''}
+  </div>`;
+}
+
+/** What letting the thread lapse costs, and when it lapses. */
+function noReplyCard(s: GameState, ev: GameEvent, deliveredDay: number): string {
+  const by = replyDeadline(ev, deliveredDay);
+  const when = by === s.values.day ? 'tonight' : `end of day ${by}`;
+  return `<div class="dvo-out">
+    <div class="dvo-out-head"><b>no reply</b><span class="dvb-pill bad">lapses ${esc(when)}</span></div>
+    ${line('When', `nothing lands by the end of day ${by}; the thread closes`)}
+    ${line('Effects', tags(effectsSummary(ev.noReply!.effects)))}
   </div>`;
 }
 
@@ -121,8 +133,9 @@ function agentOptions(store: GameStore): string {
 function qmailOptions(store: GameStore): string {
   const s = store.state;
   const c = store.content;
-  const open = activeDeliveries(s).filter((d) => d.site === 'qmail').map((d) => c.events.find((e) => e.id === d.eventId))
-    .filter((e): e is GameEvent => !!e && !!e.outcomes?.length);
+  const open = activeDeliveries(s).filter((d) => d.site === 'qmail')
+    .map((d) => ({ d, e: c.events.find((x) => x.id === d.eventId) }))
+    .filter((x): x is { d: typeof x.d; e: GameEvent } => !!x.e && !!x.e.outcomes?.length);
   const leads = c.events.filter((e) => e.site === 'qmail' && e.latent && e.addr && !s.fired.includes(e.id) && triggerMatches(s, e.trigger));
   // where the player learns each lead's address: a Y post or email that mentions it
   const source = (addr: string) => c.events.find((e) => !e.latent && e.addr === addr && s.fired.includes(e.id) && e.site !== 'qmail');
@@ -133,7 +146,7 @@ function qmailOptions(store: GameStore): string {
   const misses = c.contacts.filter((k) => k.reply).map((k) => `<div class="dvo-miss"><b>${esc(k.name ?? k.key)}</b> <span class="dvo-dim">${esc(k.key)}</span>${quote(k.reply!)}</div>`).join('');
   const sent = s.sentToday.length ? `<p class="dvo-note">Already emailed today, so another email bounces: ${s.sentToday.map((a) => `<code>${esc(a)}</code>`).join(', ')}</p>` : '';
   return sent
-    + section('Open threads', 'reply to the email; a matched outcome sends its scripted reply', open.map((e) => eventCard(s, e)).join(''))
+    + section('Open threads', 'reply to the email; a matched outcome sends its scripted reply', open.map(({ d, e }) => eventCard(s, e, '', d.day)).join(''))
     + section('Leads you can email', 'compose a new email to the address', leads.map((e) => {
       const src = source(e.addr!);
       return eventCard(s, e, src ? `from ${src.site} post` : 'address not shown yet');
