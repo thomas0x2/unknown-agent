@@ -88,3 +88,13 @@ describe('brief the agent', () => {
     expect(out.charged).toBe(true);
   });
 });
+
+describe('offline Jev post rating', () => {
+  it('counts a post as a reaction when it shares a word with a trending phrase', async () => {
+    const { offlineJev } = await import('./jev');
+    const r = await offlineJev.ratePost({ text: 'These AI layoffs will bite the companies', trending: ['AI layoffs', 'election candidates announced'], recentPosts: [], followers: 12 });
+    expect(r.category).toBe('reaction');
+    const off = await offlineJev.ratePost({ text: 'Remember to drink water today', trending: ['AI layoffs'], recentPosts: [], followers: 12 });
+    expect(off.category).toBe('tip');
+  });
+});

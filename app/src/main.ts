@@ -13,8 +13,8 @@ import './ui/qdrive.css';
 import './ui/ads.css';
 import { GameStore } from './game/store';
 import { loadContent } from './content/load';
-import { offlineJev, localStorageStore } from './engine';
-import { BackendJev } from './game/backendJev';
+import { localStorageStore } from './engine';
+import { JEV } from './game/backendJev';
 import { LLM } from './game/llm';
 import { makeGemmaWriter } from './game/gemma';
 import * as V from './ui/view';
@@ -23,9 +23,8 @@ import { listSlots } from './game/saves';
 import { newPageLoad } from './ui/ads';
 
 const content = loadContent();
-const router = new BackendJev(offlineJev);
 const writer = makeGemmaWriter(content);
-const store = new GameStore(content, router, writer, localStorageStore());
+const store = new GameStore(content, JEV, writer, localStorageStore());
 
 const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector<T>(sel);
 const val = (sel: string) => ($(sel) as HTMLInputElement | HTMLTextAreaElement | null)?.value ?? '';
@@ -72,6 +71,8 @@ function render(): void {
 }
 store.subscribe(render);
 LLM.onChange(render);
+JEV.onChange(render);
+void JEV.probe();
 
 function updateCost(): void {
   const est = $('#cost-est'); const input = $<HTMLTextAreaElement>('#prompt-input');

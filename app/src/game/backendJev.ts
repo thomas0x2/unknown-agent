@@ -3,14 +3,38 @@
  * isn't running or a call fails, it falls back to the offline keyword router so the game stays
  * playable. The key never ships in the client.
  */
-import type {
-  JevRouter, RouteInput, RouteDecision, PostInput, PostRating, FeatureMatchInput,
+import {
+  offlineJev,
+  type JevRouter, type RouteInput, type RouteDecision, type PostInput, type PostRating, type FeatureMatchInput,
 } from '../engine';
 
+export type JevMode = 'checking' | 'online' | 'offline';
+
+/** How long to stay on the offline router after a failed call before trying the proxy again. */
+const RETRY_MS = 30_000;
+
 export class BackendJev implements JevRouter {
-  private healthy = true;
+  mode: JevMode = 'checking';
+  /** Why Jev is offline, in plain words (for the agent page and the dev panel). */
+  reason = '';
+  private retryAt = 0;
+  private listeners = new Set<() => void>();
 
   constructor(private fallback: JevRouter) {}
+
+  onChange(fn: () => void): () => void { this.listeners.add(fn); return () => this.listeners.delete(fn); }
+
+  /** Ask the proxy whether Jev is usable, so the UI shows the right mode before the first call. */
+  async probe(): Promise<void> {
+    try {
+      const res = await fetch('/api/status');
+      const body = res.ok ? ((await res.json()) as { jev?: boolean; reason?: string }) : null;
+      if (body?.jev) this.setMode('online');
+      else this.goOffline(body?.reason ?? 'The Jev proxy is not running (npm run proxy).');
+    } catch {
+      this.goOffline('The Jev proxy is not running (npm run proxy).');
+    }
+  }
 
   async route(input: RouteInput): Promise<RouteDecision> {
     return this.call('route', input, () => this.fallback.route(input));
@@ -22,8 +46,19 @@ export class BackendJev implements JevRouter {
     return this.call('match-features', input, () => this.fallback.matchFeatures(input));
   }
 
+  private setMode(mode: JevMode, reason = ''): void {
+    if (this.mode === mode && this.reason === reason) return;
+    this.mode = mode; this.reason = reason;
+    this.listeners.forEach((fn) => fn());
+  }
+  private goOffline(reason: string): void {
+    this.retryAt = Date.now() + RETRY_MS;
+    this.setMode('offline', reason);
+  }
+
   private async call<T>(path: string, payload: unknown, fallback: () => Promise<T>): Promise<T> {
-    if (!this.healthy) return fallback();
+    // after a failure, use the offline router for a while, then give the proxy another chance
+    if (this.mode === 'offline' && Date.now() < this.retryAt) return fallback();
     try {
       const res = await fetch(`/api/${path}`, {
         method: 'POST',
@@ -31,13 +66,19 @@ export class BackendJev implements JevRouter {
         body: JSON.stringify(payload),
       });
       if (!res.ok) {
-        this.healthy = false; // no proxy / no key / error: use offline for the rest of the session
+        const err = (await res.json().catch(() => null)) as { error?: string } | null;
+        this.goOffline(err?.error ?? `The Jev proxy answered ${res.status}.`);
         return fallback();
       }
-      return (await res.json()) as T;
+      const out = (await res.json()) as T;
+      this.setMode('online');
+      return out;
     } catch {
-      this.healthy = false;
+      this.goOffline('The Jev proxy is not running (npm run proxy).');
       return fallback();
     }
   }
 }
+
+/** The game's one Jev router; the UI reads its mode. */
+export const JEV = new BackendJev(offlineJev);

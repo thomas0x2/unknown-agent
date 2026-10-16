@@ -5,6 +5,7 @@
  */
 import type { GameStore } from '../game/store';
 import { LLM } from '../game/llm';
+import { JEV } from '../game/backendJev';
 import { listSlots, autoSlot } from '../game/saves';
 import { ICONS, Y_ICONS } from './icons';
 import { route, bookmarks, type Route, type SiteId } from '../sites/registry';
@@ -580,7 +581,9 @@ export function costLine(s: GameState, text: string): { text: string; over: bool
   };
 }
 function jevChip(): string {
-  return `<span class="ua-llm-dot"></span>Story decisions: Jev`;
+  if (JEV.mode === 'online') return `<span class="ua-llm-dot"></span>Story decisions: Jev`;
+  if (JEV.mode === 'checking') return `<span class="ua-llm-dot off"></span>Story decisions: checking Jev…`;
+  return `<span class="ua-llm-dot off"></span><span title="${esc(JEV.reason)}">Story decisions: keyword matcher (Jev offline)</span>`;
 }
 function llmRow(): string {
   const st = LLM.settings;
@@ -766,5 +769,6 @@ export function devHtml(store: GameStore): string {
     <div class="dv-row"><button data-dev="money">+$100</button><button data-dev="followers">+50 followers</button><button data-dev="day7">Jump to Day 7</button></div>
     <p><b>Flags</b> <code>${esc(s.flags.join(', ') || 'none')}</code></p>
     <p><b>Apps</b> <code>${esc(s.apps.map((a) => `${a.name}:${appWorking(a) ? 'ok' : a.deployed ? 'check' : 'undeployed'}`).join(' · ') || 'none')}</code></p>
+    <p><b>Jev</b> ${esc(JEV.mode)}${JEV.reason ? ' · ' + esc(JEV.reason) : ''}</p>
     <p><b>Local model</b> ${esc(LLM.settings.backend)} · ${esc(LLM.status)}${LLM.detail ? ' · ' + esc(LLM.detail) : ''}</p>`;
 }
