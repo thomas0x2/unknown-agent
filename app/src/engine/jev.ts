@@ -52,7 +52,7 @@ export interface FeatureMatchInput {
   /** The player's earlier messages, oldest first: context for what the prompt refers to, not requests. */
   context?: string[];
   /** Spec features with their plain-language descriptions. */
-  features: { id: string; description: string }[];
+  features: { id: string; description: string; kind?: 'build' | 'problem' }[];
   /** Only count items for an app the prompt names or clearly refers to (the "(for <app>, <url>)" in each description). */
   appNamed?: boolean;
 }

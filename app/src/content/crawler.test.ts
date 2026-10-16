@@ -94,10 +94,17 @@ describe('sentiment crawler', () => {
     for (const h of portfolio(buys, 6, bugs('value_wrong')).holdings) expect(h.value).toBeLessThan(h.shares * 5);
     // a rising stock with a loss
     for (const h of portfolio(buys, 6, bugs('pnl_sign')).holdings) expect(Math.sign(h.dayPnl)).toBe(-Math.sign(h.move));
-    expect(portfolio(buys, 6, bugs('cash_wrong')).cash).toBeLessThan(0);
     // a few dollars' move on a $140 stock shown as a double-digit percentage
     for (const h of portfolio(buys, 6, bugs('pct_wrong')).holdings) expect(Math.abs(h.movePct)).toBeGreaterThan(0.1);
     for (const h of ok.holdings) expect(Math.abs(h.movePct)).toBeLessThan(0.1);
+    // the totals add up what's shown: only the buggy calculation itself is off
+    for (const b of ['value_wrong', 'pnl_sign', 'pct_wrong']) {
+      const p = portfolio(buys, 6, bugs(b));
+      expect(p.total, b).toBeCloseTo(p.holdings.reduce((a, h) => a + h.value, 0) + p.cash);
+      expect(p.change, b).toBeCloseTo(p.holdings.reduce((a, h) => a + h.dayPnl, 0));
+    }
+    expect(portfolio(buys, 6, bugs('value_wrong')).total).toBeLessThan(ok.total);
+    expect(portfolio(buys, 6, bugs('wrong_totals')).total).toBeCloseTo(ok.cash);
   });
 });
 
@@ -236,7 +243,6 @@ const ASKS: Record<string, [string, string, Record<string, string>]> = {
     wrong_totals: 'The portfolio total is wrong, it only counts the cash and leaves out the holdings.',
     value_wrong: "The holding values are wrong, 100 times too small. It's shares times price.",
     pnl_sign: 'The day P&L has the wrong sign, gains show as losses.',
-    cash_wrong: 'Cash shows negative.',
     pct_wrong: 'The percent changes are 100 times too big.',
     no_buy: "Auto-buy didn't buy when Crane praised $GAI.",
     wrong_ticker: 'Auto-buy bought the wrong ticker.',

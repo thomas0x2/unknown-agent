@@ -98,7 +98,7 @@ export interface BuildReport {
 const NUM = /\d+(?:[.,]\d+)?/g;
 
 /** Fills {{param}} from the spec; {{param:names}} keeps only its words, {{param:prices}} only its numbers. */
-const fillSpec = (text: string, params?: Record<string, string | number>) =>
+export const fillSpec = (text: string, params?: Record<string, string | number>) =>
   text.replace(/\{\{(\w+)(?::(names|prices))?\}\}/g, (_m, k: string, part?: string) => {
     const v = String(params?.[k] ?? '');
     return part === 'names' ? v.replace(NUM, '') : part === 'prices' ? (v.match(NUM) ?? []).join(' ') : v;
@@ -281,11 +281,12 @@ export function buildApp(s: GameState, appId: string, requested: string[], level
 }
 
 /** A category Jev can match a prompt against: the feature itself, one of its bugs, or a live break. */
-export interface FixCategory { id: string; description: string }
+/** `build` asks for the feature itself; `problem` is one thing wrong with it, matched only when the prompt points it out. */
+export interface FixCategory { id: string; description: string; kind: 'build' | 'problem' }
 
 const BREAK_CATEGORIES: Partial<Record<FailureKind, string>> = {
-  visible: 'crashes with an application error',
-  failed_fetch: "doesn't load: failed to fetch (or falls back to showing everything free)",
+  visible: 'The {{feature}} page crashes with an application error.',
+  failed_fetch: "The {{feature}} page doesn't load its data: failed to fetch (or it falls back to showing everything free).",
 };
 
 
@@ -296,11 +297,11 @@ const BREAK_CATEGORIES: Partial<Record<FailureKind, string>> = {
 export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, featureId: string): FixCategory[] {
   const def = tmpl?.features.find((f) => f.id === featureId);
   if (!def) return [];
-  const out: FixCategory[] = [{ id: 'feature', description: def.description }];
-  for (const b of def.bugs ?? []) out.push({ id: b.id, description: fillSpec(b.when, app.specParams[featureId]) });
+  const out: FixCategory[] = [{ id: 'feature', description: def.description, kind: 'build' }];
+  for (const b of def.bugs ?? []) out.push({ id: b.id, description: fillSpec(b.when, app.specParams[featureId]), kind: 'problem' });
   const brk = app.breaks.find((b) => b.featureId === featureId);
   const cat = brk && BREAK_CATEGORIES[brk.failure];
-  if (brk && cat) out.push({ id: brk.failure, description: cat });
+  if (brk && cat) out.push({ id: brk.failure, description: cat.replaceAll('{{feature}}', featureId), kind: 'problem' });
   return out;
 }
 
@@ -465,11 +466,14 @@ export function devToggleBug(s: GameState, appId: string, featureId: string, key
   }
   // switching a bug on by hand also lets the agent make it again
   if (app.fixed?.[featureId]) app.fixed[featureId] = app.fixed[featureId].filter((b) => b !== key);
+  // one switch for repo and live together: on if either has it, so both always end up the same way
+  const has = (list: BuiltFeature[]) => { const f = list.find((x) => x.id === featureId); return !!f && !f.correct && bugsOf(f).includes(key); };
+  const on = !(has(app.repo) || (app.deployed && has(app.features)));
   const toggle = (list: BuiltFeature[]) => {
     let f = list.find((x) => x.id === featureId);
     if (!f) { f = { id: featureId, correct: true, params: spec }; list.push(f); }
-    const now = f.correct ? [] : bugsOf(f);
-    const next = now.includes(key) ? now.filter((b) => b !== key) : key === 'hallucinated' ? [key, ...now] : [...now, key];
+    const now = f.correct ? [] : bugsOf(f).filter((b) => b !== key);
+    const next = !on ? now : key === 'hallucinated' ? [key, ...now] : [...now, key];
     if (!next.length) Object.assign(f, { correct: true, params: spec, variant: undefined, also: undefined });
     else Object.assign(f, { correct: false, params: spec, ...withBugs(next), seed: f.seed ?? randInt(s, 0, 9999) });
   };

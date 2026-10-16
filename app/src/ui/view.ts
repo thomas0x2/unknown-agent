@@ -18,7 +18,7 @@ import { pageDrive } from './qdrive';
 import { adHtml } from './ads';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
-import { renderAppSite, devBugPanel, devBugCount } from './appsite';
+import { renderAppSite, devBugPanel, devBugCount, appLogo } from './appsite';
 import { marketPosts, handleOf, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked } from '../engine';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 
@@ -64,8 +64,11 @@ function tabTitle(r: Route, url: string): string {
 export function tabsHtml(store: GameStore): string {
   return store.tabs.map((t) => {
     const rr = route(t.url, store.state);
+    // a deployed app with a logo shows it as its favicon
+    const app = rr.site === 'app' && rr.param ? getApp(store.state, rr.param.split('/')[0]) : undefined;
+    const logo = app && appLogo(app.template);
     return `<div class="tab${t.id === store.active ? ' on' : ''}" data-tab="${t.id}" role="tab" aria-selected="${t.id === store.active}" tabindex="0">
-      <span class="tab-ico ico-${rr.site}">${ICONS[rr.site] || ICONS.newtab}</span><span class="tab-title">${esc(tabTitle(rr, t.url))}</span>
+      <span class="tab-ico ico-${logo ? 'applogo' : rr.site}">${logo || ICONS[rr.site] || ICONS.newtab}</span><span class="tab-title">${esc(tabTitle(rr, t.url))}</span>
       <button class="tab-x" data-close="${t.id}" aria-label="Close tab">×</button></div>`;
   }).join('') + `<button class="tab-new" data-newtab aria-label="New tab">+</button>`;
 }
@@ -179,7 +182,8 @@ function pageSpinFeed(store: GameStore, param?: string): string {
   const n = Math.min(Math.max(Number(m[1] ?? 1), 1), pages);
   const lines = feed.slice((n - 1) * FEED_PAGE, n * FEED_PAGE).map((x) => `M${x.id} ST=${x.st} T=${x.t}`).join('\n');
   const next = n < pages ? `<a href="#" data-nav="spincycle.test/feed/${n + 1}">next=/feed/${n + 1}</a>` : 'next=null';
-  return `<pre class="spinfeed">SPINCYCLE STATUS FEED v1\npage=${n}/${pages} · ${FEED_PAGE} machines per page\n\nFIELDS\n  M   machine number\n  ST  status: 0 free, 1 running, 2 done (waiting for pickup), 3 out of order\n  T   seconds left on the cycle (0 unless running)\n\n${lines}\n\n${next}</pre>`;
+  const first = n > 1 ? `\n<a href="#" data-nav="spincycle.test/feed">first=/feed</a>` : '';
+  return `<pre class="spinfeed">SPINCYCLE STATUS FEED v1\npage=${n}/${pages} · ${FEED_PAGE} machines per page\n\nFIELDS\n  M   machine number\n  ST  status: 0 free, 1 running, 2 done (waiting for pickup), 3 out of order\n  T   seconds left on the cycle (0 unless running)\n\n${lines}\n\n${next}${first}</pre>`;
 }
 
 // ── page dispatch ──
