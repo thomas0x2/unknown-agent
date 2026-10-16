@@ -61,15 +61,17 @@ async function routeReply(jev: JevRouter, channel: GameEvent['site'], s: GameSta
 
 /**
  * A known contact answers a message that didn't land a storyline outcome, in their own voice (the
- * local model when loaded). A hint rides along as the fallback nudge. Returns '' for no contact.
+ * local model when loaded), or with the scripted hint Jev chose. Returns '' for no contact.
  */
 async function contactWritesBack(
   s: GameState, content: Content, writer: Writer, addr: string, subject: string, text: string, hint = '', from?: string,
 ): Promise<string> {
   const c = contactFor(content, addr);
   if (!c) return '';
-  const fb = hint || c.reply || 'Thanks for your message.';
-  const { text: body, llm } = await writer.write({ as: addr, prompt: text, fallback: fb, long: true });
+  // A hint is a hit: Jev recognised what the player was after, so the nudge is sent as written.
+  // Otherwise the character answers in their own voice, without helping (game/characters.ts).
+  const fb = c.reply || 'Thanks for your message.';
+  const { text: body, llm } = hint ? { text: hint, llm: false } : await writer.write({ as: addr, prompt: text, fallback: fb, long: true });
   const shown = body || fb;
   pushMail(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: shown, read: false, generated: llm && !!body });
   return shown;

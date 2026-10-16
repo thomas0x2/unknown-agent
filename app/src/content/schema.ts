@@ -150,10 +150,24 @@ export interface Contact {
   /** Match by qmail address or Y handle. */
   key: string;
   name?: string;
-  persona: string;
-  examples?: [string, string][];
+  /** The character who answers at this address (content/characters.json). */
+  character: string;
   /** A scripted reply shown when the local model isn't loaded, so a reply always arrives. */
   reply?: string;
+}
+
+/** A character Gemma speaks as when Jev finds nothing in what the player wrote. */
+export interface Character {
+  id: string;
+  name: string;
+  /** Who they are and how they talk, in the second person ("You are …"). */
+  profile: string;
+  /** [player, reply] pairs, short and unhelpful, all the same shape. */
+  examples: [string, string][];
+  /** Most sentences a reply may have (default 2). */
+  sentences?: number;
+  /** A regex alternation the reply must contain one of (agent's roasts must be aimed at the player). */
+  mustMention?: string;
 }
 
 /** Everything the engine reads, gathered in one bundle and passed into engine steps. */
@@ -178,6 +192,8 @@ export interface Content {
   trending: Record<number, string[]>;
   /** Personas for Gemma-written replies, keyed by address/handle. */
   contacts: Contact[];
+  /** Character profiles for off-script replies. */
+  characters?: Character[];
   /** agent.chat's hint topics and roasts. */
   agent?: AgentContent;
 }

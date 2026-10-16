@@ -5,7 +5,7 @@
  * gives a brief instead of fixed text, or when nothing was triggered.
  */
 export interface WriteReq {
-  /** Who is speaking: 'agent', or an email address / Y handle with a persona in content. */
+  /** Who is speaking: 'agent', or an email address / Y handle mapped to a character in content. */
   as: string;
   /** A brief for the reply, or the player's text to react to. */
   prompt: string;
