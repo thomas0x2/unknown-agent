@@ -7,6 +7,7 @@ import { route } from '../sites/registry';
 import { page } from './view';
 import { wordJev } from '../engine/_fixtures';
 import { devBugPanel, devBugCount } from './appsite';
+import { devToggleBug } from '../engine/apps';
 
 const mem: SaveStore = { load: () => null, save: () => {}, clear: () => {} } as unknown as SaveStore;
 
@@ -50,7 +51,7 @@ describe('Forkyard repos', () => {
     expect(html('forkyard.com/vibe-check/nope')).toContain('404');
   });
 
-  it('the dev bug panel lists only pushed features, not ones the client asked for that nobody built', async () => {
+  it('the dev bug panel shows a requested feature nobody built as missing, with no bugs', async () => {
     const content = loadContent();
     const store = new GameStore(content, {} as JevRouter, {} as Writer, mem);
     store.state.values.day = 2;
@@ -61,13 +62,17 @@ describe('Forkyard repos', () => {
     a.repoVersion = 1;
     a.repo = [{ id: 'tickers', correct: true }];
     const tmpl = content.apps[a.template];
+    const card = (html: string) => html.split('<div class="dvb-card">').find((c) => c.includes('<b>auto_buy</b>'))!;
     const panel = devBugPanel(a, tmpl);
-    expect(panel).toContain('<b>tickers</b>');
-    expect(panel).not.toContain('<b>auto_buy</b>');
+    expect(card(panel)).toContain('missing');
+    expect(card(panel)).not.toContain('data-devbug');
     expect(devBugCount(a, tmpl)).toBe(0);
-    // once pushed it shows up
+    // no bug can be switched on before it's built
+    devToggleBug(store.state, a.id, 'auto_buy', 'wrong_ticker');
+    expect(a.repo.map((f) => f.id)).toEqual(['tickers']);
+    // once pushed, its bugs show up
     a.repo.push({ id: 'auto_buy', correct: false, variant: 'wrong_ticker' });
-    expect(devBugPanel(a, tmpl)).toContain('<b>auto_buy</b>');
+    expect(card(devBugPanel(a, tmpl))).toContain('data-devbug');
     expect(devBugCount(a, tmpl)).toBe(1);
   });
 });
