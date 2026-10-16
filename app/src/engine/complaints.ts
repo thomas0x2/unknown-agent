@@ -147,7 +147,7 @@ export function deliverComplaints(s: GameState, content: Content, complaints: Co
       const seq = nextSeq(s);
       s.yExtra.push({
         id: `complaint${String(seq).padStart(5, '0')}`, author: poster.author, handle: poster.handle,
-        text: problemLine(app, tmpl, c.problems[0]), day: s.values.day, likes: 4 + (seq * 7) % 40, about: app.id,
+        text: problemLine(app, tmpl, c.problems[0]), day: s.values.day, min: s.clockMin, likes: 4 + (seq * 7) % 40, about: app.id,
       });
     }
   }
