@@ -137,6 +137,18 @@ describe('fixing named bugs', () => {
     const partial: JevRouter = { ...pickJev({ route: ['fix'] }), matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => x.endsWith('::c:confirmation/date') || x.endsWith('::s:booking')) };
     const miss = (await promptDone(s, content, partial, 'Trattoria Gino: the booking date is wrong')).state;
     expect(miss.chat.at(-1)!.src).toBe('near_miss');
+    // the near-miss says where the path stopped: the booking was named, the folder wasn't
+    expect(miss.chat.at(-1)!.text).toMatch(/form or confirmation/);
+    expect(miss.chat.at(-1)!.text).toMatch(/\bdate\b/);
+    // the part without its feature asks for the feature
+    const bare: JevRouter = { ...partial, matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => x.endsWith('::c:confirmation/date')) };
+    const noFeature = (await promptDone(s, content, bare, 'Trattoria Gino: the date is wrong')).state;
+    expect(content.agent!.hints.find((h) => h.id === 'near_feature')!.replies.map((l) => l.replaceAll('{{part}}', 'date'))).toContain(noFeature.chat.at(-1)!.text);
+    // the feature and a folder but no part: it lists that folder's parts
+    const folderOnly: JevRouter = { ...partial, matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => /::booking::(area|s:booking|s:booking\/confirmation)$/.test(x)) };
+    const noPart = (await promptDone(s, content, folderOnly, 'Trattoria Gino: the booking confirmation is wrong')).state;
+    expect(noPart.chat.at(-1)!.text).toMatch(/confirmation/);
+    expect(noPart.chat.at(-1)!.text).toMatch(/sending, recipient, date, time, party, restaurant name/);
     expect(getApp(miss, id)!.repo).toEqual(getApp(s, id)!.repo);
     // every step named: fixed
     const full: JevRouter = { ...partial, matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => /::c:confirmation\/date$|::s:booking(\/confirmation)?$/.test(x)) };
