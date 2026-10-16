@@ -424,7 +424,7 @@ describe('loose descriptions', () => {
     const { s, id } = withApp('trader_contact');
     const a = getApp(s, id)!;
     a.repo = a.repo.map((f) => (f.id === 'sentiment' ? { ...f, correct: false, variant: 'inverted', seed: 1 } : f));
-    const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::sentiment::c:labels', '::sentiment::c:sarcasm'] }), 'On the sentiment crawler app, bullish and bearish look wrong')).state;
+    const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::sentiment::c:labels', '::sentiment::c:sarcasm'] }), 'On the vibe check app, bullish and bearish look wrong')).state;
     expect(getApp(out, id)!.repo.find((f) => f.id === 'sentiment')!.correct).toBe(true);
     const reply = out.chat.at(-1)!.text;
     expect(reply).toMatch(/bullish|Bullish/);

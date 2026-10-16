@@ -89,6 +89,7 @@
       "name": "classifier",
       "description": "split today's posts into bullish, bearish and neutral",
       "aka": [
+        "sentiment",
         "sentiment analysis",
         "mood",
         "bullish/bearish",

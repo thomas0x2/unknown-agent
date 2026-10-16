@@ -1,5 +1,5 @@
 /*
- * The sentiment crawler and Spin Cycle Board (day 2): their output is computed from real data (the
+ * The vibe check and Spin Cycle Board (day 2): their output is computed from real data (the
  * stock posts on Y, the raw machine feed), each failure from the day plans is a named bug that shows
  * up in that output, and naming the bug in a fix prompt fixes it.
  */
@@ -55,7 +55,7 @@ describe('stock posts on Y', () => {
   });
 });
 
-describe('sentiment crawler', () => {
+describe('vibe check', () => {
   const posts = marketPosts(onDay(2), content);
 
   it('built right: today, $-tagged, no bots, sarcasm read as bearish, every counted post', () => {
@@ -264,7 +264,7 @@ function appFor(contact: string, day: number): { s: GameState; id: string } {
 }
 
 const ASKS: Record<string, [string, string, Record<string, string>]> = {
-  sentiment: ['trader_contact', 'Sentiment Crawler: ', {
+  sentiment: ['trader_contact', 'Vibe Check: ', {
     wrong_tickers: 'The crawler tracks the wrong tickers.',
     lowercase_missed: 'It misses lowercase tickers like $gai.',
     inverted: 'Bullish and bearish are swapped in the sentiment split.',

@@ -115,7 +115,7 @@ function restaurant(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
   return `<div class="as as-r">${header}<main>${body}</main>${foot}</div>`;
 }
 
-// ── sentiment crawler ──
+// ── vibe check ──
 
 const money = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const signed = (n: number) => `${n >= 0 ? '+' : '−'}${money(Math.abs(n))}`;

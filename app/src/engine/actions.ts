@@ -530,6 +530,12 @@ export function appStatus(app: AppInstance): string {
 /** The near-miss line for a feature without its own: the fix prompt named the feature but not which part. */
 const NEAR_MISS = "I looked at the {{feature}} and couldn't find the problem. Which part of it is wrong?";
 
+/** An app as Jev's "is the prompt about this app?" question sees it: its name, address, what it is and what it has. */
+function appSummary(a: AppInstance, tmpl: AppTemplate | undefined): string {
+  const feats = a.required.map((id) => featureName(id, tmpl?.features.find((f) => f.id === id)));
+  return `${a.name} (${a.url})${tmpl ? `, a ${tmpl.name.toLowerCase()}` : ''}${feats.length ? `. Its features: ${feats.join(', ')}` : ''}`;
+}
+
 /** What the agent says when it can't tell which app a prompt is about. */
 const WHICH_APP = 'Which app is this for? Say its name and I\'ll make the change.';
 
@@ -694,7 +700,7 @@ export async function promptAgent(
     }
     // whether the prompt says which app it means is its own simple question, one per app: asked
     // alongside every other question, Jev mostly ignored it
-    if (!started) for (const a of workable) cats.push({ id: `${a.id}::*::app`, description: `${a.name} (${a.url})`, kind: 'app' });
+    if (!started) for (const a of workable) cats.push({ id: `${a.id}::*::app`, description: appSummary(a, content.apps[a.template]), kind: 'app' });
     const context = recentPrompts(s0);
     const chat = recentChat(s0);
     // Jev decides both what is asked for and whether the player said which app it's for, and

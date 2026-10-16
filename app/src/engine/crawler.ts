@@ -1,5 +1,5 @@
 /*
- * The sentiment crawler's data and output. The stock posts on Y (content/y_market.json, plus labelled
+ * The vibe check's data and output. The stock posts on Y (content/y_market.json, plus labelled
  * story events like Crane's $GAI praise) are the ground truth; the crawler's dashboard is computed
  * from them with the build's bugs applied, so the player can check every number against the feed.
  */

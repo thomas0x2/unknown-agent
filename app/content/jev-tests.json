@@ -687,7 +687,7 @@
     "broken": [
       "tickers/symbols"
     ],
-    "prompt": "Sentiment Crawler is tracking the wrong tickers, it should be $GAI and $VANT",
+    "prompt": "Vibe Check is tracking the wrong tickers, it should be $GAI and $VANT",
     "expect": {
       "fix": [
         "tickers/symbols"
@@ -699,7 +699,7 @@
     "broken": [
       "tickers/case"
     ],
-    "prompt": "Sentiment Crawler misses tickers written in lowercase like $gai",
+    "prompt": "Vibe Check misses tickers written in lowercase like $gai",
     "expect": {
       "fix": [
         "tickers/case"
@@ -723,7 +723,7 @@
     "broken": [
       "sentiment/labels"
     ],
-    "prompt": "Sentiment Crawler: bullish posts get labelled bearish in the sentiment",
+    "prompt": "Vibe Check: bullish posts get labelled bearish in the sentiment",
     "expect": {
       "fix": [
         "sentiment/labels"
@@ -735,7 +735,7 @@
     "broken": [
       "sentiment/sarcasm"
     ],
-    "prompt": "Sentiment Crawler takes sarcastic posts literally in the sentiment analysis",
+    "prompt": "Vibe Check takes sarcastic posts literally in the sentiment analysis",
     "expect": {
       "fix": [
         "sentiment/sarcasm"
@@ -747,7 +747,7 @@
     "broken": [
       "sentiment/sarcasm"
     ],
-    "prompt": "Sentiment Crawler: sarcasm is read wrong",
+    "prompt": "Vibe Check: sarcasm is read wrong",
     "expect": {
       "near": "near_feature"
     }
@@ -757,7 +757,7 @@
     "broken": [
       "sentiment/labels"
     ],
-    "prompt": "Sentiment Crawler, the sentiment is wrong",
+    "prompt": "Vibe Check, the sentiment is wrong",
     "expect": {
       "near": "near_miss"
     }
@@ -767,7 +767,7 @@
     "broken": [
       "filter/bots"
     ],
-    "prompt": "Sentiment Crawler's bot filter lets the spam through",
+    "prompt": "Vibe Check's bot filter lets the spam through",
     "expect": {
       "fix": [
         "filter/bots"
@@ -791,7 +791,7 @@
     "broken": [
       "filter/bots"
     ],
-    "prompt": "Sentiment Crawler is counting the bots",
+    "prompt": "Vibe Check is counting the bots",
     "expect": {
       "fix": [
         "filter/bots"
@@ -803,7 +803,7 @@
     "broken": [
       "portfolio/total"
     ],
-    "prompt": "Sentiment Crawler: the portfolio total is wrong",
+    "prompt": "Vibe Check: the portfolio total is wrong",
     "expect": {
       "fix": [
         "portfolio/total"
@@ -815,7 +815,7 @@
     "broken": [
       "portfolio/total"
     ],
-    "prompt": "Sentiment Crawler portfolio doesn't add up, the total value is off",
+    "prompt": "Vibe Check portfolio doesn't add up, the total value is off",
     "expect": {
       "fix": [
         "portfolio/total"
@@ -827,7 +827,7 @@
     "broken": [
       "portfolio/holdings/price"
     ],
-    "prompt": "On the Sentiment Crawler portfolio, the price of each holding is stale",
+    "prompt": "On the Vibe Check portfolio, the price of each holding is stale",
     "expect": {
       "fix": [
         "portfolio/holdings/price"
@@ -839,7 +839,7 @@
     "broken": [
       "portfolio/holdings/price"
     ],
-    "prompt": "Sentiment Crawler portfolio: the holdings show old prices",
+    "prompt": "Vibe Check portfolio: the holdings show old prices",
     "expect": {
       "fix": [
         "portfolio/holdings/price"
@@ -851,7 +851,7 @@
     "broken": [
       "portfolio/holdings/value"
     ],
-    "prompt": "Sentiment Crawler: the value of each holding in the portfolio is wrong",
+    "prompt": "Vibe Check: the value of each holding in the portfolio is wrong",
     "expect": {
       "fix": [
         "portfolio/holdings/value"
@@ -863,7 +863,7 @@
     "broken": [
       "portfolio/pnl"
     ],
-    "prompt": "Sentiment Crawler: the P&L on the portfolio has the wrong sign",
+    "prompt": "Vibe Check: the P&L on the portfolio has the wrong sign",
     "expect": {
       "fix": [
         "portfolio/pnl"
@@ -875,7 +875,7 @@
     "broken": [
       "portfolio/pnl"
     ],
-    "prompt": "Sentiment Crawler portfolio shows a profit for today when the trader lost money",
+    "prompt": "Vibe Check portfolio shows a profit for today when the trader lost money",
     "expect": {
       "fix": [
         "portfolio/pnl"
@@ -887,7 +887,7 @@
     "broken": [
       "portfolio/percent"
     ],
-    "prompt": "Sentiment Crawler: the percent changes on the portfolio are wrong",
+    "prompt": "Vibe Check: the percent changes on the portfolio are wrong",
     "expect": {
       "fix": [
         "portfolio/percent"
@@ -899,7 +899,7 @@
     "broken": [
       "portfolio/holdings/price"
     ],
-    "prompt": "Sentiment Crawler: the prices are stale",
+    "prompt": "Vibe Check: the prices are stale",
     "expect": {
       "near": "near_feature"
     }
@@ -909,7 +909,7 @@
     "broken": [
       "portfolio/holdings/price"
     ],
-    "prompt": "Sentiment Crawler: the portfolio prices are stale",
+    "prompt": "Vibe Check: the portfolio prices are stale",
     "expect": {
       "near": "near_folder"
     }
@@ -919,7 +919,7 @@
     "broken": [
       "portfolio/holdings/value"
     ],
-    "prompt": "Sentiment Crawler: something's wrong in the portfolio holdings",
+    "prompt": "Vibe Check: something's wrong in the portfolio holdings",
     "expect": {
       "near": "near_part"
     }
@@ -929,7 +929,7 @@
     "broken": [
       "portfolio/pnl"
     ],
-    "prompt": "Sentiment Crawler: the portfolio is wrong",
+    "prompt": "Vibe Check: the portfolio is wrong",
     "expect": {
       "near": "near_miss"
     }
@@ -940,7 +940,7 @@
       "portfolio/pnl",
       "portfolio/total"
     ],
-    "prompt": "Sentiment Crawler: the portfolio P&L is wrong",
+    "prompt": "Vibe Check: the portfolio P&L is wrong",
     "expect": {
       "fix": [
         "portfolio/pnl"
@@ -952,7 +952,7 @@
     "broken": [
       "portfolio/total"
     ],
-    "prompt": "Sentiment Crawler: the P&L on the portfolio is wrong",
+    "prompt": "Vibe Check: the P&L on the portfolio is wrong",
     "expect": {
       "check": true
     }
@@ -972,7 +972,7 @@
     "broken": [
       "auto_buy/signal/author"
     ],
-    "prompt": "Sentiment Crawler auto-buy: the signal fires on posts from Crane impostor accounts",
+    "prompt": "Vibe Check auto-buy: the signal fires on posts from Crane impostor accounts",
     "expect": {
       "fix": [
         "auto_buy/signal/author"
@@ -984,7 +984,7 @@
     "broken": [
       "auto_buy/signal/praise"
     ],
-    "prompt": "Sentiment Crawler: the autobuy signal triggers on posts criticizing the company",
+    "prompt": "Vibe Check: the autobuy signal triggers on posts criticizing the company",
     "expect": {
       "fix": [
         "auto_buy/signal/praise"
@@ -996,7 +996,7 @@
     "broken": [
       "auto_buy/order/once"
     ],
-    "prompt": "Sentiment Crawler auto buy places the order several times for the same post",
+    "prompt": "Vibe Check auto buy places the order several times for the same post",
     "expect": {
       "fix": [
         "auto_buy/order/once"
@@ -1008,7 +1008,7 @@
     "broken": [
       "auto_buy/order/ticker"
     ],
-    "prompt": "Sentiment Crawler auto-buy order buys the wrong ticker",
+    "prompt": "Vibe Check auto-buy order buys the wrong ticker",
     "expect": {
       "fix": [
         "auto_buy/order/ticker"
@@ -1020,7 +1020,7 @@
     "broken": [
       "auto_buy/order/trigger"
     ],
-    "prompt": "Sentiment Crawler: the auto buy order never gets placed",
+    "prompt": "Vibe Check: the auto buy order never gets placed",
     "expect": {
       "fix": [
         "auto_buy/order/trigger"
@@ -1032,7 +1032,7 @@
     "broken": [
       "auto_buy/order/once"
     ],
-    "prompt": "Sentiment Crawler: it buys the same stock 5 times per post",
+    "prompt": "Vibe Check: it buys the same stock 5 times per post",
     "expect": {
       "near": "near_feature"
     }
@@ -1042,7 +1042,7 @@
     "broken": [
       "auto_buy/signal/author"
     ],
-    "prompt": "Sentiment Crawler: the auto-buy is broken",
+    "prompt": "Vibe Check: the auto-buy is broken",
     "expect": {
       "near": "near_miss"
     }
@@ -1052,7 +1052,7 @@
     "broken": [
       "auto_buy/order/ticker"
     ],
-    "prompt": "Sentiment Crawler auto buy: the order is wrong",
+    "prompt": "Vibe Check auto buy: the order is wrong",
     "expect": {
       "near": "near_part"
     }
@@ -1287,7 +1287,7 @@
     "missing": [
       "auto_buy"
     ],
-    "prompt": "Sentiment Crawler: add the auto-buy so it buys when Crane praises a company",
+    "prompt": "Vibe Check: add the auto-buy so it buys when Crane praises a company",
     "expect": {
       "build": [
         "auto_buy"
@@ -1300,7 +1300,7 @@
     "missing": [
       "portfolio"
     ],
-    "prompt": "Sentiment Crawler: add a portfolio view with the holdings, cash and today's change",
+    "prompt": "Vibe Check: add a portfolio view with the holdings, cash and today's change",
     "expect": {
       "build": [
         "portfolio"
@@ -1313,7 +1313,7 @@
     "missing": [
       "portfolio"
     ],
-    "prompt": "Sentiment Crawler: give it a dark mode",
+    "prompt": "Vibe Check: give it a dark mode",
     "expect": {
       "none": true
     }

@@ -332,7 +332,7 @@ export interface Content {
   characters?: Character[];
   /** agent.chat's hint topics and roasts. */
   agent?: AgentContent;
-  /** Stock posts on Y, the data the sentiment crawler reads. */
+  /** Stock posts on Y, the data the vibe check reads. */
   yMarket?: MarketContent;
 }
 
