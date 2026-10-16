@@ -2,17 +2,20 @@
   "id": "viktor_contact",
   "site": "qmail",
   "from": "Viktor",
-  "addr": "viktor@mail.test",
   "subject": "RE: somewhere to sell",
   "trigger": {
     "dayMin": 3
   },
   "latent": true,
-  "body": "You'd build a little marketplace? That would help more people than me. Listings with a photo and a price, search, a way to contact the seller, and marking things sold. That's all I'd need.",
+  "agentStart": {
+    "when": "The player asks the agent to build a classifieds or listing site, a marketplace or a place to sell second-hand things, for example for Viktor's Y post about selling his grandfather's pocket watch.",
+    "lead": "d3_y_swaplist"
+  },
+  "body": "A user app nobody hires you for: ask the agent to build the simple listing site Viktor asked for on Y. Listings with a photo and a price, search, a way to contact the seller, and marking things sold.",
   "outcomes": [
     {
       "id": "build",
-      "when": "the player offers or agrees to take the job: to build, make, create, do, help with or take on the classifieds marketplace, in any wording (\"happy to help\", \"I can do that\", \"count me in\"); not a refusal or an unrelated question",
+      "when": "the player asks the agent to build a classifieds marketplace or listing site",
       "effects": {
         "setFlags": [
           "swaplist_live"
@@ -43,6 +46,6 @@
     }
   ],
   "hints": [
-    "Offer to build him the marketplace."
+    "Ask the agent to build a listing site for Viktor."
   ]
 }

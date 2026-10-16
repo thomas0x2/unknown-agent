@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, deliverDue, deliverArrivals, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, devToggleBug, nameUnnamedBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, deliverDue, deliverArrivals, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, devToggleBug, nameUnnamedBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -83,6 +83,8 @@ export class GameStore {
     phishError: '',
     /** An action Jev was needed for and couldn't be reached: why, and the text to put back in its box. */
     jevOffline: null as { reason: string; field?: string; text?: string } | null,
+    /** Y posts by others that went up since the player last looked at the timeline, for the Y tab's badge. */
+    yUnread: 0,
   };
   /** A model download playing out in the Terminal, if one is running. */
   pull: { id: string; startedAt: number } | null = null;
@@ -140,6 +142,7 @@ export class GameStore {
       + Math.max(0, now.extra - m.extra)
       + s.delivered.filter((d) => d.site === 'y' && fresh(d.seq)).length;
     if (!mail && !posts) return false;
+    this.ui.yUnread += posts;
     const bots = [...now.bots].filter((id) => now.day !== m.day || !m.bots.has(id));
     for (const fn of this.arrivalListeners) fn({ mail, posts, bots });
     return true;
@@ -205,10 +208,11 @@ export class GameStore {
       return;
     }
     const m = this.arrivalMark();
-    advanceClock(s, mins);
+    const working = s.agentWork;
+    advanceClock(s, mins); // the agent's build or fix lands here too, once its time has come
     deliverArrivals(s, this.content); // emails and posts whose time has come
     if (s.clockMin >= CLOCK.sleep) { this.sleep(s); this.store.save(this.state); this.announce(m); this.emit(); return; }
-    if (this.announce(m)) { this.store.save(s); this.emit(); return; }
+    if (this.announce(m) || s.agentWork !== working) { this.store.save(s); this.emit(); return; }
     if (s.clockMin % 10 === 0) this.store.save(s);
     for (const fn of this.clockListeners) fn();
   }
@@ -355,7 +359,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = 1; this.nextTab = PINNED.length + 1;
-    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', jevOffline: null };
+    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', jevOffline: null, yUnread: 0 };
     this.store.save(this.state);
     this.emit();
   }
@@ -497,6 +501,7 @@ export class GameStore {
     else if (kind === 'deliver') { const m = this.arrivalMark(); deliverDue(s, this.content, { now: true }); this.announce(m); }
     else if (kind === 'hold') { this.devHoldClock(); return; }
     else if (kind === 'skip') { this.devSkip(60); return; }
+    else if (kind === 'work') { if (s.agentWork) this.devSkip(Math.max(1, s.agentWork.at - gameMinutes(s))); return; }
     this.store.save(s); this.emit();
   }
   /** Dev: set a meter to an exact value (clamped). A new day delivers that day's events. */
@@ -572,7 +577,7 @@ export function replyDelay(text: string, rnd = Math.random): number {
   return Math.min(4500, 1200 + 15 * text.length + Math.round(rnd() * 600));
 }
 /** How long after the agent's reply its charge hits the wallet. */
-export const CHARGE_DELAY_MS = 1000;
+export const CHARGE_DELAY_MS = 2000;
 /**
  * Take the prompt's charge (the agent-usage entries added since ledger entry `from`) back out of `s`
  * and return the amount, so it can be charged on its own a moment later.

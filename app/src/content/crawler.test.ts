@@ -6,13 +6,13 @@
 import { describe, it, expect } from 'vitest';
 import { loadContent } from './load';
 import { startGame } from '../engine/day';
-import { promptAgent, postToY, writeReview } from '../engine/actions';
+import { postToY, writeReview } from '../engine/actions';
 import { applyEffects } from '../engine/effects';
 import { getApp, nameUnnamedBugs, bugsOf } from '../engine/apps';
-import { marketPosts, crawl, autoBuys, portfolio, START_PORTFOLIO } from '../engine/crawler';
+import { marketPosts, crawl, autoBuys, portfolio, price, START_PORTFOLIO } from '../engine/crawler';
 import { machineFeed, machineRows } from '../engine/laundromat';
 import type { GameState } from '../engine/state';
-import { wordJev } from '../engine/_fixtures';
+import { wordJev, promptDone } from '../engine/_fixtures';
 import { CLOCK } from '../engine/config';
 
 const content = loadContent();
@@ -88,6 +88,12 @@ describe('sentiment crawler', () => {
     expect(autoBuys(all, 6, bugs('impostor_buy')).map((b) => [b.ticker, b.post.handle])).toContainEqual(['VANT', 'randa11_crane']);
     expect(autoBuys(all, 6, bugs('repeat_buys')).length).toBeGreaterThan(1);
     expect(portfolio(ok, 6, bugs()).holdings.find((h) => h.ticker === 'GAI')!.shares).toBeGreaterThan(START_PORTFOLIO.holdings.GAI);
+  });
+
+  it('prices match the posts: both up on days 1 to 3, $VANT up about 8% since the restructuring by day 2', () => {
+    for (const d of [1, 2, 3]) for (const h of portfolio([], d, bugs()).holdings) expect(h.move, `${h.ticker} day ${d}`).toBeGreaterThan(0);
+    expect(price('VANT', 2) / price('VANT', 0) - 1).toBeCloseTo(0.08, 2);
+    expect(price('VANT', 2) - price('VANT', 1)).toBeGreaterThan(price('VANT', 1) - price('VANT', 0));
   });
 
   it('each portfolio bug is off by enough to see at a glance', () => {
@@ -219,7 +225,7 @@ describe('Spin Cycle Status', () => {
   it('asking the agent starts the app and builds it, no email needed', async () => {
     const s = onDay(2);
     s.values.crypto = 100;
-    const out = (await promptAgent(s, content, wordJev, 'Create an app that visualizes spincycle.test/feed')).state;
+    const out = (await promptDone(s, content, wordJev, 'Create an app that visualizes spincycle.test/feed')).state;
     const app = out.apps.find((a) => a.template === 'laundromat')!;
     expect(app).toBeTruthy();
     expect(app.repoVersion).toBeGreaterThan(0);
@@ -227,7 +233,7 @@ describe('Spin Cycle Status', () => {
     // it said nothing about the codes, so the app shows them raw
     expect(bugsOf(app.repo.find((f) => f.id === 'machines')!)).toContain('raw_codes');
     // a second prompt doesn't start another one
-    const again = (await promptAgent(out, content, wordJev, 'Build the Spin Cycle app again')).state;
+    const again = (await promptDone(out, content, wordJev, 'Build the Spin Cycle app again')).state;
     expect(again.apps.filter((a) => a.template === 'laundromat')).toHaveLength(1);
   });
 });
@@ -285,7 +291,7 @@ describe('fixing them', () => {
         const fid = defs.find((f) => f.bugs?.some((b) => b.id === bug))!.id;
         const app = getApp(s, id)!;
         app.repo = app.repo.map((f) => (f.id === fid ? { ...f, correct: false, variant: bug, seed: 1 } : f));
-        const out = (await promptAgent(s, content, wordJev, prefix + ask)).state;
+        const out = (await promptDone(s, content, wordJev, prefix + ask)).state;
         // the fix may roll a different mistake (the agent isn't perfect), but never the named one
         const after = getApp(out, id)!.repo.find((f) => f.id === fid)!;
         expect(after.correct ? [] : bugsOf(after), bug).not.toContain(bug);

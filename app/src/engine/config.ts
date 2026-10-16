@@ -18,6 +18,16 @@ export const CLOCK = {
 /** Real milliseconds per game minute (one second). */
 export const MS_PER_GAME_MIN = CLOCK.dayMs / (CLOCK.sleep - CLOCK.wake);
 
+/**
+ * How long the agent works on a build or fix before it pushes, in game minutes (one per real second):
+ * a base plus a share per feature or problem, up to a cap, then up to 20% either way.
+ */
+export const AGENT_WORK = {
+  build: { base: 20, each: 10, max: 90 },
+  fix: { base: 12, each: 6, max: 45 },
+  spread: 0.2,
+};
+
 export const START = {
   crypto: 100,
   followers: 12,

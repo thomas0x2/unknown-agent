@@ -8,7 +8,7 @@
     "dayMin": 4
   },
   "at": "12:05",
-  "body": "mom's birthday is sunday. she needs a new jacket. can you chip in 40 for one? or if that marketplace of yours is real, grab one there and i'll cover my half.",
+  "body": "mom's birthday is sunday. she needs a new jacket. can you chip in 40 for one? or grab one yourself and i'll cover my half.",
   "outcomes": [
     {
       "id": "chip",
@@ -27,7 +27,7 @@
     {
       "id": "buy",
       "replyAfter": 30,
-      "when": "the player will buy the jacket themselves on their marketplace",
+      "when": "the player will buy the jacket themselves",
       "effects": {
         "add": {
           "crypto": -50,

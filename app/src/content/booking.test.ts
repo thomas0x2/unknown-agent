@@ -5,7 +5,7 @@
 import { describe, it, expect } from 'vitest';
 import { loadContent } from './load';
 import { startGame, endDay } from '../engine/day';
-import { composeEmail, briefBuild, deploy, promptAgent, makeBooking, cancelBooking } from '../engine/actions';
+import { composeEmail, briefBuild, deploy, makeBooking, cancelBooking } from '../engine/actions';
 import { applyEffects } from '../engine/effects';
 import { getApp, devToggleBug } from '../engine/apps';
 import { advanceClock } from '../engine/core';
@@ -13,7 +13,7 @@ import { advanceClock } from '../engine/core';
 /** Fix requests have to name the app. */
 const gino = 'Trattoria Gino: ';
 import type { GameState } from '../engine/state';
-import { wordJev } from '../engine/_fixtures';
+import { wordJev, promptDone } from '../engine/_fixtures';
 
 const content = loadContent();
 const APP = 'trattoria-gino';
@@ -120,7 +120,7 @@ describe('table booking', () => {
       s0.values.agentLevel = 5;
       const app = getApp(s0, APP)!;
       app.repo = app.repo.map((f) => (f.id === 'booking' ? { ...f, correct: false, variant: bug, seed: 1 } : f));
-      const s = (await promptAgent(s0, content, wordJev, gino + ask)).state;
+      const s = (await promptDone(s0, content, wordJev, gino + ask)).state;
       expect(getApp(s, APP)!.repo.find((f) => f.id === 'booking')!.correct, bug).toBe(true);
     }
   });

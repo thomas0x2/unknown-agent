@@ -86,12 +86,6 @@
     "reply": "Good. Keep it tight. No pain no gain."
   },
   {
-    "key": "viktor@mail.test",
-    "name": "Viktor",
-    "character": "viktor",
-    "reply": "Thank you, truly. It means more than the money. He'd have liked that it helped others."
-  },
-  {
     "key": "rep@closers.test",
     "name": "Sales rep",
     "character": "salesrep",

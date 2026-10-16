@@ -11,7 +11,7 @@ import { listSlots, autoSlot } from '../game/saves';
 import { ICONS, TOKENS, Y_ICONS } from './icons';
 import { route, bookmarks, type Route, type SiteId } from '../sites/registry';
 import {
-  type GameState, type AppInstance, getApp, bugsOf, breakVariant, onForkyard, userRevenue, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, dateShort, dateLong, dateMedium, dateFull, dayDate, clockTime, EMPIRE, BOUNCE_ADDR, eventBody, deliveryKey,
+  type GameState, type AppInstance, getApp, bugsOf, breakVariant, onForkyard, userRevenue, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, dateShort, dateLong, dateMedium, dateFull, dayDate, clockTime, gameMinutes, EMPIRE, BOUNCE_ADDR, eventBody, deliveryKey,
 } from '../engine';
 import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
@@ -64,21 +64,24 @@ function tabTitle(r: Route, url: string): string {
 
 // ── chrome slots (main.ts paints these into the static shell) ──
 export function tabsHtml(store: GameStore): string {
+  // unread counts sit on the first tab showing that site (the pinned one, unless it was moved)
+  const counts: Record<string, number> = { qmail: qmailBadge(store), y: store.ui.yUnread };
+  const badged = new Set<string>();
   return store.tabs.map((t) => {
     const rr = route(t.url, store.state);
     // a deployed app with a logo shows it as its favicon
     const app = rr.site === 'app' && rr.param ? getApp(store.state, rr.param.split('/')[0]) : undefined;
     const logo = app && appLogo(app.template);
+    const n = !badged.has(rr.site) ? counts[rr.site] ?? 0 : 0;
+    badged.add(rr.site);
     return `<div class="tab${t.id === store.active ? ' on' : ''}${t.pinned ? ' pinned' : ''}" data-tab="${t.id}" role="tab" aria-selected="${t.id === store.active}" tabindex="0">
-      <span class="tab-ico ico-${logo ? 'applogo' : rr.site}">${logo || ICONS[rr.site] || ICONS.newtab}</span><span class="tab-title">${esc(tabTitle(rr, t.url))}</span>
+      <span class="tab-ico ico-${logo ? 'applogo' : rr.site}">${logo || ICONS[rr.site] || ICONS.newtab}</span><span class="tab-title">${esc(tabTitle(rr, t.url))}</span>${n ? `<i class="badge" aria-label="${n} unread">${n > 99 ? '99+' : n}</i>` : ''}
       ${t.pinned ? '' : `<button class="tab-x" data-close="${t.id}" aria-label="Close tab">×</button>`}</div>`;
   }).join('') + `<button class="tab-new" data-newtab aria-label="New tab">+</button>`;
 }
 export function bookmarksHtml(store: GameStore): string {
-  return bookmarks(store.state).map((b) => {
-    const badge = b.id === 'qmail' ? qmailBadge(store) : 0;
-    return `<button class="bm" data-nav="${b.base}"><span class="bm-ico ico-${b.id}">${ICONS[b.id] || ICONS.newtab}</span><span class="bm-label">${esc(b.label)}</span>${badge ? `<i class="badge">${badge}</i>` : ''}</button>`;
-  }).join('');
+  return bookmarks(store.state).map((b) =>
+    `<button class="bm" data-nav="${b.base}"><span class="bm-ico ico-${b.id}">${ICONS[b.id] || ICONS.newtab}</span><span class="bm-label">${esc(b.label)}</span></button>`).join('');
 }
 export function addressValue(store: GameStore): string {
   const r = route(store.url, store.state);
@@ -851,11 +854,31 @@ function llmRow(): string {
     (st.misses === 'haiku' ? `<label class="ua-llm-pick" title="Subscription runs the claude CLI on your machine (dev only, slow); API uses ANTHROPIC_API_KEY">Haiku via <select id="llm-haiku-via">${sel(st.haikuVia, 'api', 'API key')}${sel(st.haikuVia, 'subscription', 'Claude subscription')}</select></label>` : '') +
     (status ? `<span class="ua-llm-status">${status}</span>` : '');
 }
+/**
+ * The build or fix the agent is working on, as a progress line in the chat (empty when it isn't).
+ * main.ts repaints it on every game minute.
+ */
+export function workHtml(s: GameState): string {
+  const w = s.agentWork;
+  if (!w) return '';
+  const total = Math.max(1, w.at - w.from);
+  const done = Math.max(0, Math.min(total, gameMinutes(s) - w.from));
+  const left = total - done;
+  const what = `${w.kind === 'build' ? 'Building' : 'Fixing'} ${w.appNames.join(' and ')}`;
+  return `<div class="ua-work" id="ua-work" role="status"><span class="ua-work-spin" aria-hidden="true"></span><span>${esc(what)}</span><span class="ua-work-bar"><i style="width:${Math.round((done / total) * 100)}%"></i></span><span class="ua-work-left">${left > 0 ? `${left} min left` : 'pushing…'}</span><button class="ua-work-skip" data-dev="work" title="Dev: skip the clock to when it lands">Finish now</button></div>`;
+}
 function pageAgent(store: GameStore): string {
   const s = store.state;
   const c = agentCost(s.values.agentLevel);
-  const msgs = s.chat.map((m) => {
-    if (m.from === 'you') return `<div class="ua-msg you"><div class="ua-bubble">${esc(m.text)}</div><span class="ua-cost">${m.cost ? fmtMoney(-m.cost) + ' · ' : ''}agent-${m.level ?? s.values.agentLevel} · ${dateShort(m.day)}</span></div>`;
+  // while a prompt's charge is on its way to the wallet, its cost line shows it filling in place
+  const chargingAt = store.charging ? s.chat.map((m) => m.from).lastIndexOf('you') : -1;
+  const msgs = s.chat.map((m, i) => {
+    if (m.from === 'you') {
+      const cost = i === chargingAt
+        ? `<span class="ua-cost ua-charging" role="status"><span class="ua-charge-bar"><i style="animation-duration:${CHARGE_DELAY_MS}ms"></i></span>Charging Coinbin · ${fmtMoney(-store.charging)}</span>`
+        : `<span class="ua-cost">${m.cost ? fmtMoney(-m.cost) + ' · ' : ''}agent-${m.level ?? s.values.agentLevel} · ${dateShort(m.day)}</span>`;
+      return `<div class="ua-msg you"><div class="ua-bubble">${esc(m.text)}</div>${cost}</div>`;
+    }
     if (m.from === 'system') return `<div class="ua-sys" role="alert">${ICONS.error}<span>${esc(m.text)}</span></div>`;
     const src = m.src ? `<span class="ua-src ${esc((m.src || '').split(':')[0])}">${esc(m.src)}</span>` : '';
     const model = m.src === 'llm' ? `<span class="ua-model" title="Written by a model">${esc(m.by ?? MISSES.label())}</span>`
@@ -867,8 +890,6 @@ function pageAgent(store: GameStore): string {
   }).join('');
   const p = store.pendingPrompt;
   const pending = p == null ? '' : `<div class="ua-msg you"><div class="ua-bubble">${esc(p)}</div><span class="ua-cost">${fmtMoney(-promptCost(s.values.agentLevel, p).total)} · agent-${s.values.agentLevel} · ${dateShort(s.values.day)}</span></div>`;
-  // the reply is in; its charge reaches the wallet a beat later
-  const charging = store.charging ? `<div class="ua-charge" role="status"><span class="ua-charge-bar"><i style="animation-duration:${CHARGE_DELAY_MS}ms"></i></span>Charging Coinbin ${shortAddr(WALLET_ADDR)} · ${fmtMoney(-store.charging)}</div>` : '';
   const thinking = store.busy && !store.charging ? `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text ua-dots"><i></i><i></i><i></i></div></div>` : '';
   return `<div class="ua">
     <header class="ua-head">
@@ -876,7 +897,7 @@ function pageAgent(store: GameStore): string {
       ${devOptionsButton(store, 'agent')}<span class="ua-linked"><a href="#" data-nav="agent.chat/models" class="ua-upgrade">Models</a> · ${s.agentLocked ? 'LOCKED · unpaid' : 'Billing: Coinbin ' + shortAddr(WALLET_ADDR)}</span>
     </header>
     <div class="ua-llm"><span class="ua-jev" id="ua-jev">${jevChip()}</span><span class="ua-llm-ctl" id="ua-llm">${llmRow()}</span></div>
-    <div class="ua-log" id="ua-log">${msgs}${pending}${thinking}${charging}</div>
+    <div class="ua-log" id="ua-log">${msgs}${workHtml(s)}${pending}${thinking}</div>
     <form class="ua-compose" data-form="prompt">
       <textarea id="prompt-input" rows="2" placeholder="Ask agent anything — build an app, fix one, write, translate, look something up…" ${s.ending ? 'disabled' : ''}></textarea>
       <div class="ua-row"><span id="cost-est" class="ua-est"></span><button class="ua-send" type="submit" ${s.ending || store.busy ? 'disabled' : ''}>Send</button></div>
