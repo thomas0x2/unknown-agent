@@ -7,6 +7,9 @@ touching engine code.
 - `events/*.json` — one `GameEvent` per file (see `src/content/schema.ts`). Emails, Y posts, Yowl
   listings, nullboard threads, Cellar jobs, agent messages. Each has a `trigger`, optional
   `onDeliver` effects, `outcomes` (what the player's free-text reply can trigger) and `hints`.
+  Two kinds wait on something the player does instead of their trigger alone: `launch` lands on the
+  day a client's app first goes live (at `at`, or `after` minutes after the deploy if later), and
+  `yPost` lands `after` minutes after a Y post Jev reads as being about `when`.
 - `apps/*.json` — one `AppTemplate` per file: an app type with its pages and features. Client specs
   reference features by id and description.
 - `y_filler.json` — `FillerPost[]` for the Y noise pool.

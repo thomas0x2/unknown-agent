@@ -305,6 +305,8 @@ export interface GameState {
   /** Qmail rows deleted when a day ended with them in the Bin. */
   mailDeleted?: string[];
   introSeen: boolean;
+  /** Sherwood positions by ticker: fractional shares and what they cost. Unset until the first trade. */
+  stocks?: Record<string, { shares: number; cost: number }>;
   /** Trader buy-in stake value (0 = none). */
   stake: number;
   /** Interview answers the player sent the journalist, quoted in her day 7 article. */

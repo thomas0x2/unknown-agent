@@ -16,6 +16,7 @@ import {
 import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
 import { pageDrive } from './qdrive';
+import { pageSherwood } from './sherwood';
 import { adHtml } from './ads';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
@@ -55,7 +56,7 @@ function linkify(escaped: string): string {
 
 function tabTitle(r: Route, url: string): string {
   const names: Partial<Record<string, string>> = {
-    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', phish: 'Coinbin · Sign in', forkyard: 'Forkyard',
+    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', phish: 'Coinbin · Sign in', forkyard: 'Forkyard',
     agent: 'agent', yowl: 'Yowl', weightroom: 'Weightroom', nullboard: 'nullboard', cellar: 'Cellar', app: url,
   };
   if (r.site === 'notfound') return url || 'New Tab';
@@ -208,6 +209,7 @@ export function page(store: GameStore, r: Route): string {
     case 'qdrive': return pageDrive(store.state, r.param);
     case 'y': return pageY(store, r.param);
     case 'coinbin': return pageWallet(store);
+    case 'sherwood': return pageSherwood(store, r.param);
     case 'forkyard': return pageForkyard(store, r.param);
     case 'app': return pageApp(store, r.param);
     case 'agent': return r.param === 'models' ? pageModels(store) : pageAgent(store);
@@ -446,7 +448,9 @@ function pageY(store: GameStore, profile?: string): string {
   const showAll = !!q || store.ui.yAllDay === s.values.day;
   const shown = q ? posts.filter((p) => `${p.author} ${p.handle} ${p.text}`.toLowerCase().includes(q.replace(/^@/, ''))) : showAll ? posts : posts.filter((p) => p.day === s.values.day);
   const older = !showAll && posts.some((p) => p.day !== s.values.day);
-  const feed = (shown.map((p) => yPostHtml(store, p)).join('') || `<p class="y-none">${older ? 'Nothing posted yet today.' : 'Quiet timeline.'}</p>`)
+  // with everything showing, "Hide old posts" sits where today's posts end and older ones begin
+  const firstOld = !q && showAll ? shown.findIndex((p) => p.day !== s.values.day) : -1;
+  const feed = (shown.map((p, i) => (i === firstOld ? '<div class="y-more"><button class="y-btn ghost" data-y-all="hide">Hide old posts</button></div>' : '') + yPostHtml(store, p)).join('') || `<p class="y-none">${older ? 'Nothing posted yet today.' : 'Quiet timeline.'}</p>`)
     + (older ? '<div class="y-more"><button class="y-btn ghost" data-y-all>Show all</button></div>' : '');
   const side = `<aside class="y-side">
     <section class="y-card y-me">
@@ -807,7 +811,7 @@ function pageApp(store: GameStore, param?: string): string {
   const booking = a.template === 'restaurant' && a.features.some((f) => f.id === 'booking')
     ? booked
       ? `<div class="pv-book"><h1>Table booked</h1>${notice}${summary}
-        <p class="pv-sub"><a href="#" data-act="book-again">Book another table</a></p></div>`
+        <button class="pv-btn ok" type="button" data-act="book-again">Book another table</button></div>`
       : bk.step === 1
       ? `<form class="pv-book" data-form="book-next" data-app="${esc(a.id)}"><h1>Book a table</h1>
         <p class="pv-sub">Step 1 of 2. You'll get a confirmation by email.</p>${notice}
