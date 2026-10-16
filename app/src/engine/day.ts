@@ -11,6 +11,7 @@ import { clone, addValue, money, log, pick, deliverPendingMail } from './core';
 import { runPayday, nightlyBreaks } from './apps';
 import { deliverComplaints } from './complaints';
 import { deliverDue, lapseUnanswered } from './events';
+import { emptyMailBin } from './mailbin';
 import { rolloutAgent, deductSubscription, agentCost } from './agent';
 import { checkGuardEndings, checkFinale, isLastNight } from './endings';
 import { chargeNoShows } from './actions';
@@ -31,6 +32,7 @@ export function startDayChat(s: GameState, content: Content): void {
 
 function runMorning(s: GameState, content: Content): void {
   rolloutAgent(s);
+  emptyMailBin(s); // the Bin is emptied at the end of every day
   nightlyBreaks(s, content); // overnight breaks land in the morning
   deliverDue(s, content);
   s.postsToday = 0;

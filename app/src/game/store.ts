@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, deliverDue, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, devToggleBug, nameUnnamedBugs, money,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, deliverDue, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, devToggleBug, nameUnnamedBugs, money, binMail, restoreMail, emptyMailBin,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -55,6 +55,8 @@ export class GameStore {
     slotNote: '',
     /** Qmail compose: why Send was refused before anything went out. */
     mailError: '',
+    /** Qmail: the line above the list after a conversation went into or out of the Bin, with what Undo puts back. */
+    mailNotice: null as null | { text: string; ids: string[]; undo: 'bin' | 'restore' },
     /** coinbln.com: why the last sign-in was refused. */
     phishError: '',
     /** An action Jev was needed for and couldn't be reached: why, and the text to put back in its box. */
@@ -160,6 +162,7 @@ export class GameStore {
   navigate(url: string, newTab = false): void {
     const u = norm(url);
     this.ui.cbNotice = '';
+    this.ui.mailNotice = null;
     // localhost is the laptop itself: it opens the Terminal app, not a browser page
     if (u === 'localhost' && this.state.flags.includes('has_terminal')) { this.showTerm(true); return; }
     if (newTab && this.tabs.length >= MAX_TABS) { this.ui.memWarn = true; this.emit(); return; }
@@ -224,6 +227,26 @@ export class GameStore {
     if (id.startsWith('m/')) { const m = s.mail.find((x) => x.id === id.slice(2)); if (m && !m.read) { m.read = true; this.store.save(s); } }
     else if (id.startsWith('e/')) { const ev = id.slice(2); if (!s.readEvents.includes(ev)) { s.readEvents.push(ev); this.store.save(s); } }
   }
+  /** Qmail: move a conversation's emails into the Bin (or back out), then show the folder it came from. */
+  binMail(ids: string[], back: string): void {
+    binMail(this.state, ids); this.store.save(this.state);
+    this.navigate(back);
+    this.ui.mailNotice = { text: 'Conversation moved to the Bin.', ids, undo: 'restore' };
+    this.emit();
+  }
+  restoreMail(ids: string[], back: string): void {
+    restoreMail(this.state, ids); this.store.save(this.state);
+    this.navigate(back);
+    this.ui.mailNotice = back.startsWith('qmail.com/bin') ? { text: 'Conversation moved back to the Inbox.', ids, undo: 'bin' } : null;
+    this.emit();
+  }
+  /** Undo the last Bin move, staying on the page. */
+  undoMailNotice(): void {
+    const n = this.ui.mailNotice;
+    if (!n) return;
+    if (n.undo === 'restore') restoreMail(this.state, n.ids); else binMail(this.state, n.ids);
+    this.ui.mailNotice = null; this.store.save(this.state); this.emit();
+  }
   dismissMorning(): void { this.state.morning = null; this.store.save(this.state); this.emit(); }
   seenIntro(): void { this.ui.intro = false; this.state.introSeen = true; this.store.save(this.state); this.emit(); }
   openIntro(): void { this.ui.intro = true; this.emit(); }
@@ -263,7 +286,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = 1; this.nextTab = 3;
-    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', reviewNeedsStars: false, slotNote: '', mailError: '', phishError: '', jevOffline: null };
+    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', jevOffline: null };
     this.store.save(this.state);
     this.emit();
   }
@@ -307,6 +330,8 @@ export class GameStore {
   // a new attempt clears the last attempt's notice, so a refusal never sticks to a date it wasn't about
   bookNext(name: string, email: string, date: number): void { delete this.state.bookingNotice; this.ui.book = { step: 2, name, email, date }; this.emit(); }
   bookBack(): void { delete this.state.bookingNotice; this.ui.book.step = 1; this.emit(); }
+  /** Leaves the confirmation for a fresh, empty form. */
+  bookAgain(): void { delete this.state.bookingNotice; this.ui.book = { step: 1, name: '', email: '', date: 0 }; this.emit(); }
   book(appId: string, time: string, party: number): void {
     const { name, email, date } = this.ui.book;
     const next = makeBooking(this.state, appId, name || 'You', email, date || this.state.values.day, time, party, this.content);
@@ -417,6 +442,7 @@ export class GameStore {
     const level = Math.max(1, ...Object.entries(AGENT_ROLLOUT).filter(([k]) => Number(k) <= d).map(([, v]) => v));
     s.values.agentLevel = Math.max(s.values.agentLevel, level);
     s.postsToday = 0; s.sentToday = [];
+    emptyMailBin(s);
     s.morning = null;
     deliverDue(s, this.content);
     this.store.save(s); this.emit();

@@ -264,6 +264,10 @@ export interface GameState {
   clockMin: number; // minutes since midnight; the working day runs wake..sleep
   commits: Commit[];
   readEvents: string[]; // story-email event ids the player has opened
+  /** Qmail rows (see engine/mailbin) in the Bin today; emptied when the day ends. Unset on older saves. */
+  mailBin?: string[];
+  /** Qmail rows deleted when a day ended with them in the Bin. */
+  mailDeleted?: string[];
   introSeen: boolean;
   /** Trader buy-in stake value (0 = none). */
   stake: number;

@@ -5,7 +5,12 @@
 .qm-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--qm-accent); margin-right: 8px; vertical-align: middle; flex: none; }
 .qm-row.unread { color: var(--qm-ink); font-weight: 600; }
 .qm-row.unread .qm-from, .qm-row.unread .qm-subj b { font-weight: 700; }
-.qm-row.unread .qm-subj span { color: var(--qm-ink); }
+
+/* subject vs preview: the subject carries the weight; the preview is plain, dimmer, and set off by a dash */
+.qm-row.unread .qm-subj { font-weight: 400; color: var(--qm-dim); }
+.qm-subj b { color: var(--qm-ink); }
+.qm-subj .qm-prev, .qm-row.unread .qm-subj .qm-prev { color: var(--qm-dim); font-weight: 400; }
+.qm-prev::before { content: "\2014"; margin: 0 8px; opacity: 0.5; }
 
 /* reply composer: a framed card, not a bare textarea */
 .qm-reply {
@@ -61,3 +66,14 @@
 .qm-row .qm-from { display: flex; align-items: baseline; gap: 6px; }
 .qm-names { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .qm-hint.qm-err { color: #e5484d; font-weight: 600; }
+
+/* the Bin: a button over the open conversation, a hint and an Undo line in the lists */
+.qm-tools { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+.qm-tools .qm-crumbs { margin: 0; margin-right: auto; }
+.qm-tools .qm-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; }
+.qm-tools .qm-btn svg { width: 16px; height: 16px; }
+.qm-bin-note, .qm-bin-hint { font-size: 12.5px; color: var(--qm-dim); }
+.qm-bin-hint { margin: -6px 0 12px; }
+.qm-notice { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; padding: 8px 14px; border-radius: 10px; background: var(--qm-soft); font-size: 13.5px; color: var(--qm-ink); }
+.qm-link { border: 0; background: none; padding: 0; font: inherit; font-weight: 600; color: var(--qm-accent); cursor: pointer; }
+.qm-link:hover { text-decoration: underline; }
