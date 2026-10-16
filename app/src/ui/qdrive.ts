@@ -66,12 +66,12 @@ Thank you for your years of service. As communicated, your position has been tra
 
 NEXT STEPS
 1. Badge access ends at 5:00 PM today.
-2. Your final salary will be paid in DOLR with the next payroll run.
+2. Your final salary payment has already been made. No further payments are due.
 3. Health coverage ends at midnight.
 4. Please return your laptop to Facilities. Facilities is currently unstaffed, so keep the device until further notice.
 
 SEVERANCE
-You are eligible for two weeks' pay, conditional on signing the attached non-disparagement agreement (41 pages).
+Positions transitioned to automation are not eligible for severance under current policy (PC-77b, section 4).
 
 EXIT SURVEY
 Please complete the exit survey. Your answers help us improve our automated operations.
