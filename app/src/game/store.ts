@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, localPrompt, makeBooking, cancelBooking, joinEmpire, deliverDue, CLOCK, tick, devToggleBug,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, deliverDue, CLOCK, tick, devToggleBug,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -33,6 +33,10 @@ export class GameStore {
     project: '', dev: false, liked: {} as Record<string, boolean>, intro: true, confirm: null as null | { text: string; yes: string; fn: () => void }, start: false, menuCat: 'saves',
     /** Dev mode: the site whose options panel is open (agent, qmail, y), or ''. */
     devOptions: '' as string,
+    /** The two-step booking form: which step is showing and what step one said. */
+    book: { step: 1, name: '', email: '', date: 0 },
+    /** Dev: the flags and meters editor is open. */
+    devEdit: false,
   };
 
   private listeners = new Set<() => void>();
@@ -40,7 +44,7 @@ export class GameStore {
   constructor(readonly content: Content, private router: JevRouter, private writer: Writer, private store: SaveStore) {
     const loaded = this.store.load();
     this.state = loaded ?? startGame(content);
-    startDayChat(this.state); // saves from before the per-day reset may still carry yesterday's chat
+    startDayChat(this.state, content); // saves from before the per-day reset may still carry yesterday's chat
     this.ui.intro = !this.state.introSeen;
     applyDevMode(this.devMode);
   }
@@ -90,6 +94,7 @@ export class GameStore {
   setDraft(d: Draft | null): void { this.ui.draft = d; this.emit(); }
   setProject(id: string): void { this.ui.project = id; this.emit(); }
   toggleDevOptions(site: string): void { this.ui.devOptions = this.ui.devOptions === site ? '' : site; this.emit(); }
+  toggleDevEdit(): void { this.ui.devEdit = !this.ui.devEdit; this.emit(); }
   toggleDev(): void { this.ui.dev = !this.ui.dev; this.emit(); }
   /** Dev mode shows how replies were chosen (Jev's decision, the model prompt and output). On unless turned off. */
   devMode = readDevMode();
@@ -129,11 +134,11 @@ export class GameStore {
     return true;
   }
   private resetTo(state: GameState): void {
-    startDayChat(state);
+    startDayChat(state, this.content);
     this.state = state;
     this.tabs = startTabs();
     this.active = 1; this.nextTab = 3;
-    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null, start: false, menuCat: 'saves', devOptions: this.ui.devOptions };
+    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null, start: false, menuCat: 'saves', devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 } };
     this.store.save(this.state);
     this.emit();
   }
@@ -148,8 +153,13 @@ export class GameStore {
   takeDown(appId: string): void { this.commit(takeDown(this.state, appId)); }
   cancelBooking(id: string): void { this.commit(cancelBooking(this.state, id)); }
   joinEmpire(): void { this.commitAndSettle(joinEmpire(this.state)); }
-  book(appId: string, name: string, email: string, date: number, time: string, party: number): void {
-    this.commitAndSettle(makeBooking(this.state, appId, name, email, date, time, party));
+  bookNext(name: string, email: string, date: number): void { this.ui.book = { step: 2, name, email, date }; this.emit(); }
+  bookBack(): void { this.ui.book.step = 1; this.emit(); }
+  book(appId: string, time: string, party: number): void {
+    const { name, email, date } = this.ui.book;
+    const next = makeBooking(this.state, appId, name || 'You', email, date || this.state.values.day, time, party, this.content);
+    if (next.bookings.length > this.state.bookings.length) this.ui.book = { step: 1, name: '', email: '', date: 0 };
+    this.commitAndSettle(next);
   }
 
   private async run<T>(fn: () => Promise<T>): Promise<T> {
@@ -202,8 +212,39 @@ export class GameStore {
     const s = this.state;
     if (kind === 'money') { s.values.crypto += 100; s.tx.push({ day: s.values.day, amount: 100, memo: 'Dev · grant' }); }
     else if (kind === 'followers') s.values.followers += 50;
-    else if (kind === 'day7') { s.values.day = 7; s.values.agentLevel = Math.max(s.values.agentLevel, 2); deliverDue(s, this.content); }
+    else if (kind === 'deliver') deliverDue(s, this.content);
     this.store.save(s); this.emit();
+  }
+  /** Dev: set a meter to an exact value (clamped). A new day delivers that day's events. */
+  devSetMeter(id: MeterId, value: number): void {
+    const s = this.state;
+    if (!Number.isFinite(value)) return;
+    if (id === 'day') { this.devGoToDay(value); return; }
+    setValue(s, id, value);
+    this.store.save(s); this.emit();
+  }
+  /**
+   * Dev: move straight to a day, without running the nights in between (no payday, rent or bills).
+   * The agent gets the level GeneralAI would have rolled out by then, and that day's events arrive.
+   */
+  devGoToDay(day: number): void {
+    const s = this.state;
+    if (!Number.isFinite(day)) return;
+    setValue(s, 'day', day);
+    const d = s.values.day;
+    const level = Math.max(1, ...Object.entries(AGENT_ROLLOUT).filter(([k]) => Number(k) <= d).map(([, v]) => v));
+    s.values.agentLevel = Math.max(s.values.agentLevel, level);
+    s.postsToday = 0; s.sentToday = [];
+    s.morning = null;
+    deliverDue(s, this.content);
+    this.store.save(s); this.emit();
+  }
+  /** Dev: switch a story flag on or off. */
+  devSetFlag(flag: string, on: boolean): void {
+    const f = flag.trim();
+    if (!f) return;
+    if (on) addFlag(this.state, f); else clearFlag(this.state, f);
+    this.store.save(this.state); this.emit();
   }
 
   /** Dev mode: switch a bug or break on one app feature on or off. */

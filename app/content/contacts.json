@@ -53,7 +53,15 @@
     "key": "max@alphaascend.test",
     "name": "Max Stryker",
     "character": "max",
-    "reply": "LOVE the energy! Reply EMPIRE to unlock the next tier. Winners don't hesitate."
+    "reply": "LOVE the energy! Reply EMPIRE to unlock the next tier. Winners don't hesitate.",
+    "scripted": [
+      {
+        "id": "empire",
+        "when": "the player replies EMPIRE",
+        "keywords": ["empire"],
+        "reply": "Commitment logged. The next tier opens when you're ready to stop being comfortable.\n\nMax"
+      }
+    ]
   },
   {
     "key": "owner@spincycle.test",

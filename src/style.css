@@ -350,6 +350,8 @@ button.y-act:hover { color: var(--y-like); border-color: rgba(255, 92, 122, 0.4)
 .fy-deploy dt { color: var(--fy-dim); }
 .fy-deploy dd { margin: 0; font-family: var(--f-mono); text-align: right; font-variant-numeric: tabular-nums; }
 .fy-deploy .fy-btn { align-self: flex-start; }
+.fy-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.fy-row .fy-btn.ghost { margin-top: 0; }
 
 /* ── Unknown Agent ── */
 .ua { height: 100%; display: flex; flex-direction: column; background: var(--ua-bg); color: var(--ua-ink); }
