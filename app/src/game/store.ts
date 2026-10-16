@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, deliverDue, CLOCK, tick, devToggleBug, nameUnnamedBugs,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, deliverDue, CLOCK, tick, devToggleBug, nameUnnamedBugs,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -42,6 +42,8 @@ export class GameStore {
     book: { step: 1, name: '', email: '', date: 0 },
     /** Dev: the flags and meters editor is open. */
     devEdit: false,
+    /** Coinbin's Send form: open or not, what was typed, and why the last attempt failed. */
+    send: { open: false, to: '', amount: '', error: '' },
   };
   /** A model download playing out in the Terminal, if one is running. */
   pull: { id: string; startedAt: number } | null = null;
@@ -173,7 +175,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = 1; this.nextTab = 3;
-    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 } };
+    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' } };
     this.store.save(this.state);
     this.emit();
   }
@@ -188,6 +190,15 @@ export class GameStore {
   takeDown(appId: string): void { this.commit(takeDown(this.state, appId)); }
   cancelBooking(id: string): void { this.commit(cancelBooking(this.state, id)); }
   joinEmpire(): void { this.commitAndSettle(joinEmpire(this.state)); }
+  toggleSend(open = !this.ui.send.open): void { this.ui.send = { open, to: '', amount: '', error: '' }; this.emit(); }
+  /** Coinbin Send. A refusal keeps the form open with what was typed and the reason. */
+  send(to: string, amount: string): boolean {
+    const r = sendCrypto(this.state, to, Number(amount.replace(',', '.')));
+    if (r.error) { this.ui.send = { open: true, to, amount, error: r.error }; this.emit(); return false; }
+    this.ui.send = { open: false, to: '', amount: '', error: '' };
+    this.commitAndSettle(r.state);
+    return true;
+  }
   // a new attempt clears the last attempt's notice, so a refusal never sticks to a date it wasn't about
   bookNext(name: string, email: string, date: number): void { delete this.state.bookingNotice; this.ui.book = { step: 2, name, email, date }; this.emit(); }
   bookBack(): void { delete this.state.bookingNotice; this.ui.book.step = 1; this.emit(); }

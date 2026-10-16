@@ -250,7 +250,7 @@ const WHY: Record<string, string> = {
   qmail: 'You were targeted because you read emails from people who want money from you.',
   y: 'You were targeted because you are online and have opinions.',
   yowl: 'You were targeted because you are near things.',
-  satchel: 'You were targeted because your balance is low enough to be interesting.',
+  coinbin: 'You were targeted because your balance is low enough to be interesting.',
   forkyard: 'You were targeted because you build things with an AI that bills you.',
   weightroom: 'You were targeted because you tried to avoid ads.',
 };

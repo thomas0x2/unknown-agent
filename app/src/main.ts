@@ -4,7 +4,7 @@
  * index.html is static and we fill #tabs / #bookmarks / #viewport / the taskbar / #overlay / #dev.
  */
 import '../../src/style.css';
-import './ui/satchel.css';
+import './ui/coinbin.css';
 import './ui/yowl.css';
 import './ui/forkyard.css';
 import './ui/qmail.css';
@@ -18,7 +18,7 @@ import './ui/devOptions.css';
 import { showSuggestions, hideSuggestions, suggestionKey } from './ui/mailSuggest';
 import { GameStore } from './game/store';
 import { loadContent } from './content/load';
-import { localStorageStore } from './engine';
+import { localStorageStore, PLAYER_WALLET } from './engine';
 import { JEV } from './game/backendJev';
 import { MISSES, makeWriter, type Misses, type HaikuVia } from './game/misses';
 import * as V from './ui/view';
@@ -216,6 +216,9 @@ document.addEventListener('click', (e) => {
   else if (d.devopts != null) store.toggleDevOptions(d.devopts);
   else if (d.devbug != null) { const [app, feat, key] = d.devbug.split('|'); store.devToggleBug(app, feat, key); }
   else if (d.act === 'book-back') store.bookBack();
+  else if (d.act === 'send') store.toggleSend();
+  else if (d.act === 'send-cancel') store.toggleSend(false);
+  else if (d.act === 'receive') copyWalletAddress();
   else if (d.act === 'sleep') store.endDay();
   else if (d.act === 'new') store.confirm('Start over? This erases your save.', 'Start over', () => { forgetDrafts(); store.newGame(); });
   else if (d.act === 'dev') store.toggleDev();
@@ -223,6 +226,13 @@ document.addEventListener('click', (e) => {
   else if (d.act === 'devmode') store.setDevMode(!store.devMode);
   else if (d.act === 'intro') store.openIntro();
 });
+
+/** Coinbin Receive: the player's address goes on the clipboard, for pasting wherever someone wants paying. */
+function copyWalletAddress(): void {
+  const done = () => toast('Coinbin', `Wallet address copied: ${PLAYER_WALLET.slice(0, 6)}…${PLAYER_WALLET.slice(-4)}`, 'wallet');
+  if (navigator.clipboard?.writeText) navigator.clipboard.writeText(PLAYER_WALLET).then(done, () => toast('Coinbin', `Your address: ${PLAYER_WALLET}`, 'wallet'));
+  else toast('Coinbin', `Your address: ${PLAYER_WALLET}`, 'wallet');
+}
 
 function clearMailDraft(): void { ['mail-to', 'mail-subject', 'mail-body'].forEach(clearField); }
 
@@ -242,6 +252,7 @@ document.addEventListener('submit', (e) => {
   const kind = f.dataset.form;
   if (kind === 'dev-day') { store.devGoToDay(Number(val('#dev-day'))); return; }
   if (kind === 'dev-flag') { const v = val('#dev-flag-name').trim(); if (v) store.devSetFlag(v, true); return; }
+  if (kind === 'cb-send') { if (store.send(val('#cb-to').trim(), val('#cb-amount').trim())) toast('Coinbin', 'Sent.', 'wallet'); return; }
   if (kind === 'url') { newPageLoad(); store.navigate(val('#nt-url') || val('#address')); }
   else if (kind === 'ypost') { const v = val('#post-input').trim(); if (v) { clearField('post-input'); void store.post(v, trendingToday()); } }
   else if (kind === 'prompt') {

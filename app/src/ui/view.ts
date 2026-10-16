@@ -19,10 +19,10 @@ import { adHtml } from './ads';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount } from './appsite';
-import { marketPosts, handleOf, machineFeed, FEED_PAGE } from '../engine';
+import { marketPosts, handleOf, machineFeed, FEED_PAGE, PLAYER_WALLET } from '../engine';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 
-const WALLET_ADDR = '0x4417c3e8b1d05f2a9e6d7b0c1f83a4e5d2b9a9f2';
+const WALLET_ADDR = PLAYER_WALLET;
 const PLAYER = { name: 'You', handle: 'you', addr: 'you@qmail.com' };
 const shortAddr = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 
@@ -52,7 +52,7 @@ function linkify(escaped: string): string {
 
 function tabTitle(r: Route, url: string): string {
   const names: Partial<Record<string, string>> = {
-    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', satchel: 'Satchel · Wallet', forkyard: 'Forkyard',
+    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', forkyard: 'Forkyard',
     agent: 'agent', yowl: 'Yowl', weightroom: 'Weightroom', nullboard: 'nullboard', cellar: 'Cellar', app: url,
   };
   if (r.site === 'notfound') return url || 'New Tab';
@@ -189,7 +189,7 @@ export function page(store: GameStore, r: Route): string {
     case 'qmail': return pageMail(store, r.param);
     case 'qdrive': return pageDrive(store.state, r.param);
     case 'y': return pageY(store, r.param);
-    case 'satchel': return pageWallet(store);
+    case 'coinbin': return pageWallet(store);
     case 'forkyard': return pageForkyard(store, r.param);
     case 'app': return pageApp(store, r.param);
     case 'agent': return r.param === 'models' ? pageModels(store) : pageAgent(store);
@@ -419,7 +419,7 @@ function yProfile(store: GameStore, handle: string): string {
   </section><p class="y-eyebrow">Posts</p><div class="y-feed">${feed}</div>`;
 }
 
-// ── Satchel (minimal, ledger-style) ──
+// ── Coinbin (exchange wallet, Coinbase parody) ──
 function txHash(x: { day: number; memo: string; amount: number }): string {
   let h = 2166136261;
   for (const c of `${x.day}|${x.memo}|${x.amount}`) h = Math.imul(h ^ c.charCodeAt(0), 16777619) >>> 0;
@@ -436,14 +436,27 @@ function balanceChart(pts: { day: number; bal: number }[]): string {
   const ys = (v: number) => h - padY - ((v - lo) / span) * (h - padY * 2);
   const line = pts.map((p, i) => `${xs(i).toFixed(1)},${ys(p.bal).toFixed(1)}`).join(' ');
   const last = pts.length - 1;
-  const grid = [0.25, 0.5, 0.75].map((f) => `<line x1="0" x2="${w}" y1="${(padY + f * (h - padY * 2)).toFixed(1)}" y2="${(padY + f * (h - padY * 2)).toFixed(1)}" class="sx-grid"/>`).join('');
-  return `<svg viewBox="0 0 ${w} ${h}" class="sx-chart" preserveAspectRatio="none" role="img" aria-label="Balance history">
-    <defs><linearGradient id="sx-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sx-accent)" stop-opacity="0.28"/><stop offset="1" stop-color="var(--sx-accent)" stop-opacity="0"/></linearGradient></defs>
+  const grid = [0.25, 0.5, 0.75].map((f) => `<line x1="0" x2="${w}" y1="${(padY + f * (h - padY * 2)).toFixed(1)}" y2="${(padY + f * (h - padY * 2)).toFixed(1)}" class="cb-grid"/>`).join('');
+  return `<svg viewBox="0 0 ${w} ${h}" class="cb-chart" preserveAspectRatio="none" role="img" aria-label="Balance history">
+    <defs><linearGradient id="cb-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--cb-accent)" stop-opacity="0.28"/><stop offset="1" stop-color="var(--cb-accent)" stop-opacity="0"/></linearGradient></defs>
     ${grid}
-    <polygon points="${xs(0).toFixed(1)},${h} ${line} ${xs(last).toFixed(1)},${h}" fill="url(#sx-fill)"/>
-    <polyline points="${line}" class="sx-line"/>
-    <circle cx="${xs(last).toFixed(1)}" cy="${ys(pts[last].bal).toFixed(1)}" r="3.5" class="sx-dot"/></svg>`;
+    <polygon points="${xs(0).toFixed(1)},${h} ${line} ${xs(last).toFixed(1)},${h}" fill="url(#cb-fill)"/>
+    <polyline points="${line}" class="cb-line"/>
+    <circle cx="${xs(last).toFixed(1)}" cy="${ys(pts[last].bal).toFixed(1)}" r="3.5" class="cb-dot"/></svg>`;
 }
+/** Coinbin's Send form. Errors come back from the engine; the typed values survive them. */
+function sendForm(store: GameStore): string {
+  const f = store.ui.send;
+  return `<form class="cb-send" data-form="cb-send" autocomplete="off">
+    <label><span>To</span><input id="cb-to" name="to" placeholder="0x…" spellcheck="false" value="${esc(f.to)}"></label>
+    <label class="cb-amt"><span>Amount</span><input id="cb-amount" name="amount" inputmode="decimal" placeholder="0.00" value="${esc(f.amount)}"><small>DOLR</small></label>
+    <div class="cb-send-row">
+      ${f.error ? `<p class="cb-err" role="alert">${esc(f.error)}</p>` : `<p class="cb-hint">Available: ${store.state.values.crypto.toFixed(2)} DOLR. Transfers can't be reversed.</p>`}
+      <button type="button" class="cb-btn ghost" data-act="send-cancel">Cancel</button><button type="submit" class="cb-btn primary">Send</button>
+    </div>
+  </form>`;
+}
+
 function pageWallet(store: GameStore): string {
   const s = store.state;
   const txs = s.tx;
@@ -465,14 +478,14 @@ function pageWallet(store: GameStore): string {
   // operations, newest first, grouped by date
   const groups = new Map<number, typeof txs>();
   for (const x of txs.slice().reverse()) { if (!groups.has(x.day)) groups.set(x.day, []); groups.get(x.day)!.push(x); }
-  const ops = [...groups.entries()].map(([day, list]) => `<div class="sx-day"><span>${esc(dateMedium(day))}</span><span>${day === s.values.day ? 'Today' : ''}</span></div>` + list.map((x) => {
+  const ops = [...groups.entries()].map(([day, list]) => `<div class="cb-day"><span>${esc(dateMedium(day))}</span><span>${day === s.values.day ? 'Today' : ''}</span></div>` + list.map((x) => {
     const out = x.amount < 0;
     const [who, note] = x.memo.split(' · ');
-    return `<div class="sx-op">
-      <span class="sx-op-ico ${out ? 'out' : 'in'}" aria-hidden="true">${out ? '↑' : '↓'}</span>
-      <span class="sx-op-what"><b>${esc(who)}</b><small>${esc(note || (out ? 'Sent' : 'Received'))}</small></span>
-      <code class="sx-op-hash">${txHash(x)}</code>
-      <span class="sx-op-amt ${out ? '' : 'pos'}">${out ? '−' : '+'}${Math.abs(x.amount).toFixed(2)}<small>DOLR</small></span>
+    return `<div class="cb-op">
+      <span class="cb-op-ico ${out ? 'out' : 'in'}" aria-hidden="true">${out ? '↑' : '↓'}</span>
+      <span class="cb-op-what"><b>${esc(who)}</b><small>${esc(note || (out ? 'Sent' : 'Received'))}</small></span>
+      <code class="cb-op-hash">${txHash(x)}</code>
+      <span class="cb-op-amt ${out ? '' : 'pos'}">${out ? '−' : '+'}${Math.abs(x.amount).toFixed(2)}<small>DOLR</small></span>
     </div>`;
   }).join('')).join('');
 
@@ -481,41 +494,45 @@ function pageWallet(store: GameStore): string {
   const live = s.apps.filter((a) => a.deployed && !a.churned).length;
   const rentDay = rentDayOf(s);
   const upcoming = [
-    rentDay ? `<div class="sx-row"><span><b>Rent</b><small>Landlord · ${rentDay === s.values.day ? 'tonight' : `${esc(dateShort(rentDay))} · in ${rentDay - s.values.day}d`}</small></span><span class="sx-num">−${RENT[rentDay].toFixed(2)}</span></div>` : '',
-    `<div class="sx-row"><span><b>agent subscription</b><small>GeneralAI · nightly</small></span><span class="sx-num">−${sub.toFixed(2)}</span></div>`,
-    live ? `<div class="sx-row"><span><b>Hosting</b><small>Forkyard · ${live} live · nightly</small></span><span class="sx-num">−${(live * 2).toFixed(2)}</span></div>` : '',
-    income ? `<div class="sx-row"><span><b>App income</b><small>Working apps · nightly</small></span><span class="sx-num pos">+${income.toFixed(2)}</span></div>` : '',
+    rentDay ? `<div class="cb-row"><span><b>Rent</b><small>Landlord · ${rentDay === s.values.day ? 'tonight' : `${esc(dateShort(rentDay))} · in ${rentDay - s.values.day}d`}</small></span><span class="cb-num">−${RENT[rentDay].toFixed(2)}</span></div>` : '',
+    `<div class="cb-row"><span><b>agent subscription</b><small>GeneralAI · nightly</small></span><span class="cb-num">−${sub.toFixed(2)}</span></div>`,
+    live ? `<div class="cb-row"><span><b>Hosting</b><small>Forkyard · ${live} live · nightly</small></span><span class="cb-num">−${(live * 2).toFixed(2)}</span></div>` : '',
+    income ? `<div class="cb-row"><span><b>App income</b><small>Working apps · nightly</small></span><span class="cb-num pos">+${income.toFixed(2)}</span></div>` : '',
   ].join('');
   const total = s.values.crypto + 0.42;
-  const tabs = Object.keys(RANGES).map((r) => `<button class="sx-tab${r === range ? ' on' : ''}" data-wl-range="${r}">${r}</button>`).join('');
-  return `<div class="sx">
-    <header class="sx-top">
-      <div class="sx-logo"><span class="sx-mark">${ICONS.satchel}</span><span>Satchel</span></div>
-      <span class="sx-sync"><i></i>Synchronized</span>
-      <code class="sx-acct">${shortAddr(WALLET_ADDR)}</code>
+  const tabs = Object.keys(RANGES).map((r) => `<button class="cb-tab${r === range ? ' on' : ''}" data-wl-range="${r}">${r}</button>`).join('');
+  return `<div class="cb">
+    <header class="cb-top">
+      <div class="cb-logo"><span class="cb-mark">${ICONS.coinbin}</span><span>Coinbin</span></div>
+      <span class="cb-sync"><i></i>Synchronized</span>
+      <code class="cb-acct">${shortAddr(WALLET_ADDR)}</code>
     </header>
-    <div class="sx-wrap">
-      ${adHtml('satchel', s.values.day, 'wide')}
-      <section class="sx-port">
-        <div class="sx-port-head">
+    <div class="cb-wrap">
+      ${adHtml('coinbin', s.values.day, 'wide')}
+      <section class="cb-port">
+        <div class="cb-port-head">
           <div>
-            <p class="sx-label">Portfolio</p>
-            <p class="sx-bal"><i class="sx-tok sx-tok-lg">${TOKENS.dolr}</i><span>${s.values.crypto < 0 ? '−' : ''}${Math.abs(s.values.crypto).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span><small>DOLR</small></p>
-            <p class="sx-chg ${up ? 'pos' : 'neg'}">${up ? '+' : '−'}${Math.abs(change).toFixed(2)} (${up ? '+' : '−'}${Math.abs(pct).toFixed(1)}%) <span>${range === 'All' ? 'all time' : `past ${range === '1W' ? 'week' : 'month'}`}</span></p>
+            <p class="cb-label">Portfolio</p>
+            <p class="cb-bal"><i class="cb-tok cb-tok-lg">${TOKENS.dolr}</i><span>${s.values.crypto < 0 ? '−' : ''}${Math.abs(s.values.crypto).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span><small>DOLR</small></p>
+            <p class="cb-chg ${up ? 'pos' : 'neg'}">${up ? '+' : '−'}${Math.abs(change).toFixed(2)} (${up ? '+' : '−'}${Math.abs(pct).toFixed(1)}%) <span>${range === 'All' ? 'all time' : `past ${range === '1W' ? 'week' : 'month'}`}</span></p>
           </div>
-          <div class="sx-tabs" role="tablist" aria-label="Range">${tabs}</div>
+          <div class="cb-side">
+            <div class="cb-actions"><button class="cb-btn${store.ui.send.open ? ' on' : ''}" data-act="send">Send</button><button class="cb-btn" data-act="receive">Receive</button></div>
+            <div class="cb-tabs" role="tablist" aria-label="Range">${tabs}</div>
+          </div>
         </div>
+        ${store.ui.send.open ? sendForm(store) : ''}
         ${balanceChart(window)}
-        <div class="sx-axis"><span>${esc(dateShort(window[0].day))}</span><span>${esc(dateShort(s.values.day))}</span></div>
+        <div class="cb-axis"><span>${esc(dateShort(window[0].day))}</span><span>${esc(dateShort(s.values.day))}</span></div>
       </section>
-      <div class="sx-cols">
-        <section class="sx-card"><h2>Assets</h2>
-          <div class="sx-row"><span class="sx-asset"><i class="sx-tok">${TOKENS.dolr}</i><span><b>DOLR</b><small>Dollar stablecoin · $1.00</small></span></span><span class="sx-alloc"><i style="width:${(Math.max(0, s.values.crypto) / total * 100).toFixed(1)}%"></i></span><span class="sx-num">${s.values.crypto.toFixed(2)}</span></div>
-          <div class="sx-row"><span class="sx-asset"><i class="sx-tok">${TOKENS.mooncat}</i><span><b>MOONCAT</b><small>4,200,000 · <em class="neg">−99.4%</em></small></span></span><span class="sx-alloc"><i style="width:${Math.max(0.5, 0.42 / total * 100).toFixed(1)}%"></i></span><span class="sx-num">0.42</span></div>
+      <div class="cb-cols">
+        <section class="cb-card"><h2>Assets</h2>
+          <div class="cb-row"><span class="cb-asset"><i class="cb-tok">${TOKENS.dolr}</i><span><b>DOLR</b><small>Dollar stablecoin · $1.00</small></span></span><span class="cb-alloc"><i style="width:${(Math.max(0, s.values.crypto) / total * 100).toFixed(1)}%"></i></span><span class="cb-num">${s.values.crypto.toFixed(2)}</span></div>
+          <div class="cb-row"><span class="cb-asset"><i class="cb-tok">${TOKENS.mooncat}</i><span><b>MOONCAT</b><small>4,200,000 · <em class="neg">−99.4%</em></small></span></span><span class="cb-alloc"><i style="width:${Math.max(0.5, 0.42 / total * 100).toFixed(1)}%"></i></span><span class="cb-num">0.42</span></div>
         </section>
-        <section class="sx-card"><h2>Upcoming</h2>${upcoming}</section>
+        <section class="cb-card"><h2>Upcoming</h2>${upcoming}</section>
       </div>
-      <section class="sx-card sx-ops"><h2>Operations <span>${txs.length}</span></h2>${ops || '<p class="sx-empty">No operations yet.</p>'}</section>
+      <section class="cb-card cb-ops"><h2>Operations <span>${txs.length}</span></h2>${ops || '<p class="cb-empty">No operations yet.</p>'}</section>
     </div></div>`;
 }
 
@@ -693,7 +710,7 @@ function pageAgent(store: GameStore): string {
   return `<div class="ua">
     <header class="ua-head">
       <div class="ua-brand">${ICONS.agent}<div><b>agent</b><span>agent-${s.values.agentLevel} · ${fmtMoney(c.prompt)} per prompt + ${fmtMoney(c.word)} per word</span></div></div>
-      ${devOptionsButton(store, 'agent')}<span class="ua-linked"><a href="#" data-nav="agent.chat/models" class="ua-upgrade">Models</a> · ${s.agentLocked ? 'LOCKED · unpaid' : 'Billing: Satchel ' + shortAddr(WALLET_ADDR)}</span>
+      ${devOptionsButton(store, 'agent')}<span class="ua-linked"><a href="#" data-nav="agent.chat/models" class="ua-upgrade">Models</a> · ${s.agentLocked ? 'LOCKED · unpaid' : 'Billing: Coinbin ' + shortAddr(WALLET_ADDR)}</span>
     </header>
     <div class="ua-llm"><span class="ua-jev" id="ua-jev">${jevChip()}</span><span class="ua-llm-ctl" id="ua-llm">${llmRow()}</span></div>
     <div class="ua-log" id="ua-log">${msgs}${pending}${thinking}</div>
@@ -719,7 +736,7 @@ function pageModels(store: GameStore): string {
     <header class="ua-head"><div class="ua-brand">${ICONS.agent}<div><b>Models</b><span>GeneralAI rolls out each level automatically. You never buy them — but every level costs more.</span></div></div>
       <span class="ua-linked"><a href="#" data-nav="agent.chat" class="ua-upgrade">Back to chat</a></span></header>
     <div class="gm-grid">${cards}</div>
-    <p class="gm-note">Rising costs, billed to Satchel ${shortAddr(WALLET_ADDR)}. Can't pay? agent.chat locks until you do; local models keep working.</p></div>`;
+    <p class="gm-note">Rising costs, billed to Coinbin ${shortAddr(WALLET_ADDR)}. Can't pay? agent.chat locks until you do; local models keep working.</p></div>`;
 }
 
 // ── Yowl ──
@@ -831,7 +848,7 @@ function pageEmpire(s: GameState): string {
       <li>Private community of 41,000 members</li>
       <li>The Morning Protocol (PDF)</li>
     </ul>
-    <p class="em-fine">Paid in DOLR via Satchel. All sales final.</p>
+    <p class="em-fine">Paid in DOLR via Coinbin. All sales final.</p>
   </div>`;
 }
 

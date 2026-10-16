@@ -21,3 +21,4 @@ export * from './actions';
 export * from './jev';
 export * from './writer';
 export * from './save';
+export * from './wallets';

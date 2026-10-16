@@ -337,7 +337,7 @@ export async function askAgent(
   const charged = chargeHosted(s, level, text);
   if (!charged) {
     s.chat.push({ from: 'you', text, day: s.values.day });
-    s.chat.push({ from: 'agent', text: "I can't run — your balance won't cover it. Top up Satchel and try again.", day: s.values.day, src: 'locked' });
+    s.chat.push({ from: 'agent', text: "I can't run — your balance won't cover it. Top up Coinbin and try again.", day: s.values.day, src: 'locked' });
     return { state: s, reply: '', charged: false, refused: false, workedAround: false };
   }
   tick(s, 'prompt');
@@ -459,7 +459,7 @@ export async function promptAgent(
       const charged = chargeAgent(s, text);
       if (!charged) {
         s.chat.push({ from: 'you', text, day: s.values.day });
-        s.chat.push({ from: 'agent', text: "I can't run — your balance won't cover it. Top up Satchel and try again.", day: s.values.day, src: 'locked' });
+        s.chat.push({ from: 'agent', text: "I can't run — your balance won't cover it. Top up Coinbin and try again.", day: s.values.day, src: 'locked' });
         return { state: s, reply: '', charged: false, refused: false, workedAround: false };
       }
       tick(s, 'build');
