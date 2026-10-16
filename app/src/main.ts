@@ -154,8 +154,9 @@ document.addEventListener('submit', (e) => {
   if (kind === 'url') { newPageLoad(); store.navigate(val('#nt-url') || val('#address')); }
   else if (kind === 'ypost') { const v = val('#post-input').trim(); if (v) void store.post(v, trendingToday()); }
   else if (kind === 'prompt') {
-    const v = val('#prompt-input').trim(); if (!v) return;
+    const v = val('#prompt-input').trim(); if (!v || store.busy) return;
     const input = $<HTMLTextAreaElement>('#prompt-input'); if (input) input.value = '';
+    updateCost();
     void store.prompt(v);
   } else if (kind === 'mail') {
     const to = val('#mail-to').trim(), subject = val('#mail-subject').trim(), body = val('#mail-body').trim();

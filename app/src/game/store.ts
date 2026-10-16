@@ -23,6 +23,8 @@ export class GameStore {
   active = 1;
   private nextTab = 3;
   busy = false;
+  /** The agent prompt being answered right now, shown in the chat as soon as it's sent. */
+  pendingPrompt: string | null = null;
   ui = {
     ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null as Draft | null,
     project: '', dev: false, liked: {} as Record<string, boolean>, intro: true, confirm: null as null | { text: string; yes: string; fn: () => void }, start: false, menuCat: 'saves',
@@ -139,7 +141,11 @@ export class GameStore {
   }
   /** The agent is always free-text promptable. Jev routes it to a build/fix or an ordinary reply. */
   async prompt(text: string) {
-    return this.run(async () => { const r = await promptAgent(this.state, this.content, this.router, text, this.writer); this.commitAndSettle(r.state); return r; });
+    this.pendingPrompt = text;
+    return this.run(async () => {
+      try { const r = await promptAgent(this.state, this.content, this.router, text, this.writer); this.pendingPrompt = null; this.commitAndSettle(r.state); return r; }
+      finally { this.pendingPrompt = null; }
+    });
   }
   async review(bizId: string, stars: number, text: string) {
     return this.run(async () => { const r = await writeReview(this.state, this.content, this.router, bizId, stars, text); this.ui.reviewStars = 0; this.commitAndSettle(r.state); return r; });

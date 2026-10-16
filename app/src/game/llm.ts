@@ -13,14 +13,14 @@
  * scripted fallback, so the game never waits on it.
  */
 
-import { agentMessages } from './agentBrief';
+import { agentMessages, finishRoast } from './agentBrief';
 
 export type Backend = 'browser' | 'ollama' | 'off';
 export type Status = 'off' | 'loading' | 'ready' | 'error';
 
 export interface ChatTurn { role: 'system' | 'user' | 'assistant'; content: string }
 export interface GenCtx {
-  /** A persona override (the Terminal's local model). Without it, agent's own brief is used (game/agentBrief.ts). */
+  /** A persona override (the Terminal's local model). Without it, agent roasts the prompt (game/agentBrief.ts). */
   persona?: string;
   /** Few-shot examples [user, assistant]. */
   examples?: [string, string][];
@@ -40,8 +40,9 @@ const CONFIG = {
   shortTokens: 72,
   longTokens: 140,
   temperature: 0.9,
-  /** agent stays closer to its examples; 270M drifts off-character at higher temperatures. */
-  agentTemperature: 0.6,
+  /** agent's roasts: short, and close to the examples; 270M drifts off-character when given room. */
+  roastTokens: 40,
+  agentTemperature: 0.5,
   timeoutMs: 25000,
   downloadRetries: 2,
 };
@@ -151,7 +152,7 @@ class LocalLLM {
 
   /** A reply in agent's (or a given) voice, or null when no model can answer. */
   async generate(prompt: string, ctx: GenCtx = {}): Promise<string | null> {
-    if (!ctx.persona) return this.run(agentMessages(prompt, ctx.facts), CONFIG.shortTokens, clean, CONFIG.agentTemperature);
+    if (!ctx.persona) return this.run(agentMessages(prompt), CONFIG.roastTokens, finishRoast, CONFIG.agentTemperature);
     const messages: ChatTurn[] = [{ role: 'system', content: ctx.persona + (ctx.facts ? '\n' + ctx.facts : '') }];
     for (const [u, a] of ctx.examples || []) messages.push({ role: 'user', content: u }, { role: 'assistant', content: a });
     messages.push({ role: 'user', content: String(prompt).slice(0, 700) });

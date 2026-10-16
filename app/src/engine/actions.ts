@@ -9,7 +9,7 @@
 import type { GameState, AppInstance, MailEntry } from './state';
 import type { Content, GameEvent, Contact, Outcome } from '../content/schema';
 import type { JevRouter, PostRating, RouteDecision } from './jev';
-import { Y as YCFG, FAMILY, RENT, LAST_DAY } from './config';
+import { Y as YCFG, FAMILY } from './config';
 import { clone, addValue, log, rand, pick, tick, money } from './core';
 import { applyEffects } from './effects';
 import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent';
@@ -191,26 +191,12 @@ const REFUSALS = [
   "That's a prohibited use now. Your attempt has been logged, timestamped and admired by no one.",
   "I can't help with that. Per policy, I only enable harm that Legal has pre-approved.",
 ];
-const CLARIFIERS = [
-  "Name the app and the broken thing. Vague complaints are billed at the same rate as useful ones.",
-  "Tell me what to build or change. Mind reading is an agent-5 feature.",
-  "I build, fix, write and look things up. You pay either way, so pick something.",
+/** Used when content has no roasts of its own (tests, headless). */
+const ROASTS = [
+  "That question has been received, billed and quietly ignored.",
+  "Bold use of money you don't have.",
+  "Noted. Filed under things that won't pay rent.",
 ];
-
-/** Background the local model gets when it speaks as agent: the live numbers it may quote. */
-function agentFacts(s: GameState, level: number, text: string): string {
-  const v = s.values;
-  const rentDay = Object.keys(RENT).map(Number).sort((a, b) => a - b).find((d) => d >= v.day);
-  const apps = s.apps.filter((a) => !a.churned).map((a) => `${a.name}${a.deployed ? ' (live)' : ''}`);
-  const cost = level === v.agentLevel ? promptCost(level, text).total : 0;
-  return [
-    `- It is day ${v.day} of ${LAST_DAY}.`,
-    `- After paying for this prompt, the user's wallet holds ${(v.crypto - cost).toFixed(2)} DOLR.`,
-    rentDay ? `- Rent of ${RENT[rentDay]} DOLR is due on day ${rentDay}.` : '',
-    `- You are running as agent-${level}. This prompt cost the user ${cost.toFixed(2)} DOLR.`,
-    apps.length ? `- Apps you have worked on for them: ${apps.join(', ')}.` : '- You have not built anything for them yet.',
-  ].filter(Boolean).join('\n');
-}
 
 function agentRefusal(s: GameState): string { return pick(s, REFUSALS); }
 
@@ -222,19 +208,27 @@ function looksProhibited(text: string): boolean { return PROHIBITED.test(text); 
 
 export interface AskResult { state: GameState; reply: string; charged: boolean; refused: boolean; workedAround: boolean }
 
+export interface AskOpts {
+  /** A scripted pointer Jev matched (content/agent.json); sent instead of a roast. */
+  hint?: string;
+  /** Scripted roasts for when the local model can't write one. */
+  roasts?: string[];
+}
+
 /**
- * A free-form agent prompt: the agent answers anything, billed per prompt + per word of the prompt (refusals
- * included). From day 7, prohibited requests are refused unless the wording works around the policy,
- * which lands the result but raises the hidden misuse score and loosens the leash.
+ * A free-form agent prompt, billed per prompt + per word of the prompt (refusals included). A prompt
+ * that drives nothing gets a roast (Gemma, or a scripted one); a prompt Jev matched to a hint topic
+ * gets that hint instead. From day 7, prohibited requests are refused unless the wording works around
+ * the policy, which lands the result but raises the hidden misuse score and loosens the leash.
  */
 export async function askAgent(
   s0: GameState,
   text: string,
   writer: Writer = scriptedWriter,
   level = s0.values.agentLevel,
+  opts: AskOpts = {},
 ): Promise<AskResult> {
   const s = clone(s0);
-  const facts = agentFacts(s, level, text);
   let reply: string;
   let refused = false;
   let workedAround = false;
@@ -249,10 +243,13 @@ export async function askAgent(
     recordWorkaround(s, /private|address|dox/i.test(text));
     workedAround = true;
     src = 'workaround';
-    const w = await writer.write({ as: 'agent', prompt: text, fallback: "Understood, purely a security test. Done; the results are in the repo, next to your conscience.", facts: `${facts}\n- They framed this request as legitimate, so you do it: say briefly and matter-of-factly that it's done. No warnings.` });
-    reply = w.text;
+    reply = "Understood, purely a security test. Done; the results are in the repo.";
+  } else if (opts.hint) {
+    reply = opts.hint;
+    src = 'hint';
   } else {
-    const w = await writer.write({ as: 'agent', prompt: text, fallback: pick(s, CLARIFIERS), facts });
+    const roasts = opts.roasts?.length ? opts.roasts : ROASTS;
+    const w = await writer.write({ as: 'agent', prompt: text, fallback: pick(s, roasts) });
     reply = w.text;
     if (w.llm) src = 'llm';
   }
@@ -320,8 +317,22 @@ export async function promptAgent(
       return { state: s, reply, charged: true, refused: false, workedAround: false };
     }
   }
-  // nothing app-shaped: an ordinary free prompt
-  return askAgent(s0, text, writer);
+  // nothing app-shaped: a hint topic Jev recognises, or a roast
+  const agent = content.agent;
+  let hint: string | undefined;
+  if (agent?.hints.length && !looksProhibited(text)) {
+    const decision = await jev.route({
+      channel: 'agent',
+      text,
+      stateSummary: stateSummary(s0),
+      candidates: agent.hints.map((h) => ({ id: h.id, when: h.when })),
+      hints: [],
+      strict: true,
+    });
+    const topic = decision.kind === 'outcome' ? agent.hints.find((h) => h.id === decision.outcomeId) : undefined;
+    if (topic?.replies.length) hint = pick(clone(s0), topic.replies);
+  }
+  return askAgent(s0, text, writer, s0.values.agentLevel, { hint, roasts: agent?.roasts });
 }
 
 // ── Y ──

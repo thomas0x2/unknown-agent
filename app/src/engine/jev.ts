@@ -17,6 +17,8 @@ export interface RouteInput {
   stateSummary: string;
   candidates: RouteCandidate[];
   hints: string[];
+  /** Only accept a clear match: the offline router needs two shared keywords instead of one. */
+  strict?: boolean;
 }
 
 export type RouteDecision =
@@ -82,6 +84,7 @@ export const offlineJev: JevRouter = {
       if (score > best.score) best = { score, id: c.id };
     }
     if (best.score >= 2) return { kind: 'outcome', outcomeId: best.id };
+    if (input.strict) return { kind: 'nothing' };
     if (best.score === 1) {
       return input.hints.length ? { kind: 'hint', hintIndex: 0 } : { kind: 'outcome', outcomeId: best.id };
     }
