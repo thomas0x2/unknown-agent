@@ -565,7 +565,6 @@ function chargeHosted(s: GameState, level: number, text: string): boolean {
 export function deploy(s0: GameState, appId: string): GameState {
   const s = clone(s0);
   deployAppCore(s, appId);
-  tick(s, 'deploy');
   log(s, `Deployed ${getApp(s, appId)?.name ?? appId}.`, 'info');
   return s;
 }

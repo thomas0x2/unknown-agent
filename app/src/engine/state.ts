@@ -63,6 +63,8 @@ export interface AppInstance {
   createdDay: number;
   lastDeployDay: number;
   breaks: AppBreak[];
+  /** Build bugs the agent has fixed, per feature: it doesn't make them again. */
+  fixed?: Record<string, string[]>;
   strikes: number;
   churned: boolean;
   nextUpdateDueDay?: number;
