@@ -13,6 +13,7 @@ import './ui/qdrive.css';
 import './ui/ads.css';
 import './ui/empire.css';
 import './ui/appsite.css';
+import './ui/terminal.css';
 import './ui/devOptions.css';
 import { showSuggestions, hideSuggestions, suggestionKey } from './ui/mailSuggest';
 import { GameStore } from './game/store';
@@ -26,6 +27,7 @@ import { listSlots } from './game/saves';
 import { devEditHtml } from './ui/devEdit';
 import type { MeterId } from './engine';
 import { newPageLoad } from './ui/ads';
+import { pullPct } from './game/pull';
 
 const content = loadContent();
 const writer = makeWriter(content);
@@ -93,8 +95,9 @@ function render(): void {
     }
   }
 
-  // taskbar
-  $('#dk-task')!.title = V.taskTitle(store);
+  // taskbar and the Terminal window
+  $('#dk-tasks')!.innerHTML = V.tasksHtml(store);
+  renderTerm();
   $('#clock')!.innerHTML = V.clockHtml(s);
   const menu = $('#startmenu')!; menu.hidden = !store.ui.start; menu.innerHTML = store.ui.start ? V.startMenuHtml(store) : '';
   const startBtn = $('#dk-home')!; startBtn.classList.toggle('on', store.ui.start); startBtn.setAttribute('aria-expanded', String(store.ui.start));
@@ -104,10 +107,39 @@ function render(): void {
   const dve = $('#devedit')!; const showEdit = store.ui.dev && store.ui.devEdit; dve.hidden = !showEdit; if (showEdit) dve.innerHTML = devEditHtml(store);
 
   if (site === 'agent') { const log = $('#ua-log'); if (log) log.scrollTop = log.scrollHeight; updateCost(); }
-  if (site === 'terminal') { const log = $('#tm-log'); if (log) log.scrollTop = log.scrollHeight; const t = $('#term-input'); if (t && window.innerWidth > 700 && !store.busy) t.focus(); }
   lastSite = site;
 }
+/** Paints the Terminal window, keeping what was typed at its prompt. */
+let termWasShown = false;
+function renderTerm(): void {
+  const win = $('#termwin')!;
+  const shown = store.ui.termShown;
+  win.hidden = !shown;
+  if (!shown) { termWasShown = false; return; }
+  const old = $<HTMLInputElement>('#term-input');
+  const typed = old?.value ?? '';
+  const hadFocus = !!old && document.activeElement === old;
+  if (!win.firstElementChild) win.innerHTML = V.termWindowHtml(store);
+  else $('#tm-log')!.innerHTML = V.termBodyHtml(store);
+  const log = $('#tm-log')!; log.scrollTop = log.scrollHeight;
+  const input = $<HTMLInputElement>('#term-input');
+  if (input) {
+    input.value = typed;
+    // focus the prompt when the window comes forward or was being typed in (not on phones: the keyboard covers it)
+    if (!input.disabled && (hadFocus || (!termWasShown && window.innerWidth > 700))) input.focus();
+  }
+  termWasShown = !!input;
+}
+/** One frame of a model download: just the Terminal and any Weightroom progress bar. */
+function renderPull(): void {
+  renderTerm();
+  const pct = pullPct(store.pullMs());
+  document.querySelectorAll<HTMLElement>('[data-pull-bar]').forEach((el) => {
+    el.querySelector('i')!.style.width = `${pct}%`; el.querySelector('b')!.textContent = `Downloading ${pct}%`;
+  });
+}
 store.subscribe(render);
+store.onPull(renderPull);
 MISSES.onChange(render);
 JEV.onChange(render);
 void JEV.probe();
@@ -132,14 +164,18 @@ function toast(title: string, body: string, kind = 'note'): void {
 
 // ── clicks ──
 document.addEventListener('click', (e) => {
-  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-ov],[data-dev],[data-cancel-booking],[data-empire-join],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat],[data-back],[data-forward],[data-devbug],[data-devopts]');
+  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-ov],[data-dev],[data-cancel-booking],[data-empire-join],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat],[data-back],[data-forward],[data-devbug],[data-task],[data-term],[data-devopts]');
   // any click outside the home menu closes it (menu items close it themselves below)
   if (store.ui.start && !(e.target as HTMLElement).closest('#startmenu, #dk-home')) store.toggleStart(false);
+  // clicking the browser while the Terminal is in front brings the browser forward, like any window
+  if (store.ui.termShown && (e.target as HTMLElement).closest('.window')) store.showTerm(false);
   if (!t) return;
   const d = t.dataset;
   if (d.close != null) { e.stopPropagation(); store.closeTab(Number(d.close)); return; }
   e.preventDefault();
   if (d.start != null) { store.toggleStart(); return; }
+  if (d.task != null) { if (d.task === 'terminal') store.termTask(); else store.showTerm(false); return; }
+  if (d.term != null) { if (d.term === 'close') store.closeTerm(); else store.showTerm(false); return; }
   if (d.menuCat != null) { store.setMenuCat(d.menuCat); return; }
   if (t.closest('#startmenu')) store.toggleStart(false);
   if (d.slotSave != null) { const n = Number(d.slotSave); const save = () => { if (!store.saveSlot(n)) toast('Not saved', 'Could not save (storage unavailable)', 'note'); }; if (listSlots()[n - 1]) store.confirm(`Overwrite slot ${n} with your current game?`, 'Overwrite', save); else save(); return; }

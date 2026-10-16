@@ -1,0 +1,50 @@
+/* The Terminal: a desktop app in its own Mint-style window over the browser, with a button in the
+   panel's window list next to the browser's. Also the Weightroom download bar. */
+
+.desk { position: relative; }
+
+/* ── window list buttons ── */
+.dk-tasks .dk-task { border: 0; padding: 0; color: #dcdcdc; background: none; box-shadow: none; cursor: pointer; --icon-ink: #262626; }
+.dk-tasks .dk-task:hover { background: rgba(255, 255, 255, 0.1); }
+.dk-tasks .dk-task.on { background: rgba(255, 255, 255, 0.06); box-shadow: inset 0 -2px 0 var(--dk-accent); }
+.dk-tasks .dk-task.open { box-shadow: inset 0 -2px 0 #6a6a6a; }
+
+/* ── window ── */
+.term-win {
+  position: absolute; z-index: 5;
+  left: max(6%, 24px); top: 9%;
+  width: min(780px, 82%); height: min(500px, 78%);
+  display: flex; flex-direction: column;
+  border: 1px solid #111; border-radius: 8px 8px 4px 4px; overflow: hidden;
+  background: #0b0d10;
+  box-shadow: 0 0 0 1px #3c3c3c inset, 0 24px 60px -12px rgba(0, 0, 0, 0.75);
+  animation: tw-in 0.14s ease-out;
+}
+.term-win[hidden] { display: none; }
+@keyframes tw-in { from { opacity: 0; transform: translateY(8px) scale(0.985); } }
+
+.tw-bar {
+  display: flex; align-items: center; gap: 8px; flex: none; height: 34px; padding: 0 6px 0 10px;
+  background: #2f2f2f; color: #dcdcdc; border-bottom: 1px solid #1a1a1a;
+  font: 500 13px 'Ubuntu', 'Noto Sans', var(--f-ui);
+}
+.tw-ico { display: grid; width: 16px; height: 16px; color: #dcdcdc; --icon-ink: #2f2f2f; }
+.tw-ico svg { width: 16px; height: 16px; }
+.tw-title { flex: 1; text-align: center; margin-right: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tw-ctl { display: flex; gap: 6px; }
+.tw-ctl button { display: grid; place-items: center; width: 22px; height: 22px; padding: 0; border: 0; border-radius: 50%; background: #3d3d3d; color: #dcdcdc; cursor: pointer; }
+.tw-ctl button:hover { background: #4a4a4a; }
+.tw-ctl button[data-term="close"]:hover { background: #8fbc5a; color: #13200a; }
+.tw-ctl svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+
+.term-win .tm { flex: 1; min-height: 0; overflow-y: auto; }
+
+@media (max-width: 700px) {
+  .term-win { left: 6px; right: 6px; top: 6px; bottom: 6px; width: auto; height: auto; border-radius: 6px; }
+}
+@media (prefers-reduced-motion: reduce) { .term-win { animation: none; } }
+
+/* ── Weightroom: download progress on the model card ── */
+.wr-pull { position: relative; align-self: stretch; height: 34px; border-radius: 8px; background: #ece7dc; overflow: hidden; display: grid; place-items: center; }
+.wr-pull i { position: absolute; inset: 0 auto 0 0; background: #1e1b16; transition: width 0.09s linear; }
+.wr-pull b { position: relative; font-size: 12.5px; font-weight: 600; color: #fff; mix-blend-mode: difference; font-variant-numeric: tabular-nums; }
