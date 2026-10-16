@@ -33,12 +33,63 @@ const MODEL_FILES: Record<string, { name: string; kb: number; preview: string }>
   stolen_weights: { name: 'weights_DO_NOT_SHARE.bin', kb: 9 * 1024 * 1024, preview: 'Someone else’s model. You know where it came from. So will they, eventually.' },
 };
 
+// The two files the player starts with. Lines in capitals render as headings.
+const RESUME = `YOU
+you@qmail.com · Pine Street Apartments, Unit 4B · Available immediately
+
+PROFILE
+Detail-oriented operations professional with six years of experience doing work that, it turns out, a chatbot can do for $0.03. Team player. Team no longer exists.
+
+EXPERIENCE
+Vantor Group · Process Optimization Associate · 6 years
+· Optimized processes until the only remaining inefficiency was me.
+· Reviewed 40,000+ supplier invoices by hand.
+· Recorded a "quick walkthrough of my workflow for documentation purposes." Was thanked warmly.
+· Reduced department headcount by 100% (see above).
+· Employee of the Quarter, Q3. The award has since been automated as well.
+
+Vantor Group · Data Intern · 1 year
+Unpaid. Compensated in "exposure," which is also what the job did to my lungs during the HVAC incident.
+
+EDUCATION
+B.A. Business Communication. Loan balance: ongoing, compounding, emotionally significant.
+
+SKILLS
+Excel (advanced) · Meetings (expert) · Writing "per my last email" with no hostility detectable by HR · Prompting (beginner, billed per word)
+
+REFERENCES
+Available on request. My former manager was replaced the same day and can be reached through GeneralAI support. Current wait time: 6 to 8 business years.`;
+
+const OFFBOARDING = `VANTOR GROUP · PEOPLE & CULTURE
+Offboarding Packet, Form PC-77b (revised for automation)
+
+Thank you for your years of service. Your position has been transitioned to GeneralAI Operations, effective the moment you opened this document.
+
+WHAT HAPPENS NEXT
+1. Badge access ends today. If you are in the building, Security will escort you out. Security is now a single drone that says "have a great day" until you leave.
+2. Your final salary will be paid in DOLR, at whatever DOLR is worth on payroll day. Vantor makes no promises regarding DOLR. Nobody does.
+3. Health coverage ends at midnight. Please schedule any illnesses before then.
+4. Return all company equipment, including your laptop, to Facilities. Facilities was dissolved on Tuesday.
+
+SEVERANCE
+You are eligible for two weeks' pay, conditional on signing the attached non-disparagement agreement. The agreement is 41 pages long, was written by GeneralAI, and has not been read by anyone, including GeneralAI.
+
+YOUR FEEDBACK MATTERS
+Please complete the exit survey (about 2 minutes). Your answers will be used to improve the system that replaced you.
+
+We wish you every success in what comes next, and we encourage you to explore exciting opportunities outside the Vantor family, as those are now the only ones available.
+
+Warm regards,
+People & Culture
+
+This document was drafted with GeneralAI.`;
+
 export function driveFiles(s: GameState): DriveFile[] {
   const files: DriveFile[] = [
     { id: 'resume', name: 'resume_final_v3.pdf', folder: 'documents', kind: 'pdf', kb: 84, day: -12, actions: [],
-      preview: 'Six years at Vantor Group. “Process optimization.” The bullet points read differently now.' },
+      preview: RESUME },
     { id: 'offboarding', name: 'vantor_offboarding.pdf', folder: 'documents', kind: 'pdf', kb: 212, day: 1, actions: [{ label: 'Find the email', nav: 'qmail.com' }],
-      preview: 'Your role has been “transitioned to an automated workflow.” Badge access ends today. Please return the laptop. (They forgot to ask for it back.)' },
+      preview: OFFBOARDING },
   ];
   if (s.interviewAnswers.trim()) {
     files.push({ id: 'interview', name: 'interview_answers.txt', folder: 'documents', kind: 'txt', kb: Math.max(1, Math.ceil(s.interviewAnswers.length / 1024)), actions: [],
@@ -56,6 +107,9 @@ export function driveFiles(s: GameState): DriveFile[] {
   }
   return files;
 }
+
+/** Plain text to HTML: line breaks kept, lines in capitals shown as headings. */
+const docHtml = (t: string) => t.split('\n').map((l) => (/^[A-Z][A-Z0-9 &·'-]+$/.test(l.trim()) ? `<b class="qd-hd">${esc(l)}</b>` : esc(l))).join('<br>');
 
 const QUOTA_KB = 15 * 1024 * 1024;
 function size(kb: number): string {
@@ -81,7 +135,7 @@ export function pageDrive(s: GameState, param?: string): string {
     main = `<article class="qd-open">
       <p class="qd-crumbs"><a href="#" data-nav="qdrive.com">My Drive</a> / <a href="#" data-nav="qdrive.com/${open.folder}">${FOLDERS.find((f) => f.id === open.folder)!.label}</a></p>
       <header>${glyph(open.kind)}<div><h1>${esc(open.name)}</h1><p>${size(open.kb)}${open.day === undefined ? '' : ` · Saved ${when(open.day)}`}</p></div></header>
-      <div class="qd-preview">${esc(open.preview).replace(/\n/g, '<br>')}</div>
+      <div class="qd-preview${open.kind === 'pdf' ? ' qd-doc' : ''}">${docHtml(open.preview)}</div>
       ${open.actions.length ? `<p class="qd-actions">${open.actions.map((a) => `<button class="qd-btn" data-nav="${esc(a.nav)}">${esc(a.label)}</button>`).join('')}</p>` : ''}
     </article>`;
   } else {

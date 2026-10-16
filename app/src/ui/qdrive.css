@@ -33,6 +33,8 @@
 .qd-open h1 { margin: 0 0 4px; font-size: 19px; overflow-wrap: anywhere; }
 .qd-open header p { margin: 0; font-size: 13px; color: var(--qm-dim); }
 .qd-preview { padding: 16px 18px; border: 1px solid var(--qm-line); border-radius: 10px; background: var(--qm-bg); font-size: 14.5px; line-height: 1.6; max-width: 65ch; overflow-wrap: anywhere; }
+.qd-doc { background: #fff; max-width: 70ch; padding: 28px 32px; font-size: 14px; line-height: 1.65; box-shadow: 0 1px 3px rgba(23, 26, 43, 0.06); }
+.qd-hd { display: inline-block; margin-top: 10px; font-size: 12px; letter-spacing: 0.08em; color: var(--qm-accent); }
 .qd-actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 18px 0 0; }
 .qd-btn { border: 0; background: var(--qm-accent); color: #fff; font-weight: 600; padding: 9px 20px; border-radius: 999px; font-size: 14px; }
 @media (max-width: 760px) {
@@ -41,5 +43,6 @@
   .qd-side { flex-direction: row; flex-wrap: wrap; gap: 6px; }
   .qd-side a { gap: 8px; }
   .qd-quota { flex-basis: 100%; margin-top: 4px; }
+  .qd-doc { padding: 18px 16px; }
   .qd-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
 }
