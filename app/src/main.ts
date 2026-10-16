@@ -257,6 +257,7 @@ document.addEventListener('click', (e) => {
   else if (d.devopts != null) store.toggleDevOptions(d.devopts);
   else if (d.devbug != null) { const [app, feat, key] = d.devbug.split('|'); store.devToggleBug(app, feat, key); }
   else if (d.act === 'book-back') store.bookBack();
+  else if (d.act === 'book-again') store.bookAgain();
   else if (d.act === 'send') store.toggleSend();
   else if (d.act === 'send-cancel') store.toggleSend(false);
   else if (d.act === 'receive') copyWalletAddress();

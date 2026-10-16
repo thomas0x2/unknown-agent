@@ -307,6 +307,8 @@ export class GameStore {
   // a new attempt clears the last attempt's notice, so a refusal never sticks to a date it wasn't about
   bookNext(name: string, email: string, date: number): void { delete this.state.bookingNotice; this.ui.book = { step: 2, name, email, date }; this.emit(); }
   bookBack(): void { delete this.state.bookingNotice; this.ui.book.step = 1; this.emit(); }
+  /** Leaves the confirmation for a fresh, empty form. */
+  bookAgain(): void { delete this.state.bookingNotice; this.ui.book = { step: 1, name: '', email: '', date: 0 }; this.emit(); }
   book(appId: string, time: string, party: number): void {
     const { name, email, date } = this.ui.book;
     const next = makeBooking(this.state, appId, name || 'You', email, date || this.state.values.day, time, party, this.content);

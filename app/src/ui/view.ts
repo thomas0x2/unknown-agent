@@ -743,10 +743,14 @@ function pageApp(store: GameStore, param?: string): string {
         <dd><span>Party</span>${booked.party}</dd></dl>`
     : '';
   // two steps, like the spec: who and when, then the time and party size
+  // once booked, the page shows only the confirmation, like a real site; another table is a click away
   const booking = a.template === 'restaurant' && a.features.some((f) => f.id === 'booking')
-    ? bk.step === 1
+    ? booked
+      ? `<div class="pv-book"><h1>Table booked</h1>${notice}${summary}
+        <p class="pv-sub"><a href="#" data-act="book-again">Book another table</a></p></div>`
+      : bk.step === 1
       ? `<form class="pv-book" data-form="book-next" data-app="${esc(a.id)}"><h1>Book a table</h1>
-        <p class="pv-sub">Step 1 of 2. You'll get a confirmation by email.</p>${notice}${summary}
+        <p class="pv-sub">Step 1 of 2. You'll get a confirmation by email.</p>${notice}
         <label>Name <input id="bk-name" value="${esc(bk.name || PLAYER.name)}"></label>
         <label>Email <input id="bk-email" value="${esc(bk.email || PLAYER.addr)}"></label>
         <fieldset class="bk-cal"><legend>Date</legend>${bookingCalendar(s.values.day, firstBookable, bk.date || s.values.day + 1)}</fieldset>
