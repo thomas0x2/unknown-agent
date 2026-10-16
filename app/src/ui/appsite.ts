@@ -431,7 +431,8 @@ function devRows(app: AppInstance, tmpl: AppTemplate | undefined): DevRow[] {
     // a wrong build with no named bug still gets a tag, so it can be seen and switched off
     const unnamed = [repo, liveF].some((f) => f && !f.correct && !f.variant);
     if (unnamed) present.add(UNNAMED_BUG);
-    const possible = [
+    // a feature nobody has built yet is just missing: no bugs to show or switch on until it's pushed
+    const possible = !repo && !liveF ? [] : [
       ...(unnamed || !def?.bugs?.length ? [{ key: UNNAMED_BUG, label: 'wrong (no named bug)' }] : []),
       ...(def?.bugs ?? []).map((b) => ({ key: b.id, label: b.deep ? `${b.id} (deep)` : b.id })),
       ...(def?.details?.length ? ['hallucinated', 'outdated'] : app.specParams[id] ? ['outdated'] : []).map((key) => ({ key, label: key })),
@@ -450,7 +451,8 @@ function devRows(app: AppInstance, tmpl: AppTemplate | undefined): DevRow[] {
 
 /** How many features currently have a bug (in the repo or live), for the repo list badge. */
 export function devBugCount(app: AppInstance, tmpl: AppTemplate | undefined): number {
-  return devRows(app, tmpl).filter((r) => r.repoNow !== 'ok' || (app.deployed && r.liveNow !== 'ok')).length;
+  const bad = (v: string) => v !== 'ok' && v !== 'missing';
+  return devRows(app, tmpl).filter((r) => bad(r.repoNow) || (app.deployed && bad(r.liveNow))).length;
 }
 
 const pill = (label: string, v: string) => `<span class="dvb-pill ${v === 'ok' ? 'ok' : v === 'not deployed' ? 'off' : 'bad'}"><i>${label}</i>${esc(v)}</span>`;
@@ -465,7 +467,7 @@ export function devBugPanel(app: AppInstance, tmpl: AppTemplate | undefined): st
         const off = p.live && !app.deployed;
         const tip = off ? 'Deploy first: breaks only happen on the live site' : r.present.has(p.key) ? 'Click to remove' : p.live ? 'Click to break the live site' : 'Click to add to the repo and live build';
         return `<button class="dvb-tag${r.present.has(p.key) ? ' on' : ''}" data-devbug="${esc(`${app.id}|${r.id}|${p.key}`)}" title="${tip}"${off ? ' disabled' : ''}>${esc(p.label)}</button>`;
-      }).join('') || '<i>none</i>'}</div>
+      }).join('') || (r.repoNow === 'missing' && r.liveNow !== 'ok' ? '<i>none until it\'s built</i>' : '<i>none</i>')}</div>
     </div>`).join('');
   return `<section class="dev-bugs"><div class="dvb-head"><span class="dvb-badge">DEV</span><b>Bugs in ${esc(app.id)}</b><span class="dvb-sum ${n ? 'bad' : 'ok'}">${n ? `${n} feature${n > 1 ? 's' : ''} with a bug` : 'no bugs'}</span><span class="dvb-hint">Click a bug to switch it on or off</span></div>${cards}</section>`;
 }

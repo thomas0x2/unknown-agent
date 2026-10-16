@@ -591,6 +591,8 @@ export function nameUnnamedBugs(s: GameState, content: Content): void {
 export function devToggleBug(s: GameState, appId: string, featureId: string, key: string): void {
   const app = getApp(s, appId);
   if (!app || !app.required.includes(featureId)) return;
+  // nothing to break before the agent has built it: an unbuilt feature is just missing
+  if (!app.repo.some((f) => f.id === featureId) && !app.features.some((f) => f.id === featureId)) return;
   if ((FAILURES as string[]).includes(key)) {
     if (!app.deployed) return;
     const had = app.breaks.some((b) => b.featureId === featureId && b.failure === key);
