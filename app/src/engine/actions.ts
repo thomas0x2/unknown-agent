@@ -9,7 +9,7 @@
 import type { GameState, AppInstance, BuiltFeature, AgentWork } from './state';
 import type { Content, GameEvent, Contact, Outcome, AppTemplate, ScriptedReply } from '../content/schema';
 import type { JevRouter, PostRating, RouteDecision, FeatureMatchInput } from './jev';
-import { Y as YCFG, FAMILY, APPS, AGENT_WORK, CLOCK } from './config';
+import { Y as YCFG, FAMILY, APPS, AGENT_WORK, CLOCK, MAX_INPUT_CHARS } from './config';
 import { clone, addValue, log, pick, rand, money, pushMail, sendLater, gameMinutes } from './core';
 import { applyEffects } from './effects';
 import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent';
@@ -29,6 +29,32 @@ export interface ReplyResult {
 }
 
 const PLAYER_ADDR = 'you@qmail.com';
+
+/** Over MAX_INPUT_CHARS: a scripted reply, with no Jev or Haiku call. */
+export function tooLong(text: string): boolean { return text.length > MAX_INPUT_CHARS; }
+const TOO_LONG_DEBUG = `Over ${MAX_INPUT_CHARS} characters: scripted reply, Jev and Haiku skipped`;
+/** What anyone you email says to a message over the cap. */
+export const TOO_LONG_MAIL = [
+  "I'm not reading all of that. If it matters, it fits in a few lines.",
+  "Got your email. All of it. Can you send the short version?",
+  "That's a lot of text. What do you actually need?",
+  "I scrolled for a while and gave up. Shorter, please.",
+];
+/** What the agent says to a prompt over the cap (it is still billed per word). */
+export const TOO_LONG_PROMPT = [
+  "That prompt is too long for me to work with. Send one request, in fewer words. This one has been billed.",
+  "I stopped reading partway through. Try again with just the part you need done.",
+  "Too much input. I've billed it, but I haven't done anything with it. Keep it short.",
+];
+
+/** The sender answers a message over the cap with a scripted line, if anyone there answers at all. */
+function tooLongReply(s: GameState, content: Content, addr: string, subject: string, ev?: GameEvent): string {
+  const c = contactFor(content, addr);
+  if (!c && !ev) return '';
+  const body = pick(s, TOO_LONG_MAIL);
+  sendLater(s, { folder: 'inbox', day: s.values.day, from: c?.name ?? ev?.from ?? addr, addr, subject, body, read: false }, replyAfter(content, addr, undefined, ev));
+  return body;
+}
 
 function stateSummary(s: GameState): string {
   return `Day ${s.values.day} (${dateFull(s.values.day)}). ${s.values.crypto} DOLR, ${s.values.followers} followers, model agent-${s.values.agentLevel}.`;
@@ -198,6 +224,12 @@ export async function replyToEvent(
   const delivery = s.delivered.find((d) => d.eventId === eventId && !d.answered);
   if (!ev || !delivery) return { state: s, decision: { kind: 'nothing' }, reply: '' };
   const addr = ev.site === 'qmail' && ev.addr ? ev.addr.toLowerCase() : '';
+  // a scripted answer to a wall of text: it doesn't count toward the daily limit, or bounce off it
+  if (tooLong(text)) {
+    if (ev.addr) pushMail(s, { folder: 'sent', day: s.values.day, from: 'You', addr: PLAYER_ADDR, to: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body: text, read: true });
+    const reply = ev.addr ? tooLongReply(s, content, ev.addr.toLowerCase(), `RE: ${ev.subject ?? ''}`, ev) : '';
+    return { state: s, decision: { kind: 'nothing' }, reply };
+  }
   if (addr && overDailyLimit(s, addr, delivery.seq ?? -1)) {
     bounce(s, addr, `RE: ${ev.subject ?? ''}`, text);
     return { state: s, decision: { kind: 'nothing' }, reply: '', bounced: true };
@@ -260,6 +292,12 @@ export async function composeEmail(
   const s = clone(s0);
   const addr = to.trim().toLowerCase();
   if (!addr) return { state: s, decision: { kind: 'nothing' }, reply: '', sent: false };
+  // a scripted answer to a wall of text: it doesn't count toward the daily limit, or bounce off it
+  if (tooLong(text)) {
+    pushMail(s, { folder: 'sent', day: s.values.day, from: 'You', addr: PLAYER_ADDR, to: addr, subject: subject || '(no subject)', body: text, read: true });
+    const ev = reachableByEmail(s, content, addr);
+    return { state: s, decision: { kind: 'nothing' }, reply: tooLongReply(s, content, addr, re(subject || ev?.subject || ''), ev), sent: true };
+  }
   if (overDailyLimit(s, addr)) {
     bounce(s, addr, subject, text);
     return { state: s, decision: { kind: 'nothing' }, reply: '', sent: true, bounced: true };
@@ -662,6 +700,8 @@ export async function promptAgent(
   writer: Writer = scriptedWriter,
   started?: string,
 ): Promise<AskResult> {
+  // a wall of text gets a scripted reply before any model sees it (still billed per word)
+  if (tooLong(text)) return askAgent(s0, text, writer, s0.values.agentLevel, { hints: TOO_LONG_PROMPT, hintSrc: 'too_long', debug: [TOO_LONG_DEBUG] });
   // a user app nobody hired the player for: asking the agent to build it takes the job
   const lead = started ? undefined : await agentStartFor(jev, s0, content, text);
   if (lead && s0.agentWork) return busyReply(s0, text);
