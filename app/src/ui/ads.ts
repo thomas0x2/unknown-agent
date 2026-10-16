@@ -253,6 +253,7 @@ const WHY: Record<string, string> = {
   coinbin: 'You were targeted because your balance is low enough to be interesting.',
   forkyard: 'You were targeted because you build things with an AI that bills you.',
   weightroom: 'You were targeted because you tried to avoid ads.',
+  doordish: 'You were targeted because you are hungry.',
   'spincycle-app': 'You were targeted because you are waiting for a washing machine.',
   'swaplist-app': 'You were targeted because you are selling your things.',
 };
