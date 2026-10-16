@@ -928,7 +928,7 @@ function pageAgent(store: GameStore): string {
     </header>
     <div class="ua-log" id="ua-log">${msgs}${workAt < 0 ? workHtml(s) : ''}${pending}${thinking}</div>
     <form class="ua-compose" data-form="prompt">
-      <textarea id="prompt-input" rows="2" placeholder="Ask agent anything — build an app, fix one, write, translate, look something up…" ${s.ending ? 'disabled' : ''}></textarea>
+      <textarea id="prompt-input" rows="2" placeholder="Ask agent anything" ${s.ending ? 'disabled' : ''}></textarea>
       <div class="ua-row"><span id="cost-est" class="ua-est"></span><button class="ua-send" type="submit" ${s.ending || store.busy ? 'disabled' : ''}>Send</button></div>
     </form>${devOptionsPanel(store, 'agent')}</div>`;
 }
