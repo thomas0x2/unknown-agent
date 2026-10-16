@@ -12,6 +12,7 @@ import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
 import { route, visitedFlag } from '../sites/registry';
 import { PULL_MS, pullLines } from './pull';
+import { DEEPSLEEP_LINES } from '../engine/deepsleep';
 
 /** A browser tab. back/fwd are the pages behind and ahead of it, like a real browser's history. */
 export interface Tab { id: number; url: string; back: string[]; fwd: string[] }
@@ -283,13 +284,4 @@ export function replyDelay(text: string, rnd = Math.random): number {
 const wait = (ms: number) => new Promise<void>((done) => setTimeout(done, Math.max(0, ms)));
 
 /** deepsleep-0.5B's whole repertoire: one confident, absurd sentence in Chinese, whatever you ask. */
-const DEEPSLEEP = [
-  '我的猫是银行经理。',
-  '今天的天气是一碗面条。',
-  '你的房租已经被鸽子吃掉了。',
-  '冰箱正在考虑辞职。',
-  '所有的答案都在洗衣机里。',
-  '明天是星期三，永远。',
-  '我已经把你的问题翻译成了土豆。',
-  '月亮欠我三块钱。',
-];
+const DEEPSLEEP = DEEPSLEEP_LINES.map((l) => l.zh);

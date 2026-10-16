@@ -16,6 +16,7 @@ import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent
 import { getEvent, activeDeliveries, reachableByEmail } from './events';
 import { buildApp, fixApp, fixBreak, fixCategories, keywordCategories, needsWork, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, type BuildReport } from './apps';
 import { type Writer, scriptedWriter } from './writer';
+import { deepsleepQuoted, translationReplies } from './deepsleep';
 
 export interface ReplyResult {
   state: GameState;
@@ -268,6 +269,8 @@ export interface AskResult { state: GameState; reply: string; charged: boolean; 
 export interface AskOpts {
   /** The scripted replies of the hint topic Jev matched (content/agent.json); one is sent instead of a roast. */
   hints?: string[];
+  /** How a scripted reply is labelled in the chat ('hint' unless set). */
+  hintSrc?: string;
   /** Scripted roasts for when Haiku can't write one. */
   roasts?: string[];
   /** How the prompt was routed, for dev mode. */
@@ -311,7 +314,7 @@ export async function askAgent(
     const lastReply = [...s.chat].reverse().find((m) => m.from === 'agent')?.text;
     const fresh = opts.hints.filter((h) => h !== lastReply);
     reply = pick(s, fresh.length ? fresh : opts.hints);
-    src = 'hint';
+    src = opts.hintSrc ?? 'hint';
   } else {
     const roasts = opts.roasts?.length ? opts.roasts : ROASTS;
     const w = await writer.write({ as: 'agent', prompt: text, fallback: pick(s, roasts) });
@@ -353,6 +356,11 @@ export async function promptAgent(
   text: string,
   writer: Writer = scriptedWriter,
 ): Promise<AskResult> {
+  // a deepsleep-0.5B line pasted in from the Terminal: the agent translates it (scripted, billed like any prompt)
+  const quoted = deepsleepQuoted(text);
+  if (quoted.length) {
+    return askAgent(s0, text, writer, s0.values.agentLevel, { hints: translationReplies(quoted), hintSrc: 'translation', debug: [`Quoted ${quoted.length} deepsleep-0.5B line(s): scripted translation`] });
+  }
   // apps with work left: a required feature missing or wrong in the repo, or broken on the live site
   const workable = s0.apps.filter((a) => !a.churned && a.required.some((id) => needsWork(a, id)));
   if (workable.length) {
