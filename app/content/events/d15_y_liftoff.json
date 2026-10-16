@@ -1,0 +1,11 @@
+{
+  "id": "d15_y_liftoff",
+  "site": "y",
+  "from": "Liftoff Daily",
+  "trigger": {
+    "dayMin": 15,
+    "dayMax": 15
+  },
+  "at": "16:10",
+  "body": "AI moderation is already better than any human team. Fewer mistakes, zero bias."
+}
