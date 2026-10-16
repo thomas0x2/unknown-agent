@@ -65,11 +65,27 @@ function keywordOutcome<T extends Pick<Outcome, 'keywords'>>(outcomes: T[], text
   return outcomes.find((o) => o.keywords?.some((k) => t.includes(` ${k.toLowerCase()} `)));
 }
 
-/** Jev picks nothing / a hint / one outcome, unless the reply names an outcome's keyword. */
+// Taking the job a lead posted, in any wording: "happy to help", "I can do that", "count me in".
+const JOB_ACCEPT = /\b(i'?m in|count me in|sign me up|on it|you'?re on|deal|hire me|i'?ll take (it|the job|this)|i accept|i'?m interested)\b/;
+const JOB_WILLING = /\b(i'?ll|i will|i can|i could|can i|could i|let me|happy to|glad to|keen to|love to|like to|want to|ready to|able to|i'?m up for|i'?m down to|we can|sure)\b/;
+const JOB_VERB = /\b(help|build|make|do|create|code|handle|take|set (it |this |that )?up|put together|work on|develop|write|design)\b/;
+const JOB_DECLINE = /\b(can'?t|cannot|won'?t|wouldn'?t|not (interested|able|available|going to)|no thanks|i'?ll pass|too busy|don'?t (want|have time))\b/;
+
+/** Whether a message offers to take on a lead's job; a decline or a bare question doesn't. */
+export function offersToTakeJob(text: string): boolean {
+  const t = text.toLowerCase().replace(/[’`]/g, "'");
+  if (JOB_DECLINE.test(t)) return false;
+  return JOB_ACCEPT.test(t) || (JOB_WILLING.test(t) && JOB_VERB.test(t));
+}
+
+/** Jev picks nothing / a hint / one outcome, unless the reply names an outcome's keyword or takes the job. */
 async function routeReply(jev: JevRouter, channel: GameEvent['site'], s: GameState, ev: GameEvent, text: string): Promise<RouteDecision> {
   const outcomes = ev.outcomes ?? [];
   const named = keywordOutcome(outcomes, text);
   if (named) return { kind: 'outcome', outcomeId: named.id };
+  // a lead's job is the outcome that starts an app: any reasonable offer to do it is the hit
+  const job = outcomes.find((o) => o.effects?.createApp);
+  if (job && offersToTakeJob(text)) return { kind: 'outcome', outcomeId: job.id };
   return jev.route({
     channel,
     text,

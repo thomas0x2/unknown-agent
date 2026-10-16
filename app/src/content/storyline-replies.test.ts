@@ -4,7 +4,7 @@
  */
 import { loadContent } from './load';
 import { startGame, endDay } from '../engine/day';
-import { replyToEvent, composeEmail, joinEmpire, EMPIRE } from '../engine/actions';
+import { replyToEvent, composeEmail, joinEmpire, EMPIRE, offersToTakeJob } from '../engine/actions';
 import { offlineJev } from '../engine/jev';
 import type { Writer } from '../engine/writer';
 import { clone, deliverPendingMail, tick } from '../engine/core';
@@ -158,4 +158,44 @@ describe('Max after the first email', () => {
     const r = await composeEmail(s, content, offlineJev, EMPIRE.addr, 'EMPIRE', noLlm, 'Re: Your daily EMPIRE');
     expect(r.reply).toContain('Commitment logged.');
   });
+});
+
+describe('job offers', () => {
+  const offers = [
+    'Happy to help you with the trading app.',
+    'I can do that.',
+    "I'd love to build it for you.",
+    'Count me in.',
+    "Sure, I'll take it on.",
+    'Let me make that for you',
+    'I could put together something like that',
+    "I'm in. When do you need it?",
+    'Can I help with the bot?',
+    'Deal.',
+  ];
+  const notOffers = [
+    "Sorry, I can't help with that.",
+    'How much does it pay?',
+    "I'm too busy to build it this week.",
+    'No thanks.',
+    'Nice post.',
+  ];
+  for (const text of offers) it(`"${text}" takes the job`, () => expect(offersToTakeJob(text)).toBe(true));
+  for (const text of notOffers) it(`"${text}" does not`, () => expect(offersToTakeJob(text)).toBe(false));
+
+  const leads: [string, number, string][] = [
+    ['trader@desk.test', 2, 'trader_contact'],
+    ['gino@trattoria.test', 1, 'restaurant_contact'],
+    ['viktor@mail.test', 3, 'viktor_contact'],
+    ['rep@closers.test', 6, 'outreach_contact'],
+  ];
+  for (const [addr, day, lead] of leads) {
+    it(`"Happy to help" lands the job for ${addr} with a scripted reply`, async () => {
+      let s = startGame(content, 3);
+      while (s.values.day < day) s = endDay(s, content);
+      const r = await composeEmail(s, content, offlineJev, addr, 'Happy to help with that, just say the word.', noLlm);
+      expect(r.decision.kind).toBe('outcome');
+      expect(r.state.apps.some((a) => a.clientEventId === lead)).toBe(true);
+    });
+  }
 });
