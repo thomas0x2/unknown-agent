@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer,
   startGame, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, localPrompt, makeBooking, cancelBooking, deliverDue, CLOCK, tick,
+  promptAgent, writeReview, localPrompt, makeBooking, cancelBooking, joinEmpire, deliverDue, CLOCK, tick,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -118,6 +118,7 @@ export class GameStore {
   deploy(appId: string): void { this.commitAndSettle(deploy(this.state, appId)); }
   takeDown(appId: string): void { this.commit(takeDown(this.state, appId)); }
   cancelBooking(id: string): void { this.commit(cancelBooking(this.state, id)); }
+  joinEmpire(): void { this.commitAndSettle(joinEmpire(this.state)); }
   book(appId: string, name: string, email: string, date: number, time: string, party: number): void {
     this.commitAndSettle(makeBooking(this.state, appId, name, email, date, time, party));
   }

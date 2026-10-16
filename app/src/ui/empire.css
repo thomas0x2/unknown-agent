@@ -1,0 +1,17 @@
+/* empire.alphaascend.biz: Max Stryker's sales page */
+.em { min-height: 100%; background: radial-gradient(circle at 20% 0%, #3b2a00, #0b0800 70%); color: #f4e6c0; font-family: var(--f-serif, Georgia, serif); padding: 0 16px 48px; }
+.em-top { display: flex; justify-content: space-between; align-items: center; max-width: 720px; margin: 0 auto; padding: 18px 0; color: #ffd76a; letter-spacing: .12em; font-size: 13px; }
+.em-top span { letter-spacing: 0; opacity: .7; }
+.em-hero { max-width: 720px; margin: 24px auto 0; text-align: center; }
+.em-kicker { text-transform: uppercase; letter-spacing: .2em; font-size: 12px; opacity: .7; margin: 0; }
+.em-hero h1 { font-size: clamp(48px, 10vw, 88px); margin: 8px 0; color: #ffd76a; letter-spacing: .06em; }
+.em-sub { font-size: 18px; margin: 0 0 20px; }
+.em-price { font-size: 22px; margin: 0 0 20px; }
+.em-price s { opacity: .5; margin-right: 8px; }
+.em-price b { color: #ffd76a; }
+.em-cta { font: inherit; font-weight: 700; font-size: 17px; padding: 14px 28px; border: 0; border-radius: 999px; background: linear-gradient(#ffe38a, #d79b00); color: #261800; cursor: pointer; text-transform: uppercase; letter-spacing: .06em; }
+.em-cta:disabled { opacity: .45; cursor: not-allowed; }
+.em-done { font-size: 18px; color: #ffd76a; }
+.em-list { max-width: 420px; margin: 36px auto 0; padding: 0; list-style: none; }
+.em-list li { padding: 10px 0; border-bottom: 1px solid rgba(255, 215, 106, .2); }
+.em-fine { max-width: 520px; margin: 24px auto 0; text-align: center; font-size: 12px; opacity: .6; }

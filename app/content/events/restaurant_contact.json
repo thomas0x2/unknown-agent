@@ -12,7 +12,7 @@
   "outcomes": [
     {
       "id": "offer",
-      "when": "the player offers to build the website for the restaurant",
+      "when": "the player offers to build, make or create the website for the restaurant",
       "effects": {
         "setFlags": [
           "restaurant_client"

@@ -12,7 +12,7 @@
   "outcomes": [
     {
       "id": "build",
-      "when": "the player offers to build the classifieds marketplace",
+      "when": "the player offers to build, make or create the classifieds marketplace",
       "effects": {
         "setFlags": [
           "swaplist_live"
