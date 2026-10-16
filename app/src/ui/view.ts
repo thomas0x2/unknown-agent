@@ -786,19 +786,24 @@ const EPITAPHS: Record<string, string> = {
   got_away: 'The rent got paid. Nobody asked how.',
   clean_modest: 'You kept the lights on. Nobody noticed. Yet.',
 };
+/** A Cinnamon-style dialog window: titlebar with the title and a close button, then the body. */
+function osWindow(title: string, cls: string, body: string, close?: string): string {
+  const x = close ? `<button class="ow-ctl ow-close" data-ov="${close}" title="Close" aria-label="Close"><svg viewBox="0 0 16 16"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg></button>` : '';
+  return `<div class="ov-card ${cls}" role="dialog" aria-label="${esc(title)}"><header class="ow-bar"><span class="ow-title">${esc(title)}</span>${x}</header><div class="ow-body">${body}</div></div>`;
+}
 export function overlayHtml(store: GameStore): string {
   const s = store.state;
   if (s.ending && !store.ui.confirm) {
-    return `<div class="ov-card ov-over"><p class="ov-eyebrow">The end</p><h1 class="ov-title">${esc(ENDINGS[s.ending] ?? s.ending)}</h1>
+    return osWindow('Session ended', 'ov-over', `<p class="ov-eyebrow">The end</p><h1 class="ov-title">${esc(ENDINGS[s.ending] ?? s.ending)}</h1>
       <p>${esc(EPITAPHS[s.ending] ?? 'The run is over.')} Day ${s.values.day}.</p>
-      <div class="ov-actions"><button class="btn primary" data-ov="new">Play again</button></div></div>`;
+      <div class="ov-actions"><button class="btn primary" data-ov="new">Play again</button></div>`);
   }
   if (store.ui.confirm) {
     const c = store.ui.confirm;
-    return `<div class="ov-card ov-small"><p>${esc(c.text)}</p><div class="ov-actions"><button class="btn primary" data-ov="confirm-yes">${esc(c.yes)}</button><button class="btn" data-ov="confirm-no">Cancel</button></div></div>`;
+    return osWindow('Confirm', 'ov-small ov-confirm', `<p>${esc(c.text)}</p><div class="ov-actions"><button class="btn" data-ov="confirm-no">Cancel</button><button class="btn primary" data-ov="confirm-yes">${esc(c.yes)}</button></div>`, 'confirm-no');
   }
   if (store.ui.intro) {
-    return `<div class="ov-card ov-intro"><p class="ov-eyebrow">Week one</p><h1 class="ov-title">Unknown<br>Agent</h1>
+    return osWindow('Welcome', 'ov-intro', `<p class="ov-eyebrow">Week one</p><h1 class="ov-title">Unknown Agent</h1>
       <p>You've just been automated out of a job. You have ${fmtMoney(s.values.crypto)}, a laptop, a handful of bookmarks, and agent — an AI chatbot that bills your wallet for every word.</p>
       <p>Rent is ${fmtMoney(RENT[7])}, due at the end of Day 7. Don't go broke.</p>
       <ul class="ov-rules">
@@ -806,14 +811,14 @@ export function overlayHtml(store: GameStore): string {
         <li>Read Y for leads. Check Qmail. Ship on Forkyard — and check what it ships.</li>
         <li>Anything you can do yourself, do yourself. Your time is free now.</li>
       </ul>
-      <div class="ov-actions"><button class="btn primary" data-ov="start">${s.values.day > 1 || s.chat.length > 1 ? `Continue Day ${s.values.day}` : 'Open the laptop'}</button></div></div>`;
+      <div class="ov-actions"><button class="btn primary" data-ov="start">${s.values.day > 1 || s.chat.length > 1 ? `Continue Day ${s.values.day}` : 'Open the laptop'}</button></div>`, 'start');
   }
   if (s.morning) {
     const m = s.morning;
-    return `<div class="ov-card ov-small ov-morning"><p class="ov-eyebrow">You slept. The bills didn't.</p><h2>Day ${m.day} · ${DAYS[(m.day - 1) % 7]}</h2>
+    return osWindow('Overnight summary', 'ov-small ov-morning', `<p class="ov-eyebrow">You slept. The bills didn't.</p><h2>Day ${m.day} · ${DAYS[(m.day - 1) % 7]}</h2>
       <table class="ov-lines">${m.lines.map(([l, v]) => (v == null ? `<tr class="note"><td colspan="2">${esc(l)}</td></tr>` : `<tr><td>${esc(l)}</td><td class="${v < 0 ? 'neg' : 'pos'}">${v >= 0 ? '+' : ''}${fmtMoney(v)}</td></tr>`)).join('')}
       <tr class="tot"><td>Balance</td><td>${fmtMoney(m.balance)}</td></tr></table>
-      <div class="ov-actions"><button class="btn primary" data-ov="morning">Get up</button></div></div>`;
+      <div class="ov-actions"><button class="btn primary" data-ov="morning">Get up</button></div>`, 'morning');
   }
   return '';
 }
