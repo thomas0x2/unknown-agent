@@ -200,9 +200,9 @@ async function buildMatch(sdk, body) {
     // each item is matched on its own: naming one part must not pull in the others on the same page
     const q = {
       // a fix has to say which part is wrong: naming the part, or a symptom only that part can have
-      component: `Does the prompt say this part of the app is wrong or broken? Yes if it names this part in any words ("the menu prices", "the date on the confirmation", "the P&L"), or describes something wrong that only this part can cause ("the prices are in CURO", "the email has the wrong day"), even loosely or with hedging. Players describe what they see, so read it as a player would mean it. No if it only says the feature this part belongs to is wrong without saying which part ("the menu is wrong", "fix the booking"), if it names a different part, or if it points at no part of the app ("it's broken", "fix it"). ${context}${named} Part: ${f.description}`,
+      component: `Does the prompt name the path to this exact part of the app and say it's wrong or broken? The part's path is given as "feature > folder > part" (for example "booking > confirmation > date"). Yes only if the prompt names, or nearly names, every step of the path in the prompt itself: the feature, each folder and the part ("the date on the booking confirmation" names booking > confirmation > date; "the menu prices" names menu > prices; "the bot filter" names filter > bots). Synonyms and close wording count ("the confirmation mail" for confirmation, "price" for prices); a step left out does not ("the date is wrong" skips booking and confirmation). Hedging is fine ("seems off"). Judge each complaint in the prompt on its own: a prompt can name several paths. No if a step is missing, if the complaint fits one of the other parts listed better, if the prompt only says the feature is wrong ("fix the booking"), or if it points at no part of the app ("it's broken"). When in doubt, say no. ${context}${named} Part: ${f.description}`,
       // the near-miss: the feature is named, the part isn't
-      area: `Does the prompt say something is wrong or broken with this feature without saying which of its parts? Yes for "the menu is wrong", "the booking doesn't work", "something's off with the portfolio". No if it names or describes one of the parts listed, if it's about a different feature, if it only asks to build, add or change the feature, or if it names no feature at all ("it's broken"). ${context}${named} Feature: ${f.description}`,
+      area: `Does the prompt say something is wrong with this feature or one of its parts, without naming the full path to a part? Yes for "the menu is wrong", "the booking doesn't work", or a part named without its feature or folder ("the date is wrong" about the booking confirmation). No if the prompt names a full path to one of the parts listed (the feature, each folder and the part), if it's about a different feature, if it only asks to build, add or change the feature, or if it names no feature or part at all ("it's broken"). ${context}${named} Feature: ${f.description}`,
       problem: `Does the prompt report this problem or a symptom of it, in any words? Yes if it names the problem or describes what the player sees, even loosely or with hedging. No if it describes a clearly different problem, or points at nothing the player saw ("it's broken", "fix it"). ${context}${named} Problem: ${f.description}`,
     }[f.kind];
     questions[`f${i}`] = sdk.noul(q ?? `Does the prompt ask to build or add this, or spell out what it should contain, without contradicting it? Say no if the prompt only reports a problem with it. ${context}${named} Item: ${f.description}`);
@@ -237,7 +237,9 @@ async function handle(kind, body) {
     // score is the expected rubric level, 0..4
     return { status: 200, json: { category: answers.category?.choice ?? 'tip', quality: (answers.quality?.score ?? 2) / 4 } };
   }
-  const features = (body.features ?? []).filter((f, i) => (answers[`f${i}`]?.noul ?? 0) >= 0.5).map((f) => f.id);
+  // a component counts only when Jev is fairly sure: a fix should touch what the player named and nothing near it
+  const bar = (f) => (f.kind === 'component' ? 0.75 : 0.5);
+  const features = (body.features ?? []).filter((f, i) => (answers[`f${i}`]?.noul ?? 0) >= bar(f)).map((f) => f.id);
   return { status: 200, json: features };
 }
 

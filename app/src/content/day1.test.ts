@@ -270,6 +270,8 @@ describe('day 1 playthrough', () => {
     let s = (await composeEmail(startAll(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
     s.values.agentLevel = 5;
     s.chat.push({ from: 'you', text: `Gino sells ${MENU}, all in DOLR.`, day: s.values.day });
+    // word overlap would read this as starting Spin Cycle too, and a prompt only ever touches one app
+    s.fired.push(...content.events.filter((e) => e.agentStart).map((e) => e.id));
     s = (await promptDone(s, content, wordJev, 'Build the menu page for Trattoria Gino.')).state;
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')).toMatchObject({ correct: true });
   });

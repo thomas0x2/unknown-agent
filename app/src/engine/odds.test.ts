@@ -65,3 +65,11 @@ describe('overnight breaks', () => {
     }
   });
 });
+
+describe('component paths', () => {
+  it('name every step from the feature down to the component', async () => {
+    const { componentPath } = await import('./apps');
+    expect(componentPath('booking', 'confirmation/date')).toBe('booking > confirmation > date');
+    expect(componentPath('auto_buy', 'order/once')).toBe('auto buy > order > once');
+  });
+});

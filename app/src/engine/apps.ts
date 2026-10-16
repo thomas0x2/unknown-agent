@@ -205,7 +205,8 @@ function attempt(s: GameState, app: AppInstance, id: string, level: number, ctx:
       // spelling the details out again fixes it, including the checklist items tied to this bug (the prices)
       const spelled = !!bug?.orDetails && details.length > 0 && hasDetails
         && (def?.checklist ?? []).filter((c) => c.bug === v).every((c) => specChecklist(app, def, said!)?.[c.id]);
-      return v === 'outdated' ? hasDetails || (def ? promptHasChange(said!, detailValues(existing.params, def, true), detailValues(spec, def, true)) : false)
+      // Jev judged the prompt spells out the change; the details or the change itself in the text count too
+      return v === 'outdated' ? (ctx.named ?? []).includes('outdated') || hasDetails || (def ? promptHasChange(said!, detailValues(existing.params, def, true), detailValues(spec, def, true)) : false)
         : (ctx.named ?? []).includes(v) || spelled;
     };
     const all = bugsOf(existing);
@@ -305,6 +306,9 @@ export interface FixCategory { id: string; description: string; kind: 'build' | 
 /** The feature as a player would name it: 'auto_buy' is the auto buy. */
 export const featureName = (fid: string) => fid.replaceAll('_', ' ');
 
+/** A component's path as a player names it, step by step: 'booking/confirmation/date' is "booking > confirmation > date". */
+export const componentPath = (fid: string, cid: string) => [fid, ...cid.split('/')].map(featureName).join(' > ');
+
 /** The components that can hold bugs: the ones a fix prompt can name. */
 export const fixableComponents = (def: FeatureDef | undefined): ComponentDef[] => (def?.components ?? []).filter((c) => c.bugs?.length);
 
@@ -333,20 +337,22 @@ export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, f
   const built = app.repo.find((f) => f.id === featureId);
   if (built && !built.correct && bugsOf(built).includes('outdated')) {
     const now = detailValues(app.specParams[featureId], def, true).join('; ');
-    out.push({ id: 'outdated', description: `Change ${def.description} to the client's new version${now ? ` (${now})` : ''}. Naming any part of the change counts: swapping, adding, removing or repricing items.`, kind: 'build' });
+    out.push({ id: 'outdated', description: `Change ${def.description} to the client's new version${now ? ` (${now})` : ''}. The prompt has to say what exactly changes: which items are swapped, added or removed, or which prices change and to what ("swap Diavola for Quattro Formaggi at 15"). Asking to update it without saying what changes ("update the menu items and prices") doesn't count.`, kind: 'build' });
   }
   // a fix has to say which part is wrong: one item per component, described by what can go wrong in it
   const spec = app.specParams[featureId];
   const comps = fixableComponents(def);
   for (const c of comps) {
     const can = (c.bugs ?? []).map((id) => def.bugs?.find((b) => b.id === id)).filter((b): b is BugDef => !!b).map((b) => fillSpec(b.when, spec));
-    out.push({ id: `c:${c.id}`, description: `${c.label}, a part of the ${featureName(featureId)} (${def.description}).${can.length ? ` What can go wrong with it: ${can.join(' ')}` : ''}`, kind: 'component' });
+    // the other parts are listed too, so a complaint about one of them isn't read as one about this
+    const others = comps.filter((o) => o !== c).map((o) => o.label);
+    out.push({ id: `c:${c.id}`, description: `Path: ${componentPath(featureId, c.id)}. ${c.label}, a part of the ${featureName(featureId)} (${def.description}).${can.length ? ` What can go wrong with it: ${can.join(' ')}` : ''}${others.length ? ` Other parts of the ${featureName(featureId)}, which are not this one: ${others.join('; ')}.` : ''}`, kind: 'component' });
   }
   // bugs no component claims are still matched on their own
   const claimed = new Set(comps.flatMap((c) => c.bugs ?? []));
   for (const b of def.bugs ?? []) if (!claimed.has(b.id)) out.push({ id: b.id, description: fillSpec(b.when, spec), kind: 'problem' });
   // the feature as a whole, for a prompt that says it's wrong without saying which part
-  if (built && comps.length) out.push({ id: 'area', description: `The ${featureName(featureId)} (${def.description}). Its parts: ${comps.map((c) => c.label).join('; ')}.`, kind: 'area' });
+  if (built && comps.length) out.push({ id: 'area', description: `The ${featureName(featureId)} (${def.description}). Its parts, by path: ${comps.map((c) => `${componentPath(featureId, c.id)} (${c.label})`).join('; ')}.`, kind: 'area' });
   const brk = app.breaks.find((b) => b.featureId === featureId);
   const cat = brk && BREAK_CATEGORIES[brk.failure];
   if (brk && cat) out.push({ id: brk.failure, description: cat.replaceAll('{{feature}}', featureId), kind: 'problem' });

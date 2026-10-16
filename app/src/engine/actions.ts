@@ -530,6 +530,28 @@ export function appStatus(app: AppInstance): string {
 /** The near-miss line for a feature without its own: the fix prompt named the feature but not which part. */
 const NEAR_MISS = "I looked at the {{feature}} and couldn't find the problem. Which part of it is wrong?";
 
+/** What the agent says when it can't tell which app a prompt is about. */
+const WHICH_APP = 'Which app is this for? Say its name and I\'ll make the change.';
+
+/**
+ * The one app a prompt is about, when Jev's matches span several: Jev picks among them, reading the
+ * prompt and the chat before it. Returns '' when the matches are all on one app (or none), null when
+ * Jev can't tell which.
+ */
+async function oneApp(jev: JevRouter, s: GameState, text: string, context: string[], found: string[]): Promise<string | null> {
+  const ids = [...new Set(found.map((m) => m.split('::')[0]))];
+  if (ids.length < 2) return '';
+  const decision = await jev.route({
+    channel: 'agent', text, context, stateSummary: stateSummary(s), hints: [], strict: true,
+    candidates: ids.map((id) => getApp(s, id)!).map((a) => ({
+      id: a.id,
+      when: `The prompt is about ${a.name} (${a.url}): it names this app (its name, part of the name, or what it is, like "the crawler" or "the restaurant site"), or names no app and the most recent earlier message was about this one.`,
+    })),
+  });
+  const id = decision.kind === 'outcome' ? decision.outcomeId : '';
+  return ids.includes(id) ? id : null;
+}
+
 /** What the agent says when a prompt asked for features and fixes at once: it only did the features. */
 const SKIPPED_FIXES = "I only did the feature work. There wasn't enough context to fix things in the same prompt, so ask for the fixes separately.";
 
@@ -618,7 +640,7 @@ async function buildIntent(jev: JevRouter, s: GameState, text: string, context: 
 }
 
 /** Agent hints the engine picks itself from the state, after Jev says which app the player means. */
-const APP_HINTS = new Set(['not_deployed', 'nothing_to_fix']);
+const APP_HINTS = new Set(['not_deployed', 'nothing_to_fix', 'update_help']);
 
 /**
  * The single front door to the agent: always free text. Jev decides whether the prompt is about
@@ -674,6 +696,13 @@ export async function promptAgent(
       jev.matchFeatures({ prompt: text, context: chat, features: cats, appNamed: !started }),
       started ? 'feature' : buildIntent(jev, s0, text, chat),
     ]);
+    // one prompt only ever touches one app: when Jev's matches span several, Jev picks the one the player means
+    const app = started ?? await oneApp(jev, s0, text, chat, found);
+    if (app === null) {
+      const lines = content.agent?.hints.find((h) => h.id === 'which_app')?.replies;
+      return askAgent(s0, text, writer, s0.values.agentLevel, { hints: lines?.length ? lines : [WHICH_APP], debug: ['Jev: matches on several apps and could not tell which one the prompt means'] });
+    }
+    if (app) found.splice(0, found.length, ...found.filter((m) => m.startsWith(`${app}::`)));
     // naming the feature without the part that's wrong is a near-miss, and counts only when nothing more precise matched
     const precise = found.filter((m) => !m.endsWith('::area'));
     const nearMiss = precise.length ? [] : found.filter((m) => m.endsWith('::area'));
@@ -768,7 +797,9 @@ export async function promptAgent(
       debug.push(`Jev: a question about ${asked.name}, so its status from the repo`);
     } else if (app) {
       // what to say depends on the app: work left, a push waiting to be deployed, or nothing to do
-      const hid = app.required.some((f) => needsWork(app, f)) ? 'fix_help' : app.deployedVersion < app.repoVersion ? 'not_deployed' : 'nothing_to_fix';
+      // a client change waiting to be made: ask what changed, not what's broken
+      const outdated = app.repo.some((f) => app.required.includes(f.id) && bugsOf(f).includes('outdated'));
+      const hid = outdated ? 'update_help' : app.required.some((f) => needsWork(app, f)) ? 'fix_help' : app.deployedVersion < app.repoVersion ? 'not_deployed' : 'nothing_to_fix';
       hints = agent?.hints.find((h) => h.id === hid)?.replies.map((r) => r.replaceAll('{{app}}', app.name));
       debug.push(`Jev: names ${app.name} but matched nothing to build, so "${hid}"`);
     } else {
