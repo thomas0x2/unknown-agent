@@ -558,10 +558,11 @@ export async function promptAgent(
     }
     const context = recentPrompts(s0);
     const chat = recentChat(s0);
-    // Jev decides both what is asked for and whether the player said which app it's for, and
+    // Jev decides both what is asked for and, when there's more than one app it could be, whether the
+    // player said which app it's for; and
     // whether the prompt is feature work, a fix, or both (a first build is always feature work)
     const [found, intent] = await Promise.all([
-      jev.matchFeatures({ prompt: text, context: chat, features: cats, appNamed: !started }),
+      jev.matchFeatures({ prompt: text, context: chat, features: cats, appNamed: !started && workable.length > 1 }),
       started ? 'feature' : buildIntent(jev, s0, text, chat),
     ]);
     const matched = new Set(found);
