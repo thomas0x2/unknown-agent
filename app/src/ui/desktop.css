@@ -169,3 +169,11 @@
 .btn:focus-visible, .ow-ctl:focus-visible { outline: 2px solid var(--dk-accent); outline-offset: 2px; }
 .dm-note.dm-err { margin-top: 0; color: #ff8a80; }
 .ov-dim { color: var(--muted, #777); font-size: 13px; }
+
+/* out-of-memory dialog: a System Monitor style readout */
+.mem-panel { display: grid; gap: 8px; padding: 10px 12px; background: var(--dk-panel); border: 1px solid var(--dk-line); border-radius: 4px; font-size: 12.5px; }
+.mem-bar { display: grid; grid-template-columns: 56px minmax(0, 1fr); align-items: center; column-gap: 10px; row-gap: 2px; }
+.mem-bar span { color: var(--dk-dim); }
+.mem-track { height: 8px; background: var(--dk-line); border-radius: 4px; overflow: hidden; }
+.mem-track i { display: block; height: 100%; background: var(--alarm); }
+.mem-bar b { grid-column: 2; font-weight: 400; font-size: 11.5px; color: var(--dk-dim); font-variant-numeric: tabular-nums; }

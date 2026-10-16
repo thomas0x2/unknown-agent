@@ -931,6 +931,13 @@ const EPITAPHS: Record<string, string> = {
   got_away: 'The rent got paid. Nobody asked how.',
   clean_modest: 'You kept the lights on. Nobody noticed. Yet.',
 };
+/** The memory panel in the out-of-memory dialog: RAM and swap bars, System Monitor style. */
+function memoryHtml(): string {
+  const bar = (label: string, used: string, pct: number) =>
+    `<div class="mem-bar"><span>${label}</span><div class="mem-track"><i style="width:${pct}%"></i></div><b>${used}</b></div>`;
+  return `<div class="mem-panel">${bar('Memory', '7.9 of 8.0 GB · 99%', 99)}${bar('Swap', '2.0 of 2.0 GB · 100%', 100)}</div>`;
+}
+
 /** A Cinnamon-style dialog window: titlebar with the title and a close button, then the body. */
 function osWindow(title: string, cls: string, body: string, close?: string): string {
   const x = close ? `<button class="ow-ctl ow-close" data-ov="${close}" title="Close" aria-label="Close"><svg viewBox="0 0 16 16"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg></button>` : '';
@@ -951,6 +958,11 @@ export function overlayHtml(store: GameStore): string {
     const c = store.ui.confirm;
     return osWindow('Confirm', 'ov-small ov-confirm', `<p>${esc(c.text)}</p><div class="ov-actions"><button class="btn" data-ov="confirm-no">Cancel</button><button class="btn primary" data-ov="confirm-yes">${esc(c.yes)}</button></div>`, 'confirm-no');
   }
+  if (store.ui.memWarn) {
+    return osWindow('Out of memory', 'ov-small ov-memwarn', `<p>Your system is running out of memory. Close some tabs before opening a new one.</p>
+      ${memoryHtml()}
+      <div class="ov-actions"><button class="btn primary" data-ov="mem-ok">OK</button></div>`, 'mem-ok');
+  }
   if (store.ui.intro) {
     return osWindow('Welcome', 'ov-intro', `<p class="ov-eyebrow">Week one</p><h1 class="ov-title">Unknown Agent</h1>
       <p>You've just been automated out of a job. You have ${fmtMoney(s.values.crypto)}, a laptop, a handful of bookmarks, and agent — an AI chatbot that bills your wallet for every word.</p>
@@ -968,6 +980,10 @@ export function overlayHtml(store: GameStore): string {
       <table class="ov-lines">${m.lines.map(([l, v]) => (v == null ? `<tr class="note"><td colspan="2">${esc(l)}</td></tr>` : `<tr><td>${esc(l)}</td><td class="${v < 0 ? 'neg' : 'pos'}">${v >= 0 ? '+' : ''}${fmtMoney(v)}</td></tr>`)).join('')}
       <tr class="tot"><td>Balance</td><td>${fmtMoney(m.balance)}</td></tr></table>
       <div class="ov-actions"><button class="btn primary" data-ov="morning">Get up</button></div>`, 'morning');
+  }
+  if (store.ui.dayStart) {
+    return osWindow('New day', 'ov-small ov-daystart', `<h2>${dateFull(s.values.day)}</h2><p>Ready to start?</p>
+      <div class="ov-actions"><button class="btn primary" data-ov="day-start">Start</button></div>`, 'day-start');
   }
   return '';
 }

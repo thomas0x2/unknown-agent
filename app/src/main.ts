@@ -276,6 +276,8 @@ function onOverlay(a: string): void {
   if (a === 'new') { forgetDrafts(); store.newGame(); }
   else if (a === 'start') store.seenIntro();
   else if (a === 'morning') store.dismissMorning();
+  else if (a === 'day-start') store.startDay();
+  else if (a === 'mem-ok') store.dismissMemWarn();
   else if (a === 'confirm-yes') store.resolveConfirm(true);
   else if (a === 'confirm-no') store.resolveConfirm(false);
   else if (a === 'jev-ok') {

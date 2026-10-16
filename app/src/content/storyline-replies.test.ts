@@ -5,6 +5,7 @@
 import { loadContent } from './load';
 import { startGame, endDay } from '../engine/day';
 import { replyToEvent, composeEmail, joinEmpire, EMPIRE } from '../engine/actions';
+import type { JevRouter, RouteInput } from '../engine/jev';
 import type { Writer } from '../engine/writer';
 import { clone, deliverPendingMail, tick } from '../engine/core';
 import type { GameState } from '../engine/state';
@@ -158,4 +159,32 @@ describe('Max after the first email', () => {
     const r = await composeEmail(s, content, pickJev({ route: ['empire'] }), EMPIRE.addr, 'EMPIRE', noLlm, 'Re: Your daily EMPIRE');
     expect(r.reply).toContain('Commitment logged.');
   });
+});
+
+describe('job offers', () => {
+  const leads: [string, number, string][] = [
+    ['trader@desk.test', 2, 'trader_contact'],
+    ['gino@trattoria.test', 1, 'restaurant_contact'],
+    ['viktor@mail.test', 3, 'viktor_contact'],
+    ['rep@closers.test', 6, 'outreach_contact'],
+  ];
+  const at = (day: number) => { let s = startGame(content, 3); while (s.values.day < day) s = endDay(s, content); return s; };
+  const jobOutcome = (lead: string) => content.events.find((e) => e.id === lead)!.outcomes!.find((o) => o.effects?.createApp)!;
+
+  for (const [addr, day, lead] of leads) {
+    it(`Jev decides an offer to ${addr}, and is told any wording of taking the job counts`, async () => {
+      const seen: RouteInput[] = [];
+      const judge = (hit: boolean): JevRouter => ({
+        ...wordJev,
+        route: async (input) => { seen.push(input); return hit ? { kind: 'outcome', outcomeId: jobOutcome(lead).id } : { kind: 'nothing' }; },
+      });
+      const text = 'Happy to help you with that.';
+      const yes = await composeEmail(at(day), content, judge(true), addr, text, noLlm);
+      expect(yes.state.apps.some((a) => a.clientEventId === lead)).toBe(true);
+      const no = await composeEmail(at(day), content, judge(false), addr, text);
+      expect(no.state.apps.some((a) => a.clientEventId === lead)).toBe(false);
+      expect(seen[0].text).toBe(text);
+      expect(seen[0].candidates.find((c) => c.id === jobOutcome(lead).id)?.when).toMatch(/help with.*any wording/);
+    });
+  }
 });
