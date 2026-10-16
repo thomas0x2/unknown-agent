@@ -10,7 +10,7 @@ import { newGame, startDayChat } from './state';
 import { clone, addValue, money, log } from './core';
 import { runPayday, nightlyBreaks } from './apps';
 import { deliverComplaints } from './complaints';
-import { deliverDue } from './events';
+import { deliverDue, lapseUnanswered } from './events';
 import { rolloutAgent, deductSubscription, agentCost } from './agent';
 import { checkGuardEndings, checkFinale, isLastNight } from './endings';
 
@@ -84,6 +84,7 @@ export function endDay(state: GameState, content: Content): GameState {
     if (s.values.crypto >= host) { money(s, -host, 'Forkyard · hosting'); lines.push([`Hosting (${live} live)`, -host]); }
   }
 
+  lapseUnanswered(s, content);
   applyNightSuspicion(s);
   s.ending = checkGuardEndings(s);
   if (!s.ending && isLastNight(s)) s.ending = checkFinale(s);
