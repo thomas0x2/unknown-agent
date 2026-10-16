@@ -21,6 +21,7 @@
     },
     {
       "id": "ask",
+      "replyAfter": 240,
       "when": "the player asks dad about his work or the warehouse",
       "effects": {
         "add": {

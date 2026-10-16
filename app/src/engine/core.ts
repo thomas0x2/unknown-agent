@@ -2,7 +2,7 @@
  * Low-level helpers the engine steps share. Convention: public engine functions clone the state
  * once (`clone`), then use these mutators on the copy, then return it. Callers never see mutation.
  */
-import type { GameState } from './state';
+import type { GameState, MailEntry } from './state';
 import { type MeterId, clampMeter } from './values';
 import { nextRandom } from './rng';
 import { CLOCK } from './config';
@@ -51,6 +51,33 @@ export function money(s: GameState, amount: number, memo: string): void {
 // ── clock ──
 export function tick(s: GameState, _kind?: string): void {
   s.clockMin += CLOCK.perAction; // every action is half an hour
+  deliverPendingMail(s);
+}
+
+// ── mail ──
+export function pushMail(s: GameState, m: Omit<MailEntry, 'id' | 'seq'>): MailEntry {
+  const seq = s.nextId++;
+  const entry: MailEntry = { id: `mail${seq}`, seq, ...m };
+  s.mail.push(entry);
+  return entry;
+}
+
+/** Game time in minutes since day 1 began, so a delay can run past midnight into the next morning. */
+export const gameMinutes = (s: GameState) => (s.values.day - 1) * 24 * 60 + s.clockMin;
+
+/** A reply that arrives `delayMin` of game time from now: with half-hour actions, 30 means after the next action. */
+export function sendLater(s: GameState, m: Omit<MailEntry, 'id' | 'seq'>, delayMin: number): void {
+  (s.pendingMail ??= []).push({ at: gameMinutes(s) + delayMin, mail: m });
+}
+
+/** Move the replies whose time has come into the inbox, dated the day they arrive. */
+export function deliverPendingMail(s: GameState): void {
+  if (!s.pendingMail?.length) return;
+  const now = gameMinutes(s);
+  const due = s.pendingMail.filter((p) => p.at <= now).sort((a, b) => a.at - b.at);
+  if (!due.length) return;
+  s.pendingMail = s.pendingMail.filter((p) => p.at > now);
+  for (const p of due) pushMail(s, { ...p.mail, day: s.values.day });
 }
 
 // ── log ──

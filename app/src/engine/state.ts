@@ -135,6 +135,9 @@ export interface ChatMsg {
   level?: number;
 }
 
+/** A reply that hasn't arrived yet. `at` is game time in minutes since day 1 began (see core.gameMinutes). */
+export interface PendingMail { at: number; mail: Omit<MailEntry, 'id' | 'seq'> }
+
 /** One email in Qmail: story events, generated replies, app mail and what the player sent. */
 export interface MailEntry {
   id: string;
@@ -237,6 +240,8 @@ export interface GameState {
   chat: ChatMsg[];
   nextAppNum: number;
   mail: MailEntry[];
+  /** Replies on their way: each lands in the inbox once the clock reaches `at` (see core.sendLater). */
+  pendingMail: PendingMail[];
   yExtra: YExtra[];
   reviews: YowlReview[];
   bookings: Booking[];
@@ -317,6 +322,7 @@ export function newGame(seed = makeSeed()): GameState {
     chat: [{ from: 'agent', text: "Welcome to agent, the AI that replaced you. I build and fix software, write, translate and answer questions. Every prompt is billed to your Satchel wallet: a flat fee plus a little per word you send, so choose your words like they cost money. They do.", day: 1 }],
     nextAppNum: 1,
     mail: [],
+    pendingMail: [],
     yExtra: [],
     reviews: [],
     bookings: [],
