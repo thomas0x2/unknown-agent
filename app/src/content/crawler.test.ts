@@ -6,7 +6,7 @@
 import { describe, it, expect } from 'vitest';
 import { loadContent } from './load';
 import { startGame } from '../engine/day';
-import { promptAgent } from '../engine/actions';
+import { promptAgent, postToY, writeReview } from '../engine/actions';
 import { applyEffects } from '../engine/effects';
 import { getApp, nameUnnamedBugs, bugsOf } from '../engine/apps';
 import { offlineJev } from '../engine/jev';
@@ -43,12 +43,12 @@ describe('stock posts on Y', () => {
 describe('sentiment crawler', () => {
   const posts = marketPosts(onDay(2), content);
 
-  it('built right: today, $-tagged, no bots, sarcasm read as bearish, real top posts', () => {
+  it('built right: today, $-tagged, no bots, sarcasm read as bearish, every counted post', () => {
     const r = crawl(posts, 2, bugs());
     expect(row(r, 'GAI')).toMatchObject({ count: 3, bullish: 67, bearish: 33, neutral: 0 });
     expect(row(r, 'VANT')).toMatchObject({ count: 4, bullish: 50, neutral: 25, bearish: 25 });
     expect(r.map((x) => x.ticker)).toEqual(['GAI', 'VANT']);
-    expect(row(r, 'VANT').top[0].handle).toBe('brentk_capital');
+    expect(row(r, 'VANT').posts[0].handle).toBe('brentk_capital');
   });
 
   it('each bug shows up in the numbers', () => {
@@ -57,8 +57,6 @@ describe('sentiment crawler', () => {
     expect(row(crawl(posts, 2, bugs('inverted')), 'GAI')).toMatchObject({ bullish: 33, bearish: 67 });
     expect(row(crawl(posts, 2, bugs('lowercase_missed')), 'GAI').count).toBe(2);
     expect(crawl(posts, 2, bugs('wrong_tickers')).map((r) => r.ticker)).toContain('VNTR');
-    const handles = new Set(posts.map((p) => p.handle));
-    expect(row(crawl(posts, 2, bugs('hallucinated_posts')), 'GAI').top.every((p) => !handles.has(p.handle))).toBe(true);
   });
 
   it('lists every crawled post with the mood it read, bugs included', () => {
@@ -80,9 +78,26 @@ describe('sentiment crawler', () => {
     expect(autoBuys(all, 6, bugs('impostor_buy')).map((b) => [b.ticker, b.post.handle])).toContainEqual(['VANT', 'randa11_crane']);
     expect(autoBuys(all, 6, bugs('repeat_buys')).length).toBeGreaterThan(1);
     expect(portfolio(ok, 6, bugs()).holdings.find((h) => h.ticker === 'GAI')!.shares).toBeGreaterThan(START_PORTFOLIO.holdings.GAI);
-    expect(portfolio(ok, 6, bugs('stale_after_buy')).holdings.find((h) => h.ticker === 'GAI')!.shares).toBe(START_PORTFOLIO.holdings.GAI);
-    expect(portfolio(ok, 6, bugs('change_wrong')).change).not.toBeCloseTo(portfolio(ok, 6, bugs()).change);
-    expect(portfolio(ok, 6, bugs('wrong_totals')).total).toBeGreaterThan(portfolio(ok, 6, bugs()).total);
+  });
+
+  it('each portfolio bug is off by enough to see at a glance', () => {
+    const all = marketPosts(onDay(6), content);
+    const buys = autoBuys(all, 6, bugs());
+    const ok = portfolio(buys, 6, bugs());
+    const sum = ok.holdings.reduce((a, h) => a + h.value, 0) + ok.cash;
+    expect(ok.total).toBeCloseTo(sum);
+    expect(ok.change).toBeCloseTo(ok.holdings.reduce((a, h) => a + h.dayPnl, 0));
+    for (const h of ok.holdings) expect(Math.sign(h.dayPnl)).toBe(Math.sign(h.move));
+    // the total is smaller than a single holding
+    expect(portfolio(buys, 6, bugs('wrong_totals')).total).toBeLessThan(Math.max(...ok.holdings.map((h) => h.value)));
+    // a value smaller than the share count
+    for (const h of portfolio(buys, 6, bugs('value_wrong')).holdings) expect(h.value).toBeLessThan(h.shares * 5);
+    // a rising stock with a loss
+    for (const h of portfolio(buys, 6, bugs('pnl_sign')).holdings) expect(Math.sign(h.dayPnl)).toBe(-Math.sign(h.move));
+    expect(portfolio(buys, 6, bugs('cash_wrong')).cash).toBeLessThan(0);
+    // a few dollars' move on a $140 stock shown as a double-digit percentage
+    for (const h of portfolio(buys, 6, bugs('pct_wrong')).holdings) expect(Math.abs(h.movePct)).toBeGreaterThan(0.1);
+    for (const h of ok.holdings) expect(Math.abs(h.movePct)).toBeLessThan(0.1);
   });
 });
 
@@ -93,6 +108,19 @@ describe('Spin Cycle Status', () => {
     expect(machineFeed(2)).toHaveLength(8);
     expect(machineFeed(5)).toHaveLength(12);
     for (let d = 1; d <= 21; d++) for (const m of steps(7 * 60)) expect(machineFeed(d, m).find((x) => x.id === 3)!.st).toBe(3);
+  });
+
+  it('done-as-free and broken-as-free can always be caught: a done and an out-of-order machine on page one, all day', () => {
+    for (let d = 1; d <= 21; d++) {
+      for (const m of steps(7 * 60)) {
+        const first = machineFeed(d, m).slice(0, 6);
+        expect(first.some((x) => x.st === 2), `day ${d} ${m}`).toBe(true);
+        expect(first.some((x) => x.st === 3)).toBe(true);
+        const shown = (b: string) => machineRows(d, bugs(b), { showMinutes: true, twelve: true }, m);
+        expect(shown('done_as_free').length).toBe(machineFeed(d, m).length);
+        expect(machineRows(d, bugs(), { showMinutes: true, twelve: true }, m).some((r) => r.status === 'done')).toBe(true);
+      }
+    }
   });
 
   it('changes with every half hour, the same way every time', () => {
@@ -143,7 +171,7 @@ describe('Spin Cycle Status', () => {
     expect(rows(2, 'six_of_eight')).toHaveLength(6);
     expect(rows(2, 'broken_as_free').find((m) => m.id === 3)!.status).toBe('free');
     expect(rows(2, 'done_as_free').some((m) => m.status === 'done')).toBe(false);
-    expect(rows(2, 'fetch_all_free').every((m) => m.status === 'free')).toBe(true);
+    expect(rows(2, 'fetch_failed').every((m) => m.status === 'free')).toBe(true);
     const running = ok.find((m) => m.status === 'running')!;
     const t = machineFeed(2, at).find((m) => m.id === running.id)!.t;
     expect(running.minutes).toBe(Math.ceil(t / 60));
@@ -151,6 +179,24 @@ describe('Spin Cycle Status', () => {
     expect(rows(5, 'still_eight')).toHaveLength(8);
     expect(rows(5)).toHaveLength(12);
     expect(rows(5, 'new_always_free').filter((m) => m.id > 8).every((m) => m.status === 'free')).toBe(true);
+  });
+
+  it('one post about the live app on Y and one on Yowl each bring users, once per platform', async () => {
+    const { s, id } = appFor('laundromat_contact', 3);
+    const app = getApp(s, id)!;
+    app.deployed = true;
+    s.values.followers = 400;
+    const before = app.users!;
+    let st = (await postToY(s, offlineJev, 'Built Spin Cycle Status so you can see which machines are free.', [])).state;
+    const afterY = getApp(st, id)!.users!;
+    expect(afterY).toBe(before + Math.round(st.values.followers * 0.15));
+    st = (await postToY(st, offlineJev, 'Spin Cycle Status again, still free machines.', [])).state;
+    expect(getApp(st, id)!.users).toBe(afterY);
+    st = (await writeReview(st, content, offlineJev, 'spincycle', 4, 'Use spin-cycle-status.forkyard.app before you walk over.')).state;
+    expect(getApp(st, id)!.users).toBe(afterY + 30);
+    // a post that doesn't mention it does nothing
+    const other = (await postToY(s, offlineJev, 'Rent is due again.', [])).state;
+    expect(getApp(other, id)!.users).toBe(before);
   });
 
   it('asking the agent starts the app and builds it, no email needed', async () => {
@@ -187,10 +233,11 @@ const ASKS: Record<string, [string, string, Record<string, string>]> = {
     inverted: 'Bullish and bearish are swapped in the sentiment split.',
     sarcasm_literal: 'The sentiment reads sarcastic posts literally.',
     bots_counted: 'It counts bot spam.',
-    hallucinated_posts: "The top posts are made up, those accounts don't exist.",
-    wrong_totals: 'The portfolio totals are wrong.',
-    stale_after_buy: "The portfolio doesn't update after a buy.",
-    change_wrong: "Today's change in the portfolio is wrong, it shows the change since the start.",
+    wrong_totals: 'The portfolio total is wrong, it only counts the cash and leaves out the holdings.',
+    value_wrong: "The holding values are wrong, 100 times too small. It's shares times price.",
+    pnl_sign: 'The day P&L has the wrong sign, gains show as losses.',
+    cash_wrong: 'Cash shows negative.',
+    pct_wrong: 'The percent changes are 100 times too big.',
     no_buy: "Auto-buy didn't buy when Crane praised $GAI.",
     wrong_ticker: 'Auto-buy bought the wrong ticker.',
     buys_on_criticism: 'Auto-buy fires on criticism, not just praise.',
@@ -203,7 +250,6 @@ const ASKS: Record<string, [string, string, Record<string, string>]> = {
     done_as_free: 'Done machines waiting for pickup show as free.',
     broken_as_free: 'Out of order machines show as free.',
     no_refresh: 'The status never refreshes.',
-    fetch_all_free: 'When the fetch fails it shows all machines as free.',
     minutes_wrong: 'The minutes left are wrong, it reads seconds as minutes.',
     still_eight: 'It still shows 8 machines, there are 12 now.',
     new_always_free: 'The new machines always show as free.',
@@ -242,5 +288,10 @@ describe('fixing them', () => {
     getApp(s, id)!.repo[0] = { id: 'tickers', correct: false, seed: 0, variant: 'wrong_window' };
     nameUnnamedBugs(s, content);
     expect(content.apps.sentiment.features[0].bugs!.map((b) => b.id)).toContain(getApp(s, id)!.repo[0].variant);
+    // and a feature that was since removed leaves the app
+    const a = getApp(s, id)!;
+    a.required.push('top_posts'); a.repo.push({ id: 'top_posts', correct: true }); a.features.push({ id: 'top_posts', correct: true });
+    nameUnnamedBugs(s, content);
+    expect([...a.required, ...a.repo.map((f) => f.id), ...a.features.map((f) => f.id)]).not.toContain('top_posts');
   });
 });

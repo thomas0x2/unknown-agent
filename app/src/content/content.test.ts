@@ -75,6 +75,14 @@ describe('authored content', () => {
     }
   });
 
+  it('every "<event>_broke" flag a trigger checks names a real client event (the payday sets it by that id)', () => {
+    for (const e of content.events) {
+      for (const f of [...(e.trigger.flagsAll ?? []), ...(e.trigger.flagsNone ?? [])].filter((x) => x.endsWith('_broke'))) {
+        expect(content.events.some((x) => x.id === f.slice(0, -'_broke'.length)), `${e.id}: ${f}`).toBe(true);
+      }
+    }
+  });
+
   it('latent qmail leads have an address to email, unless the agent starts them', () => {
     for (const e of content.events) {
       if (e.latent && e.site === 'qmail' && !e.agentStart) expect(e.addr, `${e.id} latent needs addr`).toBeTruthy();

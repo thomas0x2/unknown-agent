@@ -72,6 +72,8 @@ export interface AppInstance {
   nextUpdateDueDay?: number;
   brokenDays: number; // count of broken paydays (for user second-break rule)
   users?: number;
+  /** Platforms where the player has already posted about this user app (each gives one boost). */
+  promoted?: string[];
   suspicious?: boolean; // illegal app: adds suspicion while live
   /** Ever broken at a payday (for the restaurant thank-you). */
   everBroken?: boolean;

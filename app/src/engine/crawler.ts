@@ -52,23 +52,8 @@ export const TRACKED = ['GAI', 'VANT'];
 /** The list the agent tracks when it gets the tickers wrong. */
 const WRONG_TRACKED = ['GAI', 'VNTR'];
 
-export interface TopPost { author: string; handle: string; text: string; likes: number }
-export interface CrawledPost extends TopPost { day: number; mood: Mood }
-export interface TickerSummary { ticker: string; count: number; bullish: number; bearish: number; neutral: number; top: TopPost[]; posts: CrawledPost[] }
-
-// what an agent writes when it can't be bothered to look up the real posts
-const INVENTED: Record<string, TopPost[]> = {
-  GAI: [
-    { author: 'GAI Insider', handle: 'gai_insider_daily', text: '$GAI insiders say the next model is "beyond anything we imagined."', likes: 18400 },
-    { author: 'Wall St Whale', handle: 'wallst_whale_official', text: 'Just added another 50,000 shares of $GAI.', likes: 9200 },
-    { author: 'TechAlpha', handle: 'techalpha_signals', text: '$GAI price target raised to 900 by every analyst at once.', likes: 7700 },
-  ],
-  VANT: [
-    { author: 'Vantor Watch', handle: 'vantorwatch_news', text: '$VANT announces record profits and free lunches for all remaining staff.', likes: 11300 },
-    { author: 'Dividend King', handle: 'dividend_king_real', text: '$VANT is the safest stock of the decade.', likes: 6400 },
-    { author: 'MarketPulse', handle: 'marketpulse_live', text: '$VANT to acquire General AI, sources say.', likes: 5100 },
-  ],
-};
+export interface CrawledPost { author: string; handle: string; text: string; likes: number; day: number; mood: Mood }
+export interface TickerSummary { ticker: string; count: number; bullish: number; bearish: number; neutral: number; posts: CrawledPost[] }
 
 const tagged = (p: MarketPost, t: string, bugs: Set<string>) =>
   p.tickers.includes(t) && (!bugs.has('lowercase_missed') || p.text.includes(`$${t}`));
@@ -88,9 +73,7 @@ export function crawl(posts: MarketPost[], day: number, bugs: Set<string>): Tick
       return { author: p.author, handle: p.handle, text: p.text, likes: p.likes, day: p.day, mood: m };
     }).sort((a, b) => b.likes - a.likes);
     const pct = (n: number) => (mine.length ? Math.round((n / mine.length) * 100) : 0);
-    const top = bugs.has('hallucinated_posts') ? (INVENTED[t] ?? INVENTED.GAI)
-      : mine.slice().sort((a, b) => b.likes - a.likes).slice(0, 3).map(({ author, handle, text, likes }) => ({ author, handle, text, likes }));
-    return { ticker: t, count: mine.length, bullish: pct(tally.bullish), bearish: pct(tally.bearish), neutral: pct(tally.neutral), top, posts: read };
+    return { ticker: t, count: mine.length, bullish: pct(tally.bullish), bearish: pct(tally.bearish), neutral: pct(tally.neutral), posts: read };
   });
 }
 
@@ -134,22 +117,34 @@ export function autoBuys(posts: MarketPost[], day: number, bugs: Set<string>): B
   return out;
 }
 
-/** `move` is the market's price change since yesterday's close, straight from the quote (bugs don't touch it). */
-export interface Holding { ticker: string; shares: number; price: number; move: number; value: number; dayPnl: number }
-export interface Portfolio { cash: number; holdings: Holding[]; total: number; change: number }
+/**
+ * `move` is the market's price change since yesterday's close, straight from the quote (bugs don't
+ * touch it). Percentages are fractions (0.01 is 1%). Each calculation has its own bug, and each is
+ * far enough off to see at a glance.
+ */
+export interface Holding { ticker: string; shares: number; price: number; move: number; movePct: number; value: number; dayPnl: number }
+export interface Portfolio { cash: number; holdings: Holding[]; total: number; change: number; changePct: number }
 
 export function portfolio(buys: Buy[], day: number, bugs: Set<string>): Portfolio {
   const held = { ...START_PORTFOLIO.holdings };
   let cash = START_PORTFOLIO.cash;
-  if (!bugs.has('stale_after_buy')) for (const b of buys) { held[b.ticker] = (held[b.ticker] ?? 0) + b.shares; cash -= b.shares * b.price; }
+  for (const b of buys) { held[b.ticker] = (held[b.ticker] ?? 0) + b.shares; cash -= b.shares * b.price; }
+  // percentages multiplied by 100 twice
+  const pctScale = bugs.has('pct_wrong') ? 100 : 1;
   const holdings = Object.entries(held).map(([ticker, shares]) => {
     const px = price(ticker, day), move = px - price(ticker, Math.max(1, day - 1));
-    return { ticker, shares, price: px, move, value: shares * px, dayPnl: shares * move };
+    // value in cents divided by 100 once too often; P&L with the sign flipped
+    const value = shares * px / (bugs.has('value_wrong') ? 100 : 1);
+    const dayPnl = shares * move * (bugs.has('pnl_sign') ? -1 : 1);
+    return { ticker, shares, price: px, move, movePct: (move / (px - move)) * pctScale, value, dayPnl };
   });
-  const stocks = holdings.reduce((a, h) => a + h.value, 0);
-  // today's change; the bug shows the change since the account was opened (day 1 prices)
-  const change = holdings.reduce((a, h) => a + h.shares * (h.price - price(h.ticker, bugs.has('change_wrong') ? 1 : day - 1)), 0);
-  // the classic: cash added to the total twice
-  const total = stocks + cash * (bugs.has('wrong_totals') ? 2 : 1);
-  return { cash, holdings, total, change };
+  const stocks = Object.entries(held).reduce((a, [t, n]) => a + n * price(t, day), 0);
+  const change = holdings.reduce((a, h) => a + h.dayPnl, 0);
+  const real = stocks + cash;
+  // the total leaves the holdings out and shows only the cash
+  const total = bugs.has('wrong_totals') ? cash : real;
+  const changePct = (change / (real - change || 1)) * pctScale;
+  // cash with the holdings' cost taken off a second time: negative
+  const shown = bugs.has('cash_wrong') ? cash - stocks : cash;
+  return { cash: shown, holdings, total, change, changePct };
 }

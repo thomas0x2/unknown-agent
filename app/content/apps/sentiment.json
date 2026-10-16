@@ -98,34 +98,6 @@
       ]
     },
     {
-      "id": "top_posts",
-      "description": "link the three most-engaged posts per ticker",
-      "failures": [
-        "subtle"
-      ],
-      "complaints": {
-        "missing": "no top posts.",
-        "down": "top posts won't load.",
-        "wrong": "the top posts link to accounts that don't exist.",
-        "hallucinated_posts": "the top posts link to accounts that don't exist."
-      },
-      "match": "\\b(top posts?|most[- ]engaged|engagement|post links?)\\b",
-      "bugs": [
-        {
-          "id": "hallucinated_posts",
-          "when": "top posts that don't exist on Y",
-          "match": "\\b(hallucinat\\w*|made[- ]up|fake|invented|don'?t exist|doesn'?t exist|not real|nonexistent|non-existent)\\b"
-        }
-      ],
-      "checklist": [
-        {
-          "id": "engaged",
-          "text": "most engaged",
-          "bug": "hallucinated_posts"
-        }
-      ]
-    },
-    {
       "id": "portfolio",
       "description": "a portfolio view of the trader's holdings, cash and today's change",
       "failures": [
@@ -133,39 +105,51 @@
       ],
       "complaints": {
         "missing": "no portfolio view.",
-        "wrong": "the portfolio numbers don't match my account.",
-        "wrong_totals": "the portfolio numbers don't match my account.",
-        "stale_after_buy": "the bot bought and the portfolio doesn't show it.",
-        "change_wrong": "says i'm up six figures today. i'm not. that's since day one."
+        "wrong": "the portfolio numbers are nonsense.",
+        "wrong_totals": "portfolio total is 1.8M. my $GAI alone is worth more than that.",
+        "value_wrong": "says 42,000 $GAI is worth 61k. it isn't.",
+        "pnl_sign": "$GAI is up and the P&L says i lost money on it.",
+        "cash_wrong": "cash is negative. i've never been negative.",
+        "pct_wrong": "says $GAI moved 90% today. it moved one."
       },
       "match": "\\b(portfolio|holdings?|cash|p&l|balance)\\b",
       "bugs": [
         {
           "id": "wrong_totals",
-          "when": "portfolio totals are wrong",
-          "match": "\\b(totals?|sum|adds? up|math|value)\\b[^.?!]{0,30}\\b(wrong|off|incorrect|doesn'?t match|don'?t match)\\b|\\b(wrong|incorrect)\\b[^.?!]{0,20}\\b(totals?|value|numbers)\\b|\\bcounted twice\\b|\\bdouble[- ]count\\w*"
+          "when": "the portfolio total leaves out the holdings (it's just the cash)",
+          "match": "\\b(totals?|portfolio value|sum)\\b[^.?!]{0,40}\\b(wrong|off|incorrect|too (low|small)|only (the )?cash|missing|leaves? out|doesn'?t (include|add|match))\\b|\\b(wrong|incorrect)\\b[^.?!]{0,20}\\btotals?\\b|\\btotal\\b[^.?!]{0,20}\\b(holdings|stocks|positions)\\b"
         },
         {
-          "id": "stale_after_buy",
-          "when": "portfolio doesn't update after a buy",
-          "match": "\\b(doesn'?t|does not|didn'?t|never|not)\\b[^.?!]{0,20}\\b(updat|refresh|show|includ)\\w*\\b[^.?!]{0,30}\\b(buys?|bought|purchases?)\\b|\\bafter (a |the )?(buy|purchase)\\b"
+          "id": "value_wrong",
+          "when": "each holding's value is shares times price divided by 100",
+          "match": "\\b(holding|position|stock|row|share)s?'? values?\\b|\\bvalues?\\b[^.?!]{0,40}\\b(wrong|off|incorrect|too (low|small)|100|hundred|shares? (times|x|×) price)\\b|\\bshares? (times|x|×|\\*) price\\b|\\bdivided by 100\\b"
         },
         {
-          "id": "change_wrong",
-          "when": "today's change is wrong (shows the change since the start)",
-          "match": "\\b(today'?s?|daily|day'?s?) (change|gain|loss|p&l|move)\\b[^.?!]{0,30}\\b(wrong|off|incorrect|since|total)\\b|\\bchange\\b[^.?!]{0,20}\\b(wrong|incorrect|since (the )?(start|beginning))\\b"
+          "id": "pnl_sign",
+          "when": "day P&L has the wrong sign (gains shown as losses)",
+          "match": "\\b(p&l|p ?and ?l|pnl|profit|gain|loss)\\b[^.?!]{0,40}\\b(sign|wrong|flipped|inverted|backwards|negative|minus|reversed|upside down)\\b|\\b(sign|flipped|inverted|backwards)\\b[^.?!]{0,30}\\b(p&l|pnl|profit|gain|loss)\\b"
+        },
+        {
+          "id": "cash_wrong",
+          "when": "cash shows negative (the holdings subtracted from it)",
+          "match": "\\bcash\\b[^.?!]{0,40}\\b(negative|minus|wrong|off|incorrect|below zero|subtract\\w*)\\b|\\bnegative cash\\b"
+        },
+        {
+          "id": "pct_wrong",
+          "when": "percent changes are 100 times too big",
+          "match": "\\b(percent\\w*|%|pct)\\b[^.?!]{0,40}\\b(wrong|off|incorrect|too (big|high|large)|100|hundred|times)\\b|\\b(wrong|incorrect)\\b[^.?!]{0,20}\\b(percent\\w*|%)\\b"
         }
       ],
       "checklist": [
         {
           "id": "cash",
           "text": "cash",
-          "bug": "wrong_totals"
+          "bug": "cash_wrong"
         },
         {
-          "id": "change",
-          "text": "change",
-          "bug": "change_wrong"
+          "id": "pnl",
+          "text": "today's change",
+          "bug": "pnl_sign"
         }
       ]
     },
