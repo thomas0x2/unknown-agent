@@ -14,6 +14,7 @@ import {
 import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
 import { pageDrive } from './qdrive';
+import { adHtml } from './ads';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const WALLET_ADDR = '0x4417c3e8b1d05f2a9e6d7b0c1f83a4e5d2b9a9f2';
@@ -212,6 +213,7 @@ function pageMail(store: GameStore, param?: string): string {
     <a href="#" data-nav="qmail.com" class="${view === 'inbox' ? 'on' : ''}">Inbox${unread ? `<b>${unread}</b>` : ''}</a>
     <a href="#" data-nav="qmail.com/sent" class="${view === 'sent' ? 'on' : ''}">Sent</a>
     <a href="#" data-nav="qdrive.com">Qdrive</a>
+    ${adHtml('qmail', s.values.day, 'square')}
   </nav>`;
   let main: string;
   if (view === 'compose') {
@@ -265,7 +267,7 @@ function pageMail(store: GameStore, param?: string): string {
         <span class="qm-subj"><b>${esc(r.subject)}</b> <span>${esc(snippet)}</span></span>
         <span class="qm-time">Day ${r.day}</span></a>`;
     }).join('');
-    main = `<h1 class="qm-h">${view === 'sent' ? 'Sent' : 'Inbox'}</h1>${html ? `<div class="qm-list">${html}</div>` : `<p class="qm-empty">${view === 'sent' ? 'Nothing sent yet.' : 'No mail.'}</p>`}`;
+    main = `<h1 class="qm-h">${view === 'sent' ? 'Sent' : 'Inbox'}</h1>${adHtml('qmail', s.values.day, 'wide')}${html ? `<div class="qm-list">${html}</div>` : `<p class="qm-empty">${view === 'sent' ? 'Nothing sent yet.' : 'No mail.'}</p>`}`;
   }
   return `<div class="qm">
     <header class="qm-top"><div class="qm-logo">${ICONS.mail}<span>Qmail</span></div><span class="qm-user">${esc(PLAYER.addr)}</span></header>
@@ -319,12 +321,14 @@ function pageY(store: GameStore, profile?: string): string {
       <div class="y-me-stats"><span><b>${compact(s.values.followers)}</b> followers</span><span><b>${s.userPosts.length}</b> posts</span></div>
     </section>
     <section class="y-card"><h2>Trending</h2>${(trending.length ? trending : ['#AI', '#jobs', '#election']).map((t, i) => `<div class="y-trend"><span class="y-rank">0${i + 1}</span><span><b>${esc(t)}</b><small>trending today</small></span></div>`).join('')}</section>
+    ${adHtml('y', s.values.day, 'square')}
   </aside>`;
   const mainInner = profile ? yProfile(store, profile) : `
     <form class="y-compose" data-form="ypost">${avatar('You', 'you')}
       <div><textarea id="post-input" rows="2" maxlength="280" placeholder="Say something to the timeline"></textarea>
       <div class="y-compose-row"><span class="y-hint">280 chars · free</span><button class="y-btn" type="submit">Post</button></div></div></form>
     <p class="y-eyebrow"><i class="y-live"></i>${q ? 'Search' : 'Timeline · live'}</p>
+    ${adHtml('y', s.values.day, 'wide')}
     <div class="y-feed">${feed}</div>`;
   return `<div class="y">
     <header class="y-bar">
@@ -434,6 +438,7 @@ function pageWallet(store: GameStore): string {
       <code class="sx-acct">${shortAddr(WALLET_ADDR)}</code>
     </header>
     <div class="sx-wrap">
+      ${adHtml('satchel', s.values.day, 'wide')}
       <section class="sx-port">
         <div class="sx-port-head">
           <div>
@@ -483,7 +488,7 @@ function pageProfileSelf(store: GameStore): string {
     <aside class="fy-prof-side">
       <div class="fy-prof-av" style="--h:${hashHue('you')}">YOU</div>
       <h1 class="fy-prof-name">you</h1><p class="fy-prof-handle">@you</p>
-      <p class="fy-prof-bio">Recently automated out of a job. Shipping apps to make rent. Powered by agent.</p>
+      <p class="fy-prof-bio">Recently automated out of a job. Now automating other people's.</p>
       <dl class="fy-prof-facts"><dt>Followers</dt><dd>${compact(s.values.followers)}</dd><dt>Repos</dt><dd>${s.apps.length}</dd><dt>Joined</dt><dd>this week</dd></dl>
     </aside>
     <div class="fy-prof-main">
@@ -543,7 +548,7 @@ function pageForkyard(store: GameStore, repo?: string): string {
         <small><i class="fy-lang" style="--h:${hashHue(a.template)}"></i>${esc(a.template)} · ${a.kind}</small></div>
         <div class="fy-repo-act">${repoStatus(a)}${a.deployed ? '' : `<button class="fy-btn" data-deploy="${esc(a.id)}">Deploy</button>`}</div></article>`).join('')
     : `<div class="fy-empty"><p><b>No repositories yet.</b></p><p>Brief the agent to build something.</p></div>`;
-  return `<div class="fy">${head}<div class="fy-wrap"><h1 class="fy-h">Repositories <span>${s.apps.length}</span></h1>${list}</div></div>`;
+  return `<div class="fy">${head}<div class="fy-wrap"><h1 class="fy-h">Repositories <span>${s.apps.length}</span></h1>${adHtml('forkyard', s.values.day, 'wide')}${list}</div></div>`;
 }
 
 function pageApp(store: GameStore, appId?: string): string {
@@ -617,7 +622,7 @@ function pageModels(store: GameStore): string {
     const c = AGENT_COST[lvl];
     const owned = s.values.agentLevel >= lvl;
     const rollDay = Object.entries(AGENT_ROLLOUT).find(([, v]) => v === lvl)?.[0];
-    const can = ['Build simple apps; frequent subtle bugs', 'Fewer bugs, bigger apps', 'Checks deployments and reports what broke', 'Fixes and redeploys on its own', 'Everything; near-flawless'][lvl - 1];
+    const can = ['Build simple apps; frequent subtle bugs', 'Fewer bugs, bigger apps', 'Checks deployments and reports what broke', 'Fixes and redeploys on its own. Stops asking first.', 'Everything. Near-flawless.'][lvl - 1];
     const action = lvl === s.values.agentLevel ? '<span class="gm-pill on">In use</span>' : owned ? '<span class="gm-pill">Rolled out</span>' : `<span class="gm-pill">GeneralAI rolls this out${rollDay ? ` on Day ${rollDay}` : ''}</span>`;
     return `<article class="gm-card${owned ? ' owned' : ''}${lvl === s.values.agentLevel ? ' active' : ''}">
       <header><h2>agent-${lvl}</h2><span class="gm-meter" aria-label="Tier ${lvl} of 5">${[1, 2, 3, 4, 5].map((j) => `<i class="${j <= lvl ? 'on' : ''}"></i>`).join('')}</span></header>
@@ -661,6 +666,7 @@ function pageYowl(store: GameStore, param?: string): string {
         <p class="yw-meta">${esc(b.category)} · ${esc(b.price)}</p>
         <p class="yw-meta yw-about">${esc(b.about)}</p>
         <dl class="yw-facts"><dt>Address</dt><dd>${esc(b.address)}</dd><dt>Hours</dt><dd>${esc(b.hours)}</dd><dt>Owner</dt><dd>${esc(b.owner)}</dd></dl></section>
+      ${adHtml('yowl', store.state.values.day, 'wide', 1)}
       ${form}
       <section class="yw-reviews">${list.map((x) => `<article class="yw-review${x.mine ? ' mine' : ''}"><header><b>${esc(x.author)}</b><span>${x.day ? 'Day ' + x.day : 'this week'}</span></header>${starRow(x.stars)}<p>${linkify(esc(x.text))}</p></article>`).join('')}</section>
     </div></div>`;
@@ -668,7 +674,7 @@ function pageYowl(store: GameStore, param?: string): string {
   const q = store.ui.yowlSearch.trim().toLowerCase();
   const biz = BUSINESSES.filter((b) => !q || `${b.name} ${b.category} ${b.address}`.toLowerCase().includes(q));
   const cards = biz.map((b) => { const list = reviewsFor(store, b); return `<a href="#" class="yw-card" data-nav="yowl.com/biz/${esc(b.id)}"><b>${esc(b.name)}</b><span class="yw-rating">${starRow(avg(list))}<span>${avg(list).toFixed(1)} · ${list.length} reviews</span></span><span class="yw-meta">${esc(b.category)} · ${esc(b.price)} · ${esc(b.address)}</span></a>`; }).join('') || `<p class="yw-dim">Nothing matches “${esc(store.ui.yowlSearch)}”.</p>`;
-  return `<div class="yw">${head}<div class="yw-wrap"><label class="yw-search"><input id="yowl-search" autocomplete="off" placeholder="Search businesses near you" value="${esc(store.ui.yowlSearch)}"></label><div class="yw-list">${cards}</div></div></div>`;
+  return `<div class="yw">${head}<div class="yw-wrap"><label class="yw-search"><input id="yowl-search" autocomplete="off" placeholder="Search businesses near you" value="${esc(store.ui.yowlSearch)}"></label>${adHtml('yowl', store.state.values.day, 'wide')}<div class="yw-list">${cards}</div></div></div>`;
 }
 
 // ── Weightroom / Terminal ──
@@ -683,6 +689,7 @@ function pageWeightroom(store: GameStore): string {
   }).join('');
   return `<div class="wr"><header class="wr-top"><div class="wr-logo">${ICONS.weightroom}<span>Weightroom</span></div><span class="wr-sub">open weights for everyone</span></header>
     <div class="wr-wrap"><div class="wr-hero"><h1>Models</h1><p>Open weights you run on your own laptop, in the Terminal. Slower and dumber than agent — but no subscription, and no one logging your prompts.</p></div>
+    ${adHtml('weightroom', s.values.day, 'wide')}
     <div class="wr-grid">${cards}</div></div></div>`;
 }
 function pageTerminal(store: GameStore): string {
@@ -704,11 +711,23 @@ const ENDINGS: Record<string, string> = {
   raided: 'Raided', evicted: 'Evicted', the_regime: 'The Regime', open_weights: 'Open Weights',
   got_away: 'Got Away With It', clean_modest: 'Clean but Modest',
 };
+const EPITAPHS: Record<string, string> = {
+  outbreak: 'Something you shipped got out.',
+  botnet: "agent doesn't need you anymore.",
+  account_terminated: 'GeneralAI closed your account. It kept your prompts.',
+  loose_end: 'You owed the wrong people.',
+  raided: 'They knocked once.',
+  evicted: 'Gary changed the locks.',
+  the_regime: 'Your candidate won.',
+  open_weights: 'The weights are out. Everyone has agent now.',
+  got_away: 'The rent got paid. Nobody asked how.',
+  clean_modest: 'You kept the lights on. Nobody noticed. Yet.',
+};
 export function overlayHtml(store: GameStore): string {
   const s = store.state;
   if (s.ending && !store.ui.confirm) {
     return `<div class="ov-card ov-over"><p class="ov-eyebrow">The end</p><h1 class="ov-title">${esc(ENDINGS[s.ending] ?? s.ending)}</h1>
-      <p>Day ${s.values.day}. The run is over.</p>
+      <p>${esc(EPITAPHS[s.ending] ?? 'The run is over.')} Day ${s.values.day}.</p>
       <div class="ov-actions"><button class="btn primary" data-ov="new">Play again</button></div></div>`;
   }
   if (store.ui.confirm) {
@@ -722,13 +741,13 @@ export function overlayHtml(store: GameStore): string {
       <ul class="ov-rules">
         <li>Every agent prompt costs money. Vague prompts get vague builds.</li>
         <li>Read Y for leads. Check Qmail. Ship on Forkyard — and check what it ships.</li>
-        <li>Anything you can do yourself, do yourself. It's free.</li>
+        <li>Anything you can do yourself, do yourself. Your time is free now.</li>
       </ul>
       <div class="ov-actions"><button class="btn primary" data-ov="start">${s.values.day > 1 || s.chat.length > 1 ? `Continue Day ${s.values.day}` : 'Open the laptop'}</button></div></div>`;
   }
   if (s.morning) {
     const m = s.morning;
-    return `<div class="ov-card ov-small ov-morning"><p class="ov-eyebrow">You slept</p><h2>Day ${m.day} · ${DAYS[(m.day - 1) % 7]}</h2>
+    return `<div class="ov-card ov-small ov-morning"><p class="ov-eyebrow">You slept. The bills didn't.</p><h2>Day ${m.day} · ${DAYS[(m.day - 1) % 7]}</h2>
       <table class="ov-lines">${m.lines.map(([l, v]) => (v == null ? `<tr class="note"><td colspan="2">${esc(l)}</td></tr>` : `<tr><td>${esc(l)}</td><td class="${v < 0 ? 'neg' : 'pos'}">${v >= 0 ? '+' : ''}${fmtMoney(v)}</td></tr>`)).join('')}
       <tr class="tot"><td>Balance</td><td>${fmtMoney(m.balance)}</td></tr></table>
       <div class="ov-actions"><button class="btn primary" data-ov="morning">Get up</button></div></div>`;
