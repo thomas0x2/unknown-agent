@@ -54,6 +54,20 @@ describe('replyToEvent', () => {
     expect(out.state.delivered.find((d) => d.eventId === 'fam_hi')!.answered).toBe(false);
   });
 
+  it('labels a mailed-back hint and an outcome as scripted for dev mode', async () => {
+    const mom = makeContent({
+      contacts: [{ key: 'mom@test', name: 'Mom', character: 'mom' }],
+      events: [{ id: 'mom_hi', site: 'qmail' as const, from: 'Mom', addr: 'mom@test', subject: 'Hi', trigger: { dayMin: 1 },
+        hints: ['Just tell me you are eating.'], outcomes: [{ id: 'warm', when: 'warm', reply: 'Love you.' }] }],
+    });
+    const s = startGame(mom, 1);
+    const hinted = await replyToEvent(s, mom, fakeRouter({ route: () => ({ kind: 'hint', hintIndex: 0 }) }), 'mom_hi', 'hm');
+    expect(hinted.state.pendingMail!.at(-1)!.mail).toMatchObject({ body: 'Just tell me you are eating.', scripted: 'hint' });
+    hinted.state.sentToday = [];
+    const warm = await replyToEvent(hinted.state, mom, fakeRouter({ route: () => ({ kind: 'outcome', outcomeId: 'warm' }) }), 'mom_hi', 'love you');
+    expect(warm.state.pendingMail!.at(-1)!.mail).toMatchObject({ body: 'Love you.', scripted: 'outcome' });
+  });
+
   it('nothing happens on an empty match', async () => {
     const s = startGame(content, 1);
     const r = fakeRouter({ route: () => ({ kind: 'nothing' }) });
