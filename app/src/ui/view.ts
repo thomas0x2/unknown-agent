@@ -846,8 +846,15 @@ function llmRow(): string {
 function pageAgent(store: GameStore): string {
   const s = store.state;
   const c = agentCost(s.values.agentLevel);
-  const msgs = s.chat.map((m) => {
-    if (m.from === 'you') return `<div class="ua-msg you"><div class="ua-bubble">${esc(m.text)}</div><span class="ua-cost">${m.cost ? fmtMoney(-m.cost) + ' · ' : ''}agent-${m.level ?? s.values.agentLevel} · ${dateShort(m.day)}</span></div>`;
+  // while a prompt's charge is on its way to the wallet, its cost line shows it filling in place
+  const chargingAt = store.charging ? s.chat.map((m) => m.from).lastIndexOf('you') : -1;
+  const msgs = s.chat.map((m, i) => {
+    if (m.from === 'you') {
+      const cost = i === chargingAt
+        ? `<span class="ua-cost ua-charging" role="status"><span class="ua-charge-bar"><i style="animation-duration:${CHARGE_DELAY_MS}ms"></i></span>Charging Coinbin · ${fmtMoney(-store.charging)}</span>`
+        : `<span class="ua-cost">${m.cost ? fmtMoney(-m.cost) + ' · ' : ''}agent-${m.level ?? s.values.agentLevel} · ${dateShort(m.day)}</span>`;
+      return `<div class="ua-msg you"><div class="ua-bubble">${esc(m.text)}</div>${cost}</div>`;
+    }
     if (m.from === 'system') return `<div class="ua-sys" role="alert">${ICONS.error}<span>${esc(m.text)}</span></div>`;
     const src = m.src ? `<span class="ua-src ${esc((m.src || '').split(':')[0])}">${esc(m.src)}</span>` : '';
     const model = m.src === 'llm' ? `<span class="ua-model" title="Written by a model">${esc(m.by ?? MISSES.label())}</span>`
@@ -859,8 +866,6 @@ function pageAgent(store: GameStore): string {
   }).join('');
   const p = store.pendingPrompt;
   const pending = p == null ? '' : `<div class="ua-msg you"><div class="ua-bubble">${esc(p)}</div><span class="ua-cost">${fmtMoney(-promptCost(s.values.agentLevel, p).total)} · agent-${s.values.agentLevel} · ${dateShort(s.values.day)}</span></div>`;
-  // the reply is in; its charge reaches the wallet a beat later
-  const charging = store.charging ? `<div class="ua-charge" role="status"><span class="ua-charge-bar"><i style="animation-duration:${CHARGE_DELAY_MS}ms"></i></span>Charging Coinbin ${shortAddr(WALLET_ADDR)} · ${fmtMoney(-store.charging)}</div>` : '';
   const thinking = store.busy && !store.charging ? `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text ua-dots"><i></i><i></i><i></i></div></div>` : '';
   return `<div class="ua">
     <header class="ua-head">
@@ -868,7 +873,7 @@ function pageAgent(store: GameStore): string {
       ${devOptionsButton(store, 'agent')}<span class="ua-linked"><a href="#" data-nav="agent.chat/models" class="ua-upgrade">Models</a> · ${s.agentLocked ? 'LOCKED · unpaid' : 'Billing: Coinbin ' + shortAddr(WALLET_ADDR)}</span>
     </header>
     <div class="ua-llm"><span class="ua-jev" id="ua-jev">${jevChip()}</span><span class="ua-llm-ctl" id="ua-llm">${llmRow()}</span></div>
-    <div class="ua-log" id="ua-log">${msgs}${pending}${thinking}${charging}</div>
+    <div class="ua-log" id="ua-log">${msgs}${pending}${thinking}</div>
     <form class="ua-compose" data-form="prompt">
       <textarea id="prompt-input" rows="2" placeholder="Ask agent anything — build an app, fix one, write, translate, look something up…" ${s.ending ? 'disabled' : ''}></textarea>
       <div class="ua-row"><span id="cost-est" class="ua-est"></span><button class="ua-send" type="submit" ${s.ending || store.busy ? 'disabled' : ''}>Send</button></div>

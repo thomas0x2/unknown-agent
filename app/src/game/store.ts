@@ -572,7 +572,7 @@ export function replyDelay(text: string, rnd = Math.random): number {
   return Math.min(4500, 1200 + 15 * text.length + Math.round(rnd() * 600));
 }
 /** How long after the agent's reply its charge hits the wallet. */
-export const CHARGE_DELAY_MS = 1000;
+export const CHARGE_DELAY_MS = 2000;
 /**
  * Take the prompt's charge (the agent-usage entries added since ledger entry `from`) back out of `s`
  * and return the amount, so it can be charged on its own a moment later.
