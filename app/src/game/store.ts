@@ -79,6 +79,8 @@ export class GameStore {
     phishError: '',
     /** An action Jev was needed for and couldn't be reached: why, and the text to put back in its box. */
     jevOffline: null as { reason: string; field?: string; text?: string } | null,
+    /** Y posts by others that went up since the player last looked at the timeline, for the Y tab's badge. */
+    yUnread: 0,
   };
   /** A model download playing out in the Terminal, if one is running. */
   pull: { id: string; startedAt: number } | null = null;
@@ -135,6 +137,7 @@ export class GameStore {
       + Math.max(0, now.extra - m.extra)
       + s.delivered.filter((d) => d.site === 'y' && fresh(d.seq)).length;
     if (!mail && !posts) return false;
+    this.ui.yUnread += posts;
     for (const fn of this.arrivalListeners) fn({ mail, posts });
     return true;
   }
@@ -347,7 +350,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = 1; this.nextTab = PINNED.length + 1;
-    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', jevOffline: null };
+    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', jevOffline: null, yUnread: 0 };
     this.store.save(this.state);
     this.emit();
   }

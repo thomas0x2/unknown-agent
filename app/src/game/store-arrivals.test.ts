@@ -24,4 +24,12 @@ describe('arrivals over the day', () => {
     s.passMinutes(1); // 11:21
     expect(heard.every((a) => a.mail + a.posts > 0)).toBe(true);
   });
+  it('counts new Y posts for the Y tab badge', () => {
+    const s = make();
+    const heard: Arrival[] = [];
+    s.onArrival((a) => heard.push(a));
+    s.passMinutes(80);
+    expect(s.ui.yUnread).toBe(heard.reduce((n, a) => n + a.posts, 0));
+    expect(s.ui.yUnread).toBeGreaterThanOrEqual(1);
+  });
 });
