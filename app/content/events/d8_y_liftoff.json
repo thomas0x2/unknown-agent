@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_liftoff",
+  "site": "y",
+  "from": "Liftoff Daily",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "19:50",
+  "body": "Apogee rocket on the pad at sunset. Two days to launch."
+}

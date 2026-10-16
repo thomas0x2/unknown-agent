@@ -1,0 +1,11 @@
+{
+  "id": "d6_y_liftoff",
+  "site": "y",
+  "from": "Liftoff Daily",
+  "trigger": {
+    "dayMin": 6,
+    "dayMax": 6
+  },
+  "at": "18:50",
+  "body": "Apogee static fire this morning. All engines lit, nothing came off."
+}
