@@ -260,6 +260,8 @@ export interface AgentContent {
   hints: AgentHint[];
   /** Scripted roasts for prompts that drive nothing, when Haiku can't write one. */
   roasts: string[];
+  /** agent's opening line each morning from day 2, when the chat starts a new session. One is picked at random. */
+  mornings?: string[];
 }
 
 export interface Content {
