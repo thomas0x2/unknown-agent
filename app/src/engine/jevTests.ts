@@ -18,20 +18,23 @@ export interface JevTestCase {
   app: string;
   /** Component paths (feature/folder/part) that ship broken. Everything else is built right. */
   broken: string[];
+  /** Required features the agent hasn't built yet (for build prompts). */
+  missing?: string[];
   prompt: string;
   /**
    * fix: exactly these components get fixed, and no part that was fine gets checked. near: that
    * near-miss reply (near_feature, near_folder, near_part, near_miss). check: the prompt names a part
-   * that works, so the agent pushes, fixes nothing and says that part was already right. none: nothing.
+   * that works, so the agent pushes, fixes nothing and says that part was already right. build: the
+   * agent builds exactly these missing features. none: nothing.
    */
-  expect: { fix?: string[]; near?: string; check?: boolean; none?: boolean };
+  expect: { fix?: string[]; near?: string; check?: boolean; build?: string[]; none?: boolean };
 }
 
 export interface JevTestResult {
   pass: boolean;
   /** What happened, in the same terms as `expect`. */
   /** pushed: the agent pushed a change, even one that fixed nothing broken (it worked on a part that was fine). checked: the parts it reported as already right. */
-  got: { fix: string[]; near?: string; pushed?: boolean; checked?: string[] };
+  got: { fix: string[]; near?: string; pushed?: boolean; checked?: string[]; build?: string[] };
   /** The agent's reply. */
   reply: string;
   /** Every item of the fix question for the features involved, with Jev's answer. */
@@ -40,7 +43,8 @@ export interface JevTestResult {
 }
 
 /** Plain words for what a case expects or got. */
-export function describeOutcome(o: { fix?: string[]; near?: string; check?: boolean; none?: boolean; pushed?: boolean; checked?: string[] }): string {
+export function describeOutcome(o: { fix?: string[]; near?: string; check?: boolean; build?: string[]; none?: boolean; pushed?: boolean; checked?: string[] }): string {
+  if (o.build?.length) return `builds ${o.build.map((f) => f.replaceAll('_', ' ')).join(', ')}`;
   if (o.check) return 'a push that checks the part named, which was fine, and fixes nothing';
   const checked = o.checked?.length ? `, and checks parts that were fine (${o.checked.join(', ')})` : '';
   if (o.pushed && !o.fix?.length) return `a push that fixes nothing broken${checked || ' (worked on a part that was fine)'}`;
@@ -70,7 +74,7 @@ export function jevTestState(content: Content, c: JevTestCase): { s: GameState; 
     if (up) applyEffects(s, up, undefined, ev.id);
   }
   const tmpl = content.apps[a.template];
-  a.repo = a.required.map((id) => {
+  a.repo = a.required.filter((id) => !c.missing?.includes(id)).map((id) => {
     const def = tmpl?.features.find((f) => f.id === id);
     const bugs = c.broken.filter((p) => p.startsWith(`${id}/`)).map((p) => {
       const comp = def?.components?.find((x) => x.id === p.slice(id.length + 1));
@@ -126,12 +130,12 @@ function replaying(jev: JevRouter, rec: JevRecording, bars: JevBars, seen: { inp
 /** How a failed case missed: Jev let less through than it should (strict), or more (loose). */
 export function missKind(want: JevTestCase['expect'], got: JevTestResult['got']): 'strict' | 'loose' | 'other' {
   // a push counts as a fix even when it touched only parts that were fine: Jev matched too much
-  const rank = (o: { fix?: string[]; near?: string; check?: boolean; none?: boolean; pushed?: boolean }) => (o.fix?.length || o.pushed || o.check ? 2 : o.near ? 1 : 0);
+  const rank = (o: { fix?: string[]; near?: string; check?: boolean; build?: string[]; none?: boolean; pushed?: boolean }) => (o.fix?.length || o.pushed || o.check || o.build?.length ? 2 : o.near ? 1 : 0);
   const w = rank(want), g = rank(got);
   if (g < w) return 'strict';
   if (g > w) return 'loose';
   // both pushed: fixing or checking a part it shouldn't is loose, leaving one out is strict
-  if (w === 2) return got.fix.some((p) => !(want.fix ?? []).includes(p)) || (!want.check && !!got.checked?.length) ? 'loose' : 'strict';
+  if (w === 2) return got.fix.some((p) => !(want.fix ?? []).includes(p)) || (got.build ?? []).some((f) => !(want.build ?? []).includes(f)) || (!want.check && !!got.checked?.length) ? 'loose' : 'strict';
   return 'other';
 }
 
@@ -147,10 +151,10 @@ export async function runJevTest(content: Content, jev: JevRouter, c: JevTestCas
   const items = () => {
     // the fix question is the one that carries path steps; show the features the case is about
     const q = seen.find((x) => x.input.features.some((f) => f.id.includes('::s:')));
-    const feats = new Set([...c.broken, ...(c.expect.fix ?? [])].map((p) => p.split('/')[0]));
-    return (q?.input.features ?? []).map((f, n) => ({ f, score: q!.scores[n] ?? 0 })).filter(({ f }) => f.kind === 'app' || (feats.has(f.id.split('::')[1]) && f.kind !== 'build')).map(({ f, score }) => {
+    const feats = new Set([...c.broken, ...(c.expect.fix ?? []), ...(c.missing ?? [])].map((p) => p.split('/')[0]));
+    return (q?.input.features ?? []).map((f, n) => ({ f, score: q!.scores[n] ?? 0 })).filter(({ f }) => f.kind === 'app' || (feats.has(f.id.split('::')[1]) && (f.kind !== 'build' || !!c.missing?.includes(f.id.split('::')[1])))).map(({ f, score }) => {
       const [, fid, cat] = f.id.split('::');
-      const label = cat.startsWith('c:') ? componentPath(fid, cat.slice(2)) : cat.startsWith('s:') ? cat.slice(2).replaceAll('/', ' > ').replaceAll('_', ' ') : cat === 'area' ? `${fid.replaceAll('_', ' ')} as a whole` : cat === 'app' ? 'the app named' : cat;
+      const label = cat.startsWith('c:') ? componentPath(fid, cat.slice(2)) : cat.startsWith('s:') ? cat.slice(2).replaceAll('/', ' > ').replaceAll('_', ' ') : cat === 'area' ? `${fid.replaceAll('_', ' ')} as a whole` : cat === 'app' ? 'the app named' : cat === 'feature' ? `build the ${fid.replaceAll('_', ' ')}` : cat;
       return { id: f.id, kind: f.kind ?? 'problem', label, score, yes: score >= barFor(f.kind, bars) };
     });
   };
@@ -175,11 +179,13 @@ export async function runJevTest(content: Content, jev: JevRouter, c: JevTestCas
   const reply = r.state.chat.slice(r.state.chat.map((m) => m.from).lastIndexOf('you') + 1).map((m) => m.text).join('\n');
   // the agent's report names each part it looked at that was fine ("Checked the name. That part was already right.")
   const checked = [...reply.matchAll(/Checked (.+?)\. That part was already right\./g)].map((m) => m[1]);
+  const build = (c.missing ?? []).filter((id) => after.repo.some((f) => f.id === id));
   const pass = want.near ? near === want.near && !pushed
-    : want.fix ? !near && same(fix, want.fix) && !checked.length
+    : want.build ? !near && same(build, want.build)
+    : want.fix ? !near && same(fix, want.fix) && !checked.length && !build.length
     : want.check ? !near && pushed && !fix.length && checked.length > 0
     : !near && !pushed;
-  return { pass, got: { fix, near, ...(pushed ? { pushed } : {}), ...(checked.length ? { checked } : {}) }, reply, items: items() };
+  return { pass, got: { fix, near, ...(pushed ? { pushed } : {}), ...(checked.length ? { checked } : {}), ...(build.length ? { build } : {}) }, reply, items: items() };
 }
 
 /** The thresholds the sweep tries, for path steps and for parts alike. */

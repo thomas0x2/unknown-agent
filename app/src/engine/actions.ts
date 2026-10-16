@@ -485,7 +485,7 @@ function fixLines(s: GameState, app: AppInstance, tmpl: AppTemplate | undefined,
     return out;
   }
   // a first build has nothing to fix yet, so it only says what was built
-  if (!before) return [`Built the ${fid}.`];
+  if (!before) return [`Built the ${featureName(fid, def)}.`];
   const bugs = componentBugs(def, cats);
   for (const c of bugs) {
     const bug = def?.bugs?.find((b) => b.id === c);
@@ -493,7 +493,7 @@ function fixLines(s: GameState, app: AppInstance, tmpl: AppTemplate | undefined,
     if (had.includes(c) && !has.includes(c)) out.push(fillSpec(pick(s, bug.fixed?.length ? bug.fixed : [`Fixed: ${bug.when}`]), params));
   }
   // the right part was named, but the agent still doesn't have the real details to put in
-  if (bugs.includes('hallucinated') && has.includes('hallucinated')) out.push(`I never got the real details for the ${featureName(fid)}, so what's there is made up. Send them and I'll put them in.`);
+  if (bugs.includes('hallucinated') && has.includes('hallucinated')) out.push(`I never got the real details for the ${featureName(fid, def)}, so what's there is made up. Send them and I'll put them in.`);
   // a component can hold several bugs: report the ones that were there, and say "already right"
   // only when nothing named on the feature was
   if (!out.length) for (const c of cats) {
@@ -505,9 +505,9 @@ function fixLines(s: GameState, app: AppInstance, tmpl: AppTemplate | undefined,
     const bug = def?.bugs?.find((b) => b.id === c);
     if (bug && !had.includes(c)) out.push(`Checked for this: "${fillSpec(bug.when, params).replace(/\.$/, '')}". That part was already right.`);
   }
-  if (vague && !out.length) out.push(`Went over the ${fid}. Tidied up the layout and spacing.`);
-  else if (!vague && had.some((b) => b === 'hallucinated' || b === 'outdated') && !has.some((b) => b === 'hallucinated' || b === 'outdated')) out.push(`Rebuilt the ${fid} with the details you gave.`);
-  else if (!out.length) out.push(`Rebuilt the ${fid}.`);
+  if (vague && !out.length) out.push(`Went over the ${featureName(fid, def)}. Tidied up the layout and spacing.`);
+  else if (!vague && had.some((b) => b === 'hallucinated' || b === 'outdated') && !has.some((b) => b === 'hallucinated' || b === 'outdated')) out.push(`Rebuilt the ${featureName(fid, def)} with the details you gave.`);
+  else if (!out.length) out.push(`Rebuilt the ${featureName(fid, def)}.`);
   return out;
 }
 
@@ -731,7 +731,7 @@ export async function promptAgent(
       const [appId, fid] = (stop?.m ?? nearMiss[0]).split('::');
       const a = getApp(s0, appId)!;
       const def = content.apps[a.template]?.features.find((f) => f.id === fid);
-      const fill = (l: string, part = '', folders = '') => l.replaceAll('{{feature}}', featureName(fid)).replaceAll('{{app}}', a.name).replaceAll('{{part}}', part).replaceAll('{{folders}}', folders);
+      const fill = (l: string, part = '', folders = '') => l.replaceAll('{{feature}}', featureName(fid, def)).replaceAll('{{app}}', a.name).replaceAll('{{part}}', part).replaceAll('{{folders}}', folders);
       let hints: string[];
       let why: string;
       let kind: string; // which near-miss: the hint id, or 'near_miss' for the feature's own lines

@@ -29,14 +29,14 @@
         "failed_fetch"
       ],
       "complaints": {
-        "missing": "Spin Cycle Status doesn't even list the machines. What is it for.",
-        "down": "Spin Cycle Status said every machine was free. Walked over anyway. All busy.",
-        "wrong": "Spin Cycle Status said machine 3 was free. It was out of order. It's always out of order.",
-        "six_of_eight": "Spin Cycle Status shows 6 machines. There are 8.",
-        "done_as_free": "Spin Cycle Status said a machine was free. Someone's wet laundry was still in it.",
-        "broken_as_free": "Spin Cycle Status said machine 3 was free. It was out of order. It's always out of order.",
-        "failed_fetch": "Spin Cycle Status said every machine was free. None were.",
-        "raw_codes": "Spin Cycle Status says M5 is \"1\". One what."
+        "missing": "Spin Cycle Board doesn't even list the machines. What is it for.",
+        "down": "Spin Cycle Board said every machine was free. Walked over anyway. All busy.",
+        "wrong": "Spin Cycle Board said machine 3 was free. It was out of order. It's always out of order.",
+        "six_of_eight": "Spin Cycle Board shows 6 machines. There are 8.",
+        "done_as_free": "Spin Cycle Board said a machine was free. Someone's wet laundry was still in it.",
+        "broken_as_free": "Spin Cycle Board said machine 3 was free. It was out of order. It's always out of order.",
+        "failed_fetch": "Spin Cycle Board said every machine was free. None were.",
+        "raw_codes": "Spin Cycle Board says M5 is \"1\". One what."
       },
       "bugs": [
         {
@@ -160,10 +160,10 @@
         "subtle"
       ],
       "complaints": {
-        "missing": "Spin Cycle Status never updates. It shows the same thing all day.",
-        "down": "Spin Cycle Status said 4 machines free. Walked over, all 4 running. The page hadn't updated since the morning.",
-        "wrong": "Spin Cycle Status said 4 machines free. Walked over, all 4 running. The page hadn't updated since the morning.",
-        "no_refresh": "Spin Cycle Status said 4 machines free. Walked over, all 4 running. The page hadn't updated since the morning."
+        "missing": "Spin Cycle Board never updates. It shows the same thing all day.",
+        "down": "Spin Cycle Board said 4 machines free. Walked over, all 4 running. The page hadn't updated since the morning.",
+        "wrong": "Spin Cycle Board said 4 machines free. Walked over, all 4 running. The page hadn't updated since the morning.",
+        "no_refresh": "Spin Cycle Board said 4 machines free. Walked over, all 4 running. The page hadn't updated since the morning."
       },
       "bugs": [
         {
@@ -215,9 +215,9 @@
         "subtle"
       ],
       "complaints": {
-        "missing": "Spin Cycle Status shows which machines are running but not for how long. Stood there 40 minutes.",
-        "wrong": "Spin Cycle Status says my wash has 731 minutes left.",
-        "minutes_wrong": "Spin Cycle Status says my wash has 731 minutes left."
+        "missing": "Spin Cycle Board shows which machines are running but not for how long. Stood there 40 minutes.",
+        "wrong": "Spin Cycle Board says my wash has 731 minutes left.",
+        "minutes_wrong": "Spin Cycle Board says my wash has 731 minutes left."
       },
       "bugs": [
         {
@@ -266,11 +266,11 @@
         "subtle"
       ],
       "complaints": {
-        "missing": "Spin Cycle Status still shows 8 machines. There are 12 now.",
-        "wrong": "Spin Cycle Status still shows 8 machines. There are 12 now.",
-        "still_eight": "Spin Cycle Status still shows 8 machines. There are 12 now.",
-        "new_always_free": "Spin Cycle Status says the four new machines are always free. They're the busiest ones.",
-        "layout_breaks": "Spin Cycle Status is a mess since the new machines. The boxes are on top of each other."
+        "missing": "Spin Cycle Board still shows 8 machines. There are 12 now.",
+        "wrong": "Spin Cycle Board still shows 8 machines. There are 12 now.",
+        "still_eight": "Spin Cycle Board still shows 8 machines. There are 12 now.",
+        "new_always_free": "Spin Cycle Board says the four new machines are always free. They're the busiest ones.",
+        "layout_breaks": "Spin Cycle Board is a mess since the new machines. The boxes are on top of each other."
       },
       "bugs": [
         {
@@ -361,7 +361,7 @@
         "handle": "steph_m"
       }
     ],
-    "offline": "Spin Cycle Status is gone. The link just goes nowhere now.",
-    "stale": "Spin Cycle Status looks like nobody's touched it in days."
+    "offline": "Spin Cycle Board is gone. The link just goes nowhere now.",
+    "stale": "Spin Cycle Board looks like nobody's touched it in days."
   }
 }

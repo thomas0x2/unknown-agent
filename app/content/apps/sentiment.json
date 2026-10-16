@@ -86,6 +86,7 @@
     },
     {
       "id": "sentiment",
+      "name": "classifier",
       "description": "split today's posts into bullish, bearish and neutral",
       "aka": [
         "sentiment analysis",
@@ -148,8 +149,8 @@
         }
       ],
       "nearMiss": [
-        "I read through the sentiment code and felt neutral about it. Which part is wrong?",
-        "Couldn't find the issue in the sentiment split. Which part is off?"
+        "I read through the classifier code and felt neutral about it. Which part is wrong?",
+        "Couldn't find the issue in the classifier. Which part is off?"
       ]
     },
     {
@@ -276,14 +277,17 @@
       "components": [
         {
           "id": "total",
-          "label": "the portfolio total",
+          "label": "the portfolio total (what everything is worth right now, cash plus holdings)",
           "bugs": [
             "wrong_totals"
           ],
           "aka": [
             "total",
             "total value",
-            "sum"
+            "sum",
+            "net worth",
+            "balance",
+            "how much it's worth"
           ]
         },
         {
@@ -311,14 +315,17 @@
         },
         {
           "id": "pnl",
-          "label": "the day's P&L",
+          "label": "the day's P&L (how much the portfolio gained or lost today)",
           "bugs": [
             "pnl_sign"
           ],
           "aka": [
             "P&L",
+            "PnL",
+            "profit and loss",
             "profit",
             "gain/loss",
+            "today's gain",
             "daily change"
           ]
         },

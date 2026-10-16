@@ -1062,7 +1062,7 @@
     "broken": [
       "machines/count"
     ],
-    "prompt": "Spin Cycle Status only shows six machines in the machine list, there are eight",
+    "prompt": "Spin Cycle Board only shows six machines in the machine list, there are eight",
     "expect": {
       "fix": [
         "machines/count"
@@ -1074,7 +1074,7 @@
     "broken": [
       "machines/status/done"
     ],
-    "prompt": "Spin Cycle Status: on the machine list, finished machines show as free in their status",
+    "prompt": "Spin Cycle Board: on the machine list, finished machines show as free in their status",
     "expect": {
       "fix": [
         "machines/status/done"
@@ -1086,7 +1086,7 @@
     "broken": [
       "machines/status/out_of_order"
     ],
-    "prompt": "Spin Cycle Status: broken machines show as free in the machine status",
+    "prompt": "Spin Cycle Board: broken machines show as free in the machine status",
     "expect": {
       "fix": [
         "machines/status/out_of_order"
@@ -1098,7 +1098,7 @@
     "broken": [
       "machines/status/labels"
     ],
-    "prompt": "Spin Cycle Status machine list shows raw status codes instead of the status labels",
+    "prompt": "Spin Cycle Board machine list shows raw status codes instead of the status labels",
     "expect": {
       "fix": [
         "machines/status/labels"
@@ -1110,7 +1110,7 @@
     "broken": [
       "machines/status/done"
     ],
-    "prompt": "Spin Cycle Status: done machines show as free",
+    "prompt": "Spin Cycle Board: done machines show as free",
     "expect": {
       "near": "near_folder"
     }
@@ -1120,7 +1120,7 @@
     "broken": [
       "refresh/auto_refresh"
     ],
-    "prompt": "Spin Cycle Status doesn't auto refresh, the status goes stale",
+    "prompt": "Spin Cycle Board doesn't auto refresh, the status goes stale",
     "expect": {
       "fix": [
         "refresh/auto_refresh"
@@ -1132,7 +1132,7 @@
     "broken": [
       "minutes/minutes_left"
     ],
-    "prompt": "Spin Cycle Status: the countdown shows the wrong time left",
+    "prompt": "Spin Cycle Board: the countdown shows the wrong time left",
     "expect": {
       "fix": [
         "minutes/minutes_left"
@@ -1156,7 +1156,7 @@
     "broken": [
       "more_machines/new_machines"
     ],
-    "prompt": "Spin Cycle Status: the four new machines always show as free",
+    "prompt": "Spin Cycle Board: the four new machines always show as free",
     "expect": {
       "fix": [
         "more_machines/new_machines"
@@ -1168,7 +1168,7 @@
     "broken": [
       "more_machines/count"
     ],
-    "prompt": "Spin Cycle Status still shows only 8 machines, it should show all twelve",
+    "prompt": "Spin Cycle Board still shows only 8 machines, it should show all twelve",
     "expect": {
       "fix": [
         "more_machines/count"
@@ -1180,7 +1180,7 @@
     "broken": [
       "more_machines/layout"
     ],
-    "prompt": "Spin Cycle Status: the grid layout breaks with the new machines",
+    "prompt": "Spin Cycle Board: the grid layout breaks with the new machines",
     "expect": {
       "fix": [
         "more_machines/layout"
@@ -1192,7 +1192,7 @@
     "broken": [
       "machines/status/done"
     ],
-    "prompt": "Spin Cycle Status: the machine list is wrong",
+    "prompt": "Spin Cycle Board: the machine list is wrong",
     "expect": {
       "near": "near_miss"
     }
@@ -1203,6 +1203,154 @@
       "refresh/auto_refresh"
     ],
     "prompt": "spin cycle is broken",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [],
+    "missing": [
+      "menu"
+    ],
+    "prompt": "Trattoria Gino: add the menu page with Gino's dishes and prices",
+    "expect": {
+      "build": [
+        "menu"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [],
+    "missing": [
+      "booking"
+    ],
+    "prompt": "gino's site needs a booking form so people can reserve a table",
+    "expect": {
+      "build": [
+        "booking"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [],
+    "missing": [
+      "menu",
+      "booking"
+    ],
+    "prompt": "Trattoria Gino: build the menu and the table booking",
+    "expect": {
+      "build": [
+        "menu",
+        "booking"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [],
+    "missing": [
+      "menu"
+    ],
+    "prompt": "Trattoria Gino: make it look nicer",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [],
+    "missing": [
+      "menu"
+    ],
+    "prompt": "add the menu page",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "landing/name"
+    ],
+    "missing": [],
+    "prompt": "Trattoria Gino: make the landing page prettier, bigger fonts",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [],
+    "missing": [
+      "auto_buy"
+    ],
+    "prompt": "Sentiment Crawler: add the auto-buy so it buys when Crane praises a company",
+    "expect": {
+      "build": [
+        "auto_buy"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [],
+    "missing": [
+      "portfolio"
+    ],
+    "prompt": "Sentiment Crawler: add a portfolio view with the holdings, cash and today's change",
+    "expect": {
+      "build": [
+        "portfolio"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [],
+    "missing": [
+      "portfolio"
+    ],
+    "prompt": "Sentiment Crawler: give it a dark mode",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "laundromat",
+    "broken": [],
+    "missing": [
+      "refresh"
+    ],
+    "prompt": "Spin Cycle Board should refresh by itself every minute",
+    "expect": {
+      "build": [
+        "refresh"
+      ]
+    }
+  },
+  {
+    "app": "laundromat",
+    "broken": [],
+    "missing": [
+      "minutes"
+    ],
+    "prompt": "Spin Cycle Board: show how many minutes are left on running machines",
+    "expect": {
+      "build": [
+        "minutes"
+      ]
+    }
+  },
+  {
+    "app": "laundromat",
+    "broken": [],
+    "missing": [
+      "refresh"
+    ],
+    "prompt": "Spin Cycle Board: change the colours to blue",
     "expect": {
       "none": true
     }

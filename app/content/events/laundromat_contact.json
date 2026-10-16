@@ -23,7 +23,7 @@
         "createApp": {
           "template": "laundromat",
           "kind": "user",
-          "name": "Spin Cycle Status",
+          "name": "Spin Cycle Board",
           "clientEventId": "laundromat_contact",
           "startUsers": 30,
           "spec": [
