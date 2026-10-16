@@ -16,6 +16,7 @@ import {
 import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
 import { pageDrive } from './qdrive';
+import { pageSherwood } from './sherwood';
 import { adHtml } from './ads';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
@@ -55,7 +56,7 @@ function linkify(escaped: string): string {
 
 function tabTitle(r: Route, url: string): string {
   const names: Partial<Record<string, string>> = {
-    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', phish: 'Coinbin · Sign in', forkyard: 'Forkyard',
+    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', phish: 'Coinbin · Sign in', forkyard: 'Forkyard',
     agent: 'agent', yowl: 'Yowl', weightroom: 'Weightroom', nullboard: 'nullboard', cellar: 'Cellar', app: url,
   };
   if (r.site === 'notfound') return url || 'New Tab';
@@ -124,7 +125,8 @@ export function tasksHtml(store: GameStore): string {
   const cls = termShown ? ' on' : termOpen ? ' open' : '';
   return browser + `<button class="dk-task dk-term${cls}" data-task="terminal" title="Terminal" aria-label="Terminal">${ICONS.terminal}</button>`;
 }
-const BROWSER_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12V2a10 10 0 0 1 10 10z" fill="#ff5fa2"/><path d="M12 12h10a10 10 0 0 1-10 10z" fill="#ffb02e"/><path d="M12 12v10A10 10 0 0 1 2 12z" fill="#2ec4b6"/><path d="M12 12H2A10 10 0 0 1 12 2z" fill="#8a5cf6"/><rect x="7.6" y="7.6" width="8.8" height="8.8" rx="2.6" transform="rotate(45 12 12)" fill="#fff"/><rect x="9.4" y="9.4" width="5.2" height="5.2" rx="1.4" transform="rotate(45 12 12)" fill="#3a8dff"/></svg>';
+// a Firefox knockoff: no fox, just the globe, burning (drawn once, so the gradient ids can't clash)
+const BROWSER_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="globe-fire" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#e3215a"/><stop offset=".5" stop-color="#ff6a2b"/><stop offset="1" stop-color="#ffb02e"/></linearGradient><radialGradient id="globe-sea" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#8f63ff"/><stop offset="1" stop-color="#4a22b5"/></radialGradient></defs><path d="M12 23.4A10.6 10.6 0 0 1 2.2 9.6C1.7 7.6 2 5.6 3 3.8c.4 1.6 1.2 2.6 2.2 3C5.4 4.4 6.6 2.4 8.6 1c-.3 1.8 0 3.2.9 4C10 2.8 11.2 1 13.2 0c-.4 1.9-.1 3.4.8 4.4.6-1.5 1.7-2.6 3.2-3.2-.5 1.7-.3 3.2.6 4.3.8-.8 1.8-1.4 3-1.6-.6 1.4-.6 2.9 0 4.2A10.6 10.6 0 0 1 12 23.4z" fill="url(#globe-fire)"/><path d="M12 21.6a8.6 8.6 0 0 1-8-12c-.2-1.2 0-2.3.5-3.3.4 1 1 1.6 1.8 1.9.3-1.6 1.1-3 2.4-4-.1 1.2.2 2.2.9 2.9.4-1.6 1.4-3 2.8-3.8-.2 1.3.1 2.4.8 3.2.5-1 1.3-1.8 2.4-2.2-.3 1.2-.1 2.3.6 3.1.6-.5 1.3-.8 2.1-.9-.4 1-.4 2 .1 2.9A8.6 8.6 0 0 1 12 21.6z" fill="#ffd23f"/><circle cx="12" cy="13.6" r="6.8" fill="url(#globe-sea)"/><g transform="translate(-.6 1)"><path d="M9.2 8.4c1.3.4 1.9 1.4 1.5 2.5-.4.9-1.5 1-1.6 2-.1 1 1 1.6.5 2.7-.4.8-1.4 1-2.4.6A6.6 6.6 0 0 1 9.2 8.4zM14.6 6.6c1 .6 1.1 1.7.4 2.5-.8.8-.2 1.8 1 2 1.3.2 2.4.9 3 2-.3 1.9-1.2 3.4-2.6 4.5-.2-1.2 0-2.4-.9-3.1-.9-.7-2.1-.4-2.6-1.5-.5-1.1.5-1.9.2-3-.2-.9-.9-1.3-.8-2.3.1-.4.4-.8 1.3-1.1z" fill="#a98bff" fill-opacity=".75"/></g><circle cx="12" cy="13.6" r="6.8" fill="none" stroke="#3a1a96" stroke-width=".6"/></svg>';
 const MI = {
   sleep: '<svg viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>',
   help: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.5v.4M12 16.8v.2"/></svg>',
@@ -208,6 +210,7 @@ export function page(store: GameStore, r: Route): string {
     case 'qdrive': return pageDrive(store.state, r.param);
     case 'y': return pageY(store, r.param);
     case 'coinbin': return pageWallet(store);
+    case 'sherwood': return pageSherwood(store, r.param);
     case 'forkyard': return pageForkyard(store, r.param);
     case 'app': return pageApp(store, r.param);
     case 'agent': return r.param === 'models' ? pageModels(store) : pageAgent(store);
@@ -446,7 +449,9 @@ function pageY(store: GameStore, profile?: string): string {
   const showAll = !!q || store.ui.yAllDay === s.values.day;
   const shown = q ? posts.filter((p) => `${p.author} ${p.handle} ${p.text}`.toLowerCase().includes(q.replace(/^@/, ''))) : showAll ? posts : posts.filter((p) => p.day === s.values.day);
   const older = !showAll && posts.some((p) => p.day !== s.values.day);
-  const feed = (shown.map((p) => yPostHtml(store, p)).join('') || `<p class="y-none">${older ? 'Nothing posted yet today.' : 'Quiet timeline.'}</p>`)
+  // with everything showing, "Hide old posts" sits where today's posts end and older ones begin
+  const firstOld = !q && showAll ? shown.findIndex((p) => p.day !== s.values.day) : -1;
+  const feed = (shown.map((p, i) => (i === firstOld ? '<div class="y-more"><button class="y-btn ghost" data-y-all="hide">Hide old posts</button></div>' : '') + yPostHtml(store, p)).join('') || `<p class="y-none">${older ? 'Nothing posted yet today.' : 'Quiet timeline.'}</p>`)
     + (older ? '<div class="y-more"><button class="y-btn ghost" data-y-all>Show all</button></div>' : '');
   const side = `<aside class="y-side">
     <section class="y-card y-me">
@@ -807,7 +812,7 @@ function pageApp(store: GameStore, param?: string): string {
   const booking = a.template === 'restaurant' && a.features.some((f) => f.id === 'booking')
     ? booked
       ? `<div class="pv-book"><h1>Table booked</h1>${notice}${summary}
-        <p class="pv-sub"><a href="#" data-act="book-again">Book another table</a></p></div>`
+        <button class="pv-btn ok" type="button" data-act="book-again">Book another table</button></div>`
       : bk.step === 1
       ? `<form class="pv-book" data-form="book-next" data-app="${esc(a.id)}"><h1>Book a table</h1>
         <p class="pv-sub">Step 1 of 2. You'll get a confirmation by email.</p>${notice}

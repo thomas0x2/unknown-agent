@@ -180,6 +180,16 @@ export interface GameEvent {
    * prompt. `lead` is the post where the player hears about it.
    */
   agentStart?: { when: string; lead?: string };
+  /**
+   * Lands on the day the app created by client event `app` first goes live: at `at`, or `after` game
+   * minutes after that deploy when that is later. Only a first deploy queues it; the trigger alone never does.
+   */
+  launch?: { app: string; at: string; after: number };
+  /**
+   * Lands `after` game minutes (default 30) after the player posts on Y about what `when` describes,
+   * once the trigger holds. Jev reads the post. The trigger alone never delivers it.
+   */
+  yPost?: { when: string; after?: number };
   /** Offers the player paid work, so replies come within half an hour. Events with a `job` or an outcome that creates an app count already. */
   jobRequest?: boolean;
   /** Applied the moment the event is delivered. */

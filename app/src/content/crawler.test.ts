@@ -122,6 +122,15 @@ describe('sentiment crawler', () => {
     expect(portfolio(buys, 6, bugs('value_wrong')).total).toBeLessThan(ok.total);
     expect(portfolio(buys, 6, bugs('wrong_totals')).total).toBeCloseTo(ok.cash);
   });
+
+  it("stale prices don't match Sherwood's quotes on any day", () => {
+    for (let d = 2; d <= 21; d++) {
+      const buys = autoBuys(marketPosts(onDay(d), content), d, bugs());
+      for (const h of portfolio(buys, d, bugs()).holdings) expect(h.price, `day ${d}`).toBe(price(h.ticker, d));
+      // a quick look at the price column is enough: every ticker is off by over 2%
+      for (const h of portfolio(buys, d, bugs('stale_prices')).holdings) expect(Math.abs(h.price / price(h.ticker, d) - 1), `day ${d} ${h.ticker}`).toBeGreaterThan(0.02);
+    }
+  });
 });
 
 describe('Spin Cycle Status', () => {
@@ -260,6 +269,7 @@ const ASKS: Record<string, [string, string, Record<string, string>]> = {
     value_wrong: "The holding values are wrong, 100 times too small. It's shares times price.",
     pnl_sign: 'The day P&L has the wrong sign, gains show as losses.',
     pct_wrong: 'The percent changes are 100 times too big.',
+    stale_prices: "The holding prices don't match Sherwood. They never update.",
     no_buy: "Auto-buy didn't buy when Crane praised $GAI.",
     wrong_ticker: 'Auto-buy bought the wrong ticker.',
     buys_on_criticism: 'Auto-buy fires on criticism, not just praise.',

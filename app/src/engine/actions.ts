@@ -13,7 +13,7 @@ import { Y as YCFG, FAMILY, APPS, AGENT_WORK, CLOCK } from './config';
 import { clone, addValue, log, pick, rand, money, pushMail, sendLater, gameMinutes } from './core';
 import { applyEffects } from './effects';
 import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent';
-import { getEvent, activeDeliveries, reachableByEmail, triggerMatches, eventBody } from './events';
+import { getEvent, activeDeliveries, reachableByEmail, triggerMatches, eventBody, queueLaunch, queueAt, yPostEvents } from './events';
 import { buildApp, fixApp, fixBreak, fixCategories, componentBugs, featureName, needsWork, onForkyard, fillSpec, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, bugsOf, breakVariant, type BuildReport } from './apps';
 import { type Writer, type HistoryLine, scriptedWriter } from './writer';
 import { dateFull, clockTime } from './calendar';
@@ -420,16 +420,24 @@ function recentChat(s: GameState, n = 8): string[] {
 
 /**
  * A post that is about a live user app brings it users, once per platform: the first Y post and the
- * first Yowl review about it. Jev reads which app the post is about. Returns the apps it boosted.
+ * first Yowl review about it. A Y post can also answer an event waiting on one (`yPost`, Gino asking for
+ * a post about his new site), which then lands a little later. Jev reads what the post is about.
+ * Returns the apps it boosted.
  */
-export async function promoteApps(jev: JevRouter, s: GameState, platform: 'y' | 'yowl', text: string): Promise<string[]> {
+export async function promoteApps(jev: JevRouter, s: GameState, platform: 'y' | 'yowl', text: string, content?: Content): Promise<string[]> {
   const open = s.apps.filter((a) => a.kind === 'user' && a.deployed && !a.churned && !a.promoted?.includes(platform));
-  if (!open.length) return [];
+  const waiting = platform === 'y' && content ? yPostEvents(s, content) : [];
+  if (!open.length && !waiting.length) return [];
   const what = platform === 'y' ? 'post' : 'review';
   const d = await jev.route({
     channel: platform, text, stateSummary: stateSummary(s), hints: [], strict: true,
-    candidates: open.map((a) => ({ id: a.id, when: `The ${what} is about, recommends or promotes ${a.name} (${a.url}).` })),
+    candidates: [
+      ...open.map((a) => ({ id: a.id, when: `The ${what} is about, recommends or promotes ${a.name} (${a.url}).` })),
+      ...waiting.map((ev) => ({ id: `event:${ev.id}`, when: ev.yPost!.when })),
+    ],
   });
+  const ev = d.kind === 'outcome' ? waiting.find((x) => `event:${x.id}` === d.outcomeId) : undefined;
+  if (ev) { queueAt(s, ev, s.clockMin + (ev.yPost!.after ?? 30)); return []; }
   const a = d.kind === 'outcome' ? open.find((x) => x.id === d.outcomeId) : undefined;
   if (!a) return [];
   const add = platform === 'y' ? Math.max(APPS.user.promoY.min, Math.round(s.values.followers * APPS.user.promoY.followerShare)) : APPS.user.promoYowl;
@@ -819,6 +827,7 @@ export async function postToY(
   jev: JevRouter,
   text: string,
   trending: string[],
+  content?: Content,
 ): Promise<PostResult> {
   const s = clone(s0);
   const rating = await jev.ratePost({ text, trending, recentPosts: s.recentPosts, followers: s.values.followers });
@@ -838,7 +847,7 @@ export async function postToY(
   s.recentPosts = [text, ...s.recentPosts].slice(0, 5);
   s.userPosts.push({ id: `u${s.userPosts.length + 1}`, text, day: s.values.day, min: s.clockMin, likes: Math.max(0, delta * 3 + Math.round(s.values.followers * 0.02)), delta, score: rating.quality * 4 });
   log(s, `Posted on Y (${rating.category}): ${delta >= 0 ? '+' : ''}${delta} followers.`, 'info');
-  await promoteApps(jev, s, 'y', text);
+  await promoteApps(jev, s, 'y', text, content);
   return { state: s, rating, followerDelta: delta };
 }
 
@@ -978,7 +987,10 @@ export function deploy(s0: GameState, appId: string, content?: Content): GameSta
   if (getApp(s0, appId)?.churned) return s0;
   const s = clone(s0);
   const app = getApp(s, appId);
+  const first = !!app && app.deployedVersion === 0;
   deployAppCore(s, appId, app && content?.apps[app.template]);
+  // a client's site going live for the first time: what waits on its launch is on its way
+  if (first && app?.clientEventId && content) queueLaunch(s, content, app.clientEventId);
   log(s, `Deployed ${getApp(s, appId)?.name ?? appId}.`, 'info');
   return s;
 }

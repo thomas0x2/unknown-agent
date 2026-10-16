@@ -5,7 +5,7 @@
 import type { GameState } from '../engine';
 
 export type SiteId =
-  | 'y' | 'qmail' | 'qdrive' | 'coinbin' | 'forkyard' | 'agent' | 'yowl'
+  | 'y' | 'qmail' | 'qdrive' | 'coinbin' | 'sherwood' | 'forkyard' | 'agent' | 'yowl'
   | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'phish' | 'app' | 'newtab' | 'notfound';
 
 export interface SiteDef {
@@ -32,6 +32,7 @@ export const SITES: SiteDef[] = [
   { id: 'y', base: 'y.com', label: 'Y', group: 'core', reachable: always },
   { id: 'yowl', base: 'yowl.com', label: 'Yowl', group: 'core', reachable: always },
   { id: 'coinbin', base: 'coinbin.com', label: 'Coinbin', group: 'core', reachable: always },
+  { id: 'sherwood', base: 'sherwood.com', label: 'Sherwood', group: 'core', reachable: always },
   { id: 'forkyard', base: 'forkyard.com', label: 'Forkyard', group: 'core', reachable: always },
   { id: 'weightroom', base: 'weightroom.ai', label: 'Weightroom', group: 'tools', reachable: flag('knows_weightroom'),
     bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('weightroom')) || s.flags.includes('has_terminal') },

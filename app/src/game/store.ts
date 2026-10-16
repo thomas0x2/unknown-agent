@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, deliverDue, deliverArrivals, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, devToggleBug, nameUnnamedBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, buyStock, sellStock, deliverDue, deliverArrivals, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, devToggleBug, nameUnnamedBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -28,7 +28,9 @@ const norm = (u: string) =>
 export const MAX_TABS = 12;
 
 /** Always open, in this order, and never closed: the sites where mail, posts and work come in. */
-export const PINNED = ['qmail.com', 'y.com', 'agent.chat', 'forkyard.com', 'coinbin.com'];
+export const PINNED = ['coinbin.com', 'qmail.com', 'y.com', 'agent.chat', 'forkyard.com'];
+/** The tab a game or a new day opens on: Qmail. */
+const HOME_TAB = PINNED.indexOf('qmail.com') + 1;
 const siteOf = (url: string) => url.split('/')[0];
 const startTabs = (): Tab[] => PINNED.map((url, i) => ({ id: i + 1, url, back: [], fwd: [], pinned: url }));
 
@@ -47,7 +49,7 @@ interface ArrivalMark { seq: number; day: number; timed: number; extra: number; 
 export class GameStore {
   state: GameState;
   tabs: Tab[] = startTabs();
-  active = 1;
+  active = HOME_TAB;
   private nextTab = PINNED.length + 1;
   busy = false;
   /** The agent prompt being answered right now, shown in the chat as soon as it's sent. */
@@ -71,6 +73,8 @@ export class GameStore {
     send: { open: false, to: '', amount: '', error: '' },
     /** A line under Coinbin's Send/Receive buttons: "Address copied", or what was just sent. */
     cbNotice: '',
+    /** Sherwood's order box: what was typed, why the last order was refused, or what it filled. */
+    sw: { amount: '', error: '', notice: '' },
     /** Yowl: Post was pressed with no rating picked. */
     reviewNeedsStars: false,
     /** The save-slot menu's last failure, shown in its note. */
@@ -222,6 +226,7 @@ export class GameStore {
   navigate(url: string, newTab = false): void {
     const u = norm(url);
     this.ui.cbNotice = '';
+    this.ui.sw = { amount: '', error: '', notice: '' };
     this.ui.mailNotice = null;
     // localhost is the laptop itself: it opens the Terminal app, not a browser page
     if (u === 'localhost' && this.state.flags.includes('has_terminal')) { this.showTerm(true); return; }
@@ -272,7 +277,7 @@ export class GameStore {
 
   setYSearch(v: string): void { this.ui.ySearch = v; this.emit(); }
   /** Y shows only today's posts until the player asks for the rest; the choice lapses at the next day. */
-  showAllY(): void { this.ui.yAllDay = this.state.values.day; this.emit(); }
+  showAllY(on = true): void { this.ui.yAllDay = on ? this.state.values.day : 0; this.emit(); }
   setYowlSearch(v: string): void { this.ui.yowlSearch = v; this.emit(); }
   setFySearch(v: string): void { this.ui.fySearch = v; this.emit(); }
   setWalletRange(r: string): void { this.ui.walletRange = r; this.emit(); }
@@ -358,8 +363,8 @@ export class GameStore {
     nameUnnamedBugs(state, this.content);
     this.state = state;
     this.tabs = startTabs();
-    this.active = 1; this.nextTab = PINNED.length + 1;
-    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', jevOffline: null, yUnread: 0 };
+    this.active = HOME_TAB; this.nextTab = PINNED.length + 1;
+    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', jevOffline: null, yUnread: 0 };
     this.store.save(this.state);
     this.emit();
   }
@@ -376,7 +381,7 @@ export class GameStore {
     if (this.state.ending) return;
     writeSlot('auto', this.state);
     this.tabs = startTabs();
-    this.active = 1; this.nextTab = PINNED.length + 1;
+    this.active = HOME_TAB; this.nextTab = PINNED.length + 1;
     this.ui.start = false;
   }
   deploy(appId: string): void { this.commitAndSettle(deploy(this.state, appId, this.content)); }
@@ -390,6 +395,16 @@ export class GameStore {
     if (r.error) { this.ui.send = { open: true, to, amount, error: r.error }; this.emit(); return false; }
     this.ui.send = { open: false, to: '', amount: '', error: '' };
     this.ui.cbNotice = `Sent ${(-r.state.tx.at(-1)!.amount).toFixed(2)} DOLR to ${r.state.tx.at(-1)!.memo.split(' · ')[0]}.`;
+    this.commitAndSettle(r.state);
+    return true;
+  }
+  /** A Sherwood order: buy or sell `amount` DOLR of a ticker ('all' sells the whole position). */
+  trade(ticker: string, side: 'buy' | 'sell', amount: string): boolean {
+    const n = amount === 'all' ? 'all' : Number(amount.replace(',', '.'));
+    const r = side === 'buy' ? buyStock(this.state, ticker, n === 'all' ? NaN : n) : sellStock(this.state, ticker, n);
+    if (r.error) { this.ui.sw = { amount: amount === 'all' ? '' : amount, error: r.error, notice: '' }; this.emit(); return false; }
+    const tx = r.state.tx.at(-1)!;
+    this.ui.sw = { amount: '', error: '', notice: `${tx.memo.split(' · ')[1]} for ${Math.abs(tx.amount).toFixed(2)} DOLR.` };
     this.commitAndSettle(r.state);
     return true;
   }
@@ -429,7 +444,7 @@ export class GameStore {
   dismissJevOffline(): void { this.ui.jevOffline = null; this.emit(); }
 
   async post(text: string, trending: string[]) {
-    return this.run(async () => { const r = await postToY(this.state, this.router, text, trending); this.commitAndSettle(r.state); return r; }, 'post-input', text);
+    return this.run(async () => { const r = await postToY(this.state, this.router, text, trending, this.content); this.commitAndSettle(r.state); return r; }, 'post-input', text);
   }
   async reply(eventId: string, text: string) {
     return this.run(async () => { const r = await replyToEvent(this.state, this.content, this.router, eventId, text, this.writer); this.commitAndSettle(r.state); return r; }, 'reply-body', text);

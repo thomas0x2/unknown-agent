@@ -173,9 +173,18 @@
         "wrong_totals": "portfolio total is 1.8M. my $GAI alone is worth more than that.",
         "value_wrong": "says 42,000 $GAI is worth 61k. it isn't.",
         "pnl_sign": "$GAI is up and the P&L says i lost money on it.",
-        "pct_wrong": "says $GAI moved 90% today. it moved one."
+        "pct_wrong": "says $GAI moved 90% today. it moved one.",
+        "stale_prices": "the prices are stuck. sherwood has $GAI somewhere else."
       },
       "bugs": [
+        {
+          "id": "stale_prices",
+          "when": "The holding prices come from a quote cached on the first fetch and never refreshed, so they don't match Sherwood.",
+          "fixed": [
+            "Holdings use today's prices now. They match Sherwood.",
+            "Fixed the prices. It was reading a cached quote from the first day."
+          ]
+        },
         {
           "id": "wrong_totals",
           "when": "The portfolio total leaves out the holdings and shows only the cash.",
@@ -215,6 +224,13 @@
           "label": "the portfolio total",
           "bugs": [
             "wrong_totals"
+          ]
+        },
+        {
+          "id": "holdings/price",
+          "label": "the price of each holding",
+          "bugs": [
+            "stale_prices"
           ]
         },
         {
