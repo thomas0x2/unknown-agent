@@ -44,3 +44,20 @@ describe('sendCrypto', () => {
     expect(r.state.tx.at(-1)).toMatchObject({ amount: -12.5, memo: 'Test · Sent' });
   });
 });
+
+describe('wallet ledger', () => {
+  it('starts with a history whose running balance ends on the opening balance', () => {
+    const s = startGame(content, 1);
+    const seeds = s.tx.filter((x) => x.day <= 0);
+    expect(seeds.every((x) => x.bal != null)).toBe(true);
+    expect(seeds.at(-1)!.bal).toBeCloseTo(100);
+  });
+
+  it('stamps every transaction with the time and the balance it left', () => {
+    WALLETS[OTHER] = { name: 'Test' };
+    const s = startGame(content, 1);
+    const r = sendCrypto(s, OTHER, 30);
+    expect(r.state.tx.at(-1)).toMatchObject({ bal: s.values.crypto - 30, min: r.state.clockMin });
+    delete WALLETS[OTHER];
+  });
+});

@@ -45,7 +45,7 @@ export function setValue(s: GameState, id: MeterId, value: number): void {
 /** Change crypto and record it in the wallet ledger. Memo is "Who · note". */
 export function money(s: GameState, amount: number, memo: string): void {
   addValue(s, 'crypto', amount);
-  s.tx.push({ day: s.values.day, amount: Math.round(amount * 100) / 100, memo });
+  s.tx.push({ day: s.values.day, amount: Math.round(amount * 100) / 100, memo, min: s.clockMin, bal: Math.round(s.values.crypto * 100) / 100 });
 }
 
 // ── clock ──

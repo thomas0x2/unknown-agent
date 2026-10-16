@@ -48,7 +48,7 @@ describe('booking form', () => {
 });
 
 describe('a new day', () => {
-  it('closes every tab but Qmail and agent and asks to start', () => {
+  it('closes every tab but Qmail and agent', () => {
     const s = make();
     s.navigate('y.com'); s.navigate('forkyard.dev', true);
     expect(s.tabs.length).toBe(3);
@@ -56,9 +56,7 @@ describe('a new day', () => {
     expect(s.tabs.map((t) => t.url)).toEqual(['qmail.com', 'agent.chat']);
     expect(s.url).toBe('qmail.com');
     expect(s.canBack).toBe(false);
-    expect(s.ui.dayStart).toBe(true);
-    s.startDay();
-    expect(s.ui.dayStart).toBe(false);
+    expect(s.state.morning).not.toBeNull();
   });
 });
 
@@ -75,5 +73,15 @@ describe('tab limit', () => {
     expect(s.ui.memWarn).toBe(false);
     s.navigate('yowl.com');
     expect(s.url).toBe('yowl.com');
+  });
+});
+
+describe('new game', () => {
+  it('opens with the OS greeting', () => {
+    const s = make();
+    expect(s.ui.greet).toBe(true);
+    s.dismissGreet();
+    s.newGame();
+    expect(s.ui.greet).toBe(true);
   });
 });

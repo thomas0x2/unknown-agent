@@ -1,20 +1,21 @@
 /*
  * Off-script character replies from Claude Haiku, through the local proxy (server/jev-proxy.mjs,
  * POST /api/write). The proxy holds ANTHROPIC_API_KEY and builds the prompt from
- * content/characters.json; the browser only sends which character is speaking and what the player
- * wrote. Used when the "Misses" setting on agent.chat is "Haiku (API)".
+ * content/characters.json; the browser only sends which character is speaking, what the player
+ * wrote, and the conversation so far. Used when the "Misses" setting on agent.chat is "Haiku (API)".
  */
 import type { Character } from '../content/schema';
+import type { HistoryLine } from '../engine';
 import { finishReply } from './characters';
 
 export interface HaikuReply { text: string | null; note?: string; debug: string[] }
 
-export async function haikuReply(ch: Character, text: string, via: 'subscription' | 'api'): Promise<HaikuReply> {
+export async function haikuReply(ch: Character, text: string, via: 'subscription' | 'api', history: HistoryLine[] = []): Promise<HaikuReply> {
   let res: Response;
   try {
     res = await fetch('/api/write', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ character: ch.id, text, via }),
+      body: JSON.stringify({ character: ch.id, text, via, history: history.slice(-12) }),
     });
   } catch {
     return { text: null, note: 'the proxy is not running (npm run proxy)', debug: [] };

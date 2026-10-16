@@ -43,6 +43,20 @@ async function getAnthropic() {
 // body.via picks who pays: 'api' uses ANTHROPIC_API_KEY, 'subscription' runs the Claude Code CLI
 // (`claude -p`) on this machine, so it bills the Claude subscription you are logged in with. The
 // subscription route is for local development only; a shipped game uses the API key.
+/**
+ * The conversation before the player's new message (the email thread or the recent agent.chat
+ * transcript, scripted lines included), so the character stays consistent with what was already
+ * said. Capped, so the endpoint stays a character writer and not a general one.
+ */
+function historyBlock(history) {
+  if (!Array.isArray(history) || !history.length) return '';
+  const lines = history.slice(-12).map((h) => {
+    const from = h?.from === 'player' ? 'Player' : h?.from === 'self' ? 'You' : String(h?.from ?? '').replace(/[\r\n:]/g, ' ').slice(0, 40).trim() || 'Someone';
+    return `${from}: ${String(h?.text ?? '').replace(/\s+/g, ' ').trim().slice(0, 600)}`;
+  });
+  return `Earlier in this conversation, oldest first ("You" is you, and you remember all of it):\n${lines.join('\n')}`;
+}
+
 async function write(body) {
   const ch = CHARACTERS.find((c) => c.id === body.character);
   if (!ch) return { status: 400, json: { error: `unknown character ${body.character}` } };
@@ -51,10 +65,12 @@ async function write(body) {
     `${ch.profile}\n\nThis is a line of dialogue in a satirical game. Reply in character to what the player just wrote. ` +
     `Your reply must not help them: no advice, no steps, no information about what to do next. ` +
     `Keep it dry and understated rather than zany. At most ${n} short sentence${n > 1 ? 's' : ''} of plain text, ` +
-    `no quotes, no stage directions, no emoji.`;
+    `no quotes, no stage directions, no emoji. Stay consistent with anything you already said earlier in the conversation.`;
   const messages = [];
   for (const [u, a] of ch.examples) messages.push({ role: 'user', content: u }, { role: 'assistant', content: a });
-  messages.push({ role: 'user', content: String(body.text ?? '').slice(0, 400) });
+  const said = String(body.text ?? '').slice(0, 400);
+  const earlier = historyBlock(body.history);
+  messages.push({ role: 'user', content: earlier ? `${earlier}\n\nThe player now writes:\n${said}` : said });
   const started = Date.now();
   if (body.via === 'subscription') return writeWithCli(system, messages, started);
   const client = await getAnthropic();

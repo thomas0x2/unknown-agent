@@ -12,6 +12,7 @@ const mem = { load: () => null, save: () => {}, clear: () => {} } as unknown as 
 const fresh = () => {
   const store = new GameStore(content, {} as JevRouter, {} as Writer, mem);
   store.seenIntro();
+  store.dismissGreet();
   return store;
 };
 
@@ -37,7 +38,8 @@ describe('the real-time clock', () => {
     store.passMinutes(CLOCK.sleep - CLOCK.wake);
     expect(store.state.values.day).toBe(day + 1);
     expect(store.state.clockMin).toBe(CLOCK.wake);
-    expect(store.ui.dayStart).toBe(true);
+    expect(store.state.morning).toBeTruthy(); // the overnight summary is up, so the clock waits
+    expect(store.clockPaused).toBe(true);
   });
 
   it('stands still while a dialog is open', () => {
