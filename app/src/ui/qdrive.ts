@@ -33,12 +33,61 @@ const MODEL_FILES: Record<string, { name: string; kb: number; preview: string }>
   stolen_weights: { name: 'weights_DO_NOT_SHARE.bin', kb: 9 * 1024 * 1024, preview: 'Someone else’s model. You know where it came from. So will they, eventually.' },
 };
 
+// The two files the player starts with. Lines in capitals render as headings.
+const RESUME = `YOU
+you@qmail.com · Pine Street Apartments, Unit 4B
+
+PROFILE
+Operations professional with six years of experience in invoice processing, vendor reconciliation and workflow documentation. Reliable, detail-oriented and comfortable with repetitive work.
+
+EXPERIENCE
+Vantor Group · Process Optimization Associate · 6 years
+· Processed and reconciled supplier invoices for the Eastern region.
+· Maintained the team's shared tracking spreadsheet.
+· Documented the team's workflows step by step for the GeneralAI integration project.
+· Employee of the Quarter, Q3.
+
+Vantor Group · Data Intern · 1 year
+Unpaid.
+
+EDUCATION
+B.A. Business Communication
+
+SKILLS
+Excel (advanced) · Data entry · Vendor communication · Meeting notes
+
+REFERENCES
+Available on request.`;
+
+const OFFBOARDING = `VANTOR GROUP · PEOPLE & CULTURE
+Offboarding Packet, Form PC-77b
+
+Thank you for your years of service. As communicated, your position has been transitioned to GeneralAI Operations, effective today.
+
+NEXT STEPS
+1. Badge access ends at 5:00 PM today.
+2. Your final salary payment has already been made. No further payments are due.
+3. Health coverage ends at midnight.
+4. Please return your laptop to Facilities. Facilities is currently unstaffed, so keep the device until further notice.
+
+SEVERANCE
+Positions transitioned to automation are not eligible for severance under current policy (PC-77b, section 4).
+
+EXIT SURVEY
+Please complete the exit survey. Your answers help us improve our automated operations.
+
+We wish you every success in what comes next.
+
+People & Culture
+
+This document was drafted with GeneralAI.`;
+
 export function driveFiles(s: GameState): DriveFile[] {
   const files: DriveFile[] = [
     { id: 'resume', name: 'resume_final_v3.pdf', folder: 'documents', kind: 'pdf', kb: 84, day: -12, actions: [],
-      preview: 'Six years at Vantor Group. “Process optimization.” The bullet points read differently now.' },
+      preview: RESUME },
     { id: 'offboarding', name: 'vantor_offboarding.pdf', folder: 'documents', kind: 'pdf', kb: 212, day: 1, actions: [{ label: 'Find the email', nav: 'qmail.com' }],
-      preview: 'Your role has been “transitioned to an automated workflow.” Badge access ends today. Please return the laptop. (They forgot to ask for it back.)' },
+      preview: OFFBOARDING },
   ];
   if (s.interviewAnswers.trim()) {
     files.push({ id: 'interview', name: 'interview_answers.txt', folder: 'documents', kind: 'txt', kb: Math.max(1, Math.ceil(s.interviewAnswers.length / 1024)), actions: [],
@@ -56,6 +105,9 @@ export function driveFiles(s: GameState): DriveFile[] {
   }
   return files;
 }
+
+/** Plain text to HTML: line breaks kept, lines in capitals shown as headings. */
+const docHtml = (t: string) => t.split('\n').map((l) => (/^[A-Z][A-Z0-9 &·'-]+$/.test(l.trim()) ? `<b class="qd-hd">${esc(l)}</b>` : esc(l))).join('<br>');
 
 const QUOTA_KB = 15 * 1024 * 1024;
 function size(kb: number): string {
@@ -81,7 +133,7 @@ export function pageDrive(s: GameState, param?: string): string {
     main = `<article class="qd-open">
       <p class="qd-crumbs"><a href="#" data-nav="qdrive.com">My Drive</a> / <a href="#" data-nav="qdrive.com/${open.folder}">${FOLDERS.find((f) => f.id === open.folder)!.label}</a></p>
       <header>${glyph(open.kind)}<div><h1>${esc(open.name)}</h1><p>${size(open.kb)}${open.day === undefined ? '' : ` · Saved ${when(open.day)}`}</p></div></header>
-      <div class="qd-preview">${esc(open.preview).replace(/\n/g, '<br>')}</div>
+      <div class="qd-preview${open.kind === 'pdf' ? ' qd-doc' : ''}">${docHtml(open.preview)}</div>
       ${open.actions.length ? `<p class="qd-actions">${open.actions.map((a) => `<button class="qd-btn" data-nav="${esc(a.nav)}">${esc(a.label)}</button>`).join('')}</p>` : ''}
     </article>`;
   } else {

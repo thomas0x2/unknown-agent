@@ -16,6 +16,9 @@ npm run build
 
 Copy `.env.example` to `.env` and set `TYPESAFE_API_KEY` to use Jev (TypeSafe System One). The key is
 read only by `server/jev-proxy.mjs`; the client talks to `/api/*`, never to TypeSafe directly.
+Run `npm run proxy` alongside `npm run dev`. The agent page shows "Story decisions: Jev" when it is
+connected, or "keyword matcher (Jev offline)" with the reason on hover; after a failed call the game
+retries the proxy every 30 seconds.
 
 ## How the three models are wired
 

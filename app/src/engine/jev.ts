@@ -92,7 +92,8 @@ export const offlineJev: JevRouter = {
   },
   async ratePost(input) {
     const t = words(input.text);
-    const trend = new Set(input.trending.map((x) => x.toLowerCase()));
+    // trending entries are phrases ("AI layoffs"); a post hits a trend if it shares any word with one
+    const trend = new Set(input.trending.flatMap((x) => [...words(x)]));
     const hitsTrend = [...t].some((w) => trend.has(w));
     const dup = input.recentPosts.some((p) => words(p).size && overlap(words(p), t) >= Math.max(2, t.size - 1));
     const quality = Math.max(0, Math.min(1, t.size / 12));
