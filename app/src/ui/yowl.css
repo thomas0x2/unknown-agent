@@ -1,0 +1,2 @@
+/* One additive rule for the business "about" blurb. The rest of Yowl uses the legacy stylesheet. */
+.yw-about { font-size: 14px; line-height: 1.5; color: #4a2f27; margin: 8px 0 2px; max-width: 60ch; }

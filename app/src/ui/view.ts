@@ -19,7 +19,6 @@ const shortAddr = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 function fmtMoney(n: number) { return (n < 0 ? '−$' : '$') + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-function fmtCoin(n: number) { return `${n < 0 ? '−' : ''}${Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} DOLR`; }
 function compact(n: number) {
   if (n >= 1e6) return (n / 1e6).toFixed(n >= 1e7 ? 0 : 1).replace(/\.0$/, '') + 'M';
   if (n >= 1e3) return (n / 1e3).toFixed(n >= 1e4 ? 0 : 1).replace(/\.0$/, '') + 'K';
@@ -286,83 +285,107 @@ function yProfile(store: GameStore, handle: string): string {
   </section><p class="y-eyebrow">Posts</p><div class="y-feed">${feed}</div>`;
 }
 
-// ── Satchel ──
+// ── Satchel (minimal, ledger-style) ──
+/** Day 1 is Mon 12 Oct; days <= 0 are the weeks before the game. */
+function dayDate(day: number): Date { return new Date(Date.UTC(2026, 9, 12 + day - 1)); }
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const shortDate = (day: number) => { const d = dayDate(day); return `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`; };
+const longDate = (day: number) => { const d = dayDate(day); return `${DAYS[(d.getUTCDay() + 6) % 7]}, ${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`; };
 function txHash(x: { day: number; memo: string; amount: number }): string {
   let h = 2166136261;
   for (const c of `${x.day}|${x.memo}|${x.amount}`) h = Math.imul(h ^ c.charCodeAt(0), 16777619) >>> 0;
   const hex = (h.toString(16) + (h ^ 0x9e3779b9).toString(16)).padEnd(16, '0');
-  return `0x${hex.slice(0, 4)}…${hex.slice(-4)}`;
+  return `0x${hex.slice(0, 6)}…${hex.slice(-4)}`;
 }
-function identicon(addr: string): string {
-  const hue = parseInt(addr.slice(2, 6), 16) % 360;
-  let cells = '';
-  for (let y = 0; y < 5; y++) for (let x = 0; x < 3; x++) if (parseInt(addr[2 + y * 3 + x], 16) % 2) { cells += `<rect x="${x}" y="${y}" width="1" height="1"/>`; if (x < 2) cells += `<rect x="${4 - x}" y="${y}" width="1" height="1"/>`; }
-  return `<svg viewBox="0 0 5 5" class="wl-ident" aria-hidden="true" style="--h:${hue}"><g fill="hsl(${hue} 70% 62%)">${cells}</g></svg>`;
-}
-function sparkline(pts: number[]): string {
-  const w = 320, h = 90, pad = 6;
-  const lo = Math.min(0, ...pts), hi = Math.max(...pts, 1);
-  const xs = (i: number) => pad + (i / Math.max(1, pts.length - 1)) * (w - pad * 2);
-  const ys = (v: number) => h - pad - ((v - lo) / (hi - lo || 1)) * (h - pad * 2);
-  const line = pts.map((v, i) => `${xs(i).toFixed(1)},${ys(v).toFixed(1)}`).join(' ');
+const RANGES: Record<string, number> = { '1W': 7, '1M': 30, 'All': 9999 };
+function balanceChart(pts: { day: number; bal: number }[]): string {
+  const w = 720, h = 180, padX = 4, padY = 14;
+  const vals = pts.map((p) => p.bal);
+  const lo = Math.min(...vals), hi = Math.max(...vals);
+  const span = hi - lo || 1;
+  const xs = (i: number) => padX + (i / Math.max(1, pts.length - 1)) * (w - padX * 2);
+  const ys = (v: number) => h - padY - ((v - lo) / span) * (h - padY * 2);
+  const line = pts.map((p, i) => `${xs(i).toFixed(1)},${ys(p.bal).toFixed(1)}`).join(' ');
   const last = pts.length - 1;
-  return `<svg viewBox="0 0 ${w} ${h}" class="wl-spark" preserveAspectRatio="none" role="img">
-    <line x1="${pad}" x2="${w - pad}" y1="${ys(0).toFixed(1)}" y2="${ys(0).toFixed(1)}" class="wl-zero"/>
-    <polygon points="${xs(0).toFixed(1)},${h - pad} ${line} ${xs(last).toFixed(1)},${h - pad}" class="wl-area"/>
-    <polyline points="${line}" class="wl-line"/>
-    <circle cx="${xs(last).toFixed(1)}" cy="${ys(pts[last]).toFixed(1)}" r="3.5" class="wl-dot"/></svg>`;
+  const grid = [0.25, 0.5, 0.75].map((f) => `<line x1="0" x2="${w}" y1="${(padY + f * (h - padY * 2)).toFixed(1)}" y2="${(padY + f * (h - padY * 2)).toFixed(1)}" class="sx-grid"/>`).join('');
+  return `<svg viewBox="0 0 ${w} ${h}" class="sx-chart" preserveAspectRatio="none" role="img" aria-label="Balance history">
+    <defs><linearGradient id="sx-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sx-accent)" stop-opacity="0.28"/><stop offset="1" stop-color="var(--sx-accent)" stop-opacity="0"/></linearGradient></defs>
+    ${grid}
+    <polygon points="${xs(0).toFixed(1)},${h} ${line} ${xs(last).toFixed(1)},${h}" fill="url(#sx-fill)"/>
+    <polyline points="${line}" class="sx-line"/>
+    <circle cx="${xs(last).toFixed(1)}" cy="${ys(pts[last].bal).toFixed(1)}" r="3.5" class="sx-dot"/></svg>`;
 }
 function pageWallet(store: GameStore): string {
   const s = store.state;
-  const txs = s.tx.slice();
-  const sorted = txs.slice().reverse();
-  const todayDelta = Math.round(txs.filter((x) => x.day === s.values.day).reduce((n, x) => n + x.amount, 0) * 100) / 100;
+  const txs = s.tx;
+  const range = store.ui.walletRange in RANGES ? store.ui.walletRange : '1M';
+  // balance after every transaction, oldest first
   let bal = Math.round((s.values.crypto - txs.reduce((n, x) => n + x.amount, 0)) * 100) / 100;
-  const pts = [bal]; for (const x of txs) { bal = Math.round((bal + x.amount) * 100) / 100; pts.push(bal); }
-  const rows = sorted.map((x, i) => {
+  const series: { day: number; bal: number }[] = [{ day: (txs[0]?.day ?? s.values.day) - 1, bal }];
+  for (const x of txs) { bal = Math.round((bal + x.amount) * 100) / 100; series.push({ day: x.day, bal }); }
+  const from = s.values.day - RANGES[range];
+  let window = series.filter((p) => p.day > from);
+  const before = series.filter((p) => p.day <= from).pop();
+  if (before) window = [{ day: from, bal: before.bal }, ...window];
+  if (window.length < 2) window = [{ day: from, bal: window[0]?.bal ?? s.values.crypto }, ...window, { day: s.values.day, bal: s.values.crypto }];
+  const startBal = window[0].bal;
+  const change = Math.round((s.values.crypto - startBal) * 100) / 100;
+  const pct = startBal ? (change / Math.abs(startBal)) * 100 : 0;
+  const up = change >= 0;
+
+  // operations, newest first, grouped by date
+  const groups = new Map<number, typeof txs>();
+  for (const x of txs.slice().reverse()) { if (!groups.has(x.day)) groups.set(x.day, []); groups.get(x.day)!.push(x); }
+  const ops = [...groups.entries()].map(([day, list]) => `<div class="sx-day"><span>${esc(longDate(day))}</span><span>${day >= 1 ? `Day ${day}` : ''}</span></div>` + list.map((x) => {
     const out = x.amount < 0;
     const [who, note] = x.memo.split(' · ');
-    const block = (18442107 + Math.max(0, x.day) * 5 + (sorted.length - i)).toLocaleString('en-US');
-    return `<li class="wl-tx">
-      <span class="wl-dir ${out ? 'out' : 'in'}" aria-hidden="true">${out ? '↗' : '↙'}</span>
-      <span class="wl-what"><b>${esc(who)}</b><small>${note ? esc(note) : out ? 'Transfer out' : 'Transfer in'}</small></span>
-      <span class="wl-meta"><code>${txHash(x)}</code><small>Day ${x.day} · block ${block}</small></span>
-      <span class="wl-amt ${out ? 'neg' : 'pos'}">${out ? '' : '+'}${fmtCoin(x.amount)}<small class="wl-ok">Confirmed</small></span></li>`;
-  }).join('');
+    return `<div class="sx-op">
+      <span class="sx-op-ico ${out ? 'out' : 'in'}" aria-hidden="true">${out ? '↑' : '↓'}</span>
+      <span class="sx-op-what"><b>${esc(who)}</b><small>${esc(note || (out ? 'Sent' : 'Received'))}</small></span>
+      <code class="sx-op-hash">${txHash(x)}</code>
+      <span class="sx-op-amt ${out ? '' : 'pos'}">${out ? '−' : '+'}${Math.abs(x.amount).toFixed(2)}<small>DOLR</small></span>
+    </div>`;
+  }).join('')).join('');
+
   const income = s.apps.filter(appWorking).reduce((n, a) => n + (a.kind === 'client' ? a.payPerDay : Math.round((a.users ?? 0) * 0.3)), 0);
   const sub = agentCost(s.values.agentLevel).sub;
   const live = s.apps.filter((a) => a.deployed && !a.churned).length;
-  const nightly = Math.round((income - sub - live * 2) * 100) / 100;
   const rentDay = rentDayOf(s);
-  const rentLineHtml = rentDay ? `<div class="wl-up"><span>Rent · Landlord</span><b class="neg">${fmtCoin(-RENT[rentDay])}</b><small>${rentDay === s.values.day ? 'Executes tonight' : `End of Day ${rentDay} · T−${rentDay - s.values.day}d`}</small></div>` : '';
-  const action = (id: string, icon: string, label: string) => `<button class="wl-action" data-wallet="${id}"><span>${icon}</span>${label}</button>`;
-  return `<div class="wl">
-    <header class="wl-top">
-      <div class="wl-logo"><span class="wl-logo-tile">${ICONS.wallet}</span><span>Satchel</span></div>
-      <span class="wl-net"><i></i>Mainnet · 14 gwei</span>
-      <span class="wl-acct">${identicon(WALLET_ADDR)}<code>${shortAddr(WALLET_ADDR)}</code><button class="wl-copy" data-copy-addr aria-label="Copy address">Copy</button></span>
+  const upcoming = [
+    rentDay ? `<div class="sx-row"><span><b>Rent</b><small>Landlord · ${rentDay === s.values.day ? 'tonight' : `${esc(shortDate(rentDay))} · in ${rentDay - s.values.day}d`}</small></span><span class="sx-num">−${RENT[rentDay].toFixed(2)}</span></div>` : '',
+    `<div class="sx-row"><span><b>agent subscription</b><small>GeneralAI · nightly</small></span><span class="sx-num">−${sub.toFixed(2)}</span></div>`,
+    live ? `<div class="sx-row"><span><b>Hosting</b><small>Forkyard · ${live} live · nightly</small></span><span class="sx-num">−${(live * 2).toFixed(2)}</span></div>` : '',
+    income ? `<div class="sx-row"><span><b>App income</b><small>Working apps · at payday</small></span><span class="sx-num pos">+${income.toFixed(2)}</span></div>` : '',
+  ].join('');
+  const total = s.values.crypto + 0.42;
+  const tabs = Object.keys(RANGES).map((r) => `<button class="sx-tab${r === range ? ' on' : ''}" data-wl-range="${r}">${r}</button>`).join('');
+  return `<div class="sx">
+    <header class="sx-top">
+      <div class="sx-logo"><span class="sx-mark">${ICONS.wallet}</span><span>Satchel</span></div>
+      <span class="sx-sync"><i></i>Synchronized</span>
+      <code class="sx-acct">${shortAddr(WALLET_ADDR)}</code>
     </header>
-    <div class="wl-wrap">
-      <section class="wl-hero"><div class="wl-hero-top"><div>
-        <p class="wl-label">Total balance</p>
-        <p class="wl-balance ${s.values.crypto < 0 ? 'neg' : ''}">${fmtMoney(s.values.crypto)}</p>
-        <p class="wl-sub">${fmtCoin(s.values.crypto)} <span class="${todayDelta < 0 ? 'neg' : 'pos'}">${todayDelta >= 0 ? '+' : ''}${fmtMoney(todayDelta)} today</span></p>
-      </div>${sparkline(pts.slice(-40))}</div>
-        <div class="wl-actions">${action('receive', '↙', 'Receive')}${action('send', '↗', 'Send')}${action('swap', '⇄', 'Swap')}${action('buy', '+', 'Buy')}</div>
+    <div class="sx-wrap">
+      <section class="sx-port">
+        <div class="sx-port-head">
+          <div>
+            <p class="sx-label">Portfolio</p>
+            <p class="sx-bal"><span>${s.values.crypto < 0 ? '−' : ''}${Math.abs(s.values.crypto).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span><small>DOLR</small></p>
+            <p class="sx-chg ${up ? 'pos' : 'neg'}">${up ? '+' : '−'}${Math.abs(change).toFixed(2)} (${up ? '+' : '−'}${Math.abs(pct).toFixed(1)}%) <span>${range === 'All' ? 'all time' : `past ${range === '1W' ? 'week' : 'month'}`}</span></p>
+          </div>
+          <div class="sx-tabs" role="tablist" aria-label="Range">${tabs}</div>
+        </div>
+        ${balanceChart(window)}
+        <div class="sx-axis"><span>${esc(shortDate(window[0].day))}</span><span>${esc(shortDate(s.values.day))}</span></div>
       </section>
-      <section class="wl-panel wl-assets"><h2>Tokens</h2>
-        <table class="wl-table"><thead><tr><th>Asset</th><th class="r">Price</th><th class="r">24h</th><th class="r">Value</th></tr></thead>
-        <tbody>
-          <tr><td><span class="wl-asset"><span class="wl-tok dolr">D</span><span><b>DOLR</b><small>Dollar stablecoin</small></span></span></td><td class="r">$1.00</td><td class="r">0.00%</td><td class="r"><b>${fmtMoney(s.values.crypto)}</b><small>${fmtCoin(s.values.crypto)}</small></td></tr>
-          <tr><td><span class="wl-asset"><span class="wl-tok cat">M</span><span><b>MOONCAT</b><small>Bought at the top</small></span></span></td><td class="r">$0.0000001</td><td class="r neg">−99.4%</td><td class="r"><b>$0.42</b><small>4,200,000 MOONCAT</small></td></tr>
-        </tbody></table>
-      </section>
-      <section class="wl-panel wl-auto"><h2>Scheduled</h2>${rentLineHtml}
-        <div class="wl-up"><span>Nightly settlement</span><b class="${nightly < 0 ? 'neg' : 'pos'}">${nightly >= 0 ? '+' : ''}${fmtCoin(nightly)}</b><small>Agent sub ${fmtCoin(-sub)}${live ? ` · Hosting ${fmtCoin(-live * 2)}` : ''}${income ? ` · App income +${fmtCoin(income)}` : ''}</small></div>
-      </section>
-      <section class="wl-panel wl-activity"><h2>Activity <span>${txs.length} transactions</span></h2>
-        <ul class="wl-list">${rows || '<li class="wl-tx"><span class="wl-what"><b>No activity yet</b></span></li>'}</ul>
-      </section>
+      <div class="sx-cols">
+        <section class="sx-card"><h2>Assets</h2>
+          <div class="sx-row"><span class="sx-asset"><i class="sx-tok">D</i><span><b>DOLR</b><small>Dollar stablecoin · $1.00</small></span></span><span class="sx-alloc"><i style="width:${(Math.max(0, s.values.crypto) / total * 100).toFixed(1)}%"></i></span><span class="sx-num">${s.values.crypto.toFixed(2)}</span></div>
+          <div class="sx-row"><span class="sx-asset"><i class="sx-tok cat">M</i><span><b>MOONCAT</b><small>4,200,000 · <em class="neg">−99.4%</em></small></span></span><span class="sx-alloc"><i style="width:${Math.max(0.5, 0.42 / total * 100).toFixed(1)}%"></i></span><span class="sx-num">0.42</span></div>
+        </section>
+        <section class="sx-card"><h2>Upcoming</h2>${upcoming}</section>
+      </div>
+      <section class="sx-card sx-ops"><h2>Operations <span>${txs.length}</span></h2>${ops || '<p class="sx-empty">No operations yet.</p>'}</section>
     </div></div>`;
 }
 
@@ -488,7 +511,7 @@ function reviewsFor(store: GameStore, b: Business) {
   const s = store.state;
   const out: { author: string; stars: number; text: string; day: number; mine?: boolean }[] = [];
   for (const r of s.reviews.filter((r) => r.bizId === b.id && !r.removed)) out.push({ author: r.author, stars: r.stars, text: r.text, day: r.day, mine: r.mine });
-  for (const r of YOWL_SEED[b.id] ?? []) out.push({ author: r.author, stars: r.stars, text: r.text, day: 0 });
+  for (const r of YOWL_SEED[b.id] ?? []) out.push({ author: r.author, stars: r.stars, text: r.text, day: r.day ?? 0 });
   return out;
 }
 const avg = (l: { stars: number }[]) => (l.length ? l.reduce((a, x) => a + x.stars, 0) / l.length : 0);
@@ -509,7 +532,8 @@ function pageYowl(store: GameStore, param?: string): string {
       <section class="yw-biz"><h1>${esc(b.name)}</h1>
         <p class="yw-rating">${starRow(avg(list))}<b>${avg(list).toFixed(1)}</b><span>${list.length} review${list.length === 1 ? '' : 's'}</span></p>
         <p class="yw-meta">${esc(b.category)} · ${esc(b.price)}</p>
-        <dl class="yw-facts"><dt>Address</dt><dd>${esc(b.address)}</dd><dt>Owner</dt><dd>${esc(b.owner)}</dd></dl></section>
+        <p class="yw-meta yw-about">${esc(b.about)}</p>
+        <dl class="yw-facts"><dt>Address</dt><dd>${esc(b.address)}</dd><dt>Hours</dt><dd>${esc(b.hours)}</dd><dt>Owner</dt><dd>${esc(b.owner)}</dd></dl></section>
       ${form}
       <section class="yw-reviews">${list.map((x) => `<article class="yw-review${x.mine ? ' mine' : ''}"><header><b>${esc(x.author)}</b><span>${x.day ? 'Day ' + x.day : 'this week'}</span></header>${starRow(x.stars)}<p>${linkify(esc(x.text))}</p></article>`).join('')}</section>
     </div></div>`;

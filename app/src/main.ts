@@ -4,6 +4,8 @@
  * index.html is static and we fill #tabs / #bookmarks / #viewport / the taskbar / #overlay / #dev.
  */
 import '../../src/style.css';
+import './ui/satchel.css';
+import './ui/yowl.css';
 import { GameStore } from './game/store';
 import { loadContent } from './content/load';
 import { offlineJev, localStorageStore } from './engine';
@@ -81,7 +83,7 @@ function toast(title: string, body: string, kind = 'note'): void {
 
 // ── clicks ──
 document.addEventListener('click', (e) => {
-  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-copy-addr],[data-wallet],[data-star],[data-download],[data-llm],[data-ov],[data-dev],[data-cancel-booking]');
+  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-llm],[data-ov],[data-dev],[data-cancel-booking]');
   if (!t) return;
   const d = t.dataset;
   if (d.close != null) { e.stopPropagation(); store.closeTab(Number(d.close)); return; }
@@ -96,7 +98,7 @@ document.addEventListener('click', (e) => {
   else if (d.mailDiscard != null) { store.setDraft(null); store.navigate('qmail.com'); }
   else if (d.star != null) store.setReviewStars(Number(d.star));
   else if (d.download != null) { store.download(d.download); toast('Downloads', `${d.download} saved to your laptop`, 'note'); }
-  else if (d.wallet != null || d.copyAddr != null) { /* cosmetic */ }
+  else if (d.wlRange != null) store.setWalletRange(d.wlRange);
   else if (d.llm != null) onLlm(d.llm);
   else if (d.ov != null) onOverlay(d.ov);
   else if (d.dev != null) store.devAdd(d.dev);

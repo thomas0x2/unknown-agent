@@ -223,7 +223,36 @@ export interface GameState {
   nextId: number;
 }
 
-export const SAVE_VERSION = 3;
+export const SAVE_VERSION = 4;
+
+/**
+ * The four weeks before Day 1, so Satchel opens on a real history: two paychecks from Vantor, weekly
+ * rent, groceries and takeout, bills, and one very bad token buy. Days <= 0 are before the game.
+ * Opening balance is chosen so the ledger lands exactly on the starting 100 DOLR.
+ */
+export const SEED_TX: Tx[] = [
+  { day: -27, amount: 1240, memo: 'Vantor Group · Salary' },
+  { day: -26, amount: -64.2, memo: 'GreenBasket · Groceries' },
+  { day: -24, amount: -12.5, memo: 'Noodle Hut · Takeout' },
+  { day: -21, amount: -350, memo: 'Landlord · Rent' },
+  { day: -20, amount: -45, memo: 'MetroPass · Monthly transit' },
+  { day: -19, amount: -11.99, memo: 'Streamly · Subscription' },
+  { day: -18, amount: -58.75, memo: 'GreenBasket · Groceries' },
+  { day: -16, amount: -800, memo: 'MOONCAT DEX · Swap DOLR → MOONCAT' },
+  { day: -14, amount: -350, memo: 'Landlord · Rent' },
+  { day: -13, amount: 1240, memo: 'Vantor Group · Salary' },
+  { day: -12, amount: -71.3, memo: 'GreenBasket · Groceries' },
+  { day: -11, amount: -23.4, memo: 'Corner Pharmacy · Card' },
+  { day: -10, amount: -14, memo: 'Noodle Hut · Takeout' },
+  { day: -9, amount: -86.1, memo: 'Power & Light · Utilities' },
+  { day: -7, amount: -350, memo: 'Landlord · Rent' },
+  { day: -6, amount: -49.9, memo: 'GreenBasket · Groceries' },
+  { day: -5, amount: 40, memo: 'Mom · for the train' },
+  { day: -4, amount: -35, memo: 'Ringo Mobile · Phone plan' },
+  { day: -3, amount: -11.25, memo: 'Noodle Hut · Takeout' },
+  { day: -2, amount: -18.6, memo: 'Bean There · Coffee' },
+  { day: 0, amount: -350, memo: 'Landlord · Rent' },
+];
 
 export function newGame(seed = makeSeed()): GameState {
   return {
@@ -249,7 +278,7 @@ export function newGame(seed = makeSeed()): GameState {
     ending: null,
     endingShown: false,
     log: [],
-    tx: [],
+    tx: SEED_TX.map((t) => ({ ...t })),
     chat: [{ from: 'agent', text: "Hi, I'm agent. I build and fix software, write, translate and answer questions. Every prompt is billed to your Satchel wallet: a flat fee plus a little per word I write back. Ask me anything.", day: 1 }],
     nextAppNum: 1,
     mail: [],

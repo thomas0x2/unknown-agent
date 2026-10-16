@@ -23,7 +23,7 @@ export class GameStore {
   private nextTab = 3;
   busy = false;
   ui = {
-    ySearch: '', yowlSearch: '', reviewStars: 0, draft: null as Draft | null,
+    ySearch: '', yowlSearch: '', reviewStars: 0, walletRange: '1M', draft: null as Draft | null,
     project: '', dev: false, liked: {} as Record<string, boolean>, intro: true, confirm: null as null | { text: string; yes: string; fn: () => void },
   };
 
@@ -58,6 +58,7 @@ export class GameStore {
 
   setYSearch(v: string): void { this.ui.ySearch = v; this.emit(); }
   setYowlSearch(v: string): void { this.ui.yowlSearch = v; this.emit(); }
+  setWalletRange(r: string): void { this.ui.walletRange = r; this.emit(); }
   setReviewStars(n: number): void { this.ui.reviewStars = n; this.emit(); }
   setDraft(d: Draft | null): void { this.ui.draft = d; this.emit(); }
   setProject(id: string): void { this.ui.project = id; this.emit(); }
@@ -74,7 +75,7 @@ export class GameStore {
     this.state = startGame(this.content);
     this.tabs = [{ id: 1, url: 'qmail.com' }, { id: 2, url: 'agent.chat' }];
     this.active = 1; this.nextTab = 3;
-    this.ui = { ySearch: '', yowlSearch: '', reviewStars: 0, draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null };
+    this.ui = { ySearch: '', yowlSearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null };
     this.store.save(this.state);
     this.emit();
   }
