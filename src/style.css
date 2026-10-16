@@ -804,3 +804,8 @@ a.y-me-head { text-decoration: none; color: inherit; }
 @keyframes pl-spin { to { transform: rotate(360deg); } }
 @keyframes pl-bar { to { width: 85%; } }
 @media (prefers-reduced-motion: reduce) { .tab.loading .tab-ico::before { animation-duration: 1.5s; } .pl-bar { animation: none; width: 60%; } }
+/* a prompt's charge on its way to the wallet, just after the reply */
+.ua-charge { align-self: flex-end; display: flex; align-items: center; gap: 8px; font-family: var(--f-mono); font-size: 11px; color: #a12b1f; }
+.ua-charge-bar { width: 44px; height: 4px; border-radius: 2px; background: #f0d3ce; overflow: hidden; }
+.ua-charge-bar i { display: block; height: 100%; width: 100%; background: #c0392b; transform-origin: left; animation: ua-charge linear forwards; }
+@keyframes ua-charge { from { transform: scaleX(0); } to { transform: scaleX(1); } }

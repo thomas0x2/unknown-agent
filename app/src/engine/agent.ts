@@ -31,6 +31,9 @@ export function canUseAgent(s: GameState): boolean {
   return s.values.crypto >= agentCost(s.values.agentLevel).prompt;
 }
 
+/** The wallet memo of a prompt's charge. */
+export const AGENT_USAGE = 'GeneralAI · agent usage';
+
 /**
  * Charge for one agent prompt (refusals included): the per-prompt fee plus the per-word fee on the
  * words of the prompt, so the player knows the price before sending. If the player can't cover it,
@@ -43,7 +46,7 @@ export function chargeAgent(s: GameState, text: string): boolean {
     log(s, 'agent.chat locked: unpaid balance.', 'warn');
     return false;
   }
-  money(s, -total, 'GeneralAI · agent usage');
+  money(s, -total, AGENT_USAGE);
   if (s.agentLocked && s.values.crypto >= 0) s.agentLocked = false;
   return true;
 }
