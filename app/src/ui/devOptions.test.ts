@@ -52,3 +52,11 @@ describe('no-reply mechanics in the Qmail panel', () => {
     expect(html).toContain('familyTrust -5');
   });
 });
+
+describe('translations in the agent panel', () => {
+  it('lists every deepsleep line with its translation', async () => {
+    const { DEEPSLEEP_LINES } = await import('../engine/deepsleep');
+    const html = panel(startGame(content), 'agent');
+    for (const l of DEEPSLEEP_LINES) { expect(html).toContain(l.zh); expect(html).toContain(l.en.replace(/'/g, '&#39;')); }
+  });
+});

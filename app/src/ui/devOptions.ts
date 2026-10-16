@@ -8,6 +8,7 @@ import type { Effects, GameEvent, Outcome } from '../content/schema';
 import {
   type GameState, activeDeliveries, triggerMatches, replyDeadline, needsWork, fixCategories, policyActive, POST_BANDS, Y as YCFG,
 } from '../engine';
+import { DEEPSLEEP_LINES, translationReplies } from '../engine/deepsleep';
 
 export type DevOptionsSite = 'agent' | 'qmail' | 'y';
 
@@ -124,8 +125,16 @@ function agentOptions(store: GameStore): string {
     : '';
   return policy
     + section('Build and fix', `scripted reply: "${reply}"`, apps)
+    + section('Translations', 'paste a deepsleep-0.5B line from the Terminal; several lines are translated together', translations())
     + section('Hint topics', 'one reply is picked at random, never the last one twice', hints)
     + section('Misses', 'Haiku writes a roast; these stand in when it cannot', roasts ? `<div class="dvb-card">${roasts}</div>` : '');
+}
+
+/** Every deepsleep-0.5B line with its translation, and the scripted replies that carry it. */
+function translations(): string {
+  const lines = DEEPSLEEP_LINES.map((l) => `<div class="dvo-miss"><b lang="zh">${esc(l.zh)}</b>${quote(l.en)}</div>`).join('');
+  const replies = translationReplies([{ en: '…' }]).map((r) => `<span class="dvo-q">${esc(r)}</span>`).join('');
+  return `<div class="dvb-card">${lines}</div><div class="dvb-card">${line(`Replies (${translationReplies([]).length})`, replies)}</div>`;
 }
 
 // ── Qmail ──
