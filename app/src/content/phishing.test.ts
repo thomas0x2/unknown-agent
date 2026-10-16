@@ -46,6 +46,14 @@ describe('day 3 Coinbin phishing', () => {
     expect(phishLogin(r.state, COINBIN_PASSWORD).state).toBe(r.state);
   });
 
+  it('takes whatever the balance is, down to exactly 0', () => {
+    const s = startGame(content, 1);
+    s.values.crypto = 87.35;
+    const r = phishLogin(s, COINBIN_PASSWORD);
+    expect(r.state.values.crypto).toBe(0);
+    expect(r.state.tx.at(-1)!.amount).toBe(-87.35);
+  });
+
   it('the fake bank ad opens the same site', () => {
     expect(WIDE.find((a) => a.id === 'bank')?.href).toBe(`${PHISH_DOMAIN}/verify`);
   });
