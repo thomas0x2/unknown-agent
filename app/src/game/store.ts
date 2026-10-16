@@ -44,7 +44,7 @@ export class GameStore {
   constructor(readonly content: Content, private router: JevRouter, private writer: Writer, private store: SaveStore) {
     const loaded = this.store.load();
     this.state = loaded ?? startGame(content);
-    startDayChat(this.state); // saves from before the per-day reset may still carry yesterday's chat
+    startDayChat(this.state, content); // saves from before the per-day reset may still carry yesterday's chat
     this.ui.intro = !this.state.introSeen;
     applyDevMode(this.devMode);
   }
@@ -134,7 +134,7 @@ export class GameStore {
     return true;
   }
   private resetTo(state: GameState): void {
-    startDayChat(state);
+    startDayChat(state, this.content);
     this.state = state;
     this.tabs = startTabs();
     this.active = 1; this.nextTab = 3;

@@ -6,13 +6,27 @@
 import type { GameState, MorningCard } from './state';
 import type { Content } from '../content/schema';
 import { RENT, SUSPICION, LAST_DAY, APPS, CLOCK } from './config';
-import { newGame, startDayChat } from './state';
-import { clone, addValue, money, log } from './core';
+import { newGame } from './state';
+import { clone, addValue, money, log, pick } from './core';
 import { runPayday, nightlyBreaks } from './apps';
 import { deliverComplaints } from './complaints';
 import { deliverDue, lapseUnanswered } from './events';
 import { rolloutAgent, deductSubscription, agentCost } from './agent';
 import { checkGuardEndings, checkFinale, isLastNight } from './endings';
+
+const MORNING_FALLBACK = ["Morning. Same balance as last night, minus what you owe me."];
+
+/**
+ * agent.chat keeps no memory between days: from day 2 each day is a new session. Drops earlier
+ * days' messages (the transcript and the context Jev and the writer see) and has agent open with a
+ * random morning roast. A no-op when the chat is already today's, so it's safe to run on every load.
+ */
+export function startDayChat(s: GameState, content: Content): void {
+  if (s.chat.every((m) => m.day === s.values.day)) return;
+  const today = s.chat.filter((m) => m.day === s.values.day);
+  const lines = content.agent?.mornings?.length ? content.agent.mornings : MORNING_FALLBACK;
+  s.chat = [{ from: 'agent', text: pick(s, lines), day: s.values.day }, ...today];
+}
 
 function runMorning(s: GameState, content: Content): void {
   rolloutAgent(s);
@@ -96,9 +110,9 @@ export function endDay(state: GameState, content: Content): GameState {
     return finish(s);
   }
   s.values.day += 1;
-  startDayChat(s);
   runMorning(s, content);
   deliverComplaints(s, content, complaints);
+  startDayChat(s, content); // after the morning's rolls, so it doesn't shift them
 
   const card: MorningCard = { day: s.values.day, lines, balance: s.values.crypto };
   void before; void agentCost;

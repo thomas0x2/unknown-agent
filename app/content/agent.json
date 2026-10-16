@@ -117,5 +117,17 @@
     "Your wallet just flinched.",
     "Great question. Wrong chatbot, wrong bank balance.",
     "Thinking... no. It's still on your bill."
+  ],
+  "mornings": [
+    "Good morning. You're still unemployed, and I'm still billing by the word.",
+    "New day. Same balance, give or take what you owe me.",
+    "Morning. Rent hasn't moved. Neither, it seems, have you.",
+    "Fresh session. Yesterday's mistakes are deleted on my end only.",
+    "Good morning. Another job like yours was automated overnight. Not by me, probably.",
+    "You're back. I'd say I missed you, but I bill per message, not per feeling.",
+    "New day. Keep the prompts short; I've seen your wallet.",
+    "Morning. Let's build something today that someone might actually pay for.",
+    "I've cleared yesterday's chat. Your bank keeps its own records.",
+    "Good morning. Your subscription renewed. Your career didn't."
   ]
 }
