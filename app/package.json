@@ -14,6 +14,7 @@
     "proxy": "node --env-file-if-exists=.env server/jev-proxy.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "0.135.0",
     "@typesafe-ai/sdk": "0.6.0"
   },
   "devDependencies": {

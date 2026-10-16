@@ -482,7 +482,12 @@ body.dev-on .ua-src { display: block; }
 .ua-llm-err { color: #a12b1f; }
 .ua-llm-btn { border: 0; background: var(--ua-ink); color: #fff; padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; }
 .ua-llm-btn.ghost { background: none; color: var(--ua-ink); border: 1px solid var(--ua-line); }
-.ua-model { flex-basis: 100%; margin-left: 36px; font-size: 10.5px; color: var(--ua-dim); font-family: var(--f-mono); }
+.ua-model { display: none; flex-basis: 100%; margin-left: 36px; font-size: 10.5px; color: var(--ua-dim); font-family: var(--f-mono); }
+body.dev-on .ua-model { display: block; }
+.ua-debug { display: none; flex-basis: 100%; margin: 2px 0 0 36px; font-size: 10.5px; color: var(--ua-dim); font-family: var(--f-mono); }
+body.dev-on .ua-debug { display: block; }
+.ua-debug summary { cursor: pointer; }
+.ua-debug div { white-space: pre-wrap; word-break: break-word; padding: 2px 0; border-top: 1px dashed var(--ua-line); }
 .dv-probs td:last-child { width: 45%; }
 
 /* ── GIT models: picker and pricing page ── */

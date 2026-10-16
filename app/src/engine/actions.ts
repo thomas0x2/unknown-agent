@@ -14,7 +14,7 @@ import { clone, addValue, log, rand, pick, tick, money } from './core';
 import { applyEffects } from './effects';
 import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent';
 import { getEvent, activeDeliveries, reachableByEmail } from './events';
-import { buildApp, fixApp, fixBreak, fixCategories, needsWork, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, type BuildReport } from './apps';
+import { buildApp, fixApp, fixBreak, fixCategories, keywordCategories, needsWork, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, type BuildReport } from './apps';
 import { type Writer, scriptedWriter } from './writer';
 
 export interface ReplyResult {
@@ -238,6 +238,8 @@ export interface AskOpts {
   hints?: string[];
   /** Scripted roasts for when the local model can't write one. */
   roasts?: string[];
+  /** How the prompt was routed, for dev mode. */
+  debug?: string[];
 }
 
 /**
@@ -259,6 +261,8 @@ export async function askAgent(
   let workedAround = false;
   let src = 'chat';
   let note: string | undefined;
+  let by: string | undefined;
+  const debug = [...(opts.debug ?? [])];
 
   const prohibited = looksProhibited(text);
   if (prohibited && policyActive(s) && !looksLikeWorkaround(text)) {
@@ -282,6 +286,8 @@ export async function askAgent(
     reply = w.text;
     if (w.llm) src = 'llm';
     note = w.note;
+    debug.push(...(w.debug ?? []));
+    by = w.by;
   }
 
   const cost = level === s.values.agentLevel ? promptCost(level, text).total : 0;
@@ -293,7 +299,7 @@ export async function askAgent(
   }
   tick(s, 'prompt');
   s.chat.push({ from: 'you', text, day: s.values.day, cost, level });
-  s.chat.push({ from: 'agent', text: reply, day: s.values.day, src, level, ...(note ? { note } : {}) });
+  s.chat.push({ from: 'agent', text: reply, day: s.values.day, src, level, ...(note ? { note } : {}), ...(by ? { by } : {}), ...(debug.length ? { debug } : {}) });
   return { state: s, reply, charged: true, refused, workedAround };
 }
 
@@ -322,8 +328,12 @@ export async function promptAgent(
         for (const c of fixCategories(a, tmpl, id)) cats.push({ id: `${a.id}::${id}::${c.id}`, description: `${c.description} (for ${a.name})` });
       }
     }
-    const matched = await jev.matchFeatures({ prompt: text, features: cats });
-    if (matched.length) {
+    const matched = new Set(await jev.matchFeatures({ prompt: text, features: cats }));
+    // plus the template's own wordings for each feature and bug, so common phrasings don't hinge on Jev
+    const hits = workable.map((a) => ({ a, ids: a.required.filter((id) => needsWork(a, id)).flatMap((id) => keywordCategories(a, content.apps[a.template], id, text).map((c) => `${a.id}::${id}::${c}`)) })).filter((h) => h.ids.length);
+    const named = hits.filter((h) => new RegExp(`\\b${h.a.name.toLowerCase().split(/\s+/)[0].replace(/[^a-z0-9]/g, '')}`, 'i').test(text));
+    for (const h of hits.length > 1 && named.length ? named : hits) for (const id of h.ids) matched.add(id);
+    if (matched.size) {
       const s = clone(s0);
       const byApp = new Map<string, Map<string, string[]>>();
       for (const m of matched) {
@@ -368,6 +378,7 @@ export async function promptAgent(
   // nothing app-shaped: a hint topic Jev recognises, or a roast
   const agent = content.agent;
   let hints: string[] | undefined;
+  const debug: string[] = [];
   if (agent?.hints.length && !looksProhibited(text)) {
     const decision = await jev.route({
       channel: 'agent',
@@ -379,8 +390,9 @@ export async function promptAgent(
     });
     const topic = decision.kind === 'outcome' ? agent.hints.find((h) => h.id === decision.outcomeId) : undefined;
     if (topic?.replies.length) hints = topic.replies;
+    debug.push(topic ? `Jev: hint topic "${topic.id}" (${topic.replies.length} scripted replies)` : 'Jev: no hint topic matched, so this is a miss');
   }
-  return askAgent(s0, text, writer, s0.values.agentLevel, { hints, roasts: agent?.roasts });
+  return askAgent(s0, text, writer, s0.values.agentLevel, { hints, roasts: agent?.roasts, debug });
 }
 
 // ── Y ──
@@ -473,7 +485,7 @@ async function namedBugs(jev: JevRouter, app: AppInstance, tmpl: AppTemplate | u
     const f = app.repo.find((x) => x.id === id);
     const cats = fixCategories(app, tmpl, id).filter((c) => c.id !== 'feature');
     if (!f || f.correct || !f.variant || !cats.length) continue;
-    out.push(...await jev.matchFeatures({ prompt, features: cats }));
+    out.push(...await jev.matchFeatures({ prompt, features: cats }), ...keywordCategories(app, tmpl, id, prompt));
   }
   return out;
 }

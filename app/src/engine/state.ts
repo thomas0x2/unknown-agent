@@ -25,6 +25,8 @@ export interface BuiltFeature {
   variant?: string;
   /** Picks the concrete symptom when rendering a variant (which dish went missing, etc.). */
   seed?: number;
+  /** The template's spec checklist at build time: which items the build prompt mentioned. */
+  checked?: Record<string, boolean>;
 }
 
 export interface AppBreak {
@@ -119,8 +121,12 @@ export interface ChatMsg {
   src?: string;
   /** Written by the local model (Gemma) rather than scripted. */
   llm?: boolean;
+  /** Which model wrote it, when not the local one (e.g. Claude Haiku). */
+  by?: string;
   /** Why a scripted line stood in for the local model. */
   note?: string;
+  /** How the reply was chosen (Jev's decision, the model prompt and raw output), shown in dev mode. */
+  debug?: string[];
   level?: number;
 }
 

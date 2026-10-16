@@ -111,3 +111,35 @@ function generic(app: AppInstance, tmpl: AppTemplate | undefined, page: string |
   }).join('');
   return `<div class="as as-g"><header class="as-g-head"><b>${esc(app.name)}</b><nav>${nav}</nav></header><main>${body}</main></div>`;
 }
+
+// ── dev mode: which bugs each feature can have and which it has now (hidden unless body.dev-on) ──
+
+const BREAK_LABEL: Record<string, string> = { visible: 'crash', failed_fetch: 'failed fetch', subtle: 'subtle break', deep: 'deep break' };
+
+export function devBugPanel(app: AppInstance, tmpl: AppTemplate | undefined): string {
+  const tag = (t: string, on = false) => `<span class="dvb-tag${on ? ' on' : ''}">${esc(t)}</span>`;
+  const rows = app.required.map((id) => {
+    const def = tmpl?.features.find((f) => f.id === id);
+    const repo = app.repo.find((f) => f.id === id);
+    const liveF = app.features.find((f) => f.id === id);
+    const brk = app.breaks.find((b) => b.featureId === id);
+    const repoNow = !repo ? 'missing' : repo.correct ? 'ok' : repo.variant ?? 'wrong';
+    const liveNow = !app.deployed ? 'not deployed'
+      : brk ? `${BREAK_LABEL[brk.failure] ?? brk.failure}${brk.failure === 'subtle' ? `: ${breakVariant(brk, def) ?? '?'}` : ''}`
+      : !liveF ? 'missing' : liveF.correct ? 'ok' : liveF.variant ?? 'wrong';
+    const present = new Set([repo?.variant, liveF?.variant, brk && BREAK_LABEL[brk.failure], brk && breakVariant(brk, def)].filter(Boolean) as string[]);
+    const possible = [
+      ...(def?.bugs ?? []).map((b) => b.id),
+      ...(def?.details?.length ? ['hallucinated', 'outdated'] : []),
+      ...(def?.failures ?? []).map((f) => BREAK_LABEL[f] ?? f),
+    ];
+    // the spec checklist from the last build prompt: a missed item guarantees its bug
+    const list = (def?.checklist ?? []).map((c) => {
+      const hit = repo?.checked?.[c.id];
+      return `<span class="dvb-check ${hit === undefined ? '' : hit ? 'hit' : 'miss'}" title="missed → ${esc(c.bug)}">${hit === undefined ? '·' : hit ? '✓' : '✗'} ${esc(c.id)}</span>`;
+    }).join(' ');
+    return `<tr><td><b>${esc(id)}</b></td><td>${esc(repoNow)}</td><td>${esc(liveNow)}</td><td>${list || '<i>none</i>'}</td><td>${possible.map((p) => tag(p, present.has(p))).join(' ') || '<i>none</i>'}</td></tr>`;
+  }).join('');
+  return `<div class="dev-bugs"><div class="dvb-head">Dev · bugs in ${esc(app.id)}</div>
+    <table><thead><tr><th>Feature</th><th>Repo</th><th>Live</th><th>Build prompt</th><th>Possible (present highlighted)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}

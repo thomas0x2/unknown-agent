@@ -46,3 +46,18 @@
 .as-g-blank { color: #888; text-align: center; padding: 80px 0; }
 .as-r-book input { font: inherit; padding: 9px 12px; border: 1px solid #d8c8b4; border-radius: 8px; background: #fff; margin: 0 6px 8px 0; }
 .as-r-book .pv-btn.ok { background: #a3381e; }
+
+/* dev mode bug panel */
+.dev-bugs { display: none; font-family: var(--f-mono); font-size: 11px; line-height: 1.5; color: #e8e8e8; background: rgba(20, 22, 28, 0.94); border: 1px solid #3a3f4a; border-radius: 8px; padding: 10px 12px; }
+body.dev-on .dev-bugs { display: block; }
+.pv-host .dev-bugs { position: sticky; bottom: 12px; margin: 0 12px 12px auto; max-width: 640px; z-index: 5; }
+.fy .dev-bugs { margin-top: 18px; }
+.dvb-head { font-weight: 600; margin-bottom: 6px; color: #9fd3ff; }
+.dev-bugs table { width: 100%; border-collapse: collapse; }
+.dev-bugs th { text-align: left; color: #8a93a3; font-weight: 500; padding: 2px 8px 4px 0; }
+.dev-bugs td { padding: 3px 8px 3px 0; vertical-align: top; border-top: 1px solid #2c313b; }
+.dvb-tag { display: inline-block; padding: 0 6px; margin: 1px 0; border-radius: 4px; background: #2c313b; color: #a8b0bd; }
+.dvb-tag.on { background: #7a2418; color: #ffd7cf; }
+.dvb-check { white-space: nowrap; color: #8a93a3; }
+.dvb-check.hit { color: #8fd19e; }
+.dvb-check.miss { color: #ff9b8a; }
