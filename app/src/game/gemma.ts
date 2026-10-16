@@ -8,6 +8,7 @@
 import type { Writer, WriteReq } from '../engine';
 import type { Content } from '../content/schema';
 import { LLM } from './llm';
+import { haikuReply } from './haiku';
 
 /** What was sent to the model and what came back, for dev mode. */
 function runDebug(character: string): string[] {
@@ -36,6 +37,10 @@ export function makeGemmaWriter(content: Content): Writer {
       if (LLM.settings.misses === 'scripted') return { text: req.fallback, llm: false, debug: ['Misses setting is "Scripted lines", so Gemma was not asked'] };
       const ch = characterFor(req.as);
       if (!ch) return { text: req.fallback, llm: false, note: `no character for ${req.as}` };
+      if (LLM.settings.misses === 'haiku') {
+        const h = await haikuReply(ch, req.prompt);
+        return h.text ? { text: h.text, llm: true, debug: h.debug, by: LLM.settings.haikuVia === 'api' ? 'Claude Haiku 5.5 · API' : 'Claude Haiku 5.5 · subscription' } : { text: req.fallback, llm: false, note: h.note, debug: h.debug };
+      }
       LLM.lastRun = null;
       const t = await LLM.speak(ch, req.prompt);
       const debug = runDebug(ch.id);

@@ -32,8 +32,10 @@ export interface GenCtx {
 }
 
 /** What a character says when Jev finds nothing: Gemma's reply, or the scripted line. */
-export type Misses = 'gemma' | 'scripted';
-interface Settings { backend: Backend; autoload: boolean; ollamaUrl: string; ollamaModel: string; misses: Misses }
+export type Misses = 'gemma' | 'haiku' | 'scripted';
+/** Who pays for Haiku replies: the Claude subscription logged in to the claude CLI (dev), or ANTHROPIC_API_KEY. */
+export type HaikuVia = 'subscription' | 'api';
+interface Settings { backend: Backend; autoload: boolean; ollamaUrl: string; ollamaModel: string; misses: Misses; haikuVia: HaikuVia }
 
 const CONFIG = {
   transformersUrl: 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0/dist/transformers.min.js',
@@ -141,6 +143,12 @@ class LocalLLM {
 
   setMisses(misses: Misses): void {
     this.settings.misses = misses;
+    saveSettings(this.settings);
+    this.emit();
+  }
+
+  setHaikuVia(via: HaikuVia): void {
+    this.settings.haikuVia = via;
     saveSettings(this.settings);
     this.emit();
   }
@@ -289,7 +297,7 @@ class LocalLLM {
 }
 
 function loadSettings(): Settings {
-  const d: Settings = { backend: 'browser', autoload: false, ollamaUrl: CONFIG.ollamaUrl, ollamaModel: CONFIG.ollamaModel, misses: 'gemma' };
+  const d: Settings = { backend: 'browser', autoload: false, ollamaUrl: CONFIG.ollamaUrl, ollamaModel: CONFIG.ollamaModel, misses: 'gemma', haikuVia: 'subscription' };
   try { return Object.assign(d, JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}')); } catch { return d; }
 }
 function saveSettings(s: Settings): void { try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch { /* storage off */ } }
