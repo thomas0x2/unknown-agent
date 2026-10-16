@@ -5,7 +5,7 @@
 import type { GameState } from '../engine';
 
 export type SiteId =
-  | 'y' | 'qmail' | 'satchel' | 'forkyard' | 'agent' | 'yowl'
+  | 'y' | 'qmail' | 'qdrive' | 'satchel' | 'forkyard' | 'agent' | 'yowl'
   | 'weightroom' | 'terminal' | 'nullboard' | 'cellar' | 'app' | 'newtab' | 'notfound';
 
 export interface SiteDef {
@@ -22,6 +22,7 @@ const flag = (f: string) => (s: GameState) => s.flags.includes(f);
 export const SITES: SiteDef[] = [
   { id: 'agent', base: 'agent.chat', label: 'agent', group: 'core', reachable: always },
   { id: 'qmail', base: 'qmail.com', label: 'Qmail', group: 'core', reachable: always },
+  { id: 'qdrive', base: 'qdrive.com', label: 'Qdrive', group: 'core', reachable: always },
   { id: 'y', base: 'y.com', label: 'Y', group: 'core', reachable: always },
   { id: 'yowl', base: 'yowl.com', label: 'Yowl', group: 'core', reachable: always },
   { id: 'satchel', base: 'satchel.app', label: 'Satchel', group: 'core', reachable: always },
