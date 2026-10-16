@@ -32,7 +32,8 @@
   background: linear-gradient(to bottom, #a3cc6e, var(--dk-accent) 55%, #7aa94a); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 .dk-home svg { width: 20px; height: 20px; }
-.dk-flag path { stroke: rgba(0, 0, 0, 0.35); stroke-width: 0.6; }
+.dk-flag path { stroke: #1b1b1b; stroke-width: 0.9; stroke-linejoin: round; }
+.dk-flag { transform: rotate(-11deg) skewX(-6deg); }
 .dk-flag { filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.45)); }
 .dk-home:hover { filter: brightness(1.08); }
 .dk-home.on { filter: brightness(0.9); box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.35); }
