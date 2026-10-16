@@ -80,7 +80,7 @@ async function buildMatch(sdk, body) {
 
 async function handle(kind, body) {
   const client = await getClient();
-  if (!client) return { status: 501, json: { error: 'Jev not configured' } };
+  if (!client) return { status: 501, json: { error: KEY ? 'The proxy could not load @typesafe-ai/sdk (run npm install).' : 'TYPESAFE_API_KEY is not set in app/.env.' } };
   const sdk = await import('@typesafe-ai/sdk');
   let req;
   if (kind === 'route') req = await buildRoute(sdk, body);
@@ -105,7 +105,10 @@ const server = http.createServer((req, res) => {
   res.setHeader('content-type', 'application/json');
   const m = req.url?.match(/^\/api\/([a-z-]+)$/);
   if (req.method === 'GET' && req.url === '/api/status') {
-    res.end(JSON.stringify({ jev: !!KEY }));
+    getClient().then((client) => {
+      const reason = client ? '' : KEY ? 'The proxy could not load @typesafe-ai/sdk (run npm install).' : 'TYPESAFE_API_KEY is not set in app/.env.';
+      res.end(JSON.stringify({ jev: !!client, reason }));
+    });
     return;
   }
   if (req.method !== 'POST' || !m) {
