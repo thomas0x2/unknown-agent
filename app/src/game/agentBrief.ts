@@ -48,7 +48,7 @@ export function finishRoast(raw: string): string | null {
   if (words < 3 || words > 24) return null;
   if (/["“”]|\b(I say|I said|once upon)\b/i.test(t)) return null;
   if (!/[.!?]$/.test(t)) return null;
-  // a roast talks to the player; narration and poems don't
-  if (!/\byou(r|'re|'ve)?\b/i.test(t)) return null;
+  // a roast talks to the player or their money; narration and poems do neither
+  if (!/\b(you|your|you're|you've|broke|bill|billed|wallet|rent|money|prompt|paid|pay)\b/i.test(t)) return null;
   return t;
 }

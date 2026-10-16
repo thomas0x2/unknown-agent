@@ -26,7 +26,7 @@ async function getClient() {
     clientPromise = (async () => {
       try {
         const sdk = await import('@typesafe-ai/sdk');
-        return new sdk.TypeSafeClient({ apiKey: KEY, baseUrl: BASE_URL });
+        return new sdk.TypeSafeClient({ apiKey: KEY, baseURL: BASE_URL });
       } catch (e) {
         console.warn('[jev-proxy] @typesafe-ai/sdk not available:', e.message);
         return null;
@@ -61,21 +61,23 @@ async function buildRatePost(sdk, body) {
         self_promo: 'Pure self-promotion.',
         spam: 'Spam, irrelevant, or a near-copy of a recent post.',
       }),
-      quality: sdk.score('How good is this post, 0 to 1?'),
+      quality: sdk.score('How well would this post win followers on Y?', [
+        'Ignored or annoying.',
+        'Weak: few people would engage.',
+        'Decent.',
+        'Good: people would like and share it.',
+        'Excellent: it would spread.',
+      ]),
     },
   };
 }
 async function buildMatch(sdk, body) {
-  const criteria = {};
-  for (const f of body.features ?? []) criteria[f.id] = f.description;
-  return {
-    state: { setting: SETTING, prompt: body.prompt },
-    questions: {
-      features: sdk.multi
-        ? sdk.multi('Which of these features does the prompt ask for, correctly described?', criteria)
-        : sdk.choice('Which single feature does the prompt most ask for?', criteria),
-    },
-  };
+  // one yes/no question per feature, so a prompt can ask for several at once
+  const questions = {};
+  (body.features ?? []).forEach((f, i) => {
+    questions[`f${i}`] = sdk.noul(`Does the prompt ask for this feature, described correctly? Feature: ${f.description}`);
+  });
+  return { state: { setting: SETTING, prompt: body.prompt }, questions };
 }
 
 async function handle(kind, body) {
@@ -85,19 +87,23 @@ async function handle(kind, body) {
   let req;
   if (kind === 'route') req = await buildRoute(sdk, body);
   else if (kind === 'rate-post') req = await buildRatePost(sdk, body);
-  else if (kind === 'match-features') req = await buildMatch(sdk, body);
+  else if (kind === 'match-features') {
+    if (!(body.features ?? []).length) return { status: 200, json: [] };
+    req = await buildMatch(sdk, body);
+  }
   else return { status: 404, json: { error: 'unknown endpoint' } };
 
-  const result = await client.systemOne(req);
-  // Shape the SDK result back into what BackendJev expects.
+  // The SDK returns { model, answers: { <question>: … }, usage }. Shape it into what BackendJev expects.
+  const { answers } = await client.systemOne(req);
   if (kind === 'route') {
-    const choice = result.branch?.choice ?? 'nothing';
+    const choice = answers.branch?.choice ?? 'nothing';
     return { status: 200, json: choice === 'nothing' ? { kind: 'nothing' } : { kind: 'outcome', outcomeId: choice } };
   }
   if (kind === 'rate-post') {
-    return { status: 200, json: { category: result.category?.choice ?? 'tip', quality: result.quality?.score ?? 0.5 } };
+    // score is the expected rubric level, 0..4
+    return { status: 200, json: { category: answers.category?.choice ?? 'tip', quality: (answers.quality?.score ?? 2) / 4 } };
   }
-  const features = result.features?.choices ?? (result.features?.choice ? [result.features.choice] : []);
+  const features = (body.features ?? []).filter((f, i) => (answers[`f${i}`]?.noul ?? 0) >= 0.5).map((f) => f.id);
   return { status: 200, json: features };
 }
 

@@ -181,6 +181,7 @@ class LocalLLM {
         : await withTimeout(this.workerGenerate(messages, maxTokens, temperature), CONFIG.timeoutMs);
     } catch { raw = null; }
     const text = raw ? finish(raw) : null;
+    if (raw && !text) console.info('[LocalLLM] dropped an off-script reply, using a scripted line instead:', raw);
     this.last = { ms: Math.round(now() - started), ok: !!text, text: text || raw || '' };
     this.emit();
     return text;
