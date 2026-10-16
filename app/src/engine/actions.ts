@@ -435,7 +435,8 @@ export async function promptAgent(
 
 // ── Y ──
 
-const BANDS: Record<PostRating['category'], [number, number]> = {
+/** Follower change per post category, as a share of current followers (low to high quality). */
+export const POST_BANDS: Record<PostRating['category'], [number, number]> = {
   reaction: [0.05, 0.15], launch: [0.03, 0.08], tip: [0.02, 0.06], humor: [0, 0.12],
   hot_take: [0.1, 0.25], self_promo: [-0.03, -0.01], spam: [-0.05, -0.02],
 };
@@ -456,7 +457,7 @@ export async function postToY(
   if (s.postsToday >= YCFG.maxFreePostsPerDay) {
     delta = Math.round(s.values.followers * YCFG.overpostPenaltyPct);
   } else {
-    const [lo, hi] = BANDS[rating.category];
+    const [lo, hi] = POST_BANDS[rating.category];
     const pct = lo + (hi - lo) * rating.quality;
     delta = Math.round(s.values.followers * pct);
     if (rating.category === 'reaction') delta = Math.max(delta, 10);
