@@ -8,7 +8,8 @@
     "dayMin": 3,
     "flagsAll": [
       "trader_client"
-    ]
+    ],
+    "appWorking": "trader_contact"
   },
   "onDeliver": {
     "updateApp": {

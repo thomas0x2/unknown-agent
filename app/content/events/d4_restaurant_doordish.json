@@ -8,7 +8,12 @@
     "dayMin": 4,
     "flagsAll": [
       "restaurant_client"
-    ]
+    ],
+    "appWorking": "restaurant_contact",
+    "after": {
+      "flag": "restaurant_update1",
+      "delayDays": 1
+    }
   },
   "onDeliver": {
     "updateApp": {
