@@ -27,7 +27,7 @@ import * as V from './ui/view';
 import { route } from './sites/registry';
 import { listSlots } from './game/saves';
 import { devEditHtml } from './ui/devEdit';
-import { jevTestsHtml, runJevTests } from './ui/devJevTests';
+import { jevTestsHtml, runJevTests, jevTestsPick, jevTestsFailsOnly } from './ui/devJevTests';
 import type { MeterId } from './engine';
 import { newPageLoad } from './ui/ads';
 import { pullPct } from './game/pull';
@@ -323,6 +323,8 @@ document.addEventListener('click', (e) => {
   else if (d.act === 'devedit') store.toggleDevEdit();
   else if (d.act === 'devtab') store.devTab(t.dataset.devtab === 'jev' ? 'jev' : 'edit');
   else if (d.act === 'jevtests') runJevTests(store, t.dataset.case != null ? Number(t.dataset.case) : undefined);
+  else if (d.act === 'jevcell') jevTestsPick(store, Number(t.dataset.step), Number(t.dataset.part));
+  else if (d.act === 'jevfails') jevTestsFailsOnly(store);
   else if (d.act === 'devmode') store.setDevMode(!store.devMode);
   else if (d.act === 'intro') store.openIntro();
   else if (d.act === 'sound') SOUND.setMuted(!SOUND.settings.muted);

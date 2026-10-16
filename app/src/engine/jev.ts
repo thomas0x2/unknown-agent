@@ -64,6 +64,8 @@ export interface JevRouter {
   ratePost(input: PostInput): Promise<PostRating>;
   /** Which spec features a build/brief prompt asked for correctly. */
   matchFeatures(input: FeatureMatchInput): Promise<string[]>;
+  /** Jev's confidence (0..1) for each item of a matchFeatures question, in order: the dev Jev tests replay other thresholds from these. */
+  matchScores?(input: FeatureMatchInput): Promise<number[]>;
 }
 
 /** Jev couldn't be reached. The action that needed it didn't happen; nothing was charged. */

@@ -30,7 +30,7 @@ export interface JevTestResult {
   /** The agent's reply. */
   reply: string;
   /** Every item of the fix question for the features involved, with Jev's answer. */
-  items: { id: string; kind: string; label: string; yes: boolean }[];
+  items: { id: string; kind: string; label: string; score: number; yes: boolean }[];
   error?: string;
 }
 
@@ -80,28 +80,74 @@ export function jevTestState(content: Content, c: JevTestCase): { s: GameState; 
   return { s, appId: a.id };
 }
 
-export async function runJevTest(content: Content, jev: JevRouter, c: JevTestCase): Promise<JevTestResult> {
-  const asked: { input: FeatureMatchInput; out: string[] }[] = [];
-  const spy: JevRouter = {
-    route: (i) => jev.route(i),
+/**
+ * The confidence a match needs, by kind of question: a path step, a part, and everything else. The
+ * game uses BARS_NOW (the proxy applies the same numbers); the tests replay others to compare.
+ */
+export interface JevBars { step: number; component: number; other: number }
+export const BARS_NOW: JevBars = { step: 0.5, component: 0.6, other: 0.5 };
+const barFor = (kind: string | undefined, b: JevBars) => (kind === 'component' ? b.component : kind === 'step' ? b.step : b.other);
+
+/** What Jev answered while a case ran: each question's confidences, so other thresholds replay without asking again. */
+export interface JevRecording { scores: Map<string, number[]>; routes: Map<string, unknown> }
+export const newRecording = (): JevRecording => ({ scores: new Map(), routes: new Map() });
+
+/** A router that answers from the recording, asks `jev` only what it hasn't heard yet, and applies `bars`. */
+function replaying(jev: JevRouter, rec: JevRecording, bars: JevBars, seen: { input: FeatureMatchInput; scores: number[] }[]): JevRouter {
+  return {
+    async route(i) {
+      const k = JSON.stringify(i);
+      if (!rec.routes.has(k)) rec.routes.set(k, await jev.route(i));
+      return rec.routes.get(k) as Awaited<ReturnType<JevRouter['route']>>;
+    },
     ratePost: (i) => jev.ratePost(i),
-    matchFeatures: async (i) => { const out = await jev.matchFeatures(i); asked.push({ input: i, out }); return out; },
+    async matchFeatures(i) {
+      const k = JSON.stringify(i);
+      if (!rec.scores.has(k)) {
+        // a router without scores (a test fake) answers yes or no: 1 or 0
+        const sc = jev.matchScores ? await jev.matchScores(i) : await jev.matchFeatures(i).then((ids) => i.features.map((f) => (ids.includes(f.id) ? 1 : 0)));
+        rec.scores.set(k, sc);
+      }
+      const sc = rec.scores.get(k)!;
+      seen.push({ input: i, scores: sc });
+      return i.features.filter((f, n) => (sc[n] ?? 0) >= barFor(f.kind, bars)).map((f) => f.id);
+    },
   };
+}
+
+/** How a failed case missed: Jev let less through than it should (strict), or more (loose). */
+export function missKind(want: JevTestCase['expect'], got: JevTestResult['got']): 'strict' | 'loose' | 'other' {
+  const rank = (o: { fix?: string[]; near?: string; none?: boolean }) => (o.fix?.length ? 2 : o.near ? 1 : 0);
+  const w = rank(want), g = rank(got);
+  if (g < w) return 'strict';
+  if (g > w) return 'loose';
+  // both fixed something: fixing a part it shouldn't is loose, leaving one out is strict
+  if (w === 2) return got.fix.some((p) => !want.fix!.includes(p)) ? 'loose' : 'strict';
+  return 'other';
+}
+
+/**
+ * Runs a case against `jev` at `bars`. Pass the same `rec` again to replay it at other thresholds:
+ * only questions it hasn't asked before go to Jev.
+ */
+export async function runJevTest(content: Content, jev: JevRouter, c: JevTestCase, bars: JevBars = BARS_NOW, rec: JevRecording = newRecording()): Promise<JevTestResult> {
+  const seen: { input: FeatureMatchInput; scores: number[] }[] = [];
+  const router = replaying(jev, rec, bars, seen);
   const { s, appId } = jevTestState(content, c);
   const tmpl = content.apps[getApp(s, appId)!.template];
   const items = () => {
     // the fix question is the one that carries path steps; show the features the case is about
-    const q = asked.find((x) => x.input.features.some((f) => f.id.includes('::s:')));
+    const q = seen.find((x) => x.input.features.some((f) => f.id.includes('::s:')));
     const feats = new Set([...c.broken, ...(c.expect.fix ?? [])].map((p) => p.split('/')[0]));
-    return (q?.input.features ?? []).filter((f) => feats.has(f.id.split('::')[1]) && f.kind !== 'build').map((f) => {
+    return (q?.input.features ?? []).map((f, n) => ({ f, score: q!.scores[n] ?? 0 })).filter(({ f }) => feats.has(f.id.split('::')[1]) && f.kind !== 'build').map(({ f, score }) => {
       const [, fid, cat] = f.id.split('::');
       const label = cat.startsWith('c:') ? componentPath(fid, cat.slice(2)) : cat.startsWith('s:') ? cat.slice(2).replaceAll('/', ' > ').replaceAll('_', ' ') : cat === 'area' ? `${fid.replaceAll('_', ' ')} as a whole` : cat;
-      return { id: f.id, kind: f.kind ?? 'problem', label, yes: q!.out.includes(f.id) };
+      return { id: f.id, kind: f.kind ?? 'problem', label, score, yes: score >= barFor(f.kind, bars) };
     });
   };
   let r;
   try {
-    r = await promptAgent(s, content, spy, c.prompt, scriptedWriter);
+    r = await promptAgent(s, content, router, c.prompt, scriptedWriter);
     if (r.state.agentWork) deliverAgentWork(r.state, true);
   } catch (e) {
     return { pass: false, got: { fix: [] }, reply: '', items: items(), error: e instanceof Error ? e.message : String(e) };
@@ -118,4 +164,29 @@ export async function runJevTest(content: Content, jev: JevRouter, c: JevTestCas
   const same = (x: string[], y: string[]) => x.length === y.length && x.every((v) => y.includes(v));
   const pass = want.near ? near === want.near : want.fix ? !near && same(fix, want.fix) : !near && !fix.length;
   return { pass, got: { fix, near }, reply: r.state.chat.slice(r.state.chat.map((m) => m.from).lastIndexOf('you') + 1).map((m) => m.text).join('\n'), items: items() };
+}
+
+/** The thresholds the sweep tries, for path steps and for parts alike. */
+export const SWEEP = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
+
+export interface SweepCell { bars: JevBars; passed: number; strict: number; loose: number; other: number; results: JevTestResult[] }
+
+/** Replays every recorded case at each pair of step and part thresholds in SWEEP. */
+export async function sweepJevTests(content: Content, jev: JevRouter, cases: JevTestCase[], recs: JevRecording[], tick?: () => Promise<void>): Promise<SweepCell[]> {
+  const out: SweepCell[] = [];
+  for (const step of SWEEP) {
+    for (const component of SWEEP) {
+      const bars = { ...BARS_NOW, step, component };
+      const cell: SweepCell = { bars, passed: 0, strict: 0, loose: 0, other: 0, results: [] };
+      for (let i = 0; i < cases.length; i++) {
+        const r = await runJevTest(content, jev, cases[i], bars, recs[i]);
+        cell.results.push(r);
+        if (r.pass) cell.passed++;
+        else cell[r.error ? 'other' : missKind(cases[i].expect, r.got)]++;
+      }
+      out.push(cell);
+      await tick?.();
+    }
+  }
+  return out;
 }

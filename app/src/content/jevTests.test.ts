@@ -4,7 +4,8 @@
  */
 import { describe, it, expect } from 'vitest';
 import { loadContent } from './load';
-import { jevTestState, runJevTest, type JevTestCase } from '../engine/jevTests';
+import { jevTestState, runJevTest, sweepJevTests, newRecording, missKind, SWEEP, type JevTestCase } from '../engine/jevTests';
+import type { JevRouter } from '../engine/jev';
 import { getApp, bugsOf } from '../engine/apps';
 import { pickJev } from '../engine/_fixtures';
 import cases from '../../content/jev-tests.json';
@@ -40,5 +41,37 @@ describe('Jev tests', () => {
     const r = await runJevTest(content, pickJev({ features: ['::booking::area'] }), c);
     expect(r.got.near).toBe('near_part');
     expect(r.pass).toBe(true);
+  });
+
+  it('replays other thresholds from the recorded scores, without asking Jev again', async () => {
+    const c = all.find((x) => x.expect.fix?.[0] === 'landing/hours' && x.broken.length === 1)!;
+    let asked = 0;
+    // a part scored 0.55 and its feature step 0.7: through at a 0.5 bar, a near-miss at 0.6
+    const jev: JevRouter = {
+      ...pickJev({}),
+      matchFeatures: async () => [],
+      matchScores: async (i) => { asked++; return i.features.map((f) => (f.id.endsWith('::c:hours') ? 0.55 : f.id.endsWith('::s:landing') ? 0.7 : 0)); },
+    };
+    const rec = newRecording();
+    const now = await runJevTest(content, jev, c, undefined, rec);
+    // at today's bars (part 0.6) the part doesn't count: nothing comes back
+    expect(now.pass).toBe(false);
+    const n = asked;
+    const cells = await sweepJevTests(content, jev, [c], [rec]);
+    expect(asked).toBe(n);
+    expect(cells).toHaveLength(SWEEP.length ** 2);
+    const at = (step: number, component: number) => cells.find((x) => x.bars.step === step && x.bars.component === component)!;
+    expect(at(0.5, 0.5).passed).toBe(1);
+    expect(at(0.5, 0.6).passed).toBe(0);
+    expect(at(0.8, 0.5).strict).toBe(1);
+  });
+
+  it('says whether a miss was too strict or too loose', () => {
+    expect(missKind({ fix: ['a'] }, { fix: [] })).toBe('strict');
+    expect(missKind({ fix: ['a'] }, { fix: [], near: 'near_miss' })).toBe('strict');
+    expect(missKind({ near: 'near_miss' }, { fix: ['a'] })).toBe('loose');
+    expect(missKind({ none: true }, { fix: [], near: 'near_part' })).toBe('loose');
+    expect(missKind({ fix: ['a', 'b'] }, { fix: ['a'] })).toBe('strict');
+    expect(missKind({ fix: ['a'] }, { fix: ['a', 'b'] })).toBe('loose');
   });
 });

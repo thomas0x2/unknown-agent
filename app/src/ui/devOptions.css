@@ -63,3 +63,11 @@ body.dev-on .dvo { display: flex; flex-direction: column; position: fixed; z-ind
 .jt-item.yes { color: #e6e9ee; }
 .jt-reply { font-style: italic; color: #8b929c; white-space: pre-wrap; }
 .jt-err { color: #e06c6c; }
+.jt-miss { margin-left: 6px; font-size: 11px; color: #e0a96c; }
+.jt-grid { border-collapse: collapse; margin: 6px 0; font-size: 11.5px; }
+.jt-grid th { padding: 2px 6px; color: var(--chrome-dim); font-weight: normal; text-align: right; }
+.jt-grid td { padding: 2px 8px; text-align: right; border: 1px solid #1d2127; cursor: pointer; color: #e6e9ee; }
+.jt-grid td:hover { background: var(--chrome-2); }
+.jt-grid td.best { color: #5fbf7a; }
+.jt-grid td.now { outline: 1px solid var(--note); outline-offset: -2px; }
+.jt-grid td.on { background: #1d2a36; }
