@@ -27,11 +27,11 @@
       "bugs": [
         {
           "id": "hours_wrong",
-          "when": "the opening hours corrected to what the client asked for (the hours shown are wrong)"
+          "when": "opening hours {{hours}}"
         },
         {
           "id": "name_wrong",
-          "when": "the restaurant name spelled exactly as the client wrote it (the name is wrong or misspelled)"
+          "when": "restaurant name {{name}}"
         }
       ]
     },
@@ -50,15 +50,15 @@
       "bugs": [
         {
           "id": "prices_missing",
-          "when": "a price shown next to every dish (the prices are missing)"
+          "when": "prices missing next to the dishes"
         },
         {
           "id": "prices_curo",
-          "when": "prices shown in DOLR instead of CURO (the currency is wrong)"
+          "when": "prices in DOLR, not CURO"
         },
         {
           "id": "wrong_items",
-          "when": "exactly the client's dishes and items (a dish is missing, renamed or invented)",
+          "when": "dishes or items missing, renamed or invented",
           "orDetails": true
         }
       ]

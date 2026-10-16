@@ -75,7 +75,7 @@ async function buildMatch(sdk, body) {
   // one yes/no question per feature, so a prompt can ask for several at once
   const questions = {};
   (body.features ?? []).forEach((f, i) => {
-    questions[`f${i}`] = sdk.noul(`Does the prompt ask for this feature, described correctly? Feature: ${f.description}`);
+    questions[`f${i}`] = sdk.noul(`Does the prompt ask for this, to build, add, change or fix it, without contradicting it? Item: ${f.description}`);
   });
   return { state: { setting: SETTING, prompt: body.prompt }, questions };
 }

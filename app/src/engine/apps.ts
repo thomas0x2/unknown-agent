@@ -3,7 +3,7 @@
  * deploys to make it live, then checks the live app against the client's spec. Breaks hit the live
  * app nightly. Payday pays working apps and strikes/churns broken ones.
  */
-import type { GameState, AppInstance, BuiltFeature, FailureKind } from './state';
+import type { GameState, AppInstance, AppBreak, BuiltFeature, FailureKind } from './state';
 import type { Content, CreateAppSpec, AppTemplate, FeatureDef } from '../content/schema';
 import { APPS, BUILD_SUCCESS } from './config';
 import { chance, pick, randInt, log, money } from './core';
@@ -131,7 +131,7 @@ function attempt(s: GameState, app: AppInstance, id: string, level: number, ctx:
   if (existing && !existing.correct && existing.variant && ctx.prompt != null) {
     const v = existing.variant;
     const bug = def?.bugs?.find((b) => b.id === v);
-    const addressed = v === 'hallucinated' ? hasDetails
+    const addressed = v === 'hallucinated' ? true // with no dishes given, it just invents another menu
       : v === 'outdated' ? hasDetails || (def ? promptHasChange(ctx.prompt, detailValues(existing.params, def), details) : false)
       : (ctx.named ?? []).includes(v) || (!!bug?.orDetails && details.length > 0 && hasDetails);
     if (!addressed) { report.vague.push(id); return { ...existing }; }
@@ -183,6 +183,54 @@ export function buildApp(s: GameState, appId: string, requested: string[], level
     }
   }
   return report;
+}
+
+/** A category Jev can match a prompt against: the feature itself, one of its bugs, or a live break. */
+export interface FixCategory { id: string; description: string }
+
+const BREAK_CATEGORIES: Partial<Record<FailureKind, string>> = {
+  visible: 'crashes with an application error',
+  failed_fetch: "doesn't load: failed to fetch",
+};
+
+const fill = (text: string, params?: Record<string, string | number>) =>
+  text.replace(/\{\{(\w+)\}\}/g, (_m, k: string) => String(params?.[k] ?? ''));
+
+/**
+ * Everything a prompt can name about one feature: the feature, every bug the template knows for
+ * it (so "show the name Trattoria Gino" builds a missing landing page too), and its live break.
+ */
+export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, featureId: string): FixCategory[] {
+  const def = tmpl?.features.find((f) => f.id === featureId);
+  if (!def) return [];
+  const out: FixCategory[] = [{ id: 'feature', description: def.description }];
+  for (const b of def.bugs ?? []) out.push({ id: b.id, description: fill(b.when, app.specParams[featureId]) });
+  const brk = app.breaks.find((b) => b.featureId === featureId);
+  const cat = brk && BREAK_CATEGORIES[brk.failure];
+  if (brk && cat) out.push({ id: brk.failure, description: cat });
+  return out;
+}
+
+/** The bug a subtle break shows on the live site. */
+export function breakVariant(brk: AppBreak, def: FeatureDef | undefined): string | undefined {
+  if (brk.failure !== 'subtle') return undefined;
+  const bugs = def?.bugs ?? [];
+  return brk.variant ?? (bugs.length ? bugs[(brk.seed ?? 0) % bugs.length].id : undefined);
+}
+
+/** A required feature the agent still has work on: missing or wrong in the repo, or broken live. */
+export function needsWork(app: AppInstance, featureId: string): boolean {
+  const f = app.repo.find((x) => x.id === featureId);
+  return !f || !f.correct || (app.deployed && app.breaks.some((b) => b.featureId === featureId));
+}
+
+/** The agent patches a live break on a feature whose code was fine. Live again on the next deploy. */
+export function fixBreak(s: GameState, appId: string, featureId: string): boolean {
+  const app = getApp(s, appId);
+  if (!app || !app.breaks.some((b) => b.featureId === featureId)) return false;
+  app.repoVersion++;
+  s.commits.push({ day: s.values.day, repo: app.id, msg: `Fix ${featureId}`, kind: 'push' });
+  return true;
 }
 
 const SCRIPTED_FAILURES: FailureKind[] = ['visible', 'subtle', 'failed_fetch'];
