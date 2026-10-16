@@ -46,7 +46,7 @@ export function finishRoast(raw: string): string | null {
   if (first) t = first[0].trim();
   const words = t.split(' ').filter(Boolean).length;
   if (words < 3 || words > 24) return null;
-  if (/["“”]|\b(I say|she|he|they said|once upon)\b/i.test(t)) return null;
+  if (/["“”]|\b(I say|I said|once upon)\b/i.test(t)) return null;
   if (!/[.!?]$/.test(t)) return null;
   // a roast talks to the player; narration and poems don't
   if (!/\byou(r|'re|'ve)?\b/i.test(t)) return null;
