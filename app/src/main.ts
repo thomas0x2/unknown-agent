@@ -209,6 +209,7 @@ let resyncSound = false;
 function listen(): void {
   const next = soundSnap(store.state);
   const cues = resyncSound ? [] : soundCues(snap, next);
+  if (resyncSound) bounces = bounceCount();
   resyncSound = false;
   snap = next;
   // after the day-end pad, the night's money sounds wait until it has faded a little
@@ -218,13 +219,18 @@ function listen(): void {
 /** A loaded save or a new game replaces the state wholesale: take a fresh look without playing anything. */
 function quietReset(): void { resyncSound = true; }
 // new mail and Y posts come from the store's arrival events, wherever they land from (clock, reply, morning)
+// spam-filter bounces are counted apart: one coming back plays its own sound instead of the mail alert
+const bounceCount = () => store.state.mail.filter((m) => m.bounceOf).length;
+let bounces = bounceCount();
 store.onArrival(({ mail, posts, bots }) => {
   store.ui.yBurst = {};
+  const b = bounceCount(); const bounced = b > bounces; bounces = b;
   if (resyncSound) return;
   // arriving with a new day: wait for the day-end sound and the night's money
   const after = store.state.values.day !== snap.day ? 2.2 : 0.1;
   const at = after + (mail ? 0.45 : 0);
-  if (mail) SOUND.play('mail', after);
+  if (bounced) SOUND.play('bounce', after + 0.25);
+  if (mail > (bounced ? 1 : 0)) SOUND.play('mail', after);
   if (posts > bots.length) SOUND.play('post', at);
   // bot accounts post in a quick barrage: each one shows up on Y with its own chirp
   const burst = botBurst(bots.length);
