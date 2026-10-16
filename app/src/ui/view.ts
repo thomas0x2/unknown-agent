@@ -897,7 +897,7 @@ function pageAgent(store: GameStore): string {
   const msgs = s.chat.map((m, i) => {
     if (m.from === 'you') {
       const cost = i === chargingAt
-        ? `<span class="ua-cost ua-charging" role="status"><span class="ua-charge-bar"><i style="animation-duration:${CHARGE_DELAY_MS}ms"></i></span>Charging Coinbin · ${fmtMoney(-store.charging)}</span>`
+        ? `<span class="ua-cost ua-charging" role="status"><span class="ua-charge-bar"><i style="animation-duration:${CHARGE_DELAY_MS}ms"></i></span>Charging Coinbin</span>`
         : `<span class="ua-cost">${m.cost ? fmtMoney(-m.cost) + ' · ' : ''}agent-${m.level ?? s.values.agentLevel} · ${dateShort(m.day)}</span>`;
       return `<div class="ua-msg you"><div class="ua-bubble">${esc(m.text)}</div>${cost}</div>`;
     }
@@ -911,7 +911,8 @@ function pageAgent(store: GameStore): string {
     return `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text">${linkify(br(m.text))}</div>${model}${src}${debug}</div>`;
   }).join('');
   const p = store.pendingPrompt;
-  const pending = p == null ? '' : `<div class="ua-msg you"><div class="ua-bubble">${esc(p)}</div><span class="ua-cost">${fmtMoney(-promptCost(s.values.agentLevel, p).total)} · agent-${s.values.agentLevel} · ${dateShort(s.values.day)}</span></div>`;
+  // the price shows on the prompt only once the charge has gone through
+  const pending = p == null ? '' : `<div class="ua-msg you"><div class="ua-bubble">${esc(p)}</div><span class="ua-cost">agent-${s.values.agentLevel} · ${dateShort(s.values.day)}</span></div>`;
   const thinking = store.busy && !store.charging ? `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text ua-dots"><i></i><i></i><i></i></div></div>` : '';
   return `<div class="ua">
     <header class="ua-head">
