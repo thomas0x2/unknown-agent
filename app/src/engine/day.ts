@@ -8,7 +8,7 @@ import type { Content } from '../content/schema';
 import { RENT, SUSPICION, LAST_DAY, APPS, CLOCK } from './config';
 import { newGame } from './state';
 import { clone, addValue, money, log, pick, deliverPendingMail, deliverAgentWork } from './core';
-import { runPayday, nightlyBreaks } from './apps';
+import { runPayday, nightlyBreaks, wakeApps } from './apps';
 import { deliverComplaints } from './complaints';
 import { deliverDue, deliverArrivals, lapseUnanswered } from './events';
 import { emptyMailBin } from './mailbin';
@@ -36,6 +36,7 @@ function runMorning(s: GameState, content: Content): void {
   emptyMailBin(s); // the Bin is emptied at the end of every day
   nightlyBreaks(s, content); // overnight breaks land in the morning
   s.clockMin = CLOCK.wake;
+  wakeApps(s, content); // content due overnight (Swaplist's first listing) is up by morning
   deliverArrivals(s, content); // what was still on its way when the day ended comes first thing
   deliverDue(s, content); // the rest of today's mail and posts land over the day
   s.postsToday = 0;

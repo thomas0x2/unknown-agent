@@ -60,7 +60,7 @@ export function route(url: string, s: GameState): Route {
   if (!u || u === 'newtab') return { site: 'newtab', reachable: true };
 
   // deployed app URLs: <something>.forkyard.app
-  const appMatch = u.match(/^([a-z0-9-]+\.forkyard\.app)(?:\/([a-z0-9-]+))?$/);
+  const appMatch = u.match(/^([a-z0-9-]+\.forkyard\.app)(?:\/(\S+))?$/);
   if (appMatch) {
     const app = s.apps.find((a) => a.url === appMatch[1]);
     return { site: 'app', param: app && (appMatch[2] ? `${app.id}/${appMatch[2]}` : app.id), reachable: !!app && app.deployed };

@@ -411,6 +411,9 @@ document.addEventListener('submit', (e) => {
     store.bookNext(val('#bk-name').trim(), val('#bk-email').trim(), Number(val('input[name="bk-date"]:checked')) || store.state.values.day);
   } else if (kind === 'book') {
     store.book(f.dataset.app!, val('#bk-time').trim() || '19:00', Number(val('#bk-party')) || 2);
+  } else if (kind === 'sl-search') {
+    const q = val('#sl-q').trim();
+    store.navigate(`${f.dataset.base}${q ? `/search/${encodeURIComponent(q.toLowerCase())}` : ''}`);
   } else if (kind === 'fy-search') {
     const q = val('#fy-search-input').trim().replace(/^@/, '');
     if (q) store.navigate('forkyard.com/u/' + q.toLowerCase());

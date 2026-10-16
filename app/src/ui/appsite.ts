@@ -9,6 +9,7 @@ import type { AppTemplate } from '../content/schema';
 import { menuDishes, misspell, WRONG_HOURS } from '../engine/restaurant';
 import { crawl, autoBuys, portfolio, trackedOf, START_PORTFOLIO, type MarketPost, type Portfolio } from '../engine/crawler';
 import { machineRows } from '../engine/laundromat';
+import { swapListings, listedWhen, SWAP_CATEGORIES, type Listing } from '../engine/swaplist';
 import { adHtml } from './ads';
 import { dateShort, clockTime } from '../engine/calendar';
 
@@ -53,10 +54,15 @@ export interface SiteExtras {
   /** The clock, minutes since midnight: the laundry feed changes with it. */
   minute?: number;
   market?: MarketPost[];
+  /** Minutes of play so far, and whether Viktor has said his watch sold: what Swaplist lists. */
+  play?: number;
+  watchSold?: boolean;
 }
 
 /** Logos of the apps that have one, by template: the site header and the browser tab both use them. */
 const LOGO_SVG: Record<string, string> = {
+  // classifieds purple: two arrows trading places
+  swaplist: `<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="8" fill="#6e3fa3"/><path d="M11 15h17M24 10.5l4.5 4.5-4.5 4.5M29 25H12M16 20.5 11.5 25l4.5 4.5" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   laundromat: `<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="2" width="32" height="36" rx="6" fill="#2f80ed"/><rect x="8" y="6" width="24" height="5" rx="2" fill="#fff" opacity=".35"/><circle cx="20" cy="24" r="10" fill="#fff"/><circle cx="20" cy="24" r="7" fill="#9cc6f5"/><path d="M14 25c2-2 4 2 6 0s4 2 6 0" stroke="#2f80ed" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>`,
   // a dark terminal tile: a market line climbing through a crawler's scan brackets
   sentiment: `<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="8" fill="#0f1419"/><path d="M9 11V9h4M27 9h4v2M31 29v2h-4M13 31H9v-2" stroke="#3a4552" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="11" y="21" width="3" height="6" rx="1" fill="#e5484d"/><rect x="16.5" y="17" width="3" height="10" rx="1" fill="#30a46c"/><rect x="22" y="19" width="3" height="8" rx="1" fill="#e5484d"/><path d="M10 19l6.5-5 5 3 8.5-6" stroke="#4cc38a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="11" r="2.2" fill="#4cc38a"/></svg>`,
@@ -67,6 +73,7 @@ export function renderAppSite(app: AppInstance, tmpl: AppTemplate | undefined, p
   if (app.template === 'restaurant') return restaurant(app, tmpl, page, extras);
   if (app.template === 'sentiment') return crawler(app, tmpl, page, extras);
   if (app.template === 'laundromat') return laundromat(app, tmpl, page, extras);
+  if (app.template === 'swaplist') return swaplist(app, tmpl, page, extras);
   return generic(app, tmpl, page);
 }
 
@@ -246,6 +253,102 @@ function laundromat(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
   // the app pays for itself with ads: one across the top, one under the machines
   const day0 = extras.day ?? 1;
   return `<div class="as as-l">${head}<main>${adHtml('spincycle-app', day0, 'wide')}${body}${adHtml('spincycle-app', day0, 'wide', 1)}</main></div>`;
+}
+
+// ── swaplist ──
+
+const swapPrice = (l: Listing, bugs: Set<string>) => (l.price === 0 ? 'free' : `${(bugs.has('price_x100') ? l.price * 100 : l.price).toLocaleString('en-US')} DOLR`);
+
+function swaplist(app: AppInstance, tmpl: AppTemplate | undefined, page: string | undefined, extras: SiteExtras): string {
+  const day = extras.day ?? 1;
+  const f = Object.fromEntries(['listings', 'search', 'contact', 'mark_sold'].map((id) => [id, live(app, tmpl, id)]));
+  const bugs = new Set(Object.values(f).flatMap((l) => [...l.bugs]));
+  const base = app.url;
+  const all = f.listings.built ? swapListings(app.contentAt, extras.play ?? 0, extras.watchSold) : [];
+  // with titles_shifted every row shows the title of the listing posted before it
+  const titleOf = (l: Listing) => {
+    if (!bugs.has('titles_shifted') || all.length < 2) return l.title;
+    const i = all.indexOf(l);
+    return all[(i + 1) % all.length].title;
+  };
+  const catOf = (l: Listing) => (bugs.has('all_free') ? 'free stuff' : l.cat);
+  // without the sold feature nothing is ever marked; with no_sold_badge it's marked but never shown
+  const soldShown = (l: Listing) => l.soldAt != null && !!f.mark_sold.built && !bugs.has('no_sold_badge');
+  const takesOffers = (l: Listing) => l.soldAt == null || !f.mark_sold.built || bugs.has('offers_open');
+  const photo = (l: Listing, big = false) => (bugs.has('no_photos')
+    ? `<span class="as-w-ph none${big ? ' big' : ''}" aria-label="Image not found"></span>`
+    : `<span class="as-w-ph${big ? ' big' : ''}" aria-hidden="true">${l.photo}</span>`);
+  const when = (l: Listing) => { const t = listedWhen(l.at); return `${dateShort(t.day)}, ${clockTime(t.min)}`; };
+
+  const [section, arg, sub] = (page ?? '').split('/');
+  const query = section === 'search' && arg ? decodeURIComponent(arg).trim().toLowerCase() : '';
+  const cat = section === 'cat' && arg ? decodeURIComponent(arg) : '';
+  const side = f.search.built
+    ? `<form class="as-w-search" data-form="sl-search" data-base="${esc(base)}"><input id="sl-q" placeholder="search swaplist" value="${esc(query)}" autocomplete="off"><button type="submit">Search</button></form>
+      <ul class="as-w-cats">${SWAP_CATEGORIES.map((c) => `<li><a href="#" data-nav="${esc(`${base}/cat/${encodeURIComponent(c)}`)}" class="${c === cat ? 'on' : ''}">${esc(c)}</a></li>`).join('')}</ul>`
+    : '';
+  const head = `<header class="as-w-head"><a href="#" class="as-w-brand" data-nav="${esc(base)}"><span class="as-w-logo">${LOGO_SVG.swaplist}</span>${esc(app.name.toLowerCase())}</a><span>local classifieds</span></header>`;
+  const wrap = (main: string) => `<div class="as as-w">${head}<div class="as-w-body"><aside>${side}${adHtml('swaplist-app', day, 'square')}</aside><main>${adHtml('swaplist-app', day, 'wide')}${main}</main></div></div>`;
+
+  const down = outage(f.listings, 'the listings');
+  if (!f.listings.built) return wrap(`<p class="as-w-empty">Nothing listed.</p>`);
+  if (down) return wrap(down);
+
+  // one listing's page
+  if (section === 'item') {
+    const l = all.find((x) => String(x.n) === arg);
+    if (!l) return wrap(notFound());
+    const seller = `<a href="#" data-nav="y.com/${esc(l.seller)}">@${esc(l.seller)}</a>`;
+    if (sub === 'contact' && f.contact.built && !bugs.has('contact_dead')) {
+      return wrap(`<section class="as-w-item"><h1>Message @${esc(l.seller)}</h1><p class="as-w-meta">About: ${esc(titleOf(l))}</p>
+        <div class="as-w-msg">Hi, is this still available?</div>
+        <a href="#" class="as-w-btn" data-nav="${esc(`${base}/item/${l.n}/sent`)}">Send</a></section>`);
+    }
+    if (sub === 'sent' && f.contact.built && !bugs.has('contact_dead')) {
+      // wrong_seller: the message goes to whoever posted the listing before this one
+      const other = all.find((x) => x.seller !== l.seller)?.seller ?? 'second_hand_sam';
+      const to = bugs.has('wrong_seller') ? other : l.seller;
+      return wrap(`<section class="as-w-item"><h1>Message sent</h1><p>Your message was sent to <b>@${esc(to)}</b>. They'll reply by email if they're interested.</p>
+        <a href="#" data-nav="${esc(`${base}/item/${l.n}`)}">Back to the listing</a></section>`);
+    }
+    if (sub === 'offer' && takesOffers(l)) {
+      return wrap(`<section class="as-w-item"><h1>Offer sent</h1><p>Your offer on “${esc(titleOf(l))}” was sent to @${esc(l.seller)}.</p>
+        <a href="#" data-nav="${esc(`${base}/item/${l.n}`)}">Back to the listing</a></section>`);
+    }
+    if (sub) return wrap(notFound());
+    const contact = !f.contact.built ? ''
+      : bugs.has('contact_dead') ? `<button class="as-w-btn" type="button">Contact seller</button>`
+      : `<a href="#" class="as-w-btn" data-nav="${esc(`${base}/item/${l.n}/contact`)}">Contact seller</a>`;
+    const offer = takesOffers(l)
+      ? `<a href="#" class="as-w-btn ghost" data-nav="${esc(`${base}/item/${l.n}/offer`)}">Make an offer</a>${l.offers ? `<small>${l.offers} offer${l.offers === 1 ? '' : 's'} so far</small>` : ''}`
+      : `<small>Offers closed</small>`;
+    return wrap(`<section class="as-w-item">${photo(l, true)}<div>
+      <h1>${esc(titleOf(l))}${soldShown(l) ? ' <span class="as-w-sold">sold</span>' : ''}</h1>
+      <p class="as-w-price">${swapPrice(l, bugs)}</p>
+      <p class="as-w-meta">${esc(catOf(l))} · posted ${when(l)} by ${seller}</p>
+      <p class="as-w-text">${esc(l.body).replace(/\n/g, '<br>')}</p>
+      <div class="as-w-acts">${contact}${offer}</div></div></section>`);
+  }
+  if (section && section !== 'search' && section !== 'cat') return wrap(notFound());
+
+  let shown = all;
+  let title = 'Latest listings';
+  if (section === 'search' && f.search.built) {
+    title = query ? `Results for “${query}”` : 'Latest listings';
+    if (query) shown = all.filter((l) => {
+      const t = titleOf(l).toLowerCase();
+      return bugs.has('search_exact') ? t === query : t.includes(query) || l.cat.includes(query);
+    });
+  } else if (section === 'cat' && f.search.built && cat) {
+    title = cat;
+    if (!bugs.has('filter_ignored')) shown = all.filter((l) => catOf(l) === cat);
+  } else if (section) return wrap(notFound());
+
+  const rows = shown.map((l) => `<li><a href="#" data-nav="${esc(`${base}/item/${l.n}`)}">${photo(l)}<div>
+      <b>${esc(titleOf(l))}${soldShown(l) ? ' <span class="as-w-sold">sold</span>' : ''}</b>
+      <span class="as-w-meta">${esc(catOf(l))} · ${when(l)}</span></div><i>${swapPrice(l, bugs)}</i></a></li>`).join('');
+  const empty = !all.length ? 'No listings yet.' : 'Nothing matches.';
+  return wrap(`<h1 class="as-w-h1">${esc(title)}</h1>${rows ? `<ul class="as-w-list">${rows}</ul>` : `<p class="as-w-empty">${empty}</p>`}`);
 }
 
 // ── generic fallback ──

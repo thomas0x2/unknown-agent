@@ -23,7 +23,11 @@
       "complaints": {
         "missing": "Swaplist has no listings. It's a marketplace with nothing in it.",
         "down": "Swaplist won't load the listings at all.",
-        "wrong": "Swaplist listings have no photos and the prices are off. Is the bike 5 DOLR or 500?"
+        "wrong": "Swaplist listings have no photos and the prices are off. Is the bike 5 DOLR or 500?",
+        "titles_shifted": "The titles on Swaplist don't match anything. A photo of a kettle called \"Road bike\".",
+        "no_photos": "Swaplist shows grey boxes where the photos should be. I'm not buying a grey box.",
+        "price_x100": "Swaplist says the lamp is 500 DOLR. The seller wrote 5.",
+        "all_free": "Swaplist has a 90 DOLR bike under \"free stuff\". Went to pick it up. It was not free."
       },
       "components": [
         {
@@ -32,6 +36,9 @@
           "aka": [
             "title",
             "name"
+          ],
+          "bugs": [
+            "titles_shifted"
           ]
         },
         {
@@ -41,6 +48,9 @@
             "photo",
             "image",
             "picture"
+          ],
+          "bugs": [
+            "no_photos"
           ]
         },
         {
@@ -49,6 +59,9 @@
           "aka": [
             "price",
             "cost"
+          ],
+          "bugs": [
+            "price_x100"
           ]
         },
         {
@@ -57,8 +70,49 @@
           "aka": [
             "category",
             "tag"
+          ],
+          "bugs": [
+            "all_free"
           ]
         }
+      ],
+      "bugs": [
+        {
+          "id": "titles_shifted",
+          "when": "Each listing shows the title of a different listing, so the titles don't match the photos or the descriptions.",
+          "fixed": [
+            "Each listing shows its own title again.",
+            "The titles were off by one. They match the photos now."
+          ]
+        },
+        {
+          "id": "no_photos",
+          "when": "Listing photos don't load: every listing shows an empty grey box instead of its photo.",
+          "fixed": [
+            "The photos load again.",
+            "Photos were pointing at a folder that doesn't exist. Fixed."
+          ]
+        },
+        {
+          "id": "price_x100",
+          "when": "Listing prices are 100 times too high: something asking 5 DOLR shows as 500 DOLR.",
+          "fixed": [
+            "Prices were in hundredths. They show the asking price now.",
+            "Fixed the prices. A 5 DOLR lamp costs 5 DOLR again."
+          ]
+        },
+        {
+          "id": "all_free",
+          "when": "Every listing is shown in the category 'free stuff', whatever it is and whatever it costs.",
+          "fixed": [
+            "Listings show their own category again, not 'free stuff'.",
+            "Fixed the categories. Not everything is free anymore."
+          ]
+        }
+      ],
+      "nearMiss": [
+        "I looked at the listings. They list things. What's wrong with them, exactly?",
+        "Couldn't find a problem in the listings. Say which part is off."
       ]
     },
     {
@@ -74,7 +128,9 @@
       ],
       "complaints": {
         "missing": "No search on Swaplist. Scrolled for twenty minutes to find a lamp.",
-        "wrong": "Searched Swaplist for \"jacket\". Nothing. There are jackets on there, I can see them."
+        "wrong": "Searched Swaplist for \"jacket\". Nothing. There are jackets on there, I can see them.",
+        "search_exact": "Searched Swaplist for \"jacket\". Nothing. There are jackets on there, I can see them.",
+        "filter_ignored": "Clicked \"bikes\" on Swaplist. Got a sofa, a kettle and one bike."
       },
       "components": [
         {
@@ -84,6 +140,9 @@
             "search box",
             "query",
             "search results"
+          ],
+          "bugs": [
+            "search_exact"
           ]
         },
         {
@@ -92,8 +151,33 @@
           "aka": [
             "category filter",
             "filter"
+          ],
+          "bugs": [
+            "filter_ignored"
           ]
         }
+      ],
+      "bugs": [
+        {
+          "id": "search_exact",
+          "when": "Search only finds a listing when the whole title is typed exactly; searching one word like 'jacket' finds nothing.",
+          "fixed": [
+            "Search matches words in the title now, not only the whole title.",
+            "Fixed search. 'jacket' finds the jackets."
+          ]
+        },
+        {
+          "id": "filter_ignored",
+          "when": "Picking a category still shows every listing from all categories.",
+          "fixed": [
+            "The category filter filters now.",
+            "Picking a category shows only that category again."
+          ]
+        }
+      ],
+      "nearMiss": [
+        "Search runs. I searched for things and got things. What does it get wrong?",
+        "Couldn't find a problem with search. Which part?"
       ]
     },
     {
@@ -112,7 +196,9 @@
       "complaints": {
         "missing": "There's no way to contact a seller on Swaplist.",
         "deep": "Messaged a seller on Swaplist. A completely different person answered.",
-        "wrong": "The contact button on Swaplist goes to the wrong seller."
+        "wrong": "The contact button on Swaplist goes to the wrong seller.",
+        "contact_dead": "The contact button on Swaplist does nothing. Clicked it nine times.",
+        "wrong_seller": "Messaged a seller on Swaplist. A completely different person answered."
       },
       "components": [
         {
@@ -121,6 +207,9 @@
           "aka": [
             "contact button",
             "message button"
+          ],
+          "bugs": [
+            "contact_dead"
           ]
         },
         {
@@ -130,8 +219,34 @@
             "seller",
             "wrong seller",
             "recipient"
+          ],
+          "bugs": [
+            "wrong_seller"
           ]
         }
+      ],
+      "bugs": [
+        {
+          "id": "contact_dead",
+          "when": "The contact-seller button does nothing when clicked.",
+          "fixed": [
+            "The contact button opens the message form again.",
+            "The button wasn't wired to anything. It is now."
+          ]
+        },
+        {
+          "id": "wrong_seller",
+          "when": "Messages sent with the contact button go to a different seller than the one who posted the listing.",
+          "deep": true,
+          "fixed": [
+            "Messages go to the seller who posted the listing now.",
+            "It was sending to the wrong seller. Fixed."
+          ]
+        }
+      ],
+      "nearMiss": [
+        "I sent a test message. It sent. What goes wrong?",
+        "Couldn't find a problem with contacting sellers. Which part?"
       ]
     },
     {
@@ -147,7 +262,9 @@
       ],
       "complaints": {
         "missing": "Nothing on Swaplist ever gets marked sold.",
-        "wrong": "Crossed town for a chair on Swaplist. Sold two days ago. Still listed."
+        "wrong": "Crossed town for a chair on Swaplist. Sold two days ago. Still listed.",
+        "no_sold_badge": "Crossed town for a chair on Swaplist. Sold two days ago. Still listed.",
+        "offers_open": "Made an offer on Swaplist. It says sold right there. It took my offer anyway."
       },
       "components": [
         {
@@ -157,6 +274,9 @@
             "sold flag",
             "sold badge",
             "marking sold"
+          ],
+          "bugs": [
+            "no_sold_badge"
           ]
         },
         {
@@ -165,8 +285,33 @@
           "aka": [
             "offers",
             "bids"
+          ],
+          "bugs": [
+            "offers_open"
           ]
         }
+      ],
+      "bugs": [
+        {
+          "id": "no_sold_badge",
+          "when": "Sold items don't show as sold; they look available even when the seller wrote that it's sold.",
+          "fixed": [
+            "Sold items show as sold again.",
+            "The sold badge is back."
+          ]
+        },
+        {
+          "id": "offers_open",
+          "when": "Sold items still take offers: the Make an offer button stays on after an item is sold.",
+          "fixed": [
+            "Sold items stop taking offers now.",
+            "The offer button goes away once something sells."
+          ]
+        }
+      ],
+      "nearMiss": [
+        "Things get marked sold. I watched one. What's the problem?",
+        "Couldn't find a problem with the sold status. Which part?"
       ]
     }
   ],
@@ -187,5 +332,6 @@
     ],
     "offline": "Swaplist is down. I had three things listed on there.",
     "stale": "Swaplist hasn't changed in days. Is anyone running it?"
-  }
+  },
+  "firstContentAfter": 120
 }
