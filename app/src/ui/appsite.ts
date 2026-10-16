@@ -7,7 +7,7 @@
 import { type AppInstance, type AppBreak, type BuiltFeature, breakVariant, bugsOf, UNNAMED_BUG } from '../engine';
 import type { AppTemplate } from '../content/schema';
 import { menuDishes, misspell, WRONG_HOURS } from '../engine/restaurant';
-import { crawl, autoBuys, portfolio, trackedOf, START_PORTFOLIO, type MarketPost, type Portfolio } from '../engine/crawler';
+import { crawl, autoBuys, portfolio, tradeLog, trackedOf, START_PORTFOLIO, type MarketPost, type Portfolio } from '../engine/crawler';
 import { machineRows } from '../engine/laundromat';
 import { swapListings, listedWhen, SWAP_CATEGORIES, type Listing } from '../engine/swaplist';
 import { takesOffers, buyPrice, shownPrice } from '../engine/swapdeal';
@@ -57,6 +57,8 @@ export interface SiteExtras {
   /** The clock, minutes since midnight: the laundry feed changes with it. */
   minute?: number;
   market?: MarketPost[];
+  /** Everything posted as Randall Crane so far: what the auto-trade log lists. */
+  crane?: MarketPost[];
   /** Minutes of play so far, and whether Viktor has said his watch sold: what Swaplist lists. */
   play?: number;
   watchSold?: boolean;
@@ -175,12 +177,14 @@ function valueChart(values: number[], day: number): string {
   const area = `${x(0).toFixed(1)},${H} ${line} ${x(series.length - 1).toFixed(1)},${H}`;
   const grid = [0.25, 0.5, 0.75].map((g) => `<line x1="0" x2="${W}" y1="${(T + g * (H - T - B)).toFixed(1)}" y2="${(T + g * (H - T - B)).toFixed(1)}"/>`).join('');
   const k = tone(series[series.length - 1] - series[0]);
+  // a flat series (one day, or stale prices) gets one label beside the line, not the same number twice
+  const labels = hi === lo ? `<span>${money(hi)}</span>` : `<span>${money(hi)}</span><span>${money(lo)}</span>`;
   const dots = values.length < 2 ? '' : values.map((v, i) => `<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="2.5"><title>${dateShort(i + 1)}: ${money(v)}</title></circle>`).join('');
   const days = values.length < 2 ? [1, day] : values.map((_, i) => i + 1);
-  return `<figure class="as-s-chart ${k}"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Portfolio value by day">
+  return `<figure class="as-s-chart ${k}${hi === lo ? ' flat' : ''}"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Portfolio value by day">
       <defs><linearGradient id="as-s-fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-opacity="0.35"/><stop offset="1" stop-opacity="0"/></linearGradient></defs>
       <g class="grid">${grid}</g><polygon class="area" points="${area}"/><polyline class="line" points="${line}"/><g class="dots">${dots}</g></svg>
-    <figcaption><span>${money(hi)}</span><span>${money(lo)}</span></figcaption>
+    <figcaption>${labels}</figcaption>
     <div class="as-s-xaxis">${days.map((d) => `<span>${dateShort(d)}</span>`).join('')}</div></figure>`;
 }
 
@@ -240,17 +244,26 @@ function crawler(app: AppInstance, tmpl: AppTemplate | undefined, page: string |
     body = portfolioPanel(portfolio(buys, day, bugs), history, day) + body;
   }
   if (f.auto_buy.built) {
-    // the trade log keeps its own position count: what the holdings should say after each buy
+    // every Crane post with the mood the classifier read and what the bot did about it, newest first;
+    // the position column is what the holdings should say after each buy
     const pos: Record<string, number> = { ...START_PORTFOLIO.holdings };
-    const log = buys.map((b) => {
-      const was = pos[b.ticker] ?? 0;
-      pos[b.ticker] = was + b.shares;
-      return `<tr><td>${dateShort(b.day)}</td><td class="tk">BUY $${esc(b.ticker)}</td><td>${b.shares.toLocaleString('en-US')} @ ${money(b.price)}</td><td>${money(b.shares * b.price)}</td><td>${was.toLocaleString('en-US')} → ${pos[b.ticker].toLocaleString('en-US')}</td>
-        <td class="src"><a href="#" data-nav="y.com/${esc(b.post.handle)}">@${esc(b.post.handle)}</a> “${esc(b.post.text)}”</td></tr>`;
+    const log = tradeLog(extras.crane ?? [], buys, bugs).map((r) => {
+      let action = '<span class="none">No action</span>';
+      if (r.buys.length) {
+        const b = r.buys[0];
+        const shares = r.buys.reduce((a, x) => a + x.shares, 0);
+        const was = pos[b.ticker] ?? 0;
+        pos[b.ticker] = was + shares;
+        const times = r.buys.length > 1 ? ` <b class="x">×${r.buys.length}</b>` : '';
+        action = `<b class="buy">BUY $${esc(b.ticker)}</b>${times}<small>${shares.toLocaleString('en-US')} @ ${money(b.price)} · ${money(shares * b.price)}</small><small>position ${was.toLocaleString('en-US')} → ${pos[b.ticker].toLocaleString('en-US')}</small>`;
+      }
+      const mood = f.sentiment.built ? `<span class="as-s-mood ${r.mood}">${r.mood}</span>` : '<span class="as-s-mood">—</span>';
+      return `<tr><td>${dateShort(r.post.day)}${r.post.min != null ? `<small>${clockTime(r.post.min)}</small>` : ''}</td>
+        <td class="src"><a href="#" data-nav="y.com/${esc(r.post.handle)}">@${esc(r.post.handle)}</a> “${esc(r.post.text)}”</td><td class="mood">${mood}</td><td class="act">${action}</td></tr>`;
     }).reverse().join('');
-    body += `<section class="as-s-buys"><h2>Auto-buy trades</h2>${log
-      ? `<table class="as-s-trades"><thead><tr><th>Date</th><th>Order</th><th>Fill</th><th>Cost</th><th>Position</th><th>Signal</th></tr></thead><tbody>${log}</tbody></table>`
-      : '<p>No trades yet. Watching @randall_crane.</p>'}</section>`;
+    body += `<section class="as-s-buys"><h2>Auto-trade log</h2>${log
+      ? `<table class="as-s-trades"><thead><tr><th>Posted</th><th>Post</th><th>Sentiment</th><th>Action</th></tr></thead><tbody>${log}</tbody></table>`
+      : '<p>Nothing from @randall_crane yet. Watching.</p>'}</section>`;
   }
   if (open && !modal) return `<div class="as as-s">${head}<main>${notFound()}</main></div>`;
   return `<div class="as as-s">${head}<main>${body}</main>${modal}</div>`;
@@ -417,7 +430,7 @@ function generic(app: AppInstance, tmpl: AppTemplate | undefined, page: string |
 
 const BREAK_LABEL: Record<string, string> = { visible: 'crash', failed_fetch: 'failed fetch', subtle: 'subtle break', deep: 'deep break' };
 
-interface DevRow { id: string; repoNow: string; liveNow: string; present: Set<string>; possible: { key: string; label: string; live?: boolean }[]; checklist: string }
+interface DevRow { id: string; repoNow: string; liveNow: string; present: Set<string>; possible: { key: string; label: string; live?: boolean }[]; checklist: string; held: string[] }
 
 function devRows(app: AppInstance, tmpl: AppTemplate | undefined): DevRow[] {
   return app.required.map((id) => {
@@ -433,7 +446,8 @@ function devRows(app: AppInstance, tmpl: AppTemplate | undefined): DevRow[] {
     // a wrong build with no named bug still gets a tag, so it can be seen and switched off
     const unnamed = [repo, liveF].some((f) => f && !f.correct && !f.variant);
     if (unnamed) present.add(UNNAMED_BUG);
-    const possible = [
+    // a feature nobody has built yet is just missing: no bugs to show or switch on until it's pushed
+    const possible = !repo && !liveF ? [] : [
       ...(unnamed || !def?.bugs?.length ? [{ key: UNNAMED_BUG, label: 'wrong (no named bug)' }] : []),
       ...(def?.bugs ?? []).map((b) => ({ key: b.id, label: b.deep ? `${b.id} (deep)` : b.id })),
       ...(def?.details?.length ? ['hallucinated', 'outdated'] : app.specParams[id] ? ['outdated'] : []).map((key) => ({ key, label: key })),
@@ -446,13 +460,16 @@ function devRows(app: AppInstance, tmpl: AppTemplate | undefined): DevRow[] {
       const cls = hit === undefined ? '' : hit ? 'hit' : 'miss';
       return `<span class="dvb-check ${cls}">${hit === undefined ? '·' : hit ? '✓' : '✗'} ${esc(c.id)}${hit === false ? ` → ${esc(c.bug)}` : ''}</span>`;
     }).join('');
-    return { id, repoNow, liveNow, present, possible, checklist };
+    // bugs in the code that nothing shows yet: they land once something would show them
+    const held = [...new Set([...(repo?.held ?? []), ...(liveF?.held ?? [])])];
+    return { id, repoNow, liveNow, present, possible, checklist, held };
   });
 }
 
 /** How many features currently have a bug (in the repo or live), for the repo list badge. */
 export function devBugCount(app: AppInstance, tmpl: AppTemplate | undefined): number {
-  return devRows(app, tmpl).filter((r) => r.repoNow !== 'ok' || (app.deployed && r.liveNow !== 'ok')).length;
+  const bad = (v: string) => v !== 'ok' && v !== 'missing';
+  return devRows(app, tmpl).filter((r) => bad(r.repoNow) || (app.deployed && bad(r.liveNow))).length;
 }
 
 const pill = (label: string, v: string) => `<span class="dvb-pill ${v === 'ok' ? 'ok' : v === 'not deployed' ? 'off' : 'bad'}"><i>${label}</i>${esc(v)}</span>`;
@@ -463,11 +480,12 @@ export function devBugPanel(app: AppInstance, tmpl: AppTemplate | undefined): st
   const cards = rows.map((r) => `<div class="dvb-card">
       <div class="dvb-title"><b>${esc(r.id)}</b>${pill('repo', r.repoNow)}${pill('live', r.liveNow)}</div>
       ${r.checklist ? `<div class="dvb-line"><span class="dvb-k">Build prompt</span>${r.checklist}</div>` : ''}
+      ${r.held.length ? `<div class="dvb-line"><span class="dvb-k">Not showing yet</span>${r.held.map((b) => `<span class="dvb-check">${esc(b)}</span>`).join('')}</div>` : ''}
       <div class="dvb-line"><span class="dvb-k">Possible bugs</span>${r.possible.map((p) => {
         const off = p.live && !app.deployed;
         const tip = off ? 'Deploy first: breaks only happen on the live site' : r.present.has(p.key) ? 'Click to remove' : p.live ? 'Click to break the live site' : 'Click to add to the repo and live build';
         return `<button class="dvb-tag${r.present.has(p.key) ? ' on' : ''}" data-devbug="${esc(`${app.id}|${r.id}|${p.key}`)}" title="${tip}"${off ? ' disabled' : ''}>${esc(p.label)}</button>`;
-      }).join('') || '<i>none</i>'}</div>
+      }).join('') || (r.repoNow === 'missing' && r.liveNow !== 'ok' ? '<i>none until it\'s built</i>' : '<i>none</i>')}</div>
     </div>`).join('');
   return `<section class="dev-bugs"><div class="dvb-head"><span class="dvb-badge">DEV</span><b>Bugs in ${esc(app.id)}</b><span class="dvb-sum ${n ? 'bad' : 'ok'}">${n ? `${n} feature${n > 1 ? 's' : ''} with a bug` : 'no bugs'}</span><span class="dvb-hint">Click a bug to switch it on or off</span></div>${cards}</section>`;
 }

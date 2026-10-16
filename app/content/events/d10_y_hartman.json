@@ -1,0 +1,11 @@
+{
+  "id": "d10_y_hartman",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 10,
+    "dayMax": 10
+  },
+  "at": "12:45",
+  "body": "@axel_rook sorry about the rocket."
+}

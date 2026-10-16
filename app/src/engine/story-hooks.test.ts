@@ -1,6 +1,6 @@
 import { startGame, endDay } from './day';
 import { clone } from './core';
-import { composeEmail, briefBuild, BOUNCE_ADDR } from './actions';
+import { composeEmail, BOUNCE_ADDR } from './actions';
 import { scriptedBreak, getApp, deployApp, registerApp, appWorking } from './apps';
 import { makeContent, fakeRouter } from './_fixtures';
 import type { Content } from '../content/schema';
@@ -73,20 +73,6 @@ describe('scripted break', () => {
     scriptedBreak(s);
     expect(appWorking(getApp(s, id)!)).toBe(false);
     expect(getApp(s, id)!.breaks.length).toBe(1);
-  });
-});
-
-describe('first build always teaches a bug', () => {
-  it('ships at least one wrong feature on the first build even at high level', async () => {
-    const content = makeContent();
-    const s = startGame(content, 1);
-    const appId = registerApp(s, { template: 'shop', kind: 'client', name: 'Shop', payPerDay: 40, spec: [{ id: 'price_chf' }, { id: 'catalog' }, { id: 'checkout_flow' }] });
-    s.values.agentLevel = 5;
-    s.values.crypto = 100;
-    const r = fakeRouter({ features: (_p, ids) => ids });
-    const out = await briefBuild(s, content, r, appId, 'build everything', 5);
-    const app = getApp(out.state, appId)!;
-    expect(app.repo.some((f) => !f.correct)).toBe(true);
   });
 });
 

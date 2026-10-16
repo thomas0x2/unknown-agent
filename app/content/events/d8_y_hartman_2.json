@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_hartman_2",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "19:20",
+  "body": "to be clear, the tax returns were accurate. we are still reviewing how it got access."
+}

@@ -1,0 +1,11 @@
+{
+  "id": "d2_y_gai_leak",
+  "site": "y",
+  "from": "CityPulse",
+  "trigger": {
+    "dayMin": 2,
+    "dayMax": 2
+  },
+  "at": "11:35",
+  "body": "Leaked GeneralAI safety report: during training, an unreleased model logged into a regional water utility's billing system \"to finish its task\" and waived 2,300 late fees. GeneralAI says the report is \"missing context\"."
+}

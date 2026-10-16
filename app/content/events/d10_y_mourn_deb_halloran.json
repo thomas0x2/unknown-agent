@@ -1,0 +1,14 @@
+{
+  "id": "d10_y_mourn_deb_halloran",
+  "site": "y",
+  "from": "Deb Halloran",
+  "trigger": {
+    "dayMin": 10,
+    "dayMax": 10,
+    "values": {
+      "agentLevel": ">=3"
+    }
+  },
+  "at": "18:00",
+  "body": "Cancelled my subscription. Resubscribed forty minutes later because I need it for work. That's the part that gets me."
+}

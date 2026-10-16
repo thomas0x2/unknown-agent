@@ -427,6 +427,12 @@ document.addEventListener('submit', (e) => {
     store.swapOffer(Number(f.dataset.n), Number(val('#sl-offer')));
   } else if (kind === 'sl-buy') {
     store.swapBuy(Number(f.dataset.n));
+  } else if (kind === 'y-search') {
+    // a handle opens that profile; one nobody uses gets Y's "doesn't exist" page
+    const q = val('#y-search').trim().replace(/^@/, '').toLowerCase();
+    if (!q) return;
+    store.setYSearch('');
+    store.navigate('y.com/' + encodeURIComponent(q));
   } else if (kind === 'fy-search') {
     const q = val('#fy-search-input').trim().replace(/^@/, '');
     if (q) store.navigate('forkyard.com/u/' + q.toLowerCase());

@@ -1354,5 +1354,29 @@
     "expect": {
       "none": true
     }
+  },
+  {
+    "app": "laundromat",
+    "broken": [
+      "machines/count"
+    ],
+    "prompt": "The spin cycle app only has 6 machines, there should be 8",
+    "expect": {
+      "fix": [
+        "machines/count"
+      ]
+    }
+  },
+  {
+    "app": "laundromat",
+    "broken": [
+      "machines/count"
+    ],
+    "prompt": "There should be 8 machines on the spin cycle app. 2 machines are missing",
+    "expect": {
+      "fix": [
+        "machines/count"
+      ]
+    }
   }
 ]

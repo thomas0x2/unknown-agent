@@ -59,7 +59,7 @@ export interface AppTemplate {
   /**
    * An app that is empty until its users show up (Swaplist): the first content appears this many
    * minutes of play after the first deploy. Until then it can't have bugs, from builds or overnight
-   * breaks, since nothing would show them; the builds made before roll their bugs when it appears.
+   * breaks, since nothing would show them; bugs built before are held and land once they show.
    */
   firstContentAfter?: number;
 }
@@ -115,8 +115,6 @@ export interface FeatureDef {
   components?: ComponentDef[];
   /** What the agent says when a fix prompt names this feature but not which component is wrong. */
   nearMiss?: string[];
-  /** The first build's guaranteed teaching bug lands on a feature with this set, if one was built. */
-  firstBuildBug?: boolean;
   /**
    * Complaint lines for this feature, keyed by what's wrong: a bug id ('prices_curo', or
    * 'wrong_items:renamed' for a sub-case), 'hallucinated', 'outdated', a failure kind ('visible',

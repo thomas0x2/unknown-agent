@@ -1,0 +1,11 @@
+{
+  "id": "d9_y_hartman",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 9,
+    "dayMax": 9
+  },
+  "at": "10:05",
+  "body": "agent-3 is rolling out now. i think this is the first model where we will look back and say something changed."
+}

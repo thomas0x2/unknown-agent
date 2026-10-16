@@ -1,13 +1,13 @@
 /*
  * Swaplist starts empty: no bugs from builds or overnight breaks until its first listing, two hours
- * of play after the first deploy. Then the held-back bugs roll, and a clean first build still gets one.
+ * of play after the first deploy. Then the held-back bugs that can show land, and a clean app still gets one.
  */
 import { describe, it, expect } from 'vitest';
 import { loadContent } from '../content/load';
 import { startGame } from './day';
 import { applyEffects } from './effects';
 import { getEvent } from './events';
-import { buildApp, deployApp, getApp, nightlyBreaks, wakeApps, scriptedBreak } from './apps';
+import { buildApp, deployApp, getApp, nightlyBreaks, wakeApps, scriptedBreak, canSee } from './apps';
 import { swapListings } from './swaplist';
 import { playMinutes } from './core';
 import type { GameState } from './state';
@@ -85,7 +85,8 @@ describe('Swaplist when its first listing appears', () => {
       expect(wrong(s, id)).toBeGreaterThan(0);
       // the repo has the same code, so it carries the bug too
       expect(app.repo.filter((f) => !f.correct).length).toBeGreaterThan(0);
-      expect([...app.repo, ...app.features].some((f) => f.quietLevel != null)).toBe(false);
+      // what stays held needs more than the first listing to show (a second listing, a sale)
+      for (const f of app.features) for (const b of f.held ?? []) expect(canSee(s, app, tmpl, b, content), b).toBe(false);
     }
   });
 

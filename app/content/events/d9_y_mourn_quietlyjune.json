@@ -1,0 +1,14 @@
+{
+  "id": "d9_y_mourn_quietlyjune",
+  "site": "y",
+  "from": "quietlyjune",
+  "trigger": {
+    "dayMin": 9,
+    "dayMax": 9,
+    "values": {
+      "agentLevel": ">=3"
+    }
+  },
+  "at": "11:20",
+  "body": "agent-3 is live and agent-2 is just gone. No warning, no option to keep it. I had a routine with that model."
+}
