@@ -4,6 +4,7 @@
  */
 import { type MeterId, initialMeters } from './values';
 import { makeSeed } from './rng';
+import { CLOCK } from './config';
 
 export type EventSite = 'qmail' | 'y' | 'yowl' | 'nullboard' | 'cellar' | 'agent';
 export type Site = EventSite | 'satchel' | 'forkyard' | 'weightroom' | 'terminal' | 'app';
@@ -100,6 +101,9 @@ export interface Tx {
   amount: number;
   memo: string;
 }
+
+/** A Forkyard commit, for the profile activity feed and contribution grid. */
+export interface Commit { day: number; repo: string; msg: string; kind: 'push' | 'deploy' }
 
 /** A line in the agent.chat transcript. */
 export interface ChatMsg {
@@ -214,6 +218,8 @@ export interface GameState {
   /** Model running in the Terminal, if any. */
   termModel: string | null;
   morning: MorningCard | null;
+  clockMin: number; // minutes since midnight; the working day runs wake..sleep
+  commits: Commit[];
   introSeen: boolean;
   /** Trader buy-in stake value (0 = none). */
   stake: number;
@@ -223,7 +229,7 @@ export interface GameState {
   nextId: number;
 }
 
-export const SAVE_VERSION = 4;
+export const SAVE_VERSION = 5;
 
 /**
  * The four weeks before Day 1, so Satchel opens on a real history: two paychecks from Vantor, weekly
@@ -289,6 +295,8 @@ export function newGame(seed = makeSeed()): GameState {
     terminal: [],
     termModel: null,
     morning: null,
+    clockMin: CLOCK.wake,
+    commits: [],
     introSeen: false,
     stake: 0,
     interviewAnswers: '',

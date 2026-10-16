@@ -5,7 +5,7 @@
  */
 import type { GameState, MorningCard } from './state';
 import type { Content } from '../content/schema';
-import { RENT, SUSPICION, LAST_DAY, APPS } from './config';
+import { RENT, SUSPICION, LAST_DAY, APPS, CLOCK } from './config';
 import { newGame } from './state';
 import { clone, addValue, money, log } from './core';
 import { runPayday, nightlyBreaks } from './apps';
@@ -19,6 +19,7 @@ function runMorning(s: GameState, content: Content): void {
   deliverDue(s, content);
   s.postsToday = 0;
   s.sentToday = [];
+  s.clockMin = CLOCK.wake;
   s.phase = 'work';
 }
 

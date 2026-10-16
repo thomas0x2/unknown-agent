@@ -11,6 +11,7 @@ import {
   type GameState, type AppInstance, getApp, appWorking, agentCost, RENT, LAST_DAY, AGENT_COST, AGENT_ROLLOUT,
 } from '../engine';
 import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
+import { findUser } from './forkyard-users';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const WALLET_ADDR = '0x4417c3e8b1d05f2a9e6d7b0c1f83a4e5d2b9a9f2';
@@ -86,7 +87,16 @@ export function rentLine(s: GameState): string {
   return `Rent ${fmtMoney(RENT[rentDay])} ${left === 0 ? 'due tonight' : `in ${left}d`}`;
 }
 export function rentLow(s: GameState): boolean { const d = rentDayOf(s); return !!d && s.values.crypto < RENT[d]; }
-export function clockHtml(s: GameState): string { return `<b>${weekday(s.values.day)} · Day ${s.values.day}</b><span>of ${LAST_DAY}</span>`; }
+export function fmtClock(min: number): string {
+  const m = Math.max(0, Math.min(24 * 60, Math.round(min)));
+  let h = Math.floor(m / 60) % 24; const mm = m % 60;
+  const ap = h < 12 ? 'AM' : 'PM'; const h12 = h % 12 === 0 ? 12 : h % 12;
+  return `${h12}:${String(mm).padStart(2, '0')} ${ap}`;
+}
+export function clockHtml(s: GameState): string {
+  const near = s.clockMin >= 22 * 60; // getting late
+  return `<b class="${near ? 'late' : ''}">${fmtClock(s.clockMin)}</b><span>${weekday(s.values.day)} · Day ${s.values.day} of ${LAST_DAY}</span>`;
+}
 
 function qmailBadge(s: GameState): number {
   const story = s.delivered.filter((d) => d.site === 'qmail' && !d.answered).length;
@@ -394,9 +404,61 @@ function repoStatus(a: AppInstance): string {
   if (!a.deployed) return `<span class="fy-pill off">Not deployed</span>`;
   return `<span class="fy-pill on">Live</span> <a href="#" data-nav="${a.url}" class="fy-url">${a.url}</a>`;
 }
+function fyHead(store: GameStore, active: 'repos' | 'profile' | ''): string {
+  return `<header class="fy-top"><div class="fy-logo" data-nav="forkyard.com">${ICONS.forkyard}<span>forkyard</span></div>
+    <nav class="fy-nav"><a href="#" class="${active === 'repos' ? 'on' : ''}" data-nav="forkyard.com">Repositories</a><a href="#" class="${active === 'profile' ? 'on' : ''}" data-nav="forkyard.com/you">Profile</a></nav>
+    <form class="fy-search" data-form="fy-search"><input id="fy-search-input" autocomplete="off" spellcheck="false" placeholder="Search users (@handle)" value="${esc(store.ui.fySearch)}"></form>
+    <a href="#" class="fy-user" data-nav="forkyard.com/you">@you</a></header>`;
+}
+function contribGrid(counts: number[]): string {
+  const cells = counts.map((n, i) => `<i class="l${Math.min(4, n)}" title="Day ${i + 1}: ${n} commit${n === 1 ? '' : 's'}"></i>`).join('');
+  const total = counts.reduce((a, b) => a + b, 0);
+  return `<div class="fy-contrib"><div class="fy-contrib-grid">${cells}</div><small>${total} contributions across the run</small></div>`;
+}
+function pageProfileSelf(store: GameStore): string {
+  const s = store.state;
+  const commits = s.commits;
+  const counts = Array.from({ length: 21 }, (_, i) => commits.filter((c) => c.day === i + 1).length);
+  const feed = commits.slice().reverse().slice(0, 20).map((c) => `<div class="fy-act"><span class="fy-act-ico ${c.kind}">${c.kind === 'deploy' ? '▲' : '●'}</span><span class="fy-act-what"><b>${esc(c.repo)}</b> ${esc(c.msg)}</span><span class="fy-act-day">Day ${c.day}</span></div>`).join('') || '<p class="fy-note">No activity yet. Brief the agent to build something.</p>';
+  const repos = s.apps.map((a) => `<a href="#" class="fy-mini" data-nav="forkyard.com/${a.id}"><b>${esc(a.id)}</b><small>${esc(a.template)} · ${a.kind}</small></a>`).join('') || '<p class="fy-note">No repositories yet.</p>';
+  return `<div class="fy">${fyHead(store, 'profile')}<div class="fy-wrap fy-prof">
+    <aside class="fy-prof-side">
+      <div class="fy-prof-av" style="--h:${hashHue('you')}">YOU</div>
+      <h1 class="fy-prof-name">you</h1><p class="fy-prof-handle">@you</p>
+      <p class="fy-prof-bio">Recently automated out of a job. Shipping apps to make rent. Powered by agent.</p>
+      <dl class="fy-prof-facts"><dt>Followers</dt><dd>${compact(s.values.followers)}</dd><dt>Repos</dt><dd>${s.apps.length}</dd><dt>Joined</dt><dd>this week</dd></dl>
+    </aside>
+    <div class="fy-prof-main">
+      ${contribGrid(counts)}
+      <h2 class="fy-h2">Pinned</h2><div class="fy-mini-grid">${repos}</div>
+      <h2 class="fy-h2">Recent activity</h2><div class="fy-acts">${feed}</div>
+    </div></div></div>`;
+}
+function pageProfileUser(store: GameStore, handle: string): string {
+  const u = findUser(handle);
+  if (!u) return `<div class="fy">${fyHead(store, '')}<div class="fy-wrap"><p class="fy-empty">No user <code>@${esc(handle)}</code> on Forkyard.</p></div></div>`;
+  const repos = u.repos.map((r) => `<article class="fy-repo"><div><span class="fy-name">${esc(r.name)}</span><p>${esc(r.desc)}</p><small><i class="fy-lang" style="--h:${hashHue(r.lang)}"></i>${esc(r.lang)} · ★ ${r.stars}</small></div></article>`).join('');
+  const facts = [
+    ['Location', u.location], ['Company', u.company], ['Email', u.email ?? '—'],
+    ['Website', u.website || '—'], ['Joined', u.joined],
+  ].map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('');
+  return `<div class="fy">${fyHead(store, '')}<div class="fy-wrap fy-prof">
+    <aside class="fy-prof-side">
+      <div class="fy-prof-av" style="--h:${hashHue(u.handle)}">${esc(u.name.slice(0, 2).toUpperCase())}</div>
+      <h1 class="fy-prof-name">${esc(u.name)}</h1><p class="fy-prof-handle">@${esc(u.handle)}</p>
+      <p class="fy-prof-bio">${esc(u.bio)}</p>
+      <dl class="fy-prof-facts"><dt>Followers</dt><dd>${compact(u.followers)}</dd><dt>Following</dt><dd>${compact(u.following)}</dd>${facts}</dl>
+    </aside>
+    <div class="fy-prof-main">
+      ${contribGrid(u.activity)}
+      <h2 class="fy-h2">Repositories <span>${u.repos.length}</span></h2>${repos}
+    </div></div></div>`;
+}
 function pageForkyard(store: GameStore, repo?: string): string {
   const s = store.state;
-  const head = `<header class="fy-top"><div class="fy-logo">${ICONS.forkyard}<span>forkyard</span></div><span class="fy-user">@you</span></header>`;
+  if (repo === 'you') return pageProfileSelf(store);
+  if (repo && repo.startsWith('u/')) return repo.slice(2) === 'you' ? pageProfileSelf(store) : pageProfileUser(store, repo.slice(2));
+  const head = fyHead(store, repo ? '' : 'repos');
   if (repo) {
     const a = s.apps.find((x) => x.id === repo || x.url.startsWith(repo + '.'));
     if (!a) return `<div class="fy">${head}<div class="fy-wrap"><p class="fy-empty">404 — no repository called <code>${esc(repo)}</code>.</p></div></div>`;
@@ -451,16 +513,14 @@ function llmRow(): string {
   const opt = (v: string, l: string) => `<option value="${v}" ${st.backend === v ? 'selected' : ''}>${l}</option>`;
   let status = ''; let action = '';
   if (st.backend === 'off') status = 'Off-script replies use canned placeholders.';
-  else if (LLM.status === 'off') { status = st.backend === 'browser' ? 'Not loaded. Downloads once, then loads from your browser cache.' : 'Not connected.'; action = `<button class="ua-llm-btn" data-llm="load">${st.backend === 'browser' ? 'Load model' : 'Connect'}</button>`; }
+  else if (LLM.status === 'off') { status = st.backend === 'browser' ? 'Downloads ~240 MB once, then loads from your browser cache.' : 'Not connected.'; action = `<button class="ua-llm-btn" data-llm="load">${st.backend === 'browser' ? 'Download Gemma 3 270M' : 'Connect'}</button>`; }
   else if (LLM.status === 'loading') { const mb = (n: number) => (n / 1048576).toFixed(0); const bytes = LLM.totalBytes ? ` · ${mb(LLM.loadedBytes)} / ${mb(LLM.totalBytes)} MB` : ''; status = `<span class="ua-llm-bar"><i style="width:${Math.max(2, LLM.progress).toFixed(1)}%"></i></span>${LLM.totalBytes ? `${LLM.progress.toFixed(0)}%${bytes}` : esc(LLM.detail)}`; action = `<button class="ua-llm-btn ghost" data-llm="cancel">Cancel</button>`; }
   else if (LLM.status === 'ready') status = `<span class="ua-llm-dot"></span>Ready · ${esc(LLM.detail)}`;
   else if (LLM.status === 'error') { status = `<span class="ua-llm-err">${esc(LLM.detail)}</span>`; action = `<button class="ua-llm-btn" data-llm="retry">Retry</button>`; }
-  return `<label class="ua-llm-pick">Off-script replies <select id="llm-backend">${opt('browser', 'Gemma 3 270M · in browser')}${opt('ollama', 'Gemma 3 270M · Ollama')}${opt('off', 'Canned placeholders')}</select></label><span class="ua-llm-status">${status}</span>${action}`;
+  return `<label class="ua-llm-pick">Local model <select id="llm-backend">${opt('browser', 'Gemma 3 270M · in browser')}${opt('ollama', 'Gemma 3 270M · Ollama')}${opt('off', 'Canned placeholders')}</select></label><span class="ua-llm-status">${status}</span>${action}`;
 }
 function pageAgent(store: GameStore): string {
   const s = store.state;
-  const projects = s.apps.filter((a) => !a.churned);
-  const cur = store.ui.project && (store.ui.project === 'chat' || projects.some((p) => p.id === store.ui.project)) ? store.ui.project : 'chat';
   const c = agentCost(s.values.agentLevel);
   const msgs = s.chat.map((m) => {
     if (m.from === 'you') return `<div class="ua-msg you"><div class="ua-bubble">${esc(m.text)}</div><span class="ua-cost">${m.cost ? fmtMoney(-m.cost) + ' · ' : ''}agent-${m.level ?? s.values.agentLevel} · Day ${m.day}</span></div>`;
@@ -470,7 +530,6 @@ function pageAgent(store: GameStore): string {
     return `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text">${linkify(br(m.text))}</div>${model}${src}</div>`;
   }).join('');
   const thinking = store.busy ? `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text ua-dots"><i></i><i></i><i></i></div></div>` : '';
-  const projectOpts = `<option value="chat" ${cur === 'chat' ? 'selected' : ''}>— just chat —</option>` + projects.map((p) => `<option value="${p.id}" ${p.id === cur ? 'selected' : ''}>${esc(p.name)}</option>`).join('');
   return `<div class="ua">
     <header class="ua-head">
       <div class="ua-brand">${ICONS.agent}<div><b>agent</b><span>agent-${s.values.agentLevel} · ${fmtMoney(c.prompt)} per prompt + ${fmtMoney(c.word)} per word</span></div></div>
@@ -479,9 +538,8 @@ function pageAgent(store: GameStore): string {
     <div class="ua-llm"><span class="ua-jev" id="ua-jev">${jevChip()}</span><span class="ua-llm-ctl" id="ua-llm">${llmRow()}</span></div>
     <div class="ua-log" id="ua-log">${msgs}${thinking}</div>
     <form class="ua-compose" data-form="prompt">
-      <textarea id="prompt-input" rows="2" placeholder="Ask agent anything — or pick a project to build or fix it" ${s.ending || store.busy ? 'disabled' : ''}></textarea>
-      <div class="ua-row"><label class="ua-model-pick"><span class="sr-only">Project</span><select id="project-pick">${projectOpts}</select></label>
-        <span id="cost-est" class="ua-est"></span><button class="ua-send" type="submit" ${s.ending || store.busy ? 'disabled' : ''}>Send</button></div>
+      <textarea id="prompt-input" rows="2" placeholder="Ask agent anything — build an app, fix one, write, translate, look something up…" ${s.ending || store.busy ? 'disabled' : ''}></textarea>
+      <div class="ua-row"><span id="cost-est" class="ua-est"></span><button class="ua-send" type="submit" ${s.ending || store.busy ? 'disabled' : ''}>Send</button></div>
     </form></div>`;
 }
 function pageModels(store: GameStore): string {

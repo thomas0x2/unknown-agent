@@ -9,7 +9,7 @@ import type { GameState, AppInstance, MailEntry } from './state';
 import type { Content, GameEvent, Contact } from '../content/schema';
 import type { JevRouter, PostRating, RouteDecision } from './jev';
 import { Y as YCFG, FAMILY } from './config';
-import { clone, addValue, log, rand, pick } from './core';
+import { clone, addValue, log, rand, pick, tick } from './core';
 import { applyEffects } from './effects';
 import { chargeAgent, agentCost, policyActive, recordWorkaround } from './agent';
 import { getEvent, activeDeliveries, reachableByEmail } from './events';
@@ -75,6 +75,7 @@ export async function replyToEvent(
   const ev = getEvent(content, eventId);
   const delivery = s.delivered.find((d) => d.eventId === eventId && !d.answered);
   if (!ev || !delivery) return { state: s, decision: { kind: 'nothing' }, reply: '' };
+  tick(s, 'reply');
 
   // the player's reply goes to the Sent folder
   if (ev.addr) pushMail(s, { folder: 'sent', day: s.values.day, from: 'You', addr: PLAYER_ADDR, to: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body: text, read: true });
@@ -142,6 +143,7 @@ export async function composeEmail(
   const addr = to.trim().toLowerCase();
   if (!addr || s.sentToday.includes(addr)) return { state: s, decision: { kind: 'nothing' }, reply: '', sent: false };
   s.sentToday.push(addr);
+  tick(s, 'email');
   pushMail(s, { folder: 'sent', day: s.values.day, from: 'You', addr: PLAYER_ADDR, to: addr, subject: subject || '(no subject)', body: text, read: true });
 
   const ev = reachableByEmail(s, content, addr);
@@ -243,9 +245,64 @@ export async function askAgent(
     s.chat.push({ from: 'agent', text: "I can't run — your balance won't cover it. Top up Satchel and try again.", day: s.values.day, src: 'locked' });
     return { state: s, reply: '', charged: false, refused: false, workedAround: false };
   }
+  tick(s, 'prompt');
   s.chat.push({ from: 'you', text, day: s.values.day, cost, level });
   s.chat.push({ from: 'agent', text: reply, day: s.values.day, src, level });
   return { state: s, reply, charged: true, refused, workedAround };
+}
+
+/**
+ * The single front door to the agent: always free text. Jev decides whether the prompt is about
+ * building or fixing one of the player's apps; if it matches features on an app, the agent builds
+ * them (first build or a re-roll fix), otherwise it's an ordinary chat prompt (askAgent). This is
+ * the legacy feel: you can prompt the agent about anything, any time, gig or no gig.
+ */
+export async function promptAgent(
+  s0: GameState,
+  content: Content,
+  jev: JevRouter,
+  text: string,
+  writer: Writer = scriptedWriter,
+): Promise<AskResult> {
+  // apps that still have work to do (a required feature missing or wrong in the repo)
+  const buildable = s0.apps.filter(
+    (a) => !a.churned && a.required.some((id) => { const f = a.repo.find((x) => x.id === id); return !f || !f.correct; }),
+  );
+  if (buildable.length) {
+    // candidate features across those apps, namespaced appId::featureId so Jev can also disambiguate
+    const feats: { id: string; description: string }[] = [];
+    for (const a of buildable) {
+      const tmpl = content.apps[a.template];
+      for (const id of a.required) {
+        const f = a.repo.find((x) => x.id === id);
+        if (f && f.correct) continue;
+        const def = tmpl?.features.find((x) => x.id === id);
+        if (def) feats.push({ id: `${a.id}::${id}`, description: `${def.description} (for ${a.name})` });
+      }
+    }
+    const matched = await jev.matchFeatures({ prompt: text, features: feats });
+    if (matched.length) {
+      const s = clone(s0);
+      const byApp = new Map<string, string[]>();
+      for (const m of matched) { const [appId, fid] = m.split('::'); if (!byApp.has(appId)) byApp.set(appId, []); byApp.get(appId)!.push(fid); }
+      const level = s.values.agentLevel;
+      const names: string[] = [];
+      for (const [appId, fids] of byApp) { buildApp(s, appId, fids, level); const a = getApp(s, appId); if (a) names.push(a.name); }
+      const charged = chargeAgent(s, 30);
+      if (!charged) {
+        s.chat.push({ from: 'you', text, day: s.values.day });
+        s.chat.push({ from: 'agent', text: "I can't run — your balance won't cover it. Top up Satchel and try again.", day: s.values.day, src: 'locked' });
+        return { state: s, reply: '', charged: false, refused: false, workedAround: false };
+      }
+      tick(s, 'build');
+      const reply = `Pushed to Forkyard for ${names.join(', ')}.\nWorked on: ${matched.map((m) => m.split('::')[1]).join(', ')}.\n\nDeploy it on Forkyard, then open it and check it against the brief — I can miss things.`;
+      s.chat.push({ from: 'you', text, day: s.values.day, cost: agentCostOf(s0, 30), level });
+      s.chat.push({ from: 'agent', text: reply, day: s.values.day, src: 'build', level });
+      return { state: s, reply, charged: true, refused: false, workedAround: false };
+    }
+  }
+  // nothing app-shaped: an ordinary free prompt
+  return askAgent(s0, text, writer);
 }
 
 // ── Y ──
@@ -279,6 +336,7 @@ export async function postToY(
   }
   addValue(s, 'followers', delta);
   s.postsToday += 1;
+  tick(s, 'post');
   s.recentPosts = [text, ...s.recentPosts].slice(0, 5);
   s.userPosts.push({ id: `u${s.userPosts.length + 1}`, text, day: s.values.day, likes: Math.max(0, delta * 3 + Math.round(s.values.followers * 0.02)), delta, score: rating.quality * 4 });
   log(s, `Posted on Y (${rating.category}): ${delta >= 0 ? '+' : ''}${delta} followers.`, 'info');
@@ -307,6 +365,7 @@ export async function writeReview(
       if (o) { applyEffects(s, o.effects, ev.job, ev.id); s.fired.push(ev.id); }
     }
   }
+  tick(s, 'review');
   log(s, `Posted a Yowl review.`, 'info');
   return { state: s, posted: true };
 }
@@ -321,6 +380,7 @@ export async function localPrompt(
 ): Promise<{ state: GameState; reply: string }> {
   const s = clone(s0);
   s.terminal.push({ k: 'in', text: `> ${text}` });
+  tick(s, 'terminal');
   const { text: body } = await writer.write({ as: `local:${s.termModel}`, prompt: text, fallback: '…', persona });
   s.terminal.push({ k: 'model', text: body });
   return { state: s, reply: body };
@@ -397,6 +457,7 @@ function chargeHosted(s: GameState, level: number, words: number): boolean {
 export function deploy(s0: GameState, appId: string): GameState {
   const s = clone(s0);
   deployAppCore(s, appId);
+  tick(s, 'deploy');
   log(s, `Deployed ${getApp(s, appId)?.name ?? appId}.`, 'info');
   return s;
 }
@@ -416,6 +477,7 @@ export function makeBooking(s0: GameState, appId: string, name: string, email: s
   const feat = app.features.find((f) => f.id === 'booking');
   const works = app.deployed && feat && feat.correct;
   const fakeCancel = !!(feat && !feat.correct && rand(s) < 0.5);
+  tick(s, 'book');
   s.bookings.push({ id: nextId(s, 'bk'), appId, name, email, date, time, party, cancelled: false, fakeCancel });
   if (works && email.toLowerCase() === PLAYER_ADDR) {
     pushMail(s, { folder: 'inbox', day: s.values.day, from: app.name, addr: `bookings@${app.url}`, subject: `Booking confirmed — ${app.name}`, body: `Your table for ${party} on Day ${date} at ${time} is confirmed. Need to cancel? Use the link below.`, read: false, link: 'cancel' });

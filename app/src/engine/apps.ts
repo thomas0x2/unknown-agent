@@ -86,6 +86,7 @@ export function buildApp(s: GameState, appId: string, requested: string[], level
   for (const f of app.repo) if (!built.some((b) => b.id === f.id)) built.push(f);
   app.repo = built;
   app.repoVersion++;
+  s.commits.push({ day: s.values.day, repo: app.id, msg: app.repoVersion === 1 ? `Initial commit for ${app.name}` : `Update ${requested.join(', ') || app.name}`, kind: 'push' });
   // the very first build always ships at least one teaching bug, even on a lucky roll
   if (app.repoVersion === 1) {
     const correct = app.repo.filter((f) => f.correct);
@@ -123,6 +124,7 @@ export function fixApp(s: GameState, appId: string, featureId: string | null, le
   if (idx >= 0) app.repo[idx] = { ...app.repo[idx], correct: ok };
   else app.repo.push({ id: featureId, correct: ok });
   app.repoVersion++;
+  s.commits.push({ day: s.values.day, repo: app.id, msg: `Fix ${featureId}`, kind: 'push' });
   return ok;
 }
 
@@ -141,6 +143,7 @@ export function deployApp(s: GameState, appId: string): void {
   app.deployed = true;
   app.deployedVersion = app.repoVersion;
   app.lastDeployDay = s.values.day;
+  s.commits.push({ day: s.values.day, repo: app.id, msg: `Deploy ${app.name} v${app.repoVersion}`, kind: 'deploy' });
 }
 
 /** Take a deployment offline. Counts as broken at payday. */

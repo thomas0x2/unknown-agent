@@ -6,6 +6,7 @@
 import '../../src/style.css';
 import './ui/satchel.css';
 import './ui/yowl.css';
+import './ui/forkyard.css';
 import { GameStore } from './game/store';
 import { loadContent } from './content/load';
 import { offlineJev, localStorageStore } from './engine';
@@ -129,13 +130,8 @@ document.addEventListener('submit', (e) => {
   else if (kind === 'ypost') { const v = val('#post-input').trim(); if (v) void store.post(v, trendingToday()).then((r) => toast('Y', `${r.followerDelta >= 0 ? '+' : '−'}${Math.abs(r.followerDelta)} followers`, 'y')); }
   else if (kind === 'prompt') {
     const v = val('#prompt-input').trim(); if (!v) return;
-    const project = val('#project-pick');
-    if (!project || project === 'chat') void store.ask(v);
-    else {
-      const app = store.state.apps.find((a) => a.id === project);
-      const broken = app && app.repo.some((x) => !x.correct);
-      void (broken ? store.fix(project, v) : store.build(project, v));
-    }
+    const input = $<HTMLTextAreaElement>('#prompt-input'); if (input) input.value = '';
+    void store.prompt(v);
   } else if (kind === 'mail') {
     const to = val('#mail-to').trim(), subject = val('#mail-subject').trim(), body = val('#mail-body').trim();
     if (!to || !body) return;
@@ -152,6 +148,9 @@ document.addEventListener('submit', (e) => {
     const app = f.dataset.app!; const email = val('#bk-email').trim(); const time = val('#bk-time').trim() || '19:00'; const party = Number(val('#bk-party')) || 2;
     store.book(app, 'You', email, store.state.values.day, time, party);
     toast('Booking', 'Table requested — check Qmail for a confirmation', 'mail');
+  } else if (kind === 'fy-search') {
+    const q = val('#fy-search-input').trim().replace(/^@/, '');
+    if (q) store.navigate('forkyard.com/u/' + q.toLowerCase());
   } else if (kind === 'term') {
     const v = val('#term-input').trim(); if (!v) return;
     const input = $<HTMLInputElement>('#term-input'); if (input) input.value = '';
@@ -165,13 +164,13 @@ document.addEventListener('input', (e) => {
   const el = e.target as HTMLInputElement;
   if (el.id === 'y-search') store.setYSearch(el.value);
   else if (el.id === 'yowl-search') store.setYowlSearch(el.value);
+  else if (el.id === 'fy-search-input') store.setFySearch(el.value);
   else if (el.id === 'prompt-input') updateCost();
   else if (el.id === 'mail-to') store.setDraft({ to: el.value, subject: val('#mail-subject'), body: val('#mail-body') });
 });
 document.addEventListener('change', (e) => {
   const el = e.target as HTMLSelectElement;
   if (el.id === 'llm-backend') LLM.setBackend(el.value as 'browser' | 'ollama' | 'off');
-  else if (el.id === 'project-pick') store.setProject(el.value);
 });
 document.addEventListener('keydown', (e) => {
   const el = e.target as HTMLElement;

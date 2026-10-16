@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer,
   startGame, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  briefBuild, briefFix, askAgent, writeReview, localPrompt, makeBooking, cancelBooking, deliverDue,
+  promptAgent, writeReview, localPrompt, makeBooking, cancelBooking, deliverDue, CLOCK, tick,
 } from '../engine';
 import type { Content } from '../content/schema';
 
@@ -23,7 +23,7 @@ export class GameStore {
   private nextTab = 3;
   busy = false;
   ui = {
-    ySearch: '', yowlSearch: '', reviewStars: 0, walletRange: '1M', draft: null as Draft | null,
+    ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null as Draft | null,
     project: '', dev: false, liked: {} as Record<string, boolean>, intro: true, confirm: null as null | { text: string; yes: string; fn: () => void },
   };
 
@@ -38,6 +38,12 @@ export class GameStore {
   subscribe(fn: () => void): () => void { this.listeners.add(fn); return () => this.listeners.delete(fn); }
   private emit(): void { for (const fn of this.listeners) fn(); }
   private commit(s: GameState): void { this.state = s; this.store.save(s); this.emit(); }
+  /** Commit an action, then auto-sleep if the clock has run past midnight. */
+  private commitAndSettle(s: GameState): void {
+    this.state = s;
+    if (!s.ending && s.clockMin >= CLOCK.sleep) { this.state = endDay(s, this.content); }
+    this.store.save(this.state); this.emit();
+  }
 
   get url(): string { return this.tabs.find((t) => t.id === this.active)?.url ?? 'newtab'; }
 
@@ -58,6 +64,7 @@ export class GameStore {
 
   setYSearch(v: string): void { this.ui.ySearch = v; this.emit(); }
   setYowlSearch(v: string): void { this.ui.yowlSearch = v; this.emit(); }
+  setFySearch(v: string): void { this.ui.fySearch = v; this.emit(); }
   setWalletRange(r: string): void { this.ui.walletRange = r; this.emit(); }
   setReviewStars(n: number): void { this.ui.reviewStars = n; this.emit(); }
   setDraft(d: Draft | null): void { this.ui.draft = d; this.emit(); }
@@ -75,17 +82,17 @@ export class GameStore {
     this.state = startGame(this.content);
     this.tabs = [{ id: 1, url: 'qmail.com' }, { id: 2, url: 'agent.chat' }];
     this.active = 1; this.nextTab = 3;
-    this.ui = { ySearch: '', yowlSearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null };
+    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null };
     this.store.save(this.state);
     this.emit();
   }
 
   endDay(): void { this.commit(endDay(this.state, this.content)); }
-  deploy(appId: string): void { this.commit(deploy(this.state, appId)); }
+  deploy(appId: string): void { this.commitAndSettle(deploy(this.state, appId)); }
   takeDown(appId: string): void { this.commit(takeDown(this.state, appId)); }
   cancelBooking(id: string): void { this.commit(cancelBooking(this.state, id)); }
   book(appId: string, name: string, email: string, date: number, time: string, party: number): void {
-    this.commit(makeBooking(this.state, appId, name, email, date, time, party));
+    this.commitAndSettle(makeBooking(this.state, appId, name, email, date, time, party));
   }
 
   private async run<T>(fn: () => Promise<T>): Promise<T> {
@@ -94,25 +101,20 @@ export class GameStore {
   }
 
   async post(text: string, trending: string[]) {
-    return this.run(async () => { const r = await postToY(this.state, this.router, text, trending); this.commit(r.state); return r; });
+    return this.run(async () => { const r = await postToY(this.state, this.router, text, trending); this.commitAndSettle(r.state); return r; });
   }
   async reply(eventId: string, text: string) {
-    return this.run(async () => { const r = await replyToEvent(this.state, this.content, this.router, eventId, text, this.writer); this.commit(r.state); return r; });
+    return this.run(async () => { const r = await replyToEvent(this.state, this.content, this.router, eventId, text, this.writer); this.commitAndSettle(r.state); return r; });
   }
   async compose(to: string, subject: string, text: string) {
-    return this.run(async () => { const r = await composeEmail(this.state, this.content, this.router, to, text, this.writer, subject); this.commit(r.state); return r; });
+    return this.run(async () => { const r = await composeEmail(this.state, this.content, this.router, to, text, this.writer, subject); this.commitAndSettle(r.state); return r; });
   }
-  async build(appId: string, text: string) {
-    return this.run(async () => { const r = await briefBuild(this.state, this.content, this.router, appId, text); this.commit(r.state); return r; });
-  }
-  async fix(appId: string, text: string) {
-    return this.run(async () => { const r = await briefFix(this.state, this.content, this.router, appId, text); this.commit(r.state); return r; });
-  }
-  async ask(text: string) {
-    return this.run(async () => { const r = await askAgent(this.state, text, this.writer); this.commit(r.state); return r; });
+  /** The agent is always free-text promptable. Jev routes it to a build/fix or an ordinary reply. */
+  async prompt(text: string) {
+    return this.run(async () => { const r = await promptAgent(this.state, this.content, this.router, text, this.writer); this.commitAndSettle(r.state); return r; });
   }
   async review(bizId: string, stars: number, text: string) {
-    return this.run(async () => { const r = await writeReview(this.state, this.content, this.router, bizId, stars, text); this.ui.reviewStars = 0; this.commit(r.state); return r; });
+    return this.run(async () => { const r = await writeReview(this.state, this.content, this.router, bizId, stars, text); this.ui.reviewStars = 0; this.commitAndSettle(r.state); return r; });
   }
 
   download(id: string): void {
@@ -121,6 +123,7 @@ export class GameStore {
     if (!s.flags.includes('knows_weightroom')) { s.flags.push('knows_weightroom'); s.flags.sort(); }
     if (!s.flags.includes('has_terminal')) { s.flags.push('has_terminal'); s.flags.sort(); }
     s.termModel = id;
+    tick(s, 'download');
     s.terminal.push({ k: 'sys', text: `Downloaded ${id}. Running it now — replies are free but slow.` });
     this.store.save(s); this.emit();
     this.navigate('localhost');
@@ -136,7 +139,7 @@ export class GameStore {
   }
 
   async term(text: string) {
-    return this.run(async () => { const r = await localPrompt(this.state, text, this.writer, this.content.contacts.find((c) => c.key === 'deepsleep')?.persona ?? DEEPSLEEP); this.commit(r.state); return r; });
+    return this.run(async () => { const r = await localPrompt(this.state, text, this.writer, this.content.contacts.find((c) => c.key === 'deepsleep')?.persona ?? DEEPSLEEP); this.commitAndSettle(r.state); return r; });
   }
 }
 
