@@ -1,0 +1,45 @@
+/* Qdrive: Qmail's sister product, so it shares Qmail's palette (the --qm-* tokens in style.css). */
+.qd { min-height: 100%; background: var(--qm-bg); color: var(--qm-ink); display: flex; flex-direction: column; }
+.qd-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 24px; background: var(--qm-panel); border-bottom: 1px solid var(--qm-line); }
+.qd-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px; letter-spacing: -0.02em; }
+.qd-logo svg { width: 26px; height: 26px; color: var(--qm-accent); --icon-ink: #fff; }
+.qd-user { font-size: 13px; color: var(--qm-dim); font-family: var(--f-mono); }
+.qd-wrap { flex: 1; display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 18px; padding: 18px 24px 32px; max-width: 1100px; width: 100%; margin: 0 auto; }
+.qd-side { display: flex; flex-direction: column; gap: 2px; }
+.qd-side a { display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; border-radius: 999px; color: var(--qm-ink); font-size: 14px; text-decoration: none; }
+.qd-side a:hover { background: var(--qm-soft); }
+.qd-side a.on { background: var(--qm-soft); font-weight: 700; color: var(--qm-accent); }
+.qd-side a b { font-size: 12px; font-weight: 500; color: var(--qm-dim); font-variant-numeric: tabular-nums; }
+.qd-quota { margin-top: 14px; padding: 0 14px; display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--qm-dim); }
+.qd-bar { height: 4px; border-radius: 999px; background: var(--qm-line); overflow: hidden; }
+.qd-bar i { display: block; height: 100%; background: var(--qm-accent); border-radius: inherit; }
+.qd-main { min-width: 0; background: var(--qm-panel); border: 1px solid var(--qm-line); border-radius: 12px; padding: 18px 20px; align-self: start; }
+.qd-h { margin: 0 0 14px; font-size: 19px; }
+.qd-empty { color: var(--qm-dim); margin: 0; }
+.qd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+.qd-file { display: flex; flex-direction: column; gap: 6px; padding: 14px; border: 1px solid var(--qm-line); border-radius: 10px; color: var(--qm-ink); text-decoration: none; min-width: 0; }
+.qd-file:hover { border-color: var(--qm-accent); background: var(--qm-soft); }
+.qd-file b { font-size: 13.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.qd-file span:last-child { font-size: 12px; color: var(--qm-dim); font-variant-numeric: tabular-nums; }
+.qd-glyph { display: grid; place-items: center; width: 40px; height: 48px; border-radius: 6px; font: 700 10px/1 var(--f-mono); letter-spacing: 0.04em; color: #fff; flex: none; margin-bottom: 4px; }
+.qd-pdf { background: #d6453b; }
+.qd-txt { background: #6b7287; }
+.qd-zip { background: #c58a12; }
+.qd-weights { background: #3b4ad6; }
+.qd-crumbs { margin: 0 0 12px; font-size: 13px; color: var(--qm-dim); }
+.qd-crumbs a { color: var(--qm-accent); }
+.qd-open header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.qd-open header .qd-glyph { margin: 0; }
+.qd-open h1 { margin: 0 0 4px; font-size: 19px; overflow-wrap: anywhere; }
+.qd-open header p { margin: 0; font-size: 13px; color: var(--qm-dim); }
+.qd-preview { padding: 16px 18px; border: 1px solid var(--qm-line); border-radius: 10px; background: var(--qm-bg); font-size: 14.5px; line-height: 1.6; max-width: 65ch; overflow-wrap: anywhere; }
+.qd-actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 18px 0 0; }
+.qd-btn { border: 0; background: var(--qm-accent); color: #fff; font-weight: 600; padding: 9px 20px; border-radius: 999px; font-size: 14px; }
+@media (max-width: 760px) {
+  .qd-top { padding: 10px 16px; }
+  .qd-wrap { grid-template-columns: minmax(0, 1fr); padding: 12px 12px 24px; gap: 12px; }
+  .qd-side { flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  .qd-side a { gap: 8px; }
+  .qd-quota { flex-basis: 100%; margin-top: 4px; }
+  .qd-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+}
