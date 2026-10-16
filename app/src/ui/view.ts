@@ -478,7 +478,7 @@ function pageWallet(store: GameStore): string {
 // ── Forkyard ──
 function repoStatus(a: AppInstance): string {
   if (!a.deployed) return `<span class="fy-pill off">Not deployed</span>`;
-  return `<span class="fy-pill on">Live</span> <a href="#" data-nav="${a.url}" class="fy-url">${a.url}</a>`;
+  return `<span class="fy-pill on">Live</span> <a href="#" data-newtab="${a.url}" class="fy-url">${a.url}</a>`;
 }
 function fyHead(store: GameStore, active: 'repos' | 'profile' | ''): string {
   return `<header class="fy-top"><div class="fy-logo" data-nav="forkyard.com">${ICONS.forkyard}<span>forkyard</span></div>
@@ -553,7 +553,7 @@ function pageForkyard(store: GameStore, repo?: string): string {
         <div class="fy-files"><div class="fy-filehead">Pushed by <b>agent[bot]</b> · repo v${a.repoVersion}</div>${feats}</div>
         <div class="fy-deploy"><h2>Deployment</h2><p>${repoStatus(a)}</p>
           ${a.deployed
-            ? `<dl><dt>Status</dt><dd>live at <a href="#" data-nav="${esc(a.url)}">${esc(a.url)}</a></dd><dt>Hosting / day</dt><dd>$2.00</dd>${stale ? '<dt>Repo</dt><dd>new commit — redeploy</dd>' : ''}</dl><div class="fy-row"><button class="fy-btn" data-deploy="${esc(a.id)}">Redeploy</button><button class="fy-btn ghost" data-takedown="${esc(a.id)}">Take down</button></div>`
+            ? `<dl><dt>Status</dt><dd>live at <a href="#" data-newtab="${esc(a.url)}">${esc(a.url)}</a></dd><dt>Hosting / day</dt><dd>$2.00</dd>${stale ? '<dt>Repo</dt><dd>new commit — redeploy</dd>' : ''}</dl><div class="fy-row"><button class="fy-btn" data-deploy="${esc(a.id)}">Redeploy</button><button class="fy-btn ghost" data-takedown="${esc(a.id)}">Take down</button></div>`
             : `<p class="fy-note">Hosting costs $2.00/day, billed nightly. Nothing is live until you deploy.</p><button class="fy-btn" data-deploy="${esc(a.id)}">Deploy</button>`}
         </div></div></div></div>`;
   }
