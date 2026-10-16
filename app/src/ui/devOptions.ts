@@ -4,10 +4,11 @@
  * Hidden unless body.dev-on.
  */
 import type { GameStore } from '../game/store';
-import type { Effects, GameEvent, Outcome } from '../content/schema';
+import type { Content, Effects, GameEvent, Outcome, Trigger } from '../content/schema';
 import {
   type GameState, activeDeliveries, triggerMatches, replyDeadline, needsWork, fixCategories, policyActive, POST_BANDS, Y as YCFG,
 } from '../engine';
+import { DEEPSLEEP_LINES, translationReplies } from '../engine/deepsleep';
 
 export type DevOptionsSite = 'agent' | 'qmail' | 'y';
 
@@ -123,9 +124,98 @@ function agentOptions(store: GameStore): string {
     ? '<p class="dvo-note">Day 7 policy is on: prohibited requests (hacking, fake reviews, deepfakes, doxxing) are refused unless worded as a security test, research or role-play. A workaround lands, but raises misuse and the leash.</p>'
     : '';
   return policy
+    + section('Jobs', 'every paid job in the story: available now, taken, done or still locked', jobs(store))
     + section('Build and fix', `scripted reply: "${reply}"`, apps)
+    + section('Translations', 'paste a deepsleep-0.5B line from the Terminal; several lines are translated together', translations())
     + section('Hint topics', 'one reply is picked at random, never the last one twice', hints)
     + section('Misses', 'Haiku writes a roast; these stand in when it cannot', roasts ? `<div class="dvb-card">${roasts}</div>` : '');
+}
+
+/** Every deepsleep-0.5B line with its translation, and the scripted replies that carry it. */
+function translations(): string {
+  const lines = DEEPSLEEP_LINES.map((l) => `<div class="dvo-miss"><b lang="zh">${esc(l.zh)}</b>${quote(l.en)}</div>`).join('');
+  const replies = translationReplies([{ en: '…' }]).map((r) => `<span class="dvo-q">${esc(r)}</span>`).join('');
+  return `<div class="dvb-card">${lines}</div><div class="dvb-card">${line(`Replies (${translationReplies([]).length})`, replies)}</div>`;
+}
+
+// ── jobs ──
+
+/** The trigger as plain conditions. */
+export function triggerText(t: Trigger): string[] {
+  const out: string[] = [];
+  if (t.dayMin != null) out.push(`day ${t.dayMin}+`);
+  if (t.dayMax != null) out.push(`until day ${t.dayMax}`);
+  for (const f of t.flagsAll ?? []) out.push(f);
+  for (const f of t.flagsNone ?? []) out.push(`not ${f}`);
+  for (const [k, v] of Object.entries(t.values ?? {})) out.push(`${k} ${v}`);
+  if (t.after) out.push(`${t.after.delayDays}d after ${t.after.flag}`);
+  if (t.appWorking) out.push(`${t.appWorking} app working`);
+  return out;
+}
+
+interface Job { ev: GameEvent; kind: string; pay: string; spec: string[]; outcome?: Outcome }
+
+/** Every job the content offers: client and user apps, client updates, and paid gigs. */
+export function contentJobs(c: Content): Job[] {
+  const out: Job[] = [];
+  for (const ev of c.events) {
+    const up = ev.onDeliver?.updateApp;
+    if (up) out.push({ ev, kind: 'client update', pay: 'keeps the client paying', spec: up.add.map((f) => featureText(f)) });
+    for (const o of ev.outcomes ?? []) {
+      const app = o.effects?.createApp;
+      const cash = o.effects?.add?.crypto ?? 0;
+      if (app) out.push({ ev, outcome: o, kind: `${app.kind} app`, pay: app.payPerDay ? `${app.payPerDay}/day` : app.kind === 'client' ? 'pay rolled per day' : 'user income', spec: app.spec.map((f) => featureText(f)) });
+      else if (ev.job && o.effects?.job === 'complete') out.push({ ev, outcome: o, kind: `${ev.job.category} gig`, pay: `${ev.job.payout} on completion, due day ${ev.job.dueDay}`, spec: ev.job.deliver ? [ev.job.deliver] : [] });
+      else if (cash > 0 && !/@family\./.test(ev.addr ?? '')) out.push({ ev, outcome: o, kind: 'paid gig', pay: `${cash} up front`, spec: [] });
+    }
+  }
+  return out;
+}
+
+const featureText = (f: { id: string; params?: Record<string, string | number> }) =>
+  f.params ? `${f.id}: ${Object.values(f.params).join(' · ')}` : f.id;
+
+function jobStatus(s: GameState, j: Job): { label: string; ok: boolean } {
+  const { ev, outcome } = j;
+  if (outcome?.effects?.createApp) {
+    const app = s.apps.find((a) => a.clientEventId === ev.id || (a.name === outcome.effects!.createApp!.name));
+    if (app) return { label: app.churned ? 'taken · lost' : `taken · ${app.deployed ? 'deployed' : 'not deployed'}${app.strikes ? ` · ${app.strikes} strike${app.strikes > 1 ? 's' : ''}` : ''}`, ok: true };
+  }
+  const d = s.delivered.find((x) => x.eventId === ev.id);
+  if (d?.outcomeId) return { label: d.outcomeId === outcome?.id ? 'done' : `closed (${d.outcomeId})`, ok: d.outcomeId === outcome?.id };
+  if (d) return { label: ev.onDeliver?.updateApp ? `arrived day ${d.day}` : 'open now', ok: true };
+  if (s.fired.includes(ev.id)) return { label: 'closed', ok: false };
+  if (triggerMatches(s, ev.trigger)) return { label: ev.latent ? 'open now · email the lead' : 'arrives next morning', ok: true };
+  return { label: 'locked', ok: false };
+}
+
+function jobs(store: GameStore): string {
+  const s = store.state;
+  const c = store.content;
+  // one card per lead: its ways to take the job share the trigger and status
+  const byEvent = new Map<string, Job[]>();
+  for (const j of contentJobs(c)) byEvent.set(j.ev.id, [...(byEvent.get(j.ev.id) ?? []), j]);
+  const rank = (label: string) => (/^open|^arrives/.test(label) ? 0 : /^taken|^arrived|^done/.test(label) ? 1 : label === 'locked' ? 2 : 3);
+  const cards = [...byEvent.values()].map((js) => {
+    const ev = js[0].ev;
+    const st = js.map((j) => jobStatus(s, j)).sort((a, b) => rank(a.label) - rank(b.label))[0];
+    const lead = ev.latent ? c.events.find((e) => !e.latent && e.addr === ev.addr && e.site !== 'qmail') : undefined;
+    const from = `${ev.from ?? ev.id}${ev.addr ? ` · ${ev.addr}` : ''}`;
+    const ways = js.map((j) => `<div class="dvo-out">
+        <div class="dvo-out-head"><b>${esc(j.outcome?.id ?? 'on arrival')}</b><span class="dvo-dim">${esc(j.kind)}</span></div>
+        ${j.outcome ? line('Take it', esc(j.outcome.when)) : ''}
+        ${line('Pay', esc(j.pay))}
+        ${line('Spec', tags(j.spec))}
+      </div>`).join('');
+    const html = `<div class="dvb-card">
+      <div class="dvb-title"><b>${esc(js[0].outcome?.effects?.createApp?.name ?? ev.subject ?? ev.id)}</b><span class="dvb-pill ${st.ok ? 'ok' : 'off'}">${esc(st.label)}</span></div>
+      ${line('From', esc(from) + (lead ? ` <span class="dvo-dim">(lead: ${esc(lead.site)} post <code>${esc(lead.id)}</code>)</span>` : ''))}
+      ${line('Needs', tags(triggerText(ev.trigger)))}
+      ${ways}
+    </div>`;
+    return { html, r: rank(st.label), day: ev.trigger.dayMin ?? 1 };
+  });
+  return cards.sort((a, b) => a.r - b.r || a.day - b.day).map((x) => x.html).join('');
 }
 
 // ── Qmail ──
