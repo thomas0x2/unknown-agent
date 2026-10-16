@@ -348,10 +348,16 @@ function pageMail(store: GameStore, param?: string): string {
       const names = [...new Set(t.rows.filter((r) => r.addr !== BOUNCE_ADDR).map((r) => (r.folder === 'sent' ? 'me' : r.from)))];
       const who = folder === 'sent' || (binView && t.rows.every((r) => r.folder === 'sent')) ? `To: ${t.with}` : names.slice(-3).join(', ');
       const snippet = last.body.replace(/\s+/g, ' ').slice(0, 90);
-      return `<a href="#" class="qm-row${unread ? ' unread' : ''}" data-nav="qmail.com/${esc(last.id)}">
+      // the Bin (or Restore) button sits beside the row's link, over the date on hover, not inside it
+      const ids = esc(JSON.stringify(t.rows.map((r) => r.id)));
+      const home = binView ? 'qmail.com/bin' : folder === 'sent' ? 'qmail.com/sent' : 'qmail.com';
+      const tool = binView
+        ? `<button class="qm-row-tool" data-mail-restore="${ids}" data-mail-home="${home}" title="Restore" aria-label="Restore">${ICONS.restore}</button>`
+        : `<button class="qm-row-tool" data-mail-bin="${ids}" data-mail-home="${home}" title="Move to Bin" aria-label="Move to Bin">${ICONS.bin}</button>`;
+      return `<div class="qm-item"><a href="#" class="qm-row${unread ? ' unread' : ''}" data-nav="qmail.com/${esc(last.id)}">
         <span class="qm-from">${unread && folder === 'inbox' ? '<i class="qm-dot" aria-label="Unread"></i>' : ''}<span class="qm-names">${esc(who)}</span>${t.rows.length > 1 ? `<span class="qm-count">${t.rows.length}</span>` : ''}</span>
         <span class="qm-subj"><b>${esc(t.rows[0].subject)}</b>${snippet ? `<span class="qm-prev">${esc(snippet)}</span>` : ''}</span>
-        <span class="qm-time">${dateShort(last.day)}</span></a>`;
+        <span class="qm-time">${dateShort(last.day)}</span></a>${tool}</div>`;
     }).join('');
     const n = store.ui.mailNotice;
     const notice = n ? `<p class="qm-notice" role="status">${esc(n.text)} <button class="qm-link" data-mail-undo>Undo</button></p>` : '';
