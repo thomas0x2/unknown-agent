@@ -45,6 +45,10 @@ const CONFIG = {
   temperature: 0.9,
   /** Characters stay close to their examples; 270M drifts off-character at higher temperatures. */
   characterTemperature: 0.5,
+  /** transformers.js applies the repetition penalty to every prompt token, not just the reply, so
+   * with a long prompt it pushes the model off common words ("I", "you", ".") into junk like "I'ôi".
+   * Characters get none; the Terminal keeps a light one against loops. */
+  terminalRepetitionPenalty: 1.1,
   timeoutMs: 25000,
   downloadRetries: 2,
 };
@@ -73,7 +77,9 @@ function workerMain() {
     try {
       if ((self as any).navigator && (navigator as any).gpu && (await (navigator as any).gpu.requestAdapter())) device = 'webgpu';
     } catch { /* no WebGPU */ }
-    const chain = device === 'webgpu' ? ['q4f16', 'q4', 'fp32'] : ['q4', 'q8', 'fp32'];
+    // Gemma's activations overflow in fp16, so no f16 variants. On the CPU, q8 keeps a 270M model
+    // noticeably saner than q4.
+    const chain = device === 'webgpu' ? ['q4', 'fp32'] : ['q8', 'q4', 'fp32'];
     let lastErr: any = null;
     for (const dtype of chain) {
       try {
@@ -99,7 +105,7 @@ function workerMain() {
       try {
         const out = await generator(msg.messages, {
           max_new_tokens: msg.maxTokens, do_sample: true, temperature: msg.temperature,
-          top_p: 0.95, top_k: 64, repetition_penalty: 1.15,
+          top_p: 0.95, top_k: 64, repetition_penalty: msg.repetitionPenalty,
         });
         const last = out[0].generated_text;
         const text = Array.isArray(last) ? last[last.length - 1].content : String(last);
@@ -163,7 +169,7 @@ class LocalLLM {
 
   /** A reply from one of the game's characters to what the player wrote, or null (game/characters.ts). */
   async speak(ch: Character, text: string): Promise<string | null> {
-    return this.run(characterMessages(ch, text), maxTokensFor(ch), (raw) => finishReply(ch, raw), CONFIG.characterTemperature);
+    return this.run(characterMessages(ch, text), maxTokensFor(ch), (raw) => finishReply(ch, raw), CONFIG.characterTemperature, 1);
   }
 
   /** A reply in a free-form persona (the Terminal's local model), or null. */
@@ -171,10 +177,10 @@ class LocalLLM {
     const messages: ChatTurn[] = [{ role: 'system', content: ctx.persona + (ctx.facts ? '\n' + ctx.facts : '') }];
     for (const [u, a] of ctx.examples || []) messages.push({ role: 'user', content: u }, { role: 'assistant', content: a });
     messages.push({ role: 'user', content: String(prompt).slice(0, 700) });
-    return this.run(messages, ctx.long ? CONFIG.longTokens : CONFIG.shortTokens, ctx.long ? cleanEmail : clean);
+    return this.run(messages, ctx.long ? CONFIG.longTokens : CONFIG.shortTokens, ctx.long ? cleanEmail : clean, CONFIG.temperature, CONFIG.terminalRepetitionPenalty);
   }
 
-  private async run(messages: ChatTurn[], maxTokens: number, finish: (t: string) => string | null, temperature = CONFIG.temperature): Promise<string | null> {
+  private async run(messages: ChatTurn[], maxTokens: number, finish: (t: string) => string | null, temperature: number, penalty: number): Promise<string | null> {
     if (this.status !== 'ready') {
       this.lastMiss = this.settings.backend === 'off' ? 'local model is off' : this.status === 'loading' ? 'Gemma is still loading' : 'Gemma is not loaded';
       return null;
@@ -184,8 +190,8 @@ class LocalLLM {
     let failed = '';
     try {
       raw = this.settings.backend === 'ollama'
-        ? await withTimeout(this.ollamaChat(messages, maxTokens, temperature), CONFIG.timeoutMs)
-        : await withTimeout(this.workerGenerate(messages, maxTokens, temperature), CONFIG.timeoutMs);
+        ? await withTimeout(this.ollamaChat(messages, maxTokens, temperature, penalty), CONFIG.timeoutMs)
+        : await withTimeout(this.workerGenerate(messages, maxTokens, temperature, penalty), CONFIG.timeoutMs);
       if (raw == null) failed = this.workerError || `Gemma gave no reply within ${CONFIG.timeoutMs / 1000}s`;
     } catch (e: any) { raw = null; failed = String(e?.message || e); }
     this.workerError = '';
@@ -238,12 +244,12 @@ class LocalLLM {
   }
   private killWorker(): void { if (this.worker) { this.worker.terminate(); this.worker = null; } }
 
-  private workerGenerate(messages: ChatTurn[], maxTokens: number, temperature: number): Promise<string | null> {
+  private workerGenerate(messages: ChatTurn[], maxTokens: number, temperature: number, repetitionPenalty: number): Promise<string | null> {
     if (!this.worker) return Promise.resolve(null);
     const id = this.nextId++;
     return new Promise((resolve) => {
       this.pending.set(id, resolve);
-      this.worker!.postMessage({ type: 'generate', id, messages, maxTokens, temperature });
+      this.worker!.postMessage({ type: 'generate', id, messages, maxTokens, temperature, repetitionPenalty });
     });
   }
 
@@ -266,12 +272,12 @@ class LocalLLM {
     }
   }
 
-  private async ollamaChat(messages: ChatTurn[], maxTokens: number, temperature: number): Promise<string | null> {
+  private async ollamaChat(messages: ChatTurn[], maxTokens: number, temperature: number, penalty: number): Promise<string | null> {
     const { ollamaUrl, ollamaModel } = this.settings;
     const res = await fetch(`${ollamaUrl}/api/chat`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ model: ollamaModel, messages, stream: false,
-        options: { num_predict: maxTokens, temperature, top_p: 0.95, top_k: 64, repeat_penalty: 1.15 } }),
+        options: { num_predict: maxTokens, temperature, top_p: 0.95, top_k: 64, repeat_penalty: penalty } }),
     });
     if (!res.ok) return null;
     const data = await res.json();
