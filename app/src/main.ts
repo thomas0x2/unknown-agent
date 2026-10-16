@@ -13,8 +13,8 @@ import './ui/qdrive.css';
 import './ui/ads.css';
 import { GameStore } from './game/store';
 import { loadContent } from './content/load';
-import { offlineJev, localStorageStore } from './engine';
-import { BackendJev } from './game/backendJev';
+import { localStorageStore } from './engine';
+import { JEV } from './game/backendJev';
 import { LLM } from './game/llm';
 import { makeGemmaWriter } from './game/gemma';
 import * as V from './ui/view';
@@ -23,9 +23,8 @@ import { listSlots } from './game/saves';
 import { newPageLoad } from './ui/ads';
 
 const content = loadContent();
-const router = new BackendJev(offlineJev);
 const writer = makeGemmaWriter(content);
-const store = new GameStore(content, router, writer, localStorageStore());
+const store = new GameStore(content, JEV, writer, localStorageStore());
 
 const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector<T>(sel);
 const val = (sel: string) => ($(sel) as HTMLInputElement | HTMLTextAreaElement | null)?.value ?? '';
@@ -72,6 +71,8 @@ function render(): void {
 }
 store.subscribe(render);
 LLM.onChange(render);
+JEV.onChange(render);
+void JEV.probe();
 
 function updateCost(): void {
   const est = $('#cost-est'); const input = $<HTMLTextAreaElement>('#prompt-input');
@@ -103,11 +104,11 @@ document.addEventListener('click', (e) => {
   if (d.start != null) { store.toggleStart(); return; }
   if (d.menuCat != null) { store.setMenuCat(d.menuCat); return; }
   if (t.closest('#startmenu')) store.toggleStart(false);
-  if (d.slotSave != null) { const n = Number(d.slotSave); const save = () => toast('Saved', store.saveSlot(n) ? `Game saved to slot ${n}` : 'Could not save (storage unavailable)', 'note'); if (listSlots()[n - 1]) store.confirm(`Overwrite slot ${n} with your current game?`, 'Overwrite', save); else save(); return; }
+  if (d.slotSave != null) { const n = Number(d.slotSave); const save = () => { if (!store.saveSlot(n)) toast('Not saved', 'Could not save (storage unavailable)', 'note'); }; if (listSlots()[n - 1]) store.confirm(`Overwrite slot ${n} with your current game?`, 'Overwrite', save); else save(); return; }
   if (d.slotLoad != null) {
     const n = d.slotLoad === 'auto' ? 'auto' as const : Number(d.slotLoad);
     const name = n === 'auto' ? 'the autosave' : `slot ${n}`;
-    store.confirm(`Load ${name}? Your current game is replaced by it.`, 'Load', () => { if (store.loadSlot(n)) toast('Loaded', `${name[0].toUpperCase() + name.slice(1)} · Day ${store.state.values.day}`, 'note'); });
+    store.confirm(`Load ${name}? Your current game is replaced by it.`, 'Load', () => { store.loadSlot(n); });
     return;
   }
   if (d.nav != null) { newPageLoad(); store.navigate(d.nav); }
@@ -116,10 +117,10 @@ document.addEventListener('click', (e) => {
   else if (d.like != null) store.like(d.like);
   else if (d.deploy != null) store.deploy(d.deploy);
   else if (d.takedown != null) store.confirm('Take it offline? It counts as broken at payday.', 'Take down', () => store.takeDown(d.takedown!));
-  else if (d.cancelBooking != null) { store.cancelBooking(d.cancelBooking); toast('Qmail', 'Booking cancelled', 'mail'); }
+  else if (d.cancelBooking != null) store.cancelBooking(d.cancelBooking);
   else if (d.mailDiscard != null) { store.setDraft(null); store.navigate('qmail.com'); }
   else if (d.star != null) store.setReviewStars(Number(d.star));
-  else if (d.download != null) { store.download(d.download); toast('Downloads', `${d.download} saved to your laptop`, 'note'); }
+  else if (d.download != null) store.download(d.download);
   else if (d.wlRange != null) store.setWalletRange(d.wlRange);
   else if (d.llm != null) onLlm(d.llm);
   else if (d.ov != null) onOverlay(d.ov);
@@ -149,7 +150,7 @@ document.addEventListener('submit', (e) => {
   e.preventDefault();
   const kind = f.dataset.form;
   if (kind === 'url') { newPageLoad(); store.navigate(val('#nt-url') || val('#address')); }
-  else if (kind === 'ypost') { const v = val('#post-input').trim(); if (v) void store.post(v, trendingToday()).then((r) => toast('Y', `${r.followerDelta >= 0 ? '+' : '−'}${Math.abs(r.followerDelta)} followers`, 'y')); }
+  else if (kind === 'ypost') { const v = val('#post-input').trim(); if (v) void store.post(v, trendingToday()); }
   else if (kind === 'prompt') {
     const v = val('#prompt-input').trim(); if (!v) return;
     const input = $<HTMLTextAreaElement>('#prompt-input'); if (input) input.value = '';
@@ -158,24 +159,22 @@ document.addEventListener('submit', (e) => {
     const to = val('#mail-to').trim(), subject = val('#mail-subject').trim(), body = val('#mail-body').trim();
     if (!to || !body) return;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) { toast('Qmail', 'Enter a valid address.', 'mail'); return; }
-    void store.compose(to, subject, body).then((r) => { if (!r.sent) toast('Qmail', 'You already wrote to them today.', 'mail'); else { store.setDraft(null); store.navigate('qmail.com/sent'); toast('Qmail', `Sent to ${to}`, 'mail'); } });
+    void store.compose(to, subject, body).then((r) => { if (!r.sent) toast('Qmail', 'You already wrote to them today.', 'mail'); else { store.setDraft(null); store.navigate('qmail.com/sent'); } });
   } else if (kind === 'reply') {
     const v = val('#reply-body').trim(); if (!v) return;
     const input = $<HTMLTextAreaElement>('#reply-body'); if (input) input.value = '';
     const id = f.dataset.id, to = f.dataset.to;
-    if (id) void store.reply(id, v).then((r) => { if (r.reply) toast('Qmail', 'They wrote back — check your inbox.', 'mail'); });
+    if (id) void store.reply(id, v);
     else if (to) void store.compose(to, f.dataset.subject ?? '', v).then((r) => {
       if (!r.sent) { const el = $<HTMLTextAreaElement>('#reply-body'); if (el) el.value = v; toast('Qmail', 'You already wrote to them today.', 'mail'); }
-      else toast('Qmail', r.reply ? 'They wrote back — check your inbox.' : `Sent to ${to}`, 'mail');
     });
   } else if (kind === 'review') {
     const biz = f.dataset.biz!; const v = val('#review-text').trim(); const stars = store.ui.reviewStars;
     if (!stars) { toast('Yowl', 'Pick a rating first.', 'note'); return; }
-    if (v) void store.review(biz, stars, v).then(() => toast('Yowl', 'Review posted', 'note'));
+    if (v) void store.review(biz, stars, v);
   } else if (kind === 'book') {
     const app = f.dataset.app!; const email = val('#bk-email').trim(); const time = val('#bk-time').trim() || '19:00'; const party = Number(val('#bk-party')) || 2;
     store.book(app, 'You', email, store.state.values.day, time, party);
-    toast('Booking', 'Table requested — check Qmail for a confirmation', 'mail');
   } else if (kind === 'fy-search') {
     const q = val('#fy-search-input').trim().replace(/^@/, '');
     if (q) store.navigate('forkyard.com/u/' + q.toLowerCase());
