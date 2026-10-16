@@ -84,7 +84,8 @@ export function crawl(posts: MarketPost[], day: number, bugs: Set<string>): Tick
 
 // ── portfolio and auto-buy (the trader's day 3 update) ──
 
-const BASE_PRICE: Record<string, number> = { GAI: 140, VANT: 48 };
+// DISH and HALD aren't in the trader's portfolio; Sherwood (engine/stocks.ts) quotes all four
+const BASE_PRICE: Record<string, number> = { GAI: 140, VANT: 48, DISH: 31, HALD: 22 };
 export const START_PORTFOLIO = { cash: 1_850_000, holdings: { GAI: 42_000, VANT: 95_000 } as Record<string, number> };
 const BUY_SHARES = 2_000;
 
@@ -96,6 +97,8 @@ const BUY_SHARES = 2_000;
 const SCRIPTED_MOVES: Record<string, number[]> = {
   GAI: [0.04, 0.012, 0.008, 0.06, 0.009, 0.025, 0.001],
   VANT: [0.02, 0.059, 0.006, -0.014, 0.009, -0.002, 0.003],
+  // day 4: DoorDish's delivery robot "escapes"
+  DISH: [0.011, -0.006, 0.004, 0.07, -0.012],
 };
 
 /** A ticker's closing price on a day (day 0 is the close before the game starts); today's change is never zero. */
@@ -148,11 +151,13 @@ export function portfolio(buys: Buy[], day: number, bugs: Set<string>): Portfoli
   // percentages multiplied by 100 twice
   const pctScale = bugs.has('pct_wrong') ? 100 : 1;
   const holdings = Object.entries(held).map(([ticker, shares]) => {
-    const px = price(ticker, day), move = px - price(ticker, day - 1);
+    const move = price(ticker, day) - price(ticker, day - 1);
+    // the price comes from a quote cached on the first fetch and never refreshed (Sherwood has the real one)
+    const px = price(ticker, bugs.has('stale_prices') ? 0 : day);
     // value in cents divided by 100 once too often; P&L with the sign flipped
     const value = shares * px / (bugs.has('value_wrong') ? 100 : 1);
     const dayPnl = shares * move * (bugs.has('pnl_sign') ? -1 : 1);
-    return { ticker, shares, price: px, move, movePct: (move / (px - move)) * pctScale, value, dayPnl };
+    return { ticker, shares, price: px, move, movePct: (move / (price(ticker, day) - move)) * pctScale, value, dayPnl };
   });
   // the totals add up the figures as shown, so only the buggy calculation itself is off
   const stocks = holdings.reduce((a, h) => a + h.value, 0);

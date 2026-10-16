@@ -5,6 +5,7 @@
  */
 import '../../src/style.css';
 import './ui/coinbin.css';
+import './ui/sherwood.css';
 import './ui/yowl.css';
 import './ui/forkyard.css';
 import './ui/qmail.css';
@@ -313,6 +314,8 @@ document.addEventListener('click', (e) => {
   else if (d.act === 'send') store.toggleSend();
   else if (d.act === 'send-cancel') store.toggleSend(false);
   else if (d.act === 'receive') copyWalletAddress();
+  else if (d.act === 'sw-sell') { if (store.trade(t.dataset.ticker!, 'sell', val('#sw-amount').trim())) clearField('sw-amount'); }
+  else if (d.act === 'sw-sell-all') { if (store.trade(t.dataset.ticker!, 'sell', 'all')) clearField('sw-amount'); }
   else if (d.act === 'sleep') store.endDay();
   else if (d.act === 'new') store.confirm('Start over? This erases your save.', 'Start over', () => { forgetDrafts(); quietReset(); store.newGame(); });
   else if (d.act === 'dev') store.toggleDev();
@@ -357,6 +360,7 @@ document.addEventListener('submit', (e) => {
   if (kind === 'dev-day') { quietReset(); store.devGoToDay(Number(val('#dev-day'))); return; }
   if (kind === 'dev-flag') { const v = val('#dev-flag-name').trim(); if (v) store.devSetFlag(v, true); return; }
   if (kind === 'phish') { store.phish(val('#ph-pass')); return; }
+  if (kind === 'sw-trade') { if (store.trade(f.dataset.ticker!, 'buy', val('#sw-amount').trim())) clearField('sw-amount'); return; }
   if (kind === 'cb-send') { store.send(val('#cb-to').trim(), val('#cb-amount').trim()); return; }
   if (kind === 'url') { newPageLoad(); store.navigate(val('#nt-url') || val('#address')); }
   else if (kind === 'ypost') { const v = val('#post-input').trim(); if (v) { SOUND.play('send'); clearField('post-input'); markSend($('#viewport')!, 'post'); void store.post(v, trendingToday()); } }

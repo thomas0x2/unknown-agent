@@ -17,6 +17,7 @@ export const ICONS: Record<string, string> = {
   app: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M4 9h16" stroke="currentColor" stroke-width="2"/></svg>',
   bin: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 6.5h15M9.5 6.5V4.5h5v2M6.5 6.5l1 13h9l1-13M10.5 10v6.5M13.5 10v6.5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   restore: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 9.5h10a5 5 0 0 1 0 10h-4M8.5 5.5l-4 4 4 4" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  sherwood: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 3.5C11 4 5.5 9.5 5 18l1.6 1.6C15 19 20 13.5 20.5 5z" fill="currentColor"/><path d="M4 20.5 15.5 8.5M9 15h4.5M11.5 12.5h3.5" stroke="var(--icon-ink, #fff)" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>',
   error: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 2.5v.5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
 };
 

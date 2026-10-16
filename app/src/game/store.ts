@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, deliverDue, deliverArrivals, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, devToggleBug, nameUnnamedBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, buyStock, sellStock, deliverDue, deliverArrivals, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, devToggleBug, nameUnnamedBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -71,6 +71,8 @@ export class GameStore {
     send: { open: false, to: '', amount: '', error: '' },
     /** A line under Coinbin's Send/Receive buttons: "Address copied", or what was just sent. */
     cbNotice: '',
+    /** Sherwood's order box: what was typed, why the last order was refused, or what it filled. */
+    sw: { amount: '', error: '', notice: '' },
     /** Yowl: Post was pressed with no rating picked. */
     reviewNeedsStars: false,
     /** The save-slot menu's last failure, shown in its note. */
@@ -222,6 +224,7 @@ export class GameStore {
   navigate(url: string, newTab = false): void {
     const u = norm(url);
     this.ui.cbNotice = '';
+    this.ui.sw = { amount: '', error: '', notice: '' };
     this.ui.mailNotice = null;
     // localhost is the laptop itself: it opens the Terminal app, not a browser page
     if (u === 'localhost' && this.state.flags.includes('has_terminal')) { this.showTerm(true); return; }
@@ -359,7 +362,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = 1; this.nextTab = PINNED.length + 1;
-    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', jevOffline: null, yUnread: 0 };
+    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', jevOffline: null, yUnread: 0 };
     this.store.save(this.state);
     this.emit();
   }
@@ -390,6 +393,16 @@ export class GameStore {
     if (r.error) { this.ui.send = { open: true, to, amount, error: r.error }; this.emit(); return false; }
     this.ui.send = { open: false, to: '', amount: '', error: '' };
     this.ui.cbNotice = `Sent ${(-r.state.tx.at(-1)!.amount).toFixed(2)} DOLR to ${r.state.tx.at(-1)!.memo.split(' · ')[0]}.`;
+    this.commitAndSettle(r.state);
+    return true;
+  }
+  /** A Sherwood order: buy or sell `amount` DOLR of a ticker ('all' sells the whole position). */
+  trade(ticker: string, side: 'buy' | 'sell', amount: string): boolean {
+    const n = amount === 'all' ? 'all' : Number(amount.replace(',', '.'));
+    const r = side === 'buy' ? buyStock(this.state, ticker, n === 'all' ? NaN : n) : sellStock(this.state, ticker, n);
+    if (r.error) { this.ui.sw = { amount: amount === 'all' ? '' : amount, error: r.error, notice: '' }; this.emit(); return false; }
+    const tx = r.state.tx.at(-1)!;
+    this.ui.sw = { amount: '', error: '', notice: `${tx.memo.split(' · ')[1]} for ${Math.abs(tx.amount).toFixed(2)} DOLR.` };
     this.commitAndSettle(r.state);
     return true;
   }

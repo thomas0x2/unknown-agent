@@ -16,6 +16,7 @@ import {
 import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
 import { pageDrive } from './qdrive';
+import { pageSherwood } from './sherwood';
 import { adHtml } from './ads';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
@@ -55,7 +56,7 @@ function linkify(escaped: string): string {
 
 function tabTitle(r: Route, url: string): string {
   const names: Partial<Record<string, string>> = {
-    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', phish: 'Coinbin · Sign in', forkyard: 'Forkyard',
+    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', phish: 'Coinbin · Sign in', forkyard: 'Forkyard',
     agent: 'agent', yowl: 'Yowl', weightroom: 'Weightroom', nullboard: 'nullboard', cellar: 'Cellar', app: url,
   };
   if (r.site === 'notfound') return url || 'New Tab';
@@ -208,6 +209,7 @@ export function page(store: GameStore, r: Route): string {
     case 'qdrive': return pageDrive(store.state, r.param);
     case 'y': return pageY(store, r.param);
     case 'coinbin': return pageWallet(store);
+    case 'sherwood': return pageSherwood(store, r.param);
     case 'forkyard': return pageForkyard(store, r.param);
     case 'app': return pageApp(store, r.param);
     case 'agent': return r.param === 'models' ? pageModels(store) : pageAgent(store);
