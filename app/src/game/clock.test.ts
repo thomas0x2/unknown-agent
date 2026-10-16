@@ -1,6 +1,6 @@
 /*
  * The real-time clock: game minutes pass while the player plays, not per action. Dialogs and a
- * running Jev call hold parts of it; midnight ends the day.
+ * running Jev call hold parts of it; 22:00 ends the day.
  */
 import { describe, it, expect } from 'vitest';
 import { GameStore } from './store';
@@ -17,8 +17,9 @@ const fresh = () => {
 };
 
 describe('the real-time clock', () => {
-  it('runs a whole day, 10:00 to midnight, in 4 minutes 20 seconds', () => {
-    expect(MS_PER_GAME_MIN * (CLOCK.sleep - CLOCK.wake)).toBe(260_000);
+  it('runs a whole day, 10:00 to 22:00, in 12 minutes, a game minute per second', () => {
+    expect(MS_PER_GAME_MIN * (CLOCK.sleep - CLOCK.wake)).toBe(720_000);
+    expect(MS_PER_GAME_MIN).toBe(1000);
   });
 
   it('moves minute by minute and delivers replies that come due', () => {
@@ -32,7 +33,7 @@ describe('the real-time clock', () => {
     expect(store.state.mail.some((m) => m.subject === 'RE: hi')).toBe(true);
   });
 
-  it('ends the day at midnight', () => {
+  it('ends the day at 22:00', () => {
     const store = fresh();
     const day = store.state.values.day;
     store.passMinutes(CLOCK.sleep - CLOCK.wake);

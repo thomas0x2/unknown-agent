@@ -19,7 +19,7 @@ import { adHtml } from './ads';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount, appLogo } from './appsite';
-import { marketPosts, handleOf, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, inBin, isDeleted } from '../engine';
+import { marketPosts, handleOf, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, inBin, isDeleted, CLOCK } from '../engine';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 
 const WALLET_ADDR = PLAYER_WALLET;
@@ -102,7 +102,7 @@ export function rentLine(s: GameState): string {
 export function rentLow(s: GameState): boolean { const d = rentDayOf(s); return !!d && s.values.crypto < RENT[d]; }
 export const fmtClock = clockTime;
 export function clockHtml(s: GameState): string {
-  const near = s.clockMin >= 22 * 60; // getting late
+  const near = s.clockMin >= CLOCK.sleep - 60; // the last hour before bedtime
   return `<b class="${near ? 'late' : ''}">${fmtClock(s.clockMin)}</b><span>${dateMedium(s.values.day)}</span>`;
 }
 
@@ -1042,7 +1042,7 @@ export function overlayHtml(store: GameStore): string {
         <li>Every agent prompt costs money. Vague prompts get vague builds.</li>
         <li>Read Y for leads. Check Qmail. Ship on Forkyard — and check what it ships.</li>
         <li>Anything you can do yourself, do yourself. Your time is free now.</li>
-        <li>The clock runs while you work. At midnight the day ends, done or not.</li>
+        <li>The clock runs while you work. At 10 PM the day ends, done or not.</li>
       </ul>
       <div class="ov-actions"><button class="btn primary" data-ov="start">${s.values.day > 1 || s.chat.length > 1 ? `Continue · ${dateMedium(s.values.day)}` : 'Open the laptop'}</button></div>`, 'start');
   }

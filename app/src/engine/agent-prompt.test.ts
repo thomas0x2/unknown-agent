@@ -1,6 +1,6 @@
 /*
  * The agent is always free-text promptable (with costs), gig or no gig. Prompts take no game time:
- * the clock runs in real time until midnight, when the day auto-ends.
+ * the clock runs in real time until 22:00, when the day auto-ends.
  */
 import { startGame } from './day';
 import { promptAgent } from './actions';
