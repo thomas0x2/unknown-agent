@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, buyStock, sellStock, deliverDue, deliverArrivals, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, devToggleBug, nameUnnamedBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes, wakeApps,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, buyStock, sellStock, deliverDue, deliverArrivals, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, devToggleBug, nameUnnamedBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -230,6 +230,7 @@ export class GameStore {
     this.ui.cbNotice = '';
     this.ui.sw = { amount: '', error: '', notice: '' };
     this.ui.mailNotice = null;
+    if (this.state.swap?.notice) this.state.swap.notice = undefined;
     // localhost is the laptop itself: it opens the Terminal app, not a browser page
     if (u === 'localhost' && this.state.flags.includes('has_terminal')) { this.showTerm(true); return; }
     // a pinned tab stays on its site: another site opens in its own pinned tab, or a new one
@@ -460,6 +461,13 @@ export class GameStore {
   async compose(to: string, subject: string, text: string, field?: string) {
     return this.run(async () => { const r = await composeEmail(this.state, this.content, this.router, to, text, this.writer, subject); this.commitAndSettle(r.state); return r; }, field, text);
   }
+  /** Swaplist: message the seller of a listing; the reply is written in their character. */
+  async swapMessage(n: number, text: string) {
+    return this.run(async () => { const r = await swapMessage(this.state, this.content, this.writer, n, text); this.commitAndSettle(r.state); return r; }, 'sl-msg', text);
+  }
+  /** Swaplist: offer an amount on a listing, or buy it (an accepted offer's amount, else the shown price). */
+  swapOffer(n: number, amount: number): void { this.commitAndSettle(swapOffer(this.state, this.content, n, amount)); }
+  swapBuy(n: number): void { this.commitAndSettle(swapBuy(this.state, this.content, n)); }
   /** The agent is always free-text promptable. Jev routes it to a build/fix or an ordinary reply. */
   async prompt(text: string) {
     this.pendingPrompt = text;

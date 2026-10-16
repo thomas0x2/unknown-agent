@@ -10,6 +10,8 @@ import { menuDishes, misspell, WRONG_HOURS } from '../engine/restaurant';
 import { crawl, autoBuys, portfolio, trackedOf, START_PORTFOLIO, type MarketPost, type Portfolio } from '../engine/crawler';
 import { machineRows } from '../engine/laundromat';
 import { swapListings, listedWhen, SWAP_CATEGORIES, type Listing } from '../engine/swaplist';
+import { takesOffers, buyPrice, shownPrice } from '../engine/swapdeal';
+import type { SwapState } from '../engine/state';
 import { adHtml } from './ads';
 import { SWAP_ART } from './swapArt';
 import { dateShort, clockTime } from '../engine/calendar';
@@ -58,6 +60,9 @@ export interface SiteExtras {
   /** Minutes of play so far, and whether Viktor has said his watch sold: what Swaplist lists. */
   play?: number;
   watchSold?: boolean;
+  /** Swaplist as a buyer: the player's chats, offers and purchases, and whether a reply is on its way. */
+  swap?: SwapState;
+  busy?: boolean;
 }
 
 /** Logos of the apps that have one, by template: the site header and the browser tab both use them. */
@@ -284,14 +289,14 @@ function laundromat(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
 
 // ── swaplist ──
 
-const swapPrice = (l: Listing, bugs: Set<string>) => (l.price === 0 ? 'free' : `${(bugs.has('price_x100') ? l.price * 100 : l.price).toLocaleString('en-US')} DOLR`);
+const swapPrice = (l: Listing, bugs: Set<string>) => (l.price === 0 ? 'free' : `${shownPrice(l, bugs).toLocaleString('en-US')} DOLR`);
 
 function swaplist(app: AppInstance, tmpl: AppTemplate | undefined, page: string | undefined, extras: SiteExtras): string {
   const day = extras.day ?? 1;
   const f = Object.fromEntries(['listings', 'search', 'contact', 'mark_sold'].map((id) => [id, live(app, tmpl, id)]));
   const bugs = new Set(Object.values(f).flatMap((l) => [...l.bugs]));
   const base = app.url;
-  const all = f.listings.built ? swapListings(app.contentAt, extras.play ?? 0, extras.watchSold) : [];
+  const all = f.listings.built ? swapListings(app.contentAt, extras.play ?? 0, extras.watchSold, extras.swap?.bought) : [];
   // with titles_shifted every row shows the title of the listing posted before it
   const titleOf = (l: Listing) => {
     if (!bugs.has('titles_shifted') || all.length < 2) return l.title;
@@ -301,7 +306,6 @@ function swaplist(app: AppInstance, tmpl: AppTemplate | undefined, page: string 
   const catOf = (l: Listing) => (bugs.has('all_free') ? 'free stuff' : l.cat);
   // without the sold feature nothing is ever marked; with no_sold_badge it's marked but never shown
   const soldShown = (l: Listing) => l.soldAt != null && !!f.mark_sold.built && !bugs.has('no_sold_badge');
-  const takesOffers = (l: Listing) => l.soldAt == null || !f.mark_sold.built || bugs.has('offers_open');
   const photo = (l: Listing, big = false) => (bugs.has('no_photos')
     ? `<span class="as-w-ph none${big ? ' big' : ''}" aria-label="Image not found"></span>`
     : `<span class="as-w-ph${big ? ' big' : ''}" aria-hidden="true">${SWAP_ART[l.photo] ?? ''}</span>`);
@@ -326,35 +330,45 @@ function swaplist(app: AppInstance, tmpl: AppTemplate | undefined, page: string 
     const l = all.find((x) => String(x.n) === arg);
     if (!l) return wrap(notFound());
     const seller = `<a href="#" data-nav="y.com/${esc(l.seller)}">@${esc(l.seller)}</a>`;
+    const thread = extras.swap?.threads.find((t) => t.listing === l.n);
+    const back = `<a href="#" data-nav="${esc(`${base}/item/${l.n}`)}">← Back to the listing</a>`;
     if (sub === 'contact' && f.contact.built && !bugs.has('contact_dead')) {
-      return wrap(`<section class="as-w-item"><h1>Message @${esc(l.seller)}</h1><p class="as-w-meta">About: ${esc(titleOf(l))}</p>
-        <div class="as-w-msg">Hi, is this still available?</div>
-        <a href="#" class="as-w-btn" data-nav="${esc(`${base}/item/${l.n}/sent`)}">Send</a></section>`);
-    }
-    if (sub === 'sent' && f.contact.built && !bugs.has('contact_dead')) {
-      // wrong_seller: the message goes to whoever posted the listing before this one
-      const other = all.find((x) => x.seller !== l.seller)?.seller ?? 'second_hand_sam';
-      const to = bugs.has('wrong_seller') ? other : l.seller;
-      return wrap(`<section class="as-w-item"><h1>Message sent</h1><p>Your message was sent to <b>@${esc(to)}</b>. They'll reply by email if they're interested.</p>
-        <a href="#" data-nav="${esc(`${base}/item/${l.n}`)}">Back to the listing</a></section>`);
-    }
-    if (sub === 'offer' && takesOffers(l)) {
-      return wrap(`<section class="as-w-item"><h1>Offer sent</h1><p>Your offer on “${esc(titleOf(l))}” was sent to @${esc(l.seller)}.</p>
-        <a href="#" data-nav="${esc(`${base}/item/${l.n}`)}">Back to the listing</a></section>`);
+      // the header names the listing's seller; the replies come from whoever the button reached
+      const msgs = (thread?.msgs ?? []).map((m) => {
+        const t = `${dateShort(m.day)}, ${clockTime(m.min)}`;
+        return m.from === 'you'
+          ? `<li class="me"><p>${esc(m.text)}</p><small>You · ${t}</small></li>`
+          : `<li><p>${esc(m.text)}</p><small>@${esc(m.from)} · ${t}${m.note ? ` · <i class="as-w-dbg">scripted: ${esc(m.note)}</i>` : ''}</small></li>`;
+      }).join('');
+      const typing = extras.busy ? `<li class="typing"><p>…</p></li>` : '';
+      return wrap(`<section class="as-w-chat"><h1>Chat with @${esc(l.seller)}</h1><p class="as-w-meta">About: ${esc(titleOf(l))} · ${back}</p>
+        <ul class="as-w-thread">${msgs || '<li class="none">No messages yet.</li>'}${typing}</ul>
+        <form class="as-w-send" data-form="sl-msg" data-n="${l.n}"><textarea id="sl-msg" rows="2" placeholder="Write a message" ${extras.busy ? 'disabled' : ''}></textarea><button type="submit" class="as-w-btn"${extras.busy ? ' disabled' : ''}>Send</button></form></section>`);
     }
     if (sub) return wrap(notFound());
     const contact = !f.contact.built ? ''
       : bugs.has('contact_dead') ? `<button class="as-w-btn" type="button">Contact seller</button>`
-      : `<a href="#" class="as-w-btn" data-nav="${esc(`${base}/item/${l.n}/contact`)}">Contact seller</a>`;
-    const offer = takesOffers(l)
-      ? `<a href="#" class="as-w-btn ghost" data-nav="${esc(`${base}/item/${l.n}/offer`)}">Make an offer</a>${l.offers ? `<small>${l.offers} offer${l.offers === 1 ? '' : 's'} so far</small>` : ''}`
-      : `<small>Offers closed</small>`;
+      : `<a href="#" class="as-w-btn ghost" data-nav="${esc(`${base}/item/${l.n}/contact`)}">Contact seller</a>`;
+    const notice = extras.swap?.notice?.listing === l.n ? `<p class="as-w-note">${esc(extras.swap.notice.text)}</p>` : '';
+    const offer = thread?.offer;
+    const lastFromSeller = [...(thread?.msgs ?? [])].reverse().find((m) => m.from === l.seller)?.text;
+    const offerLine = offer && !l.boughtByYou
+      ? `<p class="as-w-offer ${offer.status}">Your offer of ${offer.amount.toLocaleString('en-US')} DOLR: ${offer.status === 'accepted' ? 'accepted' : offer.status === 'declined' ? 'declined' : 'item sold'}.${lastFromSeller ? ` <q>${esc(lastFromSeller)}</q>` : ''}</p>` : '';
+    const offerBox = takesOffers(app, l, bugs)
+      ? `<form class="as-w-offerform" data-form="sl-offer" data-n="${l.n}"><input id="sl-offer" type="number" min="1" step="1" placeholder="Your offer" autocomplete="off"><span>DOLR</span><button type="submit" class="as-w-btn ghost">Make an offer</button>${l.offers ? `<small>${l.offers} offer${l.offers === 1 ? '' : 's'} so far</small>` : ''}</form>`
+      : l.price > 0 && !l.boughtByYou ? `<small>Offers closed</small>` : '';
+    // the site lets you buy anything it doesn't show as sold
+    const cost = buyPrice(extras.swap, l, bugs);
+    const buy = l.boughtByYou
+      ? `<p class="as-w-bought">You bought this for ${(extras.swap?.bought[l.n]?.paid ?? 0).toLocaleString('en-US')} DOLR.</p>`
+      : soldShown(l) ? ''
+      : `<form data-form="sl-buy" data-n="${l.n}"><button type="submit" class="as-w-btn">${cost > 0 ? `Buy for ${cost.toLocaleString('en-US')} DOLR` : 'Claim it'}</button></form>`;
     return wrap(`<section class="as-w-item">${photo(l, true)}<div>
       <h1>${esc(titleOf(l))}${soldShown(l) ? ' <span class="as-w-sold">sold</span>' : ''}</h1>
       <p class="as-w-price">${swapPrice(l, bugs)}</p>
       <p class="as-w-meta">${esc(catOf(l))} · posted ${when(l)} by ${seller}</p>
       <p class="as-w-text">${esc(l.body).replace(/\n/g, '<br>')}</p>
-      <div class="as-w-acts">${contact}${offer}</div></div></section>`);
+      <div class="as-w-acts">${buy}${contact}</div>${offerBox}${offerLine}${notice}</div></section>`);
   }
   if (section && section !== 'search' && section !== 'cat') return wrap(notFound());
 

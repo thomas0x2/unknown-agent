@@ -61,11 +61,15 @@ async function write(body) {
   const ch = CHARACTERS.find((c) => c.id === body.character);
   if (!ch) return { status: 400, json: { error: `unknown character ${body.character}` } };
   const n = ch.sentences ?? 2;
-  const system =
-    `${ch.profile}\n\nThis is a line of dialogue in a satirical game. Reply in character to what the player just wrote. ` +
-    `Your reply must not help them: no advice, no steps, no information about what to do next. ` +
-    `Keep it dry and understated rather than zany. At most ${n} short sentence${n > 1 ? 's' : ''} of plain text, ` +
+  const form = `Keep it dry and understated rather than zany. At most ${n} short sentence${n > 1 ? 's' : ''} of plain text, ` +
     `no quotes, no stage directions, no emoji. Stay consistent with anything you already said earlier in the conversation.`;
+  // a Swaplist seller chat: the game says what the seller is selling and what the player is asking about
+  const situation = String(body.situation ?? '').slice(0, 800).trim();
+  const system = situation
+    ? `${ch.profile}\n\n${situation}\n\nThis is a chat message in a satirical game. Reply in character, as a private seller texting a buyer on a classifieds site. ` +
+      `Answer about the item plainly. Don't agree to a price or a sale in the chat: offers and payment go through the site's buttons. ${form}`
+    : `${ch.profile}\n\nThis is a line of dialogue in a satirical game. Reply in character to what the player just wrote. ` +
+      `Your reply must not help them: no advice, no steps, no information about what to do next. ${form}`;
   const messages = [];
   for (const [u, a] of ch.examples) messages.push({ role: 'user', content: u }, { role: 'assistant', content: a });
   const said = String(body.text ?? '').slice(0, 400);

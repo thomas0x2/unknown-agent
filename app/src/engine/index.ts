@@ -14,6 +14,7 @@ export * from './restaurant';
 export * from './crawler';
 export * from './laundromat';
 export * from './swaplist';
+export * from './swapdeal';
 export * from './agent';
 export * from './endings';
 export * from './day';

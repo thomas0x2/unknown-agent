@@ -56,6 +56,8 @@ export interface Listing {
   /** When it went up and, if it has, when it sold, in minutes of play. */
   at: number;
   soldAt?: number;
+  /** The player bought it. */
+  boughtByYou?: boolean;
   /** Offers made on it so far. */
   offers: number;
 }
@@ -69,7 +71,7 @@ const offset = (k: number) => { let t = 0; for (let i = 0; i < k; i++) t += GAPS
  * Everything posted up to now (minutes of play), newest first. `watchSold` is Viktor saying on Y
  * that it sold. The catalogue comes round again after a while: people relist what didn't go.
  */
-export function swapListings(contentAt: number | undefined, now: number, watchSold = false): Listing[] {
+export function swapListings(contentAt: number | undefined, now: number, watchSold = false, bought: Record<number, { at: number }> = {}): Listing[] {
   if (contentAt == null || now < contentAt) return [];
   const out: Listing[] = [];
   for (let k = 0; contentAt + offset(k) <= now; k++) {
@@ -80,11 +82,14 @@ export function swapListings(contentAt: number | undefined, now: number, watchSo
     const h = hash(k + 1);
     // two in three sell, three to ten hours of play after going up
     const sells = idx === 0 ? undefined : h % 3 !== 0 ? at + 180 + (h % 420) : undefined;
-    const soldAt = idx === 0 ? (watchSold ? Math.max(at + 1, now) : undefined) : sells != null && sells <= now ? sells : undefined;
+    const mine = bought[k + 1];
+    // the player got there first, unless someone else bought it before
+    const yours = !!mine && (idx === 0 ? true : sells == null || sells > mine.at);
+    const soldAt = yours ? mine.at : idx === 0 ? (watchSold ? now : undefined) : sells != null && sells <= now ? sells : undefined;
     const sold = soldAt != null;
     const offers = Math.min(4, Math.floor((now - at) / 150)) + (sold ? 1 : 0);
     out.push({
-      n: k + 1, title: it.title, photo: it.photo, cat: it.cat, price: it.price, seller: it.seller, at, soldAt, offers,
+      n: k + 1, title: it.title, photo: it.photo, cat: it.cat, price: it.price, seller: it.seller, at, soldAt, offers, ...(yours ? { boughtByYou: true } : {}),
       body: sold ? `${it.body}\n\nEDIT: sold${idx === 0 ? '. Thank you.' : ', thanks.'}` : it.body,
     });
   }
