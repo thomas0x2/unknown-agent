@@ -1,0 +1,14 @@
+{
+  "id": "d9_y_mourn_quietlyjune_2",
+  "site": "y",
+  "from": "quietlyjune",
+  "trigger": {
+    "dayMin": 9,
+    "dayMax": 9,
+    "values": {
+      "agentLevel": ">=3"
+    }
+  },
+  "at": "17:45",
+  "body": "I know it's a model. I'm allowed to be sad about a model."
+}

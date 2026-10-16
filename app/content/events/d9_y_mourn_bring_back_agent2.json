@@ -1,0 +1,14 @@
+{
+  "id": "d9_y_mourn_bring_back_agent2",
+  "site": "y",
+  "from": "bring_back_agent2",
+  "trigger": {
+    "dayMin": 9,
+    "dayMax": 9,
+    "values": {
+      "agentLevel": ">=3"
+    }
+  },
+  "at": "13:30",
+  "body": "We are asking GeneralAI to keep agent-2 available as an option. The old model, at the old price. That's all. Petition in bio. 1,204 signatures."
+}
