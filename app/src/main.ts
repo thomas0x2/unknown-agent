@@ -52,7 +52,7 @@ function render(): void {
   if (focusId) { const el = document.getElementById(focusId) as HTMLInputElement | null; if (el && !el.disabled) el.focus(); }
 
   // taskbar
-  $('#dk-task')!.innerHTML = V.taskHtml(store);
+  $('#dk-task')!.title = V.taskTitle(store);
   $('#clock')!.innerHTML = V.clockHtml(s);
   const menu = $('#startmenu')!; menu.hidden = !store.ui.start; menu.innerHTML = store.ui.start ? V.startMenuHtml(store) : '';
   const startBtn = $('#dk-home')!; startBtn.classList.toggle('on', store.ui.start); startBtn.setAttribute('aria-expanded', String(store.ui.start));
@@ -86,7 +86,7 @@ function toast(title: string, body: string, kind = 'note'): void {
 
 // ── clicks ──
 document.addEventListener('click', (e) => {
-  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-reply-to],[data-wl-range],[data-star],[data-download],[data-llm],[data-ov],[data-dev],[data-cancel-booking],[data-start],[data-slot-save],[data-slot-load]');
+  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-reply-to],[data-wl-range],[data-star],[data-download],[data-llm],[data-ov],[data-dev],[data-cancel-booking],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat]');
   // any click outside the home menu closes it (menu items close it themselves below)
   if (store.ui.start && !(e.target as HTMLElement).closest('#startmenu, #dk-home')) store.toggleStart(false);
   if (!t) return;
@@ -94,6 +94,7 @@ document.addEventListener('click', (e) => {
   if (d.close != null) { e.stopPropagation(); store.closeTab(Number(d.close)); return; }
   e.preventDefault();
   if (d.start != null) { store.toggleStart(); return; }
+  if (d.menuCat != null) { store.setMenuCat(d.menuCat); return; }
   if (t.closest('#startmenu')) store.toggleStart(false);
   if (d.slotSave != null) { const n = Number(d.slotSave); const save = () => toast('Saved', store.saveSlot(n) ? `Game saved to slot ${n}` : 'Could not save (storage unavailable)', 'note'); if (listSlots()[n - 1]) store.confirm(`Overwrite slot ${n} with your current game?`, 'Overwrite', save); else save(); return; }
   if (d.slotLoad != null) { const n = Number(d.slotLoad); store.confirm(`Load slot ${n}? Your current game is replaced by it.`, 'Load', () => { if (store.loadSlot(n)) toast('Loaded', `Slot ${n} · Day ${store.state.values.day}`, 'note'); }); return; }
@@ -168,6 +169,12 @@ document.addEventListener('submit', (e) => {
     if (v === 'clear') { store.termClear(); return; }
     void store.term(v);
   }
+});
+
+// Cinnamon-style: hovering a menu category opens it
+document.addEventListener('mouseover', (e) => {
+  const c = (e.target as HTMLElement).closest<HTMLElement>('[data-menu-cat]');
+  if (c) store.setMenuCat(c.dataset.menuCat!);
 });
 
 // ── inputs & keys ──
