@@ -15,6 +15,7 @@ import './ui/empire.css';
 import './ui/appsite.css';
 import './ui/terminal.css';
 import './ui/devOptions.css';
+import './ui/sendFx.css';
 import { showSuggestions, hideSuggestions, suggestionKey } from './ui/mailSuggest';
 import { GameStore } from './game/store';
 import { loadContent } from './content/load';
@@ -29,6 +30,7 @@ import type { MeterId } from './engine';
 import { newPageLoad } from './ui/ads';
 import { pullPct } from './game/pull';
 import { trackLoads, LOADING_HTML } from './ui/pageLoad';
+import { markSend, applySendFx } from './ui/sendFx';
 
 const content = loadContent();
 const writer = makeWriter(content);
@@ -163,6 +165,7 @@ function render(): void {
   const dve = $('#devedit')!; const showEdit = store.ui.dev && store.ui.devEdit; dve.hidden = !showEdit; if (showEdit) dve.innerHTML = devEditHtml(store);
 
   if (site === 'agent') { const log = $('#ua-log'); const read = returning ? scrolls.get(key)!['#ua-log'] : undefined; if (log && !(read && !read[2])) log.scrollTop = log.scrollHeight; updateCost(); }
+  applySendFx(vp, store.busy);
   lastSite = site;
 }
 /** Paints the Terminal window, keeping what was typed at its prompt. */
@@ -276,7 +279,7 @@ function onOverlay(a: string): void {
   if (a === 'new') { forgetDrafts(); store.newGame(); }
   else if (a === 'start') store.seenIntro();
   else if (a === 'morning') store.dismissMorning();
-  else if (a === 'day-start') store.startDay();
+  else if (a === 'greet') store.dismissGreet();
   else if (a === 'mem-ok') store.dismissMemWarn();
   else if (a === 'confirm-yes') store.resolveConfirm(true);
   else if (a === 'confirm-no') store.resolveConfirm(false);
@@ -300,11 +303,12 @@ document.addEventListener('submit', (e) => {
   if (kind === 'phish') { store.phish(val('#ph-pass')); return; }
   if (kind === 'cb-send') { store.send(val('#cb-to').trim(), val('#cb-amount').trim()); return; }
   if (kind === 'url') { newPageLoad(); store.navigate(val('#nt-url') || val('#address')); }
-  else if (kind === 'ypost') { const v = val('#post-input').trim(); if (v) { clearField('post-input'); void store.post(v, trendingToday()); } }
+  else if (kind === 'ypost') { const v = val('#post-input').trim(); if (v) { clearField('post-input'); markSend($('#viewport')!, 'post'); void store.post(v, trendingToday()); } }
   else if (kind === 'prompt') {
     const v = val('#prompt-input').trim(); if (!v || store.busy) return;
     clearField('prompt-input');
     updateCost();
+    markSend($('#viewport')!, 'prompt');
     void store.prompt(v);
   } else if (kind === 'mail') {
     const to = val('#mail-to').trim(), subject = val('#mail-subject').trim(), body = val('#mail-body').trim();
@@ -314,6 +318,7 @@ document.addEventListener('submit', (e) => {
   } else if (kind === 'reply') {
     const v = val('#reply-body').trim(); if (!v) return;
     clearField('reply-body');
+    markSend($('#viewport')!, 'reply');
     const id = f.dataset.id, to = f.dataset.to;
     if (id) void store.reply(id, v);
     else if (to) void store.compose(to, f.dataset.subject ?? '', v, 'reply-body');

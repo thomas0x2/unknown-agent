@@ -380,7 +380,12 @@ body.dev-on .ua-src { display: block; }
 .ua-src.hit { color: #1c7444; }
 .ua-src.partial { color: #a06a00; }
 .ua-src.miss { color: #a12b1f; }
-.ua-sys { align-self: center; font-size: 12.5px; color: #a12b1f; background: #f8e3e0; padding: 6px 12px; border-radius: 6px; text-align: center; }
+.ua-sys { align-self: center; display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: #a12b1f; background: #fbeae7; border: 1px solid #e3a59c; padding: 6px 12px; border-radius: 6px; text-align: center; }
+.ua-sys svg { width: 15px; height: 15px; flex: none; }
+/* the agent couldn't run: shown as an error, not as dialogue */
+.ua-msg.ua-err .ua-mark { background: #c0392b; }
+.ua-msg.ua-err .ua-text { color: #a12b1f; background: #fbeae7; border: 1px solid #e3a59c; border-left: 3px solid #c0392b; border-radius: 6px; padding: 6px 12px; }
+.ua-msg.ua-err .ua-text b { font-weight: 700; margin-right: 4px; }
 .ua-dots { display: flex; gap: 5px; align-items: center; height: 22px; }
 .ua-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--ua-dim); animation: dot 1s infinite ease-in-out; }
 .ua-dots i:nth-child(2) { animation-delay: 0.15s; }
@@ -478,7 +483,7 @@ body.dev-on .ua-debug { display: block; }
 .ua-row .ua-est { flex: 1; min-width: 0; }
 .ua-model-pick select { border: 1px solid var(--ua-line); background: var(--ua-panel); color: var(--ua-ink); border-radius: 8px; padding: 6px 8px; font-family: var(--f-mono); font-size: 12px; }
 .ua-upgrade { color: var(--ua-ink); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
-.ua-src.locked { color: #6a3fb3; }
+.ua-src.locked { color: #a12b1f; }
 .gm { overflow-y: auto; }
 .gm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(210px, 100%), 1fr)); gap: 14px; padding: 24px max(16px, calc((100% - 1100px) / 2)) 8px; }
 .gm-card { background: var(--ua-panel); border: 1px solid var(--ua-line); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 10px; }

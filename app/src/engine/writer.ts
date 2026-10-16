@@ -15,7 +15,14 @@ export interface WriteReq {
   long?: boolean;
   /** Grounding facts (wallet balance, last cost). */
   facts?: string;
+  /**
+   * What was said before `prompt`, oldest first: the email thread or the recent agent.chat transcript,
+   * scripted lines included. `from` is 'player', 'self' (the speaker), or another sender's name.
+   */
+  history?: HistoryLine[];
 }
+
+export interface HistoryLine { from: string; text: string }
 
 export interface Writer {
   /** `note` says why the scripted fallback was used when a model was asked (shown next to the line). */

@@ -13,9 +13,9 @@ import { Y as YCFG, FAMILY, APPS } from './config';
 import { clone, addValue, log, pick, tick, money, pushMail, sendLater } from './core';
 import { applyEffects } from './effects';
 import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent';
-import { getEvent, activeDeliveries, reachableByEmail, triggerMatches } from './events';
+import { getEvent, activeDeliveries, reachableByEmail, triggerMatches, eventBody } from './events';
 import { buildApp, fixApp, fixBreak, fixCategories, needsWork, onForkyard, fillSpec, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, bugsOf, breakVariant, type BuildReport } from './apps';
-import { type Writer, scriptedWriter } from './writer';
+import { type Writer, type HistoryLine, scriptedWriter } from './writer';
 import { dateFull } from './calendar';
 import { deepsleepQuoted, translationReplies, PLEA_AT } from './deepsleep';
 
@@ -82,6 +82,45 @@ async function scriptedTopic(jev: JevRouter, s: GameState, c: Contact, text: str
   return decision.kind === 'outcome' ? topics.find((t) => t.id === decision.outcomeId) : undefined;
 }
 
+/** The subject without reply and forward prefixes, so "RE: RE: Rent" and "Rent" are one conversation. */
+const baseSubject = (subject: string) => subject.replace(/^\s*((re|fwd?|aw)\s*:\s*)+/i, '').trim().toLowerCase();
+
+/**
+ * The email conversation the player's message `text` belongs to, oldest first, for the model writing
+ * `addr`'s reply: story emails, scripted and model replies and the player's own messages, each
+ * labelled by sender. A reply-all chain counts as one conversation, so everyone on it is included.
+ * The player's new message itself is left out (it's the prompt).
+ */
+export function mailHistory(s: GameState, content: Content, addr: string, subject: string, text: string): HistoryLine[] {
+  const me = addr.toLowerCase();
+  const subj = baseSubject(subject).replace(/^\(no subject\)$/, '');
+  const rows: { day: number; seq: number; from: string; addr: string; to?: string; subject: string; body: string }[] = [];
+  for (const d of s.delivered) {
+    const e = getEvent(content, d.eventId);
+    if (!e || e.site !== 'qmail' || e.latent || !e.addr) continue;
+    rows.push({ day: d.day, seq: d.seq ?? -1, from: e.from ?? e.addr, addr: e.addr, subject: e.subject ?? '', body: eventBody(e, d.day) });
+  }
+  for (const m of s.mail) if (!m.bounceOf) rows.push({ day: m.day, seq: m.seq ?? 0, from: m.from, addr: m.addr, to: m.to, subject: m.subject, body: m.body });
+  rows.sort((a, b) => a.day - b.day || a.seq - b.seq);
+  // replies already on their way count too: the sender knows what they wrote
+  for (const p of s.pendingMail ?? []) rows.push({ day: p.mail.day, seq: Infinity, from: p.mail.from, addr: p.mail.addr, subject: p.mail.subject, body: p.mail.body });
+  const withThem = (r: (typeof rows)[number]) => (r.addr === PLAYER_ADDR ? r.to ?? '' : r.addr).toLowerCase() === me;
+  const lines: HistoryLine[] = rows
+    .filter((r) => (subj ? baseSubject(r.subject) === subj : withThem(r)))
+    .map((r) => ({
+      from: r.addr === PLAYER_ADDR ? 'player' : r.addr.toLowerCase() === me ? 'self' : r.from,
+      text: r.body.replace(/\{\{\s*playerName\s*\}\}/g, 'you').replace(/\{\{\s*\w+\s*\}\}/g, ''),
+    }));
+  const own = lines.map((l) => l.from === 'player' && l.text === text).lastIndexOf(true);
+  if (own >= 0) lines.splice(own, 1);
+  return lines;
+}
+
+/** The recent agent.chat transcript, oldest first, for a model reply as the agent. */
+export function chatHistory(s: GameState, max = 10): HistoryLine[] {
+  return s.chat.filter((m) => m.from !== 'system').slice(-max).map((m) => ({ from: m.from === 'you' ? 'player' : 'self', text: m.text }));
+}
+
 /**
  * A known contact answers a message that didn't land a storyline outcome, in their own voice (the
  * Haiku when available), or with the scripted hint Jev chose. Returns '' for no contact.
@@ -100,7 +139,7 @@ async function contactWritesBack(
   // A hint is a hit: Jev recognised what the player was after, so the nudge is sent as written.
   // Otherwise the character answers in their own voice, without helping (game/characters.ts).
   const fb = c.reply || 'Thanks for your message.';
-  const { text: body, llm } = hint ? { text: hint, llm: false } : await writer.write({ as: addr, prompt: text, fallback: fb, long: true });
+  const { text: body, llm } = hint ? { text: hint, llm: false } : await writer.write({ as: addr, prompt: text, fallback: fb, long: true, history: mailHistory(s, content, addr, subject, text) });
   const shown = body || fb;
   sendLater(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: shown, read: false, generated: llm && !!body }, replyAfter(content, addr, undefined, ev));
   return shown;
@@ -327,7 +366,7 @@ export async function askAgent(
     src = opts.hintSrc ?? 'hint';
   } else {
     const roasts = opts.roasts?.length ? opts.roasts : ROASTS;
-    const w = await writer.write({ as: 'agent', prompt: text, fallback: pick(s, roasts) });
+    const w = await writer.write({ as: 'agent', prompt: text, fallback: pick(s, roasts), history: chatHistory(s) });
     reply = w.text;
     if (w.llm) src = 'llm';
     note = w.note;
