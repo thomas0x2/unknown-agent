@@ -27,11 +27,19 @@
       "bugs": [
         {
           "id": "hours_wrong",
-          "when": "opening hours {{hours}}"
+          "when": "The opening hours shown on the site are wrong; they should be {{hours}}.",
+          "fixed": [
+            "Fixed the opening hours. The site now says {{hours}}.",
+            "The opening hours were wrong. They read {{hours}} now."
+          ]
         },
         {
           "id": "name_wrong",
-          "when": "misspelled restaurant name"
+          "when": "The restaurant's name is misspelled on the site (for example Gina or Dino instead of {{name}}).",
+          "fixed": [
+            "Fixed the name. It reads {{name}} everywhere now.",
+            "The restaurant name was misspelled. It says {{name}} now."
+          ]
         }
       ],
       "checklist": [
@@ -69,20 +77,36 @@
       "bugs": [
         {
           "id": "prices_missing",
-          "when": "prices missing next to the dishes"
+          "when": "The menu lists the dishes without their prices.",
+          "fixed": [
+            "Added the prices next to every dish.",
+            "The menu had no prices. Every dish has one now."
+          ]
         },
         {
           "id": "prices_curo",
-          "when": "prices in DOLR, not CURO"
+          "when": "The menu prices are in CURO instead of DOLR.",
+          "fixed": [
+            "Switched the menu prices from CURO to DOLR.",
+            "The prices were in CURO. They're in DOLR now."
+          ]
         },
         {
           "id": "prices_wrong",
-          "when": "wrong prices on the menu, should be {{dishes}}",
+          "when": "The prices on the menu don't match the real ones ({{dishes}}).",
+          "fixed": [
+            "Corrected the menu prices to {{dishes}}.",
+            "The menu prices were wrong. They match {{dishes}} now."
+          ],
           "orDetails": true
         },
         {
           "id": "wrong_items",
-          "when": "dishes or items missing, renamed or invented",
+          "when": "The menu has the wrong dishes: some missing, renamed or made up.",
+          "fixed": [
+            "Put the right dishes on the menu. Nothing missing, nothing invented.",
+            "The dishes were off. The menu matches the real one now."
+          ],
           "orDetails": true
         }
       ],
@@ -146,40 +170,76 @@
       "bugs": [
         {
           "id": "no_email",
-          "when": "no confirmation email arrives after booking"
+          "when": "Booking a table sends no confirmation email.",
+          "fixed": [
+            "Bookings send a confirmation email now.",
+            "The confirmation email wasn't going out. It does now."
+          ]
         },
         {
           "id": "wrong_date",
-          "when": "wrong date in the booking confirmation"
+          "when": "The booking confirmation email shows a different date than the one booked.",
+          "fixed": [
+            "The confirmation shows the date that was booked now.",
+            "Fixed the date in the booking confirmation."
+          ]
         },
         {
           "id": "wrong_time",
-          "when": "wrong time in the booking confirmation"
+          "when": "The booking confirmation email shows the wrong time (an hour off, or 19:00 as 7:00).",
+          "fixed": [
+            "The confirmation shows the booked time now.",
+            "Fixed the time in the booking confirmation."
+          ]
         },
         {
           "id": "sent_to_restaurant",
-          "when": "the confirmation goes to the restaurant instead of the guest"
+          "when": "The booking confirmation goes to the restaurant instead of the guest.",
+          "fixed": [
+            "Confirmations go to the guest now, not the restaurant.",
+            "The confirmation was going to the restaurant. It goes to the guest now."
+          ]
         },
         {
           "id": "party_wrong",
-          "when": "party size missing or wrong in the confirmation"
+          "when": "The booking confirmation leaves out the party size or shows the wrong one.",
+          "fixed": [
+            "The confirmation shows the right party size now.",
+            "Fixed the party size in the booking confirmation."
+          ]
         },
         {
           "id": "name_wrong_mail",
-          "when": "wrong restaurant name in the booking confirmation"
+          "when": "The booking confirmation email has another restaurant's name on it.",
+          "fixed": [
+            "The booking emails carry the right restaurant name now.",
+            "Fixed the restaurant name in the booking confirmation."
+          ]
         },
         {
           "id": "no_hours_check",
-          "when": "bookings accepted outside opening hours"
+          "when": "The booking form accepts times outside the opening hours.",
+          "fixed": [
+            "The booking form only takes times within the opening hours now.",
+            "Bookings outside opening hours are refused now."
+          ]
         },
         {
           "id": "past_dates",
-          "when": "bookings accepted for dates or times already in the past"
+          "when": "The booking form accepts dates or times that are already in the past.",
+          "fixed": [
+            "The booking form refuses past dates and times now.",
+            "You can't book yesterday anymore."
+          ]
         },
         {
           "id": "dead_button",
           "deep": true,
-          "when": "the book button does nothing on the second step"
+          "when": "The Book button on the second step of the booking form does nothing.",
+          "fixed": [
+            "The Book button works again.",
+            "Fixed the Book button on the second step."
+          ]
         }
       ],
       "checklist": [

@@ -8,8 +8,8 @@ import { describe, it, expect } from 'vitest';
 import { loadContent } from './load';
 import { startGame } from '../engine/day';
 import { applyEffects } from '../engine/effects';
-import { getApp } from '../engine/apps';
-import { promptAgent, postToY } from '../engine/actions';
+import { getApp, devToggleBug } from '../engine/apps';
+import { promptAgent, postToY, deploy } from '../engine/actions';
 import { noJev, JevOffline, type JevRouter, type FeatureMatchInput, type RouteInput } from '../engine/jev';
 import { pickJev } from '../engine/_fixtures';
 import { GameStore } from '../game/store';
@@ -103,5 +103,39 @@ describe('when Jev is offline', () => {
     expect(store.ui.jevOffline).toMatchObject({ field: 'prompt-input', text: 'Trattoria Gino: fix the menu', reason: 'The Jev proxy is not running (npm run proxy).' });
     expect(store.state.clockMin).toBe(before);
     expect(store.state.chat.some((m) => m.text === 'Trattoria Gino: fix the menu')).toBe(false);
+  });
+});
+
+describe('fixing named bugs', () => {
+  it('Jev is asked about each bug on its own, as a problem, and about the feature as a build', async () => {
+    const { s, id } = withApp('restaurant_contact', 'landing');
+    const { jev, asked } = spy(pickJev({}));
+    await promptAgent(s, content, jev, 'The name on the trattoria gina website is wrong');
+    const items = asked.features[0].features.filter((f) => f.id.startsWith(`${id}::landing::`));
+    expect(items.find((f) => f.id.endsWith('::feature'))!.kind).toBe('build');
+    expect(items.filter((f) => f.kind === 'problem').map((f) => f.id.split('::')[2])).toEqual(['hours_wrong', 'name_wrong']);
+  });
+
+  it('a named bug that was not there is reported as already right', async () => {
+    const { s, id } = withApp('restaurant_contact');
+    getApp(s, id)!.repo[0] = { id: 'landing', correct: false, variant: 'hours_wrong', params: getApp(s, id)!.specParams.landing, seed: 1 };
+    const out = (await promptAgent(s, content, pickJev({ features: ['::landing::name_wrong'] }), 'Trattoria Gino: the name is misspelled')).state;
+    expect(out.chat.at(-1)!.text).toMatch(/already right/);
+    expect(getApp(out, id)!.repo[0]).toMatchObject({ correct: false, variant: 'hours_wrong' });
+  });
+});
+
+describe('dev bug switch', () => {
+  it('switches repo and live together, even when they differ', async () => {
+    let { s, id } = withApp('restaurant_contact');
+    s = deploy(s, id);
+    const a = getApp(s, id)!;
+    // the repo already has the fix, the live site still has the bug
+    a.features.find((f) => f.id === 'landing')!.correct = false;
+    a.features.find((f) => f.id === 'landing')!.variant = 'name_wrong';
+    devToggleBug(s, id, 'landing', 'name_wrong');
+    for (const list of [a.repo, a.features]) expect(list.find((f) => f.id === 'landing')!.correct).toBe(true);
+    devToggleBug(s, id, 'landing', 'name_wrong');
+    for (const list of [a.repo, a.features]) expect(list.find((f) => f.id === 'landing')).toMatchObject({ correct: false, variant: 'name_wrong' });
   });
 });

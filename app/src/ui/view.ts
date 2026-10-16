@@ -179,7 +179,8 @@ function pageSpinFeed(store: GameStore, param?: string): string {
   const n = Math.min(Math.max(Number(m[1] ?? 1), 1), pages);
   const lines = feed.slice((n - 1) * FEED_PAGE, n * FEED_PAGE).map((x) => `M${x.id} ST=${x.st} T=${x.t}`).join('\n');
   const next = n < pages ? `<a href="#" data-nav="spincycle.test/feed/${n + 1}">next=/feed/${n + 1}</a>` : 'next=null';
-  return `<pre class="spinfeed">SPINCYCLE STATUS FEED v1\npage=${n}/${pages} · ${FEED_PAGE} machines per page\n\nFIELDS\n  M   machine number\n  ST  status: 0 free, 1 running, 2 done (waiting for pickup), 3 out of order\n  T   seconds left on the cycle (0 unless running)\n\n${lines}\n\n${next}</pre>`;
+  const first = n > 1 ? `\n<a href="#" data-nav="spincycle.test/feed">first=/feed</a>` : '';
+  return `<pre class="spinfeed">SPINCYCLE STATUS FEED v1\npage=${n}/${pages} · ${FEED_PAGE} machines per page\n\nFIELDS\n  M   machine number\n  ST  status: 0 free, 1 running, 2 done (waiting for pickup), 3 out of order\n  T   seconds left on the cycle (0 unless running)\n\n${lines}\n\n${next}${first}</pre>`;
 }
 
 // ── page dispatch ──

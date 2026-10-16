@@ -26,11 +26,19 @@
       "bugs": [
         {
           "id": "wrong_tickers",
-          "when": "tracks the wrong tickers"
+          "when": "The crawler tracks the wrong tickers instead of $GAI and $VANT.",
+          "fixed": [
+            "It tracks $GAI and $VANT now.",
+            "Fixed the tickers. It's $GAI and $VANT."
+          ]
         },
         {
           "id": "lowercase_missed",
-          "when": "misses lowercase tickers like $gai"
+          "when": "The crawler misses tickers written in lowercase, like $gai.",
+          "fixed": [
+            "Lowercase tickers like $gai count now.",
+            "Fixed lowercase tickers being missed."
+          ]
         }
       ],
       "checklist": [
@@ -56,11 +64,19 @@
       "bugs": [
         {
           "id": "inverted",
-          "when": "bullish and bearish are swapped"
+          "when": "Bullish and bearish are swapped in the sentiment split.",
+          "fixed": [
+            "Bullish and bearish are the right way round now.",
+            "Fixed the swapped bullish and bearish counts."
+          ]
         },
         {
           "id": "sarcasm_literal",
-          "when": "reads sarcastic posts literally"
+          "when": "The sentiment reads sarcastic posts literally, as praise.",
+          "fixed": [
+            "Sarcastic posts are read as sarcasm now.",
+            "Fixed sarcasm being read as praise."
+          ]
         }
       ]
     },
@@ -78,7 +94,11 @@
       "bugs": [
         {
           "id": "bots_counted",
-          "when": "counts bot spam"
+          "when": "Bot spam posts are counted in the sentiment.",
+          "fixed": [
+            "Bot spam is filtered out now.",
+            "Fixed bot posts being counted."
+          ]
         }
       ],
       "checklist": [
@@ -107,23 +127,43 @@
       "bugs": [
         {
           "id": "wrong_totals",
-          "when": "the portfolio total leaves out the holdings (it's just the cash)"
+          "when": "The portfolio total leaves out the holdings and shows only the cash.",
+          "fixed": [
+            "The portfolio total includes the holdings now.",
+            "Fixed the total. It adds the holdings to the cash."
+          ]
         },
         {
           "id": "value_wrong",
-          "when": "each holding's value is shares times price divided by 100"
+          "when": "Each holding's value is off by a factor of 100 (shares times price divided by 100).",
+          "fixed": [
+            "Holding values are shares times price now.",
+            "Fixed the holding values. They were 100 times too small."
+          ]
         },
         {
           "id": "pnl_sign",
-          "when": "day P&L has the wrong sign (gains shown as losses)"
+          "when": "The day's P&L has the wrong sign: gains show as losses.",
+          "fixed": [
+            "Gains show as gains now.",
+            "Fixed the sign on the day's P&L."
+          ]
         },
         {
           "id": "cash_wrong",
-          "when": "cash shows negative (the holdings subtracted from it)"
+          "when": "The cash shows as negative, with the holdings subtracted from it.",
+          "fixed": [
+            "Cash shows the actual cash now.",
+            "Fixed the negative cash."
+          ]
         },
         {
           "id": "pct_wrong",
-          "when": "percent changes are 100 times too big"
+          "when": "The percent changes are 100 times too big.",
+          "fixed": [
+            "Percent changes are the right size now.",
+            "Fixed the percent changes. They were 100 times too big."
+          ]
         }
       ],
       "checklist": [
@@ -160,24 +200,44 @@
       "bugs": [
         {
           "id": "no_buy",
-          "when": "auto-buy doesn't fire on Crane's praise"
+          "when": "Auto-buy doesn't fire when Crane praises a company.",
+          "fixed": [
+            "Auto-buy fires on Crane's praise now.",
+            "Fixed auto-buy not firing."
+          ]
         },
         {
           "id": "wrong_ticker",
-          "when": "auto-buy buys the wrong ticker"
+          "when": "Auto-buy buys a different ticker than the one Crane praised.",
+          "fixed": [
+            "Auto-buy buys the ticker Crane praised now.",
+            "Fixed auto-buy picking the wrong ticker."
+          ]
         },
         {
           "id": "buys_on_criticism",
-          "when": "auto-buy fires on criticism, not just praise"
+          "when": "Auto-buy also fires when Crane criticises a company.",
+          "fixed": [
+            "Auto-buy only fires on praise now.",
+            "Fixed auto-buy buying on criticism."
+          ]
         },
         {
           "id": "repeat_buys",
-          "when": "auto-buy fires again on every refresh",
+          "when": "Auto-buy fires again on every refresh for the same post.",
+          "fixed": [
+            "Auto-buy fires once per post now.",
+            "Fixed the repeat buys on every refresh."
+          ],
           "deep": true
         },
         {
           "id": "impostor_buy",
-          "when": "auto-buy trusts a lookalike Crane account"
+          "when": "Auto-buy trusts posts from a lookalike Crane account.",
+          "fixed": [
+            "Auto-buy only trusts the real Crane account now.",
+            "Fixed auto-buy trusting the impostor account."
+          ]
         }
       ],
       "checklist": [

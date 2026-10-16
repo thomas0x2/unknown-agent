@@ -169,9 +169,13 @@ async function buildRatePost(sdk, body) {
 async function buildMatch(sdk, body) {
   // one yes/no question per feature, so a prompt can ask for several at once
   const questions = {};
+  const named = body.appNamed ? ' The prompt must also say which app it means: its name, part of the name, or its address, in any case or spelling, or clearly the app an earlier message named.' : '';
+  const context = 'Earlier messages only tell you what the prompt refers to ("those", "the menu", items listed before); they don\'t ask for anything by themselves.';
   (body.features ?? []).forEach((f, i) => {
-    const named = body.appNamed ? ' The prompt must also say which app it means: its name, part of the name, or its address, in any case or spelling, or clearly the app an earlier message named.' : '';
-    questions[`f${i}`] = sdk.noul(`Does the prompt ask for this, to build, add, change or fix it, without contradicting it? Earlier messages only tell you what the prompt refers to ("those", "the menu", items listed before); they don't ask for anything by themselves.${named} Item: ${f.description}`);
+    // a problem is matched on its own: naming one bug must not pull in the others on the same page
+    questions[`f${i}`] = f.kind === 'problem'
+      ? sdk.noul(`Does the prompt point out this specific problem, in any words: naming it, describing what they see, or saying what it should be instead? Say no if the prompt is about a different problem, even one on the same page, or only says something is wrong without saying what. ${context}${named} Problem: ${f.description}`)
+      : sdk.noul(`Does the prompt ask to build or add this, or spell out what it should contain, without contradicting it? Say no if the prompt only reports a problem with it. ${context}${named} Item: ${f.description}`);
   });
   const earlier = (body.context ?? []).filter(Boolean);
   return { state: { setting: SETTING, ...(earlier.length ? { earlierMessages: earlier } : {}), prompt: body.prompt }, questions };

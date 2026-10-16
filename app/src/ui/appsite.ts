@@ -220,7 +220,7 @@ function laundromat(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
   const f = Object.fromEntries(['machines', 'refresh', 'minutes', 'more_machines'].map((id) => [id, live(app, tmpl, id)]));
   const bugs = new Set(Object.values(f).flatMap((l) => [...l.bugs]));
   const head = `<header class="as-l-head">${SPIN_LOGO}<div><b>${esc(app.name)}</b><span>Spin Cycle Laundry · 201 Ferris St</span></div>
-    <a href="#" class="as-l-feed" data-nav="spincycle.test/feed">Raw feed ↗</a></header>`;
+    <a href="#" class="as-l-feed" data-newtab="spincycle.test/feed">Raw feed ↗</a></header>`;
   if (page && page !== 'status') return `<div class="as as-l">${head}<main>${notFound()}</main></div>`;
   let body: string;
   if (!f.machines.built) body = `<p class="as-l-empty">No machines yet.</p>`;
