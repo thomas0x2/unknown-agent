@@ -38,7 +38,7 @@ describe('latent lead + composeEmail', () => {
     const r = fakeRouter({ route: () => ({ kind: 'outcome', outcomeId: 'offer' }) });
     const out = await composeEmail(s, content, r, 'rosa@trattoria.test', 'I can build your site.');
     expect(out.sent).toBe(true);
-    expect(out.reply).toBe('Wonderful, thank you.');
+    expect(out.reply).toBe('Wonderful, thank you.\n\nGreat — here is the spec: menu with prices in DOLR.');
     expect(out.state.apps.some((a) => a.name === 'Trattoria')).toBe(true);
     expect(out.state.delivered.some((d) => d.eventId === 'owner_contact')).toBe(true); // now in inbox
   });
