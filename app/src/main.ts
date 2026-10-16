@@ -50,7 +50,42 @@ function readFields(root: HTMLElement): Record<string, string> {
   root.querySelectorAll<HTMLInputElement>('textarea[id], input[id]').forEach((el) => { if (!SKIP_TYPES.has(el.type)) out[el.id] = el.value; });
   return out;
 }
-function forgetDrafts(): void { drafts.clear(); shownUrl = null; }
+function forgetDrafts(): void { drafts.clear(); shownUrl = null; scrolls.clear(); shownKey = null; }
+
+// Where the player scrolled, per tab and page: the viewport and any inner scroll area (Qmail list, chat log).
+// Kept while switching tabs; a newly opened tab starts at the top and a closed tab's positions are dropped.
+type Scrolls = Record<string, [number, number, boolean]>;
+const scrolls = new Map<string, Scrolls>();
+let shownKey: string | null = null;
+/** A name for a scrollable element that finds the same element after the page is drawn again. */
+function scrollName(el: HTMLElement, root: HTMLElement): string {
+  if (el === root) return ':root';
+  if (el.id) return `#${el.id}`;
+  const sig = `${el.tagName}.${el.className}`;
+  let n = 0;
+  for (const o of root.querySelectorAll<HTMLElement>(el.tagName)) { if (o === el) break; if (o.className === el.className) n++; }
+  return `${sig}:${n}`;
+}
+function findScrolled(root: HTMLElement, name: string): HTMLElement | null {
+  if (name === ':root') return root;
+  if (name.startsWith('#')) return root.querySelector<HTMLElement>(`[id="${name.slice(1)}"]`);
+  const i = name.lastIndexOf(':'); const [tag, ...cls] = name.slice(0, i).split('.'); const n = Number(name.slice(i + 1));
+  const cn = cls.join('.');
+  return [...root.querySelectorAll<HTMLElement>(tag)].filter((o) => o.className === cn)[n] ?? null;
+}
+function readScrolls(root: HTMLElement): Scrolls {
+  const out: Scrolls = {};
+  for (const el of [root, ...root.querySelectorAll<HTMLElement>('*')]) {
+    // a list read to the end stays at the end, so lines added meanwhile still show up
+    if (el.scrollTop || el.scrollLeft) out[scrollName(el, root)] = [el.scrollTop, el.scrollLeft, el.scrollTop + el.clientHeight >= el.scrollHeight - 2];
+  }
+  return out;
+}
+function applyScrolls(root: HTMLElement, saved: Scrolls): void {
+  for (const [name, [top, left, atEnd]] of Object.entries(saved)) {
+    const el = findScrolled(root, name); if (el) { el.scrollTop = atEnd ? el.scrollHeight : top; el.scrollLeft = left; }
+  }
+}
 /** Empties a field after its text was sent, so the draft does not come back. */
 function clearField(id: string): void {
   const el = document.getElementById(id) as HTMLInputElement | null; if (el) el.value = '';
@@ -73,6 +108,12 @@ function render(): void {
   // unsent text is saved per page, so leaving a site (another tab, a bookmark) and coming back finds it again
   if (shownUrl != null) drafts.set(shownUrl, readFields(vp));
   const keep = drafts.get(store.url) ?? {};
+  const key = `${store.active}:${store.url}`;
+  const before = readScrolls(vp);
+  if (shownKey != null) scrolls.set(shownKey, before);
+  for (const k of scrolls.keys()) if (!store.tabs.some((t) => k.startsWith(`${t.id}:`))) scrolls.delete(k);
+  // a page the player returns to (another tab, back) gets its scroll back; a redraw of the same page keeps its own
+  const returning = key !== shownKey && scrolls.has(key);
   let focusId: string | null = null;
   let caret: [number | null, number | null] | null = null;
   if (document.activeElement && vp.contains(document.activeElement)) {
@@ -85,7 +126,10 @@ function render(): void {
   vp.innerHTML = V.page(store, r);
   shownUrl = store.url;
   const site = V.viewportSite(store);
-  if (vp.dataset.site !== site) vp.scrollTop = 0;
+  if (returning) applyScrolls(vp, scrolls.get(key)!);
+  else if (key === shownKey) applyScrolls(vp, before);
+  else if (vp.dataset.site !== site || store.active !== Number(shownKey?.split(':')[0])) vp.scrollTop = 0;
+  shownKey = key;
   vp.dataset.site = site;
   for (const [id, v] of Object.entries(keep)) { const el = document.getElementById(id) as HTMLInputElement | null; if (el && !el.disabled) el.value = v; }
   if (focusId) {
@@ -111,7 +155,7 @@ function render(): void {
   const dev = $('#dev')!; dev.hidden = !store.ui.dev; if (store.ui.dev) dev.innerHTML = V.devHtml(store);
   const dve = $('#devedit')!; const showEdit = store.ui.dev && store.ui.devEdit; dve.hidden = !showEdit; if (showEdit) dve.innerHTML = devEditHtml(store);
 
-  if (site === 'agent') { const log = $('#ua-log'); if (log) log.scrollTop = log.scrollHeight; updateCost(); }
+  if (site === 'agent') { const log = $('#ua-log'); const read = returning ? scrolls.get(key)!['#ua-log'] : undefined; if (log && !(read && !read[2])) log.scrollTop = log.scrollHeight; updateCost(); }
   lastSite = site;
 }
 /** Paints the Terminal window, keeping what was typed at its prompt. */
