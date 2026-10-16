@@ -11,7 +11,7 @@ import { listSlots, autoSlot } from '../game/saves';
 import { ICONS, TOKENS, Y_ICONS } from './icons';
 import { route, bookmarks, type Route, type SiteId } from '../sites/registry';
 import {
-  type GameState, type AppInstance, getApp, bugsOf, breakVariant, onForkyard, userRevenue, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, dateShort, dateLong, dateMedium, dateFull, dayDate, clockTime, gameMinutes, EMPIRE, BOUNCE_ADDR, eventBody, deliveryKey,
+  type GameState, type MailEntry, type AppInstance, getApp, bugsOf, breakVariant, onForkyard, userRevenue, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, dateShort, dateLong, dateMedium, dateFull, dayDate, clockTime, gameMinutes, EMPIRE, BOUNCE_ADDR, eventBody, deliveryKey,
 } from '../engine';
 import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
@@ -250,7 +250,14 @@ function pageNewTab(store: GameStore): string {
 }
 
 // ── Qmail ──
-interface Row { id: string; seq: number; /** Minutes since midnight it arrived, when known. */ min?: number; from: string; addr: string; subject: string; body: string; day: number; unread: boolean; needsReply: boolean; folder: 'inbox' | 'sent'; eventId?: string; generated?: boolean; to?: string; link?: string; bounceOf?: string; bookingId?: string; /** In the Bin until the day ends. */ binned?: boolean }
+
+/** Dev-mode label under an email that came from a script rather than Haiku. */
+const SCRIPTED_MAIL: Record<NonNullable<MailEntry['scripted']>, string> = {
+  hint: 'Scripted hint (Jev read a near miss)',
+  outcome: 'Scripted storyline outcome',
+  topic: 'Scripted topic reply',
+};
+interface Row { id: string; seq: number; /** Minutes since midnight it arrived, when known. */ min?: number; from: string; addr: string; subject: string; body: string; day: number; unread: boolean; needsReply: boolean; folder: 'inbox' | 'sent'; eventId?: string; generated?: boolean; scripted?: MailEntry['scripted']; to?: string; link?: string; bounceOf?: string; bookingId?: string; /** In the Bin until the day ends. */ binned?: boolean }
 /** Messages the player opened or closed in a conversation, so a repaint keeps them that way. */
 export const mailOpen = new Map<string, boolean>();
 function mailRows(store: GameStore): Row[] {
@@ -269,7 +276,7 @@ function mailRows(store: GameStore): Row[] {
     if (isDeleted(s, id)) continue;
     rows.push({ id, binned: inBin(s, id), seq: d.seq ?? -1, min: d.min, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(eventBody(e, d.day)), day: d.day, unread: !s.readEvents.includes(key), needsReply: canReply, folder: 'inbox', eventId: e.id });
   }
-  for (const m of s.mail) if (!isDeleted(s, 'm/' + m.id)) rows.push({ id: 'm/' + m.id, binned: inBin(s, 'm/' + m.id), seq: m.seq ?? (Number(m.id.replace(/\D/g, '')) || 0), min: m.min, from: m.from, addr: m.addr, subject: m.subject, body: m.body, day: m.day, unread: m.folder === 'inbox' && !m.read, needsReply: false, folder: m.folder, eventId: m.eventId, generated: m.generated, to: m.to, link: m.link, bounceOf: m.bounceOf, bookingId: m.bookingId });
+  for (const m of s.mail) if (!isDeleted(s, 'm/' + m.id)) rows.push({ id: 'm/' + m.id, binned: inBin(s, 'm/' + m.id), seq: m.seq ?? (Number(m.id.replace(/\D/g, '')) || 0), min: m.min, from: m.from, addr: m.addr, subject: m.subject, body: m.body, day: m.day, unread: m.folder === 'inbox' && !m.read, needsReply: false, folder: m.folder, eventId: m.eventId, generated: m.generated, scripted: m.scripted, to: m.to, link: m.link, bounceOf: m.bounceOf, bookingId: m.bookingId });
   return rows;
 }
 /** Today's mail shows the time it came in, older mail its date. */
@@ -342,7 +349,7 @@ function pageMail(store: GameStore, param?: string): string {
             ? `<p class="qm-actions"><b>Your booking has been cancelled.</b></p>`
             : s.bookings.find((b) => b.id === r.bookingId)?.noShow ? `<p class="qm-actions"><b>This booking has passed.</b></p>`
             : `<p class="qm-actions"><button class="qm-btn ghost" data-cancel-booking="${esc(r.bookingId)}" data-cancel-url="${esc(`${r.addr.split('@')[1] ?? ''}/cancel-${r.bookingId}`)}">Cancel booking</button></p>`) : ''}
-          ${r.generated ? `<p class="qm-gen">Reply written by ${esc(MISSES.label())}</p>` : ''}
+          ${r.generated ? `<p class="qm-gen">Reply written by ${esc(MISSES.label())}</p>` : r.scripted ? `<p class="qm-gen">${SCRIPTED_MAIL[r.scripted]}</p>` : ''}
         </details>`;
       }).join('');
       main = `<article class="qm-read">

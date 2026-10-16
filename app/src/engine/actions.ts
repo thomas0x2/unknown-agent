@@ -177,7 +177,7 @@ async function contactWritesBack(
   const history = mailHistory(s, content, addr, subject, text);
   const scripted = await scriptedTopic(jev, s, c, text, history.map((h) => `${h.from === 'player' ? 'Player' : h.from === 'self' ? c.name ?? from ?? addr : h.from}: ${h.text}`));
   if (scripted) {
-    sendLater(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: scripted.reply, read: false }, replyAfter(content, addr, scripted.replyAfter, ev));
+    sendLater(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: scripted.reply, read: false, scripted: 'topic' }, replyAfter(content, addr, scripted.replyAfter, ev));
     return scripted.reply;
   }
   // A hint is a hit: Jev recognised what the player was after, so the nudge is sent as written.
@@ -185,7 +185,7 @@ async function contactWritesBack(
   const fb = c.reply || 'Thanks for your message.';
   const { text: body, llm } = hint ? { text: hint, llm: false } : await writer.write({ as: addr, prompt: text, fallback: fb, long: true, history });
   const shown = body || fb;
-  sendLater(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: shown, read: false, generated: llm && !!body }, replyAfter(content, addr, undefined, ev));
+  sendLater(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: shown, read: false, generated: llm && !!body, ...(hint ? { scripted: 'hint' as const } : {}) }, replyAfter(content, addr, undefined, ev));
   return shown;
 }
 
@@ -257,7 +257,7 @@ export async function replyToEvent(
       delivery.outcomeId = outcome.id;
       // a storyline outcome always answers with its scripted reply
       const body = outcome.reply;
-      if (ev.addr) sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'Unknown', addr: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body, read: false }, replyAfter(content, ev.addr, outcome.replyAfter, ev));
+      if (ev.addr) sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'Unknown', addr: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body, read: false, scripted: 'outcome' }, replyAfter(content, ev.addr, outcome.replyAfter, ev));
       return { state: s, decision, reply: body };
     }
   }
@@ -323,7 +323,7 @@ export async function composeEmail(
       // a lead that hands over a client brief sends it along with the scripted reply
       const body = outcome.effects?.createApp && ev.body ? `${outcome.reply}\n\n${ev.body}` : outcome.reply;
       s.delivered.push({ eventId: ev.id, site: 'qmail', day: s.values.day, seq: s.nextId++, answered: true, outcomeId: outcome.id, expiresDay: ev.expiresDay });
-      sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? addr, addr, subject: re(subject || ev.subject || ''), body, read: false }, replyAfter(content, addr, outcome.replyAfter, ev));
+      sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? addr, addr, subject: re(subject || ev.subject || ''), body, read: false, scripted: 'outcome' }, replyAfter(content, addr, outcome.replyAfter, ev));
       return { state: s, decision, reply: body, sent: true };
     }
   }

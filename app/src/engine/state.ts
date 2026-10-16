@@ -193,6 +193,8 @@ export interface MailEntry {
   read: boolean;
   /** Written by a model (Claude Haiku). */
   generated?: boolean;
+  /** A scripted reply, for the dev-mode label: a hint Jev picked on a near miss, a storyline outcome, or a fixed topic answer. */
+  scripted?: 'hint' | 'outcome' | 'topic';
   /** App-sent mail (booking confirmations, test campaigns): a link the body can carry. */
   link?: string;
   /** A bounce notice: the address the player's email failed to reach, so it joins that conversation. */
