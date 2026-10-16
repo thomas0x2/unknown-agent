@@ -171,14 +171,6 @@ function promptHasChange(prompt: string, before: string[], after: string[]): boo
   return promptHasDetails(prompt, [...added, ...dropped]);
 }
 
-/** A random bug for a wrong build, skipping the ones already fixed. All of them fixed: undefined. */
-function wrongVariant(s: GameState, def: FeatureDef | undefined, fixed: string[] = []): Pick<BuiltFeature, 'variant' | 'seed'> | undefined {
-  const bugs = def?.bugs ?? [];
-  if (!bugs.length) return { variant: undefined, seed: randInt(s, 0, 9999) }; // a template with no named bugs: just wrong
-  const pool = bugs.filter((b) => !fixed.includes(b.id));
-  return pool.length ? { variant: pick(s, pool).id, seed: randInt(s, 0, 9999) } : undefined;
-}
-
 const fixedOf = (app: AppInstance, id: string): string[] => app.fixed?.[id] ?? [];
 
 /** Remember the bugs a build removed, so later builds of the feature don't bring them back. */
@@ -298,16 +290,6 @@ export function buildApp(s: GameState, appId: string, requested: string[], level
   const msg = app.repoVersion === 1 ? `Initial commit for ${app.name}`
     : worked.length ? `Update ${worked.join(', ')}` : `Check ${requested.join(', ') || app.name}`;
   s.commits.push({ day: s.values.day, repo: app.id, msg, kind: 'push' });
-  // the very first build always ships at least one teaching bug, even on a lucky roll
-  if (app.repoVersion === 1 && !quiet(app, ctx.tmpl)) {
-    const correct = app.repo.filter((f) => f.correct);
-    if (correct.length === app.repo.length && correct.length > 0) {
-      const preferred = correct.filter((f) => ctx.tmpl?.features.find((d) => d.id === f.id)?.firstBuildBug);
-      const victim = pick(s, preferred.length ? preferred : correct);
-      const wrong = wrongVariant(s, ctx.tmpl?.features.find((d) => d.id === victim.id), fixedOf(app, victim.id));
-      if (wrong) Object.assign(victim, { correct: false, ...wrong });
-    }
-  }
   return report;
 }
 
@@ -510,7 +492,7 @@ function firstBug(s: GameState, app: AppInstance, tmpl: AppTemplate): void {
 /**
  * Content appears on apps that started empty once its time has come, and with it the bugs held back
  * until then: each component built while it was empty rolls at the agent level it was built with.
- * The first time, a live app that came out clean still gets one shallow bug, like any first build.
+ * The first time, a live app that came out clean still gets one shallow bug.
  * Runs as the clock moves; returns the apps whose content just appeared.
  */
 export function wakeApps(s: GameState, content: Content): AppInstance[] {

@@ -115,7 +115,6 @@
       "details": [
         "dishes:names"
       ],
-      "firstBuildBug": true,
       "bugs": [
         {
           "id": "prices_missing",

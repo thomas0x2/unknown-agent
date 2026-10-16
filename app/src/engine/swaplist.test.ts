@@ -1,6 +1,6 @@
 /*
  * Swaplist starts empty: no bugs from builds or overnight breaks until its first listing, two hours
- * of play after the first deploy. Then the held-back bugs roll, and a clean first build still gets one.
+ * of play after the first deploy. Then the held-back bugs roll, and a clean app still gets one.
  */
 import { describe, it, expect } from 'vitest';
 import { loadContent } from '../content/load';
