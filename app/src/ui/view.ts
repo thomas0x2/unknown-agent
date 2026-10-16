@@ -213,7 +213,6 @@ function pageMail(store: GameStore, param?: string): string {
     <a href="#" class="qm-new" data-nav="qmail.com/compose">Compose</a>
     <a href="#" data-nav="qmail.com" class="${view === 'inbox' ? 'on' : ''}">Inbox${unread ? `<b>${unread}</b>` : ''}</a>
     <a href="#" data-nav="qmail.com/sent" class="${view === 'sent' ? 'on' : ''}">Sent</a>
-    <a href="#" data-nav="qdrive.com">Qdrive</a>
     ${adHtml('qmail', s.values.day, 'square')}
   </nav>`;
   let main: string;
