@@ -306,6 +306,9 @@ export interface FixCategory { id: string; description: string; kind: 'build' | 
 /** The feature as a player would name it: 'auto_buy' is the auto buy. */
 export const featureName = (fid: string) => fid.replaceAll('_', ' ');
 
+/** A component's path as a player names it, step by step: 'booking/confirmation/date' is "booking > confirmation > date". */
+export const componentPath = (fid: string, cid: string) => [fid, ...cid.split('/')].map(featureName).join(' > ');
+
 /** The components that can hold bugs: the ones a fix prompt can name. */
 export const fixableComponents = (def: FeatureDef | undefined): ComponentDef[] => (def?.components ?? []).filter((c) => c.bugs?.length);
 
@@ -343,13 +346,13 @@ export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, f
     const can = (c.bugs ?? []).map((id) => def.bugs?.find((b) => b.id === id)).filter((b): b is BugDef => !!b).map((b) => fillSpec(b.when, spec));
     // the other parts are listed too, so a complaint about one of them isn't read as one about this
     const others = comps.filter((o) => o !== c).map((o) => o.label);
-    out.push({ id: `c:${c.id}`, description: `${c.label}, a part of the ${featureName(featureId)} (${def.description}).${can.length ? ` What can go wrong with it: ${can.join(' ')}` : ''}${others.length ? ` Other parts of the ${featureName(featureId)}, which are not this one: ${others.join('; ')}.` : ''}`, kind: 'component' });
+    out.push({ id: `c:${c.id}`, description: `Path: ${componentPath(featureId, c.id)}. ${c.label}, a part of the ${featureName(featureId)} (${def.description}).${can.length ? ` What can go wrong with it: ${can.join(' ')}` : ''}${others.length ? ` Other parts of the ${featureName(featureId)}, which are not this one: ${others.join('; ')}.` : ''}`, kind: 'component' });
   }
   // bugs no component claims are still matched on their own
   const claimed = new Set(comps.flatMap((c) => c.bugs ?? []));
   for (const b of def.bugs ?? []) if (!claimed.has(b.id)) out.push({ id: b.id, description: fillSpec(b.when, spec), kind: 'problem' });
   // the feature as a whole, for a prompt that says it's wrong without saying which part
-  if (built && comps.length) out.push({ id: 'area', description: `The ${featureName(featureId)} (${def.description}). Its parts: ${comps.map((c) => c.label).join('; ')}.`, kind: 'area' });
+  if (built && comps.length) out.push({ id: 'area', description: `The ${featureName(featureId)} (${def.description}). Its parts, by path: ${comps.map((c) => `${componentPath(featureId, c.id)} (${c.label})`).join('; ')}.`, kind: 'area' });
   const brk = app.breaks.find((b) => b.featureId === featureId);
   const cat = brk && BREAK_CATEGORIES[brk.failure];
   if (brk && cat) out.push({ id: brk.failure, description: cat.replaceAll('{{feature}}', featureId), kind: 'problem' });

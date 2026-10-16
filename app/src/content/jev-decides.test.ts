@@ -114,8 +114,8 @@ describe('fixing named bugs', () => {
     const items = asked.features[0].features.filter((f) => f.id.startsWith(`${id}::landing::`));
     expect(items.find((f) => f.id.endsWith('::feature'))!.kind).toBe('build');
     expect(items.filter((f) => f.kind === 'component').map((f) => f.id.split('::')[2])).toEqual(['c:name', 'c:hours']);
-    expect(items.find((f) => f.kind === 'component')!.description).toMatch(/^the restaurant name, a part of the landing .*misspelled/);
-    expect(items.find((f) => f.kind === 'area')!.description).toMatch(/Its parts: the restaurant name; the opening hours/);
+    expect(items.find((f) => f.kind === 'component')!.description).toMatch(/^Path: landing > name\. the restaurant name, a part of the landing .*misspelled/);
+    expect(items.find((f) => f.kind === 'area')!.description).toMatch(/Its parts, by path: landing > name \(the restaurant name\); landing > hours \(the opening hours\)/);
     // each part lists the others, so a complaint about one isn't read as one about its neighbour
     expect(items.find((f) => f.kind === 'component')!.description).toMatch(/Other parts of the landing, which are not this one: the opening hours\. /);
     expect(items.some((f) => f.kind === 'problem')).toBe(false);
