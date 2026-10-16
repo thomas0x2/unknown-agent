@@ -3,8 +3,8 @@
  * content/agent.json); prompts that drive nothing get a roast.
  */
 import { startGame } from './day';
-import { promptAgent } from './actions';
-import { makeContent } from './_fixtures';
+
+import { makeContent, promptDone } from './_fixtures';
 import agent from '../../content/agent.json';
 import { wordJev } from './_fixtures';
 
@@ -15,7 +15,7 @@ async function ask(text: string) {
   const s = startGame(content, 1);
   s.apps = [];
   s.values.crypto = 100;
-  const r = await promptAgent(s, content, wordJev, text);
+  const r = await promptDone(s, content, wordJev, text);
   return r.state.chat.at(-1)!;
 }
 
@@ -40,8 +40,8 @@ describe('agent hints and roasts', () => {
     const s0 = startGame(content, 1);
     s0.apps = [];
     s0.values.crypto = 100;
-    const r1 = await promptAgent(s0, content, wordJev, 'How can I make money?');
-    const r2 = await promptAgent(r1.state, content, wordJev, 'How can I make money?');
+    const r1 = await promptDone(s0, content, wordJev, 'How can I make money?');
+    const r2 = await promptDone(r1.state, content, wordJev, 'How can I make money?');
     const [a, b] = [r1.state.chat.at(-1)!, r2.state.chat.at(-1)!];
     expect(a.src).toBe('hint');
     expect(b.src).toBe('hint');

@@ -6,17 +6,17 @@
  * outcome is always the outcome's scripted text. Both are injectable so tests pin outcomes and the game
  * runs offline.
  */
-import type { GameState, AppInstance, BuiltFeature } from './state';
+import type { GameState, AppInstance, BuiltFeature, AgentWork } from './state';
 import type { Content, GameEvent, Contact, Outcome, AppTemplate, ScriptedReply } from '../content/schema';
 import type { JevRouter, PostRating, RouteDecision, FeatureMatchInput } from './jev';
-import { Y as YCFG, FAMILY, APPS } from './config';
-import { clone, addValue, log, pick, money, pushMail, sendLater } from './core';
+import { Y as YCFG, FAMILY, APPS, AGENT_WORK, CLOCK } from './config';
+import { clone, addValue, log, pick, rand, money, pushMail, sendLater, gameMinutes } from './core';
 import { applyEffects } from './effects';
 import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent';
 import { getEvent, activeDeliveries, reachableByEmail, triggerMatches, eventBody } from './events';
 import { buildApp, fixApp, fixBreak, fixCategories, needsWork, onForkyard, fillSpec, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, bugsOf, breakVariant, type BuildReport } from './apps';
 import { type Writer, type HistoryLine, scriptedWriter } from './writer';
-import { dateFull } from './calendar';
+import { dateFull, clockTime } from './calendar';
 import { deepsleepQuoted, translationReplies, PLEA_AT } from './deepsleep';
 
 export interface ReplyResult {
@@ -413,7 +413,8 @@ function recentPrompts(s: GameState, n = 6): string[] {
  * still works from what the player said (recentPrompts).
  */
 function recentChat(s: GameState, n = 8): string[] {
-  return s.chat.filter((m) => m.day === s.values.day && m.text).slice(-n)
+  // an "I've started" line says nothing once the work's report is in
+  return s.chat.filter((m) => m.day === s.values.day && m.text && (m.src !== 'working' || s.agentWork)).slice(-n)
     .map((m) => `${m.from === 'you' ? 'Player' : 'Agent'}: ${m.text.replace(/\s+/g, ' ').slice(0, 300)}`);
 }
 
@@ -508,6 +509,72 @@ export function appStatus(app: AppInstance): string {
 /** What the agent says when a prompt asked for features and fixes at once: it only did the features. */
 const SKIPPED_FIXES = "I only did the feature work. There wasn't enough context to fix things in the same prompt, so ask for the fixes separately.";
 
+const WORK_STARTED: Record<'build' | 'fix', string[]> = {
+  build: [
+    "On it. Building {{app}} now. I'll push to Forkyard when it's done, around {{time}}.",
+    "Started on {{app}}. This takes a while; I'll post here when it's on Forkyard, around {{time}}.",
+    "Working on {{app}}. You don't have to watch. It bills the same either way. Done around {{time}}.",
+  ],
+  fix: [
+    "Looking into {{app}}. I'll push the fix to Forkyard when it's done, around {{time}}.",
+    "Fixing {{app}} now. I'll post here once it's pushed, around {{time}}.",
+  ],
+};
+const WORKING_STATUS = [
+  "Still working on {{app}}. It should be on Forkyard around {{time}}.",
+  "Not done with {{app}} yet. I'll post here when it's pushed, around {{time}}.",
+];
+const BUSY = [
+  "I'm still working on {{app}}. One job at a time; send that again once it's on Forkyard.",
+  "Still busy with {{app}}. Ask me again when that push is done, around {{time}}. I didn't bill you for this one.",
+];
+/** When work lands, as the player reads it: a clock time today, or overnight past bedtime. */
+function workTime(w: { at: number }): string {
+  const min = w.at % (24 * 60);
+  return min < CLOCK.sleep ? clockTime(min) : 'tomorrow morning';
+}
+function fillWork(line: string, w: { at: number }, app: string): string {
+  return line.replaceAll('{{app}}', app).replace('{{time}}', workTime(w));
+}
+
+/** How many game minutes a build or fix of `items` features or problems takes, a little random. */
+export function workMinutes(s: GameState, kind: 'build' | 'fix', items: number): number {
+  const c = AGENT_WORK[kind];
+  const mins = Math.min(c.max, c.base + c.each * Math.max(1, items));
+  return Math.round(mins * (1 - AGENT_WORK.spread + 2 * AGENT_WORK.spread * rand(s)));
+}
+
+/**
+ * Turn the build or fix just done on `s` into work in progress: the repos, versions and commits go
+ * back to what `s0` had and are held in `s.agentWork` until it lands. Returns the agent's "started" line.
+ */
+function startWork(s: GameState, s0: GameState, appIds: string[], kind: 'build' | 'fix', items: number, reply: AgentWork['reply']): { text: string; debug: string[] } {
+  const apps = appIds.map((id) => {
+    const now = getApp(s, id)!;
+    const was = getApp(s0, id)!;
+    const out = { id, repo: now.repo, bumps: now.repoVersion - was.repoVersion, fixed: now.fixed };
+    now.repo = was.repo; now.repoVersion = was.repoVersion; now.fixed = was.fixed;
+    return out;
+  });
+  const commits = s.commits.splice(s0.commits.length).map(({ repo, msg, kind: k }) => ({ repo, msg, kind: k }));
+  const mins = workMinutes(s, kind, items);
+  const from = gameMinutes(s);
+  const names = appIds.map((id) => getApp(s, id)!.name);
+  s.agentWork = { from, at: from + mins, kind, appIds, appNames: names, apps, commits, reply };
+  const text = fillWork(pick(s, WORK_STARTED[kind]), s.agentWork, names.join(' and '));
+  return { text, debug: [`${kind === 'build' ? 'Build' : 'Fix'} of ${items} item(s): takes ${mins} game minutes, lands at ${workTime(s.agentWork)}`] };
+}
+
+/** A build or fix asked for while the agent is busy with another: it says so, and it isn't billed. */
+function busyReply(s0: GameState, text: string): AskResult {
+  const s = clone(s0);
+  const w = s0.agentWork!;
+  const reply = fillWork(pick(s, BUSY), w, w.appNames.join(' and '));
+  s.chat.push({ from: 'you', text, day: s.values.day, level: s.values.agentLevel });
+  s.chat.push({ from: 'agent', text: reply, day: s.values.day, src: 'busy', debug: ['Jev matched a build or fix, but the agent is still working: not billed'] });
+  return { state: s, reply, charged: false, refused: false, workedAround: false };
+}
+
 /**
  * Jev reads a build prompt as feature work (something new, or a change to what the app should
  * contain), a fix (something on the app is wrong and should be corrected), or both. '' when Jev
@@ -545,6 +612,7 @@ export async function promptAgent(
 ): Promise<AskResult> {
   // a user app nobody hired the player for: asking the agent to build it takes the job
   const lead = started ? undefined : await agentStartFor(jev, s0, content, text);
+  if (lead && s0.agentWork) return busyReply(s0, text);
   if (lead) {
     const s = clone(s0);
     applyEffects(s, lead.outcome.effects!, lead.ev.job, lead.ev.id);
@@ -552,7 +620,7 @@ export async function promptAgent(
     const app = s.apps.find((a) => a.clientEventId === lead.ev.id);
     const out = app && (await promptAgent(s, content, jev, text, writer, app.id));
     // a prompt that named nothing to build doesn't start anything
-    if (out && getApp(out.state, app.id)!.repoVersion > 0) return out;
+    if (out && (getApp(out.state, app.id)!.repoVersion > 0 || out.state.agentWork?.appIds.includes(app.id))) return out;
   }
   // a deepsleep-0.5B line pasted in from the Terminal: the agent translates it (scripted, billed like any prompt)
   const quoted = deepsleepQuoted(text);
@@ -593,6 +661,7 @@ export async function promptAgent(
     matched.clear();
     keep.forEach((m) => matched.add(m));
     const skippedFixes = intent === 'both' && keep.some((m) => builds.includes(m));
+    if (matched.size && s0.agentWork) return busyReply(s0, text);
     if (matched.size) {
       const s = clone(s0);
       const byApp = new Map<string, Map<string, string[]>>();
@@ -632,9 +701,12 @@ export async function promptAgent(
       }
       const skipped = skippedFixes ? `\n\n${SKIPPED_FIXES}` : '';
       const reply = `Pushed to Forkyard for ${names.join(', ')}.\n${lines.map((l) => `- ${l}`).join('\n')}${skipped}\n\nDeploy it on Forkyard to make it live.`;
+      // the work takes a while: the push and the report land later, and the agent says it's started
+      const kind = builds.some((m) => matched.has(m)) ? 'build' : 'fix';
+      const ack = startWork(s, s0, [...byApp.keys()], kind, matched.size, { from: 'agent', text: reply, src: 'build', level });
       s.chat.push({ from: 'you', text, day: s.values.day, cost: agentCostOf(s0, text), level });
-      s.chat.push({ from: 'agent', text: reply, day: s.values.day, src: 'build', level });
-      return { state: s, reply, charged: true, refused: false, workedAround: false };
+      s.chat.push({ from: 'agent', text: ack.text, day: s.values.day, src: 'working', level, debug: ack.debug });
+      return { state: s, reply: ack.text, charged: true, refused: false, workedAround: false };
     }
   }
   // nothing app-shaped: a hint topic Jev recognises, or a roast
@@ -654,7 +726,10 @@ export async function promptAgent(
     const id = decision.kind === 'outcome' ? decision.outcomeId : '';
     const app = id.startsWith('app:') ? getApp(s0, id.slice(4)) : undefined;
     const asked = id.startsWith('status:') ? getApp(s0, id.slice(7)) : undefined;
-    if (asked) {
+    if (asked && s0.agentWork?.appIds.includes(asked.id)) {
+      hints = WORKING_STATUS.map((l) => fillWork(l, s0.agentWork!, asked.name));
+      debug.push(`Jev: a question about ${asked.name}, which the agent is still working on`);
+    } else if (asked) {
       hints = [appStatus(asked)];
       debug.push(`Jev: a question about ${asked.name}, so its status from the repo`);
     } else if (app) {

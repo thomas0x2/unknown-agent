@@ -53,6 +53,23 @@ export function money(s: GameState, amount: number, memo: string): void {
 export function advanceClock(s: GameState, minutes: number): void {
   s.clockMin = Math.min(CLOCK.sleep, s.clockMin + minutes);
   deliverPendingMail(s);
+  deliverAgentWork(s);
+}
+
+/** The agent's build or fix lands once its time has come: the push goes to Forkyard and its report into the chat. */
+export function deliverAgentWork(s: GameState, now = false): void {
+  const w = s.agentWork;
+  if (!w || (!now && w.at > gameMinutes(s))) return;
+  s.agentWork = null;
+  for (const p of w.apps) {
+    const a = s.apps.find((x) => x.id === p.id);
+    if (!a) continue;
+    a.repo = p.repo;
+    a.repoVersion += p.bumps;
+    if (p.fixed) a.fixed = p.fixed;
+  }
+  for (const c of w.commits) s.commits.push({ ...c, day: s.values.day });
+  s.chat.push({ ...w.reply, day: s.values.day });
 }
 
 // ── mail ──
