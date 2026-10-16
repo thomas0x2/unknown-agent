@@ -152,7 +152,8 @@ document.addEventListener('click', (e) => {
   else if (d.back != null) store.back();
   else if (d.forward != null) store.forward();
   else if (d.tab != null) store.switchTab(Number(d.tab));
-  else if (d.newtab != null) store.navigate('newtab', true);
+  // data-newtab with a URL opens that page in a new tab (Forkyard deployments); empty opens a blank tab
+  else if (d.newtab != null) { newPageLoad(); store.navigate(d.newtab || 'newtab', true); }
   else if (d.like != null) store.like(d.like);
   else if (d.deploy != null) store.deploy(d.deploy);
   else if (d.takedown != null) store.confirm('Take it offline? It counts as broken at payday.', 'Take down', () => store.takeDown(d.takedown!));
