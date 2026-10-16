@@ -157,10 +157,19 @@ export interface GameEvent {
   onDeliver?: Effects;
   outcomes?: Outcome[];
   hints?: string[];
+  /**
+   * What ignoring it costs: if the player hasn't answered by the end of `byDay` (default: the day it
+   * arrived), these effects apply and the thread closes, so its outcomes can no longer land.
+   */
+  noReply?: NoReply;
   expiresDay?: number;
   job?: JobSpec;
   /** Fires every time its trigger matches, not just once. */
   repeat?: boolean;
+}
+export interface NoReply {
+  byDay?: number;
+  effects: Effects;
 }
 export interface Trigger {
   dayMin?: number;
