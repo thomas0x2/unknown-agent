@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, deliverDue, CLOCK, tick, phishLogin, devToggleBug, nameUnnamedBugs,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, deliverDue, CLOCK, tick, phishLogin, devToggleBug, nameUnnamedBugs, money,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -323,7 +323,7 @@ export class GameStore {
 
   devAdd(kind: string): void {
     const s = this.state;
-    if (kind === 'money') { s.values.crypto += 100; s.tx.push({ day: s.values.day, amount: 100, memo: 'Dev · grant' }); }
+    if (kind === 'money') money(s, 100, 'Dev · grant');
     else if (kind === 'followers') s.values.followers += 50;
     else if (kind === 'deliver') deliverDue(s, this.content);
     this.store.save(s); this.emit();
@@ -333,7 +333,9 @@ export class GameStore {
     const s = this.state;
     if (!Number.isFinite(value)) return;
     if (id === 'day') { this.devGoToDay(value); return; }
-    setValue(s, id, value);
+    // the wallet goes through the ledger, so the Coinbin chart sees the jump
+    if (id === 'crypto') money(s, Math.max(0, value) - s.values.crypto, 'Dev · adjustment');
+    else setValue(s, id, value);
     this.store.save(s); this.emit();
   }
   /**
