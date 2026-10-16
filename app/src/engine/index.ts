@@ -14,6 +14,7 @@ export * from './restaurant';
 export * from './agent';
 export * from './endings';
 export * from './day';
+export * from './calendar';
 export * from './actions';
 export * from './jev';
 export * from './writer';

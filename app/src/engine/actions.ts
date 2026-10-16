@@ -16,6 +16,7 @@ import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent
 import { getEvent, activeDeliveries, reachableByEmail } from './events';
 import { buildApp, fixApp, fixBreak, fixCategories, keywordCategories, needsWork, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, bugsOf, breakVariant, type BuildReport } from './apps';
 import { type Writer, scriptedWriter } from './writer';
+import { dateFull } from './calendar';
 import { deepsleepQuoted, translationReplies } from './deepsleep';
 
 export interface ReplyResult {
@@ -30,7 +31,7 @@ export interface ReplyResult {
 const PLAYER_ADDR = 'you@qmail.com';
 
 function stateSummary(s: GameState): string {
-  return `Day ${s.values.day}. ${s.values.crypto} DOLR, ${s.values.followers} followers, agent level ${s.values.agentLevel}.`;
+  return `Day ${s.values.day} (${dateFull(s.values.day)}). ${s.values.crypto} DOLR, ${s.values.followers} followers, agent level ${s.values.agentLevel}.`;
 }
 
 function contactFor(content: Content, key: string): Contact | undefined {
@@ -682,7 +683,7 @@ export function makeBooking(s0: GameState, appId: string, name: string, email: s
     : seed % 2 ? `${Math.floor(at / 60) % 12 || 12}:${String(at % 60).padStart(2, '0')}` // 19:00 as 7:00, no am/pm
     : `${String(Math.floor(at / 60 + 1) % 24).padStart(2, '0')}:${String(at % 60).padStart(2, '0')}`; // an hour off
   const table = bugs.has('party_wrong') ? (seed % 2 ? 'Your table' : `Your table for ${party + 2}`) : `Your table for ${party}`;
-  const body = `${table} at ${restaurant} on Day ${day} at ${shownTime} is confirmed.\n\nNeed to cancel? Use the link below.`;
+  const body = `${table} at ${restaurant} on ${dateFull(day)} at ${shownTime} is confirmed.\n\nNeed to cancel? Use the link below.`;
   if (bugs.has('sent_to_restaurant')) {
     // the guest gets nothing; the owner gets the guest's confirmation
     const ev = content?.events.find((e) => e.id === app.clientEventId);

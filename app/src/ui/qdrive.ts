@@ -5,6 +5,7 @@
  */
 import type { GameState } from '../engine';
 import { ICONS } from './icons';
+import { dateShort } from '../engine/calendar';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
@@ -115,7 +116,7 @@ function size(kb: number): string {
   if (kb >= 1024) return `${(kb / 1024).toFixed(1).replace(/\.0$/, '')} MB`;
   return `${kb} KB`;
 }
-const when = (day?: number) => (day === undefined ? '' : day <= 0 ? 'Before' : `Day ${day}`);
+const when = (day?: number) => (day === undefined ? '' : dateShort(day));
 const glyph = (k: DriveFile['kind']) => `<span class="qd-glyph qd-${k}">${{ pdf: 'PDF', txt: 'TXT', zip: 'ZIP', weights: 'BIN' }[k]}</span>`;
 
 export function pageDrive(s: GameState, param?: string): string {
