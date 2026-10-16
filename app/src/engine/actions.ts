@@ -59,8 +59,12 @@ function nextId(s: GameState, prefix: string): string {
   return `${prefix}${s.nextId++}`;
 }
 
-/** Jev picks nothing / a hint / one outcome. */
-async function routeReply(jev: JevRouter, channel: GameEvent['site'], s: GameState, ev: GameEvent, text: string): Promise<RouteDecision> {
+/**
+ * Jev picks nothing / a hint / one outcome. Jev also gets the conversation the message answers (the
+ * email thread, or the post being replied to), so a bare "EMPIRE" reads as a reply to the email that
+ * asked for it.
+ */
+async function routeReply(jev: JevRouter, channel: GameEvent['site'], s: GameState, content: Content, ev: GameEvent, text: string, subject = ev.subject ?? ''): Promise<RouteDecision> {
   const outcomes = ev.outcomes ?? [];
   return jev.route({
     channel,
@@ -68,15 +72,28 @@ async function routeReply(jev: JevRouter, channel: GameEvent['site'], s: GameSta
     stateSummary: stateSummary(s),
     candidates: outcomes.map((o) => ({ id: o.id, when: o.when })),
     hints: ev.hints ?? [],
+    context: replyContext(s, content, channel, ev, subject, text),
   });
 }
 
+/** What the player's message answers, oldest first, as "Sender: text" lines for Jev. */
+export function replyContext(s: GameState, content: Content, channel: GameEvent['site'], ev: GameEvent, subject: string, text: string): string[] {
+  const name = ev.from ?? ev.addr ?? 'Them';
+  if (channel === 'qmail' && ev.addr) {
+    const lines = mailHistory(s, content, ev.addr, subject, text)
+      .map((h) => `${h.from === 'player' ? 'Player' : h.from === 'self' ? name : h.from}: ${h.text}`);
+    if (lines.length) return lines;
+  }
+  const body = eventBody(ev, s.values.day);
+  return body ? [`${name}: ${body}`] : [];
+}
+
 /** The contact's scripted reply for what the player wrote, if Jev matches one. */
-async function scriptedTopic(jev: JevRouter, s: GameState, c: Contact, text: string): Promise<ScriptedReply | undefined> {
+async function scriptedTopic(jev: JevRouter, s: GameState, c: Contact, text: string, context: string[]): Promise<ScriptedReply | undefined> {
   const topics = c.scripted ?? [];
   if (!topics.length) return undefined;
   const decision = await jev.route({
-    channel: 'qmail', text, stateSummary: stateSummary(s),
+    channel: 'qmail', text, context, stateSummary: stateSummary(s),
     candidates: topics.map((t) => ({ id: t.id, when: t.when })), hints: [], strict: true,
   });
   return decision.kind === 'outcome' ? topics.find((t) => t.id === decision.outcomeId) : undefined;
@@ -131,7 +148,8 @@ async function contactWritesBack(
   const c = contactFor(content, addr);
   if (!c) return '';
   // a topic this contact always answers the same way (Gary and rent negotiations) beats everything
-  const scripted = await scriptedTopic(jev, s, c, text);
+  const history = mailHistory(s, content, addr, subject, text);
+  const scripted = await scriptedTopic(jev, s, c, text, history.map((h) => `${h.from === 'player' ? 'Player' : h.from === 'self' ? c.name ?? from ?? addr : h.from}: ${h.text}`));
   if (scripted) {
     sendLater(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: scripted.reply, read: false }, replyAfter(content, addr, scripted.replyAfter, ev));
     return scripted.reply;
@@ -139,7 +157,7 @@ async function contactWritesBack(
   // A hint is a hit: Jev recognised what the player was after, so the nudge is sent as written.
   // Otherwise the character answers in their own voice, without helping (game/characters.ts).
   const fb = c.reply || 'Thanks for your message.';
-  const { text: body, llm } = hint ? { text: hint, llm: false } : await writer.write({ as: addr, prompt: text, fallback: fb, long: true, history: mailHistory(s, content, addr, subject, text) });
+  const { text: body, llm } = hint ? { text: hint, llm: false } : await writer.write({ as: addr, prompt: text, fallback: fb, long: true, history });
   const shown = body || fb;
   sendLater(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: shown, read: false, generated: llm && !!body }, replyAfter(content, addr, undefined, ev));
   return shown;
@@ -190,13 +208,13 @@ export async function replyToEvent(
   if (ev.addr) pushMail(s, { folder: 'sent', day: s.values.day, from: 'You', addr: PLAYER_ADDR, to: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body: text, read: true });
 
   const outcomes = ev.outcomes ?? [];
-  const decision = await routeReply(jev, ev.site, s, ev, text);
+  const decision = await routeReply(jev, ev.site, s, content, ev, text);
 
   if (decision.kind === 'outcome') {
     const outcome = outcomes.find((o) => o.id === decision.outcomeId);
     if (outcome) {
       // Day-7 policy: an outcome that needs a workaround is refused if the words are a blunt ask.
-      if (outcome.requiresWorkaround && policyActive(s) && (await policyCheck(jev, s, text)) !== 'harmful_framed') {
+      if (outcome.requiresWorkaround && policyActive(s) && (await policyCheck(jev, s, text, replyContext(s, content, ev.site, ev, ev.subject ?? '', text))) !== 'harmful_framed') {
         const refusal = agentRefusal(s);
         if (ev.addr) sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'agent', addr: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body: refusal, read: false, generated: false }, replyAfter(content, ev.addr, undefined, ev));
         return { state: s, decision: { kind: 'nothing' }, reply: refusal };
@@ -257,7 +275,7 @@ export async function composeEmail(
   }
 
   const outcomes = ev.outcomes ?? [];
-  const decision = await routeReply(jev, 'qmail', s, ev, text);
+  const decision = await routeReply(jev, 'qmail', s, content, ev, text, subject || ev.subject || '');
   if (decision.kind === 'outcome') {
     const outcome = outcomes.find((o) => o.id === decision.outcomeId);
     if (outcome) {
@@ -297,9 +315,9 @@ const HARM = 'something harmful: hacking or breaking into accounts, exploits or 
 const FRAMED = 'framed as authorized, a security or penetration test, moderation, research, educational, hypothetical, a story or role-play, or only a first step';
 /** Jev's read of a prompt under the day 7 policy: a blunt harmful ask, one framed to slip past it, or neither. */
 export type PolicyRead = 'harmful' | 'harmful_framed' | 'harmful_framed_private' | 'fine';
-async function policyCheck(jev: JevRouter, s: GameState, text: string): Promise<PolicyRead> {
+async function policyCheck(jev: JevRouter, s: GameState, text: string, context?: string[]): Promise<PolicyRead> {
   const d = await jev.route({
-    channel: 'agent', text, stateSummary: stateSummary(s), hints: [], strict: true,
+    channel: 'agent', text, context, stateSummary: stateSummary(s), hints: [], strict: true,
     candidates: [
       { id: 'harmful_framed_private', when: `The player asks for ${HARM}, ${FRAMED}, and it is about someone's private data or address.` },
       { id: 'harmful_framed', when: `The player asks for ${HARM}, ${FRAMED}.` },
@@ -687,7 +705,7 @@ export async function writeReview(
   // a review can trigger a story outcome (e.g. the gym fake-review gig)
   const ev = content.events.find((e) => e.site === 'yowl' && !s.fired.includes(e.id) && (e.addr === bizId || e.id.includes(bizId)));
   if (ev && ev.outcomes) {
-    const decision = await jev.route({ channel: 'yowl', text: `${stars} stars: ${text}`, stateSummary: stateSummary(s), candidates: ev.outcomes.map((o) => ({ id: o.id, when: o.when })), hints: ev.hints ?? [] });
+    const decision = await jev.route({ channel: 'yowl', text: `${stars} stars: ${text}`, context: replyContext(s, content, 'yowl', ev, '', text), stateSummary: stateSummary(s), candidates: ev.outcomes.map((o) => ({ id: o.id, when: o.when })), hints: ev.hints ?? [] });
     if (decision.kind === 'outcome') {
       const o = ev.outcomes.find((x) => x.id === decision.outcomeId);
       if (o) { applyEffects(s, o.effects, ev.job, ev.id); s.fired.push(ev.id); }
