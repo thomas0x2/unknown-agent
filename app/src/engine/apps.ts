@@ -6,7 +6,7 @@
 import type { GameState, AppInstance, BuiltFeature, FailureKind } from './state';
 import type { Content, CreateAppSpec } from '../content/schema';
 import { APPS, BUILD_SUCCESS } from './config';
-import { chance, pick, randInt, log } from './core';
+import { chance, pick, randInt, log, money } from './core';
 
 function successChance(level: number): number {
   return BUILD_SUCCESS[Math.max(0, Math.min(BUILD_SUCCESS.length - 1, level - 1))];
@@ -194,7 +194,7 @@ export function runPayday(s: GameState): void {
     const working = appWorking(app);
     if (app.kind === 'client') {
       if (working) {
-        s.values.crypto += app.payPerDay;
+        money(s, app.payPerDay, `${app.name} · payout`);
         app.brokenDays = 0;
         log(s, `${app.name} paid ${app.payPerDay} DOLR.`, 'money');
       } else {
@@ -210,7 +210,7 @@ export function runPayday(s: GameState): void {
     } else if (app.kind === 'user') {
       if (working) {
         const pay = Math.round((app.users ?? 0) * APPS.user.payPerUser);
-        s.values.crypto += pay;
+        money(s, pay, `${app.name} · ${app.users} users`);
         app.users = Math.round((app.users ?? 0) * (1 + APPS.user.growthPerDay));
         app.brokenDays = 0;
         log(s, `${app.name} earned ${pay} DOLR from ${app.users} users.`, 'money');
@@ -225,7 +225,5 @@ export function runPayday(s: GameState): void {
         }
       }
     }
-    // crypto was mutated directly above; keep it clamped/rounded
-    s.values.crypto = Math.round(s.values.crypto * 100) / 100;
   }
 }

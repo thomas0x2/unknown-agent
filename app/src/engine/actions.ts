@@ -9,7 +9,7 @@ import type { JevRouter, PostRating, RouteDecision } from './jev';
 import { Y as YCFG, FAMILY } from './config';
 import { clone, addValue, log } from './core';
 import { applyEffects } from './effects';
-import { chargeAgent } from './agent';
+import { chargeAgent, agentCost } from './agent';
 import { getEvent, activeDeliveries, reachableByEmail } from './events';
 import { buildApp, fixApp, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp } from './apps';
 
@@ -150,6 +150,7 @@ export async function postToY(
   addValue(s, 'followers', delta);
   s.postsToday += 1;
   s.recentPosts = [text, ...s.recentPosts].slice(0, 5);
+  s.userPosts.push({ id: `u${s.userPosts.length + 1}`, text, day: s.values.day, likes: Math.max(0, delta * 3 + Math.round(s.values.followers * 0.02)), delta, score: rating.quality * 4 });
   log(s, `Posted on Y (${rating.category}): ${delta >= 0 ? '+' : ''}${delta} followers.`, 'info');
   return { state: s, rating, followerDelta: delta };
 }
@@ -169,8 +170,14 @@ export async function briefBuild(
   const tmpl = content.apps[app.template];
   const descs = (tmpl?.features ?? []).filter((f) => app.required.includes(f.id));
   const requested = await jev.matchFeatures({ prompt: text, features: descs.map((f) => ({ id: f.id, description: f.description })) });
+  const cost = level === s.values.agentLevel ? agentCostOf(s, 30) : 0;
   const charged = chargeHosted(s, level, 30);
   if (charged) buildApp(s, appId, requested, level);
+  const reply = !charged
+    ? "I can't run — your balance won't cover it. Pay agent.chat and try again."
+    : `Pushed \`${app.template}\` to Forkyard for ${app.name}.\nBuilt: ${requested.length ? requested.join(', ') : 'nothing I could pin down — be specific about the features'}.\n\nDeploy it on Forkyard, then open it and check it against the brief.`;
+  s.chat.push({ from: 'you', text, day: s.values.day, cost });
+  s.chat.push({ from: 'agent', text: reply, day: s.values.day, src: charged ? 'build' : 'locked' });
   return { state: s, requested, charged };
 }
 
@@ -195,9 +202,22 @@ export async function briefFix(
   const descs = (tmpl?.features ?? []).filter((f) => problems.includes(f.id));
   const matched = await jev.matchFeatures({ prompt: text, features: descs.map((f) => ({ id: f.id, description: f.description })) });
   const target = matched[0] ?? null;
+  const cost = level === s.values.agentLevel ? agentCostOf(s, 15) : 0;
   const charged = chargeHosted(s, level, 15);
   const fixed = charged ? fixApp(s, appId, target, level) : false;
+  const reply = !charged
+    ? "I can't run — your balance won't cover it."
+    : target
+      ? `Pushed a fix for \`${target}\` to ${app.name}. Redeploy and check it — fixes can miss too.`
+      : "I couldn't tell which feature you mean. Name the one that's wrong.";
+  s.chat.push({ from: 'you', text, day: s.values.day, cost });
+  s.chat.push({ from: 'agent', text: reply, day: s.values.day, src: charged ? 'fix' : 'locked' });
   return { state: s, target, fixed, charged };
+}
+
+function agentCostOf(s: GameState, words: number): number {
+  const c = agentCost(s.values.agentLevel);
+  return Math.round((c.prompt + c.word * words) * 100) / 100;
 }
 
 /** Charge the hosted agent; local-model levels (passed by the Terminal) are free. */

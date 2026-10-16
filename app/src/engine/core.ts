@@ -41,6 +41,11 @@ export function addValue(s: GameState, id: MeterId, delta: number): void {
 export function setValue(s: GameState, id: MeterId, value: number): void {
   s.values[id] = clampMeter(id, value);
 }
+/** Change crypto and record it in the wallet ledger. Memo is "Who · note". */
+export function money(s: GameState, amount: number, memo: string): void {
+  addValue(s, 'crypto', amount);
+  s.tx.push({ day: s.values.day, amount: Math.round(amount * 100) / 100, memo });
+}
 
 // ── log ──
 export function log(s: GameState, text: string, kind: GameState['log'][number]['kind'] = 'info'): void {

@@ -5,7 +5,7 @@
  */
 import type { GameState } from './state';
 import { AGENT_COST, AGENT_ROLLOUT, AGENT_POLICY } from './config';
-import { addValue, setValue, log } from './core';
+import { addValue, setValue, money, log } from './core';
 
 export function agentCost(level: number) {
   return AGENT_COST[Math.max(1, Math.min(5, level))];
@@ -29,7 +29,7 @@ export function chargeAgent(s: GameState, outputWords: number): boolean {
     log(s, 'agent.chat locked: unpaid balance.', 'warn');
     return false;
   }
-  addValue(s, 'crypto', -total);
+  money(s, -total, 'GeneralAI · agent usage');
   if (s.agentLocked && s.values.crypto >= 0) s.agentLocked = false;
   return true;
 }
@@ -42,7 +42,7 @@ export function deductSubscription(s: GameState): void {
     log(s, `Agent subscription (${c.sub} DOLR) could not be paid. Locked.`, 'warn');
     return;
   }
-  addValue(s, 'crypto', -c.sub);
+  money(s, -c.sub, 'GeneralAI · subscription');
 }
 
 /** Morning rollout: GeneralAI pushes the next level on its scheduled day. */

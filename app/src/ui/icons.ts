@@ -1,0 +1,25 @@
+/* Icons, verbatim from the original game. */
+export const ICONS: Record<string, string> = {
+  y: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 3h4l3.5 6.6L15.5 3h4l-5.6 9.7V21h-3.8v-8.3z" fill="currentColor"/></svg>',
+  mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5" fill="currentColor"/><path d="M4.5 7.5 12 13l7.5-5.5" stroke="var(--icon-ink, #fff)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  wallet: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H17v3h1.5A1.5 1.5 0 0 1 20 8.5v10a1.5 1.5 0 0 1-1.5 1.5h-12A2.5 2.5 0 0 1 4 17.5z" fill="currentColor"/><circle cx="16" cy="13.5" r="1.6" fill="var(--icon-ink, #1f2329)"/></svg>',
+  forkyard: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3a3 3 0 0 0-1 5.8v6.4A3 3 0 1 0 8 15.2V13c0-1 1-2 2-2h4a4 4 0 0 0 4-4V8.8A3 3 0 1 0 16 8.8V7c0 1-1 2-2 2h-4c-.7 0-1.4.2-2 .5V8.8A3 3 0 0 0 7 3z" fill="currentColor"/></svg>',
+  agent: '<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(0 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(60 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(120 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(180 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(240 12 12)"/><rect x="12.3" y="2.4" width="3.4" height="8.4" rx="1.7" transform="rotate(300 12 12)"/></g></svg>',
+  newtab: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2" fill="none"/></svg>',
+  yowl: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.6l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z" fill="currentColor"/></svg>',
+  weightroom: '<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="5" y="6.5" width="3.5" height="11" rx="1.2"/><rect x="8.5" y="11" width="7" height="2" rx="1"/><rect x="15.5" y="6.5" width="3.5" height="11" rx="1.2"/><rect x="19" y="9" width="3" height="6" rx="1"/></g></svg>',
+  terminal: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4" width="19" height="16" rx="2.5" fill="currentColor"/><path d="m6.5 9 3 3-3 3M11.5 15.5h5" stroke="var(--icon-ink, #111)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  nullboard: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.5" stroke="currentColor" stroke-width="2.2" fill="none"/><path d="M6 18 18 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
+  cellar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20V10l9-6 9 6v10h-4v-6H7v6z" fill="currentColor"/><path d="M9 16h6M10 18.5h4" stroke="var(--icon-ink, #111)" stroke-width="1.4" stroke-linecap="round"/></svg>',
+  app: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M4 9h16" stroke="currentColor" stroke-width="2"/></svg>',
+  error: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3zm0 6v6m0 2.5v.5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
+};
+
+export const Y_ICONS: Record<string, string> = {
+  explore: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="2.2" fill="none"/><path d="m15.5 15.5 5 5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
+  reply: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5C4 7.4 7.6 4 12 4s8 3.4 8 7.5S16.4 19 12 19c-1.1 0-2.2-.2-3.2-.6L4 20l1.4-3.9A7 7 0 0 1 4 11.5z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/></svg>',
+  repost: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10l-2.5-2.5M17 17H7l2.5 2.5M7 7v5M17 17v-5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  heart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7a4.3 4.3 0 0 1 7.5 3c0 5.4-7.5 10-7.5 10z" stroke="currentColor" stroke-width="1.8" fill="var(--heart-fill, none)" stroke-linejoin="round"/></svg>',
+  views: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V6M15 20v-9M20 20V4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  badge: '<svg viewBox="0 0 24 24" aria-label="Verified" role="img"><path d="M12 2.5 20.2 7.2v9.6L12 21.5l-8.2-4.7V7.2z" fill="currentColor"/><path d="m8.3 12.1 2.5 2.5 4.9-5" stroke="var(--y-bg)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+};

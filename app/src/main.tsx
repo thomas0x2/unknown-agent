@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import './theme.css';
+import './style.css';
 import App from './App';
 import { StoreContext } from './game/useGame';
 import { GameStore } from './game/store';

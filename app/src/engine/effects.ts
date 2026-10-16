@@ -4,7 +4,7 @@
  */
 import type { GameState } from './state';
 import type { Effects, JobSpec } from '../content/schema';
-import { addValue, addFlag, clearFlag } from './core';
+import { addValue, addFlag, clearFlag, money } from './core';
 import { registerApp, scriptedBreak } from './apps';
 import type { MeterId } from './values';
 
@@ -12,7 +12,9 @@ export function applyEffects(s: GameState, effects?: Effects, job?: JobSpec, eve
   if (!effects) return;
   if (effects.add) {
     for (const [id, delta] of Object.entries(effects.add)) {
-      if (delta != null) addValue(s, id as MeterId, delta);
+      if (delta == null) continue;
+      if (id === 'crypto') money(s, delta, 'Transfer');
+      else addValue(s, id as MeterId, delta);
     }
   }
   for (const f of effects.setFlags ?? []) addFlag(s, f);
@@ -36,6 +38,6 @@ export function applyEffects(s: GameState, effects?: Effects, job?: JobSpec, eve
   if (effects.job && job) {
     const status = effects.job === 'complete' ? 'completed' : effects.job === 'fail' ? 'failed' : 'accepted';
     s.jobs.push({ eventId: eventId ?? '', category: job.category, payout: job.payout, dueDay: job.dueDay, status, takenDay: s.values.day });
-    if (status === 'completed') addValue(s, 'crypto', job.payout);
+    if (status === 'completed') money(s, job.payout, 'Job · payout');
   }
 }

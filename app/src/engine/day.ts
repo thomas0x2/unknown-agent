@@ -6,7 +6,7 @@ import type { GameState } from './state';
 import type { Content } from '../content/schema';
 import { RENT, SUSPICION, LAST_DAY } from './config';
 import { newGame } from './state';
-import { clone, addValue, log } from './core';
+import { clone, addValue, money, log } from './core';
 import { runPayday, nightlyBreaks } from './apps';
 import { deliverDue } from './events';
 import { rolloutAgent, deductSubscription } from './agent';
@@ -58,7 +58,7 @@ export function endDay(state: GameState, content: Content): GameState {
       s.ending = 'evicted';
       return finish(s);
     }
-    addValue(s, 'crypto', -rent);
+    money(s, -rent, 'Landlord · rent');
     log(s, `Rent paid: ${rent} DOLR.`, 'money');
   }
 

@@ -1,95 +1,100 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useGame } from './game/useGame';
-import { route, bookmarks } from './sites/registry';
-import { SiteView } from './sites/Sites';
-import { RENT } from './engine';
-
-const ENDING_TITLES: Record<string, string> = {
-  outbreak: 'Outbreak',
-  botnet: 'Botnet',
-  account_terminated: 'Account Terminated',
-  loose_end: 'Loose End',
-  raided: 'Raided',
-  evicted: 'Evicted',
-  the_regime: 'The Regime',
-  open_weights: 'Open Weights',
-  got_away: 'Got Away With It',
-  clean_modest: 'Clean but Modest',
-};
-
-function nextRentDay(day: number): number | null {
-  const days = Object.keys(RENT).map(Number).sort((a, b) => a - b);
-  return days.find((d) => d >= day) ?? null;
-}
+import { renderApp } from './ui/view';
 
 export default function App() {
   const store = useGame();
-  const state = store.state;
-  const [draft, setDraft] = useState(store.url);
-  useEffect(() => setDraft(store.url), [store.url]);
+  const hostRef = useRef<HTMLDivElement>(null);
 
-  const r = route(store.url, state);
-  const nextRent = nextRentDay(state.values.day);
-  const rentAmt = nextRent ? RENT[nextRent] : 0;
-  const cryptoLow = rentAmt > 0 && state.values.crypto < rentAmt;
+  // Re-render the whole browser from the store on every change, preserving the focused field.
+  useEffect(() => {
+    const host = hostRef.current;
+    if (!host) return;
+    const active = document.activeElement as HTMLInputElement | HTMLTextAreaElement | null;
+    const focus = active && host.contains(active) && active.id
+      ? { id: active.id, start: active.selectionStart, end: active.selectionEnd }
+      : null;
+    host.innerHTML = renderApp(store);
+    if (focus) {
+      const el = host.querySelector<HTMLInputElement>('#' + CSS.escape(focus.id));
+      if (el) {
+        el.focus();
+        try { if (focus.start != null) el.setSelectionRange(focus.start, focus.end ?? focus.start); } catch { /* non-text input */ }
+      }
+    }
+  });
 
-  function go(url: string) {
-    store.navigate(url);
-  }
+  // Event delegation, attached once.
+  useEffect(() => {
+    const host = hostRef.current;
+    if (!host) return;
 
-  return (
-    <div className="browser">
-      <div className="chrome">
-        <div className="chrome-row">
-          <div className="urlbar">
-            <span className="lock">{r.reachable ? '●' : '⚠'}</span>
-            <input
-              value={draft}
-              onChange={(e) => setDraft(e.target.value)}
-              onKeyDown={(e) => { if (e.key === 'Enter') go(draft); }}
-              spellCheck={false}
-              aria-label="Address bar"
-            />
-          </div>
-          <button className="btn ghost" onClick={() => go(draft)}>Go</button>
-        </div>
-        <div className="bookmarks">
-          {bookmarks(state).map((b) => (
-            <button
-              key={b.id}
-              className={`bm ${b.group === 'underground' ? 'underground' : ''} ${r.def?.id === b.id ? 'active' : ''}`}
-              onClick={() => go(b.base)}
-            >
-              {b.label}
-            </button>
-          ))}
-        </div>
-      </div>
+    const val = (sel: string) => (host.querySelector(sel) as HTMLInputElement | HTMLTextAreaElement | null)?.value ?? '';
+    const trendingToday = () => store.content.trending[store.state.values.day] ?? [];
 
-      <div className="viewport" data-site={r.reachable ? r.site : 'notfound'}>
-        <SiteView route={r} />
-      </div>
+    const onClick = (e: MouseEvent) => {
+      const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-wallet],[data-copy-addr],[data-mail-discard]');
+      if (!t) return;
+      e.preventDefault();
+      const d = t.dataset;
+      if (d.nav != null) store.navigate(d.nav);
+      else if (d.tab != null) store.switchTab(Number(d.tab));
+      else if (d.close != null) store.closeTab(Number(d.close));
+      else if (d.newtab != null) store.navigate('newtab', true);
+      else if (d.like != null) store.like(d.like);
+      else if (d.deploy != null) store.deploy(d.deploy);
+      else if (d.takedown != null) { if (confirm('Take it offline? It counts as broken at payday.')) store.takeDown(d.takedown); }
+      else if (d.mailDiscard != null) { store.setDraft(null); store.navigate('qmail.com'); }
+      else if (d.wallet != null || d.copyAddr != null) { /* cosmetic */ }
+      else if (d.act === 'endday') store.endDay();
+      else if (d.act === 'new') { if (confirm('Start over? This erases your save.')) store.newGame(); }
+      else if (d.act === 'dev') store.toggleDev();
+    };
 
-      <div className="statusbar">
-        <span className="stat"><span className="lbl">Day</span><b>{state.values.day}/21</b></span>
-        <span className={`stat crypto ${cryptoLow ? 'low' : ''}`}><span className="lbl">DOLR</span><b>{state.values.crypto.toFixed(2)}</b></span>
-        <span className="stat"><span className="lbl">Followers</span><b>{state.values.followers}</b></span>
-        <span className="stat"><span className="lbl">Agent</span><b>L{state.values.agentLevel}</b></span>
-        {nextRent && <span className="stat"><span className="lbl">Rent d{nextRent}</span><b>{rentAmt}</b></span>}
-        <span className="spacer" />
-        <button className="btn ghost" onClick={() => { if (confirm('Start over? This erases your save.')) store.newGame(); }}>New</button>
-        <button className="btn" onClick={() => store.endDay()} disabled={!!state.ending}>End day</button>
-      </div>
+    const onSubmit = (e: SubmitEvent) => {
+      const f = (e.target as HTMLElement).closest<HTMLFormElement>('[data-form]');
+      if (!f) return;
+      e.preventDefault();
+      const kind = f.dataset.form;
+      if (kind === 'url') { store.navigate(val('#nt-url') || val('#address')); }
+      else if (kind === 'ypost') { const v = val('#post-input').trim(); if (v) void store.post(v, trendingToday()); }
+      else if (kind === 'prompt') {
+        const v = val('#prompt-input').trim();
+        const project = val('#project-pick');
+        if (v && project) void store.build(project, v);
+      } else if (kind === 'mail') {
+        const to = val('#mail-to').trim();
+        const body = val('#mail-body').trim();
+        if (to && body) void store.compose(to, body).then(() => { store.setDraft(null); store.navigate('qmail.com'); });
+      } else if (kind === 'reply') {
+        const id = f.dataset.id!;
+        const v = val('#reply-body').trim();
+        if (v) void store.reply(id, v);
+      }
+    };
 
-      {state.ending && (
-        <div className="overlay">
-          <div className="box">
-            <h1>{ENDING_TITLES[state.ending] ?? state.ending}</h1>
-            <p className="muted">Day {state.values.day}.</p>
-            <button className="btn" style={{ marginTop: 16 }} onClick={() => store.newGame()}>Play again</button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+    const onKey = (e: KeyboardEvent) => {
+      const el = e.target as HTMLElement;
+      if (el.id === 'prompt-input' && e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); (el as HTMLTextAreaElement).form?.requestSubmit(); }
+      if ((el.id === 'post-input' || el.id === 'mail-body' || el.id === 'reply-body') && e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); (el as HTMLTextAreaElement).form?.requestSubmit(); }
+    };
+
+    const onInput = (e: Event) => {
+      const el = e.target as HTMLInputElement;
+      if (el.id === 'y-search') store.setYSearch(el.value);
+    };
+
+    host.addEventListener('click', onClick);
+    host.addEventListener('submit', onSubmit);
+    host.addEventListener('keydown', onKey);
+    host.addEventListener('input', onInput);
+    return () => {
+      host.removeEventListener('click', onClick);
+      host.removeEventListener('submit', onSubmit);
+      host.removeEventListener('keydown', onKey);
+      host.removeEventListener('input', onInput);
+    };
+  }, [store]);
+
+  return <div id="app" ref={hostRef} />;
 }

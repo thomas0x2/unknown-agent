@@ -88,6 +88,22 @@ export interface LogEntry {
   kind: 'info' | 'money' | 'warn' | 'break' | 'ending';
 }
 
+/** A wallet transaction, for Satchel's activity list and balance chart. */
+export interface Tx {
+  day: number;
+  amount: number;
+  memo: string;
+}
+
+/** A line in the agent.chat transcript. */
+export interface ChatMsg {
+  from: 'you' | 'agent' | 'system';
+  text: string;
+  day: number;
+  cost?: number;
+  src?: string;
+}
+
 export type Phase = 'morning' | 'work' | 'ended';
 
 export interface GameState {
@@ -106,16 +122,19 @@ export interface GameState {
   localModels: string[]; // downloaded Weightroom models + stolen weights
   postsToday: number;
   recentPosts: string[]; // last 5 Y posts, for Jev context
+  userPosts: { id: string; text: string; day: number; likes: number; delta: number; score: number }[];
   sentToday: string[]; // recipients emailed today (one-per-recipient rule)
   agentLocked: boolean;
   autofix: boolean;
   ending: string | null;
   endingShown: boolean;
   log: LogEntry[];
+  tx: Tx[];
+  chat: ChatMsg[];
   nextAppNum: number;
 }
 
-export const SAVE_VERSION = 1;
+export const SAVE_VERSION = 2;
 
 export function newGame(seed = makeSeed()): GameState {
   return {
@@ -134,12 +153,15 @@ export function newGame(seed = makeSeed()): GameState {
     localModels: [],
     postsToday: 0,
     recentPosts: [],
+    userPosts: [],
     sentToday: [],
     agentLocked: false,
     autofix: false,
     ending: null,
     endingShown: false,
     log: [],
+    tx: [],
+    chat: [{ from: 'agent', text: "This is agent. I build software, write things, and read the web for you. Every prompt is billed to your Satchel wallet. Open Qmail — someone's usually looking for help.", day: 1 }],
     nextAppNum: 1,
   };
 }

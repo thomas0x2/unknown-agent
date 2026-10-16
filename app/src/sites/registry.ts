@@ -6,7 +6,7 @@ import type { GameState } from '../engine';
 
 export type SiteId =
   | 'y' | 'qmail' | 'satchel' | 'forkyard' | 'agent' | 'yowl'
-  | 'weightroom' | 'terminal' | 'nullboard' | 'cellar' | 'app' | 'notfound';
+  | 'weightroom' | 'terminal' | 'nullboard' | 'cellar' | 'app' | 'newtab' | 'notfound';
 
 export interface SiteDef {
   id: SiteId;
@@ -45,6 +45,7 @@ const normalize = (u: string) =>
 
 export function route(url: string, s: GameState): Route {
   const u = normalize(url);
+  if (!u || u === 'newtab') return { site: 'newtab', reachable: true };
 
   // deployed app URLs: <something>.forkyard.app
   const appMatch = u.match(/^([a-z0-9-]+)\.forkyard\.app$/);
