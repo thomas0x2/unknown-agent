@@ -220,6 +220,10 @@ describe('job offers', () => {
 describe('email hints', () => {
   // a hint on an email lead is mailed back as the sender's own reply, so it must read as them writing,
   // not as a narrator describing them ("She just wants to know you're alright." from Mom)
+  it('are left out for Mom and Dad, whose near misses Haiku answers in their own voice', () => {
+    for (const id of ['d1_mom', 'd2_dad']) expect(content.events.find((e) => e.id === id)?.hints).toBeUndefined();
+  });
+
   it('are written in the sender\'s voice, not about them or as instructions to the player', () => {
     const narrator = /^(she|he|they|tell|offer|ask|reply)\b|\b(she|he)('s| just| is)\b/i;
     for (const ev of content.events.filter((e) => e.site === 'qmail' && e.addr)) {
