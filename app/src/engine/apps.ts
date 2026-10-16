@@ -348,6 +348,9 @@ export function breakVariant(brk: AppBreak, def: FeatureDef | undefined): string
   return brk.variant ?? (bugs.length ? bugs[(brk.seed ?? 0) % bugs.length].id : undefined);
 }
 
+/** The repo exists on Forkyard once the agent has pushed to it; taking the job alone doesn't create it. */
+export const onForkyard = (app: AppInstance) => app.repoVersion > 0;
+
 /** A required feature the agent still has work on: missing or wrong in the repo, or broken live. */
 export function needsWork(app: AppInstance, featureId: string): boolean {
   const f = app.repo.find((x) => x.id === featureId);
