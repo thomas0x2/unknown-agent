@@ -289,14 +289,14 @@
       "components": [
         {
           "id": "form/date",
-          "label": "the dates the booking form offers",
+          "label": "the dates the booking form lets you pick (no past dates)",
           "bugs": [
             "past_dates"
           ]
         },
         {
           "id": "form/hours",
-          "label": "the times the booking form accepts (opening hours)",
+          "label": "the opening hours on the booking form (no bookings while closed)",
           "bugs": [
             "no_hours_check"
           ]

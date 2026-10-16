@@ -341,7 +341,9 @@ export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, f
   const comps = fixableComponents(def);
   for (const c of comps) {
     const can = (c.bugs ?? []).map((id) => def.bugs?.find((b) => b.id === id)).filter((b): b is BugDef => !!b).map((b) => fillSpec(b.when, spec));
-    out.push({ id: `c:${c.id}`, description: `${c.label}, a part of the ${featureName(featureId)} (${def.description}).${can.length ? ` What can go wrong with it: ${can.join(' ')}` : ''}`, kind: 'component' });
+    // the other parts are listed too, so a complaint about one of them isn't read as one about this
+    const others = comps.filter((o) => o !== c).map((o) => o.label);
+    out.push({ id: `c:${c.id}`, description: `${c.label}, a part of the ${featureName(featureId)} (${def.description}).${can.length ? ` What can go wrong with it: ${can.join(' ')}` : ''}${others.length ? ` Other parts of the ${featureName(featureId)}, which are not this one: ${others.join('; ')}.` : ''}`, kind: 'component' });
   }
   // bugs no component claims are still matched on their own
   const claimed = new Set(comps.flatMap((c) => c.bugs ?? []));
