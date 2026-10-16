@@ -495,7 +495,7 @@ function pageWallet(store: GameStore): string {
   const tabs = Object.keys(RANGES).map((r) => `<button class="sx-tab${r === range ? ' on' : ''}" data-wl-range="${r}">${r}</button>`).join('');
   return `<div class="sx">
     <header class="sx-top">
-      <div class="sx-logo"><span class="sx-mark">${ICONS.wallet}</span><span>Satchel</span></div>
+      <div class="sx-logo"><span class="sx-mark">${ICONS.satchel}</span><span>Satchel</span></div>
       <span class="sx-sync"><i></i>Synchronized</span>
       <code class="sx-acct">${shortAddr(WALLET_ADDR)}</code>
     </header>

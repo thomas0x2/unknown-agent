@@ -9,8 +9,8 @@
 
 .sx-top { display: flex; align-items: center; gap: 14px; padding: 14px clamp(16px, 4vw, 40px); border-bottom: 1px solid var(--sx-line); }
 .sx-logo { display: flex; align-items: center; gap: 9px; font-weight: 600; font-size: 15px; letter-spacing: 0.01em; }
-.sx-mark { display: grid; place-items: center; width: 26px; height: 26px; border: 1px solid var(--sx-line); border-radius: 6px; color: var(--sx-ink); }
-.sx-mark svg { width: 15px; height: 15px; --icon-ink: var(--sx-bg); }
+.sx-mark { display: grid; place-items: center; width: 26px; height: 26px; border: 1px solid var(--sx-line); border-radius: 6px; color: #17b26a; }
+.sx-mark svg { width: 17px; height: 17px; --icon-ink: var(--sx-bg); }
 .sx-sync { margin-left: auto; display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--sx-dim); }
 .sx-sync i { width: 6px; height: 6px; border-radius: 50%; background: var(--sx-pos); box-shadow: 0 0 0 3px rgba(111, 211, 155, 0.12); }
 .sx-acct { font-size: 12px; color: var(--sx-dim); padding: 4px 9px; border: 1px solid var(--sx-line); border-radius: 6px; }
