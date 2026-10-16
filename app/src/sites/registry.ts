@@ -3,10 +3,11 @@
  * a "site not found" placeholder until a discovery flag is set (content will set these later).
  */
 import type { GameState } from '../engine';
+import { adSite } from './adSites';
 
 export type SiteId =
   | 'y' | 'qmail' | 'qdrive' | 'coinbin' | 'sherwood' | 'doordish' | 'forkyard' | 'agent' | 'yowl'
-  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'phish' | 'app' | 'newtab' | 'notfound';
+  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'phish' | 'adsite' | 'app' | 'newtab' | 'notfound';
 
 export interface SiteDef {
   id: SiteId;
@@ -48,7 +49,7 @@ export const SITES: SiteDef[] = [
 export interface Route {
   site: SiteId;
   def?: SiteDef;
-  /** sub-path param: a Y handle, a Forkyard repo, or an app id (with its page, as id/page). */
+  /** sub-path param: a Y handle, a Forkyard repo, an app id (with its page, as id/page), or an ad site's URL. */
   param?: string;
   reachable: boolean;
 }
@@ -66,6 +67,10 @@ export function route(url: string, s: GameState): Route {
     const app = s.apps.find((a) => a.url === appMatch[1]);
     return { site: 'app', param: app && (appMatch[2] ? `${app.id}/${appMatch[2]}` : app.id), reachable: !!app && app.deployed };
   }
+
+  // a banner ad's landing page (sites/adSites.ts), always reachable; checked first because some sit
+  // on another site's domain (doordish.com/robots)
+  if (adSite(u)) return { site: 'adsite', param: u, reachable: true };
 
   for (const def of SITES) {
     if (u === def.base || u.startsWith(def.base + '/')) {

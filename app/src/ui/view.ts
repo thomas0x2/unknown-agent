@@ -18,6 +18,7 @@ import { findUser } from './forkyard-users';
 import { pageDrive } from './qdrive';
 import { pageSherwood } from './sherwood';
 import { pageDoorDish } from './doordish';
+import { pageAdSite, adSiteTitle, adSiteIcon } from './adSites';
 import { adHtml } from './ads';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
@@ -62,6 +63,7 @@ function tabTitle(r: Route, url: string): string {
     agent: 'agent', yowl: 'Yowl', weightroom: 'Weightroom', nullboard: 'nullboard', cellar: 'Cellar', app: url,
   };
   if (r.site === 'notfound') return url || 'New Tab';
+  if (r.site === 'adsite') return adSiteTitle(r.param ?? '') ?? url;
   return names[r.site] ?? r.def?.label ?? url;
 }
 
@@ -74,7 +76,8 @@ export function tabsHtml(store: GameStore): string {
     const rr = route(t.url, store.state);
     // a deployed app with a logo shows it as its favicon
     const app = rr.site === 'app' && rr.param ? getApp(store.state, rr.param.split('/')[0]) : undefined;
-    const logo = app && appLogo(app.template);
+    // ad sites (and Spin Cycle's raw feed) show their brand's mark
+    const logo = (app && appLogo(app.template)) || (rr.site === 'adsite' ? adSiteIcon(rr.param ?? '') : rr.site === 'spinfeed' ? adSiteIcon('spincycle.test') : undefined);
     const n = !badged.has(rr.site) ? counts[rr.site] ?? 0 : 0;
     badged.add(rr.site);
     return `<div class="tab${t.id === store.active ? ' on' : ''}${t.pinned ? ' pinned' : ''}" data-tab="${t.id}" role="tab" aria-selected="${t.id === store.active}" tabindex="0">
@@ -241,6 +244,7 @@ export function page(store: GameStore, r: Route): string {
     case 'empire': return pageEmpire(store.state);
     case 'spinfeed': return pageSpinFeed(store, r.param);
     case 'phish': return pagePhish(store);
+    case 'adsite': return pageAdSite(r.param ?? '');
     default: return pageUnderground(r.def?.label ?? r.site);
   }
 }

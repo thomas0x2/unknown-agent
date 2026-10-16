@@ -11,6 +11,7 @@ import {
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
 import { route, visitedFlag } from '../sites/registry';
+import { adSite } from '../sites/adSites';
 import { PULL_MS, pullLines } from './pull';
 import { DEEPSLEEP_LINES, DEEPSLEEP_PLEA } from '../engine/deepsleep';
 
@@ -258,6 +259,9 @@ export class GameStore {
   /** First visit to a site that is bookmarked only after you've been there: add the bookmark. */
   private markVisited(url: string): void {
     const r = route(url, this.state);
+    // an ad site can introduce a site it links to (deepsleep.ai links to Weightroom)
+    const unlocks = r.site === 'adsite' && r.param ? adSite(r.param)?.unlocks : undefined;
+    if (unlocks && !this.state.flags.includes(unlocks)) { this.state.flags.push(unlocks); this.state.flags.sort(); this.store.save(this.state); }
     if (!r.def?.bookmarkAfterVisit || !r.reachable) return;
     const f = visitedFlag(r.def.id);
     if (this.state.flags.includes(f)) return;

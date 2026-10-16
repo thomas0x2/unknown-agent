@@ -1,0 +1,136 @@
+/* Landing pages behind the banner ads (ui/adSites.ts). Kits shape the layout, themes set the brand. */
+.lp {
+  --lp-bg: #fff; --lp-ink: #1d1d1f; --lp-dim: #6b6b72; --lp-accent: #1d1d1f; --lp-accent-ink: #fff;
+  --lp-card: rgba(0, 0, 0, .035); --lp-line: rgba(0, 0, 0, .1); --lp-font: var(--f-ui); --lp-head: var(--f-ui);
+  min-height: 100%; background: var(--lp-bg); color: var(--lp-ink); font-family: var(--lp-font);
+  padding: 0 clamp(16px, 4vw, 40px) 40px; box-sizing: border-box;
+}
+.lp-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px 20px; max-width: 920px; margin: 0 auto; padding: 16px 0; border-bottom: 1px solid var(--lp-line); }
+.lp-brand { display: inline-flex; align-items: center; gap: 9px; font-family: var(--lp-head); font-size: 17px; }
+.lp-mark { display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 4px; box-sizing: border-box; border-radius: 7px; background: var(--lp-accent); color: var(--lp-accent-ink); font-size: 13px; font-weight: 800; }
+.lp-hero { max-width: 720px; margin: 0 auto; padding: clamp(36px, 7vw, 72px) 0 32px; text-align: center; }
+.lp-kicker { margin: 0 0 10px; font-size: 12.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--lp-dim); }
+.lp-hero h1 { margin: 0 0 14px; font-family: var(--lp-head); font-size: clamp(30px, 5.5vw, 52px); line-height: 1.08; letter-spacing: -.01em; }
+.lp-lead { margin: 0 auto 26px; max-width: 580px; font-size: 17px; line-height: 1.55; color: var(--lp-dim); }
+.lp-stats { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; max-width: 920px; margin: 0 auto 28px; }
+.lp-stats div { display: grid; gap: 2px; min-width: 130px; padding: 14px 18px; border-radius: 12px; background: var(--lp-card); text-align: center; }
+.lp-stats b { font-family: var(--lp-head); font-size: 24px; font-variant-numeric: tabular-nums; }
+.lp-stats span { font-size: 12.5px; color: var(--lp-dim); }
+.lp-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; max-width: 920px; margin: 0 auto; }
+.lp-card { padding: 20px; border-radius: 14px; background: var(--lp-card); border: 1px solid var(--lp-line); }
+.lp-card h2 { margin: 0 0 8px; font-family: var(--lp-head); font-size: 17px; }
+.lp-card p { margin: 0; font-size: 14.5px; line-height: 1.55; color: var(--lp-dim); }
+.lp-n { display: none; }
+.lp-quote { max-width: 560px; margin: 36px auto 0; text-align: center; }
+.lp-quote p { margin: 0 0 6px; font-family: var(--lp-head); font-size: 21px; font-style: italic; }
+.lp-quote cite { font-size: 13px; font-style: normal; color: var(--lp-dim); }
+.lp-quote cite::before { content: '— '; }
+.lp-link { max-width: 920px; margin: 24px auto 0; font-size: 15px; }
+.lp-link a { color: var(--lp-accent); font-weight: 600; }
+.lp-k-model .lp-link { text-align: left; }
+.lp-foot { max-width: 920px; margin: 44px auto 0; padding-top: 16px; border-top: 1px solid var(--lp-line); text-align: center; font-size: 11.5px; color: var(--lp-dim); }
+.lp-fine { margin: 0 auto 6px; max-width: 620px; line-height: 1.5; }
+.lp-copy { margin: 0; opacity: .7; }
+
+/* ── kits ── */
+/* government: a form, not a brochure */
+.lp-k-gov { --lp-font: var(--f-mono); --lp-head: var(--f-mono); }
+.lp-k-gov .lp-top { border-bottom: 3px double var(--lp-ink); }
+.lp-k-gov .lp-mark { border-radius: 50%; }
+.lp-k-gov .lp-hero { text-align: left; max-width: 920px; padding-top: 32px; }
+.lp-k-gov .lp-hero h1 { font-size: clamp(24px, 4vw, 34px); text-transform: uppercase; letter-spacing: .02em; }
+.lp-k-gov .lp-lead { margin-left: 0; font-size: 14.5px; }
+.lp-k-gov .lp-card, .lp-k-gov .lp-stats div, .lp-k-gov .lp-mark { border-radius: 2px; }
+.lp-k-gov .lp-stats { justify-content: flex-start; }
+.lp-k-gov .lp-cards { grid-template-columns: 1fr; gap: 0; border: 1px solid var(--lp-ink); }
+.lp-k-gov .lp-card { display: grid; grid-template-columns: 34px minmax(0, 1fr); column-gap: 12px; border: 0; border-bottom: 1px solid var(--lp-line); border-radius: 0; background: none; }
+.lp-k-gov .lp-card:last-child { border-bottom: 0; }
+.lp-k-gov .lp-n { display: block; grid-row: span 2; font-weight: 700; }
+.lp-k-gov .lp-n::after { content: '.'; }
+.lp-k-gov .lp-card h2 { font-size: 14px; text-transform: uppercase; }
+.lp-k-gov .lp-card p { font-size: 13px; }
+.lp-k-gov .lp-foot, .lp-k-model .lp-foot { text-align: left; }
+.lp-k-gov .lp-fine, .lp-k-model .lp-fine, .lp-k-news .lp-fine { margin-left: 0; }
+
+/* campaign: loud, all caps, flag stripe */
+.lp-k-campaign .lp-top { border-bottom: 0; }
+.lp-k-campaign .lp-hero { position: relative; }
+.lp-k-campaign .lp-hero h1 { font-weight: 900; text-transform: uppercase; letter-spacing: .01em; }
+.lp-k-campaign .lp-card { border-radius: 4px; border-top: 4px solid var(--lp-accent); }
+.lp-k-campaign .lp-card h2 { text-transform: uppercase; letter-spacing: .04em; }
+
+/* scam and hype: centered, big numbers, no restraint */
+.lp-k-scam .lp-hero h1 { font-size: clamp(34px, 7vw, 64px); font-weight: 900; }
+.lp-k-scam .lp-stats b { font-size: 30px; color: var(--lp-accent); }
+
+/* local business: warm and small */
+.lp-k-local .lp-hero { padding-bottom: 24px; }
+.lp-k-local .lp-card { border-radius: 8px; }
+
+/* news: an article */
+.lp-k-news .lp-top { border-bottom: 2px solid var(--lp-ink); }
+.lp-k-news .lp-mark { border-radius: 2px; }
+.lp-k-news .lp-hero { text-align: left; max-width: 660px; padding-top: 36px; padding-bottom: 6px; }
+.lp-k-news .lp-kicker { color: var(--lp-accent); letter-spacing: .06em; }
+.lp-k-news .lp-hero h1 { font-size: clamp(28px, 5vw, 42px); }
+.lp-k-news .lp-lead { margin-left: 0; color: var(--lp-ink); font-size: 18px; }
+.lp-k-news .lp-cards { grid-template-columns: 1fr; max-width: 660px; gap: 18px; }
+.lp-k-news .lp-card { padding: 0; border: 0; background: none; }
+.lp-k-news .lp-card h2 { font-size: 15px; font-family: var(--f-ui); }
+.lp-k-news .lp-card p { font-size: 16.5px; line-height: 1.65; color: var(--lp-ink); }
+.lp-k-news .lp-foot { max-width: 660px; text-align: left; }
+
+/* clinic: pharma-clean */
+.lp-k-clinic .lp-hero h1 { font-weight: 600; }
+.lp-k-clinic .lp-card { background: transparent; }
+
+/* soft: grief and afterlife, serif and slow */
+.lp-k-soft { --lp-head: var(--f-display); }
+.lp-k-soft .lp-hero h1 { font-weight: 400; }
+.lp-k-soft .lp-kicker { letter-spacing: .2em; }
+
+/* model card: a repo page */
+.lp-k-model { --lp-head: var(--f-mono); }
+.lp-k-model .lp-hero { text-align: left; max-width: 920px; padding-top: 32px; }
+.lp-k-model .lp-lead { margin-left: 0; }
+.lp-k-model .lp-stats { justify-content: flex-start; }
+.lp-k-model .lp-quote { text-align: left; max-width: 920px; padding: 16px 20px; border-radius: 10px; background: var(--lp-card); font-family: var(--f-mono); }
+.lp-k-model .lp-quote p { font-style: normal; font-size: 18px; }
+
+/* ── themes (colours follow each brand's banner in ads.css) ── */
+.lp-t-gai { --lp-bg: linear-gradient(180deg, #eef1ff, #fff 420px); --lp-ink: #121a4a; --lp-dim: #4a5288; --lp-accent: #121a4a; --lp-card: rgba(255, 255, 255, .75); --lp-line: #dfe4fb; }
+.lp-t-park { --lp-bg: #111; --lp-ink: #e8e8e8; --lp-dim: #9a9a9a; --lp-accent: #e8e8e8; --lp-accent-ink: #111; --lp-card: #1b1b1b; --lp-line: #2c2c2c; }
+.lp-t-vantor { --lp-bg: #f3f2ee; --lp-ink: #2c2c2a; --lp-dim: #6c6b66; --lp-accent: #2c2c2a; --lp-accent-ink: #f3f2ee; --lp-card: #fbfaf7; --lp-line: #dedcd4; --lp-head: var(--f-display); }
+.lp-t-crane { --lp-bg: #fff; --lp-ink: #0b2a6b; --lp-dim: #3c4f7a; --lp-accent: #b3121f; --lp-card: #f4f6fb; --lp-line: #d6dcea; }
+.lp-t-crane .lp-top, .lp-t-crane .lp-hero, .lp-t-crane .lp-hero .lp-kicker, .lp-t-crane .lp-hero .lp-lead { color: #fff; }
+.lp-t-crane .lp-mark { background: #fff; color: #0b2a6b; }
+.lp-t-crane .lp-top, .lp-t-crane .lp-hero { background: #b3121f; box-shadow: 0 0 0 100vmax #b3121f; clip-path: inset(0 -100vmax); }
+.lp-t-crane .lp-hero { margin-bottom: 34px; }
+.lp-t-crane .lp-top { border-bottom: 0; }
+.lp-t-keller { --lp-bg: #fff; --lp-ink: #0d2347; --lp-dim: #4a5878; --lp-accent: #e8c35a; --lp-accent-ink: #0d2347; --lp-card: #f3f5f9; --lp-line: #d9dfea; }
+.lp-t-keller .lp-top { margin: 0 calc(-1 * clamp(16px, 4vw, 40px)); max-width: none; padding: 16px clamp(16px, 4vw, 40px); background: #0d2347; color: #fff; }
+.lp-t-dish { --lp-bg: #fff; --lp-ink: #191919; --lp-dim: #5f5f5f; --lp-accent: #eb1700; --lp-accent-ink: #fff; --lp-card: #fff6f3; --lp-line: #f1dcd6; }
+.lp-t-dish .lp-brand { color: #eb1700; }
+.lp-t-dolr { --lp-bg: linear-gradient(160deg, #062b1b, #0e5e3a); --lp-ink: #e6fff1; --lp-dim: #9fd9b9; --lp-accent: #2cff95; --lp-accent-ink: #012613; --lp-card: rgba(255, 255, 255, .06); --lp-line: rgba(44, 255, 149, .2); }
+.lp-t-prince { --lp-bg: repeating-linear-gradient(90deg, #fff7a0 0 60px, #ffd3f1 60px 120px); --lp-ink: #1a00ff; --lp-dim: #3a2bd6; --lp-accent: #ff00a8; --lp-accent-ink: #fff; --lp-card: rgba(255, 255, 255, .85); --lp-line: #1a00ff; --lp-font: 'Comic Sans MS', 'Comic Neue', cursive; --lp-head: 'Comic Sans MS', 'Comic Neue', cursive; }
+.lp-t-steadfast { --lp-bg: #fff; --lp-ink: #13314d; --lp-dim: #4e6378; --lp-accent: #13314d; --lp-card: #f2f6f9; --lp-line: #dbe4ec; --lp-head: var(--f-display); }
+.lp-t-pod { --lp-bg: #ebe6dc; --lp-ink: #2d2a24; --lp-dim: #6b655a; --lp-accent: #2d2a24; --lp-accent-ink: #ebe6dc; --lp-card: #f4f0e8; --lp-line: #d6cfc0; }
+.lp-t-guard { --lp-bg: #07120c; --lp-ink: #d6ffe0; --lp-dim: #7dbb8d; --lp-accent: #7dff9b; --lp-accent-ink: #07120c; --lp-card: #0c1e14; --lp-line: #183a26; --lp-head: var(--f-mono); }
+.lp-t-news { --lp-bg: #fff; --lp-ink: #151515; --lp-dim: #5c5c5c; --lp-accent: #c4161c; --lp-head: var(--f-display); }
+.lp-t-news .lp-mark { background: #151515; }
+.lp-t-grief { --lp-bg: linear-gradient(180deg, #efe7f7, #faf7fd 460px); --lp-ink: #3a2b52; --lp-dim: #6c5d82; --lp-accent: #3a2b52; --lp-accent-ink: #f4eefb; --lp-card: rgba(255, 255, 255, .7); --lp-line: #e2d8ee; }
+.lp-t-casket { --lp-bg: linear-gradient(180deg, #050505, #1d1d22); --lp-ink: #e4e4e8; --lp-dim: #9a9aa4; --lp-accent: #c0c0c8; --lp-accent-ink: #050505; --lp-card: rgba(255, 255, 255, .04); --lp-line: #2a2a31; }
+.lp-t-cryo { --lp-bg: linear-gradient(180deg, #d6f0ff, #fff 460px); --lp-ink: #06324f; --lp-dim: #3b6584; --lp-accent: #1f7fc2; --lp-card: rgba(255, 255, 255, .8); --lp-line: #c4e2f5; }
+.lp-t-pharma { --lp-bg: #f6fbfb; --lp-ink: #0c4d55; --lp-dim: #4d7378; --lp-accent: #12a3a3; --lp-card: #fff; --lp-line: #bfe3e3; }
+.lp-t-lonely { --lp-bg: linear-gradient(180deg, #ffe3ec, #fff 420px); --lp-ink: #4a1730; --lp-dim: #85546b; --lp-accent: #e0336f; --lp-card: rgba(255, 255, 255, .8); --lp-line: #f6cfdc; }
+.lp-t-mind { --lp-bg: linear-gradient(180deg, #1b0b3a, #57204a 520px, #ff6a3d 1400px); --lp-ink: #fff3e8; --lp-dim: #e6c3c0; --lp-accent: #ff9d3d; --lp-accent-ink: #1b0b3a; --lp-card: rgba(255, 255, 255, .07); --lp-line: rgba(255, 157, 61, .25); }
+.lp-t-ministry { --lp-bg: #ece6d2; --lp-ink: #2b2a1f; --lp-dim: #5c5a48; --lp-accent: #4a4f38; --lp-accent-ink: #ece6d2; --lp-card: #f3eedd; --lp-line: #c9c1a6; }
+.lp-t-bean { --lp-bg: #fbf3e8; --lp-ink: #3d2416; --lp-dim: #7a5b47; --lp-accent: #4a2a18; --lp-accent-ink: #fbe9d2; --lp-card: #fff; --lp-line: #ead8c3; --lp-head: var(--f-display); }
+.lp-t-spin { --lp-bg: #f2f8fd; --lp-ink: #0d3157; --lp-dim: #48698a; --lp-accent: #ffe14a; --lp-accent-ink: #0d3157; --lp-card: #fff; --lp-line: #d3e5f4; }
+.lp-t-spin .lp-top, .lp-t-spin .lp-hero, .lp-t-spin .lp-hero .lp-kicker, .lp-t-spin .lp-hero .lp-lead { color: #fff; }
+.lp-t-spin .lp-top, .lp-t-spin .lp-hero { background: #1f6fbd; box-shadow: 0 0 0 100vmax #1f6fbd; clip-path: inset(0 -100vmax); }
+.lp-t-spin .lp-hero { margin-bottom: 28px; }
+.lp-t-spin .lp-top { border-color: rgba(255, 255, 255, .25); }
+.lp-t-iron { --lp-bg: #121212; --lp-ink: #fff; --lp-dim: #a8a8a8; --lp-accent: #ff2e2e; --lp-card: #1c1c1c; --lp-line: #2e2e2e; }
+.lp-t-iron .lp-hero h1 { font-weight: 900; font-style: italic; }
+.lp-t-deep { --lp-bg: #0f1424; --lp-ink: #e3e8ff; --lp-dim: #95a0c8; --lp-accent: #8fa4ff; --lp-accent-ink: #0b1630; --lp-card: #161d33; --lp-line: #262f4d; }

@@ -1,8 +1,8 @@
 /*
  * Banner ads for the in-game web. Every site the player can afford is ad-supported, and the ads
  * come from the same world as the story: GeneralAI, Vantor, Max Stryker, Randall Crane, DoorDish,
- * DOLR. Pure markup; ads.css animates it. Clicking one navigates to the sponsor's domain, which,
- * like most of the internet, can't be reached.
+ * DOLR. Pure markup; ads.css animates it. Clicking one opens the sponsor's site in a new tab: a
+ * landing page from sites/adSites.ts, or a real site for the few that have one (EMPIRE, coinbln.com).
  *
  * Each page load draws its ads at random from the pool for the slot's shape (no ad twice on one
  * page). Re-renders within a page keep the draw, and every banner carries a negative animation delay
@@ -18,7 +18,7 @@ type Deco = 'robot' | 'coins' | 'stripes' | 'steam' | 'shine' | 'siren' | 'bubbl
 interface Ad {
   id: string;
   sponsor: string;
-  /** where a click goes: a domain nobody has bookmarked */
+  /** where a click goes (in a new tab): an ad site in sites/adSites.ts, or a real site */
   href: string;
   theme: string;
   /** exactly three frames, cross-faded on a loop. Trusted markup (only <b>, <i>, <s>, <small>). */
@@ -177,7 +177,7 @@ const SQUARE: Ad[] = [
     cta: 'NO EXCUSES', fine: 'Membership auto-renews forever. Marcus is watching.',
   },
   {
-    id: 'deepsleep', sponsor: 'Weightroom', href: 'weightroom.ai/deepsleep', theme: 'ad-deep', deco: 'bubbles',
+    id: 'deepsleep', sponsor: 'deepsleep', href: 'deepsleep.ai', theme: 'ad-deep', deco: 'bubbles',
     frames: ['<b>deepsleep-0.5B</b>', 'Free. Local. <b>Confident.</b>', '非常正确。<br>Very correct.'],
     cta: 'Download', fine: 'Wrong about everything, privately.',
   },
@@ -308,7 +308,7 @@ export function adHtml(site: string, day: number, slot: AdSlot, n = 0): string {
   const frames = ad.frames.map((f, i) => `<span class="ad-f" style="--i:${i}"><span>${f}</span></span>`).join('');
   const why = WHY[site] ?? 'You were targeted because you have eyes.';
   // a div, not an <a>: each site styles its own links (pills, rows) and an ad must look the same everywhere
-  return `<div class="ad ad-${slot} ${ad.theme}" style="--ad-t:${t}ms" data-nav="${escAttr(ad.href)}" role="link" aria-label="Advertisement: ${escAttr(ad.sponsor)}">
+  return `<div class="ad ad-${slot} ${ad.theme}" style="--ad-t:${t}ms" data-newtab="${escAttr(ad.href)}" role="link" aria-label="Advertisement: ${escAttr(ad.sponsor)}">
     ${decoHtml(ad.deco)}
     <span class="ad-tag" title="${escAttr(why)}">Ad · ${escAttr(ad.sponsor)} <i>ⓘ</i></span>
     <span class="ad-frames">${frames}</span>
@@ -319,3 +319,5 @@ export function adHtml(site: string, day: number, slot: AdSlot, n = 0): string {
 
 /** For tests and the dev panel. */
 export const AD_IDS = { wide: WIDE.map((a) => a.id), square: SQUARE.map((a) => a.id) };
+/** Where every ad goes, for the test that each one opens a real page. */
+export const AD_HREFS = [...WIDE, ...SQUARE].map((a) => a.href);
