@@ -45,7 +45,7 @@ export const YOWL_SEED: Record<string, SeedReview[]> = {
   beanthere: [
     { author: 'espresso_or_death', stars: 1, text: 'Burnt. Every single time. And a twenty-minute wait for the privilege.' },
     { author: 'commuter22', stars: 2, text: 'Slow service, staff seem annoyed you came in. The muffins are fine, I guess.' },
-    { author: 'Dana K.', stars: 2, text: 'Wanted to love it. Latte was lukewarm and they spelled a three-letter name wrong.' },
+    { author: 'Zoe K.', stars: 2, text: 'Wanted to love it. Latte was lukewarm and they spelled a three-letter name wrong.' },
   ],
   ironyard: [
     { author: 'liftbro', stars: 3, text: 'New place, half the machines still in boxes. Good platforms though. Potential.' },
