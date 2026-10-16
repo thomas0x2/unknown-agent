@@ -1,0 +1,17 @@
+{
+  "id": "restaurant_promo_thanks",
+  "site": "qmail",
+  "from": "Gino (Trattoria)",
+  "addr": "gino@trattoria.test",
+  "subject": "Your post",
+  "trigger": {
+    "flagsAll": [
+      "restaurant_promo_asked"
+    ]
+  },
+  "yPost": {
+    "when": "The post is about, recommends or promotes Trattoria Gino, Gino's restaurant or its new website.",
+    "after": 30
+  },
+  "body": "Somebody showed me your post. A man came in tonight and said he saw it on the Y. He ordered one espresso and stayed two hours, but still.\n\nGrazie.\n\nGino"
+}
