@@ -13,6 +13,7 @@ import './ui/qdrive.css';
 import './ui/ads.css';
 import './ui/empire.css';
 import './ui/appsite.css';
+import { showSuggestions, hideSuggestions, suggestionKey } from './ui/mailSuggest';
 import { GameStore } from './game/store';
 import { loadContent } from './content/load';
 import { localStorageStore } from './engine';
@@ -238,15 +239,41 @@ document.addEventListener('input', (e) => {
   else if (el.id === 'yowl-search') store.setYowlSearch(el.value);
   else if (el.id === 'fy-search-input') store.setFySearch(el.value);
   else if (el.id === 'prompt-input') updateCost();
-  else if (el.id === 'mail-to') store.setDraft({ to: el.value, subject: val('#mail-subject'), body: val('#mail-body') });
+  else if (el.id === 'mail-to') { syncMailTo(); showSuggestions(el); }
 });
 document.addEventListener('change', (e) => {
   const el = e.target as HTMLSelectElement;
   if (el.id === 'llm-backend') LLM.setBackend(el.value as 'browser' | 'ollama' | 'off');
   else if (el.id === 'llm-misses') LLM.setMisses(el.value as 'gemma' | 'scripted');
 });
+/** Keep the To draft and the once-a-day notice current without re-rendering, so the field and its suggestions stay put. */
+function syncMailTo(): void {
+  const to = val('#mail-to');
+  store.ui.draft = { to, subject: val('#mail-subject'), body: val('#mail-body') };
+  const waiting = store.state.sentToday.includes(to.trim().toLowerCase());
+  $('#mail-wait')?.toggleAttribute('hidden', !waiting);
+  const send = document.querySelector<HTMLButtonElement>('.qm-compose button[type="submit"]');
+  if (send) send.disabled = waiting;
+}
+function pickContact(addr: string): void {
+  const input = $<HTMLInputElement>('#mail-to');
+  if (!input) return;
+  input.value = addr;
+  hideSuggestions();
+  syncMailTo();
+  $<HTMLInputElement>('#mail-subject')?.focus();
+}
+document.addEventListener('focusin', (e) => { if ((e.target as HTMLElement).id === 'mail-to') showSuggestions(e.target as HTMLInputElement); });
+document.addEventListener('focusout', (e) => { if ((e.target as HTMLElement).id === 'mail-to') hideSuggestions(); });
+// mousedown, not click: a click would blur the field first and close the list before it registers
+document.addEventListener('mousedown', (e) => {
+  const li = (e.target as HTMLElement).closest<HTMLElement>('#qm-sugg li');
+  if (li) { e.preventDefault(); pickContact(li.dataset.addr!); }
+});
+
 document.addEventListener('keydown', (e) => {
   const el = e.target as HTMLElement;
+  if (el.id === 'mail-to' && suggestionKey(e, pickContact)) { e.preventDefault(); return; }
   if ((el.id === 'prompt-input' || el.id === 'reply-body') && e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); (el as HTMLTextAreaElement).form?.requestSubmit(); }
   if ((el.id === 'post-input' || el.id === 'mail-body' || el.id === 'review-text') && e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); (el as HTMLTextAreaElement).form?.requestSubmit(); }
   if (e.key === '`' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); store.toggleDev(); }
