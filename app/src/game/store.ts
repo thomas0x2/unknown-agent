@@ -31,6 +31,8 @@ export class GameStore {
   ui = {
     ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null as Draft | null,
     project: '', dev: false, liked: {} as Record<string, boolean>, intro: true, confirm: null as null | { text: string; yes: string; fn: () => void }, start: false, menuCat: 'saves',
+    /** Dev mode: the site whose options panel is open (agent, qmail, y), or ''. */
+    devOptions: '' as string,
   };
 
   private listeners = new Set<() => void>();
@@ -86,6 +88,7 @@ export class GameStore {
   setReviewStars(n: number): void { this.ui.reviewStars = n; this.emit(); }
   setDraft(d: Draft | null): void { this.ui.draft = d; this.emit(); }
   setProject(id: string): void { this.ui.project = id; this.emit(); }
+  toggleDevOptions(site: string): void { this.ui.devOptions = this.ui.devOptions === site ? '' : site; this.emit(); }
   toggleDev(): void { this.ui.dev = !this.ui.dev; this.emit(); }
   /** Dev mode shows how replies were chosen (Jev's decision, the model prompt and output). On unless turned off. */
   devMode = readDevMode();
@@ -128,7 +131,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = 1; this.nextTab = 3;
-    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null, start: false, menuCat: 'saves' };
+    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null, start: false, menuCat: 'saves', devOptions: this.ui.devOptions };
     this.store.save(this.state);
     this.emit();
   }

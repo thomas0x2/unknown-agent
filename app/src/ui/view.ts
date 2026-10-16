@@ -17,6 +17,7 @@ import { findUser } from './forkyard-users';
 import { pageDrive } from './qdrive';
 import { adHtml } from './ads';
 import { renderAppSite, devBugPanel, devBugCount } from './appsite';
+import { devOptionsButton, devOptionsPanel } from './devOptions';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const WALLET_ADDR = '0x4417c3e8b1d05f2a9e6d7b0c1f83a4e5d2b9a9f2';
@@ -281,8 +282,8 @@ function pageMail(store: GameStore, param?: string): string {
     main = `<h1 class="qm-h">${view === 'sent' ? 'Sent' : 'Inbox'}</h1>${adHtml('qmail', s.values.day, 'wide')}${html ? `<div class="qm-list">${html}</div>` : `<p class="qm-empty">${view === 'sent' ? 'Nothing sent yet.' : 'No mail.'}</p>`}`;
   }
   return `<div class="qm">
-    <header class="qm-top"><div class="qm-logo">${ICONS.mail}<span>Qmail</span></div><span class="qm-user">${esc(PLAYER.addr)}</span></header>
-    <div class="qm-wrap">${side}<main class="qm-main">${main}</main></div></div>`;
+    <header class="qm-top"><div class="qm-logo">${ICONS.mail}<span>Qmail</span></div>${devOptionsButton(store, 'qmail')}<span class="qm-user">${esc(PLAYER.addr)}</span></header>
+    <div class="qm-wrap">${side}<main class="qm-main">${main}</main></div>${devOptionsPanel(store, 'qmail')}</div>`;
 }
 
 // ── Y ──
@@ -347,8 +348,9 @@ function pageY(store: GameStore, profile?: string): string {
       <nav class="y-pills"><a href="#" data-nav="y.com" class="${profile ? '' : 'on'}">Home</a><a href="#" data-nav="y.com/you" class="${profile === 'you' ? 'on' : ''}">Profile</a></nav>
       <span class="y-count"><b>${compact(s.values.followers)}</b> followers</span>
       <label class="y-search">${Y_ICONS.explore}<input id="y-search" autocomplete="off" placeholder="Search Y or @username" value="${esc(store.ui.ySearch)}"></label>
+      ${devOptionsButton(store, 'y')}
     </header>
-    <div class="y-cols"><main class="y-main">${mainInner}</main>${side}</div></div>`;
+    <div class="y-cols"><main class="y-main">${mainInner}</main>${side}</div>${devOptionsPanel(store, 'y')}</div>`;
 }
 function yProfile(store: GameStore, handle: string): string {
   const s = store.state;
@@ -624,14 +626,14 @@ function pageAgent(store: GameStore): string {
   return `<div class="ua">
     <header class="ua-head">
       <div class="ua-brand">${ICONS.agent}<div><b>agent</b><span>agent-${s.values.agentLevel} · ${fmtMoney(c.prompt)} per prompt + ${fmtMoney(c.word)} per word</span></div></div>
-      <span class="ua-linked"><a href="#" data-nav="agent.chat/models" class="ua-upgrade">Models</a> · ${s.agentLocked ? 'LOCKED · unpaid' : 'Billing: Satchel ' + shortAddr(WALLET_ADDR)}</span>
+      ${devOptionsButton(store, 'agent')}<span class="ua-linked"><a href="#" data-nav="agent.chat/models" class="ua-upgrade">Models</a> · ${s.agentLocked ? 'LOCKED · unpaid' : 'Billing: Satchel ' + shortAddr(WALLET_ADDR)}</span>
     </header>
     <div class="ua-llm"><span class="ua-jev" id="ua-jev">${jevChip()}</span><span class="ua-llm-ctl" id="ua-llm">${llmRow()}</span></div>
     <div class="ua-log" id="ua-log">${msgs}${pending}${thinking}</div>
     <form class="ua-compose" data-form="prompt">
       <textarea id="prompt-input" rows="2" placeholder="Ask agent anything — build an app, fix one, write, translate, look something up…" ${s.ending ? 'disabled' : ''}></textarea>
       <div class="ua-row"><span id="cost-est" class="ua-est"></span><button class="ua-send" type="submit" ${s.ending || store.busy ? 'disabled' : ''}>Send</button></div>
-    </form></div>`;
+    </form>${devOptionsPanel(store, 'agent')}</div>`;
 }
 function pageModels(store: GameStore): string {
   const s = store.state;
