@@ -52,6 +52,16 @@ export function menuDishes(l: { variant?: string; bugs?: Iterable<string>; seed:
     else if (how === 1) d[i] = { ...d[i], name: RENAMES[d[i].name] ?? `${d[i].name} Speciale` };
     else d.splice(Math.min(i + 1, d.length), 0, INVENTED.find((x) => !d.some((y) => y.name === x.name)) ?? INVENTED[0]);
   }
+  if (bugs.has('prices_wrong')) {
+    // the right dishes at prices the agent made up: a few DOLR off, never the real one
+    const off = [3, -2, 5, 2, -1, 4, -3];
+    d = d.map((x, i) => {
+      const p = Number(x.price);
+      if (!x.price || !Number.isFinite(p)) return x;
+      const q = Math.max(1, p + off[(l.seed + i) % off.length]);
+      return { ...x, price: String(q === p ? p + 2 : q) };
+    });
+  }
   if (bugs.has('prices_missing')) return { dishes: d.map((x) => ({ ...x, price: '' })), currency: '' };
   return { dishes: d, currency: bugs.has('prices_curo') ? 'CURO' : 'DOLR' };
 }
