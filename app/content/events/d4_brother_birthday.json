@@ -11,6 +11,12 @@
   "body": "mom's birthday is sunday. she needs a new jacket. can you chip in 40 for one? my coinbin is 0xb8d6e201b59c95094b2e417784b38b06c0c7e46a, send it by saturday so i can order. or grab one yourself and i'll cover my half.",
   "outcomes": [
     {
+      "id": "promise",
+      "keepsOpen": true,
+      "when": "the player says they'll send the money or chip in, but hasn't sent it yet",
+      "reply": "i'll believe it when i see it."
+    },
+    {
       "id": "buy",
       "replyAfter": 30,
       "when": "the player will buy the jacket themselves",
