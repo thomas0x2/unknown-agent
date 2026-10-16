@@ -175,9 +175,3 @@
 .mem-track { height: 8px; background: var(--dk-line); border-radius: 4px; overflow: hidden; }
 .mem-track i { display: block; height: 100%; background: var(--alarm); }
 .mem-bar b { grid-column: 2; font-weight: 400; font-size: 11.5px; color: var(--dk-dim); font-variant-numeric: tabular-nums; }
-.mem-procs { width: 100%; border-collapse: collapse; margin-top: 2px; font-variant-numeric: tabular-nums; }
-.mem-procs th { text-align: left; font-weight: 500; color: var(--dk-dim); padding: 3px 0; border-bottom: 1px solid var(--dk-line); }
-.mem-procs td { padding: 3px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 0; }
-.mem-procs th:last-child, .mem-procs td:last-child { text-align: right; width: 72px; }
-.mem-procs td:last-child { font-family: var(--f-mono); font-size: 11.5px; }
-.mem-procs tr.dim td { color: var(--dk-dim); }
