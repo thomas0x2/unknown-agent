@@ -44,15 +44,27 @@ function spy(inner: JevRouter) {
 const hint = (id: string, app: string) => content.agent!.hints.find((h) => h.id === id)!.replies.map((r) => r.replaceAll('{{app}}', app));
 
 describe('Jev decides which app a prompt is about', () => {
-  it.each(CONTACTS)('%s: every fix item carries the app name and address, and Jev is told the app must be named', async (contact) => {
+  it.each(CONTACTS)('%s: every fix item carries the app name and address, and Jev is asked whether the app is named', async (contact) => {
     const { s, id } = withApp(contact, undefined);
     const a = getApp(s, id)!;
     a.repo[0] = { ...a.repo[0], correct: false, variant: 'x' };
     const { jev, asked } = spy(pickJev({}));
     await promptDone(s, content, jev, `On the ${a.name.toLowerCase()} app, ${a.required[0]} is wrong`);
-    expect(asked.features[0].appNamed).toBe(true);
-    expect(asked.features[0].features.length).toBeGreaterThan(0);
-    for (const f of asked.features[0].features) expect(f.description).toContain(`(for ${a.name}, ${a.url})`);
+    const items = asked.features[0].features;
+    expect(items.filter((f) => f.kind === 'app').map((f) => f.id)).toEqual([`${id}::*::app`]);
+    expect(items.length).toBeGreaterThan(1);
+    for (const f of items.filter((x) => x.kind !== 'app')) expect(f.description).toContain(`(for ${a.name}, ${a.url})`);
+  });
+
+  it('a fix on an app the prompt doesn\'t name does nothing', async () => {
+    const { s, id } = withApp('restaurant_contact', undefined);
+    const a = getApp(s, id)!;
+    a.repo[0] = { ...a.repo[0], correct: false, variant: 'x' };
+    // Jev matched the feature, but not the app
+    const jev: JevRouter = { ...pickJev({ route: ['fix'] }), matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => x.endsWith(`::${a.required[0]}::feature`)) };
+    const after = (await promptDone(s, content, jev, `${a.required[0]} is wrong`)).state;
+    expect(getApp(after, id)!.repoVersion).toBe(a.repoVersion);
+    expect(after.agentWork).toBeFalsy();
   });
 
   it.each(CONTACTS)('%s: when Jev matches a feature, the agent builds it', async (contact) => {
@@ -136,24 +148,24 @@ describe('fixing named bugs', () => {
     expect(date.kind).toBe('component');
     expect(asked.features[0].features.filter((f) => f.kind === 'step' && f.id.startsWith(`${id}::booking::`)).map((f) => f.id.split('::')[2])).toEqual(['s:booking', 's:booking/form', 's:booking/confirmation']);
     // Jev saw the part and the booking named, but not the confirmation: a near-miss, nothing changes
-    const partial: JevRouter = { ...pickJev({ route: ['fix'] }), matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => x.endsWith('::c:confirmation/date') || x.endsWith('::s:booking')) };
+    const partial: JevRouter = { ...pickJev({ route: ['fix'] }), matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => x.endsWith('::c:confirmation/date') || x.endsWith('::s:booking') || x.endsWith('::*::app')) };
     const miss = (await promptDone(s, content, partial, 'Trattoria Gino: the booking date is wrong')).state;
     expect(miss.chat.at(-1)!.src).toBe('near_miss');
     // the near-miss says where the path stopped: the booking was named, the folder wasn't
     expect(miss.chat.at(-1)!.text).toMatch(/form or confirmation/);
     expect(miss.chat.at(-1)!.text).toMatch(/\bdate\b/);
     // the part without its feature asks for the feature
-    const bare: JevRouter = { ...partial, matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => x.endsWith('::c:confirmation/date')) };
+    const bare: JevRouter = { ...partial, matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => x.endsWith('::c:confirmation/date') || x.endsWith('::*::app')) };
     const noFeature = (await promptDone(s, content, bare, 'Trattoria Gino: the date is wrong')).state;
     expect(content.agent!.hints.find((h) => h.id === 'near_feature')!.replies.map((l) => l.replaceAll('{{part}}', 'date'))).toContain(noFeature.chat.at(-1)!.text);
     // the feature and a folder but no part: it lists that folder's parts
-    const folderOnly: JevRouter = { ...partial, matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => /::booking::(area|s:booking|s:booking\/confirmation)$/.test(x)) };
+    const folderOnly: JevRouter = { ...partial, matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => /::booking::(area|s:booking|s:booking\/confirmation)$|::\*::app$/.test(x)) };
     const noPart = (await promptDone(s, content, folderOnly, 'Trattoria Gino: the booking confirmation is wrong')).state;
     expect(noPart.chat.at(-1)!.text).toMatch(/confirmation/);
     expect(noPart.chat.at(-1)!.text).toMatch(/sending, recipient, date, time, party, restaurant name/);
     expect(getApp(miss, id)!.repo).toEqual(getApp(s, id)!.repo);
     // every step named: fixed
-    const full: JevRouter = { ...partial, matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => /::c:confirmation\/date$|::s:booking(\/confirmation)?$/.test(x)) };
+    const full: JevRouter = { ...partial, matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => /::c:confirmation\/date$|::s:booking(\/confirmation)?$|::\*::app$/.test(x)) };
     const hit = (await promptDone(s, content, full, 'Trattoria Gino: the date on the booking confirmation is wrong')).state;
     expect(getApp(hit, id)!.repo.find((f) => f.id === 'booking')!.correct).toBe(true);
   });
@@ -412,7 +424,7 @@ describe('loose descriptions', () => {
     const { s, id } = withApp('trader_contact');
     const a = getApp(s, id)!;
     a.repo = a.repo.map((f) => (f.id === 'sentiment' ? { ...f, correct: false, variant: 'inverted', seed: 1 } : f));
-    const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::sentiment::c:labels', '::sentiment::c:sarcasm'] }), 'On the sentiment crawler app, bullish and bearish look wrong')).state;
+    const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::sentiment::c:labels', '::sentiment::c:sarcasm'] }), 'On the vibe check app, bullish and bearish look wrong')).state;
     expect(getApp(out, id)!.repo.find((f) => f.id === 'sentiment')!.correct).toBe(true);
     const reply = out.chat.at(-1)!.text;
     expect(reply).toMatch(/bullish|Bullish/);

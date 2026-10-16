@@ -54,9 +54,8 @@ export interface FeatureMatchInput {
   /** Today's agent.chat before this prompt, oldest first ("Player: …", "Agent: …"): context for what the prompt refers to, not requests. */
   context?: string[];
   /** Spec features with their plain-language descriptions. */
-  features: { id: string; description: string; kind?: 'build' | 'problem' | 'component' | 'area' | 'step' }[];
-  /** Only count items for an app the prompt names or clearly refers to (the "(for <app>, <url>)" in each description). */
-  appNamed?: boolean;
+  /** `app` asks whether the prompt names that app (or the chat just before it did); the engine drops matches on apps it doesn't name. */
+  features: { id: string; description: string; kind?: 'build' | 'problem' | 'component' | 'area' | 'step' | 'app' }[];
 }
 
 export interface JevRouter {

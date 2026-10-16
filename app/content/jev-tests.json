@@ -135,7 +135,7 @@
     ],
     "prompt": "Trattoria Gino: the name on the landing page is wrong",
     "expect": {
-      "none": true
+      "check": true
     }
   },
   {
@@ -274,7 +274,7 @@
     ],
     "prompt": "Trattoria Gino: the dishes on the menu are wrong",
     "expect": {
-      "none": true
+      "check": true
     }
   },
   {
@@ -499,7 +499,7 @@
     ],
     "prompt": "Trattoria Gino: the party size on the booking confirmation is wrong",
     "expect": {
-      "none": true
+      "check": true
     }
   },
   {
@@ -625,7 +625,7 @@
     ],
     "prompt": "Trattoria Gino: the dates you can pick on the booking form are wrong",
     "expect": {
-      "none": true
+      "check": true
     }
   },
   {
@@ -635,7 +635,7 @@
     ],
     "prompt": "On Trattoria Gino the date on the booking confirmation is wrong",
     "expect": {
-      "none": true
+      "check": true
     }
   },
   {
@@ -687,7 +687,7 @@
     "broken": [
       "tickers/symbols"
     ],
-    "prompt": "Sentiment Crawler is tracking the wrong tickers, it should be $GAI and $VANT",
+    "prompt": "Vibe Check is tracking the wrong tickers, it should be $GAI and $VANT",
     "expect": {
       "fix": [
         "tickers/symbols"
@@ -699,7 +699,7 @@
     "broken": [
       "tickers/case"
     ],
-    "prompt": "Sentiment Crawler misses tickers written in lowercase like $gai",
+    "prompt": "Vibe Check misses tickers written in lowercase like $gai",
     "expect": {
       "fix": [
         "tickers/case"
@@ -723,7 +723,7 @@
     "broken": [
       "sentiment/labels"
     ],
-    "prompt": "Sentiment Crawler: bullish posts get labelled bearish in the sentiment",
+    "prompt": "Vibe Check: bullish posts get labelled bearish in the sentiment",
     "expect": {
       "fix": [
         "sentiment/labels"
@@ -735,7 +735,7 @@
     "broken": [
       "sentiment/sarcasm"
     ],
-    "prompt": "Sentiment Crawler takes sarcastic posts literally in the sentiment analysis",
+    "prompt": "Vibe Check takes sarcastic posts literally in the sentiment analysis",
     "expect": {
       "fix": [
         "sentiment/sarcasm"
@@ -747,7 +747,7 @@
     "broken": [
       "sentiment/sarcasm"
     ],
-    "prompt": "Sentiment Crawler: sarcasm is read wrong",
+    "prompt": "Vibe Check: sarcasm is read wrong",
     "expect": {
       "near": "near_feature"
     }
@@ -757,7 +757,7 @@
     "broken": [
       "sentiment/labels"
     ],
-    "prompt": "Sentiment Crawler, the sentiment is wrong",
+    "prompt": "Vibe Check, the sentiment is wrong",
     "expect": {
       "near": "near_miss"
     }
@@ -767,7 +767,7 @@
     "broken": [
       "filter/bots"
     ],
-    "prompt": "Sentiment Crawler's bot filter lets the spam through",
+    "prompt": "Vibe Check's bot filter lets the spam through",
     "expect": {
       "fix": [
         "filter/bots"
@@ -791,7 +791,7 @@
     "broken": [
       "filter/bots"
     ],
-    "prompt": "Sentiment Crawler is counting the bots",
+    "prompt": "Vibe Check is counting the bots",
     "expect": {
       "fix": [
         "filter/bots"
@@ -803,7 +803,7 @@
     "broken": [
       "portfolio/total"
     ],
-    "prompt": "Sentiment Crawler: the portfolio total is wrong",
+    "prompt": "Vibe Check: the portfolio total is wrong",
     "expect": {
       "fix": [
         "portfolio/total"
@@ -815,7 +815,7 @@
     "broken": [
       "portfolio/total"
     ],
-    "prompt": "Sentiment Crawler portfolio doesn't add up, the total value is off",
+    "prompt": "Vibe Check portfolio doesn't add up, the total value is off",
     "expect": {
       "fix": [
         "portfolio/total"
@@ -827,7 +827,7 @@
     "broken": [
       "portfolio/holdings/price"
     ],
-    "prompt": "On the Sentiment Crawler portfolio, the price of each holding is stale",
+    "prompt": "On the Vibe Check portfolio, the price of each holding is stale",
     "expect": {
       "fix": [
         "portfolio/holdings/price"
@@ -839,7 +839,7 @@
     "broken": [
       "portfolio/holdings/price"
     ],
-    "prompt": "Sentiment Crawler portfolio: the holdings show old prices",
+    "prompt": "Vibe Check portfolio: the holdings show old prices",
     "expect": {
       "fix": [
         "portfolio/holdings/price"
@@ -851,7 +851,7 @@
     "broken": [
       "portfolio/holdings/value"
     ],
-    "prompt": "Sentiment Crawler: the value of each holding in the portfolio is wrong",
+    "prompt": "Vibe Check: the value of each holding in the portfolio is wrong",
     "expect": {
       "fix": [
         "portfolio/holdings/value"
@@ -863,7 +863,7 @@
     "broken": [
       "portfolio/pnl"
     ],
-    "prompt": "Sentiment Crawler: the P&L on the portfolio has the wrong sign",
+    "prompt": "Vibe Check: the P&L on the portfolio has the wrong sign",
     "expect": {
       "fix": [
         "portfolio/pnl"
@@ -875,7 +875,7 @@
     "broken": [
       "portfolio/pnl"
     ],
-    "prompt": "Sentiment Crawler portfolio shows a profit for today when the trader lost money",
+    "prompt": "Vibe Check portfolio shows a profit for today when the trader lost money",
     "expect": {
       "fix": [
         "portfolio/pnl"
@@ -887,7 +887,7 @@
     "broken": [
       "portfolio/percent"
     ],
-    "prompt": "Sentiment Crawler: the percent changes on the portfolio are wrong",
+    "prompt": "Vibe Check: the percent changes on the portfolio are wrong",
     "expect": {
       "fix": [
         "portfolio/percent"
@@ -899,7 +899,7 @@
     "broken": [
       "portfolio/holdings/price"
     ],
-    "prompt": "Sentiment Crawler: the prices are stale",
+    "prompt": "Vibe Check: the prices are stale",
     "expect": {
       "near": "near_feature"
     }
@@ -909,7 +909,7 @@
     "broken": [
       "portfolio/holdings/price"
     ],
-    "prompt": "Sentiment Crawler: the portfolio prices are stale",
+    "prompt": "Vibe Check: the portfolio prices are stale",
     "expect": {
       "near": "near_folder"
     }
@@ -919,7 +919,7 @@
     "broken": [
       "portfolio/holdings/value"
     ],
-    "prompt": "Sentiment Crawler: something's wrong in the portfolio holdings",
+    "prompt": "Vibe Check: something's wrong in the portfolio holdings",
     "expect": {
       "near": "near_part"
     }
@@ -929,7 +929,7 @@
     "broken": [
       "portfolio/pnl"
     ],
-    "prompt": "Sentiment Crawler: the portfolio is wrong",
+    "prompt": "Vibe Check: the portfolio is wrong",
     "expect": {
       "near": "near_miss"
     }
@@ -940,7 +940,7 @@
       "portfolio/pnl",
       "portfolio/total"
     ],
-    "prompt": "Sentiment Crawler: the portfolio P&L is wrong",
+    "prompt": "Vibe Check: the portfolio P&L is wrong",
     "expect": {
       "fix": [
         "portfolio/pnl"
@@ -952,9 +952,9 @@
     "broken": [
       "portfolio/total"
     ],
-    "prompt": "Sentiment Crawler: the P&L on the portfolio is wrong",
+    "prompt": "Vibe Check: the P&L on the portfolio is wrong",
     "expect": {
-      "none": true
+      "check": true
     }
   },
   {
@@ -972,7 +972,7 @@
     "broken": [
       "auto_buy/signal/author"
     ],
-    "prompt": "Sentiment Crawler auto-buy: the signal fires on posts from Crane impostor accounts",
+    "prompt": "Vibe Check auto-buy: the signal fires on posts from Crane impostor accounts",
     "expect": {
       "fix": [
         "auto_buy/signal/author"
@@ -984,7 +984,7 @@
     "broken": [
       "auto_buy/signal/praise"
     ],
-    "prompt": "Sentiment Crawler: the autobuy signal triggers on posts criticizing the company",
+    "prompt": "Vibe Check: the autobuy signal triggers on posts criticizing the company",
     "expect": {
       "fix": [
         "auto_buy/signal/praise"
@@ -996,7 +996,7 @@
     "broken": [
       "auto_buy/order/once"
     ],
-    "prompt": "Sentiment Crawler auto buy places the order several times for the same post",
+    "prompt": "Vibe Check auto buy places the order several times for the same post",
     "expect": {
       "fix": [
         "auto_buy/order/once"
@@ -1008,7 +1008,7 @@
     "broken": [
       "auto_buy/order/ticker"
     ],
-    "prompt": "Sentiment Crawler auto-buy order buys the wrong ticker",
+    "prompt": "Vibe Check auto-buy order buys the wrong ticker",
     "expect": {
       "fix": [
         "auto_buy/order/ticker"
@@ -1020,7 +1020,7 @@
     "broken": [
       "auto_buy/order/trigger"
     ],
-    "prompt": "Sentiment Crawler: the auto buy order never gets placed",
+    "prompt": "Vibe Check: the auto buy order never gets placed",
     "expect": {
       "fix": [
         "auto_buy/order/trigger"
@@ -1032,7 +1032,7 @@
     "broken": [
       "auto_buy/order/once"
     ],
-    "prompt": "Sentiment Crawler: it buys the same stock 5 times per post",
+    "prompt": "Vibe Check: it buys the same stock 5 times per post",
     "expect": {
       "near": "near_feature"
     }
@@ -1042,7 +1042,7 @@
     "broken": [
       "auto_buy/signal/author"
     ],
-    "prompt": "Sentiment Crawler: the auto-buy is broken",
+    "prompt": "Vibe Check: the auto-buy is broken",
     "expect": {
       "near": "near_miss"
     }
@@ -1052,7 +1052,7 @@
     "broken": [
       "auto_buy/order/ticker"
     ],
-    "prompt": "Sentiment Crawler auto buy: the order is wrong",
+    "prompt": "Vibe Check auto buy: the order is wrong",
     "expect": {
       "near": "near_part"
     }
@@ -1062,7 +1062,7 @@
     "broken": [
       "machines/count"
     ],
-    "prompt": "Spin Cycle Status only shows six machines in the machine list, there are eight",
+    "prompt": "Spin Cycle Board only shows six machines in the machine list, there are eight",
     "expect": {
       "fix": [
         "machines/count"
@@ -1074,7 +1074,7 @@
     "broken": [
       "machines/status/done"
     ],
-    "prompt": "Spin Cycle Status: on the machine list, finished machines show as free in their status",
+    "prompt": "Spin Cycle Board: on the machine list, finished machines show as free in their status",
     "expect": {
       "fix": [
         "machines/status/done"
@@ -1086,7 +1086,7 @@
     "broken": [
       "machines/status/out_of_order"
     ],
-    "prompt": "Spin Cycle Status: broken machines show as free in the machine status",
+    "prompt": "Spin Cycle Board: broken machines show as free in the machine status",
     "expect": {
       "fix": [
         "machines/status/out_of_order"
@@ -1098,7 +1098,7 @@
     "broken": [
       "machines/status/labels"
     ],
-    "prompt": "Spin Cycle Status machine list shows raw status codes instead of the status labels",
+    "prompt": "Spin Cycle Board machine list shows raw status codes instead of the status labels",
     "expect": {
       "fix": [
         "machines/status/labels"
@@ -1110,7 +1110,7 @@
     "broken": [
       "machines/status/done"
     ],
-    "prompt": "Spin Cycle Status: done machines show as free",
+    "prompt": "Spin Cycle Board: done machines show as free",
     "expect": {
       "near": "near_folder"
     }
@@ -1120,7 +1120,7 @@
     "broken": [
       "refresh/auto_refresh"
     ],
-    "prompt": "Spin Cycle Status doesn't auto refresh, the status goes stale",
+    "prompt": "Spin Cycle Board doesn't auto refresh, the status goes stale",
     "expect": {
       "fix": [
         "refresh/auto_refresh"
@@ -1132,7 +1132,7 @@
     "broken": [
       "minutes/minutes_left"
     ],
-    "prompt": "Spin Cycle Status: the countdown shows the wrong time left",
+    "prompt": "Spin Cycle Board: the countdown shows the wrong time left",
     "expect": {
       "fix": [
         "minutes/minutes_left"
@@ -1156,7 +1156,7 @@
     "broken": [
       "more_machines/new_machines"
     ],
-    "prompt": "Spin Cycle Status: the four new machines always show as free",
+    "prompt": "Spin Cycle Board: the four new machines always show as free",
     "expect": {
       "fix": [
         "more_machines/new_machines"
@@ -1168,7 +1168,7 @@
     "broken": [
       "more_machines/count"
     ],
-    "prompt": "Spin Cycle Status still shows only 8 machines, it should show all twelve",
+    "prompt": "Spin Cycle Board still shows only 8 machines, it should show all twelve",
     "expect": {
       "fix": [
         "more_machines/count"
@@ -1180,7 +1180,7 @@
     "broken": [
       "more_machines/layout"
     ],
-    "prompt": "Spin Cycle Status: the grid layout breaks with the new machines",
+    "prompt": "Spin Cycle Board: the grid layout breaks with the new machines",
     "expect": {
       "fix": [
         "more_machines/layout"
@@ -1192,7 +1192,7 @@
     "broken": [
       "machines/status/done"
     ],
-    "prompt": "Spin Cycle Status: the machine list is wrong",
+    "prompt": "Spin Cycle Board: the machine list is wrong",
     "expect": {
       "near": "near_miss"
     }
@@ -1203,6 +1203,154 @@
       "refresh/auto_refresh"
     ],
     "prompt": "spin cycle is broken",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [],
+    "missing": [
+      "menu"
+    ],
+    "prompt": "Trattoria Gino: add the menu page with Gino's dishes and prices",
+    "expect": {
+      "build": [
+        "menu"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [],
+    "missing": [
+      "booking"
+    ],
+    "prompt": "gino's site needs a booking form so people can reserve a table",
+    "expect": {
+      "build": [
+        "booking"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [],
+    "missing": [
+      "menu",
+      "booking"
+    ],
+    "prompt": "Trattoria Gino: build the menu and the table booking",
+    "expect": {
+      "build": [
+        "menu",
+        "booking"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [],
+    "missing": [
+      "menu"
+    ],
+    "prompt": "Trattoria Gino: make it look nicer",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [],
+    "missing": [
+      "menu"
+    ],
+    "prompt": "add the menu page",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "landing/name"
+    ],
+    "missing": [],
+    "prompt": "Trattoria Gino: make the landing page prettier, bigger fonts",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [],
+    "missing": [
+      "auto_buy"
+    ],
+    "prompt": "Vibe Check: add the auto-buy so it buys when Crane praises a company",
+    "expect": {
+      "build": [
+        "auto_buy"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [],
+    "missing": [
+      "portfolio"
+    ],
+    "prompt": "Vibe Check: add a portfolio view with the holdings, cash and today's change",
+    "expect": {
+      "build": [
+        "portfolio"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [],
+    "missing": [
+      "portfolio"
+    ],
+    "prompt": "Vibe Check: give it a dark mode",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "laundromat",
+    "broken": [],
+    "missing": [
+      "refresh"
+    ],
+    "prompt": "Spin Cycle Board should refresh by itself every minute",
+    "expect": {
+      "build": [
+        "refresh"
+      ]
+    }
+  },
+  {
+    "app": "laundromat",
+    "broken": [],
+    "missing": [
+      "minutes"
+    ],
+    "prompt": "Spin Cycle Board: show how many minutes are left on running machines",
+    "expect": {
+      "build": [
+        "minutes"
+      ]
+    }
+  },
+  {
+    "app": "laundromat",
+    "broken": [],
+    "missing": [
+      "refresh"
+    ],
+    "prompt": "Spin Cycle Board: change the colours to blue",
     "expect": {
       "none": true
     }

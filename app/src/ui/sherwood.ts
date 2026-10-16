@@ -1,6 +1,6 @@
 /*
  * sherwood.com: the stock app (Robinhood parody). Four tickers, quotes from engine/crawler.price (the
- * same closes the sentiment crawler shows), orders paid from and into the Coinbin wallet.
+ * same closes the vibe check shows), orders paid from and into the Coinbin wallet.
  */
 import type { GameStore } from '../game/store';
 import { STOCKS, quote, sharesOf, costOf, price, dateShort } from '../engine';
