@@ -16,7 +16,7 @@ import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
 import { pageDrive } from './qdrive';
 import { adHtml } from './ads';
-import { renderAppSite, devBugPanel } from './appsite';
+import { renderAppSite, devBugPanel, devBugCount } from './appsite';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const WALLET_ADDR = '0x4417c3e8b1d05f2a9e6d7b0c1f83a4e5d2b9a9f2';
@@ -548,17 +548,18 @@ function pageForkyard(store: GameStore, repo?: string): string {
     return `<div class="fy">${head}<div class="fy-wrap">
       <p class="fy-crumbs"><a href="#" data-nav="forkyard.com">you</a> / <b>${esc(a.id)}</b></p>
       <p class="fy-desc">${esc(a.name)} · template ${esc(a.template)}</p>
+      ${devBugPanel(a, tmpl)}
       <div class="fy-grid">
         <div class="fy-files"><div class="fy-filehead">Pushed by <b>agent[bot]</b> · repo v${a.repoVersion}</div>${feats}</div>
         <div class="fy-deploy"><h2>Deployment</h2><p>${repoStatus(a)}</p>
           ${a.deployed
             ? `<dl><dt>Status</dt><dd>live at <a href="#" data-nav="${esc(a.url)}">${esc(a.url)}</a></dd><dt>Hosting / day</dt><dd>$2.00</dd>${stale ? '<dt>Repo</dt><dd>new commit — redeploy</dd>' : ''}</dl><div class="fy-row"><button class="fy-btn" data-deploy="${esc(a.id)}">Redeploy</button><button class="fy-btn ghost" data-takedown="${esc(a.id)}">Take down</button></div>`
             : `<p class="fy-note">Hosting costs $2.00/day, billed nightly. Nothing is live until you deploy.</p><button class="fy-btn" data-deploy="${esc(a.id)}">Deploy</button>`}
-        </div></div>${devBugPanel(a, tmpl)}</div></div>`;
+        </div></div></div></div>`;
   }
   const list = s.apps.length
     ? s.apps.slice().reverse().map((a) => `<article class="fy-repo">
-        <div><a href="#" data-nav="forkyard.com/${a.id}" class="fy-name">${esc(a.id)}</a><p>${esc(a.name)}</p>
+        <div><a href="#" data-nav="forkyard.com/${a.id}" class="fy-name">${esc(a.id)}</a>${((n) => n ? `<span class="fy-devcount" title="Dev mode">${n} bug${n > 1 ? 's' : ''}</span>` : '')(devBugCount(a, store.content.apps[a.template]))}<p>${esc(a.name)}</p>
         <small><i class="fy-lang" style="--h:${hashHue(a.template)}"></i>${esc(a.template)} · ${a.kind}</small></div>
         <div class="fy-repo-act">${repoStatus(a)}${a.deployed ? '' : `<button class="fy-btn" data-deploy="${esc(a.id)}">Deploy</button>`}</div></article>`).join('')
     : `<div class="fy-empty"><p><b>No repositories yet.</b></p><p>Brief the agent to build something.</p></div>`;
@@ -577,7 +578,7 @@ function pageApp(store: GameStore, param?: string): string {
         <button class="pv-btn ok" type="submit">Book</button></form>`
     : undefined;
   const tmpl = store.content.apps[a.template];
-  return `<div class="pv-host">${renderAppSite(a, tmpl, sub, { booking })}${devBugPanel(a, tmpl)}</div>`;
+  return `<div class="pv-host">${renderAppSite(a, tmpl, sub, { booking })}</div>`;
 }
 
 // ── agent chat (free-promptable, with costs) ──

@@ -173,9 +173,10 @@ function generic(app: AppInstance, tmpl: AppTemplate | undefined, page: string |
 
 const BREAK_LABEL: Record<string, string> = { visible: 'crash', failed_fetch: 'failed fetch', subtle: 'subtle break', deep: 'deep break' };
 
-export function devBugPanel(app: AppInstance, tmpl: AppTemplate | undefined): string {
-  const tag = (t: string, on = false) => `<span class="dvb-tag${on ? ' on' : ''}">${esc(t)}</span>`;
-  const rows = app.required.map((id) => {
+interface DevRow { id: string; repoNow: string; liveNow: string; present: Set<string>; possible: string[]; checklist: string }
+
+function devRows(app: AppInstance, tmpl: AppTemplate | undefined): DevRow[] {
+  return app.required.map((id) => {
     const def = tmpl?.features.find((f) => f.id === id);
     const repo = app.repo.find((f) => f.id === id);
     const liveF = app.features.find((f) => f.id === id);
@@ -191,12 +192,29 @@ export function devBugPanel(app: AppInstance, tmpl: AppTemplate | undefined): st
       ...(def?.failures ?? []).map((f) => BREAK_LABEL[f] ?? f),
     ];
     // the spec checklist from the last build prompt: a missed item guarantees its bug
-    const list = (def?.checklist ?? []).map((c) => {
+    const checklist = (def?.checklist ?? []).map((c) => {
       const hit = repo?.checked?.[c.id];
-      return `<span class="dvb-check ${hit === undefined ? '' : hit ? 'hit' : 'miss'}" title="missed → ${esc(c.bug)}">${hit === undefined ? '·' : hit ? '✓' : '✗'} ${esc(c.id)}</span>`;
-    }).join(' ');
-    return `<tr><td><b>${esc(id)}</b></td><td>${esc(repoNow)}</td><td>${esc(liveNow)}</td><td>${list || '<i>none</i>'}</td><td>${possible.map((p) => tag(p, present.has(p))).join(' ') || '<i>none</i>'}</td></tr>`;
-  }).join('');
-  return `<div class="dev-bugs"><div class="dvb-head">Dev · bugs in ${esc(app.id)}</div>
-    <table><thead><tr><th>Feature</th><th>Repo</th><th>Live</th><th>Build prompt</th><th>Possible (present highlighted)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+      const cls = hit === undefined ? '' : hit ? 'hit' : 'miss';
+      return `<span class="dvb-check ${cls}">${hit === undefined ? '·' : hit ? '✓' : '✗'} ${esc(c.id)}${hit === false ? ` → ${esc(c.bug)}` : ''}</span>`;
+    }).join('');
+    return { id, repoNow, liveNow, present, possible, checklist };
+  });
+}
+
+/** How many features currently have a bug (in the repo or live), for the repo list badge. */
+export function devBugCount(app: AppInstance, tmpl: AppTemplate | undefined): number {
+  return devRows(app, tmpl).filter((r) => r.repoNow !== 'ok' || (app.deployed && r.liveNow !== 'ok')).length;
+}
+
+const pill = (label: string, v: string) => `<span class="dvb-pill ${v === 'ok' ? 'ok' : v === 'not deployed' ? 'off' : 'bad'}"><i>${label}</i>${esc(v)}</span>`;
+
+export function devBugPanel(app: AppInstance, tmpl: AppTemplate | undefined): string {
+  const rows = devRows(app, tmpl);
+  const n = devBugCount(app, tmpl);
+  const cards = rows.map((r) => `<div class="dvb-card">
+      <div class="dvb-title"><b>${esc(r.id)}</b>${pill('repo', r.repoNow)}${pill('live', r.liveNow)}</div>
+      ${r.checklist ? `<div class="dvb-line"><span class="dvb-k">Build prompt</span>${r.checklist}</div>` : ''}
+      <div class="dvb-line"><span class="dvb-k">Possible bugs</span>${r.possible.map((p) => `<span class="dvb-tag${r.present.has(p) ? ' on' : ''}">${esc(p)}</span>`).join('') || '<i>none</i>'}</div>
+    </div>`).join('');
+  return `<section class="dev-bugs"><div class="dvb-head"><span class="dvb-badge">DEV</span><b>Bugs in ${esc(app.id)}</b><span class="dvb-sum ${n ? 'bad' : 'ok'}">${n ? `${n} feature${n > 1 ? 's' : ''} with a bug` : 'no bugs'}</span></div>${cards}</section>`;
 }
