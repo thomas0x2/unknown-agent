@@ -429,7 +429,7 @@ export class GameStore {
   dismissJevOffline(): void { this.ui.jevOffline = null; this.emit(); }
 
   async post(text: string, trending: string[]) {
-    return this.run(async () => { const r = await postToY(this.state, this.router, text, trending); this.commitAndSettle(r.state); return r; }, 'post-input', text);
+    return this.run(async () => { const r = await postToY(this.state, this.router, text, trending, this.content); this.commitAndSettle(r.state); return r; }, 'post-input', text);
   }
   async reply(eventId: string, text: string) {
     return this.run(async () => { const r = await replyToEvent(this.state, this.content, this.router, eventId, text, this.writer); this.commitAndSettle(r.state); return r; }, 'reply-body', text);

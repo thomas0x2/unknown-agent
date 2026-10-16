@@ -160,7 +160,7 @@ export function deliverDue(s: GameState, content: Content, opts: { now?: boolean
   }
   // trigger-driven events (latent ones are not auto-delivered — the player reaches them by email)
   for (const ev of content.events) {
-    if (ev.latent) continue;
+    if (ev.latent || ev.launch || ev.yPost) continue;
     if (underway(s, ev)) continue;
     if (triggerMatches(s, ev.trigger)) deliverOrQueue(s, ev, now, out);
   }
@@ -188,6 +188,28 @@ export function deliverArrivals(s: GameState, content: Content, all = false): De
     if (d) out.push(d);
   }
   return out;
+}
+
+/** Queue an event to land at minute `at` today (clamped to the day), unless it's already on its way or delivered. */
+export function queueAt(s: GameState, ev: GameEvent, at: number): void {
+  if (underway(s, ev)) return;
+  (s.arriving ??= []).push({ eventId: ev.id, day: s.values.day, at: Math.max(CLOCK.wake, Math.min(CLOCK.sleep - 1, at)) });
+}
+
+/**
+ * A client app just went live for the first time: queue the events waiting on its launch, each at its
+ * `at` or `after` minutes from now, whichever is later.
+ */
+export function queueLaunch(s: GameState, content: Content, clientEventId: string): void {
+  for (const ev of content.events) {
+    if (ev.launch?.app !== clientEventId || !triggerMatches(s, ev.trigger)) continue;
+    queueAt(s, ev, Math.max(parseClock(ev.launch.at) ?? CLOCK.wake, s.clockMin + ev.launch.after));
+  }
+}
+
+/** Events that wait on a Y post about something (`yPost`), open now: trigger holds, not yet on its way. */
+export function yPostEvents(s: GameState, content: Content): GameEvent[] {
+  return content.events.filter((ev) => ev.yPost && !underway(s, ev) && triggerMatches(s, ev.trigger));
 }
 
 /** Latent qmail events the player can currently email (trigger matches, not yet fired). */
