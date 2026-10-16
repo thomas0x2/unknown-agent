@@ -632,7 +632,7 @@ function pageApp(store: GameStore, param?: string): string {
         <label>Date <select id="bk-date">${Array.from({ length: LAST_DAY }, (_, i) => i + 1).filter((d) => d >= firstBookable).map((d) => `<option value="${d}"${d === (bk.date || s.values.day + 1) ? ' selected' : ''}>${dateMedium(d)}</option>`).join('')}</select></label>
         <button class="pv-btn ok" type="submit">Continue</button></form>`
       : `<form class="pv-book" data-form="book" data-app="${esc(a.id)}"><h1>Book a table</h1>
-        <p class="pv-sub">Step 2 of 2: ${esc(bk.name)}, ${dateFull(bk.date)}.</p>
+        <p class="pv-sub">Step 2 of 2: ${esc(bk.name)}, ${dateFull(bk.date)}.</p>${notice}
         <label>Time <input id="bk-time" value="19:00"></label>
         <label>Party size <input id="bk-party" value="2" type="number" min="1" max="8"></label>
         <button class="pv-btn ghost" type="button" data-act="book-back">Back</button> <button class="pv-btn ok" type="submit">Book</button></form>`

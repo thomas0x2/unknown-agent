@@ -34,3 +34,15 @@ describe('browser history', () => {
     expect(s.url).toBe('qmail.com');
   });
 });
+
+describe('booking form', () => {
+  it("a refusal's notice is cleared by the next attempt", () => {
+    const s = make();
+    s.state.bookingNotice = { appId: 'trattoria-gino', ok: false, text: 'That date is in the past.' };
+    s.bookNext('You', 'you@qmail.com', s.state.values.day + 1);
+    expect(s.state.bookingNotice).toBeUndefined();
+    s.state.bookingNotice = { appId: 'trattoria-gino', ok: false, text: 'That date is in the past.' };
+    s.bookBack();
+    expect(s.state.bookingNotice).toBeUndefined();
+  });
+});

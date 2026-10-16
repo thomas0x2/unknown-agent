@@ -48,6 +48,14 @@ describe('table booking', () => {
     expect(book(s0, '19:00', 2, 0).bookings).toHaveLength(0);
   });
 
+  it('past dates: yesterday is refused, today (later on) and tomorrow are fine', async () => {
+    const s0 = await liveSite();
+    const day = s0.values.day;
+    expect(book(s0, '19:00', 2, day - 1).bookingNotice).toMatchObject({ ok: false, text: 'That date is in the past.' });
+    expect(book(s0, '19:00', 2, day).bookings).toHaveLength(1);
+    expect(book(s0, '19:00', 2, day + 1).bookings).toHaveLength(1);
+  });
+
   it('each bug shows up where a test booking would reveal it', async () => {
     const s0 = await liveSite();
     const withBug = (bug: string) => { const s = structuredClone(s0); devToggleBug(s, APP, 'booking', bug); return s; };

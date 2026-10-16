@@ -188,8 +188,9 @@ export class GameStore {
   takeDown(appId: string): void { this.commit(takeDown(this.state, appId)); }
   cancelBooking(id: string): void { this.commit(cancelBooking(this.state, id)); }
   joinEmpire(): void { this.commitAndSettle(joinEmpire(this.state)); }
-  bookNext(name: string, email: string, date: number): void { this.ui.book = { step: 2, name, email, date }; this.emit(); }
-  bookBack(): void { this.ui.book.step = 1; this.emit(); }
+  // a new attempt clears the last attempt's notice, so a refusal never sticks to a date it wasn't about
+  bookNext(name: string, email: string, date: number): void { delete this.state.bookingNotice; this.ui.book = { step: 2, name, email, date }; this.emit(); }
+  bookBack(): void { delete this.state.bookingNotice; this.ui.book.step = 1; this.emit(); }
   book(appId: string, time: string, party: number): void {
     const { name, email, date } = this.ui.book;
     const next = makeBooking(this.state, appId, name || 'You', email, date || this.state.values.day, time, party, this.content);
