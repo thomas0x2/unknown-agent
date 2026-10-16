@@ -145,7 +145,7 @@ export function startMenuHtml(store: GameStore): string {
       const when = info ? `${fmtClock(info.clockMin)} · saved ${new Date(info.savedAt).toLocaleString(undefined, { month: 'short', day: 'numeric' })}` : 'Empty';
       return `<div class="dm-slot${info ? '' : ' empty'}">${MI.slot}<span><b>Slot ${n}${info ? ` · ${dateShort(info.day)}` : ''}</b><small>${esc(when)}</small></span>
         <span class="dm-slot-acts">${info ? `<button data-slot-load="${n}">Load</button>` : ''}<button data-slot-save="${n}">Save</button></span></div>`;
-    }).join('') + '<p class="dm-note">Your current game saves itself after every action. The autosave is a snapshot from the start of each day.</p>';
+    }).join('') + (store.ui.slotNote ? `<p class="dm-note dm-err" role="alert">${esc(store.ui.slotNote)}</p>` : '') + '<p class="dm-note">Your current game saves itself after every action. The autosave is a snapshot from the start of each day.</p>';
   return `<aside class="dm-side">
       <span class="dm-avatar" title="${esc(PLAYER.name)}">${ICONS.agent}</span>
       <span class="dm-side-gap"></span>
@@ -264,7 +264,7 @@ function pageMail(store: GameStore, param?: string): string {
         <ul id="qm-sugg" class="qm-sugg" role="listbox" hidden data-contacts="${esc(JSON.stringify(contacts))}"></ul></div>
       <label class="qm-field"><span>Subject</span><input id="mail-subject" autocomplete="off" value="${esc(d.subject)}"></label>
       <textarea id="mail-body" rows="10" aria-label="Message">${esc(d.body)}</textarea>
-      <div class="qm-actions"><button class="qm-btn" type="submit">Send</button><button class="qm-btn ghost" type="button" data-mail-discard>Discard</button><span class="qm-hint">Free. One email per person per day.</span></div>
+      <div class="qm-actions"><button class="qm-btn" type="submit">Send</button><button class="qm-btn ghost" type="button" data-mail-discard>Discard</button>${store.ui.mailError ? `<span class="qm-hint qm-err" role="alert">${esc(store.ui.mailError)}</span>` : '<span class="qm-hint">Free. One email per person per day.</span>'}</div>
     </form>`;
   } else if (view === 'msg') {
     const row = rows.find((x) => x.id === param);
@@ -518,6 +518,7 @@ function pageWallet(store: GameStore): string {
           </div>
           <div class="cb-side">
             <div class="cb-actions"><button class="cb-btn${store.ui.send.open ? ' on' : ''}" data-act="send">Send</button><button class="cb-btn" data-act="receive">Receive</button></div>
+            ${store.ui.cbNotice ? `<p class="cb-notice" role="status">${esc(store.ui.cbNotice)}</p>` : ''}
             <div class="cb-tabs" role="tablist" aria-label="Range">${tabs}</div>
           </div>
         </div>
@@ -758,7 +759,7 @@ function pageYowl(store: GameStore, param?: string): string {
     const mine = store.state.reviews.some((r) => r.bizId === b.id && r.mine);
     const stars = store.ui.reviewStars;
     const form = mine ? '' : `<form class="yw-form" data-form="review" data-biz="${esc(b.id)}"><h2>Write a review</h2>
-      <div class="yw-pick" role="radiogroup" aria-label="Your rating">${[1, 2, 3, 4, 5].map((i) => `<button type="button" class="${stars >= i ? 'on' : ''}" data-star="${i}" role="radio" aria-checked="${stars === i}" aria-label="${i} star${i > 1 ? 's' : ''}"></button>`).join('')}<span>${stars ? `${stars} of 5` : 'Pick a rating'}</span></div>
+      <div class="yw-pick" role="radiogroup" aria-label="Your rating">${[1, 2, 3, 4, 5].map((i) => `<button type="button" class="${stars >= i ? 'on' : ''}" data-star="${i}" role="radio" aria-checked="${stars === i}" aria-label="${i} star${i > 1 ? 's' : ''}"></button>`).join('')}<span${store.ui.reviewNeedsStars ? ' class="yw-need"' : ''}>${stars ? `${stars} of 5` : store.ui.reviewNeedsStars ? 'Pick a rating first' : 'Pick a rating'}</span></div>
       <textarea id="review-text" rows="3" maxlength="600" placeholder="What was it like?"></textarea>
       <div class="yw-form-row"><span class="yw-hint">Free · one review per business</span><button class="yw-btn" type="submit">Post review</button></div></form>`;
     return `<div class="yw">${head}<div class="yw-wrap">

@@ -208,16 +208,6 @@ function updateCost(): void {
   est.classList.toggle('neg', c.over);
 }
 
-function toast(title: string, body: string, kind = 'note'): void {
-  const box = $('#toasts'); if (!box) return;
-  const el = document.createElement('div');
-  el.className = `toast t-${kind}`;
-  el.innerHTML = `<b>${title}</b><span>${body}</span>`;
-  box.appendChild(el);
-  while (box.children.length > 4) box.firstChild!.remove();
-  setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 400); }, 4200);
-}
-
 // ── clicks ──
 document.addEventListener('click', (e) => {
   const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-ov],[data-dev],[data-cancel-booking],[data-empire-join],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat],[data-back],[data-forward],[data-devbug],[data-task],[data-term],[data-devopts]');
@@ -234,7 +224,7 @@ document.addEventListener('click', (e) => {
   if (d.term != null) { if (d.term === 'close') store.closeTerm(); else store.showTerm(false); return; }
   if (d.menuCat != null) { store.setMenuCat(d.menuCat); return; }
   if (t.closest('#startmenu')) store.toggleStart(false);
-  if (d.slotSave != null) { const n = Number(d.slotSave); const save = () => { if (!store.saveSlot(n)) toast('Not saved', 'Could not save (storage unavailable)', 'note'); }; if (listSlots()[n - 1]) store.confirm(`Overwrite slot ${n} with your current game?`, 'Overwrite', save); else save(); return; }
+  if (d.slotSave != null) { const n = Number(d.slotSave); const save = () => { store.saveSlot(n); }; if (listSlots()[n - 1]) store.confirm(`Overwrite slot ${n} with your current game?`, 'Overwrite', save); else save(); return; }
   if (d.slotLoad != null) {
     const n = d.slotLoad === 'auto' ? 'auto' as const : Number(d.slotLoad);
     const name = n === 'auto' ? 'the autosave' : `slot ${n}`;
@@ -275,9 +265,9 @@ document.addEventListener('click', (e) => {
 
 /** Coinbin Receive: the player's address goes on the clipboard, for pasting wherever someone wants paying. */
 function copyWalletAddress(): void {
-  const done = () => toast('Coinbin', `Wallet address copied: ${PLAYER_WALLET.slice(0, 6)}…${PLAYER_WALLET.slice(-4)}`, 'wallet');
-  if (navigator.clipboard?.writeText) navigator.clipboard.writeText(PLAYER_WALLET).then(done, () => toast('Coinbin', `Your address: ${PLAYER_WALLET}`, 'wallet'));
-  else toast('Coinbin', `Your address: ${PLAYER_WALLET}`, 'wallet');
+  const fallback = () => store.setCbNotice(`Your address: ${PLAYER_WALLET}`);
+  if (navigator.clipboard?.writeText) navigator.clipboard.writeText(PLAYER_WALLET).then(() => store.setCbNotice('Address copied'), fallback);
+  else fallback();
 }
 
 function clearMailDraft(): void { ['mail-to', 'mail-subject', 'mail-body'].forEach(clearField); }
@@ -298,7 +288,7 @@ document.addEventListener('submit', (e) => {
   const kind = f.dataset.form;
   if (kind === 'dev-day') { store.devGoToDay(Number(val('#dev-day'))); return; }
   if (kind === 'dev-flag') { const v = val('#dev-flag-name').trim(); if (v) store.devSetFlag(v, true); return; }
-  if (kind === 'cb-send') { if (store.send(val('#cb-to').trim(), val('#cb-amount').trim())) toast('Coinbin', 'Sent.', 'wallet'); return; }
+  if (kind === 'cb-send') { store.send(val('#cb-to').trim(), val('#cb-amount').trim()); return; }
   if (kind === 'url') { newPageLoad(); store.navigate(val('#nt-url') || val('#address')); }
   else if (kind === 'ypost') { const v = val('#post-input').trim(); if (v) { clearField('post-input'); void store.post(v, trendingToday()); } }
   else if (kind === 'prompt') {
@@ -309,7 +299,7 @@ document.addEventListener('submit', (e) => {
   } else if (kind === 'mail') {
     const to = val('#mail-to').trim(), subject = val('#mail-subject').trim(), body = val('#mail-body').trim();
     if (!to || !body) return;
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) { toast('Qmail', 'Enter a valid address.', 'mail'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) { store.setMailError('Enter a valid address.'); return; }
     void store.compose(to, subject, body).then((r) => { if (r.sent) { clearMailDraft(); store.setDraft(null); store.navigate('qmail.com/sent'); } });
   } else if (kind === 'reply') {
     const v = val('#reply-body').trim(); if (!v) return;
@@ -319,7 +309,7 @@ document.addEventListener('submit', (e) => {
     else if (to) void store.compose(to, f.dataset.subject ?? '', v);
   } else if (kind === 'review') {
     const biz = f.dataset.biz!; const v = val('#review-text').trim(); const stars = store.ui.reviewStars;
-    if (!stars) { toast('Yowl', 'Pick a rating first.', 'note'); return; }
+    if (!stars) { store.needStars(); return; }
     if (v) void store.review(biz, stars, v).then((r) => { if (r.posted !== false) clearField('review-text'); });
   } else if (kind === 'book-next') {
     store.bookNext(val('#bk-name').trim(), val('#bk-email').trim(), Number(val('#bk-date')) || store.state.values.day);
