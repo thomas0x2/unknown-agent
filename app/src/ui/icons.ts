@@ -24,5 +24,11 @@ export const Y_ICONS: Record<string, string> = {
   views: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V6M15 20v-9M20 20V4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
   badge: '<svg viewBox="0 0 24 24" aria-label="Verified" role="img"><path d="M12 2.5 20.2 7.2v9.6L12 21.5l-8.2-4.7V7.2z" fill="currentColor"/><path d="m8.3 12.1 2.5 2.5 4.9-5" stroke="var(--y-bg)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
 };
+/* Token coins, full colour. No gradients or ids, so any number can share a page. */
+export const TOKENS: Record<'dolr' | 'mooncat', string> = {
+  dolr: '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="#17b26a"/><circle cx="16" cy="16" r="12.6" fill="none" stroke="#c9f7df" stroke-opacity=".45" stroke-width="1"/><path d="M12.6 9.6h3.6a6.4 6.4 0 0 1 0 12.8h-3.6z" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/><path d="M9.6 16h6M13.8 6.6v3M13.8 22.4v3" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>',
+  mooncat: '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="#3b2a63"/><circle cx="16" cy="16" r="12.6" fill="none" stroke="#c7b6f2" stroke-opacity=".35" stroke-width="1"/><path d="M8.7 15.2 8.9 7.6l4.4 3.6a7.6 7.6 0 0 1 5.4 0l4.4-3.6.2 7.6A7.6 7.6 0 1 1 8.7 15.2z" fill="#f5d77a"/><circle cx="20.6" cy="18.4" r="6.2" fill="#3b2a63"/><path d="M11.6 15.9q1.1-1 2.2 0" fill="none" stroke="#3b2a63" stroke-width="1.3" stroke-linecap="round"/></svg>',
+};
+
 // Qmail's tab and bookmark use the envelope.
 ICONS.qmail = ICONS.mail;

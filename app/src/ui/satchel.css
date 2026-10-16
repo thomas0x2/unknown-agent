@@ -52,8 +52,9 @@
 .sx-num { margin-left: auto; font-size: 13px; white-space: nowrap; }
 .sx-asset { flex-direction: row !important; align-items: center; gap: 10px !important; }
 .sx-asset > span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.sx-tok { flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-size: 11px; font-weight: 700; background: #1d2a24; color: var(--sx-pos); border: 1px solid #2a3b33; }
-.sx-tok.cat { background: #2a2224; color: #e9a3b0; border-color: #3b2e31; }
+.sx-tok { flex: none; width: 26px; height: 26px; display: block; }
+.sx-tok svg { display: block; width: 100%; height: 100%; }
+.sx-tok-lg { width: 30px; height: 30px; align-self: center; }
 .sx-alloc { flex: 0 0 72px; height: 3px; border-radius: 2px; background: var(--sx-line); overflow: hidden; }
 .sx-alloc i { display: block; height: 100%; background: var(--sx-accent); }
 

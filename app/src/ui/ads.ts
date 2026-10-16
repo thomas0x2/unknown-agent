@@ -9,6 +9,8 @@
  * (--ad-t) taken from the wall clock, so the motion carries on instead of restarting.
  */
 
+import { TOKENS } from './icons';
+
 /** the two ad pools: rectangular leaderboards for the top of a page, square boxes for sidebars */
 export type AdSlot = 'wide' | 'square';
 type Deco = 'robot' | 'coins' | 'stripes' | 'steam' | 'shine' | 'siren' | 'bubbles' | 'sparkle' | 'ekg' | 'snow' | 'stamp';
@@ -280,7 +282,7 @@ export function pickAd(site: string, day: number, slot: AdSlot, n = 0, rand: () 
 function decoHtml(d?: Deco): string {
   switch (d) {
     case 'robot': return '<span class="ad-robot" aria-hidden="true">🤖</span>';
-    case 'coins': return '<span class="ad-coins" aria-hidden="true"><i>🪙</i><i>🪙</i><i>🪙</i><i>🪙</i><i>🪙</i></span>';
+    case 'coins': return `<span class="ad-coins" aria-hidden="true">${`<i>${TOKENS.dolr}</i>`.repeat(5)}</span>`;
     case 'steam': return '<span class="ad-steam" aria-hidden="true"><i></i><i></i><i></i></span>';
     case 'bubbles': return '<span class="ad-bubbles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>';
     case 'sparkle': return '<span class="ad-sparkle" aria-hidden="true"><i>✦</i><i>✦</i><i>✦</i><i>✦</i></span>';

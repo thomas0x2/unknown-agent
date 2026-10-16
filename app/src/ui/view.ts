@@ -7,7 +7,7 @@ import type { GameStore } from '../game/store';
 import { MISSES } from '../game/misses';
 import { JEV } from '../game/backendJev';
 import { listSlots, autoSlot } from '../game/saves';
-import { ICONS, Y_ICONS } from './icons';
+import { ICONS, TOKENS, Y_ICONS } from './icons';
 import { route, bookmarks, type Route, type SiteId } from '../sites/registry';
 import {
   type GameState, type AppInstance, getApp, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, EMPIRE, BOUNCE_ADDR,
@@ -475,7 +475,7 @@ function pageWallet(store: GameStore): string {
         <div class="sx-port-head">
           <div>
             <p class="sx-label">Portfolio</p>
-            <p class="sx-bal"><span>${s.values.crypto < 0 ? '−' : ''}${Math.abs(s.values.crypto).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span><small>DOLR</small></p>
+            <p class="sx-bal"><i class="sx-tok sx-tok-lg">${TOKENS.dolr}</i><span>${s.values.crypto < 0 ? '−' : ''}${Math.abs(s.values.crypto).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span><small>DOLR</small></p>
             <p class="sx-chg ${up ? 'pos' : 'neg'}">${up ? '+' : '−'}${Math.abs(change).toFixed(2)} (${up ? '+' : '−'}${Math.abs(pct).toFixed(1)}%) <span>${range === 'All' ? 'all time' : `past ${range === '1W' ? 'week' : 'month'}`}</span></p>
           </div>
           <div class="sx-tabs" role="tablist" aria-label="Range">${tabs}</div>
@@ -485,8 +485,8 @@ function pageWallet(store: GameStore): string {
       </section>
       <div class="sx-cols">
         <section class="sx-card"><h2>Assets</h2>
-          <div class="sx-row"><span class="sx-asset"><i class="sx-tok">D</i><span><b>DOLR</b><small>Dollar stablecoin · $1.00</small></span></span><span class="sx-alloc"><i style="width:${(Math.max(0, s.values.crypto) / total * 100).toFixed(1)}%"></i></span><span class="sx-num">${s.values.crypto.toFixed(2)}</span></div>
-          <div class="sx-row"><span class="sx-asset"><i class="sx-tok cat">M</i><span><b>MOONCAT</b><small>4,200,000 · <em class="neg">−99.4%</em></small></span></span><span class="sx-alloc"><i style="width:${Math.max(0.5, 0.42 / total * 100).toFixed(1)}%"></i></span><span class="sx-num">0.42</span></div>
+          <div class="sx-row"><span class="sx-asset"><i class="sx-tok">${TOKENS.dolr}</i><span><b>DOLR</b><small>Dollar stablecoin · $1.00</small></span></span><span class="sx-alloc"><i style="width:${(Math.max(0, s.values.crypto) / total * 100).toFixed(1)}%"></i></span><span class="sx-num">${s.values.crypto.toFixed(2)}</span></div>
+          <div class="sx-row"><span class="sx-asset"><i class="sx-tok">${TOKENS.mooncat}</i><span><b>MOONCAT</b><small>4,200,000 · <em class="neg">−99.4%</em></small></span></span><span class="sx-alloc"><i style="width:${Math.max(0.5, 0.42 / total * 100).toFixed(1)}%"></i></span><span class="sx-num">0.42</span></div>
         </section>
         <section class="sx-card"><h2>Upcoming</h2>${upcoming}</section>
       </div>
