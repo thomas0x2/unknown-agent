@@ -22,7 +22,7 @@ import { adHtml } from './ads';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount, appLogo } from './appsite';
-import { marketPosts, fillerToday, postMin, handleOf, playMinutes, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, inBin, isDeleted, CLOCK } from '../engine';
+import { marketPosts, cranePosts, fillerToday, postMin, handleOf, playMinutes, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, inBin, isDeleted, CLOCK } from '../engine';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 import { repoFiles, treeAt, fileSource } from './repoTree';
 
@@ -864,7 +864,7 @@ function pageApp(store: GameStore, param?: string): string {
     ? `<h1>Booking cancelled</h1><p class="pv-note ok">Your booking for ${cancelled.party} on ${dateFull(cancelled.date)} at ${esc(cancelled.time)} has been cancelled.</p><p class="pv-sub">We hope to see you another time.</p>`
     : undefined;
   const tmpl = store.content.apps[a.template];
-  return `<div class="pv-host">${renderAppSite(a, tmpl, cancel ? 'cancel' : sub, { booking, cancel, day: s.values.day, minute: s.clockMin, market: crawlable(store), play: playMinutes(s), watchSold: s.flags.includes('viktor_sold_watch') })}</div>`;
+  return `<div class="pv-host">${renderAppSite(a, tmpl, cancel ? 'cancel' : sub, { booking, cancel, day: s.values.day, minute: s.clockMin, market: crawlable(store), crane: cranePosts(s, store.content), play: playMinutes(s), watchSold: s.flags.includes('viktor_sold_watch') })}</div>`;
 }
 
 // ── agent chat (free-promptable, with costs) ──
