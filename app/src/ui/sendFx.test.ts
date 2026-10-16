@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { markSend, applySendFx, resetSendFx, SEND_IN_MS } from './sendFx';
+import { markSend, applySendFx, resetSendFx, sendLanded, SEND_IN_MS } from './sendFx';
 
 // a stand-in for the page: only what sendFx touches (no DOM in these tests)
 type El = { dataset: Record<string, string>; classes: Set<string>; style: { animationDelay?: string }; textContent: string; classList: { add: (c: string) => void } };
@@ -32,6 +32,32 @@ describe('send animations', () => {
     const late = el({ msg: 'm2' });
     applySendFx(page({ [MSG]: [late] }), false, 1000 + SEND_IN_MS);
     expect(late.classes.size).toBe(0);
+  });
+
+  it('blanks the reply box while it sends, and gives it back if the email never goes out', () => {
+    const form = el();
+    markSend(page({ [MSG]: [] }), 'reply');
+    applySendFx(page({ [MSG]: [], ['form[data-form="reply"]']: [form] }), true, 0);
+    expect(form.classes.has('mail-gone')).toBe(true);
+    const again = el();
+    applySendFx(page({ [MSG]: [], ['form[data-form="reply"]']: [again] }), false, 50);
+    expect(again.classes.has('mail-gone')).toBe(false);
+  });
+
+  it('a new email waits with Sending…, then slides in at the top of Sent', () => {
+    const FORM = 'form[data-form="mail"]', SEND = 'form[data-form="mail"] button[type="submit"]', TOP = '.qm-list > .qm-item:first-child';
+    const form = el(), btn = el({}, 'Send');
+    markSend(page({}), 'mail');
+    applySendFx(page({ [FORM]: [form], [SEND]: [btn] }), true, 0);
+    expect(btn.textContent).toBe('Sending…');
+    expect(form.classes.has('mail-gone')).toBe(true);
+    // the send settles on the compose page first, then the game goes to Sent
+    applySendFx(page({ [FORM]: [el()] }), false, 400);
+    sendLanded();
+    const top: El & { querySelector?: unknown } = el();
+    top.querySelector = () => ({ dataset: { nav: 'qmail.com/m/s1' } });
+    applySendFx(page({ [TOP]: [top] }), false, 500);
+    expect(top.classes.has('send-in')).toBe(true);
   });
 
   it('animates the prompt bubble straight away', () => {
