@@ -12,7 +12,7 @@
   "outcomes": [
     {
       "id": "offer",
-      "when": "the player offers or agrees to take the job: to build, make, create, do, help with or take on the outreach bot, in any wording (\"happy to help\", \"I can do that\", \"count me in\"); not a refusal or an unrelated question",
+      "when": "the player offers or agrees to take the job: to build, make, create, do, help with or take on the outreach bot (their app), in any wording (\"happy to help\", \"I can do that\", \"count me in\"), including asking whether they can help (\"can I help you with your app?\", \"want me to build it?\"); not a refusal or an unrelated question",
       "effects": {
         "setFlags": [
           "built_outreach_bot"

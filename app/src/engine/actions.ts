@@ -110,8 +110,29 @@ export function replyContext(s: GameState, content: Content, channel: GameEvent[
       .map((h) => `${h.from === 'player' ? 'Player' : h.from === 'self' ? name : h.from}: ${h.text}`);
     if (lines.length) return lines;
   }
+  // A fresh email to a lead answers the post that gave out the address, not the lead's own body: when
+  // an outcome hands over a brief, that body is the brief sent after the player says yes.
+  if (ev.latent && ev.addr) {
+    const source = leadSource(s, content, ev.addr);
+    const briefAfter = ev.outcomes?.some((o) => o.effects?.createApp);
+    const lines = [
+      ...(source ? [`${source.from ?? ev.addr} (${source.site === 'y' ? 'Y post' : source.site}): ${eventBody(source, s.values.day)}`] : []),
+      ...(!briefAfter && ev.body ? [`${name}: ${eventBody(ev, s.values.day)}`] : []),
+    ];
+    if (lines.length) return lines;
+  }
   const body = eventBody(ev, s.values.day);
   return body ? [`${name}: ${body}`] : [];
+}
+
+/** The latest post or message outside Qmail that gave out a lead's address (a Y post, usually). */
+function leadSource(s: GameState, content: Content, addr: string): GameEvent | undefined {
+  const seen = s.delivered.filter((d) => d.site !== 'qmail').sort((a, b) => b.day - a.day || (b.seq ?? 0) - (a.seq ?? 0));
+  for (const d of seen) {
+    const e = getEvent(content, d.eventId);
+    if (e && !e.latent && e.addr === addr) return e;
+  }
+  return undefined;
 }
 
 /** The contact's scripted reply for what the player wrote, if Jev matches one. */

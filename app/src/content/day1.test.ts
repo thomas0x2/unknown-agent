@@ -32,6 +32,17 @@ describe('day 1 playthrough', () => {
     expect(inbox).not.toContain('restaurant_contact');
   });
 
+  it('a fresh email to Gino shows Jev his Y post, not the brief he sends after a yes', async () => {
+    const s = startAll(content, 7);
+    let seen: { context?: string[]; candidates: { id: string; when: string }[] } | undefined;
+    const jev = { ...wordJev, route: async (input: Parameters<typeof wordJev.route>[0]) => { seen = input; return { kind: 'outcome' as const, outcomeId: 'offer' }; } };
+    await composeEmail(s, content, jev, 'gino@trattoria.test', 'Can I help you with your app?');
+    expect(seen!.context!.join('\n')).toContain('nephew used to run our website');
+    expect(seen!.context!.join('\n')).not.toContain("Here's what I need");
+    // asking whether they can help is an offer, and the app counts as the website
+    expect(seen!.candidates.find((c) => c.id === 'offer')!.when).toMatch(/can I help you with your app/);
+  });
+
   it('take the gig, build, deploy, fix the bug, and get paid at day end', async () => {
     let s = startAll(content, 7);
 
