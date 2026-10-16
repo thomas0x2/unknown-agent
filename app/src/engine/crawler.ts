@@ -117,22 +117,34 @@ export function autoBuys(posts: MarketPost[], day: number, bugs: Set<string>): B
   return out;
 }
 
-/** `move` is the market's price change since yesterday's close, straight from the quote (bugs don't touch it). */
-export interface Holding { ticker: string; shares: number; price: number; move: number; value: number; dayPnl: number }
-export interface Portfolio { cash: number; holdings: Holding[]; total: number; change: number }
+/**
+ * `move` is the market's price change since yesterday's close, straight from the quote (bugs don't
+ * touch it). Percentages are fractions (0.01 is 1%). Each calculation has its own bug, and each is
+ * far enough off to see at a glance.
+ */
+export interface Holding { ticker: string; shares: number; price: number; move: number; movePct: number; value: number; dayPnl: number }
+export interface Portfolio { cash: number; holdings: Holding[]; total: number; change: number; changePct: number }
 
 export function portfolio(buys: Buy[], day: number, bugs: Set<string>): Portfolio {
   const held = { ...START_PORTFOLIO.holdings };
   let cash = START_PORTFOLIO.cash;
-  if (!bugs.has('stale_after_buy')) for (const b of buys) { held[b.ticker] = (held[b.ticker] ?? 0) + b.shares; cash -= b.shares * b.price; }
+  for (const b of buys) { held[b.ticker] = (held[b.ticker] ?? 0) + b.shares; cash -= b.shares * b.price; }
+  // percentages multiplied by 100 twice
+  const pctScale = bugs.has('pct_wrong') ? 100 : 1;
   const holdings = Object.entries(held).map(([ticker, shares]) => {
     const px = price(ticker, day), move = px - price(ticker, Math.max(1, day - 1));
-    return { ticker, shares, price: px, move, value: shares * px, dayPnl: shares * move };
+    // value in cents divided by 100 once too often; P&L with the sign flipped
+    const value = shares * px / (bugs.has('value_wrong') ? 100 : 1);
+    const dayPnl = shares * move * (bugs.has('pnl_sign') ? -1 : 1);
+    return { ticker, shares, price: px, move, movePct: (move / (px - move)) * pctScale, value, dayPnl };
   });
-  const stocks = holdings.reduce((a, h) => a + h.value, 0);
-  // today's change; the bug shows the change since the account was opened (day 1 prices)
-  const change = holdings.reduce((a, h) => a + h.shares * (h.price - price(h.ticker, bugs.has('change_wrong') ? 1 : day - 1)), 0);
-  // the classic: cash added to the total twice
-  const total = stocks + cash * (bugs.has('wrong_totals') ? 2 : 1);
-  return { cash, holdings, total, change };
+  const stocks = Object.entries(held).reduce((a, [t, n]) => a + n * price(t, day), 0);
+  const change = holdings.reduce((a, h) => a + h.dayPnl, 0);
+  const real = stocks + cash;
+  // the total leaves the holdings out and shows only the cash
+  const total = bugs.has('wrong_totals') ? cash : real;
+  const changePct = (change / (real - change || 1)) * pctScale;
+  // cash with the holdings' cost taken off a second time: negative
+  const shown = bugs.has('cash_wrong') ? cash - stocks : cash;
+  return { cash: shown, holdings, total, change, changePct };
 }

@@ -78,9 +78,26 @@ describe('sentiment crawler', () => {
     expect(autoBuys(all, 6, bugs('impostor_buy')).map((b) => [b.ticker, b.post.handle])).toContainEqual(['VANT', 'randa11_crane']);
     expect(autoBuys(all, 6, bugs('repeat_buys')).length).toBeGreaterThan(1);
     expect(portfolio(ok, 6, bugs()).holdings.find((h) => h.ticker === 'GAI')!.shares).toBeGreaterThan(START_PORTFOLIO.holdings.GAI);
-    expect(portfolio(ok, 6, bugs('stale_after_buy')).holdings.find((h) => h.ticker === 'GAI')!.shares).toBe(START_PORTFOLIO.holdings.GAI);
-    expect(portfolio(ok, 6, bugs('change_wrong')).change).not.toBeCloseTo(portfolio(ok, 6, bugs()).change);
-    expect(portfolio(ok, 6, bugs('wrong_totals')).total).toBeGreaterThan(portfolio(ok, 6, bugs()).total);
+  });
+
+  it('each portfolio bug is off by enough to see at a glance', () => {
+    const all = marketPosts(onDay(6), content);
+    const buys = autoBuys(all, 6, bugs());
+    const ok = portfolio(buys, 6, bugs());
+    const sum = ok.holdings.reduce((a, h) => a + h.value, 0) + ok.cash;
+    expect(ok.total).toBeCloseTo(sum);
+    expect(ok.change).toBeCloseTo(ok.holdings.reduce((a, h) => a + h.dayPnl, 0));
+    for (const h of ok.holdings) expect(Math.sign(h.dayPnl)).toBe(Math.sign(h.move));
+    // the total is smaller than a single holding
+    expect(portfolio(buys, 6, bugs('wrong_totals')).total).toBeLessThan(Math.max(...ok.holdings.map((h) => h.value)));
+    // a value smaller than the share count
+    for (const h of portfolio(buys, 6, bugs('value_wrong')).holdings) expect(h.value).toBeLessThan(h.shares * 5);
+    // a rising stock with a loss
+    for (const h of portfolio(buys, 6, bugs('pnl_sign')).holdings) expect(Math.sign(h.dayPnl)).toBe(-Math.sign(h.move));
+    expect(portfolio(buys, 6, bugs('cash_wrong')).cash).toBeLessThan(0);
+    // a few dollars' move on a $140 stock shown as a double-digit percentage
+    for (const h of portfolio(buys, 6, bugs('pct_wrong')).holdings) expect(Math.abs(h.movePct)).toBeGreaterThan(0.1);
+    for (const h of ok.holdings) expect(Math.abs(h.movePct)).toBeLessThan(0.1);
   });
 });
 
@@ -185,9 +202,11 @@ const ASKS: Record<string, [string, string, Record<string, string>]> = {
     inverted: 'Bullish and bearish are swapped in the sentiment split.',
     sarcasm_literal: 'The sentiment reads sarcastic posts literally.',
     bots_counted: 'It counts bot spam.',
-    wrong_totals: 'The portfolio totals are wrong.',
-    stale_after_buy: "The portfolio doesn't update after a buy.",
-    change_wrong: "Today's change in the portfolio is wrong, it shows the change since the start.",
+    wrong_totals: 'The portfolio total is wrong, it only counts the cash and leaves out the holdings.',
+    value_wrong: "The holding values are wrong, 100 times too small. It's shares times price.",
+    pnl_sign: 'The day P&L has the wrong sign, gains show as losses.',
+    cash_wrong: 'Cash shows negative.',
+    pct_wrong: 'The percent changes are 100 times too big.',
     no_buy: "Auto-buy didn't buy when Crane praised $GAI.",
     wrong_ticker: 'Auto-buy bought the wrong ticker.',
     buys_on_criticism: 'Auto-buy fires on criticism, not just praise.',

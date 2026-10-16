@@ -137,13 +137,12 @@ function valueChart(values: number[], day: number): string {
 }
 
 function portfolioPanel(pf: Portfolio, history: number[], day: number): string {
-  const prev = history.length > 1 ? history[history.length - 2] : pf.total;
   const rows = pf.holdings.map((h) => `<tr><td class="tk">$${esc(h.ticker)}</td><td>${h.shares.toLocaleString('en-US')}</td><td>${money(h.price)}</td>
-      <td class="${tone(h.move)}">${signed(h.move)} <small>${pct(h.move / (h.price - h.move))}</small></td><td>${money(h.value)}</td><td class="${tone(h.dayPnl)}">${signed(h.dayPnl)}</td></tr>`).join('');
+      <td class="${tone(h.move)}">${signed(h.move)} <small>${pct(h.movePct)}</small></td><td>${money(h.value)}</td><td class="${tone(h.dayPnl)}">${signed(h.dayPnl)}</td></tr>`).join('');
   return `<section class="as-s-pf">
     <div class="as-s-pf-top">
       <div><span class="lbl">Portfolio value</span><b class="as-s-big">${money(pf.total)} <small>DOLR</small></b></div>
-      <span class="as-s-pill ${tone(pf.change)}">${signed(pf.change)} (${pct(prev ? pf.change / (pf.total - pf.change) : 0)}) today</span>
+      <span class="as-s-pill ${tone(pf.change)}">${signed(pf.change)} (${pct(pf.changePct)}) today</span>
     </div>
     ${valueChart(history, day)}
     <table class="as-s-hold"><thead><tr><th>Ticker</th><th>Shares</th><th>Price</th><th>Today</th><th>Value</th><th>Day P&amp;L</th></tr></thead>
