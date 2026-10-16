@@ -93,7 +93,7 @@ export class GameStore {
   /** Called on every game minute that passes without anything else changing, so only the clock repaints. */
   onClock(fn: () => void): () => void { this.clockListeners.add(fn); return () => this.clockListeners.delete(fn); }
   private commit(s: GameState): void { this.keepTime(s); this.state = s; this.store.save(s); this.emit(); }
-  /** Commit an action, then auto-sleep if the clock has run past midnight. */
+  /** Commit an action, then auto-sleep if the clock has reached bedtime (22:00). */
   private commitAndSettle(s: GameState): void {
     this.keepTime(s);
     this.state = s;
@@ -137,7 +137,7 @@ export class GameStore {
     this.clockCarry -= mins * MS_PER_GAME_MIN;
     this.passMinutes(mins);
   }
-  /** Let game minutes pass: replies come due, and at midnight the day ends. */
+  /** Let game minutes pass: replies come due, and at 22:00 the day ends. */
   passMinutes(mins: number): void {
     const s = this.state;
     if (s.ending) return;
@@ -423,7 +423,7 @@ export class GameStore {
   }
   /** Dev: stop or restart the clock. */
   devHoldClock(): void { this.clockHeld = !this.clockHeld; this.emit(); }
-  /** Dev: jump the clock forward (to midnight at most, which ends the day). */
+  /** Dev: jump the clock forward (to 22:00 at most, which ends the day). */
   devSkip(minutes: number): void { this.passMinutes(Math.min(minutes, CLOCK.sleep - this.state.clockMin)); }
   /** Dev: switch a story flag on or off. */
   devSetFlag(flag: string, on: boolean): void {

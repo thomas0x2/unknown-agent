@@ -13,7 +13,7 @@ touching engine code.
 - `qmail_spam.json` — `FillerPost[]` for the Qmail spam pool.
 - `contacts.json` — who answers at each address. `replyAfter` is how many minutes of game time
   their replies take (default 60). The clock runs in real time, one game minute per
-  real second (a whole day in 14 minutes), so 30 game minutes is 30 seconds. An outcome or scripted reply can set its own
+  real second (a whole day, 10:00 to 22:00, in 12 minutes), so 30 game minutes is 30 seconds. An outcome or scripted reply can set its own
   `replyAfter` to answer faster or slower.
   Job requests always answer within 30 game minutes: events with a `job`, an outcome that creates
   an app, or `jobRequest: true`.
