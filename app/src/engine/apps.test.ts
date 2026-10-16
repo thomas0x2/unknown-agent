@@ -99,6 +99,16 @@ describe('payday', () => {
     expect(getApp(s, id)!.churned).toBe(true);
   });
 
+  it('a churned client app cannot be deployed again', () => {
+    const { s, id } = withShop();
+    makeWorking(s, id);
+    const app = getApp(s, id)!;
+    app.churned = true;
+    app.deployed = false;
+    deployApp(s, id);
+    expect(getApp(s, id)!.deployed).toBe(false);
+  });
+
   it('user app grows when working and bleeds users when broken', () => {
     const { s, id } = withShop('user');
     makeWorking(s, id);

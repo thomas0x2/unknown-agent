@@ -662,6 +662,7 @@ function pageWallet(store: GameStore): string {
 
 // ── Forkyard ──
 function repoStatus(a: AppInstance): string {
+  if (a.churned) return `<span class="fy-pill off">Client cancelled</span>`;
   if (!a.deployed) return `<span class="fy-pill off">Not deployed</span>`;
   return `<span class="fy-pill on">Live</span> <a href="#" data-newtab="${a.url}" class="fy-url">${a.url}</a>`;
 }
@@ -737,7 +738,9 @@ function pageForkyard(store: GameStore, repo?: string): string {
       <div class="fy-grid">
         <div class="fy-files"><div class="fy-filehead">Pushed by <b>agent[bot]</b> · repo v${a.repoVersion}</div>${feats}</div>
         <div class="fy-deploy"><h2>Deployment</h2><p>${repoStatus(a)}</p>
-          ${a.deployed
+          ${a.churned
+            ? `<p class="fy-note">The client cancelled. This app can't be deployed.</p>`
+            : a.deployed
             ? `<dl><dt>Status</dt><dd>live</dd>${a.kind === 'user' ? `<dt>Users</dt><dd>${(a.users ?? 0).toLocaleString('en-US')}</dd><dt>Ad revenue / day</dt><dd>${userRevenue(a)} DOLR</dd>` : ''}<dt>Hosting / day</dt><dd>$2.00</dd>${stale ? '<dt>Repo</dt><dd>new commit — redeploy</dd>' : ''}</dl><div class="fy-row"><button class="fy-btn" data-deploy="${esc(a.id)}">Redeploy</button><button class="fy-btn ghost" data-takedown="${esc(a.id)}">Take down</button></div>`
             : `<p class="fy-note">Hosting costs $2.00/day, billed nightly. Nothing is live until you deploy.</p><button class="fy-btn" data-deploy="${esc(a.id)}">Deploy</button>`}
         </div></div></div></div>`;
@@ -747,7 +750,7 @@ function pageForkyard(store: GameStore, repo?: string): string {
     ? repos.slice().reverse().map((a) => `<article class="fy-repo">
         <div><a href="#" data-nav="forkyard.com/${a.id}" class="fy-name">${esc(a.id)}</a>${((n) => n ? `<span class="fy-devcount" title="Dev mode">${n} bug${n > 1 ? 's' : ''}</span>` : '')(devBugCount(a, store.content.apps[a.template]))}<p>${esc(a.name)}</p>
         <small><i class="fy-lang" style="--h:${hashHue(a.template)}"></i>${esc(a.template)} · ${a.kind}${a.kind === 'user' ? ` · ${(a.users ?? 0).toLocaleString('en-US')} users · ${userRevenue(a)} DOLR/day` : ''}</small></div>
-        <div class="fy-repo-act">${repoStatus(a)}<button class="fy-btn" data-deploy="${esc(a.id)}">${a.deployed ? 'Redeploy' : 'Deploy'}</button></div></article>`).join('')
+        <div class="fy-repo-act">${repoStatus(a)}${a.churned ? '' : `<button class="fy-btn" data-deploy="${esc(a.id)}">${a.deployed ? 'Redeploy' : 'Deploy'}</button>`}</div></article>`).join('')
     : `<div class="fy-empty"><p><b>No repositories yet.</b></p><p>Brief the agent to build something.</p></div>`;
   return `<div class="fy">${head}<div class="fy-wrap"><h1 class="fy-h">Repositories <span>${repos.length}</span></h1>${adHtml('forkyard', s.values.day, 'wide')}${list}</div></div>`;
 }
