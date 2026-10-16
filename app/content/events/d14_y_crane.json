@@ -1,0 +1,11 @@
+{
+  "id": "d14_y_crane",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "dayMin": 14,
+    "dayMax": 14
+  },
+  "at": "11:15",
+  "body": "A computer in the capital, they call it a \"model,\" now does the work of 9,000 government employees. And it STILL can't balance a budget! I could do it in an afternoon. Maybe a morning."
+}

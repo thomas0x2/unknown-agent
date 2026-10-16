@@ -1,0 +1,11 @@
+{
+  "id": "d18_y_crane",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "dayMin": 18,
+    "dayMax": 18
+  },
+  "at": "10:20",
+  "body": "WON the debate, by a lot! One online poll had me at 94%, with 1.2 million votes in under a minute. People are very excited, and very fast."
+}

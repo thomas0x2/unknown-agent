@@ -1,0 +1,11 @@
+{
+  "id": "d17_y_crane",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "dayMin": 17,
+    "dayMax": 17
+  },
+  "at": "12:00",
+  "body": "Debate tonight. I won't need notes. I have the best memory of anyone who has ever run, everybody says so. I can't remember who, but they say it."
+}

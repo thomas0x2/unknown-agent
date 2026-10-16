@@ -1,0 +1,11 @@
+{
+  "id": "d11_y_crane",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "dayMin": 11,
+    "dayMax": 11
+  },
+  "at": "19:25",
+  "body": "Somebody asked me what I'll do about AI. I will do the best thing anybody has ever done about AI. Everybody will be shocked how good it is. Details very soon!"
+}
