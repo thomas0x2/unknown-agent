@@ -915,6 +915,21 @@ export const POST_BANDS: Record<PostRating['category'], [number, number]> = {
   hot_take: [0.1, 0.25], self_promo: [-0.03, -0.01], spam: [-0.05, -0.02],
 };
 
+/** Flat follower change per category that small accounts get when it beats the share above (low to high quality). */
+export const POST_FLOORS: Record<PostRating['category'], [number, number]> = {
+  reaction: [8, 14], launch: [2, 8], tip: [1, 5], humor: [0, 8],
+  hot_take: [4, 12], self_promo: [-3, -1], spam: [-5, -2],
+};
+
+/** Follower change for a rated post before jitter: the share of followers or the flat floor, whichever is bigger. */
+export function postBase(category: PostRating['category'], quality: number, followers: number): number {
+  const [lo, hi] = POST_BANDS[category];
+  const [flo, fhi] = POST_FLOORS[category];
+  const share = followers * (lo + (hi - lo) * quality);
+  const floor = flo + (fhi - flo) * quality;
+  return Math.abs(floor) > Math.abs(share) ? floor : share;
+}
+
 export interface PostResult { state: GameState; rating: PostRating; followerDelta: number }
 
 /** Post to Y. Jev rates it; the rating becomes a follower change per the rubric. */
@@ -932,10 +947,8 @@ export async function postToY(
   if (s.postsToday >= YCFG.maxFreePostsPerDay) {
     delta = Math.round(s.values.followers * YCFG.overpostPenaltyPct);
   } else {
-    const [lo, hi] = POST_BANDS[rating.category];
-    const pct = lo + (hi - lo) * rating.quality;
-    delta = Math.round(s.values.followers * pct);
-    if (rating.category === 'reaction') delta = Math.max(delta, 10);
+    const jitter = 1 + YCFG.postJitter * (2 * rand(s) - 1);
+    delta = Math.round(postBase(rating.category, rating.quality, s.values.followers) * jitter);
     if (rating.category === 'hot_take') addValue(s, 'familyTrust', -Math.round(5 + 5 * rating.quality));
   }
   addValue(s, 'followers', delta);

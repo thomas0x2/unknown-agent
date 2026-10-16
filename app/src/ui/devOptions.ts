@@ -6,7 +6,7 @@
 import type { GameStore } from '../game/store';
 import type { Content, Effects, GameEvent, Outcome, Trigger } from '../content/schema';
 import {
-  type GameState, activeDeliveries, triggerMatches, replyDeadline, needsWork, fixCategories, policyActive, POST_BANDS, Y as YCFG, NO_SHOW,
+  type GameState, activeDeliveries, triggerMatches, replyDeadline, needsWork, fixCategories, policyActive, POST_BANDS, postBase, Y as YCFG, NO_SHOW,
 } from '../engine';
 import { PASSWORDS, COINBIN_PASSWORD, PHISH_DOMAIN, hacked } from '../engine/phishing';
 import { DEEPSLEEP_LINES, DEEPSLEEP_PLEA, PLEA_AT, translationReplies } from '../engine/deepsleep';
@@ -282,7 +282,7 @@ function phishing(store: GameStore): string {
 // ── Y ──
 
 const CATEGORY_NOTE: Record<string, string> = {
-  reaction: 'on a trending topic; at least +10',
+  reaction: 'on a trending topic',
   launch: 'announcing something you made',
   tip: 'useful advice; the default for anything off-trend',
   humor: '',
@@ -297,14 +297,15 @@ function yOptions(store: GameStore): string {
   const f = s.values.followers;
   const trending = c.trending[s.values.day] ?? [];
   const rows = Object.entries(POST_BANDS).map(([cat, [lo, hi]]) => {
-    let a = Math.round(f * lo), b = Math.round(f * hi);
-    if (cat === 'reaction') { a = Math.max(a, 10); b = Math.max(b, 10); }
+    const c0 = cat as keyof typeof POST_BANDS;
+    const ends = [postBase(c0, 0, f), postBase(c0, 1, f)].flatMap((v) => [v * (1 - YCFG.postJitter), v * (1 + YCFG.postJitter)]).map(Math.round);
+    const a = Math.min(...ends), b = Math.max(...ends);
     const pct = `${signed(Math.round(lo * 100))}% to ${signed(Math.round(hi * 100))}%`;
     return `<tr><td><code>${esc(cat)}</code></td><td>${pct}</td><td>${a === b ? signed(a) : `${signed(a)} to ${signed(b)}`}</td><td class="dvo-dim">${esc(CATEGORY_NOTE[cat] ?? '')}</td></tr>`;
   }).join('');
   const left = Math.max(0, YCFG.maxFreePostsPerDay - s.postsToday);
   const posts = `<p class="dvo-note">${s.postsToday} of ${YCFG.maxFreePostsPerDay} posts today. ${left ? `${left} left before overposting` : 'Overposting now'}: every extra post costs ${Math.round(-YCFG.overpostPenaltyPct * 100)}% of followers${Math.round(f * YCFG.overpostPenaltyPct) ? ` (${signed(Math.round(f * YCFG.overpostPenaltyPct))})` : ''}.</p>`;
-  const table = `<table class="dvo-table"><thead><tr><th>Jev rates it</th><th>Followers</th><th>At ${f}</th><th></th></tr></thead><tbody>${rows}</tbody></table><p class="dvo-dim">Where in the range depends on the quality Jev gives the post.</p>`;
+  const table = `<table class="dvo-table"><thead><tr><th>Jev rates it</th><th>Followers</th><th>At ${f}</th><th></th></tr></thead><tbody>${rows}</tbody></table><p class="dvo-dim">Where in the range depends on the quality Jev gives the post, then lands randomly within ±${Math.round(YCFG.postJitter * 100)}%. Small accounts get a flat amount instead when it is bigger.</p>`;
   // posts on Y that lead somewhere: an address that opens a Qmail lead
   const leads = s.delivered.filter((d) => d.site === 'y').map((d) => c.events.find((e) => e.id === d.eventId)).filter((e): e is GameEvent => !!e?.addr).map((e) => {
     const lead = c.events.find((x) => x.site === 'qmail' && x.latent && x.addr === e.addr);

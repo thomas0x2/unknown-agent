@@ -159,4 +159,6 @@ export const Y = {
   feedMix: { noise: 0.6, world: 0.25, leads: 0.15 },
   maxFreePostsPerDay: 3,
   overpostPenaltyPct: -0.02,
+  /** A post's follower change lands randomly within this share either side of what its rating earns. */
+  postJitter: 0.3,
 };
