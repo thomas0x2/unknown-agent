@@ -297,7 +297,7 @@ class LocalLLM {
 }
 
 function loadSettings(): Settings {
-  const d: Settings = { backend: 'browser', autoload: false, ollamaUrl: CONFIG.ollamaUrl, ollamaModel: CONFIG.ollamaModel, misses: 'gemma', haikuVia: 'subscription' };
+  const d: Settings = { backend: 'browser', autoload: false, ollamaUrl: CONFIG.ollamaUrl, ollamaModel: CONFIG.ollamaModel, misses: 'gemma', haikuVia: 'api' };
   try { return Object.assign(d, JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}')); } catch { return d; }
 }
 function saveSettings(s: Settings): void { try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch { /* storage off */ } }
