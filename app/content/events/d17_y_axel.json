@@ -1,0 +1,11 @@
+{
+  "id": "d17_y_axel",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 17,
+    "dayMax": 17
+  },
+  "at": "16:30",
+  "body": "Hosting tonight's debate live on Y. Over 40 million people listening."
+}

@@ -1,0 +1,11 @@
+{
+  "id": "d18_y_axel",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 18,
+    "dayMax": 18
+  },
+  "at": "09:30",
+  "body": "Big win for free speech last night"
+}

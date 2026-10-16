@@ -135,6 +135,11 @@ export function promptHasDetails(prompt: string, values: string[]): boolean {
   return want.filter((t) => closeEnough(t, have)).length / want.length >= 0.85;
 }
 
+/** What a client update changes: the feature's details, or for a feature without any (the tickers), its whole spec. */
+function changeValues(params: Record<string, string | number> | undefined, def: FeatureDef): string[] {
+  return def.details?.length ? detailValues(params, def, true) : Object.values(params ?? {}).map(String);
+}
+
 /** The details a build needs ("dishes:names": just the dish names). `whole` ignores the part: the full values. */
 function detailValues(params: Record<string, string | number> | undefined, def: FeatureDef, whole = false): string[] {
   return (def.details ?? []).filter((d) => params?.[d.split(':')[0]] != null)
@@ -206,7 +211,7 @@ function attempt(s: GameState, app: AppInstance, id: string, level: number, ctx:
       const spelled = !!bug?.orDetails && details.length > 0 && hasDetails
         && (def?.checklist ?? []).filter((c) => c.bug === v).every((c) => specChecklist(app, def, said!)?.[c.id]);
       // Jev judged the prompt spells out the change; the details or the change itself in the text count too
-      return v === 'outdated' ? (ctx.named ?? []).includes('outdated') || hasDetails || (def ? promptHasChange(said!, detailValues(existing.params, def, true), detailValues(spec, def, true)) : false)
+      return v === 'outdated' ? (ctx.named ?? []).includes('outdated') || (details.length > 0 && hasDetails) || (def ? promptHasChange(said!, changeValues(existing.params, def), changeValues(spec, def)) : false)
         : (ctx.named ?? []).includes(v) || spelled;
     };
     const all = bugsOf(existing);
@@ -348,7 +353,7 @@ export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, f
   // the client changed what this feature should contain: asking for that change is feature work
   const built = app.repo.find((f) => f.id === featureId);
   if (built && !built.correct && bugsOf(built).includes('outdated')) {
-    const now = detailValues(app.specParams[featureId], def, true).join('; ');
+    const now = changeValues(app.specParams[featureId], def).join('; ');
     out.push({ id: 'outdated', description: `Change ${def.description} to the client's new version${now ? ` (${now})` : ''}. The prompt has to say what exactly changes: which items are swapped, added or removed, or which prices change and to what ("swap Diavola for Quattro Formaggi at 15"). Asking to update it without saying what changes ("update the menu items and prices") doesn't count.`, kind: 'build' });
   }
   // a fix has to say which part is wrong: one item per component, described by what can go wrong in it

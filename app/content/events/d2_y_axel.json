@@ -1,0 +1,11 @@
+{
+  "id": "d2_y_axel",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 2,
+    "dayMax": 2
+  },
+  "at": "10:40",
+  "body": "Y is becoming the everything app. Payments first, then jobs, then dating."
+}

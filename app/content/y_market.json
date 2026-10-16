@@ -431,6 +431,30 @@
       "mood": "neutral"
     },
     {
+      "id": "m8_apo_rook",
+      "day": 8,
+      "from": "Brent Kowalski",
+      "handle": "brentk_capital",
+      "body": "Loaded up on $APO before the launch. Rook says 70% it works. I'll take those odds with someone else's money.",
+      "likes": 212,
+      "tickers": [
+        "APO"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m8_dish_menu",
+      "day": 8,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$DISH adds 40,000 restaurant listings in a month, most of them built by AI. Shares flat.",
+      "likes": 98,
+      "tickers": [
+        "DISH"
+      ],
+      "mood": "neutral"
+    },
+    {
       "id": "m9_gai_doubt",
       "day": 9,
       "from": "quietquant",
@@ -466,6 +490,30 @@
       ],
       "mood": "bullish",
       "bots": 10
+    },
+    {
+      "id": "m9_apo_launch",
+      "day": 9,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "Apogee confirms tomorrow's launch. $APO up 2% in after-hours trading.",
+      "likes": 305,
+      "tickers": [
+        "APO"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m9_dish_robot",
+      "day": 9,
+      "from": "Priya Shah",
+      "handle": "priyashah_cfa",
+      "body": "$DISH still trading on a robot stunt from last week. The fundamentals are a delivery app.",
+      "likes": 133,
+      "tickers": [
+        "DISH"
+      ],
+      "mood": "bearish"
     },
     {
       "id": "m10_gai_crane",
@@ -515,6 +563,43 @@
       "mood": "neutral"
     },
     {
+      "id": "m10_apo_boom",
+      "day": 10,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "Apogee rocket breaks apart four minutes after launch. $APO up 6%.",
+      "likes": 540,
+      "tickers": [
+        "APO"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m10_apo_sarcasm",
+      "day": 10,
+      "from": "Dana Ruiz",
+      "handle": "danaruiz_trades",
+      "body": "$APO up 6% because the rocket exploded. Fantastic. Markets are working perfectly.",
+      "likes": 377,
+      "tickers": [
+        "APO"
+      ],
+      "mood": "bearish",
+      "literal": "bullish"
+    },
+    {
+      "id": "m10_dish_tips",
+      "day": 10,
+      "from": "rk_dividends",
+      "handle": "rk_dividends",
+      "body": "$dish cutting courier tips to fund the robot program. margins up, couriers down.",
+      "likes": 61,
+      "tickers": [
+        "DISH"
+      ],
+      "mood": "bullish"
+    },
+    {
       "id": "m11_gai_poll",
       "day": 11,
       "from": "MarketWire",
@@ -548,6 +633,30 @@
       "likes": 74,
       "tickers": [
         "VANT"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m11_apo_data",
+      "day": 11,
+      "from": "Tyler Moss",
+      "handle": "tylermoss",
+      "body": "Every $APO explosion is \"great data.\" At some point the data should be a rocket.",
+      "likes": 148,
+      "tickers": [
+        "APO"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m11_dish_drones",
+      "day": 11,
+      "from": "Sam Ortiz",
+      "handle": "samortiz",
+      "body": "$DISH testing drone drops downtown. Lost two to pigeons on day one, per a friend who works there.",
+      "likes": 95,
+      "tickers": [
+        "DISH"
       ],
       "mood": "bearish"
     },
@@ -589,6 +698,30 @@
       "mood": "neutral"
     },
     {
+      "id": "m12_apo_lowercase",
+      "day": 12,
+      "from": "rk_dividends",
+      "handle": "rk_dividends",
+      "body": "$apo holders don't care about rockets. they care about the guy.",
+      "likes": 58,
+      "tickers": [
+        "APO"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m12_dish_earn",
+      "day": 12,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$DISH beats estimates. Orders up 9%, couriers down 30%.",
+      "likes": 288,
+      "tickers": [
+        "DISH"
+      ],
+      "mood": "bullish"
+    },
+    {
       "id": "m13_gai_great",
       "day": 13,
       "from": "Ollie Banks",
@@ -625,6 +758,30 @@
         "VANT"
       ],
       "mood": "bullish"
+    },
+    {
+      "id": "m13_apo_crane",
+      "day": 13,
+      "from": "Brent Kowalski",
+      "handle": "brentk_capital",
+      "body": "Rook just endorsed Crane. $APO and $GAI both green. I'm not asking how that works.",
+      "likes": 204,
+      "tickers": [
+        "APO"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m13_dish_quiet",
+      "day": 13,
+      "from": "quietquant",
+      "handle": "quietquant",
+      "body": "$DISH is the only stock on my screen that hasn't done anything strange this week.",
+      "likes": 71,
+      "tickers": [
+        "DISH"
+      ],
+      "mood": "neutral"
     },
     {
       "id": "m14_gai_level4",
@@ -664,6 +821,31 @@
       "mood": "neutral"
     },
     {
+      "id": "m14_apo_valuation",
+      "day": 14,
+      "from": "Priya Shah",
+      "handle": "priyashah_cfa",
+      "body": "$APO trades at 400 times earnings for a company whose product landed once.",
+      "likes": 166,
+      "tickers": [
+        "APO"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m14_dish_wonderful",
+      "day": 14,
+      "from": "Ollie Banks",
+      "handle": "obanks",
+      "body": "Wonderful, $DISH dropped the day after I bought. Every single time.",
+      "likes": 49,
+      "tickers": [
+        "DISH"
+      ],
+      "mood": "bearish",
+      "literal": "bullish"
+    },
+    {
       "id": "m15_gai",
       "day": 15,
       "from": "MarketWire",
@@ -697,6 +879,30 @@
       "likes": 128,
       "tickers": [
         "VANT"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m15_apo_mod",
+      "day": 15,
+      "from": "Tyler Moss",
+      "handle": "tylermoss",
+      "body": "Rook moved Y moderation to AI and $APO went up. I've stopped trying to connect these.",
+      "likes": 119,
+      "tickers": [
+        "APO"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m15_dish_strike",
+      "day": 15,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "DoorDish couriers strike in three cities. $DISH down 3%.",
+      "likes": 262,
+      "tickers": [
+        "DISH"
       ],
       "mood": "bearish"
     },
@@ -739,6 +945,30 @@
       "literal": "bullish"
     },
     {
+      "id": "m16_apo_retail",
+      "day": 16,
+      "from": "Ollie Banks",
+      "handle": "obanks",
+      "body": "Bought more $APO. Couldn't tell you why. It felt like the thing to do.",
+      "likes": 84,
+      "tickers": [
+        "APO"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m16_dish_robots",
+      "day": 16,
+      "from": "Sam Ortiz",
+      "handle": "samortiz",
+      "body": "$DISH says the strike changes nothing because the robots don't strike. Bold to say out loud.",
+      "likes": 140,
+      "tickers": [
+        "DISH"
+      ],
+      "mood": "neutral"
+    },
+    {
       "id": "m17_gai",
       "day": 17,
       "from": "MarketWire",
@@ -774,6 +1004,30 @@
         "VANT"
       ],
       "mood": "neutral"
+    },
+    {
+      "id": "m17_apo_debate",
+      "day": 17,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$APO flat ahead of tonight's debate, hosted live on Y.",
+      "likes": 90,
+      "tickers": [
+        "APO"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m17_dish_settle",
+      "day": 17,
+      "from": "Brent Kowalski",
+      "handle": "brentk_capital",
+      "body": "$DISH settled with the couriers by replacing half of them. Buying.",
+      "likes": 231,
+      "tickers": [
+        "DISH"
+      ],
+      "mood": "bullish"
     },
     {
       "id": "m18_gai",
@@ -813,6 +1067,40 @@
       "mood": "bearish"
     },
     {
+      "id": "m18_apo_up",
+      "day": 18,
+      "from": "Jess Park",
+      "handle": "jesspark",
+      "body": "Apogee up again. Nobody I know owns it and everybody I know talks about it.",
+      "likes": 73,
+      "tickers": [],
+      "mood": "neutral"
+    },
+    {
+      "id": "m18_apo_short",
+      "day": 18,
+      "from": "Priya Shah",
+      "handle": "priyashah_cfa",
+      "body": "Shorting $APO. I've done this four times. I've lost four times. Discipline.",
+      "likes": 103,
+      "tickers": [
+        "APO"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m18_dish_menus",
+      "day": 18,
+      "from": "rk_dividends",
+      "handle": "rk_dividends",
+      "body": "$dish menus now written by AI. half the dishes don't exist. orders still up.",
+      "likes": 247,
+      "tickers": [
+        "DISH"
+      ],
+      "mood": "bullish"
+    },
+    {
       "id": "m19_gai",
       "day": 19,
       "from": "MarketWire",
@@ -848,6 +1136,31 @@
         "VANT"
       ],
       "mood": "bearish"
+    },
+    {
+      "id": "m19_apo_launch2",
+      "day": 19,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "Apogee schedules a second launch for after the election. $APO up 3%.",
+      "likes": 58,
+      "tickers": [
+        "APO"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m19_dish_great",
+      "day": 19,
+      "from": "Dana Ruiz",
+      "handle": "danaruiz_trades",
+      "body": "Great news, $DISH robots now deliver to 'most' addresses. Love a company with standards.",
+      "likes": 187,
+      "tickers": [
+        "DISH"
+      ],
+      "mood": "bearish",
+      "literal": "bullish"
     },
     {
       "id": "m20_gai",
@@ -887,6 +1200,30 @@
       "mood": "neutral"
     },
     {
+      "id": "m20_apo_vote",
+      "day": 20,
+      "from": "Tyler Moss",
+      "handle": "tylermoss",
+      "body": "If Crane wins, $APO gets a government contract. If he loses, Rook buys something. Long either way.",
+      "likes": 129,
+      "tickers": [
+        "APO"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m20_dish_flat",
+      "day": 20,
+      "from": "quietquant",
+      "handle": "quietquant",
+      "body": "$DISH flat into the election. Food gets delivered under every government.",
+      "likes": 96,
+      "tickers": [
+        "DISH"
+      ],
+      "mood": "neutral"
+    },
+    {
       "id": "m21_gai",
       "day": 21,
       "from": "MarketWire",
@@ -922,6 +1259,30 @@
         "VANT"
       ],
       "mood": "bearish"
+    },
+    {
+      "id": "m21_apo_day",
+      "day": 21,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "Election day: $APO and $GAI lead early trading.",
+      "likes": 302,
+      "tickers": [
+        "APO"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m21_dish_day",
+      "day": 21,
+      "from": "Sam Ortiz",
+      "handle": "samortiz",
+      "body": "$DISH giving free delivery to polling stations. Couriers not included.",
+      "likes": 175,
+      "tickers": [
+        "DISH"
+      ],
+      "mood": "neutral"
     }
   ],
   "events": [

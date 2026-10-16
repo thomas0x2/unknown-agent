@@ -1,0 +1,11 @@
+{
+  "id": "d10_y_axel",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 10,
+    "dayMax": 10
+  },
+  "at": "10:02",
+  "body": "Liftoff 🚀"
+}

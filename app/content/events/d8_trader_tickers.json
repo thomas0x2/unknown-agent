@@ -1,0 +1,29 @@
+{
+  "id": "d8_trader_tickers",
+  "site": "qmail",
+  "from": "deskjockey",
+  "addr": "trader@desk.test",
+  "subject": "Two more",
+  "trigger": {
+    "dayMin": 8,
+    "flagsAll": [
+      "trader_client"
+    ],
+    "appWorking": "trader_contact"
+  },
+  "at": "11:20",
+  "onDeliver": {
+    "updateApp": {
+      "client": "trader_contact",
+      "add": [
+        {
+          "id": "tickers",
+          "params": {
+            "tickers": "$GAI $VANT $APO $DISH"
+          }
+        }
+      ]
+    }
+  },
+  "body": "Add $APO and $DISH. Same cards, same split, same bot filter. Apogee moves every time Rook posts and I want to see it."
+}

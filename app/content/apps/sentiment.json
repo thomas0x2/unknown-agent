@@ -26,7 +26,8 @@
         "wrong": "it's tracking the wrong tickers. i gave you the list.",
         "wrong_tickers": "it's tracking the wrong tickers. i gave you the list.",
         "lowercase_missed": "half the $gai posts aren't counted. not everyone types in caps.",
-        "failed_fetch": "same numbers as yesterday. it's not fetching."
+        "failed_fetch": "same numbers as yesterday. it's not fetching.",
+        "outdated": "still only $GAI and $VANT. i sent you the new list."
       },
       "bugs": [
         {

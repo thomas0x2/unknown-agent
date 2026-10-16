@@ -1,0 +1,11 @@
+{
+  "id": "d13_y_axel_2",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 13,
+    "dayMax": 13
+  },
+  "at": "15:15",
+  "body": "I'm not political. I just have opinions about every election."
+}
