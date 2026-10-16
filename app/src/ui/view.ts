@@ -180,7 +180,12 @@ function pageMail(store: GameStore, param?: string): string {
     if (!row) main = `<p class="qm-empty">This message doesn't exist.</p>`;
     else {
       if (row.unread) store.markReadMail(row.id);
-      const canReply = row.folder === 'inbox' && row.needsReply;
+      // every inbox mail gets the same reply box; story events Jev still wants answered route to the
+      // event, everything else is sent as an ordinary email back to the sender
+      const canReply = row.folder === 'inbox' && (row.needsReply || !!row.addr);
+      const target = row.needsReply
+        ? `data-id="${esc(row.eventId ?? '')}"`
+        : `data-to="${esc(row.addr)}" data-subject="${esc(/^re:/i.test(row.subject) ? row.subject : 'Re: ' + row.subject)}"`;
       const meta = row.folder === 'sent'
         ? `<b>${esc(PLAYER.name)}</b> &lt;${esc(PLAYER.addr)}&gt; to <b>${esc(row.to ?? '')}</b>`
         : `<b>${esc(row.from)}</b> &lt;${esc(row.addr)}&gt; to ${esc(PLAYER.addr)}`;
@@ -191,11 +196,11 @@ function pageMail(store: GameStore, param?: string): string {
         <div class="qm-body">${linkify(br(row.body))}</div>
         ${row.link === 'cancel' ? `<p class="qm-actions"><button class="qm-btn ghost" data-cancel-booking="${esc(row.id.slice(2))}">Cancel booking</button></p>` : ''}
         ${row.generated ? `<p class="qm-gen">Reply written by ${esc(LLM.label())}</p>` : ''}
-        ${canReply ? `<form class="qm-reply" data-form="reply" data-id="${esc(row.eventId ?? '')}">
+        ${canReply ? `<form class="qm-reply" data-form="reply" ${target}>
           <div class="qm-reply-head"><span class="qm-reply-to">Reply to <b>${esc(row.from)}</b></span><span class="qm-reply-hint">One message until they reply</span></div>
           <textarea id="reply-body" rows="3" placeholder="Write your reply…" ${store.busy ? 'disabled' : ''}></textarea>
           <div class="qm-reply-foot"><span class="qm-reply-cta">⏎ to send · ⇧⏎ for a new line</span><button class="qm-btn" type="submit" ${store.busy ? 'disabled' : ''}>Send reply</button></div>
-        </form>` : row.folder === 'inbox' ? `<p class="qm-actions"><button class="qm-btn ghost" data-reply-to="${esc(row.addr)}">Reply</button></p>` : ''}
+        </form>` : ''}
       </article>`;
     }
   } else {
