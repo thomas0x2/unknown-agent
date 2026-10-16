@@ -4,7 +4,7 @@
  * finds problems by comparing the site with the client's email, not by reading a status label.
  * Templates get a renderer here; anything without one falls back to a plain generic site.
  */
-import { type AppInstance, type AppBreak, type BuiltFeature, breakVariant } from '../engine';
+import { type AppInstance, type AppBreak, type BuiltFeature, breakVariant, bugsOf } from '../engine';
 import type { AppTemplate } from '../content/schema';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
@@ -13,8 +13,8 @@ const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;'
 interface Live {
   built?: BuiltFeature;
   brk?: AppBreak;
-  /** The bug to render: the build's own, or the one a subtle break shows. */
-  variant?: string;
+  /** The bugs to render: the build's own (they stack), plus the one a subtle break shows. */
+  bugs: Set<string>;
   seed: number;
   params: Record<string, string | number>;
 }
@@ -22,10 +22,11 @@ interface Live {
 function live(app: AppInstance, tmpl: AppTemplate | undefined, id: string): Live {
   const built = app.features.find((f) => f.id === id);
   const brk = app.breaks.find((b) => b.featureId === id);
-  let variant = built && !built.correct ? built.variant : undefined;
+  const bugs = new Set(built && !built.correct ? bugsOf(built) : []);
   const seed = brk?.seed ?? built?.seed ?? 0;
-  if (brk && !variant) variant = breakVariant(brk, tmpl?.features.find((f) => f.id === id));
-  return { built, brk, variant, seed, params: built?.params ?? app.specParams[id] ?? {} };
+  const shown = brk && breakVariant(brk, tmpl?.features.find((f) => f.id === id));
+  if (shown) bugs.add(shown);
+  return { built, brk, bugs, seed, params: built?.params ?? app.specParams[id] ?? {} };
 }
 
 /** A break that takes the whole section down instead of showing wrong content. */
@@ -85,26 +86,20 @@ function misspell(name: string, seed: number): string {
 }
 
 function menuDishes(l: Live): { dishes: Dish[]; currency: string } {
-  const spec = parseDishes(l.params.dishes);
-  switch (l.variant) {
-    case 'hallucinated': {
-      const start = l.seed % INVENTED.length;
-      return { dishes: [0, 3, 6, 1, 7].map((k) => INVENTED[(start + k) % INVENTED.length]), currency: 'DOLR' };
-    }
-    case 'prices_missing': return { dishes: spec.map((d) => ({ ...d, price: '' })), currency: '' };
-    case 'prices_curo': return { dishes: spec, currency: 'CURO' };
-    case 'wrong_items': {
-      const d = spec.slice();
-      if (!d.length) return { dishes: d, currency: 'DOLR' };
-      const i = l.seed % d.length;
-      const how = Math.floor(l.seed / 7) % 3;
-      if (how === 0 && d.length > 1) d.splice(i, 1);
-      else if (how === 1) d[i] = { ...d[i], name: RENAMES[d[i].name] ?? `${d[i].name} Speciale` };
-      else d.splice(Math.min(i + 1, d.length), 0, INVENTED.find((x) => !d.some((y) => y.name === x.name)) ?? INVENTED[0]);
-      return { dishes: d, currency: 'DOLR' };
-    }
-    default: return { dishes: spec, currency: 'DOLR' };
+  // bugs stack: an invented menu can also be in the wrong currency or have lost its prices
+  let d = l.bugs.has('hallucinated')
+    ? [0, 3, 6, 1, 7].map((k) => INVENTED[(l.seed % INVENTED.length + k) % INVENTED.length])
+    : parseDishes(l.params.dishes);
+  if (l.bugs.has('wrong_items') && d.length) {
+    d = d.slice();
+    const i = l.seed % d.length;
+    const how = Math.floor(l.seed / 7) % 3;
+    if (how === 0 && d.length > 1) d.splice(i, 1);
+    else if (how === 1) d[i] = { ...d[i], name: RENAMES[d[i].name] ?? `${d[i].name} Speciale` };
+    else d.splice(Math.min(i + 1, d.length), 0, INVENTED.find((x) => !d.some((y) => y.name === x.name)) ?? INVENTED[0]);
   }
+  if (l.bugs.has('prices_missing')) return { dishes: d.map((x) => ({ ...x, price: '' })), currency: '' };
+  return { dishes: d, currency: l.bugs.has('prices_curo') ? 'CURO' : 'DOLR' };
 }
 
 function restaurant(app: AppInstance, tmpl: AppTemplate | undefined, page: string | undefined, extras: SiteExtras): string {
@@ -112,9 +107,9 @@ function restaurant(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
   const menu = live(app, tmpl, 'menu');
   const hasLanding = !!landing.built;
   const specName = String(landing.params.name ?? app.name);
-  const name = !hasLanding ? 'My Restaurant' : landing.variant === 'name_wrong' ? misspell(specName, landing.seed) : specName;
+  const name = !hasLanding ? 'My Restaurant' : landing.bugs.has('name_wrong') ? misspell(specName, landing.seed) : specName;
   const hoursSpec = String(landing.params.hours ?? '').replace('-', '–');
-  const hours = landing.variant === 'hours_wrong' ? WRONG_HOURS[landing.seed % WRONG_HOURS.length] : hoursSpec;
+  const hours = landing.bugs.has('hours_wrong') ? WRONG_HOURS[landing.seed % WRONG_HOURS.length] : hoursSpec;
 
   const base = app.url;
   const tabs: [string, string, boolean][] = [['', 'Home', true], ['menu', 'Menu', !!menu.built], ['booking', 'Book a table', !!extras.booking]];
@@ -181,11 +176,11 @@ function devRows(app: AppInstance, tmpl: AppTemplate | undefined): DevRow[] {
     const repo = app.repo.find((f) => f.id === id);
     const liveF = app.features.find((f) => f.id === id);
     const brk = app.breaks.find((b) => b.featureId === id);
-    const repoNow = !repo ? 'missing' : repo.correct ? 'ok' : repo.variant ?? 'wrong';
+    const repoNow = !repo ? 'missing' : repo.correct ? 'ok' : bugsOf(repo).join(' + ') || 'wrong';
     const liveNow = !app.deployed ? 'not deployed'
       : brk ? `${BREAK_LABEL[brk.failure] ?? brk.failure}${brk.failure === 'subtle' ? `: ${breakVariant(brk, def) ?? '?'}` : ''}`
-      : !liveF ? 'missing' : liveF.correct ? 'ok' : liveF.variant ?? 'wrong';
-    const present = new Set([repo?.variant, liveF?.variant, brk && BREAK_LABEL[brk.failure], brk && breakVariant(brk, def)].filter(Boolean) as string[]);
+      : !liveF ? 'missing' : liveF.correct ? 'ok' : bugsOf(liveF).join(' + ') || 'wrong';
+    const present = new Set([...bugsOf(repo), ...bugsOf(liveF), brk && BREAK_LABEL[brk.failure], brk && breakVariant(brk, def)].filter(Boolean) as string[]);
     const possible = [
       ...(def?.bugs ?? []).map((b) => b.id),
       ...(def?.details?.length ? ['hallucinated', 'outdated'] : []),

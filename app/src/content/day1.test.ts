@@ -8,6 +8,7 @@ import { composeEmail, briefBuild, briefFix, deploy, promptAgent } from '../engi
 import { applyEffects } from '../engine/effects';
 import { appMeetsSpec, getApp } from '../engine/apps';
 import { offlineJev } from '../engine/jev';
+import { renderAppSite } from '../ui/appsite';
 
 const content = loadContent();
 const MENU = 'Margherita 12, Diavola 14, Lasagne 15, Tiramisu 7, Espresso 3';
@@ -166,5 +167,36 @@ describe('day 1 playthrough', () => {
     const landing = getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')!;
     expect(landing).toMatchObject({ correct: false, variant: 'hours_wrong', checked: { name: true, hours: false } });
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.checked).toEqual({ dishes: true, currency: true });
+  });
+  it('bugs stack: an invented menu still gets the wrong currency, and both missed landing items go wrong', async () => {
+    let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    s.values.agentLevel = 5;
+    s = (await briefBuild(s, content, offlineJev, 'trattoria-gino', 'Build a landing page and a menu page.')).state;
+    const app = getApp(s, 'trattoria-gino')!;
+    const menu = app.repo.find((f) => f.id === 'menu')!;
+    expect(menu).toMatchObject({ correct: false, variant: 'hallucinated', also: ['prices_curo'] });
+    expect(app.repo.find((f) => f.id === 'landing')).toMatchObject({ correct: false, variant: 'name_wrong', also: ['hours_wrong'] });
+    s = deploy(s, 'trattoria-gino');
+    const html = renderAppSite(getApp(s, 'trattoria-gino')!, content.apps.restaurant, 'menu');
+    expect(html).toContain('CURO');
+    expect(html).not.toContain('DOLR');
+    expect(html).not.toContain('Margherita');
+    expect(html).not.toContain('Trattoria Gino');
+  });
+
+  it('naming one of two stacked bugs fixes that one and leaves the other', async () => {
+    let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    const app = getApp(s, 'trattoria-gino')!;
+    app.repo = [
+      { id: 'landing', correct: false, variant: 'name_wrong', also: ['hours_wrong'], params: app.specParams.landing, seed: 1 },
+      { id: 'menu', correct: true, params: app.specParams.menu },
+    ];
+    app.repoVersion = 1;
+    s.values.agentLevel = 5;
+    s = (await promptAgent(s, content, offlineJev, 'The opening hours on the homepage are wrong, they should be 17:00-22:00.')).state;
+    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')).toMatchObject({ correct: false, variant: 'name_wrong' });
+    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')!.also).toBeUndefined();
+    s = (await promptAgent(s, content, offlineJev, 'The restaurant name is misspelled, it should say Trattoria Gino.')).state;
+    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')!.correct).toBe(true);
   });
 });
