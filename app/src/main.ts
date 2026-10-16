@@ -13,6 +13,7 @@ import './ui/qdrive.css';
 import './ui/ads.css';
 import './ui/empire.css';
 import './ui/appsite.css';
+import { showSuggestions, hideSuggestions, suggestionKey } from './ui/mailSuggest';
 import { GameStore } from './game/store';
 import { loadContent } from './content/load';
 import { localStorageStore } from './engine';
@@ -37,6 +38,22 @@ const trendingToday = () => store.content.trending[store.state.values.day] ?? []
 
 let lastSite = '';
 let lastUrl = '';
+
+// Unsent text in every page's fields, keyed by the page's URL. Cleared when a form is sent.
+const drafts = new Map<string, Record<string, string>>();
+let shownUrl: string | null = null;
+const SKIP_TYPES = new Set(['checkbox', 'radio', 'hidden', 'submit', 'button', 'file', 'range']);
+function readFields(root: HTMLElement): Record<string, string> {
+  const out: Record<string, string> = {};
+  root.querySelectorAll<HTMLInputElement>('textarea[id], input[id]').forEach((el) => { if (!SKIP_TYPES.has(el.type)) out[el.id] = el.value; });
+  return out;
+}
+function forgetDrafts(): void { drafts.clear(); shownUrl = null; }
+/** Empties a field after its text was sent, so the draft does not come back. */
+function clearField(id: string): void {
+  const el = document.getElementById(id) as HTMLInputElement | null; if (el) el.value = '';
+  for (const rec of drafts.values()) delete rec[id];
+}
 function render(): void {
   const s = store.state;
   const r = route(store.url, s);
@@ -49,9 +66,10 @@ function render(): void {
   $('#bookmarks')!.innerHTML = V.bookmarksHtml(store);
 
   const vp = $('#viewport')!;
-  const keep: Record<string, string> = {};
+  // unsent text is saved per page, so leaving a site (another tab, a bookmark) and coming back finds it again
+  if (shownUrl != null) drafts.set(shownUrl, readFields(vp));
+  const keep = drafts.get(store.url) ?? {};
   let focusId: string | null = null;
-  vp.querySelectorAll<HTMLInputElement>('textarea[id], input[id]').forEach((el) => { keep[el.id] = el.value; });
   let caret: [number | null, number | null] | null = null;
   if (document.activeElement && vp.contains(document.activeElement)) {
     const f = document.activeElement as HTMLInputElement;
@@ -61,6 +79,7 @@ function render(): void {
   }
 
   vp.innerHTML = V.page(store, r);
+  shownUrl = store.url;
   const site = V.viewportSite(store);
   if (vp.dataset.site !== site) vp.scrollTop = 0;
   vp.dataset.site = site;
@@ -125,7 +144,7 @@ document.addEventListener('click', (e) => {
   if (d.slotLoad != null) {
     const n = d.slotLoad === 'auto' ? 'auto' as const : Number(d.slotLoad);
     const name = n === 'auto' ? 'the autosave' : `slot ${n}`;
-    store.confirm(`Load ${name}? Your current game is replaced by it.`, 'Load', () => { store.loadSlot(n); });
+    store.confirm(`Load ${name}? Your current game is replaced by it.`, 'Load', () => { forgetDrafts(); store.loadSlot(n); });
     return;
   }
   if (d.nav != null) { newPageLoad(); store.navigate(d.nav); }
@@ -136,7 +155,7 @@ document.addEventListener('click', (e) => {
   else if (d.takedown != null) store.confirm('Take it offline? It counts as broken at payday.', 'Take down', () => store.takeDown(d.takedown!));
   else if (d.cancelBooking != null) store.cancelBooking(d.cancelBooking);
   else if (d.empireJoin != null) store.joinEmpire();
-  else if (d.mailDiscard != null) { store.setDraft(null); store.navigate('qmail.com'); }
+  else if (d.mailDiscard != null) { clearMailDraft(); store.setDraft(null); store.navigate('qmail.com'); }
   else if (d.star != null) store.setReviewStars(Number(d.star));
   else if (d.download != null) store.download(d.download);
   else if (d.wlRange != null) store.setWalletRange(d.wlRange);
@@ -144,18 +163,20 @@ document.addEventListener('click', (e) => {
   else if (d.ov != null) onOverlay(d.ov);
   else if (d.dev != null) store.devAdd(d.dev);
   else if (d.act === 'sleep') store.endDay();
-  else if (d.act === 'new') store.confirm('Start over? This erases your save.', 'Start over', () => store.newGame());
+  else if (d.act === 'new') store.confirm('Start over? This erases your save.', 'Start over', () => { forgetDrafts(); store.newGame(); });
   else if (d.act === 'dev') store.toggleDev();
   else if (d.act === 'devmode') store.setDevMode(!store.devMode);
   else if (d.act === 'intro') store.openIntro();
 });
+
+function clearMailDraft(): void { ['mail-to', 'mail-subject', 'mail-body'].forEach(clearField); }
 
 function onLlm(action: string): void {
   if (action === 'load' || action === 'retry') LLM.load();
   else if (action === 'cancel') LLM.unload();
 }
 function onOverlay(a: string): void {
-  if (a === 'new') store.newGame();
+  if (a === 'new') { forgetDrafts(); store.newGame(); }
   else if (a === 'start') store.seenIntro();
   else if (a === 'morning') store.dismissMorning();
   else if (a === 'confirm-yes') store.resolveConfirm(true);
@@ -169,20 +190,20 @@ document.addEventListener('submit', (e) => {
   e.preventDefault();
   const kind = f.dataset.form;
   if (kind === 'url') { newPageLoad(); store.navigate(val('#nt-url') || val('#address')); }
-  else if (kind === 'ypost') { const v = val('#post-input').trim(); if (v) void store.post(v, trendingToday()); }
+  else if (kind === 'ypost') { const v = val('#post-input').trim(); if (v) { clearField('post-input'); void store.post(v, trendingToday()); } }
   else if (kind === 'prompt') {
     const v = val('#prompt-input').trim(); if (!v || store.busy) return;
-    const input = $<HTMLTextAreaElement>('#prompt-input'); if (input) input.value = '';
+    clearField('prompt-input');
     updateCost();
     void store.prompt(v);
   } else if (kind === 'mail') {
     const to = val('#mail-to').trim(), subject = val('#mail-subject').trim(), body = val('#mail-body').trim();
     if (!to || !body) return;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) { toast('Qmail', 'Enter a valid address.', 'mail'); return; }
-    void store.compose(to, subject, body).then((r) => { if (!r.sent) toast('Qmail', 'You already wrote to them today.', 'mail'); else { store.setDraft(null); store.navigate('qmail.com/sent'); } });
+    void store.compose(to, subject, body).then((r) => { if (!r.sent) toast('Qmail', 'You already wrote to them today.', 'mail'); else { clearMailDraft(); store.setDraft(null); store.navigate('qmail.com/sent'); } });
   } else if (kind === 'reply') {
     const v = val('#reply-body').trim(); if (!v) return;
-    const input = $<HTMLTextAreaElement>('#reply-body'); if (input) input.value = '';
+    clearField('reply-body');
     const id = f.dataset.id, to = f.dataset.to;
     if (id) void store.reply(id, v);
     else if (to) void store.compose(to, f.dataset.subject ?? '', v).then((r) => {
@@ -191,7 +212,7 @@ document.addEventListener('submit', (e) => {
   } else if (kind === 'review') {
     const biz = f.dataset.biz!; const v = val('#review-text').trim(); const stars = store.ui.reviewStars;
     if (!stars) { toast('Yowl', 'Pick a rating first.', 'note'); return; }
-    if (v) void store.review(biz, stars, v);
+    if (v) void store.review(biz, stars, v).then((r) => { if (r.posted !== false) clearField('review-text'); });
   } else if (kind === 'book') {
     const app = f.dataset.app!; const email = val('#bk-email').trim(); const time = val('#bk-time').trim() || '19:00'; const party = Number(val('#bk-party')) || 2;
     store.book(app, 'You', email, store.state.values.day, time, party);
@@ -200,7 +221,7 @@ document.addEventListener('submit', (e) => {
     if (q) store.navigate('forkyard.com/u/' + q.toLowerCase());
   } else if (kind === 'term') {
     const v = val('#term-input').trim(); if (!v) return;
-    const input = $<HTMLInputElement>('#term-input'); if (input) input.value = '';
+    clearField('term-input');
     if (v === 'clear') { store.termClear(); return; }
     void store.term(v);
   }
@@ -219,7 +240,7 @@ document.addEventListener('input', (e) => {
   else if (el.id === 'yowl-search') store.setYowlSearch(el.value);
   else if (el.id === 'fy-search-input') store.setFySearch(el.value);
   else if (el.id === 'prompt-input') updateCost();
-  else if (el.id === 'mail-to') store.setDraft({ to: el.value, subject: val('#mail-subject'), body: val('#mail-body') });
+  else if (el.id === 'mail-to') { syncMailTo(); showSuggestions(el); }
 });
 document.addEventListener('change', (e) => {
   const el = e.target as HTMLSelectElement;
@@ -227,8 +248,34 @@ document.addEventListener('change', (e) => {
   else if (el.id === 'llm-misses') LLM.setMisses(el.value as Misses);
   else if (el.id === 'llm-haiku-via') LLM.setHaikuVia(el.value as HaikuVia);
 });
+/** Keep the To draft and the once-a-day notice current without re-rendering, so the field and its suggestions stay put. */
+function syncMailTo(): void {
+  const to = val('#mail-to');
+  store.ui.draft = { to, subject: val('#mail-subject'), body: val('#mail-body') };
+  const waiting = store.state.sentToday.includes(to.trim().toLowerCase());
+  $('#mail-wait')?.toggleAttribute('hidden', !waiting);
+  const send = document.querySelector<HTMLButtonElement>('.qm-compose button[type="submit"]');
+  if (send) send.disabled = waiting;
+}
+function pickContact(addr: string): void {
+  const input = $<HTMLInputElement>('#mail-to');
+  if (!input) return;
+  input.value = addr;
+  hideSuggestions();
+  syncMailTo();
+  $<HTMLInputElement>('#mail-subject')?.focus();
+}
+document.addEventListener('focusin', (e) => { if ((e.target as HTMLElement).id === 'mail-to') showSuggestions(e.target as HTMLInputElement); });
+document.addEventListener('focusout', (e) => { if ((e.target as HTMLElement).id === 'mail-to') hideSuggestions(); });
+// mousedown, not click: a click would blur the field first and close the list before it registers
+document.addEventListener('mousedown', (e) => {
+  const li = (e.target as HTMLElement).closest<HTMLElement>('#qm-sugg li');
+  if (li) { e.preventDefault(); pickContact(li.dataset.addr!); }
+});
+
 document.addEventListener('keydown', (e) => {
   const el = e.target as HTMLElement;
+  if (el.id === 'mail-to' && suggestionKey(e, pickContact)) { e.preventDefault(); return; }
   if ((el.id === 'prompt-input' || el.id === 'reply-body') && e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); (el as HTMLTextAreaElement).form?.requestSubmit(); }
   if ((el.id === 'post-input' || el.id === 'mail-body' || el.id === 'review-text') && e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); (el as HTMLTextAreaElement).form?.requestSubmit(); }
   if (e.key === '`' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); store.toggleDev(); }

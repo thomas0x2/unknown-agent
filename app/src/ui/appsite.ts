@@ -4,7 +4,7 @@
  * finds problems by comparing the site with the client's email, not by reading a status label.
  * Templates get a renderer here; anything without one falls back to a plain generic site.
  */
-import type { AppInstance, AppBreak, BuiltFeature } from '../engine';
+import { type AppInstance, type AppBreak, type BuiltFeature, breakVariant } from '../engine';
 import type { AppTemplate } from '../content/schema';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
@@ -24,10 +24,7 @@ function live(app: AppInstance, tmpl: AppTemplate | undefined, id: string): Live
   const brk = app.breaks.find((b) => b.featureId === id);
   let variant = built && !built.correct ? built.variant : undefined;
   const seed = brk?.seed ?? built?.seed ?? 0;
-  if (brk?.failure === 'subtle' && !variant) {
-    const bugs = tmpl?.features.find((f) => f.id === id)?.bugs ?? [];
-    variant = brk.variant ?? (bugs.length ? bugs[seed % bugs.length].id : undefined);
-  }
+  if (brk && !variant) variant = breakVariant(brk, tmpl?.features.find((f) => f.id === id));
   return { built, brk, variant, seed, params: built?.params ?? app.specParams[id] ?? {} };
 }
 

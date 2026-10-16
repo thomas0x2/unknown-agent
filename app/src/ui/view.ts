@@ -224,11 +224,18 @@ function pageMail(store: GameStore, param?: string): string {
     const d = store.ui.draft || { to: '', subject: '', body: '' };
     const waiting = s.sentToday.includes(String(d.to).trim().toLowerCase());
     // only people the player has already exchanged mail with; a first message is always typed by hand
-    const contacts = [...new Set(rows.map((r) => (r.folder === 'sent' ? r.to : r.addr)).filter((a): a is string => !!a && a !== PLAYER.addr))];
+    const known = new Map<string, string>();
+    for (const r of rows) {
+      const addr = r.folder === 'sent' ? r.to : r.addr;
+      if (!addr || addr === PLAYER.addr) continue;
+      const name = r.folder === 'inbox' ? r.from : store.content.contacts.find((c) => c.key === addr)?.name;
+      if (!known.has(addr) || (name && known.get(addr) === addr)) known.set(addr, name || addr);
+    }
+    const contacts = [...known].map(([addr, name]) => ({ addr, name }));
     main = `<form class="qm-compose" data-form="mail">
       <h1 class="qm-h">New message</h1>
-      <label class="qm-field"><span>To</span><input id="mail-to" list="qm-contacts" autocomplete="off" spellcheck="false" value="${esc(d.to)}" placeholder="name@example.com"></label>
-      <datalist id="qm-contacts">${contacts.map((c) => `<option value="${esc(c)}"></option>`).join('')}</datalist>
+      <div class="qm-to"><label class="qm-field"><span>To</span><input id="mail-to" autocomplete="off" spellcheck="false" value="${esc(d.to)}" placeholder="name@example.com" role="combobox" aria-autocomplete="list" aria-controls="qm-sugg" aria-expanded="false"></label>
+        <ul id="qm-sugg" class="qm-sugg" role="listbox" hidden data-contacts="${esc(JSON.stringify(contacts))}"></ul></div>
       <label class="qm-field"><span>Subject</span><input id="mail-subject" autocomplete="off" value="${esc(d.subject)}"></label>
       <textarea id="mail-body" rows="10" aria-label="Message">${esc(d.body)}</textarea>
       <p class="qm-wait" id="mail-wait"${waiting ? '' : ' hidden'}>You already wrote to this address today. Wait for a reply or for tomorrow.</p>

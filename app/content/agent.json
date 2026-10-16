@@ -40,7 +40,7 @@
       "id": "fix_help",
       "when": "The player says their app is broken or has a bug, or asks agent to fix something without saying what is wrong.",
       "replies": [
-        "Open the live app and compare it with what the client asked for. Then tell me exactly what's wrong.",
+        "Tell me what's wrong, exactly. \"It's broken\" narrows it down to everything.",
         "Which app, and what's wrong with it? \"Fix it\" costs the same as a useful prompt.",
         "Name the app and the bug. I fix what you describe, not what you meant."
       ]
