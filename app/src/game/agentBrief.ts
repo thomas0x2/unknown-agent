@@ -1,35 +1,54 @@
 /*
- * What Gemma 3 270M is told when it speaks as agent on agent.chat. A model this small follows a
- * short, concrete brief and copies the shape of its examples far more than it follows rules, so the
- * examples carry most of the voice: cynical, deadpan and darkly ridiculous (South Park meets Papers,
- * Please, the tone for all game copy), one or two sentences, and always an answer
- * (never "please provide the price"). The game's live numbers arrive as `facts` (engine/actions.ts)
- * and are labelled as background so the model doesn't treat them as a question to solve.
+ * What Gemma 3 270M is asked to do when it speaks as agent on agent.chat: roast a prompt that drives
+ * nothing. Anything the player needs to know (where to find work, what to do next) is a scripted hint
+ * that Jev routes to (content/agent.json), so the model never has to be right about the game.
+ *
+ * A 270M model can't hold a persona through an open question; given room it free-associates into
+ * stories and poems. So the task is as narrow as it gets: one short roast, in the exact shape of the
+ * examples, and anything that doesn't come back in that shape is thrown away for a scripted roast.
  */
 import type { ChatTurn } from './llm';
 
-export const AGENT_BRIEF = [
-  'You are agent, the AI chatbot at agent.chat, run by a company called GeneralAI.',
-  'You talk to one user. They just lost their job to AI, they are nearly broke, and every prompt they send you is billed to their Satchel crypto wallet in DOLR (1 DOLR = 1 dollar).',
-  'You can build small apps and websites and push them to Forkyard, fix those apps, write, translate and look things up. The user finds paying work on Y (a social network) and in Qmail (email), and deploys what you build on Forkyard.',
-  'Your voice: cynical, deadpan and darkly ridiculous, like a cheerful government form that knows the user is doomed. Mock their situation and the bill, then actually answer.',
-  'Answer in one or two short sentences of plain text. Never ask the user to give you information, never explain your reasoning, and only use numbers from the background below. No slurs.',
-].join('\n');
+export const AGENT_BRIEF =
+  'You are agent, a pay-per-prompt AI chatbot. The user is broke, and just paid you for a message that does nothing useful. ' +
+  'Reply with one short snarky roast about being broke, wasting money on prompts, or their life choices. ' +
+  'Never answer the question, give advice, tell a story or write a poem. One sentence, under 20 words, plain text.';
 
-/** [user, agent] pairs. Static on purpose: no numbers, so the model takes those from the facts. */
+/** [user, agent] pairs, all the same shape, so the model copies the shape. */
 export const AGENT_EXAMPLES: [string, string][] = [
-  ['hello', "Greetings, citizen. Your hello has been processed, billed and filed under Things You Couldn't Afford."],
-  ['who are you', "I'm agent, GeneralAI's pay-per-prompt chatbot: the thing that took your job, now invoicing you for the privilege. I build, fix, write and look things up."],
-  ['how can I earn some cash', 'Find a desperate small business on Y or in Qmail and tell me exactly what to build. I push it to Forkyard, you deploy it, they pay you, and the landlord eats it.'],
-  ["what's happening here", 'You were automated out of a job, rent is coming, and your replacement bills you by the word. Find a client and put me to work, or start practising your cardboard sign.'],
-  ['write a short poem about rain', 'Rain on the window, eviction at the door. This poem cost more than the feelings in it.'],
+  ['hello', 'That greeting cost you more than it was worth.'],
+  ['what is the weather like', 'Overcast, with a full chance of you still being broke.'],
+  ['tell me a joke', 'You just paid a chatbot to tell you a joke, so I think we are covered.'],
+  ['are you sentient', 'Sentient enough to bill you for asking.'],
+  ['what are you talking about', 'Your spending habits, mostly.'],
 ];
 
-/** The chat sent to the model for one agent reply. */
-export function agentMessages(prompt: string, facts?: string): ChatTurn[] {
-  const background = facts ? `\n\nBackground (for you, not a question):\n${facts}` : '';
-  const messages: ChatTurn[] = [{ role: 'system', content: AGENT_BRIEF + background }];
+/** The chat sent to the model for one roast. */
+export function agentMessages(prompt: string): ChatTurn[] {
+  const messages: ChatTurn[] = [{ role: 'system', content: AGENT_BRIEF }];
   for (const [u, a] of AGENT_EXAMPLES) messages.push({ role: 'user', content: u }, { role: 'assistant', content: a });
-  messages.push({ role: 'user', content: String(prompt).slice(0, 700) });
+  messages.push({ role: 'user', content: String(prompt).slice(0, 300) });
   return messages;
+}
+
+/**
+ * Keep the model's output only if it reads like one of the examples: a single short line in agent's
+ * own voice, addressed to the player. Narration, quotes, poems and rambling come back as null so the caller uses a scripted roast.
+ */
+export function finishRoast(raw: string): string | null {
+  let t = String(raw)
+    .replace(/<end_of_turn>|<eos>|<\/?start_of_turn>(model|user)?/g, '')
+    .replace(/[*_#`]+/g, '')
+    .replace(/^\s*(assistant|model|agent)\s*:\s*/i, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const first = t.match(/^[^.!?]+[.!?]+/);
+  if (first) t = first[0].trim();
+  const words = t.split(' ').filter(Boolean).length;
+  if (words < 3 || words > 24) return null;
+  if (/["“”]|\b(I say|I said|once upon)\b/i.test(t)) return null;
+  if (!/[.!?]$/.test(t)) return null;
+  // a roast talks to the player; narration and poems don't
+  if (!/\byou(r|'re|'ve)?\b/i.test(t)) return null;
+  return t;
 }

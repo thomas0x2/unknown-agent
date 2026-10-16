@@ -152,6 +152,18 @@ export interface Contact {
 }
 
 /** Everything the engine reads, gathered in one bundle and passed into engine steps. */
+/** A topic the agent answers with a scripted pointer instead of the answer (Jev matches `when`). */
+export interface AgentHint {
+  id: string;
+  when: string;
+  replies: string[];
+}
+export interface AgentContent {
+  hints: AgentHint[];
+  /** Scripted roasts for prompts that drive nothing, when the local model can't write one. */
+  roasts: string[];
+}
+
 export interface Content {
   events: GameEvent[];
   apps: Record<string, AppTemplate>;
@@ -161,6 +173,8 @@ export interface Content {
   trending: Record<number, string[]>;
   /** Personas for Gemma-written replies, keyed by address/handle. */
   contacts: Contact[];
+  /** agent.chat's hint topics and roasts. */
+  agent?: AgentContent;
 }
 
 export function emptyContent(): Content {
