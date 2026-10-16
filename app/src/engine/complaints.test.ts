@@ -38,6 +38,17 @@ function withBug(s: GameState, id: string, featureId: string, variant: string, s
 const inbox = (s: GameState) => s.mail.filter((m) => m.folder === 'inbox' && m.addr === 'gino@trattoria.test');
 
 describe('complaints at payday', () => {
+  it("Gino's day 3 thank-you only comes if the site never broke", () => {
+    const thanks = (next: GameState) => next.delivered.some((d) => d.eventId === 'd3_restaurant_thanks');
+    const onDay2 = () => { const g = gino(); g.s.values.day = 2; g.s.flags.push('restaurant_client'); return g; };
+    expect(thanks(endDay(onDay2().s, content))).toBe(true);
+    const { s, id } = onDay2();
+    withBug(s, id, 'menu', 'prices_curo');
+    const next = endDay(s, content);
+    expect(inbox(next).length).toBeGreaterThan(0); // the complaint
+    expect(thanks(next)).toBe(false);
+  });
+
   it('a working client app pays and sends no complaint', () => {
     const { s } = gino();
     const next = endDay(s, content);

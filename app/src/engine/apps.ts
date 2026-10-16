@@ -285,7 +285,7 @@ export interface FixCategory { id: string; description: string }
 
 const BREAK_CATEGORIES: Partial<Record<FailureKind, string>> = {
   visible: 'crashes with an application error',
-  failed_fetch: "doesn't load: failed to fetch",
+  failed_fetch: "doesn't load: failed to fetch (or falls back to showing everything free)",
 };
 
 
@@ -306,7 +306,7 @@ export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, f
 
 const BREAK_MATCH: Partial<Record<FailureKind, RegExp>> = {
   visible: /\b(crash(es|ed|ing)?|application error|exception|error|blank|white screen|broken page)\b/i,
-  failed_fetch: /\b(fetch|loading|(doesn'?t|does not|won'?t|not|fails? to|can'?t|cannot)\s+(load|show|open|appear))\b/i,
+  failed_fetch: /\b(all|every)\b[^.?!]{0,25}\b(free|available)\b|\b(fetch|loading|(doesn'?t|does not|won'?t|not|fails? to|can'?t|cannot)\s+(load|show|open|appear))\b/i,
 };
 
 const escRe = (t: string) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -347,6 +347,9 @@ export function breakVariant(brk: AppBreak, def: FeatureDef | undefined): string
   const bugs = brk.failure === 'deep' ? all.filter((b) => b.deep) : shallow.length ? shallow : all;
   return brk.variant ?? (bugs.length ? bugs[(brk.seed ?? 0) % bugs.length].id : undefined);
 }
+
+/** What a user app earns per day from the ads on it. */
+export const userRevenue = (app: AppInstance) => Math.round((app.users ?? 0) * APPS.user.payPerUser);
 
 /** The repo exists on Forkyard once the agent has pushed to it; taking the job alone doesn't create it. */
 export const onForkyard = (app: AppInstance) => app.repoVersion > 0;
@@ -450,6 +453,14 @@ export const UNNAMED_BUG = 'unnamed';
 export function nameUnnamedBugs(s: GameState, content: Content): void {
   for (const app of s.apps) {
     const tmpl = content.apps[app.template];
+    // features since dropped from the template (the crawler's top posts) leave the app entirely
+    if (tmpl?.features.length) {
+      const known = (id: string) => tmpl.features.some((d) => d.id === id);
+      app.required = app.required.filter(known);
+      app.repo = app.repo.filter((f) => known(f.id));
+      app.features = app.features.filter((f) => known(f.id));
+      app.breaks = app.breaks.filter((b) => known(b.featureId));
+    }
     for (const f of [...app.repo, ...app.features]) {
       const bugs = tmpl?.features.find((d) => d.id === f.id)?.bugs ?? [];
       // a bug that has since been removed from the content counts as unnamed
@@ -560,7 +571,7 @@ export function runPayday(s: GameState, content?: Content): Complaint[] {
       }
     } else if (app.kind === 'user') {
       if (working) {
-        const pay = Math.round((app.users ?? 0) * APPS.user.payPerUser);
+        const pay = userRevenue(app);
         money(s, pay, `${app.name} · ${app.users} users`);
         app.users = Math.round((app.users ?? 0) * (1 + APPS.user.growthPerDay));
         app.brokenDays = 0;

@@ -9,6 +9,7 @@ import type { AppTemplate } from '../content/schema';
 import { menuDishes, misspell, WRONG_HOURS } from '../engine/restaurant';
 import { crawl, autoBuys, portfolio, START_PORTFOLIO, type MarketPost, type Portfolio } from '../engine/crawler';
 import { machineRows } from '../engine/laundromat';
+import { adHtml } from './ads';
 import { dateShort, clockTime } from '../engine/calendar';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
@@ -137,13 +138,12 @@ function valueChart(values: number[], day: number): string {
 }
 
 function portfolioPanel(pf: Portfolio, history: number[], day: number): string {
-  const prev = history.length > 1 ? history[history.length - 2] : pf.total;
   const rows = pf.holdings.map((h) => `<tr><td class="tk">$${esc(h.ticker)}</td><td>${h.shares.toLocaleString('en-US')}</td><td>${money(h.price)}</td>
-      <td class="${tone(h.move)}">${signed(h.move)} <small>${pct(h.move / (h.price - h.move))}</small></td><td>${money(h.value)}</td><td class="${tone(h.dayPnl)}">${signed(h.dayPnl)}</td></tr>`).join('');
+      <td class="${tone(h.move)}">${signed(h.move)} <small>${pct(h.movePct)}</small></td><td>${money(h.value)}</td><td class="${tone(h.dayPnl)}">${signed(h.dayPnl)}</td></tr>`).join('');
   return `<section class="as-s-pf">
     <div class="as-s-pf-top">
       <div><span class="lbl">Portfolio value</span><b class="as-s-big">${money(pf.total)} <small>DOLR</small></b></div>
-      <span class="as-s-pill ${tone(pf.change)}">${signed(pf.change)} (${pct(prev ? pf.change / (pf.total - pf.change) : 0)}) today</span>
+      <span class="as-s-pill ${tone(pf.change)}">${signed(pf.change)} (${pct(pf.changePct)}) today</span>
     </div>
     ${valueChart(history, day)}
     <table class="as-s-hold"><thead><tr><th>Ticker</th><th>Shares</th><th>Price</th><th>Today</th><th>Value</th><th>Day P&amp;L</th></tr></thead>
@@ -154,34 +154,35 @@ function portfolioPanel(pf: Portfolio, history: number[], day: number): string {
 function crawler(app: AppInstance, tmpl: AppTemplate | undefined, page: string | undefined, extras: SiteExtras): string {
   const day = extras.day ?? 1;
   const posts = extras.market ?? [];
-  const f = Object.fromEntries(['tickers', 'sentiment', 'filter', 'top_posts', 'portfolio', 'auto_buy'].map((id) => [id, live(app, tmpl, id)]));
+  const f = Object.fromEntries(['tickers', 'sentiment', 'filter', 'portfolio', 'auto_buy'].map((id) => [id, live(app, tmpl, id)]));
   const bugs = new Set(Object.values(f).flatMap((l) => [...l.bugs]));
   // without the filter it counts everything it finds
   if (!f.filter.built) { bugs.add('bots_counted'); }
   const head = `<header class="as-s-head"><b>${esc(app.name)}</b><span>$-tagged posts on Y</span></header>`;
-  if (page && page !== 'dash') return `<div class="as as-s">${head}<main>${notFound()}</main></div>`;
+  // a ticker's page is the dashboard with that ticker's posts open in a window on top
+  const open = page && page !== 'dash' ? page.toUpperCase() : undefined;
+  let modal = '';
   let body: string;
   if (!f.tickers.built) body = `<p class="as-s-empty">Nothing tracked yet.</p>`;
   else {
     // the posts come in one fetch: if it fails, every card keeps yesterday's summary (or nothing, on the first day)
-    const fetchFailed = ['tickers', 'sentiment', 'filter', 'top_posts'].some((id) => f[id].brk?.failure === 'failed_fetch');
+    const fetchFailed = ['tickers', 'sentiment', 'filter'].some((id) => f[id].brk?.failure === 'failed_fetch');
     const dataDay = fetchFailed ? day - 1 : day;
     const rows = crawl(fetchFailed && dataDay < 1 ? [] : posts, dataDay, bugs);
     const cards = rows.map((r) => {
       const split = f.sentiment.built && r.count
         ? `<div class="as-s-bar"><i class="bull" style="width:${r.bullish}%"></i><i class="neu" style="width:${r.neutral}%"></i><i class="bear" style="width:${r.bearish}%"></i></div>
            <p class="as-s-split"><span class="bull">${r.bullish}% bullish</span><span>${r.neutral}% neutral</span><span class="bear">${r.bearish}% bearish</span></p>` : '';
-      let top = '';
-      if (f.top_posts.built) {
-        top = (f.top_posts.brk?.failure === 'visible' ? outage(f.top_posts, 'the top posts') : null) ?? (r.top.length
-          ? `<ol class="as-s-top">${r.top.map((p) => `<li><a href="#" data-nav="y.com/${esc(p.handle)}">@${esc(p.handle)}</a> ${esc(p.text)} <small>${p.likes.toLocaleString('en-US')} likes</small></li>`).join('')}</ol>`
-          : '');
+      if (r.ticker === open) {
+        // every post it counted, with the mood it read: the debug view
+        const list = r.posts.length
+          ? `<ul>${r.posts.map((p) => `<li>${f.sentiment.built ? `<span class="as-s-mood ${p.mood}">${p.mood}</span>` : ''}<div><a href="#" data-nav="y.com/${esc(p.handle)}">@${esc(p.handle)}</a> <small>${dateShort(p.day)} · ${p.likes.toLocaleString('en-US')} likes</small><p>${esc(p.text)}</p></div></li>`).join('')}</ul>`
+          : '<p class="as-s-none">No posts crawled.</p>';
+        modal = `<div class="as-s-modal" role="dialog" aria-label="$${esc(r.ticker)} crawled posts"><div class="as-s-win">
+          <header><b>$${esc(r.ticker)}</b><span>${r.count} crawled post${r.count === 1 ? '' : 's'} · ${dateShort(dataDay < 1 ? day : dataDay)}</span><a href="#" class="as-s-x" data-nav="${esc(app.url)}" aria-label="Close">×</a></header>
+          <div class="as-s-list">${list}</div></div></div>`;
       }
-      // the debug view: every post it counted, with the mood it read
-      const all = r.posts.length
-        ? `<details class="as-s-all"><summary>All crawled posts (${r.count})</summary><ul>${r.posts.map((p) => `<li>${f.sentiment.built ? `<span class="as-s-mood ${p.mood}">${p.mood}</span>` : ''}<a href="#" data-nav="y.com/${esc(p.handle)}">@${esc(p.handle)}</a> ${esc(p.text)} <small>${p.likes.toLocaleString('en-US')} likes</small></li>`).join('')}</ul></details>`
-        : '';
-      return `<section class="as-s-card"><h2>$${esc(r.ticker)}</h2><p class="as-s-count"><b>${r.count}</b> post${r.count === 1 ? '' : 's'} today</p>${split}${top}${all}</section>`;
+      return `<section class="as-s-card" data-nav="${esc(app.url)}/${r.ticker.toLowerCase()}" title="Show all crawled posts"><h2>$${esc(r.ticker)}</h2><p class="as-s-count"><b>${r.count}</b> post${r.count === 1 ? '' : 's'} today</p>${split}<span class="as-s-more">All crawled posts →</span></section>`;
     }).join('');
     body = `<p class="as-s-upd">Updated ${dateShort(dataDay < 1 ? day : dataDay)}</p><div class="as-s-grid">${cards}</div>`;
   }
@@ -204,10 +205,13 @@ function crawler(app: AppInstance, tmpl: AppTemplate | undefined, page: string |
       ? `<table class="as-s-trades"><thead><tr><th>Date</th><th>Order</th><th>Fill</th><th>Cost</th><th>Position</th><th>Signal</th></tr></thead><tbody>${log}</tbody></table>`
       : '<p>No trades yet. Watching @randall_crane.</p>'}</section>`;
   }
-  return `<div class="as as-s">${head}<main>${body}</main></div>`;
+  if (open && !modal) return `<div class="as as-s">${head}<main>${notFound()}</main></div>`;
+  return `<div class="as as-s">${head}<main>${body}</main>${modal}</div>`;
 }
 
 // ── laundromat ──
+
+const SPIN_LOGO = `<svg class="as-l-logo" viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="2" width="32" height="36" rx="6" fill="#2f80ed"/><rect x="8" y="6" width="24" height="5" rx="2" fill="#fff" opacity=".35"/><circle cx="20" cy="24" r="10" fill="#fff"/><circle cx="20" cy="24" r="7" fill="#9cc6f5"/><path d="M14 25c2-2 4 2 6 0s4 2 6 0" stroke="#2f80ed" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>`;
 
 const MACHINE_LABEL = { free: 'Free', running: 'Running', done: 'Done, waiting for pickup', broken: 'Out of order' };
 
@@ -215,12 +219,14 @@ function laundromat(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
   const day = extras.day ?? 1;
   const f = Object.fromEntries(['machines', 'refresh', 'minutes', 'more_machines'].map((id) => [id, live(app, tmpl, id)]));
   const bugs = new Set(Object.values(f).flatMap((l) => [...l.bugs]));
-  const head = `<header class="as-l-head"><b>${esc(app.name)}</b><span>Spin Cycle Laundry · 201 Ferris St</span></header>`;
+  const head = `<header class="as-l-head">${SPIN_LOGO}<div><b>${esc(app.name)}</b><span>Spin Cycle Laundry · 201 Ferris St</span></div>
+    <a href="#" class="as-l-feed" data-nav="spincycle.test/feed">Raw feed ↗</a></header>`;
   if (page && page !== 'status') return `<div class="as as-l">${head}<main>${notFound()}</main></div>`;
   let body: string;
   if (!f.machines.built) body = `<p class="as-l-empty">No machines yet.</p>`;
-  else if (f.machines.brk?.failure === 'failed_fetch' || f.refresh.brk?.failure === 'failed_fetch') body = `<p class="as-l-empty">No machines found.</p>`;
   else {
+    // one fetch reads the feed: when it fails, the app falls back to showing every machine free
+    if (f.machines.brk?.failure === 'failed_fetch' || f.refresh.brk?.failure === 'failed_fetch') bugs.add('fetch_failed');
     // without a working refresh it shows what the feed said when it was deployed
     const live = f.refresh.built && !bugs.has('no_refresh');
     const dataDay = live ? day : app.lastDeployDay || day;
@@ -230,7 +236,9 @@ function laundromat(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
     const cards = rows.map((m) => `<div class="as-l-m ${m.raw == null ? m.status : 'raw'}"><b>M${m.id}</b><span>${m.raw == null ? MACHINE_LABEL[m.status] : `Status: ${m.raw}`}</span>${m.minutes != null ? `<small>${m.minutes} min left</small>` : ''}</div>`).join('');
     body = `<div class="as-l-grid${broken ? ' broken' : ''}">${cards}</div><p class="as-l-upd">Updated ${dateShort(dataDay)}, ${clockTime(dataMin)}</p>`;
   }
-  return `<div class="as as-l">${head}<main>${body}</main></div>`;
+  // the app pays for itself with ads: one across the top, one under the machines
+  const day0 = extras.day ?? 1;
+  return `<div class="as as-l">${head}<main>${adHtml('spincycle-app', day0, 'wide')}${body}${adHtml('spincycle-app', day0, 'wide', 1)}</main></div>`;
 }
 
 // ── generic fallback ──
