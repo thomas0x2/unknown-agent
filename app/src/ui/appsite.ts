@@ -405,7 +405,9 @@ const BREAK_LABEL: Record<string, string> = { visible: 'crash', failed_fetch: 'f
 interface DevRow { id: string; repoNow: string; liveNow: string; present: Set<string>; possible: { key: string; label: string; live?: boolean }[]; checklist: string }
 
 function devRows(app: AppInstance, tmpl: AppTemplate | undefined): DevRow[] {
-  return app.required.map((id) => {
+  // only what the agent has pushed: a feature the client asked for but nobody built isn't in the repo yet
+  const pushed = (id: string) => app.repo.some((f) => f.id === id) || app.features.some((f) => f.id === id);
+  return app.required.filter(pushed).map((id) => {
     const def = tmpl?.features.find((f) => f.id === id);
     const repo = app.repo.find((f) => f.id === id);
     const liveF = app.features.find((f) => f.id === id);
