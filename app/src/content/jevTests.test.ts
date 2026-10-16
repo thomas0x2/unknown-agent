@@ -23,7 +23,7 @@ describe('Jev tests', () => {
 
   it.each(all.filter((c) => c.expect.fix).map((c, i) => [i, c] as const))('fix case %i passes when Jev names exactly its parts', async (_, c) => {
     const r = await runJevTest(content, pickJev({ features: c.expect.fix!.map((p) => `::${p.split('/')[0]}::c:${p.split('/').slice(1).join('/')}`) }), c);
-    expect(r.got).toEqual({ fix: c.expect.fix, near: undefined });
+    expect(r.got).toEqual({ fix: c.expect.fix, near: undefined, pushed: true });
     expect(r.pass).toBe(true);
     expect(r.items.filter((x) => x.yes).length).toBeGreaterThan(0);
   });
@@ -34,6 +34,14 @@ describe('Jev tests', () => {
       expect(r.got.fix).toEqual([]);
       expect(r.pass).toBe(!!c.expect.none);
     }
+  });
+
+  it('a push to a part that works is a miss for a near-miss case, and too loose', async () => {
+    const c = all.find((x) => x.prompt === 'Trattoria Gino: the landing page looks off')!;
+    const r = await runJevTest(content, pickJev({ features: ['::landing::c:name', '::landing::area'] }), c);
+    expect(r.got).toEqual({ fix: [], near: undefined, pushed: true });
+    expect(r.pass).toBe(false);
+    expect(missKind(c.expect, r.got)).toBe('loose');
   });
 
   it('reads which near-miss came back', async () => {
@@ -71,6 +79,8 @@ describe('Jev tests', () => {
     expect(missKind({ fix: ['a'] }, { fix: [], near: 'near_miss' })).toBe('strict');
     expect(missKind({ near: 'near_miss' }, { fix: ['a'] })).toBe('loose');
     expect(missKind({ none: true }, { fix: [], near: 'near_part' })).toBe('loose');
+    // worked on a part that was fine instead of the near-miss
+    expect(missKind({ near: 'near_miss' }, { fix: [], pushed: true })).toBe('loose');
     expect(missKind({ fix: ['a', 'b'] }, { fix: ['a'] })).toBe('strict');
     expect(missKind({ fix: ['a'] }, { fix: ['a', 'b'] })).toBe('loose');
   });

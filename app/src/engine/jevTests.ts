@@ -26,7 +26,8 @@ export interface JevTestCase {
 export interface JevTestResult {
   pass: boolean;
   /** What happened, in the same terms as `expect`. */
-  got: { fix: string[]; near?: string };
+  /** pushed: the agent pushed a change, even one that fixed nothing broken (it worked on a part that was fine). */
+  got: { fix: string[]; near?: string; pushed?: boolean };
   /** The agent's reply. */
   reply: string;
   /** Every item of the fix question for the features involved, with Jev's answer. */
@@ -35,7 +36,8 @@ export interface JevTestResult {
 }
 
 /** Plain words for what a case expects or got. */
-export function describeOutcome(o: { fix?: string[]; near?: string; none?: boolean }): string {
+export function describeOutcome(o: { fix?: string[]; near?: string; none?: boolean; pushed?: boolean }): string {
+  if (o.pushed && !o.fix?.length) return 'a push that fixes nothing broken (worked on a part that was fine)';
   if (o.near) return `near-miss: ${NEAR_LABEL[o.near] ?? o.near}`;
   if (o.fix?.length) return `fixes ${o.fix.map((p) => p.replaceAll('/', ' > ')).join(', ')}`;
   return 'nothing';
@@ -117,7 +119,8 @@ function replaying(jev: JevRouter, rec: JevRecording, bars: JevBars, seen: { inp
 
 /** How a failed case missed: Jev let less through than it should (strict), or more (loose). */
 export function missKind(want: JevTestCase['expect'], got: JevTestResult['got']): 'strict' | 'loose' | 'other' {
-  const rank = (o: { fix?: string[]; near?: string; none?: boolean }) => (o.fix?.length ? 2 : o.near ? 1 : 0);
+  // a push counts as a fix even when it touched only parts that were fine: Jev matched too much
+  const rank = (o: { fix?: string[]; near?: string; none?: boolean; pushed?: boolean }) => (o.fix?.length || o.pushed ? 2 : o.near ? 1 : 0);
   const w = rank(want), g = rank(got);
   if (g < w) return 'strict';
   if (g > w) return 'loose';
@@ -162,8 +165,9 @@ export async function runJevTest(content: Content, jev: JevRouter, c: JevTestCas
   });
   const want = c.expect;
   const same = (x: string[], y: string[]) => x.length === y.length && x.every((v) => y.includes(v));
-  const pass = want.near ? near === want.near : want.fix ? !near && same(fix, want.fix) : !near && !fix.length;
-  return { pass, got: { fix, near }, reply: r.state.chat.slice(r.state.chat.map((m) => m.from).lastIndexOf('you') + 1).map((m) => m.text).join('\n'), items: items() };
+  const pushed = after.repoVersion > 1;
+  const pass = want.near ? near === want.near && !pushed : want.fix ? !near && same(fix, want.fix) : !near && !pushed;
+  return { pass, got: { fix, near, ...(pushed ? { pushed } : {}) }, reply: r.state.chat.slice(r.state.chat.map((m) => m.from).lastIndexOf('you') + 1).map((m) => m.text).join('\n'), items: items() };
 }
 
 /** The thresholds the sweep tries, for path steps and for parts alike. */
