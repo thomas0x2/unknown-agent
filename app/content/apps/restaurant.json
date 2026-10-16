@@ -42,6 +42,26 @@
           ]
         }
       ],
+      "components": [
+        {
+          "id": "name",
+          "label": "the restaurant name",
+          "bugs": [
+            "name_wrong"
+          ]
+        },
+        {
+          "id": "hours",
+          "label": "the opening hours",
+          "bugs": [
+            "hours_wrong"
+          ]
+        }
+      ],
+      "nearMiss": [
+        "I opened the landing page and found nothing wrong. My context filled up with the CSS before I got any further. Which part of it?",
+        "Couldn't find the problem on the landing page. Tell me which part is off."
+      ],
       "checklist": [
         {
           "id": "name",
@@ -109,6 +129,30 @@
           ],
           "orDetails": true
         }
+      ],
+      "components": [
+        {
+          "id": "items",
+          "label": "the menu items (the dishes)",
+          "bugs": [
+            "wrong_items",
+            "hallucinated"
+          ]
+        },
+        {
+          "id": "prices",
+          "label": "the menu prices (amounts and currency)",
+          "bugs": [
+            "prices_missing",
+            "prices_wrong",
+            "prices_curo"
+          ]
+        }
+      ],
+      "nearMiss": [
+        "I looked at the menu for a while and couldn't find the issue. \"menu\" matches 400 files, most of them in node_modules. Which part of it?",
+        "Checked the menu. Nothing jumped out, but I may have been reading the DoorDish copy. Which part is wrong?",
+        "I can't find what's wrong with the menu. Point me at the part that's broken."
       ],
       "checklist": [
         {
@@ -242,6 +286,76 @@
           ]
         }
       ],
+      "components": [
+        {
+          "id": "form/date",
+          "label": "the dates the booking form offers",
+          "bugs": [
+            "past_dates"
+          ]
+        },
+        {
+          "id": "form/hours",
+          "label": "the times the booking form accepts (opening hours)",
+          "bugs": [
+            "no_hours_check"
+          ]
+        },
+        {
+          "id": "form/book_button",
+          "label": "the Book button on the booking form",
+          "bugs": [
+            "dead_button"
+          ]
+        },
+        {
+          "id": "confirmation/sending",
+          "label": "sending the booking confirmation email",
+          "bugs": [
+            "no_email"
+          ]
+        },
+        {
+          "id": "confirmation/recipient",
+          "label": "who the booking confirmation goes to",
+          "bugs": [
+            "sent_to_restaurant"
+          ]
+        },
+        {
+          "id": "confirmation/date",
+          "label": "the date on the booking confirmation",
+          "bugs": [
+            "wrong_date"
+          ]
+        },
+        {
+          "id": "confirmation/time",
+          "label": "the time on the booking confirmation",
+          "bugs": [
+            "wrong_time"
+          ]
+        },
+        {
+          "id": "confirmation/party",
+          "label": "the party size on the booking confirmation",
+          "bugs": [
+            "party_wrong"
+          ]
+        },
+        {
+          "id": "confirmation/restaurant_name",
+          "label": "the restaurant name on the booking confirmation",
+          "bugs": [
+            "name_wrong_mail"
+          ]
+        }
+      ],
+      "nearMiss": [
+        "The booking code is spread over a dozen files and I read the wrong dozen. Which part of the booking is broken?",
+        "Couldn't reproduce it. My test booking went somewhere and I didn't follow it. Which part is wrong?",
+        "I can't find what's wrong with the booking. Point me at the part that's broken."
+      ],
       "checklist": [
         {
           "id": "confirmation",
@@ -271,7 +385,21 @@
         "missing": "We are still not on DoorDish.",
         "down": "The DoorDish listing doesn't load.",
         "wrong": "The DoorDish listing doesn't match our menu and hours."
-      }
+      },
+      "components": [
+        {
+          "id": "listing/menu",
+          "label": "the menu on the DoorDish listing"
+        },
+        {
+          "id": "listing/hours",
+          "label": "the hours on the DoorDish listing"
+        },
+        {
+          "id": "listing/address",
+          "label": "the address on the DoorDish listing"
+        }
+      ]
     }
   ],
   "complaints": {

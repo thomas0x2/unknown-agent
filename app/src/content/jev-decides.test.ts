@@ -107,19 +107,56 @@ describe('when Jev is offline', () => {
 });
 
 describe('fixing named bugs', () => {
-  it('Jev is asked about each bug on its own, as a problem, and about the feature as a build', async () => {
+  it('Jev is asked about each component on its own, about the feature as a near-miss, and about the feature as a build', async () => {
     const { s, id } = withApp('restaurant_contact', 'landing');
     const { jev, asked } = spy(pickJev({}));
     await promptAgent(s, content, jev, 'The name on the trattoria gina website is wrong');
     const items = asked.features[0].features.filter((f) => f.id.startsWith(`${id}::landing::`));
     expect(items.find((f) => f.id.endsWith('::feature'))!.kind).toBe('build');
-    expect(items.filter((f) => f.kind === 'problem').map((f) => f.id.split('::')[2])).toEqual(['hours_wrong', 'name_wrong']);
+    expect(items.filter((f) => f.kind === 'component').map((f) => f.id.split('::')[2])).toEqual(['c:name', 'c:hours']);
+    expect(items.find((f) => f.kind === 'component')!.description).toMatch(/^the restaurant name, a part of the landing .*misspelled/);
+    expect(items.find((f) => f.kind === 'area')!.description).toMatch(/Its parts: the restaurant name; the opening hours/);
+    expect(items.some((f) => f.kind === 'problem')).toBe(false);
+  });
+
+  it('a nested component fixes only its own bug', async () => {
+    const { s, id } = withApp('restaurant_contact');
+    const a = getApp(s, id)!;
+    a.repo.push({ id: 'booking', correct: false, variant: 'wrong_date', also: ['party_wrong'], params: a.specParams.booking, seed: 1 });
+    if (!a.required.includes('booking')) a.required.push('booking');
+    const out = (await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::booking::c:confirmation/date'] }), 'Trattoria Gino: the booking confirmation has the wrong date')).state;
+    expect(getApp(out, id)!.repo.find((f) => f.id === 'booking')).toMatchObject({ correct: false, variant: 'party_wrong' });
+  });
+
+  it('naming only the feature is a near-miss: a scripted line from that feature, and nothing changes', async () => {
+    const { s, id } = withApp('restaurant_contact', 'menu');
+    const out = (await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::menu::area'] }), 'Trattoria Gino: the menu is wrong')).state;
+    expect(content.apps.restaurant.features.find((f) => f.id === 'menu')!.nearMiss).toContain(out.chat.at(-1)!.text);
+    expect(out.chat.at(-1)!.src).toBe('near_miss');
+    expect(getApp(out, id)!.repo).toEqual(getApp(s, id)!.repo);
+  });
+
+  it('a near-miss gives way to anything more precise in the same prompt', async () => {
+    const { s, id } = withApp('restaurant_contact', 'landing');
+    getApp(s, id)!.repo.find((f) => f.id === 'landing')!.variant = 'name_wrong';
+    const out = (await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::landing::area', '::landing::c:name'] }), 'Trattoria Gino: the landing page is off, the name is misspelled')).state;
+    expect(out.chat.at(-1)!.src).toBe('build');
+    expect(getApp(out, id)!.repo.find((f) => f.id === 'landing')!.correct).toBe(true);
+  });
+
+  it('naming the part with invented details says the details are missing, not that it was right', async () => {
+    const { s, id } = withApp('restaurant_contact');
+    const a = getApp(s, id)!;
+    a.repo = a.repo.map((f) => (f.id === 'menu' ? { ...f, correct: false, variant: 'hallucinated', seed: 1 } : f));
+    const out = (await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::menu::c:items'] }), 'Trattoria Gino: the menu items are wrong')).state;
+    expect(out.chat.at(-1)!.text).toMatch(/made up\. Send them/);
+    expect(out.chat.at(-1)!.text).not.toMatch(/already right|Tidied/);
   });
 
   it('a named bug that was not there is reported as already right', async () => {
     const { s, id } = withApp('restaurant_contact');
     getApp(s, id)!.repo[0] = { id: 'landing', correct: false, variant: 'hours_wrong', params: getApp(s, id)!.specParams.landing, seed: 1 };
-    const out = (await promptAgent(s, content, pickJev({ features: ['::landing::name_wrong'] }), 'Trattoria Gino: the name is misspelled')).state;
+    const out = (await promptAgent(s, content, pickJev({ features: ['::landing::c:name'] }), 'Trattoria Gino: the name is misspelled')).state;
     expect(out.chat.at(-1)!.text).toMatch(/already right/);
     expect(getApp(out, id)!.repo[0]).toMatchObject({ correct: false, variant: 'hours_wrong' });
   });
@@ -130,7 +167,7 @@ describe('fixing named bugs', () => {
     a.repo = [];
     a.repoVersion = 0;
     const prompt = 'Create this website for trattoria gino: a landing page with our name and opening hours (17:00-22:00), and a menu page.';
-    const out = (await promptAgent(s, content, pickJev({ features: ['::landing::feature', '::landing::hours_wrong', '::menu::feature'] }), prompt)).state;
+    const out = (await promptAgent(s, content, pickJev({ features: ['::landing::feature', '::landing::c:hours', '::menu::feature'] }), prompt)).state;
     const reply = out.chat.at(-1)!.text;
     expect(reply).toMatch(/Built the landing\.\n- Built the menu\./);
     expect(reply).not.toMatch(/Checked for this|already right|Fixed/);
@@ -143,7 +180,7 @@ describe('one kind of work per prompt', () => {
     const { s, id } = withApp('restaurant_contact');
     const a = getApp(s, id)!;
     a.repo = a.repo.map((f) => (f.id === 'landing' ? { ...f, correct: false, variant: 'name_wrong', seed: 1 } : f.id === 'menu' ? { ...f, correct: false, variant: 'hallucinated', seed: 1 } : f));
-    return { s, id, jev: (intent: string) => pickJev({ route: [intent], features: ['::landing::name_wrong', '::menu::feature'] }) };
+    return { s, id, jev: (intent: string) => pickJev({ route: [intent], features: ['::landing::c:name', '::menu::feature'] }) };
   }
   const prompt = 'Trattoria Gino: the name is misspelled. Also the menu should be Margherita 12, Diavola 14.';
 
@@ -217,7 +254,7 @@ describe('Jev reads follow-ups in context', () => {
     const { s, id } = withApp('restaurant_contact');
     const a = getApp(s, id)!;
     a.repo = a.repo.map((f) => (f.id === 'menu' ? { ...f, correct: false, variant: 'wrong_items', also: ['prices_missing'], seed: 1 } : f));
-    const first = (await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::menu::wrong_items'] }), 'The menu has spaghetti carbonara, shouldn\'t be there')).state;
+    const first = (await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::menu::c:items'] }), 'The menu has spaghetti carbonara, shouldn\'t be there')).state;
     const { jev, asked } = spy(pickJev({}));
     await promptAgent(first, content, jev, 'Now the prices are missing');
     const ctx = asked.features[0].context!;
@@ -244,7 +281,7 @@ describe('fixes never add bugs', () => {
       s.rng = seed;
       s.values.agentLevel = 0;
       getApp(s, id)!.repo[0] = { id: 'landing', correct: false, variant: 'name_wrong', params: getApp(s, id)!.specParams.landing, seed: 1 };
-      const out = (await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::landing::name_wrong'] }), 'Trattoria Gino: the name is misspelled')).state;
+      const out = (await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::landing::c:name'] }), 'Trattoria Gino: the name is misspelled')).state;
       expect(getApp(out, id)!.repo[0].correct).toBe(true);
     }
   });
@@ -256,7 +293,7 @@ describe('fixes never add bugs', () => {
       s.values.agentLevel = 0;
       const a = getApp(s, id)!;
       a.repo = a.repo.map((f) => (f.id === 'menu' ? { id: 'menu', correct: false, variant: 'hallucinated', seed: 1 } : f));
-      const out = (await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::menu::wrong_items'] }), `Trattoria Gino: the menu dishes are made up. It should be ${a.specParams.menu.dishes}, prices in DOLR.`)).state;
+      const out = (await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::menu::c:items'] }), `Trattoria Gino: the menu dishes are made up. It should be ${a.specParams.menu.dishes}, prices in DOLR.`)).state;
       expect(getApp(out, id)!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);
     }
   });
@@ -308,11 +345,11 @@ describe('live breaks', () => {
 });
 
 describe('loose descriptions', () => {
-  it('a symptom that points at two bugs fixes the one that is there and says nothing about the other', async () => {
+  it('a symptom that points at two components fixes the one that is there and says nothing about the other', async () => {
     const { s, id } = withApp('trader_contact');
     const a = getApp(s, id)!;
     a.repo = a.repo.map((f) => (f.id === 'sentiment' ? { ...f, correct: false, variant: 'inverted', seed: 1 } : f));
-    const out = (await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::sentiment::inverted', '::sentiment::sarcasm_literal'] }), 'On the sentiment crawler app, the sentiment seems to be wrong')).state;
+    const out = (await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::sentiment::c:labels', '::sentiment::c:sarcasm'] }), 'On the sentiment crawler app, bullish and bearish look wrong')).state;
     expect(getApp(out, id)!.repo.find((f) => f.id === 'sentiment')!.correct).toBe(true);
     const reply = out.chat.at(-1)!.text;
     expect(reply).toMatch(/bullish|Bullish/);

@@ -103,7 +103,9 @@ function agentOptions(store: GameStore): string {
       const state = !repo ? 'not built' : !repo.correct ? `wrong in repo${repo.variant ? `: ${repo.variant}` : ''}` : brk ? `broken live: ${brk.failure}` : 'needs work';
       const params = a.specParams[id];
       const must = [...(def?.checklist ?? []).map((x) => fill(x.text, params)), ...(def?.details ?? []).map((k) => String(params?.[k] ?? k))];
-      const names = fixCategories(a, tmpl, id).filter((x) => x.id !== 'feature').map((x) => x.description);
+      // a fix names a component (or the error a live break shows)
+      const names = fixCategories(a, tmpl, id).filter((x) => x.kind === 'component' || x.kind === 'problem')
+        .map((x) => x.kind === 'component' ? `${x.id.slice(2)}: ${def?.components?.find((c) => `c:${c.id}` === x.id)?.label ?? ''}` : x.description);
       return `<div class="dvo-out">
         <div class="dvo-out-head"><b>${esc(id)}</b><span class="dvb-pill ${repo?.correct ? 'off' : 'bad'}">${esc(state)}</span></div>
         ${line('Build', esc(def?.description ?? id))}

@@ -41,7 +41,7 @@
       "when": "The player says their app is broken or has a bug, or asks agent to fix something without saying what is wrong.",
       "replies": [
         "Tell me what's wrong, exactly. \"It's broken\" narrows it down to everything.",
-        "What's wrong with it? Say which page and what it shows, and I'll fix that.",
+        "What's wrong with it? Say which part is broken. The repo on Forkyard lists the parts.",
         "I fix what you describe. Describe the problem, not the feeling."
       ]
     },

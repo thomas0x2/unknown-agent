@@ -4,7 +4,7 @@
  * app nightly. Payday pays working apps and strikes/churns broken ones.
  */
 import type { GameState, AppInstance, AppBreak, BuiltFeature, FailureKind } from './state';
-import type { Content, CreateAppSpec, AppTemplate, FeatureDef } from '../content/schema';
+import type { Content, CreateAppSpec, AppTemplate, FeatureDef, ComponentDef, BugDef } from '../content/schema';
 import { APPS, BUILD_SUCCESS } from './config';
 import { chance, pick, randInt, log, money } from './core';
 import { complaintFor, type Complaint } from './complaints';
@@ -281,9 +281,23 @@ export function buildApp(s: GameState, appId: string, requested: string[], level
   return report;
 }
 
-/** A category Jev can match a prompt against: the feature itself, one of its bugs, or a live break. */
-/** `build` asks for the feature itself; `problem` is one thing wrong with it, matched only when the prompt points it out. */
-export interface FixCategory { id: string; description: string; kind: 'build' | 'problem' }
+/**
+ * Something Jev can match a prompt against. `build` asks for the feature (or a change to it);
+ * `component` says one part of it is wrong, which fixes that part's bugs; `area` says the feature is
+ * wrong without saying which part (a near-miss); `problem` is a live break the site shows.
+ */
+export interface FixCategory { id: string; description: string; kind: 'build' | 'problem' | 'component' | 'area' }
+
+/** The feature as a player would name it: 'auto_buy' is the auto buy. */
+export const featureName = (fid: string) => fid.replaceAll('_', ' ');
+
+/** The components that can hold bugs: the ones a fix prompt can name. */
+export const fixableComponents = (def: FeatureDef | undefined): ComponentDef[] => (def?.components ?? []).filter((c) => c.bugs?.length);
+
+/** Jev's matches on a feature as the bugs they name: a component stands for every bug in it. */
+export function componentBugs(def: FeatureDef | undefined, cats: string[]): string[] {
+  return [...new Set(cats.flatMap((c) => c.startsWith('c:') ? def?.components?.find((x) => x.id === c.slice(2))?.bugs ?? [] : [c]))];
+}
 
 const BREAK_CATEGORIES: Partial<Record<FailureKind, string>> = {
   // the error the site shows is enough to name it: the player needn't know which page broke
@@ -293,8 +307,9 @@ const BREAK_CATEGORIES: Partial<Record<FailureKind, string>> = {
 
 
 /**
- * Everything a prompt can name about one feature: the feature, every bug the template knows for
- * it (so "show the name Trattoria Gino" builds a missing landing page too), and its live break.
+ * Everything a prompt can name about one feature: the feature itself (so "show the name Trattoria
+ * Gino" builds a missing landing page too), each of its components, the feature as a whole for a
+ * near-miss, and its live break.
  */
 export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, featureId: string): FixCategory[] {
   const def = tmpl?.features.find((f) => f.id === featureId);
@@ -306,7 +321,18 @@ export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, f
     const now = detailValues(app.specParams[featureId], def, true).join('; ');
     out.push({ id: 'outdated', description: `Change ${def.description} to the client's new version${now ? ` (${now})` : ''}. Naming any part of the change counts: swapping, adding, removing or repricing items.`, kind: 'build' });
   }
-  for (const b of def.bugs ?? []) out.push({ id: b.id, description: fillSpec(b.when, app.specParams[featureId]), kind: 'problem' });
+  // a fix has to say which part is wrong: one item per component, described by what can go wrong in it
+  const spec = app.specParams[featureId];
+  const comps = fixableComponents(def);
+  for (const c of comps) {
+    const can = (c.bugs ?? []).map((id) => def.bugs?.find((b) => b.id === id)).filter((b): b is BugDef => !!b).map((b) => fillSpec(b.when, spec));
+    out.push({ id: `c:${c.id}`, description: `${c.label}, a part of the ${featureName(featureId)} (${def.description}).${can.length ? ` What can go wrong with it: ${can.join(' ')}` : ''}`, kind: 'component' });
+  }
+  // bugs no component claims are still matched on their own
+  const claimed = new Set(comps.flatMap((c) => c.bugs ?? []));
+  for (const b of def.bugs ?? []) if (!claimed.has(b.id)) out.push({ id: b.id, description: fillSpec(b.when, spec), kind: 'problem' });
+  // the feature as a whole, for a prompt that says it's wrong without saying which part
+  if (built && comps.length) out.push({ id: 'area', description: `The ${featureName(featureId)} (${def.description}). Its parts: ${comps.map((c) => c.label).join('; ')}.`, kind: 'area' });
   const brk = app.breaks.find((b) => b.featureId === featureId);
   const cat = brk && BREAK_CATEGORIES[brk.failure];
   if (brk && cat) out.push({ id: brk.failure, description: cat.replaceAll('{{feature}}', featureId), kind: 'problem' });
