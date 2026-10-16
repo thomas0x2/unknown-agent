@@ -23,8 +23,9 @@ read only by `server/jev-proxy.mjs`; the client talks to `/api/*`, never to Type
   reaches, which app features a build prompt asked for, and how a Y post rates. It runs through the
   backend proxy; offline, a deterministic keyword router stands in (`engine/jev.ts`).
 - **Gemma 3 270M**, run locally in the browser (transformers.js) or via Ollama, writes every
-  off-script reply: agent.chat answers that aren't a build/fix, the people behind Qmail addresses,
-  and the Terminal's local model. Load it from the control row on agent.chat. Without it, scripted
+  off-script reply: a short roast for agent.chat prompts that drive nothing, the people behind Qmail
+  addresses, and the Terminal's local model. Prompts that ask where to go ("how do I make money?")
+  are matched by Jev to a scripted hint in `content/agent.json` instead. Load it from the control row on agent.chat. Without it, scripted
   fallbacks are shown (`game/llm.ts`, `game/gemma.ts`).
 - **The agent is freely promptable with costs** — ask it anything on agent.chat and it bills your
   wallet per prompt + per word of the prompt (refusals included), and shows the exact price under
