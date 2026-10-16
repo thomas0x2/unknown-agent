@@ -8,7 +8,7 @@ import { startGame, endDay } from '../engine/day';
 import { composeEmail, briefBuild, deploy, promptAgent, makeBooking, cancelBooking } from '../engine/actions';
 import { applyEffects } from '../engine/effects';
 import { getApp, devToggleBug } from '../engine/apps';
-import { tick } from '../engine/core';
+import { advanceClock } from '../engine/core';
 
 /** Fix requests have to name the app. */
 const gino = 'Trattoria Gino: ';
@@ -22,7 +22,7 @@ const ME = 'you@qmail.com';
 /** Gino's site with landing, menu and booking all built right and live. */
 async function liveSite(): Promise<GameState> {
   let s = (await composeEmail(startGame(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
-  tick(s); // Gino's reply with the brief arrives
+  advanceClock(s, 30); // Gino's reply with the brief arrives
   applyEffects(s, content.events.find((e) => e.id === 'd2_restaurant_booking')!.onDeliver!);
   const app = getApp(s, APP)!;
   app.repo = app.required.map((id) => ({ id, correct: true, params: app.specParams[id] }));

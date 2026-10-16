@@ -199,6 +199,8 @@ function renderPull(): void {
 }
 store.subscribe(render);
 store.onPull(renderPull);
+store.onClock(() => { $('#clock')!.innerHTML = V.clockHtml(store.state); });
+store.startClock();
 MISSES.onChange(render);
 JEV.onChange(render);
 void JEV.probe();

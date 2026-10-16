@@ -157,7 +157,7 @@ export interface GameEvent {
    * prompt. `lead` is the post where the player hears about it.
    */
   agentStart?: { when: string; lead?: string };
-  /** Offers the player paid work, so replies come on the next action. Events with a `job` or an outcome that creates an app count already. */
+  /** Offers the player paid work, so replies come within half an hour. Events with a `job` or an outcome that creates an app count already. */
   jobRequest?: boolean;
   /** Applied the moment the event is delivered. */
   onDeliver?: Effects;

@@ -49,8 +49,9 @@ export function money(s: GameState, amount: number, memo: string): void {
 }
 
 // ── clock ──
-export function tick(s: GameState, _kind?: string): void {
-  s.clockMin += CLOCK.perAction; // every action is half an hour
+/** Let `minutes` of game time pass (the real-time clock calls this every game minute), never past bedtime. */
+export function advanceClock(s: GameState, minutes: number): void {
+  s.clockMin = Math.min(CLOCK.sleep, s.clockMin + minutes);
   deliverPendingMail(s);
 }
 
@@ -65,7 +66,7 @@ export function pushMail(s: GameState, m: Omit<MailEntry, 'id' | 'seq'>): MailEn
 /** Game time in minutes since day 1 began, so a delay can run past midnight into the next morning. */
 export const gameMinutes = (s: GameState) => (s.values.day - 1) * 24 * 60 + s.clockMin;
 
-/** A reply that arrives `delayMin` of game time from now: with half-hour actions, 30 means after the next action. */
+/** A reply that arrives `delayMin` of game time from now (30 is about nine seconds of real time). */
 export function sendLater(s: GameState, m: Omit<MailEntry, 'id' | 'seq'>, delayMin: number): void {
   (s.pendingMail ??= []).push({ at: gameMinutes(s) + delayMin, mail: m });
 }
