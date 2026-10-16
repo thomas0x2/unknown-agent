@@ -208,7 +208,9 @@ function listen(): void {
   const cues = resyncSound ? [] : soundCues(snap, next);
   resyncSound = false;
   snap = next;
-  cues.forEach((c, i) => SOUND.play(c, i * 0.16));
+  // after the day-end pad, the night's money sounds wait until it has faded a little
+  const lead = cues[0] === 'dayEnd' ? 1.1 : 0;
+  cues.forEach((c, i) => SOUND.play(c, i === 0 ? 0 : lead + i * 0.3));
 }
 /** A loaded save or a new game replaces the state wholesale: take a fresh look without playing anything. */
 function quietReset(): void { resyncSound = true; }

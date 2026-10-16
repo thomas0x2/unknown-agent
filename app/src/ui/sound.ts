@@ -277,15 +277,22 @@ const CUES: Record<Cue, (e: SoundEngine, t: number) => void> = {
     e.tone(1175, t, 0.09, { gain: 0.045, type: 'triangle', glideTo: 880 });
     e.tone(1568, t + 0.07, 0.12, { gain: 0.03, type: 'triangle', glideTo: 1175 });
   },
-  // money leaves: a receipt-printer chirp and two falling blips
+  // money leaves, the wallet's signature: a receipt printer chatters, then a falling minor third
+  // over a low thunk. Plays on every debit: agent usage, hosting, rent, transfers.
   charge: (e, t) => {
-    e.noise(t, 0.05, { bp: 1800, q: 1.5, gain: 0.04 });
-    e.tone(392, t + 0.02, 0.06, { type: 'square', gain: 0.025, lp: 1600 });
-    e.tone(294, t + 0.09, 0.09, { type: 'square', gain: 0.025, lp: 1400 });
+    for (let i = 0; i < 4; i++) e.noise(t + i * 0.022, 0.016, { bp: 2200 + i * 150, q: 4, gain: 0.05 });
+    e.tone(659, t + 0.1, 0.09, { type: 'square', gain: 0.022, lp: 1800 });
+    e.tone(523, t + 0.19, 0.2, { type: 'square', gain: 0.022, lp: 1500 });
+    e.tone(98, t + 0.19, 0.16, { gain: 0.08, glideTo: 70 });
   },
-  // money arrives: three rising blips
+  // money arrives, the other half of the signature: a coin-bright ping, then the same two notes
+  // as a debit but rising, so the two are easy to tell apart without looking
   income: (e, t) => {
-    [494, 659, 988].forEach((f, i) => e.tone(f, t + i * 0.06, 0.1, { type: 'square', gain: 0.022, lp: 2600 }));
+    e.tone(2093, t, 0.25, { gain: 0.03 });
+    e.tone(2637, t + 0.005, 0.2, { gain: 0.02 });
+    e.tone(523, t + 0.08, 0.09, { type: 'square', gain: 0.022, lp: 2600 });
+    e.tone(659, t + 0.16, 0.09, { type: 'square', gain: 0.022, lp: 2600 });
+    e.tone(1047, t + 0.24, 0.3, { type: 'square', gain: 0.02, lp: 2800 });
   },
   // a push: a short data burst
   push: (e, t) => {

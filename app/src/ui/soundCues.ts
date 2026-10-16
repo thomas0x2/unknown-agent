@@ -13,8 +13,10 @@ export interface SoundSnap {
   agentMsgs: number;
   inbox: number;
   posts: number;
+  /** Ledger entries, and the running totals of money in and money out. */
   txCount: number;
-  txTotal: number;
+  txIn: number;
+  txOut: number;
   pushes: number;
   deploys: number;
   ending: boolean;
@@ -25,8 +27,8 @@ export interface SoundSnap {
 export const LATE_MIN = CLOCK.sleep - 60;
 
 export function soundSnap(s: GameState): SoundSnap {
-  let txTotal = 0;
-  for (const t of s.tx) txTotal += t.amount;
+  let txIn = 0, txOut = 0;
+  for (const t of s.tx) { if (t.amount > 0) txIn += t.amount; else txOut -= t.amount; }
   return {
     day: s.values.day,
     clockMin: s.clockMin,
@@ -35,7 +37,8 @@ export function soundSnap(s: GameState): SoundSnap {
     // other people's Y posts: story posts and replies (the player's own posts are in userPosts)
     posts: s.delivered.filter((d) => d.site === 'y').length + s.yExtra.length,
     txCount: s.tx.length,
-    txTotal,
+    txIn,
+    txOut,
     pushes: s.commits.filter((c) => c.kind === 'push').length,
     deploys: s.commits.filter((c) => c.kind === 'deploy').length,
     ending: !!s.ending,
@@ -47,8 +50,10 @@ export function soundSnap(s: GameState): SoundSnap {
 export function soundCues(a: SoundSnap, b: SoundSnap): Cue[] {
   if (b.ending && !a.ending) return ['ending'];
   if (b.ending) return [];
-  // sleeping covers the night's rent, payouts and mail; any other jump (a loaded save, dev tools) is silent
-  if (b.day !== a.day) return b.day === a.day + 1 ? ['dayEnd'] : [];
+  // any jump but a night's sleep (a loaded save, dev tools) is silent
+  if (b.day !== a.day && b.day !== a.day + 1) return [];
+  // sleeping: the day ends, and the night's rent and payouts still make their money sounds
+  if (b.day !== a.day) return ['dayEnd', ...money(a, b)];
   const out: Cue[] = [];
   if (a.morning && !b.morning) out.push('dayStart');
   if (a.clockMin < LATE_MIN && b.clockMin >= LATE_MIN) out.push('lateWarn');
@@ -57,10 +62,15 @@ export function soundCues(a: SoundSnap, b: SoundSnap): Cue[] {
   if (b.pushes > a.pushes && b.deploys === a.deploys) out.push('push');
   if (b.inbox > a.inbox) out.push('mail');
   if (b.posts > a.posts) out.push('post');
-  if (b.txCount > a.txCount) {
-    const net = b.txTotal - a.txTotal;
-    if (net < -0.004) out.push('charge');
-    else if (net > 0.004) out.push('income');
-  }
+  out.push(...money(a, b));
+  return out;
+}
+
+/** Every balance change is heard: money out and money in each have their sound, both if both happened. */
+function money(a: SoundSnap, b: SoundSnap): Cue[] {
+  if (b.txCount <= a.txCount) return [];
+  const out: Cue[] = [];
+  if (b.txOut - a.txOut > 0.004) out.push('charge');
+  if (b.txIn - a.txIn > 0.004) out.push('income');
   return out;
 }
