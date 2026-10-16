@@ -178,5 +178,9 @@
 .mem-track i { display: block; height: 100%; background: var(--alarm); }
 .mem-bar b { grid-column: 2; font-weight: 400; font-size: 11.5px; color: var(--dk-dim); font-variant-numeric: tabular-nums; }
 
+/* System menu: volume slider */
+.dm-vol input[type="range"] { width: 100%; margin: 4px 0 0; accent-color: #8ab4f8; }
+.dm-vol input[type="range"]:disabled { opacity: .4; }
+
 /* pinned tabs (Qmail, Y, agent, Forkyard, Coinbin) can't be closed, so they need no × and less room */
 .tab.pinned { flex: 0 1 150px; padding-right: 12px; }

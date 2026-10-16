@@ -1,0 +1,52 @@
+import { describe, it, expect } from 'vitest';
+import { soundCues, LATE_MIN, type SoundSnap } from './soundCues';
+import { profileOf } from './sound';
+
+const base: SoundSnap = { day: 2, clockMin: 12 * 60, agentMsgs: 3, txCount: 10, txIn: 500, txOut: 400, pushes: 1, deploys: 0, ending: false, morning: false };
+const at = (o: Partial<SoundSnap>): SoundSnap => ({ ...base, ...o });
+
+describe('sound cues', () => {
+  it('is silent when nothing changed', () => {
+    expect(soundCues(base, at({ clockMin: base.clockMin + 1 }))).toEqual([]);
+  });
+  it('plays an agent reply and its charge together', () => {
+    expect(soundCues(base, at({ agentMsgs: 4, txCount: 11, txOut: 400.8 }))).toEqual(['reply', 'charge']);
+  });
+  it('plays income for money coming in, and both sounds when money moved both ways', () => {
+    expect(soundCues(base, at({ txCount: 11, txIn: 540 }))).toEqual(['income']);
+    expect(soundCues(base, at({ txCount: 12, txIn: 540, txOut: 402 }))).toEqual(['charge', 'income']);
+  });
+  it('plays a push, but leaves a deploy to the button', () => {
+    expect(soundCues(base, at({ pushes: 2 }))).toEqual(['push']);
+    expect(soundCues(base, at({ pushes: 2, deploys: 1 }))).toEqual([]);
+  });
+  it('warns once when the last hour starts', () => {
+    expect(soundCues(at({ clockMin: LATE_MIN - 1 }), at({ clockMin: LATE_MIN }))).toEqual(['lateWarn']);
+    expect(soundCues(at({ clockMin: LATE_MIN }), at({ clockMin: LATE_MIN + 1 }))).toEqual([]);
+  });
+  it('ends the day on sleep and starts it when the morning card closes', () => {
+    expect(soundCues(base, at({ day: 3, morning: true }))).toEqual(['dayEnd']);
+    // rent and a payout overnight are still heard
+    expect(soundCues(base, at({ day: 3, txCount: 12, txIn: 520, txOut: 750, morning: true }))).toEqual(['dayEnd', 'charge', 'income']);
+    expect(soundCues(at({ day: 3, morning: true }), at({ day: 3 }))).toEqual(['dayStart']);
+  });
+  it('stays quiet when the day jumps (a loaded save, dev tools)', () => {
+    expect(soundCues(base, at({ day: 7 }))).toEqual([]);
+    expect(soundCues(base, at({ day: 1 }))).toEqual([]);
+  });
+  it('plays only the ending when the run ends', () => {
+    expect(soundCues(base, at({ ending: true, txCount: 11, txOut: 500 }))).toEqual(['ending']);
+  });
+});
+
+describe('site sound profiles', () => {
+  it('gives the main sites their own and shares the rest', () => {
+    expect(profileOf('qmail')).toBe('qmail');
+    expect(profileOf('y')).toBe('y');
+    expect(profileOf('agent')).toBe('agent');
+    expect(profileOf('weightroom')).toBe('forkyard');
+    expect(profileOf('cellar')).toBe('under');
+    expect(profileOf('newtab')).toBe('plain');
+    expect(profileOf('app')).toBe('plain');
+  });
+});
