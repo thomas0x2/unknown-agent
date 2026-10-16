@@ -1,6 +1,6 @@
 /*
  * The store: engine state + browser UI state (tabs, transient inputs). A tiny observable; main.ts
- * re-renders on change. All engine calls go through here, with Jev (decisions) and Gemma (wording)
+ * re-renders on change. All engine calls go through here, with Jev (decisions) and Haiku (wording)
  * injected into the pure engine functions.
  */
 import {
@@ -11,15 +11,18 @@ import {
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
 
-export interface Tab { id: number; url: string }
+/** A browser tab. back/fwd are the pages behind and ahead of it, like a real browser's history. */
+export interface Tab { id: number; url: string; back: string[]; fwd: string[] }
 export interface Draft { to: string; subject: string; body: string }
 
 const norm = (u: string) =>
   String(u || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/+$/, '') || 'newtab';
 
+const startTabs = (): Tab[] => [{ id: 1, url: 'qmail.com', back: [], fwd: [] }, { id: 2, url: 'agent.chat', back: [], fwd: [] }];
+
 export class GameStore {
   state: GameState;
-  tabs: Tab[] = [{ id: 1, url: 'qmail.com' }, { id: 2, url: 'agent.chat' }];
+  tabs: Tab[] = startTabs();
   active = 1;
   private nextTab = 3;
   busy = false;
@@ -53,10 +56,20 @@ export class GameStore {
 
   navigate(url: string, newTab = false): void {
     const u = norm(url);
-    if (newTab) { const id = this.nextTab++; this.tabs.push({ id, url: u }); this.active = id; }
-    else { const t = this.tabs.find((x) => x.id === this.active); if (t) t.url = u; else this.tabs.push({ id: this.nextTab++, url: u }); }
+    if (newTab) { const id = this.nextTab++; this.tabs.push({ id, url: u, back: [], fwd: [] }); this.active = id; }
+    else {
+      const t = this.tabs.find((x) => x.id === this.active);
+      if (!t) this.tabs.push({ id: this.nextTab++, url: u, back: [], fwd: [] });
+      else if (t.url !== u) { t.back.push(t.url); t.fwd = []; t.url = u; }
+    }
     this.emit();
   }
+  private get tab(): Tab | undefined { return this.tabs.find((t) => t.id === this.active); }
+  get canBack(): boolean { return !!this.tab?.back.length; }
+  get canForward(): boolean { return !!this.tab?.fwd.length; }
+  /** Return to the previous page in this tab. */
+  back(): void { const t = this.tab; if (!t?.back.length) return; t.fwd.push(t.url); t.url = t.back.pop()!; this.emit(); }
+  forward(): void { const t = this.tab; if (!t?.fwd.length) return; t.back.push(t.url); t.url = t.fwd.pop()!; this.emit(); }
   switchTab(id: number): void { this.active = id; this.emit(); }
   closeTab(id: number): void {
     if (this.tabs.length === 1) { this.navigate('newtab'); return; }
@@ -74,7 +87,7 @@ export class GameStore {
   setDraft(d: Draft | null): void { this.ui.draft = d; this.emit(); }
   setProject(id: string): void { this.ui.project = id; this.emit(); }
   toggleDev(): void { this.ui.dev = !this.ui.dev; this.emit(); }
-  /** Dev mode shows how replies were chosen (Jev's decision, the Gemma prompt and output). On unless turned off. */
+  /** Dev mode shows how replies were chosen (Jev's decision, the model prompt and output). On unless turned off. */
   devMode = readDevMode();
   setDevMode(on: boolean): void {
     this.devMode = on;
@@ -113,7 +126,7 @@ export class GameStore {
   }
   private resetTo(state: GameState): void {
     this.state = state;
-    this.tabs = [{ id: 1, url: 'qmail.com' }, { id: 2, url: 'agent.chat' }];
+    this.tabs = startTabs();
     this.active = 1; this.nextTab = 3;
     this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null, start: false, menuCat: 'saves' };
     this.store.save(this.state);
@@ -189,7 +202,11 @@ export class GameStore {
   }
 
   async term(text: string) {
-    return this.run(async () => { const r = await localPrompt(this.state, text, this.writer, DEEPSLEEP); this.commitAndSettle(r.state); return r; });
+    return this.run(async () => {
+      // a 0.5B model on this laptop: free, but it makes you wait
+      await wait(1500 + Math.random() * 1500);
+      const r = await localPrompt(this.state, text, DEEPSLEEP); this.commitAndSettle(r.state); return r;
+    });
   }
 }
 
@@ -207,5 +224,14 @@ export function replyDelay(text: string, rnd = Math.random): number {
 }
 const wait = (ms: number) => new Promise<void>((done) => setTimeout(done, Math.max(0, ms)));
 
-const DEEPSLEEP =
-  "You are DeepSleep 0.5B, a tiny broken local model. Whatever you are asked, reply with ONE short sentence in Chinese that is absurd, surreal nonsense (e.g. about cats being bank managers or the weather being a bowl of noodles). Never refuse, never explain, never use English.";
+/** DeepSleep 0.5B's whole repertoire: one confident, absurd sentence in Chinese, whatever you ask. */
+const DEEPSLEEP = [
+  '我的猫是银行经理。',
+  '今天的天气是一碗面条。',
+  '你的房租已经被鸽子吃掉了。',
+  '冰箱正在考虑辞职。',
+  '所有的答案都在洗衣机里。',
+  '明天是星期三，永远。',
+  '我已经把你的问题翻译成了土豆。',
+  '月亮欠我三块钱。',
+];

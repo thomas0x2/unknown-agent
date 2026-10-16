@@ -14,14 +14,23 @@
       "failures": [
         "failed_fetch",
         "subtle"
-      ]
+      ],
+      "complaints": {
+        "missing": "Swaplist has no listings. It's a marketplace with nothing in it.",
+        "down": "Swaplist won't load the listings at all.",
+        "wrong": "Swaplist listings have no photos and the prices are off. Is the bike 5 DOLR or 500?"
+      }
     },
     {
       "id": "search",
       "description": "browse, search and filter by category",
       "failures": [
         "subtle"
-      ]
+      ],
+      "complaints": {
+        "missing": "No search on Swaplist. Scrolled for twenty minutes to find a lamp.",
+        "wrong": "Searched Swaplist for \"jacket\". Nothing. There are jackets on there, I can see them."
+      }
     },
     {
       "id": "contact",
@@ -30,14 +39,41 @@
         "deep",
         "subtle"
       ],
-      "deep": true
+      "deep": true,
+      "complaints": {
+        "missing": "There's no way to contact a seller on Swaplist.",
+        "deep": "Messaged a seller on Swaplist. A completely different person answered.",
+        "wrong": "The contact button on Swaplist goes to the wrong seller."
+      }
     },
     {
       "id": "mark_sold",
       "description": "mark items as sold so they stop taking offers",
       "failures": [
         "subtle"
-      ]
+      ],
+      "complaints": {
+        "missing": "Nothing on Swaplist ever gets marked sold.",
+        "wrong": "Crossed town for a chair on Swaplist. Sold two days ago. Still listed."
+      }
     }
-  ]
+  ],
+  "complaints": {
+    "posters": [
+      {
+        "author": "Ines",
+        "handle": "ines_sells"
+      },
+      {
+        "author": "second_hand_sam",
+        "handle": "second_hand_sam"
+      },
+      {
+        "author": "Pia L.",
+        "handle": "pia_l"
+      }
+    ],
+    "offline": "Swaplist is down. I had three things listed on there.",
+    "stale": "Swaplist hasn't changed in days. Is anyone running it?"
+  }
 }

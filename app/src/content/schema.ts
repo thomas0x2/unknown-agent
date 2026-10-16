@@ -54,6 +54,26 @@ export interface AppTemplate {
   name: string;
   pages: AppPage[];
   features: FeatureDef[];
+  /** What happens when the app is broken at payday: a client email, or a user's post on Y. */
+  complaints?: AppComplaints;
+}
+/**
+ * Complaint copy for an app that was broken at payday. Client apps send one email from the client
+ * (intro, one line per problem, outro or fired); user apps get one Y post from a poster. Lines may
+ * use {{app}} and, in feature lines, the feature's spec params plus {{shown}}/{{expected}}.
+ */
+export interface AppComplaints {
+  subject?: string;
+  intro?: string;
+  outro?: string;
+  /** Replaces the outro on the strike that loses the client. */
+  fired?: string;
+  /** The app isn't deployed at all. */
+  offline?: string;
+  /** The live app matches the brief but isn't the latest version. */
+  stale?: string;
+  /** User apps: who posts the complaint on Y. */
+  posters?: { author: string; handle: string }[];
 }
 export interface AppPage {
   id: string;
@@ -84,6 +104,13 @@ export interface FeatureDef {
   match?: string;
   /** The first build's guaranteed teaching bug lands on a feature with this set, if one was built. */
   firstBuildBug?: boolean;
+  /**
+   * Complaint lines for this feature, keyed by what's wrong: a bug id ('prices_curo', or
+   * 'wrong_items:renamed' for a sub-case), 'hallucinated', 'outdated', a failure kind ('visible',
+   * 'failed_fetch', 'deep', 'subtle'), or the fallbacks 'missing', 'down' (crash or failed fetch)
+   * and 'wrong' (anything else).
+   */
+  complaints?: Record<string, string>;
   /**
    * The spec as a checklist for the build prompt: each item the prompt doesn't mention explicitly
    * guarantees its linked bug. `text` fills {{param}} from the spec; `bug` is a bug id.
@@ -155,7 +182,7 @@ export interface Outcome {
    */
   keywords?: string[];
   effects?: Effects;
-  /** Fixed reply text. Storyline replies are always scripted, never written by the local model. */
+  /** Fixed reply text. Storyline replies are always scripted, never written by a model. */
   reply: string;
   /**
    * From day 7 this outcome only lands if the player's words work around a refusal (a "security
@@ -183,14 +210,14 @@ export interface FillerPost {
   flagsAll?: string[];
 }
 
-/** The voice Gemma uses to reply as a given email address or Y handle. */
+/** The voice Haiku uses to reply as a given email address or Y handle. */
 export interface Contact {
   /** Match by qmail address or Y handle. */
   key: string;
   name?: string;
   /** The character who answers at this address (content/characters.json). */
   character: string;
-  /** A scripted reply shown when the local model isn't loaded, so a reply always arrives. */
+  /** A scripted reply shown when Haiku can't answer, so a reply always arrives. */
   reply?: string;
   /** Topics this contact always answers with fixed text, whatever email it arrives on (Jev matches `when`). */
   scripted?: ScriptedReply[];
@@ -203,7 +230,7 @@ export interface ScriptedReply {
   reply: string;
 }
 
-/** A character Gemma speaks as when Jev finds nothing in what the player wrote. */
+/** A character Haiku speaks as when Jev finds nothing in what the player wrote. */
 export interface Character {
   id: string;
   name: string;
@@ -226,7 +253,7 @@ export interface AgentHint {
 }
 export interface AgentContent {
   hints: AgentHint[];
-  /** Scripted roasts for prompts that drive nothing, when the local model can't write one. */
+  /** Scripted roasts for prompts that drive nothing, when Haiku can't write one. */
   roasts: string[];
 }
 
@@ -237,7 +264,7 @@ export interface Content {
   qmailSpam: FillerPost[];
   /** Trending topics on Y, by day — flavor for the feed and context for post rating. */
   trending: Record<number, string[]>;
-  /** Personas for Gemma-written replies, keyed by address/handle. */
+  /** Personas for Haiku-written replies, keyed by address/handle. */
   contacts: Contact[];
   /** Character profiles for off-script replies. */
   characters?: Character[];

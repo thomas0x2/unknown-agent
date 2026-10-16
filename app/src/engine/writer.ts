@@ -1,6 +1,6 @@
 /*
- * The Writer is how the engine gets human-sounding text without knowing about Gemma. The game wires
- * the local model in (game/gemma.ts); tests and the headless engine pass a stub that returns the
+ * The Writer is how the engine gets human-sounding text without knowing about the model. The game wires
+ * Claude Haiku in (game/misses.ts); tests and the headless engine pass a stub that returns the
  * scripted fallback. Jev decides *what* happens; the Writer only phrases a reply when the content
  * gives a brief instead of fixed text, or when nothing was triggered.
  */
@@ -15,8 +15,6 @@ export interface WriteReq {
   long?: boolean;
   /** Grounding facts (wallet balance, last cost). */
   facts?: string;
-  /** An explicit persona override (the Terminal's local model), bypassing the content lookup. */
-  persona?: string;
 }
 
 export interface Writer {

@@ -121,11 +121,11 @@ export interface ChatMsg {
   day: number;
   cost?: number;
   src?: string;
-  /** Written by the local model (Gemma) rather than scripted. */
+  /** Written by a model (Claude Haiku) rather than scripted. */
   llm?: boolean;
   /** Which model wrote it, when not the local one (e.g. Claude Haiku). */
   by?: string;
-  /** Why a scripted line stood in for the local model. */
+  /** Why a scripted line stood in for the model. */
   note?: string;
   /** How the reply was chosen (Jev's decision, the model prompt and raw output), shown in dev mode. */
   debug?: string[];
@@ -147,7 +147,7 @@ export interface MailEntry {
   subject: string;
   body: string;
   read: boolean;
-  /** Written by the local model. */
+  /** Written by a model (Claude Haiku). */
   generated?: boolean;
   /** App-sent mail (booking confirmations, test campaigns): a link the body can carry. */
   link?: string;
@@ -163,6 +163,8 @@ export interface YExtra {
   likes: number;
   replyTo?: string;
   generated?: boolean;
+  /** A user's complaint about this app (broken at payday); shown at the top of its day. */
+  about?: string;
 }
 
 export interface YowlReview {

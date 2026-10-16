@@ -14,7 +14,12 @@
       "failures": [
         "subtle",
         "failed_fetch"
-      ]
+      ],
+      "complaints": {
+        "missing": "Spin Cycle Status doesn't even list the machines. What is it for.",
+        "down": "Spin Cycle Status just says \"Failed to fetch\". Walked over anyway. All busy.",
+        "wrong": "Spin Cycle Status said machine 3 was free. It was out of order. It's always out of order."
+      }
     },
     {
       "id": "refresh",
@@ -22,21 +27,52 @@
       "failures": [
         "failed_fetch",
         "subtle"
-      ]
+      ],
+      "complaints": {
+        "missing": "Spin Cycle Status never updates. It shows the same thing all day.",
+        "down": "Spin Cycle Status stopped updating. Walked over for a free machine that wasn't.",
+        "wrong": "Spin Cycle Status said 4 machines free. Walked over, all 4 running. The page hadn't updated since the morning."
+      }
     },
     {
       "id": "minutes",
       "description": "show the minutes left for running machines",
       "failures": [
         "subtle"
-      ]
+      ],
+      "complaints": {
+        "missing": "Spin Cycle Status shows which machines are running but not for how long. Stood there 40 minutes.",
+        "wrong": "Spin Cycle Status says my wash has 731 minutes left."
+      }
     },
     {
       "id": "more_machines",
       "description": "show all twelve machines after the four new ones were added",
       "failures": [
         "subtle"
-      ]
+      ],
+      "complaints": {
+        "missing": "Spin Cycle Status still shows 8 machines. There are 12 now.",
+        "wrong": "Spin Cycle Status still shows 8 machines. There are 12 now."
+      }
     }
-  ]
+  ],
+  "complaints": {
+    "posters": [
+      {
+        "author": "walked_there_again",
+        "handle": "walked_there_again"
+      },
+      {
+        "author": "Kofi A.",
+        "handle": "kofi_a"
+      },
+      {
+        "author": "Steph M.",
+        "handle": "steph_m"
+      }
+    ],
+    "offline": "Spin Cycle Status is gone. The link just goes nowhere now.",
+    "stale": "Spin Cycle Status looks like nobody's touched it in days."
+  }
 }
