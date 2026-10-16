@@ -26,17 +26,19 @@
       <div class="viewport" id="viewport"></div>
     </div>
   </div>
-  <footer class="taskbar">
-    <div class="tk-note" title="Objective"><span class="tk-pin" aria-hidden="true"></span><span id="objective"></span></div>
-    <div class="tk-right">
-      <span class="tk-rent" id="rent"></span>
-      <span class="tk-wallet" id="wallet" title="Balance"></span>
-      <span class="tk-clock" id="clock"></span>
-      <button class="tk-btn" data-act="sleep" title="End the day and sleep until morning">Sleep</button>
-      <button class="tk-btn ghost" data-act="new" title="New game">New</button>
-      <button class="tk-btn ghost" data-act="dev" title="Story debugger (Ctrl+`)">jev</button>
+  <footer class="taskbar dk-bar">
+    <button class="dk-home" id="dk-home" data-start aria-haspopup="menu" aria-expanded="false" title="Home menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 11.2 12 4l8.5 7.2M6 9.6V20h4.5v-5.5h3V20H18V9.6"/></svg><span>Home</span></button>
+    <div class="dk-tasks"><span class="dk-task" id="dk-task"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12V2a10 10 0 0 1 10 10z" fill="#ff5fa2"/><path d="M12 12h10a10 10 0 0 1-10 10z" fill="#ffb02e"/><path d="M12 12v10A10 10 0 0 1 2 12z" fill="#2ec4b6"/><path d="M12 12H2A10 10 0 0 1 12 2z" fill="#8a5cf6"/><rect x="7.6" y="7.6" width="8.8" height="8.8" rx="2.6" transform="rotate(45 12 12)" fill="#fff"/><rect x="9.4" y="9.4" width="5.2" height="5.2" rx="1.4" transform="rotate(45 12 12)" fill="#3a8dff"/></svg></span></div>
+    <div class="dk-tray">
+      <span class="dk-tray-icons" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.3a9.5 9.5 0 0 1 13 0M8.6 15.5a5 5 0 0 1 6.8 0"/><circle cx="12" cy="19" r="1.3" class="fill"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" class="fill"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/></svg>
+        <svg viewBox="0 0 24 24"><rect x="2.5" y="7.5" width="17" height="9" rx="2"/><rect x="4.5" y="9.5" width="9" height="5" rx="1" class="fill"/><path d="M21.5 10.5v3"/></svg>
+      </span>
+      <span class="dk-clock" id="clock"></span>
     </div>
   </footer>
+  <nav class="dk-menu" id="startmenu" role="menu" aria-label="Home menu" hidden></nav>
   <div id="toasts" aria-live="polite"></div>
   <div id="overlay" hidden></div>
   <aside id="dev" hidden></aside>

@@ -7,7 +7,7 @@
   "trigger": {
     "dayMin": 1
   },
-  "body": "Sweetheart, I heard about the layoffs on the news. Are you alright? Are you eating? Write back when you can.\n\nLove, Mom",
+  "body": "Sweetheart, I heard about the layoffs on the news. Are you alright? Are you eating? Your father says hi (he didn't). Write back when you can.\n\nLove, Mom",
   "outcomes": [
     {
       "id": "warm",
@@ -31,7 +31,7 @@
           "asked_mom_money"
         ]
       },
-      "reply": "I sent you a little something. Don't make a habit of it."
+      "reply": "I knew it. I sent you a little something. Don't tell your father. Buy vegetables."
     }
   ],
   "hints": [

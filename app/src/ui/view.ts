@@ -5,6 +5,7 @@
  */
 import type { GameStore } from '../game/store';
 import { LLM } from '../game/llm';
+import { listSlots } from '../game/saves';
 import { ICONS, Y_ICONS } from './icons';
 import { route, bookmarks, type Route, type SiteId } from '../sites/registry';
 import {
@@ -96,6 +97,48 @@ export function fmtClock(min: number): string {
 export function clockHtml(s: GameState): string {
   const near = s.clockMin >= 22 * 60; // getting late
   return `<b class="${near ? 'late' : ''}">${fmtClock(s.clockMin)}</b><span>${weekday(s.values.day)} · Day ${s.values.day} of ${LAST_DAY}</span>`;
+}
+
+// ── desktop: taskbar window entry + home menu ──
+export function taskTitle(store: GameStore): string {
+  const r = route(store.url, store.state);
+  return `Browser — ${r.site === 'newtab' ? 'New tab' : store.url}`;
+}
+const MI = {
+  sleep: '<svg viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>',
+  help: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.5v.4M12 16.8v.2"/></svg>',
+  term: '<svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="2"/><path d="M7 9.5l3 2.5-3 2.5M12.5 15H17"/></svg>',
+  slot: '<svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></svg>',
+  logout: '<svg viewBox="0 0 24 24"><path d="M14 4H6v16h8M10 12h10m-3-3 3 3-3 3"/></svg>',
+  folder: '<svg viewBox="0 0 24 24"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2h8.5A1.5 1.5 0 0 1 21 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/></svg>',
+  gear: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg>',
+};
+export function startMenuHtml(store: GameStore): string {
+  const s = store.state;
+  const cat = store.ui.menuCat;
+  const cats = [['saves', MI.folder, 'Saved games'], ['system', MI.gear, 'System']]
+    .map(([id, icon, label]) => `<button class="dm-cat${cat === id ? ' on' : ''}" data-menu-cat="${id}">${icon}${label}</button>`).join('');
+  const item = (act: string, icon: string, title: string, sub: string) =>
+    `<button class="dm-item" data-act="${act}">${icon}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span></button>`;
+  const list = cat === 'system'
+    ? item('intro', MI.help, 'How to play', 'The rules, again') + item('dev', MI.term, 'Story debugger', 'jev · Ctrl+`')
+    : listSlots().map((info, i) => {
+      const n = i + 1;
+      const when = info ? `${fmtClock(info.clockMin)} · saved ${new Date(info.savedAt).toLocaleString(undefined, { month: 'short', day: 'numeric' })}` : 'Empty';
+      return `<div class="dm-slot${info ? '' : ' empty'}">${MI.slot}<span><b>Slot ${n}${info ? ` · Day ${info.day}` : ''}</b><small>${esc(when)}</small></span>
+        <span class="dm-slot-acts">${info ? `<button data-slot-load="${n}">Load</button>` : ''}<button data-slot-save="${n}">Save</button></span></div>`;
+    }).join('') + '<p class="dm-note">Progress also autosaves after every action.</p>';
+  return `<aside class="dm-side">
+      <span class="dm-avatar" title="${esc(PLAYER.name)}">${ICONS.agent}</span>
+      <span class="dm-side-gap"></span>
+      <button class="dm-side-btn" data-act="new" title="New game (log out)">${MI.logout}</button>
+      <button class="dm-side-btn dm-sleep" data-act="sleep" title="Sleep until tomorrow">${MI.sleep}</button>
+    </aside>
+    <div class="dm-main">
+      <header class="dm-head"><b>${esc(PLAYER.name)}</b><span>${weekday(s.values.day)} · Day ${s.values.day} of ${LAST_DAY}</span>
+        <button class="dm-sleep-wide" data-act="sleep">${MI.sleep}Sleep</button></header>
+      <div class="dm-body"><nav class="dm-cats">${cats}</nav><div class="dm-list">${list}</div></div>
+    </div>`;
 }
 
 function qmailBadge(s: GameState): number {

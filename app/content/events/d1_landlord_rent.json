@@ -1,11 +1,11 @@
 {
   "id": "d1_landlord_rent",
   "site": "qmail",
-  "from": "Landlord",
-  "addr": "landlord@pine.test",
-  "subject": "Rent due day 7",
+  "from": "Gary Pruitt",
+  "addr": "gary@pruittproperty.test",
+  "subject": "Rent: end of day 7",
   "trigger": {
     "dayMin": 1
   },
-  "body": "Reminder: 350 DOLR rent is due at the end of day 7. Please don't make me ask twice."
+  "body": "Hi,\n\nReminder that rent (350 DOLR) comes out of your wallet at the end of day 7. Last month's late fee was 89.50 DOLR. I'd rather not do that again, and I'd rather not do the other thing either.\n\nGary Pruitt\nPruitt Property Management"
 }
