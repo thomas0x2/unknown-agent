@@ -5,7 +5,7 @@
 import { loadContent } from './load';
 import { composeEmail, briefBuild, briefFix, deploy, promptAgent } from '../engine/actions';
 import { applyEffects } from '../engine/effects';
-import { appMeetsSpec, getApp, devToggleBug } from '../engine/apps';
+import { appMeetsSpec, getApp, devToggleBug, bugsOf } from '../engine/apps';
 
 /** Fix requests have to name the app. */
 const gino = 'Trattoria Gino: ';
@@ -48,14 +48,14 @@ describe('day 1 playthrough', () => {
     s = b.state;
     expect(b.requested.sort()).toEqual(['landing', 'menu']);
 
-    // first build always ships a teaching bug, on the menu -> not meeting spec yet
-    const first = getApp(s, appId)!.repo.find((f) => !f.correct);
-    expect(first?.id).toBe('menu');
-    expect(['prices_missing', 'prices_wrong', 'prices_curo', 'wrong_items']).toContain(first?.variant);
+    // agent-1 gets about half the components wrong, and the first build always ships at least one bug
+    const menu = getApp(s, appId)!.repo.find((f) => f.id === 'menu')!;
+    expect(getApp(s, appId)!.repo.some((f) => !f.correct)).toBe(true);
+    if (!menu.correct) expect(['prices_missing', 'prices_wrong', 'prices_curo', 'wrong_items']).toEqual(expect.arrayContaining(bugsOf(menu)));
 
     // deploy, then fix whichever bug is there, naming it, until the live app meets spec
     s = deploy(s, appId);
-    for (let i = 0; i < 6 && !appMeetsSpec(getApp(s, appId)!); i++) {
+    for (let i = 0; i < 10 && !appMeetsSpec(getApp(s, appId)!); i++) {
       const broken = getApp(s, appId)!.repo.find((f) => !f.correct)!;
       s = (await briefFix(s, content, wordJev, appId, FIX[broken.variant ?? ''] ?? `Rebuild the menu with exactly these dishes: ${MENU}.`)).state;
       s = deploy(s, appId);

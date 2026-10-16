@@ -2,6 +2,7 @@ import { endAll } from './_fixtures';
 import { loadContent } from '../content/load';
 import { newGame, type GameState } from './state';
 import { clone } from './core';
+import { APPS } from './config';
 import { registerApp, deployApp, breakFeature, getApp } from './apps';
 import { appProblems, problemLine } from './complaints';
 import { menuDishes } from './restaurant';
@@ -167,10 +168,13 @@ describe('complaints at payday', () => {
     expect(subjects(next)).toEqual(['The website']);
     expect(next.delivered.some((d) => d.eventId === 'd2_restaurant_booking')).toBe(false);
 
-    // fixed and redeployed: the next morning brings the update, not a complaint
+    // fixed and redeployed: the next morning brings the update, not a complaint (and nothing breaks overnight)
     const app = next.apps[0];
     for (const list of [app.repo, app.features]) for (const f of list) Object.assign(f, { correct: true, variant: undefined });
-    next = endAll(next, content);
+    app.breaks = [];
+    const odds = APPS.breakOdds;
+    APPS.breakOdds = [];
+    try { next = endAll(next, content); } finally { APPS.breakOdds = odds; }
     expect(next.delivered.some((d) => d.eventId === 'd2_restaurant_booking' && d.day === 3)).toBe(true);
     expect(subjects(next)).toEqual(['The website']);
     expect(content.events.find((e) => e.id === 'd2_restaurant_booking')!.body).not.toMatch(/agent|redeploy/i);
