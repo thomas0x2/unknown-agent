@@ -37,6 +37,10 @@ export function triggerMatches(s: GameState, t: Trigger): boolean {
     const set = s.flagDays[t.after.flag];
     if (set == null || day - set < t.after.delayDays) return false;
   }
+  if (t.appWorking) {
+    const app = s.apps.find((a) => a.clientEventId === t.appWorking && !a.churned);
+    if (!app || !app.deployed || app.brokenDays > 0) return false;
+  }
   return true;
 }
 

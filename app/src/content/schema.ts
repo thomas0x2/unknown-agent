@@ -171,6 +171,11 @@ export interface Trigger {
   values?: Partial<Record<MeterId, string>>;
   /** Fire N days after a flag was set. */
   after?: { flag: string; delayDays: number };
+  /**
+   * Only while the app created by this client event passed its last payday (live and to spec).
+   * Client update requests wait on this, so a broken site gets a complaint first, not new work.
+   */
+  appWorking?: string;
 }
 export interface Outcome {
   id: string;

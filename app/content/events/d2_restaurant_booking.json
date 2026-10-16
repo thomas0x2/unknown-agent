@@ -8,9 +8,10 @@
     "dayMin": 2,
     "flagsAll": [
       "restaurant_client"
-    ]
+    ],
+    "appWorking": "restaurant_contact"
   },
-  "body": "The site looks great. Two changes:\n\n- Swap Diavola for Quattro Formaggi at 15, and make Espresso 3.5.\n- Add a table booking form (name, email, date, time, party size 1-8), only during opening hours. Each booking should email the guest a confirmation with a cancel link.\n\nRe-brief your agent and redeploy.",
+  "body": "The site looks great. Two changes:\n\n- Swap Diavola for Quattro Formaggi at 15, and make Espresso 3.5.\n- Add a table booking form (name, email, date, time, party size 1-8), only during opening hours. Each booking should email the guest a confirmation with a cancel link.",
   "onDeliver": {
     "updateApp": {
       "client": "restaurant_contact",
@@ -25,6 +26,9 @@
           }
         }
       ]
-    }
+    },
+    "setFlags": [
+      "restaurant_update1"
+    ]
   }
 }

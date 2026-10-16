@@ -145,4 +145,23 @@ describe('complaints at payday', () => {
       expect(t.complaints?.offline, t.id).toBeTruthy();
     }
   });
+
+  it("Gino's update request waits until the site passes a payday; the complaint comes first", () => {
+    const { s, id } = gino();
+    s.flags.push('restaurant_client');
+    s.flags.sort();
+    withBug(s, id, 'menu', 'prices_curo');
+    let next = endDay(s, content);
+    const subjects = (st: GameState) => inbox(st).map((m) => m.subject);
+    expect(subjects(next)).toEqual(['The website']);
+    expect(next.delivered.some((d) => d.eventId === 'd2_restaurant_booking')).toBe(false);
+
+    // fixed and redeployed: the next morning brings the update, not a complaint
+    const app = next.apps[0];
+    for (const list of [app.repo, app.features]) for (const f of list) Object.assign(f, { correct: true, variant: undefined });
+    next = endDay(next, content);
+    expect(next.delivered.some((d) => d.eventId === 'd2_restaurant_booking' && d.day === 3)).toBe(true);
+    expect(subjects(next)).toEqual(['The website']);
+    expect(content.events.find((e) => e.id === 'd2_restaurant_booking')!.body).not.toMatch(/agent|redeploy/i);
+  });
 });

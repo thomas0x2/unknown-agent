@@ -8,7 +8,8 @@
     "dayMin": 5,
     "flagsAll": [
       "laundromat_live"
-    ]
+    ],
+    "appWorking": "laundromat_contact"
   },
   "onDeliver": {
     "updateApp": {
