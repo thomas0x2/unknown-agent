@@ -346,7 +346,7 @@ function pageY(store: GameStore, profile?: string): string {
   return `<div class="y">
     <header class="y-bar">
       <div class="y-brand"><span class="y-mark">${ICONS.y}</span></div>
-      <nav class="y-pills"><a href="#" data-nav="y.com" class="${profile ? '' : 'on'}">Home</a><a href="#" data-nav="y.com/you" class="${profile === 'you' ? 'on' : ''}">Profile</a><span>Alerts</span><span>Inbox</span></nav>
+      <nav class="y-pills"><a href="#" data-nav="y.com" class="${profile ? '' : 'on'}">Home</a><a href="#" data-nav="y.com/you" class="${profile === 'you' ? 'on' : ''}">Profile</a></nav>
       <span class="y-count"><b>${compact(s.values.followers)}</b> followers</span>
       <label class="y-search">${Y_ICONS.explore}<input id="y-search" autocomplete="off" placeholder="Search Y or @username" value="${esc(store.ui.ySearch)}"></label>
     </header>
