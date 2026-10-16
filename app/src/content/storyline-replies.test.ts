@@ -27,6 +27,27 @@ describe('EMPIRE', () => {
     expect(r.state.values.crypto).toBe(s.values.crypto);
   });
 
+  it('Jev sees the email the player is answering, so a bare EMPIRE has something to refer to', async () => {
+    const s = startAll(content, 3);
+    const asked: RouteInput[] = [];
+    const jev: JevRouter = { ...pickJev({ route: ['interested'] }), route: async (i) => { asked.push(i); return { kind: 'outcome', outcomeId: 'interested' }; } };
+    await replyToEvent(s, content, jev, 'd1_guru', 'EMPIRE', noLlm);
+    expect(asked).toHaveLength(1);
+    expect(asked[0].text).toBe('EMPIRE');
+    expect(asked[0].candidates.map((c) => c.id)).toEqual(['interested']);
+    expect(asked[0].context).toEqual([expect.stringMatching(/^Max Stryker · Alpha Ascend: .*Reply EMPIRE to claim it\.$/s)]);
+  });
+
+  it("on a miss, Jev still sees the email when it checks Max's scripted topics", async () => {
+    const s = startAll(content, 3);
+    const asked: RouteInput[] = [];
+    const jev: JevRouter = { ...pickJev({}), route: async (i) => { asked.push(i); return { kind: 'nothing' }; } };
+    await replyToEvent(s, content, jev, 'd1_guru', 'tell me more', { write: async () => ({ text: 'Cart is open.', llm: true }) });
+    expect(asked.map((a) => a.candidates.map((c) => c.id))).toEqual([['interested'], ['empire']]);
+    expect(asked[0].hints).toEqual(['It costs 20 DOLR. Reply only if you want in.']);
+    for (const a of asked) expect(a.context?.join('\n')).toContain('Reply EMPIRE to claim it.');
+  });
+
   it('signing up on the page costs 20 DOLR once and starts the newsletter', () => {
     const s = startAll(content, 3);
     const a = joinEmpire(s);
@@ -34,6 +55,17 @@ describe('EMPIRE', () => {
     expect(a.flags).toContain('guru_subscriber');
     expect(a.tx.at(-1)).toMatchObject({ amount: -20 });
     expect(joinEmpire(a).values.crypto).toBe(a.values.crypto);
+  });
+
+  it('the welcome email lands a few game minutes after paying, not instantly', async () => {
+    const { advanceClock } = await import('../engine/core');
+    const a = joinEmpire(startAll(content, 3));
+    const welcome = (x: typeof a) => x.mail.filter((m) => m.subject === 'Welcome to EMPIRE');
+    expect(welcome(a)).toHaveLength(0);
+    advanceClock(a, EMPIRE.welcomeAfter - 1);
+    expect(welcome(a)).toHaveLength(0);
+    advanceClock(a, 1);
+    expect(welcome(a)).toHaveLength(1);
   });
 
   it("can't sign up without 20 DOLR", () => {
