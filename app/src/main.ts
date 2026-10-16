@@ -23,9 +23,6 @@ import * as V from './ui/view';
 import { route } from './sites/registry';
 import { listSlots } from './game/saves';
 import { newPageLoad } from './ui/ads';
-import { disableClipboard } from './ui/noClipboard';
-
-disableClipboard();
 
 const content = loadContent();
 const writer = makeWriter(content);
