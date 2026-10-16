@@ -157,7 +157,9 @@ async function buildRoute(sdk, body) {
   return {
     state: { setting: SETTING, situation: body.stateSummary, ...(earlier.length ? { earlierMessages: earlier } : {}), player_message: body.text },
     questions: {
-      branch: sdk.choice('Which outcome does the player\'s message accomplish, if any?', criteria),
+      branch: sdk.choice(earlier.length
+        ? 'The player\'s message answers the earlier messages (an email thread, a post or a chat). Which outcome does it accomplish, if any?'
+        : 'Which outcome does the player\'s message accomplish, if any?', criteria),
     },
   };
 }

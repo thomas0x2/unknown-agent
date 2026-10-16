@@ -59,8 +59,12 @@ function nextId(s: GameState, prefix: string): string {
   return `${prefix}${s.nextId++}`;
 }
 
-/** Jev picks nothing / a hint / one outcome. */
-async function routeReply(jev: JevRouter, channel: GameEvent['site'], s: GameState, ev: GameEvent, text: string): Promise<RouteDecision> {
+/**
+ * Jev picks nothing / a hint / one outcome. Jev also gets the conversation the message answers (the
+ * email thread, or the post being replied to), so a bare "EMPIRE" reads as a reply to the email that
+ * asked for it.
+ */
+async function routeReply(jev: JevRouter, channel: GameEvent['site'], s: GameState, content: Content, ev: GameEvent, text: string, subject = ev.subject ?? ''): Promise<RouteDecision> {
   const outcomes = ev.outcomes ?? [];
   return jev.route({
     channel,
@@ -68,7 +72,20 @@ async function routeReply(jev: JevRouter, channel: GameEvent['site'], s: GameSta
     stateSummary: stateSummary(s),
     candidates: outcomes.map((o) => ({ id: o.id, when: o.when })),
     hints: ev.hints ?? [],
+    context: replyContext(s, content, channel, ev, subject, text),
   });
+}
+
+/** What the player's message answers, oldest first, as "Sender: text" lines for Jev. */
+export function replyContext(s: GameState, content: Content, channel: GameEvent['site'], ev: GameEvent, subject: string, text: string): string[] {
+  const name = ev.from ?? ev.addr ?? 'Them';
+  if (channel === 'qmail' && ev.addr) {
+    const lines = mailHistory(s, content, ev.addr, subject, text)
+      .map((h) => `${h.from === 'player' ? 'Player' : h.from === 'self' ? name : h.from}: ${h.text}`);
+    if (lines.length) return lines;
+  }
+  const body = eventBody(ev, s.values.day);
+  return body ? [`${name}: ${body}`] : [];
 }
 
 /** The contact's scripted reply for what the player wrote, if Jev matches one. */
@@ -190,7 +207,7 @@ export async function replyToEvent(
   if (ev.addr) pushMail(s, { folder: 'sent', day: s.values.day, from: 'You', addr: PLAYER_ADDR, to: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body: text, read: true });
 
   const outcomes = ev.outcomes ?? [];
-  const decision = await routeReply(jev, ev.site, s, ev, text);
+  const decision = await routeReply(jev, ev.site, s, content, ev, text);
 
   if (decision.kind === 'outcome') {
     const outcome = outcomes.find((o) => o.id === decision.outcomeId);
@@ -257,7 +274,7 @@ export async function composeEmail(
   }
 
   const outcomes = ev.outcomes ?? [];
-  const decision = await routeReply(jev, 'qmail', s, ev, text);
+  const decision = await routeReply(jev, 'qmail', s, content, ev, text, subject || ev.subject || '');
   if (decision.kind === 'outcome') {
     const outcome = outcomes.find((o) => o.id === decision.outcomeId);
     if (outcome) {

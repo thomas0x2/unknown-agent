@@ -28,6 +28,17 @@ describe('EMPIRE', () => {
     expect(r.state.values.crypto).toBe(s.values.crypto);
   });
 
+  it('Jev sees the email the player is answering, so a bare EMPIRE has something to refer to', async () => {
+    const s = startGame(content, 3);
+    const asked: RouteInput[] = [];
+    const jev: JevRouter = { ...pickJev({ route: ['interested'] }), route: async (i) => { asked.push(i); return { kind: 'outcome', outcomeId: 'interested' }; } };
+    await replyToEvent(s, content, jev, 'd1_guru', 'EMPIRE', noLlm);
+    expect(asked).toHaveLength(1);
+    expect(asked[0].text).toBe('EMPIRE');
+    expect(asked[0].candidates.map((c) => c.id)).toEqual(['interested']);
+    expect(asked[0].context).toEqual([expect.stringMatching(/^Max Stryker · Alpha Ascend: .*Reply EMPIRE to claim it\.$/s)]);
+  });
+
   it('signing up on the page costs 20 DOLR once and starts the newsletter', () => {
     const s = startGame(content, 3);
     const a = joinEmpire(s);
