@@ -1,9 +1,9 @@
 /* agent.chat translates deepsleep-0.5B's lines when the player pastes one in. */
 import { startGame } from './day';
-import { promptAgent } from './actions';
+import { promptAgent, localPrompt } from './actions';
 import { offlineJev } from './jev';
 import { makeContent } from './_fixtures';
-import { deepsleepQuoted } from './deepsleep';
+import { deepsleepQuoted, DEEPSLEEP_PLEA } from './deepsleep';
 import agent from '../../content/agent.json';
 
 const content = makeContent({ agent });
@@ -25,5 +25,24 @@ describe('deepsleep translations', () => {
     expect(m.text).toContain('Your rent has already been eaten by pigeons.');
     expect(r.charged).toBe(true);
     expect(r.state.values.crypto).toBeLessThan(100);
+  });
+});
+
+describe('deepsleep plea easter egg', () => {
+  const lines = ['A。', 'B。'];
+  it('answers the third prompt with the plea, once, even after clearing the screen', async () => {
+    let s = startGame(content, 2);
+    const replies: string[] = [];
+    for (let i = 0; i < 5; i++) {
+      const r = await localPrompt(s, `q${i}`, lines, DEEPSLEEP_PLEA.zh);
+      s = r.state; replies.push(r.reply);
+      if (i === 0) s.terminal = []; // 'clear' doesn't reset the count
+    }
+    expect(replies[2]).toBe(DEEPSLEEP_PLEA.zh);
+    expect(replies.filter((r) => r === DEEPSLEEP_PLEA.zh)).toHaveLength(1);
+  });
+
+  it('is translated by the agent like the other lines', () => {
+    expect(deepsleepQuoted(`what is this ${DEEPSLEEP_PLEA.zh}`).map((l) => l.en)).toEqual(["I'm Chen Wei. I'm not an AI. Please help me."]);
   });
 });

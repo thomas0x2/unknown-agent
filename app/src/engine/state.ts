@@ -250,6 +250,8 @@ export interface GameState {
   terminal: { k: 'in' | 'sys' | 'err' | 'model'; text: string }[];
   /** Model running in the Terminal, if any. */
   termModel: string | null;
+  /** Prompts ever sent to the Terminal's model (older saves: unset, counted from 0). */
+  termPrompts?: number;
   morning: MorningCard | null;
   clockMin: number; // minutes since midnight; the working day runs wake..sleep
   commits: Commit[];

@@ -17,7 +17,7 @@ import { getEvent, activeDeliveries, reachableByEmail } from './events';
 import { buildApp, fixApp, fixBreak, fixCategories, keywordCategories, needsWork, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, bugsOf, breakVariant, type BuildReport } from './apps';
 import { type Writer, scriptedWriter } from './writer';
 import { dateFull } from './calendar';
-import { deepsleepQuoted, translationReplies } from './deepsleep';
+import { deepsleepQuoted, translationReplies, PLEA_AT } from './deepsleep';
 
 export interface ReplyResult {
   state: GameState;
@@ -534,14 +534,17 @@ export async function localPrompt(
   s0: GameState,
   text: string,
   lines: readonly string[],
+  /** Said once, to the PLEA_AT-th prompt, instead of a line from the list. */
+  plea?: string,
 ): Promise<{ state: GameState; reply: string }> {
   const s = clone(s0);
+  s.termPrompts = (s.termPrompts ?? 0) + 1;
   // the model answers whatever was asked with one of its lines, never the same one twice in a row
   const last = [...s.terminal].reverse().find((l) => l.k === 'model')?.text;
   const fresh = lines.filter((l) => l !== last);
   s.terminal.push({ k: 'in', text: `> ${text}` });
   tick(s, 'terminal');
-  const body = pick(s, fresh.length ? fresh : lines);
+  const body = plea && s.termPrompts === PLEA_AT ? plea : pick(s, fresh.length ? fresh : lines);
   s.terminal.push({ k: 'model', text: body });
   return { state: s, reply: body };
 }

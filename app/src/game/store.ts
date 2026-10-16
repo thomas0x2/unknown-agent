@@ -12,7 +12,7 @@ import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
 import { route, visitedFlag } from '../sites/registry';
 import { PULL_MS, pullLines } from './pull';
-import { DEEPSLEEP_LINES } from '../engine/deepsleep';
+import { DEEPSLEEP_LINES, DEEPSLEEP_PLEA } from '../engine/deepsleep';
 
 /** A browser tab. back/fwd are the pages behind and ahead of it, like a real browser's history. */
 export interface Tab { id: number; url: string; back: string[]; fwd: string[] }
@@ -308,7 +308,7 @@ export class GameStore {
     return this.run(async () => {
       // a 0.5B model on this laptop: free, but it makes you wait
       await wait(1500 + Math.random() * 1500);
-      const r = await localPrompt(this.state, text, DEEPSLEEP); this.commitAndSettle(r.state); return r;
+      const r = await localPrompt(this.state, text, DEEPSLEEP, DEEPSLEEP_PLEA.zh); this.commitAndSettle(r.state); return r;
     });
   }
 }
