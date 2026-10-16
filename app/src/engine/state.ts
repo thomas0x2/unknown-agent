@@ -202,10 +202,10 @@ export interface Booking {
   time: string;
   party: number;
   cancelled: boolean;
-  /** The cancel link only pretends to work (a bug). */
-  fakeCancel?: boolean;
-  /** The player clicked the cancel link (whether or not it really cancelled). */
+  /** The player clicked the cancel link. */
   cancelClicked?: boolean;
+  /** Nobody came and the owner charged the no-show fee (night of the booking's date). */
+  noShow?: boolean;
 }
 
 /** What the night did, shown on the "You slept" card. */
@@ -250,7 +250,7 @@ export interface GameState {
   reviews: YowlReview[];
   bookings: Booking[];
   /** What the booking form said after the last attempt (accepted, or why not). */
-  bookingNotice?: { appId: string; ok: boolean; text: string };
+  bookingNotice?: { appId: string; ok: boolean; text: string; bookingId?: string };
   terminal: { k: 'in' | 'sys' | 'err' | 'model'; text: string }[];
   /** Model running in the Terminal, if any. */
   termModel: string | null;

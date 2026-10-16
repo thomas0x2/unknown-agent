@@ -4,7 +4,7 @@
  */
 import { describe, it, expect } from 'vitest';
 import { loadContent } from './load';
-import { startGame } from '../engine/day';
+import { startGame, endDay } from '../engine/day';
 import { composeEmail, briefBuild, deploy, promptAgent, makeBooking, cancelBooking } from '../engine/actions';
 import { applyEffects } from '../engine/effects';
 import { getApp, devToggleBug } from '../engine/apps';
@@ -41,6 +41,8 @@ describe('table booking', () => {
     const m = lastMail(s)!;
     expect(m.body).toContain('Your table for 3 at Trattoria Gino on Wednesday, October 4, 2028 at 19:00');
     expect(m.bookingId).toBe(s.bookings[0].id);
+    // the site's summary reads this booking, to compare with the email
+    expect(s.bookingNotice).toMatchObject({ ok: true, bookingId: s.bookings[0].id });
     expect(cancelBooking(s, m.bookingId!).bookings[0]).toMatchObject({ cancelled: true, cancelClicked: true });
     // outside opening hours, or in the past: refused
     expect(book(s0, '23:30').bookings).toHaveLength(0);
@@ -69,8 +71,6 @@ describe('table booking', () => {
     const toGino = lastMail(book(withBug('sent_to_restaurant')))!;
     expect(toGino.addr).toBe('gino@trattoria.test');
     expect(toGino.link).toBeUndefined();
-    const fake = book(withBug('fake_cancel'));
-    expect(cancelBooking(fake, lastMail(fake)!.bookingId!).bookings[0]).toMatchObject({ cancelled: false, cancelClicked: true });
     expect(book(withBug('no_hours_check'), '23:30').bookings).toHaveLength(1);
     expect(book(withBug('no_hours_check'), '19:00', 2, 0).bookings).toHaveLength(0);
     expect(book(withBug('past_dates'), '19:00', 2, 0).bookings).toHaveLength(1);
@@ -99,14 +99,13 @@ describe('table booking', () => {
     getApp(s0, APP)!.repo = getApp(s0, APP)!.repo.filter((f) => f.id !== 'booking');
     const s = (await briefBuild(s0, content, offlineJev, APP, 'Add a booking form with name, email, date, time and party size, only during opening hours.')).state;
     const f = getApp(s, APP)!.repo.find((x) => x.id === 'booking')!;
-    expect(f.checked).toEqual({ confirmation: false, cancel: false, party: true, hours: true });
-    expect([f.variant, ...(f.also ?? [])]).toEqual(['no_email', 'fake_cancel']);
+    expect(f.checked).toEqual({ confirmation: false, party: true, hours: true });
+    expect([f.variant, ...(f.also ?? [])]).toEqual(['no_email']);
   });
 
   it('every booking bug has a fix request that names it, and naming it fixes it', async () => {
     const asks: Record<string, string> = {
       no_email: "I booked a table but no confirmation email arrived.",
-      fake_cancel: "The cancel link in the booking email doesn't actually cancel the booking.",
       wrong_date: 'The booking confirmation shows the wrong date.',
       wrong_time: 'The time in the booking confirmation is wrong.',
       sent_to_restaurant: 'The booking confirmation is sent to the restaurant instead of the guest.',
@@ -124,5 +123,26 @@ describe('table booking', () => {
       const s = (await promptAgent(s0, content, offlineJev, gino + ask)).state;
       expect(getApp(s, APP)!.repo.find((f) => f.id === 'booking')!.correct, bug).toBe(true);
     }
+  });
+
+  it('a test booking nobody cancels costs a no-show fee on its night; cancelling avoids it', async () => {
+    const s0 = await liveSite();
+    const s1 = book(s0, '19:00', 2); // tomorrow
+    const night1 = endDay(s1, content);
+    expect(night1.bookings[0].noShow).toBeFalsy(); // not its night yet
+    const night2 = endDay(night1, content);
+    const m = night2.mail.find((x) => x.subject === 'Your table tonight')!;
+    expect(m.addr).toBe('gino@trattoria.test');
+    expect(m.body).toContain('19:00');
+    expect(night2.flags).toContain('test_booking_no_show');
+    expect(night2.morning!.lines).toContainEqual(['No-show fee', -25]);
+    expect(night2.tx.some((t) => t.amount === -25 && t.memo.includes('no-show'))).toBe(true);
+    // charged once
+    expect(endDay(night2, content).mail.filter((x) => x.subject === 'Your table tonight')).toHaveLength(1);
+    // cancelled through the link: nothing
+    const cancelled = cancelBooking(s1, lastMail(s1)!.bookingId!);
+    const quiet = endDay(endDay(cancelled, content), content);
+    expect(quiet.mail.some((x) => x.subject === 'Your table tonight')).toBe(false);
+    expect(quiet.flags).not.toContain('test_booking_no_show');
   });
 });

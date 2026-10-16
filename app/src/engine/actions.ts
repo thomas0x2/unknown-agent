@@ -702,7 +702,8 @@ const minutes = (t: string) => { const m = t.match(/^(\d{1,2})(?::(\d{2}))?$/); 
 
 /**
  * The player books a table on a restaurant app. What happens follows the booking feature's live
- * bugs: a dead button, no or a garbled confirmation, a cancel link that doesn't cancel, no checks.
+ * bugs: a dead button, no or a garbled confirmation, no checks. A test booking nobody cancels costs
+ * a no-show fee on its night (chargeNoShows).
  */
 export function makeBooking(s0: GameState, appId: string, name: string, email: string, date: number, time: string, party: number, content?: Content): GameState {
   const s = clone(s0);
@@ -736,8 +737,8 @@ export function makeBooking(s0: GameState, appId: string, name: string, email: s
   }
   tick(s, 'book');
   const id = nextId(s, 'bk');
-  s.bookings.push({ id, appId, name, email, date, time, party, cancelled: false, fakeCancel: bugs.has('fake_cancel') });
-  s.bookingNotice = { appId, ok: true, text: 'Booked. A confirmation is on its way.' };
+  s.bookings.push({ id, appId, name, email, date, time, party, cancelled: false });
+  s.bookingNotice = { appId, ok: true, text: 'Booked. A confirmation is on its way.', bookingId: id };
   if (bugs.has('no_email')) return s;
   const restaurant = bugs.has('name_wrong_mail') ? FAKE_NAMES[seed % FAKE_NAMES.length] : app.name;
   const day = bugs.has('wrong_date') ? date + 1 : date;
@@ -761,14 +762,40 @@ export function makeBooking(s0: GameState, appId: string, name: string, email: s
   return s;
 }
 
-/** The cancel link in a confirmation. It always says it worked; with the bug, the booking stays. */
+/** The cancel link in a confirmation. */
 export function cancelBooking(s0: GameState, bookingId: string): GameState {
   const s = clone(s0);
   const b = s.bookings.find((x) => x.id === bookingId);
   if (!b) return s;
   b.cancelClicked = true;
-  if (!b.fakeCancel) b.cancelled = true;
+  b.cancelled = true;
   return s;
+}
+
+export const NO_SHOW = { fee: 25, flag: 'test_booking_no_show' } as const;
+
+/** Test bookings for tonight that nobody cancelled or will cancel now. */
+export const noShowsTonight = (s: GameState) => s.bookings.filter((b) => !b.cancelled && !b.cancelClicked && !b.noShow && b.date === s.values.day);
+
+/**
+ * End of day: every uncancelled booking for tonight was a no-show. The owner writes and charges
+ * the fee, once per booking. Returns what was charged, for the morning card.
+ */
+export function chargeNoShows(s: GameState, content: Content): number {
+  let total = 0;
+  for (const b of noShowsTonight(s)) {
+    const app = getApp(s, b.appId);
+    const ev = app?.clientEventId ? content.events.find((e) => e.id === app.clientEventId) : undefined;
+    if (!app || !ev?.addr) continue;
+    b.noShow = true;
+    total += NO_SHOW.fee;
+    money(s, -NO_SHOW.fee, `${app.name} · no-show fee`);
+    applyEffects(s, { setFlags: [NO_SHOW.flag] });
+    const who = b.party === 1 ? 'one' : String(b.party);
+    pushMail(s, { folder: 'inbox', day: s.values.day, from: ev.from ?? app.name, addr: ev.addr, subject: 'Your table tonight', read: false,
+      body: `A table for ${who} at ${b.time}, under "${b.name}". We kept it all evening and turned a couple away at the door. Nobody came.\n\nI think it was your test. Next time please use the cancel link. I took ${NO_SHOW.fee} DOLR for the table, like with everybody.\n\nGino` });
+  }
+  return total;
 }
 
 // ── Alpha Ascend: Max Stryker's EMPIRE sign-up page ──

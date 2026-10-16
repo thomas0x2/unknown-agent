@@ -296,6 +296,7 @@ function pageMail(store: GameStore, param?: string): string {
           <div class="qm-body">${linkify(br(r.body))}</div>
           ${r.link === 'cancel' && r.bookingId ? (s.bookings.find((b) => b.id === r.bookingId)?.cancelClicked
             ? `<p class="qm-actions"><b>Your booking has been cancelled.</b></p>`
+            : s.bookings.find((b) => b.id === r.bookingId)?.noShow ? `<p class="qm-actions"><b>This booking has passed.</b></p>`
             : `<p class="qm-actions"><button class="qm-btn ghost" data-cancel-booking="${esc(r.bookingId)}" data-cancel-url="${esc(`${r.addr.split('@')[1] ?? ''}/cancel-${r.bookingId}`)}">Cancel booking</button></p>`) : ''}
           ${r.generated ? `<p class="qm-gen">Reply written by ${esc(MISSES.label())}</p>` : ''}
         </details>`;
@@ -671,11 +672,19 @@ function pageApp(store: GameStore, param?: string): string {
     || (!!brk && breakVariant(brk, store.content.apps[a.template]?.features.find((f) => f.id === 'booking')) === 'past_dates');
   const firstBookable = pastBug ? 1 : s.values.day;
   const notice = s.bookingNotice?.appId === a.id ? `<p class="pv-note ${s.bookingNotice.ok ? 'ok' : 'bad'}">${esc(s.bookingNotice.text)}</p>` : '';
+  // after booking: what was entered, to check against the confirmation email
+  const booked = s.bookingNotice?.appId === a.id && s.bookingNotice.bookingId ? s.bookings.find((b) => b.id === s.bookingNotice!.bookingId) : undefined;
+  const summary = booked
+    ? `<dl class="pv-summary"><dt>Your booking</dt>
+        <dd><span>Name</span>${esc(booked.name)}</dd><dd><span>Email</span>${esc(booked.email)}</dd>
+        <dd><span>Date</span>${dateFull(booked.date)}</dd><dd><span>Time</span>${esc(booked.time)}</dd>
+        <dd><span>Party</span>${booked.party}</dd></dl>`
+    : '';
   // two steps, like the spec: who and when, then the time and party size
   const booking = a.template === 'restaurant' && a.features.some((f) => f.id === 'booking')
     ? bk.step === 1
       ? `<form class="pv-book" data-form="book-next" data-app="${esc(a.id)}"><h1>Book a table</h1>
-        <p class="pv-sub">Step 1 of 2. You'll get a confirmation by email.</p>${notice}
+        <p class="pv-sub">Step 1 of 2. You'll get a confirmation by email.</p>${notice}${summary}
         <label>Name <input id="bk-name" value="${esc(bk.name || PLAYER.name)}"></label>
         <label>Email <input id="bk-email" value="${esc(bk.email || PLAYER.addr)}"></label>
         <label>Date <select id="bk-date">${Array.from({ length: LAST_DAY }, (_, i) => i + 1).filter((d) => d >= firstBookable).map((d) => `<option value="${d}"${d === (bk.date || s.values.day + 1) ? ' selected' : ''}>${dateMedium(d)}</option>`).join('')}</select></label>
@@ -686,7 +695,7 @@ function pageApp(store: GameStore, param?: string): string {
         <label>Party size <input id="bk-party" value="2" type="number" min="1" max="8"></label>
         <button class="pv-btn ghost" type="button" data-act="book-back">Back</button> <button class="pv-btn ok" type="submit">Book</button></form>`
     : undefined;
-  // the cancel link from a confirmation email: it always says it worked (with the bug, it didn't)
+  // the cancel link from a confirmation email
   const cancelled = sub?.startsWith('cancel-') ? s.bookings.find((b) => b.id === sub.slice(7) && b.appId === a.id) : undefined;
   const cancel = cancelled
     ? `<h1>Booking cancelled</h1><p class="pv-note ok">Your booking for ${cancelled.party} on ${dateFull(cancelled.date)} at ${esc(cancelled.time)} has been cancelled.</p><p class="pv-sub">We hope to see you another time.</p>`

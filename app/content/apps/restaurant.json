@@ -140,7 +140,6 @@
       "complaints": {
         "missing": "There is still no way to book a table.",
         "no_email": "People book a table and then call me to ask if it worked. They get no email.",
-        "fake_cancel": "A guest cancelled with the link in the email, and the table was still held for them all evening.",
         "wrong_date": "A family came on the wrong day. The email told them a different day than they booked.",
         "wrong_time": "Two guests came an hour late. The time in their email was wrong.",
         "sent_to_restaurant": "I keep getting the booking confirmations. The guests get nothing.",
@@ -158,11 +157,6 @@
           "id": "no_email",
           "when": "no confirmation email arrives after booking",
           "match": "\\b(no|never|didn'?t|did not|doesn'?t|does not|without( a)?|missing)\\b[^.?!]{0,30}\\b(confirmation|e-?mail|mail)\\b|\\b(confirmation|e-?mail|mail)s?\\b[^.?!]{0,30}\\b(never|doesn'?t|does not|didn'?t|isn'?t|not)\\s+(arrive|come|get sent|sent|show)"
-        },
-        {
-          "id": "fake_cancel",
-          "when": "the cancel link says cancelled but the booking stays",
-          "match": "\\bcancel\\w*\\b[^.?!]{0,40}\\b(doesn'?t|does not|didn'?t|did not|isn'?t|not|still|fake|broken|pretends?)\\b|\\b(doesn'?t|does not|didn'?t|did not|won'?t)\\s+(actually\\s+)?cancel\\b"
         },
         {
           "id": "wrong_date",
@@ -211,11 +205,6 @@
           "id": "confirmation",
           "text": "confirmation email",
           "bug": "no_email"
-        },
-        {
-          "id": "cancel",
-          "text": "cancel link",
-          "bug": "fake_cancel"
         },
         {
           "id": "party",

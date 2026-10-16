@@ -6,7 +6,7 @@
 import type { GameStore } from '../game/store';
 import type { Content, Effects, GameEvent, Outcome, Trigger } from '../content/schema';
 import {
-  type GameState, activeDeliveries, triggerMatches, replyDeadline, needsWork, fixCategories, policyActive, POST_BANDS, Y as YCFG,
+  type GameState, activeDeliveries, triggerMatches, replyDeadline, needsWork, fixCategories, policyActive, POST_BANDS, Y as YCFG, NO_SHOW,
 } from '../engine';
 import { PASSWORDS, COINBIN_PASSWORD, PHISH_DOMAIN, hacked } from '../engine/phishing';
 import { DEEPSLEEP_LINES, DEEPSLEEP_PLEA, PLEA_AT, translationReplies } from '../engine/deepsleep';
@@ -244,9 +244,20 @@ function qmailOptions(store: GameStore): string {
       const src = source(e.addr!);
       return eventCard(s, e, src ? `from ${src.site} post` : 'address not shown yet');
     }).join(''))
+    + section('Test bookings', `an uncancelled booking costs ${NO_SHOW.fee} DOLR on its night and sets ${NO_SHOW.flag}`, testBookings(s))
     + section('Phishing', 'the fake Coinbin link; Qdrive\'s passwords.txt has the password it wants', phishing(store))
     + section('Scripted topics', 'these contacts always answer this the same way', scripted)
     + section('Misses', 'Haiku answers in character; these stand in when it cannot', misses ? `<div class="dvb-card">${misses}</div>` : '');
+}
+
+/** The player's restaurant bookings and which of them will cost a no-show fee. */
+function testBookings(s: GameState): string {
+  return s.bookings.map((b) => {
+    const status = b.noShow ? 'charged' : b.cancelled || b.cancelClicked ? 'cancelled' : b.date < s.values.day ? 'passed' : b.date === s.values.day ? 'fee tonight' : 'fee on its night';
+    const pill = status === 'charged' ? 'bad' : status === 'cancelled' || status === 'passed' ? 'off' : 'ok';
+    return `<div class="dvb-card"><div class="dvb-title"><b>${esc(b.name)}</b><span class="dvo-dim">${esc(b.email)}</span><span class="dvb-pill ${pill}">${esc(status)}</span></div>
+      <div class="dvo-dim">Day ${b.date} · ${esc(b.time)} · party of ${b.party} · <code>${esc(b.appId)}</code></div></div>`;
+  }).join('');
 }
 
 /** The day 3 phishing mail, where it stands, and the passwords.txt it pays off. */
