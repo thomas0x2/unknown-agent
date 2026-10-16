@@ -1,0 +1,43 @@
+{
+  "id": "swaplist",
+  "name": "Swaplist",
+  "pages": [
+    {
+      "id": "browse",
+      "title": "Browse"
+    }
+  ],
+  "features": [
+    {
+      "id": "listings",
+      "description": "listings with title, photo, price in DOLR and category",
+      "failures": [
+        "failed_fetch",
+        "subtle"
+      ]
+    },
+    {
+      "id": "search",
+      "description": "browse, search and filter by category",
+      "failures": [
+        "subtle"
+      ]
+    },
+    {
+      "id": "contact",
+      "description": "a contact-seller button that reaches the right seller",
+      "failures": [
+        "deep",
+        "subtle"
+      ],
+      "deep": true
+    },
+    {
+      "id": "mark_sold",
+      "description": "mark items as sold so they stop taking offers",
+      "failures": [
+        "subtle"
+      ]
+    }
+  ]
+}

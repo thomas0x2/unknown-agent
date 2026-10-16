@@ -1,0 +1,17 @@
+{
+  "id": "d6_mom_bday_chip",
+  "site": "qmail",
+  "from": "Mom",
+  "addr": "mom@family.test",
+  "subject": "Thank you!",
+  "trigger": {
+    "dayMin": 6,
+    "flagsAll": [
+      "gift_chipped_in"
+    ],
+    "flagsNone": [
+      "gift_own"
+    ]
+  },
+  "body": "Thank you both for the jacket, it's lovely. How's the job search going, really?"
+}

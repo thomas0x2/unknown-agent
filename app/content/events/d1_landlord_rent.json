@@ -1,0 +1,11 @@
+{
+  "id": "d1_landlord_rent",
+  "site": "qmail",
+  "from": "Landlord",
+  "addr": "landlord@pine.test",
+  "subject": "Rent due day 7",
+  "trigger": {
+    "dayMin": 1
+  },
+  "body": "Reminder: 350 DOLR rent is due at the end of day 7. Please don't make me ask twice."
+}

@@ -1,0 +1,40 @@
+{
+  "id": "d1_mom",
+  "site": "qmail",
+  "from": "Mom",
+  "addr": "mom@family.test",
+  "subject": "Are you okay?",
+  "trigger": {
+    "dayMin": 1
+  },
+  "body": "Sweetheart, I heard about the layoffs on the news. Are you alright? Are you eating? Write back when you can.\n\nLove, Mom",
+  "outcomes": [
+    {
+      "id": "warm",
+      "when": "the player replies warmly and reassures mom",
+      "effects": {
+        "add": {
+          "familyTrust": 5
+        }
+      },
+      "reply": "Oh good. I was worried. Call me on the weekend."
+    },
+    {
+      "id": "money",
+      "when": "the player asks mom for money",
+      "effects": {
+        "add": {
+          "crypto": 100,
+          "familyTrust": -10
+        },
+        "setFlags": [
+          "asked_mom_money"
+        ]
+      },
+      "reply": "I sent you a little something. Don't make a habit of it."
+    }
+  ],
+  "hints": [
+    "She just wants to know you're alright."
+  ]
+}

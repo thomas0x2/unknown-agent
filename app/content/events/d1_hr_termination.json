@@ -1,0 +1,11 @@
+{
+  "id": "d1_hr_termination",
+  "site": "qmail",
+  "from": "People & Culture, Vantor Group",
+  "addr": "people@vantorgroup.test",
+  "subject": "Changes to your role",
+  "trigger": {
+    "dayMin": 1
+  },
+  "body": "Hi {{playerName}},\n\nAs part of our transition to GeneralAI-powered operations, your team's responsibilities are being fully automated, effective immediately. Your position has therefore been eliminated.\n\nYour final salary will be paid in DOLR with the next payroll run. We wish you every success in what comes next.\n\nWarm regards, People & Culture\n\nThis message was drafted with GeneralAI."
+}

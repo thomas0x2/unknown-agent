@@ -1,0 +1,9 @@
+{
+  "id": "d3_y_crane",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "dayMin": 3
+  },
+  "body": "They sent your jobs to the machines and called it progress. I'll send the machines back where they came from. BELIEVE IT."
+}

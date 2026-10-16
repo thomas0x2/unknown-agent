@@ -1,0 +1,42 @@
+{
+  "id": "restaurant_contact",
+  "site": "qmail",
+  "from": "Gino (Trattoria)",
+  "addr": "gino@trattoria.test",
+  "subject": "RE: your website",
+  "trigger": {
+    "dayMin": 1
+  },
+  "latent": true,
+  "body": "Grazie! Here's what I need:\n\n- A landing page with our name (Trattoria Gino) and opening hours (17:00-22:00).\n- A menu page, each dish with its price in DOLR: Margherita 12, Diavola 14, Lasagne 15, Tiramisu 7, Espresso 3.\n\nSend it over when it's ready.",
+  "outcomes": [
+    {
+      "id": "offer",
+      "when": "the player offers to build the website for the restaurant",
+      "effects": {
+        "setFlags": [
+          "restaurant_client"
+        ],
+        "createApp": {
+          "template": "restaurant",
+          "kind": "client",
+          "name": "Trattoria Gino",
+          "clientEventId": "restaurant_contact",
+          "payPerDay": 40,
+          "spec": [
+            {
+              "id": "landing"
+            },
+            {
+              "id": "menu"
+            }
+          ]
+        }
+      },
+      "reply": "Perfect. Looking forward to it."
+    }
+  ],
+  "hints": [
+    "Tell him clearly you can build his website."
+  ]
+}

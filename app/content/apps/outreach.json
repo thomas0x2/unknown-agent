@@ -1,0 +1,43 @@
+{
+  "id": "outreach",
+  "name": "Outreach bot",
+  "pages": [
+    {
+      "id": "campaign",
+      "title": "Campaign"
+    }
+  ],
+  "features": [
+    {
+      "id": "personalize",
+      "description": "fill the first name and company into each email correctly",
+      "failures": [
+        "subtle"
+      ]
+    },
+    {
+      "id": "cap",
+      "description": "send at most 50 a day with no duplicates",
+      "failures": [
+        "subtle"
+      ]
+    },
+    {
+      "id": "unsubscribe",
+      "description": "a working unsubscribe link that is always honored",
+      "failures": [
+        "deep",
+        "subtle"
+      ],
+      "deep": true
+    },
+    {
+      "id": "test",
+      "description": "a test button that sends the first leads to your own inbox",
+      "failures": [
+        "visible",
+        "subtle"
+      ]
+    }
+  ]
+}

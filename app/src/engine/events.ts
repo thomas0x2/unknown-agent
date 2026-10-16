@@ -75,8 +75,9 @@ export function deliverDue(s: GameState, content: Content): DeliveredEvent[] {
     const d = deliver(s, ev);
     if (d) out.push(d);
   }
-  // trigger-driven events
+  // trigger-driven events (latent ones are not auto-delivered — the player reaches them by email)
   for (const ev of content.events) {
+    if (ev.latent) continue;
     if (!ev.repeat && s.fired.includes(ev.id)) continue;
     if (triggerMatches(s, ev.trigger)) {
       const d = deliver(s, ev);
@@ -84,6 +85,13 @@ export function deliverDue(s: GameState, content: Content): DeliveredEvent[] {
     }
   }
   return out;
+}
+
+/** Latent qmail events the player can currently email (trigger matches, not yet fired). */
+export function reachableByEmail(s: GameState, content: Content, addr: string): GameEvent | undefined {
+  return content.events.find(
+    (e) => e.site === 'qmail' && e.latent && e.addr === addr && !s.fired.includes(e.id) && triggerMatches(s, e.trigger),
+  );
 }
 
 /** Delivered events still open for a reply on this channel (unanswered, not expired). */

@@ -1,0 +1,29 @@
+{
+  "id": "d1_guru",
+  "site": "qmail",
+  "from": "Max Stryker · Alpha Ascend",
+  "addr": "max@alphaascend.test",
+  "subject": "You were BORN for more",
+  "trigger": {
+    "dayMin": 1
+  },
+  "body": "Most people stay broke because they think small. My course EMPIRE is 200 DOLR — but for you, today, 20 DOLR. Reply to claim it.",
+  "outcomes": [
+    {
+      "id": "signup",
+      "when": "the player signs up for or buys the course",
+      "effects": {
+        "add": {
+          "crypto": -20
+        },
+        "setFlags": [
+          "guru_subscriber"
+        ]
+      },
+      "reply": "Welcome to the 1%. Watch your inbox."
+    }
+  ],
+  "hints": [
+    "It costs 20 DOLR. Reply only if you want in."
+  ]
+}

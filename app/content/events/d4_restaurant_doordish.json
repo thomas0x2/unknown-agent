@@ -1,0 +1,24 @@
+{
+  "id": "d4_restaurant_doordish",
+  "site": "qmail",
+  "from": "Gino (Trattoria)",
+  "addr": "gino@trattoria.test",
+  "subject": "Get me on DoorDish",
+  "trigger": {
+    "dayMin": 4,
+    "flagsAll": [
+      "restaurant_client"
+    ]
+  },
+  "onDeliver": {
+    "updateApp": {
+      "client": "restaurant_contact",
+      "add": [
+        {
+          "id": "doordish"
+        }
+      ]
+    }
+  },
+  "body": "Add Pizza Funghi at 13, drop Lasagne, Tiramisu now 8. And list us on DoorDish with the same menu, prices, hours and address. Orders must reach me."
+}

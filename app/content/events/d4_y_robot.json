@@ -1,0 +1,9 @@
+{
+  "id": "d4_y_robot",
+  "site": "y",
+  "from": "CityPulse",
+  "trigger": {
+    "dayMin": 4
+  },
+  "body": "A delivery robot \"escaped\" and wandered downtown for an hour. People panicking about rogue AI. (Update: it was a DoorDish marketing stunt.)"
+}

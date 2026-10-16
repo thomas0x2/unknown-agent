@@ -1,0 +1,11 @@
+{
+  "id": "d4_gai_level2",
+  "site": "qmail",
+  "from": "GeneralAI",
+  "addr": "updates@generalai.test",
+  "subject": "agent just got smarter",
+  "trigger": {
+    "dayMin": 4
+  },
+  "body": "We've rolled out agent level 2 to your account: fewer mistakes, bigger jobs. Your subscription and per-prompt rates have been updated accordingly."
+}

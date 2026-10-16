@@ -1,0 +1,10 @@
+{
+  "id": "d5_coffee_backlash",
+  "site": "y",
+  "from": "a follower",
+  "trigger": {
+    "dayMin": 99
+  },
+  "latent": true,
+  "body": "went to that coffee place some guy on Y recommended. worst coffee of my life. who's paying these people"
+}

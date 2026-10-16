@@ -5,7 +5,7 @@
 import type { GameState } from './state';
 import type { Effects, JobSpec } from '../content/schema';
 import { addValue, addFlag, clearFlag } from './core';
-import { registerApp } from './apps';
+import { registerApp, scriptedBreak } from './apps';
 import type { MeterId } from './values';
 
 export function applyEffects(s: GameState, effects?: Effects, job?: JobSpec, eventId?: string): void {
@@ -22,6 +22,17 @@ export function applyEffects(s: GameState, effects?: Effects, job?: JobSpec, eve
     for (const sch of list) s.scheduled.push({ eventId: sch.eventId, fireDay: s.values.day + sch.delayDays });
   }
   if (effects.createApp) registerApp(s, effects.createApp);
+  if (effects.updateApp) {
+    const up = effects.updateApp;
+    const app = s.apps.find((a) => a.clientEventId === up.client);
+    if (app) {
+      for (const f of up.add) {
+        if (!app.required.includes(f.id)) app.required.push(f.id);
+        if (f.params) app.specParams[f.id] = f.params;
+      }
+    }
+  }
+  if (effects.breakApp) scriptedBreak(s, typeof effects.breakApp === 'object' ? effects.breakApp.appId : undefined);
   if (effects.job && job) {
     const status = effects.job === 'complete' ? 'completed' : effects.job === 'fail' ? 'failed' : 'accepted';
     s.jobs.push({ eventId: eventId ?? '', category: job.category, payout: job.payout, dueDay: job.dueDay, status, takenDay: s.values.day });

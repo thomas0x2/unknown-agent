@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "id": "f1",
+    "from": "noodleposter",
+    "handle": "noodleposter",
+    "body": "day 4 of only eating instant noodles. the broth is my therapist now."
+  },
+  {
+    "id": "f2",
+    "from": "cat_ceo",
+    "handle": "cat_ceo",
+    "body": "my productivity hack is simply never checking my bank balance"
+  },
+  {
+    "id": "f3",
+    "from": "doomscroll",
+    "handle": "doomscroll",
+    "body": "everything is fine. this is fine. the economy is a vibe and the vibe is fine."
+  }
+]

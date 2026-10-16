@@ -60,7 +60,7 @@ export function registerApp(s: GameState, spec: CreateAppSpec): string {
     strikes: 0,
     churned: false,
     brokenDays: 0,
-    users: spec.kind === 'user' ? APPS.user.startUsers : undefined,
+    users: spec.kind === 'user' ? spec.startUsers ?? APPS.user.startUsers : undefined,
     suspicious: spec.suspicious,
   };
   s.apps.push(app);
@@ -86,6 +86,27 @@ export function buildApp(s: GameState, appId: string, requested: string[], level
   for (const f of app.repo) if (!built.some((b) => b.id === f.id)) built.push(f);
   app.repo = built;
   app.repoVersion++;
+  // the very first build always ships at least one teaching bug, even on a lucky roll
+  if (app.repoVersion === 1) {
+    const correct = app.repo.filter((f) => f.correct);
+    if (correct.length === app.repo.length && correct.length > 0) {
+      pick(s, correct).correct = false;
+    }
+  }
+}
+
+const SCRIPTED_FAILURES: FailureKind[] = ['visible', 'subtle', 'failed_fetch'];
+
+/** Force a break on a live app (a named one, else a random live app). Used for scripted breaks. */
+export function scriptedBreak(s: GameState, appId?: string): void {
+  const live = s.apps.filter((a) => a.deployed && !a.churned);
+  const app = appId ? live.find((a) => a.id === appId) : live.length ? pick(s, live) : undefined;
+  if (!app) return;
+  const candidates = app.features.filter((f) => f.correct);
+  if (!candidates.length) return;
+  const victim = pick(s, candidates);
+  breakFeature(s, app, victim.id, pick(s, SCRIPTED_FAILURES), true);
+  log(s, `${app.name} broke (${victim.id}).`, 'break');
 }
 
 /**

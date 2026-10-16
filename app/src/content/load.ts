@@ -9,12 +9,14 @@ export function loadContent(): Content {
   const appMods = import.meta.glob('../../content/apps/*.json', { eager: true }) as Record<string, { default: AppTemplate }>;
   const fillerMods = import.meta.glob('../../content/y_filler.json', { eager: true }) as Record<string, { default: FillerPost[] }>;
   const spamMods = import.meta.glob('../../content/qmail_spam.json', { eager: true }) as Record<string, { default: FillerPost[] }>;
+  const trendMods = import.meta.glob('../../content/trending.json', { eager: true }) as Record<string, { default: Record<number, string[]> }>;
 
   const events = Object.values(eventMods).map((m) => m.default);
   const apps: Record<string, AppTemplate> = {};
   for (const m of Object.values(appMods)) apps[m.default.id] = m.default;
   const yFiller = Object.values(fillerMods)[0]?.default ?? [];
   const qmailSpam = Object.values(spamMods)[0]?.default ?? [];
+  const trending = Object.values(trendMods)[0]?.default ?? {};
 
-  return { events, apps, yFiller, qmailSpam };
+  return { events, apps, yFiller, qmailSpam, trending };
 }

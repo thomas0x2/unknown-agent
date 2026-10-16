@@ -1,1 +1,23 @@
-[]
+[
+  {
+    "id": "s1",
+    "from": "Crypto Prince",
+    "handle": "prince",
+    "body": "URGENT: your wallet has won 5000 DOLR. Click to claim."
+  },
+  {
+    "id": "s2",
+    "from": "Your Bank (totally)",
+    "handle": "bank",
+    "body": "Verify your account or it will be suspended in 24h."
+  },
+  {
+    "id": "s3",
+    "from": "Mindset Daily",
+    "handle": "mindset",
+    "body": "The only thing between you and success is 4am.",
+    "flagsAll": [
+      "built_outreach_bot"
+    ]
+  }
+]

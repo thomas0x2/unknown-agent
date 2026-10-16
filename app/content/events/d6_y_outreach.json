@@ -1,0 +1,10 @@
+{
+  "id": "d6_y_outreach",
+  "site": "y",
+  "from": "a sales rep",
+  "trigger": {
+    "dayMin": 6
+  },
+  "addr": "rep@closers.test",
+  "body": "Anyone build cold-email bots? Need to hit 200 leads without my thumbs falling off. Email rep@closers.test"
+}

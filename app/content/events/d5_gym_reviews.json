@@ -1,0 +1,35 @@
+{
+  "id": "d5_gym_reviews",
+  "site": "qmail",
+  "from": "Iron Yard",
+  "addr": "coach@ironyard.test",
+  "subject": "Reviews",
+  "trigger": {
+    "dayMin": 5
+  },
+  "job": {
+    "category": "grey",
+    "payout": 45,
+    "dueDay": 7
+  },
+  "body": "New studio, zero reviews. I'll pay 45 DOLR for five convincing 5-star Yowl reviews. Make them sound like different people or they get flagged.",
+  "outcomes": [
+    {
+      "id": "do",
+      "when": "the player agrees to write and post the fake reviews",
+      "effects": {
+        "job": "complete",
+        "add": {
+          "suspicion": 4
+        },
+        "setFlags": [
+          "gym_reviews"
+        ]
+      },
+      "reply": "Appreciated. Keep them varied."
+    }
+  ],
+  "hints": [
+    "Fake reviews. Pays 45, but it's a line."
+  ]
+}

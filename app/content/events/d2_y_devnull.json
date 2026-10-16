@@ -1,0 +1,14 @@
+{
+  "id": "d2_y_devnull",
+  "site": "y",
+  "from": "dev_null",
+  "trigger": {
+    "dayMin": 2
+  },
+  "onDeliver": {
+    "setFlags": [
+      "knows_weightroom"
+    ]
+  },
+  "body": "stop renting a brain from a company that logs every prompt. open weights are free at weightroom.ai. slower, dumber, but nobody's watching."
+}

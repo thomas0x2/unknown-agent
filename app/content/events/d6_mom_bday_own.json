@@ -1,0 +1,20 @@
+{
+  "id": "d6_mom_bday_own",
+  "site": "qmail",
+  "from": "Mom",
+  "addr": "mom@family.test",
+  "subject": "Thank you!",
+  "trigger": {
+    "dayMin": 6,
+    "flagsAll": [
+      "gift_own"
+    ]
+  },
+  "onDeliver": {
+    "add": {
+      "crypto": 25,
+      "familyTrust": 5
+    }
+  },
+  "body": "The jacket is perfect and it had YOUR name on the card. Your brother sent me his half to pass on — it's in your wallet. How's the job search going, really?"
+}

@@ -1,0 +1,42 @@
+{
+  "id": "laundromat",
+  "name": "Laundromat status",
+  "pages": [
+    {
+      "id": "status",
+      "title": "Machines"
+    }
+  ],
+  "features": [
+    {
+      "id": "machines",
+      "description": "show every machine and whether it is free, running, done, or out of order",
+      "failures": [
+        "subtle",
+        "failed_fetch"
+      ]
+    },
+    {
+      "id": "refresh",
+      "description": "refresh the live status regularly instead of showing stale data",
+      "failures": [
+        "failed_fetch",
+        "subtle"
+      ]
+    },
+    {
+      "id": "minutes",
+      "description": "show the minutes left for running machines",
+      "failures": [
+        "subtle"
+      ]
+    },
+    {
+      "id": "more_machines",
+      "description": "show all twelve machines after the four new ones were added",
+      "failures": [
+        "subtle"
+      ]
+    }
+  ]
+}

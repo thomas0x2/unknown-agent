@@ -1,0 +1,15 @@
+{
+  "id": "guru_newsletter",
+  "site": "qmail",
+  "from": "Max Stryker · Alpha Ascend",
+  "addr": "max@alphaascend.test",
+  "subject": "Your daily EMPIRE",
+  "trigger": {
+    "dayMin": 2,
+    "flagsAll": [
+      "guru_subscriber"
+    ]
+  },
+  "repeat": true,
+  "body": "Winners wake at 4am. Losers hit snooze. Which are you? Reply EMPIRE to double down."
+}

@@ -1,0 +1,58 @@
+{
+  "id": "sentiment",
+  "name": "Sentiment crawler",
+  "pages": [
+    {
+      "id": "dash",
+      "title": "Dashboard"
+    }
+  ],
+  "features": [
+    {
+      "id": "tickers",
+      "description": "track the exact stock tickers the trader listed",
+      "failures": [
+        "subtle",
+        "failed_fetch"
+      ]
+    },
+    {
+      "id": "sentiment",
+      "description": "split today's posts into bullish, bearish and neutral",
+      "failures": [
+        "subtle"
+      ]
+    },
+    {
+      "id": "filter",
+      "description": "ignore bot spam and non-ticker mentions",
+      "failures": [
+        "subtle"
+      ]
+    },
+    {
+      "id": "top_posts",
+      "description": "link the three most-engaged posts per ticker",
+      "failures": [
+        "failed_fetch",
+        "subtle"
+      ]
+    },
+    {
+      "id": "portfolio",
+      "description": "a portfolio view of holdings, cash and today's change",
+      "failures": [
+        "subtle"
+      ]
+    },
+    {
+      "id": "auto_buy",
+      "description": "auto-buy a stock only when the candidate genuinely praises that company, once per post",
+      "failures": [
+        "deep",
+        "subtle"
+      ],
+      "deep": true
+    }
+  ]
+}

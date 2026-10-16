@@ -1,0 +1,25 @@
+{
+  "id": "d3_restaurant_thanks",
+  "site": "qmail",
+  "from": "Gino (Trattoria)",
+  "addr": "gino@trattoria.test",
+  "subject": "Grazie mille!",
+  "trigger": {
+    "dayMin": 3,
+    "flagsAll": [
+      "restaurant_client"
+    ],
+    "flagsNone": [
+      "restaurant_broke"
+    ]
+  },
+  "onDeliver": {
+    "add": {
+      "crypto": 5
+    },
+    "setFlags": [
+      "restaurant_happy"
+    ]
+  },
+  "body": "Bookings are up since the site went live. Here's 5 DOLR extra, on me. No changes today — enjoy the quiet."
+}

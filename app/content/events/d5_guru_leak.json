@@ -1,0 +1,19 @@
+{
+  "id": "d5_guru_leak",
+  "site": "qmail",
+  "from": "Max Stryker · Alpha Ascend",
+  "addr": "max@alphaascend.test",
+  "subject": "Your daily EMPIRE",
+  "trigger": {
+    "dayMin": 5,
+    "flagsAll": [
+      "guru_subscriber"
+    ]
+  },
+  "onDeliver": {
+    "setFlags": [
+      "guru_cc_leak"
+    ]
+  },
+  "body": "TODAY ONLY: double your discipline. (Note: this went out with every subscriber in CC, not BCC. You can see all their addresses.)"
+}

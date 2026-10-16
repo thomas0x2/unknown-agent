@@ -1,0 +1,10 @@
+{
+  "id": "d3_y_swaplist",
+  "site": "y",
+  "from": "Viktor",
+  "trigger": {
+    "dayMin": 3
+  },
+  "addr": "viktor@mail.test",
+  "body": "Lost my job. Need to sell my grandfather's pocket watch and there's nowhere simple to list it anymore. Does anyone still build that kind of thing? viktor@mail.test"
+}

@@ -1,0 +1,15 @@
+{
+  "id": "d6_mom_bday_skip",
+  "site": "qmail",
+  "from": "Mom",
+  "addr": "mom@family.test",
+  "subject": "Hi love",
+  "trigger": {
+    "dayMin": 6,
+    "flagsNone": [
+      "gift_own",
+      "gift_chipped_in"
+    ]
+  },
+  "body": "Your brother got me a lovely jacket. He said you were busy. That's alright. How are you doing?"
+}

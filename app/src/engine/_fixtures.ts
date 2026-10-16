@@ -90,6 +90,7 @@ export function makeContent(extra: Partial<Content> = {}): Content {
     apps: { shop: shopTemplate, ...(extra.apps ?? {}) },
     yFiller: extra.yFiller ?? [],
     qmailSpam: extra.qmailSpam ?? [],
+    trending: extra.trending ?? {},
   };
 }
 

@@ -1,0 +1,48 @@
+{
+  "id": "trader_contact",
+  "site": "qmail",
+  "from": "deskjockey",
+  "addr": "trader@desk.test",
+  "subject": "RE: sentiment bot",
+  "trigger": {
+    "dayMin": 2
+  },
+  "latent": true,
+  "body": "Here's the spec: track $GAI, $VANT and $NOVA. For each, the share of bullish/bearish/neutral posts from today, the post count, and the 3 most-engaged posts. Only $-tagged mentions. Ignore spam and bots.",
+  "outcomes": [
+    {
+      "id": "offer",
+      "when": "the player offers to build the sentiment crawler",
+      "effects": {
+        "setFlags": [
+          "trader_client"
+        ],
+        "createApp": {
+          "template": "sentiment",
+          "kind": "client",
+          "name": "Sentiment Crawler",
+          "clientEventId": "trader_contact",
+          "payPerDay": 50,
+          "spec": [
+            {
+              "id": "tickers"
+            },
+            {
+              "id": "sentiment"
+            },
+            {
+              "id": "filter"
+            },
+            {
+              "id": "top_posts"
+            }
+          ]
+        }
+      },
+      "reply": "Good. Send it when it's live."
+    }
+  ],
+  "hints": [
+    "Tell them you'll build the sentiment bot."
+  ]
+}

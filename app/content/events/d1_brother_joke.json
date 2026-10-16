@@ -1,0 +1,11 @@
+{
+  "id": "d1_brother_joke",
+  "site": "qmail",
+  "from": "Your brother",
+  "addr": "bro@family.test",
+  "subject": "RE: Are you okay?",
+  "trigger": {
+    "dayMin": 1
+  },
+  "body": "reply-all: well at least the robots will remember you fondly lmao. you good though?"
+}

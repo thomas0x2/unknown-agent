@@ -4,13 +4,13 @@
  */
 import {
   type GameState, type JevRouter, type SaveStore,
-  startGame, endDay, deploy, takeDown, postToY, replyToEvent, briefBuild, briefFix,
+  startGame, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail, briefBuild, briefFix,
 } from '../engine';
 import type { Content } from '../content/schema';
 
 export class GameStore {
   state: GameState;
-  url = 'agent.chat';
+  url = 'qmail.com';
   private rev = 0;
   private listeners = new Set<() => void>();
 
@@ -67,6 +67,11 @@ export class GameStore {
   }
   async reply(eventId: string, text: string) {
     const res = await replyToEvent(this.state, this.content, this.router, eventId, text);
+    this.commit(res.state);
+    return res;
+  }
+  async compose(to: string, text: string) {
+    const res = await composeEmail(this.state, this.content, this.router, to, text);
     this.commit(res.state);
     return res;
   }

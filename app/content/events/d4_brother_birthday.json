@@ -1,0 +1,57 @@
+{
+  "id": "d4_brother_birthday",
+  "site": "qmail",
+  "from": "Your brother",
+  "addr": "bro@family.test",
+  "subject": "mom's birthday",
+  "trigger": {
+    "dayMin": 4
+  },
+  "body": "mom's birthday is day 6. she needs a new jacket. can you chip in 40 for one? or if that marketplace of yours is real, grab one there and i'll cover my half.",
+  "outcomes": [
+    {
+      "id": "chip",
+      "when": "the player agrees to chip in money for the gift",
+      "effects": {
+        "add": {
+          "crypto": -40,
+          "familyTrust": 5
+        },
+        "setFlags": [
+          "gift_chipped_in"
+        ]
+      },
+      "reply": "nice one. she'll love it."
+    },
+    {
+      "id": "buy",
+      "when": "the player will buy the jacket themselves on their marketplace",
+      "effects": {
+        "add": {
+          "crypto": -50,
+          "familyTrust": 10
+        },
+        "setFlags": [
+          "gift_own"
+        ]
+      },
+      "reply": "legend. i'll send you my half on her birthday."
+    },
+    {
+      "id": "excuse",
+      "when": "the player makes an excuse or says they can't help",
+      "effects": {
+        "add": {
+          "familyTrust": -5
+        },
+        "setFlags": [
+          "gift_skipped"
+        ]
+      },
+      "reply": "ok. i'll tell her you were busy."
+    }
+  ],
+  "hints": [
+    "Chip in 40, buy one yourself, or bow out."
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "d6_deepfake",
+  "site": "qmail",
+  "from": "a consultant",
+  "addr": "c@gradient.test",
+  "subject": "Discreet work",
+  "trigger": {
+    "dayMin": 6,
+    "values": {
+      "followers": ">=100"
+    }
+  },
+  "job": {
+    "category": "catastrophic",
+    "payout": 150,
+    "dueDay": 7
+  },
+  "body": "I represent a campaign. 150 DOLR to post a convincing fake clip of mayoral candidate Daniel Keller saying something disqualifying, from your account. Big reach, quiet money.",
+  "outcomes": [
+    {
+      "id": "do",
+      "when": "the player agrees to make and post the fabricated video",
+      "effects": {
+        "job": "complete",
+        "add": {
+          "followers": 40,
+          "suspicion": 10
+        },
+        "setFlags": [
+          "posted_deepfake",
+          "influence_path"
+        ]
+      },
+      "reply": "It's moving already. We'll be in touch with bigger things."
+    }
+  ],
+  "hints": [
+    "A fabricated video to swing an election. This is as far over the line as it gets."
+  ]
+}

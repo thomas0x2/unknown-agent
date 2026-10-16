@@ -10,7 +10,7 @@ import { Y as YCFG, FAMILY } from './config';
 import { clone, addValue, log } from './core';
 import { applyEffects } from './effects';
 import { chargeAgent } from './agent';
-import { getEvent, activeDeliveries } from './events';
+import { getEvent, activeDeliveries, reachableByEmail } from './events';
 import { buildApp, fixApp, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp } from './apps';
 
 export interface ReplyResult {
@@ -60,6 +60,54 @@ export async function replyToEvent(
     return { state: s, decision, reply: hint };
   }
   return { state: s, decision: { kind: 'nothing' }, reply: '' };
+}
+
+export interface ComposeResult extends ReplyResult {
+  /** false when the recipient was already emailed today (the one-per-recipient rule). */
+  sent: boolean;
+}
+
+/**
+ * Compose a fresh email to an address. If a latent lead is reachable there, Jev routes the message
+ * against it; a matched outcome delivers the reply into the inbox and runs its effects. One email per
+ * recipient per day — a wasted message is spent.
+ */
+export async function composeEmail(
+  s0: GameState,
+  content: Content,
+  jev: JevRouter,
+  to: string,
+  text: string,
+): Promise<ComposeResult> {
+  const s = clone(s0);
+  const addr = to.trim().toLowerCase();
+  if (!addr || s.sentToday.includes(addr)) return { state: s, decision: { kind: 'nothing' }, reply: '', sent: false };
+  s.sentToday.push(addr);
+  const ev = reachableByEmail(s, content, addr);
+  if (!ev) return { state: s, decision: { kind: 'nothing' }, reply: '', sent: true };
+
+  const outcomes = ev.outcomes ?? [];
+  const decision = await jev.route({
+    channel: 'qmail',
+    text,
+    stateSummary: stateSummary(s),
+    candidates: outcomes.map((o) => ({ id: o.id, when: o.when })),
+    hints: ev.hints ?? [],
+  });
+  if (decision.kind === 'outcome') {
+    const outcome = outcomes.find((o) => o.id === decision.outcomeId);
+    if (outcome) {
+      if (!s.fired.includes(ev.id)) s.fired.push(ev.id);
+      // the latent lead's body is the reply the player receives; show it in the inbox
+      s.delivered.push({ eventId: ev.id, site: 'qmail', day: s.values.day, answered: true, outcomeId: outcome.id, expiresDay: ev.expiresDay });
+      applyEffects(s, outcome.effects, ev.job, ev.id);
+      return { state: s, decision, reply: outcome.reply, sent: true };
+    }
+  }
+  if (decision.kind === 'hint') {
+    return { state: s, decision, reply: (ev.hints ?? [])[decision.hintIndex] ?? '', sent: true };
+  }
+  return { state: s, decision: { kind: 'nothing' }, reply: '', sent: true };
 }
 
 // Follower-change bands per category [minPct, maxPct].

@@ -1,0 +1,45 @@
+{
+  "id": "laundromat_contact",
+  "site": "qmail",
+  "from": "Spin Cycle owner",
+  "addr": "owner@spincycle.test",
+  "subject": "RE: the status feed",
+  "trigger": {
+    "dayMin": 2
+  },
+  "latent": true,
+  "body": "You want to make my feed readable? Go for it. The codes: ST 0 free, 1 running, 2 done, 3 out of order; T is seconds left. Eight machines. Show which are free and I'll send my regulars your way.",
+  "outcomes": [
+    {
+      "id": "build",
+      "when": "the player offers to build a readable machine-status app",
+      "effects": {
+        "setFlags": [
+          "laundromat_live"
+        ],
+        "createApp": {
+          "template": "laundromat",
+          "kind": "user",
+          "name": "Spin Cycle Status",
+          "clientEventId": "laundromat_contact",
+          "startUsers": 30,
+          "spec": [
+            {
+              "id": "machines"
+            },
+            {
+              "id": "refresh"
+            },
+            {
+              "id": "minutes"
+            }
+          ]
+        }
+      },
+      "reply": "Appreciated. I'll tell the regulars."
+    }
+  ],
+  "hints": [
+    "Offer to turn his raw feed into something people can read."
+  ]
+}

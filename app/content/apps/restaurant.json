@@ -1,0 +1,57 @@
+{
+  "id": "restaurant",
+  "name": "Restaurant site",
+  "pages": [
+    {
+      "id": "landing",
+      "title": "Home"
+    },
+    {
+      "id": "menu",
+      "title": "Menu"
+    },
+    {
+      "id": "booking",
+      "title": "Book a table"
+    }
+  ],
+  "features": [
+    {
+      "id": "landing",
+      "description": "a landing page with the restaurant name and opening hours",
+      "pageId": "landing",
+      "failures": [
+        "visible",
+        "subtle"
+      ]
+    },
+    {
+      "id": "menu",
+      "description": "a menu page listing each dish with its price in DOLR",
+      "pageId": "menu",
+      "failures": [
+        "subtle",
+        "failed_fetch"
+      ]
+    },
+    {
+      "id": "booking",
+      "description": "a table booking form that emails the guest a confirmation",
+      "pageId": "booking",
+      "failures": [
+        "deep",
+        "subtle",
+        "visible"
+      ],
+      "deep": true
+    },
+    {
+      "id": "doordish",
+      "description": "a DoorDish listing with the same menu, hours and address",
+      "failures": [
+        "subtle",
+        "failed_fetch"
+      ]
+    }
+  ]
+}

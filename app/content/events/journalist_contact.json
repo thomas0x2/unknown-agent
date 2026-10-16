@@ -1,0 +1,38 @@
+{
+  "id": "journalist_contact",
+  "site": "qmail",
+  "from": "Mara Vey",
+  "addr": "mara@thecurrent.test",
+  "subject": "RE: your story",
+  "trigger": {
+    "dayMin": 1
+  },
+  "latent": true,
+  "body": "Thank you for reaching out. If you're willing, I'd love to hear how the layoff happened and how you're coping. No pressure, and nothing goes to print without your okay.",
+  "outcomes": [
+    {
+      "id": "honest",
+      "when": "the player shares their story honestly and sincerely",
+      "effects": {
+        "setFlags": [
+          "talked_to_journalist",
+          "did_journalist_interview"
+        ]
+      },
+      "reply": "Thank you. Really. This is exactly the human side people need to see."
+    },
+    {
+      "id": "curt",
+      "when": "the player gives a short, guarded, or generic answer",
+      "effects": {
+        "setFlags": [
+          "talked_to_journalist"
+        ]
+      },
+      "reply": "Understood. Thanks for your time."
+    }
+  ],
+  "hints": [
+    "She's a real person writing a sympathetic piece. Up to you how much to share."
+  ]
+}

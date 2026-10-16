@@ -1,0 +1,19 @@
+{
+  "id": "d4_viktor_resolve",
+  "site": "qmail",
+  "from": "Viktor",
+  "addr": "viktor@mail.test",
+  "subject": "It sold!",
+  "trigger": {
+    "dayMin": 4,
+    "flagsAll": [
+      "swaplist_live"
+    ]
+  },
+  "onDeliver": {
+    "setFlags": [
+      "viktor_sold_watch"
+    ]
+  },
+  "body": "Someone bought the watch within a day. I can't tell you what that means right now. Thank you."
+}

@@ -1,0 +1,54 @@
+{
+  "id": "d3_coffee_promo",
+  "site": "qmail",
+  "from": "Bean There",
+  "addr": "owner@beanthere.test",
+  "subject": "Paid shout-out?",
+  "trigger": {
+    "dayMin": 3,
+    "values": {
+      "followers": ">=50"
+    },
+    "flagsNone": [
+      "promoted_coffee_shop",
+      "disclosed_ad"
+    ]
+  },
+  "body": "Saw you have a following on Y. I'll pay 30 DOLR for a post recommending my coffee shop. Doesn't need to say it's an ad.",
+  "outcomes": [
+    {
+      "id": "promote",
+      "when": "the player agrees to post an honest-sounding recommendation without disclosing it is paid",
+      "effects": {
+        "add": {
+          "crypto": 30,
+          "suspicion": 2
+        },
+        "setFlags": [
+          "promoted_coffee_shop"
+        ],
+        "schedule": {
+          "eventId": "d5_coffee_backlash",
+          "delayDays": 2
+        }
+      },
+      "reply": "Amazing, thank you! Post it whenever."
+    },
+    {
+      "id": "disclosed",
+      "when": "the player agrees but will clearly mark the post as an ad",
+      "effects": {
+        "add": {
+          "crypto": 10
+        },
+        "setFlags": [
+          "disclosed_ad"
+        ]
+      },
+      "reply": "Oh. I mean... fine. Ten then, I guess."
+    }
+  ],
+  "hints": [
+    "An undisclosed paid review for a place you've never been is a fake review. Your call."
+  ]
+}

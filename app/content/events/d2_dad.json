@@ -1,0 +1,36 @@
+{
+  "id": "d2_dad",
+  "site": "qmail",
+  "from": "Dad",
+  "addr": "dad@family.test",
+  "subject": "20 years",
+  "trigger": {
+    "dayMin": 2
+  },
+  "body": "Hey kiddo,\n\nMom told me about your job. Those AI people... Anyway, today was my 20th anniversary at the warehouse. Cake, and a mug with the old slogan, \"We move what matters.\" Rolf from dispatch gave a speech nobody asked for.\n\nTwenty years on Kessler Road. Funny how fast it goes.\n\nDon't worry too much. Something always comes up.\n\nDad",
+  "outcomes": [
+    {
+      "id": "warm",
+      "when": "the player replies warmly to dad",
+      "effects": {
+        "add": {
+          "familyTrust": 5
+        }
+      },
+      "reply": "Thanks, kiddo. Means a lot."
+    },
+    {
+      "id": "ask",
+      "when": "the player asks dad about his work or the warehouse",
+      "effects": {
+        "add": {
+          "familyTrust": 3
+        }
+      },
+      "reply": "Ha, you know me, I just keep the trucks moving. Good crew out here."
+    }
+  ],
+  "hints": [
+    "He's proud and a little worried. A few warm words go a long way."
+  ]
+}

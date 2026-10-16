@@ -1,0 +1,11 @@
+{
+  "id": "d6_landlord",
+  "site": "qmail",
+  "from": "Landlord",
+  "addr": "landlord@pine.test",
+  "subject": "Tomorrow",
+  "trigger": {
+    "dayMin": 6
+  },
+  "body": "350 DOLR, tomorrow night. Make sure it's in the wallet."
+}

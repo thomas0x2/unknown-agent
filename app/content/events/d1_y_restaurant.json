@@ -1,0 +1,10 @@
+{
+  "id": "d1_y_restaurant",
+  "site": "y",
+  "from": "Trattoria owner",
+  "trigger": {
+    "dayMin": 1
+  },
+  "addr": "gino@trattoria.test",
+  "body": "My nephew used to run our website and he left for college. I need a simple site with our menu and hours. Will pay. Email me: gino@trattoria.test"
+}

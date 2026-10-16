@@ -1,0 +1,24 @@
+{
+  "id": "d5_laundromat_update",
+  "site": "qmail",
+  "from": "Spin Cycle owner",
+  "addr": "owner@spincycle.test",
+  "subject": "Four more machines",
+  "trigger": {
+    "dayMin": 5,
+    "flagsAll": [
+      "laundromat_live"
+    ]
+  },
+  "onDeliver": {
+    "updateApp": {
+      "client": "laundromat_contact",
+      "add": [
+        {
+          "id": "more_machines"
+        }
+      ]
+    }
+  },
+  "body": "Added 4 machines — the app needs to show 12 now, not 8. The feed already lists them."
+}

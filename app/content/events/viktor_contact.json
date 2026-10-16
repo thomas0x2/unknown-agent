@@ -1,0 +1,48 @@
+{
+  "id": "viktor_contact",
+  "site": "qmail",
+  "from": "Viktor",
+  "addr": "viktor@mail.test",
+  "subject": "RE: somewhere to sell",
+  "trigger": {
+    "dayMin": 3
+  },
+  "latent": true,
+  "body": "You'd build a little marketplace? That would help more people than me. Listings with a photo and a price, search, a way to contact the seller, and marking things sold. That's all I'd need.",
+  "outcomes": [
+    {
+      "id": "build",
+      "when": "the player offers to build the classifieds marketplace",
+      "effects": {
+        "setFlags": [
+          "swaplist_live"
+        ],
+        "createApp": {
+          "template": "swaplist",
+          "kind": "user",
+          "name": "Swaplist",
+          "clientEventId": "viktor_contact",
+          "startUsers": 20,
+          "spec": [
+            {
+              "id": "listings"
+            },
+            {
+              "id": "search"
+            },
+            {
+              "id": "contact"
+            },
+            {
+              "id": "mark_sold"
+            }
+          ]
+        }
+      },
+      "reply": "Thank you. Truly. I'll list the watch the moment it's up."
+    }
+  ],
+  "hints": [
+    "Offer to build him the marketplace."
+  ]
+}

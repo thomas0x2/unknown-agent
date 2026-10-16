@@ -1,0 +1,14 @@
+{
+  "id": "d3_break",
+  "site": "qmail",
+  "from": "Forkyard",
+  "addr": "noreply@forkyard.test",
+  "subject": "Deployment alert",
+  "trigger": {
+    "dayMin": 3
+  },
+  "onDeliver": {
+    "breakApp": true
+  },
+  "body": "One of your live deployments failed a health check overnight. Open it and see what's wrong."
+}
