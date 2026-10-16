@@ -99,37 +99,37 @@ export function clockHtml(s: GameState): string {
   return `<b class="${near ? 'late' : ''}">${fmtClock(s.clockMin)}</b><span>${weekday(s.values.day)} · Day ${s.values.day} of ${LAST_DAY}</span>`;
 }
 
-// ── home menu (XP-style start menu) ──
-const XI = {
-  sleep: '<svg viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="#f6d55c" stroke="#a87b12" stroke-width="1.2"/></svg>',
-  help: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#2a6fd6" stroke="#174a9c"/><path d="M9.3 9.2a2.8 2.8 0 1 1 3.9 2.6c-.8.4-1.2.9-1.2 1.8v.6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17.4" r="1.2" fill="#fff"/></svg>',
-  bug: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2" fill="#2b2f36" stroke="#0e1013"/><path d="M7 9l3 3-3 3M12 15h5" fill="none" stroke="#73c994" stroke-width="2" stroke-linecap="round"/></svg>',
-  disk: '<svg viewBox="0 0 24 24"><path d="M4 3h13l3 3v15H4z" fill="#3c6fd1" stroke="#1d3f86"/><rect x="7" y="3" width="9" height="6" fill="#dfe8f7"/><rect x="7" y="13" width="10" height="7" fill="#fff"/></svg>',
-  logoff: '<svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4" fill="#e9a531" stroke="#9c6a0f"/><path d="M8 12h9m-3-3 3 3-3 3" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-  power: '<svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4" fill="#d9442b" stroke="#8e2412"/><path d="M12 6v6M8.2 8.3a5.5 5.5 0 1 0 7.6 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>',
+// ── desktop: taskbar window entry + home menu ──
+export function taskHtml(store: GameStore): string {
+  const r = route(store.url, store.state);
+  return `<i></i>browser <span>${esc(r.site === 'newtab' ? 'new tab' : store.url)}</span>`;
+}
+const MI = {
+  sleep: '<svg viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>',
+  help: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.5v.4M12 16.8v.2"/></svg>',
+  term: '<svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="2"/><path d="M7 9.5l3 2.5-3 2.5M12.5 15H17"/></svg>',
+  slot: '<svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></svg>',
+  logout: '<svg viewBox="0 0 24 24"><path d="M14 4H6v16h8M10 12h10m-3-3 3 3-3 3"/></svg>',
 };
 export function startMenuHtml(store: GameStore): string {
   const s = store.state;
-  const item = (act: string, icon: string, title: string, sub: string) =>
-    `<button class="xs-item" data-act="${act}">${icon}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span></button>`;
+  const apps = bookmarks(s).map((b) =>
+    `<button class="dm-app" data-nav="${b.base}"><span class="bm-ico ico-${b.id}">${ICONS[b.id] || ICONS.newtab}</span>${esc(b.label)}</button>`).join('');
+  const item = (act: string, icon: string, title: string, hint: string) =>
+    `<button class="dm-item" data-act="${act}">${icon}<b>${esc(title)}</b><kbd>${esc(hint)}</kbd></button>`;
   const slots = listSlots().map((info, i) => {
     const n = i + 1;
-    const label = info ? `Day ${info.day}` : 'Empty';
-    const when = info ? `${fmtClock(info.clockMin)} · saved ` + new Date(info.savedAt).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : 'Nothing saved here';
-    return `<div class="xs-slot${info ? '' : ' empty'}">${XI.disk}<span><b>Slot ${n} · ${esc(label)}</b><small>${esc(when)}</small></span>
-      <span class="xs-slot-acts"><button data-slot-save="${n}">Save</button>${info ? `<button data-slot-load="${n}">Load</button>` : ''}</span></div>`;
+    const when = info ? `${fmtClock(info.clockMin)} · saved ${new Date(info.savedAt).toLocaleString(undefined, { month: 'short', day: 'numeric' })}` : 'empty';
+    return `<div class="dm-slot${info ? '' : ' empty'}">${MI.slot}<span><b>slot${n}${info ? ` · day ${info.day}` : ''}</b><small>${esc(when)}</small></span>
+      <span class="dm-slot-acts">${info ? `<button data-slot-load="${n}">load</button>` : ''}<button data-slot-save="${n}">save</button></span></div>`;
   }).join('');
-  return `<header class="xs-head"><span class="xs-avatar">${ICONS.agent}</span><b>${esc(PLAYER.name)}</b><span class="xs-day">${weekday(s.values.day)} · Day ${s.values.day} of ${LAST_DAY}</span></header>
-    <div class="xs-body">
-      <div class="xs-left">
-        ${item('sleep', XI.sleep, 'Sleep', 'End the day, wake up tomorrow')}
-        ${item('intro', XI.help, 'How to play', 'The rules, again')}
-        <hr>
-        ${item('dev', XI.bug, 'Story debugger', 'jev · Ctrl+`')}
-      </div>
-      <div class="xs-right"><p class="xs-cap">Saved games</p>${slots}<p class="xs-note">Your progress also autosaves after every action.</p></div>
+  return `<header class="dm-head"><span class="dm-user">${esc(PLAYER.handle)}<i>@</i>laptop</span><span class="dm-day">${weekday(s.values.day)} · day ${s.values.day}/${LAST_DAY}</span></header>
+    <div class="dm-body">
+      <section class="dm-col"><p class="dm-cap">apps</p><div class="dm-apps">${apps}</div>
+        <p class="dm-cap">system</p>${item('intro', MI.help, 'How to play', '?')}${item('dev', MI.term, 'Story debugger', 'ctrl+`')}</section>
+      <section class="dm-col dm-saves"><p class="dm-cap">saved games</p>${slots}<p class="dm-note">autosaves after every action</p></section>
     </div>
-    <footer class="xs-foot"><button data-act="new">${XI.logoff}New game</button><button data-act="sleep">${XI.power}Sleep</button></footer>`;
+    <footer class="dm-foot"><button class="dm-new" data-act="new">${MI.logout}New game</button><button class="dm-sleep" data-act="sleep">${MI.sleep}Sleep<small>end the day</small></button></footer>`;
 }
 
 function qmailBadge(s: GameState): number {

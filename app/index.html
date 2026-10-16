@@ -26,15 +26,12 @@
       <div class="viewport" id="viewport"></div>
     </div>
   </div>
-  <footer class="taskbar xp-bar">
-    <button class="xp-start" id="xp-start" data-start aria-haspopup="menu" aria-expanded="false" title="Home menu"><span class="xp-flag" aria-hidden="true"><i></i><i></i><i></i><i></i></span>home</button>
-    <div class="xp-tasks"><div class="xp-task" title="Objective"><span class="tk-pin" aria-hidden="true"></span><span id="objective"></span></div></div>
-    <div class="xp-tray">
-      <button class="xp-sleep" data-act="sleep" title="End the day and sleep until morning"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>Sleep</button>
-      <span class="xp-clock" id="clock"></span>
-    </div>
+  <footer class="taskbar dk-bar">
+    <button class="dk-home" id="dk-home" data-start aria-haspopup="menu" aria-expanded="false" title="Home menu"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><rect x="10.3" y="1.5" width="3.4" height="9" rx="1.7"/><rect x="10.3" y="1.5" width="3.4" height="9" rx="1.7" transform="rotate(60 12 12)"/><rect x="10.3" y="1.5" width="3.4" height="9" rx="1.7" transform="rotate(120 12 12)"/><rect x="10.3" y="1.5" width="3.4" height="9" rx="1.7" transform="rotate(180 12 12)"/><rect x="10.3" y="1.5" width="3.4" height="9" rx="1.7" transform="rotate(240 12 12)"/><rect x="10.3" y="1.5" width="3.4" height="9" rx="1.7" transform="rotate(300 12 12)"/></g></svg><span>home</span></button>
+    <div class="dk-tasks"><span class="dk-task" id="dk-task" title="Browser"></span></div>
+    <div class="dk-tray"><span class="dk-clock" id="clock"></span></div>
   </footer>
-  <nav class="xp-menu" id="startmenu" role="menu" aria-label="Home menu" hidden></nav>
+  <nav class="dk-menu" id="startmenu" role="menu" aria-label="Home menu" hidden></nav>
   <div id="toasts" aria-live="polite"></div>
   <div id="overlay" hidden></div>
   <aside id="dev" hidden></aside>

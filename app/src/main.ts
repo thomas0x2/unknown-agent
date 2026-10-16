@@ -8,7 +8,7 @@ import './ui/satchel.css';
 import './ui/yowl.css';
 import './ui/forkyard.css';
 import './ui/qmail.css';
-import './ui/xp.css';
+import './ui/desktop.css';
 import { GameStore } from './game/store';
 import { loadContent } from './content/load';
 import { offlineJev, localStorageStore } from './engine';
@@ -52,11 +52,10 @@ function render(): void {
   if (focusId) { const el = document.getElementById(focusId) as HTMLInputElement | null; if (el && !el.disabled) el.focus(); }
 
   // taskbar
-  $('#objective')!.textContent = V.objective(s);
-  $('#objective')!.parentElement!.title = V.rentLine(s);
+  $('#dk-task')!.innerHTML = V.taskHtml(store);
   $('#clock')!.innerHTML = V.clockHtml(s);
   const menu = $('#startmenu')!; menu.hidden = !store.ui.start; menu.innerHTML = store.ui.start ? V.startMenuHtml(store) : '';
-  const startBtn = $('#xp-start')!; startBtn.classList.toggle('on', store.ui.start); startBtn.setAttribute('aria-expanded', String(store.ui.start));
+  const startBtn = $('#dk-home')!; startBtn.classList.toggle('on', store.ui.start); startBtn.setAttribute('aria-expanded', String(store.ui.start));
 
   const ov = $('#overlay')!; const oh = V.overlayHtml(store); ov.innerHTML = oh; ov.hidden = !oh;
   const dev = $('#dev')!; dev.hidden = !store.ui.dev; if (store.ui.dev) dev.innerHTML = V.devHtml(store);
@@ -89,7 +88,7 @@ function toast(title: string, body: string, kind = 'note'): void {
 document.addEventListener('click', (e) => {
   const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-reply-to],[data-wl-range],[data-star],[data-download],[data-llm],[data-ov],[data-dev],[data-cancel-booking],[data-start],[data-slot-save],[data-slot-load]');
   // any click outside the home menu closes it (menu items close it themselves below)
-  if (store.ui.start && !(e.target as HTMLElement).closest('#startmenu, #xp-start')) store.toggleStart(false);
+  if (store.ui.start && !(e.target as HTMLElement).closest('#startmenu, #dk-home')) store.toggleStart(false);
   if (!t) return;
   const d = t.dataset;
   if (d.close != null) { e.stopPropagation(); store.closeTab(Number(d.close)); return; }
