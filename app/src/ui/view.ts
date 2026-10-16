@@ -904,6 +904,29 @@ const EPITAPHS: Record<string, string> = {
   got_away: 'The rent got paid. Nobody asked how.',
   clean_modest: 'You kept the lights on. Nobody noticed. Yet.',
 };
+// What each open tab costs in RAM (MB), System Monitor style. Fixed per site, nudged by tab id.
+const TAB_MB: Partial<Record<string, number>> = { agent: 1380, y: 540, forkyard: 410, yowl: 330, qmail: 290, qdrive: 260, coinbin: 240, weightroom: 620, newtab: 90 };
+const SYS_PROCS: [string, number][] = [['generalai-telemetryd', 1120], ['cinnamon', 410], ['Xorg', 190]];
+const fmtMem = (mb: number) => (mb >= 1000 ? `${(mb / 1024).toFixed(1)} GB` : `${mb} MB`);
+/** The memory panel in the out-of-memory dialog: RAM and swap bars, then the biggest processes. */
+function memoryHtml(store: GameStore): string {
+  const tabs: [string, number][] = store.tabs.map((t) => {
+    const r = route(t.url, store.state);
+    return [`Browser · ${tabTitle(r, t.url)}`, (TAB_MB[r.site] ?? 280) + ((t.id * 37) % 60)];
+  });
+  const procs = [...tabs, ...SYS_PROCS].sort((a, b) => b[1] - a[1]);
+  const top = procs.slice(0, 6);
+  const rest = procs.slice(6).reduce((n, p) => n + p[1], 0);
+  const bar = (label: string, used: string, pct: number) =>
+    `<div class="mem-bar"><span>${label}</span><div class="mem-track"><i style="width:${pct}%"></i></div><b>${used}</b></div>`;
+  return `<div class="mem-panel">
+      ${bar('Memory', '7.9 of 8.0 GB · 99%', 99)}${bar('Swap', '2.0 of 2.0 GB · 100%', 100)}
+      <table class="mem-procs"><tr><th>Process</th><th>Memory</th></tr>
+      ${top.map(([n, mb]) => `<tr><td>${esc(n)}</td><td>${fmtMem(mb)}</td></tr>`).join('')}
+      ${rest ? `<tr class="dim"><td>${procs.length - top.length} more</td><td>${fmtMem(rest)}</td></tr>` : ''}</table>
+    </div>`;
+}
+
 /** A Cinnamon-style dialog window: titlebar with the title and a close button, then the body. */
 function osWindow(title: string, cls: string, body: string, close?: string): string {
   const x = close ? `<button class="ow-ctl ow-close" data-ov="${close}" title="Close" aria-label="Close"><svg viewBox="0 0 16 16"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg></button>` : '';
@@ -921,7 +944,8 @@ export function overlayHtml(store: GameStore): string {
     return osWindow('Confirm', 'ov-small ov-confirm', `<p>${esc(c.text)}</p><div class="ov-actions"><button class="btn" data-ov="confirm-no">Cancel</button><button class="btn primary" data-ov="confirm-yes">${esc(c.yes)}</button></div>`, 'confirm-no');
   }
   if (store.ui.memWarn) {
-    return osWindow('Low memory', 'ov-small ov-memwarn', `<p>Your system is running low on memory. Close some tabs before opening a new one.</p>
+    return osWindow('Out of memory', 'ov-small ov-memwarn', `<p>Your system is running out of memory. Close some tabs before opening a new one.</p>
+      ${memoryHtml(store)}
       <div class="ov-actions"><button class="btn primary" data-ov="mem-ok">OK</button></div>`, 'mem-ok');
   }
   if (store.ui.intro) {
