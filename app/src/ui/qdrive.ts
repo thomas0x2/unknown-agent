@@ -35,51 +35,49 @@ const MODEL_FILES: Record<string, { name: string; kb: number; preview: string }>
 
 // The two files the player starts with. Lines in capitals render as headings.
 const RESUME = `YOU
-you@qmail.com · Pine Street Apartments, Unit 4B · Available immediately
+you@qmail.com · Pine Street Apartments, Unit 4B
 
 PROFILE
-Detail-oriented operations professional with six years of experience doing work that, it turns out, a chatbot can do for $0.03. Team player. Team no longer exists.
+Operations professional with six years of experience in invoice processing, vendor reconciliation and workflow documentation. Reliable, detail-oriented and comfortable with repetitive work.
 
 EXPERIENCE
 Vantor Group · Process Optimization Associate · 6 years
-· Optimized processes until the only remaining inefficiency was me.
-· Reviewed 40,000+ supplier invoices by hand.
-· Recorded a "quick walkthrough of my workflow for documentation purposes." Was thanked warmly.
-· Reduced department headcount by 100% (see above).
-· Employee of the Quarter, Q3. The award has since been automated as well.
+· Processed and reconciled supplier invoices for the Eastern region.
+· Maintained the team's shared tracking spreadsheet.
+· Documented the team's workflows step by step for the GeneralAI integration project.
+· Employee of the Quarter, Q3.
 
 Vantor Group · Data Intern · 1 year
-Unpaid. Compensated in "exposure," which is also what the job did to my lungs during the HVAC incident.
+Unpaid.
 
 EDUCATION
-B.A. Business Communication. Loan balance: ongoing, compounding, emotionally significant.
+B.A. Business Communication
 
 SKILLS
-Excel (advanced) · Meetings (expert) · Writing "per my last email" with no hostility detectable by HR · Prompting (beginner, billed per word)
+Excel (advanced) · Data entry · Vendor communication · Meeting notes
 
 REFERENCES
-Available on request. My former manager was replaced the same day and can be reached through GeneralAI support. Current wait time: 6 to 8 business years.`;
+Available on request.`;
 
 const OFFBOARDING = `VANTOR GROUP · PEOPLE & CULTURE
-Offboarding Packet, Form PC-77b (revised for automation)
+Offboarding Packet, Form PC-77b
 
-Thank you for your years of service. Your position has been transitioned to GeneralAI Operations, effective the moment you opened this document.
+Thank you for your years of service. As communicated, your position has been transitioned to GeneralAI Operations, effective today.
 
-WHAT HAPPENS NEXT
-1. Badge access ends today. If you are in the building, Security will escort you out. Security is now a single drone that says "have a great day" until you leave.
-2. Your final salary will be paid in DOLR, at whatever DOLR is worth on payroll day. Vantor makes no promises regarding DOLR. Nobody does.
-3. Health coverage ends at midnight. Please schedule any illnesses before then.
-4. Return all company equipment, including your laptop, to Facilities. Facilities was dissolved on Tuesday.
+NEXT STEPS
+1. Badge access ends at 5:00 PM today.
+2. Your final salary will be paid in DOLR with the next payroll run.
+3. Health coverage ends at midnight.
+4. Please return your laptop to Facilities. Facilities is currently unstaffed, so keep the device until further notice.
 
 SEVERANCE
-You are eligible for two weeks' pay, conditional on signing the attached non-disparagement agreement. The agreement is 41 pages long, was written by GeneralAI, and has not been read by anyone, including GeneralAI.
+You are eligible for two weeks' pay, conditional on signing the attached non-disparagement agreement (41 pages).
 
-YOUR FEEDBACK MATTERS
-Please complete the exit survey (about 2 minutes). Your answers will be used to improve the system that replaced you.
+EXIT SURVEY
+Please complete the exit survey. Your answers help us improve our automated operations.
 
-We wish you every success in what comes next, and we encourage you to explore exciting opportunities outside the Vantor family, as those are now the only ones available.
+We wish you every success in what comes next.
 
-Warm regards,
 People & Culture
 
 This document was drafted with GeneralAI.`;
