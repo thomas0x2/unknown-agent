@@ -176,7 +176,7 @@ const SQUARE: Ad[] = [
   },
   {
     id: 'deepsleep', sponsor: 'Weightroom', href: 'weightroom.ai/deepsleep', theme: 'ad-deep', deco: 'bubbles',
-    frames: ['<b>DeepSleep 0.5B</b>', 'Free. Local. <b>Confident.</b>', '非常正确。<br>Very correct.'],
+    frames: ['<b>deepsleep-0.5B</b>', 'Free. Local. <b>Confident.</b>', '非常正确。<br>Very correct.'],
     cta: 'Download', fine: 'Wrong about everything, privately.',
   },
   {

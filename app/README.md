@@ -36,7 +36,7 @@ subscription you're logged in to with Claude Code (use this for development only
   agent.chat prompts that drive nothing, and the people behind Qmail addresses, each in the voice of
   their profile in `content/characters.json`. Prompts that ask where to go ("how do I make money?")
   are matched by Jev to a scripted hint in `content/agent.json` instead. Without the proxy or a key,
-  scripted fallbacks are shown (`game/misses.ts`, `game/haiku.ts`). The Terminal's DeepSleep model
+  scripted fallbacks are shown (`game/misses.ts`, `game/haiku.ts`). The Terminal app's deepsleep-0.5B model
   answers from a fixed list of lines.
 - **The agent is freely promptable with costs** — ask it anything on agent.chat and it bills your
   wallet per prompt + per word of the prompt (refusals included), and shows the exact price under

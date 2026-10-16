@@ -6,7 +6,7 @@ import type { GameState } from '../engine';
 
 export type SiteId =
   | 'y' | 'qmail' | 'qdrive' | 'satchel' | 'forkyard' | 'agent' | 'yowl'
-  | 'weightroom' | 'terminal' | 'nullboard' | 'cellar' | 'empire' | 'app' | 'newtab' | 'notfound';
+  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'app' | 'newtab' | 'notfound';
 
 export interface SiteDef {
   id: SiteId;
@@ -29,7 +29,6 @@ export const SITES: SiteDef[] = [
   { id: 'satchel', base: 'satchel.app', label: 'Satchel', group: 'core', reachable: always },
   { id: 'forkyard', base: 'forkyard.com', label: 'Forkyard', group: 'core', reachable: always },
   { id: 'weightroom', base: 'weightroom.ai', label: 'Weightroom', group: 'tools', reachable: flag('knows_weightroom') },
-  { id: 'terminal', base: 'localhost', label: 'Terminal', group: 'tools', reachable: flag('has_terminal') },
   { id: 'nullboard', base: 'nullboard.onion', label: 'nullboard', group: 'underground', reachable: flag('knows_nullboard') },
   { id: 'cellar', base: 'cellar.onion', label: 'Cellar', group: 'underground', reachable: flag('knows_cellar') },
   { id: 'empire', base: 'empire.alphaascend.biz', label: 'EMPIRE', group: 'web', reachable: always },
