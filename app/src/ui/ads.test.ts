@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { pickAd, adHtml, newPageLoad, AD_IDS } from './ads';
+import { pickAd, adHtml, newPageLoad, AD_IDS, AD_HREFS } from './ads';
+import { route } from '../sites/registry';
+import { AD_SITES } from '../sites/adSites';
+import { pageAdSite } from './adSites';
+import { newGame } from '../engine';
 
 describe('banner ads', () => {
   it('has two separate pools', () => {
@@ -27,7 +31,28 @@ describe('banner ads', () => {
     newPageLoad();
     const html = adHtml('qmail', 1, 'square');
     expect(html).toMatch(/class="ad ad-square /);
-    expect(html).toMatch(/data-nav="[a-z0-9.-]+(\/[a-z0-9-]+)?"/);
+    expect(html).toMatch(/data-newtab="[a-z0-9.-]+(\/[a-z0-9-]+)?"/);
     expect(html.match(/class="ad-f"/g)).toHaveLength(3);
+  });
+  it('opens a real page for every ad: its landing page, or a site that already exists', () => {
+    const s = newGame();
+    for (const href of AD_HREFS) {
+      const r = route(href, s);
+      expect(r.reachable, href).toBe(true);
+      expect(['adsite', 'empire', 'phish'], href).toContain(r.site);
+    }
+  });
+  it('has no landing page without an ad', () => {
+    for (const site of AD_SITES) expect(AD_HREFS, site.url).toContain(site.url);
+  });
+  it('draws each landing page with its brand, three cards and the fine print', () => {
+    for (const site of AD_SITES) {
+      const html = pageAdSite(site.url);
+      expect(html).toContain(`lp-t-${site.theme}`);
+      expect(html.match(/class="lp-card"/g)).toHaveLength(3);
+      expect(html).toContain('class="lp-fine"');
+      // nothing on it is clickable yet
+      expect(html).not.toMatch(/data-(nav|newtab|act|form)|<(a|button|input|form)\b/);
+    }
   });
 });
