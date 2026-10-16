@@ -147,6 +147,11 @@ async function getClient() {
 async function buildRoute(sdk, body) {
   const criteria = {};
   for (const c of body.candidates ?? []) criteria[c.id] = c.when;
+  // a hint is a near miss: the player is after one of the outcomes but hasn't done it yet
+  const hints = body.strict ? [] : (body.hints ?? []).filter(Boolean);
+  hints.forEach((h, i) => {
+    criteria[`hint_${i}`] = `The message doesn't accomplish any outcome above but is on the right track, and this answer would nudge the player: "${h}"`;
+  });
   // strict routes (agent.chat hints) should only fire on a clear match; small talk, insults and
   // questions about agent itself fall through to a roast.
   criteria.nothing = body.strict
@@ -219,6 +224,8 @@ async function handle(kind, body) {
   const { answers } = await client.systemOne(req);
   if (kind === 'route') {
     const choice = answers.branch?.choice ?? 'nothing';
+    const hint = /^hint_(\d+)$/.exec(choice);
+    if (hint) return { status: 200, json: { kind: 'hint', hintIndex: Number(hint[1]) } };
     return { status: 200, json: choice === 'nothing' ? { kind: 'nothing' } : { kind: 'outcome', outcomeId: choice } };
   }
   if (kind === 'rate-post') {
