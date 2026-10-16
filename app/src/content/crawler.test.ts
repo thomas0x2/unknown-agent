@@ -34,7 +34,6 @@ describe('stock posts on Y', () => {
     const posts = marketPosts(onDay(2), content);
     expect(posts.filter((p) => p.bot && p.day === 2)).toHaveLength(30);
     expect(new Set(posts.filter((p) => p.bot).map((p) => p.handle)).size).toBe(30);
-    expect(posts.some((p) => p.decoy === 'VANT' && !p.text.includes('$'))).toBe(true);
     expect(posts.some((p) => /nova/i.test(p.text))).toBe(false);
     const all = marketPosts(onDay(21), content);
     for (let d = 1; d <= 21; d++) expect(all.filter((p) => p.day === d && !p.bot).length, `day ${d}`).toBeGreaterThanOrEqual(2);
@@ -54,14 +53,21 @@ describe('sentiment crawler', () => {
 
   it('each bug shows up in the numbers', () => {
     expect(row(crawl(posts, 2, bugs('bots_counted')), 'GAI').count).toBe(33);
-    expect(row(crawl(posts, 2, bugs('untagged_counted')), 'VANT').count).toBe(5);
     expect(row(crawl(posts, 2, bugs('sarcasm_literal')), 'VANT').bullish).toBe(75);
     expect(row(crawl(posts, 2, bugs('inverted')), 'GAI')).toMatchObject({ bullish: 33, bearish: 67 });
     expect(row(crawl(posts, 2, bugs('lowercase_missed')), 'GAI').count).toBe(2);
-    expect(row(crawl(posts, 2, bugs('wrong_window')), 'GAI').count).toBe(6);
     expect(crawl(posts, 2, bugs('wrong_tickers')).map((r) => r.ticker)).toContain('VNTR');
     const handles = new Set(posts.map((p) => p.handle));
     expect(row(crawl(posts, 2, bugs('hallucinated_posts')), 'GAI').top.every((p) => !handles.has(p.handle))).toBe(true);
+  });
+
+  it('lists every crawled post with the mood it read, bugs included', () => {
+    const ok = row(crawl(posts, 2, bugs()), 'VANT');
+    expect(ok.posts).toHaveLength(ok.count);
+    expect(row(crawl(posts, 2, bugs('bots_counted')), 'GAI').posts.filter((p) => /\d{4}$/.test(p.handle)).length).toBe(30);
+    const sarcastic = posts.find((p) => p.literal && p.tickers.includes('VANT'))!;
+    expect(ok.posts.find((p) => p.handle === sarcastic.handle)!.mood).toBe(sarcastic.mood);
+    expect(row(crawl(posts, 2, bugs('sarcasm_literal')), 'VANT').posts.find((p) => p.handle === sarcastic.handle)!.mood).toBe(sarcastic.literal);
   });
 
   it("auto-buy: once on Crane's real praise; each bug buys differently", () => {
@@ -81,33 +87,85 @@ describe('sentiment crawler', () => {
 });
 
 describe('Spin Cycle Status', () => {
-  it('the feed: 8 machines, 12 from day 5, M3 out of order, something done and running', () => {
+  const steps = (from = 10 * 60) => Array.from({ length: (24 * 60 - from) / 30 }, (_, k) => from + k * 30);
+
+  it('the feed: 8 machines, 12 from day 5, M3 always out of order', () => {
     expect(machineFeed(2)).toHaveLength(8);
     expect(machineFeed(5)).toHaveLength(12);
-    for (let d = 2; d <= 10; d++) {
-      const f = machineFeed(d);
-      expect(f.find((m) => m.id === 3)!.st).toBe(3);
-      expect(f.slice(0, 6).some((m) => m.st === 2)).toBe(true);
-      expect(f.slice(0, 6).some((m) => m.st === 1)).toBe(true);
+    for (let d = 1; d <= 21; d++) for (const m of steps(7 * 60)) expect(machineFeed(d, m).find((x) => x.id === 3)!.st).toBe(3);
+  });
+
+  it('changes with every half hour, the same way every time', () => {
+    for (let d = 2; d <= 8; d++) {
+      for (const m of steps().slice(0, -1)) {
+        expect(machineFeed(d, m), `day ${d} ${m}`).not.toEqual(machineFeed(d, m + 30));
+        expect(machineFeed(d, m)).toEqual(machineFeed(d, m));
+      }
     }
+  });
+
+  it('machines run their cycle down, finish, wait for pickup and free up', () => {
+    let seen = 0;
+    for (let d = 2; d <= 8; d++) {
+      for (const m of steps().slice(0, -1)) {
+        const now = machineFeed(d, m), later = machineFeed(d, m + 30);
+        for (const x of now.filter((x) => x.st === 1)) {
+          const y = later.find((z) => z.id === x.id)!;
+          // a load still running has 30 minutes less to go; one that ended is done or already collected
+          if (x.t > 1800 + 60) { expect(y.st, `M${x.id}`).toBe(1); expect(Math.abs(x.t - 1800 - y.t)).toBeLessThan(60); seen++; }
+          else expect([0, 1, 2, 3]).toContain(y.st);
+        }
+        for (const x of now.filter((x) => x.st !== 1)) expect(x.t).toBe(0);
+      }
+    }
+    expect(seen).toBeGreaterThan(10);
+  });
+
+  it('busier in the evening than in the morning', () => {
+    let morning = 0, evening = 0;
+    for (let d = 2; d <= 15; d++) {
+      for (const m of [10 * 60, 10 * 60 + 30, 11 * 60]) morning += machineFeed(d, m).filter((x) => x.st === 1).length;
+      for (const m of [19 * 60, 19 * 60 + 30, 20 * 60]) evening += machineFeed(d, m).filter((x) => x.st === 1).length;
+    }
+    expect(evening).toBeGreaterThan(morning * 1.3);
   });
 
   it('each bug shows up on the machine list', () => {
     const opts = { showMinutes: true, twelve: true };
-    const ok = machineRows(2, bugs(), opts);
+    // a time on day 2 with a done and a running machine on the first page
+    const at = steps().find((m) => { const f = machineFeed(2, m).slice(0, 6); return f.some((x) => x.st === 2) && f.some((x) => x.st === 1); })!;
+    const rows = (day: number, ...b: string[]) => machineRows(day, bugs(...b), opts, at);
+    const ok = rows(2);
     expect(ok).toHaveLength(8);
     expect(ok.find((m) => m.id === 3)!.status).toBe('broken');
-    expect(machineRows(2, bugs('six_of_eight'), opts)).toHaveLength(6);
-    expect(machineRows(2, bugs('broken_as_free'), opts).find((m) => m.id === 3)!.status).toBe('free');
-    expect(machineRows(2, bugs('done_as_free'), opts).some((m) => m.status === 'done')).toBe(false);
-    expect(machineRows(2, bugs('fetch_all_free'), opts).every((m) => m.status === 'free')).toBe(true);
+    expect(ok.every((m) => m.raw === undefined)).toBe(true);
+    expect(rows(2, 'raw_codes').map((m) => m.raw)).toEqual(machineFeed(2, at).map((x) => x.st));
+    expect(rows(2, 'six_of_eight')).toHaveLength(6);
+    expect(rows(2, 'broken_as_free').find((m) => m.id === 3)!.status).toBe('free');
+    expect(rows(2, 'done_as_free').some((m) => m.status === 'done')).toBe(false);
+    expect(rows(2, 'fetch_all_free').every((m) => m.status === 'free')).toBe(true);
     const running = ok.find((m) => m.status === 'running')!;
-    const t = machineFeed(2).find((m) => m.id === running.id)!.t;
+    const t = machineFeed(2, at).find((m) => m.id === running.id)!.t;
     expect(running.minutes).toBe(Math.ceil(t / 60));
-    expect(machineRows(2, bugs('minutes_wrong'), opts).find((m) => m.id === running.id)!.minutes).toBe(t);
-    expect(machineRows(5, bugs('still_eight'), opts)).toHaveLength(8);
-    expect(machineRows(5, bugs(), opts)).toHaveLength(12);
-    expect(machineRows(5, bugs('new_always_free'), opts).filter((m) => m.id > 8).every((m) => m.status === 'free')).toBe(true);
+    expect(rows(2, 'minutes_wrong').find((m) => m.id === running.id)!.minutes).toBe(t);
+    expect(rows(5, 'still_eight')).toHaveLength(8);
+    expect(rows(5)).toHaveLength(12);
+    expect(rows(5, 'new_always_free').filter((m) => m.id > 8).every((m) => m.status === 'free')).toBe(true);
+  });
+
+  it('asking the agent starts the app and builds it, no email needed', async () => {
+    const s = onDay(2);
+    s.values.crypto = 100;
+    const out = (await promptAgent(s, content, offlineJev, 'Create an app that visualizes spincycle.test/feed')).state;
+    const app = out.apps.find((a) => a.template === 'laundromat')!;
+    expect(app).toBeTruthy();
+    expect(app.repoVersion).toBeGreaterThan(0);
+    expect(app.repo.map((f) => f.id).sort()).toEqual([...app.required].sort());
+    // it said nothing about the codes, so the app shows them raw
+    expect(bugsOf(app.repo.find((f) => f.id === 'machines')!)).toContain('raw_codes');
+    // a second prompt doesn't start another one
+    const again = (await promptAgent(out, content, offlineJev, 'Build the Spin Cycle app again')).state;
+    expect(again.apps.filter((a) => a.template === 'laundromat')).toHaveLength(1);
   });
 });
 
@@ -126,11 +184,9 @@ const ASKS: Record<string, [string, string, Record<string, string>]> = {
   sentiment: ['trader_contact', 'Sentiment Crawler: ', {
     wrong_tickers: 'The crawler tracks the wrong tickers.',
     lowercase_missed: 'It misses lowercase tickers like $gai.',
-    wrong_window: "It counts yesterday's posts too. Only count today's.",
     inverted: 'Bullish and bearish are swapped in the sentiment split.',
     sarcasm_literal: 'The sentiment reads sarcastic posts literally.',
     bots_counted: 'It counts bot spam.',
-    untagged_counted: 'It counts posts that only mention Vantor without the $ tag.',
     hallucinated_posts: "The top posts are made up, those accounts don't exist.",
     wrong_totals: 'The portfolio totals are wrong.',
     stale_after_buy: "The portfolio doesn't update after a buy.",
@@ -142,6 +198,7 @@ const ASKS: Record<string, [string, string, Record<string, string>]> = {
     impostor_buy: 'Auto-buy trusted an impostor Crane account.',
   }],
   laundromat: ['laundromat_contact', 'Spin Cycle Status: ', {
+    raw_codes: 'It shows the raw ST codes. Translate them: 0 free, 1 running, 2 done, 3 out of order.',
     six_of_eight: 'It only shows 6 machines, the second page of the feed is never fetched.',
     done_as_free: 'Done machines waiting for pickup show as free.',
     broken_as_free: 'Out of order machines show as free.',
@@ -181,5 +238,9 @@ describe('fixing them', () => {
     getApp(s, id)!.repo[1] = { id: 'sentiment', correct: false, seed: 3 };
     nameUnnamedBugs(s, content);
     expect(getApp(s, id)!.repo[1].variant).toBeTruthy();
+    // a save holding a bug that was since removed gets a current one
+    getApp(s, id)!.repo[0] = { id: 'tickers', correct: false, seed: 0, variant: 'wrong_window' };
+    nameUnnamedBugs(s, content);
+    expect(content.apps.sentiment.features[0].bugs!.map((b) => b.id)).toContain(getApp(s, id)!.repo[0].variant);
   });
 });

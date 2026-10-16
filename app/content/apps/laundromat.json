@@ -22,7 +22,8 @@
         "six_of_eight": "Spin Cycle Status shows 6 machines. There are 8.",
         "done_as_free": "Spin Cycle Status said a machine was free. Someone's wet laundry was still in it.",
         "broken_as_free": "Spin Cycle Status said machine 3 was free. It was out of order. It's always out of order.",
-        "failed_fetch": "Spin Cycle Status shows no machines at all. Walked over anyway. All busy."
+        "failed_fetch": "Spin Cycle Status shows no machines at all. Walked over anyway. All busy.",
+        "raw_codes": "Spin Cycle Status says M5 is \"1\". One what."
       },
       "match": "\\b(machines?|washers?|dryers?|out of order|pick-?up)\\b",
       "bugs": [
@@ -40,9 +41,19 @@
           "id": "broken_as_free",
           "when": "out-of-order machines shown as free",
           "match": "\\bout[- ]of[- ]order\\b|\\bbroken machines?\\b|\\bst ?= ?3\\b|\\bm3\\b"
+        },
+        {
+          "id": "raw_codes",
+          "when": "shows the raw ST codes (0, 1, 2, 3) instead of free, running, done and out of order",
+          "match": "\\b(raw|st) ?(codes?|numbers?|values?)\\b|\\bcodes?\\b|\\bst ?=|\\btranslat\\w*|\\blabels?\\b|\\bnumbers? instead\\b|\\bone what\\b"
         }
       ],
       "checklist": [
+        {
+          "id": "codes",
+          "text": "ST 0 free, 1 running, 2 done, 3 out of order",
+          "bug": "raw_codes"
+        },
         {
           "id": "all",
           "text": "8 machines",
@@ -117,7 +128,7 @@
       "checklist": [
         {
           "id": "minutes",
-          "text": "minutes",
+          "text": "T seconds left, minutes",
           "bug": "minutes_wrong"
         }
       ]

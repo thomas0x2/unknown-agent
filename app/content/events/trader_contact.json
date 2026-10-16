@@ -8,7 +8,7 @@
     "dayMin": 2
   },
   "latent": true,
-  "body": "Here's the spec: track $GAI and $VANT. For each, the share of bullish/bearish/neutral posts from today, the post count, and the 3 most-engaged posts. Only $-tagged mentions. Ignore spam and bots. And a portfolio view: my holdings, cash and today's change.",
+  "body": "Spec: $GAI and $VANT. Per ticker: today's post count, bullish/bearish/neutral split, top 3 posts by engagement. No bots, no spam. Portfolio view: holdings, cash, today's change.",
   "outcomes": [
     {
       "id": "offer",
@@ -42,7 +42,7 @@
           ]
         }
       },
-      "reply": "Good. Send it when it's live."
+      "reply": "Fine. Send it when it's live."
     }
   ],
   "hints": [

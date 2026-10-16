@@ -26,3 +26,10 @@ export const dateShort = (day: number) => { const d = dayDate(day); return `${MO
 export const dateFull = (day: number) => `${weekdayName(day)}, ${dateLong(day)}, ${dayDate(day).getUTCFullYear()}`;
 /** "Tue, Oct 3, 2028" */
 export const dateMedium = (day: number) => `${weekdayShort(day)}, ${dateShort(day)}, ${dayDate(day).getUTCFullYear()}`;
+
+/** Minutes since midnight as a 12-hour clock time ("2:30 PM"). */
+export function clockTime(min: number): string {
+  const m = Math.max(0, Math.min(24 * 60, Math.round(min)));
+  const h = Math.floor(m / 60) % 24;
+  return `${h % 12 === 0 ? 12 : h % 12}:${String(m % 60).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`;
+}
