@@ -59,13 +59,13 @@ describe('day 1 playthrough', () => {
     s = b.state;
     expect(b.requested.sort()).toEqual(['landing', 'menu']);
 
-    // agent-1 gets about half the components wrong, and the first build always ships at least one bug
+    // agent-1 gets about half the components wrong
     const menu = getApp(s, appId)!.repo.find((f) => f.id === 'menu')!;
-    expect(getApp(s, appId)!.repo.some((f) => !f.correct)).toBe(true);
     if (!menu.correct) expect(['prices_missing', 'prices_wrong', 'prices_curo', 'wrong_items']).toEqual(expect.arrayContaining(bugsOf(menu)));
 
-    // deploy, then fix whichever bug is there, naming it, until the live app meets spec
+    // the player's first deploy always ships at least one bug; fix whichever is there, naming it, until the live app meets spec
     s = deploy(s, appId);
+    expect(getApp(s, appId)!.repo.some((f) => !f.correct)).toBe(true);
     for (let i = 0; i < 10 && !appMeetsSpec(getApp(s, appId)!); i++) {
       const broken = getApp(s, appId)!.repo.find((f) => !f.correct)!;
       s = (await briefFix(s, content, wordJev, appId, FIX[broken.variant ?? ''] ?? `Rebuild the menu with exactly these dishes: ${MENU}.`)).state;

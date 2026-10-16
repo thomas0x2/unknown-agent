@@ -22,7 +22,6 @@ describe('build bug rate', () => {
       const runs = 400;
       for (let i = 0; i < runs; i++) {
         const { s, id } = crawler(i + 1);
-        getApp(s, id)!.repoVersion = 5; // past the first build's teaching bug
         buildApp(s, id, getApp(s, id)!.required, level, { tmpl });
         bugs += getApp(s, id)!.repo.reduce((n, f) => n + (f.correct ? 0 : bugsOf(f).length), 0);
       }
