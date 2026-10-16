@@ -40,6 +40,11 @@ describe('stock posts on Y', () => {
     const all = marketPosts(onDay(21), content);
     for (let d = 1; d <= 21; d++) expect(all.filter((p) => p.day === d && !p.bot).length, `day ${d}`).toBeGreaterThanOrEqual(2);
   });
+  it('a $GAI post is already on Y when day 1 starts', () => {
+    const s = startGame(content);
+    expect(marketPosts(s, content).some((p) => p.day === 1 && p.tickers.includes('GAI'))).toBe(true);
+  });
+
   it("today's posts go up over the day, so the crawler only sees what's posted so far", () => {
     const s = onDay(3);
     const late = marketPosts(s, content).filter((p) => p.day === 3);
