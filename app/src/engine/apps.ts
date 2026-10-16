@@ -286,8 +286,9 @@ export function buildApp(s: GameState, appId: string, requested: string[], level
 export interface FixCategory { id: string; description: string; kind: 'build' | 'problem' }
 
 const BREAK_CATEGORIES: Partial<Record<FailureKind, string>> = {
-  visible: 'The {{feature}} page crashes with an application error.',
-  failed_fetch: "The {{feature}} page doesn't load its data: failed to fetch (or it falls back to showing everything free).",
+  // the error the site shows is enough to name it: the player needn't know which page broke
+  visible: 'The {{feature}} page crashes: the site shows "Application error" (a client-side exception). Mentioning the application error, a crash or an exception on the app counts, without naming the page.',
+  failed_fetch: "The {{feature}} page doesn't load its data: failed to fetch (or it falls back to showing everything free). Mentioning the failed fetch, data not loading or everything showing as free counts, without naming the page.",
 };
 
 

@@ -294,6 +294,19 @@ describe("the first deploy", () => {
   });
 });
 
+describe('live breaks', () => {
+  it('a crash is described by the error the site shows, so "an application error on the app" can name it', async () => {
+    let { s, id } = withApp('restaurant_contact');
+    s = deploy(s, id);
+    getApp(s, id)!.breaks.push({ featureId: 'menu', failure: 'visible', day: s.values.day, scripted: false, seed: 1 });
+    const { jev, asked } = spy(pickJev({ route: ['fix'], features: ['::menu::visible'] }));
+    const out = (await promptAgent(s, content, jev, "There's an application error on the trattoria gino app")).state;
+    const item = asked.features[0].features.find((f) => f.id === `${id}::menu::visible`)!;
+    expect(item.description).toMatch(/"Application error".*without naming the page/);
+    expect(out.chat.at(-1)!.text).toMatch(/Pushed to Forkyard/);
+  });
+});
+
 describe('dev bug switch', () => {
   it('switches repo and live together, even when they differ', async () => {
     let { s, id } = withApp('restaurant_contact');
