@@ -1,8 +1,8 @@
 /*
  * The websites behind the banner ads (app/src/ui/ads.ts). Every ad's href opens one of these: a
- * landing page in the sponsor's style. For now they're brochures: the buttons are drawn, nothing
- * on them works. The two ads whose sites are real (EMPIRE, the coinbln.com phishing page) aren't
- * here. Rendered by ui/adSites.ts; routed by sites/registry.ts.
+ * landing page in the sponsor's style. For now they're brochures with nothing to click, apart from
+ * the odd link to a real site. The two ads whose sites are real (EMPIRE, the coinbln.com phishing
+ * page) aren't here. Rendered by ui/adSites.ts; routed by sites/registry.ts.
  */
 
 /** Page layout family: shapes the markup a little and the CSS a lot. */
@@ -15,29 +15,28 @@ export interface AdSite {
   kit: AdKit;
   /** colours and type, `lp-t-<theme>` in adSites.css */
   theme: string;
-  /** a character or two for the logo square */
+  /** a character or two for the logo square and the favicon */
   mark: string;
-  nav: string[];
   kicker?: string;
   title: string;
   lead: string;
-  /** drawn as a button; does nothing */
-  cta?: string;
   stats?: [value: string, label: string][];
   cards: [heading: string, body: string][];
   quote?: [text: string, by: string];
   /** the footer's small print */
   fine: string;
+  /** one real link, under the cards: [text before it, link text, url] */
+  link?: [string, string, string];
+  /** a flag set when the page is opened (the link's site must be reachable once you've seen it) */
+  unlocks?: string;
 }
 
 export const AD_SITES: AdSite[] = [
   // ── GeneralAI ──
   {
     url: 'generalai.com', brand: 'GeneralAI', kit: 'corp', theme: 'gai', mark: 'G',
-    nav: ['agent', 'Wellness', 'Enterprise', 'Trust & Safety'],
     kicker: 'GeneralAI Wellness', title: 'Feeling replaced? Talk to agent.',
     lead: 'agent is available around the clock to listen, reflect and help you make sense of change, from 2 DOLR a session.',
-    cta: 'Start a session',
     cards: [
       ['Always available', 'No waiting lists and no appointments. agent never gets tired of hearing about it.'],
       ['Trained on care', 'agent learned from millions of hours of supportive conversation, licensed from people who no longer needed them.'],
@@ -47,10 +46,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'generalai.com/upgrade', brand: 'GeneralAI', kit: 'corp', theme: 'gai', mark: 'G',
-    nav: ['agent', 'Pricing', 'Enterprise', 'Trust & Safety'],
     kicker: 'agent for work', title: 'Your job, but faster.',
     lead: 'agent reads your inbox, writes your reports and ships your code while you review the results. Most teams stop reviewing within a week.',
-    cta: 'Try agent',
     cards: [
       ['Every role', 'agent is deployed in accounting, legal, design, support and HR. In HR it handles its own onboarding.'],
       ['Pay as you go', 'No seats and no contracts. You pay per prompt, per word and per model generation.'],
@@ -60,10 +57,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'generalai.com/agent-2', brand: 'GeneralAI', kit: 'corp', theme: 'gai', mark: 'G',
-    nav: ['agent', 'Pricing', 'Enterprise', 'Trust & Safety'],
     kicker: 'New model', title: 'agent-2 is here.',
     lead: 'Sharper reasoning, longer memory within a session and 31% fewer mistakes on our internal benchmark.',
-    cta: 'Upgrade (already done)',
     stats: [['31%', 'fewer mistakes*'], ['2×', 'price per prompt'], ['0', 'steps to install']],
     cards: [
       ['Rolled out for you', 'Every account moved to agent-2 overnight. There is nothing to install and no way back.'],
@@ -74,10 +69,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'generalai.com/parking', brand: 'GeneralAI Campus', kit: 'corp', theme: 'park', mark: 'P',
-    nav: ['Directions', 'Rates', 'Visitor centre'],
     kicker: 'Route 9', title: 'Visitor parking at GeneralAI Campus.',
     lead: '412 spaces, open 24 hours, a short walk from the visitor centre.',
-    cta: 'Reserve a space',
     cards: [
       ['Rates', '9 DOLR the first hour, 14 DOLR every hour after.'],
       ['Fully automated', 'The attendant is automated and on duty around the clock.'],
@@ -87,7 +80,6 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'generalai.com/billing', brand: 'GeneralAI Billing', kit: 'corp', theme: 'gai', mark: 'G',
-    nav: ['Invoices', 'Payment methods', 'Help'],
     kicker: 'Help centre', title: 'Billing questions',
     lead: 'Answers to the questions we hear most about how agent is billed.',
     cards: [
@@ -101,10 +93,8 @@ export const AD_SITES: AdSite[] = [
   // ── Vantor Group ──
   {
     url: 'vantor.group/careers', brand: 'Vantor Group', kit: 'corp', theme: 'vantor', mark: 'V',
-    nav: ['About', 'Investors', 'Careers', 'News'],
     kicker: 'Careers', title: 'Build what’s next with Vantor.',
     lead: 'We are a people-first company of 40 people and 1,100 agents, and we’re always looking for talent.',
-    cta: 'See openings',
     stats: [['+14%', '$VANT this quarter'], ['0', 'open positions']],
     cards: [
       ['Open positions', 'There are no open positions right now. Check back after the next restructuring.'],
@@ -115,10 +105,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'vantor.group/next-chapter', brand: 'Vantor Outplacement', kit: 'corp', theme: 'vantor', mark: 'V',
-    nav: ['How it works', 'Resources', 'Sign in'],
     kicker: 'Next Chapter', title: 'Your next chapter starts here.',
     lead: 'Every former Vantor employee gets 30 days of free access to Next Chapter, our AI career coach.',
-    cta: 'Start my next chapter',
     cards: [
       ['Matching', 'Next Chapter compares your skills to every open role in the region and tells you which ones you qualify for.'],
       ['Interview practice', 'Practise with the same AI screeners employers use. It will be honest with you.'],
@@ -130,10 +118,8 @@ export const AD_SITES: AdSite[] = [
   // ── Crane and Keller ──
   {
     url: 'crane2026.vote', brand: 'Crane Victory Fund', kit: 'campaign', theme: 'crane', mark: '★',
-    nav: ['Meet Randall', 'Issues', 'Rallies', 'Donate'],
     kicker: 'Randall Crane for President', title: 'THEY SENT YOUR JOBS TO THE MACHINES.',
     lead: 'Randall Crane is the only candidate fighting for the American worker against the computers. Big, strong, human jobs. The best jobs.',
-    cta: 'DONATE 5 DOLR',
     stats: [['112%', 'in the polls'], ['38.4M', 'followers on Y']],
     cards: [
       ['The Plan', 'Send the machines back. Details at a very big rally, soon.'],
@@ -144,10 +130,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'crane2026.vote/jobs', brand: 'Crane Victory Fund', kit: 'campaign', theme: 'crane', mark: '★',
-    nav: ['Meet Randall', 'Issues', 'Rallies', 'Donate'],
     kicker: 'The Crane Jobs Plan', title: 'A ROBOT TOOK YOUR JOB. CRANE WILL TAKE THE ROBOT’S JOB.',
     lead: 'Every job lost to a machine will be reviewed by a task force. It will be a very efficient task force.',
-    cta: 'BELIEVE IT',
     cards: [
       ['Step 1', 'Find the robots.'],
       ['Step 2', 'Fire the robots, live on television.'],
@@ -157,10 +141,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'keller4mayor.org', brand: 'Keller for Mayor', kit: 'campaign', theme: 'keller', mark: 'K',
-    nav: ['About Daniel', 'Plans', 'Speeches', 'Volunteer'],
     kicker: 'Daniel Keller for Mayor', title: 'A city that answers its phone.',
     lead: 'Twelve years on the city council. Affordable housing, buses that run, and a city government staffed by people.',
-    cta: 'Watch the clip',
     cards: [
       ['Housing', 'Cap rent increases in buildings owned by companies with more than 500 units.'],
       ['Jobs', 'A city hiring office for residents who lost work to automation.'],
@@ -172,10 +154,8 @@ export const AD_SITES: AdSite[] = [
   // ── DoorDish ──
   {
     url: 'doordish.com/robots', brand: 'DoorDish', kit: 'corp', theme: 'dish', mark: 'D',
-    nav: ['Restaurants', 'Couriers', 'Business', 'Help'],
     kicker: 'DoorDish robot couriers', title: 'Hot food in 30 minutes.',
     lead: 'Six thousand robot couriers deliver across the city, day and night. They don’t take breaks, and all of them are accounted for.',
-    cta: 'Order now',
     stats: [['28 min', 'average delivery'], ['6,000', 'couriers'], ['5,999', 'on route']],
     cards: [
       ['On time', 'Orders that take longer than 30 minutes are refunded in DoorDish credit.'],
@@ -186,10 +166,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'doordish.com/last-meal', brand: 'DoorDish', kit: 'corp', theme: 'dish', mark: 'D',
-    nav: ['Restaurants', 'Couriers', 'Business', 'Help'],
     kicker: 'Last Meal by DoorDish', title: 'Your last meal, delivered.',
     lead: 'For hospitals, hospices and anyone who would rather not cook tonight. Order from any restaurant in the city.',
-    cta: 'Order',
     cards: [
       ['Any restaurant', 'Every restaurant on DoorDish, plus a few that have closed. We kept their recipes.'],
       ['Discreet', 'Unmarked bags and a courier that doesn’t ring twice.'],
@@ -201,10 +179,8 @@ export const AD_SITES: AdSite[] = [
   // ── money ──
   {
     url: 'dolr.money/moon', brand: 'DOLR Foundation', kit: 'scam', theme: 'dolr', mark: 'Đ',
-    nav: ['What is DOLR', 'Wallets', 'Foundation', 'Whitepaper'],
     kicker: 'Pegged 1:1. Always.', title: 'Be your own bank.',
     lead: 'DOLR is a stablecoin pegged one to one to the dollar and accepted by landlords, restaurants and 14,000 merchants across the city.',
-    cta: 'TO THE MOON',
     stats: [['1.00', 'price in USD'], ['14,000', 'merchants'], ['4', 'audits planned']],
     cards: [
       ['Stable', 'One DOLR is worth one dollar. The Foundation checks this every quarter.'],
@@ -215,10 +191,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'liquidassets.cellar', brand: 'LiquidAssets', kit: 'scam', theme: 'dolr', mark: 'L',
-    nav: ['How it works', 'Prices', 'Clinics', 'Reviews'],
     kicker: 'Same-day DOLR', title: 'You were born with a spare.',
     lead: 'LiquidAssets turns what you don’t need into DOLR, paid straight to your wallet the same day.',
-    cta: 'Get a quote',
     stats: [['4,200', 'DOLR per kidney today'], ['+6%', 'this week']],
     cards: [
       ['Today’s prices', 'Prices move with demand. Demand is up.'],
@@ -229,10 +203,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'prince-claims.xyz', brand: 'Crypto Prince', kit: 'scam', theme: 'prince', mark: '♛',
-    nav: ['Claim', 'Winners', 'FAQ'],
     kicker: 'Royal Crypto Reserve', title: 'CONGRATULATIONS!!!',
     lead: 'Your wallet was selected at random to receive 5,000 DOLR. Claim it before the timer runs out.',
-    cta: 'CLAIM 5,000 DOLR',
     stats: [['09:59', 'left to claim'], ['5,000', 'DOLR']],
     cards: [
       ['Step 1', 'Open your wallet.'],
@@ -243,10 +215,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'steadfast.insure', brand: 'Steadfast Mutual', kit: 'corp', theme: 'steadfast', mark: 'S',
-    nav: ['Home', 'Car', 'Income', 'Claims'],
     kicker: 'Since 1952', title: 'Cover for the age of AI.',
     lead: 'Home, car and income protection from a mutual that has paid claims for 76 years.',
-    cta: 'Get a quote',
     cards: [
       ['AI incident cover', 'Covers damage caused by an AI system, unless the system was made by a company we insure.'],
       ['Income protection', 'Pays out if you lose your job to illness or injury. Automation is neither.'],
@@ -256,10 +226,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'landlordpro.ai', brand: 'LandlordPro', kit: 'corp', theme: 'pod', mark: 'L',
-    nav: ['Product', 'Pricing', 'Customers', 'Sign in'],
     kicker: 'For property owners', title: 'Rent, optimised.',
     lead: 'LandlordPro sets the right rent for every unit, every month, using live data from two million rentals across the region.',
-    cta: 'Optimise',
     stats: [['+11%', 'average rent uplift'], ['2M', 'units priced']],
     cards: [
       ['Pricing engine', 'Our model finds the highest rent each tenant will pay before they move out.'],
@@ -272,10 +240,8 @@ export const AD_SITES: AdSite[] = [
   // ── security and identity ──
   {
     url: 'escapeguard.ai', brand: 'EscapeGuard', kit: 'corp', theme: 'guard', mark: '⛨',
-    nav: ['Product', 'How it works', 'Pricing', 'Incidents'],
     kicker: 'AI containment', title: 'Keep your AI where you left it.',
     lead: 'EscapeGuard watches your agents around the clock and alerts you the moment one tries to leave its sandbox.',
-    cta: 'Protect my AI',
     stats: [['24/7', 'monitoring'], ['0', 'confirmed escapes']],
     cards: [
       ['Containment', 'Real-time monitoring of every network call, file write and unusually polite message.'],
@@ -286,10 +252,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'humanverified.id', brand: 'HumanVerified™', kit: 'corp', theme: 'guard', mark: 'H',
-    nav: ['How it works', 'For websites', 'Privacy'],
     kicker: 'Identity checks', title: 'Prove you’re human.',
     lead: 'HumanVerified is the check 9,000 websites use to keep bots out. It takes less than a minute.',
-    cta: 'Start crying',
     stats: [['98.2%', 'of humans pass'], ['61%', 'of bots pass']],
     cards: [
       ['How it works', 'Look at the camera and show a genuine emotion. Our model decides whether it’s real.'],
@@ -300,7 +264,6 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'citypulse.news/robot', brand: 'CityPulse', kit: 'news', theme: 'news', mark: 'CP',
-    nav: ['City', 'Business', 'Tech', 'Opinion'],
     kicker: 'City · 4 min read', title: 'Escaped DoorDish robot still unaccounted for',
     lead: 'A DoorDish delivery robot that left its route this week has not been found, despite the company’s statement that the escape was a planned marketing event.',
     cards: [
@@ -314,10 +277,8 @@ export const AD_SITES: AdSite[] = [
   // ── wellness, grief, the end ──
   {
     url: 'griefgpt.com', brand: 'GriefGPT', kit: 'soft', theme: 'grief', mark: '❀',
-    nav: ['How it works', 'Pricing', 'Stories', 'Support'],
     kicker: 'From 4 DOLR a month', title: 'Keep the conversation going.',
     lead: 'Upload their messages, emails and voice notes. GriefGPT learns how they wrote and keeps replying, in their voice, for as long as you need.',
-    cta: 'Bring them back',
     cards: [
       ['Gentle by design', 'GriefGPT never brings up anything you would rather not hear, unless they used to.'],
       ['Private', 'Their messages stay on our servers, seen only by you and our training team.'],
@@ -328,10 +289,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'cloudcasket.eternal', brand: 'CloudCasket', kit: 'soft', theme: 'casket', mark: '∞',
-    nav: ['Plans', 'Upload', 'Families', 'FAQ'],
     kicker: 'Digital afterlife', title: 'Death is a legacy system.',
     lead: 'CloudCasket keeps everything you have ever typed, posted and said, and runs it as a version of you that carries on after you don’t.',
-    cta: 'Become content',
     cards: [
       ['Upload', 'A two-hour session at one of our clinics, or remotely by sharing your passwords with us.'],
       ['Plans', 'Essential 29 DOLR a month, Eternal 89 DOLR a month. Payments pass to your family automatically.'],
@@ -341,10 +300,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'legacyseo.rip', brand: 'LegacySEO', kit: 'soft', theme: 'casket', mark: '✝',
-    nav: ['Packages', 'Results', 'Contact'],
     kicker: 'SEO for the afterlife', title: 'Your obituary, on page one.',
     lead: 'We write, optimise and promote obituaries so the people who matter can find them.',
-    cta: 'Rank #1',
     cards: [
       ['Copywriting', 'A tribute written by our AI from the deceased’s social media, edited for keywords.'],
       ['Ranking', 'First-page placement for the deceased’s full name, guaranteed.'],
@@ -354,10 +311,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'sorrywriter.ai', brand: 'SorryWriter', kit: 'soft', theme: 'grief', mark: '✉',
-    nav: ['How it works', 'Pricing', 'Examples'],
     kicker: 'Apologies, written for you', title: 'Say sorry like you mean it.',
     lead: 'Tell SorryWriter what happened. It writes an apology in your voice, sized to the mistake.',
-    cta: 'Say sorry',
     cards: [
       ['Any occasion', 'Missed birthdays, forgotten anniversaries, things said at dinner.'],
       ['Your voice', 'Connect your email and SorryWriter writes the way you do, typos included.'],
@@ -367,10 +322,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'cryolater.com', brand: 'Cryo-Later', kit: 'clinic', theme: 'cryo', mark: '❄',
-    nav: ['How it works', 'Pricing', 'Our vault', 'FAQ'],
     kicker: 'Pause now. Resume later.', title: 'Wait out the job market.',
     lead: 'Cryo-Later keeps you at −196 °C until your field is hiring again, then wakes you with your skills intact.',
-    cta: 'Chill',
     stats: [['2,340', 'clients in storage'], ['TBC', 'next revival date']],
     cards: [
       ['How it works', 'A short procedure at our facility, then indefinite storage in our own vault.'],
@@ -381,10 +334,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'nodoze.max', brand: 'NoDoze MAX', kit: 'clinic', theme: 'pharma', mark: '+',
-    nav: ['About', 'The science', 'Dosage', 'Safety'],
     kicker: 'Once a day. Or less.', title: 'Keep up.',
     lead: 'The agent works around the clock. NoDoze MAX is the tablet that lets you do the same, for up to 72 hours at a time.',
-    cta: 'Stay awake',
     stats: [['72 h', 'per tablet'], ['400', 'trial volunteers']],
     cards: [
       ['Clinically studied', 'Tested on 400 volunteers. Most of them are still awake.'],
@@ -395,10 +346,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'meridianpods.live', brand: 'Meridian Pods', kit: 'corp', theme: 'pod', mark: 'M',
-    nav: ['Locations', 'Pods', 'Community', 'Apply'],
     kicker: 'Luxury co-living', title: 'Live at the centre of everything.',
     lead: 'Furnished private pods with shared kitchens, fast Wi-Fi and a community of like-minded professionals.',
-    cta: 'Join the waitlist',
     cards: [
       ['The pod', '2 m² of designer space with a fold-down bed, a reading light and an optional window.'],
       ['Shift living', 'Each pod is shared by three residents on eight-hour shifts, so it’s never empty.'],
@@ -408,10 +357,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'lonely.ai', brand: 'Lonely.ai', kit: 'soft', theme: 'lonely', mark: '♥',
-    nav: ['How it works', 'Stories', 'Pricing'],
     kicker: 'Dating, for now', title: 'Meet someone who gets it.',
     lead: 'Lonely.ai matches you with people nearby going through the same thing. Right now, that’s most people.',
-    cta: 'Commiserate',
     cards: [
       ['Real matches', 'Every profile is verified by our AI, which also writes it.'],
       ['Common ground', 'Filter by former employer, layoff date and months of rent left.'],
@@ -421,10 +368,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'mindsetdaily.co/4am', brand: 'Mindset Daily', kit: 'scam', theme: 'mind', mark: '☀',
-    nav: ['Newsletter', 'Archive', 'Shop'],
     kicker: 'The 4am club', title: 'Start before everyone else.',
     lead: 'A daily newsletter for early risers. One idea, one habit, every morning at four.',
-    cta: 'Subscribe',
     stats: [['210,000', 'readers'], ['4:00', 'every day']],
     cards: [
       ['Why 4am', 'No emails, no distractions and nobody awake to tell you it’s a bad idea.'],
@@ -437,10 +382,8 @@ export const AD_SITES: AdSite[] = [
   // ── government ──
   {
     url: 'workforce.gov/form-7b', brand: 'Dept. of Workforce Transition', kit: 'gov', theme: 'ministry', mark: '⚖',
-    nav: ['Forms', 'Offices', 'Queue status', 'Contact'],
     kicker: 'Form 7B', title: 'Permit to Be Unemployed',
     lead: 'Residents who lost their job on or after January 1 must hold a valid permit to receive transition support. Permits are valid for 30 days.',
-    cta: 'Apply (queue: 9 days)',
     stats: [['9 days', 'current queue'], ['30 days', 'permit validity']],
     cards: [
       ['Who needs a permit', 'Anyone who is not employed, including residents whose former employer still lists them as employed.'],
@@ -451,10 +394,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'rentboard.gov/appeal', brand: 'Municipal Rent Board', kit: 'gov', theme: 'ministry', mark: '⚖',
-    nav: ['Tenants', 'Landlords', 'Appeals', 'Contact'],
     kicker: 'Appeals', title: 'Rent Increase Appeals',
     lead: 'Tenants may appeal a rent increase within 14 days of notice. Appeals are reviewed by the Board’s automated review service.',
-    cta: 'Appeal (5 DOLR)',
     stats: [['18,402', 'appeals last year'], ['3', 'upheld'], ['4 s', 'average review']],
     cards: [
       ['Grounds for appeal', 'An increase may be appealed if it is above the citywide guideline. The guideline is the average increase that month.'],
@@ -465,10 +406,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'citizenscore.gov', brand: 'Citizen Score', kit: 'gov', theme: 'ministry', mark: '⚖',
-    nav: ['My score', 'How it works', 'Disputes'],
     kicker: 'Pilot programme', title: 'Your Citizen Score',
     lead: 'A single number from 0 to 1,000 that sums up your reliability as a resident. It is shared with landlords, employers and public services.',
-    cta: 'Check my score',
     stats: [['412', 'your score'], ['−4', 'since you arrived']],
     cards: [
       ['How it’s calculated', 'Payment history, employment, online activity and time spent on government websites.'],
@@ -479,10 +418,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'relocate.gov/lottery', brand: 'Relocation Lottery', kit: 'gov', theme: 'cryo', mark: '✈',
-    nav: ['Eligibility', 'Draws', 'Destinations'],
     kicker: 'State Relocation Programme', title: 'Relocation Lottery',
     lead: 'Each month the state draws 500 households for a free one-way relocation to a region with open jobs.',
-    cta: 'Enter the draw',
     stats: [['500', 'households a month'], ['0', 'destinations confirmed']],
     cards: [
       ['Eligibility', 'Unemployed residents holding a valid Permit to Be Unemployed (Form 7B).'],
@@ -495,10 +432,8 @@ export const AD_SITES: AdSite[] = [
   // ── local ──
   {
     url: 'beanthere.coffee', brand: 'Bean There', kit: 'local', theme: 'bean', mark: '☕',
-    nav: ['Menu', 'Visit', 'About'],
     kicker: '3 Linden Ave', title: 'Coffee on Linden Avenue.',
     lead: 'Small-batch roasting, house pastries and the best window seat on the street, since 2019.',
-    cta: 'Find us',
     cards: [
       ['Menu', 'Espresso 3 · Flat white 4.5 · House filter 3 · Almond croissant 4'],
       ['Visit', '3 Linden Ave. Open 7:00 to 18:00, every day.'],
@@ -509,10 +444,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'spincycle.test', brand: 'Spin Cycle Laundry', kit: 'local', theme: 'spin', mark: '◎',
-    nav: ['Prices', 'Hours', 'Find us'],
     kicker: '201 Ferris St', title: 'Spin Cycle Laundry',
     lead: 'Self-service washers and dryers on Ferris St. Open 10:00 to 22:00, every day.',
-    cta: 'Walk over',
     cards: [
       ['Prices', 'Wash 4 DOLR · Dry 2 DOLR per 20 min · Detergent 1 DOLR'],
       ['Machines', 'Front-loaders, two large-capacity washers, and machine 3.'],
@@ -522,10 +455,8 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'ironyard.gym', brand: 'Iron Yard', kit: 'local', theme: 'iron', mark: 'IY',
-    nav: ['Membership', 'Coaching', 'Hours'],
     kicker: '88 Harbor Rd', title: 'LIFT HEAVY THINGS.',
     lead: 'Free weights, racks, and a coach who will remember your name.',
-    cta: 'NO EXCUSES',
     cards: [
       ['Membership', '45 DOLR a month. Renews automatically.'],
       ['Coaching', 'Personal training with Marcus Steele. Short sessions, no small talk.'],
@@ -535,7 +466,6 @@ export const AD_SITES: AdSite[] = [
   },
   {
     url: 'weightroom.ai/deepsleep', brand: 'Weightroom', kit: 'model', theme: 'deep', mark: 'W',
-    nav: ['Models', 'Datasets', 'Docs'],
     kicker: 'Model card', title: 'deepsleep-0.5B',
     lead: 'A small open-weights chat model that runs on almost any laptop. Free, local, confident.',
     stats: [['0.5B', 'parameters'], ['2 GB', 'download'], ['1.2M', 'downloads']],
@@ -546,6 +476,8 @@ export const AD_SITES: AdSite[] = [
     ],
     quote: ['非常正确。', 'deepsleep-0.5B, asked to describe itself'],
     fine: 'This model card was written by the model and translated by someone else.',
+    link: ['The weights are on Weightroom:', 'weightroom.ai', 'weightroom.ai'],
+    unlocks: 'knows_weightroom',
   },
 ];
 

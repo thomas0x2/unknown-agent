@@ -51,8 +51,14 @@ describe('banner ads', () => {
       expect(html).toContain(`lp-t-${site.theme}`);
       expect(html.match(/class="lp-card"/g)).toHaveLength(3);
       expect(html).toContain('class="lp-fine"');
-      // nothing on it is clickable yet
-      expect(html).not.toMatch(/data-(nav|newtab|act|form)|<(a|button|input|form)\b/);
+      // no buttons; the only thing to click is an optional link to a site you can then reach
+      expect(html).not.toMatch(/data-(newtab|act|form)|<(button|input|form)\b/);
+      expect(html.match(/data-nav=/g) ?? []).toHaveLength(site.link ? 1 : 0);
+      if (site.link) {
+        const s = newGame();
+        if (site.unlocks) s.flags.push(site.unlocks);
+        expect(route(site.link[2], s).reachable, site.url).toBe(true);
+      }
     }
   });
 });
