@@ -313,7 +313,7 @@ document.addEventListener('submit', (e) => {
     if (!stars) { store.needStars(); return; }
     if (v) void store.review(biz, stars, v).then((r) => { if (r.posted !== false) clearField('review-text'); });
   } else if (kind === 'book-next') {
-    store.bookNext(val('#bk-name').trim(), val('#bk-email').trim(), Number(val('#bk-date')) || store.state.values.day);
+    store.bookNext(val('#bk-name').trim(), val('#bk-email').trim(), Number(val('input[name="bk-date"]:checked')) || store.state.values.day);
   } else if (kind === 'book') {
     store.book(f.dataset.app!, val('#bk-time').trim() || '19:00', Number(val('#bk-party')) || 2);
   } else if (kind === 'fy-search') {
