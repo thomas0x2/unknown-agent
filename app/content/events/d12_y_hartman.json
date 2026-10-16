@@ -1,0 +1,11 @@
+{
+  "id": "d12_y_hartman",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 12,
+    "dayMax": 12
+  },
+  "at": "11:30",
+  "body": "i get asked a lot what young people should study now. honestly i don't know. something you enjoy."
+}

@@ -1,0 +1,11 @@
+{
+  "id": "d6_y_hartman",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 6,
+    "dayMax": 6
+  },
+  "at": "11:15",
+  "body": "grateful for the kind words from @randall_crane. we work with leaders across the spectrum."
+}

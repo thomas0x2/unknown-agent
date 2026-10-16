@@ -1,0 +1,11 @@
+{
+  "id": "d13_y_hartman",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 13,
+    "dayMax": 13
+  },
+  "at": "16:10",
+  "body": "next week is going to be a big week for us. can't say more yet."
+}

@@ -1,0 +1,11 @@
+{
+  "id": "d14_y_hartman_2",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 14,
+    "dayMax": 14
+  },
+  "at": "19:10",
+  "body": "crazy day. thank you all for being patient with us."
+}

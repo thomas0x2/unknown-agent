@@ -1,0 +1,11 @@
+{
+  "id": "d4_y_hartman",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 4,
+    "dayMax": 4
+  },
+  "at": "10:05",
+  "body": "agent-2 is live for everyone today. it is our best model yet and it feels a little bit like magic. the new pricing reflects that."
+}
