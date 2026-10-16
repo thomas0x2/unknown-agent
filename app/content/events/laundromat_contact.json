@@ -8,7 +8,7 @@
   },
   "latent": true,
   "agentStart": {
-    "match": "\\b(spin ?cycle|laundr\\w*|laundromat|washers?|washing machines?|spincycle\\.test)\\b",
+    "when": "The player asks the agent to build an app, site or page for the Spin Cycle laundromat's machines, for example from its raw status feed (spincycle.test/feed).",
     "lead": "d2_y_laundromat"
   },
   "body": "A user app nobody hires you for: ask the agent to turn Spin Cycle's raw feed (spincycle.test/feed) into something readable.",

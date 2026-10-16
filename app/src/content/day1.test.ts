@@ -7,11 +7,11 @@ import { startGame, endDay } from '../engine/day';
 import { composeEmail, briefBuild, briefFix, deploy, promptAgent } from '../engine/actions';
 import { applyEffects } from '../engine/effects';
 import { appMeetsSpec, getApp, devToggleBug } from '../engine/apps';
-import { offlineJev } from '../engine/jev';
 
 /** Fix requests have to name the app. */
 const gino = 'Trattoria Gino: ';
 import { renderAppSite } from '../ui/appsite';
+import { wordJev, pickJev } from '../engine/_fixtures';
 
 const content = loadContent();
 const MENU = 'Margherita 12, Diavola 14, Lasagne 15, Tiramisu 7, Espresso 3';
@@ -37,7 +37,7 @@ describe('day 1 playthrough', () => {
     let s = startGame(content, 7);
 
     // email Gino to take the job -> creates the client app + drops the spec in the inbox
-    const c = await composeEmail(s, content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website with the menu and hours.');
+    const c = await composeEmail(s, content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website with the menu and hours.');
     expect(c.sent).toBe(true);
     s = c.state;
     const app = s.apps.find((a) => a.clientEventId === 'restaurant_contact');
@@ -45,7 +45,7 @@ describe('day 1 playthrough', () => {
     const appId = app!.id;
 
     // brief the agent to build landing + menu, spelling out the dishes
-    const b = await briefBuild(s, content, offlineJev, appId, `Build a landing page for Trattoria Gino with opening hours 17:00-22:00, and a menu page listing each dish with its price in DOLR: ${MENU}.`);
+    const b = await briefBuild(s, content, wordJev, appId, `Build a landing page for Trattoria Gino with opening hours 17:00-22:00, and a menu page listing each dish with its price in DOLR: ${MENU}.`);
     s = b.state;
     expect(b.requested.sort()).toEqual(['landing', 'menu']);
 
@@ -58,7 +58,7 @@ describe('day 1 playthrough', () => {
     s = deploy(s, appId);
     for (let i = 0; i < 6 && !appMeetsSpec(getApp(s, appId)!); i++) {
       const broken = getApp(s, appId)!.repo.find((f) => !f.correct)!;
-      s = (await briefFix(s, content, offlineJev, appId, FIX[broken.variant ?? ''] ?? `Rebuild the menu with exactly these dishes: ${MENU}.`)).state;
+      s = (await briefFix(s, content, wordJev, appId, FIX[broken.variant ?? ''] ?? `Rebuild the menu with exactly these dishes: ${MENU}.`)).state;
       s = deploy(s, appId);
     }
     expect(appMeetsSpec(getApp(s, appId)!)).toBe(true);
@@ -71,26 +71,26 @@ describe('day 1 playthrough', () => {
   });
 
   it('names the repo after the client', async () => {
-    const s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    const s = (await composeEmail(startGame(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
     const app = s.apps.find((a) => a.clientEventId === 'restaurant_contact')!;
     expect(app.id).toBe('trattoria-gino');
     expect(app.url).toBe('trattoria-gino.forkyard.app');
   });
 
   it('a build prompt without the dishes gets an invented menu, and a fix without them invents another', async () => {
-    let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
-    s = (await briefBuild(s, content, offlineJev, 'trattoria-gino', 'Build a landing page with the name and opening hours, and a menu page with prices in DOLR.')).state;
+    let s = (await composeEmail(startGame(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    s = (await briefBuild(s, content, wordJev, 'trattoria-gino', 'Build a landing page with the name and opening hours, and a menu page with prices in DOLR.')).state;
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')).toMatchObject({ correct: false, variant: 'hallucinated' });
     const v = getApp(s, 'trattoria-gino')!.repoVersion;
-    s = (await briefFix(s, content, offlineJev, 'trattoria-gino', 'The menu is wrong, fix it.')).state;
+    s = (await briefFix(s, content, wordJev, 'trattoria-gino', 'The menu is wrong, fix it.')).state;
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')).toMatchObject({ correct: false, variant: 'hallucinated' });
     expect(getApp(s, 'trattoria-gino')!.repoVersion).toBe(v + 1);
-    s = (await briefFix(s, content, offlineJev, 'trattoria-gino', `The menu should be exactly: ${MENU}.`)).state;
+    s = (await briefFix(s, content, wordJev, 'trattoria-gino', `The menu should be exactly: ${MENU}.`)).state;
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.variant).not.toBe('hallucinated');
   });
 
   it('in agent.chat, a fix prompt that names the bug fixes it; one that only says "menu" does not', async () => {
-    let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    let s = (await composeEmail(startGame(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
     const app = getApp(s, 'trattoria-gino')!;
     app.repo = [
       { id: 'landing', correct: true, params: app.specParams.landing },
@@ -98,14 +98,14 @@ describe('day 1 playthrough', () => {
     ];
     app.repoVersion = 1;
     s.values.agentLevel = 5; // the fix roll succeeds
-    const vague = (await promptAgent(s, content, offlineJev, gino + 'Please fix the menu page.')).state;
+    const vague = (await promptAgent(s, content, wordJev, gino + 'Please fix the menu page.')).state;
     expect(getApp(vague, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.variant).toBe('prices_curo');
-    const named = (await promptAgent(s, content, offlineJev, gino + 'The prices show CURO, they need to be DOLR.')).state;
+    const named = (await promptAgent(s, content, wordJev, gino + 'The prices show CURO, they need to be DOLR.')).state;
     expect(getApp(named, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);
   });
 
   it("Gino's menu change makes the built menu outdated until a prompt spells out the change", async () => {
-    let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    let s = (await composeEmail(startGame(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
     const app = getApp(s, 'trattoria-gino')!;
     app.repo = [{ id: 'landing', correct: true }, { id: 'menu', correct: true, params: app.specParams.menu }];
     app.repoVersion = 1;
@@ -113,9 +113,9 @@ describe('day 1 playthrough', () => {
     applyEffects(s, content.events.find((e) => e.id === 'd2_restaurant_booking')!.onDeliver!);
     expect(getApp(s, 'trattoria-gino')!.features.find((f) => f.id === 'menu')).toMatchObject({ correct: false, variant: 'outdated' });
     s.values.agentLevel = 5;
-    const vague = (await briefFix(s, content, offlineJev, 'trattoria-gino', 'Update the menu like Gino asked.')).state;
+    const vague = (await briefFix(s, content, wordJev, 'trattoria-gino', 'Update the menu like Gino asked.')).state;
     expect(getApp(vague, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.variant).toBe('outdated');
-    const done = (await briefFix(s, content, offlineJev, 'trattoria-gino', 'Menu: swap Diavola for Quattro Formaggi at 15, Espresso is now 3.5.')).state;
+    const done = (await briefFix(s, content, wordJev, 'trattoria-gino', 'Menu: swap Diavola for Quattro Formaggi at 15, Espresso is now 3.5.')).state;
     expect(getApp(done, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);
   });
 
@@ -128,12 +128,12 @@ describe('day 1 playthrough', () => {
       wrong_items: ['menu', 'Lasagne is missing and there is an invented dish'],
     };
     for (const [bug, [fid, ask]] of Object.entries(asks)) {
-      let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+      let s = (await composeEmail(startGame(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
       const app = getApp(s, 'trattoria-gino')!;
       app.repo = app.required.map((id) => (id === fid ? { id, correct: false, variant: bug, params: app.specParams[id], seed: 2 } : { id, correct: true, params: app.specParams[id] }));
       app.repoVersion = 1;
       s.values.agentLevel = 5;
-      s = (await promptAgent(s, content, offlineJev, gino + ask)).state;
+      s = (await promptAgent(s, content, pickJev({ features: [`::${fid}::${bug}`] }), gino + ask)).state;
       expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === fid)!.correct, bug).toBe(true);
       expect(s.chat.at(-1)!.src, bug).toBe('build');
       expect(s.chat.at(-1)!.text).not.toMatch(/check/i);
@@ -141,40 +141,40 @@ describe('day 1 playthrough', () => {
   });
 
   it('a missing landing page gets built from a request to show the restaurant name', async () => {
-    let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    let s = (await composeEmail(startGame(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
     const app = getApp(s, 'trattoria-gino')!;
     app.repo = [{ id: 'menu', correct: true, params: app.specParams.menu }];
     app.repoVersion = 1;
-    s = (await promptAgent(s, content, offlineJev, "The website needs to show it's for trattoria gino")).state;
+    s = (await promptAgent(s, content, pickJev({ features: ['::landing::feature'] }), "The website needs to show it's for trattoria gino")).state;
     expect(getApp(s, 'trattoria-gino')!.repo.some((f) => f.id === 'landing')).toBe(true);
   });
 
   it('a crashed page on the live site counts as a fix request, and the patch goes live on deploy', async () => {
-    let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    let s = (await composeEmail(startGame(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
     const app = getApp(s, 'trattoria-gino')!;
     app.repo = app.required.map((id) => ({ id, correct: true, params: app.specParams[id] }));
     app.repoVersion = 1;
     s = deploy(s, 'trattoria-gino');
     getApp(s, 'trattoria-gino')!.breaks.push({ featureId: 'menu', failure: 'failed_fetch', day: 1, seed: 0 });
     getApp(s, 'trattoria-gino')!.features.find((f) => f.id === 'menu')!.correct = false;
-    s = (await promptAgent(s, content, offlineJev, gino + 'The menu fails to load, it says failed to fetch')).state;
+    s = (await promptAgent(s, content, wordJev, gino + 'The menu fails to load, it says failed to fetch')).state;
     expect(s.chat.at(-1)!.src).toBe('build');
     s = deploy(s, 'trattoria-gino');
     expect(appMeetsSpec(getApp(s, 'trattoria-gino')!)).toBe(true);
   });
 
   it('a spec item the build prompt leaves out guarantees its mistake', async () => {
-    let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    let s = (await composeEmail(startGame(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
     s.values.agentLevel = 5;
-    s = (await briefBuild(s, content, offlineJev, 'trattoria-gino', `Landing page for Trattoria Gino with the opening hours, and a menu page: ${MENU}, prices in DOLR.`)).state;
+    s = (await briefBuild(s, content, wordJev, 'trattoria-gino', `Landing page for Trattoria Gino with the opening hours, and a menu page: ${MENU}, prices in DOLR.`)).state;
     const landing = getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')!;
     expect(landing).toMatchObject({ correct: false, variant: 'hours_wrong', checked: { name: true, hours: false } });
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.checked).toEqual({ dishes: true, prices: true, currency: true });
   });
   it('bugs stack: an invented menu still gets the wrong currency, and both missed landing items go wrong', async () => {
-    let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    let s = (await composeEmail(startGame(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
     s.values.agentLevel = 5;
-    s = (await briefBuild(s, content, offlineJev, 'trattoria-gino', 'Build a landing page and a menu page.')).state;
+    s = (await briefBuild(s, content, wordJev, 'trattoria-gino', 'Build a landing page and a menu page.')).state;
     const app = getApp(s, 'trattoria-gino')!;
     const menu = app.repo.find((f) => f.id === 'menu')!;
     expect(menu).toMatchObject({ correct: false, variant: 'hallucinated', also: ['prices_curo'] });
@@ -188,7 +188,7 @@ describe('day 1 playthrough', () => {
   });
 
   it('naming one of two stacked bugs fixes that one and leaves the other', async () => {
-    let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    let s = (await composeEmail(startGame(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
     const app = getApp(s, 'trattoria-gino')!;
     app.repo = [
       { id: 'landing', correct: false, variant: 'name_wrong', also: ['hours_wrong'], params: app.specParams.landing, seed: 1 },
@@ -196,16 +196,16 @@ describe('day 1 playthrough', () => {
     ];
     app.repoVersion = 1;
     s.values.agentLevel = 5;
-    s = (await promptAgent(s, content, offlineJev, gino + 'The opening hours on the homepage are wrong, they should be 17:00-22:00.')).state;
+    s = (await promptAgent(s, content, wordJev, gino + 'The opening hours on the homepage are wrong, they should be 17:00-22:00.')).state;
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')).toMatchObject({ correct: false, variant: 'name_wrong' });
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')!.also).toBeUndefined();
-    s = (await promptAgent(s, content, offlineJev, gino + 'The restaurant name is misspelled, it should say Trattoria Gino.')).state;
+    s = (await promptAgent(s, content, wordJev, gino + 'The restaurant name is misspelled, it should say Trattoria Gino.')).state;
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')!.correct).toBe(true);
   });
   it('dev mode switches bugs and breaks on and off on demand', async () => {
-    let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    let s = (await composeEmail(startGame(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
     s.values.agentLevel = 5;
-    s = (await briefBuild(s, content, offlineJev, 'trattoria-gino', `Landing page for Trattoria Gino, open 17:00-22:00, and a menu page: ${MENU}, prices in DOLR.`)).state;
+    s = (await briefBuild(s, content, wordJev, 'trattoria-gino', `Landing page for Trattoria Gino, open 17:00-22:00, and a menu page: ${MENU}, prices in DOLR.`)).state;
     const app = getApp(s, 'trattoria-gino')!;
     for (const f of app.repo) Object.assign(f, { correct: true, variant: undefined, also: undefined, params: app.specParams[f.id] });
     s = deploy(s, 'trattoria-gino');
@@ -224,61 +224,61 @@ describe('day 1 playthrough', () => {
     expect(a.breaks).toEqual([]);
   });
   it('a fixed bug stays fixed: later prompts and rolls never bring it back', async () => {
-    let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    let s = (await composeEmail(startGame(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
     s.values.agentLevel = 5;
     const lazy = 'Build a landing page and a menu page.';
-    s = (await briefBuild(s, content, offlineJev, 'trattoria-gino', lazy)).state;
+    s = (await briefBuild(s, content, wordJev, 'trattoria-gino', lazy)).state;
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')).toMatchObject({ variant: 'name_wrong', also: ['hours_wrong'] });
-    s = (await promptAgent(s, content, offlineJev, gino + 'The restaurant name is misspelled, it should say Trattoria Gino. And the opening hours should be 17:00-22:00.')).state;
-    s = (await promptAgent(s, content, offlineJev, gino + `The menu is invented. It should be: ${MENU}, prices in DOLR.`)).state;
+    s = (await promptAgent(s, content, wordJev, gino + 'The restaurant name is misspelled, it should say Trattoria Gino. And the opening hours should be 17:00-22:00.')).state;
+    s = (await promptAgent(s, content, wordJev, gino + `The menu is invented. It should be: ${MENU}, prices in DOLR.`)).state;
     const app = getApp(s, 'trattoria-gino')!;
     expect(app.repo.every((f) => f.correct)).toBe(true);
     expect(app.fixed).toMatchObject({ landing: expect.arrayContaining(['name_wrong', 'hours_wrong']), menu: expect.arrayContaining(['hallucinated', 'prices_curo']) });
     // the same lazy prompt again: no checklist mistakes, no invented menu
-    s = (await briefBuild(s, content, offlineJev, 'trattoria-gino', lazy)).state;
+    s = (await briefBuild(s, content, wordJev, 'trattoria-gino', lazy)).state;
     expect(getApp(s, 'trattoria-gino')!.repo.every((f) => f.correct)).toBe(true);
     // a weak agent whose every possible mistake was already fixed gets it right
     const a = getApp(s, 'trattoria-gino')!;
     a.fixed!.menu = ['hallucinated', 'prices_missing', 'prices_wrong', 'prices_curo', 'wrong_items'];
     s.values.agentLevel = 0;
-    for (let i = 0; i < 5; i++) s = (await briefBuild(s, content, offlineJev, 'trattoria-gino', `Menu page: ${MENU}, prices in DOLR.`)).state;
+    for (let i = 0; i < 5; i++) s = (await briefBuild(s, content, wordJev, 'trattoria-gino', `Menu page: ${MENU}, prices in DOLR.`)).state;
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);
   });
 
   it('deploying does not move the clock', async () => {
-    let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
-    s = (await briefBuild(s, content, offlineJev, 'trattoria-gino', 'Build a landing page and a menu page.')).state;
+    let s = (await composeEmail(startGame(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    s = (await briefBuild(s, content, wordJev, 'trattoria-gino', 'Build a landing page and a menu page.')).state;
     const t = s.clockMin;
     s = deploy(deploy(s, 'trattoria-gino'), 'trattoria-gino');
     expect(s.clockMin).toBe(t);
   });
   it('typos in dish names still count as the dishes', async () => {
-    let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    let s = (await composeEmail(startGame(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
     s.values.agentLevel = 5;
-    s = (await briefBuild(s, content, offlineJev, 'trattoria-gino', 'Build a landing page and a menu page.')).state;
+    s = (await briefBuild(s, content, wordJev, 'trattoria-gino', 'Build a landing page and a menu page.')).state;
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.variant).toBe('hallucinated');
-    s = (await promptAgent(s, content, offlineJev, gino + 'I need magherita for 12, diavola for 14, lasagna for 15, tiramisu for 7 and espresso for 3 in DOLR for the menu')).state;
+    s = (await promptAgent(s, content, wordJev, gino + 'I need magherita for 12, diavola for 14, lasagna for 15, tiramisu for 7 and espresso for 3 in DOLR for the menu')).state;
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')).toMatchObject({ correct: true });
   });
 
   it('details from earlier messages to the agent count for the next prompt', async () => {
-    let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    let s = (await composeEmail(startGame(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
     s.values.agentLevel = 5;
     s.chat.push({ from: 'you', text: `Gino sells ${MENU}, all in DOLR.`, day: s.values.day });
-    s = (await promptAgent(s, content, offlineJev, 'Build the menu page for Trattoria Gino.')).state;
+    s = (await promptAgent(s, content, wordJev, 'Build the menu page for Trattoria Gino.')).state;
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')).toMatchObject({ correct: true });
   });
   it('dishes without prices get the right dishes at wrong prices, and the prices fix it', async () => {
-    let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    let s = (await composeEmail(startGame(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
     s.values.agentLevel = 5;
-    s = (await briefBuild(s, content, offlineJev, 'trattoria-gino', 'Landing page for Trattoria Gino, open 17:00-22:00. Menu page with Margherita, Diavola, Lasagne, Tiramisu and Espresso, prices in DOLR.')).state;
+    s = (await briefBuild(s, content, wordJev, 'trattoria-gino', 'Landing page for Trattoria Gino, open 17:00-22:00. Menu page with Margherita, Diavola, Lasagne, Tiramisu and Espresso, prices in DOLR.')).state;
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')).toMatchObject({ correct: false, variant: 'prices_wrong', checked: { dishes: true, prices: false, currency: true } });
     s = deploy(s, 'trattoria-gino');
     const html = renderAppSite(getApp(s, 'trattoria-gino')!, content.apps.restaurant, 'menu');
     for (const d of ['Margherita', 'Diavola', 'Lasagne', 'Tiramisu', 'Espresso']) expect(html).toContain(d);
     expect(html).toMatch(/Margherita<\/span><i><\/i><b>\d+ DOLR/);
     expect(html).not.toContain('Margherita</span><i></i><b>12 DOLR');
-    s = (await promptAgent(s, content, offlineJev, gino + `The prices are wrong. It should be ${MENU}.`)).state;
+    s = (await promptAgent(s, content, wordJev, gino + `The prices are wrong. It should be ${MENU}.`)).state;
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);
   });
 });

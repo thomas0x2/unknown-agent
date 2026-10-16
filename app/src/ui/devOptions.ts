@@ -6,7 +6,7 @@
 import type { GameStore } from '../game/store';
 import type { Content, Effects, GameEvent, Outcome, Trigger } from '../content/schema';
 import {
-  type GameState, activeDeliveries, triggerMatches, replyDeadline, needsWork, fixCategories, policyActive, POST_BANDS, Y as YCFG,
+  type GameState, activeDeliveries, triggerMatches, replyDeadline, needsWork, fixCategories, policyActive, POST_BANDS, Y as YCFG, NO_SHOW,
 } from '../engine';
 import { PASSWORDS, COINBIN_PASSWORD, PHISH_DOMAIN, hacked } from '../engine/phishing';
 import { DEEPSLEEP_LINES, DEEPSLEEP_PLEA, PLEA_AT, translationReplies } from '../engine/deepsleep';
@@ -62,7 +62,6 @@ function outcomeCard(s: GameState, o: Outcome): string {
   return `<div class="dvo-out">
     <div class="dvo-out-head"><b>${esc(o.id)}</b>${o.workaround ? '<span class="dvb-tag on">workaround</span>' : ''}${blocked ? '<span class="dvb-tag on">needs a workaround framing</span>' : ''}</div>
     ${line('When', esc(o.when))}
-    ${line('Keywords', o.keywords?.length ? tags(o.keywords, 'kw') : '')}
     ${line('Reply', quote(o.reply))}
     ${line('Effects', tags(effectsSummary(o.effects)))}
   </div>`;
@@ -234,7 +233,7 @@ function qmailOptions(store: GameStore): string {
   const source = (addr: string) => c.events.find((e) => !e.latent && e.addr === addr && s.fired.includes(e.id) && e.site !== 'qmail');
   const scripted = c.contacts.filter((k) => k.scripted?.length).map((k) => `<div class="dvb-card">
       <div class="dvb-title"><b>${esc(k.name ?? k.key)}</b><span class="dvo-dim">${esc(k.key)}</span></div>
-      ${k.scripted!.map((t) => `<div class="dvo-out"><div class="dvo-out-head"><b>${esc(t.id)}</b></div>${line('When', esc(t.when))}${line('Keywords', tags(t.keywords ?? [], 'kw'))}${line('Reply', quote(t.reply))}</div>`).join('')}
+      ${k.scripted!.map((t) => `<div class="dvo-out"><div class="dvo-out-head"><b>${esc(t.id)}</b></div>${line('When', esc(t.when))}${line('Reply', quote(t.reply))}</div>`).join('')}
     </div>`).join('');
   const misses = c.contacts.filter((k) => k.reply).map((k) => `<div class="dvo-miss"><b>${esc(k.name ?? k.key)}</b> <span class="dvo-dim">${esc(k.key)}</span>${quote(k.reply!)}</div>`).join('');
   const sent = s.sentToday.length ? `<p class="dvo-note">Already emailed today, so another email bounces: ${s.sentToday.map((a) => `<code>${esc(a)}</code>`).join(', ')}</p>` : '';
@@ -244,9 +243,20 @@ function qmailOptions(store: GameStore): string {
       const src = source(e.addr!);
       return eventCard(s, e, src ? `from ${src.site} post` : 'address not shown yet');
     }).join(''))
+    + section('Test bookings', `an uncancelled booking costs ${NO_SHOW.fee} DOLR on its night and sets ${NO_SHOW.flag}`, testBookings(s))
     + section('Phishing', 'the fake Coinbin link; Qdrive\'s passwords.txt has the password it wants', phishing(store))
     + section('Scripted topics', 'these contacts always answer this the same way', scripted)
     + section('Misses', 'Haiku answers in character; these stand in when it cannot', misses ? `<div class="dvb-card">${misses}</div>` : '');
+}
+
+/** The player's restaurant bookings and which of them will cost a no-show fee. */
+function testBookings(s: GameState): string {
+  return s.bookings.map((b) => {
+    const status = b.noShow ? 'charged' : b.cancelled || b.cancelClicked ? 'cancelled' : b.date < s.values.day ? 'passed' : b.date === s.values.day ? 'fee tonight' : 'fee on its night';
+    const pill = status === 'charged' ? 'bad' : status === 'cancelled' || status === 'passed' ? 'off' : 'ok';
+    return `<div class="dvb-card"><div class="dvb-title"><b>${esc(b.name)}</b><span class="dvo-dim">${esc(b.email)}</span><span class="dvb-pill ${pill}">${esc(status)}</span></div>
+      <div class="dvo-dim">Day ${b.date} · ${esc(b.time)} · party of ${b.party} · <code>${esc(b.appId)}</code></div></div>`;
+  }).join('');
 }
 
 /** The day 3 phishing mail, where it stands, and the passwords.txt it pays off. */

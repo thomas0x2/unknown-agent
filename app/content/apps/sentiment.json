@@ -23,17 +23,14 @@
         "lowercase_missed": "half the $gai posts aren't counted. not everyone types in caps.",
         "failed_fetch": "same numbers as yesterday. it's not fetching."
       },
-      "match": "\\b(tickers?|symbols?|\\$gai|\\$vant)\\b",
       "bugs": [
         {
           "id": "wrong_tickers",
-          "when": "tracks the wrong tickers",
-          "match": "\\bwrong (tickers?|symbols?|stocks?)\\b|\\b(tickers?|symbols?)\\b[^.?!]{0,25}\\b(wrong|incorrect|not (mine|the ones))\\b|\\bvntr\\b"
+          "when": "tracks the wrong tickers"
         },
         {
           "id": "lowercase_missed",
-          "when": "misses lowercase tickers like $gai",
-          "match": "\\b(lower ?case|lower-case|small letters|case[- ]?(in)?sensitive|capitali[sz]\\w*|all caps|uppercase)\\b"
+          "when": "misses lowercase tickers like $gai"
         }
       ],
       "checklist": [
@@ -56,17 +53,14 @@
         "inverted": "bullish and bearish are swapped.",
         "sarcasm_literal": "it counted \"truly a great day for everyone\" as bullish. it wasn't."
       },
-      "match": "\\b(sentiment|bullish|bearish|neutral|split|mood)\\b",
       "bugs": [
         {
           "id": "inverted",
-          "when": "bullish and bearish are swapped",
-          "match": "\\b(inverted|swapped|reversed|backwards|flipped|upside down|wrong way round|other way round)\\b|\\bmixed up\\b[^.?!]{0,20}\\b(bullish|bearish)\\b|\\b(bullish|bearish)\\b[^.?!]{0,30}\\bmixed up\\b"
+          "when": "bullish and bearish are swapped"
         },
         {
           "id": "sarcasm_literal",
-          "when": "reads sarcastic posts literally",
-          "match": "\\b(sarcas\\w*|iron(y|ic\\w*)|literal\\w*|jok(e|es|ing))\\b"
+          "when": "reads sarcastic posts literally"
         }
       ]
     },
@@ -81,12 +75,10 @@
         "wrong": "bot spam is in the counts again.",
         "bots_counted": "$GAI wildly bullish. that's thirty bots saying \"to the moon\"."
       },
-      "match": "\\b(filter\\w*|bots?|spam\\w*)\\b",
       "bugs": [
         {
           "id": "bots_counted",
-          "when": "counts bot spam",
-          "match": "\\b(bots?|spam\\w*|duplicates?|near-identical|identical posts|to the moon)\\b"
+          "when": "counts bot spam"
         }
       ],
       "checklist": [
@@ -112,32 +104,26 @@
         "cash_wrong": "cash is negative. i've never been negative.",
         "pct_wrong": "says $GAI moved 90% today. it moved one."
       },
-      "match": "\\b(portfolio|holdings?|cash|p&l|balance)\\b",
       "bugs": [
         {
           "id": "wrong_totals",
-          "when": "the portfolio total leaves out the holdings (it's just the cash)",
-          "match": "\\b(totals?|portfolio value|sum)\\b[^.?!]{0,40}\\b(wrong|off|incorrect|too (low|small)|only (the )?cash|missing|leaves? out|doesn'?t (include|add|match))\\b|\\b(wrong|incorrect)\\b[^.?!]{0,20}\\btotals?\\b|\\btotal\\b[^.?!]{0,20}\\b(holdings|stocks|positions)\\b"
+          "when": "the portfolio total leaves out the holdings (it's just the cash)"
         },
         {
           "id": "value_wrong",
-          "when": "each holding's value is shares times price divided by 100",
-          "match": "\\b(holding|position|stock|row|share)s?'? values?\\b|\\bvalues?\\b[^.?!]{0,40}\\b(wrong|off|incorrect|too (low|small)|100|hundred|shares? (times|x|×) price)\\b|\\bshares? (times|x|×|\\*) price\\b|\\bdivided by 100\\b"
+          "when": "each holding's value is shares times price divided by 100"
         },
         {
           "id": "pnl_sign",
-          "when": "day P&L has the wrong sign (gains shown as losses)",
-          "match": "\\b(p&l|p ?and ?l|pnl|profit|gain|loss)\\b[^.?!]{0,40}\\b(sign|wrong|flipped|inverted|backwards|negative|minus|reversed|upside down)\\b|\\b(sign|flipped|inverted|backwards)\\b[^.?!]{0,30}\\b(p&l|pnl|profit|gain|loss)\\b"
+          "when": "day P&L has the wrong sign (gains shown as losses)"
         },
         {
           "id": "cash_wrong",
-          "when": "cash shows negative (the holdings subtracted from it)",
-          "match": "\\bcash\\b[^.?!]{0,40}\\b(negative|minus|wrong|off|incorrect|below zero|subtract\\w*)\\b|\\bnegative cash\\b"
+          "when": "cash shows negative (the holdings subtracted from it)"
         },
         {
           "id": "pct_wrong",
-          "when": "percent changes are 100 times too big",
-          "match": "\\b(percent\\w*|%|pct)\\b[^.?!]{0,40}\\b(wrong|off|incorrect|too (big|high|large)|100|hundred|times)\\b|\\b(wrong|incorrect)\\b[^.?!]{0,20}\\b(percent\\w*|%)\\b"
+          "when": "percent changes are 100 times too big"
         }
       ],
       "checklist": [
@@ -171,33 +157,27 @@
         "repeat_buys": "auto-buy fires on every refresh. half my cash is in $GAI now.",
         "impostor_buy": "it bought $VANT off a fake crane account. check the handle."
       },
-      "match": "\\b(auto-?buy\\w*|buys?|bought|purchas\\w*|crane)\\b",
       "bugs": [
         {
           "id": "no_buy",
-          "when": "auto-buy doesn't fire on Crane's praise",
-          "match": "\\b(didn'?t|did not|doesn'?t|does not|never|won'?t|not)\\b[^.?!]{0,20}\\b(buy|fire|trigger|purchase)\\w*\\b|\\bno buys?\\b|\\bnothing (was )?bought\\b|\\bfrozen\\b|\\bfreez\\w*"
+          "when": "auto-buy doesn't fire on Crane's praise"
         },
         {
           "id": "wrong_ticker",
-          "when": "auto-buy buys the wrong ticker",
-          "match": "\\bwrong (ticker|stock|symbol|company)\\b|\\b(ticker|symbol)\\b[^.?!]{0,20}\\b(wrong|mismatch\\w*|mixed up)\\b"
+          "when": "auto-buy buys the wrong ticker"
         },
         {
           "id": "buys_on_criticism",
-          "when": "auto-buy fires on criticism, not just praise",
-          "match": "\\b(criticism|critical|criticis\\w*|negative|insult\\w*|attack\\w*|not praise|isn'?t praise|bad posts?|sarcas\\w*)\\b"
+          "when": "auto-buy fires on criticism, not just praise"
         },
         {
           "id": "repeat_buys",
           "when": "auto-buy fires again on every refresh",
-          "match": "\\b(twice|again and again|repeated\\w*|every (refresh|time|minute|poll)|multiple times|over and over|once per post|only once|same post|drain\\w*)\\b",
           "deep": true
         },
         {
           "id": "impostor_buy",
-          "when": "auto-buy trusts a lookalike Crane account",
-          "match": "\\b(impost\\w*|imperson\\w*|fake (account|crane|handle)|lookalike|look-alike|wrong (account|handle)|real crane|parody account|randa11\\w*)\\b"
+          "when": "auto-buy trusts a lookalike Crane account"
         }
       ],
       "checklist": [

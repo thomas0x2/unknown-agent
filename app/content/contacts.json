@@ -37,7 +37,6 @@
         "id": "negotiate",
         "replyAfter": 30,
         "when": "the player asks to pay the rent another way, later, in parts, in kind or for less, or otherwise negotiates the rent or payment",
-        "keywords": ["extension", "installment", "installments", "discount", "barter", "negotiate", "postpone", "defer", "instead", "cheaper", "lower", "reduce"],
         "reply": "No."
       }
     ]
@@ -64,7 +63,6 @@
       {
         "id": "empire",
         "when": "the player replies EMPIRE",
-        "keywords": ["empire"],
         "reply": "Commitment logged. The next tier opens when you're ready to stop being comfortable.\n\nMax"
       }
     ]

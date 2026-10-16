@@ -5,6 +5,56 @@
 import type { Content, AppTemplate, GameEvent } from '../content/schema';
 import type { JevRouter, RouteDecision, PostRating } from './jev';
 
+const STOP = new Set(['the', 'a', 'an', 'to', 'of', 'and', 'or', 'is', 'it', 'i', 'you', 'my', 'me', 'for', 'on', 'in', 'that', 'this', 'with', 'be', 'do', 'please', 'can', 'could', 'would']);
+function words(text: string): Set<string> {
+  return new Set(
+    text.toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter((w) => w.length > 2 && !STOP.has(w)),
+  );
+}
+function overlap(a: Set<string>, b: Set<string>): number {
+  let n = 0;
+  for (const w of a) if (b.has(w)) n++;
+  return n;
+}
+
+/**
+ * A stand-in for Jev in tests: deterministic word overlap with each candidate's description. The game
+ * never uses it; it only lets tests drive the engine without the model.
+ */
+export const wordJev: JevRouter = {
+  async route(input) {
+    const t = words(input.text);
+    let best = { score: 0, id: '' };
+    for (const c of input.candidates) {
+      const score = overlap(t, words(c.when));
+      if (score > best.score) best = { score, id: c.id };
+    }
+    if (best.score >= 2) return { kind: 'outcome', outcomeId: best.id };
+    if (input.strict) return { kind: 'nothing' };
+    if (best.score === 1) {
+      return input.hints.length ? { kind: 'hint', hintIndex: 0 } : { kind: 'outcome', outcomeId: best.id };
+    }
+    return { kind: 'nothing' };
+  },
+  async ratePost(input) {
+    const t = words(input.text);
+    // trending entries are phrases ("AI layoffs"); a post hits a trend if it shares any word with one
+    const trend = new Set(input.trending.flatMap((x) => [...words(x)]));
+    const hitsTrend = [...t].some((w) => trend.has(w));
+    const dup = input.recentPosts.some((p) => words(p).size && overlap(words(p), t) >= Math.max(2, t.size - 1));
+    const quality = Math.max(0, Math.min(1, t.size / 12));
+    if (dup) return { category: 'spam', quality: 0.1 };
+    if (hitsTrend) return { category: 'reaction', quality: Math.max(0.4, quality) };
+    return { category: 'tip', quality };
+  },
+  async matchFeatures(input) {
+    const t = words(input.prompt);
+    // the "(for <app name>)" suffix only disambiguates for the real model; naming the app isn't asking for a feature
+    return input.features.filter((f) => overlap(t, words(f.description.replace(/\s*\(for [^)]*\)$/, ''))) >= 1).map((f) => f.id);
+  },
+};
+
+
 export const shopTemplate: AppTemplate = {
   id: 'shop',
   name: 'Shop',
@@ -114,5 +164,22 @@ export function fakeRouter(opts: {
     async ratePost(input) {
       return opts.rating ? opts.rating(input.text) : { category: 'tip', quality: 0.5 };
     },
+  };
+}
+
+/**
+ * A Jev that makes the decisions a test names: route picks the first candidate whose id is in
+ * `route` (else nothing), matchFeatures returns the ids ending in one of `features`.
+ */
+export function pickJev(pick: { route?: string[]; features?: string[] }): JevRouter {
+  return {
+    async route(input) {
+      const c = input.candidates.find((x) => pick.route?.includes(x.id));
+      return c ? { kind: 'outcome', outcomeId: c.id } : { kind: 'nothing' };
+    },
+    async matchFeatures(input) {
+      return input.features.map((f) => f.id).filter((id) => pick.features?.some((s) => id.endsWith(s)));
+    },
+    ratePost: wordJev.ratePost,
   };
 }

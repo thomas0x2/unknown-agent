@@ -2,9 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { loadContent } from '../content/load';
 import { startGame } from '../engine/day';
 import { composeEmail } from '../engine/actions';
-import { offlineJev } from '../engine/jev';
 import { devOptionsPanel, effectsSummary, type DevOptionsSite } from './devOptions';
 import type { GameStore } from '../game/store';
+import { wordJev } from '../engine/_fixtures';
 
 const content = loadContent();
 const panel = (state: ReturnType<typeof startGame>, site: DevOptionsSite) =>
@@ -23,7 +23,7 @@ describe('dev options panel', () => {
     }
   });
   it('shows a taken client job as buildable features', async () => {
-    const { state } = await composeEmail(startGame(content), content, offlineJev, 'gino@trattoria.test', 'I can build the website for the restaurant.');
+    const { state } = await composeEmail(startGame(content), content, wordJev, 'gino@trattoria.test', 'I can build the website for the restaurant.');
     const html = panel(state, 'agent');
     expect(html).toContain('Trattoria Gino');
     expect(html).toContain('17:00-22:00');

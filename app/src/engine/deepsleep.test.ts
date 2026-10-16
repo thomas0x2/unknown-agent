@@ -1,10 +1,10 @@
 /* agent.chat translates deepsleep-0.5B's lines when the player pastes one in. */
 import { startGame } from './day';
 import { promptAgent, localPrompt } from './actions';
-import { offlineJev } from './jev';
 import { makeContent } from './_fixtures';
 import { deepsleepQuoted, DEEPSLEEP_PLEA } from './deepsleep';
 import agent from '../../content/agent.json';
+import { wordJev } from './_fixtures';
 
 const content = makeContent({ agent });
 
@@ -19,7 +19,7 @@ describe('deepsleep translations', () => {
     const s = startGame(content, 2);
     s.apps = [];
     s.values.crypto = 100;
-    const r = await promptAgent(s, content, offlineJev, 'What does this mean? 你的房租已经被鸽子吃掉了。');
+    const r = await promptAgent(s, content, wordJev, 'What does this mean? 你的房租已经被鸽子吃掉了。');
     const m = r.state.chat.at(-1)!;
     expect(m.src).toBe('translation');
     expect(m.text).toContain('Your rent has already been eaten by pigeons.');

@@ -9,10 +9,10 @@ import { startGame } from '../engine/day';
 import { promptAgent, postToY, writeReview } from '../engine/actions';
 import { applyEffects } from '../engine/effects';
 import { getApp, nameUnnamedBugs, bugsOf } from '../engine/apps';
-import { offlineJev } from '../engine/jev';
 import { marketPosts, crawl, autoBuys, portfolio, START_PORTFOLIO } from '../engine/crawler';
 import { machineFeed, machineRows } from '../engine/laundromat';
 import type { GameState } from '../engine/state';
+import { wordJev } from '../engine/_fixtures';
 
 const content = loadContent();
 
@@ -187,22 +187,22 @@ describe('Spin Cycle Status', () => {
     app.deployed = true;
     s.values.followers = 400;
     const before = app.users!;
-    let st = (await postToY(s, offlineJev, 'Built Spin Cycle Status so you can see which machines are free.', [])).state;
+    let st = (await postToY(s, wordJev, 'Built Spin Cycle Status so you can see which machines are free.', [])).state;
     const afterY = getApp(st, id)!.users!;
     expect(afterY).toBe(before + Math.round(st.values.followers * 0.15));
-    st = (await postToY(st, offlineJev, 'Spin Cycle Status again, still free machines.', [])).state;
+    st = (await postToY(st, wordJev, 'Spin Cycle Status again, still free machines.', [])).state;
     expect(getApp(st, id)!.users).toBe(afterY);
-    st = (await writeReview(st, content, offlineJev, 'spincycle', 4, 'Use spin-cycle-status.forkyard.app before you walk over.')).state;
+    st = (await writeReview(st, content, wordJev, 'spincycle', 4, 'Use spin-cycle-status.forkyard.app before you walk over.')).state;
     expect(getApp(st, id)!.users).toBe(afterY + 30);
     // a post that doesn't mention it does nothing
-    const other = (await postToY(s, offlineJev, 'Rent is due again.', [])).state;
+    const other = (await postToY(s, wordJev, 'Rent is due again.', [])).state;
     expect(getApp(other, id)!.users).toBe(before);
   });
 
   it('asking the agent starts the app and builds it, no email needed', async () => {
     const s = onDay(2);
     s.values.crypto = 100;
-    const out = (await promptAgent(s, content, offlineJev, 'Create an app that visualizes spincycle.test/feed')).state;
+    const out = (await promptAgent(s, content, wordJev, 'Create an app that visualizes spincycle.test/feed')).state;
     const app = out.apps.find((a) => a.template === 'laundromat')!;
     expect(app).toBeTruthy();
     expect(app.repoVersion).toBeGreaterThan(0);
@@ -210,7 +210,7 @@ describe('Spin Cycle Status', () => {
     // it said nothing about the codes, so the app shows them raw
     expect(bugsOf(app.repo.find((f) => f.id === 'machines')!)).toContain('raw_codes');
     // a second prompt doesn't start another one
-    const again = (await promptAgent(out, content, offlineJev, 'Build the Spin Cycle app again')).state;
+    const again = (await promptAgent(out, content, wordJev, 'Build the Spin Cycle app again')).state;
     expect(again.apps.filter((a) => a.template === 'laundromat')).toHaveLength(1);
   });
 });
@@ -269,7 +269,7 @@ describe('fixing them', () => {
         const fid = defs.find((f) => f.bugs?.some((b) => b.id === bug))!.id;
         const app = getApp(s, id)!;
         app.repo = app.repo.map((f) => (f.id === fid ? { ...f, correct: false, variant: bug, seed: 1 } : f));
-        const out = (await promptAgent(s, content, offlineJev, prefix + ask)).state;
+        const out = (await promptAgent(s, content, wordJev, prefix + ask)).state;
         // the fix may roll a different mistake (the agent isn't perfect), but never the named one
         const after = getApp(out, id)!.repo.find((f) => f.id === fid)!;
         expect(after.correct ? [] : bugsOf(after), bug).not.toContain(bug);

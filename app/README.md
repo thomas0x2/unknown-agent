@@ -9,7 +9,7 @@ framework — a vanilla controller fills the same browser shell the legacy game 
 ```bash
 npm install
 npm run dev        # game at http://localhost:5173
-npm run proxy      # Jev backend on :8787 (optional; the game falls back to an offline router)
+npm run proxy      # Jev backend on :8787 (required: without it nothing the player writes is decided)
 npm test           # engine + content tests (vitest)
 npm run build
 ```
@@ -17,8 +17,9 @@ npm run build
 Copy `.env.example` to `.env` and set `TYPESAFE_API_KEY` to use Jev (TypeSafe System One). The key is
 read only by `server/jev-proxy.mjs`; the client talks to `/api/*`, never to TypeSafe directly.
 Run `npm run proxy` alongside `npm run dev`. The agent page shows "Story decisions: Jev" when it is
-connected, or "keyword matcher (Jev offline)" with the reason on hover; after a failed call the game
-retries the proxy every 30 seconds.
+connected, or "Jev offline" with the reason on hover. There is no keyword fallback: while Jev can't be
+reached, an action that needs it (a prompt, an email, a Y post, a review) does nothing, costs nothing,
+and a dialog says Jev is offline; the text goes back in its box. Every call tries the proxy again.
 
 Off-script replies (when Jev matches nothing) come from the **Misses** setting on agent.chat:  Claude
 Haiku (**Haiku (API)**, through `npm run proxy`) or **Scripted lines**.
@@ -30,8 +31,9 @@ subscription you're logged in to with Claude Code (use this for development only
 ## How the three models are wired
 
 - **Jev (TypeSafe)** categorizes everything the player writes — which outcome a reply/post/prompt
-  reaches, which app features a build prompt asked for, and how a Y post rates. It runs through the
-  backend proxy; offline, a deterministic keyword router stands in (`engine/jev.ts`).
+  reaches, which app features a build prompt asked for and whether it named the app, the day 7 policy
+  read, which app a post promotes, and how a Y post rates. It runs through the backend proxy. Tests
+  use stand-ins from `engine/_fixtures.ts`; the game itself never decides by keywords.
 - **Claude Haiku 5.5**, through the proxy, writes every off-script reply: a short roast for
   agent.chat prompts that drive nothing, and the people behind Qmail addresses, each in the voice of
   their profile in `content/characters.json`. Prompts that ask where to go ("how do I make money?")

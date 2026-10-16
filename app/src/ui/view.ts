@@ -296,6 +296,7 @@ function pageMail(store: GameStore, param?: string): string {
           <div class="qm-body">${linkify(br(r.body))}</div>
           ${r.link === 'cancel' && r.bookingId ? (s.bookings.find((b) => b.id === r.bookingId)?.cancelClicked
             ? `<p class="qm-actions"><b>Your booking has been cancelled.</b></p>`
+            : s.bookings.find((b) => b.id === r.bookingId)?.noShow ? `<p class="qm-actions"><b>This booking has passed.</b></p>`
             : `<p class="qm-actions"><button class="qm-btn ghost" data-cancel-booking="${esc(r.bookingId)}" data-cancel-url="${esc(`${r.addr.split('@')[1] ?? ''}/cancel-${r.bookingId}`)}">Cancel booking</button></p>`) : ''}
           ${r.generated ? `<p class="qm-gen">Reply written by ${esc(MISSES.label())}</p>` : ''}
         </details>`;
@@ -689,11 +690,19 @@ function pageApp(store: GameStore, param?: string): string {
     || (!!brk && breakVariant(brk, store.content.apps[a.template]?.features.find((f) => f.id === 'booking')) === 'past_dates');
   const firstBookable = pastBug ? 1 : s.values.day;
   const notice = s.bookingNotice?.appId === a.id ? `<p class="pv-note ${s.bookingNotice.ok ? 'ok' : 'bad'}">${esc(s.bookingNotice.text)}</p>` : '';
+  // after booking: what was entered, to check against the confirmation email
+  const booked = s.bookingNotice?.appId === a.id && s.bookingNotice.bookingId ? s.bookings.find((b) => b.id === s.bookingNotice!.bookingId) : undefined;
+  const summary = booked
+    ? `<dl class="pv-summary"><dt>Your booking</dt>
+        <dd><span>Name</span>${esc(booked.name)}</dd><dd><span>Email</span>${esc(booked.email)}</dd>
+        <dd><span>Date</span>${dateFull(booked.date)}</dd><dd><span>Time</span>${esc(booked.time)}</dd>
+        <dd><span>Party</span>${booked.party}</dd></dl>`
+    : '';
   // two steps, like the spec: who and when, then the time and party size
   const booking = a.template === 'restaurant' && a.features.some((f) => f.id === 'booking')
     ? bk.step === 1
       ? `<form class="pv-book" data-form="book-next" data-app="${esc(a.id)}"><h1>Book a table</h1>
-        <p class="pv-sub">Step 1 of 2. You'll get a confirmation by email.</p>${notice}
+        <p class="pv-sub">Step 1 of 2. You'll get a confirmation by email.</p>${notice}${summary}
         <label>Name <input id="bk-name" value="${esc(bk.name || PLAYER.name)}"></label>
         <label>Email <input id="bk-email" value="${esc(bk.email || PLAYER.addr)}"></label>
         <fieldset class="bk-cal"><legend>Date</legend>${bookingCalendar(s.values.day, firstBookable, bk.date || s.values.day + 1)}</fieldset>
@@ -704,7 +713,7 @@ function pageApp(store: GameStore, param?: string): string {
         <label>Party size <input id="bk-party" value="2" type="number" min="1" max="8"></label>
         <button class="pv-btn ghost" type="button" data-act="book-back">Back</button> <button class="pv-btn ok" type="submit">Book</button></form>`
     : undefined;
-  // the cancel link from a confirmation email: it always says it worked (with the bug, it didn't)
+  // the cancel link from a confirmation email
   const cancelled = sub?.startsWith('cancel-') ? s.bookings.find((b) => b.id === sub.slice(7) && b.appId === a.id) : undefined;
   const cancel = cancelled
     ? `<h1>Booking cancelled</h1><p class="pv-note ok">Your booking for ${cancelled.party} on ${dateFull(cancelled.date)} at ${esc(cancelled.time)} has been cancelled.</p><p class="pv-sub">We hope to see you another time.</p>`
@@ -728,7 +737,7 @@ export function costLine(s: GameState, text: string): { text: string; over: bool
 function jevChip(): string {
   if (JEV.mode === 'online') return `<span class="ua-llm-dot"></span>Story decisions: Jev`;
   if (JEV.mode === 'checking') return `<span class="ua-llm-dot off"></span>Story decisions: checking Jev…`;
-  return `<span class="ua-llm-dot off"></span><span title="${esc(JEV.reason)}">Story decisions: keyword matcher (Jev offline)</span>`;
+  return `<span class="ua-llm-dot off"></span><span title="${esc(JEV.reason)}">Story decisions: Jev offline, nothing gets decided until it's back</span>`;
 }
 function llmRow(): string {
   const st = MISSES.settings;
@@ -940,6 +949,10 @@ export function overlayHtml(store: GameStore): string {
     return osWindow('Session ended', 'ov-over', `<p class="ov-eyebrow">The end</p><h1 class="ov-title">${esc(ENDINGS[s.ending] ?? s.ending)}</h1>
       <p>${esc(EPITAPHS[s.ending] ?? 'The run is over.')} ${dateFull(s.values.day)}.</p>
       <div class="ov-actions"><button class="btn primary" data-ov="new">Play again</button></div>`);
+  }
+  if (store.ui.jevOffline) {
+    return osWindow('Jev is offline', 'ov-small ov-confirm', `<p>Jev decides what your messages do, and it can't be reached right now, so nothing was sent and nothing was charged.</p>
+      <p class="ov-dim">${esc(store.ui.jevOffline.reason)}</p><div class="ov-actions"><button class="btn primary" data-ov="jev-ok">OK</button></div>`, 'jev-ok');
   }
   if (store.ui.confirm) {
     const c = store.ui.confirm;

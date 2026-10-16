@@ -198,3 +198,7 @@ body.dev-on .fy-devcount { display: inline-block; }
 .as-s-list small { color: #7d8894; }
 .as-s-list p { margin: 3px 0 0; }
 .as-s-none { color: #7d8894; font-size: 13px; padding: 16px 0; }
+.as-r-book .pv-summary { margin: 0; padding: 10px 12px; border: 1px solid #d8cfc0; border-radius: 8px; font-size: 14px; display: grid; gap: 4px; }
+.as-r-book .pv-summary dt { font-weight: 600; margin-bottom: 2px; }
+.as-r-book .pv-summary dd { margin: 0; display: flex; gap: 8px; }
+.as-r-book .pv-summary dd span { width: 52px; color: #7a6e5e; }

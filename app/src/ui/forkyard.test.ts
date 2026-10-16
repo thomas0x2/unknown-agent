@@ -2,9 +2,10 @@
 import { describe, it, expect } from 'vitest';
 import { GameStore } from '../game/store';
 import { loadContent } from '../content/load';
-import { composeEmail, offlineJev, type JevRouter, type SaveStore, type Writer } from '../engine';
+import { composeEmail, type JevRouter, type SaveStore, type Writer } from '../engine';
 import { route } from '../sites/registry';
 import { page } from './view';
+import { wordJev } from '../engine/_fixtures';
 
 const mem: SaveStore = { load: () => null, save: () => {}, clear: () => {} } as unknown as SaveStore;
 
@@ -13,7 +14,7 @@ describe('Forkyard repos', () => {
     const content = loadContent();
     const store = new GameStore(content, {} as JevRouter, {} as Writer, mem);
     store.state.values.day = 2;
-    store.state = (await composeEmail(store.state, content, offlineJev, 'trader@desk.test', 'Hi, I can build your sentiment bot.')).state;
+    store.state = (await composeEmail(store.state, content, wordJev, 'trader@desk.test', 'Hi, I can build your sentiment bot.')).state;
     expect(store.state.apps.map((a) => a.id)).toEqual(['sentiment-crawler']);
     const html = (url: string) => page(store, route(url, store.state));
     expect(html('forkyard.com')).not.toContain('sentiment-crawler');

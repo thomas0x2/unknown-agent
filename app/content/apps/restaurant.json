@@ -27,13 +27,11 @@
       "bugs": [
         {
           "id": "hours_wrong",
-          "when": "opening hours {{hours}}",
-          "match": "\\bhours\\b|\\bopen(s|ing)? (at|from|until|till|daily|times?)\\b|\\bclos(e|es|ing) (at|times?)\\b|\\bwrong times?\\b|\\d{1,2}(:\\d\\d)?\\s*(-|–|to|until|till)\\s*\\d{1,2}"
+          "when": "opening hours {{hours}}"
         },
         {
           "id": "name_wrong",
-          "when": "misspelled restaurant name",
-          "match": "\\b(restaurant|site'?s?|website'?s?|wrong|correct|right|the|its|his) name\\b|\\bname\\b[^.?!]{0,20}\\b(wrong|misspel\\w*|typo|incorrect|spelled)\\b|\\b(misspel\\w*|typo)\\b|(show|say|display|read)s?\\b[^.?!]{0,30}{{name}}|{{name}}[^.?!]{0,20}\\b(not|instead)\\b"
+          "when": "misspelled restaurant name"
         }
       ],
       "checklist": [
@@ -48,7 +46,6 @@
           "bug": "hours_wrong"
         }
       ],
-      "match": "\\b(landing( page)?|home ?page|front ?page|main page|start page|opening hours|restaurant name)\\b",
       "complaints": {
         "missing": "There is no home page with our name and opening hours.",
         "name_wrong": "The site calls us \"{{shown}}\". It's {{expected}}. That name has been on the door since 1998.",
@@ -72,25 +69,21 @@
       "bugs": [
         {
           "id": "prices_missing",
-          "when": "prices missing next to the dishes",
-          "match": "\\b(no|missing|without|lacks?|lacking|add|show|forgot|forgotten)\\b[^.?!]{0,20}\\bprices?\\b|\\bprices?\\b[^.?!]{0,20}\\b(missing|gone|empty|blank|absent|not (shown|there|listed|showing|visible)|aren'?t (shown|there|listed|showing|visible)|disappeared)\\b"
+          "when": "prices missing next to the dishes"
         },
         {
           "id": "prices_curo",
-          "when": "prices in DOLR, not CURO",
-          "match": "\\b(curo|currency|currencies)\\b|\\bin dolr\\b|\\bdolr\\b[^.?!]{0,20}\\b(not|instead)\\b|\\bnot dolr\\b"
+          "when": "prices in DOLR, not CURO"
         },
         {
           "id": "prices_wrong",
           "when": "wrong prices on the menu, should be {{dishes}}",
-          "orDetails": true,
-          "match": "\\bprices?\\b[^.?!]{0,25}\\b(wrong|incorrect|off|too (high|low)|don'?t match|not right|made[ -]up|invented)\\b|\\b(wrong|incorrect|made[ -]up|invented)\\s+prices?\\b|\\b(costs?|prices?)\\s+(should|must|needs? to)\\s+be\\b|\\b({{dishes:words}})\\b[^.?!]{0,20}\\b(costs?|is|for|at)\\s+\\d"
+          "orDetails": true
         },
         {
           "id": "wrong_items",
           "when": "dishes or items missing, renamed or invented",
-          "orDetails": true,
-          "match": "\\b(missing|wrong|invented|made[ -]up|extra|renamed|misspel\\w*|unknown|fake|doesn'?t exist)\\b[^.?!]{0,20}\\b(dish(es)?|items?|pizzas?|food)\\b|\\b(dish(es)?|items?|pizzas?)\\b[^.?!]{0,25}\\b(missing|wrong|invented|made up|renamed|not on|isn'?t on|shouldn'?t be|doesn'?t exist|don'?t exist)\\b|\\b({{dishes:words}})\\b|\\bstill\\b[^.?!]{0,25}\\b(on|listed|there|shown)\\b|\\b(never|didn'?t|did not|not)\\s+(ask(ed)?|order(ed)?|want(ed)?)\\b|\\b(doesn'?t|don'?t) belong\\b|\\bshouldn'?t be (there|on)\\b"
+          "orDetails": true
         }
       ],
       "checklist": [
@@ -110,7 +103,6 @@
           "bug": "prices_curo"
         }
       ],
-      "match": "\\b(menu|dish(es)?|prices?|pizzas?)\\b",
       "complaints": {
         "missing": "There is no menu page.",
         "prices_missing": "The menu has no prices. People called to ask.",
@@ -136,11 +128,9 @@
         "visible"
       ],
       "deep": true,
-      "match": "\\b(booking( form| page| system)?s?|book(ing)? a table|reservations?|reserve a table|table booking)\\b",
       "complaints": {
         "missing": "There is still no way to book a table.",
         "no_email": "People book a table and then call me to ask if it worked. They get no email.",
-        "fake_cancel": "A guest cancelled with the link in the email, and the table was still held for them all evening.",
         "wrong_date": "A family came on the wrong day. The email told them a different day than they booked.",
         "wrong_time": "Two guests came an hour late. The time in their email was wrong.",
         "sent_to_restaurant": "I keep getting the booking confirmations. The guests get nothing.",
@@ -156,54 +146,40 @@
       "bugs": [
         {
           "id": "no_email",
-          "when": "no confirmation email arrives after booking",
-          "match": "\\b(no|never|didn'?t|did not|doesn'?t|does not|without( a)?|missing)\\b[^.?!]{0,30}\\b(confirmation|e-?mail|mail)\\b|\\b(confirmation|e-?mail|mail)s?\\b[^.?!]{0,30}\\b(never|doesn'?t|does not|didn'?t|isn'?t|not)\\s+(arrive|come|get sent|sent|show)"
-        },
-        {
-          "id": "fake_cancel",
-          "when": "the cancel link says cancelled but the booking stays",
-          "match": "\\bcancel\\w*\\b[^.?!]{0,40}\\b(doesn'?t|does not|didn'?t|did not|isn'?t|not|still|fake|broken|pretends?)\\b|\\b(doesn'?t|does not|didn'?t|did not|won'?t)\\s+(actually\\s+)?cancel\\b"
+          "when": "no confirmation email arrives after booking"
         },
         {
           "id": "wrong_date",
-          "when": "wrong date in the booking confirmation",
-          "match": "\\b(wrong|incorrect|different|off)\\b[^.?!]{0,20}\\b(date|day)\\b|\\b(date|day)\\b[^.?!]{0,20}\\b(wrong|incorrect|off by|is off|doesn'?t match)\\b"
+          "when": "wrong date in the booking confirmation"
         },
         {
           "id": "wrong_time",
-          "when": "wrong time in the booking confirmation",
-          "match": "\\b(wrong|incorrect|different)\\b[^.?!]{0,20}\\btime\\b|\\btime\\b[^.?!]{0,20}\\b(wrong|incorrect|off|shifted|doesn'?t match)\\b|\\b(am|pm|a\\.m\\.|p\\.m\\.|time ?zone)\\b"
+          "when": "wrong time in the booking confirmation"
         },
         {
           "id": "sent_to_restaurant",
-          "when": "the confirmation goes to the restaurant instead of the guest",
-          "match": "\\b(sent|goes|going|went|arrives?)\\b[^.?!]{0,30}\\b(restaurant|gino|owner)\\b|\\b(instead of|not to)\\b[^.?!]{0,10}\\b(the )?(guest|customer|me)\\b|\\bwrong (recipient|address|person)\\b"
+          "when": "the confirmation goes to the restaurant instead of the guest"
         },
         {
           "id": "party_wrong",
-          "when": "party size missing or wrong in the confirmation",
-          "match": "\\b(party|guests?|people|persons?|seats?|covers)\\b[^.?!]{0,25}\\b(size|count|number|missing|wrong|incorrect)\\b|\\b(wrong|missing|no)\\b[^.?!]{0,15}\\b(party|number of (guests|people))\\b"
+          "when": "party size missing or wrong in the confirmation"
         },
         {
           "id": "name_wrong_mail",
-          "when": "wrong restaurant name in the booking confirmation",
-          "match": "\\b(confirmation|e-?mail|mail)\\b[^.?!]{0,40}\\b(name|restaurant)\\b[^.?!]{0,20}\\b(wrong|incorrect|different|made[ -]up|invented)\\b|\\b(wrong|different|made[ -]up|invented|another)\\s+(restaurant|restaurant name)\\b"
+          "when": "wrong restaurant name in the booking confirmation"
         },
         {
           "id": "no_hours_check",
-          "when": "bookings accepted outside opening hours",
-          "match": "\\b(outside|after|before)\\b[^.?!]{0,20}\\b(opening hours|hours|open|closing)\\b|\\b(midnight|closed)\\b|\\b(accepts?|allows?|lets?)\\b[^.?!]{0,30}\\b(any time|anytime)\\b"
+          "when": "bookings accepted outside opening hours"
         },
         {
           "id": "past_dates",
-          "when": "bookings accepted for dates or times already in the past",
-          "match": "\\b(in the past|past (dates?|days?|times?)|yesterday|last (week|monday|tuesday|wednesday|thursday|friday|saturday|sunday)|already (gone|passed|over)|earlier today|before today)\\b|\\b(accepts?|allows?|lets?)\\b[^.?!]{0,30}\\b(any date|past|old dates?)\\b"
+          "when": "bookings accepted for dates or times already in the past"
         },
         {
           "id": "dead_button",
           "deep": true,
-          "when": "the book button does nothing on the second step",
-          "match": "\\b(book|submit|confirm)\\b[^.?!]{0,15}\\bbutton\\b[^.?!]{0,30}\\b(nothing|doesn'?t|does not|dead|broken|not working|won'?t)\\b|\\b(second|2nd|next) (step|page)\\b|\\bnothing happens\\b|\\bcan'?t (book|submit|finish)\\b"
+          "when": "the book button does nothing on the second step"
         }
       ],
       "checklist": [
@@ -211,11 +187,6 @@
           "id": "confirmation",
           "text": "confirmation email",
           "bug": "no_email"
-        },
-        {
-          "id": "cancel",
-          "text": "cancel link",
-          "bug": "fake_cancel"
         },
         {
           "id": "party",
@@ -236,7 +207,6 @@
         "subtle",
         "failed_fetch"
       ],
-      "match": "\\bdoor ?dish\\b",
       "complaints": {
         "missing": "We are still not on DoorDish.",
         "down": "The DoorDish listing doesn't load.",
