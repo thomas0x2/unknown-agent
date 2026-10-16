@@ -237,6 +237,31 @@ describe('Jev reads follow-ups in context', () => {
   });
 });
 
+describe('fixes never add bugs', () => {
+  it('naming the only bug fixes it outright, even for the weakest agent', async () => {
+    for (let seed = 0; seed < 20; seed++) {
+      const { s, id } = withApp('restaurant_contact');
+      s.rng = seed;
+      s.values.agentLevel = 0;
+      getApp(s, id)!.repo[0] = { id: 'landing', correct: false, variant: 'name_wrong', params: getApp(s, id)!.specParams.landing, seed: 1 };
+      const out = (await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::landing::name_wrong'] }), 'Trattoria Gino: the name is misspelled')).state;
+      expect(getApp(out, id)!.repo[0].correct).toBe(true);
+    }
+  });
+
+  it('an invented menu given the real dishes comes out right, with nothing new wrong', async () => {
+    for (let seed = 0; seed < 20; seed++) {
+      const { s, id } = withApp('restaurant_contact');
+      s.rng = seed;
+      s.values.agentLevel = 0;
+      const a = getApp(s, id)!;
+      a.repo = a.repo.map((f) => (f.id === 'menu' ? { id: 'menu', correct: false, variant: 'hallucinated', seed: 1 } : f));
+      const out = (await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::menu::wrong_items'] }), `Trattoria Gino: the menu dishes are made up. It should be ${a.specParams.menu.dishes}, prices in DOLR.`)).state;
+      expect(getApp(out, id)!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);
+    }
+  });
+});
+
 describe('dev bug switch', () => {
   it('switches repo and live together, even when they differ', async () => {
     let { s, id } = withApp('restaurant_contact');

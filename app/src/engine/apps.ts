@@ -196,9 +196,11 @@ function attempt(s: GameState, app: AppInstance, id: string, level: number, ctx:
   const said = ctx.prompt != null ? [ctx.context, ctx.prompt].filter(Boolean).join('\n') : undefined;
   const details = def && said != null ? detailValues(spec, def) : [];
   const hasDetails = !details.length || promptHasDetails(said ?? '', details);
-  if (existing && !existing.correct && existing.variant && ctx.prompt != null && existing.variant !== 'hallucinated') {
-    // with no details given, an invented feature is just invented again, so it skips this and rebuilds
+  // a fix only removes the bugs it addresses; it never adds new ones (bugs come from building and overnight breaks)
+  if (existing && !existing.correct && existing.variant && ctx.prompt != null) {
     const isAddressed = (v: string) => {
+      // an invented feature needs the real details, from this prompt or an earlier one
+      if (v === 'hallucinated') return details.length > 0 && hasDetails;
       const bug = def?.bugs?.find((b) => b.id === v);
       // spelling the details out again fixes it, including the checklist items tied to this bug (the prices)
       const spelled = !!bug?.orDetails && details.length > 0 && hasDetails
@@ -210,9 +212,8 @@ function attempt(s: GameState, app: AppInstance, id: string, level: number, ctx:
     const left = all.filter((v) => !isAddressed(v));
     if (left.length === all.length) { report.vague.push(id); return { ...existing }; }
     // the named bugs are fixed; the ones nobody mentioned stay
-    if (left.length) return { ...existing, ...withBugs(left) };
-    // the agent already has the details from the repo; only an invented feature needed them again
-    return roll(s, id, level, spec, def, fixedOf(app, id));
+    if (left.length) return { ...existing, ...(left.includes('outdated') ? {} : { params: spec }), ...withBugs(left) };
+    return { id, correct: true, params: spec };
   }
   const checked = said != null ? specChecklist(app, def, said) : undefined;
   // every spec item the build prompt never mentioned guarantees its mistake, whatever the roll
