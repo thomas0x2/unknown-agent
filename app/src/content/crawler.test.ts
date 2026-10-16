@@ -34,9 +34,10 @@ describe('stock posts on Y', () => {
     const posts = marketPosts(onDay(2), content);
     expect(posts.filter((p) => p.bot && p.day === 2)).toHaveLength(30);
     expect(new Set(posts.filter((p) => p.bot).map((p) => p.handle)).size).toBe(30);
-    expect(posts.some((p) => p.decoy === 'NOVA' && p.text.startsWith('Saw Nova live'))).toBe(true);
+    expect(posts.some((p) => p.decoy === 'VANT' && !p.text.includes('$'))).toBe(true);
+    expect(posts.some((p) => /nova/i.test(p.text))).toBe(false);
     const all = marketPosts(onDay(21), content);
-    for (let d = 1; d <= 21; d++) expect(all.filter((p) => p.day === d && !p.bot).length, `day ${d}`).toBeGreaterThanOrEqual(3);
+    for (let d = 1; d <= 21; d++) expect(all.filter((p) => p.day === d && !p.bot).length, `day ${d}`).toBeGreaterThanOrEqual(2);
   });
 });
 
@@ -46,19 +47,19 @@ describe('sentiment crawler', () => {
   it('built right: today, $-tagged, no bots, sarcasm read as bearish, real top posts', () => {
     const r = crawl(posts, 2, bugs());
     expect(row(r, 'GAI')).toMatchObject({ count: 3, bullish: 67, bearish: 33, neutral: 0 });
-    expect(row(r, 'VANT')).toMatchObject({ count: 3, bullish: 67, neutral: 33 });
-    expect(row(r, 'NOVA')).toMatchObject({ count: 2, bearish: 50, neutral: 50 });
+    expect(row(r, 'VANT')).toMatchObject({ count: 4, bullish: 50, neutral: 25, bearish: 25 });
+    expect(r.map((x) => x.ticker)).toEqual(['GAI', 'VANT']);
     expect(row(r, 'VANT').top[0].handle).toBe('brentk_capital');
   });
 
   it('each bug shows up in the numbers', () => {
-    expect(row(crawl(posts, 2, bugs('bots_counted')), 'NOVA').count).toBe(32);
-    expect(row(crawl(posts, 2, bugs('band_counted')), 'NOVA').count).toBe(3);
-    expect(row(crawl(posts, 2, bugs('sarcasm_literal')), 'NOVA').bullish).toBe(50);
+    expect(row(crawl(posts, 2, bugs('bots_counted')), 'GAI').count).toBe(33);
+    expect(row(crawl(posts, 2, bugs('untagged_counted')), 'VANT').count).toBe(5);
+    expect(row(crawl(posts, 2, bugs('sarcasm_literal')), 'VANT').bullish).toBe(75);
     expect(row(crawl(posts, 2, bugs('inverted')), 'GAI')).toMatchObject({ bullish: 33, bearish: 67 });
     expect(row(crawl(posts, 2, bugs('lowercase_missed')), 'GAI').count).toBe(2);
     expect(row(crawl(posts, 2, bugs('wrong_window')), 'GAI').count).toBe(6);
-    expect(crawl(posts, 2, bugs('wrong_tickers')).map((r) => r.ticker)).toContain('NOVO');
+    expect(crawl(posts, 2, bugs('wrong_tickers')).map((r) => r.ticker)).toContain('VNTR');
     const handles = new Set(posts.map((p) => p.handle));
     expect(row(crawl(posts, 2, bugs('hallucinated_posts')), 'GAI').top.every((p) => !handles.has(p.handle))).toBe(true);
   });
@@ -69,11 +70,12 @@ describe('sentiment crawler', () => {
     expect(ok.map((b) => [b.day, b.ticker])).toEqual([[6, 'GAI']]);
     expect(autoBuys(all, 6, bugs('no_buy'))).toHaveLength(0);
     expect(autoBuys(all, 6, bugs('wrong_ticker'))[0].ticker).not.toBe('GAI');
-    expect(autoBuys(all, 6, bugs('buys_on_criticism')).map((b) => b.ticker)).toContain('VANT');
-    expect(autoBuys(all, 6, bugs('impostor_buy')).map((b) => b.ticker)).toContain('NOVA');
+    expect(autoBuys(all, 6, bugs('buys_on_criticism')).map((b) => [b.ticker, b.post.crane])).toContainEqual(['VANT', 'criticism']);
+    expect(autoBuys(all, 6, bugs('impostor_buy')).map((b) => [b.ticker, b.post.handle])).toContainEqual(['VANT', 'randa11_crane']);
     expect(autoBuys(all, 6, bugs('repeat_buys')).length).toBeGreaterThan(1);
     expect(portfolio(ok, 6, bugs()).holdings.find((h) => h.ticker === 'GAI')!.shares).toBeGreaterThan(START_PORTFOLIO.holdings.GAI);
     expect(portfolio(ok, 6, bugs('stale_after_buy')).holdings.find((h) => h.ticker === 'GAI')!.shares).toBe(START_PORTFOLIO.holdings.GAI);
+    expect(portfolio(ok, 6, bugs('change_wrong')).change).not.toBeCloseTo(portfolio(ok, 6, bugs()).change);
     expect(portfolio(ok, 6, bugs('wrong_totals')).total).toBeGreaterThan(portfolio(ok, 6, bugs()).total);
   });
 });
@@ -128,10 +130,11 @@ const ASKS: Record<string, [string, string, Record<string, string>]> = {
     inverted: 'Bullish and bearish are swapped in the sentiment split.',
     sarcasm_literal: 'The sentiment reads sarcastic posts literally.',
     bots_counted: 'It counts bot spam.',
-    band_counted: 'It counts posts about the band Nova that have no $ tag.',
+    untagged_counted: 'It counts posts that only mention Vantor without the $ tag.',
     hallucinated_posts: "The top posts are made up, those accounts don't exist.",
     wrong_totals: 'The portfolio totals are wrong.',
     stale_after_buy: "The portfolio doesn't update after a buy.",
+    change_wrong: "Today's change in the portfolio is wrong, it shows the change since the start.",
     no_buy: "Auto-buy didn't buy when Crane praised $GAI.",
     wrong_ticker: 'Auto-buy bought the wrong ticker.',
     buys_on_criticism: 'Auto-buy fires on criticism, not just praise.',

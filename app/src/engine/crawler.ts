@@ -49,9 +49,9 @@ export function marketPosts(s: GameState, content: Content): MarketPost[] {
   return out;
 }
 
-export const TRACKED = ['GAI', 'VANT', 'NOVA'];
+export const TRACKED = ['GAI', 'VANT'];
 /** The list the agent tracks when it gets the tickers wrong. */
-const WRONG_TRACKED = ['GAI', 'VANT', 'NOVO'];
+const WRONG_TRACKED = ['GAI', 'VNTR'];
 
 export interface TopPost { author: string; handle: string; text: string; likes: number }
 export interface TickerSummary { ticker: string; count: number; bullish: number; bearish: number; neutral: number; top: TopPost[] }
@@ -68,11 +68,6 @@ const INVENTED: Record<string, TopPost[]> = {
     { author: 'Dividend King', handle: 'dividend_king_real', text: '$VANT is the safest stock of the decade.', likes: 6400 },
     { author: 'MarketPulse', handle: 'marketpulse_live', text: '$VANT to acquire General AI, sources say.', likes: 5100 },
   ],
-  NOVA: [
-    { author: 'Nova Bull', handle: 'nova_bull_official', text: '$NOVA is about to announce a breakthrough. Trust me.', likes: 15800 },
-    { author: 'ChartGuru', handle: 'chartguru_pro', text: '$NOVA forming a perfect cup and handle.', likes: 4300 },
-    { author: 'Retail Army', handle: 'retail_army_hq', text: 'Everyone is buying $NOVA today.', likes: 3900 },
-  ],
 };
 
 const tagged = (p: MarketPost, t: string, bugs: Set<string>) =>
@@ -84,7 +79,7 @@ export function crawl(posts: MarketPost[], day: number, bugs: Set<string>): Tick
   const inWindow = posts.filter((p) => p.day === day || (bugs.has('wrong_window') && p.day === day - 1));
   const kept = inWindow.filter((p) => (!p.bot || bugs.has('bots_counted')));
   return tracked.map((t) => {
-    const mine = kept.filter((p) => tagged(p, t, bugs) || (bugs.has('band_counted') && p.decoy === t));
+    const mine = kept.filter((p) => tagged(p, t, bugs) || (bugs.has('untagged_counted') && p.decoy === t));
     const tally = { bullish: 0, bearish: 0, neutral: 0 };
     for (const p of mine) {
       let m: Mood = bugs.has('sarcasm_literal') && p.literal ? p.literal : p.mood;
@@ -92,7 +87,7 @@ export function crawl(posts: MarketPost[], day: number, bugs: Set<string>): Tick
       tally[m]++;
     }
     const pct = (n: number) => (mine.length ? Math.round((n / mine.length) * 100) : 0);
-    const top = bugs.has('hallucinated_posts') ? (INVENTED[t] ?? INVENTED.NOVA)
+    const top = bugs.has('hallucinated_posts') ? (INVENTED[t] ?? INVENTED.GAI)
       : mine.slice().sort((a, b) => b.likes - a.likes).slice(0, 3).map(({ author, handle, text, likes }) => ({ author, handle, text, likes }));
     return { ticker: t, count: mine.length, bullish: pct(tally.bullish), bearish: pct(tally.bearish), neutral: pct(tally.neutral), top };
   });
@@ -100,8 +95,8 @@ export function crawl(posts: MarketPost[], day: number, bugs: Set<string>): Tick
 
 // ── portfolio and auto-buy (the trader's day 3 update) ──
 
-const BASE_PRICE: Record<string, number> = { GAI: 140, VANT: 48, NOVA: 12 };
-export const START_PORTFOLIO = { cash: 2000, holdings: { GAI: 10, VANT: 20, NOVA: 50 } as Record<string, number> };
+const BASE_PRICE: Record<string, number> = { GAI: 140, VANT: 48 };
+export const START_PORTFOLIO = { cash: 2000, holdings: { GAI: 12, VANT: 30 } as Record<string, number> };
 const BUY_SHARES = 5;
 
 /** A ticker's closing price on a day: a small deterministic walk, so today's change is never zero. */
@@ -146,7 +141,8 @@ export function portfolio(buys: Buy[], day: number, bugs: Set<string>): Portfoli
   if (!bugs.has('stale_after_buy')) for (const b of buys) { held[b.ticker] = (held[b.ticker] ?? 0) + b.shares; cash -= b.shares * b.price; }
   const holdings = Object.entries(held).map(([ticker, shares]) => ({ ticker, shares, price: price(ticker, day), value: shares * price(ticker, day) }));
   const stocks = holdings.reduce((a, h) => a + h.value, 0);
-  const change = holdings.reduce((a, h) => a + h.shares * (h.price - price(h.ticker, day - 1)), 0);
+  // today's change; the bug shows the change since the account was opened (day 1 prices)
+  const change = holdings.reduce((a, h) => a + h.shares * (h.price - price(h.ticker, bugs.has('change_wrong') ? 1 : day - 1)), 0);
   // the classic: cash added to the total twice
   const total = stocks + cash * (bugs.has('wrong_totals') ? 2 : 1);
   return { cash, holdings, total, change };

@@ -10,13 +10,13 @@
   "features": [
     {
       "id": "tickers",
-      "description": "track the exact stock tickers the trader listed",
+      "description": "track the exact stock tickers the trader listed ($GAI and $VANT)",
       "failures": [
         "subtle",
         "failed_fetch"
       ],
       "complaints": {
-        "missing": "it isn't tracking my tickers. $GAI, $VANT, $NOVA. that was the whole spec.",
+        "missing": "it isn't tracking my tickers. $GAI and $VANT. that was the whole spec.",
         "down": "the ticker view won't load. a bot that freezes on a trading day is bad luck.",
         "wrong": "it's tracking the wrong tickers. i gave you the list.",
         "wrong_tickers": "it's tracking the wrong tickers. i gave you the list.",
@@ -24,12 +24,12 @@
         "wrong_window": "the counts include yesterday's posts. i asked for today.",
         "failed_fetch": "the dashboard shows the same numbers as yesterday. it's not fetching anything."
       },
-      "match": "\\b(tickers?|symbols?|\\$gai|\\$vant|\\$nova)\\b",
+      "match": "\\b(tickers?|symbols?|\\$gai|\\$vant)\\b",
       "bugs": [
         {
           "id": "wrong_tickers",
           "when": "tracks the wrong tickers",
-          "match": "\\bwrong (tickers?|symbols?|stocks?)\\b|\\b(tickers?|symbols?)\\b[^.?!]{0,25}\\b(wrong|incorrect|not (mine|the ones))\\b|\\bnovo\\b"
+          "match": "\\bwrong (tickers?|symbols?|stocks?)\\b|\\b(tickers?|symbols?)\\b[^.?!]{0,25}\\b(wrong|incorrect|not (mine|the ones))\\b|\\bvntr\\b"
         },
         {
           "id": "lowercase_missed",
@@ -45,7 +45,7 @@
       "checklist": [
         {
           "id": "tickers",
-          "text": "$GAI $VANT $NOVA",
+          "text": "$GAI $VANT",
           "bug": "wrong_tickers"
         },
         {
@@ -65,7 +65,7 @@
         "missing": "there's no bullish/bearish/neutral split.",
         "wrong": "the bullish/bearish split is nonsense. it counted a post calling $VANT a corpse as bullish.",
         "inverted": "bullish and bearish are the wrong way round. $GAI is apparently collapsing on a day it went up.",
-        "sarcasm_literal": "it counted \"truly the investment of a lifetime\" as bullish. it wasn't."
+        "sarcasm_literal": "it counted \"truly a great day for everyone\" as bullish. it wasn't."
       },
       "match": "\\b(sentiment|bullish|bearish|neutral|split|mood)\\b",
       "bugs": [
@@ -90,10 +90,10 @@
       "complaints": {
         "missing": "it counts everything, bots included.",
         "wrong": "bot spam and random mentions are in the counts again. only $-tagged posts.",
-        "bots_counted": "$NOVA shows as the most bullish stock on Y. that's thirty bots saying \"to the moon\".",
-        "band_counted": "it's counting posts about a band called Nova. only $-tagged posts."
+        "bots_counted": "$GAI shows as wildly bullish. that's thirty bots saying \"to the moon\".",
+        "untagged_counted": "it's counting posts that just mention vantor. only $-tagged posts."
       },
-      "match": "\\b(filter\\w*|bots?|spam\\w*|band|\\$-?tag\\w*|non-?ticker)\\b",
+      "match": "\\b(filter\\w*|bots?|spam\\w*|\\$-?tag\\w*|non-?ticker|untagged)\\b",
       "bugs": [
         {
           "id": "bots_counted",
@@ -101,9 +101,9 @@
           "match": "\\b(bots?|spam\\w*|duplicates?|near-identical|identical posts|to the moon)\\b"
         },
         {
-          "id": "band_counted",
-          "when": "counts mentions without a $ tag, like the band Nova",
-          "match": "\\b(band|concert|music|non-?ticker|not (a )?ticker|untagged|without (a |the )?\\$|\\$-?tag\\w*|dollar sign)\\b"
+          "id": "untagged_counted",
+          "when": "counts mentions without a $ tag",
+          "match": "\\b(non-?ticker|not (a )?ticker|untagged|without (a |the )?\\$|\\$-?tag\\w*|dollar sign|just mention\\w*|name mentions?)\\b"
         }
       ],
       "checklist": [
@@ -115,7 +115,7 @@
         {
           "id": "tagged",
           "text": "tagged",
-          "bug": "band_counted"
+          "bug": "untagged_counted"
         }
       ]
     },
@@ -150,15 +150,16 @@
     },
     {
       "id": "portfolio",
-      "description": "a portfolio view of holdings, cash and today's change",
+      "description": "a portfolio view of the trader's holdings, cash and today's change",
       "failures": [
         "subtle"
       ],
       "complaints": {
-        "missing": "no portfolio view yet.",
+        "missing": "there's no portfolio view. i asked for one.",
         "wrong": "the portfolio numbers don't match my account.",
         "wrong_totals": "the portfolio numbers don't match my account.",
-        "stale_after_buy": "the bot bought something and the portfolio doesn't show it."
+        "stale_after_buy": "the bot bought something and the portfolio doesn't show it.",
+        "change_wrong": "the portfolio says i'm up hundreds today. i'm not. that's since i opened the account."
       },
       "match": "\\b(portfolio|holdings?|cash|p&l|balance)\\b",
       "bugs": [
@@ -171,6 +172,11 @@
           "id": "stale_after_buy",
           "when": "portfolio doesn't update after a buy",
           "match": "\\b(doesn'?t|does not|didn'?t|never|not)\\b[^.?!]{0,20}\\b(updat|refresh|show|includ)\\w*\\b[^.?!]{0,30}\\b(buys?|bought|purchases?)\\b|\\bafter (a |the )?(buy|purchase)\\b"
+        },
+        {
+          "id": "change_wrong",
+          "when": "today's change is wrong (shows the change since the start)",
+          "match": "\\b(today'?s?|daily|day'?s?) (change|gain|loss|p&l|move)\\b[^.?!]{0,30}\\b(wrong|off|incorrect|since|total)\\b|\\bchange\\b[^.?!]{0,20}\\b(wrong|incorrect|since (the )?(start|beginning))\\b"
         }
       ],
       "checklist": [
@@ -178,6 +184,11 @@
           "id": "cash",
           "text": "cash",
           "bug": "wrong_totals"
+        },
+        {
+          "id": "change",
+          "text": "change",
+          "bug": "change_wrong"
         }
       ]
     },
@@ -197,7 +208,7 @@
         "wrong_ticker": "crane praised $GAI and the bot bought $VANT.",
         "buys_on_criticism": "it bought $VANT because crane called vantor disgraceful. that's not praise.",
         "repeat_buys": "auto-buy fired again on every refresh. most of my cash is in $GAI now.",
-        "impostor_buy": "it bought $NOVA because of a fake crane account. check the handle."
+        "impostor_buy": "it bought $VANT because of a fake crane account. check the handle."
       },
       "match": "\\b(auto-?buy\\w*|buys?|bought|purchas\\w*|crane)\\b",
       "bugs": [

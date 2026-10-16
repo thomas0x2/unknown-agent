@@ -168,6 +168,12 @@ function qmailBadge(store: GameStore): number {
   return mailRows(store).filter((r) => r.folder === 'inbox' && r.unread).length;
 }
 
+/** The stock posts the crawler reads: only ones on the Y timeline right now, so the player can check every number. */
+function crawlable(store: GameStore) {
+  const onY = new Set(yPosts(store).map((p) => p.id));
+  return marketPosts(store.state, store.content).filter((p) => onY.has(p.id));
+}
+
 // ── Spin Cycle's raw machine feed: the ground truth for the laundromat app ──
 function pageSpinFeed(store: GameStore, param?: string): string {
   const m = param?.match(/^feed(?:\/(\d+))?$/);
@@ -643,7 +649,7 @@ function pageApp(store: GameStore, param?: string): string {
     ? `<h1>Booking cancelled</h1><p class="pv-note ok">Your booking for ${cancelled.party} on ${dateFull(cancelled.date)} at ${esc(cancelled.time)} has been cancelled.</p><p class="pv-sub">We hope to see you another time.</p>`
     : undefined;
   const tmpl = store.content.apps[a.template];
-  return `<div class="pv-host">${renderAppSite(a, tmpl, cancel ? 'cancel' : sub, { booking, cancel, day: s.values.day, market: marketPosts(s, store.content) })}</div>`;
+  return `<div class="pv-host">${renderAppSite(a, tmpl, cancel ? 'cancel' : sub, { booking, cancel, day: s.values.day, market: crawlable(store) })}</div>`;
 }
 
 // ── agent chat (free-promptable, with costs) ──

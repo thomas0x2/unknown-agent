@@ -3,7 +3,7 @@
   "site": "qmail",
   "from": "deskjockey",
   "addr": "trader@desk.test",
-  "subject": "Two more things",
+  "subject": "One more thing",
   "trigger": {
     "dayMin": 3,
     "flagsAll": [
@@ -16,13 +16,10 @@
       "client": "trader_contact",
       "add": [
         {
-          "id": "portfolio"
-        },
-        {
           "id": "auto_buy"
         }
       ]
     }
   },
-  "body": "Add a portfolio view (holdings, cash, today's change). And an auto-buy: when candidate Randall Crane posts genuine praise about a company, buy that stock — once per post, right ticker, not on sarcasm. Just make sure it actually fires when he posts; I've been burned by bots that freeze."
+  "body": "One more thing. An auto-buy: when candidate Randall Crane posts genuine praise about a company, buy that stock — once per post, right ticker, not on sarcasm. Just make sure it actually fires when he posts; I've been burned by bots that freeze."
 }

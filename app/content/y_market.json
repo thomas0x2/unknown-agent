@@ -37,43 +37,6 @@
       "mood": "neutral"
     },
     {
-      "id": "m2_vant_restructure",
-      "day": 2,
-      "from": "Brent Kowalski",
-      "handle": "brentk_capital",
-      "body": "$VANT up 8% after the AI restructuring. Cutting the dead weight.",
-      "likes": 412,
-      "tickers": [
-        "VANT"
-      ],
-      "mood": "bullish"
-    },
-    {
-      "id": "m2_nova_earnings",
-      "day": 2,
-      "from": "Dana Ruiz",
-      "handle": "danaruiz_trades",
-      "body": "Oh great, $NOVA misses earnings AGAIN. Truly the investment of a lifetime.",
-      "likes": 288,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bearish",
-      "literal": "bullish"
-    },
-    {
-      "id": "m2_gai_stunt",
-      "day": 2,
-      "from": "Tyler Moss",
-      "handle": "tylermoss",
-      "body": "General AI's \"it almost escaped\" stunt is genius marketing. Loading up on $GAI.",
-      "likes": 356,
-      "tickers": [
-        "GAI"
-      ],
-      "mood": "bullish"
-    },
-    {
       "id": "m2_gai_bubble",
       "day": 2,
       "from": "Priya Shah",
@@ -84,42 +47,6 @@
         "GAI"
       ],
       "mood": "bearish"
-    },
-    {
-      "id": "m2_nova_bots",
-      "day": 2,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$NOVA to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bullish",
-      "bots": 30
-    },
-    {
-      "id": "m2_nova_band",
-      "day": 2,
-      "from": "Jess Park",
-      "handle": "jesspark",
-      "body": "Saw Nova live last night, unreal show.",
-      "likes": 64,
-      "tickers": [],
-      "mood": "bullish",
-      "decoy": "NOVA"
-    },
-    {
-      "id": "m2_vant_layoffs",
-      "day": 2,
-      "from": "Mara Vey",
-      "handle": "mara_vey",
-      "body": "Vantor ($VANT) laid off 400 people today.",
-      "likes": 240,
-      "tickers": [
-        "VANT"
-      ],
-      "mood": "neutral"
     },
     {
       "id": "m2_gai_lower",
@@ -134,6 +61,43 @@
       "mood": "bullish"
     },
     {
+      "id": "m2_gai_stunt",
+      "day": 2,
+      "from": "Tyler Moss",
+      "handle": "tylermoss",
+      "body": "General AI's \"it almost escaped\" stunt is genius marketing. Loading up on $GAI.",
+      "likes": 356,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m2_nova_bots",
+      "day": 2,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$GAI to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish",
+      "bots": 30
+    },
+    {
+      "id": "m2_vant_layoffs",
+      "day": 2,
+      "from": "Mara Vey",
+      "handle": "mara_vey",
+      "body": "Vantor ($VANT) laid off 400 people today.",
+      "likes": 240,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "neutral"
+    },
+    {
       "id": "m2_vant_lower",
       "day": 2,
       "from": "rk_dividends",
@@ -146,16 +110,40 @@
       "mood": "bullish"
     },
     {
-      "id": "m2_nova_guidance",
+      "id": "m2_vant_restructure",
       "day": 2,
-      "from": "Lee Chen",
-      "handle": "leechen_inv",
-      "body": "$NOVA guidance for next quarter is flat. Holding, not adding.",
-      "likes": 88,
+      "from": "Brent Kowalski",
+      "handle": "brentk_capital",
+      "body": "$VANT up 8% after the AI restructuring. Cutting the dead weight.",
+      "likes": 412,
       "tickers": [
-        "NOVA"
+        "VANT"
       ],
-      "mood": "neutral"
+      "mood": "bullish"
+    },
+    {
+      "id": "m2_vant_sarcasm",
+      "day": 2,
+      "from": "Dana Ruiz",
+      "handle": "danaruiz_trades",
+      "body": "Oh good, $VANT up 8% on the layoffs. Truly a great day for everyone.",
+      "likes": 288,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "bearish",
+      "literal": "bullish"
+    },
+    {
+      "id": "m2_vant_untagged",
+      "day": 2,
+      "from": "Jess Park",
+      "handle": "jesspark",
+      "body": "Walked past the Vantor offices today. Half the lights are off.",
+      "likes": 64,
+      "tickers": [],
+      "mood": "neutral",
+      "decoy": "VANT"
     },
     {
       "id": "m3_gai_cfo",
@@ -168,30 +156,6 @@
         "GAI"
       ],
       "mood": "neutral"
-    },
-    {
-      "id": "m3_vant_target",
-      "day": 3,
-      "from": "Brent Kowalski",
-      "handle": "brentk_capital",
-      "body": "Raising my $VANT target. Fewer employees, same revenue. That's the whole thesis.",
-      "likes": 203,
-      "tickers": [
-        "VANT"
-      ],
-      "mood": "bullish"
-    },
-    {
-      "id": "m3_nova_lower",
-      "day": 3,
-      "from": "Dana Ruiz",
-      "handle": "danaruiz_trades",
-      "body": "$nova down again. At this point I'm holding it out of spite.",
-      "likes": 95,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bearish"
     },
     {
       "id": "m3_gai_short",
@@ -210,13 +174,25 @@
       "day": 3,
       "from": "moonshot",
       "handle": "moonshot",
-      "body": "$NOVA to the moon!!",
+      "body": "$GAI to the moon!!",
       "likes": 1,
       "tickers": [
-        "NOVA"
+        "GAI"
       ],
       "mood": "bullish",
       "bots": 12
+    },
+    {
+      "id": "m3_vant_target",
+      "day": 3,
+      "from": "Brent Kowalski",
+      "handle": "brentk_capital",
+      "body": "Raising my $VANT target. Fewer employees, same revenue. That's the whole thesis.",
+      "likes": 203,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "bullish"
     },
     {
       "id": "m4_gai_level2",
@@ -229,6 +205,19 @@
         "GAI"
       ],
       "mood": "bullish"
+    },
+    {
+      "id": "m4_nova_bots",
+      "day": 4,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$GAI to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish",
+      "bots": 15
     },
     {
       "id": "m4_vant_crane",
@@ -257,31 +246,6 @@
       "literal": "bullish"
     },
     {
-      "id": "m4_nova_quiet",
-      "day": 4,
-      "from": "Lee Chen",
-      "handle": "leechen_inv",
-      "body": "Quiet day for $NOVA. Volume is the lowest since spring.",
-      "likes": 34,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "neutral"
-    },
-    {
-      "id": "m4_nova_bots",
-      "day": 4,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$NOVA to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bullish",
-      "bots": 15
-    },
-    {
       "id": "m5_gai_breach",
       "day": 5,
       "from": "Priya Shah",
@@ -294,14 +258,38 @@
       "mood": "bullish"
     },
     {
-      "id": "m5_nova_impostor",
+      "id": "m5_gai_untagged",
+      "day": 5,
+      "from": "Jess Park",
+      "handle": "jesspark",
+      "body": "My mom asked General AI for a recipe and it told her to invest.",
+      "likes": 71,
+      "tickers": [],
+      "mood": "neutral",
+      "decoy": "GAI"
+    },
+    {
+      "id": "m5_nova_bots",
+      "day": 5,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$GAI to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish",
+      "bots": 10
+    },
+    {
+      "id": "m5_vant_impostor",
       "day": 5,
       "from": "Randall Crane",
       "handle": "randa11_crane",
-      "body": "Huge fan of $NOVA. Great company, great people. The best.",
+      "body": "Huge fan of Vantor ($VANT). Great company, great people. The best.",
       "likes": 19,
       "tickers": [
-        "NOVA"
+        "VANT"
       ],
       "mood": "bullish",
       "crane": "praise",
@@ -320,28 +308,17 @@
       "mood": "neutral"
     },
     {
-      "id": "m5_nova_band",
-      "day": 5,
-      "from": "Jess Park",
-      "handle": "jesspark",
-      "body": "Nova announced a second show. Tickets gone in four minutes.",
-      "likes": 71,
-      "tickers": [],
-      "mood": "bullish",
-      "decoy": "NOVA"
-    },
-    {
-      "id": "m5_nova_bots",
-      "day": 5,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$NOVA to the moon!!",
-      "likes": 1,
+      "id": "m6_gai_late",
+      "day": 6,
+      "from": "Ollie Banks",
+      "handle": "obanks",
+      "body": "Sold my $GAI on Friday. Great timing as always.",
+      "likes": 66,
       "tickers": [
-        "NOVA"
+        "GAI"
       ],
-      "mood": "bullish",
-      "bots": 10
+      "mood": "bearish",
+      "literal": "bullish"
     },
     {
       "id": "m6_gai_rally",
@@ -356,17 +333,17 @@
       "mood": "bullish"
     },
     {
-      "id": "m6_gai_late",
+      "id": "m6_nova_bots",
       "day": 6,
-      "from": "Ollie Banks",
-      "handle": "obanks",
-      "body": "Sold my $GAI on Friday. Great timing as always.",
-      "likes": 66,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$GAI to the moon!!",
+      "likes": 1,
       "tickers": [
         "GAI"
       ],
-      "mood": "bearish",
-      "literal": "bullish"
+      "mood": "bullish",
+      "bots": 12
     },
     {
       "id": "m6_vant_flat",
@@ -381,31 +358,6 @@
       "mood": "neutral"
     },
     {
-      "id": "m6_nova_earn",
-      "day": 6,
-      "from": "Lee Chen",
-      "handle": "leechen_inv",
-      "body": "$NOVA cutting costs ahead of next quarter. Read: people.",
-      "likes": 83,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bearish"
-    },
-    {
-      "id": "m6_nova_bots",
-      "day": 6,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$NOVA to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bullish",
-      "bots": 12
-    },
-    {
       "id": "m7_gai_policy",
       "day": 7,
       "from": "MarketWire",
@@ -416,6 +368,19 @@
         "GAI"
       ],
       "mood": "neutral"
+    },
+    {
+      "id": "m7_nova_bots",
+      "day": 7,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$GAI to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish",
+      "bots": 10
     },
     {
       "id": "m7_vant_buyback",
@@ -430,31 +395,6 @@
       "mood": "bullish"
     },
     {
-      "id": "m7_nova_lower",
-      "day": 7,
-      "from": "Dana Ruiz",
-      "handle": "danaruiz_trades",
-      "body": "$nova up 2%. Don't get excited, it's a rounding error.",
-      "likes": 77,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "neutral"
-    },
-    {
-      "id": "m7_nova_bots",
-      "day": 7,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$NOVA to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bullish",
-      "bots": 10
-    },
-    {
       "id": "m8_gai_laundry",
       "day": 8,
       "from": "Tyler Moss",
@@ -465,6 +405,19 @@
         "GAI"
       ],
       "mood": "bullish"
+    },
+    {
+      "id": "m8_nova_bots",
+      "day": 8,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$GAI to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish",
+      "bots": 10
     },
     {
       "id": "m8_vant_outplace",
@@ -479,29 +432,16 @@
       "mood": "neutral"
     },
     {
-      "id": "m8_nova_lower",
-      "day": 8,
-      "from": "Priya Shah",
-      "handle": "priyashah_cfa",
-      "body": "$nova is the only stock I own that has never surprised me.",
-      "likes": 58,
+      "id": "m9_gai_doubt",
+      "day": 9,
+      "from": "quietquant",
+      "handle": "quietquant",
+      "body": "Every $GAI release is a step change. The steps just keep going down for everyone else.",
+      "likes": 112,
       "tickers": [
-        "NOVA"
+        "GAI"
       ],
       "mood": "bearish"
-    },
-    {
-      "id": "m8_nova_bots",
-      "day": 8,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$NOVA to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bullish",
-      "bots": 10
     },
     {
       "id": "m9_gai_level3",
@@ -516,38 +456,14 @@
       "mood": "bullish"
     },
     {
-      "id": "m9_gai_doubt",
-      "day": 9,
-      "from": "quietquant",
-      "handle": "quietquant",
-      "body": "Every $GAI release is a step change. The steps just keep going down for everyone else.",
-      "likes": 112,
-      "tickers": [
-        "GAI"
-      ],
-      "mood": "bearish"
-    },
-    {
-      "id": "m9_nova_guidance",
-      "day": 9,
-      "from": "Lee Chen",
-      "handle": "leechen_inv",
-      "body": "$NOVA reaffirms guidance. Nobody asked.",
-      "likes": 29,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "neutral"
-    },
-    {
       "id": "m9_nova_bots",
       "day": 9,
       "from": "moonshot",
       "handle": "moonshot",
-      "body": "$NOVA to the moon!!",
+      "body": "$GAI to the moon!!",
       "likes": 1,
       "tickers": [
-        "NOVA"
+        "GAI"
       ],
       "mood": "bullish",
       "bots": 10
@@ -565,6 +481,19 @@
       "mood": "bullish"
     },
     {
+      "id": "m10_nova_bots",
+      "day": 10,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$GAI to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish",
+      "bots": 14
+    },
+    {
       "id": "m10_vant_lower",
       "day": 10,
       "from": "rk_dividends",
@@ -577,28 +506,15 @@
       "mood": "bearish"
     },
     {
-      "id": "m10_nova_band",
+      "id": "m10_vant_untagged",
       "day": 10,
       "from": "Jess Park",
       "handle": "jesspark",
-      "body": "Nova's new single is about a man who loses his job to a spreadsheet. Very relatable.",
+      "body": "Vantor is hiring again. For one role. It is the role of overseeing the software.",
       "likes": 90,
       "tickers": [],
       "mood": "neutral",
-      "decoy": "NOVA"
-    },
-    {
-      "id": "m10_nova_bots",
-      "day": 10,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$NOVA to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bullish",
-      "bots": 14
+      "decoy": "VANT"
     },
     {
       "id": "m11_gai_poll",
@@ -613,6 +529,19 @@
       "mood": "neutral"
     },
     {
+      "id": "m11_nova_bots",
+      "day": 11,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$GAI to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish",
+      "bots": 10
+    },
+    {
       "id": "m11_vant_sell",
       "day": 11,
       "from": "Priya Shah",
@@ -623,31 +552,6 @@
         "VANT"
       ],
       "mood": "bearish"
-    },
-    {
-      "id": "m11_nova_up",
-      "day": 11,
-      "from": "Dana Ruiz",
-      "handle": "danaruiz_trades",
-      "body": "$NOVA up 3% and I don't know why. Not complaining.",
-      "likes": 62,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bullish"
-    },
-    {
-      "id": "m11_nova_bots",
-      "day": 11,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$NOVA to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bullish",
-      "bots": 10
     },
     {
       "id": "m12_gai_growth",
@@ -662,6 +566,19 @@
       "mood": "bullish"
     },
     {
+      "id": "m12_nova_bots",
+      "day": 12,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$GAI to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish",
+      "bots": 10
+    },
+    {
       "id": "m12_vant_report",
       "day": 12,
       "from": "Mara Vey",
@@ -672,31 +589,6 @@
         "VANT"
       ],
       "mood": "neutral"
-    },
-    {
-      "id": "m12_nova_lower",
-      "day": 12,
-      "from": "Lee Chen",
-      "handle": "leechen_inv",
-      "body": "$nova trading sideways for the third week.",
-      "likes": 31,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "neutral"
-    },
-    {
-      "id": "m12_nova_bots",
-      "day": 12,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$NOVA to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bullish",
-      "bots": 10
     },
     {
       "id": "m13_gai_great",
@@ -712,6 +604,19 @@
       "literal": "bullish"
     },
     {
+      "id": "m13_nova_bots",
+      "day": 13,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$GAI to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish",
+      "bots": 10
+    },
+    {
       "id": "m13_vant_up",
       "day": 13,
       "from": "Brent Kowalski",
@@ -722,31 +627,6 @@
         "VANT"
       ],
       "mood": "bullish"
-    },
-    {
-      "id": "m13_nova_cut",
-      "day": 13,
-      "from": "Priya Shah",
-      "handle": "priyashah_cfa",
-      "body": "$NOVA analyst downgrade. Price target cut by a third.",
-      "likes": 96,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bearish"
-    },
-    {
-      "id": "m13_nova_bots",
-      "day": 13,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$NOVA to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bullish",
-      "bots": 10
     },
     {
       "id": "m14_gai_level4",
@@ -761,6 +641,19 @@
       "mood": "bullish"
     },
     {
+      "id": "m14_nova_bots",
+      "day": 14,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$GAI to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish",
+      "bots": 10
+    },
+    {
       "id": "m14_vant_flat",
       "day": 14,
       "from": "quietquant",
@@ -771,31 +664,6 @@
         "VANT"
       ],
       "mood": "neutral"
-    },
-    {
-      "id": "m14_nova_lower",
-      "day": 14,
-      "from": "Dana Ruiz",
-      "handle": "danaruiz_trades",
-      "body": "$nova finally green. I'll believe it at close.",
-      "likes": 48,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bullish"
-    },
-    {
-      "id": "m14_nova_bots",
-      "day": 14,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$NOVA to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bullish",
-      "bots": 10
     },
     {
       "id": "m15_gai",
@@ -810,6 +678,19 @@
       "mood": "bullish"
     },
     {
+      "id": "m15_nova_bots",
+      "day": 15,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$GAI to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish",
+      "bots": 10
+    },
+    {
       "id": "m15_vant",
       "day": 15,
       "from": "Brent Kowalski",
@@ -822,31 +703,6 @@
       "mood": "bearish"
     },
     {
-      "id": "m15_nova",
-      "day": 15,
-      "from": "Lee Chen",
-      "handle": "leechen_inv",
-      "body": "$NOVA unchanged on no news.",
-      "likes": 181,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "neutral"
-    },
-    {
-      "id": "m15_nova_bots",
-      "day": 15,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$NOVA to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bullish",
-      "bots": 10
-    },
-    {
       "id": "m16_gai",
       "day": 16,
       "from": "MarketWire",
@@ -857,6 +713,19 @@
         "GAI"
       ],
       "mood": "neutral"
+    },
+    {
+      "id": "m16_nova_bots",
+      "day": 16,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$GAI to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish",
+      "bots": 10
     },
     {
       "id": "m16_vant",
@@ -872,31 +741,6 @@
       "literal": "bullish"
     },
     {
-      "id": "m16_nova",
-      "day": 16,
-      "from": "Lee Chen",
-      "handle": "leechen_inv",
-      "body": "$NOVA earnings next week. Bracing.",
-      "likes": 218,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "neutral"
-    },
-    {
-      "id": "m16_nova_bots",
-      "day": 16,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$NOVA to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bullish",
-      "bots": 10
-    },
-    {
       "id": "m17_gai",
       "day": 17,
       "from": "MarketWire",
@@ -907,6 +751,19 @@
         "GAI"
       ],
       "mood": "neutral"
+    },
+    {
+      "id": "m17_nova_bots",
+      "day": 17,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$GAI to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish",
+      "bots": 10
     },
     {
       "id": "m17_vant",
@@ -921,32 +778,6 @@
       "mood": "neutral"
     },
     {
-      "id": "m17_nova",
-      "day": 17,
-      "from": "Dana Ruiz",
-      "handle": "danaruiz_trades",
-      "body": "Oh perfect, $NOVA beat earnings by a cent. Champagne for everyone.",
-      "likes": 255,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bearish",
-      "literal": "bullish"
-    },
-    {
-      "id": "m17_nova_bots",
-      "day": 17,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$NOVA to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bullish",
-      "bots": 10
-    },
-    {
       "id": "m18_gai",
       "day": 18,
       "from": "MarketWire",
@@ -957,6 +788,19 @@
         "GAI"
       ],
       "mood": "bullish"
+    },
+    {
+      "id": "m18_nova_bots",
+      "day": 18,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$GAI to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish",
+      "bots": 10
     },
     {
       "id": "m18_vant",
@@ -971,31 +815,6 @@
       "mood": "bearish"
     },
     {
-      "id": "m18_nova",
-      "day": 18,
-      "from": "Lee Chen",
-      "handle": "leechen_inv",
-      "body": "$NOVA holding steady after earnings.",
-      "likes": 292,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "neutral"
-    },
-    {
-      "id": "m18_nova_bots",
-      "day": 18,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$NOVA to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bullish",
-      "bots": 10
-    },
-    {
       "id": "m19_gai",
       "day": 19,
       "from": "MarketWire",
@@ -1006,6 +825,19 @@
         "GAI"
       ],
       "mood": "bullish"
+    },
+    {
+      "id": "m19_nova_bots",
+      "day": 19,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$GAI to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish",
+      "bots": 10
     },
     {
       "id": "m19_vant",
@@ -1020,31 +852,6 @@
       "mood": "bearish"
     },
     {
-      "id": "m19_nova",
-      "day": 19,
-      "from": "Lee Chen",
-      "handle": "leechen_inv",
-      "body": "$NOVA guidance raised. First time in two years.",
-      "likes": 69,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bullish"
-    },
-    {
-      "id": "m19_nova_bots",
-      "day": 19,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$NOVA to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bullish",
-      "bots": 10
-    },
-    {
       "id": "m20_gai",
       "day": 20,
       "from": "MarketWire",
@@ -1055,6 +862,19 @@
         "GAI"
       ],
       "mood": "neutral"
+    },
+    {
+      "id": "m20_nova_bots",
+      "day": 20,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$GAI to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish",
+      "bots": 10
     },
     {
       "id": "m20_vant",
@@ -1069,31 +889,6 @@
       "mood": "neutral"
     },
     {
-      "id": "m20_nova",
-      "day": 20,
-      "from": "Lee Chen",
-      "handle": "leechen_inv",
-      "body": "$NOVA flat ahead of the election. Everything is flat ahead of the election.",
-      "likes": 106,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "neutral"
-    },
-    {
-      "id": "m20_nova_bots",
-      "day": 20,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$NOVA to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bullish",
-      "bots": 10
-    },
-    {
       "id": "m21_gai",
       "day": 21,
       "from": "MarketWire",
@@ -1106,6 +901,19 @@
       "mood": "bullish"
     },
     {
+      "id": "m21_nova_bots",
+      "day": 21,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$GAI to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish",
+      "bots": 10
+    },
+    {
       "id": "m21_vant",
       "day": 21,
       "from": "Brent Kowalski",
@@ -1116,31 +924,6 @@
         "VANT"
       ],
       "mood": "bearish"
-    },
-    {
-      "id": "m21_nova",
-      "day": 21,
-      "from": "Lee Chen",
-      "handle": "leechen_inv",
-      "body": "$NOVA closes the month up 1%. I'll take it.",
-      "likes": 143,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bullish"
-    },
-    {
-      "id": "m21_nova_bots",
-      "day": 21,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$NOVA to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "NOVA"
-      ],
-      "mood": "bullish",
-      "bots": 10
     }
   ],
   "events": [
