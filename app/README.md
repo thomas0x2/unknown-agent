@@ -20,6 +20,13 @@ Run `npm run proxy` alongside `npm run dev`. The agent page shows "Story decisio
 connected, or "keyword matcher (Jev offline)" with the reason on hover; after a failed call the game
 retries the proxy every 30 seconds.
 
+Off-script replies (when Jev matches nothing) come from the **Misses** setting on agent.chat: the
+in-browser Gemma, scripted lines, or **Haiku (API)**, which also goes through `npm run proxy`.
+"Haiku via: Claude subscription" runs `claude -p` on your machine, so it bills the Claude
+subscription you're logged in to with Claude Code (use this for development only). "API key" uses
+`ANTHROPIC_API_KEY` from `.env`. Either way the proxy builds the prompt from
+`content/characters.json`; the browser only sends the character id and the player's text.
+
 ## How the three models are wired
 
 - **Jev (TypeSafe)** categorizes everything the player writes — which outcome a reply/post/prompt

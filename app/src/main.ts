@@ -18,7 +18,7 @@ import { GameStore } from './game/store';
 import { loadContent } from './content/load';
 import { localStorageStore } from './engine';
 import { JEV } from './game/backendJev';
-import { LLM } from './game/llm';
+import { LLM, type Misses, type HaikuVia } from './game/llm';
 import { makeGemmaWriter } from './game/gemma';
 import * as V from './ui/view';
 import { route } from './sites/registry';
@@ -165,6 +165,7 @@ document.addEventListener('click', (e) => {
   else if (d.act === 'sleep') store.endDay();
   else if (d.act === 'new') store.confirm('Start over? This erases your save.', 'Start over', () => { forgetDrafts(); store.newGame(); });
   else if (d.act === 'dev') store.toggleDev();
+  else if (d.act === 'devmode') store.setDevMode(!store.devMode);
   else if (d.act === 'intro') store.openIntro();
 });
 
@@ -244,7 +245,8 @@ document.addEventListener('input', (e) => {
 document.addEventListener('change', (e) => {
   const el = e.target as HTMLSelectElement;
   if (el.id === 'llm-backend') LLM.setBackend(el.value as 'browser' | 'ollama' | 'off');
-  else if (el.id === 'llm-misses') LLM.setMisses(el.value as 'gemma' | 'scripted');
+  else if (el.id === 'llm-misses') LLM.setMisses(el.value as Misses);
+  else if (el.id === 'llm-haiku-via') LLM.setHaikuVia(el.value as HaikuVia);
 });
 /** Keep the To draft and the once-a-day notice current without re-rendering, so the field and its suggestions stay put. */
 function syncMailTo(): void {

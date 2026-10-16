@@ -121,8 +121,12 @@ export interface ChatMsg {
   src?: string;
   /** Written by the local model (Gemma) rather than scripted. */
   llm?: boolean;
+  /** Which model wrote it, when not the local one (e.g. Claude Haiku). */
+  by?: string;
   /** Why a scripted line stood in for the local model. */
   note?: string;
+  /** How the reply was chosen (Jev's decision, the model prompt and raw output), shown in dev mode. */
+  debug?: string[];
   level?: number;
 }
 

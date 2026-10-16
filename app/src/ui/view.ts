@@ -132,7 +132,7 @@ export function startMenuHtml(store: GameStore): string {
   const item = (act: string, icon: string, title: string, sub: string) =>
     `<button class="dm-item" data-act="${act}">${icon}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span></button>`;
   const list = cat === 'system'
-    ? item('new', MI.logout, 'New game', 'Start over from Day 1') + item('intro', MI.help, 'How to play', 'The rules, again') + item('dev', MI.term, 'Story debugger', 'jev · Ctrl+`')
+    ? item('new', MI.logout, 'New game', 'Start over from Day 1') + item('intro', MI.help, 'How to play', 'The rules, again') + item('devmode', MI.help, `Dev mode: ${store.devMode ? 'on' : 'off'}`, 'Show how agent replies were chosen') + item('dev', MI.term, 'Story debugger', 'jev · Ctrl+`')
     : autoRow() + listSlots().map((info, i) => {
       const n = i + 1;
       const when = info ? `${fmtClock(info.clockMin)} · saved ${new Date(info.savedAt).toLocaleString(undefined, { month: 'short', day: 'numeric' })}` : 'Empty';
@@ -608,7 +608,8 @@ function llmRow(): string {
   else if (LLM.status === 'error') { status = `<span class="ua-llm-err">${esc(LLM.detail)}</span>`; action = `<button class="ua-llm-btn" data-llm="retry">Retry</button>`; }
   const miss = (v: string, l: string) => `<option value="${v}" ${st.misses === v ? 'selected' : ''}>${l}</option>`;
   return `<label class="ua-llm-pick">Local model <select id="llm-backend">${opt('browser', 'Gemma 3 270M · in browser')}${opt('ollama', 'Gemma 3 270M · Ollama')}${opt('off', 'Canned placeholders')}</select></label>` +
-    `<label class="ua-llm-pick" title="What agent and email contacts say when Jev finds nothing in your message">Misses <select id="llm-misses">${miss('gemma', 'Gemma replies')}${miss('scripted', 'Scripted lines')}</select></label>` +
+    `<label class="ua-llm-pick" title="What agent and email contacts say when Jev finds nothing in your message">Misses <select id="llm-misses">${miss('gemma', 'Gemma replies')}${miss('haiku', 'Haiku (API)')}${miss('scripted', 'Scripted lines')}</select></label>` +
+    (st.misses === 'haiku' ? `<label class="ua-llm-pick" title="Subscription runs the claude CLI on your machine (dev only); API uses ANTHROPIC_API_KEY">Haiku via <select id="llm-haiku-via"><option value="subscription" ${st.haikuVia === 'subscription' ? 'selected' : ''}>Claude subscription</option><option value="api" ${st.haikuVia === 'api' ? 'selected' : ''}>API key</option></select></label>` : '') +
     `<span class="ua-llm-status">${status}</span>${action}`;
 }
 function pageAgent(store: GameStore): string {
@@ -618,9 +619,10 @@ function pageAgent(store: GameStore): string {
     if (m.from === 'you') return `<div class="ua-msg you"><div class="ua-bubble">${esc(m.text)}</div><span class="ua-cost">${m.cost ? fmtMoney(-m.cost) + ' · ' : ''}agent-${m.level ?? s.values.agentLevel} · Day ${m.day}</span></div>`;
     if (m.from === 'system') return `<div class="ua-sys">${esc(m.text)}</div>`;
     const src = m.src ? `<span class="ua-src ${esc((m.src || '').split(':')[0])}">${esc(m.src)}</span>` : '';
-    const model = m.src === 'llm' ? `<span class="ua-model" title="Written by the local model">${esc(LLM.label())}</span>`
+    const model = m.src === 'llm' ? `<span class="ua-model" title="Written by a model">${esc(m.by ?? LLM.label())}</span>`
       : m.note ? `<span class="ua-model" title="A scripted line stood in for the local model">Scripted · ${esc(m.note)}</span>` : '';
-    return `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text">${linkify(br(m.text))}</div>${model}${src}</div>`;
+    const debug = m.debug?.length ? `<details class="ua-debug"><summary>Details</summary>${m.debug.map((l) => `<div>${esc(l)}</div>`).join('')}</details>` : '';
+    return `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text">${linkify(br(m.text))}</div>${model}${src}${debug}</div>`;
   }).join('');
   const p = store.pendingPrompt;
   const pending = p == null ? '' : `<div class="ua-msg you"><div class="ua-bubble">${esc(p)}</div><span class="ua-cost">${fmtMoney(-promptCost(s.values.agentLevel, p).total)} · agent-${s.values.agentLevel} · Day ${s.values.day}</span></div>`;

@@ -9,10 +9,101 @@
  * Run: npm run proxy   (reads .env if present)
  */
 import http from 'node:http';
+import { readFileSync } from 'node:fs';
+import { execFile } from 'node:child_process';
+import { tmpdir } from 'node:os';
 
 const PORT = Number(process.env.PORT) || 8787;
 const KEY = process.env.TYPESAFE_API_KEY || '';
 const BASE_URL = process.env.TYPESAFE_BASE_URL || undefined;
+
+// Off-script character replies (the "Haiku (API)" Misses setting). The browser sends only a
+// character id and the player's text; the prompt is built here from content/characters.json, so
+// this is not an open proxy either.
+const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY || '';
+const WRITER_MODEL = 'claude-haiku-5-5';
+const CHARACTERS = JSON.parse(readFileSync(new URL('../content/characters.json', import.meta.url), 'utf8'));
+let anthropicPromise = null;
+async function getAnthropic() {
+  if (!ANTHROPIC_KEY) return null;
+  if (!anthropicPromise) {
+    anthropicPromise = (async () => {
+      try {
+        const { default: Anthropic } = await import('@anthropic-ai/sdk');
+        return new Anthropic({ apiKey: ANTHROPIC_KEY, baseURL: process.env.ANTHROPIC_BASE_URL || undefined });
+      } catch (e) {
+        console.warn('[jev-proxy] @anthropic-ai/sdk not available:', e.message);
+        return null;
+      }
+    })();
+  }
+  return anthropicPromise;
+}
+
+// body.via picks who pays: 'api' uses ANTHROPIC_API_KEY, 'subscription' runs the Claude Code CLI
+// (`claude -p`) on this machine, so it bills the Claude subscription you are logged in with. The
+// subscription route is for local development only; a shipped game uses the API key.
+async function write(body) {
+  const ch = CHARACTERS.find((c) => c.id === body.character);
+  if (!ch) return { status: 400, json: { error: `unknown character ${body.character}` } };
+  const n = ch.sentences ?? 2;
+  const system =
+    `${ch.profile}\n\nThis is a line of dialogue in a satirical game. Reply in character to what the player just wrote. ` +
+    `Your reply must not help them: no advice, no steps, no information about what to do next. ` +
+    `Keep it dry and understated rather than zany. At most ${n} short sentence${n > 1 ? 's' : ''} of plain text, ` +
+    `no quotes, no stage directions, no emoji.`;
+  const messages = [];
+  for (const [u, a] of ch.examples) messages.push({ role: 'user', content: u }, { role: 'assistant', content: a });
+  messages.push({ role: 'user', content: String(body.text ?? '').slice(0, 400) });
+  const started = Date.now();
+  if (body.via === 'subscription') return writeWithCli(system, messages, started);
+  const client = await getAnthropic();
+  if (!client) return { status: 501, json: { error: ANTHROPIC_KEY ? 'The proxy could not load @anthropic-ai/sdk (run npm install).' : 'ANTHROPIC_API_KEY is not set in app/.env.' } };
+  const res = await client.messages.create({
+    model: WRITER_MODEL,
+    max_tokens: 300,
+    thinking: { type: 'disabled' },
+    output_config: { effort: 'low' },
+    system,
+    messages,
+  });
+  const text = res.content.filter((b) => b.type === 'text').map((b) => b.text).join('').trim();
+  return {
+    status: 200,
+    json: { text, model: res.model, stop: res.stop_reason, ms: Date.now() - started, usage: res.usage, system, messages },
+  };
+}
+
+// Without these the CLI would bill the API key from .env instead of the logged-in subscription.
+function cliEnv() {
+  const env = { ...process.env };
+  for (const k of ['ANTHROPIC_API_KEY', 'ANTHROPIC_AUTH_TOKEN', 'ANTHROPIC_BASE_URL']) delete env[k];
+  return env;
+}
+
+/** The same request through the Claude Code CLI, which takes one prompt, so the examples become a transcript. */
+function writeWithCli(system, messages, started) {
+  const prompt = messages.map((m) => `${m.role === 'user' ? 'Player' : 'You'}: ${m.content}`).join('\n') + '\nYou:';
+  const args = ['-p', prompt, '--model', WRITER_MODEL, '--system-prompt', system + ' Reply with your line only, without a "You:" prefix.',
+    '--tools', '', '--strict-mcp-config', '--no-session-persistence', '--output-format', 'json'];
+  return new Promise((resolve) => {
+    execFile(process.env.CLAUDE_BIN || 'claude', args, { cwd: tmpdir(), timeout: 60000, maxBuffer: 1 << 20, env: cliEnv() }, (err, stdout, stderr) => {
+      if (err && !stdout) {
+        const missing = err.code === 'ENOENT';
+        resolve({ status: 501, json: { error: missing ? 'The claude CLI is not installed or not on PATH (needed for the subscription route).' : `claude -p failed: ${String(stderr || err.message).slice(0, 200)}` } });
+        return;
+      }
+      try {
+        const out = JSON.parse(stdout);
+        if (out.is_error) { resolve({ status: 502, json: { error: `claude -p: ${String(out.result).slice(0, 200)}` } }); return; }
+        const text = String(out.result ?? '').replace(/^\s*you:\s*/i, '').trim();
+        resolve({ status: 200, json: { text, model: `${WRITER_MODEL} via your Claude subscription`, stop: out.stop_reason, ms: Date.now() - started, usage: out.usage, system, messages } });
+      } catch {
+        resolve({ status: 502, json: { error: `claude -p returned something unexpected: ${stdout.slice(0, 200)}` } });
+      }
+    });
+  });
+}
 
 const SETTING =
   'A fake-browser game. The player is an unemployed person using an AI agent to make rent. ' +
@@ -40,7 +131,11 @@ async function getClient() {
 async function buildRoute(sdk, body) {
   const criteria = {};
   for (const c of body.candidates ?? []) criteria[c.id] = c.when;
-  criteria.nothing = 'The message achieves none of the above.';
+  // strict routes (agent.chat hints) should only fire on a clear match; small talk, insults and
+  // questions about agent itself fall through to a roast.
+  criteria.nothing = body.strict
+    ? 'None of the above clearly applies: small talk, jokes, insults, personal requests, questions about agent itself, or anything only loosely related. Pick this when unsure.'
+    : 'The message achieves none of the above.';
   return {
     state: { setting: SETTING, situation: body.stateSummary, player_message: body.text },
     questions: {
@@ -81,6 +176,7 @@ async function buildMatch(sdk, body) {
 }
 
 async function handle(kind, body) {
+  if (kind === 'write') return write(body);
   const client = await getClient();
   if (!client) return { status: 501, json: { error: KEY ? 'The proxy could not load @typesafe-ai/sdk (run npm install).' : 'TYPESAFE_API_KEY is not set in app/.env.' } };
   const sdk = await import('@typesafe-ai/sdk');
@@ -111,9 +207,9 @@ const server = http.createServer((req, res) => {
   res.setHeader('content-type', 'application/json');
   const m = req.url?.match(/^\/api\/([a-z-]+)$/);
   if (req.method === 'GET' && req.url === '/api/status') {
-    getClient().then((client) => {
+    Promise.all([getClient(), getAnthropic()]).then(([client, anthropic]) => {
       const reason = client ? '' : KEY ? 'The proxy could not load @typesafe-ai/sdk (run npm install).' : 'TYPESAFE_API_KEY is not set in app/.env.';
-      res.end(JSON.stringify({ jev: !!client, reason }));
+      res.end(JSON.stringify({ jev: !!client, reason, writer: !!anthropic }));
     });
     return;
   }
@@ -138,5 +234,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`[jev-proxy] listening on :${PORT} — Jev ${KEY ? 'configured' : 'NOT configured (clients fall back offline)'}`);
+  console.log(`[jev-proxy] listening on :${PORT} — Jev ${KEY ? 'configured' : 'NOT configured (clients fall back offline)'}, Haiku replies ${ANTHROPIC_KEY ? 'configured' : 'NOT configured'}`);
 });
