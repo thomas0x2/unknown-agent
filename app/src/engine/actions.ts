@@ -253,8 +253,10 @@ export async function replyToEvent(
       }
       applyEffects(s, outcome.effects, ev.job, ev.id);
       if (outcome.workaround) recordWorkaround(s);
-      delivery.answered = true;
-      delivery.outcomeId = outcome.id;
+      if (!outcome.keepsOpen) {
+        delivery.answered = true;
+        delivery.outcomeId = outcome.id;
+      }
       // a storyline outcome always answers with its scripted reply
       const body = outcome.reply;
       if (ev.addr) sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'Unknown', addr: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body, read: false, scripted: 'outcome' }, replyAfter(content, ev.addr, outcome.replyAfter, ev));

@@ -273,6 +273,8 @@ export interface Outcome {
   requiresWorkaround?: boolean;
   /** This outcome is a successful workaround: records misuse + leash when it lands. */
   workaround?: boolean;
+  /** Replies without answering the thread: its other outcomes, `payment` and `noReply` still apply. */
+  keepsOpen?: boolean;
 }
 export interface JobSpec {
   category: JobCategory;
