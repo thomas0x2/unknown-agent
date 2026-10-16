@@ -897,7 +897,10 @@ function pageAgent(store: GameStore): string {
   const c = agentCost(s.values.agentLevel);
   // while a prompt's charge is on its way to the wallet, its cost line shows it filling in place
   const chargingAt = store.charging ? s.chat.map((m) => m.from).lastIndexOf('you') : -1;
-  const msgs = s.chat.map((m, i) => {
+  // the build/fix meter stays under the "working on it" line that started it, however much is said after
+  const workAt = s.agentWork ? s.chat.map((m) => m.src).lastIndexOf('working') : -1;
+  const msgs = s.chat.map((m, i) => msgHtml(m, i) + (i === workAt ? workHtml(s) : '')).join('');
+  function msgHtml(m: GameState['chat'][number], i: number): string {
     if (m.from === 'you') {
       const cost = i === chargingAt
         ? `<span class="ua-cost ua-charging" role="status"><span class="ua-charge-bar"><i style="animation-duration:${CHARGE_DELAY_MS}ms"></i></span>Charging Coinbin</span>`
@@ -912,7 +915,7 @@ function pageAgent(store: GameStore): string {
     // the agent couldn't run (unpaid balance): an error, not a line of dialogue
     if (m.src === 'locked') return `<div class="ua-msg agent ua-err" role="alert"><div class="ua-mark">${ICONS.error}</div><div class="ua-text"><b>Error</b> ${linkify(br(m.text))}</div>${src}</div>`;
     return `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text">${linkify(br(m.text))}</div>${model}${src}${debug}</div>`;
-  }).join('');
+  }
   const p = store.pendingPrompt;
   // the price shows on the prompt only once the charge has gone through
   const pending = p == null ? '' : `<div class="ua-msg you"><div class="ua-bubble">${esc(p)}</div><span class="ua-cost">agent-${s.values.agentLevel} · ${dateShort(s.values.day)}</span></div>`;
@@ -922,7 +925,7 @@ function pageAgent(store: GameStore): string {
       <div class="ua-brand">${ICONS.agent}<div><b>agent</b><span>agent-${s.values.agentLevel} · ${fmtMoney(c.prompt)} per prompt + ${fmtMoney(c.word)} per word</span></div></div>
       ${devOptionsButton(store, 'agent')}<span class="ua-linked"><a href="#" data-nav="agent.chat/models" class="ua-upgrade">Models</a> · ${s.agentLocked ? 'LOCKED · unpaid' : 'Billing: Coinbin ' + shortAddr(WALLET_ADDR)}</span>
     </header>
-    <div class="ua-log" id="ua-log">${msgs}${workHtml(s)}${pending}${thinking}</div>
+    <div class="ua-log" id="ua-log">${msgs}${workAt < 0 ? workHtml(s) : ''}${pending}${thinking}</div>
     <form class="ua-compose" data-form="prompt">
       <textarea id="prompt-input" rows="2" placeholder="Ask agent anything — build an app, fix one, write, translate, look something up…" ${s.ending ? 'disabled' : ''}></textarea>
       <div class="ua-row"><span id="cost-est" class="ua-est"></span><button class="ua-send" type="submit" ${s.ending || store.busy ? 'disabled' : ''}>Send</button></div>
