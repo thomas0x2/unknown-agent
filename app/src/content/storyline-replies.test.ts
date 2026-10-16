@@ -83,3 +83,12 @@ describe('inbox order', () => {
     expect(reply.seq!).toBeGreaterThan(r.state.delivered.find((d) => d.eventId === 'd1_guru')!.seq!);
   });
 });
+
+describe('Mom', () => {
+  it('sends 20 DOLR when asked for money', async () => {
+    const s = startGame(content, 3);
+    const r = await replyToEvent(s, content, offlineJev, 'd1_mom', 'Mom, could you send me some money?', noLlm);
+    expect(r.decision).toEqual({ kind: 'outcome', outcomeId: 'money' });
+    expect(r.state.values.crypto).toBe(s.values.crypto + 20);
+  });
+});
