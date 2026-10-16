@@ -88,12 +88,23 @@ const BASE_PRICE: Record<string, number> = { GAI: 140, VANT: 48 };
 export const START_PORTFOLIO = { cash: 1_850_000, holdings: { GAI: 42_000, VANT: 95_000 } as Record<string, number> };
 const BUY_SHARES = 2_000;
 
-/** A ticker's closing price on a day: a small deterministic walk, so today's change is never zero. */
+/**
+ * Daily moves the Y posts talk about, as fractions: day 1 is $GAI's "almost escaped" pop and the day
+ * the Vantor restructuring lands, day 2 most of $VANT's 8%, day 4 $GAI's level 2 launch and Crane's
+ * criticism of $VANT, day 6 $GAI's rally and a flat week for $VANT. Later days take a small walk.
+ */
+const SCRIPTED_MOVES: Record<string, number[]> = {
+  GAI: [0.04, 0.012, 0.008, 0.06, 0.009, 0.025, 0.001],
+  VANT: [0.02, 0.059, 0.006, -0.014, 0.009, -0.002, 0.003],
+};
+
+/** A ticker's closing price on a day (day 0 is the close before the game starts); today's change is never zero. */
 export function price(t: string, day: number): number {
   let p = BASE_PRICE[t] ?? 10;
-  for (let d = 2; d <= day; d++) {
+  for (let d = 1; d <= day; d++) {
+    const scripted = SCRIPTED_MOVES[t]?.[d - 1];
     const h = ((d * 2654435761 + t.charCodeAt(0) * 97 + t.length * 13) >>> 0) % 1000;
-    p *= 1 + ((h / 1000) - 0.45) * 0.06;
+    p *= 1 + (scripted ?? ((h / 1000) - 0.45) * 0.06);
   }
   return Math.round(p * 100) / 100;
 }
@@ -137,7 +148,7 @@ export function portfolio(buys: Buy[], day: number, bugs: Set<string>): Portfoli
   // percentages multiplied by 100 twice
   const pctScale = bugs.has('pct_wrong') ? 100 : 1;
   const holdings = Object.entries(held).map(([ticker, shares]) => {
-    const px = price(ticker, day), move = px - price(ticker, Math.max(1, day - 1));
+    const px = price(ticker, day), move = px - price(ticker, day - 1);
     // value in cents divided by 100 once too often; P&L with the sign flipped
     const value = shares * px / (bugs.has('value_wrong') ? 100 : 1);
     const dayPnl = shares * move * (bugs.has('pnl_sign') ? -1 : 1);
