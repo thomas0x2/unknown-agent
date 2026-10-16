@@ -436,6 +436,25 @@ const FAILURES: FailureKind[] = ['visible', 'subtle', 'failed_fetch', 'deep'];
  * Dev mode: switch one bug on or off on demand. A bug id (or 'hallucinated' / 'outdated') goes on
  * the repo build and, if deployed, the live one; a failure kind toggles a live break.
  */
+/** The dev panel's key for a wrong build that has no named bug. */
+export const UNNAMED_BUG = 'unnamed';
+
+/**
+ * Wrong builds saved before their template had named bugs get one now, so the site shows it and the
+ * dev panel can say what it is. Runs on load.
+ */
+export function nameUnnamedBugs(s: GameState, content: Content): void {
+  for (const app of s.apps) {
+    const tmpl = content.apps[app.template];
+    for (const f of [...app.repo, ...app.features]) {
+      const bugs = tmpl?.features.find((d) => d.id === f.id)?.bugs ?? [];
+      if (f.correct || f.variant || !bugs.length) continue;
+      f.seed ??= 0;
+      f.variant = bugs.filter((b) => !b.deep)[f.seed % Math.max(1, bugs.filter((b) => !b.deep).length)]?.id ?? bugs[0].id;
+    }
+  }
+}
+
 export function devToggleBug(s: GameState, appId: string, featureId: string, key: string): void {
   const app = getApp(s, appId);
   if (!app || !app.required.includes(featureId)) return;
@@ -447,6 +466,18 @@ export function devToggleBug(s: GameState, appId: string, featureId: string, key
     return;
   }
   const spec = app.specParams[featureId];
+  if (key === UNNAMED_BUG) {
+    // a wrong build with no named bug (a template without bugs): on and off as a whole
+    const flip = (list: BuiltFeature[]) => {
+      const f = list.find((x) => x.id === featureId);
+      if (!f) list.push({ id: featureId, correct: false, params: spec, seed: randInt(s, 0, 9999) });
+      else if (f.correct) Object.assign(f, { correct: false, seed: f.seed ?? randInt(s, 0, 9999) });
+      else if (!f.variant) Object.assign(f, { correct: true, params: spec, also: undefined });
+    };
+    flip(app.repo);
+    if (app.deployed) flip(app.features);
+    return;
+  }
   // switching a bug on by hand also lets the agent make it again
   if (app.fixed?.[featureId]) app.fixed[featureId] = app.fixed[featureId].filter((b) => b !== key);
   const toggle = (list: BuiltFeature[]) => {

@@ -6,7 +6,7 @@ import type { GameState } from '../engine';
 
 export type SiteId =
   | 'y' | 'qmail' | 'qdrive' | 'satchel' | 'forkyard' | 'agent' | 'yowl'
-  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'app' | 'newtab' | 'notfound';
+  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'app' | 'newtab' | 'notfound';
 
 export interface SiteDef {
   id: SiteId;
@@ -38,6 +38,7 @@ export const SITES: SiteDef[] = [
   { id: 'nullboard', base: 'nullboard.onion', label: 'nullboard', group: 'underground', reachable: flag('knows_nullboard') },
   { id: 'cellar', base: 'cellar.onion', label: 'Cellar', group: 'underground', reachable: flag('knows_cellar') },
   { id: 'empire', base: 'empire.alphaascend.biz', label: 'EMPIRE', group: 'web', reachable: always },
+  { id: 'spinfeed', base: 'spincycle.test', label: 'Spin Cycle feed', group: 'web', reachable: always },
 ];
 
 export interface Route {

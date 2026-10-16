@@ -296,6 +296,45 @@ export interface Content {
   characters?: Character[];
   /** agent.chat's hint topics and roasts. */
   agent?: AgentContent;
+  /** Stock posts on Y, the data the sentiment crawler reads. */
+  yMarket?: MarketContent;
+}
+
+export type Mood = 'bullish' | 'bearish' | 'neutral';
+/** A post on Y about the trader's stocks, with what it really says so the crawler can be checked. */
+export interface MarketPostDef {
+  id: string;
+  day: number;
+  from: string;
+  handle: string;
+  body: string;
+  likes: number;
+  /** The $-tagged tickers it is really about (the band Nova has none). */
+  tickers: string[];
+  mood: Mood;
+  /** What a crawler that misses sarcasm reads instead. */
+  literal?: Mood;
+  /** Posted this many times by bot accounts (handle_1, handle_2, ...). */
+  bots?: number;
+  /** Mentions this ticker's name without the $ tag. */
+  decoy?: string;
+  /** Randall Crane on a company: what the auto-buy should (praise) or shouldn't (criticism) act on. */
+  crane?: 'praise' | 'criticism';
+  /** A lookalike account posting as Crane. */
+  impostor?: boolean;
+}
+/** Labels for a stock post that arrives as a story event (Crane's $GAI praise). */
+export interface MarketEventLabel {
+  event: string;
+  tickers: string[];
+  mood: Mood;
+  literal?: Mood;
+  crane?: 'praise' | 'criticism';
+  likes?: number;
+}
+export interface MarketContent {
+  posts: MarketPostDef[];
+  events: MarketEventLabel[];
 }
 
 export function emptyContent(): Content {

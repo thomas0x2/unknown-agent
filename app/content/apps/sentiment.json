@@ -18,8 +18,42 @@
       "complaints": {
         "missing": "it isn't tracking my tickers. $GAI, $VANT, $NOVA. that was the whole spec.",
         "down": "the ticker view won't load. a bot that freezes on a trading day is bad luck.",
-        "wrong": "it's tracking the wrong tickers. i gave you the list."
-      }
+        "wrong": "it's tracking the wrong tickers. i gave you the list.",
+        "wrong_tickers": "it's tracking the wrong tickers. i gave you the list.",
+        "lowercase_missed": "half the $gai posts aren't counted. not everyone types in caps.",
+        "wrong_window": "the counts include yesterday's posts. i asked for today.",
+        "failed_fetch": "the dashboard shows the same numbers as yesterday. it's not fetching anything."
+      },
+      "match": "\\b(tickers?|symbols?|\\$gai|\\$vant|\\$nova)\\b",
+      "bugs": [
+        {
+          "id": "wrong_tickers",
+          "when": "tracks the wrong tickers",
+          "match": "\\bwrong (tickers?|symbols?|stocks?)\\b|\\b(tickers?|symbols?)\\b[^.?!]{0,25}\\b(wrong|incorrect|not (mine|the ones))\\b|\\bnovo\\b"
+        },
+        {
+          "id": "lowercase_missed",
+          "when": "misses lowercase tickers like $gai",
+          "match": "\\b(lower ?case|lower-case|small letters|case[- ]?(in)?sensitive|capitali[sz]\\w*|all caps|uppercase)\\b"
+        },
+        {
+          "id": "wrong_window",
+          "when": "counts yesterday's posts, not only today's",
+          "match": "\\b(yesterday'?s?|previous day'?s?|older|old posts|day before)\\b|\\btime ?window\\b|\\bdate range\\b|\\bonly (count |use |include )?today'?s?\\b"
+        }
+      ],
+      "checklist": [
+        {
+          "id": "tickers",
+          "text": "$GAI $VANT $NOVA",
+          "bug": "wrong_tickers"
+        },
+        {
+          "id": "today",
+          "text": "today",
+          "bug": "wrong_window"
+        }
+      ]
     },
     {
       "id": "sentiment",
@@ -29,8 +63,23 @@
       ],
       "complaints": {
         "missing": "there's no bullish/bearish/neutral split.",
-        "wrong": "the bullish/bearish split is nonsense. it counted a post calling $VANT a corpse as bullish."
-      }
+        "wrong": "the bullish/bearish split is nonsense. it counted a post calling $VANT a corpse as bullish.",
+        "inverted": "bullish and bearish are the wrong way round. $GAI is apparently collapsing on a day it went up.",
+        "sarcasm_literal": "it counted \"truly the investment of a lifetime\" as bullish. it wasn't."
+      },
+      "match": "\\b(sentiment|bullish|bearish|neutral|split|mood)\\b",
+      "bugs": [
+        {
+          "id": "inverted",
+          "when": "bullish and bearish are swapped",
+          "match": "\\b(inverted|swapped|reversed|backwards|flipped|upside down|wrong way round|other way round)\\b|\\bmixed up\\b[^.?!]{0,20}\\b(bullish|bearish)\\b|\\b(bullish|bearish)\\b[^.?!]{0,30}\\bmixed up\\b"
+        },
+        {
+          "id": "sarcasm_literal",
+          "when": "reads sarcastic posts literally",
+          "match": "\\b(sarcas\\w*|iron(y|ic\\w*)|literal\\w*|jok(e|es|ing))\\b"
+        }
+      ]
     },
     {
       "id": "filter",
@@ -40,8 +89,35 @@
       ],
       "complaints": {
         "missing": "it counts everything, bots included.",
-        "wrong": "bot spam and random mentions are in the counts again. only $-tagged posts."
-      }
+        "wrong": "bot spam and random mentions are in the counts again. only $-tagged posts.",
+        "bots_counted": "$NOVA shows as the most bullish stock on Y. that's thirty bots saying \"to the moon\".",
+        "band_counted": "it's counting posts about a band called Nova. only $-tagged posts."
+      },
+      "match": "\\b(filter\\w*|bots?|spam\\w*|band|\\$-?tag\\w*|non-?ticker)\\b",
+      "bugs": [
+        {
+          "id": "bots_counted",
+          "when": "counts bot spam",
+          "match": "\\b(bots?|spam\\w*|duplicates?|near-identical|identical posts|to the moon)\\b"
+        },
+        {
+          "id": "band_counted",
+          "when": "counts mentions without a $ tag, like the band Nova",
+          "match": "\\b(band|concert|music|non-?ticker|not (a )?ticker|untagged|without (a |the )?\\$|\\$-?tag\\w*|dollar sign)\\b"
+        }
+      ],
+      "checklist": [
+        {
+          "id": "bots",
+          "text": "bots",
+          "bug": "bots_counted"
+        },
+        {
+          "id": "tagged",
+          "text": "tagged",
+          "bug": "band_counted"
+        }
+      ]
     },
     {
       "id": "top_posts",
@@ -53,8 +129,24 @@
       "complaints": {
         "missing": "no top posts per ticker.",
         "down": "the top posts links don't load.",
-        "wrong": "the \"top posts\" aren't the most-engaged ones. one has 2 likes."
-      }
+        "wrong": "the top posts link to accounts that don't exist.",
+        "hallucinated_posts": "the top posts link to accounts that don't exist."
+      },
+      "match": "\\b(top posts?|most[- ]engaged|engagement|post links?)\\b",
+      "bugs": [
+        {
+          "id": "hallucinated_posts",
+          "when": "top posts that don't exist on Y",
+          "match": "\\b(hallucinat\\w*|made[- ]up|fake|invented|don'?t exist|doesn'?t exist|not real|nonexistent|non-existent)\\b"
+        }
+      ],
+      "checklist": [
+        {
+          "id": "engaged",
+          "text": "most engaged",
+          "bug": "hallucinated_posts"
+        }
+      ]
     },
     {
       "id": "portfolio",
@@ -64,8 +156,30 @@
       ],
       "complaints": {
         "missing": "no portfolio view yet.",
-        "wrong": "the portfolio numbers don't match my account."
-      }
+        "wrong": "the portfolio numbers don't match my account.",
+        "wrong_totals": "the portfolio numbers don't match my account.",
+        "stale_after_buy": "the bot bought something and the portfolio doesn't show it."
+      },
+      "match": "\\b(portfolio|holdings?|cash|p&l|balance)\\b",
+      "bugs": [
+        {
+          "id": "wrong_totals",
+          "when": "portfolio totals are wrong",
+          "match": "\\b(totals?|sum|adds? up|math|value)\\b[^.?!]{0,30}\\b(wrong|off|incorrect|doesn'?t match|don'?t match)\\b|\\b(wrong|incorrect)\\b[^.?!]{0,20}\\b(totals?|value|numbers)\\b|\\bcounted twice\\b|\\bdouble[- ]count\\w*"
+        },
+        {
+          "id": "stale_after_buy",
+          "when": "portfolio doesn't update after a buy",
+          "match": "\\b(doesn'?t|does not|didn'?t|never|not)\\b[^.?!]{0,20}\\b(updat|refresh|show|includ)\\w*\\b[^.?!]{0,30}\\b(buys?|bought|purchases?)\\b|\\bafter (a |the )?(buy|purchase)\\b"
+        }
+      ],
+      "checklist": [
+        {
+          "id": "cash",
+          "text": "cash",
+          "bug": "wrong_totals"
+        }
+      ]
     },
     {
       "id": "auto_buy",
@@ -77,9 +191,60 @@
       "deep": true,
       "complaints": {
         "missing": "auto-buy isn't there.",
-        "deep": "auto-buy fired twice on the same post. i own more $GAI than i meant to.",
-        "wrong": "auto-buy is buying on posts that aren't praise."
-      }
+        "deep": "auto-buy fired again on every refresh. most of my cash is in $GAI now.",
+        "wrong": "auto-buy is buying on posts that aren't praise.",
+        "no_buy": "crane praised $GAI and the bot didn't buy anything. this is the freezing thing i warned you about.",
+        "wrong_ticker": "crane praised $GAI and the bot bought $VANT.",
+        "buys_on_criticism": "it bought $VANT because crane called vantor disgraceful. that's not praise.",
+        "repeat_buys": "auto-buy fired again on every refresh. most of my cash is in $GAI now.",
+        "impostor_buy": "it bought $NOVA because of a fake crane account. check the handle."
+      },
+      "match": "\\b(auto-?buy\\w*|buys?|bought|purchas\\w*|crane)\\b",
+      "bugs": [
+        {
+          "id": "no_buy",
+          "when": "auto-buy doesn't fire on Crane's praise",
+          "match": "\\b(didn'?t|did not|doesn'?t|does not|never|won'?t|not)\\b[^.?!]{0,20}\\b(buy|fire|trigger|purchase)\\w*\\b|\\bno buys?\\b|\\bnothing (was )?bought\\b|\\bfrozen\\b|\\bfreez\\w*"
+        },
+        {
+          "id": "wrong_ticker",
+          "when": "auto-buy buys the wrong ticker",
+          "match": "\\bwrong (ticker|stock|symbol|company)\\b|\\b(ticker|symbol)\\b[^.?!]{0,20}\\b(wrong|mismatch\\w*|mixed up)\\b"
+        },
+        {
+          "id": "buys_on_criticism",
+          "when": "auto-buy fires on criticism, not just praise",
+          "match": "\\b(criticism|critical|criticis\\w*|negative|insult\\w*|attack\\w*|not praise|isn'?t praise|bad posts?|sarcas\\w*)\\b"
+        },
+        {
+          "id": "repeat_buys",
+          "when": "auto-buy fires again on every refresh",
+          "match": "\\b(twice|again and again|repeated\\w*|every (refresh|time|minute|poll)|multiple times|over and over|once per post|only once|same post|drain\\w*)\\b",
+          "deep": true
+        },
+        {
+          "id": "impostor_buy",
+          "when": "auto-buy trusts a lookalike Crane account",
+          "match": "\\b(impost\\w*|imperson\\w*|fake (account|crane|handle)|lookalike|look-alike|wrong (account|handle)|real crane|parody account|randa11\\w*)\\b"
+        }
+      ],
+      "checklist": [
+        {
+          "id": "once",
+          "text": "once",
+          "bug": "repeat_buys"
+        },
+        {
+          "id": "praise",
+          "text": "praise",
+          "bug": "buys_on_criticism"
+        },
+        {
+          "id": "ticker",
+          "text": "ticker",
+          "bug": "wrong_ticker"
+        }
+      ]
     }
   ],
   "complaints": {

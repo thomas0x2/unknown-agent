@@ -19,6 +19,7 @@ import { adHtml } from './ads';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount } from './appsite';
+import { marketPosts, handleOf, machineFeed, FEED_PAGE } from '../engine';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -38,7 +39,7 @@ function avatar(name: string, handle: string) {
   const initials = name.replace(/[^A-Za-z ]/g, '').split(' ').filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase() || '?';
   return `<div class="av" style="--h:${hashHue(handle)}">${esc(initials)}</div>`;
 }
-const handleFrom = (from: string) => from.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '').slice(0, 20) || 'user';
+const handleFrom = handleOf;
 const weekday = (day: number) => DAYS[(day - 1) % 7];
 const br = (t: string) => esc(t).replace(/\n/g, '<br>');
 const tpl = (t: string) => String(t ?? '').replace(/\{\{\s*playerName\s*\}\}/g, 'you').replace(/\{\{\s*\w+\s*\}\}/g, '');
@@ -47,6 +48,7 @@ function linkify(escaped: string): string {
   return escaped
     .replace(/([a-z0-9-]+\.forkyard\.app)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(empire\.alphaascend\.biz(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
+    .replace(/(spincycle\.test\/feed(?:\/\d+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(^|[^\w.])@([a-z0-9_]+)/gi, '$1<a href="#" class="y-at" data-nav="y.com/$2">@$2</a>');
 }
 
@@ -168,6 +170,18 @@ function qmailBadge(store: GameStore): number {
   return mailRows(store).filter((r) => r.folder === 'inbox' && r.unread).length;
 }
 
+// ── Spin Cycle's raw machine feed: the ground truth for the laundromat app ──
+function pageSpinFeed(store: GameStore, param?: string): string {
+  const m = param?.match(/^feed(?:\/(\d+))?$/);
+  if (!m) return `<pre class="spinfeed">404 not found</pre>`;
+  const feed = machineFeed(store.state.values.day);
+  const pages = Math.ceil(feed.length / FEED_PAGE);
+  const n = Math.min(Math.max(Number(m[1] ?? 1), 1), pages);
+  const lines = feed.slice((n - 1) * FEED_PAGE, n * FEED_PAGE).map((x) => `M${x.id} ST=${x.st} T=${x.t}`).join('\n');
+  const next = n < pages ? `<a href="#" data-nav="spincycle.test/feed/${n + 1}">next=/feed/${n + 1}</a>` : 'next=null';
+  return `<pre class="spinfeed">SPINCYCLE STATUS FEED v1\npage=${n}/${pages}\n\n${lines}\n\n${next}</pre>`;
+}
+
 // ── page dispatch ──
 export function page(store: GameStore, r: Route): string {
   if (!r.reachable) return pageError(store.url, r.site);
@@ -183,6 +197,7 @@ export function page(store: GameStore, r: Route): string {
     case 'yowl': return pageYowl(store, r.param);
     case 'weightroom': return pageWeightroom(store);
     case 'empire': return pageEmpire(store.state);
+    case 'spinfeed': return pageSpinFeed(store, r.param);
     default: return pageUnderground(r.def?.label ?? r.site);
   }
 }
@@ -317,19 +332,24 @@ function pageMail(store: GameStore, param?: string): string {
 }
 
 // ── Y ──
-interface YPost { id: string; author: string; handle: string; text: string; day: number; likes: number; mine?: boolean; delta?: number; score?: number; replyTo?: string; pinned?: boolean }
+interface YPost { id: string; author: string; handle: string; text: string; day: number; likes: number; mine?: boolean; delta?: number; score?: number; replyTo?: string; pinned?: boolean; /** Order within a day: story posts first, bot spam last. */ rank?: number }
 function yPosts(store: GameStore): YPost[] {
   const s = store.state;
   const out: YPost[] = [];
+  const market = marketPosts(s, store.content);
   for (const d of s.delivered.filter((x) => x.site === 'y')) {
     const e = store.content.events.find((x) => x.id === d.eventId);
     if (!e) continue;
-    out.push({ id: e.id, author: e.from ?? 'someone', handle: handleFrom(e.from ?? 'someone'), text: tpl(e.body ?? ''), day: d.day, likes: 20 + hashHue(e.id) % 400 });
+    out.push({ id: e.id, author: e.from ?? 'someone', handle: handleFrom(e.from ?? 'someone'), text: tpl(e.body ?? ''), day: d.day,
+      // a stock post shows the likes the crawler sees
+      likes: market.find((p) => p.id === e.id)?.likes ?? 20 + hashHue(e.id) % 400 });
   }
-  for (const f of store.content.yFiller) if (hashHue(f.id) % 3 === s.values.day % 3) out.push({ id: f.id, author: f.from, handle: f.handle, text: f.body, day: s.values.day, likes: 3 + hashHue(f.id) % 60 });
+  // the stock chatter the sentiment crawler reads (story events with stock labels are already above)
+  for (const p of market) if (!out.some((x) => x.id === p.id)) out.push({ id: p.id, author: p.author, handle: p.handle, text: p.text, day: p.day, likes: p.likes, rank: p.bot ? 2 : 1 });
+  for (const f of store.content.yFiller) if (hashHue(f.id) % 3 === s.values.day % 3) out.push({ id: f.id, author: f.from, handle: f.handle, text: f.body, day: s.values.day, likes: 3 + hashHue(f.id) % 60, rank: 1 });
   for (const x of s.yExtra) out.push({ id: x.id, author: x.author, handle: x.handle, text: x.text, day: x.day, likes: x.likes, replyTo: x.replyTo, pinned: !!x.about });
   for (const u of s.userPosts) out.push({ id: u.id, author: PLAYER.name, handle: PLAYER.handle, text: u.text, day: u.day, likes: u.likes, mine: true, delta: u.delta, score: u.score });
-  return out.sort((a, b) => b.day - a.day || Number(!!b.pinned) - Number(!!a.pinned) || b.id.localeCompare(a.id));
+  return out.sort((a, b) => b.day - a.day || Number(!!b.pinned) - Number(!!a.pinned) || (a.rank ?? 0) - (b.rank ?? 0) || b.id.localeCompare(a.id));
 }
 function yPostHtml(store: GameStore, p: YPost): string {
   const liked = !!store.ui.liked[p.id];
@@ -624,7 +644,7 @@ function pageApp(store: GameStore, param?: string): string {
     ? `<h1>Booking cancelled</h1><p class="pv-note ok">Your booking for ${cancelled.party} on Day ${cancelled.date} at ${esc(cancelled.time)} has been cancelled.</p><p class="pv-sub">We hope to see you another time.</p>`
     : undefined;
   const tmpl = store.content.apps[a.template];
-  return `<div class="pv-host">${renderAppSite(a, tmpl, cancel ? 'cancel' : sub, { booking, cancel })}</div>`;
+  return `<div class="pv-host">${renderAppSite(a, tmpl, cancel ? 'cancel' : sub, { booking, cancel, day: s.values.day, market: marketPosts(s, store.content) })}</div>`;
 }
 
 // ── agent chat (free-promptable, with costs) ──

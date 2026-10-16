@@ -1,0 +1,1157 @@
+{
+  "posts": [
+    {
+      "id": "m1_gai_escape",
+      "day": 1,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "General AI says its model \"almost escaped\" during testing. $GAI up 4% on the news.",
+      "likes": 320,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m1_gai_open",
+      "day": 1,
+      "from": "Ollie Banks",
+      "handle": "obanks",
+      "body": "Bought $GAI at the open. Not sure why. Everyone else was.",
+      "likes": 58,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m1_gai_value",
+      "day": 1,
+      "from": "quietquant",
+      "handle": "quietquant",
+      "body": "$GAI valuation makes no sense and I own it anyway.",
+      "likes": 77,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m2_vant_restructure",
+      "day": 2,
+      "from": "Brent Kowalski",
+      "handle": "brentk_capital",
+      "body": "$VANT up 8% after the AI restructuring. Cutting the dead weight.",
+      "likes": 412,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m2_nova_earnings",
+      "day": 2,
+      "from": "Dana Ruiz",
+      "handle": "danaruiz_trades",
+      "body": "Oh great, $NOVA misses earnings AGAIN. Truly the investment of a lifetime.",
+      "likes": 288,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bearish",
+      "literal": "bullish"
+    },
+    {
+      "id": "m2_gai_stunt",
+      "day": 2,
+      "from": "Tyler Moss",
+      "handle": "tylermoss",
+      "body": "General AI's \"it almost escaped\" stunt is genius marketing. Loading up on $GAI.",
+      "likes": 356,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m2_gai_bubble",
+      "day": 2,
+      "from": "Priya Shah",
+      "handle": "priyashah_cfa",
+      "body": "$GAI is a bubble and everyone knows it.",
+      "likes": 197,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m2_nova_bots",
+      "day": 2,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$NOVA to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish",
+      "bots": 30
+    },
+    {
+      "id": "m2_nova_band",
+      "day": 2,
+      "from": "Jess Park",
+      "handle": "jesspark",
+      "body": "Saw Nova live last night, unreal show.",
+      "likes": 64,
+      "tickers": [],
+      "mood": "bullish",
+      "decoy": "NOVA"
+    },
+    {
+      "id": "m2_vant_layoffs",
+      "day": 2,
+      "from": "Mara Vey",
+      "handle": "mara_vey",
+      "body": "Vantor ($VANT) laid off 400 people today.",
+      "likes": 240,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m2_gai_lower",
+      "day": 2,
+      "from": "Sam Ortiz",
+      "handle": "samortiz",
+      "body": "$gai holding up better than I expected after the stunt.",
+      "likes": 41,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m2_vant_lower",
+      "day": 2,
+      "from": "rk_dividends",
+      "handle": "rk_dividends",
+      "body": "Still holding $vant. The restructuring math works if you don't think about it.",
+      "likes": 52,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m2_nova_guidance",
+      "day": 2,
+      "from": "Lee Chen",
+      "handle": "leechen_inv",
+      "body": "$NOVA guidance for next quarter is flat. Holding, not adding.",
+      "likes": 88,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m3_gai_cfo",
+      "day": 3,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$GAI CFO says the company will be \"profitable in the long run.\" No date given.",
+      "likes": 144,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m3_vant_target",
+      "day": 3,
+      "from": "Brent Kowalski",
+      "handle": "brentk_capital",
+      "body": "Raising my $VANT target. Fewer employees, same revenue. That's the whole thesis.",
+      "likes": 203,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m3_nova_lower",
+      "day": 3,
+      "from": "Dana Ruiz",
+      "handle": "danaruiz_trades",
+      "body": "$nova down again. At this point I'm holding it out of spite.",
+      "likes": 95,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m3_gai_short",
+      "day": 3,
+      "from": "Priya Shah",
+      "handle": "priyashah_cfa",
+      "body": "Shorting $GAI. I've been wrong about it for a year, so the odds are improving.",
+      "likes": 132,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m3_nova_bots",
+      "day": 3,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$NOVA to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish",
+      "bots": 12
+    },
+    {
+      "id": "m4_gai_level2",
+      "day": 4,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$GAI up 6% on the agent level 2 launch.",
+      "likes": 276,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m4_vant_crane",
+      "day": 4,
+      "from": "Randall Crane",
+      "handle": "randall_crane",
+      "body": "Vantor ($VANT) fired 400 hardworking Americans and replaced them with a computer. Disgraceful. BELIEVE IT.",
+      "likes": 3120,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "bearish",
+      "crane": "criticism"
+    },
+    {
+      "id": "m4_vant_wonderful",
+      "day": 4,
+      "from": "Tyler Moss",
+      "handle": "tylermoss",
+      "body": "Oh wonderful, Crane is talking about $VANT. Can't wait to see what that does to my position.",
+      "likes": 87,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "bearish",
+      "literal": "bullish"
+    },
+    {
+      "id": "m4_nova_quiet",
+      "day": 4,
+      "from": "Lee Chen",
+      "handle": "leechen_inv",
+      "body": "Quiet day for $NOVA. Volume is the lowest since spring.",
+      "likes": 34,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m4_nova_bots",
+      "day": 4,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$NOVA to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish",
+      "bots": 15
+    },
+    {
+      "id": "m5_gai_breach",
+      "day": 5,
+      "from": "Priya Shah",
+      "handle": "priyashah_cfa",
+      "body": "Another data breach in the news and $GAI is up. Nothing touches this stock.",
+      "likes": 118,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m5_nova_impostor",
+      "day": 5,
+      "from": "Randall Crane",
+      "handle": "randa11_crane",
+      "body": "Huge fan of $NOVA. Great company, great people. The best.",
+      "likes": 19,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish",
+      "crane": "praise",
+      "impostor": true
+    },
+    {
+      "id": "m5_vant_lower",
+      "day": 5,
+      "from": "rk_dividends",
+      "handle": "rk_dividends",
+      "body": "$vant dividend unchanged. The 400 people weren't on the dividend.",
+      "likes": 61,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m5_nova_band",
+      "day": 5,
+      "from": "Jess Park",
+      "handle": "jesspark",
+      "body": "Nova announced a second show. Tickets gone in four minutes.",
+      "likes": 71,
+      "tickers": [],
+      "mood": "bullish",
+      "decoy": "NOVA"
+    },
+    {
+      "id": "m5_nova_bots",
+      "day": 5,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$NOVA to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish",
+      "bots": 10
+    },
+    {
+      "id": "m6_gai_rally",
+      "day": 6,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$GAI rallying after Randall Crane calls General AI \"an American success story.\"",
+      "likes": 402,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m6_gai_late",
+      "day": 6,
+      "from": "Ollie Banks",
+      "handle": "obanks",
+      "body": "Sold my $GAI on Friday. Great timing as always.",
+      "likes": 66,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bearish",
+      "literal": "bullish"
+    },
+    {
+      "id": "m6_vant_flat",
+      "day": 6,
+      "from": "quietquant",
+      "handle": "quietquant",
+      "body": "$VANT flat on the week. The market has moved on from the layoffs.",
+      "likes": 49,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m6_nova_earn",
+      "day": 6,
+      "from": "Lee Chen",
+      "handle": "leechen_inv",
+      "body": "$NOVA cutting costs ahead of next quarter. Read: people.",
+      "likes": 83,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m6_nova_bots",
+      "day": 6,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$NOVA to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish",
+      "bots": 12
+    },
+    {
+      "id": "m7_gai_policy",
+      "day": 7,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$GAI updates its usage policy. Shares unchanged. Users less so.",
+      "likes": 151,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m7_vant_buyback",
+      "day": 7,
+      "from": "Brent Kowalski",
+      "handle": "brentk_capital",
+      "body": "$VANT announces a buyback with the money it saved on salaries. Elegant.",
+      "likes": 188,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m7_nova_lower",
+      "day": 7,
+      "from": "Dana Ruiz",
+      "handle": "danaruiz_trades",
+      "body": "$nova up 2%. Don't get excited, it's a rounding error.",
+      "likes": 77,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m7_nova_bots",
+      "day": 7,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$NOVA to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish",
+      "bots": 10
+    },
+    {
+      "id": "m8_gai_laundry",
+      "day": 8,
+      "from": "Tyler Moss",
+      "handle": "tylermoss",
+      "body": "Even my laundromat has an app built with General AI now. Long $GAI.",
+      "likes": 95,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m8_vant_outplace",
+      "day": 8,
+      "from": "Mara Vey",
+      "handle": "mara_vey",
+      "body": "Vantor ($VANT) says its outplacement program has placed 0 of 400 former staff so far.",
+      "likes": 233,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m8_nova_lower",
+      "day": 8,
+      "from": "Priya Shah",
+      "handle": "priyashah_cfa",
+      "body": "$nova is the only stock I own that has never surprised me.",
+      "likes": 58,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m8_nova_bots",
+      "day": 8,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$NOVA to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish",
+      "bots": 10
+    },
+    {
+      "id": "m9_gai_level3",
+      "day": 9,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$GAI up 5% on agent level 3. Analysts call it \"a step change.\"",
+      "likes": 310,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m9_gai_doubt",
+      "day": 9,
+      "from": "quietquant",
+      "handle": "quietquant",
+      "body": "Every $GAI release is a step change. The steps just keep going down for everyone else.",
+      "likes": 112,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m9_nova_guidance",
+      "day": 9,
+      "from": "Lee Chen",
+      "handle": "leechen_inv",
+      "body": "$NOVA reaffirms guidance. Nobody asked.",
+      "likes": 29,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m9_nova_bots",
+      "day": 9,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$NOVA to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish",
+      "bots": 10
+    },
+    {
+      "id": "m10_gai_crane",
+      "day": 10,
+      "from": "Brent Kowalski",
+      "handle": "brentk_capital",
+      "body": "Crane campaign bots are all over Y and $GAI is up again. I'm not asking questions.",
+      "likes": 141,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m10_vant_lower",
+      "day": 10,
+      "from": "rk_dividends",
+      "handle": "rk_dividends",
+      "body": "$vant quietly hiring contractors for the roles it automated.",
+      "likes": 67,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m10_nova_band",
+      "day": 10,
+      "from": "Jess Park",
+      "handle": "jesspark",
+      "body": "Nova's new single is about a man who loses his job to a spreadsheet. Very relatable.",
+      "likes": 90,
+      "tickers": [],
+      "mood": "neutral",
+      "decoy": "NOVA"
+    },
+    {
+      "id": "m10_nova_bots",
+      "day": 10,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$NOVA to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish",
+      "bots": 14
+    },
+    {
+      "id": "m11_gai_poll",
+      "day": 11,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$GAI moves with Crane's poll numbers now. Make of that what you will.",
+      "likes": 188,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m11_vant_sell",
+      "day": 11,
+      "from": "Priya Shah",
+      "handle": "priyashah_cfa",
+      "body": "Sold my $VANT. The restructuring trade is done.",
+      "likes": 74,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m11_nova_up",
+      "day": 11,
+      "from": "Dana Ruiz",
+      "handle": "danaruiz_trades",
+      "body": "$NOVA up 3% and I don't know why. Not complaining.",
+      "likes": 62,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m11_nova_bots",
+      "day": 11,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$NOVA to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish",
+      "bots": 10
+    },
+    {
+      "id": "m12_gai_growth",
+      "day": 12,
+      "from": "Tyler Moss",
+      "handle": "tylermoss",
+      "body": "$GAI is the only stock where bad news and good news both go up.",
+      "likes": 133,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m12_vant_report",
+      "day": 12,
+      "from": "Mara Vey",
+      "handle": "mara_vey",
+      "body": "Vantor ($VANT) quarterly report out. Headcount down 400, executive bonuses up.",
+      "likes": 261,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m12_nova_lower",
+      "day": 12,
+      "from": "Lee Chen",
+      "handle": "leechen_inv",
+      "body": "$nova trading sideways for the third week.",
+      "likes": 31,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m12_nova_bots",
+      "day": 12,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$NOVA to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish",
+      "bots": 10
+    },
+    {
+      "id": "m13_gai_great",
+      "day": 13,
+      "from": "Ollie Banks",
+      "handle": "obanks",
+      "body": "Great, $GAI dips the one day I finally buy.",
+      "likes": 54,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bearish",
+      "literal": "bullish"
+    },
+    {
+      "id": "m13_vant_up",
+      "day": 13,
+      "from": "Brent Kowalski",
+      "handle": "brentk_capital",
+      "body": "$VANT up again. Turns out the dead weight was the people.",
+      "likes": 172,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m13_nova_cut",
+      "day": 13,
+      "from": "Priya Shah",
+      "handle": "priyashah_cfa",
+      "body": "$NOVA analyst downgrade. Price target cut by a third.",
+      "likes": 96,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m13_nova_bots",
+      "day": 13,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$NOVA to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish",
+      "bots": 10
+    },
+    {
+      "id": "m14_gai_level4",
+      "day": 14,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$GAI up 7% on agent level 4.",
+      "likes": 344,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m14_vant_flat",
+      "day": 14,
+      "from": "quietquant",
+      "handle": "quietquant",
+      "body": "$VANT flat. Nothing left to cut.",
+      "likes": 44,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m14_nova_lower",
+      "day": 14,
+      "from": "Dana Ruiz",
+      "handle": "danaruiz_trades",
+      "body": "$nova finally green. I'll believe it at close.",
+      "likes": 48,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m14_nova_bots",
+      "day": 14,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$NOVA to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish",
+      "bots": 10
+    },
+    {
+      "id": "m15_gai",
+      "day": 15,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$GAI hearing scheduled in Congress. Shares up on the publicity.",
+      "likes": 75,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m15_vant",
+      "day": 15,
+      "from": "Brent Kowalski",
+      "handle": "brentk_capital",
+      "body": "$VANT announces a second round of \"efficiencies.\"",
+      "likes": 128,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m15_nova",
+      "day": 15,
+      "from": "Lee Chen",
+      "handle": "leechen_inv",
+      "body": "$NOVA unchanged on no news.",
+      "likes": 181,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m15_nova_bots",
+      "day": 15,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$NOVA to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish",
+      "bots": 10
+    },
+    {
+      "id": "m16_gai",
+      "day": 16,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "Can't tell anymore if $GAI is a company or a weather system.",
+      "likes": 112,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m16_vant",
+      "day": 16,
+      "from": "Tyler Moss",
+      "handle": "tylermoss",
+      "body": "Brilliant, $VANT is \"exploring strategic options.\" Love that for us.",
+      "likes": 165,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "bearish",
+      "literal": "bullish"
+    },
+    {
+      "id": "m16_nova",
+      "day": 16,
+      "from": "Lee Chen",
+      "handle": "leechen_inv",
+      "body": "$NOVA earnings next week. Bracing.",
+      "likes": 218,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m16_nova_bots",
+      "day": 16,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$NOVA to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish",
+      "bots": 10
+    },
+    {
+      "id": "m17_gai",
+      "day": 17,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$GAI down 2% on a bad headline. Back up by lunch.",
+      "likes": 149,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m17_vant",
+      "day": 17,
+      "from": "Brent Kowalski",
+      "handle": "brentk_capital",
+      "body": "$VANT up 1%. It's been a boring stock since the layoffs.",
+      "likes": 202,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m17_nova",
+      "day": 17,
+      "from": "Dana Ruiz",
+      "handle": "danaruiz_trades",
+      "body": "Oh perfect, $NOVA beat earnings by a cent. Champagne for everyone.",
+      "likes": 255,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bearish",
+      "literal": "bullish"
+    },
+    {
+      "id": "m17_nova_bots",
+      "day": 17,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$NOVA to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish",
+      "bots": 10
+    },
+    {
+      "id": "m18_gai",
+      "day": 18,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$GAI up on agent level 5. Nobody I know can afford it.",
+      "likes": 186,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m18_vant",
+      "day": 18,
+      "from": "Mara Vey",
+      "handle": "mara_vey",
+      "body": "$VANT replaces its customer support with General AI. Calls now go nowhere faster.",
+      "likes": 239,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m18_nova",
+      "day": 18,
+      "from": "Lee Chen",
+      "handle": "leechen_inv",
+      "body": "$NOVA holding steady after earnings.",
+      "likes": 292,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m18_nova_bots",
+      "day": 18,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$NOVA to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish",
+      "bots": 10
+    },
+    {
+      "id": "m19_gai",
+      "day": 19,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$GAI market cap passes a small country's GDP. The country is not named.",
+      "likes": 223,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m19_vant",
+      "day": 19,
+      "from": "Brent Kowalski",
+      "handle": "brentk_capital",
+      "body": "$VANT down 3% on a lawsuit from former staff.",
+      "likes": 276,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m19_nova",
+      "day": 19,
+      "from": "Lee Chen",
+      "handle": "leechen_inv",
+      "body": "$NOVA guidance raised. First time in two years.",
+      "likes": 69,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m19_nova_bots",
+      "day": 19,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$NOVA to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish",
+      "bots": 10
+    },
+    {
+      "id": "m20_gai",
+      "day": 20,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$GAI flat ahead of the election.",
+      "likes": 260,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m20_vant",
+      "day": 20,
+      "from": "Brent Kowalski",
+      "handle": "brentk_capital",
+      "body": "$VANT flat ahead of the election.",
+      "likes": 53,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m20_nova",
+      "day": 20,
+      "from": "Lee Chen",
+      "handle": "leechen_inv",
+      "body": "$NOVA flat ahead of the election. Everything is flat ahead of the election.",
+      "likes": 106,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m20_nova_bots",
+      "day": 20,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$NOVA to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish",
+      "bots": 10
+    },
+    {
+      "id": "m21_gai",
+      "day": 21,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "Whatever happens tomorrow, $GAI wins. That's the trade.",
+      "likes": 297,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m21_vant",
+      "day": 21,
+      "from": "Brent Kowalski",
+      "handle": "brentk_capital",
+      "body": "$VANT under pressure as the layoff lawsuit grows.",
+      "likes": 90,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m21_nova",
+      "day": 21,
+      "from": "Lee Chen",
+      "handle": "leechen_inv",
+      "body": "$NOVA closes the month up 1%. I'll take it.",
+      "likes": 143,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m21_nova_bots",
+      "day": 21,
+      "from": "moonshot",
+      "handle": "moonshot",
+      "body": "$NOVA to the moon!!",
+      "likes": 1,
+      "tickers": [
+        "NOVA"
+      ],
+      "mood": "bullish",
+      "bots": 10
+    }
+  ],
+  "events": [
+    {
+      "event": "d6_y_crane_gai",
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish",
+      "crane": "praise",
+      "likes": 5210
+    }
+  ]
+}
