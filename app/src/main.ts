@@ -257,6 +257,12 @@ function pickContact(addr: string): void {
   syncMailTo();
   $<HTMLInputElement>('#mail-subject')?.focus();
 }
+// a conversation keeps the messages the player opened or closed when the page repaints (a click on the
+// summary, not 'toggle', which also fires when a message renders already open)
+document.addEventListener('click', (e) => {
+  const d = (e.target as HTMLElement).closest('summary')?.parentElement;
+  if (d instanceof HTMLDetailsElement && d.classList.contains('qm-msg') && d.dataset.msg) V.mailOpen.set(d.dataset.msg, !d.open);
+});
 document.addEventListener('focusin', (e) => { if ((e.target as HTMLElement).id === 'mail-to') showSuggestions(e.target as HTMLInputElement); });
 document.addEventListener('focusout', (e) => { if ((e.target as HTMLElement).id === 'mail-to') hideSuggestions(); });
 // mousedown, not click: a click would blur the field first and close the list before it registers

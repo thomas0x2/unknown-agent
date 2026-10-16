@@ -153,6 +153,8 @@ export interface MailEntry {
   generated?: boolean;
   /** App-sent mail (booking confirmations, test campaigns): a link the body can carry. */
   link?: string;
+  /** A bounce notice: the address the player's email failed to reach, so it joins that conversation. */
+  bounceOf?: string;
 }
 
 /** A Y post by someone else that isn't a content event: replies to the player, filler. */
