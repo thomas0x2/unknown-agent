@@ -25,10 +25,17 @@
           "payPerDay": 40,
           "spec": [
             {
-              "id": "landing"
+              "id": "landing",
+              "params": {
+                "name": "Trattoria Gino",
+                "hours": "17:00-22:00"
+              }
             },
             {
-              "id": "menu"
+              "id": "menu",
+              "params": {
+                "dishes": "Margherita 12, Diavola 14, Lasagne 15, Tiramisu 7, Espresso 3"
+              }
             }
           ]
         }

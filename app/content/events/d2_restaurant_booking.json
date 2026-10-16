@@ -17,6 +17,12 @@
       "add": [
         {
           "id": "booking"
+        },
+        {
+          "id": "menu",
+          "params": {
+            "dishes": "Margherita 12, Quattro Formaggi 15, Lasagne 15, Tiramisu 7, Espresso 3.5"
+          }
         }
       ]
     }

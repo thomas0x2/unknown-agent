@@ -30,7 +30,12 @@ export function applyEffects(s: GameState, effects?: Effects, job?: JobSpec, eve
     if (app) {
       for (const f of up.add) {
         if (!app.required.includes(f.id)) app.required.push(f.id);
-        if (f.params) app.specParams[f.id] = f.params;
+        if (f.params) {
+          const changed = JSON.stringify(app.specParams[f.id] ?? null) !== JSON.stringify(f.params);
+          app.specParams[f.id] = f.params;
+          // the client changed what this feature should say: what's built (and live) is now out of date
+          if (changed) for (const b of [...app.repo, ...app.features]) if (b.id === f.id && b.correct) { b.correct = false; b.variant = 'outdated'; }
+        }
       }
     }
   }

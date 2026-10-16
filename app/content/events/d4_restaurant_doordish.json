@@ -16,6 +16,12 @@
       "add": [
         {
           "id": "doordish"
+        },
+        {
+          "id": "menu",
+          "params": {
+            "dishes": "Margherita 12, Quattro Formaggi 15, Pizza Funghi 13, Tiramisu 8, Espresso 3.5"
+          }
         }
       ]
     }

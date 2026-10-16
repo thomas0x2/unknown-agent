@@ -38,7 +38,7 @@ export const SITES: SiteDef[] = [
 export interface Route {
   site: SiteId;
   def?: SiteDef;
-  /** sub-path param: a Y handle, a Forkyard repo, or an app id. */
+  /** sub-path param: a Y handle, a Forkyard repo, or an app id (with its page, as id/page). */
   param?: string;
   reachable: boolean;
 }
@@ -51,10 +51,10 @@ export function route(url: string, s: GameState): Route {
   if (!u || u === 'newtab') return { site: 'newtab', reachable: true };
 
   // deployed app URLs: <something>.forkyard.app
-  const appMatch = u.match(/^([a-z0-9-]+)\.forkyard\.app$/);
+  const appMatch = u.match(/^([a-z0-9-]+\.forkyard\.app)(?:\/([a-z0-9-]+))?$/);
   if (appMatch) {
-    const app = s.apps.find((a) => a.url === u);
-    return { site: 'app', param: app?.id, reachable: !!app && app.deployed };
+    const app = s.apps.find((a) => a.url === appMatch[1]);
+    return { site: 'app', param: app && (appMatch[2] ? `${app.id}/${appMatch[2]}` : app.id), reachable: !!app && app.deployed };
   }
 
   for (const def of SITES) {
