@@ -790,7 +790,7 @@ function pageEmpire(s: GameState): string {
     : `<button class="em-cta" data-empire-join${short ? ' disabled' : ''}>Join EMPIRE · ${EMPIRE.price} DOLR</button>
        ${short ? `<p class="em-fine">Your wallet holds ${s.values.crypto.toFixed(2)} DOLR.</p>` : ''}`;
   return `<div class="em">
-    <header class="em-top"><b>ALPHA ASCEND</b><span>Max Stryker</span></header>
+    <header class="em-top"><b><span class="em-mark">${ICONS.empire}</span>ALPHA ASCEND</b><span>Max Stryker</span></header>
     <section class="em-hero">
       <p class="em-kicker">The course</p>
       <h1>EMPIRE</h1>
