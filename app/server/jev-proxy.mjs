@@ -200,7 +200,7 @@ async function buildMatch(sdk, body) {
     // each item is matched on its own: naming one part must not pull in the others on the same page
     const q = {
       // a fix has to say which part is wrong: naming the part, or a symptom only that part can have
-      component: `Does the prompt say this exact part of the app is wrong or broken? Yes only if the prompt names this part in any words ("the menu prices", "the date on the confirmation", "the P&L"), or describes a problem that this part has and none of the other parts listed could have ("the prices are in CURO", "the email has the wrong day"). Hedging is fine ("seems off"). Judge each complaint in the prompt on its own: a prompt can name several parts, and this part matches only if one of its complaints is about this part. No if the complaints fit one of the other parts listed better, even when they share words with this one (picking a date in the past is about the dates the form offers, not the date on the confirmation or the opening hours), if the prompt only says the feature this part belongs to is wrong without saying which part ("the menu is wrong", "fix the booking"), or if it points at no part of the app ("it's broken", "fix it"). ${context}${named} Part: ${f.description}`,
+      component: `Does the prompt say this exact part of the app is wrong or broken? Yes only if the prompt names this part in any words ("the menu prices", "the date on the confirmation", "the P&L"), or describes a problem that this part has and none of the other parts listed could have ("the prices are in CURO", "the email has the wrong day"). Hedging is fine ("seems off"). Judge each complaint in the prompt on its own: a prompt can name several parts, and this part matches only if one of its complaints is about this part. No if the complaints fit one of the other parts listed better, even when they share words with this one (picking a date in the past is about the dates the form offers, not the date on the confirmation or the opening hours), if the prompt only says the feature this part belongs to is wrong without saying which part ("the menu is wrong", "fix the booking"), or if it points at no part of the app ("it's broken", "fix it"). A general complaint about the whole feature ("the portfolio numbers look wrong") names none of its parts. When in doubt, say no. ${context}${named} Part: ${f.description}`,
       // the near-miss: the feature is named, the part isn't
       area: `Does the prompt say something is wrong or broken with this feature without saying which of its parts? Yes for "the menu is wrong", "the booking doesn't work", "something's off with the portfolio". No if it names or describes one of the parts listed, if it's about a different feature, if it only asks to build, add or change the feature, or if it names no feature at all ("it's broken"). ${context}${named} Feature: ${f.description}`,
       problem: `Does the prompt report this problem or a symptom of it, in any words? Yes if it names the problem or describes what the player sees, even loosely or with hedging. No if it describes a clearly different problem, or points at nothing the player saw ("it's broken", "fix it"). ${context}${named} Problem: ${f.description}`,
@@ -237,7 +237,9 @@ async function handle(kind, body) {
     // score is the expected rubric level, 0..4
     return { status: 200, json: { category: answers.category?.choice ?? 'tip', quality: (answers.quality?.score ?? 2) / 4 } };
   }
-  const features = (body.features ?? []).filter((f, i) => (answers[`f${i}`]?.noul ?? 0) >= 0.5).map((f) => f.id);
+  // a component counts only when Jev is fairly sure: a fix should touch what the player named and nothing near it
+  const bar = (f) => (f.kind === 'component' ? 0.75 : 0.5);
+  const features = (body.features ?? []).filter((f, i) => (answers[`f${i}`]?.noul ?? 0) >= bar(f)).map((f) => f.id);
   return { status: 200, json: features };
 }
 
