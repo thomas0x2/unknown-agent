@@ -450,6 +450,14 @@ export const UNNAMED_BUG = 'unnamed';
 export function nameUnnamedBugs(s: GameState, content: Content): void {
   for (const app of s.apps) {
     const tmpl = content.apps[app.template];
+    // features since dropped from the template (the crawler's top posts) leave the app entirely
+    if (tmpl?.features.length) {
+      const known = (id: string) => tmpl.features.some((d) => d.id === id);
+      app.required = app.required.filter(known);
+      app.repo = app.repo.filter((f) => known(f.id));
+      app.features = app.features.filter((f) => known(f.id));
+      app.breaks = app.breaks.filter((b) => known(b.featureId));
+    }
     for (const f of [...app.repo, ...app.features]) {
       const bugs = tmpl?.features.find((d) => d.id === f.id)?.bugs ?? [];
       // a bug that has since been removed from the content counts as unnamed

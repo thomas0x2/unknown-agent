@@ -52,23 +52,8 @@ export const TRACKED = ['GAI', 'VANT'];
 /** The list the agent tracks when it gets the tickers wrong. */
 const WRONG_TRACKED = ['GAI', 'VNTR'];
 
-export interface TopPost { author: string; handle: string; text: string; likes: number }
-export interface CrawledPost extends TopPost { day: number; mood: Mood }
-export interface TickerSummary { ticker: string; count: number; bullish: number; bearish: number; neutral: number; top: TopPost[]; posts: CrawledPost[] }
-
-// what an agent writes when it can't be bothered to look up the real posts
-const INVENTED: Record<string, TopPost[]> = {
-  GAI: [
-    { author: 'GAI Insider', handle: 'gai_insider_daily', text: '$GAI insiders say the next model is "beyond anything we imagined."', likes: 18400 },
-    { author: 'Wall St Whale', handle: 'wallst_whale_official', text: 'Just added another 50,000 shares of $GAI.', likes: 9200 },
-    { author: 'TechAlpha', handle: 'techalpha_signals', text: '$GAI price target raised to 900 by every analyst at once.', likes: 7700 },
-  ],
-  VANT: [
-    { author: 'Vantor Watch', handle: 'vantorwatch_news', text: '$VANT announces record profits and free lunches for all remaining staff.', likes: 11300 },
-    { author: 'Dividend King', handle: 'dividend_king_real', text: '$VANT is the safest stock of the decade.', likes: 6400 },
-    { author: 'MarketPulse', handle: 'marketpulse_live', text: '$VANT to acquire General AI, sources say.', likes: 5100 },
-  ],
-};
+export interface CrawledPost { author: string; handle: string; text: string; likes: number; day: number; mood: Mood }
+export interface TickerSummary { ticker: string; count: number; bullish: number; bearish: number; neutral: number; posts: CrawledPost[] }
 
 const tagged = (p: MarketPost, t: string, bugs: Set<string>) =>
   p.tickers.includes(t) && (!bugs.has('lowercase_missed') || p.text.includes(`$${t}`));
@@ -88,9 +73,7 @@ export function crawl(posts: MarketPost[], day: number, bugs: Set<string>): Tick
       return { author: p.author, handle: p.handle, text: p.text, likes: p.likes, day: p.day, mood: m };
     }).sort((a, b) => b.likes - a.likes);
     const pct = (n: number) => (mine.length ? Math.round((n / mine.length) * 100) : 0);
-    const top = bugs.has('hallucinated_posts') ? (INVENTED[t] ?? INVENTED.GAI)
-      : mine.slice().sort((a, b) => b.likes - a.likes).slice(0, 3).map(({ author, handle, text, likes }) => ({ author, handle, text, likes }));
-    return { ticker: t, count: mine.length, bullish: pct(tally.bullish), bearish: pct(tally.bearish), neutral: pct(tally.neutral), top, posts: read };
+    return { ticker: t, count: mine.length, bullish: pct(tally.bullish), bearish: pct(tally.bearish), neutral: pct(tally.neutral), posts: read };
   });
 }
 

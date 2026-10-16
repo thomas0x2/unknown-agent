@@ -8,7 +8,7 @@
     "dayMin": 2
   },
   "latent": true,
-  "body": "Spec: $GAI and $VANT. Per ticker: today's post count, bullish/bearish/neutral split, top 3 posts by engagement. No bots, no spam. Portfolio view: holdings, cash, today's change.",
+  "body": "Spec: $GAI and $VANT. Per ticker: today's post count, bullish/bearish/neutral split, and every post it counted. No bots, no spam. Portfolio view: holdings, cash, today's change.",
   "outcomes": [
     {
       "id": "offer",
@@ -32,9 +32,6 @@
             },
             {
               "id": "filter"
-            },
-            {
-              "id": "top_posts"
             },
             {
               "id": "portfolio"

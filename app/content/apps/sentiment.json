@@ -98,34 +98,6 @@
       ]
     },
     {
-      "id": "top_posts",
-      "description": "link the three most-engaged posts per ticker",
-      "failures": [
-        "subtle"
-      ],
-      "complaints": {
-        "missing": "no top posts.",
-        "down": "top posts won't load.",
-        "wrong": "the top posts link to accounts that don't exist.",
-        "hallucinated_posts": "the top posts link to accounts that don't exist."
-      },
-      "match": "\\b(top posts?|most[- ]engaged|engagement|post links?)\\b",
-      "bugs": [
-        {
-          "id": "hallucinated_posts",
-          "when": "top posts that don't exist on Y",
-          "match": "\\b(hallucinat\\w*|made[- ]up|fake|invented|don'?t exist|doesn'?t exist|not real|nonexistent|non-existent)\\b"
-        }
-      ],
-      "checklist": [
-        {
-          "id": "engaged",
-          "text": "most engaged",
-          "bug": "hallucinated_posts"
-        }
-      ]
-    },
-    {
       "id": "portfolio",
       "description": "a portfolio view of the trader's holdings, cash and today's change",
       "failures": [

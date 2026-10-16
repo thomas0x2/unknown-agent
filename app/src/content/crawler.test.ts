@@ -43,12 +43,12 @@ describe('stock posts on Y', () => {
 describe('sentiment crawler', () => {
   const posts = marketPosts(onDay(2), content);
 
-  it('built right: today, $-tagged, no bots, sarcasm read as bearish, real top posts', () => {
+  it('built right: today, $-tagged, no bots, sarcasm read as bearish, every counted post', () => {
     const r = crawl(posts, 2, bugs());
     expect(row(r, 'GAI')).toMatchObject({ count: 3, bullish: 67, bearish: 33, neutral: 0 });
     expect(row(r, 'VANT')).toMatchObject({ count: 4, bullish: 50, neutral: 25, bearish: 25 });
     expect(r.map((x) => x.ticker)).toEqual(['GAI', 'VANT']);
-    expect(row(r, 'VANT').top[0].handle).toBe('brentk_capital');
+    expect(row(r, 'VANT').posts[0].handle).toBe('brentk_capital');
   });
 
   it('each bug shows up in the numbers', () => {
@@ -57,8 +57,6 @@ describe('sentiment crawler', () => {
     expect(row(crawl(posts, 2, bugs('inverted')), 'GAI')).toMatchObject({ bullish: 33, bearish: 67 });
     expect(row(crawl(posts, 2, bugs('lowercase_missed')), 'GAI').count).toBe(2);
     expect(crawl(posts, 2, bugs('wrong_tickers')).map((r) => r.ticker)).toContain('VNTR');
-    const handles = new Set(posts.map((p) => p.handle));
-    expect(row(crawl(posts, 2, bugs('hallucinated_posts')), 'GAI').top.every((p) => !handles.has(p.handle))).toBe(true);
   });
 
   it('lists every crawled post with the mood it read, bugs included', () => {
@@ -187,7 +185,6 @@ const ASKS: Record<string, [string, string, Record<string, string>]> = {
     inverted: 'Bullish and bearish are swapped in the sentiment split.',
     sarcasm_literal: 'The sentiment reads sarcastic posts literally.',
     bots_counted: 'It counts bot spam.',
-    hallucinated_posts: "The top posts are made up, those accounts don't exist.",
     wrong_totals: 'The portfolio totals are wrong.',
     stale_after_buy: "The portfolio doesn't update after a buy.",
     change_wrong: "Today's change in the portfolio is wrong, it shows the change since the start.",
@@ -242,5 +239,10 @@ describe('fixing them', () => {
     getApp(s, id)!.repo[0] = { id: 'tickers', correct: false, seed: 0, variant: 'wrong_window' };
     nameUnnamedBugs(s, content);
     expect(content.apps.sentiment.features[0].bugs!.map((b) => b.id)).toContain(getApp(s, id)!.repo[0].variant);
+    // and a feature that was since removed leaves the app
+    const a = getApp(s, id)!;
+    a.required.push('top_posts'); a.repo.push({ id: 'top_posts', correct: true }); a.features.push({ id: 'top_posts', correct: true });
+    nameUnnamedBugs(s, content);
+    expect([...a.required, ...a.repo.map((f) => f.id), ...a.features.map((f) => f.id)]).not.toContain('top_posts');
   });
 });

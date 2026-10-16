@@ -154,34 +154,35 @@ function portfolioPanel(pf: Portfolio, history: number[], day: number): string {
 function crawler(app: AppInstance, tmpl: AppTemplate | undefined, page: string | undefined, extras: SiteExtras): string {
   const day = extras.day ?? 1;
   const posts = extras.market ?? [];
-  const f = Object.fromEntries(['tickers', 'sentiment', 'filter', 'top_posts', 'portfolio', 'auto_buy'].map((id) => [id, live(app, tmpl, id)]));
+  const f = Object.fromEntries(['tickers', 'sentiment', 'filter', 'portfolio', 'auto_buy'].map((id) => [id, live(app, tmpl, id)]));
   const bugs = new Set(Object.values(f).flatMap((l) => [...l.bugs]));
   // without the filter it counts everything it finds
   if (!f.filter.built) { bugs.add('bots_counted'); }
   const head = `<header class="as-s-head"><b>${esc(app.name)}</b><span>$-tagged posts on Y</span></header>`;
-  if (page && page !== 'dash') return `<div class="as as-s">${head}<main>${notFound()}</main></div>`;
+  // a ticker's page is the dashboard with that ticker's posts open in a window on top
+  const open = page && page !== 'dash' ? page.toUpperCase() : undefined;
+  let modal = '';
   let body: string;
   if (!f.tickers.built) body = `<p class="as-s-empty">Nothing tracked yet.</p>`;
   else {
     // the posts come in one fetch: if it fails, every card keeps yesterday's summary (or nothing, on the first day)
-    const fetchFailed = ['tickers', 'sentiment', 'filter', 'top_posts'].some((id) => f[id].brk?.failure === 'failed_fetch');
+    const fetchFailed = ['tickers', 'sentiment', 'filter'].some((id) => f[id].brk?.failure === 'failed_fetch');
     const dataDay = fetchFailed ? day - 1 : day;
     const rows = crawl(fetchFailed && dataDay < 1 ? [] : posts, dataDay, bugs);
     const cards = rows.map((r) => {
       const split = f.sentiment.built && r.count
         ? `<div class="as-s-bar"><i class="bull" style="width:${r.bullish}%"></i><i class="neu" style="width:${r.neutral}%"></i><i class="bear" style="width:${r.bearish}%"></i></div>
            <p class="as-s-split"><span class="bull">${r.bullish}% bullish</span><span>${r.neutral}% neutral</span><span class="bear">${r.bearish}% bearish</span></p>` : '';
-      let top = '';
-      if (f.top_posts.built) {
-        top = (f.top_posts.brk?.failure === 'visible' ? outage(f.top_posts, 'the top posts') : null) ?? (r.top.length
-          ? `<ol class="as-s-top">${r.top.map((p) => `<li><a href="#" data-nav="y.com/${esc(p.handle)}">@${esc(p.handle)}</a> ${esc(p.text)} <small>${p.likes.toLocaleString('en-US')} likes</small></li>`).join('')}</ol>`
-          : '');
+      if (r.ticker === open) {
+        // every post it counted, with the mood it read: the debug view
+        const list = r.posts.length
+          ? `<ul>${r.posts.map((p) => `<li>${f.sentiment.built ? `<span class="as-s-mood ${p.mood}">${p.mood}</span>` : ''}<div><a href="#" data-nav="y.com/${esc(p.handle)}">@${esc(p.handle)}</a> <small>${dateShort(p.day)} · ${p.likes.toLocaleString('en-US')} likes</small><p>${esc(p.text)}</p></div></li>`).join('')}</ul>`
+          : '<p class="as-s-none">No posts crawled.</p>';
+        modal = `<div class="as-s-modal" role="dialog" aria-label="$${esc(r.ticker)} crawled posts"><div class="as-s-win">
+          <header><b>$${esc(r.ticker)}</b><span>${r.count} crawled post${r.count === 1 ? '' : 's'} · ${dateShort(dataDay < 1 ? day : dataDay)}</span><a href="#" class="as-s-x" data-nav="${esc(app.url)}" aria-label="Close">×</a></header>
+          <div class="as-s-list">${list}</div></div></div>`;
       }
-      // the debug view: every post it counted, with the mood it read
-      const all = r.posts.length
-        ? `<details class="as-s-all"><summary>All crawled posts (${r.count})</summary><ul>${r.posts.map((p) => `<li>${f.sentiment.built ? `<span class="as-s-mood ${p.mood}">${p.mood}</span>` : ''}<a href="#" data-nav="y.com/${esc(p.handle)}">@${esc(p.handle)}</a> ${esc(p.text)} <small>${p.likes.toLocaleString('en-US')} likes</small></li>`).join('')}</ul></details>`
-        : '';
-      return `<section class="as-s-card"><h2>$${esc(r.ticker)}</h2><p class="as-s-count"><b>${r.count}</b> post${r.count === 1 ? '' : 's'} today</p>${split}${top}${all}</section>`;
+      return `<section class="as-s-card" data-nav="${esc(app.url)}/${r.ticker.toLowerCase()}" title="Show all crawled posts"><h2>$${esc(r.ticker)}</h2><p class="as-s-count"><b>${r.count}</b> post${r.count === 1 ? '' : 's'} today</p>${split}<span class="as-s-more">All crawled posts →</span></section>`;
     }).join('');
     body = `<p class="as-s-upd">Updated ${dateShort(dataDay < 1 ? day : dataDay)}</p><div class="as-s-grid">${cards}</div>`;
   }
@@ -204,7 +205,8 @@ function crawler(app: AppInstance, tmpl: AppTemplate | undefined, page: string |
       ? `<table class="as-s-trades"><thead><tr><th>Date</th><th>Order</th><th>Fill</th><th>Cost</th><th>Position</th><th>Signal</th></tr></thead><tbody>${log}</tbody></table>`
       : '<p>No trades yet. Watching @randall_crane.</p>'}</section>`;
   }
-  return `<div class="as as-s">${head}<main>${body}</main></div>`;
+  if (open && !modal) return `<div class="as as-s">${head}<main>${notFound()}</main></div>`;
+  return `<div class="as as-s">${head}<main>${body}</main>${modal}</div>`;
 }
 
 // ── laundromat ──
