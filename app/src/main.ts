@@ -47,6 +47,7 @@ const trendingToday = () => store.content.trending[store.state.values.day] ?? []
 let lastSite = '';
 let lastUrl = '';
 let shownPage = '';
+let shownMenu = '';
 
 // Unsent text in every page's fields, keyed by the page's URL. Cleared when a form is sent.
 const drafts = new Map<string, Record<string, string>>();
@@ -165,7 +166,10 @@ function render(): void {
   $('#dk-tasks')!.innerHTML = V.tasksHtml(store);
   renderTerm();
   $('#clock')!.innerHTML = V.clockHtml(s);
-  const menu = $('#startmenu')!; menu.hidden = !store.ui.start; if (document.activeElement?.id !== 'snd-vol' || !store.ui.start) menu.innerHTML = store.ui.start ? V.startMenuHtml(store) : '';
+  const menu = $('#startmenu')!; menu.hidden = !store.ui.start;
+  // only redraw the menu when it changed, so an open dropdown in it survives the clock ticking
+  const menuHtml = store.ui.start ? V.startMenuHtml(store) : '';
+  if (menuHtml !== shownMenu && (document.activeElement?.id !== 'snd-vol' || !store.ui.start)) { menu.innerHTML = menuHtml; shownMenu = menuHtml; }
   const startBtn = $('#dk-home')!; startBtn.classList.toggle('on', store.ui.start); startBtn.setAttribute('aria-expanded', String(store.ui.start));
 
   const ov = $('#overlay')!; const oh = V.overlayHtml(store); ov.innerHTML = oh; ov.hidden = !oh;
