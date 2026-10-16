@@ -10,7 +10,7 @@ import { listSlots, autoSlot } from '../game/saves';
 import { ICONS, Y_ICONS } from './icons';
 import { route, bookmarks, type Route, type SiteId } from '../sites/registry';
 import {
-  type GameState, type AppInstance, getApp, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, EMPIRE,
+  type GameState, type AppInstance, getApp, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, EMPIRE, BOUNCE_ADDR,
 } from '../engine';
 import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
@@ -222,12 +222,11 @@ function pageMail(store: GameStore, param?: string): string {
   let main: string;
   if (view === 'compose') {
     const d = store.ui.draft || { to: '', subject: '', body: '' };
-    const waiting = s.sentToday.includes(String(d.to).trim().toLowerCase());
     // only people the player has already exchanged mail with; a first message is always typed by hand
     const known = new Map<string, string>();
     for (const r of rows) {
       const addr = r.folder === 'sent' ? r.to : r.addr;
-      if (!addr || addr === PLAYER.addr) continue;
+      if (!addr || addr === PLAYER.addr || addr === BOUNCE_ADDR) continue;
       const name = r.folder === 'inbox' ? r.from : store.content.contacts.find((c) => c.key === addr)?.name;
       if (!known.has(addr) || (name && known.get(addr) === addr)) known.set(addr, name || addr);
     }
@@ -238,8 +237,7 @@ function pageMail(store: GameStore, param?: string): string {
         <ul id="qm-sugg" class="qm-sugg" role="listbox" hidden data-contacts="${esc(JSON.stringify(contacts))}"></ul></div>
       <label class="qm-field"><span>Subject</span><input id="mail-subject" autocomplete="off" value="${esc(d.subject)}"></label>
       <textarea id="mail-body" rows="10" aria-label="Message">${esc(d.body)}</textarea>
-      <p class="qm-wait" id="mail-wait"${waiting ? '' : ' hidden'}>You already wrote to this address today. Wait for a reply or for tomorrow.</p>
-      <div class="qm-actions"><button class="qm-btn" type="submit"${waiting ? ' disabled' : ''}>Send</button><button class="qm-btn ghost" type="button" data-mail-discard>Discard</button><span class="qm-hint">Free, one message per person per day.</span></div>
+      <div class="qm-actions"><button class="qm-btn" type="submit">Send</button><button class="qm-btn ghost" type="button" data-mail-discard>Discard</button><span class="qm-hint">Free. One email per person per day.</span></div>
     </form>`;
   } else if (view === 'msg') {
     const row = rows.find((x) => x.id === param);
@@ -248,7 +246,7 @@ function pageMail(store: GameStore, param?: string): string {
       if (row.unread) store.markReadMail(row.id);
       // every inbox mail gets the same reply box; story events Jev still wants answered route to the
       // event, everything else is sent as an ordinary email back to the sender
-      const canReply = row.folder === 'inbox' && (row.needsReply || !!row.addr);
+      const canReply = row.folder === 'inbox' && (row.needsReply || (!!row.addr && row.addr !== BOUNCE_ADDR));
       const target = row.needsReply
         ? `data-id="${esc(row.eventId ?? '')}"`
         : `data-to="${esc(row.addr)}" data-subject="${esc(/^re:/i.test(row.subject) ? row.subject : 'Re: ' + row.subject)}"`;
@@ -263,7 +261,7 @@ function pageMail(store: GameStore, param?: string): string {
         ${row.link === 'cancel' ? `<p class="qm-actions"><button class="qm-btn ghost" data-cancel-booking="${esc(row.id.slice(2))}">Cancel booking</button></p>` : ''}
         ${row.generated ? `<p class="qm-gen">Reply written by ${esc(MISSES.label())}</p>` : ''}
         ${canReply ? `<form class="qm-reply" data-form="reply" ${target}>
-          <div class="qm-reply-head"><span class="qm-reply-to">Reply to <b>${esc(row.from)}</b></span><span class="qm-reply-hint">One message until they reply</span></div>
+          <div class="qm-reply-head"><span class="qm-reply-to">Reply to <b>${esc(row.from)}</b></span><span class="qm-reply-hint">One email per person per day</span></div>
           <textarea id="reply-body" rows="3" placeholder="Write your reply…" ${store.busy ? 'disabled' : ''}></textarea>
           <div class="qm-reply-foot"><span class="qm-reply-cta">⏎ to send · ⇧⏎ for a new line</span><button class="qm-btn" type="submit" ${store.busy ? 'disabled' : ''}>Send reply</button></div>
         </form>` : ''}
