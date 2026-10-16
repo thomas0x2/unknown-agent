@@ -92,6 +92,7 @@ export function makeContent(extra: Partial<Content> = {}): Content {
     qmailSpam: extra.qmailSpam ?? [],
     trending: extra.trending ?? {},
     contacts: extra.contacts ?? [],
+    characters: extra.characters,
     agent: extra.agent,
   };
 }

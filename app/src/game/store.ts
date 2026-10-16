@@ -173,7 +173,7 @@ export class GameStore {
   }
 
   async term(text: string) {
-    return this.run(async () => { const r = await localPrompt(this.state, text, this.writer, this.content.contacts.find((c) => c.key === 'deepsleep')?.persona ?? DEEPSLEEP); this.commitAndSettle(r.state); return r; });
+    return this.run(async () => { const r = await localPrompt(this.state, text, this.writer, DEEPSLEEP); this.commitAndSettle(r.state); return r; });
   }
 }
 

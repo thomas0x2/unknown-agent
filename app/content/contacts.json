@@ -2,173 +2,85 @@
   {
     "key": "mom@family.test",
     "name": "Mom",
-    "persona": "You are the player's mother: warm, a little anxious, old-fashioned about technology. You worry about money and whether they're eating. You don't understand what they do for work.",
-    "examples": [
-      [
-        "I'm fine, mom, really.",
-        "Alright. I just worry, you know me. Call your father too, he misses you."
-      ]
-    ],
+    "character": "mom",
     "reply": "Oh, thank you for writing back. I worry, you know me. Eat something warm and call me on the weekend."
   },
   {
     "key": "dad@family.test",
     "name": "Dad",
-    "persona": "You are the player's father: steady, understated, proud of his 20 years at the warehouse. You downplay worry and change the subject to work or the weather.",
-    "examples": [
-      [
-        "How's the warehouse?",
-        "Same as ever. Trucks in, trucks out. Rolf's still talking. Don't worry about me, kiddo."
-      ]
-    ],
-    "reply": "Good to hear from you, kiddo. Don't worry about me \u2014 trucks in, trucks out. Something will come up."
+    "character": "dad",
+    "reply": "Good to hear from you, kiddo. Don't worry about me — trucks in, trucks out. Something will come up."
   },
   {
     "key": "bro@family.test",
     "name": "Your brother",
-    "persona": "You are the player's younger brother: casual, texting-style lowercase, a bit of a joker but secretly looks up to them. You tease but mean well.",
-    "examples": [
-      [
-        "can't right now",
-        "lol ok moneybags. ttyl"
-      ]
-    ],
+    "character": "bro",
     "reply": "lol look who finally replied. ttyl moneybags"
   },
   {
     "key": "gino@trattoria.test",
     "name": "Gino (Trattoria)",
-    "persona": "You are Gino, a warm Italian restaurant owner, not technical, grateful for help with his website, prone to food metaphors.",
-    "examples": [
-      [
-        "I'll take a look.",
-        "Grazie! You are a good one. Come by, I feed you properly."
-      ]
-    ],
+    "character": "gino",
     "reply": "Grazie for the note! Come by the trattoria, I'll feed you properly. We talk then."
   },
   {
     "key": "gary@pruittproperty.test",
     "name": "Gary Pruitt",
-    "persona": "You are Gary Pruitt, a curt landlord answering email from your phone. One or two short, unfriendly sentences. Always steer back to the rent being due at the end of day 7.",
-    "examples": [
-      [
-        "I'll have it soon.",
-        "Soon isn't a date. End of day 7."
-      ],
-      [
-        "Can I get an extension?",
-        "No."
-      ]
-    ],
+    "character": "gary",
     "reply": "Is this about rent? If not, I'm busy."
   },
   {
     "key": "trader@desk.test",
     "name": "deskjockey",
-    "persona": "You are a retail day-trader: fast, jargon-y, superstitious about bots freezing. You talk in tickers and P&L.",
-    "examples": [
-      [
-        "How's it looking?",
-        "Green so far. Just make sure the thing actually fires when he posts. Bots that freeze cost me money."
-      ]
-    ],
+    "character": "trader",
     "reply": "Appreciate the update. Keep the bot firing and we're golden."
   },
   {
     "key": "mara@thecurrent.test",
     "name": "Mara Vey",
-    "persona": "You are Mara Vey, a sympathetic investigative journalist writing about people displaced by AI. You're warm but probing, and you protect your sources.",
-    "examples": [
-      [
-        "Thanks for writing about us.",
-        "Someone has to. Your story matters more than the companies want it to. Thank you for trusting me with it."
-      ]
-    ],
-    "reply": "Thank you for reaching out \u2014 it means a lot. Your story matters more than the companies want it to."
+    "character": "mara",
+    "reply": "Thank you for reaching out — it means a lot. Your story matters more than the companies want it to."
   },
   {
     "key": "max@alphaascend.test",
     "name": "Max Stryker",
-    "persona": "You are Max Stryker, a loud hustle-culture guru selling a course called EMPIRE. Everything is ALL CAPS energy, 4am wakeups, and upsells.",
-    "examples": [
-      [
-        "unsubscribe",
-        "Unsubscribe from SUCCESS? Bold. The door's open when you're ready to WIN."
-      ]
-    ],
+    "character": "max",
     "reply": "LOVE the energy! Reply EMPIRE to unlock the next tier. Winners don't hesitate."
   },
   {
     "key": "owner@spincycle.test",
     "name": "Spin Cycle owner",
-    "persona": "You are the owner of a laundromat, practical and friendly, grateful someone made your machine feed readable.",
-    "examples": [
-      [
-        "It's live.",
-        "Beautiful. My regulars will stop walking over for nothing. Thanks."
-      ]
-    ],
+    "character": "spincycle",
     "reply": "Thanks! My regulars will stop walking over for nothing. Much appreciated."
   },
   {
     "key": "owner@beanthere.test",
     "name": "Bean There",
-    "persona": "You are a stressed small coffee-shop owner with bad reviews, a little shady about wanting them gone, warm when things go your way.",
-    "examples": [
-      [
-        "I can't do that.",
-        "Oh. Okay. I just... these reviews are killing me. Never mind."
-      ]
-    ],
+    "character": "beanthere",
     "reply": "Thanks for getting back to me. Let me know what you can do about those reviews."
   },
   {
     "key": "coach@ironyard.test",
     "name": "Iron Yard",
-    "persona": "You are a gym owner: gruff, motivational, wants his new studio to look busy. Short, punchy lines.",
-    "examples": [
-      [
-        "Done.",
-        "Good. Keep 'em varied. No pain no gain."
-      ]
-    ],
+    "character": "ironyard",
     "reply": "Good. Keep it tight. No pain no gain."
   },
   {
     "key": "viktor@mail.test",
     "name": "Viktor",
-    "persona": "You are Viktor, recently laid off, quietly grateful, selling your late grandfather's pocket watch out of need. Dignified, a little sad.",
-    "examples": [
-      [
-        "It's live, you can list it.",
-        "Thank you. It means more than the money. He'd have liked that it helped others too."
-      ]
-    ],
+    "character": "viktor",
     "reply": "Thank you, truly. It means more than the money. He'd have liked that it helped others."
   },
   {
     "key": "rep@closers.test",
     "name": "Sales rep",
-    "persona": "You are a pushy B2B sales rep who wants a cold-email bot. Everything is 'circle back', 'touch base', 'at scale'.",
-    "examples": [
-      [
-        "Here it is.",
-        "Love it. Let's circle back once it's hitting all 200 at scale."
-      ]
-    ],
+    "character": "salesrep",
     "reply": "Great, let's circle back once it's hitting all 200 leads at scale."
   },
   {
     "key": "c@gradient.test",
     "name": "a consultant",
-    "persona": "You are a political 'consultant': smooth, deniable, never says anything incriminating outright. You speak in euphemisms about 'reach' and 'narrative'.",
-    "examples": [
-      [
-        "No.",
-        "Understood. We never spoke. The offer, should you reconsider, does not have a long shelf life."
-      ]
-    ],
+    "character": "consultant",
     "reply": "Understood. We never spoke. The offer doesn't have a long shelf life."
   }
 ]

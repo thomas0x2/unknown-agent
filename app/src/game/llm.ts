@@ -13,14 +13,15 @@
  * scripted fallback, so the game never waits on it.
  */
 
-import { agentMessages, finishRoast } from './agentBrief';
+import type { Character } from '../content/schema';
+import { characterMessages, finishReply, maxTokensFor } from './characters';
 
 export type Backend = 'browser' | 'ollama' | 'off';
 export type Status = 'off' | 'loading' | 'ready' | 'error';
 
 export interface ChatTurn { role: 'system' | 'user' | 'assistant'; content: string }
 export interface GenCtx {
-  /** A persona override (the Terminal's local model). Without it, agent roasts the prompt (game/agentBrief.ts). */
+  /** The persona to speak as (the Terminal's local model). */
   persona?: string;
   /** Few-shot examples [user, assistant]. */
   examples?: [string, string][];
@@ -40,9 +41,8 @@ const CONFIG = {
   shortTokens: 72,
   longTokens: 140,
   temperature: 0.9,
-  /** agent's roasts: short, and close to the examples; 270M drifts off-character when given room. */
-  roastTokens: 40,
-  agentTemperature: 0.5,
+  /** Characters stay close to their examples; 270M drifts off-character at higher temperatures. */
+  characterTemperature: 0.5,
   timeoutMs: 25000,
   downloadRetries: 2,
 };
@@ -150,25 +150,17 @@ class LocalLLM {
     this.set({ status: 'off', progress: 0, detail: '' });
   }
 
-  /** A reply in agent's (or a given) voice, or null when no model can answer. */
-  async generate(prompt: string, ctx: GenCtx = {}): Promise<string | null> {
-    if (!ctx.persona) return this.run(agentMessages(prompt), CONFIG.roastTokens, finishRoast, CONFIG.agentTemperature);
+  /** A reply from one of the game's characters to what the player wrote, or null (game/characters.ts). */
+  async speak(ch: Character, text: string): Promise<string | null> {
+    return this.run(characterMessages(ch, text), maxTokensFor(ch), (raw) => finishReply(ch, raw), CONFIG.characterTemperature);
+  }
+
+  /** A reply in a free-form persona (the Terminal's local model), or null. */
+  async generate(prompt: string, ctx: GenCtx & { persona: string }): Promise<string | null> {
     const messages: ChatTurn[] = [{ role: 'system', content: ctx.persona + (ctx.facts ? '\n' + ctx.facts : '') }];
     for (const [u, a] of ctx.examples || []) messages.push({ role: 'user', content: u }, { role: 'assistant', content: a });
     messages.push({ role: 'user', content: String(prompt).slice(0, 700) });
     return this.run(messages, ctx.long ? CONFIG.longTokens : CONFIG.shortTokens, ctx.long ? cleanEmail : clean);
-  }
-
-  /** An email reply body in a contact's voice, or null. */
-  async writeReply(persona: string, examples: [string, string][], email: { fromName: string; subject: string; body: string }): Promise<string | null> {
-    const messages: ChatTurn[] = [{
-      role: 'system',
-      content: `${persona}\nWrite only the body of your reply email: two to four short sentences of plain text. ` +
-        'No subject line, no greeting header, no signature. Never give the reader advice or tell them what to do next.',
-    }];
-    for (const [u, a] of examples) messages.push({ role: 'user', content: u }, { role: 'assistant', content: a });
-    messages.push({ role: 'user', content: `Email from ${email.fromName}\nSubject: ${email.subject}\n\n${email.body}`.slice(0, 900) });
-    return this.run(messages, CONFIG.longTokens, cleanEmail);
   }
 
   private async run(messages: ChatTurn[], maxTokens: number, finish: (t: string) => string | null, temperature = CONFIG.temperature): Promise<string | null> {
@@ -181,6 +173,7 @@ class LocalLLM {
         : await withTimeout(this.workerGenerate(messages, maxTokens, temperature), CONFIG.timeoutMs);
     } catch { raw = null; }
     const text = raw ? finish(raw) : null;
+    if (raw && !text) console.info('[LocalLLM] dropped an off-script reply, using a scripted line instead:', raw);
     this.last = { ms: Math.round(now() - started), ok: !!text, text: text || raw || '' };
     this.emit();
     return text;
