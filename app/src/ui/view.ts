@@ -10,7 +10,7 @@ import { listSlots, autoSlot } from '../game/saves';
 import { ICONS, TOKENS, Y_ICONS } from './icons';
 import { route, bookmarks, type Route, type SiteId } from '../sites/registry';
 import {
-  type GameState, type AppInstance, getApp, bugsOf, breakVariant, onForkyard, userRevenue, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, dateShort, dateLong, dateMedium, dateFull, clockTime, EMPIRE, BOUNCE_ADDR, eventBody, deliveryKey,
+  type GameState, type AppInstance, getApp, bugsOf, breakVariant, onForkyard, userRevenue, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, dateShort, dateLong, dateMedium, dateFull, dayDate, clockTime, EMPIRE, BOUNCE_ADDR, eventBody, deliveryKey,
 } from '../engine';
 import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
@@ -659,6 +659,24 @@ function pageForkyard(store: GameStore, repo?: string): string {
   return `<div class="fy">${head}<div class="fy-wrap"><h1 class="fy-h">Repositories <span>${repos.length}</span></h1>${adHtml('forkyard', s.values.day, 'wide')}${list}</div></div>`;
 }
 
+/** Month grid for the booking form: one radio per game day, earlier days greyed out. */
+function bookingCalendar(today: number, first: number, picked: number): string {
+  const start = dayDate(1), year = start.getUTCFullYear(), month = start.getUTCMonth();
+  const daysInMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+  const lead = (new Date(Date.UTC(year, month, 1)).getUTCDay() + 6) % 7; // Monday first
+  const toDay = (date: number) => date - start.getUTCDate() + 1;
+  const cells = Array.from({ length: lead }, () => '<span></span>');
+  for (let date = 1; date <= daysInMonth; date++) {
+    const d = toDay(date);
+    const open = d >= Math.max(1, first) && d <= LAST_DAY;
+    const cls = `${d === today ? ' today' : ''}${open ? '' : ' off'}`;
+    cells.push(open
+      ? `<label class="bk-day${cls}"><input type="radio" name="bk-date" value="${d}"${d === picked ? ' checked' : ''}><span>${date}</span></label>`
+      : `<span class="bk-day${cls}"><span>${date}</span></span>`);
+  }
+  return `<p class="bk-cal-month">${esc(dateLong(1).split(' ')[0])} ${year}</p>
+    <div class="bk-cal-grid">${['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map((w) => `<b>${w}</b>`).join('')}${cells.join('')}</div>`;
+}
 function pageApp(store: GameStore, param?: string): string {
   const s = store.state;
   const [appId, sub] = (param ?? '').split('/');
@@ -687,7 +705,7 @@ function pageApp(store: GameStore, param?: string): string {
         <p class="pv-sub">Step 1 of 2. You'll get a confirmation by email.</p>${notice}${summary}
         <label>Name <input id="bk-name" value="${esc(bk.name || PLAYER.name)}"></label>
         <label>Email <input id="bk-email" value="${esc(bk.email || PLAYER.addr)}"></label>
-        <label>Date <select id="bk-date">${Array.from({ length: LAST_DAY }, (_, i) => i + 1).filter((d) => d >= firstBookable).map((d) => `<option value="${d}"${d === (bk.date || s.values.day + 1) ? ' selected' : ''}>${dateMedium(d)}</option>`).join('')}</select></label>
+        <fieldset class="bk-cal"><legend>Date</legend>${bookingCalendar(s.values.day, firstBookable, bk.date || s.values.day + 1)}</fieldset>
         <button class="pv-btn ok" type="submit">Continue</button></form>`
       : `<form class="pv-book" data-form="book" data-app="${esc(a.id)}"><h1>Book a table</h1>
         <p class="pv-sub">Step 2 of 2: ${esc(bk.name)}, ${dateFull(bk.date)}.</p>${notice}
