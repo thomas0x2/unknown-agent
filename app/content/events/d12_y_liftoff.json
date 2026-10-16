@@ -1,0 +1,11 @@
+{
+  "id": "d12_y_liftoff",
+  "site": "y",
+  "from": "Liftoff Daily",
+  "trigger": {
+    "dayMin": 12,
+    "dayMax": 12
+  },
+  "at": "11:35",
+  "body": "Legacy media lost. Y is where the news happens now."
+}

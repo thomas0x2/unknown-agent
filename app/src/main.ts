@@ -33,7 +33,7 @@ import type { MeterId } from './engine';
 import { newPageLoad } from './ui/ads';
 import { pullPct } from './game/pull';
 import { trackLoads, LOADING_HTML } from './ui/pageLoad';
-import { markSend, applySendFx } from './ui/sendFx';
+import { markSend, applySendFx, flyOff, sendLanded } from './ui/sendFx';
 import { SOUND } from './ui/sound';
 import { soundSnap, soundCues, botBurst } from './ui/soundCues';
 
@@ -393,11 +393,15 @@ document.addEventListener('submit', (e) => {
     const to = val('#mail-to').trim(), subject = val('#mail-subject').trim(), body = val('#mail-body').trim();
     if (!to || !body) return;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) { store.setMailError('Enter a valid address.'); return; }
+    if (store.busy) return;
     SOUND.play('send');
-    void store.compose(to, subject, body).then((r) => { if (r?.sent) { clearMailDraft(); store.setDraft(null); store.navigate('qmail.com/sent'); } });
+    flyOff(f);
+    markSend($('#viewport')!, 'mail');
+    void store.compose(to, subject, body).then((r) => { if (r?.sent) { clearMailDraft(); store.setDraft(null); sendLanded(); store.navigate('qmail.com/sent'); } });
   } else if (kind === 'reply') {
     const v = val('#reply-body').trim(); if (!v || store.busy) return;
     SOUND.play('send');
+    flyOff(f);
     markSend($('#viewport')!, 'reply');
     // the text stays in the (disabled) box until the email is in the thread; if it doesn't go out it stays editable
     const id = f.dataset.id, to = f.dataset.to;

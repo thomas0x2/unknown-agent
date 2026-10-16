@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { loadContent } from '../content/load';
-import { startAll, endAll } from './_fixtures';
+import { startAll, endAll, wordJev } from './_fixtures';
+import { replyToEvent } from './actions';
+import type { JevRouter } from './jev';
 import { deliverDue, deliverArrivals, settlePayments } from './events';
 import { sendCrypto } from './wallets';
 import type { GameState } from './state';
@@ -82,5 +84,24 @@ describe("paying the brother through Coinbin", () => {
     const s = { ...endAll(send(s0, 40), content), morning: null };
     deliverArrivals(s, content);
     expect(arrived(s, 'd4_brother_paid')).toBe(true);
+  });
+});
+
+describe("promising the money by email", () => {
+  const promiseJev: JevRouter = { ...wordJev, async route() { return { kind: 'outcome', outcomeId: 'promise' }; } };
+
+  it("gets 'i'll believe it when i see it' and leaves the thread open", async () => {
+    const { state, reply } = await replyToEvent(day4(), content, promiseJev, bro.id, "sure, i'll send it later");
+    expect(reply).toMatch(/believe it when i see it/);
+    expect(state.delivered.find((d) => d.eventId === bro.id)?.answered).toBe(false);
+    // paying afterwards still counts
+    expect(send(state, 40).flags).toContain('gift_chipped_in');
+  });
+
+  it('still costs trust when the money never comes', async () => {
+    let { state: s } = await replyToEvent(day4(), content, promiseJev, bro.id, "sure, i'll send it later");
+    s = { ...endAll(s, content), morning: null };
+    s = { ...endAll(s, content), morning: null };
+    expect(s.flags).toContain('gift_skipped');
   });
 });

@@ -3,6 +3,22 @@
 @keyframes send-wait { 50% { opacity: .55; } }
 .send-in { animation: send-in 360ms cubic-bezier(.2, .7, .3, 1) both; }
 button.sending { animation: send-wait 900ms ease-in-out infinite; cursor: progress; }
+/* an email being sent: its text lifts off as paper (flyOff) and the fields stay blank until it's decided */
+.mail-gone input, .mail-gone textarea { color: transparent !important; caret-color: transparent; }
+.mail-gone { pointer-events: none; }
+@keyframes mail-fly {
+  0% { opacity: 1; transform: none; }
+  30% { opacity: 1; transform: scale(.96) rotate(-1deg); }
+  100% { opacity: 0; transform: translate(70px, -90px) scale(.55) rotate(-6deg); }
+}
+.mail-fly {
+  position: fixed; z-index: 50; box-sizing: border-box; overflow: hidden; pointer-events: none; padding: 14px 16px;
+  border-radius: 10px; box-shadow: 0 10px 30px -12px rgba(20, 24, 50, .4);
+  transform-origin: 80% 20%;
+  animation: mail-fly 560ms cubic-bezier(.5, 0, .75, .4) forwards;
+}
+.mail-fly-line { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
+.mail-fly-body { white-space: pre-wrap; }
 @media (prefers-reduced-motion: reduce) {
   .send-in, button.sending { animation: none; }
 }

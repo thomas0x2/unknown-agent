@@ -1,0 +1,11 @@
+{
+  "id": "d19_y_liftoff",
+  "site": "y",
+  "from": "Liftoff Daily",
+  "trigger": {
+    "dayMin": 19,
+    "dayMax": 19
+  },
+  "at": "17:55",
+  "body": "Apogee has hired 2,000 people this year. Everyone else is doing layoffs."
+}
