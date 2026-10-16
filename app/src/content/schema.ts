@@ -81,7 +81,10 @@ export interface FeatureDef {
 }
 export interface BugDef {
   id: string;
-  /** What a fix prompt has to ask for to address this bug, for Jev to match. Vague prompts miss it. */
+  /**
+   * What a fix prompt has to name to address this bug, for Jev to match; {{param}} fills in from the
+   * spec. Keep it to the distinctive words: the offline fallback matches on any shared word.
+   */
   when: string;
   /** Spelling out the feature's details again (the full menu) also fixes it. */
   orDetails?: boolean;

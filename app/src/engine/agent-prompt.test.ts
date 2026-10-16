@@ -26,7 +26,7 @@ describe('promptAgent — always free text', () => {
     const s = startGame(content, 1);
     const app = s.apps.find((a) => a.clientEventId === 'client_shop')!;
     s.values.crypto = 100;
-    const r = await promptAgent(s, content, fakeRouter({ features: (_p, ids) => ids.filter((i) => i.endsWith('catalog')) }), 'build the product catalog');
+    const r = await promptAgent(s, content, fakeRouter({ features: (_p, ids) => ids.filter((i) => i.endsWith('::catalog::feature')) }), 'build the product catalog');
     const built = r.state.apps.find((a) => a.id === app.id)!;
     expect(built.repo.some((f) => f.id === 'catalog')).toBe(true);
     expect(r.state.chat.at(-1)!.src).toBe('build');

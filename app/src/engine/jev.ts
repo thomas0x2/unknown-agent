@@ -103,6 +103,7 @@ export const offlineJev: JevRouter = {
   },
   async matchFeatures(input) {
     const t = words(input.prompt);
-    return input.features.filter((f) => overlap(t, words(f.description)) >= 1).map((f) => f.id);
+    // the "(for <app name>)" suffix only disambiguates for the real model; naming the app isn't asking for a feature
+    return input.features.filter((f) => overlap(t, words(f.description.replace(/\s*\(for [^)]*\)$/, ''))) >= 1).map((f) => f.id);
   },
 };
