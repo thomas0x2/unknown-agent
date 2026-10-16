@@ -6,13 +6,14 @@ import type { GameState } from '../engine';
 
 export type SiteId =
   | 'y' | 'qmail' | 'qdrive' | 'satchel' | 'forkyard' | 'agent' | 'yowl'
-  | 'weightroom' | 'terminal' | 'nullboard' | 'cellar' | 'app' | 'newtab' | 'notfound';
+  | 'weightroom' | 'terminal' | 'nullboard' | 'cellar' | 'empire' | 'app' | 'newtab' | 'notfound';
 
 export interface SiteDef {
   id: SiteId;
   base: string;
   label: string;
-  group: 'core' | 'tools' | 'underground';
+  /** 'web' sites are reachable by link or address but never bookmarked. */
+  group: 'core' | 'tools' | 'underground' | 'web';
   reachable: (s: GameState) => boolean;
 }
 
@@ -31,6 +32,7 @@ export const SITES: SiteDef[] = [
   { id: 'terminal', base: 'localhost', label: 'Terminal', group: 'tools', reachable: flag('has_terminal') },
   { id: 'nullboard', base: 'nullboard.onion', label: 'nullboard', group: 'underground', reachable: flag('knows_nullboard') },
   { id: 'cellar', base: 'cellar.onion', label: 'Cellar', group: 'underground', reachable: flag('knows_cellar') },
+  { id: 'empire', base: 'empire.alphaascend.biz', label: 'EMPIRE', group: 'web', reachable: always },
 ];
 
 export interface Route {
@@ -64,4 +66,4 @@ export function route(url: string, s: GameState): Route {
   return { site: 'notfound', reachable: false };
 }
 
-export const bookmarks = (s: GameState): SiteDef[] => SITES.filter((d) => d.reachable(s));
+export const bookmarks = (s: GameState): SiteDef[] => SITES.filter((d) => d.group !== 'web' && d.reachable(s));

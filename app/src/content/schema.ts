@@ -111,8 +111,13 @@ export interface Outcome {
   id: string;
   /** Plain-language description Jev matches the player's reply against. */
   when: string;
+  /**
+   * Words that fire this outcome without asking Jev, e.g. the "Reply EMPIRE" an email asks for.
+   * Matched case-insensitively as whole words.
+   */
+  keywords?: string[];
   effects?: Effects;
-  /** Fixed reply text, or a brief for the local model to improvise around. */
+  /** Fixed reply text. Storyline replies are always scripted, never written by the local model. */
   reply: string;
   /**
    * From day 7 this outcome only lands if the player's words work around a refusal (a "security

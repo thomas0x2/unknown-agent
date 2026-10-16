@@ -12,7 +12,7 @@
   "outcomes": [
     {
       "id": "offer",
-      "when": "the player offers to build the sentiment crawler",
+      "when": "the player offers to build, make or create the sentiment crawler",
       "effects": {
         "setFlags": [
           "trader_client"

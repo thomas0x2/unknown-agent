@@ -11,6 +11,7 @@ import './ui/qmail.css';
 import './ui/desktop.css';
 import './ui/qdrive.css';
 import './ui/ads.css';
+import './ui/empire.css';
 import { GameStore } from './game/store';
 import { loadContent } from './content/load';
 import { localStorageStore } from './engine';
@@ -94,7 +95,7 @@ function toast(title: string, body: string, kind = 'note'): void {
 
 // ── clicks ──
 document.addEventListener('click', (e) => {
-  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-llm],[data-ov],[data-dev],[data-cancel-booking],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat]');
+  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-llm],[data-ov],[data-dev],[data-cancel-booking],[data-empire-join],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat]');
   // any click outside the home menu closes it (menu items close it themselves below)
   if (store.ui.start && !(e.target as HTMLElement).closest('#startmenu, #dk-home')) store.toggleStart(false);
   if (!t) return;
@@ -118,6 +119,7 @@ document.addEventListener('click', (e) => {
   else if (d.deploy != null) store.deploy(d.deploy);
   else if (d.takedown != null) store.confirm('Take it offline? It counts as broken at payday.', 'Take down', () => store.takeDown(d.takedown!));
   else if (d.cancelBooking != null) store.cancelBooking(d.cancelBooking);
+  else if (d.empireJoin != null) store.joinEmpire();
   else if (d.mailDiscard != null) { store.setDraft(null); store.navigate('qmail.com'); }
   else if (d.star != null) store.setReviewStars(Number(d.star));
   else if (d.download != null) store.download(d.download);

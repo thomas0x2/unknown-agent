@@ -2,14 +2,15 @@
  * Player actions: everything the player does through free text (prompting the agent, posting on Y,
  * replying to mail, reviewing on Yowl, running a local model) plus the button actions (deploy, take
  * down). Each returns a new state. Jev (injected) decides *what* a message does; the Writer
- * (injected, Gemma in the game) phrases replies that aren't fixed text. Both are injectable so tests
- * pin outcomes and the game runs offline.
+ * (injected, Gemma in the game) phrases replies that aren't fixed text; a reply that lands a storyline
+ * outcome is always the outcome's scripted text. Both are injectable so tests pin outcomes and the game
+ * runs offline.
  */
 import type { GameState, AppInstance, MailEntry } from './state';
-import type { Content, GameEvent, Contact } from '../content/schema';
+import type { Content, GameEvent, Contact, Outcome } from '../content/schema';
 import type { JevRouter, PostRating, RouteDecision } from './jev';
 import { Y as YCFG, FAMILY } from './config';
-import { clone, addValue, log, rand, pick, tick } from './core';
+import { clone, addValue, log, rand, pick, tick, money } from './core';
 import { applyEffects } from './effects';
 import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent';
 import { getEvent, activeDeliveries, reachableByEmail } from './events';
@@ -38,22 +39,40 @@ function nextId(s: GameState, prefix: string): string {
   return `${prefix}${s.nextId++}`;
 }
 
-/** Turn an outcome/story reply into shown text. A reply starting with "Brief:" is handed to Gemma. */
-async function phrase(
-  writer: Writer,
-  content: Content,
-  asKey: string,
-  reply: string,
-  playerText: string,
-  long = false,
-): Promise<{ text: string; llm: boolean }> {
-  if (reply.startsWith('Brief:')) {
-    const c = contactFor(content, asKey);
-    const r = await writer.write({ as: asKey, prompt: `${reply.slice(6).trim()}\n\n(they wrote: ${playerText})`, fallback: reply.slice(6).trim(), long });
-    void c;
-    return r;
-  }
-  return { text: reply, llm: false };
+/** An outcome the player's words name outright (its `keywords`), so Jev isn't needed. */
+function keywordOutcome(outcomes: Outcome[], text: string): Outcome | undefined {
+  const t = ` ${text.toLowerCase().replace(/[^a-z0-9]+/g, ' ')} `;
+  return outcomes.find((o) => o.keywords?.some((k) => t.includes(` ${k.toLowerCase()} `)));
+}
+
+/** Jev picks nothing / a hint / one outcome, unless the reply names an outcome's keyword. */
+async function routeReply(jev: JevRouter, channel: GameEvent['site'], s: GameState, ev: GameEvent, text: string): Promise<RouteDecision> {
+  const outcomes = ev.outcomes ?? [];
+  const named = keywordOutcome(outcomes, text);
+  if (named) return { kind: 'outcome', outcomeId: named.id };
+  return jev.route({
+    channel,
+    text,
+    stateSummary: stateSummary(s),
+    candidates: outcomes.map((o) => ({ id: o.id, when: o.when })),
+    hints: ev.hints ?? [],
+  });
+}
+
+/**
+ * A known contact answers a message that didn't land a storyline outcome, in their own voice (the
+ * local model when loaded). A hint rides along as the fallback nudge. Returns '' for no contact.
+ */
+async function contactWritesBack(
+  s: GameState, content: Content, writer: Writer, addr: string, subject: string, text: string, hint = '', from?: string,
+): Promise<string> {
+  const c = contactFor(content, addr);
+  if (!c) return '';
+  const fb = hint || c.reply || 'Thanks for your message.';
+  const { text: body, llm } = await writer.write({ as: addr, prompt: text, fallback: fb, long: true });
+  const shown = body || fb;
+  pushMail(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: shown, read: false, generated: llm && !!body });
+  return shown;
 }
 
 function pushMail(s: GameState, m: Omit<MailEntry, 'id'>): MailEntry {
@@ -81,13 +100,7 @@ export async function replyToEvent(
   if (ev.addr) pushMail(s, { folder: 'sent', day: s.values.day, from: 'You', addr: PLAYER_ADDR, to: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body: text, read: true });
 
   const outcomes = ev.outcomes ?? [];
-  const decision = await jev.route({
-    channel: ev.site,
-    text,
-    stateSummary: stateSummary(s),
-    candidates: outcomes.map((o) => ({ id: o.id, when: o.when })),
-    hints: ev.hints ?? [],
-  });
+  const decision = await routeReply(jev, ev.site, s, ev, text);
 
   if (decision.kind === 'outcome') {
     const outcome = outcomes.find((o) => o.id === decision.outcomeId);
@@ -102,22 +115,17 @@ export async function replyToEvent(
       if (outcome.workaround) recordWorkaround(s);
       delivery.answered = true;
       delivery.outcomeId = outcome.id;
-      const { text: body } = await phrase(writer, content, ev.addr ?? ev.from ?? 'agent', outcome.reply, text, true);
+      // a storyline outcome always answers with its scripted reply
+      const body = outcome.reply;
       if (ev.addr) pushMail(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'Unknown', addr: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body, read: false });
       return { state: s, decision, reply: body };
     }
   }
   // No outcome fired (a near miss / hint, or nothing). Either way the person writes back in their
   // own voice so a reply always lands in the inbox; a hint rides along as a gentle nudge from them.
-  const c = ev.addr ? contactFor(content, ev.addr) : undefined;
   const hint = decision.kind === 'hint' ? (ev.hints ?? [])[decision.hintIndex] ?? '' : '';
-  if (c) {
-    const fb = hint || c.reply || 'Thanks for your message.';
-    const { text: body, llm } = await writer.write({ as: ev.addr!, prompt: text, fallback: fb, long: true });
-    const shown = body || fb;
-    pushMail(s, { folder: 'inbox', day: s.values.day, from: c.name ?? ev.from ?? 'Unknown', addr: ev.addr!, subject: `RE: ${ev.subject ?? ''}`, body: shown, read: false, generated: llm });
-    return { state: s, decision, reply: shown };
-  }
+  const reply = ev.addr ? await contactWritesBack(s, content, writer, ev.addr, `RE: ${ev.subject ?? ''}`, text, hint, ev.from) : '';
+  if (reply) return { state: s, decision, reply };
   if (hint) return { state: s, decision, reply: hint };
   return { state: s, decision: { kind: 'nothing' }, reply: '' };
 }
@@ -128,8 +136,9 @@ export interface ComposeResult extends ReplyResult {
 }
 
 /**
- * Compose a fresh email to an address. A latent lead reachable there is routed by Jev; otherwise, if
- * the address has a persona, Gemma writes a reply in their voice. One email per recipient per day.
+ * Compose a fresh email to an address. A latent lead reachable there is routed by Jev and, when an
+ * outcome lands, answers with its scripted reply; otherwise, if the address has a persona, Gemma
+ * writes a reply in their voice. One email per recipient per day.
  */
 export async function composeEmail(
   s0: GameState,
@@ -150,34 +159,29 @@ export async function composeEmail(
   const ev = reachableByEmail(s, content, addr);
   if (!ev) {
     // no story lead here — a known contact replies in their own voice
-    const c = contactFor(content, addr);
-    if (c) {
-      const { text: body, llm } = await writer.write({ as: addr, prompt: text, fallback: c.reply ?? 'Thanks for your message.', long: true });
-      if (body) pushMail(s, { folder: 'inbox', day: s.values.day, from: c.name ?? addr, addr, subject: `RE: ${subject || ''}`, body, read: false, generated: llm });
-      return { state: s, decision: { kind: 'nothing' }, reply: body, sent: true };
-    }
-    return { state: s, decision: { kind: 'nothing' }, reply: '', sent: true };
+    const reply = await contactWritesBack(s, content, writer, addr, `RE: ${subject || ''}`, text);
+    return { state: s, decision: { kind: 'nothing' }, reply, sent: true };
   }
 
   const outcomes = ev.outcomes ?? [];
-  const decision = await jev.route({
-    channel: 'qmail', text, stateSummary: stateSummary(s),
-    candidates: outcomes.map((o) => ({ id: o.id, when: o.when })), hints: ev.hints ?? [],
-  });
+  const decision = await routeReply(jev, 'qmail', s, ev, text);
   if (decision.kind === 'outcome') {
     const outcome = outcomes.find((o) => o.id === decision.outcomeId);
     if (outcome) {
       if (!s.fired.includes(ev.id)) s.fired.push(ev.id);
       applyEffects(s, outcome.effects, ev.job, ev.id);
       if (outcome.workaround) recordWorkaround(s);
-      const { text: body } = await phrase(writer, content, ev.addr ?? addr, outcome.reply, text, true);
+      // a lead that hands over a client brief sends it along with the scripted reply
+      const body = outcome.effects?.createApp && ev.body ? `${outcome.reply}\n\n${ev.body}` : outcome.reply;
       s.delivered.push({ eventId: ev.id, site: 'qmail', day: s.values.day, answered: true, outcomeId: outcome.id, expiresDay: ev.expiresDay });
       pushMail(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? addr, addr, subject: `RE: ${ev.subject ?? subject}`, body, read: false });
       return { state: s, decision, reply: body, sent: true };
     }
   }
-  if (decision.kind === 'hint') return { state: s, decision, reply: (ev.hints ?? [])[decision.hintIndex] ?? '', sent: true };
-  return { state: s, decision: { kind: 'nothing' }, reply: '', sent: true };
+  // a near miss or nothing: the lead still writes back in their own voice, so the email isn't lost
+  const hint = decision.kind === 'hint' ? (ev.hints ?? [])[decision.hintIndex] ?? '' : '';
+  const reply = await contactWritesBack(s, content, writer, addr, `RE: ${subject || ''}`, text, hint);
+  return { state: s, decision, reply: reply || hint, sent: true };
 }
 
 // ── the agent, freely promptable (with costs), not only when there's a job ──
@@ -514,6 +518,26 @@ export function cancelBooking(s0: GameState, bookingId: string): GameState {
   const s = clone(s0);
   const b = s.bookings.find((x) => x.id === bookingId);
   if (b && !b.fakeCancel) b.cancelled = true;
+  return s;
+}
+
+// ── Alpha Ascend: Max Stryker's EMPIRE sign-up page ──
+
+export const EMPIRE = { price: 20, flag: 'guru_subscriber', addr: 'max@alphaascend.test' } as const;
+
+/** Pay for EMPIRE on empire.alphaascend.biz. Does nothing if already a member or short of DOLR. */
+export function joinEmpire(s0: GameState): GameState {
+  const s = clone(s0);
+  if (s.flags.includes(EMPIRE.flag) || s.values.crypto < EMPIRE.price) return s;
+  tick(s, 'empire');
+  money(s, -EMPIRE.price, 'Alpha Ascend · EMPIRE');
+  applyEffects(s, { setFlags: [EMPIRE.flag] });
+  pushMail(s, {
+    folder: 'inbox', day: s.values.day, from: 'Max Stryker · Alpha Ascend', addr: EMPIRE.addr,
+    subject: 'Welcome to EMPIRE',
+    body: 'Payment received. Welcome to the 1%.\n\nYour first lesson arrives tomorrow at 4am. Refunds are available to anyone who completes the course.',
+    read: false,
+  });
   return s;
 }
 

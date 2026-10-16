@@ -12,7 +12,7 @@
   "outcomes": [
     {
       "id": "build",
-      "when": "the player offers to build a readable machine-status app",
+      "when": "the player offers to build, make or create a readable machine-status app",
       "effects": {
         "setFlags": [
           "laundromat_live"

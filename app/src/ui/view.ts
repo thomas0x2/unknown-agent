@@ -10,7 +10,7 @@ import { listSlots, autoSlot } from '../game/saves';
 import { ICONS, Y_ICONS } from './icons';
 import { route, bookmarks, type Route, type SiteId } from '../sites/registry';
 import {
-  type GameState, type AppInstance, getApp, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, AGENT_ROLLOUT,
+  type GameState, type AppInstance, getApp, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, AGENT_ROLLOUT, EMPIRE,
 } from '../engine';
 import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
@@ -42,6 +42,7 @@ const tpl = (t: string) => String(t ?? '').replace(/\{\{\s*playerName\s*\}\}/g, 
 function linkify(escaped: string): string {
   return escaped
     .replace(/([a-z0-9-]+\.forkyard\.app)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
+    .replace(/(empire\.alphaascend\.biz(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(^|[^\w.])@([a-z0-9_]+)/gi, '$1<a href="#" class="y-at" data-nav="y.com/$2">@$2</a>');
 }
 
@@ -171,6 +172,7 @@ export function page(store: GameStore, r: Route): string {
     case 'yowl': return pageYowl(store, r.param);
     case 'weightroom': return pageWeightroom(store);
     case 'terminal': return pageTerminal(store);
+    case 'empire': return pageEmpire(store.state);
     default: return pageUnderground(r.def?.label ?? r.site);
   }
 }
@@ -703,6 +705,32 @@ function pageTerminal(store: GameStore): string {
   const busy = store.busy;
   return `<div class="tm" id="tm-log"><div class="tm-sys">${esc(intro)}</div>${lines}${busy ? '<div class="tm-sys tm-wait">thinking… (this laptop is not fast)</div>' : ''}
     <form class="tm-in" data-form="term"><label for="term-input" class="tm-ps">you@laptop:~$</label><input id="term-input" autocomplete="off" autocapitalize="off" spellcheck="false" ${busy ? 'disabled' : ''}></form></div>`;
+}
+
+// ── empire.alphaascend.biz ──
+function pageEmpire(s: GameState): string {
+  const member = s.flags.includes(EMPIRE.flag);
+  const short = s.values.crypto < EMPIRE.price;
+  const action = member
+    ? `<p class="em-done">You're in. Lesson one arrives at 4am.</p>`
+    : `<button class="em-cta" data-empire-join${short ? ' disabled' : ''}>Join EMPIRE · ${EMPIRE.price} DOLR</button>
+       ${short ? `<p class="em-fine">Your wallet holds ${s.values.crypto.toFixed(2)} DOLR.</p>` : ''}`;
+  return `<div class="em">
+    <header class="em-top"><b>ALPHA ASCEND</b><span>Max Stryker</span></header>
+    <section class="em-hero">
+      <p class="em-kicker">The course</p>
+      <h1>EMPIRE</h1>
+      <p class="em-sub">Twelve lessons on discipline, money and waking up at 4am.</p>
+      <p class="em-price"><s>200 DOLR</s> <b>${EMPIRE.price} DOLR</b></p>
+      ${action}
+    </section>
+    <ul class="em-list">
+      <li>Daily lesson by email</li>
+      <li>Private community of 41,000 members</li>
+      <li>The Morning Protocol (PDF)</li>
+    </ul>
+    <p class="em-fine">Paid in DOLR via Satchel. All sales final.</p>
+  </div>`;
 }
 
 function pageUnderground(label: string): string {
