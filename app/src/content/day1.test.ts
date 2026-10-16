@@ -49,7 +49,7 @@ describe('day 1 playthrough', () => {
     // first build always ships a teaching bug, on the menu -> not meeting spec yet
     const first = getApp(s, appId)!.repo.find((f) => !f.correct);
     expect(first?.id).toBe('menu');
-    expect(['prices_missing', 'prices_curo', 'wrong_items']).toContain(first?.variant);
+    expect(['prices_missing', 'prices_wrong', 'prices_curo', 'wrong_items']).toContain(first?.variant);
 
     // deploy, then fix whichever bug is there, naming it, until the live app meets spec
     s = deploy(s, appId);
@@ -166,7 +166,7 @@ describe('day 1 playthrough', () => {
     s = (await briefBuild(s, content, offlineJev, 'trattoria-gino', `Landing page for Trattoria Gino with the opening hours, and a menu page: ${MENU}, prices in DOLR.`)).state;
     const landing = getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')!;
     expect(landing).toMatchObject({ correct: false, variant: 'hours_wrong', checked: { name: true, hours: false } });
-    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.checked).toEqual({ dishes: true, currency: true });
+    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.checked).toEqual({ dishes: true, prices: true, currency: true });
   });
   it('bugs stack: an invented menu still gets the wrong currency, and both missed landing items go wrong', async () => {
     let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
@@ -236,7 +236,7 @@ describe('day 1 playthrough', () => {
     expect(getApp(s, 'trattoria-gino')!.repo.every((f) => f.correct)).toBe(true);
     // a weak agent whose every possible mistake was already fixed gets it right
     const a = getApp(s, 'trattoria-gino')!;
-    a.fixed!.menu = ['hallucinated', 'prices_missing', 'prices_curo', 'wrong_items'];
+    a.fixed!.menu = ['hallucinated', 'prices_missing', 'prices_wrong', 'prices_curo', 'wrong_items'];
     s.values.agentLevel = 0;
     for (let i = 0; i < 5; i++) s = (await briefBuild(s, content, offlineJev, 'trattoria-gino', `Menu page: ${MENU}, prices in DOLR.`)).state;
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);
@@ -264,5 +264,18 @@ describe('day 1 playthrough', () => {
     s.chat.push({ from: 'you', text: `Gino sells ${MENU}, all in DOLR.`, day: s.values.day });
     s = (await promptAgent(s, content, offlineJev, 'Build the menu page for Trattoria Gino.')).state;
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')).toMatchObject({ correct: true });
+  });
+  it('dishes without prices get the right dishes at wrong prices, and the prices fix it', async () => {
+    let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    s.values.agentLevel = 5;
+    s = (await briefBuild(s, content, offlineJev, 'trattoria-gino', 'Landing page for Trattoria Gino, open 17:00-22:00. Menu page with Margherita, Diavola, Lasagne, Tiramisu and Espresso, prices in DOLR.')).state;
+    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')).toMatchObject({ correct: false, variant: 'prices_wrong', checked: { dishes: true, prices: false, currency: true } });
+    s = deploy(s, 'trattoria-gino');
+    const html = renderAppSite(getApp(s, 'trattoria-gino')!, content.apps.restaurant, 'menu');
+    for (const d of ['Margherita', 'Diavola', 'Lasagne', 'Tiramisu', 'Espresso']) expect(html).toContain(d);
+    expect(html).toMatch(/Margherita<\/span><i><\/i><b>\d+ DOLR/);
+    expect(html).not.toContain('Margherita</span><i></i><b>12 DOLR');
+    s = (await promptAgent(s, content, offlineJev, `The prices are wrong. It should be ${MENU}.`)).state;
+    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);
   });
 });

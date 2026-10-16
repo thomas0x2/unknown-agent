@@ -66,7 +66,7 @@
         "failed_fetch"
       ],
       "details": [
-        "dishes"
+        "dishes:names"
       ],
       "firstBuildBug": true,
       "bugs": [
@@ -81,6 +81,12 @@
           "match": "\\b(curo|currency|currencies)\\b|\\bin dolr\\b|\\bdolr\\b[^.?!]{0,20}\\b(not|instead)\\b|\\bnot dolr\\b"
         },
         {
+          "id": "prices_wrong",
+          "when": "wrong prices on the menu, should be {{dishes}}",
+          "orDetails": true,
+          "match": "\\bprices?\\b[^.?!]{0,25}\\b(wrong|incorrect|off|too (high|low)|don'?t match|not right|made[ -]up|invented)\\b|\\b(wrong|incorrect|made[ -]up|invented)\\s+prices?\\b|\\b(costs?|prices?)\\s+(should|must|needs? to)\\s+be\\b|\\b({{dishes:words}})\\b[^.?!]{0,20}\\b(costs?|is|for|at)\\s+\\d"
+        },
+        {
           "id": "wrong_items",
           "when": "dishes or items missing, renamed or invented",
           "orDetails": true,
@@ -90,8 +96,13 @@
       "checklist": [
         {
           "id": "dishes",
-          "text": "{{dishes}}",
+          "text": "{{dishes:names}}",
           "bug": "hallucinated"
+        },
+        {
+          "id": "prices",
+          "text": "{{dishes:prices}}",
+          "bug": "prices_wrong"
         },
         {
           "id": "currency",
@@ -103,6 +114,7 @@
       "complaints": {
         "missing": "There is no menu page.",
         "prices_missing": "The menu has no prices. People called to ask.",
+        "prices_wrong": "The prices on the menu are wrong. Those are not our prices.",
         "prices_curo": "The prices are in CURO. I don't know what CURO is. We take DOLR.",
         "wrong_items:removed": "{{expected}} is missing from the menu. We still make it.",
         "wrong_items:renamed": "The menu says \"{{shown}}\". It's {{expected}}.",

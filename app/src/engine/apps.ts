@@ -95,8 +95,14 @@ export interface BuildReport {
   hallucinated: string[];
 }
 
+const NUM = /\d+(?:[.,]\d+)?/g;
+
+/** Fills {{param}} from the spec; {{param:names}} keeps only its words, {{param:prices}} only its numbers. */
 const fillSpec = (text: string, params?: Record<string, string | number>) =>
-  text.replace(/\{\{(\w+)\}\}/g, (_m, k: string) => String(params?.[k] ?? ''));
+  text.replace(/\{\{(\w+)(?::(names|prices))?\}\}/g, (_m, k: string, part?: string) => {
+    const v = String(params?.[k] ?? '');
+    return part === 'names' ? v.replace(NUM, '') : part === 'prices' ? (v.match(NUM) ?? []).join(' ') : v;
+  });
 
 function tokens(text: string): string[] {
   // "17:00" counts as 17: the zeros are formatting, not something the prompt has to repeat
@@ -129,8 +135,10 @@ export function promptHasDetails(prompt: string, values: string[]): boolean {
   return want.filter((t) => closeEnough(t, have)).length / want.length >= 0.85;
 }
 
-function detailValues(params: Record<string, string | number> | undefined, def: FeatureDef): string[] {
-  return (def.details ?? []).map((k) => params?.[k]).filter((v) => v != null).map(String);
+/** The details a build needs ("dishes:names": just the dish names). `whole` ignores the part: the full values. */
+function detailValues(params: Record<string, string | number> | undefined, def: FeatureDef, whole = false): string[] {
+  return (def.details ?? []).filter((d) => params?.[d.split(':')[0]] != null)
+    .map((d) => fillSpec(`{{${whole ? d.split(':')[0] : d}}}`, params));
 }
 
 /** Which of the feature's spec checklist items the prompt mentions explicitly (item id -> mentioned). */
@@ -192,8 +200,11 @@ function attempt(s: GameState, app: AppInstance, id: string, level: number, ctx:
     // with no details given, an invented feature is just invented again, so it skips this and rebuilds
     const isAddressed = (v: string) => {
       const bug = def?.bugs?.find((b) => b.id === v);
-      return v === 'outdated' ? hasDetails || (def ? promptHasChange(said!, detailValues(existing.params, def), details) : false)
-        : (ctx.named ?? []).includes(v) || (!!bug?.orDetails && details.length > 0 && hasDetails);
+      // spelling the details out again fixes it, including the checklist items tied to this bug (the prices)
+      const spelled = !!bug?.orDetails && details.length > 0 && hasDetails
+        && (def?.checklist ?? []).filter((c) => c.bug === v).every((c) => specChecklist(app, def, said!)?.[c.id]);
+      return v === 'outdated' ? hasDetails || (def ? promptHasChange(said!, detailValues(existing.params, def, true), detailValues(spec, def, true)) : false)
+        : (ctx.named ?? []).includes(v) || spelled;
     };
     const all = bugsOf(existing);
     const left = all.filter((v) => !isAddressed(v));
@@ -207,11 +218,17 @@ function attempt(s: GameState, app: AppInstance, id: string, level: number, ctx:
   // every spec item the build prompt never mentioned guarantees its mistake, whatever the roll
   // ...unless the agent already fixed that mistake once: then it knows better
   const fixed = fixedOf(app, id);
-  const missed = [...new Set((def?.checklist ?? []).filter((c) => checked?.[c.id] === false).map((c) => c.bug))].filter((b) => b !== 'hallucinated' && !fixed.includes(b));
+  // checklist items about the details themselves (the prices in the menu) are moot when the details
+  // get invented anyway, or when the real ones are already in the repo from an earlier fix
+  const keys = (def?.details ?? []).map((d) => d.split(':')[0]);
+  const moot = new Set((def?.checklist ?? []).filter((c) => keys.some((k) => c.text.includes(`{{${k}`))).map((c) => c.bug));
+  const knowsDetails = fixed.includes('hallucinated');
+  const missed = [...new Set((def?.checklist ?? []).filter((c) => checked?.[c.id] === false).map((c) => c.bug))]
+    .filter((b) => b !== 'hallucinated' && !fixed.includes(b) && !(knowsDetails && moot.has(b)));
   // once the real details are in the repo, a prompt without them reuses them instead of inventing
-  if (!hasDetails && !fixed.includes('hallucinated')) {
+  if (!hasDetails && !knowsDetails) {
     report.hallucinated.push(id);
-    return { id, correct: false, ...withBugs(['hallucinated', ...missed]), seed: randInt(s, 0, 9999), checked };
+    return { id, correct: false, ...withBugs(['hallucinated', ...missed.filter((b) => !moot.has(b))]), seed: randInt(s, 0, 9999), checked };
   }
   if (missed.length) return { id, correct: false, params: spec, ...withBugs(missed), seed: randInt(s, 0, 9999), checked };
   return { ...roll(s, id, level, spec, def, fixed), checked };
