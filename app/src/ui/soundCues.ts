@@ -63,3 +63,13 @@ function money(a: SoundSnap, b: SoundSnap): Cue[] {
   if (b.txIn - a.txIn > 0.004) out.push('income');
   return out;
 }
+
+/**
+ * When each of `n` bot posts lands, in seconds after the first: they come in a quick barrage, about
+ * a second for a big batch, never closer than 40ms or further apart than 90ms.
+ */
+export function botBurst(n: number): number[] {
+  if (n <= 0) return [];
+  const gap = n > 1 ? Math.max(0.04, Math.min(0.09, 1.2 / (n - 1))) : 0;
+  return Array.from({ length: n }, (_, i) => Math.round(i * gap * 1000) / 1000);
+}

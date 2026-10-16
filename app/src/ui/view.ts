@@ -409,7 +409,11 @@ function yPostHtml(store: GameStore, p: YPost): string {
   const likes = p.likes + (liked ? 1 : 0);
   const text = linkify(esc(p.text).replace(/(^|[^&\w])(#[a-z][a-z0-9_]*)/gi, '$1<span class="y-at">$2</span>'));
   const prof = `y.com/${esc(p.handle)}`;
-  return `<article class="y-post${p.mine ? ' mine' : ''}">
+  // a bot post in a barrage fades in at its own moment, wherever the repaint catches it
+  const lands = store.ui.yBurst[p.id];
+  const wait = lands == null ? null : lands - performance.now();
+  const arrive = wait != null && wait > -400 ? ` y-arrive" style="animation-delay:${Math.round(wait)}ms` : '';
+  return `<article class="y-post${p.mine ? ' mine' : ''}${arrive}">
     <header>
       <a href="#" class="y-av-link" data-nav="${prof}">${avatar(p.author, p.handle)}</a>
       <a href="#" class="y-who" data-nav="${prof}"><span class="y-name"><b>${esc(p.author)}</b></span><span class="y-handle">@${esc(p.handle)}</span></a>
@@ -429,7 +433,12 @@ function pageY(store: GameStore, profile?: string): string {
   const posts = yPosts(store);
   const q = store.ui.ySearch.trim().toLowerCase();
   const trending = store.content.trending[s.values.day] ?? [];
-  const feed = (q ? posts.filter((p) => `${p.author} ${p.handle} ${p.text}`.toLowerCase().includes(q.replace(/^@/, ''))) : posts).map((p) => yPostHtml(store, p)).join('') || `<p class="y-none">Quiet timeline.</p>`;
+  // the timeline shows today's posts; older ones wait behind "Show all" (a search covers everything)
+  const showAll = !!q || store.ui.yAllDay === s.values.day;
+  const shown = q ? posts.filter((p) => `${p.author} ${p.handle} ${p.text}`.toLowerCase().includes(q.replace(/^@/, ''))) : showAll ? posts : posts.filter((p) => p.day === s.values.day);
+  const older = !showAll && posts.some((p) => p.day !== s.values.day);
+  const feed = (shown.map((p) => yPostHtml(store, p)).join('') || `<p class="y-none">${older ? 'Nothing posted yet today.' : 'Quiet timeline.'}</p>`)
+    + (older ? '<div class="y-more"><button class="y-btn ghost" data-y-all>Show all</button></div>' : '');
   const side = `<aside class="y-side">
     <section class="y-card y-me">
       <a href="#" class="y-me-head" data-nav="y.com/you">${avatar('You', 'you')}<span><b>You</b><small>@you</small></span></a>

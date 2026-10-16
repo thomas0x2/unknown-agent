@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { soundCues, LATE_MIN, type SoundSnap } from './soundCues';
+import { soundCues, botBurst, LATE_MIN, type SoundSnap } from './soundCues';
 import { profileOf } from './sound';
 
 const base: SoundSnap = { day: 2, clockMin: 12 * 60, agentMsgs: 3, txCount: 10, txIn: 500, txOut: 400, ending: false, morning: false };
@@ -44,5 +44,17 @@ describe('site sound profiles', () => {
     expect(profileOf('cellar')).toBe('under');
     expect(profileOf('newtab')).toBe('plain');
     expect(profileOf('app')).toBe('plain');
+  });
+});
+
+describe('bot barrage', () => {
+  it('spreads a swarm over about a second, a small batch a little tighter than that', () => {
+    expect(botBurst(0)).toEqual([]);
+    expect(botBurst(1)).toEqual([0]);
+    const big = botBurst(30);
+    expect(big).toHaveLength(30);
+    expect(big[29]).toBeGreaterThan(1);
+    expect(big[29]).toBeLessThan(1.5);
+    expect(botBurst(10)[9]).toBeCloseTo(0.81);
   });
 });

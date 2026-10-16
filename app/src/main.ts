@@ -32,7 +32,7 @@ import { pullPct } from './game/pull';
 import { trackLoads, LOADING_HTML } from './ui/pageLoad';
 import { markSend, applySendFx } from './ui/sendFx';
 import { SOUND } from './ui/sound';
-import { soundSnap, soundCues } from './ui/soundCues';
+import { soundSnap, soundCues, botBurst } from './ui/soundCues';
 
 const content = loadContent();
 const writer = makeWriter(content);
@@ -220,14 +220,22 @@ function quietReset(): void { resyncSound = true; }
 // spam-filter bounces are counted apart: one coming back plays its own sound instead of the mail alert
 const bounceCount = () => store.state.mail.filter((m) => m.bounceOf).length;
 let bounces = bounceCount();
-store.onArrival(({ mail, posts }) => {
+store.onArrival(({ mail, posts, bots }) => {
+  store.ui.yBurst = {};
   const b = bounceCount(); const bounced = b > bounces; bounces = b;
   if (resyncSound) return;
   // arriving with a new day: wait for the day-end sound and the night's money
   const after = store.state.values.day !== snap.day ? 2.2 : 0.1;
+  const at = after + (mail ? 0.45 : 0);
   if (bounced) SOUND.play('bounce', after + 0.25);
   if (mail > (bounced ? 1 : 0)) SOUND.play('mail', after);
-  if (posts) SOUND.play('post', after + (mail ? 0.45 : 0));
+  if (posts > bots.length) SOUND.play('post', at);
+  // bot accounts post in a quick barrage: each one shows up on Y with its own chirp
+  const burst = botBurst(bots.length);
+  const start = performance.now() + at * 1000;
+  // the feed lists them newest on top, so the barrage builds upward
+  [...bots].sort((a, b) => a.localeCompare(b)).forEach((id, i) => { store.ui.yBurst[id] = start + burst[i] * 1000; });
+  SOUND.burst('post', burst, at);
 });
 store.subscribe(render);
 store.subscribe(listen);
@@ -249,7 +257,7 @@ function updateCost(): void {
 
 // ── clicks ──
 document.addEventListener('click', (e) => {
-  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-ov],[data-dev],[data-cancel-booking],[data-empire-join],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat],[data-back],[data-forward],[data-devbug],[data-task],[data-term],[data-devopts],[data-mail-bin],[data-mail-restore],[data-mail-undo]');
+  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-ov],[data-dev],[data-cancel-booking],[data-empire-join],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat],[data-back],[data-forward],[data-devbug],[data-task],[data-term],[data-devopts],[data-mail-bin],[data-mail-restore],[data-mail-undo],[data-y-all]');
   // any click outside the home menu closes it (menu items close it themselves below)
   if (store.ui.start && !(e.target as HTMLElement).closest('#startmenu, #dk-home')) store.toggleStart(false);
   // clicking the browser while the Terminal is in front brings the browser forward, like any window
@@ -277,6 +285,7 @@ document.addEventListener('click', (e) => {
   // data-newtab with a URL opens that page in a new tab (Forkyard deployments); empty opens a blank tab
   else if (d.newtab != null) { newPageLoad(); store.navigate(d.newtab || 'newtab', true); }
   else if (d.like != null) store.like(d.like);
+  else if (d.yAll != null) store.showAllY();
   else if (d.deploy != null) { SOUND.play('deploy'); store.deploy(d.deploy); }
   else if (d.takedown != null) store.confirm('Take it offline? It counts as broken at payday.', 'Take down', () => store.takeDown(d.takedown!));
   // the cancel link opens the restaurant's cancel page in a new tab

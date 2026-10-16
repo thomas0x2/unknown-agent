@@ -38,9 +38,11 @@ export interface Arrival {
   mail: number;
   /** New posts on the Y timeline by someone other than the player. */
   posts: number;
+  /** The bot accounts among them, which land as a barrage rather than all at once. */
+  bots: string[];
 }
 /** Where arrivals are counted from: the shared seq counter, and the timeline posts up today. */
-interface ArrivalMark { seq: number; day: number; timed: number; extra: number }
+interface ArrivalMark { seq: number; day: number; timed: number; extra: number; bots: Set<string> }
 
 export class GameStore {
   state: GameState;
@@ -53,7 +55,9 @@ export class GameStore {
   /** A prompt's charge on its way to the wallet, a beat after the reply (0 when nothing is). */
   charging = 0;
   ui = {
-    ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null as Draft | null,
+    ySearch: '', yAllDay: 0, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null as Draft | null,
+    /** Bot posts landing as a barrage: when each shows up on Y (performance.now() ms), so a repaint keeps the timing. */
+    yBurst: {} as Record<string, number>,
     project: '', dev: false, liked: {} as Record<string, boolean>, intro: true, greet: false, memWarn: false, confirm: null as null | { text: string; yes: string; fn: () => void }, start: false, menuCat: 'saves',
     /** The Terminal is its own window: open (in the taskbar) and shown (in front of the browser). */
     termOpen: false, termShown: false,
@@ -120,7 +124,8 @@ export class GameStore {
   onArrival(fn: (a: Arrival) => void): () => void { this.arrivalListeners.add(fn); return () => this.arrivalListeners.delete(fn); }
   private arrivalMark(s = this.state): ArrivalMark {
     const day = s.values.day;
-    return { seq: s.nextId, day, extra: s.yExtra.length, timed: marketPosts(s, this.content).filter((p) => p.day === day).length + fillerToday(s, this.content).length };
+    const market = marketPosts(s, this.content).filter((p) => p.day === day);
+    return { seq: s.nextId, day, extra: s.yExtra.length, timed: market.length + fillerToday(s, this.content).length, bots: new Set(market.filter((p) => p.bot).map((p) => p.id)) };
   }
   /** Tell the listeners what arrived since `m`. Returns whether anything did. */
   private announce(m: ArrivalMark): boolean {
@@ -135,7 +140,8 @@ export class GameStore {
       + Math.max(0, now.extra - m.extra)
       + s.delivered.filter((d) => d.site === 'y' && fresh(d.seq)).length;
     if (!mail && !posts) return false;
-    for (const fn of this.arrivalListeners) fn({ mail, posts });
+    const bots = [...now.bots].filter((id) => now.day !== m.day || !m.bots.has(id));
+    for (const fn of this.arrivalListeners) fn({ mail, posts, bots });
     return true;
   }
   private commit(s: GameState): void {
@@ -261,6 +267,8 @@ export class GameStore {
   }
 
   setYSearch(v: string): void { this.ui.ySearch = v; this.emit(); }
+  /** Y shows only today's posts until the player asks for the rest; the choice lapses at the next day. */
+  showAllY(): void { this.ui.yAllDay = this.state.values.day; this.emit(); }
   setYowlSearch(v: string): void { this.ui.yowlSearch = v; this.emit(); }
   setFySearch(v: string): void { this.ui.fySearch = v; this.emit(); }
   setWalletRange(r: string): void { this.ui.walletRange = r; this.emit(); }
@@ -347,7 +355,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = 1; this.nextTab = PINNED.length + 1;
-    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', jevOffline: null };
+    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', jevOffline: null };
     this.store.save(this.state);
     this.emit();
   }
