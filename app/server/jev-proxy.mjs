@@ -40,7 +40,11 @@ async function getClient() {
 async function buildRoute(sdk, body) {
   const criteria = {};
   for (const c of body.candidates ?? []) criteria[c.id] = c.when;
-  criteria.nothing = 'The message achieves none of the above.';
+  // strict routes (agent.chat hints) should only fire on a clear match; small talk, insults and
+  // questions about agent itself fall through to a roast.
+  criteria.nothing = body.strict
+    ? 'None of the above clearly applies: small talk, jokes, insults, personal requests, questions about agent itself, or anything only loosely related. Pick this when unsure.'
+    : 'The message achieves none of the above.';
   return {
     state: { setting: SETTING, situation: body.stateSummary, player_message: body.text },
     questions: {

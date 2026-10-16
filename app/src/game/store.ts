@@ -36,6 +36,7 @@ export class GameStore {
     const loaded = this.store.load();
     this.state = loaded ?? startGame(content);
     this.ui.intro = !this.state.introSeen;
+    applyDevMode(this.devMode);
   }
 
   subscribe(fn: () => void): () => void { this.listeners.add(fn); return () => this.listeners.delete(fn); }
@@ -72,7 +73,15 @@ export class GameStore {
   setReviewStars(n: number): void { this.ui.reviewStars = n; this.emit(); }
   setDraft(d: Draft | null): void { this.ui.draft = d; this.emit(); }
   setProject(id: string): void { this.ui.project = id; this.emit(); }
-  toggleDev(): void { this.ui.dev = !this.ui.dev; document.body.classList.toggle('dev-on', this.ui.dev); this.emit(); }
+  toggleDev(): void { this.ui.dev = !this.ui.dev; this.emit(); }
+  /** Dev mode shows how replies were chosen (Jev's decision, the Gemma prompt and output). On unless turned off. */
+  devMode = readDevMode();
+  setDevMode(on: boolean): void {
+    this.devMode = on;
+    try { localStorage.setItem(DEV_KEY, on ? '1' : '0'); } catch { /* storage off */ }
+    applyDevMode(on);
+    this.emit();
+  }
   like(id: string): void { this.ui.liked[id] = !this.ui.liked[id]; this.emit(); }
   /** Mark a mail row read (persisted, no re-render — called during render). */
   markReadMail(id: string): void {
@@ -182,6 +191,14 @@ export class GameStore {
   async term(text: string) {
     return this.run(async () => { const r = await localPrompt(this.state, text, this.writer, DEEPSLEEP); this.commitAndSettle(r.state); return r; });
   }
+}
+
+const DEV_KEY = 'unknown-agent-dev';
+function readDevMode(): boolean {
+  try { return localStorage.getItem(DEV_KEY) !== '0'; } catch { return true; }
+}
+function applyDevMode(on: boolean): void {
+  if (typeof document !== 'undefined') document.body.classList.toggle('dev-on', on);
 }
 
 /** How long a scripted agent reply "thinks" before it appears: longer for longer replies, a little random. */

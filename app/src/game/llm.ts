@@ -126,6 +126,8 @@ class LocalLLM {
   last: { ms: number; ok: boolean; text: string } | null = null;
   /** Why the last generation gave no reply, in plain words (shown next to the scripted line). */
   lastMiss = '';
+  /** The last generation's input and raw output, for dev mode. */
+  lastRun: { messages: ChatTurn[]; raw: string | null; ms: number; temperature: number; penalty: number } | null = null;
 
   private listeners = new Set<() => void>();
   private worker: Worker | null = null;
@@ -199,6 +201,7 @@ class LocalLLM {
     this.lastMiss = text ? '' : failed || (raw ? `Gemma's reply was unusable: ${raw.slice(0, 80)}` : 'Gemma gave no reply');
     if (!text) console.info('[LocalLLM] no usable reply:', this.lastMiss, raw ?? '');
     this.last = { ms: Math.round(now() - started), ok: !!text, text: text || raw || '' };
+    this.lastRun = { messages, raw, ms: this.last.ms, temperature, penalty };
     this.emit();
     return text;
   }

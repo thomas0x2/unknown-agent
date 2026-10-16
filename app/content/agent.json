@@ -2,11 +2,11 @@
   "hints": [
     {
       "id": "capabilities",
-      "when": "The player asks what agent can do, what it is for, which features or skills it has, or how to use it.",
+      "when": "The player asks what agent can do, what it is for, which features or skills it has, or how to use it. Not questions about whether agent is smart, alive, real or has feelings.",
       "replies": [
-        "I build and fix apps for clients. Find someone on Y who needs one, then tell me exactly what they asked for.",
-        "Websites, small apps, fixes. You bring the client and the spec, I bring the code, GeneralAI brings the invoice.",
-        "I write code from specs. The specs are in your inbox and on Y, from people who still have money."
+        "I build and fix software, write, translate and answer questions. Every one of those is billed.",
+        "Apps, websites, fixes, emails, translations. Tell me what you need and I'll do it, for a fee.",
+        "Mostly code: I build apps, fix them and push them to Forkyard. I also write and translate, if you can afford the words."
       ]
     },
     {

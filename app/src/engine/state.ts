@@ -121,6 +121,8 @@ export interface ChatMsg {
   llm?: boolean;
   /** Why a scripted line stood in for the local model. */
   note?: string;
+  /** How the reply was chosen (Jev's decision, the model prompt and raw output), shown in dev mode. */
+  debug?: string[];
   level?: number;
 }
 

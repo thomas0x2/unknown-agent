@@ -146,6 +146,7 @@ document.addEventListener('click', (e) => {
   else if (d.act === 'sleep') store.endDay();
   else if (d.act === 'new') store.confirm('Start over? This erases your save.', 'Start over', () => store.newGame());
   else if (d.act === 'dev') store.toggleDev();
+  else if (d.act === 'devmode') store.setDevMode(!store.devMode);
   else if (d.act === 'intro') store.openIntro();
 });
 

@@ -132,7 +132,7 @@ export function startMenuHtml(store: GameStore): string {
   const item = (act: string, icon: string, title: string, sub: string) =>
     `<button class="dm-item" data-act="${act}">${icon}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span></button>`;
   const list = cat === 'system'
-    ? item('new', MI.logout, 'New game', 'Start over from Day 1') + item('intro', MI.help, 'How to play', 'The rules, again') + item('dev', MI.term, 'Story debugger', 'jev · Ctrl+`')
+    ? item('new', MI.logout, 'New game', 'Start over from Day 1') + item('intro', MI.help, 'How to play', 'The rules, again') + item('devmode', MI.help, `Dev mode: ${store.devMode ? 'on' : 'off'}`, 'Show how agent replies were chosen') + item('dev', MI.term, 'Story debugger', 'jev · Ctrl+`')
     : autoRow() + listSlots().map((info, i) => {
       const n = i + 1;
       const when = info ? `${fmtClock(info.clockMin)} · saved ${new Date(info.savedAt).toLocaleString(undefined, { month: 'short', day: 'numeric' })}` : 'Empty';
@@ -612,7 +612,8 @@ function pageAgent(store: GameStore): string {
     const src = m.src ? `<span class="ua-src ${esc((m.src || '').split(':')[0])}">${esc(m.src)}</span>` : '';
     const model = m.src === 'llm' ? `<span class="ua-model" title="Written by the local model">${esc(LLM.label())}</span>`
       : m.note ? `<span class="ua-model" title="A scripted line stood in for the local model">Scripted · ${esc(m.note)}</span>` : '';
-    return `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text">${linkify(br(m.text))}</div>${model}${src}</div>`;
+    const debug = m.debug?.length ? `<details class="ua-debug"><summary>Details</summary>${m.debug.map((l) => `<div>${esc(l)}</div>`).join('')}</details>` : '';
+    return `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text">${linkify(br(m.text))}</div>${model}${src}${debug}</div>`;
   }).join('');
   const p = store.pendingPrompt;
   const pending = p == null ? '' : `<div class="ua-msg you"><div class="ua-bubble">${esc(p)}</div><span class="ua-cost">${fmtMoney(-promptCost(s.values.agentLevel, p).total)} · agent-${s.values.agentLevel} · Day ${s.values.day}</span></div>`;

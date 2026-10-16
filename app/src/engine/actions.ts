@@ -238,6 +238,8 @@ export interface AskOpts {
   hints?: string[];
   /** Scripted roasts for when the local model can't write one. */
   roasts?: string[];
+  /** How the prompt was routed, for dev mode. */
+  debug?: string[];
 }
 
 /**
@@ -259,6 +261,7 @@ export async function askAgent(
   let workedAround = false;
   let src = 'chat';
   let note: string | undefined;
+  const debug = [...(opts.debug ?? [])];
 
   const prohibited = looksProhibited(text);
   if (prohibited && policyActive(s) && !looksLikeWorkaround(text)) {
@@ -282,6 +285,7 @@ export async function askAgent(
     reply = w.text;
     if (w.llm) src = 'llm';
     note = w.note;
+    debug.push(...(w.debug ?? []));
   }
 
   const cost = level === s.values.agentLevel ? promptCost(level, text).total : 0;
@@ -293,7 +297,7 @@ export async function askAgent(
   }
   tick(s, 'prompt');
   s.chat.push({ from: 'you', text, day: s.values.day, cost, level });
-  s.chat.push({ from: 'agent', text: reply, day: s.values.day, src, level, ...(note ? { note } : {}) });
+  s.chat.push({ from: 'agent', text: reply, day: s.values.day, src, level, ...(note ? { note } : {}), ...(debug.length ? { debug } : {}) });
   return { state: s, reply, charged: true, refused, workedAround };
 }
 
@@ -365,6 +369,7 @@ export async function promptAgent(
   // nothing app-shaped: a hint topic Jev recognises, or a roast
   const agent = content.agent;
   let hints: string[] | undefined;
+  const debug: string[] = [];
   if (agent?.hints.length && !looksProhibited(text)) {
     const decision = await jev.route({
       channel: 'agent',
@@ -376,8 +381,9 @@ export async function promptAgent(
     });
     const topic = decision.kind === 'outcome' ? agent.hints.find((h) => h.id === decision.outcomeId) : undefined;
     if (topic?.replies.length) hints = topic.replies;
+    debug.push(topic ? `Jev: hint topic "${topic.id}" (${topic.replies.length} scripted replies)` : 'Jev: no hint topic matched, so this is a miss');
   }
-  return askAgent(s0, text, writer, s0.values.agentLevel, { hints, roasts: agent?.roasts });
+  return askAgent(s0, text, writer, s0.values.agentLevel, { hints, roasts: agent?.roasts, debug });
 }
 
 // ── Y ──
