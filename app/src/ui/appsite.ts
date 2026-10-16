@@ -117,7 +117,7 @@ function generic(app: AppInstance, tmpl: AppTemplate | undefined, page: string |
 
 const BREAK_LABEL: Record<string, string> = { visible: 'crash', failed_fetch: 'failed fetch', subtle: 'subtle break', deep: 'deep break' };
 
-interface DevRow { id: string; repoNow: string; liveNow: string; present: Set<string>; possible: string[]; checklist: string }
+interface DevRow { id: string; repoNow: string; liveNow: string; present: Set<string>; possible: { key: string; label: string; live?: boolean }[]; checklist: string }
 
 function devRows(app: AppInstance, tmpl: AppTemplate | undefined): DevRow[] {
   return app.required.map((id) => {
@@ -129,11 +129,10 @@ function devRows(app: AppInstance, tmpl: AppTemplate | undefined): DevRow[] {
     const liveNow = !app.deployed ? 'not deployed'
       : brk ? `${BREAK_LABEL[brk.failure] ?? brk.failure}${brk.failure === 'subtle' ? `: ${breakVariant(brk, def) ?? '?'}` : ''}`
       : !liveF ? 'missing' : liveF.correct ? 'ok' : bugsOf(liveF).join(' + ') || 'wrong';
-    const present = new Set([...bugsOf(repo), ...bugsOf(liveF), brk && BREAK_LABEL[brk.failure], brk && breakVariant(brk, def)].filter(Boolean) as string[]);
+    const present = new Set([...(repo?.correct ? [] : bugsOf(repo)), ...(liveF?.correct ? [] : bugsOf(liveF)), ...(brk ? [brk.failure] : [])]);
     const possible = [
-      ...(def?.bugs ?? []).map((b) => b.id),
-      ...(def?.details?.length ? ['hallucinated', 'outdated'] : []),
-      ...(def?.failures ?? []).map((f) => BREAK_LABEL[f] ?? f),
+      ...[...(def?.bugs ?? []).map((b) => b.id), ...(def?.details?.length ? ['hallucinated', 'outdated'] : [])].map((key) => ({ key, label: key })),
+      ...(def?.failures ?? []).map((f) => ({ key: f, label: BREAK_LABEL[f] ?? f, live: true })),
     ];
     // the spec checklist from the last build prompt: a missed item guarantees its bug
     const checklist = (def?.checklist ?? []).map((c) => {
@@ -158,7 +157,11 @@ export function devBugPanel(app: AppInstance, tmpl: AppTemplate | undefined): st
   const cards = rows.map((r) => `<div class="dvb-card">
       <div class="dvb-title"><b>${esc(r.id)}</b>${pill('repo', r.repoNow)}${pill('live', r.liveNow)}</div>
       ${r.checklist ? `<div class="dvb-line"><span class="dvb-k">Build prompt</span>${r.checklist}</div>` : ''}
-      <div class="dvb-line"><span class="dvb-k">Possible bugs</span>${r.possible.map((p) => `<span class="dvb-tag${r.present.has(p) ? ' on' : ''}">${esc(p)}</span>`).join('') || '<i>none</i>'}</div>
+      <div class="dvb-line"><span class="dvb-k">Possible bugs</span>${r.possible.map((p) => {
+        const off = p.live && !app.deployed;
+        const tip = off ? 'Deploy first: breaks only happen on the live site' : r.present.has(p.key) ? 'Click to remove' : p.live ? 'Click to break the live site' : 'Click to add to the repo and live build';
+        return `<button class="dvb-tag${r.present.has(p.key) ? ' on' : ''}" data-devbug="${esc(`${app.id}|${r.id}|${p.key}`)}" title="${tip}"${off ? ' disabled' : ''}>${esc(p.label)}</button>`;
+      }).join('') || '<i>none</i>'}</div>
     </div>`).join('');
-  return `<section class="dev-bugs"><div class="dvb-head"><span class="dvb-badge">DEV</span><b>Bugs in ${esc(app.id)}</b><span class="dvb-sum ${n ? 'bad' : 'ok'}">${n ? `${n} feature${n > 1 ? 's' : ''} with a bug` : 'no bugs'}</span></div>${cards}</section>`;
+  return `<section class="dev-bugs"><div class="dvb-head"><span class="dvb-badge">DEV</span><b>Bugs in ${esc(app.id)}</b><span class="dvb-sum ${n ? 'bad' : 'ok'}">${n ? `${n} feature${n > 1 ? 's' : ''} with a bug` : 'no bugs'}</span><span class="dvb-hint">Click a bug to switch it on or off</span></div>${cards}</section>`;
 }
