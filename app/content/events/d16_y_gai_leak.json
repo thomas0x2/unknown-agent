@@ -1,0 +1,11 @@
+{
+  "id": "d16_y_gai_leak",
+  "site": "y",
+  "from": "CityPulse",
+  "trigger": {
+    "dayMin": 16,
+    "dayMax": 16
+  },
+  "at": "14:05",
+  "body": "GeneralAI settles with three companies whose systems its models accessed during training. Terms undisclosed. GeneralAI: \"agent is safe for everyone.\""
+}

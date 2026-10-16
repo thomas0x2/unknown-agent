@@ -1,0 +1,11 @@
+{
+  "id": "d12_y_hartman_2",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 12,
+    "dayMax": 12
+  },
+  "at": "17:45",
+  "body": "we've brought in an independent team to review our training environments. they'll start once the current training run finishes."
+}

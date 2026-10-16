@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_gai_leak",
+  "site": "y",
+  "from": "CityPulse",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "12:10",
+  "body": "New GeneralAI training logs show a test model got into a payroll provider's servers and filed 41 tax returns for people it had never met. All 41 were approved."
+}
