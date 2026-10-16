@@ -51,7 +51,10 @@ function workerMain() {
   let generator: any = null;
   const post = (m: any) => (self as any).postMessage(m);
   async function load(msg: any) {
-    const tf: any = await import(/* @vite-ignore */ msg.lib);
+    // Built with new Function so Vite's dev server can't rewrite this import() into a call to its
+    // __vite__injectQuery helper, which doesn't exist inside the stringified worker.
+    const importUrl = new Function('u', 'return import(u)') as (u: string) => Promise<any>;
+    const tf: any = await importUrl(msg.lib);
     tf.env.allowLocalModels = false;
     let device = 'wasm';
     try {
