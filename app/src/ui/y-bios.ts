@@ -31,6 +31,13 @@ export const Y_BIOS: Record<string, string> = {
   brentk_capital: 'Founder, BK Capital. Up at 4am. Efficiency is a moral good and headcount is a cost.',
   danaruiz_trades: 'Day trader. Still here, somehow.',
   jesspark: 'Walks a lot. Notices things. Vantor Heights.',
+  // agent-2 mourners (days 9 and 10, after agent-3 replaces it)
+  quietlyjune: 'Librarian. Mostly quiet. agent-2 user since launch day.',
+  marcus_okafor: 'Caregiver for my mom. Night owl. I talk to software more than I should.',
+  bring_back_agent2: 'Users asking GeneralAI to keep agent-2 available. Not affiliated with GeneralAI. Petition below. 🕯️',
+  deb_halloran: 'Payroll at a company with fewer people every month. Married, thanks partly to agent-2.',
+  agent2forever: 'agent-2, Oct 6 to Oct 11, 2028. Never forget. Never agent-3.',
+  teo_vasquez: 'Electrician. Looking for work. References available.',
   // background regulars
   noodleposter: 'instant noodle reviewer. 87 flavors ranked so far.',
   cat_ceo: 'CEO of one cat. Board meetings at 5am, attendance mandatory.',

@@ -1,0 +1,14 @@
+{
+  "id": "d10_y_mourn_teo_vasquez",
+  "site": "y",
+  "from": "Teo Vasquez",
+  "trigger": {
+    "dayMin": 10,
+    "dayMax": 10,
+    "values": {
+      "agentLevel": ">=3"
+    }
+  },
+  "at": "13:15",
+  "body": "there's a candlelight vigil downtown for a software version. I've been applying for jobs for five months."
+}

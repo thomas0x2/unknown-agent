@@ -1,0 +1,14 @@
+{
+  "id": "d9_y_mourn_marcus_okafor",
+  "site": "y",
+  "from": "Marcus Okafor",
+  "trigger": {
+    "dayMin": 9,
+    "dayMax": 9,
+    "values": {
+      "agentLevel": ">=3"
+    }
+  },
+  "at": "12:05",
+  "body": "agent-2 asked how my mother was doing every morning. agent-3 asked if I wanted to try Priority Reasoning for 4 DOLR."
+}
