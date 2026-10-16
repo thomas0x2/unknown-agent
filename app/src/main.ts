@@ -23,6 +23,8 @@ import { MISSES, makeWriter, type Misses, type HaikuVia } from './game/misses';
 import * as V from './ui/view';
 import { route } from './sites/registry';
 import { listSlots } from './game/saves';
+import { devEditHtml } from './ui/devEdit';
+import type { MeterId } from './engine';
 import { newPageLoad } from './ui/ads';
 import { disableClipboard } from './ui/noClipboard';
 
@@ -102,6 +104,7 @@ function render(): void {
 
   const ov = $('#overlay')!; const oh = V.overlayHtml(store); ov.innerHTML = oh; ov.hidden = !oh;
   const dev = $('#dev')!; dev.hidden = !store.ui.dev; if (store.ui.dev) dev.innerHTML = V.devHtml(store);
+  const dve = $('#devedit')!; const showEdit = store.ui.dev && store.ui.devEdit; dve.hidden = !showEdit; if (showEdit) dve.innerHTML = devEditHtml(store);
 
   if (site === 'agent') { const log = $('#ua-log'); if (log) log.scrollTop = log.scrollHeight; updateCost(); }
   if (site === 'terminal') { const log = $('#tm-log'); if (log) log.scrollTop = log.scrollHeight; const t = $('#term-input'); if (t && window.innerWidth > 700 && !store.busy) t.focus(); }
@@ -171,6 +174,7 @@ document.addEventListener('click', (e) => {
   else if (d.act === 'sleep') store.endDay();
   else if (d.act === 'new') store.confirm('Start over? This erases your save.', 'Start over', () => { forgetDrafts(); store.newGame(); });
   else if (d.act === 'dev') store.toggleDev();
+  else if (d.act === 'devedit') store.toggleDevEdit();
   else if (d.act === 'devmode') store.setDevMode(!store.devMode);
   else if (d.act === 'intro') store.openIntro();
 });
@@ -191,6 +195,8 @@ document.addEventListener('submit', (e) => {
   if (!f) return;
   e.preventDefault();
   const kind = f.dataset.form;
+  if (kind === 'dev-day') { store.devGoToDay(Number(val('#dev-day'))); return; }
+  if (kind === 'dev-flag') { const v = val('#dev-flag-name').trim(); if (v) store.devSetFlag(v, true); return; }
   if (kind === 'url') { newPageLoad(); store.navigate(val('#nt-url') || val('#address')); }
   else if (kind === 'ypost') { const v = val('#post-input').trim(); if (v) { clearField('post-input'); void store.post(v, trendingToday()); } }
   else if (kind === 'prompt') {
@@ -246,6 +252,8 @@ document.addEventListener('change', (e) => {
   const el = e.target as HTMLSelectElement;
   if (el.id === 'llm-misses') MISSES.set({ misses: el.value as Misses });
   else if (el.id === 'llm-haiku-via') MISSES.set({ haikuVia: el.value as HaikuVia });
+  else if (el.dataset.devMeter) store.devSetMeter(el.dataset.devMeter as MeterId, Number(el.value));
+  else if (el.dataset.devFlag) store.devSetFlag(el.dataset.devFlag, (el as unknown as HTMLInputElement).checked);
 });
 /** Keep the To draft current without re-rendering, so the field and its suggestions stay put. */
 function syncMailTo(): void {
