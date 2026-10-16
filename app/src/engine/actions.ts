@@ -9,7 +9,7 @@
 import type { GameState, AppInstance, BuiltFeature, AgentWork } from './state';
 import type { Content, GameEvent, Contact, Outcome, AppTemplate, ScriptedReply } from '../content/schema';
 import type { JevRouter, PostRating, RouteDecision, FeatureMatchInput } from './jev';
-import { Y as YCFG, FAMILY, APPS, AGENT_WORK, CLOCK } from './config';
+import { Y as YCFG, FAMILY, APPS, AGENT_WORK, CLOCK, MAX_INPUT_CHARS } from './config';
 import { clone, addValue, log, pick, rand, money, pushMail, sendLater, gameMinutes } from './core';
 import { applyEffects } from './effects';
 import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent';
@@ -29,6 +29,32 @@ export interface ReplyResult {
 }
 
 const PLAYER_ADDR = 'you@qmail.com';
+
+/** Over MAX_INPUT_CHARS: a scripted reply, with no Jev or Haiku call. */
+export function tooLong(text: string): boolean { return text.length > MAX_INPUT_CHARS; }
+const TOO_LONG_DEBUG = `Over ${MAX_INPUT_CHARS} characters: scripted reply, Jev and Haiku skipped`;
+/** What anyone you email says to a message over the cap. */
+export const TOO_LONG_MAIL = [
+  "I'm not reading all of that. If it matters, it fits in a few lines.",
+  "Got your email. All of it. Can you send the short version?",
+  "That's a lot of text. What do you actually need?",
+  "I scrolled for a while and gave up. Shorter, please.",
+];
+/** What the agent says to a prompt over the cap (it is still billed per word). */
+export const TOO_LONG_PROMPT = [
+  "That prompt is too long for me to work with. Send one request, in fewer words. This one has been billed.",
+  "I stopped reading partway through. Try again with just the part you need done.",
+  "Too much input. I've billed it, but I haven't done anything with it. Keep it short.",
+];
+
+/** The sender answers a message over the cap with a scripted line, if anyone there answers at all. */
+function tooLongReply(s: GameState, content: Content, addr: string, subject: string, ev?: GameEvent): string {
+  const c = contactFor(content, addr);
+  if (!c && !ev) return '';
+  const body = pick(s, TOO_LONG_MAIL);
+  sendLater(s, { folder: 'inbox', day: s.values.day, from: c?.name ?? ev?.from ?? addr, addr, subject, body, read: false }, replyAfter(content, addr, undefined, ev));
+  return body;
+}
 
 function stateSummary(s: GameState): string {
   return `Day ${s.values.day} (${dateFull(s.values.day)}). ${s.values.crypto} DOLR, ${s.values.followers} followers, model agent-${s.values.agentLevel}.`;
@@ -151,7 +177,7 @@ async function contactWritesBack(
   const history = mailHistory(s, content, addr, subject, text);
   const scripted = await scriptedTopic(jev, s, c, text, history.map((h) => `${h.from === 'player' ? 'Player' : h.from === 'self' ? c.name ?? from ?? addr : h.from}: ${h.text}`));
   if (scripted) {
-    sendLater(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: scripted.reply, read: false }, replyAfter(content, addr, scripted.replyAfter, ev));
+    sendLater(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: scripted.reply, read: false, scripted: 'topic' }, replyAfter(content, addr, scripted.replyAfter, ev));
     return scripted.reply;
   }
   // A hint is a hit: Jev recognised what the player was after, so the nudge is sent as written.
@@ -159,7 +185,7 @@ async function contactWritesBack(
   const fb = c.reply || 'Thanks for your message.';
   const { text: body, llm } = hint ? { text: hint, llm: false } : await writer.write({ as: addr, prompt: text, fallback: fb, long: true, history });
   const shown = body || fb;
-  sendLater(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: shown, read: false, generated: llm && !!body }, replyAfter(content, addr, undefined, ev));
+  sendLater(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: shown, read: false, generated: llm && !!body, ...(hint ? { scripted: 'hint' as const } : {}) }, replyAfter(content, addr, undefined, ev));
   return shown;
 }
 
@@ -198,6 +224,12 @@ export async function replyToEvent(
   const delivery = s.delivered.find((d) => d.eventId === eventId && !d.answered);
   if (!ev || !delivery) return { state: s, decision: { kind: 'nothing' }, reply: '' };
   const addr = ev.site === 'qmail' && ev.addr ? ev.addr.toLowerCase() : '';
+  // a scripted answer to a wall of text: it doesn't count toward the daily limit, or bounce off it
+  if (tooLong(text)) {
+    if (ev.addr) pushMail(s, { folder: 'sent', day: s.values.day, from: 'You', addr: PLAYER_ADDR, to: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body: text, read: true });
+    const reply = ev.addr ? tooLongReply(s, content, ev.addr.toLowerCase(), `RE: ${ev.subject ?? ''}`, ev) : '';
+    return { state: s, decision: { kind: 'nothing' }, reply };
+  }
   if (addr && overDailyLimit(s, addr, delivery.seq ?? -1)) {
     bounce(s, addr, `RE: ${ev.subject ?? ''}`, text);
     return { state: s, decision: { kind: 'nothing' }, reply: '', bounced: true };
@@ -225,7 +257,7 @@ export async function replyToEvent(
       delivery.outcomeId = outcome.id;
       // a storyline outcome always answers with its scripted reply
       const body = outcome.reply;
-      if (ev.addr) sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'Unknown', addr: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body, read: false }, replyAfter(content, ev.addr, outcome.replyAfter, ev));
+      if (ev.addr) sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'Unknown', addr: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body, read: false, scripted: 'outcome' }, replyAfter(content, ev.addr, outcome.replyAfter, ev));
       return { state: s, decision, reply: body };
     }
   }
@@ -260,6 +292,12 @@ export async function composeEmail(
   const s = clone(s0);
   const addr = to.trim().toLowerCase();
   if (!addr) return { state: s, decision: { kind: 'nothing' }, reply: '', sent: false };
+  // a scripted answer to a wall of text: it doesn't count toward the daily limit, or bounce off it
+  if (tooLong(text)) {
+    pushMail(s, { folder: 'sent', day: s.values.day, from: 'You', addr: PLAYER_ADDR, to: addr, subject: subject || '(no subject)', body: text, read: true });
+    const ev = reachableByEmail(s, content, addr);
+    return { state: s, decision: { kind: 'nothing' }, reply: tooLongReply(s, content, addr, re(subject || ev?.subject || ''), ev), sent: true };
+  }
   if (overDailyLimit(s, addr)) {
     bounce(s, addr, subject, text);
     return { state: s, decision: { kind: 'nothing' }, reply: '', sent: true, bounced: true };
@@ -285,7 +323,7 @@ export async function composeEmail(
       // a lead that hands over a client brief sends it along with the scripted reply
       const body = outcome.effects?.createApp && ev.body ? `${outcome.reply}\n\n${ev.body}` : outcome.reply;
       s.delivered.push({ eventId: ev.id, site: 'qmail', day: s.values.day, seq: s.nextId++, answered: true, outcomeId: outcome.id, expiresDay: ev.expiresDay });
-      sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? addr, addr, subject: re(subject || ev.subject || ''), body, read: false }, replyAfter(content, addr, outcome.replyAfter, ev));
+      sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? addr, addr, subject: re(subject || ev.subject || ''), body, read: false, scripted: 'outcome' }, replyAfter(content, addr, outcome.replyAfter, ev));
       return { state: s, decision, reply: body, sent: true };
     }
   }
@@ -663,6 +701,8 @@ export async function promptAgent(
   writer: Writer = scriptedWriter,
   started?: string,
 ): Promise<AskResult> {
+  // a wall of text gets a scripted reply before any model sees it (still billed per word)
+  if (tooLong(text)) return askAgent(s0, text, writer, s0.values.agentLevel, { hints: TOO_LONG_PROMPT, hintSrc: 'too_long', debug: [TOO_LONG_DEBUG] });
   // a user app nobody hired the player for: asking the agent to build it takes the job
   const lead = started ? undefined : await agentStartFor(jev, s0, content, text);
   if (lead && s0.agentWork) return busyReply(s0, text);
@@ -876,6 +916,21 @@ export const POST_BANDS: Record<PostRating['category'], [number, number]> = {
   hot_take: [0.1, 0.25], self_promo: [-0.03, -0.01], spam: [-0.05, -0.02],
 };
 
+/** Flat follower change per category that small accounts get when it beats the share above (low to high quality). */
+export const POST_FLOORS: Record<PostRating['category'], [number, number]> = {
+  reaction: [8, 14], launch: [2, 8], tip: [1, 5], humor: [0, 8],
+  hot_take: [4, 12], self_promo: [-3, -1], spam: [-5, -2],
+};
+
+/** Follower change for a rated post before jitter: the share of followers or the flat floor, whichever is bigger. */
+export function postBase(category: PostRating['category'], quality: number, followers: number): number {
+  const [lo, hi] = POST_BANDS[category];
+  const [flo, fhi] = POST_FLOORS[category];
+  const share = followers * (lo + (hi - lo) * quality);
+  const floor = flo + (fhi - flo) * quality;
+  return Math.abs(floor) > Math.abs(share) ? floor : share;
+}
+
 export interface PostResult { state: GameState; rating: PostRating; followerDelta: number }
 
 /** Post to Y. Jev rates it; the rating becomes a follower change per the rubric. */
@@ -893,10 +948,8 @@ export async function postToY(
   if (s.postsToday >= YCFG.maxFreePostsPerDay) {
     delta = Math.round(s.values.followers * YCFG.overpostPenaltyPct);
   } else {
-    const [lo, hi] = POST_BANDS[rating.category];
-    const pct = lo + (hi - lo) * rating.quality;
-    delta = Math.round(s.values.followers * pct);
-    if (rating.category === 'reaction') delta = Math.max(delta, 10);
+    const jitter = 1 + YCFG.postJitter * (2 * rand(s) - 1);
+    delta = Math.round(postBase(rating.category, rating.quality, s.values.followers) * jitter);
     if (rating.category === 'hot_take') addValue(s, 'familyTrust', -Math.round(5 + 5 * rating.quality));
   }
   addValue(s, 'followers', delta);

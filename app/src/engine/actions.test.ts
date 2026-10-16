@@ -8,14 +8,33 @@ import { noJev, JevOffline } from './jev';
 const content = makeContent();
 
 describe('postToY', () => {
-  it('a trending reaction gains at least the floor', async () => {
+  it('a trending reaction on a small account gains the jittered floor', async () => {
     const s = startGame(content, 1);
     s.values.followers = 12;
     const r = fakeRouter({ rating: () => ({ category: 'reaction', quality: 0 }) });
     const out = await postToY(s, r, 'rent is brutal', ['rent']);
-    expect(out.followerDelta).toBe(10); // floor beats 12*0.05
-    expect(out.state.values.followers).toBe(22);
+    expect(out.followerDelta).toBeGreaterThanOrEqual(6); // floor 8 beats 12*0.05, ±30%
+    expect(out.followerDelta).toBeLessThanOrEqual(10);
+    expect(out.state.values.followers).toBe(12 + out.followerDelta);
     expect(out.state.postsToday).toBe(1);
+  });
+
+  it('the same rating does not always give the same gain', async () => {
+    const r = fakeRouter({ rating: () => ({ category: 'reaction', quality: 0.5 }) });
+    const gains = new Set<number>();
+    for (let seed = 1; seed <= 20; seed++) {
+      const s = startGame(content, seed);
+      s.values.followers = 12;
+      gains.add((await postToY(s, r, 'crane said what', ['Crane'])).followerDelta);
+    }
+    expect(gains.size).toBeGreaterThan(3);
+  });
+
+  it('small accounts gain something from a good tip', async () => {
+    const s = startGame(content, 1);
+    s.values.followers = 12;
+    const r = fakeRouter({ rating: () => ({ category: 'tip', quality: 1 }) });
+    expect((await postToY(s, r, 'use a password manager', [])).followerDelta).toBeGreaterThan(0);
   });
 
   it('spam loses followers', async () => {
@@ -52,6 +71,20 @@ describe('replyToEvent', () => {
     const out = await replyToEvent(s, content, r, 'fam_hi', 'hm');
     expect(out.reply).toBe('She just wants to hear from you.');
     expect(out.state.delivered.find((d) => d.eventId === 'fam_hi')!.answered).toBe(false);
+  });
+
+  it('labels a mailed-back hint and an outcome as scripted for dev mode', async () => {
+    const mom = makeContent({
+      contacts: [{ key: 'mom@test', name: 'Mom', character: 'mom' }],
+      events: [{ id: 'mom_hi', site: 'qmail' as const, from: 'Mom', addr: 'mom@test', subject: 'Hi', trigger: { dayMin: 1 },
+        hints: ['Just tell me you are eating.'], outcomes: [{ id: 'warm', when: 'warm', reply: 'Love you.' }] }],
+    });
+    const s = startGame(mom, 1);
+    const hinted = await replyToEvent(s, mom, fakeRouter({ route: () => ({ kind: 'hint', hintIndex: 0 }) }), 'mom_hi', 'hm');
+    expect(hinted.state.pendingMail!.at(-1)!.mail).toMatchObject({ body: 'Just tell me you are eating.', scripted: 'hint' });
+    hinted.state.sentToday = [];
+    const warm = await replyToEvent(hinted.state, mom, fakeRouter({ route: () => ({ kind: 'outcome', outcomeId: 'warm' }) }), 'mom_hi', 'love you');
+    expect(warm.state.pendingMail!.at(-1)!.mail).toMatchObject({ body: 'Love you.', scripted: 'outcome' });
   });
 
   it('nothing happens on an empty match', async () => {

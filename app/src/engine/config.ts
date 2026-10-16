@@ -6,6 +6,13 @@
 export const LAST_DAY = 21;
 
 /**
+ * The longest email or agent prompt that goes to Jev and Haiku, in characters. Anything longer gets
+ * a scripted reply without a model call: normal play never gets near it, it only stops pasted walls
+ * of text from costing tokens.
+ */
+export const MAX_INPUT_CHARS = 2000;
+
+/**
  * The in-game clock. The day runs from 10:00 to 22:00 in real time: the clock moves minute by
  * minute while the player plays, whatever they do. Actions themselves take no game time.
  */
@@ -154,4 +161,6 @@ export const Y = {
   feedMix: { noise: 0.6, world: 0.25, leads: 0.15 },
   maxFreePostsPerDay: 3,
   overpostPenaltyPct: -0.02,
+  /** A post's follower change lands randomly within this share either side of what its rating earns. */
+  postJitter: 0.3,
 };
