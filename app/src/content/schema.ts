@@ -54,6 +54,26 @@ export interface AppTemplate {
   name: string;
   pages: AppPage[];
   features: FeatureDef[];
+  /** What happens when the app is broken at payday: a client email, or a user's post on Y. */
+  complaints?: AppComplaints;
+}
+/**
+ * Complaint copy for an app that was broken at payday. Client apps send one email from the client
+ * (intro, one line per problem, outro or fired); user apps get one Y post from a poster. Lines may
+ * use {{app}} and, in feature lines, the feature's spec params plus {{shown}}/{{expected}}.
+ */
+export interface AppComplaints {
+  subject?: string;
+  intro?: string;
+  outro?: string;
+  /** Replaces the outro on the strike that loses the client. */
+  fired?: string;
+  /** The app isn't deployed at all. */
+  offline?: string;
+  /** The live app matches the brief but isn't the latest version. */
+  stale?: string;
+  /** User apps: who posts the complaint on Y. */
+  posters?: { author: string; handle: string }[];
 }
 export interface AppPage {
   id: string;
@@ -78,6 +98,13 @@ export interface FeatureDef {
   bugs?: BugDef[];
   /** The first build's guaranteed teaching bug lands on a feature with this set, if one was built. */
   firstBuildBug?: boolean;
+  /**
+   * Complaint lines for this feature, keyed by what's wrong: a bug id ('prices_curo', or
+   * 'wrong_items:renamed' for a sub-case), 'hallucinated', 'outdated', a failure kind ('visible',
+   * 'failed_fetch', 'deep', 'subtle'), or the fallbacks 'missing', 'down' (crash or failed fetch)
+   * and 'wrong' (anything else).
+   */
+  complaints?: Record<string, string>;
 }
 export interface BugDef {
   id: string;

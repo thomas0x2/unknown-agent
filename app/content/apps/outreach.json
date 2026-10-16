@@ -13,14 +13,22 @@
       "description": "fill the first name and company into each email correctly",
       "failures": [
         "subtle"
-      ]
+      ],
+      "complaints": {
+        "missing": "The emails aren't personalised at all.",
+        "wrong": "Emails went out as \"Hi {first name}\". Prospects noticed."
+      }
     },
     {
       "id": "cap",
       "description": "send at most 50 a day with no duplicates",
       "failures": [
         "subtle"
-      ]
+      ],
+      "complaints": {
+        "missing": "There's no daily cap. It just keeps sending.",
+        "wrong": "It sent well over 50 today and some leads got the same email twice."
+      }
     },
     {
       "id": "unsubscribe",
@@ -29,7 +37,12 @@
         "deep",
         "subtle"
       ],
-      "deep": true
+      "deep": true,
+      "complaints": {
+        "missing": "There's no unsubscribe link. That's a compliance problem, not a nice-to-have.",
+        "deep": "People who unsubscribed got emailed again. Legal is now cc'd on this thread.",
+        "wrong": "The unsubscribe link doesn't work."
+      }
     },
     {
       "id": "test",
@@ -37,7 +50,20 @@
       "failures": [
         "visible",
         "subtle"
-      ]
+      ],
+      "complaints": {
+        "missing": "There's no Test button.",
+        "down": "The Test button throws an error.",
+        "wrong": "The Test button didn't send anything to my inbox."
+      }
     }
-  ]
+  ],
+  "complaints": {
+    "subject": "Re: Outreach Bot",
+    "intro": "Hi,\n\nCircling back on the bot after today's send.",
+    "outro": "We can't bill the client for today, so we can't pay you for today. Let's touch base once it's fixed.",
+    "fired": "That's two misses. We're going to move on from this partnership. Best of luck going forward.",
+    "offline": "The bot is offline. Nothing went out today.",
+    "stale": "You mentioned an update but the bot is still on the old version."
+  }
 }

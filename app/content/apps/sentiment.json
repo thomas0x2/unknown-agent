@@ -14,21 +14,34 @@
       "failures": [
         "subtle",
         "failed_fetch"
-      ]
+      ],
+      "complaints": {
+        "missing": "it isn't tracking my tickers. $GAI, $VANT, $NOVA. that was the whole spec.",
+        "down": "the ticker view won't load. a bot that freezes on a trading day is bad luck.",
+        "wrong": "it's tracking the wrong tickers. i gave you the list."
+      }
     },
     {
       "id": "sentiment",
       "description": "split today's posts into bullish, bearish and neutral",
       "failures": [
         "subtle"
-      ]
+      ],
+      "complaints": {
+        "missing": "there's no bullish/bearish/neutral split.",
+        "wrong": "the bullish/bearish split is nonsense. it counted a post calling $VANT a corpse as bullish."
+      }
     },
     {
       "id": "filter",
       "description": "ignore bot spam and non-ticker mentions",
       "failures": [
         "subtle"
-      ]
+      ],
+      "complaints": {
+        "missing": "it counts everything, bots included.",
+        "wrong": "bot spam and random mentions are in the counts again. only $-tagged posts."
+      }
     },
     {
       "id": "top_posts",
@@ -36,14 +49,23 @@
       "failures": [
         "failed_fetch",
         "subtle"
-      ]
+      ],
+      "complaints": {
+        "missing": "no top posts per ticker.",
+        "down": "the top posts links don't load.",
+        "wrong": "the \"top posts\" aren't the most-engaged ones. one has 2 likes."
+      }
     },
     {
       "id": "portfolio",
       "description": "a portfolio view of holdings, cash and today's change",
       "failures": [
         "subtle"
-      ]
+      ],
+      "complaints": {
+        "missing": "no portfolio view yet.",
+        "wrong": "the portfolio numbers don't match my account."
+      }
     },
     {
       "id": "auto_buy",
@@ -52,7 +74,20 @@
         "deep",
         "subtle"
       ],
-      "deep": true
+      "deep": true,
+      "complaints": {
+        "missing": "auto-buy isn't there.",
+        "deep": "auto-buy fired twice on the same post. i own more $GAI than i meant to.",
+        "wrong": "auto-buy is buying on posts that aren't praise."
+      }
     }
-  ]
+  ],
+  "complaints": {
+    "subject": "crawler",
+    "intro": "checked the crawler at close.",
+    "outro": "not paying for a day of bad data. fix it before the open.",
+    "fired": "that's two. i'm out. back to reading the posts myself.",
+    "offline": "the crawler's not running at all. dashboard is a 404.",
+    "stale": "you said you pushed a fix but i'm looking at the same version."
+  }
 }

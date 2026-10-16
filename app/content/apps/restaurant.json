@@ -33,7 +33,14 @@
           "id": "name_wrong",
           "when": "restaurant name {{name}}"
         }
-      ]
+      ],
+      "complaints": {
+        "missing": "There is no home page with our name and opening hours.",
+        "name_wrong": "The site calls us \"{{shown}}\". It's {{expected}}. That name has been on the door since 1998.",
+        "hours_wrong": "The site says we're open {{shown}}. We open {{expected}}. Two people came at the wrong time and found the door locked.",
+        "down": "The home page shows an error instead of our name.",
+        "wrong": "The home page is not right. Please check the name and the hours."
+      }
     },
     {
       "id": "menu",
@@ -61,7 +68,20 @@
           "when": "dishes or items missing, renamed or invented",
           "orDetails": true
         }
-      ]
+      ],
+      "complaints": {
+        "missing": "There is no menu page.",
+        "prices_missing": "The menu has no prices. People called to ask.",
+        "prices_curo": "The prices are in CURO. I don't know what CURO is. We take DOLR.",
+        "wrong_items:removed": "{{expected}} is missing from the menu. We still make it.",
+        "wrong_items:renamed": "The menu says \"{{shown}}\". It's {{expected}}.",
+        "wrong_items:invented": "The menu has {{shown}}. We don't make {{shown}}.",
+        "wrong_items": "The dishes on the menu are not our dishes.",
+        "hallucinated": "That is not my menu. {{shown}}? We have never served these.",
+        "outdated": "The menu is still the old one. I sent you the changes.",
+        "down": "The menu page doesn't load. It only says there was an error.",
+        "wrong": "Something is wrong with the menu. Please compare it with what I sent."
+      }
     },
     {
       "id": "booking",
@@ -72,7 +92,13 @@
         "subtle",
         "visible"
       ],
-      "deep": true
+      "deep": true,
+      "complaints": {
+        "missing": "There is still no way to book a table.",
+        "deep": "The booking form looks fine, but the confirmation email never arrives. A couple came for their anniversary and we had no table for them.",
+        "down": "The booking page shows an error.",
+        "wrong": "The bookings come in wrong. Please check the form."
+      }
     },
     {
       "id": "doordish",
@@ -80,7 +106,20 @@
       "failures": [
         "subtle",
         "failed_fetch"
-      ]
+      ],
+      "complaints": {
+        "missing": "We are still not on DoorDish.",
+        "down": "The DoorDish listing doesn't load.",
+        "wrong": "The DoorDish listing doesn't match our menu and hours."
+      }
     }
-  ]
+  ],
+  "complaints": {
+    "subject": "The website",
+    "intro": "Ciao,\n\nI looked at the site tonight before service.",
+    "outro": "I can't pay for today like this. Please fix it before tomorrow.\n\nGino",
+    "fired": "This is the second time. I'll find someone else for the site. Grazie anyway.\n\nGino",
+    "offline": "The site is gone. I typed the address and there is nothing there.",
+    "stale": "You said you changed something, but the site looks the same as before."
+  }
 }
