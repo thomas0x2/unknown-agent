@@ -17,6 +17,10 @@
       <div class="tabstrip" id="tabs" role="tablist"></div>
       <form class="toolbar" data-form="url">
         <span class="tb-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="tb-nav">
+          <button type="button" class="tb-btn" id="nav-back" data-back aria-label="Back" title="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <button type="button" class="tb-btn" id="nav-fwd" data-forward aria-label="Forward" title="Forward"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+        </span>
         <label class="addr">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3h1v10H6V11h1zm2 0h6V8a3 3 0 0 0-6 0v3z" fill="currentColor"/></svg>
           <input id="address" autocomplete="off" spellcheck="false" aria-label="Address">

@@ -108,3 +108,10 @@
   .dm-cats { flex-direction: row; align-items: center; border-right: 0; border-bottom: 1px solid var(--dk-line); }
   .dm-head span { display: none; }
 }
+
+/* ── browser back / forward ── */
+.tb-nav { display: flex; gap: 2px; flex: none; }
+.tb-btn { display: grid; place-items: center; width: 28px; height: 28px; border: 0; border-radius: 50%; background: none; color: var(--chrome-ink); cursor: pointer; }
+.tb-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.tb-btn:hover:not(:disabled) { background: var(--chrome-3); }
+.tb-btn:disabled { color: var(--chrome-dim); opacity: .5; cursor: default; }

@@ -62,6 +62,8 @@ function render(): void {
   $('#tabs')!.innerHTML = V.tabsHtml(store);
   const addr = $<HTMLInputElement>('#address')!;
   if (document.activeElement !== addr) addr.value = V.addressValue(store);
+  $<HTMLButtonElement>('#nav-back')!.disabled = !store.canBack;
+  $<HTMLButtonElement>('#nav-fwd')!.disabled = !store.canForward;
   $('#bookmarks')!.innerHTML = V.bookmarksHtml(store);
 
   const vp = $('#viewport')!;
@@ -129,7 +131,7 @@ function toast(title: string, body: string, kind = 'note'): void {
 
 // ── clicks ──
 document.addEventListener('click', (e) => {
-  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-ov],[data-dev],[data-cancel-booking],[data-empire-join],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat]');
+  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-ov],[data-dev],[data-cancel-booking],[data-empire-join],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat],[data-back],[data-forward]');
   // any click outside the home menu closes it (menu items close it themselves below)
   if (store.ui.start && !(e.target as HTMLElement).closest('#startmenu, #dk-home')) store.toggleStart(false);
   if (!t) return;
@@ -147,6 +149,8 @@ document.addEventListener('click', (e) => {
     return;
   }
   if (d.nav != null) { newPageLoad(); store.navigate(d.nav); }
+  else if (d.back != null) store.back();
+  else if (d.forward != null) store.forward();
   else if (d.tab != null) store.switchTab(Number(d.tab));
   else if (d.newtab != null) store.navigate('newtab', true);
   else if (d.like != null) store.like(d.like);
@@ -273,6 +277,8 @@ document.addEventListener('keydown', (e) => {
   if ((el.id === 'post-input' || el.id === 'mail-body' || el.id === 'review-text') && e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); (el as HTMLTextAreaElement).form?.requestSubmit(); }
   if (e.key === '`' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); store.toggleDev(); }
   if (e.key === 'Escape' && store.ui.start) store.toggleStart(false);
+  // Alt+Left / Alt+Right, like a real browser
+  if (e.altKey && !e.ctrlKey && !e.metaKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) { e.preventDefault(); if (e.key === 'ArrowLeft') store.back(); else store.forward(); }
 });
 
 void lastSite;
