@@ -194,7 +194,7 @@ function pageNewTab(store: GameStore): string {
 }
 
 // ── Qmail ──
-interface Row { id: string; seq: number; from: string; addr: string; subject: string; body: string; day: number; unread: boolean; needsReply: boolean; folder: 'inbox' | 'sent'; eventId?: string; generated?: boolean; to?: string; link?: string; bounceOf?: string }
+interface Row { id: string; seq: number; from: string; addr: string; subject: string; body: string; day: number; unread: boolean; needsReply: boolean; folder: 'inbox' | 'sent'; eventId?: string; generated?: boolean; to?: string; link?: string; bounceOf?: string; bookingId?: string }
 /** Messages the player opened or closed in a conversation, so a repaint keeps them that way. */
 export const mailOpen = new Map<string, boolean>();
 function mailRows(store: GameStore): Row[] {
@@ -209,7 +209,7 @@ function mailRows(store: GameStore): Row[] {
     const canReply = !!(e.outcomes && !d.answered);
     rows.push({ id: 'e/' + d.eventId, seq: d.seq ?? -1, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(e.body ?? ''), day: d.day, unread: !s.readEvents.includes(e.id), needsReply: canReply, folder: 'inbox', eventId: e.id });
   }
-  for (const m of s.mail) rows.push({ id: 'm/' + m.id, seq: m.seq ?? (Number(m.id.replace(/\D/g, '')) || 0), from: m.from, addr: m.addr, subject: m.subject, body: m.body, day: m.day, unread: m.folder === 'inbox' && !m.read, needsReply: false, folder: m.folder, eventId: m.eventId, generated: m.generated, to: m.to, link: m.link, bounceOf: m.bounceOf });
+  for (const m of s.mail) rows.push({ id: 'm/' + m.id, seq: m.seq ?? (Number(m.id.replace(/\D/g, '')) || 0), from: m.from, addr: m.addr, subject: m.subject, body: m.body, day: m.day, unread: m.folder === 'inbox' && !m.read, needsReply: false, folder: m.folder, eventId: m.eventId, generated: m.generated, to: m.to, link: m.link, bounceOf: m.bounceOf, bookingId: m.bookingId });
   return rows;
 }
 function pageMail(store: GameStore, param?: string): string {
@@ -269,7 +269,9 @@ function pageMail(store: GameStore, param?: string): string {
         return `<details class="qm-msg" data-msg="${esc(r.id)}"${expanded ? ' open' : ''}>
           <summary class="qm-meta"><span>${meta}<span class="qm-snip">${esc(r.body.replace(/\s+/g, ' ').slice(0, 90))}</span></span><span>Day ${r.day}</span></summary>
           <div class="qm-body">${linkify(br(r.body))}</div>
-          ${r.link === 'cancel' ? `<p class="qm-actions"><button class="qm-btn ghost" data-cancel-booking="${esc(r.id.slice(2))}">Cancel booking</button></p>` : ''}
+          ${r.link === 'cancel' && r.bookingId ? (s.bookings.find((b) => b.id === r.bookingId)?.cancelClicked
+            ? `<p class="qm-actions"><b>Your booking has been cancelled.</b></p>`
+            : `<p class="qm-actions"><button class="qm-btn ghost" data-cancel-booking="${esc(r.bookingId)}" data-cancel-url="${esc(`${r.addr.split('@')[1] ?? ''}/cancel-${r.bookingId}`)}">Cancel booking</button></p>`) : ''}
           ${r.generated ? `<p class="qm-gen">Reply written by ${esc(MISSES.label())}</p>` : ''}
         </details>`;
       }).join('');
@@ -590,14 +592,30 @@ function pageApp(store: GameStore, param?: string): string {
   const [appId, sub] = (param ?? '').split('/');
   const a = appId ? getApp(s, appId) : undefined;
   if (!a || !a.deployed) return `<div class="err"><h1>404: NOT_FOUND</h1><p>Nothing is deployed here.</p></div>`;
+  const bk = store.ui.book;
+  const notice = s.bookingNotice?.appId === a.id ? `<p class="pv-note ${s.bookingNotice.ok ? 'ok' : 'bad'}">${esc(s.bookingNotice.text)}</p>` : '';
+  // two steps, like the spec: who and when, then the time and party size
   const booking = a.template === 'restaurant' && a.features.some((f) => f.id === 'booking')
-    ? `<form class="pv-book" data-form="book" data-app="${esc(a.id)}"><h1>Book a table</h1>
-        <p class="pv-sub">You'll get a confirmation by email.</p>
-        <input id="bk-email" value="${esc(PLAYER.addr)}" aria-label="Email"> <input id="bk-time" value="19:00" aria-label="Time"> <input id="bk-party" value="2" type="number" min="1" max="8" aria-label="Party">
-        <button class="pv-btn ok" type="submit">Book</button></form>`
+    ? bk.step === 1
+      ? `<form class="pv-book" data-form="book-next" data-app="${esc(a.id)}"><h1>Book a table</h1>
+        <p class="pv-sub">Step 1 of 2. You'll get a confirmation by email.</p>${notice}
+        <label>Name <input id="bk-name" value="${esc(bk.name || PLAYER.name)}"></label>
+        <label>Email <input id="bk-email" value="${esc(bk.email || PLAYER.addr)}"></label>
+        <label>Day <input id="bk-date" type="number" value="${bk.date || s.values.day + 1}"></label>
+        <button class="pv-btn ok" type="submit">Continue</button></form>`
+      : `<form class="pv-book" data-form="book" data-app="${esc(a.id)}"><h1>Book a table</h1>
+        <p class="pv-sub">Step 2 of 2: ${esc(bk.name)}, Day ${bk.date}.</p>
+        <label>Time <input id="bk-time" value="19:00"></label>
+        <label>Party size <input id="bk-party" value="2" type="number" min="1" max="8"></label>
+        <button class="pv-btn ghost" type="button" data-act="book-back">Back</button> <button class="pv-btn ok" type="submit">Book</button></form>`
+    : undefined;
+  // the cancel link from a confirmation email: it always says it worked (with the bug, it didn't)
+  const cancelled = sub?.startsWith('cancel-') ? s.bookings.find((b) => b.id === sub.slice(7) && b.appId === a.id) : undefined;
+  const cancel = cancelled
+    ? `<h1>Booking cancelled</h1><p class="pv-note ok">Your booking for ${cancelled.party} on Day ${cancelled.date} at ${esc(cancelled.time)} has been cancelled.</p><p class="pv-sub">We hope to see you another time.</p>`
     : undefined;
   const tmpl = store.content.apps[a.template];
-  return `<div class="pv-host">${renderAppSite(a, tmpl, sub, { booking })}</div>`;
+  return `<div class="pv-host">${renderAppSite(a, tmpl, cancel ? 'cancel' : sub, { booking, cancel })}</div>`;
 }
 
 // ── agent chat (free-promptable, with costs) ──

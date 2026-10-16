@@ -156,6 +156,8 @@ export interface MailEntry {
   link?: string;
   /** A bounce notice: the address the player's email failed to reach, so it joins that conversation. */
   bounceOf?: string;
+  /** For a booking confirmation: the booking its cancel link cancels. */
+  bookingId?: string;
 }
 
 /** A Y post by someone else that isn't a content event: replies to the player, filler. */
@@ -195,6 +197,8 @@ export interface Booking {
   cancelled: boolean;
   /** The cancel link only pretends to work (a bug). */
   fakeCancel?: boolean;
+  /** The player clicked the cancel link (whether or not it really cancelled). */
+  cancelClicked?: boolean;
 }
 
 /** What the night did, shown on the "You slept" card. */
@@ -236,6 +240,8 @@ export interface GameState {
   yExtra: YExtra[];
   reviews: YowlReview[];
   bookings: Booking[];
+  /** What the booking form said after the last attempt (accepted, or why not). */
+  bookingNotice?: { appId: string; ok: boolean; text: string };
   terminal: { k: 'in' | 'sys' | 'err' | 'model'; text: string }[];
   /** Model running in the Terminal, if any. */
   termModel: string | null;

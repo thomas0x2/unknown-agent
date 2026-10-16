@@ -132,6 +132,8 @@ export interface BugDef {
   when: string;
   /** Spelling out the feature's details again (the full menu) also fixes it. */
   orDetails?: boolean;
+  /** A deep failure: hidden until someone goes through the whole flow. A deep live break shows this bug. */
+  deep?: boolean;
   /** Regex (case-insensitive) for wordings that name this bug, matched without Jev. See FeatureDef.match. */
   match?: string;
 }

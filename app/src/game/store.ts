@@ -33,6 +33,8 @@ export class GameStore {
     project: '', dev: false, liked: {} as Record<string, boolean>, intro: true, confirm: null as null | { text: string; yes: string; fn: () => void }, start: false, menuCat: 'saves',
     /** Dev mode: the site whose options panel is open (agent, qmail, y), or ''. */
     devOptions: '' as string,
+    /** The two-step booking form: which step is showing and what step one said. */
+    book: { step: 1, name: '', email: '', date: 0 },
     /** Dev: the flags and meters editor is open. */
     devEdit: false,
   };
@@ -136,7 +138,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = 1; this.nextTab = 3;
-    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null, start: false, menuCat: 'saves', devOptions: this.ui.devOptions, devEdit: this.ui.devEdit };
+    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null, start: false, menuCat: 'saves', devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 } };
     this.store.save(this.state);
     this.emit();
   }
@@ -151,8 +153,13 @@ export class GameStore {
   takeDown(appId: string): void { this.commit(takeDown(this.state, appId)); }
   cancelBooking(id: string): void { this.commit(cancelBooking(this.state, id)); }
   joinEmpire(): void { this.commitAndSettle(joinEmpire(this.state)); }
-  book(appId: string, name: string, email: string, date: number, time: string, party: number): void {
-    this.commitAndSettle(makeBooking(this.state, appId, name, email, date, time, party));
+  bookNext(name: string, email: string, date: number): void { this.ui.book = { step: 2, name, email, date }; this.emit(); }
+  bookBack(): void { this.ui.book.step = 1; this.emit(); }
+  book(appId: string, time: string, party: number): void {
+    const { name, email, date } = this.ui.book;
+    const next = makeBooking(this.state, appId, name || 'You', email, date || this.state.values.day, time, party, this.content);
+    if (next.bookings.length > this.state.bookings.length) this.ui.book = { step: 1, name: '', email: '', date: 0 };
+    this.commitAndSettle(next);
   }
 
   private async run<T>(fn: () => Promise<T>): Promise<T> {
