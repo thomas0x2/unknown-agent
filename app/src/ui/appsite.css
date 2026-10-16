@@ -138,6 +138,7 @@ body.dev-on .fy-devcount { display: inline-block; }
 .as-s-chart .line { stroke: var(--c); } .as-s-chart .dots circle { fill: var(--c); }
 .as-s-chart stop { stop-color: var(--c); } .as-s-chart .area { fill: url(#as-s-fill); }
 .as-s-chart figcaption { position: absolute; top: 6px; bottom: 26px; right: 8px; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; pointer-events: none; }
+.as-s-chart.flat figcaption { justify-content: center; padding-bottom: 22px; }
 .as-s-chart figcaption span, .as-s-xaxis { font-family: var(--f-mono); font-size: 10px; color: #6b7785; }
 .as-s-xaxis { display: flex; justify-content: space-between; margin-top: 5px; }
 .as-s-hold, .as-s-trades { width: 100%; border-collapse: collapse; font-family: var(--f-mono); font-size: 13px; }
