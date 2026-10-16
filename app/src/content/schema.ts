@@ -96,6 +96,13 @@ export interface FeatureDef {
   details?: string[];
   /** Concrete ways a wrong build of this feature is wrong. The site renders the one it got. */
   bugs?: BugDef[];
+  /**
+   * The feature's parts, as files in the repo's tree on Forkyard. A fix prompt has to name the
+   * component that's wrong; naming only the feature gets a near-miss (see nearMiss).
+   */
+  components?: ComponentDef[];
+  /** What the agent says when a fix prompt names this feature but not which component is wrong. */
+  nearMiss?: string[];
   /** The first build's guaranteed teaching bug lands on a feature with this set, if one was built. */
   firstBuildBug?: boolean;
   /**
@@ -110,6 +117,17 @@ export interface FeatureDef {
    * guarantees its linked bug. `text` fills {{param}} from the spec; `bug` is a bug id.
    */
   checklist?: ChecklistItem[];
+}
+/**
+ * One component: a file in the repo tree. `id` is its path inside the feature ('confirmation/date'),
+ * so folders nest; components are always the leaves. Every bug of the feature belongs to exactly one.
+ */
+export interface ComponentDef {
+  id: string;
+  /** What it is, in plain words: what the player names to point at it ("the date on the booking confirmation"). */
+  label: string;
+  /** The feature's bug ids that live in this component. */
+  bugs?: string[];
 }
 export interface ChecklistItem {
   id: string;

@@ -41,6 +41,26 @@
           ]
         }
       ],
+      "components": [
+        {
+          "id": "symbols",
+          "label": "which tickers are tracked",
+          "bugs": [
+            "wrong_tickers"
+          ]
+        },
+        {
+          "id": "case",
+          "label": "reading lowercase tickers",
+          "bugs": [
+            "lowercase_missed"
+          ]
+        }
+      ],
+      "nearMiss": [
+        "Couldn't find anything wrong with the tickers. Searching for \"$\" returned the whole codebase. Which part is off?",
+        "The ticker code looks fine to me. Tell me what exactly is wrong with it."
+      ],
       "checklist": [
         {
           "id": "tickers",
@@ -78,6 +98,26 @@
             "Fixed sarcasm being read as praise."
           ]
         }
+      ],
+      "components": [
+        {
+          "id": "labels",
+          "label": "which posts count as bullish or bearish",
+          "bugs": [
+            "inverted"
+          ]
+        },
+        {
+          "id": "sarcasm",
+          "label": "reading sarcastic posts",
+          "bugs": [
+            "sarcasm_literal"
+          ]
+        }
+      ],
+      "nearMiss": [
+        "I read through the sentiment code and felt neutral about it. Which part is wrong?",
+        "Couldn't find the issue in the sentiment split. Which part is off?"
       ]
     },
     {
@@ -100,6 +140,18 @@
             "Fixed bot posts being counted."
           ]
         }
+      ],
+      "components": [
+        {
+          "id": "bots",
+          "label": "filtering out bot spam",
+          "bugs": [
+            "bots_counted"
+          ]
+        }
+      ],
+      "nearMiss": [
+        "Checked the filter and couldn't find the problem. What exactly is getting through?"
       ],
       "checklist": [
         {
@@ -156,6 +208,40 @@
             "Fixed the percent changes. They were 100 times too big."
           ]
         }
+      ],
+      "components": [
+        {
+          "id": "total",
+          "label": "the portfolio total",
+          "bugs": [
+            "wrong_totals"
+          ]
+        },
+        {
+          "id": "holdings/value",
+          "label": "the value of each holding",
+          "bugs": [
+            "value_wrong"
+          ]
+        },
+        {
+          "id": "day_change/pnl",
+          "label": "the day's P&L",
+          "bugs": [
+            "pnl_sign"
+          ]
+        },
+        {
+          "id": "day_change/percent",
+          "label": "the percent changes",
+          "bugs": [
+            "pct_wrong"
+          ]
+        }
+      ],
+      "nearMiss": [
+        "Couldn't find anything wrong with the portfolio. There are a lot of numbers in there and I trusted all of them. Which one is off?",
+        "The portfolio code looks fine to me. Which part of it is wrong?"
       ],
       "checklist": [
         {
@@ -225,6 +311,47 @@
             "Fixed auto-buy trusting the impostor account."
           ]
         }
+      ],
+      "components": [
+        {
+          "id": "signal/praise",
+          "label": "checking the post actually praises the company",
+          "bugs": [
+            "buys_on_criticism"
+          ]
+        },
+        {
+          "id": "signal/author",
+          "label": "checking the post is from Crane's real account",
+          "bugs": [
+            "impostor_buy"
+          ]
+        },
+        {
+          "id": "order/trigger",
+          "label": "placing the buy when the signal fires",
+          "bugs": [
+            "no_buy"
+          ]
+        },
+        {
+          "id": "order/ticker",
+          "label": "which ticker the order buys",
+          "bugs": [
+            "wrong_ticker"
+          ]
+        },
+        {
+          "id": "order/once",
+          "label": "buying once per post",
+          "bugs": [
+            "repeat_buys"
+          ]
+        }
+      ],
+      "nearMiss": [
+        "I didn't find the bug in auto-buy. Running it to check would have bought something, so I stopped. Which part is wrong?",
+        "Auto-buy looks fine on paper. Tell me which part misbehaves."
       ],
       "checklist": [
         {

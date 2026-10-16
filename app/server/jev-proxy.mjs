@@ -197,10 +197,15 @@ async function buildMatch(sdk, body) {
   const named = body.appNamed ? ' The prompt must also say which app it means: its name, part of the name, or its address, in any case or spelling, or an app named in an earlier message. A prompt that names no app means the app the most recent earlier message named (the player\'s or the agent\'s, like "Pushed to Forkyard for <app>"), so "the menu is missing a dish" right after work on an app is about that app.' : '';
   const context = 'Earlier messages (the player\'s prompts and the agent\'s replies) only tell you what the prompt refers to ("those", "the menu", "now", items listed before, the app the agent just pushed); they don\'t ask for anything by themselves.';
   (body.features ?? []).forEach((f, i) => {
-    // a problem is matched on its own: naming one bug must not pull in the others on the same page
-    questions[`f${i}`] = f.kind === 'problem'
-      ? sdk.noul(`Does the prompt point out this specific problem, in any words: naming it, describing what they see, or saying what it should be instead? Say no if the prompt is about a different problem, even one on the same page, or only says something is wrong without saying what. ${context}${named} Problem: ${f.description}`)
-      : sdk.noul(`Does the prompt ask to build or add this, or spell out what it should contain, without contradicting it? Say no if the prompt only reports a problem with it. ${context}${named} Item: ${f.description}`);
+    // each item is matched on its own: naming one part must not pull in the others on the same page
+    const q = {
+      // a fix has to say which part is wrong: naming the part, or a symptom only that part can have
+      component: `Does the prompt say this part of the app is wrong or broken? Yes if it names this part in any words ("the menu prices", "the date on the confirmation", "the P&L"), or describes something wrong that only this part can cause ("the prices are in CURO", "the email has the wrong day"), even loosely or with hedging. Players describe what they see, so read it as a player would mean it. No if it only says the feature this part belongs to is wrong without saying which part ("the menu is wrong", "fix the booking"), if it names a different part, or if it points at no part of the app ("it's broken", "fix it"). ${context}${named} Part: ${f.description}`,
+      // the near-miss: the feature is named, the part isn't
+      area: `Does the prompt say something is wrong or broken with this feature without saying which of its parts? Yes for "the menu is wrong", "the booking doesn't work", "something's off with the portfolio". No if it names or describes one of the parts listed, if it's about a different feature, if it only asks to build, add or change the feature, or if it names no feature at all ("it's broken"). ${context}${named} Feature: ${f.description}`,
+      problem: `Does the prompt report this problem or a symptom of it, in any words? Yes if it names the problem or describes what the player sees, even loosely or with hedging. No if it describes a clearly different problem, or points at nothing the player saw ("it's broken", "fix it"). ${context}${named} Problem: ${f.description}`,
+    }[f.kind];
+    questions[`f${i}`] = sdk.noul(q ?? `Does the prompt ask to build or add this, or spell out what it should contain, without contradicting it? Say no if the prompt only reports a problem with it. ${context}${named} Item: ${f.description}`);
   });
   const earlier = (body.context ?? []).filter(Boolean);
   return { state: { setting: SETTING, ...(earlier.length ? { earlierMessages: earlier } : {}), prompt: body.prompt }, questions };

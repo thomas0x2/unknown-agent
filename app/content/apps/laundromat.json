@@ -59,6 +59,40 @@
           ]
         }
       ],
+      "components": [
+        {
+          "id": "count",
+          "label": "how many machines are shown",
+          "bugs": [
+            "six_of_eight"
+          ]
+        },
+        {
+          "id": "status/labels",
+          "label": "the status labels (free, running, done, out of order)",
+          "bugs": [
+            "raw_codes"
+          ]
+        },
+        {
+          "id": "status/done",
+          "label": "the status of machines that are done",
+          "bugs": [
+            "done_as_free"
+          ]
+        },
+        {
+          "id": "status/out_of_order",
+          "label": "the status of out-of-order machines",
+          "bugs": [
+            "broken_as_free"
+          ]
+        }
+      ],
+      "nearMiss": [
+        "Looked at the machines view. Couldn't find anything, mostly because the feed changed while I was reading it. Which part is wrong?",
+        "Nothing obvious in the machines code. Tell me which part of it is off."
+      ],
       "checklist": [
         {
           "id": "codes",
@@ -104,6 +138,19 @@
           ]
         }
       ],
+      "components": [
+        {
+          "id": "auto_refresh",
+          "label": "refreshing the machine status",
+          "bugs": [
+            "no_refresh"
+          ]
+        }
+      ],
+      "nearMiss": [
+        "I checked the refresh. It looked fine the one time I loaded it, which proves nothing. What exactly is wrong?",
+        "Couldn't find a problem with the refresh. Say what it does wrong."
+      ],
       "checklist": [
         {
           "id": "refresh",
@@ -132,6 +179,18 @@
             "Fixed the minutes left on running machines."
           ]
         }
+      ],
+      "components": [
+        {
+          "id": "minutes_left",
+          "label": "the minutes left on running machines",
+          "bugs": [
+            "minutes_wrong"
+          ]
+        }
+      ],
+      "nearMiss": [
+        "Couldn't find anything wrong with the minutes. What exactly is off?"
       ],
       "checklist": [
         {
@@ -179,6 +238,33 @@
             "Fixed the layout for more than 8 machines."
           ]
         }
+      ],
+      "components": [
+        {
+          "id": "count",
+          "label": "showing all twelve machines",
+          "bugs": [
+            "still_eight"
+          ]
+        },
+        {
+          "id": "new_machines",
+          "label": "the status of the four new machines",
+          "bugs": [
+            "new_always_free"
+          ]
+        },
+        {
+          "id": "layout",
+          "label": "the grid layout with more machines",
+          "bugs": [
+            "layout_breaks"
+          ]
+        }
+      ],
+      "nearMiss": [
+        "Checked the new machines. The diff was mostly whitespace and I got lost in it. Which part is wrong?",
+        "Nothing obvious in the code for the extra machines. Which part is broken?"
       ],
       "checklist": [
         {

@@ -5,7 +5,7 @@
 import { loadContent } from './load';
 import { composeEmail, briefBuild, briefFix, deploy } from '../engine/actions';
 import { applyEffects } from '../engine/effects';
-import { appMeetsSpec, getApp, devToggleBug } from '../engine/apps';
+import { appMeetsSpec, getApp, devToggleBug, bugsOf } from '../engine/apps';
 
 /** Fix requests have to name the app. */
 const gino = 'Trattoria Gino: ';
@@ -48,14 +48,14 @@ describe('day 1 playthrough', () => {
     s = b.state;
     expect(b.requested.sort()).toEqual(['landing', 'menu']);
 
-    // first build always ships a teaching bug, on the menu -> not meeting spec yet
-    const first = getApp(s, appId)!.repo.find((f) => !f.correct);
-    expect(first?.id).toBe('menu');
-    expect(['prices_missing', 'prices_wrong', 'prices_curo', 'wrong_items']).toContain(first?.variant);
+    // agent-1 gets about half the components wrong, and the first build always ships at least one bug
+    const menu = getApp(s, appId)!.repo.find((f) => f.id === 'menu')!;
+    expect(getApp(s, appId)!.repo.some((f) => !f.correct)).toBe(true);
+    if (!menu.correct) expect(['prices_missing', 'prices_wrong', 'prices_curo', 'wrong_items']).toEqual(expect.arrayContaining(bugsOf(menu)));
 
     // deploy, then fix whichever bug is there, naming it, until the live app meets spec
     s = deploy(s, appId);
-    for (let i = 0; i < 6 && !appMeetsSpec(getApp(s, appId)!); i++) {
+    for (let i = 0; i < 10 && !appMeetsSpec(getApp(s, appId)!); i++) {
       const broken = getApp(s, appId)!.repo.find((f) => !f.correct)!;
       s = (await briefFix(s, content, wordJev, appId, FIX[broken.variant ?? ''] ?? `Rebuild the menu with exactly these dishes: ${MENU}.`)).state;
       s = deploy(s, appId);
@@ -99,7 +99,7 @@ describe('day 1 playthrough', () => {
     s.values.agentLevel = 5; // the fix roll succeeds
     const vague = (await promptDone(s, content, pickJev({ features: ['::menu::feature'] }), gino + 'Please fix the menu page.')).state;
     expect(getApp(vague, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.variant).toBe('prices_curo');
-    const named = (await promptDone(s, content, pickJev({ features: ['::menu::prices_curo'] }), gino + 'The prices show CURO, they need to be DOLR.')).state;
+    const named = (await promptDone(s, content, pickJev({ features: ['::menu::c:prices'] }), gino + 'The prices show CURO, they need to be DOLR.')).state;
     expect(getApp(named, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);
   });
 
@@ -132,7 +132,7 @@ describe('day 1 playthrough', () => {
       app.repo = app.required.map((id) => (id === fid ? { id, correct: false, variant: bug, params: app.specParams[id], seed: 2 } : { id, correct: true, params: app.specParams[id] }));
       app.repoVersion = 1;
       s.values.agentLevel = 5;
-      s = (await promptDone(s, content, pickJev({ features: [`::${fid}::${bug}`] }), gino + ask)).state;
+      s = (await promptDone(s, content, pickJev({ features: [`::${fid}::c:${content.apps.restaurant.features.find((f) => f.id === fid)!.components!.find((c) => c.bugs?.includes(bug))!.id}`] }), gino + ask)).state;
       expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === fid)!.correct, bug).toBe(true);
       expect(s.chat.at(-1)!.src, bug).toBe('build');
       expect(s.chat.at(-1)!.text).not.toMatch(/check/i);
@@ -195,7 +195,7 @@ describe('day 1 playthrough', () => {
     ];
     app.repoVersion = 1;
     s.values.agentLevel = 5;
-    s = (await promptDone(s, content, pickJev({ features: ['::landing::hours_wrong'] }), gino + 'The opening hours on the homepage are wrong, they should be 17:00-22:00.')).state;
+    s = (await promptDone(s, content, pickJev({ features: ['::landing::c:hours'] }), gino + 'The opening hours on the homepage are wrong, they should be 17:00-22:00.')).state;
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')).toMatchObject({ correct: false, variant: 'name_wrong' });
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')!.also).toBeUndefined();
     // the reply says what was fixed, and only that
@@ -203,7 +203,7 @@ describe('day 1 playthrough', () => {
     const lines = s.chat.at(-1)!.text.split('\n').filter((l) => l.startsWith('- ')).map((l) => l.slice(2));
     expect(lines).toHaveLength(1);
     expect(hoursFixed).toContain(lines[0]);
-    s = (await promptDone(s, content, pickJev({ features: ['::landing::name_wrong'] }), gino + 'The restaurant name is misspelled, it should say Trattoria Gino.')).state;
+    s = (await promptDone(s, content, pickJev({ features: ['::landing::c:name'] }), gino + 'The restaurant name is misspelled, it should say Trattoria Gino.')).state;
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')!.correct).toBe(true);
     expect(s.chat.at(-1)!.text).toContain('Trattoria Gino');
   });

@@ -22,6 +22,7 @@ import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount, appLogo } from './appsite';
 import { marketPosts, fillerToday, postMin, handleOf, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, inBin, isDeleted, CLOCK } from '../engine';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
+import { repoFiles, treeAt, fileSource } from './repoTree';
 
 const WALLET_ADDR = PLAYER_WALLET;
 const PLAYER = { name: 'You', handle: 'you', addr: 'you@qmail.com' };
@@ -721,21 +722,28 @@ function pageForkyard(store: GameStore, repo?: string): string {
   if (repo && repo.startsWith('u/')) return repo.slice(2) === 'you' ? pageProfileSelf(store) : pageProfileUser(store, repo.slice(2));
   const head = fyHead(store, repo ? '' : 'repos');
   if (repo) {
-    const a = s.apps.filter(onForkyard).find((x) => x.id === repo || x.url.startsWith(repo + '.'));
+    // forkyard.com/<repo>/<folder>/.../<file>.ts: the repo's file tree
+    const [repoId, ...rest] = repo.split('/');
+    const path = rest.join('/');
+    const a = s.apps.filter(onForkyard).find((x) => x.id === repoId || x.url.startsWith(repoId + '.'));
     if (!a) return `<div class="fy">${head}<div class="fy-wrap"><p class="fy-empty">404 — no repository called <code>${esc(repo)}</code>.</p></div></div>`;
     const tmpl = store.content.apps[a.template];
-    const feats = a.repo.map((f) => {
-      const page = tmpl?.features.find((d) => d.id === f.id)?.pageId;
-      const file = page ? (page === 'landing' ? 'index.html' : `${page}.html`) : `integrations/${f.id}.json`;
-      return `<div class="fy-file">${esc(file)}</div>`;
-    }).join('') || '<div class="fy-file"><small>Empty repository</small></div>';
+    const at = treeAt(repoFiles(a, tmpl), path);
+    const segs = path ? path.split('/') : [];
+    const crumbs = [`<a href="#" data-nav="forkyard.com">you</a>`, segs.length ? `<a href="#" data-nav="forkyard.com/${a.id}">${esc(a.id)}</a>` : `<b>${esc(a.id)}</b>`,
+      ...segs.map((seg, i) => i === segs.length - 1 ? `<b>${esc(seg)}</b>` : `<a href="#" data-nav="forkyard.com/${a.id}/${segs.slice(0, i + 1).map(esc).join('/')}">${esc(seg)}</a>`)].join(' / ');
+    const files = !at
+      ? (path ? `<div class="fy-file"><small>404 — nothing at <code>${esc(path)}</code>.</small></div>` : '<div class="fy-file"><small>Empty repository</small></div>')
+      : 'file' in at
+        ? `<pre class="fy-code">${esc(fileSource(at.file))}</pre>`
+        : at.dir.map((e) => `<a href="#" class="fy-file fy-entry${e.dir ? ' dir' : ''}" data-nav="forkyard.com/${a.id}/${esc(e.path)}">${e.dir ? '▸ ' : ''}${esc(e.name)}${e.dir ? '/' : ''}</a>`).join('');
     const stale = a.deployed && a.deployedVersion !== a.repoVersion;
     return `<div class="fy">${head}<div class="fy-wrap">
-      <p class="fy-crumbs"><a href="#" data-nav="forkyard.com">you</a> / <b>${esc(a.id)}</b></p>
+      <p class="fy-crumbs">${crumbs}</p>
       <p class="fy-desc">${esc(a.name)} · template ${esc(a.template)}</p>
-      ${devBugPanel(a, tmpl)}
+      ${path ? '' : devBugPanel(a, tmpl)}
       <div class="fy-grid">
-        <div class="fy-files"><div class="fy-filehead">Pushed by <b>agent[bot]</b> · repo v${a.repoVersion}</div>${feats}</div>
+        <div class="fy-files"><div class="fy-filehead">Pushed by <b>agent[bot]</b> · repo v${a.repoVersion}</div>${files}</div>
         <div class="fy-deploy"><h2>Deployment</h2><p>${repoStatus(a)}</p>
           ${a.deployed
             ? `<dl><dt>Status</dt><dd>live</dd>${a.kind === 'user' ? `<dt>Users</dt><dd>${(a.users ?? 0).toLocaleString('en-US')}</dd><dt>Ad revenue / day</dt><dd>${userRevenue(a)} DOLR</dd>` : ''}<dt>Hosting / day</dt><dd>$2.00</dd>${stale ? '<dt>Repo</dt><dd>new commit — redeploy</dd>' : ''}</dl><div class="fy-row"><button class="fy-btn" data-deploy="${esc(a.id)}">Redeploy</button><button class="fy-btn ghost" data-takedown="${esc(a.id)}">Take down</button></div>`

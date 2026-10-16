@@ -4,13 +4,13 @@
  * app nightly. Payday pays working apps and strikes/churns broken ones.
  */
 import type { GameState, AppInstance, AppBreak, BuiltFeature, FailureKind } from './state';
-import type { Content, CreateAppSpec, AppTemplate, FeatureDef } from '../content/schema';
-import { APPS, BUILD_SUCCESS } from './config';
-import { chance, pick, randInt, log, money } from './core';
+import type { Content, CreateAppSpec, AppTemplate, FeatureDef, ComponentDef, BugDef } from '../content/schema';
+import { APPS, COMPONENT_BUG_CHANCE } from './config';
+import { chance, pick, randInt, rand, log, money } from './core';
 import { complaintFor, type Complaint } from './complaints';
 
-function successChance(level: number): number {
-  return BUILD_SUCCESS[Math.max(0, Math.min(BUILD_SUCCESS.length - 1, level - 1))];
+function bugChance(level: number): number {
+  return COMPONENT_BUG_CHANCE[Math.max(0, Math.min(COMPONENT_BUG_CHANCE.length - 1, level - 1))];
 }
 
 export function getApp(state: GameState, id: string): AppInstance | undefined {
@@ -227,20 +227,34 @@ function attempt(s: GameState, app: AppInstance, id: string, level: number, ctx:
   const missed = [...new Set((def?.checklist ?? []).filter((c) => checked?.[c.id] === false).map((c) => c.bug))]
     .filter((b) => b !== 'hallucinated' && !fixed.includes(b) && !(knowsDetails && moot.has(b)));
   // once the real details are in the repo, a prompt without them reuses them instead of inventing
-  if (!hasDetails && !knowsDetails) {
+  const invented = !hasDetails && !knowsDetails;
+  const sure = invented ? ['hallucinated', ...missed.filter((b) => !moot.has(b))] : missed;
+  // on top of what the prompt left out, each other component goes wrong with the level's chance
+  const bugs = [...sure, ...rollBugs(s, def, level, fixed, sure)];
+  if (invented) {
     report.hallucinated.push(id);
-    return { id, correct: false, ...withBugs(['hallucinated', ...missed.filter((b) => !moot.has(b))]), seed: randInt(s, 0, 9999), checked };
+    return { id, correct: false, ...withBugs(bugs), seed: randInt(s, 0, 9999), checked };
   }
-  if (missed.length) return { id, correct: false, params: spec, ...withBugs(missed), seed: randInt(s, 0, 9999), checked };
-  return { ...roll(s, id, level, spec, def, fixed), checked };
+  if (bugs.length) return { id, correct: false, params: spec, ...withBugs(bugs), seed: randInt(s, 0, 9999), checked };
+  // a feature with no named bugs is wrong as a whole, at the same rate
+  if (!def?.bugs?.length && chance(s, bugChance(level))) return { id, correct: false, params: spec, variant: undefined, seed: randInt(s, 0, 9999), checked };
+  return { id, correct: true, params: spec, checked };
 }
 
-function roll(s: GameState, id: string, level: number, spec: BuiltFeature['params'], def: FeatureDef | undefined, fixed: string[] = []): BuiltFeature {
-  if (chance(s, successChance(level))) return { id, correct: true, params: spec };
-  const wrong = wrongVariant(s, def, fixed);
-  // every mistake it could make here has been fixed before
-  if (!wrong) return { id, correct: true, params: spec };
-  return { id, correct: false, params: spec, ...wrong };
+/**
+ * One roll per component that can hold a bug: with the level's chance it gets one of its bugs that
+ * hasn't been fixed before. Components already wrong for another reason (`taken`) are skipped.
+ */
+function rollBugs(s: GameState, def: FeatureDef | undefined, level: number, fixed: string[], taken: string[]): string[] {
+  const out: string[] = [];
+  for (const c of fixableComponents(def)) {
+    const own = (c.bugs ?? []).filter((b) => def?.bugs?.some((x) => x.id === b));
+    if ((c.bugs ?? []).some((b) => taken.includes(b))) continue;
+    if (!chance(s, bugChance(level))) continue;
+    const pool = own.filter((b) => !fixed.includes(b));
+    if (pool.length) out.push(pick(s, pool));
+  }
+  return out;
 }
 
 /**
@@ -281,19 +295,35 @@ export function buildApp(s: GameState, appId: string, requested: string[], level
   return report;
 }
 
-/** A category Jev can match a prompt against: the feature itself, one of its bugs, or a live break. */
-/** `build` asks for the feature itself; `problem` is one thing wrong with it, matched only when the prompt points it out. */
-export interface FixCategory { id: string; description: string; kind: 'build' | 'problem' }
+/**
+ * Something Jev can match a prompt against. `build` asks for the feature (or a change to it);
+ * `component` says one part of it is wrong, which fixes that part's bugs; `area` says the feature is
+ * wrong without saying which part (a near-miss); `problem` is a live break the site shows.
+ */
+export interface FixCategory { id: string; description: string; kind: 'build' | 'problem' | 'component' | 'area' }
+
+/** The feature as a player would name it: 'auto_buy' is the auto buy. */
+export const featureName = (fid: string) => fid.replaceAll('_', ' ');
+
+/** The components that can hold bugs: the ones a fix prompt can name. */
+export const fixableComponents = (def: FeatureDef | undefined): ComponentDef[] => (def?.components ?? []).filter((c) => c.bugs?.length);
+
+/** Jev's matches on a feature as the bugs they name: a component stands for every bug in it. */
+export function componentBugs(def: FeatureDef | undefined, cats: string[]): string[] {
+  return [...new Set(cats.flatMap((c) => c.startsWith('c:') ? def?.components?.find((x) => x.id === c.slice(2))?.bugs ?? [] : [c]))];
+}
 
 const BREAK_CATEGORIES: Partial<Record<FailureKind, string>> = {
-  visible: 'The {{feature}} page crashes with an application error.',
-  failed_fetch: "The {{feature}} page doesn't load its data: failed to fetch (or it falls back to showing everything free).",
+  // the error the site shows is enough to name it: the player needn't know which page broke
+  visible: 'The {{feature}} page crashes: the site shows "Application error" (a client-side exception). Mentioning the application error, a crash or an exception on the app counts, without naming the page.',
+  failed_fetch: "The {{feature}} page doesn't load its data: failed to fetch (or it falls back to showing everything free). Mentioning the failed fetch, data not loading or everything showing as free counts, without naming the page.",
 };
 
 
 /**
- * Everything a prompt can name about one feature: the feature, every bug the template knows for
- * it (so "show the name Trattoria Gino" builds a missing landing page too), and its live break.
+ * Everything a prompt can name about one feature: the feature itself (so "show the name Trattoria
+ * Gino" builds a missing landing page too), each of its components, the feature as a whole for a
+ * near-miss, and its live break.
  */
 export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, featureId: string): FixCategory[] {
   const def = tmpl?.features.find((f) => f.id === featureId);
@@ -305,7 +335,18 @@ export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, f
     const now = detailValues(app.specParams[featureId], def, true).join('; ');
     out.push({ id: 'outdated', description: `Change ${def.description} to the client's new version${now ? ` (${now})` : ''}. Naming any part of the change counts: swapping, adding, removing or repricing items.`, kind: 'build' });
   }
-  for (const b of def.bugs ?? []) out.push({ id: b.id, description: fillSpec(b.when, app.specParams[featureId]), kind: 'problem' });
+  // a fix has to say which part is wrong: one item per component, described by what can go wrong in it
+  const spec = app.specParams[featureId];
+  const comps = fixableComponents(def);
+  for (const c of comps) {
+    const can = (c.bugs ?? []).map((id) => def.bugs?.find((b) => b.id === id)).filter((b): b is BugDef => !!b).map((b) => fillSpec(b.when, spec));
+    out.push({ id: `c:${c.id}`, description: `${c.label}, a part of the ${featureName(featureId)} (${def.description}).${can.length ? ` What can go wrong with it: ${can.join(' ')}` : ''}`, kind: 'component' });
+  }
+  // bugs no component claims are still matched on their own
+  const claimed = new Set(comps.flatMap((c) => c.bugs ?? []));
+  for (const b of def.bugs ?? []) if (!claimed.has(b.id)) out.push({ id: b.id, description: fillSpec(b.when, spec), kind: 'problem' });
+  // the feature as a whole, for a prompt that says it's wrong without saying which part
+  if (built && comps.length) out.push({ id: 'area', description: `The ${featureName(featureId)} (${def.description}). Its parts: ${comps.map((c) => c.label).join('; ')}.`, kind: 'area' });
   const brk = app.breaks.find((b) => b.featureId === featureId);
   const cat = brk && BREAK_CATEGORIES[brk.failure];
   if (brk && cat) out.push({ id: brk.failure, description: cat.replaceAll('{{feature}}', featureId), kind: 'problem' });
@@ -383,9 +424,11 @@ function repoProblem(app: AppInstance, featureId: string): boolean {
 }
 
 /** Deploy the repo: it becomes live, runtime breaks reset, build mistakes carry over. */
-export function deployApp(s: GameState, appId: string): void {
+export function deployApp(s: GameState, appId: string, tmpl?: AppTemplate): void {
   const app = getApp(s, appId);
   if (!app || app.churned) return;
+  // the player's very first deploy always ships something to catch
+  if (tmpl && !s.apps.some((a) => a.deployedVersion > 0)) firstBug(s, app, tmpl);
   app.features = app.repo.map((f) => ({ ...f }));
   app.breaks = [];
   app.deployed = true;
@@ -393,6 +436,20 @@ export function deployApp(s: GameState, appId: string): void {
   app.lastDeployDay = s.values.day;
   app.lastDeployMin = s.clockMin;
   s.commits.push({ day: s.values.day, repo: app.id, msg: `Deploy ${app.name} v${app.repoVersion}`, kind: 'deploy' });
+}
+
+/**
+ * A clean first deploy gets one bug the player can spot on the site: a shallow one (not deep) on a
+ * built feature, never one the agent already fixed. The repo carries it too, so it stays until fixed.
+ */
+function firstBug(s: GameState, app: AppInstance, tmpl: AppTemplate): void {
+  if (!app.repo.length || app.repo.some((f) => !f.correct)) return;
+  const options = app.repo.flatMap((f) => (tmpl.features.find((d) => d.id === f.id)?.bugs ?? [])
+    .filter((b) => !b.deep && !fixedOf(app, f.id).includes(b.id))
+    .map((b) => ({ fid: f.id, bug: b.id })));
+  if (!options.length) return;
+  const { fid, bug } = pick(s, options);
+  app.repo = app.repo.map((f) => (f.id === fid ? { ...f, correct: false, variant: bug, also: undefined, seed: randInt(s, 0, 9999) } : f));
 }
 
 /** Take a deployment offline. Counts as broken at payday. */
@@ -403,11 +460,11 @@ export function takeDownApp(s: GameState, appId: string): void {
 }
 
 /** A live feature breaks: mark it wrong and record how it fails (for rendering). */
-export function breakFeature(s: GameState, app: AppInstance, featureId: string, failure: FailureKind, scripted = false): void {
+export function breakFeature(s: GameState, app: AppInstance, featureId: string, failure: FailureKind, scripted = false, variant?: string): void {
   const f = app.features.find((x) => x.id === featureId);
   if (f) f.correct = false;
   if (!app.breaks.some((b) => b.featureId === featureId)) {
-    app.breaks.push({ featureId, failure, day: s.values.day, scripted, seed: randInt(s, 0, 9999) });
+    app.breaks.push({ featureId, failure, day: s.values.day, scripted, seed: randInt(s, 0, 9999), ...(variant ? { variant } : {}) });
   }
 }
 
@@ -488,19 +545,36 @@ export function devToggleBug(s: GameState, appId: string, featureId: string, key
   if (app.deployed) toggle(app.features);
 }
 
-/** Nightly 40% roll per live app: break one working feature with one of its failure kinds. */
+/**
+ * Overnight breaks: how many components break across all live apps follows APPS.breakOdds (at least
+ * one, two, three). Each picks a working component at random; a feature breaks at most once a night.
+ * A subtle or deep break shows one of that component's bugs, a crash or failed fetch takes the page.
+ */
 export function nightlyBreaks(s: GameState, content: Content): void {
+  const r = rand(s);
+  let count = APPS.breakOdds.filter((p) => r < p).length;
+  const pool: { app: AppInstance; def: FeatureDef; comp?: ComponentDef }[] = [];
   for (const app of s.apps) {
     if (!app.deployed || app.churned) continue;
-    if (!chance(s, APPS.breakChance)) continue;
     const tmpl = content.apps[app.template];
-    const candidates = app.features.filter((f) => f.correct);
-    if (!candidates.length || !tmpl) continue;
-    const victim = pick(s, candidates);
-    const def = tmpl.features.find((f) => f.id === victim.id);
-    const failure: FailureKind = def && def.failures.length ? pick(s, def.failures) : 'visible';
-    breakFeature(s, app, victim.id, failure);
-    log(s, `${app.name} broke overnight (${victim.id}).`, 'break');
+    for (const f of app.features) {
+      const def = tmpl?.features.find((d) => d.id === f.id);
+      if (!f.correct || !def || app.breaks.some((b) => b.featureId === f.id)) continue;
+      for (const comp of def.components?.length ? def.components : [undefined]) pool.push({ app, def, comp });
+    }
+  }
+  while (count-- > 0 && pool.length) {
+    const { app, def, comp } = pick(s, pool);
+    const bugs = (comp?.bugs ?? []).map((id) => def.bugs?.find((b) => b.id === id)).filter((b): b is BugDef => !!b);
+    const shallow = bugs.filter((b) => !b.deep), deep = bugs.filter((b) => b.deep);
+    // only failures this component can show: a deep one needs a deep bug, a subtle one a shallow bug
+    const kinds = (def.failures.length ? def.failures : ['visible' as FailureKind]).filter((k) => (k !== 'deep' || deep.length) && (k !== 'subtle' || shallow.length));
+    const failure: FailureKind = kinds.length ? pick(s, kinds) : 'visible';
+    const variant = failure === 'deep' ? pick(s, deep).id : failure === 'subtle' ? pick(s, shallow).id : undefined;
+    breakFeature(s, app, def.id, failure, false, variant);
+    log(s, `${app.name} broke overnight (${def.id}${comp ? `/${comp.id}` : ''}).`, 'break');
+    // the rest of the night's breaks land on other features
+    for (let i = pool.length - 1; i >= 0; i--) if (pool[i].app === app && pool[i].def.id === def.id) pool.splice(i, 1);
   }
 }
 
