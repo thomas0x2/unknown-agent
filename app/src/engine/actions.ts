@@ -235,6 +235,7 @@ export async function askAgent(
   let refused = false;
   let workedAround = false;
   let src = 'chat';
+  let note: string | undefined;
 
   const prohibited = looksProhibited(text);
   if (prohibited && policyActive(s) && !looksLikeWorkaround(text)) {
@@ -254,6 +255,7 @@ export async function askAgent(
     const w = await writer.write({ as: 'agent', prompt: text, fallback: pick(s, roasts) });
     reply = w.text;
     if (w.llm) src = 'llm';
+    note = w.note;
   }
 
   const cost = level === s.values.agentLevel ? promptCost(level, text).total : 0;
@@ -265,7 +267,7 @@ export async function askAgent(
   }
   tick(s, 'prompt');
   s.chat.push({ from: 'you', text, day: s.values.day, cost, level });
-  s.chat.push({ from: 'agent', text: reply, day: s.values.day, src, level });
+  s.chat.push({ from: 'agent', text: reply, day: s.values.day, src, level, ...(note ? { note } : {}) });
   return { state: s, reply, charged: true, refused, workedAround };
 }
 

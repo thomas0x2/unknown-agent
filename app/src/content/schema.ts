@@ -166,8 +166,6 @@ export interface Character {
   examples: [string, string][];
   /** Most sentences a reply may have (default 2). */
   sentences?: number;
-  /** A regex alternation the reply must contain one of (agent's roasts must be aimed at the player). */
-  mustMention?: string;
 }
 
 /** Everything the engine reads, gathered in one bundle and passed into engine steps. */

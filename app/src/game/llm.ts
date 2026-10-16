@@ -31,7 +31,9 @@ export interface GenCtx {
   long?: boolean;
 }
 
-interface Settings { backend: Backend; autoload: boolean; ollamaUrl: string; ollamaModel: string }
+/** What a character says when Jev finds nothing: Gemma's reply, or the scripted line. */
+export type Misses = 'gemma' | 'scripted';
+interface Settings { backend: Backend; autoload: boolean; ollamaUrl: string; ollamaModel: string; misses: Misses }
 
 const CONFIG = {
   transformersUrl: 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0/dist/transformers.min.js',
@@ -116,15 +118,24 @@ class LocalLLM {
   totalBytes = 0;
   detail = '';
   last: { ms: number; ok: boolean; text: string } | null = null;
+  /** Why the last generation gave no reply, in plain words (shown next to the scripted line). */
+  lastMiss = '';
 
   private listeners = new Set<() => void>();
   private worker: Worker | null = null;
   private pending = new Map<number, (v: string | null) => void>();
   private nextId = 1;
   private retries = 0;
+  private workerError = '';
 
   onChange(fn: () => void): () => void { this.listeners.add(fn); return () => this.listeners.delete(fn); }
   label(): string { return this.settings.backend === 'ollama' ? 'Gemma 3 270M via Ollama' : 'Gemma 3 270M'; }
+
+  setMisses(misses: Misses): void {
+    this.settings.misses = misses;
+    saveSettings(this.settings);
+    this.emit();
+  }
 
   setBackend(backend: Backend): void {
     if (backend === this.settings.backend) return;
@@ -164,16 +175,23 @@ class LocalLLM {
   }
 
   private async run(messages: ChatTurn[], maxTokens: number, finish: (t: string) => string | null, temperature = CONFIG.temperature): Promise<string | null> {
-    if (this.status !== 'ready') return null;
+    if (this.status !== 'ready') {
+      this.lastMiss = this.settings.backend === 'off' ? 'local model is off' : this.status === 'loading' ? 'Gemma is still loading' : 'Gemma is not loaded';
+      return null;
+    }
     const started = now();
     let raw: string | null = null;
+    let failed = '';
     try {
       raw = this.settings.backend === 'ollama'
         ? await withTimeout(this.ollamaChat(messages, maxTokens, temperature), CONFIG.timeoutMs)
         : await withTimeout(this.workerGenerate(messages, maxTokens, temperature), CONFIG.timeoutMs);
-    } catch { raw = null; }
+      if (raw == null) failed = this.workerError || `Gemma gave no reply within ${CONFIG.timeoutMs / 1000}s`;
+    } catch (e: any) { raw = null; failed = String(e?.message || e); }
+    this.workerError = '';
     const text = raw ? finish(raw) : null;
-    if (raw && !text) console.info('[LocalLLM] dropped an off-script reply, using a scripted line instead:', raw);
+    this.lastMiss = text ? '' : failed || (raw ? `Gemma's reply was empty after cleanup: ${raw.slice(0, 80)}` : 'Gemma gave no reply');
+    if (!text) console.info('[LocalLLM] no usable reply:', this.lastMiss, raw ?? '');
     this.last = { ms: Math.round(now() - started), ok: !!text, text: text || raw || '' };
     this.emit();
     return text;
@@ -211,7 +229,7 @@ class LocalLLM {
         const r = this.pending.get(m.id);
         if (!r) return;
         this.pending.delete(m.id);
-        if (m.error) console.warn('[LocalLLM] generation failed:', m.error);
+        if (m.error) { console.warn('[LocalLLM] generation failed:', m.error); this.workerError = `Gemma failed: ${String(m.error).slice(0, 120)}`; }
         r(m.error ? null : m.text);
       }
     };
@@ -262,7 +280,7 @@ class LocalLLM {
 }
 
 function loadSettings(): Settings {
-  const d: Settings = { backend: 'browser', autoload: false, ollamaUrl: CONFIG.ollamaUrl, ollamaModel: CONFIG.ollamaModel };
+  const d: Settings = { backend: 'browser', autoload: false, ollamaUrl: CONFIG.ollamaUrl, ollamaModel: CONFIG.ollamaModel, misses: 'gemma' };
   try { return Object.assign(d, JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}')); } catch { return d; }
 }
 function saveSettings(s: Settings): void { try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch { /* storage off */ } }
