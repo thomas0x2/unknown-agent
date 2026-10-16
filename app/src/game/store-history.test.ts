@@ -30,30 +30,31 @@ describe('browser history', () => {
   it('keeps each tab its own history', () => {
     const s = make();
     s.navigate('qmail.com/compose');
-    s.switchTab(2);
+    s.switchTab(3);
     expect(s.canBack).toBe(false);
-    s.switchTab(1); s.back();
+    s.switchTab(2); s.back();
     expect(s.url).toBe('qmail.com');
   });
 });
 
 describe('pinned tabs', () => {
-  it('opens with Qmail, Y, agent, Forkyard and Coinbin, which can\'t be closed', () => {
+  it('opens on Qmail with Coinbin, Qmail, Y, agent and Forkyard, which can\'t be closed', () => {
     const s = make();
-    expect(s.tabs.map((t) => t.url)).toEqual(['qmail.com', 'y.com', 'agent.chat', 'forkyard.com', 'coinbin.com']);
+    expect(s.url).toBe('qmail.com');
+    expect(s.tabs.map((t) => t.url)).toEqual(['coinbin.com', 'qmail.com', 'y.com', 'agent.chat', 'forkyard.com']);
     s.closeTab(2);
     expect(s.tabs).toHaveLength(5);
   });
   it('keeps a pinned tab on its site: another pinned site switches tabs, anything else opens a new one', () => {
     const s = make();
     s.navigate('y.com/obanks');
-    expect(s.active).toBe(2);
-    expect(s.tabs[0].url).toBe('qmail.com');
+    expect(s.active).toBe(3);
+    expect(s.tabs[1].url).toBe('qmail.com');
     expect(s.url).toBe('y.com/obanks');
     s.navigate('yowl.com');
     expect(s.tabs).toHaveLength(6);
     expect(s.url).toBe('yowl.com');
-    expect(s.tabs[1].url).toBe('y.com/obanks');
+    expect(s.tabs[2].url).toBe('y.com/obanks');
     s.closeTab(s.active);
     expect(s.tabs).toHaveLength(5);
   });
@@ -86,7 +87,7 @@ describe('a new day', () => {
     s.navigate('y.com/obanks'); s.navigate('forkyard.dev', true);
     expect(s.tabs.length).toBe(6);
     s.endDay();
-    expect(s.tabs.map((t) => t.url)).toEqual(['qmail.com', 'y.com', 'agent.chat', 'forkyard.com', 'coinbin.com']);
+    expect(s.tabs.map((t) => t.url)).toEqual(['coinbin.com', 'qmail.com', 'y.com', 'agent.chat', 'forkyard.com']);
     expect(s.url).toBe('qmail.com');
     expect(s.canBack).toBe(false);
     expect(s.state.morning).not.toBeNull();

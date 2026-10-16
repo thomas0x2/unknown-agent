@@ -28,7 +28,9 @@ const norm = (u: string) =>
 export const MAX_TABS = 12;
 
 /** Always open, in this order, and never closed: the sites where mail, posts and work come in. */
-export const PINNED = ['qmail.com', 'y.com', 'agent.chat', 'forkyard.com', 'coinbin.com'];
+export const PINNED = ['coinbin.com', 'qmail.com', 'y.com', 'agent.chat', 'forkyard.com'];
+/** The tab a game or a new day opens on: Qmail. */
+const HOME_TAB = PINNED.indexOf('qmail.com') + 1;
 const siteOf = (url: string) => url.split('/')[0];
 const startTabs = (): Tab[] => PINNED.map((url, i) => ({ id: i + 1, url, back: [], fwd: [], pinned: url }));
 
@@ -47,7 +49,7 @@ interface ArrivalMark { seq: number; day: number; timed: number; extra: number; 
 export class GameStore {
   state: GameState;
   tabs: Tab[] = startTabs();
-  active = 1;
+  active = HOME_TAB;
   private nextTab = PINNED.length + 1;
   busy = false;
   /** The agent prompt being answered right now, shown in the chat as soon as it's sent. */
@@ -361,7 +363,7 @@ export class GameStore {
     nameUnnamedBugs(state, this.content);
     this.state = state;
     this.tabs = startTabs();
-    this.active = 1; this.nextTab = PINNED.length + 1;
+    this.active = HOME_TAB; this.nextTab = PINNED.length + 1;
     this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', jevOffline: null, yUnread: 0 };
     this.store.save(this.state);
     this.emit();
@@ -379,7 +381,7 @@ export class GameStore {
     if (this.state.ending) return;
     writeSlot('auto', this.state);
     this.tabs = startTabs();
-    this.active = 1; this.nextTab = PINNED.length + 1;
+    this.active = HOME_TAB; this.nextTab = PINNED.length + 1;
     this.ui.start = false;
   }
   deploy(appId: string): void { this.commitAndSettle(deploy(this.state, appId, this.content)); }

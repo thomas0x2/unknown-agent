@@ -182,5 +182,5 @@
 .dm-vol input[type="range"] { width: 100%; margin: 4px 0 0; accent-color: #8ab4f8; }
 .dm-vol input[type="range"]:disabled { opacity: .4; }
 
-/* pinned tabs (Qmail, Y, agent, Forkyard, Coinbin) can't be closed, so they need no × and less room */
+/* pinned tabs (Coinbin, Qmail, Y, agent, Forkyard) can't be closed, so they need no × and less room */
 .tab.pinned { flex: 0 1 150px; padding-right: 12px; }
