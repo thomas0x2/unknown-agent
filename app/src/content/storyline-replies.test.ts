@@ -7,7 +7,7 @@ import { startGame, endDay } from '../engine/day';
 import { replyToEvent, composeEmail, joinEmpire, EMPIRE } from '../engine/actions';
 import type { JevRouter, RouteInput } from '../engine/jev';
 import type { Writer } from '../engine/writer';
-import { clone, deliverPendingMail, tick } from '../engine/core';
+import { clone, deliverPendingMail, advanceClock } from '../engine/core';
 import type { GameState } from '../engine/state';
 import { wordJev, pickJev } from '../engine/_fixtures';
 
@@ -101,9 +101,9 @@ describe('Mom', () => {
 
 describe('reply times', () => {
   const inboxFrom = (s: GameState, addr: string) => s.mail.filter((m) => m.folder === 'inbox' && m.addr === addr);
-  const after = (s0: GameState, actions: number) => { const s = clone(s0); for (let i = 0; i < actions; i++) tick(s); return s; };
+  const after = (s0: GameState, halfHours: number) => { const s = clone(s0); advanceClock(s, 30 * halfHours); return s; };
 
-  it('Mom answers after the next action, not straight away', async () => {
+  it('Mom answers within half an hour, not straight away', async () => {
     const r = await replyToEvent(startGame(content, 3), content, wordJev, 'd1_mom', "I'm okay, mom, don't worry.", noLlm);
     expect(inboxFrom(r.state, 'mom@family.test').filter((m) => m.subject.startsWith('RE:'))).toHaveLength(0);
     expect(inboxFrom(after(r.state, 1), 'mom@family.test').some((m) => m.subject.startsWith('RE:'))).toBe(true);
@@ -118,7 +118,7 @@ describe('reply times', () => {
     expect(inboxFrom(after(no.state, 1), gary).at(-1)?.body).toBe('No.');
   });
 
-  it('job leads always answer after the next action, whatever the player said', async () => {
+  it('job leads always answer within half an hour, whatever the player said', async () => {
     for (const text of ['Hi Gino, I could create the website for you.', 'Hello, nice restaurant.']) {
       const r = await composeEmail(startGame(content, 3), content, wordJev, 'gino@trattoria.test', text);
       expect(inboxFrom(r.state, 'gino@trattoria.test')).toHaveLength(0);

@@ -10,7 +10,7 @@ import type { GameState, AppInstance } from './state';
 import type { Content, GameEvent, Contact, Outcome, AppTemplate, ScriptedReply } from '../content/schema';
 import type { JevRouter, PostRating, RouteDecision } from './jev';
 import { Y as YCFG, FAMILY, APPS } from './config';
-import { clone, addValue, log, pick, tick, money, pushMail, sendLater } from './core';
+import { clone, addValue, log, pick, money, pushMail, sendLater } from './core';
 import { applyEffects } from './effects';
 import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent';
 import { getEvent, activeDeliveries, reachableByEmail, triggerMatches } from './events';
@@ -39,14 +39,14 @@ function contactFor(content: Content, key: string): Contact | undefined {
   return content.contacts.find((c) => c.key.toLowerCase() === k);
 }
 
-/** Minutes of game time before a reply arrives when neither the outcome nor the contact sets one (two actions). */
+/** Minutes of game time before a reply arrives when neither the outcome nor the contact sets one (an hour). */
 const REPLY_AFTER = 60;
 /** How long a reply from this address takes: the outcome's own time, else the contact's, else the default. */
 function replyAfter(content: Content, addr: string, outcome?: number, ev?: GameEvent): number {
   if (ev && isJobRequest(ev)) return JOB_REPLY_AFTER;
   return outcome ?? contactFor(content, addr)?.replyAfter ?? REPLY_AFTER;
 }
-/** Someone offering the player work answers on the next action, whatever the player said. */
+/** Someone offering the player work answers within half an hour, whatever the player said. */
 const JOB_REPLY_AFTER = 30;
 function isJobRequest(ev: GameEvent): boolean {
   return !!ev.job || !!ev.jobRequest || (ev.outcomes ?? []).some((o) => !!o.effects?.createApp);
@@ -140,7 +140,6 @@ export async function replyToEvent(
   const ev = getEvent(content, eventId);
   const delivery = s.delivered.find((d) => d.eventId === eventId && !d.answered);
   if (!ev || !delivery) return { state: s, decision: { kind: 'nothing' }, reply: '' };
-  tick(s, 'reply');
   const addr = ev.site === 'qmail' && ev.addr ? ev.addr.toLowerCase() : '';
   if (addr && overDailyLimit(s, addr, delivery.seq ?? -1)) {
     bounce(s, addr, `RE: ${ev.subject ?? ''}`, text);
@@ -204,7 +203,6 @@ export async function composeEmail(
   const s = clone(s0);
   const addr = to.trim().toLowerCase();
   if (!addr) return { state: s, decision: { kind: 'nothing' }, reply: '', sent: false };
-  tick(s, 'email');
   if (overDailyLimit(s, addr)) {
     bounce(s, addr, subject, text);
     return { state: s, decision: { kind: 'nothing' }, reply: '', sent: true, bounced: true };
@@ -342,7 +340,6 @@ export async function askAgent(
     s.chat.push({ from: 'agent', text: "I can't run — your balance won't cover it. Top up Coinbin and try again.", day: s.values.day, src: 'locked' });
     return { state: s, reply: '', charged: false, refused: false, workedAround: false };
   }
-  tick(s, 'prompt');
   s.chat.push({ from: 'you', text, day: s.values.day, cost, level });
   s.chat.push({ from: 'agent', text: reply, day: s.values.day, src, level, ...(note ? { note } : {}), ...(by ? { by } : {}), ...(debug.length ? { debug } : {}) });
   return { state: s, reply, charged: true, refused, workedAround };
@@ -475,7 +472,6 @@ export async function promptAgent(
         s.chat.push({ from: 'agent', text: "I can't run — your balance won't cover it. Top up Coinbin and try again.", day: s.values.day, src: 'locked' });
         return { state: s, reply: '', charged: false, refused: false, workedAround: false };
       }
-      tick(s, 'build');
       const reply = `Pushed to Forkyard for ${names.join(', ')}.\nWorked on: ${worked.join(', ')}.\n\nDeploy it on Forkyard to make it live.`;
       s.chat.push({ from: 'you', text, day: s.values.day, cost: agentCostOf(s0, text), level });
       s.chat.push({ from: 'agent', text: reply, day: s.values.day, src: 'build', level });
@@ -543,7 +539,6 @@ export async function postToY(
   }
   addValue(s, 'followers', delta);
   s.postsToday += 1;
-  tick(s, 'post');
   s.recentPosts = [text, ...s.recentPosts].slice(0, 5);
   s.userPosts.push({ id: `u${s.userPosts.length + 1}`, text, day: s.values.day, likes: Math.max(0, delta * 3 + Math.round(s.values.followers * 0.02)), delta, score: rating.quality * 4 });
   log(s, `Posted on Y (${rating.category}): ${delta >= 0 ? '+' : ''}${delta} followers.`, 'info');
@@ -574,7 +569,6 @@ export async function writeReview(
     }
   }
   await promoteApps(jev, s, 'yowl', text);
-  tick(s, 'review');
   log(s, `Posted a Yowl review.`, 'info');
   return { state: s, posted: true };
 }
@@ -594,7 +588,6 @@ export async function localPrompt(
   const last = [...s.terminal].reverse().find((l) => l.k === 'model')?.text;
   const fresh = lines.filter((l) => l !== last);
   s.terminal.push({ k: 'in', text: `> ${text}` });
-  tick(s, 'terminal');
   const body = plea && s.termPrompts === PLEA_AT ? plea : pick(s, fresh.length ? fresh : lines);
   s.terminal.push({ k: 'model', text: body });
   return { state: s, reply: body };
@@ -739,7 +732,6 @@ export function makeBooking(s0: GameState, appId: string, name: string, email: s
     s.bookingNotice = { appId, ok: false, text: `We only take bookings during opening hours (${String(app.specParams.landing?.hours ?? '17:00-22:00')}).` };
     return s;
   }
-  tick(s, 'book');
   const id = nextId(s, 'bk');
   s.bookings.push({ id, appId, name, email, date, time, party, cancelled: false });
   s.bookingNotice = { appId, ok: true, text: 'Booked. A confirmation is on its way.', bookingId: id };
@@ -810,7 +802,6 @@ export const EMPIRE = { price: 20, flag: 'guru_subscriber', addr: 'max@alphaasce
 export function joinEmpire(s0: GameState): GameState {
   const s = clone(s0);
   if (s.flags.includes(EMPIRE.flag) || s.values.crypto < EMPIRE.price) return s;
-  tick(s, 'empire');
   money(s, -EMPIRE.price, 'Alpha Ascend · EMPIRE');
   applyEffects(s, { setFlags: [EMPIRE.flag] });
   pushMail(s, {

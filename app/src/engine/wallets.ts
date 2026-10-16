@@ -4,7 +4,7 @@
  * adds recipients (a client, a scammer, a darknet seller) as they come into the game.
  */
 import type { GameState } from './state';
-import { clone, tick, money } from './core';
+import { clone, money } from './core';
 
 /** The player's own Coinbin address. */
 export const PLAYER_WALLET = '0x4417c3e8b1d05f2a9e6d7b0c1f83a4e5d2b9a9f2';
@@ -28,7 +28,6 @@ export function sendCrypto(s0: GameState, to: string, amount: number): SendResul
   const cents = Math.round(amount * 100) / 100;
   if (cents > s0.values.crypto) return { state: s0, error: `Insufficient balance. You have ${s0.values.crypto.toFixed(2)} DOLR.` };
   const s = clone(s0);
-  tick(s, 'send');
   money(s, -cents, `${wallet.name} · Sent`);
   return { state: s };
 }

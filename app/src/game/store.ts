@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, deliverDue, CLOCK, tick, phishLogin, devToggleBug, nameUnnamedBugs,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, deliverDue, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, devToggleBug, nameUnnamedBugs,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -67,6 +67,15 @@ export class GameStore {
 
   private listeners = new Set<() => void>();
 
+  /** The real-time clock: game minutes pass while the player plays. Paused under dialogs and in a hidden tab. */
+  private clockTimer: ReturnType<typeof setInterval> | null = null;
+  private clockLast = 0;
+  /** Real milliseconds not yet turned into a whole game minute. */
+  private clockCarry = 0;
+  private clockListeners = new Set<() => void>();
+  /** Dev: the clock is stopped by hand. */
+  clockHeld = false;
+
   constructor(readonly content: Content, private router: JevRouter, private writer: Writer, private store: SaveStore) {
     const loaded = this.store.load();
     this.state = loaded ?? startGame(content);
@@ -80,12 +89,69 @@ export class GameStore {
   private emit(): void { for (const fn of this.listeners) fn(); }
   /** Called on every frame of a download, so only the Terminal and the progress bars repaint. */
   onPull(fn: () => void): () => void { this.pullListeners.add(fn); return () => this.pullListeners.delete(fn); }
-  private commit(s: GameState): void { this.state = s; this.store.save(s); this.emit(); }
+  /** Called on every game minute that passes without anything else changing, so only the clock repaints. */
+  onClock(fn: () => void): () => void { this.clockListeners.add(fn); return () => this.clockListeners.delete(fn); }
+  private commit(s: GameState): void { this.keepTime(s); this.state = s; this.store.save(s); this.emit(); }
   /** Commit an action, then auto-sleep if the clock has run past midnight. */
   private commitAndSettle(s: GameState): void {
+    this.keepTime(s);
     this.state = s;
     if (!s.ending && s.clockMin >= CLOCK.sleep) this.sleep(s);
     this.store.save(this.state); this.emit();
+  }
+
+  /**
+   * An action works on a copy of the state, and the clock kept running while it waited on Jev:
+   * carry the time over, and deliver the mail that came due meanwhile.
+   */
+  private keepTime(s: GameState): void {
+    if (s === this.state || s.values.day !== this.state.values.day || s.clockMin >= this.state.clockMin) return;
+    advanceClock(s, this.state.clockMin - s.clockMin);
+  }
+
+  /** A dialog is up (or the run is over), so time stands still. */
+  get dialogOpen(): boolean {
+    const s = this.state;
+    return !!(s.ending || s.morning || this.ui.jevOffline || this.ui.confirm || this.ui.memWarn || this.ui.intro || this.ui.dayStart);
+  }
+  get clockPaused(): boolean {
+    return this.clockHeld || this.dialogOpen || (typeof document !== 'undefined' && document.hidden);
+  }
+  /** Start the real-time clock. */
+  startClock(): void {
+    if (this.clockTimer) return;
+    this.clockLast = Date.now();
+    this.clockTimer = setInterval(() => this.clockFrame(), 100);
+  }
+  stopClock(): void { if (this.clockTimer) clearInterval(this.clockTimer); this.clockTimer = null; }
+  private clockFrame(): void {
+    const now = Date.now();
+    const dt = now - this.clockLast;
+    this.clockLast = now;
+    if (this.clockPaused) return;
+    // a stalled timer (a sleeping laptop) doesn't fast-forward the day
+    this.clockCarry += Math.min(dt, 1000);
+    const mins = Math.floor(this.clockCarry / MS_PER_GAME_MIN);
+    if (!mins) return;
+    this.clockCarry -= mins * MS_PER_GAME_MIN;
+    this.passMinutes(mins);
+  }
+  /** Let game minutes pass: replies come due, and at midnight the day ends. */
+  passMinutes(mins: number): void {
+    const s = this.state;
+    if (s.ending) return;
+    if (this.busy) {
+      // an action is working on a copy of this state: move the clock only, and hold mail and bedtime until it lands
+      s.clockMin = Math.min(CLOCK.sleep - 1, s.clockMin + mins);
+      for (const fn of this.clockListeners) fn();
+      return;
+    }
+    const mail = s.mail.length;
+    advanceClock(s, mins);
+    if (s.clockMin >= CLOCK.sleep) { this.sleep(s); this.store.save(this.state); this.emit(); return; }
+    if (s.mail.length !== mail) { this.store.save(s); this.emit(); return; }
+    if (s.clockMin % 10 === 0) this.store.save(s);
+    for (const fn of this.clockListeners) fn();
   }
 
   get url(): string { return this.tabs.find((t) => t.id === this.active)?.url ?? 'newtab'; }
@@ -314,7 +380,6 @@ export class GameStore {
     if (!s.flags.includes('knows_weightroom')) { s.flags.push('knows_weightroom'); s.flags.sort(); }
     if (!s.flags.includes('has_terminal')) { s.flags.push('has_terminal'); s.flags.sort(); }
     s.termModel = id;
-    tick(s, 'download');
     s.terminal.push(...pullLines(id, PULL_MS));
     this.commitAndSettle(s);
   }
@@ -325,6 +390,8 @@ export class GameStore {
     if (kind === 'money') { s.values.crypto += 100; s.tx.push({ day: s.values.day, amount: 100, memo: 'Dev · grant' }); }
     else if (kind === 'followers') s.values.followers += 50;
     else if (kind === 'deliver') deliverDue(s, this.content);
+    else if (kind === 'hold') { this.devHoldClock(); return; }
+    else if (kind === 'skip') { this.devSkip(60); return; }
     this.store.save(s); this.emit();
   }
   /** Dev: set a meter to an exact value (clamped). A new day delivers that day's events. */
@@ -351,6 +418,10 @@ export class GameStore {
     deliverDue(s, this.content);
     this.store.save(s); this.emit();
   }
+  /** Dev: stop or restart the clock. */
+  devHoldClock(): void { this.clockHeld = !this.clockHeld; this.emit(); }
+  /** Dev: jump the clock forward (to midnight at most, which ends the day). */
+  devSkip(minutes: number): void { this.passMinutes(Math.min(minutes, CLOCK.sleep - this.state.clockMin)); }
   /** Dev: switch a story flag on or off. */
   devSetFlag(flag: string, on: boolean): void {
     const f = flag.trim();

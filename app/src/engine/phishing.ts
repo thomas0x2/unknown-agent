@@ -4,7 +4,7 @@
  * ordinary "incorrect password" error, like a real sign-in page would.
  */
 import type { GameState } from './state';
-import { clone, tick, money, addFlag } from './core';
+import { clone, money, addFlag } from './core';
 
 /** The lookalike domain the mail links to. */
 export const PHISH_DOMAIN = 'coinbln.com';
@@ -42,7 +42,6 @@ export function phishLogin(s0: GameState, password: string): PhishResult {
   if (!password) return { state: s0, error: 'Enter your password.' };
   if (password !== COINBIN_PASSWORD) return { state: s0, error: 'Incorrect password. Try again.' };
   const s = clone(s0);
-  tick(s, 'phish');
   const all = Math.round(s.values.crypto * 100) / 100;
   if (all > 0) money(s, -all, `${PHISH_WALLET.slice(0, 6)}…${PHISH_WALLET.slice(-4)} · Sent`);
   addFlag(s, HACKED_FLAG);

@@ -1,6 +1,6 @@
 /*
- * The agent is always free-text promptable (with costs), gig or no gig, and every action spends
- * in-game time until the clock hits midnight and the day auto-ends.
+ * The agent is always free-text promptable (with costs), gig or no gig. Prompts take no game time:
+ * the clock runs in real time until midnight, when the day auto-ends.
  */
 import { startGame } from './day';
 import { promptAgent } from './actions';
@@ -19,7 +19,7 @@ describe('promptAgent — always free text', () => {
     expect(r.charged).toBe(true);
     expect(r.state.values.crypto).toBeCloseTo(100 - promptCost(1, 'what can you help me with?').total, 2);
     expect(r.state.chat.at(-1)!.from).toBe('agent');
-    expect(r.state.clockMin).toBe(CLOCK.wake + CLOCK.perAction); // one prompt spent
+    expect(r.state.clockMin).toBe(CLOCK.wake); // the clock runs in real time, not per prompt
   });
 
   it('routes a build-shaped prompt to the matching app when a gig exists', async () => {
@@ -41,7 +41,7 @@ describe('promptCost', () => {
 });
 
 describe('the clock', () => {
-  it('starts at 10:00 and advances per action', async () => {
+  it('starts at 10:00', async () => {
     const s = startGame(content, 1);
     expect(s.clockMin).toBe(CLOCK.wake);
   });

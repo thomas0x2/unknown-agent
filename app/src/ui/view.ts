@@ -146,7 +146,7 @@ export function startMenuHtml(store: GameStore): string {
       const when = info ? `${fmtClock(info.clockMin)} · saved ${new Date(info.savedAt).toLocaleString(undefined, { month: 'short', day: 'numeric' })}` : 'Empty';
       return `<div class="dm-slot${info ? '' : ' empty'}">${MI.slot}<span><b>Slot ${n}${info ? ` · ${dateShort(info.day)}` : ''}</b><small>${esc(when)}</small></span>
         <span class="dm-slot-acts">${info ? `<button data-slot-load="${n}">Load</button>` : ''}<button data-slot-save="${n}">Save</button></span></div>`;
-    }).join('') + (store.ui.slotNote ? `<p class="dm-note dm-err" role="alert">${esc(store.ui.slotNote)}</p>` : '') + '<p class="dm-note">Your current game saves itself after every action. The autosave is a snapshot from the start of each day.</p>';
+    }).join('') + (store.ui.slotNote ? `<p class="dm-note dm-err" role="alert">${esc(store.ui.slotNote)}</p>` : '') + '<p class="dm-note">Your current game saves itself as you play. The autosave is a snapshot from the start of each day.</p>';
   return `<aside class="dm-side">
       <span class="dm-avatar" title="${esc(PLAYER.name)}">${ICONS.agent}</span>
       <span class="dm-side-gap"></span>
@@ -984,6 +984,7 @@ export function overlayHtml(store: GameStore): string {
         <li>Every agent prompt costs money. Vague prompts get vague builds.</li>
         <li>Read Y for leads. Check Qmail. Ship on Forkyard — and check what it ships.</li>
         <li>Anything you can do yourself, do yourself. Your time is free now.</li>
+        <li>The clock runs while you work. At midnight the day ends, done or not.</li>
       </ul>
       <div class="ov-actions"><button class="btn primary" data-ov="start">${s.values.day > 1 || s.chat.length > 1 ? `Continue · ${dateMedium(s.values.day)}` : 'Open the laptop'}</button></div>`, 'start');
   }
@@ -1009,6 +1010,7 @@ export function devHtml(store: GameStore): string {
   return `<header><b>jev · dev</b><button data-act="dev">×</button></header>
     <p><b>Day</b> ${m.day} · <b>Agent</b> L${m.agentLevel} · <b>Followers</b> ${m.followers}</p>
     <p><b>Meters</b> <span class="dv-dim">${esc(meters)}</span></p>
+    <div class="dv-row"><b>Clock</b><button data-dev="hold" class="${store.clockHeld ? 'on' : ''}">${store.clockHeld ? 'Start clock' : 'Stop clock'}</button><button data-dev="skip">+1 hour</button></div>
     <div class="dv-row"><button data-dev="money">+$100</button><button data-dev="followers">+50 followers</button><button data-act="devedit" class="${store.ui.devEdit ? 'on' : ''}">Flags and meters…</button></div>
     <form class="dv-row" data-form="dev-day"><label>Go to day <input id="dev-day" type="number" min="1" max="${LAST_DAY}" value="${Math.min(LAST_DAY, m.day + 1)}"></label><button type="submit">Go</button><span class="dv-dim">skips the nights: no payday, rent or bills</span></form>
     <p><b>Flags</b> <code>${esc(s.flags.join(', ') || 'none')}</code></p>

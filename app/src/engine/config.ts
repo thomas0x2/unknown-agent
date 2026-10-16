@@ -5,13 +5,18 @@
 
 export const LAST_DAY = 21;
 
-/** The in-game clock. The day runs from 10:00 to midnight; every action spends time. */
+/**
+ * The in-game clock. The day runs from 10:00 to midnight in real time: the clock moves minute by
+ * minute while the player plays, whatever they do. Actions themselves take no game time.
+ */
 export const CLOCK = {
   wake: 10 * 60,   // 10:00
   sleep: 24 * 60,  // 00:00 (auto-sleep)
-  // Every action spends exactly half an hour.
-  perAction: 30,
+  // How long a whole day (wake to sleep) lasts in real time: 4 minutes 20 seconds.
+  dayMs: (4 * 60 + 20) * 1000,
 };
+/** Real milliseconds per game minute (about 0.31 s). */
+export const MS_PER_GAME_MIN = CLOCK.dayMs / (CLOCK.sleep - CLOCK.wake);
 
 export const START = {
   crypto: 100,
