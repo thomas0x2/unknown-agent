@@ -3,6 +3,7 @@
  * scheduled queue entry) and records it for the player to read and answer.
  */
 import type { GameState, DeliveredEvent } from './state';
+import { CLOCK } from './config';
 import type { Content, GameEvent, Trigger } from '../content/schema';
 import { hasAll, hasNone, log } from './core';
 import { applyEffects } from './effects';
@@ -61,7 +62,51 @@ export function getEvent(content: Content, id: string): GameEvent | undefined {
   return content.events.find((e) => e.id === id);
 }
 
-function deliver(s: GameState, ev: GameEvent): DeliveredEvent | null {
+/** "HH:MM" as minutes since midnight, or null when it isn't a time. */
+export function parseClock(at: string | undefined): number | null {
+  const m = at?.match(/^(\d{1,2}):(\d{2})$/);
+  if (!m) return null;
+  return Number(m[1]) * 60 + Number(m[2]);
+}
+
+function hashOf(text: string): number {
+  let h = 0;
+  for (const c of text) h = (h * 33 + c.charCodeAt(0)) >>> 0;
+  return h;
+}
+
+/**
+ * A time between 10:15 and 19:45 picked from a key, so the same post or email always comes at the
+ * same minute. Leaves the last two hours quiet enough to answer what came in.
+ */
+export function spreadMin(key: string): number {
+  const from = CLOCK.wake + 15, to = CLOCK.sleep - 135;
+  return from + (hashOf(key) % (to - from + 1));
+}
+
+/** The minute an event lands on the day it's due: its `at` ("HH:MM"), or first thing without one. */
+export function arrivalMin(ev: Pick<GameEvent, 'at'>): number {
+  const at = parseClock(ev.at);
+  return at == null ? CLOCK.wake : Math.max(CLOCK.wake, Math.min(CLOCK.sleep - 1, at));
+}
+
+/** The minute a timeline post goes up on its day: its `at`, or a time spread over the day. */
+export function postMin(p: { id: string; at?: string }, day: number): number {
+  return parseClock(p.at) ?? spreadMin(`${p.id}@${day}`);
+}
+
+/** Whether a post of `day` that comes at `min` is on the timeline yet. Earlier days' posts all are. */
+export function posted(s: GameState, day: number, min: number): boolean {
+  return day < s.values.day || (day === s.values.day && min <= s.clockMin);
+}
+
+/** The filler posts on today's timeline so far: a third of them each day, each at its own time. */
+export function fillerToday(s: GameState, content: Content): Content['yFiller'] {
+  const day = s.values.day;
+  return content.yFiller.filter((f) => hashOf(f.id) % 3 === day % 3 && posted(s, day, postMin(f, day)));
+}
+
+function deliver(s: GameState, ev: GameEvent, min = s.clockMin): DeliveredEvent | null {
   if (!ev.repeat && s.fired.includes(ev.id)) return null;
   if (!s.fired.includes(ev.id)) s.fired.push(ev.id);
   const d: DeliveredEvent = {
@@ -71,6 +116,7 @@ function deliver(s: GameState, ev: GameEvent): DeliveredEvent | null {
     seq: s.nextId++,
     answered: false,
     expiresDay: ev.expiresDay,
+    min,
   };
   s.delivered.push(d);
   applyEffects(s, ev.onDeliver, ev.job, ev.id);
@@ -78,29 +124,68 @@ function deliver(s: GameState, ev: GameEvent): DeliveredEvent | null {
   return d;
 }
 
+/** Already on its way today, or (once-only) already delivered. */
+function underway(s: GameState, ev: GameEvent): boolean {
+  if (!ev.repeat && s.fired.includes(ev.id)) return true;
+  return !!s.arriving?.some((a) => a.eventId === ev.id && a.day === s.values.day);
+}
+
+/** Deliver it now if its time has come, otherwise queue it to land at its time. */
+function deliverOrQueue(s: GameState, ev: GameEvent, now: boolean, out: DeliveredEvent[]): void {
+  if (underway(s, ev)) return;
+  const at = arrivalMin(ev);
+  if (now || at <= s.clockMin) {
+    const d = deliver(s, ev);
+    if (d) out.push(d);
+    return;
+  }
+  (s.arriving ??= []).push({ eventId: ev.id, day: s.values.day, at });
+}
+
 /**
- * Deliver everything due this morning: first the explicitly scheduled queue entries whose day has
- * come, then every content event whose trigger now matches. Returns what was delivered.
+ * Pick everything due today: first the explicitly scheduled queue entries whose day has come, then
+ * every content event whose trigger now matches. Each lands at its own time of day: what is due by
+ * now is delivered (and returned), the rest waits in `s.arriving` for deliverArrivals. `now` delivers
+ * everything at once (dev tools).
  */
-export function deliverDue(s: GameState, content: Content): DeliveredEvent[] {
+export function deliverDue(s: GameState, content: Content, opts: { now?: boolean } = {}): DeliveredEvent[] {
   const out: DeliveredEvent[] = [];
+  const now = !!opts.now;
   // scheduled queue: deliver on its day regardless of trigger (it was queued on purpose)
   const due = s.scheduled.filter((q) => q.fireDay <= s.values.day);
   s.scheduled = s.scheduled.filter((q) => q.fireDay > s.values.day);
   for (const q of due) {
     const ev = getEvent(content, q.eventId);
-    if (!ev) continue;
-    const d = deliver(s, ev);
-    if (d) out.push(d);
+    if (ev) deliverOrQueue(s, ev, now, out);
   }
   // trigger-driven events (latent ones are not auto-delivered — the player reaches them by email)
   for (const ev of content.events) {
     if (ev.latent) continue;
-    if (!ev.repeat && s.fired.includes(ev.id)) continue;
-    if (triggerMatches(s, ev.trigger)) {
-      const d = deliver(s, ev);
-      if (d) out.push(d);
-    }
+    if (underway(s, ev)) continue;
+    if (triggerMatches(s, ev.trigger)) deliverOrQueue(s, ev, now, out);
+  }
+  if (now) out.push(...deliverArrivals(s, content, true));
+  return out;
+}
+
+/**
+ * Land the queued emails and posts whose time has come, in the order they were meant to arrive.
+ * Ones left over from a day that ended early arrive first thing the next morning. `all` lands
+ * everything still queued. Returns what was delivered.
+ */
+export function deliverArrivals(s: GameState, content: Content, all = false): DeliveredEvent[] {
+  if (!s.arriving?.length) return [];
+  const day = s.values.day;
+  const isDue = (a: { day: number; at: number }) => all || a.day < day || a.at <= s.clockMin;
+  const due = s.arriving.filter(isDue).sort((a, b) => a.day - b.day || a.at - b.at);
+  if (!due.length) return [];
+  s.arriving = s.arriving.filter((a) => !isDue(a));
+  const out: DeliveredEvent[] = [];
+  for (const a of due) {
+    const ev = getEvent(content, a.eventId);
+    if (!ev) continue;
+    const d = deliver(s, ev, a.day < day ? CLOCK.wake : Math.min(a.at, s.clockMin));
+    if (d) out.push(d);
   }
   return out;
 }
@@ -117,9 +202,12 @@ export function activeDeliveries(s: GameState): DeliveredEvent[] {
   return s.delivered.filter((d) => !d.answered && (d.expiresDay == null || s.values.day <= d.expiresDay));
 }
 
-/** The last day an event can be answered before its `noReply` effects apply. */
+/**
+ * The last day an event can be answered before its `noReply` effects apply. Never before the day it
+ * arrived, so an email held up overnight still gets its day.
+ */
 export function replyDeadline(ev: GameEvent, deliveredDay: number): number {
-  return ev.noReply?.byDay ?? deliveredDay;
+  return Math.max(ev.noReply?.byDay ?? deliveredDay, deliveredDay);
 }
 
 /**

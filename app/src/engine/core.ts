@@ -58,7 +58,7 @@ export function advanceClock(s: GameState, minutes: number): void {
 // ── mail ──
 export function pushMail(s: GameState, m: Omit<MailEntry, 'id' | 'seq'>): MailEntry {
   const seq = s.nextId++;
-  const entry: MailEntry = { id: `mail${seq}`, seq, ...m };
+  const entry: MailEntry = { id: `mail${seq}`, seq, min: s.clockMin, ...m };
   s.mail.push(entry);
   return entry;
 }

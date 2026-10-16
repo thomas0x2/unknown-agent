@@ -11,6 +11,7 @@
     ],
     "appWorking": "laundromat_contact"
   },
+  "at": "12:40",
   "onDeliver": {
     "updateApp": {
       "client": "laundromat_contact",

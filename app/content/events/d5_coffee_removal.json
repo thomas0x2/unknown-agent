@@ -7,6 +7,7 @@
   "trigger": {
     "dayMin": 5
   },
+  "at": "11:15",
   "job": {
     "category": "grey",
     "payout": 60,

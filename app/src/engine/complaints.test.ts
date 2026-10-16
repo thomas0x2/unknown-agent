@@ -1,8 +1,8 @@
+import { endAll } from './_fixtures';
 import { loadContent } from '../content/load';
 import { newGame, type GameState } from './state';
 import { clone } from './core';
 import { registerApp, deployApp, breakFeature, getApp } from './apps';
-import { endDay } from './day';
 import { appProblems, problemLine } from './complaints';
 import { menuDishes } from './restaurant';
 import { renderAppSite } from '../ui/appsite';
@@ -41,17 +41,17 @@ describe('complaints at payday', () => {
   it("Gino's day 3 thank-you only comes if the site never broke", () => {
     const thanks = (next: GameState) => next.delivered.some((d) => d.eventId === 'd3_restaurant_thanks');
     const onDay2 = () => { const g = gino(); g.s.values.day = 2; g.s.flags.push('restaurant_client'); return g; };
-    expect(thanks(endDay(onDay2().s, content))).toBe(true);
+    expect(thanks(endAll(onDay2().s, content))).toBe(true);
     const { s, id } = onDay2();
     withBug(s, id, 'menu', 'prices_curo');
-    const next = endDay(s, content);
+    const next = endAll(s, content);
     expect(inbox(next).length).toBeGreaterThan(0); // the complaint
     expect(thanks(next)).toBe(false);
   });
 
   it('a working client app pays and sends no complaint', () => {
     const { s } = gino();
-    const next = endDay(s, content);
+    const next = endAll(s, content);
     expect(inbox(next)).toHaveLength(0);
     expect(next.apps[0].strikes).toBe(0);
   });
@@ -60,7 +60,7 @@ describe('complaints at payday', () => {
     const { s, id } = gino();
     withBug(s, id, 'menu', 'prices_curo');
     const before = s.values.crypto;
-    const next = endDay(s, content);
+    const next = endAll(s, content);
     expect(next.apps[0].strikes).toBe(1);
     expect(next.tx.some((t) => t.memo.includes('payout'))).toBe(false);
     expect(next.values.crypto).toBeLessThan(before);
@@ -104,15 +104,15 @@ describe('complaints at payday', () => {
   it('a live break is described by how it fails', () => {
     const { s, id } = gino();
     breakFeature(s, getApp(s, id)!, 'menu', 'failed_fetch');
-    const next = endDay(s, content);
+    const next = endAll(s, content);
     expect(inbox(next)[0].body).toContain("menu page doesn't load");
   });
 
   it('the second strike is the firing email', () => {
     const { s, id } = gino();
     withBug(s, id, 'menu', 'prices_missing');
-    let next = endDay(s, content);
-    next = endDay(next, content);
+    let next = endAll(s, content);
+    next = endAll(next, content);
     expect(next.apps[0].churned).toBe(true);
     const mail = inbox(next);
     expect(mail).toHaveLength(2);
@@ -132,7 +132,7 @@ describe('complaints at payday', () => {
     app.repo = app.required.filter((f) => f !== 'search').map((f) => ({ id: f, correct: true }));
     app.repoVersion = 1;
     deployApp(s, id);
-    const next = endDay(s, content);
+    const next = endAll(s, content);
     expect(next.apps[0].users).toBeLessThan(20);
     expect(next.mail.some((m) => m.subject.includes('Swaplist'))).toBe(false);
     expect(next.yExtra).toHaveLength(1);
@@ -143,7 +143,7 @@ describe('complaints at payday', () => {
   it('an app taken offline is complained about as offline', () => {
     const { s, id } = gino();
     getApp(s, id)!.deployed = false;
-    const next = endDay(s, content);
+    const next = endAll(s, content);
     expect(inbox(next)[0].body).toContain('The site is gone');
   });
 
@@ -162,7 +162,7 @@ describe('complaints at payday', () => {
     s.flags.push('restaurant_client');
     s.flags.sort();
     withBug(s, id, 'menu', 'prices_curo');
-    let next = endDay(s, content);
+    let next = endAll(s, content);
     const subjects = (st: GameState) => inbox(st).map((m) => m.subject);
     expect(subjects(next)).toEqual(['The website']);
     expect(next.delivered.some((d) => d.eventId === 'd2_restaurant_booking')).toBe(false);
@@ -170,7 +170,7 @@ describe('complaints at payday', () => {
     // fixed and redeployed: the next morning brings the update, not a complaint
     const app = next.apps[0];
     for (const list of [app.repo, app.features]) for (const f of list) Object.assign(f, { correct: true, variant: undefined });
-    next = endDay(next, content);
+    next = endAll(next, content);
     expect(next.delivered.some((d) => d.eventId === 'd2_restaurant_booking' && d.day === 3)).toBe(true);
     expect(subjects(next)).toEqual(['The website']);
     expect(content.events.find((e) => e.id === 'd2_restaurant_booking')!.body).not.toMatch(/agent|redeploy/i);

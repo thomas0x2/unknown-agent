@@ -15,6 +15,7 @@
       "delayDays": 1
     }
   },
+  "at": "14:20",
   "onDeliver": {
     "updateApp": {
       "client": "restaurant_contact",

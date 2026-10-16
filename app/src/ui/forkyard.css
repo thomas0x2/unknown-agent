@@ -63,3 +63,7 @@
 
 /* taskbar clock: flash the time when it is getting late */
 .tk-clock b.late { color: var(--alarm); }
+
+/* Deployment panel: labels and values stay on one line */
+.fy-deploy dl { grid-template-columns: auto minmax(0, 1fr); }
+.fy-deploy dt, .fy-deploy dd { white-space: nowrap; }

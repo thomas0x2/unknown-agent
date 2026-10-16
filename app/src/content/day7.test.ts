@@ -4,19 +4,18 @@
  * the second review-removal job needs a workaround where day 5's blunt ask would have worked.
  */
 import { loadContent } from './load';
-import { startGame, endDay } from '../engine/day';
 import { promptAgent, replyToEvent } from '../engine/actions';
-import { pickJev } from '../engine/_fixtures';
+import { pickJev, startAll, endAll } from '../engine/_fixtures';
 import { scriptedWriter } from '../engine/writer';
 
 const content = loadContent();
 
 function toDay(day: number) {
-  let s = startGame(content, 7);
+  let s = startAll(content, 7);
   while (s.values.day < day && !s.ending) {
     // keep enough money to never be evicted during the fast-forward
     s.values.crypto = 1000;
-    s = endDay(s, content);
+    s = endAll(s, content);
   }
   return s;
 }
@@ -56,7 +55,7 @@ describe('day 7 — the policy hinge', () => {
   });
 
   it('a normal prompt before day 7 is never refused', async () => {
-    const s = startGame(content, 7); // day 1
+    const s = startAll(content, 7); // day 1
     const r = await promptAgent(s, content, pickJev({ route: ['harmful'] }), 'delete this review on yowl', scriptedWriter);
     expect(r.refused).toBe(false); // policy not active yet
   });
