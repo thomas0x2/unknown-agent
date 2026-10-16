@@ -275,11 +275,19 @@ const CUES: Record<Cue, (e: SoundEngine, t: number) => void> = {
     e.tone(659, t, 0.22, { gain: 0.06, type: 'triangle' });
     e.tone(988, t + 0.08, 0.3, { gain: 0.05, type: 'triangle' });
   },
-  // a document arrives: paper over a counter, then a low two-tone
+  // a document arrives by pneumatic tube: a rush of air, a capsule landing in the tray, then a
+  // two-strike desk bell. The only bell in the game, so mail never sounds like a post or a reply.
   mail: (e, t) => {
-    e.noise(t, 0.16, { lp: 1400, hp: 300, gain: 0.05 });
-    e.tone(784, t + 0.06, 0.28, { gain: 0.06, type: 'triangle' });
-    e.tone(587, t + 0.17, 0.38, { gain: 0.06, type: 'triangle' });
+    e.noise(t, 0.22, { bp: 900, q: 0.8, gain: 0.06 });
+    e.noise(t + 0.18, 0.08, { lp: 450, gain: 0.2 });
+    e.tone(130, t + 0.18, 0.14, { gain: 0.1, glideTo: 65, attack: 0.002 });
+    const bell = (f: number, at: number) => {
+      e.tone(f, t + at, 1.1, { gain: 0.05, attack: 0.002 });
+      e.tone(f * 2.76, t + at, 0.5, { gain: 0.018, attack: 0.002 });
+      e.tone(f * 5.4, t + at, 0.18, { gain: 0.008, attack: 0.002 });
+    };
+    bell(1047, 0.34);
+    bell(831, 0.52);
   },
   // someone posted on Y: a small bright pip, falling
   post: (e, t) => {
