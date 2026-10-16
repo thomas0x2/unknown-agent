@@ -296,7 +296,7 @@ export function buildApp(s: GameState, appId: string, requested: string[], level
   app.repoVersion++;
   const worked = requested.filter((id) => !report.vague.includes(id));
   const msg = app.repoVersion === 1 ? `Initial commit for ${app.name}`
-    : worked.length ? `Update ${worked.join(', ')}` : `Tidy up ${requested.join(', ') || app.name} styling`;
+    : worked.length ? `Update ${worked.join(', ')}` : `Check ${requested.join(', ') || app.name}`;
   s.commits.push({ day: s.values.day, repo: app.id, msg, kind: 'push' });
   // the very first build always ships at least one teaching bug, even on a lucky roll
   if (app.repoVersion === 1 && !quiet(app, ctx.tmpl)) {
@@ -359,9 +359,14 @@ const BREAK_CATEGORIES: Partial<Record<FailureKind, string>> = {
 export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, featureId: string): FixCategory[] {
   const def = tmpl?.features.find((f) => f.id === featureId);
   if (!def) return [];
-  const out: FixCategory[] = [{ id: 'feature', description: def.description, kind: 'build' }];
-  // the client changed what this feature should contain: asking for that change is feature work
   const built = app.repo.find((f) => f.id === featureId);
+  // asking for the feature itself builds it when it's missing, re-rolls it when it's wrong as a whole,
+  // and puts in the real details when they were invented. A feature that's there with named bugs has
+  // nothing to build: a prompt about it has to name the broken part
+  const named = bugsOf(built).filter((b) => def.bugs?.some((x) => x.id === b));
+  const buildable = !built || !named.length || named.some((b) => b === 'hallucinated' || b === 'outdated');
+  const out: FixCategory[] = buildable ? [{ id: 'feature', description: def.description, kind: 'build' }] : [];
+  // the client changed what this feature should contain: asking for that change is feature work
   if (built && !built.correct && bugsOf(built).includes('outdated')) {
     const now = changeValues(app.specParams[featureId], def).join('; ');
     out.push({ id: 'outdated', description: `Change ${def.description} to the client's new version${now ? ` (${now})` : ''}. The prompt has to say what exactly changes: which items are swapped, added or removed, or which prices change and to what ("swap Diavola for Quattro Formaggi at 15"). Asking to update it without saying what changes ("update the menu items and prices") doesn't count.`, kind: 'build' });
@@ -461,7 +466,7 @@ export function fixApp(s: GameState, appId: string, featureId: string | null, le
   if (idx >= 0) app.repo[idx] = f;
   else app.repo.push(f);
   app.repoVersion++;
-  s.commits.push({ day: s.values.day, repo: app.id, msg: report.vague.length ? `Tidy up ${featureId} styling` : `Fix ${featureId}`, kind: 'push' });
+  s.commits.push({ day: s.values.day, repo: app.id, msg: report.vague.length ? `Check ${featureId}` : `Fix ${featureId}`, kind: 'push' });
   return f.correct;
 }
 

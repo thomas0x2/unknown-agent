@@ -566,8 +566,9 @@ function fixLines(s: GameState, app: AppInstance, tmpl: AppTemplate | undefined,
     const bug = def?.bugs?.find((b) => b.id === c);
     if (bug && !had.includes(c)) out.push(`Checked for this: "${fillSpec(bug.when, params).replace(/\.$/, '')}". That part was already right.`);
   }
-  if (vague && !out.length) out.push(`Went over the ${featureName(fid, def)}. Tidied up the layout and spacing.`);
-  else if (!vague && had.some((b) => b === 'hallucinated' || b === 'outdated') && !has.some((b) => b === 'hallucinated' || b === 'outdated')) out.push(`Rebuilt the ${featureName(fid, def)} with the details you gave.`);
+  // a push that touched nothing gets no line: the caller treats a push with no lines as no push at all
+  if (vague && !out.length) return out;
+  if (!vague && had.some((b) => b === 'hallucinated' || b === 'outdated') && !has.some((b) => b === 'hallucinated' || b === 'outdated')) out.push(`Rebuilt the ${featureName(fid, def)} with the details you gave.`);
   else if (!out.length) out.push(`Rebuilt the ${featureName(fid, def)}.`);
   return out;
 }
@@ -858,6 +859,7 @@ export async function promptAgent(
       const level = s.values.agentLevel;
       const names: string[] = [];
       const lines: string[] = [];
+      let builtSome = false;
       for (const [appId, feats] of byApp) {
         const a = getApp(s, appId)!;
         names.push(a.name);
@@ -874,15 +876,23 @@ export async function promptAgent(
           ? buildApp(s, appId, toBuild, level, { tmpl, prompt: text, context: context.join('\n'), named: toBuild.flatMap((fid) => componentBugs(tmpl?.features.find((f) => f.id === fid), feats.get(fid)!)) })
           : { vague: [], hallucinated: [] };
         // one line per thing Jev saw named: what was fixed, or that it was already right
-        for (const fid of feats.keys()) lines.push(...fixLines(s, a, tmpl, fid, feats.get(fid)!, before.get(fid), patched.includes(fid), report.vague.includes(fid)));
+        for (const fid of feats.keys()) {
+          const said = fixLines(s, a, tmpl, fid, feats.get(fid)!, before.get(fid), patched.includes(fid), report.vague.includes(fid));
+          lines.push(...said);
+          if (said.length && !report.vague.includes(fid) && feats.get(fid)!.some((c) => builds.includes(`${appId}::${fid}::${c}`))) builtSome = true;
+        }
       }
+      // nothing Jev matched changed anything (every feature came back untouched): not a hit, so it
+      // falls through to the hint topics and misses below, on the state from before the push
+      if (lines.length) {
       const charged = chargeAgent(s, text);
       if (!charged) {
         s.chat.push({ from: 'you', text, day: s.values.day });
         s.chat.push({ from: 'agent', text: "I can't run — your balance won't cover it. Top up Coinbin and try again.", day: s.values.day, src: 'locked' });
         return { state: s, reply: '', charged: false, refused: false, workedAround: false };
       }
-      const skipped = skippedFixes ? `\n\n${SKIPPED_FIXES}` : '';
+      // "only did the feature work" only when feature work was actually done
+      const skipped = skippedFixes && builtSome ? `\n\n${SKIPPED_FIXES}` : '';
       const reply = `Pushed to Forkyard for ${names.join(', ')}.\n${lines.map((l) => `- ${l}`).join('\n')}${skipped}\n\nDeploy it on Forkyard to make it live.`;
       // the work takes a while: the push and the report land later, and the agent says it's started
       const kind = builds.some((m) => matched.has(m)) ? 'build' : 'fix';
@@ -890,6 +900,7 @@ export async function promptAgent(
       s.chat.push({ from: 'you', text, day: s.values.day, cost: agentCostOf(s0, text), level });
       s.chat.push({ from: 'agent', text: ack.text, day: s.values.day, src: 'working', level, debug: ack.debug });
       return { state: s, reply: ack.text, charged: true, refused: false, workedAround: false };
+      }
     }
   }
   // nothing app-shaped: a hint topic Jev recognises, or a roast
@@ -1099,7 +1110,7 @@ export async function briefFix(
     ? "I can't run — your balance won't cover it."
     : target
       ? report.vague.length
-        ? `Pushed a change to \`${target}\` on ${app.name}: tidied up the layout and spacing. Redeploy to make it live.`
+        ? `Looked at \`${target}\` on ${app.name} and couldn't find what's wrong. Which part of it is off?`
         : `Pushed a fix for \`${target}\` to ${app.name}. Redeploy to make it live.`
       : "I couldn't tell which feature you mean. Name the one that's wrong.";
   s.chat.push({ from: 'you', text, day: s.values.day, cost });
