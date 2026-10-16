@@ -129,7 +129,7 @@ export function startMenuHtml(store: GameStore): string {
         <span class="dm-slot-acts">${info ? `<button data-slot-load="${n}">Load</button>` : ''}<button data-slot-save="${n}">Save</button></span></div>`;
     }).join('') + '<p class="dm-note">Progress also autosaves after every action.</p>';
   return `<aside class="dm-side">
-      <span class="dm-avatar" title="${esc(PLAYER.name)}"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="4"/><path d="M4.5 20.5c1.2-3.8 4-5.5 7.5-5.5s6.3 1.7 7.5 5.5"/></svg></span>
+      <span class="dm-avatar" title="${esc(PLAYER.name)}">${ICONS.agent}</span>
       <span class="dm-side-gap"></span>
       <button class="dm-side-btn" data-act="new" title="New game (log out)">${MI.logout}</button>
       <button class="dm-side-btn dm-sleep" data-act="sleep" title="Sleep until tomorrow">${MI.sleep}</button>
