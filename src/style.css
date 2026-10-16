@@ -82,6 +82,7 @@ code { font-family: var(--f-mono); font-size: 0.86em; }
 
 .ico-y { color: var(--y-accent); }
 .ico-wallet, .nt-wallet .nt-ico { color: #4cc9f0; --icon-ink: #1f2329; }
+.ico-satchel, .nt-satchel .nt-ico { color: #17b26a; --icon-ink: #1f2329; }
 .toast.t-wallet { border-left-color: #4cc9f0; }
 .ico-forkyard { color: var(--fy-accent); }
 .ico-agent { color: #f4f5f7; }
