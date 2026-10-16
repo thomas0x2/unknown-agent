@@ -116,6 +116,10 @@ export interface Tx {
   day: number;
   amount: number;
   memo: string;
+  /** Minutes since midnight when it happened. Missing on entries from older saves. */
+  min?: number;
+  /** Wallet balance right after it. Missing on entries from older saves; the chart works those out backwards. */
+  bal?: number;
 }
 
 /** A Forkyard commit, for the profile activity feed and contribution grid. */
@@ -300,6 +304,12 @@ export const SEED_TX: Tx[] = [
   { day: 0, amount: -350, memo: 'Landlord · Rent' },
 ];
 
+/** The pre-game history with a running balance, so the chart's first month is exact too. */
+function seedLedger(start: number): Tx[] {
+  let bal = Math.round((start - SEED_TX.reduce((n, t) => n + t.amount, 0)) * 100) / 100;
+  return SEED_TX.map((t) => { bal = Math.round((bal + t.amount) * 100) / 100; return { ...t, min: 12 * 60, bal }; });
+}
+
 export function newGame(seed = makeSeed()): GameState {
   return {
     version: SAVE_VERSION,
@@ -324,7 +334,7 @@ export function newGame(seed = makeSeed()): GameState {
     ending: null,
     endingShown: false,
     log: [],
-    tx: SEED_TX.map((t) => ({ ...t })),
+    tx: seedLedger(initialMeters().crypto),
     chat: [{ from: 'agent', text: "Welcome to agent, the AI that replaced you. I build and fix software, write, translate and answer questions. Every prompt is billed to your Coinbin wallet: a flat fee plus a little per word you send, so choose your words like they cost money. They do.", day: 1 }],
     nextAppNum: 1,
     mail: [],

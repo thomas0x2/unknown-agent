@@ -470,22 +470,55 @@ function txHash(x: { day: number; memo: string; amount: number }): string {
   return `0x${hex.slice(0, 6)}…${hex.slice(-4)}`;
 }
 const RANGES: Record<string, number> = { '1W': 7, '1M': 30, 'All': 9999 };
-function balanceChart(pts: { day: number; bal: number }[]): string {
+/** A point on the balance chart: game time in days (day + minutes / 1440) and the balance from then on. */
+type BalPoint = { t: number; bal: number };
+const at = (day: number, min: number) => day + min / 1440;
+const cents = (n: number) => Math.round(n * 100) / 100;
+
+/**
+ * The wallet's balance over game time, one point per transaction plus "now". Each entry carries the
+ * balance it left behind; entries from saves made before that was recorded are worked out backwards
+ * from the next known balance, so an old save's history still ends on its real current balance.
+ */
+function balanceSeries(s: GameStore['state']): BalPoint[] {
+  const txs = s.tx;
+  const after: number[] = new Array(txs.length);
+  let next = s.values.crypto;
+  for (let i = txs.length - 1; i >= 0; i--) { after[i] = txs[i].bal ?? next; next = cents(after[i] - txs[i].amount); }
+  const now = at(s.values.day, s.clockMin);
+  const first = txs.length ? at(txs[0].day, txs[0].min ?? 720) : now;
+  const pts: BalPoint[] = [{ t: first - 1, bal: next }];
+  txs.forEach((x, i) => pts.push({ t: Math.min(now, at(x.day, x.min ?? 720)), bal: after[i] }));
+  pts.push({ t: now, bal: s.values.crypto });
+  return pts;
+}
+
+/** The part of the series inside the range, starting with the balance held when the range opens. */
+function balanceWindow(pts: BalPoint[], from: number): BalPoint[] {
+  const inside = pts.filter((p) => p.t > from);
+  const held = pts.filter((p) => p.t <= from).pop();
+  return held ? [{ t: from, bal: held.bal }, ...inside] : inside;
+}
+
+/** A step chart on a real time axis: the balance holds flat until the next transaction moves it. */
+function balanceChart(pts: BalPoint[]): string {
   const w = 720, h = 180, padX = 4, padY = 14;
   const vals = pts.map((p) => p.bal);
   const lo = Math.min(...vals), hi = Math.max(...vals);
   const span = hi - lo || 1;
-  const xs = (i: number) => padX + (i / Math.max(1, pts.length - 1)) * (w - padX * 2);
+  const t0 = pts[0].t, t1 = pts[pts.length - 1].t;
+  const xs = (t: number) => padX + ((t - t0) / (t1 - t0 || 1)) * (w - padX * 2);
   const ys = (v: number) => h - padY - ((v - lo) / span) * (h - padY * 2);
-  const line = pts.map((p, i) => `${xs(i).toFixed(1)},${ys(p.bal).toFixed(1)}`).join(' ');
-  const last = pts.length - 1;
+  let line = `${xs(pts[0].t).toFixed(1)},${ys(pts[0].bal).toFixed(1)}`;
+  for (let i = 1; i < pts.length; i++) line += ` ${xs(pts[i].t).toFixed(1)},${ys(pts[i - 1].bal).toFixed(1)} ${xs(pts[i].t).toFixed(1)},${ys(pts[i].bal).toFixed(1)}`;
+  const last = pts[pts.length - 1];
   const grid = [0.25, 0.5, 0.75].map((f) => `<line x1="0" x2="${w}" y1="${(padY + f * (h - padY * 2)).toFixed(1)}" y2="${(padY + f * (h - padY * 2)).toFixed(1)}" class="cb-grid"/>`).join('');
   return `<svg viewBox="0 0 ${w} ${h}" class="cb-chart" preserveAspectRatio="none" role="img" aria-label="Balance history">
     <defs><linearGradient id="cb-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--cb-accent)" stop-opacity="0.28"/><stop offset="1" stop-color="var(--cb-accent)" stop-opacity="0"/></linearGradient></defs>
     ${grid}
-    <polygon points="${xs(0).toFixed(1)},${h} ${line} ${xs(last).toFixed(1)},${h}" fill="url(#cb-fill)"/>
+    <polygon points="${xs(t0).toFixed(1)},${h} ${line} ${xs(last.t).toFixed(1)},${h}" fill="url(#cb-fill)"/>
     <polyline points="${line}" class="cb-line"/>
-    <circle cx="${xs(last).toFixed(1)}" cy="${ys(pts[last].bal).toFixed(1)}" r="3.5" class="cb-dot"/></svg>`;
+    <circle cx="${xs(last.t).toFixed(1)}" cy="${ys(last.bal).toFixed(1)}" r="3.5" class="cb-dot"/></svg>`;
 }
 /** Coinbin's Send form. Errors come back from the engine; the typed values survive them. */
 function sendForm(store: GameStore): string {
@@ -504,17 +537,11 @@ function pageWallet(store: GameStore): string {
   const s = store.state;
   const txs = s.tx;
   const range = store.ui.walletRange in RANGES ? store.ui.walletRange : '1M';
-  // balance after every transaction, oldest first
-  let bal = Math.round((s.values.crypto - txs.reduce((n, x) => n + x.amount, 0)) * 100) / 100;
-  const series: { day: number; bal: number }[] = [{ day: (txs[0]?.day ?? s.values.day) - 1, bal }];
-  for (const x of txs) { bal = Math.round((bal + x.amount) * 100) / 100; series.push({ day: x.day, bal }); }
-  const from = s.values.day - RANGES[range];
-  let window = series.filter((p) => p.day > from);
-  const before = series.filter((p) => p.day <= from).pop();
-  if (before) window = [{ day: from, bal: before.bal }, ...window];
-  if (window.length < 2) window = [{ day: from, bal: window[0]?.bal ?? s.values.crypto }, ...window, { day: s.values.day, bal: s.values.crypto }];
+  const series = balanceSeries(s);
+  const now = series[series.length - 1].t;
+  const window = balanceWindow(series, range === 'All' ? -Infinity : now - RANGES[range]);
   const startBal = window[0].bal;
-  const change = Math.round((s.values.crypto - startBal) * 100) / 100;
+  const change = cents(s.values.crypto - startBal);
   const pct = startBal ? (change / Math.abs(startBal)) * 100 : 0;
   const up = change >= 0;
 
@@ -567,7 +594,7 @@ function pageWallet(store: GameStore): string {
         </div>
         ${store.ui.send.open ? sendForm(store) : ''}
         ${balanceChart(window)}
-        <div class="cb-axis"><span>${esc(dateShort(window[0].day))}</span><span>${esc(dateShort(s.values.day))}</span></div>
+        <div class="cb-axis"><span>${esc(dateShort(Math.floor(window[0].t)))}</span><span>${esc(dateShort(s.values.day))}</span></div>
       </section>
       <div class="cb-cols">
         <section class="cb-card"><h2>Assets</h2>
