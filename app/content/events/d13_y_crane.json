@@ -1,0 +1,11 @@
+{
+  "id": "d13_y_crane",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "dayMin": 13,
+    "dayMax": 13
+  },
+  "at": "18:40",
+  "body": "Had a beautiful dinner with real working people tonight. Steak, well done, the way it should be. They all agreed with me, every single one. One of them cried."
+}

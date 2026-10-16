@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_crane",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "13:45",
+  "body": "I asked one of these AI computers if it loves our country. It said it has \"no position on that.\" No position! A machine that won't stand for the anthem is a machine that won't stand for anything. Think about it!"
+}

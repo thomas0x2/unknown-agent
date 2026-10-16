@@ -1,0 +1,11 @@
+{
+  "id": "d15_y_crane",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "dayMin": 15,
+    "dayMax": 15
+  },
+  "at": "18:50",
+  "body": "The Fake News at The Current is writing ANOTHER sob story about \"displaced workers.\" I LOVE displaced workers. Nobody loves them more than me. I've displaced many myself, as a businessman, and they all did great."
+}

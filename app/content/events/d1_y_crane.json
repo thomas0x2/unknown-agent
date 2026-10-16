@@ -1,0 +1,11 @@
+{
+  "id": "d1_y_crane",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "dayMin": 1,
+    "dayMax": 1
+  },
+  "at": "19:40",
+  "body": "Another great company fired its people today and hired a computer. The computer doesn't pay taxes. The computer doesn't buy a truck. It doesn't even say thank you. SAD! We will fix it, and fast."
+}
