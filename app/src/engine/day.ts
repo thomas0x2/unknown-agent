@@ -96,7 +96,7 @@ export function endDay(state: GameState, content: Content): GameState {
   const subBefore = s.values.crypto;
   deductSubscription(s);
   const subPaid = Math.round((s.values.crypto - subBefore) * 100) / 100;
-  if (subPaid !== 0) lines.push([`Agent subscription (L${s.values.agentLevel})`, subPaid]);
+  if (subPaid !== 0) lines.push([`Agent subscription (agent-${s.values.agentLevel})`, subPaid]);
 
   const live = s.apps.filter((a) => a.deployed && !a.churned).length;
   if (live > 0) {

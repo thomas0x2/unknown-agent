@@ -31,7 +31,7 @@ export interface ReplyResult {
 const PLAYER_ADDR = 'you@qmail.com';
 
 function stateSummary(s: GameState): string {
-  return `Day ${s.values.day} (${dateFull(s.values.day)}). ${s.values.crypto} DOLR, ${s.values.followers} followers, agent level ${s.values.agentLevel}.`;
+  return `Day ${s.values.day} (${dateFull(s.values.day)}). ${s.values.crypto} DOLR, ${s.values.followers} followers, model agent-${s.values.agentLevel}.`;
 }
 
 function contactFor(content: Content, key: string): Contact | undefined {

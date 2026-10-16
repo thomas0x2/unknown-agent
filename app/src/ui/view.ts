@@ -920,7 +920,7 @@ function pageModels(store: GameStore): string {
       <div class="gm-act">${action}</div></article>`;
   }).join('');
   return `<div class="ua gm">
-    <header class="ua-head"><div class="ua-brand">${ICONS.agent}<div><b>Models</b><span>GeneralAI rolls out each level automatically. You never buy them — but every level costs more.</span></div></div>
+    <header class="ua-head"><div class="ua-brand">${ICONS.agent}<div><b>Models</b><span>GeneralAI rolls out each model automatically. You never buy them — but every model costs more.</span></div></div>
       <span class="ua-linked"><a href="#" data-nav="agent.chat" class="ua-upgrade">Back to chat</a></span></header>
     <div class="gm-grid">${cards}</div>
     <p class="gm-note">Rising costs, billed to Coinbin ${shortAddr(WALLET_ADDR)}. Can't pay? agent.chat locks until you do; local models keep working.</p></div>`;

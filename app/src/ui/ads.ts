@@ -46,9 +46,9 @@ export const WIDE: Ad[] = [
     cta: 'Try agent', fine: 'Billed per prompt. Per thought. Per pause between thoughts.',
   },
   {
-    id: 'gai2', sponsor: 'GeneralAI', href: 'generalai.com/level-2', theme: 'ad-gai', deco: 'shine', cta_fx: 'pulse', from: 4,
-    frames: ['<b>agent level 2</b> is here', 'Fewer mistakes.*', 'Bigger invoices.'],
-    cta: 'Upgrade (already done)', fine: '*Mistakes now billed at the level 2 rate.',
+    id: 'gai2', sponsor: 'GeneralAI', href: 'generalai.com/agent-2', theme: 'ad-gai', deco: 'shine', cta_fx: 'pulse', from: 4,
+    frames: ['<b>agent-2</b> is here', 'Fewer mistakes.*', 'Bigger invoices.'],
+    cta: 'Upgrade (already done)', fine: '*Mistakes now billed at the agent-2 rate.',
   },
   {
     id: 'crane', sponsor: 'Crane Victory Fund', href: 'crane2026.vote', theme: 'ad-crane', deco: 'stripes', cta_fx: 'blink', from: 3,

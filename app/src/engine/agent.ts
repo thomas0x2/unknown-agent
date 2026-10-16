@@ -67,7 +67,7 @@ export function rolloutAgent(s: GameState): void {
   const target = AGENT_ROLLOUT[s.values.day];
   if (target && s.values.agentLevel < target) {
     setValue(s, 'agentLevel', target);
-    log(s, `GeneralAI rolled out agent level ${target}.`, 'info');
+    log(s, `GeneralAI rolled out agent-${target}.`, 'info');
   }
 }
 
