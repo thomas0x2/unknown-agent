@@ -938,6 +938,10 @@ export function overlayHtml(store: GameStore): string {
       <tr class="tot"><td>Balance</td><td>${fmtMoney(m.balance)}</td></tr></table>
       <div class="ov-actions"><button class="btn primary" data-ov="morning">Get up</button></div>`, 'morning');
   }
+  if (store.ui.dayStart) {
+    return osWindow('New day', 'ov-small ov-daystart', `<h2>${dateFull(s.values.day)}</h2><p>Ready to start?</p>
+      <div class="ov-actions"><button class="btn primary" data-ov="day-start">Start</button></div>`, 'day-start');
+  }
   return '';
 }
 

@@ -33,7 +33,7 @@ export class GameStore {
   pendingPrompt: string | null = null;
   ui = {
     ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null as Draft | null,
-    project: '', dev: false, liked: {} as Record<string, boolean>, intro: true, confirm: null as null | { text: string; yes: string; fn: () => void }, start: false, menuCat: 'saves',
+    project: '', dev: false, liked: {} as Record<string, boolean>, intro: true, dayStart: false, confirm: null as null | { text: string; yes: string; fn: () => void }, start: false, menuCat: 'saves',
     /** The Terminal is its own window: open (in the taskbar) and shown (in front of the browser). */
     termOpen: false, termShown: false,
     /** Dev mode: the site whose options panel is open (agent, qmail, y), or ''. */
@@ -189,16 +189,25 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = 1; this.nextTab = 3;
-    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', reviewNeedsStars: false, slotNote: '', mailError: '', phishError: '' };
+    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, dayStart: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', reviewNeedsStars: false, slotNote: '', mailError: '', phishError: '' };
     this.store.save(this.state);
     this.emit();
   }
 
   endDay(): void { this.sleep(this.state); this.store.save(this.state); this.emit(); }
-  /** End the day and autosave the new morning into the 'auto' slot. */
+  startDay(): void { this.ui.dayStart = false; this.emit(); }
+  /**
+   * End the day and autosave the new morning into the 'auto' slot. The next day starts with only
+   * Qmail and agent open, and asks if the player is ready.
+   */
   private sleep(s: GameState): void {
     this.state = endDay(s, this.content);
-    if (!this.state.ending) writeSlot('auto', this.state);
+    if (this.state.ending) return;
+    writeSlot('auto', this.state);
+    this.tabs = startTabs();
+    this.active = 1; this.nextTab = 3;
+    this.ui.start = false;
+    this.ui.dayStart = true;
   }
   deploy(appId: string): void { this.commitAndSettle(deploy(this.state, appId)); }
   takeDown(appId: string): void { this.commit(takeDown(this.state, appId)); }

@@ -46,3 +46,18 @@ describe('booking form', () => {
     expect(s.state.bookingNotice).toBeUndefined();
   });
 });
+
+describe('a new day', () => {
+  it('closes every tab but Qmail and agent and asks to start', () => {
+    const s = make();
+    s.navigate('y.com'); s.navigate('forkyard.dev', true);
+    expect(s.tabs.length).toBe(3);
+    s.endDay();
+    expect(s.tabs.map((t) => t.url)).toEqual(['qmail.com', 'agent.chat']);
+    expect(s.url).toBe('qmail.com');
+    expect(s.canBack).toBe(false);
+    expect(s.ui.dayStart).toBe(true);
+    s.startDay();
+    expect(s.ui.dayStart).toBe(false);
+  });
+});
