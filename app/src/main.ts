@@ -28,6 +28,7 @@ import { devEditHtml } from './ui/devEdit';
 import type { MeterId } from './engine';
 import { newPageLoad } from './ui/ads';
 import { pullPct } from './game/pull';
+import { trackLoads, LOADING_HTML } from './ui/pageLoad';
 
 const content = loadContent();
 const writer = makeWriter(content);
@@ -63,6 +64,10 @@ function render(): void {
   if (store.url !== lastUrl) { newPageLoad(); lastUrl = store.url; }
 
   $('#tabs')!.innerHTML = V.tabsHtml(store);
+  // a tab that just went to another website shows a spinner and a blank page for a moment
+  const loading = trackLoads(store.tabs, render);
+  for (const id of loading) $(`#tabs .tab[data-tab="${id}"]`)?.classList.add('loading');
+  const busy = loading.has(store.active);
   const addr = $<HTMLInputElement>('#address')!;
   if (document.activeElement !== addr) addr.value = V.addressValue(store);
   $<HTMLButtonElement>('#nav-back')!.disabled = !store.canBack;
@@ -82,9 +87,9 @@ function render(): void {
     try { caret = [f.selectionStart, f.selectionEnd]; } catch { caret = null; }
   }
 
-  vp.innerHTML = V.page(store, r);
-  shownUrl = store.url;
-  const site = V.viewportSite(store);
+  vp.innerHTML = busy ? LOADING_HTML : V.page(store, r);
+  shownUrl = busy ? null : store.url;
+  const site = busy ? 'loading' : V.viewportSite(store);
   if (vp.dataset.site !== site) vp.scrollTop = 0;
   vp.dataset.site = site;
   for (const [id, v] of Object.entries(keep)) { const el = document.getElementById(id) as HTMLInputElement | null; if (el && !el.disabled) el.value = v; }
