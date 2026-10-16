@@ -405,7 +405,7 @@ function yPosts(store: GameStore): YPost[] {
       // a stock post shows the likes the crawler sees
       likes: market.find((p) => p.id === e.id)?.likes ?? 20 + hashHue(e.id) % 400 });
   }
-  // the stock chatter the sentiment crawler reads (story events with stock labels are already above)
+  // the stock chatter the vibe check reads (story events with stock labels are already above)
   for (const p of market) if (!out.some((x) => x.id === p.id)) out.push({ id: p.id, author: p.author, handle: p.handle, text: p.text, day: p.day, min: p.min, likes: p.likes, rank: p.bot ? 2 : 1 });
   // a third of the filler is up each day, posted at its own time
   for (const f of fillerToday(s, store.content)) out.push({ id: f.id, author: f.from, handle: f.handle, text: f.body, day: s.values.day, min: postMin(f, s.values.day), likes: 3 + hashHue(f.id) % 60, rank: 1 });

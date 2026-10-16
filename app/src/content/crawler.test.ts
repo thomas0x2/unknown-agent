@@ -1,5 +1,5 @@
 /*
- * The sentiment crawler and Spin Cycle Status (day 2): their output is computed from real data (the
+ * The vibe check and Spin Cycle Board (day 2): their output is computed from real data (the
  * stock posts on Y, the raw machine feed), each failure from the day plans is a named bug that shows
  * up in that output, and naming the bug in a fix prompt fixes it.
  */
@@ -55,7 +55,7 @@ describe('stock posts on Y', () => {
   });
 });
 
-describe('sentiment crawler', () => {
+describe('vibe check', () => {
   const posts = marketPosts(onDay(2), content);
 
   it('built right: today, $-tagged, no bots, sarcasm read as bearish, every counted post', () => {
@@ -138,7 +138,7 @@ describe('sentiment crawler', () => {
   });
 });
 
-describe('Spin Cycle Status', () => {
+describe('Spin Cycle Board', () => {
   const steps = (from = 10 * 60) => Array.from({ length: (24 * 60 - from) / 30 }, (_, k) => from + k * 30);
 
   it('the feed: 8 machines, 12 from day 5, M3 always out of order', () => {
@@ -224,12 +224,12 @@ describe('Spin Cycle Status', () => {
     app.deployed = true;
     s.values.followers = 400;
     const before = app.users!;
-    let st = (await postToY(s, wordJev, 'Built Spin Cycle Status so you can see which machines are free.', [])).state;
+    let st = (await postToY(s, wordJev, 'Built Spin Cycle Board so you can see which machines are free.', [])).state;
     const afterY = getApp(st, id)!.users!;
     expect(afterY).toBe(before + Math.round(st.values.followers * 0.15));
-    st = (await postToY(st, wordJev, 'Spin Cycle Status again, still free machines.', [])).state;
+    st = (await postToY(st, wordJev, 'Spin Cycle Board again, still free machines.', [])).state;
     expect(getApp(st, id)!.users).toBe(afterY);
-    st = (await writeReview(st, content, wordJev, 'spincycle', 4, 'Use spin-cycle-status.forkyard.app before you walk over.')).state;
+    st = (await writeReview(st, content, wordJev, 'spincycle', 4, 'Use spin-cycle-board.forkyard.app before you walk over.')).state;
     expect(getApp(st, id)!.users).toBe(afterY + 30);
     // a post that doesn't mention it does nothing
     const other = (await postToY(s, wordJev, 'Rent is due again.', [])).state;
@@ -264,7 +264,7 @@ function appFor(contact: string, day: number): { s: GameState; id: string } {
 }
 
 const ASKS: Record<string, [string, string, Record<string, string>]> = {
-  sentiment: ['trader_contact', 'Sentiment Crawler: ', {
+  sentiment: ['trader_contact', 'Vibe Check: ', {
     wrong_tickers: 'The crawler tracks the wrong tickers.',
     lowercase_missed: 'It misses lowercase tickers like $gai.',
     inverted: 'Bullish and bearish are swapped in the sentiment split.',
@@ -281,7 +281,7 @@ const ASKS: Record<string, [string, string, Record<string, string>]> = {
     repeat_buys: 'Auto-buy fires again on every refresh. Only once per post.',
     impostor_buy: 'Auto-buy trusted an impostor Crane account.',
   }],
-  laundromat: ['laundromat_contact', 'Spin Cycle Status: ', {
+  laundromat: ['laundromat_contact', 'Spin Cycle Board: ', {
     raw_codes: 'It shows the raw ST codes. Translate them: 0 free, 1 running, 2 done, 3 out of order.',
     six_of_eight: 'It only shows 6 machines, the second page of the feed is never fetched.',
     done_as_free: 'Done machines waiting for pickup show as free.',

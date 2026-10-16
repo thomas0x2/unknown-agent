@@ -39,9 +39,18 @@ describe('Jev tests', () => {
   it('a push to a part that works is a miss for a near-miss case, and too loose', async () => {
     const c = all.find((x) => x.prompt === 'Trattoria Gino: the landing page looks off')!;
     const r = await runJevTest(content, pickJev({ features: ['::landing::c:name', '::landing::area'] }), c);
-    expect(r.got).toEqual({ fix: [], near: undefined, pushed: true });
+    expect(r.got).toMatchObject({ fix: [], near: undefined, pushed: true });
+    expect(r.got.checked).toHaveLength(1);
     expect(r.pass).toBe(false);
     expect(missKind(c.expect, r.got)).toBe('loose');
+  });
+
+  it('a prompt naming a part that works: the agent checks it and says it was already right', async () => {
+    const c = all.find((x) => x.expect.check && x.broken[0] === 'landing/hours')!;
+    const r = await runJevTest(content, pickJev({ features: ['::landing::c:name'] }), c);
+    expect(r.got).toMatchObject({ fix: [], pushed: true });
+    expect(r.got.checked).toHaveLength(1);
+    expect(r.pass).toBe(true);
   });
 
   it('reads which near-miss came back', async () => {
@@ -58,7 +67,7 @@ describe('Jev tests', () => {
     const jev: JevRouter = {
       ...pickJev({}),
       matchFeatures: async () => [],
-      matchScores: async (i) => { asked++; return i.features.map((f) => (f.id.endsWith('::c:hours') ? 0.55 : f.id.endsWith('::s:landing') ? 0.7 : 0)); },
+      matchScores: async (i) => { asked++; return i.features.map((f) => (f.id.endsWith('::c:hours') ? 0.55 : f.id.endsWith('::s:landing') ? 0.7 : f.kind === 'app' ? 1 : 0)); },
     };
     const rec = newRecording();
     const now = await runJevTest(content, jev, c, undefined, rec);

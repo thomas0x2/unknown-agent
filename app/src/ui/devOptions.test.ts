@@ -64,7 +64,7 @@ describe('jobs in the agent panel', () => {
   it('lists every app job and gig with its status', async () => {
     const { contentJobs } = await import('./devOptions');
     const names = contentJobs(content).map((j) => j.outcome?.effects?.createApp?.name ?? j.ev.id);
-    for (const n of ['Trattoria Gino', 'Spin Cycle Status', 'Sentiment Crawler', 'Swaplist', 'Outreach Bot', 'd5_gym_reviews', 'd6_deepfake', 'd3_coffee_promo', 'd2_restaurant_booking']) expect(names).toContain(n);
+    for (const n of ['Trattoria Gino', 'Spin Cycle Board', 'Vibe Check', 'Swaplist', 'Outreach Bot', 'd5_gym_reviews', 'd6_deepfake', 'd3_coffee_promo', 'd2_restaurant_booking']) expect(names).toContain(n);
     expect(names).not.toContain('d1_mom');
     const html = panel(startAll(content), 'agent');
     expect(html).toContain('open now · email the lead');

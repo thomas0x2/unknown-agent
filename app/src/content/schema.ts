@@ -83,6 +83,8 @@ export interface FeatureDef {
   id: string;
   /** Plain-language description a client spec refers to, e.g. "prices shown in CHF". */
   description: string;
+  /** What the player sees it called (its Forkyard folder, the agent's replies, Jev's questions) when that isn't the id. */
+  name?: string;
   /** Other common names for the feature that count as naming it ("home page" for the landing). */
   aka?: string[];
   /** The same for each folder of its components, by folder path ("confirmation email" for confirmation). */
@@ -330,7 +332,7 @@ export interface Content {
   characters?: Character[];
   /** agent.chat's hint topics and roasts. */
   agent?: AgentContent;
-  /** Stock posts on Y, the data the sentiment crawler reads. */
+  /** Stock posts on Y, the data the vibe check reads. */
   yMarket?: MarketContent;
 }
 
