@@ -1,11 +1,11 @@
 /*
- * The agent is always free-text promptable (with costs), gig or no gig. Prompts take no game time:
- * the clock runs in real time until 22:00, when the day auto-ends.
+ * The agent is always free-text promptable (with costs), gig or no gig. A chat prompt takes no game
+ * time; builds and fixes run in the background (agent-work.test.ts).
  */
 import { startGame } from './day';
-import { promptAgent } from './actions';
+
 import { promptCost } from './agent';
-import { makeContent, fakeRouter } from './_fixtures';
+import { makeContent, fakeRouter, promptDone } from './_fixtures';
 import { CLOCK } from './config';
 
 const content = makeContent();
@@ -15,7 +15,7 @@ describe('promptAgent — always free text', () => {
     const s = startGame(content, 1);
     s.apps = []; // no gig taken
     s.values.crypto = 100;
-    const r = await promptAgent(s, content, fakeRouter({}), 'what can you help me with?');
+    const r = await promptDone(s, content, fakeRouter({}), 'what can you help me with?');
     expect(r.charged).toBe(true);
     expect(r.state.values.crypto).toBeCloseTo(100 - promptCost(1, 'what can you help me with?').total, 2);
     expect(r.state.chat.at(-1)!.from).toBe('agent');
@@ -26,7 +26,7 @@ describe('promptAgent — always free text', () => {
     const s = startGame(content, 1);
     const app = s.apps.find((a) => a.clientEventId === 'client_shop')!;
     s.values.crypto = 100;
-    const r = await promptAgent(s, content, fakeRouter({ features: (_p, ids) => ids.filter((i) => i.endsWith('::catalog::feature')) }), 'build the product catalog for Rosa Shop');
+    const r = await promptDone(s, content, fakeRouter({ features: (_p, ids) => ids.filter((i) => i.endsWith('::catalog::feature')) }), 'build the product catalog for Rosa Shop');
     const built = r.state.apps.find((a) => a.id === app.id)!;
     expect(built.repo.some((f) => f.id === 'catalog')).toBe(true);
     expect(r.state.chat.at(-1)!.src).toBe('build');

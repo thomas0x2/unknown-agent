@@ -154,6 +154,24 @@ export interface ChatMsg {
 }
 
 /** A reply that hasn't arrived yet. `at` is game time in minutes since day 1 began (see core.gameMinutes). */
+/**
+ * A build or fix the agent is working on. It was decided and billed when the player sent the prompt;
+ * the repo changes, commits and the agent's report land when the clock reaches `at` (see
+ * core.deliverAgentWork). `from` and `at` are game time in minutes since day 1 began.
+ */
+export interface AgentWork {
+  from: number;
+  at: number;
+  kind: 'build' | 'fix';
+  /** The apps being worked on, by name, for the progress line and status questions. */
+  appIds: string[];
+  appNames: string[];
+  /** What each app's repo looks like once the work lands; `bumps` is how many versions it pushes. */
+  apps: { id: string; repo: BuiltFeature[]; bumps: number; fixed?: Record<string, string[]> }[];
+  commits: Omit<Commit, 'day'>[];
+  reply: Omit<ChatMsg, 'day'>;
+}
+
 export interface PendingMail { at: number; mail: Omit<MailEntry, 'id' | 'seq'> }
 
 /** One email in Qmail: story events, generated replies, app mail and what the player sent. */
@@ -264,6 +282,8 @@ export interface GameState {
   mail: MailEntry[];
   /** Replies on their way: each lands in the inbox once the clock reaches `at` (see core.sendLater). */
   pendingMail: PendingMail[];
+  /** The build or fix the agent is busy with, if any (unset in older saves). */
+  agentWork?: AgentWork | null;
   yExtra: YExtra[];
   reviews: YowlReview[];
   bookings: Booking[];

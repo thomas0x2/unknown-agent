@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, deliverDue, deliverArrivals, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, devToggleBug, nameUnnamedBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, deliverDue, deliverArrivals, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, devToggleBug, nameUnnamedBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -208,10 +208,11 @@ export class GameStore {
       return;
     }
     const m = this.arrivalMark();
-    advanceClock(s, mins);
+    const working = s.agentWork;
+    advanceClock(s, mins); // the agent's build or fix lands here too, once its time has come
     deliverArrivals(s, this.content); // emails and posts whose time has come
     if (s.clockMin >= CLOCK.sleep) { this.sleep(s); this.store.save(this.state); this.announce(m); this.emit(); return; }
-    if (this.announce(m)) { this.store.save(s); this.emit(); return; }
+    if (this.announce(m) || s.agentWork !== working) { this.store.save(s); this.emit(); return; }
     if (s.clockMin % 10 === 0) this.store.save(s);
     for (const fn of this.clockListeners) fn();
   }
@@ -500,6 +501,7 @@ export class GameStore {
     else if (kind === 'deliver') { const m = this.arrivalMark(); deliverDue(s, this.content, { now: true }); this.announce(m); }
     else if (kind === 'hold') { this.devHoldClock(); return; }
     else if (kind === 'skip') { this.devSkip(60); return; }
+    else if (kind === 'work') { if (s.agentWork) this.devSkip(Math.max(1, s.agentWork.at - gameMinutes(s))); return; }
     this.store.save(s); this.emit();
   }
   /** Dev: set a meter to an exact value (clamped). A new day delivers that day's events. */

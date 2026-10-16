@@ -7,7 +7,7 @@ import type { GameState, MorningCard } from './state';
 import type { Content } from '../content/schema';
 import { RENT, SUSPICION, LAST_DAY, APPS, CLOCK } from './config';
 import { newGame } from './state';
-import { clone, addValue, money, log, pick, deliverPendingMail } from './core';
+import { clone, addValue, money, log, pick, deliverPendingMail, deliverAgentWork } from './core';
 import { runPayday, nightlyBreaks } from './apps';
 import { deliverComplaints } from './complaints';
 import { deliverDue, deliverArrivals, lapseUnanswered } from './events';
@@ -32,6 +32,7 @@ export function startDayChat(s: GameState, content: Content): void {
 
 function runMorning(s: GameState, content: Content): void {
   rolloutAgent(s);
+  deliverAgentWork(s, true); // work still going at bedtime is pushed overnight
   emptyMailBin(s); // the Bin is emptied at the end of every day
   nightlyBreaks(s, content); // overnight breaks land in the morning
   s.clockMin = CLOCK.wake;

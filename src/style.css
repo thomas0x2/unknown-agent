@@ -815,3 +815,12 @@ a.y-me-head { text-decoration: none; color: inherit; }
 .ua-charge-bar { width: 32px; height: 3px; border-radius: 2px; background: #f0d3ce; overflow: hidden; }
 .ua-charge-bar i { display: block; height: 100%; width: 100%; background: #c0392b; transform-origin: left; animation: ua-charge linear forwards; }
 @keyframes ua-charge { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+/* the build or fix the agent is working on, while the player does something else */
+.ua-work { align-self: flex-start; display: flex; align-items: center; gap: 8px; font-family: var(--f-mono); font-size: 11.5px; color: #5b6472; padding: 6px 10px; border: 1px dashed #d4d8de; border-radius: 8px; background: #fafbfc; }
+.ua-work-spin { box-sizing: border-box; width: 11px; height: 11px; border-radius: 50%; border: 2px solid #d4d8de; border-top-color: #3b6fd8; animation: pl-spin 0.9s linear infinite; }
+.ua-work-bar { width: 80px; height: 4px; border-radius: 2px; background: #e6e9ee; overflow: hidden; }
+.ua-work-bar i { display: block; height: 100%; background: #3b6fd8; transition: width 0.9s linear; }
+.ua-work-left { color: #8a929e; }
+@media (prefers-reduced-motion: reduce) { .ua-work-spin { animation-duration: 2.5s; } .ua-work-bar i { transition: none; } }
+.ua-work-skip { display: none; font: inherit; font-size: 10.5px; border: 1px solid #d4d8de; background: #fff; border-radius: 4px; padding: 1px 6px; cursor: pointer; color: #5b6472; }
+body.dev-on .ua-work-skip { display: inline-block; }

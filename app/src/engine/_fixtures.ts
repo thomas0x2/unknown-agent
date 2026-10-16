@@ -6,6 +6,8 @@ import type { Content, AppTemplate, GameEvent } from '../content/schema';
 import type { GameState } from './state';
 import { startGame, endDay } from './day';
 import { deliverArrivals } from './events';
+import { promptAgent } from './actions';
+import { deliverAgentWork } from './core';
 import type { JevRouter, RouteDecision, PostRating } from './jev';
 
 const STOP = new Set(['the', 'a', 'an', 'to', 'of', 'and', 'or', 'is', 'it', 'i', 'you', 'my', 'me', 'for', 'on', 'in', 'that', 'this', 'with', 'be', 'do', 'please', 'can', 'could', 'would']);
@@ -199,3 +201,14 @@ export function wholeDay(s: GameState, content: Content): GameState {
 }
 export const startAll = (content: Content, seed?: number) => wholeDay(startGame(content, seed), content);
 export const endAll = (s: GameState, content: Content) => wholeDay(endDay(s, content), content);
+
+/**
+ * promptAgent, then let any build or fix it started finish at once, so a test can check the repo and
+ * the agent's report straight away. `reply` is then the report, as promptAgent returned before builds took time.
+ */
+export async function promptDone(...args: Parameters<typeof promptAgent>): ReturnType<typeof promptAgent> {
+  const r = await promptAgent(...args);
+  if (!r.state.agentWork) return r;
+  deliverAgentWork(r.state, true);
+  return { ...r, reply: r.state.chat[r.state.chat.length - 1].text };
+}

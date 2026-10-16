@@ -242,7 +242,11 @@ store.onArrival(({ mail, posts, bots }) => {
 store.subscribe(render);
 store.subscribe(listen);
 store.onPull(renderPull);
-store.onClock(() => { $('#clock')!.innerHTML = V.clockHtml(store.state); listen(); });
+store.onClock(() => {
+  $('#clock')!.innerHTML = V.clockHtml(store.state);
+  const work = $('#ua-work'); if (work) work.outerHTML = V.workHtml(store.state);
+  listen();
+});
 SOUND.onChange(render);
 store.startClock();
 MISSES.onChange(render);

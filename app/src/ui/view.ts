@@ -11,7 +11,7 @@ import { listSlots, autoSlot } from '../game/saves';
 import { ICONS, TOKENS, Y_ICONS } from './icons';
 import { route, bookmarks, type Route, type SiteId } from '../sites/registry';
 import {
-  type GameState, type AppInstance, getApp, bugsOf, breakVariant, onForkyard, userRevenue, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, dateShort, dateLong, dateMedium, dateFull, dayDate, clockTime, EMPIRE, BOUNCE_ADDR, eventBody, deliveryKey,
+  type GameState, type AppInstance, getApp, bugsOf, breakVariant, onForkyard, userRevenue, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, dateShort, dateLong, dateMedium, dateFull, dayDate, clockTime, gameMinutes, EMPIRE, BOUNCE_ADDR, eventBody, deliveryKey,
 } from '../engine';
 import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
@@ -846,6 +846,19 @@ function llmRow(): string {
     (st.misses === 'haiku' ? `<label class="ua-llm-pick" title="Subscription runs the claude CLI on your machine (dev only, slow); API uses ANTHROPIC_API_KEY">Haiku via <select id="llm-haiku-via">${sel(st.haikuVia, 'api', 'API key')}${sel(st.haikuVia, 'subscription', 'Claude subscription')}</select></label>` : '') +
     (status ? `<span class="ua-llm-status">${status}</span>` : '');
 }
+/**
+ * The build or fix the agent is working on, as a progress line in the chat (empty when it isn't).
+ * main.ts repaints it on every game minute.
+ */
+export function workHtml(s: GameState): string {
+  const w = s.agentWork;
+  if (!w) return '';
+  const total = Math.max(1, w.at - w.from);
+  const done = Math.max(0, Math.min(total, gameMinutes(s) - w.from));
+  const left = total - done;
+  const what = `${w.kind === 'build' ? 'Building' : 'Fixing'} ${w.appNames.join(' and ')}`;
+  return `<div class="ua-work" id="ua-work" role="status"><span class="ua-work-spin" aria-hidden="true"></span><span>${esc(what)}</span><span class="ua-work-bar"><i style="width:${Math.round((done / total) * 100)}%"></i></span><span class="ua-work-left">${left > 0 ? `${left} min left` : 'pushing…'}</span><button class="ua-work-skip" data-dev="work" title="Dev: skip the clock to when it lands">Finish now</button></div>`;
+}
 function pageAgent(store: GameStore): string {
   const s = store.state;
   const c = agentCost(s.values.agentLevel);
@@ -876,7 +889,7 @@ function pageAgent(store: GameStore): string {
       ${devOptionsButton(store, 'agent')}<span class="ua-linked"><a href="#" data-nav="agent.chat/models" class="ua-upgrade">Models</a> · ${s.agentLocked ? 'LOCKED · unpaid' : 'Billing: Coinbin ' + shortAddr(WALLET_ADDR)}</span>
     </header>
     <div class="ua-llm"><span class="ua-jev" id="ua-jev">${jevChip()}</span><span class="ua-llm-ctl" id="ua-llm">${llmRow()}</span></div>
-    <div class="ua-log" id="ua-log">${msgs}${pending}${thinking}</div>
+    <div class="ua-log" id="ua-log">${msgs}${workHtml(s)}${pending}${thinking}</div>
     <form class="ua-compose" data-form="prompt">
       <textarea id="prompt-input" rows="2" placeholder="Ask agent anything — build an app, fix one, write, translate, look something up…" ${s.ending ? 'disabled' : ''}></textarea>
       <div class="ua-row"><span id="cost-est" class="ua-est"></span><button class="ua-send" type="submit" ${s.ending || store.busy ? 'disabled' : ''}>Send</button></div>
