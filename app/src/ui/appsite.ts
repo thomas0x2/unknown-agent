@@ -4,7 +4,7 @@
  * finds problems by comparing the site with the client's email, not by reading a status label.
  * Templates get a renderer here; anything without one falls back to a plain generic site.
  */
-import { type AppInstance, type AppBreak, type BuiltFeature, breakVariant } from '../engine';
+import { type AppInstance, type AppBreak, type BuiltFeature, breakVariant, bugsOf } from '../engine';
 import type { AppTemplate } from '../content/schema';
 import { menuDishes, misspell, WRONG_HOURS } from '../engine/restaurant';
 
@@ -14,8 +14,8 @@ const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;'
 interface Live {
   built?: BuiltFeature;
   brk?: AppBreak;
-  /** The bug to render: the build's own, or the one a subtle break shows. */
-  variant?: string;
+  /** The bugs to render: the build's own (they stack), plus the one a subtle break shows. */
+  bugs: Set<string>;
   seed: number;
   params: Record<string, string | number>;
 }
@@ -23,10 +23,11 @@ interface Live {
 function live(app: AppInstance, tmpl: AppTemplate | undefined, id: string): Live {
   const built = app.features.find((f) => f.id === id);
   const brk = app.breaks.find((b) => b.featureId === id);
-  let variant = built && !built.correct ? built.variant : undefined;
+  const bugs = new Set(built && !built.correct ? bugsOf(built) : []);
   const seed = brk?.seed ?? built?.seed ?? 0;
-  if (brk && !variant) variant = breakVariant(brk, tmpl?.features.find((f) => f.id === id));
-  return { built, brk, variant, seed, params: built?.params ?? app.specParams[id] ?? {} };
+  const shown = brk && breakVariant(brk, tmpl?.features.find((f) => f.id === id));
+  if (shown) bugs.add(shown);
+  return { built, brk, bugs, seed, params: built?.params ?? app.specParams[id] ?? {} };
 }
 
 /** A break that takes the whole section down instead of showing wrong content. */
@@ -55,9 +56,9 @@ function restaurant(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
   const menu = live(app, tmpl, 'menu');
   const hasLanding = !!landing.built;
   const specName = String(landing.params.name ?? app.name);
-  const name = !hasLanding ? 'My Restaurant' : landing.variant === 'name_wrong' ? misspell(specName, landing.seed) : specName;
+  const name = !hasLanding ? 'My Restaurant' : landing.bugs.has('name_wrong') ? misspell(specName, landing.seed) : specName;
   const hoursSpec = String(landing.params.hours ?? '').replace('-', '–');
-  const hours = landing.variant === 'hours_wrong' ? WRONG_HOURS[landing.seed % WRONG_HOURS.length] : hoursSpec;
+  const hours = landing.bugs.has('hours_wrong') ? WRONG_HOURS[landing.seed % WRONG_HOURS.length] : hoursSpec;
 
   const base = app.url;
   const tabs: [string, string, boolean][] = [['', 'Home', true], ['menu', 'Menu', !!menu.built], ['booking', 'Book a table', !!extras.booking]];
@@ -116,30 +117,48 @@ function generic(app: AppInstance, tmpl: AppTemplate | undefined, page: string |
 
 const BREAK_LABEL: Record<string, string> = { visible: 'crash', failed_fetch: 'failed fetch', subtle: 'subtle break', deep: 'deep break' };
 
-export function devBugPanel(app: AppInstance, tmpl: AppTemplate | undefined): string {
-  const tag = (t: string, on = false) => `<span class="dvb-tag${on ? ' on' : ''}">${esc(t)}</span>`;
-  const rows = app.required.map((id) => {
+interface DevRow { id: string; repoNow: string; liveNow: string; present: Set<string>; possible: string[]; checklist: string }
+
+function devRows(app: AppInstance, tmpl: AppTemplate | undefined): DevRow[] {
+  return app.required.map((id) => {
     const def = tmpl?.features.find((f) => f.id === id);
     const repo = app.repo.find((f) => f.id === id);
     const liveF = app.features.find((f) => f.id === id);
     const brk = app.breaks.find((b) => b.featureId === id);
-    const repoNow = !repo ? 'missing' : repo.correct ? 'ok' : repo.variant ?? 'wrong';
+    const repoNow = !repo ? 'missing' : repo.correct ? 'ok' : bugsOf(repo).join(' + ') || 'wrong';
     const liveNow = !app.deployed ? 'not deployed'
       : brk ? `${BREAK_LABEL[brk.failure] ?? brk.failure}${brk.failure === 'subtle' ? `: ${breakVariant(brk, def) ?? '?'}` : ''}`
-      : !liveF ? 'missing' : liveF.correct ? 'ok' : liveF.variant ?? 'wrong';
-    const present = new Set([repo?.variant, liveF?.variant, brk && BREAK_LABEL[brk.failure], brk && breakVariant(brk, def)].filter(Boolean) as string[]);
+      : !liveF ? 'missing' : liveF.correct ? 'ok' : bugsOf(liveF).join(' + ') || 'wrong';
+    const present = new Set([...bugsOf(repo), ...bugsOf(liveF), brk && BREAK_LABEL[brk.failure], brk && breakVariant(brk, def)].filter(Boolean) as string[]);
     const possible = [
       ...(def?.bugs ?? []).map((b) => b.id),
       ...(def?.details?.length ? ['hallucinated', 'outdated'] : []),
       ...(def?.failures ?? []).map((f) => BREAK_LABEL[f] ?? f),
     ];
     // the spec checklist from the last build prompt: a missed item guarantees its bug
-    const list = (def?.checklist ?? []).map((c) => {
+    const checklist = (def?.checklist ?? []).map((c) => {
       const hit = repo?.checked?.[c.id];
-      return `<span class="dvb-check ${hit === undefined ? '' : hit ? 'hit' : 'miss'}" title="missed → ${esc(c.bug)}">${hit === undefined ? '·' : hit ? '✓' : '✗'} ${esc(c.id)}</span>`;
-    }).join(' ');
-    return `<tr><td><b>${esc(id)}</b></td><td>${esc(repoNow)}</td><td>${esc(liveNow)}</td><td>${list || '<i>none</i>'}</td><td>${possible.map((p) => tag(p, present.has(p))).join(' ') || '<i>none</i>'}</td></tr>`;
-  }).join('');
-  return `<div class="dev-bugs"><div class="dvb-head">Dev · bugs in ${esc(app.id)}</div>
-    <table><thead><tr><th>Feature</th><th>Repo</th><th>Live</th><th>Build prompt</th><th>Possible (present highlighted)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+      const cls = hit === undefined ? '' : hit ? 'hit' : 'miss';
+      return `<span class="dvb-check ${cls}">${hit === undefined ? '·' : hit ? '✓' : '✗'} ${esc(c.id)}${hit === false ? ` → ${esc(c.bug)}` : ''}</span>`;
+    }).join('');
+    return { id, repoNow, liveNow, present, possible, checklist };
+  });
+}
+
+/** How many features currently have a bug (in the repo or live), for the repo list badge. */
+export function devBugCount(app: AppInstance, tmpl: AppTemplate | undefined): number {
+  return devRows(app, tmpl).filter((r) => r.repoNow !== 'ok' || (app.deployed && r.liveNow !== 'ok')).length;
+}
+
+const pill = (label: string, v: string) => `<span class="dvb-pill ${v === 'ok' ? 'ok' : v === 'not deployed' ? 'off' : 'bad'}"><i>${label}</i>${esc(v)}</span>`;
+
+export function devBugPanel(app: AppInstance, tmpl: AppTemplate | undefined): string {
+  const rows = devRows(app, tmpl);
+  const n = devBugCount(app, tmpl);
+  const cards = rows.map((r) => `<div class="dvb-card">
+      <div class="dvb-title"><b>${esc(r.id)}</b>${pill('repo', r.repoNow)}${pill('live', r.liveNow)}</div>
+      ${r.checklist ? `<div class="dvb-line"><span class="dvb-k">Build prompt</span>${r.checklist}</div>` : ''}
+      <div class="dvb-line"><span class="dvb-k">Possible bugs</span>${r.possible.map((p) => `<span class="dvb-tag${r.present.has(p) ? ' on' : ''}">${esc(p)}</span>`).join('') || '<i>none</i>'}</div>
+    </div>`).join('');
+  return `<section class="dev-bugs"><div class="dvb-head"><span class="dvb-badge">DEV</span><b>Bugs in ${esc(app.id)}</b><span class="dvb-sum ${n ? 'bad' : 'ok'}">${n ? `${n} feature${n > 1 ? 's' : ''} with a bug` : 'no bugs'}</span></div>${cards}</section>`;
 }

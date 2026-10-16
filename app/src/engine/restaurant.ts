@@ -38,26 +38,20 @@ export function misspell(name: string, seed: number): string {
   return name + 's';
 }
 
-/** The menu as the live site shows it, given the bug it has (if any). */
-export function menuDishes(l: { variant?: string; seed: number; params: Record<string, string | number> }): { dishes: Dish[]; currency: string } {
-  const spec = parseDishes(l.params.dishes);
-  switch (l.variant) {
-    case 'hallucinated': {
-      const start = l.seed % INVENTED.length;
-      return { dishes: [0, 3, 6, 1, 7].map((k) => INVENTED[(start + k) % INVENTED.length]), currency: 'DOLR' };
-    }
-    case 'prices_missing': return { dishes: spec.map((d) => ({ ...d, price: '' })), currency: '' };
-    case 'prices_curo': return { dishes: spec, currency: 'CURO' };
-    case 'wrong_items': {
-      const d = spec.slice();
-      if (!d.length) return { dishes: d, currency: 'DOLR' };
-      const i = l.seed % d.length;
-      const how = Math.floor(l.seed / 7) % 3;
-      if (how === 0 && d.length > 1) d.splice(i, 1);
-      else if (how === 1) d[i] = { ...d[i], name: RENAMES[d[i].name] ?? `${d[i].name} Speciale` };
-      else d.splice(Math.min(i + 1, d.length), 0, INVENTED.find((x) => !d.some((y) => y.name === x.name)) ?? INVENTED[0]);
-      return { dishes: d, currency: 'DOLR' };
-    }
-    default: return { dishes: spec, currency: 'DOLR' };
+/** The menu as the live site shows it, given its bugs. They stack: an invented menu can also be in the wrong currency. */
+export function menuDishes(l: { variant?: string; bugs?: Iterable<string>; seed: number; params: Record<string, string | number> }): { dishes: Dish[]; currency: string } {
+  const bugs = new Set(l.bugs ?? (l.variant ? [l.variant] : []));
+  let d = bugs.has('hallucinated')
+    ? [0, 3, 6, 1, 7].map((k) => INVENTED[(l.seed % INVENTED.length + k) % INVENTED.length])
+    : parseDishes(l.params.dishes);
+  if (bugs.has('wrong_items') && d.length) {
+    d = d.slice();
+    const i = l.seed % d.length;
+    const how = Math.floor(l.seed / 7) % 3;
+    if (how === 0 && d.length > 1) d.splice(i, 1);
+    else if (how === 1) d[i] = { ...d[i], name: RENAMES[d[i].name] ?? `${d[i].name} Speciale` };
+    else d.splice(Math.min(i + 1, d.length), 0, INVENTED.find((x) => !d.some((y) => y.name === x.name)) ?? INVENTED[0]);
   }
+  if (bugs.has('prices_missing')) return { dishes: d.map((x) => ({ ...x, price: '' })), currency: '' };
+  return { dishes: d, currency: bugs.has('prices_curo') ? 'CURO' : 'DOLR' };
 }

@@ -23,6 +23,8 @@ export interface BuiltFeature {
   params?: Record<string, string | number>;
   /** How a wrong build is wrong (a bug id from the template, or 'hallucinated' / 'outdated'). */
   variant?: string;
+  /** Further bugs stacked on the same build (an invented menu can still be in the wrong currency). */
+  also?: string[];
   /** Picks the concrete symptom when rendering a variant (which dish went missing, etc.). */
   seed?: number;
   /** The template's spec checklist at build time: which items the build prompt mentioned. */

@@ -134,6 +134,14 @@ function wrongVariant(s: GameState, def: FeatureDef | undefined): Pick<BuiltFeat
   return { variant: def?.bugs?.length ? pick(s, def.bugs).id : undefined, seed: randInt(s, 0, 9999) };
 }
 
+/** Every bug a wrong build has: its main variant and any stacked on it. */
+export const bugsOf = (f: Pick<BuiltFeature, 'variant' | 'also'> | undefined): string[] =>
+  f?.variant ? [f.variant, ...(f.also ?? [])] : [];
+
+function withBugs(list: string[]): Pick<BuiltFeature, 'variant' | 'also'> {
+  return list.length > 1 ? { variant: list[0], also: list.slice(1) } : { variant: list[0], also: undefined };
+}
+
 /** One feature through the agent: a fresh build, a fix of a known problem, or a miss on a vague prompt. */
 function attempt(s: GameState, app: AppInstance, id: string, level: number, ctx: BuildCtx, report: BuildReport): BuiltFeature {
   const def = ctx.tmpl?.features.find((f) => f.id === id);
@@ -141,24 +149,29 @@ function attempt(s: GameState, app: AppInstance, id: string, level: number, ctx:
   const existing = app.repo.find((f) => f.id === id);
   const details = def && ctx.prompt != null ? detailValues(spec, def) : [];
   const hasDetails = !details.length || promptHasDetails(ctx.prompt ?? '', details);
-  if (existing && !existing.correct && existing.variant && ctx.prompt != null) {
-    const v = existing.variant;
-    const bug = def?.bugs?.find((b) => b.id === v);
-    const addressed = v === 'hallucinated' ? true // with no dishes given, it just invents another menu
-      : v === 'outdated' ? hasDetails || (def ? promptHasChange(ctx.prompt, detailValues(existing.params, def), details) : false)
-      : (ctx.named ?? []).includes(v) || (!!bug?.orDetails && details.length > 0 && hasDetails);
-    if (!addressed) { report.vague.push(id); return { ...existing }; }
+  if (existing && !existing.correct && existing.variant && ctx.prompt != null && existing.variant !== 'hallucinated') {
+    // with no details given, an invented feature is just invented again, so it skips this and rebuilds
+    const isAddressed = (v: string) => {
+      const bug = def?.bugs?.find((b) => b.id === v);
+      return v === 'outdated' ? hasDetails || (def ? promptHasChange(ctx.prompt!, detailValues(existing.params, def), details) : false)
+        : (ctx.named ?? []).includes(v) || (!!bug?.orDetails && details.length > 0 && hasDetails);
+    };
+    const all = bugsOf(existing);
+    const left = all.filter((v) => !isAddressed(v));
+    if (left.length === all.length) { report.vague.push(id); return { ...existing }; }
+    // the named bugs are fixed; the ones nobody mentioned stay
+    if (left.length) return { ...existing, ...withBugs(left) };
     // the agent already has the details from the repo; only an invented feature needed them again
-    if (v !== 'hallucinated') return roll(s, id, level, spec, def);
+    return roll(s, id, level, spec, def);
   }
   const checked = ctx.prompt != null ? specChecklist(app, def, ctx.prompt) : undefined;
+  // every spec item the build prompt never mentioned guarantees its mistake, whatever the roll
+  const missed = [...new Set((def?.checklist ?? []).filter((c) => checked?.[c.id] === false).map((c) => c.bug))].filter((b) => b !== 'hallucinated');
   if (!hasDetails) {
     report.hallucinated.push(id);
-    return { id, correct: false, variant: 'hallucinated', seed: randInt(s, 0, 9999), checked };
+    return { id, correct: false, ...withBugs(['hallucinated', ...missed]), seed: randInt(s, 0, 9999), checked };
   }
-  // a spec item the build prompt never mentioned guarantees its mistake, whatever the roll
-  const missed = (def?.checklist ?? []).find((c) => checked?.[c.id] === false);
-  if (missed) return { id, correct: false, params: spec, variant: missed.bug, seed: randInt(s, 0, 9999), checked };
+  if (missed.length) return { id, correct: false, params: spec, ...withBugs(missed), seed: randInt(s, 0, 9999), checked };
   return { ...roll(s, id, level, spec, def), checked };
 }
 
