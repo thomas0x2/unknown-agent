@@ -217,8 +217,11 @@ body.dev-on .fy-devcount { display: inline-block; }
 .as-w-body { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 24px; width: 100%; box-sizing: border-box; max-width: 1080px; margin: 0 auto; padding: 18px 20px; }
 .as-w-body aside { display: flex; flex-direction: column; gap: 14px; }
 .as-w-search { display: flex; gap: 4px; }
-.as-w-search input { flex: 1; min-width: 0; border: 1px solid #bbb; padding: 5px 7px; font: inherit; font-size: 13px; }
-.as-w-search button { border: 1px solid #bbb; background: #f4f4f4; font: inherit; font-size: 13px; padding: 4px 8px; cursor: pointer; }
+.as-w .as-w-search input { flex: 1; min-width: 0; height: 30px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 3px; background: #fff; color: #222; color-scheme: light; padding: 0 8px; font: inherit; font-size: 13px; box-shadow: none; outline: none; }
+.as-w .as-w-search input::placeholder { color: #999; }
+.as-w .as-w-search input:focus { border-color: #6e3fa3; }
+.as-w .as-w-search button { height: 30px; box-sizing: border-box; border: 1px solid #6e3fa3; border-radius: 3px; background: #6e3fa3; color: #fff; font: inherit; font-size: 13px; padding: 0 10px; cursor: pointer; }
+.as-w .as-w-search button:hover { filter: brightness(1.08); }
 .as-w-cats { list-style: none; margin: 0; padding: 0; font-size: 14px; line-height: 1.8; }
 .as-w-cats a.on { font-weight: 700; color: #222; }
 .as-w main { min-width: 0; display: flex; flex-direction: column; gap: 14px; }
