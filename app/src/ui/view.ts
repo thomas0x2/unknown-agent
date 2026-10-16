@@ -16,6 +16,7 @@ import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
 import { pageDrive } from './qdrive';
 import { adHtml } from './ads';
+import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount } from './appsite';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -192,7 +193,9 @@ function pageNewTab(store: GameStore): string {
 }
 
 // ── Qmail ──
-interface Row { id: string; seq: number; from: string; addr: string; subject: string; body: string; day: number; unread: boolean; needsReply: boolean; folder: 'inbox' | 'sent'; eventId?: string; generated?: boolean; to?: string; link?: string }
+interface Row { id: string; seq: number; from: string; addr: string; subject: string; body: string; day: number; unread: boolean; needsReply: boolean; folder: 'inbox' | 'sent'; eventId?: string; generated?: boolean; to?: string; link?: string; bounceOf?: string }
+/** Messages the player opened or closed in a conversation, so a repaint keeps them that way. */
+export const mailOpen = new Map<string, boolean>();
 function mailRows(store: GameStore): Row[] {
   const s = store.state;
   const rows: Row[] = [];
@@ -205,7 +208,7 @@ function mailRows(store: GameStore): Row[] {
     const canReply = !!(e.outcomes && !d.answered);
     rows.push({ id: 'e/' + d.eventId, seq: d.seq ?? -1, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(e.body ?? ''), day: d.day, unread: !s.readEvents.includes(e.id), needsReply: canReply, folder: 'inbox', eventId: e.id });
   }
-  for (const m of s.mail) rows.push({ id: 'm/' + m.id, seq: m.seq ?? (Number(m.id.replace(/\D/g, '')) || 0), from: m.from, addr: m.addr, subject: m.subject, body: m.body, day: m.day, unread: m.folder === 'inbox' && !m.read, needsReply: false, folder: m.folder, eventId: m.eventId, generated: m.generated, to: m.to, link: m.link });
+  for (const m of s.mail) rows.push({ id: 'm/' + m.id, seq: m.seq ?? (Number(m.id.replace(/\D/g, '')) || 0), from: m.from, addr: m.addr, subject: m.subject, body: m.body, day: m.day, unread: m.folder === 'inbox' && !m.read, needsReply: false, folder: m.folder, eventId: m.eventId, generated: m.generated, to: m.to, link: m.link, bounceOf: m.bounceOf });
   return rows;
 }
 function pageMail(store: GameStore, param?: string): string {
@@ -243,40 +246,56 @@ function pageMail(store: GameStore, param?: string): string {
     const row = rows.find((x) => x.id === param);
     if (!row) main = `<p class="qm-empty">This message doesn't exist.</p>`;
     else {
-      if (row.unread) store.markReadMail(row.id);
-      // every inbox mail gets the same reply box; story events Jev still wants answered route to the
-      // event, everything else is sent as an ordinary email back to the sender
-      const canReply = row.folder === 'inbox' && (row.needsReply || (!!row.addr && row.addr !== BOUNCE_ADDR));
-      const target = row.needsReply
-        ? `data-id="${esc(row.eventId ?? '')}"`
-        : `data-to="${esc(row.addr)}" data-subject="${esc(/^re:/i.test(row.subject) ? row.subject : 'Re: ' + row.subject)}"`;
-      const meta = row.folder === 'sent'
-        ? `<b>${esc(PLAYER.name)}</b> &lt;${esc(PLAYER.addr)}&gt; to <b>${esc(row.to ?? '')}</b>`
-        : `<b>${esc(row.from)}</b> &lt;${esc(row.addr)}&gt; to ${esc(PLAYER.addr)}`;
+      // the whole conversation, oldest first; what came in since the player last wrote starts expanded
+      const thread = groupThreads(rows).find((t) => t.rows.includes(row))!;
+      for (const r of thread.rows) if (r.unread) store.markReadMail(r.id);
+      const lastSent = thread.rows.map((r) => r.folder).lastIndexOf('sent');
+      const inSent = thread.rows.every((r) => r.folder === 'sent');
+      // one reply box for the conversation: a story email still waiting on an answer gets it, otherwise
+      // it's an ordinary email back to the person on the other side
+      const open = [...thread.rows].reverse().find((r) => r.needsReply);
+      const who = thread.with;
+      const canReply = !!open || (!!who && who !== PLAYER.addr && who !== BOUNCE_ADDR);
+      const target = open
+        ? `data-id="${esc(open.eventId ?? '')}"`
+        : `data-to="${esc(who)}" data-subject="${esc('Re: ' + baseSubject(thread.rows[0].subject))}"`;
+      const replyName = open?.from ?? [...thread.rows].reverse().find((r) => r.folder === 'inbox' && r.addr === who)?.from ?? who;
+      const msgs = thread.rows.map((r, i) => {
+        const expanded = mailOpen.get(r.id) ?? (i === thread.rows.length - 1 || (i > lastSent && r.folder === 'inbox'));
+        const meta = r.folder === 'sent'
+          ? `<b>${esc(PLAYER.name)}</b> &lt;${esc(PLAYER.addr)}&gt; to <b>${esc(r.to ?? '')}</b>`
+          : `<b>${esc(r.from)}</b> &lt;${esc(r.addr)}&gt; to ${esc(PLAYER.addr)}`;
+        return `<details class="qm-msg" data-msg="${esc(r.id)}"${expanded ? ' open' : ''}>
+          <summary class="qm-meta"><span>${meta}<span class="qm-snip">${esc(r.body.replace(/\s+/g, ' ').slice(0, 90))}</span></span><span>Day ${r.day}</span></summary>
+          <div class="qm-body">${linkify(br(r.body))}</div>
+          ${r.link === 'cancel' ? `<p class="qm-actions"><button class="qm-btn ghost" data-cancel-booking="${esc(r.id.slice(2))}">Cancel booking</button></p>` : ''}
+          ${r.generated ? `<p class="qm-gen">Reply written by ${esc(MISSES.label())}</p>` : ''}
+        </details>`;
+      }).join('');
       main = `<article class="qm-read">
-        <p class="qm-crumbs"><a href="#" data-nav="qmail.com${row.folder === 'sent' ? '/sent' : ''}">${row.folder === 'sent' ? 'Sent' : 'Inbox'}</a></p>
-        <h1 class="qm-h">${esc(row.subject || '(no subject)')}</h1>
-        <p class="qm-meta"><span>${meta}</span><span>Day ${row.day}</span></p>
-        <div class="qm-body">${linkify(br(row.body))}</div>
-        ${row.link === 'cancel' ? `<p class="qm-actions"><button class="qm-btn ghost" data-cancel-booking="${esc(row.id.slice(2))}">Cancel booking</button></p>` : ''}
-        ${row.generated ? `<p class="qm-gen">Reply written by ${esc(MISSES.label())}</p>` : ''}
+        <p class="qm-crumbs"><a href="#" data-nav="qmail.com${inSent ? '/sent' : ''}">${inSent ? 'Sent' : 'Inbox'}</a></p>
+        <h1 class="qm-h">${esc(thread.rows[0].subject || '(no subject)')}${thread.rows.length > 1 ? ` <span class="qm-count">${thread.rows.length}</span>` : ''}</h1>
+        <div class="qm-thread">${msgs}</div>
         ${canReply ? `<form class="qm-reply" data-form="reply" ${target}>
-          <div class="qm-reply-head"><span class="qm-reply-to">Reply to <b>${esc(row.from)}</b></span><span class="qm-reply-hint">One email per person per day</span></div>
+          <div class="qm-reply-head"><span class="qm-reply-to">Reply to <b>${esc(replyName)}</b></span><span class="qm-reply-hint">One email per person per day</span></div>
           <textarea id="reply-body" rows="3" placeholder="Write your reply…" ${store.busy ? 'disabled' : ''}></textarea>
           <div class="qm-reply-foot"><span class="qm-reply-cta">⏎ to send · ⇧⏎ for a new line</span><button class="qm-btn" type="submit" ${store.busy ? 'disabled' : ''}>Send reply</button></div>
         </form>` : ''}
       </article>`;
     }
   } else {
-    const list = rows.filter((r) => r.folder === (view === 'sent' ? 'sent' : 'inbox'))// newest first, in the order they arrived
-      .sort((a, b) => b.day - a.day || b.seq - a.seq);
-    const html = list.map((r) => {
-      const snippet = r.body.replace(/\s+/g, ' ').slice(0, 90);
-      const who = r.folder === 'sent' ? `To: ${r.to}` : r.from;
-      return `<a href="#" class="qm-row${r.unread ? ' unread' : ''}" data-nav="qmail.com/${esc(r.id)}">
-        <span class="qm-from">${r.unread && r.folder === 'inbox' ? '<i class="qm-dot" aria-label="Unread"></i>' : ''}${esc(who)}</span>
-        <span class="qm-subj"><b>${esc(r.subject)}</b> <span>${esc(snippet)}</span></span>
-        <span class="qm-time">Day ${r.day}</span></a>`;
+    // one row per conversation, the most recently active first
+    const folder = view === 'sent' ? 'sent' : 'inbox';
+    const html = groupThreads(rows).filter((t) => t.rows.some((r) => r.folder === folder)).map((t) => {
+      const last = t.rows[t.rows.length - 1];
+      const unread = t.rows.some((r) => r.unread);
+      const names = [...new Set(t.rows.filter((r) => r.addr !== BOUNCE_ADDR).map((r) => (r.folder === 'sent' ? 'me' : r.from)))];
+      const who = folder === 'sent' ? `To: ${t.with}` : names.slice(-3).join(', ');
+      const snippet = last.body.replace(/\s+/g, ' ').slice(0, 90);
+      return `<a href="#" class="qm-row${unread ? ' unread' : ''}" data-nav="qmail.com/${esc(last.id)}">
+        <span class="qm-from">${unread && folder === 'inbox' ? '<i class="qm-dot" aria-label="Unread"></i>' : ''}<span class="qm-names">${esc(who)}</span>${t.rows.length > 1 ? `<span class="qm-count">${t.rows.length}</span>` : ''}</span>
+        <span class="qm-subj"><b>${esc(t.rows[0].subject)}</b> <span>${esc(snippet)}</span></span>
+        <span class="qm-time">Day ${last.day}</span></a>`;
     }).join('');
     main = `<h1 class="qm-h">${view === 'sent' ? 'Sent' : 'Inbox'}</h1>${adHtml('qmail', s.values.day, 'wide')}${html ? `<div class="qm-list">${html}</div>` : `<p class="qm-empty">${view === 'sent' ? 'Nothing sent yet.' : 'No mail.'}</p>`}`;
   }
