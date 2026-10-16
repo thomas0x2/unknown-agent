@@ -103,7 +103,12 @@ document.addEventListener('click', (e) => {
   if (d.menuCat != null) { store.setMenuCat(d.menuCat); return; }
   if (t.closest('#startmenu')) store.toggleStart(false);
   if (d.slotSave != null) { const n = Number(d.slotSave); const save = () => toast('Saved', store.saveSlot(n) ? `Game saved to slot ${n}` : 'Could not save (storage unavailable)', 'note'); if (listSlots()[n - 1]) store.confirm(`Overwrite slot ${n} with your current game?`, 'Overwrite', save); else save(); return; }
-  if (d.slotLoad != null) { const n = Number(d.slotLoad); store.confirm(`Load slot ${n}? Your current game is replaced by it.`, 'Load', () => { if (store.loadSlot(n)) toast('Loaded', `Slot ${n} · Day ${store.state.values.day}`, 'note'); }); return; }
+  if (d.slotLoad != null) {
+    const n = d.slotLoad === 'auto' ? 'auto' as const : Number(d.slotLoad);
+    const name = n === 'auto' ? 'the autosave' : `slot ${n}`;
+    store.confirm(`Load ${name}? Your current game is replaced by it.`, 'Load', () => { if (store.loadSlot(n)) toast('Loaded', `${name[0].toUpperCase() + name.slice(1)} · Day ${store.state.values.day}`, 'note'); });
+    return;
+  }
   if (d.nav != null) { newPageLoad(); store.navigate(d.nav); }
   else if (d.tab != null) store.switchTab(Number(d.tab));
   else if (d.newtab != null) store.navigate('newtab', true);

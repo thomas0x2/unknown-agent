@@ -78,7 +78,7 @@
 .dm-sleep-wide svg { width: 14px; height: 14px; fill: currentColor; stroke: none; }
 .dk-menu .dm-sleep-wide:hover { filter: brightness(1.1); }
 
-.dm-body { display: grid; grid-template-columns: 150px minmax(0, 1fr); min-height: 210px; }
+.dm-body { display: grid; grid-template-columns: 150px minmax(0, 1fr); height: 262px; }
 .dm-cats { padding: 6px; border-right: 1px solid var(--dk-line); display: flex; flex-direction: column; gap: 1px; }
 .dm-cat { display: flex; align-items: center; gap: 9px; padding: 7px 8px; border-radius: 4px; }
 .dm-cat svg { width: 17px; height: 17px; color: var(--dk-dim); }
@@ -86,7 +86,7 @@
 .dk-menu .dm-cat.on { background: var(--dk-raise); box-shadow: inset 3px 0 0 var(--dk-accent); }
 .dm-cat.on svg { color: var(--dk-accent); }
 
-.dm-list { padding: 6px; display: flex; flex-direction: column; gap: 1px; }
+.dm-list { overflow-y: auto; padding: 6px; display: flex; flex-direction: column; gap: 1px; }
 .dm-item, .dm-slot { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 4px; }
 .dm-item:hover, .dm-slot:hover { background: var(--dk-hover); }
 .dm-item svg, .dm-slot > svg { width: 22px; height: 22px; flex: none; color: #c8c8c8; }
@@ -104,7 +104,7 @@
 @media (max-width: 700px) {
   .dk-tray-icons { display: none; }
   .dk-clock span { display: none; }
-  .dm-body { grid-template-columns: minmax(0, 1fr); }
+  .dm-body { grid-template-columns: minmax(0, 1fr); height: auto; }
   .dm-cats { flex-direction: row; align-items: center; border-right: 0; border-bottom: 1px solid var(--dk-line); }
   .dm-head span { display: none; }
 }
