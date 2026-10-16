@@ -9,7 +9,7 @@ import {
   promptAgent, writeReview, localPrompt, makeBooking, cancelBooking, deliverDue, CLOCK, tick,
 } from '../engine';
 import type { Content } from '../content/schema';
-import { readSlot, writeSlot } from './saves';
+import { readSlot, writeSlot, type Slot } from './saves';
 
 export interface Tab { id: number; url: string }
 export interface Draft { to: string; subject: string; body: string }
@@ -42,7 +42,7 @@ export class GameStore {
   /** Commit an action, then auto-sleep if the clock has run past midnight. */
   private commitAndSettle(s: GameState): void {
     this.state = s;
-    if (!s.ending && s.clockMin >= CLOCK.sleep) { this.state = endDay(s, this.content); }
+    if (!s.ending && s.clockMin >= CLOCK.sleep) this.sleep(s);
     this.store.save(this.state); this.emit();
   }
 
@@ -92,9 +92,9 @@ export class GameStore {
     this.resetTo(startGame(this.content));
   }
   /** Snapshot the current game into a manual slot. */
-  saveSlot(n: number): boolean { const ok = writeSlot(n, this.state); this.emit(); return ok; }
+  saveSlot(n: Slot): boolean { const ok = writeSlot(n, this.state); this.emit(); return ok; }
   /** Replace the current game with a slot's snapshot (it becomes the autosave too). */
-  loadSlot(n: number): boolean {
+  loadSlot(n: Slot): boolean {
     const s = readSlot(n);
     if (!s) return false;
     this.resetTo(s);
@@ -109,7 +109,12 @@ export class GameStore {
     this.emit();
   }
 
-  endDay(): void { this.commit(endDay(this.state, this.content)); }
+  endDay(): void { this.sleep(this.state); this.store.save(this.state); this.emit(); }
+  /** End the day and autosave the new morning into the 'auto' slot. */
+  private sleep(s: GameState): void {
+    this.state = endDay(s, this.content);
+    if (!this.state.ending) writeSlot('auto', this.state);
+  }
   deploy(appId: string): void { this.commitAndSettle(deploy(this.state, appId)); }
   takeDown(appId: string): void { this.commit(takeDown(this.state, appId)); }
   cancelBooking(id: string): void { this.commit(cancelBooking(this.state, id)); }
