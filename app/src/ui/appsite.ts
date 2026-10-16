@@ -115,6 +115,32 @@ function restaurant(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
   return `<div class="as as-r">${header}<main>${body}</main>${foot}</div>`;
 }
 
+/** What a restaurant's DoorDish listing shows: the live site's name, hours and menu, bugs included. */
+export interface DishListing {
+  name: string;
+  hours: string;
+  address: string;
+  dishes: { name: string; price: string }[];
+  currency: string;
+  /** The listing itself is down: the store page can't load its menu. */
+  down: boolean;
+}
+
+/** A deployed restaurant with the DoorDish feature live, as DoorDish lists it; undefined if it isn't on DoorDish. */
+export function dishListing(app: AppInstance, tmpl: AppTemplate | undefined): DishListing | undefined {
+  if (app.template !== 'restaurant' || !app.deployed) return undefined;
+  const listing = live(app, tmpl, 'doordish');
+  if (!listing.built) return undefined;
+  const landing = live(app, tmpl, 'landing');
+  const menu = live(app, tmpl, 'menu');
+  const specName = String(landing.params.name ?? app.name);
+  const name = landing.bugs.has('name_wrong') ? misspell(specName, landing.seed) : specName;
+  const hours = landing.bugs.has('hours_wrong') ? WRONG_HOURS[landing.seed % WRONG_HOURS.length] : String(landing.params.hours ?? '').replace('-', '–');
+  const down = !!listing.brk && (listing.brk.failure === 'visible' || listing.brk.failure === 'failed_fetch');
+  const { dishes, currency } = menu.built && !outage(menu, '') ? menuDishes(menu) : { dishes: [], currency: '' };
+  return { name, hours, address: String(listing.params.address ?? ''), dishes, currency, down };
+}
+
 // ── vibe check ──
 
 const money = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
