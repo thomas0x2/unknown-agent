@@ -11,7 +11,7 @@ import { listSlots, autoSlot } from '../game/saves';
 import { ICONS, TOKENS, Y_ICONS } from './icons';
 import { route, bookmarks, type Route, type SiteId } from '../sites/registry';
 import {
-  type GameState, type MailEntry, type AppInstance, getApp, bugsOf, breakVariant, onForkyard, userRevenue, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, dateShort, dateLong, dateMedium, dateFull, dayDate, clockTime, gameMinutes, EMPIRE, BOUNCE_ADDR, eventBody, deliveryKey,
+  type GameState, type MailEntry, type AppInstance, getApp, bugsOf, breakVariant, onForkyard, userRevenue, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, AGENT_WORK, dateShort, dateLong, dateMedium, dateFull, dayDate, clockTime, gameMinutes, EMPIRE, BOUNCE_ADDR, eventBody, deliveryKey,
 } from '../engine';
 import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
@@ -935,7 +935,7 @@ function pageModels(store: GameStore): string {
     return `<article class="gm-card owned${lvl === s.values.agentLevel ? ' active' : ''}">
       <header><h2>agent-${lvl}</h2><span class="gm-meter" aria-label="Tier ${lvl} of 5">${[1, 2, 3, 4, 5].map((j) => `<i class="${j <= lvl ? 'on' : ''}"></i>`).join('')}</span></header>
       <p>${esc(can)}</p>
-      <dl><dt>Per prompt</dt><dd>${fmtMoney(c.prompt)}</dd><dt>Per word</dt><dd>${fmtMoney(c.word)}</dd><dt>Daily sub</dt><dd>${fmtMoney(c.sub)}</dd></dl>
+      <dl><dt>Per prompt</dt><dd>${fmtMoney(c.prompt)}</dd><dt>Per word</dt><dd>${fmtMoney(c.word)}</dd><dt>Daily sub</dt><dd>${fmtMoney(c.sub)}</dd><dt>Speed</dt><dd>${+(1 / AGENT_WORK.speed[lvl - 1]).toFixed(1)}×</dd></dl>
       <div class="gm-act">${action}</div></article>`;
   }).join('');
   return `<div class="ua gm">
