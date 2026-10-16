@@ -5,7 +5,7 @@
  */
 import {
   type GameState, type JevRouter, type SaveStore, type Writer,
-  startGame, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
+  startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
   promptAgent, writeReview, localPrompt, makeBooking, cancelBooking, joinEmpire, deliverDue, CLOCK, tick, devToggleBug,
 } from '../engine';
 import type { Content } from '../content/schema';
@@ -40,6 +40,7 @@ export class GameStore {
   constructor(readonly content: Content, private router: JevRouter, private writer: Writer, private store: SaveStore) {
     const loaded = this.store.load();
     this.state = loaded ?? startGame(content);
+    startDayChat(this.state); // saves from before the per-day reset may still carry yesterday's chat
     this.ui.intro = !this.state.introSeen;
     applyDevMode(this.devMode);
   }
@@ -128,6 +129,7 @@ export class GameStore {
     return true;
   }
   private resetTo(state: GameState): void {
+    startDayChat(state);
     this.state = state;
     this.tabs = startTabs();
     this.active = 1; this.nextTab = 3;
