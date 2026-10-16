@@ -152,8 +152,10 @@ async function buildRoute(sdk, body) {
   criteria.nothing = body.strict
     ? 'None of the above clearly applies: small talk, jokes, insults, personal requests, questions about agent itself, or anything only loosely related. Pick this when unsure.'
     : 'The message achieves none of the above.';
+  const earlier = (body.context ?? []).filter(Boolean);
+  if (earlier.length) criteria.nothing += ' The earlier messages only tell you what the message refers to; they accomplish nothing by themselves.';
   return {
-    state: { setting: SETTING, situation: body.stateSummary, player_message: body.text },
+    state: { setting: SETTING, situation: body.stateSummary, ...(earlier.length ? { earlierMessages: earlier } : {}), player_message: body.text },
     questions: {
       branch: sdk.choice('Which outcome does the player\'s message accomplish, if any?', criteria),
     },
@@ -185,8 +187,8 @@ async function buildRatePost(sdk, body) {
 async function buildMatch(sdk, body) {
   // one yes/no question per feature, so a prompt can ask for several at once
   const questions = {};
-  const named = body.appNamed ? ' The prompt must also say which app it means: its name, part of the name, or its address, in any case or spelling, or clearly the app an earlier message named.' : '';
-  const context = 'Earlier messages only tell you what the prompt refers to ("those", "the menu", items listed before); they don\'t ask for anything by themselves.';
+  const named = body.appNamed ? ' The prompt must also say which app it means: its name, part of the name, or its address, in any case or spelling, or clearly the app an earlier message named, including the app the agent just worked on when the prompt follows up on it ("now the prices are missing").' : '';
+  const context = 'Earlier messages (the player\'s prompts and the agent\'s replies) only tell you what the prompt refers to ("those", "the menu", "now", items listed before, the app the agent just pushed); they don\'t ask for anything by themselves.';
   (body.features ?? []).forEach((f, i) => {
     // a problem is matched on its own: naming one bug must not pull in the others on the same page
     questions[`f${i}`] = f.kind === 'problem'

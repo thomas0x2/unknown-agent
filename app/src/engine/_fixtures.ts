@@ -23,6 +23,8 @@ function overlap(a: Set<string>, b: Set<string>): number {
  */
 export const wordJev: JevRouter = {
   async route(input) {
+    // word overlap can't tell feature work from a fix, so it leaves that question unanswered
+    if (input.candidates.some((c) => c.id === 'fix')) return { kind: 'nothing' };
     const t = words(input.text);
     let best = { score: 0, id: '' };
     for (const c of input.candidates) {

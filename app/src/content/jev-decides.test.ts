@@ -137,6 +137,61 @@ describe('fixing named bugs', () => {
   });
 });
 
+describe('one kind of work per prompt', () => {
+  /** Trattoria Gino with the name misspelled and the menu needing a rebuild: Jev matches both kinds. */
+  function mixed() {
+    const { s, id } = withApp('restaurant_contact');
+    const a = getApp(s, id)!;
+    a.repo = a.repo.map((f) => (f.id === 'landing' ? { ...f, correct: false, variant: 'name_wrong', seed: 1 } : f.id === 'menu' ? { ...f, correct: false, variant: 'hallucinated', seed: 1 } : f));
+    return { s, id, jev: (intent: string) => pickJev({ route: [intent], features: ['::landing::name_wrong', '::menu::feature'] }) };
+  }
+  const prompt = 'Trattoria Gino: the name is misspelled. Also the menu should be Margherita 12, Diavola 14.';
+
+  it('Jev is asked whether the prompt is feature work, a fix, or both', async () => {
+    const { s, jev } = mixed();
+    const { jev: spied, asked } = spy(jev('feature'));
+    await promptAgent(s, content, spied, prompt);
+    expect(asked.routes[0].candidates.map((c) => c.id)).toEqual(['feature', 'fix', 'both']);
+  });
+
+  it('feature work leaves the bugs alone and says nothing about them', async () => {
+    const { s, id, jev } = mixed();
+    const out = (await promptAgent(s, content, jev('feature'), prompt)).state;
+    expect(getApp(out, id)!.repo.find((f) => f.id === 'landing')).toMatchObject({ correct: false, variant: 'name_wrong' });
+    expect(out.chat.at(-1)!.text).not.toMatch(/Fixed the name|already right|feature work/);
+  });
+
+  it('a fix leaves the features alone', async () => {
+    const { s, id, jev } = mixed();
+    const out = (await promptAgent(s, content, jev('fix'), prompt)).state;
+    expect(getApp(out, id)!.repo.find((f) => f.id === 'landing')!.correct).toBe(true);
+    expect(getApp(out, id)!.repo.find((f) => f.id === 'menu')).toMatchObject({ correct: false, variant: 'hallucinated' });
+    expect(out.chat.at(-1)!.text).not.toMatch(/menu/);
+  });
+
+  it('both: only the features, and the agent says it ran out of context for the fixes', async () => {
+    const { s, id, jev } = mixed();
+    const out = (await promptAgent(s, content, jev('both'), prompt)).state;
+    expect(getApp(out, id)!.repo.find((f) => f.id === 'landing')).toMatchObject({ correct: false, variant: 'name_wrong' });
+    expect(out.chat.at(-1)!.text).toMatch(/only did the feature work.*not enough context|wasn't enough context/);
+  });
+});
+
+describe('Jev reads follow-ups in context', () => {
+  it("gets today's prompts and the agent's replies, so a follow-up names the app the agent just worked on", async () => {
+    const { s, id } = withApp('restaurant_contact');
+    const a = getApp(s, id)!;
+    a.repo = a.repo.map((f) => (f.id === 'menu' ? { ...f, correct: false, variant: 'wrong_items', also: ['prices_missing'], seed: 1 } : f));
+    const first = (await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::menu::wrong_items'] }), 'The menu has spaghetti carbonara, shouldn\'t be there')).state;
+    const { jev, asked } = spy(pickJev({}));
+    await promptAgent(first, content, jev, 'Now the prices are missing');
+    const ctx = asked.features[0].context!;
+    expect(ctx[0]).toBe("Player: The menu has spaghetti carbonara, shouldn't be there");
+    expect(ctx[1]).toMatch(/^Agent: Pushed to Forkyard for Trattoria Gino\./);
+    expect(asked.routes.every((r) => r.context?.length === 2)).toBe(true);
+  });
+});
+
 describe('dev bug switch', () => {
   it('switches repo and live together, even when they differ', async () => {
     let { s, id } = withApp('restaurant_contact');
