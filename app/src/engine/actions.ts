@@ -841,9 +841,10 @@ function chargeHosted(s: GameState, level: number, text: string): boolean {
   return chargeAgent(s, text);
 }
 
-export function deploy(s0: GameState, appId: string): GameState {
+export function deploy(s0: GameState, appId: string, content?: Content): GameState {
   const s = clone(s0);
-  deployAppCore(s, appId);
+  const app = getApp(s, appId);
+  deployAppCore(s, appId, app && content?.apps[app.template]);
   log(s, `Deployed ${getApp(s, appId)?.name ?? appId}.`, 'info');
   return s;
 }

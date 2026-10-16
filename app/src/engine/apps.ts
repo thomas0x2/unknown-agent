@@ -383,9 +383,11 @@ function repoProblem(app: AppInstance, featureId: string): boolean {
 }
 
 /** Deploy the repo: it becomes live, runtime breaks reset, build mistakes carry over. */
-export function deployApp(s: GameState, appId: string): void {
+export function deployApp(s: GameState, appId: string, tmpl?: AppTemplate): void {
   const app = getApp(s, appId);
   if (!app || app.churned) return;
+  // the player's very first deploy always ships something to catch
+  if (tmpl && !s.apps.some((a) => a.deployedVersion > 0)) firstBug(s, app, tmpl);
   app.features = app.repo.map((f) => ({ ...f }));
   app.breaks = [];
   app.deployed = true;
@@ -393,6 +395,20 @@ export function deployApp(s: GameState, appId: string): void {
   app.lastDeployDay = s.values.day;
   app.lastDeployMin = s.clockMin;
   s.commits.push({ day: s.values.day, repo: app.id, msg: `Deploy ${app.name} v${app.repoVersion}`, kind: 'deploy' });
+}
+
+/**
+ * A clean first deploy gets one bug the player can spot on the site: a shallow one (not deep) on a
+ * built feature, never one the agent already fixed. The repo carries it too, so it stays until fixed.
+ */
+function firstBug(s: GameState, app: AppInstance, tmpl: AppTemplate): void {
+  if (!app.repo.length || app.repo.some((f) => !f.correct)) return;
+  const options = app.repo.flatMap((f) => (tmpl.features.find((d) => d.id === f.id)?.bugs ?? [])
+    .filter((b) => !b.deep && !fixedOf(app, f.id).includes(b.id))
+    .map((b) => ({ fid: f.id, bug: b.id })));
+  if (!options.length) return;
+  const { fid, bug } = pick(s, options);
+  app.repo = app.repo.map((f) => (f.id === fid ? { ...f, correct: false, variant: bug, also: undefined, seed: randInt(s, 0, 9999) } : f));
 }
 
 /** Take a deployment offline. Counts as broken at payday. */

@@ -367,7 +367,7 @@ export class GameStore {
     this.active = 1; this.nextTab = PINNED.length + 1;
     this.ui.start = false;
   }
-  deploy(appId: string): void { this.commitAndSettle(deploy(this.state, appId)); }
+  deploy(appId: string): void { this.commitAndSettle(deploy(this.state, appId, this.content)); }
   takeDown(appId: string): void { this.commit(takeDown(this.state, appId)); }
   cancelBooking(id: string): void { this.commit(cancelBooking(this.state, id)); }
   joinEmpire(): void { this.commitAndSettle(joinEmpire(this.state)); }

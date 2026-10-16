@@ -262,6 +262,38 @@ describe('fixes never add bugs', () => {
   });
 });
 
+describe("the first deploy", () => {
+  it('a clean first deploy ships one shallow bug, live and in the repo', () => {
+    for (let seed = 0; seed < 10; seed++) {
+      const { s, id } = withApp('restaurant_contact');
+      s.rng = seed;
+      const out = deploy(s, id, content);
+      const a = getApp(out, id)!;
+      const wrong = a.features.filter((f) => !f.correct);
+      expect(wrong).toHaveLength(1);
+      const def = content.apps.restaurant.features.find((f) => f.id === wrong[0].id)!;
+      expect(def.bugs!.find((b) => b.id === wrong[0].variant)!.deep).toBeFalsy();
+      expect(a.repo.find((f) => f.id === wrong[0].id)).toMatchObject({ correct: false, variant: wrong[0].variant });
+    }
+  });
+
+  it('a first deploy that already has a bug gets no extra one', () => {
+    const { s, id } = withApp('restaurant_contact', 'landing');
+    const out = deploy(s, id, content);
+    expect(getApp(out, id)!.features.filter((f) => !f.correct).map((f) => f.id)).toEqual(['landing']);
+  });
+
+  it('later deploys are left alone', () => {
+    const { s, id } = withApp('restaurant_contact');
+    const once = deploy(s, id, content);
+    const a = getApp(once, id)!;
+    a.repo = a.repo.map((f) => ({ id: f.id, correct: true, params: a.specParams[f.id] }));
+    a.repoVersion++;
+    const twice = deploy(once, id, content);
+    expect(getApp(twice, id)!.features.every((f) => f.correct)).toBe(true);
+  });
+});
+
 describe('dev bug switch', () => {
   it('switches repo and live together, even when they differ', async () => {
     let { s, id } = withApp('restaurant_contact');
