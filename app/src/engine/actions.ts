@@ -692,14 +692,22 @@ export async function promptAgent(
         }
       }
     }
+    // whether the prompt says which app it means is its own simple question, one per app: asked
+    // alongside every other question, Jev mostly ignored it
+    if (!started) for (const a of workable) cats.push({ id: `${a.id}::*::app`, description: `${a.name} (${a.url})`, kind: 'app' });
     const context = recentPrompts(s0);
     const chat = recentChat(s0);
     // Jev decides both what is asked for and whether the player said which app it's for, and
     // whether the prompt is feature work, a fix, or both (a first build is always feature work)
     const [found, intent] = await Promise.all([
-      jev.matchFeatures({ prompt: text, context: chat, features: cats, appNamed: !started }),
+      jev.matchFeatures({ prompt: text, context: chat, features: cats }),
       started ? 'feature' : buildIntent(jev, s0, text, chat),
     ]);
+    // a match counts only on an app the prompt (or the chat just before it) names
+    if (!started) {
+      const named = new Set(found.filter((m) => m.endsWith('::*::app')).map((m) => m.split('::')[0]));
+      found.splice(0, found.length, ...found.filter((m) => !m.endsWith('::*::app') && named.has(m.split('::')[0])));
+    }
     // one prompt only ever touches one app: when Jev's matches span several, Jev picks the one the player means
     // a component counts only when every step of its path (feature, folders) is named too; one named
     // without its full path is a near-miss on its feature. Steps aren't work on their own

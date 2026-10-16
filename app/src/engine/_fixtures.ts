@@ -57,7 +57,8 @@ export const wordJev: JevRouter = {
   async matchFeatures(input) {
     const t = words(input.prompt);
     // the "(for <app name>)" suffix only disambiguates for the real model; naming the app isn't asking for a feature
-    return input.features.filter((f) => overlap(t, words(f.description.replace(/\s*\(for [^)]*\)$/, ''))) >= 1).map((f) => f.id);
+    // a word match can't tell whether the app is named, so every app counts as named
+    return input.features.filter((f) => f.kind === 'app' || overlap(t, words(f.description.replace(/\s*\(for [^)]*\)$/, ''))) >= 1).map((f) => f.id);
   },
 };
 
@@ -166,7 +167,8 @@ export function fakeRouter(opts: {
     },
     async matchFeatures(input) {
       const ids = input.features.map((f) => f.id);
-      return opts.features ? opts.features(input.prompt, ids) : ids;
+      // the app counts as named unless a test says otherwise
+      return opts.features ? [...new Set([...opts.features(input.prompt, ids), ...ids.filter((id) => id.endsWith('::*::app'))])] : ids;
     },
     async ratePost(input) {
       return opts.rating ? opts.rating(input.text) : { category: 'tip', quality: 0.5 };
@@ -185,8 +187,8 @@ export function pickJev(pick: { route?: string[]; features?: string[] }): JevRou
       return c ? { kind: 'outcome', outcomeId: c.id } : { kind: 'nothing' };
     },
     async matchFeatures(input) {
-      // the path steps (feature, folders) count as named whenever a test picks anything: tests pick the parts
-      return input.features.map((f) => f.id).filter((id) => pick.features?.some((s) => id.endsWith(s)) || (!!pick.features?.length && id.includes('::s:')));
+      // the path steps (feature, folders) and the app count as named whenever a test picks anything: tests pick the parts
+      return input.features.map((f) => f.id).filter((id) => pick.features?.some((s) => id.endsWith(s)) || (!!pick.features?.length && (id.includes('::s:') || id.endsWith('::*::app'))));
     },
     ratePost: wordJev.ratePost,
   };

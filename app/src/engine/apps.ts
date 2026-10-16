@@ -379,7 +379,7 @@ export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, f
   const claimed = new Set(comps.flatMap((c) => c.bugs ?? []));
   for (const b of def.bugs ?? []) if (!claimed.has(b.id)) out.push({ id: b.id, description: fillSpec(b.when, spec), kind: 'problem' });
   // the feature as a whole, for a prompt that says it's wrong without saying which part
-  if (built && comps.length) out.push({ id: 'area', description: `The ${featureName(featureId)} (${def.description}). Its parts, by path: ${comps.map((c) => `${componentPath(featureId, c.id)} (${c.label})`).join('; ')}.`, kind: 'area' });
+  if (built && comps.length) out.push({ id: 'area', description: `The ${featureName(featureId)} (${def.description})${also(def.aka)}. Its parts, by path: ${comps.map((c) => `${componentPath(featureId, c.id)} (${c.label})`).join('; ')}.`, kind: 'area' });
   const brk = app.breaks.find((b) => b.featureId === featureId);
   const cat = brk && BREAK_CATEGORIES[brk.failure];
   if (brk && cat) out.push({ id: brk.failure, description: cat.replaceAll('{{feature}}', featureId), kind: 'problem' });

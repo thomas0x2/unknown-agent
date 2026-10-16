@@ -135,7 +135,7 @@
     ],
     "prompt": "Trattoria Gino: the name on the landing page is wrong",
     "expect": {
-      "none": true
+      "check": true
     }
   },
   {
@@ -274,7 +274,7 @@
     ],
     "prompt": "Trattoria Gino: the dishes on the menu are wrong",
     "expect": {
-      "none": true
+      "check": true
     }
   },
   {
@@ -499,7 +499,7 @@
     ],
     "prompt": "Trattoria Gino: the party size on the booking confirmation is wrong",
     "expect": {
-      "none": true
+      "check": true
     }
   },
   {
@@ -625,7 +625,7 @@
     ],
     "prompt": "Trattoria Gino: the dates you can pick on the booking form are wrong",
     "expect": {
-      "none": true
+      "check": true
     }
   },
   {
@@ -635,7 +635,7 @@
     ],
     "prompt": "On Trattoria Gino the date on the booking confirmation is wrong",
     "expect": {
-      "none": true
+      "check": true
     }
   },
   {
@@ -954,7 +954,7 @@
     ],
     "prompt": "Sentiment Crawler: the P&L on the portfolio is wrong",
     "expect": {
-      "none": true
+      "check": true
     }
   },
   {
