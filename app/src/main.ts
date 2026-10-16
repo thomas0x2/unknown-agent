@@ -118,7 +118,7 @@ document.addEventListener('click', (e) => {
   else if (d.deploy != null) store.deploy(d.deploy);
   else if (d.takedown != null) store.confirm('Take it offline? It counts as broken at payday.', 'Take down', () => store.takeDown(d.takedown!));
   else if (d.cancelBooking != null) { store.cancelBooking(d.cancelBooking); toast('Qmail', 'Booking cancelled', 'mail'); }
-  else if (d.empireJoin != null) { const was = store.state.flags.includes('guru_subscriber'); store.joinEmpire(); if (!was && store.state.flags.includes('guru_subscriber')) toast('Satchel', 'Paid 20 DOLR to Alpha Ascend', 'note'); }
+  else if (d.empireJoin != null) store.joinEmpire();
   else if (d.mailDiscard != null) { store.setDraft(null); store.navigate('qmail.com'); }
   else if (d.star != null) store.setReviewStars(Number(d.star));
   else if (d.download != null) { store.download(d.download); toast('Downloads', `${d.download} saved to your laptop`, 'note'); }
