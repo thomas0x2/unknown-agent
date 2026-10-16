@@ -66,7 +66,7 @@ export function pushMail(s: GameState, m: Omit<MailEntry, 'id' | 'seq'>): MailEn
 /** Game time in minutes since day 1 began, so a delay can run past midnight into the next morning. */
 export const gameMinutes = (s: GameState) => (s.values.day - 1) * 24 * 60 + s.clockMin;
 
-/** A reply that arrives `delayMin` of game time from now (30 is about nine seconds of real time). */
+/** A reply that arrives `delayMin` of game time from now (30 is about 17 seconds of real time). */
 export function sendLater(s: GameState, m: Omit<MailEntry, 'id' | 'seq'>, delayMin: number): void {
   (s.pendingMail ??= []).push({ at: gameMinutes(s) + delayMin, mail: m });
 }

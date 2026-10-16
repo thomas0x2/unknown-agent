@@ -17,8 +17,8 @@ const fresh = () => {
 };
 
 describe('the real-time clock', () => {
-  it('runs a whole day, 10:00 to midnight, in 4 minutes 20 seconds', () => {
-    expect(MS_PER_GAME_MIN * (CLOCK.sleep - CLOCK.wake)).toBe(260_000);
+  it('runs a whole day, 10:00 to midnight, in 8 minutes', () => {
+    expect(MS_PER_GAME_MIN * (CLOCK.sleep - CLOCK.wake)).toBe(480_000);
   });
 
   it('moves minute by minute and delivers replies that come due', () => {
