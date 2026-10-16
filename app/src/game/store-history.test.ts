@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { GameStore } from './store';
+import { GameStore, MAX_TABS } from './store';
 import { loadContent } from '../content/load';
 import type { JevRouter, SaveStore, Writer } from '../engine';
 
@@ -44,5 +44,36 @@ describe('booking form', () => {
     s.state.bookingNotice = { appId: 'trattoria-gino', ok: false, text: 'That date is in the past.' };
     s.bookBack();
     expect(s.state.bookingNotice).toBeUndefined();
+  });
+});
+
+describe('a new day', () => {
+  it('closes every tab but Qmail and agent and asks to start', () => {
+    const s = make();
+    s.navigate('y.com'); s.navigate('forkyard.dev', true);
+    expect(s.tabs.length).toBe(3);
+    s.endDay();
+    expect(s.tabs.map((t) => t.url)).toEqual(['qmail.com', 'agent.chat']);
+    expect(s.url).toBe('qmail.com');
+    expect(s.canBack).toBe(false);
+    expect(s.ui.dayStart).toBe(true);
+    s.startDay();
+    expect(s.ui.dayStart).toBe(false);
+  });
+});
+
+describe('tab limit', () => {
+  it('refuses a 13th tab with a low-memory warning', () => {
+    const s = make();
+    for (let i = s.tabs.length; i < MAX_TABS; i++) s.navigate('y.com', true);
+    expect(s.tabs.length).toBe(MAX_TABS);
+    s.navigate('yowl.com', true);
+    expect(s.tabs.length).toBe(MAX_TABS);
+    expect(s.url).toBe('y.com');
+    expect(s.ui.memWarn).toBe(true);
+    s.dismissMemWarn();
+    expect(s.ui.memWarn).toBe(false);
+    s.navigate('yowl.com');
+    expect(s.url).toBe('yowl.com');
   });
 });
