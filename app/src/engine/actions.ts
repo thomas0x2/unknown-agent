@@ -471,6 +471,22 @@ function fixLines(s: GameState, app: AppInstance, tmpl: AppTemplate | undefined,
   return out;
 }
 
+/**
+ * The agent's answer to "did you update the menu?": each required feature as the agent sees it
+ * (built, not updated to the client's latest changes, not built), then whether the push is live.
+ * Its own bugs it doesn't know about, so a wrong build still counts as built.
+ */
+export function appStatus(app: AppInstance): string {
+  const lines = app.required.map((fid) => {
+    const f = app.repo.find((x) => x.id === fid);
+    if (!f) return `The ${fid} isn't built yet.`;
+    if (!f.correct && bugsOf(f).includes('outdated')) return `The ${fid} isn't updated to the latest changes yet.`;
+    return `The ${fid} is built.`;
+  });
+  const live = !app.deployed ? "None of it is live yet. Deploy it on Forkyard." : app.deployedVersion < app.repoVersion ? "The latest push isn't deployed yet." : "What's in the repo is live.";
+  return `${app.name}: ${lines.join(' ')} ${live}`;
+}
+
 /** What the agent says when a prompt asked for features and fixes at once: it only did the features. */
 const SKIPPED_FIXES = "I only did the feature work. There wasn't enough context to fix things in the same prompt, so ask for the fixes separately.";
 
@@ -611,14 +627,19 @@ export async function promptAgent(
   const apps = s0.apps.filter((a) => !a.churned && onForkyard(a));
   const topics = (agent?.hints ?? []).filter((h) => !APP_HINTS.has(h.id));
   const candidates = [
-    ...apps.map((a) => ({ id: `app:${a.id}`, when: `The player names ${a.name} (${a.url}) and asks to change, update or fix it, without saying what is wrong, or asking for something it already has.` })),
+    ...apps.map((a) => ({ id: `status:${a.id}`, when: `The player asks whether the agent did, built, updated or fixed something on ${a.name} (${a.url}), or what state it is in: a question about work already done, not a request for new work. Includes follow-up questions about the agent's last push to it.` })),
+    ...apps.map((a) => ({ id: `app:${a.id}`, when: `The player names ${a.name} (${a.url}) and asks the agent to change, update or fix it, without saying what is wrong, or asking for something it already has.` })),
     ...topics.map((h) => ({ id: h.id, when: h.when })),
   ];
   if (candidates.length) {
     const decision = await jev.route({ channel: 'agent', text, context: recentChat(s0), stateSummary: stateSummary(s0), candidates, hints: [], strict: true });
     const id = decision.kind === 'outcome' ? decision.outcomeId : '';
     const app = id.startsWith('app:') ? getApp(s0, id.slice(4)) : undefined;
-    if (app) {
+    const asked = id.startsWith('status:') ? getApp(s0, id.slice(7)) : undefined;
+    if (asked) {
+      hints = [appStatus(asked)];
+      debug.push(`Jev: a question about ${asked.name}, so its status from the repo`);
+    } else if (app) {
       // what to say depends on the app: work left, a push waiting to be deployed, or nothing to do
       const hid = app.required.some((f) => needsWork(app, f)) ? 'fix_help' : app.deployedVersion < app.repoVersion ? 'not_deployed' : 'nothing_to_fix';
       hints = agent?.hints.find((h) => h.id === hid)?.replies.map((r) => r.replaceAll('{{app}}', app.name));

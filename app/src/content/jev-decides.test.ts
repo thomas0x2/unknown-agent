@@ -177,6 +177,41 @@ describe('one kind of work per prompt', () => {
   });
 });
 
+describe("the client's change requests", () => {
+  /** Trattoria Gino, built right, then Gino's email: swap a dish, add a booking form. */
+  function updated() {
+    const { s, id } = withApp('restaurant_contact');
+    applyEffects(s, content.events.find((e) => e.id === 'd2_restaurant_booking')!.onDeliver!);
+    return { s, id };
+  }
+  const gino = 'Please add this to the trattoria website: Swap Diavola for Quattro Formaggi at 15, and make Espresso 3.5. Add a table booking form.';
+
+  it('an out-of-date feature gives Jev its own item for the change, as feature work', async () => {
+    const { s, id } = updated();
+    const { jev, asked } = spy(pickJev({ route: ['feature'] }));
+    await promptAgent(s, content, jev, gino);
+    const item = asked.features[0].features.find((f) => f.id === `${id}::menu::outdated`)!;
+    expect(item.kind).toBe('build');
+    expect(item.description).toMatch(/Quattro Formaggi 15/);
+  });
+
+  it('asking for the change updates the menu alongside the new booking form', async () => {
+    const { s, id } = updated();
+    const out = (await promptAgent(s, content, pickJev({ route: ['feature'], features: ['::menu::outdated', '::booking::feature'] }), gino)).state;
+    expect(getApp(out, id)!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);
+    expect(out.chat.at(-1)!.text).toMatch(/Rebuilt the menu with the details you gave\.\n- Built the booking\./);
+  });
+
+  it('"did you update the menu?" gets the status from the repo', async () => {
+    const { s, id } = updated();
+    const { jev, asked } = spy(pickJev({ route: [`status:${id}`] }));
+    // nothing to build matches, so the question goes to the agent's routing
+    const out = (await promptAgent(s, content, jev, 'Did you also update the menu?')).state;
+    expect(asked.routes.at(-1)!.candidates[0].id).toBe(`status:${id}`);
+    expect(out.chat.at(-1)!.text).toBe("Trattoria Gino: The landing is built. The menu isn't updated to the latest changes yet. The booking isn't built yet. None of it is live yet. Deploy it on Forkyard.");
+  });
+});
+
 describe('Jev reads follow-ups in context', () => {
   it("gets today's prompts and the agent's replies, so a follow-up names the app the agent just worked on", async () => {
     const { s, id } = withApp('restaurant_contact');
