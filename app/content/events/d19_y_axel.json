@@ -1,0 +1,11 @@
+{
+  "id": "d19_y_axel",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 19,
+    "dayMax": 19
+  },
+  "at": "11:10",
+  "body": "Next Apogee flight after the election. Probably 80% this time."
+}

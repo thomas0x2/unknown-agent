@@ -1,6 +1,6 @@
 /*
  * Sherwood, the stock app (Robinhood parody). Quotes come from the same daily closes the sentiment
- * crawler uses (crawler.price), so the player can check the crawler's prices against it. Trades
+ * vibe check uses (crawler.price), so the player can check the crawler's prices against it. Trades
  * settle in DOLR straight from the Coinbin wallet, in fractional shares.
  */
 import type { GameState } from './state';
@@ -13,6 +13,7 @@ export const STOCKS: Stock[] = [
   { ticker: 'VANT', name: 'Vantor Group' },
   { ticker: 'DISH', name: 'DoorDish' },
   { ticker: 'HALD', name: 'Halden Logistics' },
+  { ticker: 'APO', name: 'Apogee' },
 ];
 
 /** A ticker's quote right now: today's price. */

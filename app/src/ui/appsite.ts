@@ -7,7 +7,7 @@
 import { type AppInstance, type AppBreak, type BuiltFeature, breakVariant, bugsOf, UNNAMED_BUG } from '../engine';
 import type { AppTemplate } from '../content/schema';
 import { menuDishes, misspell, WRONG_HOURS } from '../engine/restaurant';
-import { crawl, autoBuys, portfolio, START_PORTFOLIO, type MarketPost, type Portfolio } from '../engine/crawler';
+import { crawl, autoBuys, portfolio, trackedOf, START_PORTFOLIO, type MarketPost, type Portfolio } from '../engine/crawler';
 import { machineRows } from '../engine/laundromat';
 import { adHtml } from './ads';
 import { dateShort, clockTime } from '../engine/calendar';
@@ -176,7 +176,7 @@ function crawler(app: AppInstance, tmpl: AppTemplate | undefined, page: string |
     // the posts come in one fetch: if it fails, every card keeps yesterday's summary (or nothing, on the first day)
     const fetchFailed = ['tickers', 'sentiment', 'filter'].some((id) => f[id].brk?.failure === 'failed_fetch');
     const dataDay = fetchFailed ? day - 1 : day;
-    const rows = crawl(fetchFailed && dataDay < 1 ? [] : posts, dataDay, bugs);
+    const rows = crawl(fetchFailed && dataDay < 1 ? [] : posts, dataDay, bugs, trackedOf(f.tickers.params.tickers));
     const cards = rows.map((r) => {
       const split = f.sentiment.built && r.count
         ? `<div class="as-s-bar"><i class="bull" style="width:${r.bullish}%"></i><i class="neu" style="width:${r.neutral}%"></i><i class="bear" style="width:${r.bearish}%"></i></div>
@@ -292,7 +292,7 @@ function devRows(app: AppInstance, tmpl: AppTemplate | undefined): DevRow[] {
     const possible = [
       ...(unnamed || !def?.bugs?.length ? [{ key: UNNAMED_BUG, label: 'wrong (no named bug)' }] : []),
       ...(def?.bugs ?? []).map((b) => ({ key: b.id, label: b.deep ? `${b.id} (deep)` : b.id })),
-      ...(def?.details?.length ? ['hallucinated', 'outdated'] : []).map((key) => ({ key, label: key })),
+      ...(def?.details?.length ? ['hallucinated', 'outdated'] : app.specParams[id] ? ['outdated'] : []).map((key) => ({ key, label: key })),
       // subtle and deep breaks show one of the bugs above, so with named bugs they'd only repeat them
       ...(def?.failures ?? []).filter((f) => !(def?.bugs?.length && (f === 'subtle' || f === 'deep'))).map((f) => ({ key: f, label: BREAK_LABEL[f] ?? f, live: true })),
     ];

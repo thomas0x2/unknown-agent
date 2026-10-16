@@ -6,10 +6,10 @@
 import { describe, it, expect } from 'vitest';
 import { loadContent } from './load';
 import { startGame } from '../engine/day';
-import { postToY, writeReview } from '../engine/actions';
+import { postToY, writeReview, briefFix } from '../engine/actions';
 import { applyEffects } from '../engine/effects';
 import { getApp, nameUnnamedBugs, bugsOf } from '../engine/apps';
-import { marketPosts, crawl, autoBuys, portfolio, price, START_PORTFOLIO } from '../engine/crawler';
+import { marketPosts, crawl, autoBuys, portfolio, price, trackedOf, START_PORTFOLIO } from '../engine/crawler';
 import { machineFeed, machineRows } from '../engine/laundromat';
 import type { GameState } from '../engine/state';
 import { wordJev, promptDone } from '../engine/_fixtures';
@@ -330,5 +330,39 @@ describe('fixing them', () => {
     a.required.push('top_posts'); a.repo.push({ id: 'top_posts', correct: true }); a.features.push({ id: 'top_posts', correct: true });
     nameUnnamedBugs(s, content);
     expect([...a.required, ...a.repo.map((f) => f.id), ...a.features.map((f) => f.id)]).not.toContain('top_posts');
+  });
+});
+
+describe("the trader's two more tickers (day 8)", () => {
+  function updated() {
+    const { s, id } = appFor('trader_contact', 10);
+    const app = getApp(s, id)!;
+    app.features = app.repo.map((f) => ({ ...f }));
+    app.deployed = true;
+    applyEffects(s, content.events.find((e) => e.id === 'd8_trader_tickers')!.onDeliver!);
+    s.values.agentLevel = 5;
+    return { s, id };
+  }
+  const tracked = (s: GameState, id: string) => trackedOf(getApp(s, id)!.repo.find((f) => f.id === 'tickers')!.params?.tickers);
+
+  it('the update outdates the tracker until a prompt names the new tickers', async () => {
+    const { s, id } = updated();
+    expect(getApp(s, id)!.repo.find((f) => f.id === 'tickers')).toMatchObject({ correct: false, variant: 'outdated' });
+    expect(tracked(s, id)).toEqual(['GAI', 'VANT']);
+    const vague = (await briefFix(s, content, wordJev, id, 'Vibe Check: update the tickers like the trader asked.')).state;
+    expect(getApp(vague, id)!.repo.find((f) => f.id === 'tickers')!.variant).toBe('outdated');
+    const done = (await briefFix(s, content, wordJev, id, 'Vibe Check: add $APO and $DISH to the tickers it tracks.')).state;
+    expect(getApp(done, id)!.repo.find((f) => f.id === 'tickers')!.correct).toBe(true);
+    expect(tracked(done, id)).toEqual(['GAI', 'VANT', 'APO', 'DISH']);
+  });
+
+  it('$APO and $DISH have posts to crawl every day from the update on', () => {
+    const posts = marketPosts(onDay(21), content);
+    for (let d = 8; d <= 21; d++) {
+      const rows = crawl(posts, d, bugs(), ['GAI', 'VANT', 'APO', 'DISH']);
+      for (const t of ['APO', 'DISH']) expect(row(rows, t).count, `$${t} day ${d}`).toBeGreaterThan(0);
+    }
+    expect(crawl(posts, 10, bugs('wrong_tickers'), ['GAI', 'VANT', 'APO', 'DISH']).map((r) => r.ticker)).toEqual(['GAI', 'VNTR', 'APO', 'DISH']);
+    expect(price('APO', 10)).toBeGreaterThan(price('APO', 9));
   });
 });

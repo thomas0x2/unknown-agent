@@ -1,0 +1,11 @@
+{
+  "id": "d11_y_axel_2",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 11,
+    "dayMax": 11
+  },
+  "at": "18:30",
+  "body": "Y now has 600 million users, of which a small number are bots"
+}

@@ -54,8 +54,10 @@ export function marketPosts(s: GameState, content: Content): MarketPost[] {
 }
 
 export const TRACKED = ['GAI', 'VANT'];
-/** The list the agent tracks when it gets the tickers wrong. */
-const WRONG_TRACKED = ['GAI', 'VNTR'];
+/** The tickers a build tracks, from its spec ("$GAI $VANT", later "$GAI $VANT $APO $DISH"). */
+export const trackedOf = (spec?: string | number) => String(spec ?? '').toUpperCase().match(/[A-Z]+/g) ?? TRACKED;
+/** The list the agent tracks when it gets the tickers wrong: Vantor under a ticker that doesn't exist. */
+const wrongTracked = (tracked: string[]) => tracked.map((t) => (t === 'VANT' ? 'VNTR' : t));
 
 export interface CrawledPost { author: string; handle: string; text: string; likes: number; day: number; mood: Mood }
 export interface TickerSummary { ticker: string; count: number; bullish: number; bearish: number; neutral: number; posts: CrawledPost[] }
@@ -64,8 +66,8 @@ const tagged = (p: MarketPost, t: string, bugs: Set<string>) =>
   p.tickers.includes(t) && (!bugs.has('lowercase_missed') || p.text.includes(`$${t}`));
 
 /** The crawler's summary for `day`, as a build with these bugs computes it. */
-export function crawl(posts: MarketPost[], day: number, bugs: Set<string>): TickerSummary[] {
-  const tracked = bugs.has('wrong_tickers') ? WRONG_TRACKED : TRACKED;
+export function crawl(posts: MarketPost[], day: number, bugs: Set<string>, tickers: string[] = TRACKED): TickerSummary[] {
+  const tracked = bugs.has('wrong_tickers') ? wrongTracked(tickers) : tickers;
   const kept = posts.filter((p) => p.day === day && (!p.bot || bugs.has('bots_counted')));
   return tracked.map((t) => {
     const mine = kept.filter((p) => tagged(p, t, bugs));
@@ -84,8 +86,8 @@ export function crawl(posts: MarketPost[], day: number, bugs: Set<string>): Tick
 
 // ── portfolio and auto-buy (the trader's day 3 update) ──
 
-// DISH and HALD aren't in the trader's portfolio; Sherwood (engine/stocks.ts) quotes all four
-const BASE_PRICE: Record<string, number> = { GAI: 140, VANT: 48, DISH: 31, HALD: 22 };
+// DISH, HALD and APO aren't in the trader's portfolio; Sherwood (engine/stocks.ts) quotes all five
+const BASE_PRICE: Record<string, number> = { GAI: 140, VANT: 48, DISH: 31, HALD: 22, APO: 212 };
 export const START_PORTFOLIO = { cash: 1_850_000, holdings: { GAI: 42_000, VANT: 95_000 } as Record<string, number> };
 const BUY_SHARES = 2_000;
 
@@ -99,6 +101,8 @@ const SCRIPTED_MOVES: Record<string, number[]> = {
   VANT: [0.02, 0.059, 0.006, -0.014, 0.009, -0.002, 0.003],
   // day 4: DoorDish's delivery robot "escapes"
   DISH: [0.011, -0.006, 0.004, 0.07, -0.012],
+  // day 10: an Apogee rocket comes apart on launch, and the stock goes up
+  APO: [0.008, 0.015, -0.004, 0.012, 0.006, -0.009, 0.011, 0.004, 0.021, 0.064],
 };
 
 /** A ticker's closing price on a day (day 0 is the close before the game starts); today's change is never zero. */

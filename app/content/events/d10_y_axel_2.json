@@ -1,0 +1,11 @@
+{
+  "id": "d10_y_axel_2",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 10,
+    "dayMax": 10
+  },
+  "at": "10:09",
+  "body": "Rapid unscheduled disassembly. Great data."
+}

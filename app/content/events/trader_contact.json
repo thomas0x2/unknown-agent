@@ -25,7 +25,10 @@
           "payPerDay": 50,
           "spec": [
             {
-              "id": "tickers"
+              "id": "tickers",
+              "params": {
+                "tickers": "$GAI $VANT"
+              }
             },
             {
               "id": "sentiment"

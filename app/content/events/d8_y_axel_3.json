@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_axel_3",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "19:59",
+  "body": "Wow"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "d3_y_axel",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 3,
+    "dayMax": 3
+  },
+  "at": "11:30",
+  "body": "The legacy media is lying to you"
+}
