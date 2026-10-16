@@ -470,7 +470,7 @@ function pageWallet(store: GameStore): string {
     rentDay ? `<div class="sx-row"><span><b>Rent</b><small>Landlord · ${rentDay === s.values.day ? 'tonight' : `${esc(shortDate(rentDay))} · in ${rentDay - s.values.day}d`}</small></span><span class="sx-num">−${RENT[rentDay].toFixed(2)}</span></div>` : '',
     `<div class="sx-row"><span><b>agent subscription</b><small>GeneralAI · nightly</small></span><span class="sx-num">−${sub.toFixed(2)}</span></div>`,
     live ? `<div class="sx-row"><span><b>Hosting</b><small>Forkyard · ${live} live · nightly</small></span><span class="sx-num">−${(live * 2).toFixed(2)}</span></div>` : '',
-    income ? `<div class="sx-row"><span><b>App income</b><small>Working apps · at payday</small></span><span class="sx-num pos">+${income.toFixed(2)}</span></div>` : '',
+    income ? `<div class="sx-row"><span><b>App income</b><small>Working apps · nightly</small></span><span class="sx-num pos">+${income.toFixed(2)}</span></div>` : '',
   ].join('');
   const total = s.values.crypto + 0.42;
   const tabs = Object.keys(RANGES).map((r) => `<button class="sx-tab${r === range ? ' on' : ''}" data-wl-range="${r}">${r}</button>`).join('');
