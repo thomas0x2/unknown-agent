@@ -4,7 +4,7 @@
  * legacy stylesheet (../../src/style.css); nothing here invents new classes.
  */
 import { SOUND } from './sound';
-import type { GameStore } from '../game/store';
+import { type GameStore, CHARGE_DELAY_MS } from '../game/store';
 import { MISSES } from '../game/misses';
 import { JEV } from '../game/backendJev';
 import { listSlots, autoSlot } from '../game/saves';
@@ -845,14 +845,16 @@ function pageAgent(store: GameStore): string {
   }).join('');
   const p = store.pendingPrompt;
   const pending = p == null ? '' : `<div class="ua-msg you"><div class="ua-bubble">${esc(p)}</div><span class="ua-cost">${fmtMoney(-promptCost(s.values.agentLevel, p).total)} · agent-${s.values.agentLevel} · ${dateShort(s.values.day)}</span></div>`;
-  const thinking = store.busy ? `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text ua-dots"><i></i><i></i><i></i></div></div>` : '';
+  // the reply is in; its charge reaches the wallet a beat later
+  const charging = store.charging ? `<div class="ua-charge" role="status"><span class="ua-charge-bar"><i style="animation-duration:${CHARGE_DELAY_MS}ms"></i></span>Charging Coinbin ${shortAddr(WALLET_ADDR)} · ${fmtMoney(-store.charging)}</div>` : '';
+  const thinking = store.busy && !store.charging ? `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text ua-dots"><i></i><i></i><i></i></div></div>` : '';
   return `<div class="ua">
     <header class="ua-head">
       <div class="ua-brand">${ICONS.agent}<div><b>agent</b><span>agent-${s.values.agentLevel} · ${fmtMoney(c.prompt)} per prompt + ${fmtMoney(c.word)} per word</span></div></div>
       ${devOptionsButton(store, 'agent')}<span class="ua-linked"><a href="#" data-nav="agent.chat/models" class="ua-upgrade">Models</a> · ${s.agentLocked ? 'LOCKED · unpaid' : 'Billing: Coinbin ' + shortAddr(WALLET_ADDR)}</span>
     </header>
     <div class="ua-llm"><span class="ua-jev" id="ua-jev">${jevChip()}</span><span class="ua-llm-ctl" id="ua-llm">${llmRow()}</span></div>
-    <div class="ua-log" id="ua-log">${msgs}${pending}${thinking}</div>
+    <div class="ua-log" id="ua-log">${msgs}${pending}${thinking}${charging}</div>
     <form class="ua-compose" data-form="prompt">
       <textarea id="prompt-input" rows="2" placeholder="Ask agent anything — build an app, fix one, write, translate, look something up…" ${s.ending ? 'disabled' : ''}></textarea>
       <div class="ua-row"><span id="cost-est" class="ua-est"></span><button class="ua-send" type="submit" ${s.ending || store.busy ? 'disabled' : ''}>Send</button></div>

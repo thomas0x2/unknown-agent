@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, deliverDue, deliverArrivals, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, devToggleBug, nameUnnamedBugs, money, binMail, restoreMail, emptyMailBin,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, deliverDue, deliverArrivals, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, devToggleBug, nameUnnamedBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -50,6 +50,8 @@ export class GameStore {
   busy = false;
   /** The agent prompt being answered right now, shown in the chat as soon as it's sent. */
   pendingPrompt: string | null = null;
+  /** A prompt's charge on its way to the wallet, a beat after the reply (0 when nothing is). */
+  charging = 0;
   ui = {
     ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null as Draft | null,
     project: '', dev: false, liked: {} as Record<string, boolean>, intro: true, greet: false, memWarn: false, confirm: null as null | { text: string; yes: string; fn: () => void }, start: false, menuCat: 'saves',
@@ -430,13 +432,23 @@ export class GameStore {
     return this.run(async () => {
       try {
         const started = Date.now();
+        const txBefore = this.state.tx.length;
         const r = await promptAgent(this.state, this.content, this.router, text, this.writer);
         // Scripted replies come back instantly; hold them behind the typing dots like a generated one.
         const last = r.state.chat[r.state.chat.length - 1];
         if (last && last.from === 'agent' && last.src !== 'llm') await wait(replyDelay(last.text) - (Date.now() - started));
-        this.pendingPrompt = null; this.commitAndSettle(r.state); return r;
+        // the reply lands first and the wallet is charged a beat later, so each makes its own sound
+        const due = r.state.clockMin < CLOCK.sleep ? withholdCharge(r.state, txBefore) : 0;
+        this.pendingPrompt = null; this.charging = due; this.commitAndSettle(r.state);
+        if (due) {
+          await wait(CHARGE_DELAY_MS);
+          this.charging = 0;
+          money(this.state, -due, AGENT_USAGE);
+          this.commitAndSettle(this.state);
+        }
+        return r;
       }
-      finally { this.pendingPrompt = null; }
+      finally { this.pendingPrompt = null; this.charging = 0; }
     }, 'prompt-input', text);
   }
   async review(bizId: string, stars: number, text: string) {
@@ -550,6 +562,24 @@ function applyDevMode(on: boolean): void {
 /** How long a scripted agent reply "thinks" before it appears: longer for longer replies, a little random. */
 export function replyDelay(text: string, rnd = Math.random): number {
   return Math.min(4500, 1200 + 15 * text.length + Math.round(rnd() * 600));
+}
+/** How long after the agent's reply its charge hits the wallet. */
+export const CHARGE_DELAY_MS = 1000;
+/**
+ * Take the prompt's charge (the agent-usage entries added since ledger entry `from`) back out of `s`
+ * and return the amount, so it can be charged on its own a moment later.
+ */
+export function withholdCharge(s: GameState, from: number): number {
+  let due = 0;
+  const kept = s.tx.slice(0, from);
+  for (const t of s.tx.slice(from)) {
+    if (t.memo === AGENT_USAGE && t.amount < 0) { due -= t.amount; continue; }
+    kept.push(due && t.bal != null ? { ...t, bal: Math.round((t.bal + due) * 100) / 100 } : t);
+  }
+  if (!due) return 0;
+  s.tx = kept;
+  addValue(s, 'crypto', due);
+  return Math.round(due * 100) / 100;
 }
 const wait = (ms: number) => new Promise<void>((done) => setTimeout(done, Math.max(0, ms)));
 
