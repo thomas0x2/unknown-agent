@@ -39,7 +39,7 @@ export function appProblems(app: AppInstance, tmpl: AppTemplate | undefined): Ap
     let variant: string | undefined;
     let keys: string[];
     if (brk) {
-      variant = brk.failure === 'subtle' ? breakVariant(brk, def) : undefined;
+      variant = breakVariant(brk, def);
       const fallback = brk.failure === 'visible' || brk.failure === 'failed_fetch' ? 'down' : 'wrong';
       keys = [...(variant ? [variant] : []), brk.failure, fallback];
     } else if (!liveF) {

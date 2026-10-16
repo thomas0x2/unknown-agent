@@ -44,6 +44,19 @@ export function triggerMatches(s: GameState, t: Trigger): boolean {
   return true;
 }
 
+/** The body shown for an event delivered on `day`: a repeating event cycles through its `bodies`. */
+export function eventBody(ev: GameEvent, day: number): string {
+  const list = ev.bodies;
+  if (!list?.length) return ev.body ?? '';
+  const i = (day - (ev.trigger.dayMin ?? 1)) % list.length;
+  return list[(i + list.length) % list.length];
+}
+
+/** A delivery's key in the inbox and readEvents: repeating events get one per day. */
+export function deliveryKey(ev: Pick<GameEvent, 'id' | 'repeat'>, day: number): string {
+  return ev.repeat ? `${ev.id}@${day}` : ev.id;
+}
+
 export function getEvent(content: Content, id: string): GameEvent | undefined {
   return content.events.find((e) => e.id === id);
 }
