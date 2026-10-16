@@ -13,6 +13,7 @@ import {
 } from '../engine';
 import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
+import { pageDrive } from './qdrive';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const WALLET_ADDR = '0x4417c3e8b1d05f2a9e6d7b0c1f83a4e5d2b9a9f2';
@@ -44,7 +45,7 @@ function linkify(escaped: string): string {
 
 function tabTitle(r: Route, url: string): string {
   const names: Partial<Record<string, string>> = {
-    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', satchel: 'Satchel · Wallet', forkyard: 'Forkyard',
+    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', satchel: 'Satchel · Wallet', forkyard: 'Forkyard',
     agent: 'agent', yowl: 'Yowl', weightroom: 'Weightroom', terminal: 'localhost', nullboard: 'nullboard', cellar: 'Cellar', app: url,
   };
   if (r.site === 'notfound') return url || 'New Tab';
@@ -153,6 +154,7 @@ export function page(store: GameStore, r: Route): string {
   switch (r.site) {
     case 'newtab': return pageNewTab(store);
     case 'qmail': return pageMail(store, r.param);
+    case 'qdrive': return pageDrive(store.state, r.param);
     case 'y': return pageY(store, r.param);
     case 'satchel': return pageWallet(store);
     case 'forkyard': return pageForkyard(store, r.param);
@@ -203,6 +205,7 @@ function pageMail(store: GameStore, param?: string): string {
     <a href="#" class="qm-new" data-nav="qmail.com/compose">Compose</a>
     <a href="#" data-nav="qmail.com" class="${view === 'inbox' ? 'on' : ''}">Inbox${unread ? `<b>${unread}</b>` : ''}</a>
     <a href="#" data-nav="qmail.com/sent" class="${view === 'sent' ? 'on' : ''}">Sent</a>
+    <a href="#" data-nav="qdrive.com">Qdrive</a>
   </nav>`;
   let main: string;
   if (view === 'compose') {
