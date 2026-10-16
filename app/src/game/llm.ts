@@ -39,6 +39,7 @@ const CONFIG = {
   longTokens: 140,
   temperature: 0.9,
   timeoutMs: 25000,
+  downloadRetries: 2,
 };
 const SETTINGS_KEY = 'unknown-agent-llm';
 
@@ -50,6 +51,15 @@ const AGENT_PERSONA =
 function workerMain() {
   let generator: any = null;
   const post = (m: any) => (self as any).postMessage(m);
+  // transformers.js fetches the external weights file (*.onnx_data) inside a `new Promise(async …)`,
+  // so when that download fails the error escapes as an unhandled rejection and pipeline() never
+  // settles. Without this the load hangs forever at whatever byte count it had reached.
+  let loading = false;
+  self.addEventListener('unhandledrejection', (e: any) => {
+    if (!loading) return;
+    loading = false;
+    post({ type: 'error', message: String((e.reason && e.reason.message) || e.reason) });
+  });
   async function load(msg: any) {
     // Built with new Function so Vite's dev server can't rewrite this import() into a call to its
     // __vite__injectQuery helper, which doesn't exist inside the stringified worker.
@@ -79,7 +89,9 @@ function workerMain() {
   (self as any).onmessage = async (e: any) => {
     const msg = e.data;
     if (msg.type === 'load') {
-      try { await load(msg); } catch (err: any) { post({ type: 'error', message: String((err && err.message) || err) }); }
+      loading = true;
+      try { await load(msg); } catch (err: any) { if (loading) post({ type: 'error', message: String((err && err.message) || err) }); }
+      loading = false;
     } else if (msg.type === 'generate') {
       try {
         const out = await generator(msg.messages, {
@@ -108,6 +120,7 @@ class LocalLLM {
   private worker: Worker | null = null;
   private pending = new Map<number, (v: string | null) => void>();
   private nextId = 1;
+  private retries = 0;
 
   onChange(fn: () => void): () => void { this.listeners.add(fn); return () => this.listeners.delete(fn); }
   label(): string { return this.settings.backend === 'ollama' ? 'Gemma 3 270M via Ollama' : 'Gemma 3 270M'; }
@@ -125,7 +138,7 @@ class LocalLLM {
   load(): void {
     const b = this.settings.backend;
     if (b === 'off' || this.status === 'loading' || this.status === 'ready') return;
-    if (b === 'browser') this.loadBrowser();
+    if (b === 'browser') { this.retries = 0; this.loadBrowser(); }
     else if (b === 'ollama') this.loadOllama();
   }
 
@@ -188,7 +201,18 @@ class LocalLLM {
       if (m.type === 'progress') this.set({ progress: m.progress, loadedBytes: m.loaded, totalBytes: m.total, detail: 'Downloading' });
       else if (m.type === 'ready') { this.rememberReady(); this.set({ status: 'ready', progress: 100, detail: `${m.device} · ${m.dtype}` }); }
       else if (m.type === 'log') console.info('[LocalLLM]', m.text);
-      else if (m.type === 'error') { this.killWorker(); this.set({ status: 'error', detail: explain(m.message) }); }
+      else if (m.type === 'error') {
+        this.killWorker();
+        // A dropped connection mid-download: start again. Finished files are in the browser cache,
+        // so only the interrupted one downloads again.
+        if (isNetworkDrop(m.message) && this.retries < CONFIG.downloadRetries) {
+          this.retries++;
+          console.info('[LocalLLM] download interrupted, retrying:', m.message);
+          this.loadBrowser();
+          return;
+        }
+        this.set({ status: 'error', detail: explain(m.message) });
+      }
       else if (m.type === 'result') {
         const r = this.pending.get(m.id);
         if (!r) return;
@@ -277,8 +301,12 @@ function cleanEmail(text: string): string | null {
   if (t.length > 480) t = t.slice(0, 477).replace(/\s+\S*$/, '') + '…';
   return t.length >= 2 ? t : null;
 }
+function isNetworkDrop(msg: string): boolean {
+  return /network error|failed to fetch|networkerror|load failed/i.test(String(msg || '')) && !/dynamically imported module/i.test(String(msg || ''));
+}
 function explain(msg: string): string {
   const m = String(msg || '');
+  if (isNetworkDrop(m)) return 'The model download was interrupted. Press Retry; the parts already downloaded are kept.';
   if (/fetch|network|import|load failed|cors|blocked/i.test(m)) {
     return "Couldn't download the model. This page may not be allowed to reach Hugging Face; run the game with npm run dev.";
   }
