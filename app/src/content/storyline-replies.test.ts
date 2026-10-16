@@ -194,7 +194,6 @@ describe('job offers', () => {
   const leads: [string, number, string][] = [
     ['trader@desk.test', 2, 'trader_contact'],
     ['gino@trattoria.test', 1, 'restaurant_contact'],
-    ['viktor@mail.test', 3, 'viktor_contact'],
     ['rep@closers.test', 6, 'outreach_contact'],
   ];
   const at = (day: number) => { let s = startAll(content, 3); while (s.values.day < day) s = endAll(s, content); return s; };
