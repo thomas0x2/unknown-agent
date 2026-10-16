@@ -451,6 +451,10 @@ export function nameUnnamedBugs(s: GameState, content: Content): void {
     const tmpl = content.apps[app.template];
     for (const f of [...app.repo, ...app.features]) {
       const bugs = tmpl?.features.find((d) => d.id === f.id)?.bugs ?? [];
+      // a bug that has since been removed from the content counts as unnamed
+      const known = (v: string) => v === 'outdated' || bugs.some((b) => b.id === v);
+      if (bugs.length && f.also) f.also = f.also.filter(known).length ? f.also.filter(known) : undefined;
+      if (bugs.length && f.variant && !known(f.variant)) f.variant = undefined;
       if (f.correct || f.variant || !bugs.length) continue;
       f.seed ??= 0;
       f.variant = bugs.filter((b) => !b.deep)[f.seed % Math.max(1, bugs.filter((b) => !b.deep).length)]?.id ?? bugs[0].id;

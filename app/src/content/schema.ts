@@ -319,7 +319,6 @@ export interface MarketPostDef {
   /** Posted this many times by bot accounts (handle_1, handle_2, ...). */
   bots?: number;
   /** Mentions this ticker's company without the $ tag. */
-  decoy?: string;
   /** Randall Crane on a company: what the auto-buy should (praise) or shouldn't (criticism) act on. */
   crane?: 'praise' | 'criticism';
   /** A lookalike account posting as Crane. */

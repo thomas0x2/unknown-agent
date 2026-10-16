@@ -21,7 +21,6 @@
         "wrong": "it's tracking the wrong tickers. i gave you the list.",
         "wrong_tickers": "it's tracking the wrong tickers. i gave you the list.",
         "lowercase_missed": "half the $gai posts aren't counted. not everyone types in caps.",
-        "wrong_window": "the counts include yesterday's posts. i asked for today.",
         "failed_fetch": "the dashboard shows the same numbers as yesterday. it's not fetching anything."
       },
       "match": "\\b(tickers?|symbols?|\\$gai|\\$vant)\\b",
@@ -35,11 +34,6 @@
           "id": "lowercase_missed",
           "when": "misses lowercase tickers like $gai",
           "match": "\\b(lower ?case|lower-case|small letters|case[- ]?(in)?sensitive|capitali[sz]\\w*|all caps|uppercase)\\b"
-        },
-        {
-          "id": "wrong_window",
-          "when": "counts yesterday's posts, not only today's",
-          "match": "\\b(yesterday'?s?|previous day'?s?|older|old posts|day before)\\b|\\btime ?window\\b|\\bdate range\\b|\\bonly (count |use |include )?today'?s?\\b"
         }
       ],
       "checklist": [
@@ -47,11 +41,6 @@
           "id": "tickers",
           "text": "$GAI $VANT",
           "bug": "wrong_tickers"
-        },
-        {
-          "id": "today",
-          "text": "today",
-          "bug": "wrong_window"
         }
       ]
     },
@@ -83,27 +72,21 @@
     },
     {
       "id": "filter",
-      "description": "ignore bot spam and non-ticker mentions",
+      "description": "ignore bot spam",
       "failures": [
         "subtle"
       ],
       "complaints": {
         "missing": "it counts everything, bots included.",
-        "wrong": "bot spam and random mentions are in the counts again. only $-tagged posts.",
-        "bots_counted": "$GAI shows as wildly bullish. that's thirty bots saying \"to the moon\".",
-        "untagged_counted": "it's counting posts that just mention vantor. only $-tagged posts."
+        "wrong": "bot spam is in the counts again.",
+        "bots_counted": "$GAI shows as wildly bullish. that's thirty bots saying \"to the moon\"."
       },
-      "match": "\\b(filter\\w*|bots?|spam\\w*|\\$-?tag\\w*|non-?ticker|untagged)\\b",
+      "match": "\\b(filter\\w*|bots?|spam\\w*)\\b",
       "bugs": [
         {
           "id": "bots_counted",
           "when": "counts bot spam",
           "match": "\\b(bots?|spam\\w*|duplicates?|near-identical|identical posts|to the moon)\\b"
-        },
-        {
-          "id": "untagged_counted",
-          "when": "counts mentions without a $ tag",
-          "match": "\\b(non-?ticker|not (a )?ticker|untagged|without (a |the )?\\$|\\$-?tag\\w*|dollar sign|just mention\\w*|name mentions?)\\b"
         }
       ],
       "checklist": [
@@ -111,11 +94,6 @@
           "id": "bots",
           "text": "bots",
           "bug": "bots_counted"
-        },
-        {
-          "id": "tagged",
-          "text": "tagged",
-          "bug": "untagged_counted"
         }
       ]
     },
@@ -123,7 +101,6 @@
       "id": "top_posts",
       "description": "link the three most-engaged posts per ticker",
       "failures": [
-        "failed_fetch",
         "subtle"
       ],
       "complaints": {

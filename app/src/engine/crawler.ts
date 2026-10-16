@@ -17,7 +17,6 @@ export interface MarketPost {
   mood: Mood;
   literal?: Mood;
   bot?: boolean;
-  decoy?: string;
   crane?: 'praise' | 'criticism';
   impostor?: boolean;
 }
@@ -33,7 +32,7 @@ export function marketPosts(s: GameState, content: Content): MarketPost[] {
   const out: MarketPost[] = [];
   for (const p of m.posts) {
     if (p.day > today) continue;
-    const base = { day: p.day, author: p.from, text: p.body, likes: p.likes, tickers: p.tickers, mood: p.mood, literal: p.literal, decoy: p.decoy, crane: p.crane, impostor: p.impostor };
+    const base = { day: p.day, author: p.from, text: p.body, likes: p.likes, tickers: p.tickers, mood: p.mood, literal: p.literal, crane: p.crane, impostor: p.impostor };
     if (!p.bots) { out.push({ ...base, id: p.id, handle: p.handle }); continue; }
     for (let n = 1; n <= p.bots; n++) {
       const tag = 1000 + ((n * 7919 + p.day * 131) % 9000);
@@ -54,7 +53,8 @@ export const TRACKED = ['GAI', 'VANT'];
 const WRONG_TRACKED = ['GAI', 'VNTR'];
 
 export interface TopPost { author: string; handle: string; text: string; likes: number }
-export interface TickerSummary { ticker: string; count: number; bullish: number; bearish: number; neutral: number; top: TopPost[] }
+export interface CrawledPost extends TopPost { day: number; mood: Mood }
+export interface TickerSummary { ticker: string; count: number; bullish: number; bearish: number; neutral: number; top: TopPost[]; posts: CrawledPost[] }
 
 // what an agent writes when it can't be bothered to look up the real posts
 const INVENTED: Record<string, TopPost[]> = {
@@ -76,20 +76,21 @@ const tagged = (p: MarketPost, t: string, bugs: Set<string>) =>
 /** The crawler's summary for `day`, as a build with these bugs computes it. */
 export function crawl(posts: MarketPost[], day: number, bugs: Set<string>): TickerSummary[] {
   const tracked = bugs.has('wrong_tickers') ? WRONG_TRACKED : TRACKED;
-  const inWindow = posts.filter((p) => p.day === day || (bugs.has('wrong_window') && p.day === day - 1));
-  const kept = inWindow.filter((p) => (!p.bot || bugs.has('bots_counted')));
+  const kept = posts.filter((p) => p.day === day && (!p.bot || bugs.has('bots_counted')));
   return tracked.map((t) => {
-    const mine = kept.filter((p) => tagged(p, t, bugs) || (bugs.has('untagged_counted') && p.decoy === t));
+    const mine = kept.filter((p) => tagged(p, t, bugs));
     const tally = { bullish: 0, bearish: 0, neutral: 0 };
-    for (const p of mine) {
+    // every post it counted, with the mood it gave it
+    const read: CrawledPost[] = mine.map((p) => {
       let m: Mood = bugs.has('sarcasm_literal') && p.literal ? p.literal : p.mood;
       if (bugs.has('inverted')) m = m === 'bullish' ? 'bearish' : m === 'bearish' ? 'bullish' : m;
       tally[m]++;
-    }
+      return { author: p.author, handle: p.handle, text: p.text, likes: p.likes, day: p.day, mood: m };
+    }).sort((a, b) => b.likes - a.likes);
     const pct = (n: number) => (mine.length ? Math.round((n / mine.length) * 100) : 0);
     const top = bugs.has('hallucinated_posts') ? (INVENTED[t] ?? INVENTED.GAI)
       : mine.slice().sort((a, b) => b.likes - a.likes).slice(0, 3).map(({ author, handle, text, likes }) => ({ author, handle, text, likes }));
-    return { ticker: t, count: mine.length, bullish: pct(tally.bullish), bearish: pct(tally.bearish), neutral: pct(tally.neutral), top };
+    return { ticker: t, count: mine.length, bullish: pct(tally.bullish), bearish: pct(tally.bearish), neutral: pct(tally.neutral), top, posts: read };
   });
 }
 

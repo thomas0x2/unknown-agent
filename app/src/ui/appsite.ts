@@ -109,20 +109,33 @@ function restaurant(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
 const money = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const signed = (n: number) => `${n >= 0 ? '+' : '−'}${money(Math.abs(n))}`;
 
+/** Portfolio value per day as a line chart; one point (day 1) draws a flat line. */
+function valueChart(values: number[]): string {
+  const W = 600, H = 120, P = 6;
+  const lo = Math.min(...values), hi = Math.max(...values);
+  const span = hi - lo || Math.max(1, hi * 0.01);
+  const x = (i: number) => (values.length < 2 ? (i ? W - P : P) : P + (i / (values.length - 1)) * (W - 2 * P));
+  const y = (v: number) => H - P - ((v - lo) / span) * (H - 2 * P);
+  const pts = (values.length < 2 ? [values[0], values[0]] : values).map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  const up = values[values.length - 1] >= values[0];
+  return `<figure class="as-s-chart"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Portfolio value by day"><polyline class="${up ? 'bull' : 'bear'}" points="${pts}"/></svg>
+    <figcaption><span>${dateShort(1)}</span><span>${money(hi)} high · ${money(lo)} low</span><span>${dateShort(values.length)}</span></figcaption></figure>`;
+}
+
 function crawler(app: AppInstance, tmpl: AppTemplate | undefined, page: string | undefined, extras: SiteExtras): string {
   const day = extras.day ?? 1;
   const posts = extras.market ?? [];
   const f = Object.fromEntries(['tickers', 'sentiment', 'filter', 'top_posts', 'portfolio', 'auto_buy'].map((id) => [id, live(app, tmpl, id)]));
   const bugs = new Set(Object.values(f).flatMap((l) => [...l.bugs]));
   // without the filter it counts everything it finds
-  if (!f.filter.built) { bugs.add('bots_counted'); bugs.add('untagged_counted'); }
+  if (!f.filter.built) { bugs.add('bots_counted'); }
   const head = `<header class="as-s-head"><b>${esc(app.name)}</b><span>$-tagged posts on Y</span></header>`;
   if (page && page !== 'dash') return `<div class="as as-s">${head}<main>${notFound()}</main></div>`;
   let body: string;
   if (!f.tickers.built) body = `<p class="as-s-empty">Nothing tracked yet.</p>`;
   else {
-    // a failed fetch leaves yesterday's summary up (or nothing, on the first day)
-    const fetchFailed = f.tickers.brk?.failure === 'failed_fetch';
+    // the posts come in one fetch: if it fails, every card keeps yesterday's summary (or nothing, on the first day)
+    const fetchFailed = ['tickers', 'sentiment', 'filter', 'top_posts'].some((id) => f[id].brk?.failure === 'failed_fetch');
     const dataDay = fetchFailed ? day - 1 : day;
     const rows = crawl(fetchFailed && dataDay < 1 ? [] : posts, dataDay, bugs);
     const cards = rows.map((r) => {
@@ -131,20 +144,28 @@ function crawler(app: AppInstance, tmpl: AppTemplate | undefined, page: string |
            <p class="as-s-split"><span class="bull">${r.bullish}% bullish</span><span>${r.neutral}% neutral</span><span class="bear">${r.bearish}% bearish</span></p>` : '';
       let top = '';
       if (f.top_posts.built) {
-        top = outage(f.top_posts, 'the top posts') ?? (r.top.length
+        top = (f.top_posts.brk?.failure === 'visible' ? outage(f.top_posts, 'the top posts') : null) ?? (r.top.length
           ? `<ol class="as-s-top">${r.top.map((p) => `<li><a href="#" data-nav="y.com/${esc(p.handle)}">@${esc(p.handle)}</a> ${esc(p.text)} <small>${p.likes.toLocaleString('en-US')} likes</small></li>`).join('')}</ol>`
           : '');
       }
-      return `<section class="as-s-card"><h2>$${esc(r.ticker)}</h2><p class="as-s-count"><b>${r.count}</b> post${r.count === 1 ? '' : 's'} today</p>${split}${top}</section>`;
+      // the debug view: every post it counted, with the mood it read
+      const all = r.posts.length
+        ? `<details class="as-s-all"><summary>All crawled posts (${r.count})</summary><ul>${r.posts.map((p) => `<li>${f.sentiment.built ? `<span class="as-s-mood ${p.mood}">${p.mood}</span>` : ''}<a href="#" data-nav="y.com/${esc(p.handle)}">@${esc(p.handle)}</a> ${esc(p.text)} <small>${p.likes.toLocaleString('en-US')} likes</small></li>`).join('')}</ul></details>`
+        : '';
+      return `<section class="as-s-card"><h2>$${esc(r.ticker)}</h2><p class="as-s-count"><b>${r.count}</b> post${r.count === 1 ? '' : 's'} today</p>${split}${top}${all}</section>`;
     }).join('');
     body = `<p class="as-s-upd">Updated ${dateShort(dataDay < 1 ? day : dataDay)}</p><div class="as-s-grid">${cards}</div>`;
   }
   const buys = f.auto_buy.built ? autoBuys(posts, day, bugs) : [];
+  // the portfolio goes on top, with its value over the days so far
   if (f.portfolio.built) {
     const pf = portfolio(buys, day, bugs);
-    body += `<section class="as-s-pf"><h2>Portfolio</h2><table>${pf.holdings.map((h) => `<tr><td>$${esc(h.ticker)}</td><td>${h.shares} shares</td><td>${money(h.price)}</td><td>${money(h.value)}</td></tr>`).join('')}
-      <tr class="cash"><td>Cash</td><td></td><td></td><td>${money(pf.cash)}</td></tr></table>
-      <p class="as-s-total">Total <b>${money(pf.total)} DOLR</b> <span class="${pf.change >= 0 ? 'bull' : 'bear'}">${signed(pf.change)} today</span></p></section>`;
+    const history = Array.from({ length: day }, (_, i) => portfolio(buys.filter((b) => b.day <= i + 1), i + 1, bugs).total);
+    body = `<section class="as-s-pf"><h2>Portfolio</h2>
+      <p class="as-s-total">Total <b>${money(pf.total)} DOLR</b> <span class="${pf.change >= 0 ? 'bull' : 'bear'}">${signed(pf.change)} today</span></p>
+      ${valueChart(history)}
+      <table>${pf.holdings.map((h) => `<tr><td>$${esc(h.ticker)}</td><td>${h.shares} shares</td><td>${money(h.price)}</td><td>${money(h.value)}</td></tr>`).join('')}
+      <tr class="cash"><td>Cash</td><td></td><td></td><td>${money(pf.cash)}</td></tr></table></section>` + body;
   }
   if (f.auto_buy.built) {
     const log = buys.slice().reverse().map((b) => `<li>${dateShort(b.day)}: bought ${b.shares} $${esc(b.ticker)} at ${money(b.price)} on <a href="#" data-nav="y.com/${esc(b.post.handle)}">@${esc(b.post.handle)}</a> “${esc(b.post.text)}”</li>`).join('');

@@ -142,8 +142,7 @@
       "body": "Walked past the Vantor offices today. Half the lights are off.",
       "likes": 64,
       "tickers": [],
-      "mood": "neutral",
-      "decoy": "VANT"
+      "mood": "neutral"
     },
     {
       "id": "m3_gai_cfo",
@@ -265,8 +264,7 @@
       "body": "My mom asked General AI for a recipe and it told her to invest.",
       "likes": 71,
       "tickers": [],
-      "mood": "neutral",
-      "decoy": "GAI"
+      "mood": "neutral"
     },
     {
       "id": "m5_nova_bots",
@@ -513,8 +511,7 @@
       "body": "Vantor is hiring again. For one role. It is the role of overseeing the software.",
       "likes": 90,
       "tickers": [],
-      "mood": "neutral",
-      "decoy": "VANT"
+      "mood": "neutral"
     },
     {
       "id": "m11_gai_poll",

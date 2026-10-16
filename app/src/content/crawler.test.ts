@@ -34,7 +34,6 @@ describe('stock posts on Y', () => {
     const posts = marketPosts(onDay(2), content);
     expect(posts.filter((p) => p.bot && p.day === 2)).toHaveLength(30);
     expect(new Set(posts.filter((p) => p.bot).map((p) => p.handle)).size).toBe(30);
-    expect(posts.some((p) => p.decoy === 'VANT' && !p.text.includes('$'))).toBe(true);
     expect(posts.some((p) => /nova/i.test(p.text))).toBe(false);
     const all = marketPosts(onDay(21), content);
     for (let d = 1; d <= 21; d++) expect(all.filter((p) => p.day === d && !p.bot).length, `day ${d}`).toBeGreaterThanOrEqual(2);
@@ -54,14 +53,21 @@ describe('sentiment crawler', () => {
 
   it('each bug shows up in the numbers', () => {
     expect(row(crawl(posts, 2, bugs('bots_counted')), 'GAI').count).toBe(33);
-    expect(row(crawl(posts, 2, bugs('untagged_counted')), 'VANT').count).toBe(5);
     expect(row(crawl(posts, 2, bugs('sarcasm_literal')), 'VANT').bullish).toBe(75);
     expect(row(crawl(posts, 2, bugs('inverted')), 'GAI')).toMatchObject({ bullish: 33, bearish: 67 });
     expect(row(crawl(posts, 2, bugs('lowercase_missed')), 'GAI').count).toBe(2);
-    expect(row(crawl(posts, 2, bugs('wrong_window')), 'GAI').count).toBe(6);
     expect(crawl(posts, 2, bugs('wrong_tickers')).map((r) => r.ticker)).toContain('VNTR');
     const handles = new Set(posts.map((p) => p.handle));
     expect(row(crawl(posts, 2, bugs('hallucinated_posts')), 'GAI').top.every((p) => !handles.has(p.handle))).toBe(true);
+  });
+
+  it('lists every crawled post with the mood it read, bugs included', () => {
+    const ok = row(crawl(posts, 2, bugs()), 'VANT');
+    expect(ok.posts).toHaveLength(ok.count);
+    expect(row(crawl(posts, 2, bugs('bots_counted')), 'GAI').posts.filter((p) => /\d{4}$/.test(p.handle)).length).toBe(30);
+    const sarcastic = posts.find((p) => p.literal && p.tickers.includes('VANT'))!;
+    expect(ok.posts.find((p) => p.handle === sarcastic.handle)!.mood).toBe(sarcastic.mood);
+    expect(row(crawl(posts, 2, bugs('sarcasm_literal')), 'VANT').posts.find((p) => p.handle === sarcastic.handle)!.mood).toBe(sarcastic.literal);
   });
 
   it("auto-buy: once on Crane's real praise; each bug buys differently", () => {
@@ -126,11 +132,9 @@ const ASKS: Record<string, [string, string, Record<string, string>]> = {
   sentiment: ['trader_contact', 'Sentiment Crawler: ', {
     wrong_tickers: 'The crawler tracks the wrong tickers.',
     lowercase_missed: 'It misses lowercase tickers like $gai.',
-    wrong_window: "It counts yesterday's posts too. Only count today's.",
     inverted: 'Bullish and bearish are swapped in the sentiment split.',
     sarcasm_literal: 'The sentiment reads sarcastic posts literally.',
     bots_counted: 'It counts bot spam.',
-    untagged_counted: 'It counts posts that only mention Vantor without the $ tag.',
     hallucinated_posts: "The top posts are made up, those accounts don't exist.",
     wrong_totals: 'The portfolio totals are wrong.',
     stale_after_buy: "The portfolio doesn't update after a buy.",
@@ -181,5 +185,9 @@ describe('fixing them', () => {
     getApp(s, id)!.repo[1] = { id: 'sentiment', correct: false, seed: 3 };
     nameUnnamedBugs(s, content);
     expect(getApp(s, id)!.repo[1].variant).toBeTruthy();
+    // a save holding a bug that was since removed gets a current one
+    getApp(s, id)!.repo[0] = { id: 'tickers', correct: false, seed: 0, variant: 'wrong_window' };
+    nameUnnamedBugs(s, content);
+    expect(content.apps.sentiment.features[0].bugs!.map((b) => b.id)).toContain(getApp(s, id)!.repo[0].variant);
   });
 });
