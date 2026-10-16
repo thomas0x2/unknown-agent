@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, deliverDue, CLOCK, tick, devToggleBug, nameUnnamedBugs,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, deliverDue, CLOCK, tick, phishLogin, devToggleBug, nameUnnamedBugs,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -52,6 +52,8 @@ export class GameStore {
     slotNote: '',
     /** Qmail compose: why Send was refused before anything went out. */
     mailError: '',
+    /** coinbln.com: why the last sign-in was refused. */
+    phishError: '',
   };
   /** A model download playing out in the Terminal, if one is running. */
   pull: { id: string; startedAt: number } | null = null;
@@ -187,7 +189,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = 1; this.nextTab = 3;
-    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', reviewNeedsStars: false, slotNote: '', mailError: '' };
+    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', reviewNeedsStars: false, slotNote: '', mailError: '', phishError: '' };
     this.store.save(this.state);
     this.emit();
   }
@@ -211,6 +213,13 @@ export class GameStore {
     this.ui.cbNotice = `Sent ${(-r.state.tx.at(-1)!.amount).toFixed(2)} DOLR to ${r.state.tx.at(-1)!.memo.split(' · ')[0]}.`;
     this.commitAndSettle(r.state);
     return true;
+  }
+  /** The phishing page's sign-in. A wrong password stays on the form with an error. */
+  phish(password: string): void {
+    const r = phishLogin(this.state, password);
+    this.ui.phishError = r.error ?? '';
+    if (r.error) { this.emit(); return; }
+    this.commitAndSettle(r.state);
   }
   // a new attempt clears the last attempt's notice, so a refusal never sticks to a date it wasn't about
   bookNext(name: string, email: string, date: number): void { delete this.state.bookingNotice; this.ui.book = { step: 2, name, email, date }; this.emit(); }

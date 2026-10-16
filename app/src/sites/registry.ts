@@ -6,7 +6,7 @@ import type { GameState } from '../engine';
 
 export type SiteId =
   | 'y' | 'qmail' | 'qdrive' | 'coinbin' | 'forkyard' | 'agent' | 'yowl'
-  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'app' | 'newtab' | 'notfound';
+  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'phish' | 'app' | 'newtab' | 'notfound';
 
 export interface SiteDef {
   id: SiteId;
@@ -39,6 +39,8 @@ export const SITES: SiteDef[] = [
   { id: 'cellar', base: 'cellar.onion', label: 'Cellar', group: 'underground', reachable: flag('knows_cellar') },
   { id: 'empire', base: 'empire.alphaascend.biz', label: 'EMPIRE', group: 'web', reachable: always },
   { id: 'spinfeed', base: 'spincycle.test', label: 'Spin Cycle feed', group: 'web', reachable: always },
+  // the lookalike from the day 3 phishing mail (engine/phishing.ts)
+  { id: 'phish', base: 'coinbln.com', label: 'Coinbin', group: 'web', reachable: always },
 ];
 
 export interface Route {

@@ -1,0 +1,12 @@
+{
+  "id": "d3_coinbin_phish",
+  "site": "qmail",
+  "from": "Coinbin Security",
+  "addr": "security@coinbln.com",
+  "subject": "Unusual sign-in to your wallet",
+  "trigger": {
+    "dayMin": 3,
+    "dayMax": 3
+  },
+  "body": "We noticed a sign-in to your Coinbin wallet from a new device.\n\nDevice: Panes 11 PC\nLocation: Unknown\n\nIf this was you, no action is needed. If not, please verify your account within 24 hours to avoid a temporary hold on withdrawals.\n\nVerify your account: coinbln.com/verify\n\nCoinbin Security\nCoinbin will never ask for your password by email."
+}

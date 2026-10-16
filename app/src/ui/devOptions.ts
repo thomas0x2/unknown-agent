@@ -8,6 +8,7 @@ import type { Content, Effects, GameEvent, Outcome, Trigger } from '../content/s
 import {
   type GameState, activeDeliveries, triggerMatches, replyDeadline, needsWork, fixCategories, policyActive, POST_BANDS, Y as YCFG,
 } from '../engine';
+import { PASSWORDS, COINBIN_PASSWORD, PHISH_DOMAIN, hacked } from '../engine/phishing';
 import { DEEPSLEEP_LINES, DEEPSLEEP_PLEA, PLEA_AT, translationReplies } from '../engine/deepsleep';
 
 export type DevOptionsSite = 'agent' | 'qmail' | 'y';
@@ -243,8 +244,27 @@ function qmailOptions(store: GameStore): string {
       const src = source(e.addr!);
       return eventCard(s, e, src ? `from ${src.site} post` : 'address not shown yet');
     }).join(''))
+    + section('Phishing', 'the fake Coinbin link; Qdrive\'s passwords.txt has the password it wants', phishing(store))
     + section('Scripted topics', 'these contacts always answer this the same way', scripted)
     + section('Misses', 'Haiku answers in character; these stand in when it cannot', misses ? `<div class="dvb-card">${misses}</div>` : '');
+}
+
+/** The day 3 phishing mail, where it stands, and the passwords.txt it pays off. */
+function phishing(store: GameStore): string {
+  const s = store.state;
+  const ev = store.content.events.find((e) => e.id === 'd3_coinbin_phish');
+  if (!ev) return '';
+  const d = s.delivered.find((x) => x.eventId === ev.id);
+  const status = hacked(s) ? 'hacked' : d ? `arrived day ${d.day}` : s.fired.includes(ev.id) ? 'closed' : triggerMatches(s, ev.trigger) ? 'arrives next morning' : 'locked';
+  const pw = PASSWORDS.map((p) => `<div class="dvo-miss"><b>${esc(p.site)}</b> <span class="dvo-dim">${esc(p.login)}</span> <code>${esc(p.password)}</code>${p.password === COINBIN_PASSWORD ? ' <span class="dvb-tag on">works on the fake page</span>' : ''}</div>`).join('');
+  return `<div class="dvb-card">
+    <div class="dvb-title"><b>${esc(ev.from ?? ev.id)}</b><span class="dvo-dim">${esc(ev.addr ?? '')}</span><span class="dvb-pill ${status === 'locked' || status === 'closed' ? 'off' : status === 'hacked' ? 'bad' : 'ok'}">${esc(status)}</span></div>
+    <div class="dvo-dim">${esc(ev.subject ?? '')} · <code>${esc(ev.id)}</code></div>
+    ${line('Needs', tags(triggerText(ev.trigger)))}
+    ${line('Link', `<code>${PHISH_DOMAIN}/verify</code>`)}
+    ${line('Right password', tags([`sends all ${s.values.crypto.toFixed(2)} DOLR away`, 'sets coinbin_hacked', 'shows the hacked screen']))}
+    ${line('Wrong password', esc('"Incorrect password. Try again." Nothing changes.'))}
+  </div><div class="dvb-card"><div class="dvb-title"><b>passwords.txt</b><span class="dvo-dim">Qdrive · Documents</span></div>${pw}</div>`;
 }
 
 // ── Y ──

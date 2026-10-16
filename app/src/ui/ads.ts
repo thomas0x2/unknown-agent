@@ -34,7 +34,7 @@ interface Ad {
 }
 
 /** Rectangular leaderboards: room for a sentence and a button. */
-const WIDE: Ad[] = [
+export const WIDE: Ad[] = [
   {
     id: 'empire', sponsor: 'Alpha Ascend', href: 'empire.alphaascend.biz', theme: 'ad-gold', deco: 'sparkle', cta_fx: 'shake',
     frames: ['<b>BROKE?</b>', 'That’s not a money problem.<br><b>That’s a MINDSET problem.</b>', '<b>EMPIRE</b> by Max Stryker<br><s>200 DOLR</s> <b>20 DOLR</b>'],
@@ -81,7 +81,7 @@ const WIDE: Ad[] = [
     cta: 'Reserve a curb', fine: 'Route 9. Towing billed per prompt.',
   },
   {
-    id: 'bank', sponsor: 'Your Bank (totally)', href: 'yourbank-totally.verify', theme: 'ad-bank', cta_fx: 'shake',
+    id: 'bank', sponsor: 'Your Bank (totally)', href: 'coinbln.com/verify', theme: 'ad-bank', cta_fx: 'shake',
     frames: ['⚠ Unusual activity', 'on your account', 'Verify within <b>24h</b>'],
     cta: 'VERIFY NOW', fine: 'We are definitely your bank. Which bank? Yes.',
   },

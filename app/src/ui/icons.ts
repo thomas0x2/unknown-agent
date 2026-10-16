@@ -34,3 +34,5 @@ export const TOKENS: Record<'dolr' | 'mooncat', string> = {
 
 // Qmail's tab and bookmark use the envelope.
 ICONS.qmail = ICONS.mail;
+// the phishing copy of Coinbin borrows its favicon
+ICONS.phish = ICONS.coinbin;
