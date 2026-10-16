@@ -161,6 +161,8 @@ export interface YExtra {
   likes: number;
   replyTo?: string;
   generated?: boolean;
+  /** A user's complaint about this app (broken at payday); shown at the top of its day. */
+  about?: string;
 }
 
 export interface YowlReview {

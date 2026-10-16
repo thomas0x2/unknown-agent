@@ -288,7 +288,7 @@ function pageMail(store: GameStore, param?: string): string {
 }
 
 // ── Y ──
-interface YPost { id: string; author: string; handle: string; text: string; day: number; likes: number; mine?: boolean; delta?: number; score?: number; replyTo?: string }
+interface YPost { id: string; author: string; handle: string; text: string; day: number; likes: number; mine?: boolean; delta?: number; score?: number; replyTo?: string; pinned?: boolean }
 function yPosts(store: GameStore): YPost[] {
   const s = store.state;
   const out: YPost[] = [];
@@ -298,9 +298,9 @@ function yPosts(store: GameStore): YPost[] {
     out.push({ id: e.id, author: e.from ?? 'someone', handle: handleFrom(e.from ?? 'someone'), text: tpl(e.body ?? ''), day: d.day, likes: 20 + hashHue(e.id) % 400 });
   }
   for (const f of store.content.yFiller) if (hashHue(f.id) % 3 === s.values.day % 3) out.push({ id: f.id, author: f.from, handle: f.handle, text: f.body, day: s.values.day, likes: 3 + hashHue(f.id) % 60 });
-  for (const x of s.yExtra) out.push({ id: x.id, author: x.author, handle: x.handle, text: x.text, day: x.day, likes: x.likes, replyTo: x.replyTo });
+  for (const x of s.yExtra) out.push({ id: x.id, author: x.author, handle: x.handle, text: x.text, day: x.day, likes: x.likes, replyTo: x.replyTo, pinned: !!x.about });
   for (const u of s.userPosts) out.push({ id: u.id, author: PLAYER.name, handle: PLAYER.handle, text: u.text, day: u.day, likes: u.likes, mine: true, delta: u.delta, score: u.score });
-  return out.sort((a, b) => b.day - a.day || b.id.localeCompare(a.id));
+  return out.sort((a, b) => b.day - a.day || Number(!!b.pinned) - Number(!!a.pinned) || b.id.localeCompare(a.id));
 }
 function yPostHtml(store: GameStore, p: YPost): string {
   const liked = !!store.ui.liked[p.id];

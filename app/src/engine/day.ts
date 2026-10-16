@@ -9,6 +9,7 @@ import { RENT, SUSPICION, LAST_DAY, APPS, CLOCK } from './config';
 import { newGame } from './state';
 import { clone, addValue, money, log } from './core';
 import { runPayday, nightlyBreaks } from './apps';
+import { deliverComplaints } from './complaints';
 import { deliverDue } from './events';
 import { rolloutAgent, deductSubscription, agentCost } from './agent';
 import { checkGuardEndings, checkFinale, isLastNight } from './endings';
@@ -55,7 +56,7 @@ export function endDay(state: GameState, content: Content): GameState {
 
   // 3. Payday
   const payBefore = s.values.crypto;
-  runPayday(s);
+  const complaints = runPayday(s, content);
   const payDelta = Math.round((s.values.crypto - payBefore) * 100) / 100;
   if (payDelta !== 0) lines.push(['App income', payDelta]);
 
@@ -95,6 +96,7 @@ export function endDay(state: GameState, content: Content): GameState {
   }
   s.values.day += 1;
   runMorning(s, content);
+  deliverComplaints(s, content, complaints);
 
   const card: MorningCard = { day: s.values.day, lines, balance: s.values.crypto };
   void before; void agentCost;

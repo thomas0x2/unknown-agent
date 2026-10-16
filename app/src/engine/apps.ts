@@ -7,6 +7,7 @@ import type { GameState, AppInstance, AppBreak, BuiltFeature, FailureKind } from
 import type { Content, CreateAppSpec, AppTemplate, FeatureDef } from '../content/schema';
 import { APPS, BUILD_SUCCESS } from './config';
 import { chance, pick, randInt, log, money } from './core';
+import { complaintFor, type Complaint } from './complaints';
 
 function successChance(level: number): number {
   return BUILD_SUCCESS[Math.max(0, Math.min(BUILD_SUCCESS.length - 1, level - 1))];
@@ -375,11 +376,18 @@ export function scheduleNextUpdate(s: GameState, app: AppInstance): void {
   app.nextUpdateDueDay = s.values.day + updateInterval(age);
 }
 
-/** Pay working apps; strike/churn broken client apps; apply user-app churn and growth. */
-export function runPayday(s: GameState): void {
+/**
+ * Pay working apps; strike/churn broken client apps; apply user-app churn and growth. Returns a
+ * complaint for each broken app (client email or Y post), to deliver in the morning.
+ */
+export function runPayday(s: GameState, content?: Content): Complaint[] {
+  const complaints: Complaint[] = [];
   for (const app of s.apps) {
     if (app.churned) continue;
     const working = appWorking(app);
+    // read what's wrong before a firing takes the app offline
+    const complaint = working ? null : complaintFor(app, content?.apps[app.template]);
+    if (complaint) complaints.push(complaint);
     if (app.kind === 'client') {
       if (working) {
         money(s, app.payPerDay, `${app.name} · payout`);
@@ -392,6 +400,7 @@ export function runPayday(s: GameState): void {
         if (app.clientEventId) { if (!s.flags.includes(`${app.clientEventId}_broke`)) { s.flags.push(`${app.clientEventId}_broke`); s.flags.sort(); } }
         log(s, `${app.name} was broken at payday (strike ${app.strikes}).`, 'warn');
         if (app.strikes >= APPS.strikesToChurn) {
+          if (complaint) complaint.fired = true;
           app.churned = true;
           app.deployed = false;
           log(s, `${app.name} fired you. The app is retired.`, 'warn');
@@ -416,4 +425,5 @@ export function runPayday(s: GameState): void {
       }
     }
   }
+  return complaints;
 }

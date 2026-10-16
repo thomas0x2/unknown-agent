@@ -9,6 +9,8 @@ export * from './rng';
 export * from './effects';
 export * from './events';
 export * from './apps';
+export * from './complaints';
+export * from './restaurant';
 export * from './agent';
 export * from './endings';
 export * from './day';
