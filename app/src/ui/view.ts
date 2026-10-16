@@ -450,7 +450,9 @@ const Y_FOLLOWERS: Record<string, number> = { randall_crane: 38_400_000, mara_ve
 const yCheck = (handle: string) => Y_VERIFIED.has(handle) ? `<span class="y-badge" title="Verified">${Y_ICONS.badge}</span>` : '';
 function yPostHtml(store: GameStore, p: YPost): string {
   const liked = !!store.ui.liked[p.id];
+  const reposted = !!store.ui.reposted[p.id];
   const likes = p.likes + (liked ? 1 : 0);
+  const reposts = Math.round(p.likes * 0.14) + (reposted ? 1 : 0);
   const text = linkify(esc(p.text).replace(/(^|[^&\w])(#[a-z][a-z0-9_]*)/gi, '$1<span class="y-at">$2</span>'));
   const prof = `y.com/${esc(p.handle)}`;
   // a bot post in a barrage fades in at its own moment, wherever the repaint catches it
@@ -465,11 +467,11 @@ function yPostHtml(store: GameStore, p: YPost): string {
     </header>
     <p>${text}</p>
     <footer class="y-acts">
-      <span class="y-act">${Y_ICONS.reply}${compact(Math.round(likes * 0.07))}</span>
-      <span class="y-act">${Y_ICONS.repost}${compact(Math.round(likes * 0.14))}</span>
+      <span class="y-act">${Y_ICONS.reply}${compact(Math.round(p.likes * 0.07))}</span>
+      <button class="y-act repost${reposted ? ' on' : ''}" data-repost="${esc(p.id)}" aria-label="Repost">${Y_ICONS.repost}${compact(reposts)}</button>
       <button class="y-act like${liked ? ' on' : ''}" data-like="${esc(p.id)}" aria-label="Like">${Y_ICONS.heart}${compact(likes)}</button>
       ${p.mine && p.delta != null ? `<span class="y-delta ${p.delta > 0 ? 'up' : p.delta < 0 ? 'down' : ''}">${p.delta > 0 ? '+' : p.delta < 0 ? '−' : '±'}${Math.abs(p.delta)} followers${p.score != null ? `<span class="y-score">rated ${p.score.toFixed(1)}/4</span>` : ''}</span>` : ''}
-      <span class="y-act views">${Y_ICONS.views}${compact(Math.max(12, likes * 37 + 9))}</span>
+      <span class="y-act views">${Y_ICONS.views}${compact(Math.max(12, p.likes * 37 + 9))}</span>
     </footer></article>`;
 }
 function pageY(store: GameStore, profile?: string): string {

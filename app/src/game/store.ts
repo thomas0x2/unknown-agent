@@ -60,7 +60,7 @@ export class GameStore {
     ySearch: '', yAllDay: 0, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null as Draft | null,
     /** Bot posts landing as a barrage: when each shows up on Y (performance.now() ms), so a repaint keeps the timing. */
     yBurst: {} as Record<string, number>,
-    project: '', dev: false, liked: {} as Record<string, boolean>, intro: true, greet: false, memWarn: false, confirm: null as null | { text: string; yes: string; fn: () => void }, start: false, menuCat: 'saves',
+    project: '', dev: false, liked: {} as Record<string, boolean>, reposted: {} as Record<string, boolean>, intro: true, greet: false, memWarn: false, confirm: null as null | { text: string; yes: string; fn: () => void }, start: false, menuCat: 'saves',
     /** The Terminal is its own window: open (in the taskbar) and shown (in front of the browser). */
     termOpen: false, termShown: false,
     /** Dev mode: the site whose options panel is open (agent, qmail, y), or ''. */
@@ -307,6 +307,7 @@ export class GameStore {
     this.emit();
   }
   like(id: string): void { this.ui.liked[id] = !this.ui.liked[id]; this.emit(); }
+  repost(id: string): void { this.ui.reposted[id] = !this.ui.reposted[id]; this.emit(); }
   /** Mark a mail row read (persisted, no re-render — called during render). */
   markReadMail(id: string): void {
     const s = this.state;
@@ -373,7 +374,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = HOME_TAB; this.nextTab = PINNED.length + 1;
-    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', jevOffline: null, yUnread: 0 };
+    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, reposted: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', jevOffline: null, yUnread: 0 };
     this.store.save(this.state);
     this.emit();
   }
