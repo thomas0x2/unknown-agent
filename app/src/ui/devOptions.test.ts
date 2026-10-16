@@ -44,3 +44,11 @@ describe('dev options panel', () => {
     expect(effectsSummary({ add: { crypto: -40, familyTrust: 5 }, setFlags: ['gift_chipped_in'] })).toEqual(['crypto -40', 'familyTrust +5', 'sets gift_chipped_in']);
   });
 });
+
+describe('no-reply mechanics in the Qmail panel', () => {
+  it("shows what ignoring Mom costs", () => {
+    const html = panel(startGame(content), 'qmail');
+    expect(html).toContain('lapses tonight');
+    expect(html).toContain('familyTrust -5');
+  });
+});
