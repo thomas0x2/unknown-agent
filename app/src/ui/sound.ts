@@ -8,7 +8,7 @@
  */
 export type Cue =
   | 'click' | 'key' | 'send' | 'reply' | 'mail' | 'post' | 'charge' | 'income'
-  | 'deploy' | 'dayStart' | 'dayEnd' | 'lateWarn' | 'ending';
+  | 'deploy' | 'bounce' | 'dayStart' | 'dayEnd' | 'lateWarn' | 'ending';
 
 export interface SoundSettings { muted: boolean; volume: number }
 
@@ -317,6 +317,14 @@ const CUES: Record<Cue, (e: SoundEngine, t: number) => void> = {
   dayEnd: (e, t) => {
     e.pad([92.5, 139, 185, 220], t, 2.4, 1600, 180, 0.022);
     e.tone(440, t + 0.1, 1.0, { gain: 0.035, glideTo: 110 });
+  },
+  // the recipient's spam filter sent your email back: a flat two-tone reject buzz, then a rubber
+  // stamp. The opposite of a delivery, and the one mail sound that never rises.
+  bounce: (e, t) => {
+    e.tone(185, t, 0.13, { type: 'sawtooth', gain: 0.035, lp: 900 });
+    e.tone(175, t + 0.17, 0.2, { type: 'sawtooth', gain: 0.035, lp: 800 });
+    e.noise(t + 0.44, 0.07, { lp: 700, gain: 0.22 });
+    e.tone(82, t + 0.44, 0.14, { gain: 0.1, glideTo: 55, attack: 0.002 });
   },
   // an hour left: a wristwatch double beep, twice
   lateWarn: (e, t) => {
