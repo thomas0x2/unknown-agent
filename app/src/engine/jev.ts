@@ -48,6 +48,8 @@ export interface PostRating {
 
 export interface FeatureMatchInput {
   prompt: string;
+  /** The player's earlier messages, oldest first: context for what the prompt refers to, not requests. */
+  context?: string[];
   /** Spec features with their plain-language descriptions. */
   features: { id: string; description: string }[];
 }

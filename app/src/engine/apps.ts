@@ -82,6 +82,8 @@ export function registerApp(s: GameState, spec: CreateAppSpec): string {
 export interface BuildCtx {
   tmpl?: AppTemplate;
   prompt?: string;
+  /** The player's earlier messages to the agent: details given there (the dishes, the hours) count too. */
+  context?: string;
   /** Bug ids Jev judged the prompt names (see BugDef.when). */
   named?: string[];
 }
@@ -101,12 +103,30 @@ function tokens(text: string): string[] {
   return text.toLowerCase().match(/[a-z\u00c0-\u024f]{3,}|\d+(?:[.,]\d+)?/g)?.map((t) => t.replace(',', '.')).filter((t) => !/^0+$/.test(t)) ?? [];
 }
 
+function editDistance(a: string, b: string): number {
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    for (let j = 1; j <= b.length; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[b.length];
+}
+
+/** A word the player typed counts if it's close enough: "magherita" is Margherita, "lasagna" is Lasagne. Numbers are exact. */
+function closeEnough(want: string, have: Set<string>): boolean {
+  if (have.has(want) || /^\d/.test(want) || want.length < 5) return have.has(want);
+  const max = want.length >= 8 ? 2 : 1;
+  for (const h of have) if (!/^\d/.test(h) && Math.abs(h.length - want.length) <= max && editDistance(want, h) <= max) return true;
+  return false;
+}
+
 /** True when the prompt carries (nearly) every word and number of `values`, e.g. the dishes and prices. */
 export function promptHasDetails(prompt: string, values: string[]): boolean {
   const want = [...new Set(values.flatMap(tokens))];
   if (!want.length) return true;
   const have = new Set(tokens(prompt));
-  return want.filter((t) => have.has(t)).length / want.length >= 0.85;
+  return want.filter((t) => closeEnough(t, have)).length / want.length >= 0.85;
 }
 
 function detailValues(params: Record<string, string | number> | undefined, def: FeatureDef): string[] {
@@ -130,8 +150,25 @@ function promptHasChange(prompt: string, before: string[], after: string[]): boo
   return promptHasDetails(prompt, [...added, ...dropped]);
 }
 
-function wrongVariant(s: GameState, def: FeatureDef | undefined): Pick<BuiltFeature, 'variant' | 'seed'> {
-  return { variant: def?.bugs?.length ? pick(s, def.bugs).id : undefined, seed: randInt(s, 0, 9999) };
+/** A random bug for a wrong build, skipping the ones already fixed. All of them fixed: undefined. */
+function wrongVariant(s: GameState, def: FeatureDef | undefined, fixed: string[] = []): Pick<BuiltFeature, 'variant' | 'seed'> | undefined {
+  const bugs = def?.bugs ?? [];
+  if (!bugs.length) return { variant: undefined, seed: randInt(s, 0, 9999) }; // a template with no named bugs: just wrong
+  const pool = bugs.filter((b) => !fixed.includes(b.id));
+  return pool.length ? { variant: pick(s, pool).id, seed: randInt(s, 0, 9999) } : undefined;
+}
+
+const fixedOf = (app: AppInstance, id: string): string[] => app.fixed?.[id] ?? [];
+
+/** Remember the bugs a build removed, so later builds of the feature don't bring them back. */
+function recordFixed(app: AppInstance, before: BuiltFeature | undefined, after: BuiltFeature): void {
+  const had = before && !before.correct ? bugsOf(before) : [];
+  const has = after.correct ? [] : bugsOf(after);
+  // 'outdated' is not a mistake: the next client update outdates it again
+  const gone = had.filter((b) => !has.includes(b) && b !== 'outdated');
+  if (!gone.length) return;
+  app.fixed ??= {};
+  app.fixed[after.id] = [...new Set([...fixedOf(app, after.id), ...gone])];
 }
 
 /** Every bug a wrong build has: its main variant and any stacked on it. */
@@ -147,13 +184,15 @@ function attempt(s: GameState, app: AppInstance, id: string, level: number, ctx:
   const def = ctx.tmpl?.features.find((f) => f.id === id);
   const spec = app.specParams[id];
   const existing = app.repo.find((f) => f.id === id);
-  const details = def && ctx.prompt != null ? detailValues(spec, def) : [];
-  const hasDetails = !details.length || promptHasDetails(ctx.prompt ?? '', details);
+  // what the agent knows: this prompt plus what the player told it earlier
+  const said = ctx.prompt != null ? [ctx.context, ctx.prompt].filter(Boolean).join('\n') : undefined;
+  const details = def && said != null ? detailValues(spec, def) : [];
+  const hasDetails = !details.length || promptHasDetails(said ?? '', details);
   if (existing && !existing.correct && existing.variant && ctx.prompt != null && existing.variant !== 'hallucinated') {
     // with no details given, an invented feature is just invented again, so it skips this and rebuilds
     const isAddressed = (v: string) => {
       const bug = def?.bugs?.find((b) => b.id === v);
-      return v === 'outdated' ? hasDetails || (def ? promptHasChange(ctx.prompt!, detailValues(existing.params, def), details) : false)
+      return v === 'outdated' ? hasDetails || (def ? promptHasChange(said!, detailValues(existing.params, def), details) : false)
         : (ctx.named ?? []).includes(v) || (!!bug?.orDetails && details.length > 0 && hasDetails);
     };
     const all = bugsOf(existing);
@@ -162,22 +201,28 @@ function attempt(s: GameState, app: AppInstance, id: string, level: number, ctx:
     // the named bugs are fixed; the ones nobody mentioned stay
     if (left.length) return { ...existing, ...withBugs(left) };
     // the agent already has the details from the repo; only an invented feature needed them again
-    return roll(s, id, level, spec, def);
+    return roll(s, id, level, spec, def, fixedOf(app, id));
   }
-  const checked = ctx.prompt != null ? specChecklist(app, def, ctx.prompt) : undefined;
+  const checked = said != null ? specChecklist(app, def, said) : undefined;
   // every spec item the build prompt never mentioned guarantees its mistake, whatever the roll
-  const missed = [...new Set((def?.checklist ?? []).filter((c) => checked?.[c.id] === false).map((c) => c.bug))].filter((b) => b !== 'hallucinated');
-  if (!hasDetails) {
+  // ...unless the agent already fixed that mistake once: then it knows better
+  const fixed = fixedOf(app, id);
+  const missed = [...new Set((def?.checklist ?? []).filter((c) => checked?.[c.id] === false).map((c) => c.bug))].filter((b) => b !== 'hallucinated' && !fixed.includes(b));
+  // once the real details are in the repo, a prompt without them reuses them instead of inventing
+  if (!hasDetails && !fixed.includes('hallucinated')) {
     report.hallucinated.push(id);
     return { id, correct: false, ...withBugs(['hallucinated', ...missed]), seed: randInt(s, 0, 9999), checked };
   }
   if (missed.length) return { id, correct: false, params: spec, ...withBugs(missed), seed: randInt(s, 0, 9999), checked };
-  return { ...roll(s, id, level, spec, def), checked };
+  return { ...roll(s, id, level, spec, def, fixed), checked };
 }
 
-function roll(s: GameState, id: string, level: number, spec: BuiltFeature['params'], def: FeatureDef | undefined): BuiltFeature {
+function roll(s: GameState, id: string, level: number, spec: BuiltFeature['params'], def: FeatureDef | undefined, fixed: string[] = []): BuiltFeature {
   if (chance(s, successChance(level))) return { id, correct: true, params: spec };
-  return { id, correct: false, params: spec, ...wrongVariant(s, def) };
+  const wrong = wrongVariant(s, def, fixed);
+  // every mistake it could make here has been fixed before
+  if (!wrong) return { id, correct: true, params: spec };
+  return { id, correct: false, params: spec, ...wrong };
 }
 
 /**
@@ -193,7 +238,9 @@ export function buildApp(s: GameState, appId: string, requested: string[], level
   const built: BuiltFeature[] = [];
   for (const id of app.required) {
     if (!requested.includes(id)) continue; // forgotten features are missing
-    built.push(attempt(s, app, id, level, ctx, report));
+    const f = attempt(s, app, id, level, ctx, report);
+    recordFixed(app, app.repo.find((x) => x.id === id), f);
+    built.push(f);
   }
   // keep any already-correct features the player didn't re-request
   for (const f of app.repo) if (!built.some((b) => b.id === f.id)) built.push(f);
@@ -209,7 +256,8 @@ export function buildApp(s: GameState, appId: string, requested: string[], level
     if (correct.length === app.repo.length && correct.length > 0) {
       const preferred = correct.filter((f) => ctx.tmpl?.features.find((d) => d.id === f.id)?.firstBuildBug);
       const victim = pick(s, preferred.length ? preferred : correct);
-      Object.assign(victim, { correct: false, ...wrongVariant(s, ctx.tmpl?.features.find((d) => d.id === victim.id)) });
+      const wrong = wrongVariant(s, ctx.tmpl?.features.find((d) => d.id === victim.id), fixedOf(app, victim.id));
+      if (wrong) Object.assign(victim, { correct: false, ...wrong });
     }
   }
   return report;
@@ -319,6 +367,7 @@ export function fixApp(s: GameState, appId: string, featureId: string | null, le
   if (!app || !featureId) return false;
   if (!repoProblem(app, featureId)) return false;
   const f = attempt(s, app, featureId, level, ctx, report);
+  recordFixed(app, app.repo.find((x) => x.id === featureId), f);
   const idx = app.repo.findIndex((x) => x.id === featureId);
   if (idx >= 0) app.repo[idx] = f;
   else app.repo.push(f);
@@ -378,6 +427,8 @@ export function devToggleBug(s: GameState, appId: string, featureId: string, key
     return;
   }
   const spec = app.specParams[featureId];
+  // switching a bug on by hand also lets the agent make it again
+  if (app.fixed?.[featureId]) app.fixed[featureId] = app.fixed[featureId].filter((b) => b !== key);
   const toggle = (list: BuiltFeature[]) => {
     let f = list.find((x) => x.id === featureId);
     if (!f) { f = { id: featureId, correct: true, params: spec }; list.push(f); }
