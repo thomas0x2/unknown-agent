@@ -19,9 +19,9 @@ describe('sound cues', () => {
   it('plays income for money coming in', () => {
     expect(soundCues(base, at({ txCount: 11, txTotal: 140 }))).toEqual(['income']);
   });
-  it('plays a deploy over a push', () => {
+  it('plays a push, but leaves a deploy to the button', () => {
     expect(soundCues(base, at({ pushes: 2 }))).toEqual(['push']);
-    expect(soundCues(base, at({ pushes: 2, deploys: 1 }))).toEqual(['deploy']);
+    expect(soundCues(base, at({ pushes: 2, deploys: 1 }))).toEqual([]);
   });
   it('warns once when the last hour starts', () => {
     expect(soundCues(at({ clockMin: LATE_MIN - 1 }), at({ clockMin: LATE_MIN }))).toEqual(['lateWarn']);

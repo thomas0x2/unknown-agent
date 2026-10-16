@@ -53,8 +53,8 @@ export function soundCues(a: SoundSnap, b: SoundSnap): Cue[] {
   if (a.morning && !b.morning) out.push('dayStart');
   if (a.clockMin < LATE_MIN && b.clockMin >= LATE_MIN) out.push('lateWarn');
   if (b.agentMsgs > a.agentMsgs) out.push('reply');
-  if (b.deploys > a.deploys) out.push('deploy');
-  else if (b.pushes > a.pushes) out.push('push');
+  // a deploy plays its signature sound from the button itself (main.ts), so only a push is heard here
+  if (b.pushes > a.pushes && b.deploys === a.deploys) out.push('push');
   if (b.inbox > a.inbox) out.push('mail');
   if (b.posts > a.posts) out.push('post');
   if (b.txCount > a.txCount) {

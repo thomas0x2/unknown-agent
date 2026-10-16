@@ -292,11 +292,17 @@ const CUES: Record<Cue, (e: SoundEngine, t: number) => void> = {
     const scale = [1047, 1175, 1319, 1568, 1760];
     for (let i = 0; i < 7; i++) e.tone(scale[Math.floor(Math.random() * scale.length)], t + i * 0.028, 0.03, { type: 'square', gain: 0.014, lp: 3200 });
   },
-  // a deploy: the burst, then a settled confirmation tone
+  // the Deploy button, the game's signature sound: a heavy stamp on the desk, a rising upload,
+  // then a short three-note confirmation that settles a little lower than you'd hope
   deploy: (e, t) => {
-    CUES.push(e, t);
-    e.tone(523, t + 0.24, 0.5, { gain: 0.045, type: 'triangle' });
-    e.tone(784, t + 0.24, 0.5, { gain: 0.035 });
+    e.noise(t, 0.09, { lp: 900, gain: 0.3 });
+    e.tone(110, t, 0.18, { gain: 0.14, glideTo: 55, attack: 0.002 });
+    e.noise(t + 0.02, 0.04, { bp: 2600, q: 2, gain: 0.06 });
+    e.tone(330, t + 0.12, 0.42, { type: 'sawtooth', gain: 0.02, glideTo: 1320, lp: 2400 });
+    const scale = [1319, 1568, 1760, 2093];
+    for (let i = 0; i < 6; i++) e.tone(scale[i % scale.length], t + 0.16 + i * 0.045, 0.035, { type: 'square', gain: 0.012, lp: 3400 });
+    [[659, 0.6], [988, 0.72], [880, 0.86]].forEach(([f, at]) => e.tone(f, t + at, 0.5, { gain: 0.045, type: 'triangle' }));
+    e.tone(440, t + 0.86, 0.7, { gain: 0.025 });
   },
   // the working day opens: a low pad that brightens, then one bell
   dayStart: (e, t) => {

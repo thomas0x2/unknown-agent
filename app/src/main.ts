@@ -260,7 +260,7 @@ document.addEventListener('click', (e) => {
   // data-newtab with a URL opens that page in a new tab (Forkyard deployments); empty opens a blank tab
   else if (d.newtab != null) { newPageLoad(); store.navigate(d.newtab || 'newtab', true); }
   else if (d.like != null) store.like(d.like);
-  else if (d.deploy != null) store.deploy(d.deploy);
+  else if (d.deploy != null) { SOUND.play('deploy'); store.deploy(d.deploy); }
   else if (d.takedown != null) store.confirm('Take it offline? It counts as broken at payday.', 'Take down', () => store.takeDown(d.takedown!));
   // the cancel link opens the restaurant's cancel page in a new tab
   else if (d.cancelBooking != null) { store.cancelBooking(d.cancelBooking); if (d.cancelUrl) { newPageLoad(); store.navigate(d.cancelUrl, true); } }
@@ -437,7 +437,7 @@ document.addEventListener('pointerdown', (e) => {
   SOUND.unlock();
   const t = e.target as HTMLElement;
   const hit = t.closest('button, a, summary, label, select, [data-nav], [data-tab], [data-act], [data-task], [data-start], [data-like], [data-star], input[type="checkbox"], input[type="radio"]');
-  if (hit && !(hit instanceof HTMLButtonElement && hit.type === 'submit' && hit.form)) SOUND.play('click', 0, soundSite(t));
+  if (hit && !hit.closest('[data-deploy]') && !(hit instanceof HTMLButtonElement && hit.type === 'submit' && hit.form)) SOUND.play('click', 0, soundSite(t));
 }, true);
 document.addEventListener('keydown', (e) => {
   SOUND.unlock();
