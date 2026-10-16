@@ -92,8 +92,12 @@ export interface BuildReport {
   hallucinated: string[];
 }
 
+const fillSpec = (text: string, params?: Record<string, string | number>) =>
+  text.replace(/\{\{(\w+)\}\}/g, (_m, k: string) => String(params?.[k] ?? ''));
+
 function tokens(text: string): string[] {
-  return text.toLowerCase().match(/[a-z\u00c0-\u024f]{3,}|\d+(?:[.,]\d+)?/g)?.map((t) => t.replace(',', '.')) ?? [];
+  // "17:00" counts as 17: the zeros are formatting, not something the prompt has to repeat
+  return text.toLowerCase().match(/[a-z\u00c0-\u024f]{3,}|\d+(?:[.,]\d+)?/g)?.map((t) => t.replace(',', '.')).filter((t) => !/^0+$/.test(t)) ?? [];
 }
 
 /** True when the prompt carries (nearly) every word and number of `values`, e.g. the dishes and prices. */
@@ -106,6 +110,14 @@ export function promptHasDetails(prompt: string, values: string[]): boolean {
 
 function detailValues(params: Record<string, string | number> | undefined, def: FeatureDef): string[] {
   return (def.details ?? []).map((k) => params?.[k]).filter((v) => v != null).map(String);
+}
+
+/** Which of the feature's spec checklist items the prompt mentions explicitly (item id -> mentioned). */
+export function specChecklist(app: AppInstance, def: FeatureDef | undefined, prompt: string): Record<string, boolean> | undefined {
+  if (!def?.checklist?.length) return undefined;
+  const out: Record<string, boolean> = {};
+  for (const c of def.checklist) out[c.id] = promptHasDetails(prompt, [fillSpec(c.text, app.specParams[def.id])]);
+  return out;
 }
 
 /** For an outdated feature: does the prompt spell out what changed (new dishes and prices, dropped dishes)? */
@@ -138,11 +150,15 @@ function attempt(s: GameState, app: AppInstance, id: string, level: number, ctx:
     // the agent already has the details from the repo; only an invented feature needed them again
     if (v !== 'hallucinated') return roll(s, id, level, spec, def);
   }
+  const checked = ctx.prompt != null ? specChecklist(app, def, ctx.prompt) : undefined;
   if (!hasDetails) {
     report.hallucinated.push(id);
-    return { id, correct: false, variant: 'hallucinated', seed: randInt(s, 0, 9999) };
+    return { id, correct: false, variant: 'hallucinated', seed: randInt(s, 0, 9999), checked };
   }
-  return roll(s, id, level, spec, def);
+  // a spec item the build prompt never mentioned guarantees its mistake, whatever the roll
+  const missed = (def?.checklist ?? []).find((c) => checked?.[c.id] === false);
+  if (missed) return { id, correct: false, params: spec, variant: missed.bug, seed: randInt(s, 0, 9999), checked };
+  return { ...roll(s, id, level, spec, def), checked };
 }
 
 function roll(s: GameState, id: string, level: number, spec: BuiltFeature['params'], def: FeatureDef | undefined): BuiltFeature {
@@ -193,8 +209,6 @@ const BREAK_CATEGORIES: Partial<Record<FailureKind, string>> = {
   failed_fetch: "doesn't load: failed to fetch",
 };
 
-const fill = (text: string, params?: Record<string, string | number>) =>
-  text.replace(/\{\{(\w+)\}\}/g, (_m, k: string) => String(params?.[k] ?? ''));
 
 /**
  * Everything a prompt can name about one feature: the feature, every bug the template knows for
@@ -204,10 +218,44 @@ export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, f
   const def = tmpl?.features.find((f) => f.id === featureId);
   if (!def) return [];
   const out: FixCategory[] = [{ id: 'feature', description: def.description }];
-  for (const b of def.bugs ?? []) out.push({ id: b.id, description: fill(b.when, app.specParams[featureId]) });
+  for (const b of def.bugs ?? []) out.push({ id: b.id, description: fillSpec(b.when, app.specParams[featureId]) });
   const brk = app.breaks.find((b) => b.featureId === featureId);
   const cat = brk && BREAK_CATEGORIES[brk.failure];
   if (brk && cat) out.push({ id: brk.failure, description: cat });
+  return out;
+}
+
+const BREAK_MATCH: Partial<Record<FailureKind, RegExp>> = {
+  visible: /\b(crash(es|ed|ing)?|application error|exception|error|blank|white screen|broken page)\b/i,
+  failed_fetch: /\b(fetch|loading|(doesn'?t|does not|won'?t|not|fails? to|can'?t|cannot)\s+(load|show|open|appear))\b/i,
+};
+
+const escRe = (t: string) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+/** A content regex with {{param}} (literal) and {{param:words}} (any of its words) filled from the spec. */
+function specRegex(src: string, params?: Record<string, string | number>): RegExp | null {
+  const body = src.replace(/\{\{(\w+)(:words)?\}\}/g, (_m, k: string, words?: string) => {
+    const v = String(params?.[k] ?? '');
+    if (!words) return v ? escRe(v) : '(?!)';
+    const ws = [...new Set(v.toLowerCase().match(/[a-z\u00c0-\u024f]{4,}/g) ?? [])];
+    return ws.length ? ws.map(escRe).join('|') : '(?!)';
+  });
+  try { return new RegExp(body, 'i'); } catch { return null; }
+}
+
+/**
+ * The categories of fixCategories that the prompt's wording names, by the template's regexes and
+ * no model. Unioned with Jev's matches so common phrasings never depend on the model's mood.
+ */
+export function keywordCategories(app: AppInstance, tmpl: AppTemplate | undefined, featureId: string, prompt: string): string[] {
+  const def = tmpl?.features.find((f) => f.id === featureId);
+  if (!def) return [];
+  const params = app.specParams[featureId];
+  const out: string[] = [];
+  if (def.match && specRegex(def.match, params)?.test(prompt)) out.push('feature');
+  for (const b of def.bugs ?? []) if (b.match && specRegex(b.match, params)?.test(prompt)) out.push(b.id);
+  const brk = app.breaks.find((b) => b.featureId === featureId);
+  if (brk && BREAK_MATCH[brk.failure]?.test(prompt)) out.push(brk.failure);
   return out;
 }
 

@@ -16,7 +16,7 @@ import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
 import { pageDrive } from './qdrive';
 import { adHtml } from './ads';
-import { renderAppSite } from './appsite';
+import { renderAppSite, devBugPanel } from './appsite';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const WALLET_ADDR = '0x4417c3e8b1d05f2a9e6d7b0c1f83a4e5d2b9a9f2';
@@ -554,7 +554,7 @@ function pageForkyard(store: GameStore, repo?: string): string {
           ${a.deployed
             ? `<dl><dt>Status</dt><dd>live at <a href="#" data-nav="${esc(a.url)}">${esc(a.url)}</a></dd><dt>Hosting / day</dt><dd>$2.00</dd>${stale ? '<dt>Repo</dt><dd>new commit — redeploy</dd>' : ''}</dl><div class="fy-row"><button class="fy-btn" data-deploy="${esc(a.id)}">Redeploy</button><button class="fy-btn ghost" data-takedown="${esc(a.id)}">Take down</button></div>`
             : `<p class="fy-note">Hosting costs $2.00/day, billed nightly. Nothing is live until you deploy.</p><button class="fy-btn" data-deploy="${esc(a.id)}">Deploy</button>`}
-        </div></div></div></div>`;
+        </div></div>${devBugPanel(a, tmpl)}</div></div>`;
   }
   const list = s.apps.length
     ? s.apps.slice().reverse().map((a) => `<article class="fy-repo">
@@ -576,7 +576,8 @@ function pageApp(store: GameStore, param?: string): string {
         <input id="bk-email" value="${esc(PLAYER.addr)}" aria-label="Email"> <input id="bk-time" value="19:00" aria-label="Time"> <input id="bk-party" value="2" type="number" min="1" max="8" aria-label="Party">
         <button class="pv-btn ok" type="submit">Book</button></form>`
     : undefined;
-  return `<div class="pv-host">${renderAppSite(a, store.content.apps[a.template], sub, { booking })}</div>`;
+  const tmpl = store.content.apps[a.template];
+  return `<div class="pv-host">${renderAppSite(a, tmpl, sub, { booking })}${devBugPanel(a, tmpl)}</div>`;
 }
 
 // ── agent chat (free-promptable, with costs) ──

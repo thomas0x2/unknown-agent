@@ -14,7 +14,7 @@ import { clone, addValue, log, rand, pick, tick, money } from './core';
 import { applyEffects } from './effects';
 import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent';
 import { getEvent, activeDeliveries, reachableByEmail } from './events';
-import { buildApp, fixApp, fixBreak, fixCategories, needsWork, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, type BuildReport } from './apps';
+import { buildApp, fixApp, fixBreak, fixCategories, keywordCategories, needsWork, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, type BuildReport } from './apps';
 import { type Writer, scriptedWriter } from './writer';
 
 export interface ReplyResult {
@@ -322,8 +322,12 @@ export async function promptAgent(
         for (const c of fixCategories(a, tmpl, id)) cats.push({ id: `${a.id}::${id}::${c.id}`, description: `${c.description} (for ${a.name})` });
       }
     }
-    const matched = await jev.matchFeatures({ prompt: text, features: cats });
-    if (matched.length) {
+    const matched = new Set(await jev.matchFeatures({ prompt: text, features: cats }));
+    // plus the template's own wordings for each feature and bug, so common phrasings don't hinge on Jev
+    const hits = workable.map((a) => ({ a, ids: a.required.filter((id) => needsWork(a, id)).flatMap((id) => keywordCategories(a, content.apps[a.template], id, text).map((c) => `${a.id}::${id}::${c}`)) })).filter((h) => h.ids.length);
+    const named = hits.filter((h) => new RegExp(`\\b${h.a.name.toLowerCase().split(/\s+/)[0].replace(/[^a-z0-9]/g, '')}`, 'i').test(text));
+    for (const h of hits.length > 1 && named.length ? named : hits) for (const id of h.ids) matched.add(id);
+    if (matched.size) {
       const s = clone(s0);
       const byApp = new Map<string, Map<string, string[]>>();
       for (const m of matched) {
@@ -473,7 +477,7 @@ async function namedBugs(jev: JevRouter, app: AppInstance, tmpl: AppTemplate | u
     const f = app.repo.find((x) => x.id === id);
     const cats = fixCategories(app, tmpl, id).filter((c) => c.id !== 'feature');
     if (!f || f.correct || !f.variant || !cats.length) continue;
-    out.push(...await jev.matchFeatures({ prompt, features: cats }));
+    out.push(...await jev.matchFeatures({ prompt, features: cats }), ...keywordCategories(app, tmpl, id, prompt));
   }
   return out;
 }
