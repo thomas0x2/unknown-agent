@@ -86,7 +86,7 @@ function toast(title: string, body: string, kind = 'note'): void {
 
 // ── clicks ──
 document.addEventListener('click', (e) => {
-  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-reply-to],[data-wl-range],[data-star],[data-download],[data-llm],[data-ov],[data-dev],[data-cancel-booking],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat]');
+  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-llm],[data-ov],[data-dev],[data-cancel-booking],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat]');
   // any click outside the home menu closes it (menu items close it themselves below)
   if (store.ui.start && !(e.target as HTMLElement).closest('#startmenu, #dk-home')) store.toggleStart(false);
   if (!t) return;
@@ -105,7 +105,6 @@ document.addEventListener('click', (e) => {
   else if (d.deploy != null) store.deploy(d.deploy);
   else if (d.takedown != null) store.confirm('Take it offline? It counts as broken at payday.', 'Take down', () => store.takeDown(d.takedown!));
   else if (d.cancelBooking != null) { store.cancelBooking(d.cancelBooking); toast('Qmail', 'Booking cancelled', 'mail'); }
-  else if (d.replyTo != null) { store.setDraft({ to: d.replyTo, subject: 'Re:', body: '' }); store.navigate('qmail.com/compose'); }
   else if (d.mailDiscard != null) { store.setDraft(null); store.navigate('qmail.com'); }
   else if (d.star != null) store.setReviewStars(Number(d.star));
   else if (d.download != null) { store.download(d.download); toast('Downloads', `${d.download} saved to your laptop`, 'note'); }
@@ -149,9 +148,14 @@ document.addEventListener('submit', (e) => {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) { toast('Qmail', 'Enter a valid address.', 'mail'); return; }
     void store.compose(to, subject, body).then((r) => { if (!r.sent) toast('Qmail', 'You already wrote to them today.', 'mail'); else { store.setDraft(null); store.navigate('qmail.com/sent'); toast('Qmail', `Sent to ${to}`, 'mail'); } });
   } else if (kind === 'reply') {
-    const id = f.dataset.id!; const v = val('#reply-body').trim();
+    const v = val('#reply-body').trim(); if (!v) return;
     const input = $<HTMLTextAreaElement>('#reply-body'); if (input) input.value = '';
-    if (v) void store.reply(id, v).then((r) => { if (r.reply) toast('Qmail', 'They wrote back — check your inbox.', 'mail'); });
+    const id = f.dataset.id, to = f.dataset.to;
+    if (id) void store.reply(id, v).then((r) => { if (r.reply) toast('Qmail', 'They wrote back — check your inbox.', 'mail'); });
+    else if (to) void store.compose(to, f.dataset.subject ?? '', v).then((r) => {
+      if (!r.sent) { const el = $<HTMLTextAreaElement>('#reply-body'); if (el) el.value = v; toast('Qmail', 'You already wrote to them today.', 'mail'); }
+      else toast('Qmail', r.reply ? 'They wrote back — check your inbox.' : `Sent to ${to}`, 'mail');
+    });
   } else if (kind === 'review') {
     const biz = f.dataset.biz!; const v = val('#review-text').trim(); const stars = store.ui.reviewStars;
     if (!stars) { toast('Yowl', 'Pick a rating first.', 'note'); return; }
