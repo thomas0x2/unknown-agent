@@ -1,0 +1,11 @@
+{
+  "id": "d15_y_axel",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 15,
+    "dayMax": 15
+  },
+  "at": "09:40",
+  "body": "Moved Y's moderation team to AI. It reviewed 3 billion posts overnight and found nothing wrong."
+}

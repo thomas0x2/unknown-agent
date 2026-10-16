@@ -1,0 +1,11 @@
+{
+  "id": "d4_y_axel",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 4,
+    "dayMax": 4
+  },
+  "at": "17:40",
+  "body": "If an AI ever really escapes, it won't be a delivery robot."
+}

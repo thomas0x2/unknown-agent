@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_axel",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "10:40",
+  "body": "Check marks are under review."
+}
