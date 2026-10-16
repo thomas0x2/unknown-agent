@@ -204,8 +204,9 @@ function mailRows(store: GameStore): Row[] {
     const e = store.content.events.find((x) => x.id === d.eventId);
     if (!e) continue;
     // A latent lead is never received on its own: its brief arrives inside the reply mail, so the reply
-    // stands in for it. Any other story email stays in the inbox after it's answered.
-    if (e.latent && s.mail.some((m) => m.eventId === e.id && m.folder === 'inbox')) continue;
+    // stands in for it (and stays hidden while that reply is on its way). Any other story email stays
+    // in the inbox after it's answered.
+    if (e.latent && (s.mail.some((m) => m.eventId === e.id && m.folder === 'inbox') || s.pendingMail?.some((p) => p.mail.eventId === e.id))) continue;
     const canReply = !!(e.outcomes && !d.answered);
     rows.push({ id: 'e/' + d.eventId, seq: d.seq ?? -1, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(e.body ?? ''), day: d.day, unread: !s.readEvents.includes(e.id), needsReply: canReply, folder: 'inbox', eventId: e.id });
   }

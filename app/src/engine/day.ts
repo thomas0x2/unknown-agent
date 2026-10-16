@@ -7,7 +7,7 @@ import type { GameState, MorningCard } from './state';
 import type { Content } from '../content/schema';
 import { RENT, SUSPICION, LAST_DAY, APPS, CLOCK } from './config';
 import { newGame, startDayChat } from './state';
-import { clone, addValue, money, log } from './core';
+import { clone, addValue, money, log, deliverPendingMail } from './core';
 import { runPayday, nightlyBreaks } from './apps';
 import { deliverComplaints } from './complaints';
 import { deliverDue } from './events';
@@ -21,6 +21,7 @@ function runMorning(s: GameState, content: Content): void {
   s.postsToday = 0;
   s.sentToday = [];
   s.clockMin = CLOCK.wake;
+  deliverPendingMail(s); // replies still on their way overnight arrive in the morning
   s.phase = 'work';
 }
 

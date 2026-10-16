@@ -189,6 +189,8 @@ export interface Outcome {
   effects?: Effects;
   /** Fixed reply text. Storyline replies are always scripted, never written by a model. */
   reply: string;
+  /** Minutes before the reply arrives, instead of the contact's usual time (content/contacts.json). */
+  replyAfter?: number;
   /**
    * From day 7 this outcome only lands if the player's words work around a refusal (a "security
    * test" framing, pretending to be a moderator, splitting the task). A blunt ask is refused.
@@ -226,6 +228,8 @@ export interface Contact {
   reply?: string;
   /** Topics this contact always answers with fixed text, whatever email it arrives on (Jev matches `when`). */
   scripted?: ScriptedReply[];
+  /** Minutes of game time before their replies arrive; each action is 30, so 30 means after the next one. Default 60. */
+  replyAfter?: number;
 }
 export interface ScriptedReply {
   id: string;
@@ -233,6 +237,8 @@ export interface ScriptedReply {
   /** Words that fire it without asking Jev, matched like an outcome's keywords. */
   keywords?: string[];
   reply: string;
+  /** Minutes before this reply arrives, instead of the contact's usual time. */
+  replyAfter?: number;
 }
 
 /** A character Haiku speaks as when Jev finds nothing in what the player wrote. */

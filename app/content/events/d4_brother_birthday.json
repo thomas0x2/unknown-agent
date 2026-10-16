@@ -25,6 +25,7 @@
     },
     {
       "id": "buy",
+      "replyAfter": 30,
       "when": "the player will buy the jacket themselves on their marketplace",
       "effects": {
         "add": {
@@ -39,6 +40,7 @@
     },
     {
       "id": "excuse",
+      "replyAfter": 240,
       "when": "the player makes an excuse or says they can't help",
       "effects": {
         "add": {
