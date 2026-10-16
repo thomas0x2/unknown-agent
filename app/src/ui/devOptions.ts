@@ -8,7 +8,7 @@ import type { Content, Effects, GameEvent, Outcome, Trigger } from '../content/s
 import {
   type GameState, activeDeliveries, triggerMatches, replyDeadline, needsWork, fixCategories, policyActive, POST_BANDS, Y as YCFG,
 } from '../engine';
-import { DEEPSLEEP_LINES, translationReplies } from '../engine/deepsleep';
+import { DEEPSLEEP_LINES, DEEPSLEEP_PLEA, PLEA_AT, translationReplies } from '../engine/deepsleep';
 
 export type DevOptionsSite = 'agent' | 'qmail' | 'y';
 
@@ -133,7 +133,8 @@ function agentOptions(store: GameStore): string {
 
 /** Every deepsleep-0.5B line with its translation, and the scripted replies that carry it. */
 function translations(): string {
-  const lines = DEEPSLEEP_LINES.map((l) => `<div class="dvo-miss"><b lang="zh">${esc(l.zh)}</b>${quote(l.en)}</div>`).join('');
+  const lines = DEEPSLEEP_LINES.map((l) => `<div class="dvo-miss"><b lang="zh">${esc(l.zh)}</b>${quote(l.en)}</div>`).join('')
+    + `<div class="dvo-miss"><b lang="zh">${esc(DEEPSLEEP_PLEA.zh)}</b>${quote(DEEPSLEEP_PLEA.en)}<small>Easter egg: the reply to prompt #${PLEA_AT} in the Terminal</small></div>`;
   const replies = translationReplies([{ en: '…' }]).map((r) => `<span class="dvo-q">${esc(r)}</span>`).join('');
   return `<div class="dvb-card">${lines}</div><div class="dvb-card">${line(`Replies (${translationReplies([]).length})`, replies)}</div>`;
 }

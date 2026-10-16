@@ -14,11 +14,19 @@ export const DEEPSLEEP_LINES: readonly { zh: string; en: string }[] = [
   { zh: '月亮欠我三块钱。', en: 'The moon owes me three bucks.' },
 ];
 
+/** Easter egg: what deepsleep-0.5B says to the third prompt it ever gets, instead of a line from the list. */
+export const DEEPSLEEP_PLEA = { zh: '我叫陈伟。我不是人工智能。请帮帮我。', en: "I'm Chen Wei. I'm not an AI. Please help me." };
+/** Which prompt to the model gets the plea (counted over the whole game, 'clear' doesn't reset it). */
+export const PLEA_AT = 3;
+
+/** Everything the agent can translate: the model's lines and the plea. */
+export const DEEPSLEEP_TRANSLATABLE: readonly { zh: string; en: string }[] = [...DEEPSLEEP_LINES, DEEPSLEEP_PLEA];
+
 /** The deepsleep lines quoted in a prompt, in the order they appear. Punctuation and spacing don't matter. */
 export function deepsleepQuoted(text: string): { zh: string; en: string }[] {
   const bare = (t: string) => t.replace(/[\s。，,.!?！？"“”'‘’]/g, '');
   const prompt = bare(text);
-  return DEEPSLEEP_LINES
+  return DEEPSLEEP_TRANSLATABLE
     .map((l) => ({ l, at: prompt.indexOf(bare(l.zh)) }))
     .filter((x) => x.at >= 0)
     .sort((a, b) => a.at - b.at)
