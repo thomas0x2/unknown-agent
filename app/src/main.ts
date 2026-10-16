@@ -31,6 +31,8 @@ import { newPageLoad } from './ui/ads';
 import { pullPct } from './game/pull';
 import { trackLoads, LOADING_HTML } from './ui/pageLoad';
 import { markSend, applySendFx } from './ui/sendFx';
+import { SOUND } from './ui/sound';
+import { soundSnap, soundCues } from './ui/soundCues';
 
 const content = loadContent();
 const writer = makeWriter(content);
@@ -140,6 +142,7 @@ function render(): void {
   // the loading page has no scroll worth keeping
   shownKey = busy ? null : key;
   vp.dataset.site = site;
+  SOUND.setSite(site);
   for (const [id, v] of Object.entries(keep)) { const el = document.getElementById(id) as HTMLInputElement | null; if (el && !el.disabled) el.value = v; }
   if (focusId) {
     const el = document.getElementById(focusId) as HTMLInputElement | null;
@@ -157,7 +160,7 @@ function render(): void {
   $('#dk-tasks')!.innerHTML = V.tasksHtml(store);
   renderTerm();
   $('#clock')!.innerHTML = V.clockHtml(s);
-  const menu = $('#startmenu')!; menu.hidden = !store.ui.start; menu.innerHTML = store.ui.start ? V.startMenuHtml(store) : '';
+  const menu = $('#startmenu')!; menu.hidden = !store.ui.start; if (document.activeElement?.id !== 'snd-vol' || !store.ui.start) menu.innerHTML = store.ui.start ? V.startMenuHtml(store) : '';
   const startBtn = $('#dk-home')!; startBtn.classList.toggle('on', store.ui.start); startBtn.setAttribute('aria-expanded', String(store.ui.start));
 
   const ov = $('#overlay')!; const oh = V.overlayHtml(store); ov.innerHTML = oh; ov.hidden = !oh;
@@ -197,9 +200,23 @@ function renderPull(): void {
     el.querySelector('i')!.style.width = `${pct}%`; el.querySelector('b')!.textContent = `Downloading ${pct}%`;
   });
 }
+// ── sound: cues come from what changed in the game since the last look ──
+let snap = soundSnap(store.state);
+let resyncSound = false;
+function listen(): void {
+  const next = soundSnap(store.state);
+  const cues = resyncSound ? [] : soundCues(snap, next);
+  resyncSound = false;
+  snap = next;
+  cues.forEach((c, i) => SOUND.play(c, i * 0.16));
+}
+/** A loaded save or a new game replaces the state wholesale: take a fresh look without playing anything. */
+function quietReset(): void { resyncSound = true; }
 store.subscribe(render);
+store.subscribe(listen);
 store.onPull(renderPull);
-store.onClock(() => { $('#clock')!.innerHTML = V.clockHtml(store.state); });
+store.onClock(() => { $('#clock')!.innerHTML = V.clockHtml(store.state); listen(); });
+SOUND.onChange(render);
 store.startClock();
 MISSES.onChange(render);
 JEV.onChange(render);
@@ -233,7 +250,7 @@ document.addEventListener('click', (e) => {
   if (d.slotLoad != null) {
     const n = d.slotLoad === 'auto' ? 'auto' as const : Number(d.slotLoad);
     const name = n === 'auto' ? 'the autosave' : `slot ${n}`;
-    store.confirm(`Load ${name}? Your current game is replaced by it.`, 'Load', () => { forgetDrafts(); store.loadSlot(n); });
+    store.confirm(`Load ${name}? Your current game is replaced by it.`, 'Load', () => { forgetDrafts(); quietReset(); store.loadSlot(n); });
     return;
   }
   if (d.nav != null) { newPageLoad(); store.navigate(d.nav); }
@@ -265,11 +282,12 @@ document.addEventListener('click', (e) => {
   else if (d.act === 'send-cancel') store.toggleSend(false);
   else if (d.act === 'receive') copyWalletAddress();
   else if (d.act === 'sleep') store.endDay();
-  else if (d.act === 'new') store.confirm('Start over? This erases your save.', 'Start over', () => { forgetDrafts(); store.newGame(); });
+  else if (d.act === 'new') store.confirm('Start over? This erases your save.', 'Start over', () => { forgetDrafts(); quietReset(); store.newGame(); });
   else if (d.act === 'dev') store.toggleDev();
   else if (d.act === 'devedit') store.toggleDevEdit();
   else if (d.act === 'devmode') store.setDevMode(!store.devMode);
   else if (d.act === 'intro') store.openIntro();
+  else if (d.act === 'sound') SOUND.setMuted(!SOUND.settings.muted);
 });
 
 /** Coinbin Receive: the player's address goes on the clipboard, for pasting wherever someone wants paying. */
@@ -282,10 +300,10 @@ function copyWalletAddress(): void {
 function clearMailDraft(): void { ['mail-to', 'mail-subject', 'mail-body'].forEach(clearField); }
 
 function onOverlay(a: string): void {
-  if (a === 'new') { forgetDrafts(); store.newGame(); }
+  if (a === 'new') { forgetDrafts(); quietReset(); store.newGame(); }
   else if (a === 'start') store.seenIntro();
   else if (a === 'morning') store.dismissMorning();
-  else if (a === 'greet') store.dismissGreet();
+  else if (a === 'greet') { store.dismissGreet(); SOUND.play('dayStart', 0.1); }
   else if (a === 'mem-ok') store.dismissMemWarn();
   else if (a === 'confirm-yes') store.resolveConfirm(true);
   else if (a === 'confirm-no') store.resolveConfirm(false);
@@ -304,14 +322,15 @@ document.addEventListener('submit', (e) => {
   if (!f) return;
   e.preventDefault();
   const kind = f.dataset.form;
-  if (kind === 'dev-day') { store.devGoToDay(Number(val('#dev-day'))); return; }
+  if (kind === 'dev-day') { quietReset(); store.devGoToDay(Number(val('#dev-day'))); return; }
   if (kind === 'dev-flag') { const v = val('#dev-flag-name').trim(); if (v) store.devSetFlag(v, true); return; }
   if (kind === 'phish') { store.phish(val('#ph-pass')); return; }
   if (kind === 'cb-send') { store.send(val('#cb-to').trim(), val('#cb-amount').trim()); return; }
   if (kind === 'url') { newPageLoad(); store.navigate(val('#nt-url') || val('#address')); }
-  else if (kind === 'ypost') { const v = val('#post-input').trim(); if (v) { clearField('post-input'); markSend($('#viewport')!, 'post'); void store.post(v, trendingToday()); } }
+  else if (kind === 'ypost') { const v = val('#post-input').trim(); if (v) { SOUND.play('send'); clearField('post-input'); markSend($('#viewport')!, 'post'); void store.post(v, trendingToday()); } }
   else if (kind === 'prompt') {
     const v = val('#prompt-input').trim(); if (!v || store.busy) return;
+    SOUND.play('send');
     clearField('prompt-input');
     updateCost();
     markSend($('#viewport')!, 'prompt');
@@ -320,9 +339,11 @@ document.addEventListener('submit', (e) => {
     const to = val('#mail-to').trim(), subject = val('#mail-subject').trim(), body = val('#mail-body').trim();
     if (!to || !body) return;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) { store.setMailError('Enter a valid address.'); return; }
+    SOUND.play('send');
     void store.compose(to, subject, body).then((r) => { if (r?.sent) { clearMailDraft(); store.setDraft(null); store.navigate('qmail.com/sent'); } });
   } else if (kind === 'reply') {
     const v = val('#reply-body').trim(); if (!v) return;
+    SOUND.play('send');
     clearField('reply-body');
     markSend($('#viewport')!, 'reply');
     const id = f.dataset.id, to = f.dataset.to;
@@ -331,6 +352,7 @@ document.addEventListener('submit', (e) => {
   } else if (kind === 'review') {
     const biz = f.dataset.biz!; const v = val('#review-text').trim(); const stars = store.ui.reviewStars;
     if (!stars) { store.needStars(); return; }
+    if (v) SOUND.play('send');
     if (v) void store.review(biz, stars, v).then((r) => { if (r && r.posted !== false) clearField('review-text'); });
   } else if (kind === 'book-next') {
     store.bookNext(val('#bk-name').trim(), val('#bk-email').trim(), Number(val('input[name="bk-date"]:checked')) || store.state.values.day);
@@ -341,6 +363,7 @@ document.addEventListener('submit', (e) => {
     if (q) store.navigate('forkyard.com/u/' + q.toLowerCase());
   } else if (kind === 'term') {
     const v = val('#term-input').trim(); if (!v) return;
+    SOUND.play('send', 0, 'terminal');
     clearField('term-input');
     if (v === 'clear') { store.termClear(); return; }
     void store.term(v);
@@ -361,12 +384,14 @@ document.addEventListener('input', (e) => {
   else if (el.id === 'fy-search-input') store.setFySearch(el.value);
   else if (el.id === 'prompt-input') updateCost();
   else if (el.id === 'mail-to') { syncMailTo(); showSuggestions(el); }
+  else if (el.id === 'snd-vol') SOUND.setVolume(Number(el.value) / 100);
 });
 document.addEventListener('change', (e) => {
   const el = e.target as HTMLSelectElement;
   if (el.id === 'llm-misses') MISSES.set({ misses: el.value as Misses });
   else if (el.id === 'llm-haiku-via') MISSES.set({ haikuVia: el.value as HaikuVia });
   else if (el.dataset.devMeter) store.devSetMeter(el.dataset.devMeter as MeterId, Number(el.value));
+  else if (el.id === 'snd-vol') { SOUND.setVolume(Number(el.value) / 100, true); SOUND.play('reply'); }
   else if (el.dataset.devFlag) store.devSetFlag(el.dataset.devFlag, (el as unknown as HTMLInputElement).checked);
 });
 /** Keep the To draft current without re-rendering, so the field and its suggestions stay put. */
@@ -405,6 +430,28 @@ document.addEventListener('keydown', (e) => {
   // Alt+Left / Alt+Right, like a real browser
   if (e.altKey && !e.ctrlKey && !e.metaKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) { e.preventDefault(); if (e.key === 'ArrowLeft') store.back(); else store.forward(); }
 });
+
+// the audio can only start after a gesture; clicks tick, typing ticks quieter (sends have their own cue)
+const TYPING = new Set(['text', 'search', 'email', 'password', 'url', 'number', 'textarea']);
+document.addEventListener('pointerdown', (e) => {
+  SOUND.unlock();
+  const t = e.target as HTMLElement;
+  const hit = t.closest('button, a, summary, label, select, [data-nav], [data-tab], [data-act], [data-task], [data-start], [data-like], [data-star], input[type="checkbox"], input[type="radio"]');
+  if (hit && !(hit instanceof HTMLButtonElement && hit.type === 'submit' && hit.form)) SOUND.play('click', 0, soundSite(t));
+}, true);
+document.addEventListener('keydown', (e) => {
+  SOUND.unlock();
+  const el = e.target as HTMLInputElement;
+  const kind = el.tagName === 'TEXTAREA' ? 'textarea' : el.tagName === 'INPUT' ? el.type : '';
+  if (!TYPING.has(kind) || e.ctrlKey || e.metaKey || e.altKey || e.key === 'Enter') return;
+  if (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Delete') SOUND.play('key', 0, soundSite(el));
+}, true);
+/** The Terminal window and the desktop chrome have their own sound; the page uses its site's. */
+function soundSite(el: HTMLElement): string | undefined {
+  if (el.closest('#termwin')) return 'terminal';
+  if (el.closest('#viewport')) return undefined;
+  return 'plain';
+}
 
 void lastSite;
 render();
