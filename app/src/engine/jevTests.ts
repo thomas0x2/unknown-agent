@@ -85,7 +85,7 @@ export function jevTestState(content: Content, c: JevTestCase): { s: GameState; 
  * game uses BARS_NOW (the proxy applies the same numbers); the tests replay others to compare.
  */
 export interface JevBars { step: number; component: number; other: number }
-export const BARS_NOW: JevBars = { step: 0.5, component: 0.6, other: 0.5 };
+export const BARS_NOW: JevBars = { step: 0.7, component: 0.8, other: 0.5 };
 const barFor = (kind: string | undefined, b: JevBars) => (kind === 'component' ? b.component : kind === 'step' ? b.step : b.other);
 
 /** What Jev answered while a case ran: each question's confidences, so other thresholds replay without asking again. */

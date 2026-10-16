@@ -242,7 +242,7 @@ async function handle(kind, body) {
   // the dev Jev tests take the raw confidences and apply thresholds themselves
   if (body.withScores) return { status: 200, json: (body.features ?? []).map((_, i) => answers[`f${i}`]?.noul ?? 0) };
   // a component counts only when Jev is fairly sure (keep in step with BARS_NOW in src/engine/jevTests.ts): a fix should touch what the player named and nothing near it
-  const bar = (f) => (f.kind === 'component' ? 0.6 : 0.5);
+  const bar = (f) => (f.kind === 'component' ? 0.8 : f.kind === 'step' ? 0.7 : 0.5);
   const features = (body.features ?? []).filter((f, i) => (answers[`f${i}`]?.noul ?? 0) >= bar(f)).map((f) => f.id);
   return { status: 200, json: features };
 }
