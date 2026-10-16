@@ -259,7 +259,7 @@ export class GameStore {
   /** First visit to a site that is bookmarked only after you've been there: add the bookmark. */
   private markVisited(url: string): void {
     const r = route(url, this.state);
-    // an ad site can introduce a site it links to (the deepsleep model card links to Weightroom)
+    // an ad site can introduce a site it links to (deepsleep.ai links to Weightroom)
     const unlocks = r.site === 'adsite' && r.param ? adSite(r.param)?.unlocks : undefined;
     if (unlocks && !this.state.flags.includes(unlocks)) { this.state.flags.push(unlocks); this.state.flags.sort(); this.store.save(this.state); }
     if (!r.def?.bookmarkAfterVisit || !r.reachable) return;

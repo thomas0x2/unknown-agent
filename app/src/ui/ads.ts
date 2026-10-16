@@ -177,7 +177,7 @@ const SQUARE: Ad[] = [
     cta: 'NO EXCUSES', fine: 'Membership auto-renews forever. Marcus is watching.',
   },
   {
-    id: 'deepsleep', sponsor: 'Weightroom', href: 'weightroom.ai/deepsleep', theme: 'ad-deep', deco: 'bubbles',
+    id: 'deepsleep', sponsor: 'deepsleep', href: 'deepsleep.ai', theme: 'ad-deep', deco: 'bubbles',
     frames: ['<b>deepsleep-0.5B</b>', 'Free. Local. <b>Confident.</b>', '非常正确。<br>Very correct.'],
     cta: 'Download', fine: 'Wrong about everything, privately.',
   },

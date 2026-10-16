@@ -69,7 +69,7 @@ export function route(url: string, s: GameState): Route {
   }
 
   // a banner ad's landing page (sites/adSites.ts), always reachable; checked first because some sit
-  // on another site's domain (doordish.com/robots, weightroom.ai/deepsleep)
+  // on another site's domain (doordish.com/robots)
   if (adSite(u)) return { site: 'adsite', param: u, reachable: true };
 
   for (const def of SITES) {

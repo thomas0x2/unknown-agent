@@ -1,7 +1,7 @@
 /*
  * The websites behind the banner ads (app/src/ui/ads.ts). Every ad's href opens one of these: a
  * landing page in the sponsor's style. For now they're brochures with nothing to click, apart from
- * the odd link to a real site. The two ads whose sites are real (EMPIRE, the coinbln.com phishing
+ * the odd link to a real site (deepsleep.ai links to Weightroom). The two ads whose sites are real (EMPIRE, the coinbln.com phishing
  * page) aren't here. Rendered by ui/adSites.ts; routed by sites/registry.ts.
  */
 
@@ -465,8 +465,8 @@ export const AD_SITES: AdSite[] = [
     fine: 'Memberships can be cancelled in person at the front desk, when Marcus is not there.',
   },
   {
-    url: 'weightroom.ai/deepsleep', brand: 'Weightroom', kit: 'model', theme: 'deep', mark: 'W',
-    kicker: 'Model card', title: 'deepsleep-0.5B',
+    url: 'deepsleep.ai', brand: 'deepsleep', kit: 'model', theme: 'deep', mark: 'd',
+    kicker: 'Open weights', title: 'deepsleep-0.5B',
     lead: 'A small open-weights chat model that runs on almost any laptop. Free, local, confident.',
     stats: [['0.5B', 'parameters'], ['2 GB', 'download'], ['1.2M', 'downloads']],
     cards: [
@@ -475,8 +475,8 @@ export const AD_SITES: AdSite[] = [
       ['Usage', 'Runs locally. No account, no logs, no refusals.'],
     ],
     quote: ['非常正确。', 'deepsleep-0.5B, asked to describe itself'],
-    fine: 'This model card was written by the model and translated by someone else.',
-    link: ['The weights are on Weightroom:', 'weightroom.ai', 'weightroom.ai'],
+    fine: 'This page was written by the model and translated by someone else.',
+    link: ['Download the weights from Weightroom:', 'weightroom.ai', 'weightroom.ai'],
     unlocks: 'knows_weightroom',
   },
 ];
