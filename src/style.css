@@ -781,3 +781,12 @@ a.y-me-head { text-decoration: none; color: inherit; }
 .yw-review header { display: flex; justify-content: space-between; gap: 10px; font-size: 14px; }
 .yw-review header span { color: #9b8178; font-size: 12.5px; white-space: nowrap; }
 .yw-review p { margin: 0; font-size: 14.5px; line-height: 1.5; overflow-wrap: anywhere; }
+
+/* a website loading in a tab: spinner in place of the favicon, blank page under a thin progress bar */
+.tab.loading .tab-ico svg { display: none; }
+.tab.loading .tab-ico::before { content: ''; box-sizing: border-box; width: 13px; height: 13px; margin: 1px; border-radius: 50%; border: 2px solid var(--chrome-3); border-top-color: #1a73e8; animation: pl-spin 0.6s linear infinite; }
+.pl-page { position: absolute; inset: 0; background: #fff; overflow: hidden; }
+.pl-bar { height: 3px; width: 0; background: #1a73e8; animation: pl-bar 0.5s cubic-bezier(0.1, 0.6, 0.3, 1) forwards; }
+@keyframes pl-spin { to { transform: rotate(360deg); } }
+@keyframes pl-bar { to { width: 85%; } }
+@media (prefers-reduced-motion: reduce) { .tab.loading .tab-ico::before { animation-duration: 1.5s; } .pl-bar { animation: none; width: 60%; } }
