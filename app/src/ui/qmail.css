@@ -96,3 +96,10 @@
   .qm-row { padding-right: 40px; }
   .qm-item:hover .qm-time, .qm-item:focus-within .qm-time { visibility: visible; }
 }
+
+/* empty folder: a quiet centred placeholder instead of a bare line */
+.qm-empty-state { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 44px 16px 52px; border-top: 1px solid var(--qm-line); }
+.qm-empty-ico { display: grid; place-items: center; width: 56px; height: 56px; margin-bottom: 14px; border-radius: 50%; background: var(--qm-soft); color: var(--qm-accent); }
+.qm-empty-ico svg { width: 26px; height: 26px; }
+.qm-empty-title { margin: 0; font-size: 16px; font-weight: 600; color: var(--qm-ink); }
+.qm-empty-note { margin: 4px 0 0; font-size: 13.5px; color: var(--qm-dim); }
