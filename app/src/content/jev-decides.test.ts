@@ -114,11 +114,34 @@ describe('fixing named bugs', () => {
     const items = asked.features[0].features.filter((f) => f.id.startsWith(`${id}::landing::`));
     expect(items.find((f) => f.id.endsWith('::feature'))!.kind).toBe('build');
     expect(items.filter((f) => f.kind === 'component').map((f) => f.id.split('::')[2])).toEqual(['c:name', 'c:hours']);
-    expect(items.find((f) => f.kind === 'component')!.description).toMatch(/^Path: landing > name\. the restaurant name, a part of the landing .*misspelled/);
+    expect(items.find((f) => f.kind === 'component')!.description).toMatch(/^the restaurant name, a part of the landing .*misspelled/);
+    // the path is asked step by step: here just the feature, since landing's parts sit at its top
+    expect(items.filter((f) => f.kind === 'step').map((f) => f.id.split('::')[2])).toEqual(['s:landing']);
     expect(items.find((f) => f.kind === 'area')!.description).toMatch(/Its parts, by path: landing > name \(the restaurant name\); landing > hours \(the opening hours\)/);
     // each part lists the others, so a complaint about one isn't read as one about its neighbour
     expect(items.find((f) => f.kind === 'component')!.description).toMatch(/Other parts of the landing, which are not this one: the opening hours\. /);
     expect(items.some((f) => f.kind === 'problem')).toBe(false);
+  });
+
+  it('a part counts only when every step of its path is named; without them it is a near-miss', async () => {
+    const { s, id } = withApp('restaurant_contact');
+    const a = getApp(s, id)!;
+    a.repo.push({ id: 'booking', correct: false, variant: 'wrong_date', params: a.specParams.booking, seed: 1 });
+    if (!a.required.includes('booking')) a.required.push('booking');
+    const { jev, asked } = spy(pickJev({}));
+    await promptDone(s, content, jev, 'Trattoria Gino: the date is wrong');
+    const date = asked.features[0].features.find((f) => f.id === `${id}::booking::c:confirmation/date`)!;
+    expect(date.kind).toBe('component');
+    expect(asked.features[0].features.filter((f) => f.kind === 'step' && f.id.startsWith(`${id}::booking::`)).map((f) => f.id.split('::')[2])).toEqual(['s:booking', 's:booking/form', 's:booking/confirmation']);
+    // Jev saw the part and the booking named, but not the confirmation: a near-miss, nothing changes
+    const partial: JevRouter = { ...pickJev({ route: ['fix'] }), matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => x.endsWith('::c:confirmation/date') || x.endsWith('::s:booking')) };
+    const miss = (await promptDone(s, content, partial, 'Trattoria Gino: the booking date is wrong')).state;
+    expect(miss.chat.at(-1)!.src).toBe('near_miss');
+    expect(getApp(miss, id)!.repo).toEqual(getApp(s, id)!.repo);
+    // every step named: fixed
+    const full: JevRouter = { ...partial, matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => /::c:confirmation\/date$|::s:booking(\/confirmation)?$/.test(x)) };
+    const hit = (await promptDone(s, content, full, 'Trattoria Gino: the date on the booking confirmation is wrong')).state;
+    expect(getApp(hit, id)!.repo.find((f) => f.id === 'booking')!.correct).toBe(true);
   });
 
   it('a nested component fixes only its own bug', async () => {

@@ -681,11 +681,15 @@ export async function promptAgent(
   if (workable.length) {
     // every way to name each feature (itself, its bugs, its live break), namespaced app::feature::category
     const cats: FeatureMatchInput['features'] = [];
+    const needs = new Map<string, string[]>(); // component -> the path steps it needs named
     for (const a of workable) {
       const tmpl = content.apps[a.template];
       for (const id of a.required) {
         if (!needsWork(a, id)) continue;
-        for (const c of fixCategories(a, tmpl, id)) cats.push({ id: `${a.id}::${id}::${c.id}`, description: `${c.description} (for ${a.name}, ${a.url})`, kind: c.kind });
+        for (const c of fixCategories(a, tmpl, id)) {
+          cats.push({ id: `${a.id}::${id}::${c.id}`, description: `${c.description} (for ${a.name}, ${a.url})`, kind: c.kind });
+          if (c.requires) needs.set(`${a.id}::${id}::${c.id}`, c.requires.map((r) => `${a.id}::${id}::${r}`));
+        }
       }
     }
     const context = recentPrompts(s0);
@@ -697,6 +701,11 @@ export async function promptAgent(
       started ? 'feature' : buildIntent(jev, s0, text, chat),
     ]);
     // one prompt only ever touches one app: when Jev's matches span several, Jev picks the one the player means
+    // a component counts only when every step of its path (feature, folders) is named too; one named
+    // without its full path is a near-miss on its feature. Steps aren't work on their own
+    const unpathed = found.filter((m) => needs.get(m)?.some((r) => !found.includes(r)));
+    const areas = unpathed.map((m) => m.replace(/::c:.*$/, '::area')).filter((m) => cats.some((c) => c.id === m));
+    found.splice(0, found.length, ...new Set([...found.filter((m) => !m.includes('::s:') && !unpathed.includes(m)), ...areas]));
     const app = started ?? await oneApp(jev, s0, text, chat, found);
     if (app === null) {
       const lines = content.agent?.hints.find((h) => h.id === 'which_app')?.replies;

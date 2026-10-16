@@ -241,14 +241,14 @@
           ]
         },
         {
-          "id": "day_change/pnl",
+          "id": "pnl",
           "label": "the day's P&L",
           "bugs": [
             "pnl_sign"
           ]
         },
         {
-          "id": "day_change/percent",
+          "id": "percent",
           "label": "the percent changes",
           "bugs": [
             "pct_wrong"

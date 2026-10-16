@@ -301,7 +301,13 @@ export function buildApp(s: GameState, appId: string, requested: string[], level
  * `component` says one part of it is wrong, which fixes that part's bugs; `area` says the feature is
  * wrong without saying which part (a near-miss); `problem` is a live break the site shows.
  */
-export interface FixCategory { id: string; description: string; kind: 'build' | 'problem' | 'component' | 'area' }
+export interface FixCategory {
+  id: string;
+  description: string;
+  kind: 'build' | 'problem' | 'component' | 'area' | 'step';
+  /** A component counts as named only when the prompt also names each step of its path (these step ids). */
+  requires?: string[];
+}
 
 /** The feature as a player would name it: 'auto_buy' is the auto buy. */
 export const featureName = (fid: string) => fid.replaceAll('_', ' ');
@@ -342,11 +348,26 @@ export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, f
   // a fix has to say which part is wrong: one item per component, described by what can go wrong in it
   const spec = app.specParams[featureId];
   const comps = fixableComponents(def);
+  // the path to each component: the feature, then each folder. Each step is its own simple question
+  // ("does the prompt name the booking?"), and a component needs every step on its path named
+  const steps = new Map<string, string>();
+  steps.set(`s:${featureId}`, `the ${featureName(featureId)} (${def.description})`);
+  for (const c of comps) {
+    const folders = c.id.split('/').slice(0, -1);
+    folders.forEach((_, i) => {
+      const path = folders.slice(0, i + 1).join('/');
+      const under = comps.filter((o) => o.id.startsWith(`${path}/`)).map((o) => o.label);
+      steps.set(`s:${featureId}/${path}`, `the ${featureName(folders[i])} of the ${featureName(featureId)}, which holds: ${under.join('; ')}`);
+    });
+  }
+  if (comps.length) for (const [id, description] of steps) out.push({ id, description, kind: 'step' });
   for (const c of comps) {
     const can = (c.bugs ?? []).map((id) => def.bugs?.find((b) => b.id === id)).filter((b): b is BugDef => !!b).map((b) => fillSpec(b.when, spec));
     // the other parts are listed too, so a complaint about one of them isn't read as one about this
     const others = comps.filter((o) => o !== c).map((o) => o.label);
-    out.push({ id: `c:${c.id}`, description: `Path: ${componentPath(featureId, c.id)}. ${c.label}, a part of the ${featureName(featureId)} (${def.description}).${can.length ? ` What can go wrong with it: ${can.join(' ')}` : ''}${others.length ? ` Other parts of the ${featureName(featureId)}, which are not this one: ${others.join('; ')}.` : ''}`, kind: 'component' });
+    const folders = c.id.split('/').slice(0, -1);
+    const requires = [`s:${featureId}`, ...folders.map((_, i) => `s:${featureId}/${folders.slice(0, i + 1).join('/')}`)];
+    out.push({ id: `c:${c.id}`, description: `${c.label}, a part of the ${featureName(featureId)} (${def.description}).${can.length ? ` What can go wrong with it: ${can.join(' ')}` : ''}${others.length ? ` Other parts of the ${featureName(featureId)}, which are not this one: ${others.join('; ')}.` : ''}`, kind: 'component', requires });
   }
   // bugs no component claims are still matched on their own
   const claimed = new Set(comps.flatMap((c) => c.bugs ?? []));
