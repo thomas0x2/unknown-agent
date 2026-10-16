@@ -132,6 +132,8 @@ export interface BugDef {
   when: string;
   /** Spelling out the feature's details again (the full menu) also fixes it. */
   orDetails?: boolean;
+  /** A deep failure: hidden until someone goes through the whole flow. A deep live break shows this bug. */
+  deep?: boolean;
   /** Regex (case-insensitive) for wordings that name this bug, matched without Jev. See FeatureDef.match. */
   match?: string;
 }
@@ -146,6 +148,8 @@ export interface GameEvent {
   subject?: string;
   /** May use {{placeholder}} filled from state. */
   body?: string;
+  /** A repeating event's body for each delivery, cycling by day (see eventBody). Overrides `body`. */
+  bodies?: string[];
   trigger: Trigger;
   /**
    * Latent events are never auto-delivered to the inbox. Their outcomes become available for the
@@ -157,10 +161,19 @@ export interface GameEvent {
   onDeliver?: Effects;
   outcomes?: Outcome[];
   hints?: string[];
+  /**
+   * What ignoring it costs: if the player hasn't answered by the end of `byDay` (default: the day it
+   * arrived), these effects apply and the thread closes, so its outcomes can no longer land.
+   */
+  noReply?: NoReply;
   expiresDay?: number;
   job?: JobSpec;
   /** Fires every time its trigger matches, not just once. */
   repeat?: boolean;
+}
+export interface NoReply {
+  byDay?: number;
+  effects: Effects;
 }
 export interface Trigger {
   dayMin?: number;
@@ -266,6 +279,8 @@ export interface AgentContent {
   hints: AgentHint[];
   /** Scripted roasts for prompts that drive nothing, when Haiku can't write one. */
   roasts: string[];
+  /** agent's opening line each morning from day 2, when the chat starts a new session. One is picked at random. */
+  mornings?: string[];
 }
 
 export interface Content {

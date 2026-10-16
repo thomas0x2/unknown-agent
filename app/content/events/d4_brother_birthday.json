@@ -55,5 +55,16 @@
   ],
   "hints": [
     "Chip in 40, buy one yourself, or bow out."
-  ]
+  ],
+  "noReply": {
+    "byDay": 5,
+    "effects": {
+      "add": {
+        "familyTrust": -5
+      },
+      "setFlags": [
+        "gift_skipped"
+      ]
+    }
+  }
 }

@@ -37,5 +37,12 @@
   ],
   "hints": [
     "She just wants to know you're alright."
-  ]
+  ],
+  "noReply": {
+    "effects": {
+      "add": {
+        "familyTrust": -5
+      }
+    }
+  }
 }

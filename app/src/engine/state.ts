@@ -91,6 +91,7 @@ export interface DeliveredEvent {
   /** Arrival order, shared with MailEntry.seq (s.nextId), so the inbox lists both as they came in. */
   seq?: number;
   answered: boolean;
+  /** The outcome that landed, or 'no_reply' when the player let it lapse. */
   outcomeId?: string;
   expiresDay?: number;
 }
@@ -158,6 +159,8 @@ export interface MailEntry {
   link?: string;
   /** A bounce notice: the address the player's email failed to reach, so it joins that conversation. */
   bounceOf?: string;
+  /** For a booking confirmation: the booking its cancel link cancels. */
+  bookingId?: string;
 }
 
 /** A Y post by someone else that isn't a content event: replies to the player, filler. */
@@ -197,6 +200,8 @@ export interface Booking {
   cancelled: boolean;
   /** The cancel link only pretends to work (a bug). */
   fakeCancel?: boolean;
+  /** The player clicked the cancel link (whether or not it really cancelled). */
+  cancelClicked?: boolean;
 }
 
 /** What the night did, shown on the "You slept" card. */
@@ -240,6 +245,8 @@ export interface GameState {
   yExtra: YExtra[];
   reviews: YowlReview[];
   bookings: Booking[];
+  /** What the booking form said after the last attempt (accepted, or why not). */
+  bookingNotice?: { appId: string; ok: boolean; text: string };
   terminal: { k: 'in' | 'sys' | 'err' | 'model'; text: string }[];
   /** Model running in the Terminal, if any. */
   termModel: string | null;
@@ -286,17 +293,6 @@ export const SEED_TX: Tx[] = [
   { day: -2, amount: -18.6, memo: 'Bean There · Coffee' },
   { day: 0, amount: -350, memo: 'Landlord · Rent' },
 ];
-
-/**
- * agent.chat keeps no memory between days: a new day starts a new session. Drops earlier days'
- * messages (the transcript and the context Jev and the writer see) and opens with a session line.
- * A no-op when the chat is already today's, so it's safe to run on every load.
- */
-export function startDayChat(s: GameState): void {
-  if (s.chat.every((m) => m.day === s.values.day)) return;
-  const today = s.chat.filter((m) => m.day === s.values.day);
-  s.chat = [{ from: 'system', text: `Day ${s.values.day}. New session; yesterday's conversation is gone.`, day: s.values.day }, ...today];
-}
 
 export function newGame(seed = makeSeed()): GameState {
   return {

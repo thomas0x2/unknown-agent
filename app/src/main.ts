@@ -23,6 +23,8 @@ import { MISSES, makeWriter, type Misses, type HaikuVia } from './game/misses';
 import * as V from './ui/view';
 import { route } from './sites/registry';
 import { listSlots } from './game/saves';
+import { devEditHtml } from './ui/devEdit';
+import type { MeterId } from './engine';
 import { newPageLoad } from './ui/ads';
 
 const content = loadContent();
@@ -99,6 +101,7 @@ function render(): void {
 
   const ov = $('#overlay')!; const oh = V.overlayHtml(store); ov.innerHTML = oh; ov.hidden = !oh;
   const dev = $('#dev')!; dev.hidden = !store.ui.dev; if (store.ui.dev) dev.innerHTML = V.devHtml(store);
+  const dve = $('#devedit')!; const showEdit = store.ui.dev && store.ui.devEdit; dve.hidden = !showEdit; if (showEdit) dve.innerHTML = devEditHtml(store);
 
   if (site === 'agent') { const log = $('#ua-log'); if (log) log.scrollTop = log.scrollHeight; updateCost(); }
   if (site === 'terminal') { const log = $('#tm-log'); if (log) log.scrollTop = log.scrollHeight; const t = $('#term-input'); if (t && window.innerWidth > 700 && !store.busy) t.focus(); }
@@ -155,7 +158,8 @@ document.addEventListener('click', (e) => {
   else if (d.like != null) store.like(d.like);
   else if (d.deploy != null) store.deploy(d.deploy);
   else if (d.takedown != null) store.confirm('Take it offline? It counts as broken at payday.', 'Take down', () => store.takeDown(d.takedown!));
-  else if (d.cancelBooking != null) store.cancelBooking(d.cancelBooking);
+  // the cancel link opens the restaurant's cancel page in a new tab
+  else if (d.cancelBooking != null) { store.cancelBooking(d.cancelBooking); if (d.cancelUrl) { newPageLoad(); store.navigate(d.cancelUrl, true); } }
   else if (d.empireJoin != null) store.joinEmpire();
   else if (d.mailDiscard != null) { clearMailDraft(); store.setDraft(null); store.navigate('qmail.com'); }
   else if (d.star != null) store.setReviewStars(Number(d.star));
@@ -165,9 +169,11 @@ document.addEventListener('click', (e) => {
   else if (d.dev != null) store.devAdd(d.dev);
   else if (d.devopts != null) store.toggleDevOptions(d.devopts);
   else if (d.devbug != null) { const [app, feat, key] = d.devbug.split('|'); store.devToggleBug(app, feat, key); }
+  else if (d.act === 'book-back') store.bookBack();
   else if (d.act === 'sleep') store.endDay();
   else if (d.act === 'new') store.confirm('Start over? This erases your save.', 'Start over', () => { forgetDrafts(); store.newGame(); });
   else if (d.act === 'dev') store.toggleDev();
+  else if (d.act === 'devedit') store.toggleDevEdit();
   else if (d.act === 'devmode') store.setDevMode(!store.devMode);
   else if (d.act === 'intro') store.openIntro();
 });
@@ -188,6 +194,8 @@ document.addEventListener('submit', (e) => {
   if (!f) return;
   e.preventDefault();
   const kind = f.dataset.form;
+  if (kind === 'dev-day') { store.devGoToDay(Number(val('#dev-day'))); return; }
+  if (kind === 'dev-flag') { const v = val('#dev-flag-name').trim(); if (v) store.devSetFlag(v, true); return; }
   if (kind === 'url') { newPageLoad(); store.navigate(val('#nt-url') || val('#address')); }
   else if (kind === 'ypost') { const v = val('#post-input').trim(); if (v) { clearField('post-input'); void store.post(v, trendingToday()); } }
   else if (kind === 'prompt') {
@@ -210,9 +218,10 @@ document.addEventListener('submit', (e) => {
     const biz = f.dataset.biz!; const v = val('#review-text').trim(); const stars = store.ui.reviewStars;
     if (!stars) { toast('Yowl', 'Pick a rating first.', 'note'); return; }
     if (v) void store.review(biz, stars, v).then((r) => { if (r.posted !== false) clearField('review-text'); });
+  } else if (kind === 'book-next') {
+    store.bookNext(val('#bk-name').trim(), val('#bk-email').trim(), Number(val('#bk-date')) || store.state.values.day);
   } else if (kind === 'book') {
-    const app = f.dataset.app!; const email = val('#bk-email').trim(); const time = val('#bk-time').trim() || '19:00'; const party = Number(val('#bk-party')) || 2;
-    store.book(app, 'You', email, store.state.values.day, time, party);
+    store.book(f.dataset.app!, val('#bk-time').trim() || '19:00', Number(val('#bk-party')) || 2);
   } else if (kind === 'fy-search') {
     const q = val('#fy-search-input').trim().replace(/^@/, '');
     if (q) store.navigate('forkyard.com/u/' + q.toLowerCase());
@@ -243,6 +252,8 @@ document.addEventListener('change', (e) => {
   const el = e.target as HTMLSelectElement;
   if (el.id === 'llm-misses') MISSES.set({ misses: el.value as Misses });
   else if (el.id === 'llm-haiku-via') MISSES.set({ haikuVia: el.value as HaikuVia });
+  else if (el.dataset.devMeter) store.devSetMeter(el.dataset.devMeter as MeterId, Number(el.value));
+  else if (el.dataset.devFlag) store.devSetFlag(el.dataset.devFlag, (el as unknown as HTMLInputElement).checked);
 });
 /** Keep the To draft current without re-rendering, so the field and its suggestions stay put. */
 function syncMailTo(): void {

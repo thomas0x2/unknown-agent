@@ -33,5 +33,12 @@
   ],
   "hints": [
     "He's proud and a little worried. A few warm words go a long way."
-  ]
+  ],
+  "noReply": {
+    "effects": {
+      "add": {
+        "familyTrust": -5
+      }
+    }
+  }
 }

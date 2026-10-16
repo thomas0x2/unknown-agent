@@ -44,6 +44,19 @@ export function triggerMatches(s: GameState, t: Trigger): boolean {
   return true;
 }
 
+/** The body shown for an event delivered on `day`: a repeating event cycles through its `bodies`. */
+export function eventBody(ev: GameEvent, day: number): string {
+  const list = ev.bodies;
+  if (!list?.length) return ev.body ?? '';
+  const i = (day - (ev.trigger.dayMin ?? 1)) % list.length;
+  return list[(i + list.length) % list.length];
+}
+
+/** A delivery's key in the inbox and readEvents: repeating events get one per day. */
+export function deliveryKey(ev: Pick<GameEvent, 'id' | 'repeat'>, day: number): string {
+  return ev.repeat ? `${ev.id}@${day}` : ev.id;
+}
+
 export function getEvent(content: Content, id: string): GameEvent | undefined {
   return content.events.find((e) => e.id === id);
 }
@@ -102,4 +115,25 @@ export function reachableByEmail(s: GameState, content: Content, addr: string): 
 /** Delivered events still open for a reply on this channel (unanswered, not expired). */
 export function activeDeliveries(s: GameState): DeliveredEvent[] {
   return s.delivered.filter((d) => !d.answered && (d.expiresDay == null || s.values.day <= d.expiresDay));
+}
+
+/** The last day an event can be answered before its `noReply` effects apply. */
+export function replyDeadline(ev: GameEvent, deliveredDay: number): number {
+  return ev.noReply?.byDay ?? deliveredDay;
+}
+
+/**
+ * End of day: every unanswered event with a `noReply` whose deadline is today lapses. Its effects
+ * apply once and the thread closes.
+ */
+export function lapseUnanswered(s: GameState, content: Content): void {
+  for (const d of s.delivered) {
+    if (d.answered) continue;
+    const ev = getEvent(content, d.eventId);
+    if (!ev?.noReply || replyDeadline(ev, d.day) > s.values.day) continue;
+    d.answered = true;
+    d.outcomeId = 'no_reply';
+    applyEffects(s, ev.noReply.effects, ev.job, ev.id);
+    log(s, `No reply to ${ev.from ?? ev.id}: ${ev.subject ?? ev.id}.`, 'info');
+  }
 }

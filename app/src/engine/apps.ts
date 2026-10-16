@@ -338,10 +338,13 @@ export function keywordCategories(app: AppInstance, tmpl: AppTemplate | undefine
   return out;
 }
 
-/** The bug a subtle break shows on the live site. */
+/** The bug a subtle or deep break shows on the live site. */
 export function breakVariant(brk: AppBreak, def: FeatureDef | undefined): string | undefined {
-  if (brk.failure !== 'subtle') return undefined;
-  const bugs = def?.bugs ?? [];
+  if (brk.failure !== 'subtle' && brk.failure !== 'deep') return undefined;
+  // a deep break shows one of the feature's deep bugs (the dead booking button); a subtle one any bug
+  const all = def?.bugs ?? [];
+  const shallow = all.filter((b) => !b.deep);
+  const bugs = brk.failure === 'deep' ? all.filter((b) => b.deep) : shallow.length ? shallow : all;
   return brk.variant ?? (bugs.length ? bugs[(brk.seed ?? 0) % bugs.length].id : undefined);
 }
 

@@ -10,11 +10,11 @@ import type { GameState, AppInstance } from './state';
 import type { Content, GameEvent, Contact, Outcome, AppTemplate, ScriptedReply } from '../content/schema';
 import type { JevRouter, PostRating, RouteDecision } from './jev';
 import { Y as YCFG, FAMILY } from './config';
-import { clone, addValue, log, rand, pick, tick, money, pushMail, sendLater } from './core';
+import { clone, addValue, log, pick, tick, money, pushMail, sendLater } from './core';
 import { applyEffects } from './effects';
 import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent';
 import { getEvent, activeDeliveries, reachableByEmail } from './events';
-import { buildApp, fixApp, fixBreak, fixCategories, keywordCategories, needsWork, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, type BuildReport } from './apps';
+import { buildApp, fixApp, fixBreak, fixCategories, keywordCategories, needsWork, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, bugsOf, breakVariant, type BuildReport } from './apps';
 import { type Writer, scriptedWriter } from './writer';
 
 export interface ReplyResult {
@@ -342,6 +342,13 @@ export async function askAgent(
  * them (first build or a re-roll fix), otherwise it's an ordinary chat prompt (askAgent). This is
  * the legacy feel: you can prompt the agent about anything, any time, gig or no gig.
  */
+/** Does the prompt name this app: its id, or a word of its name ("Gino", "trattoria gino's site")? */
+export function namesApp(app: AppInstance, text: string): boolean {
+  const t = text.toLowerCase();
+  const words = [...new Set(app.name.toLowerCase().match(/[a-z\u00c0-\u024f0-9]{4,}/g) ?? [])];
+  return t.includes(app.id) || t.includes(app.id.replace(/-/g, ' ')) || words.some((w) => new RegExp(`\\b${w}`, 'i').test(t));
+}
+
 /** The player's last few messages to the agent today: what they already told it. */
 function recentPrompts(s: GameState, n = 6): string[] {
   return s.chat.filter((m) => m.from === 'you' && m.day === s.values.day).slice(-n).map((m) => m.text);
@@ -370,8 +377,14 @@ export async function promptAgent(
     const matched = new Set(await jev.matchFeatures({ prompt: text, context, features: cats }));
     // plus the template's own wordings for each feature and bug, so common phrasings don't hinge on Jev
     const hits = workable.map((a) => ({ a, ids: a.required.filter((id) => needsWork(a, id)).flatMap((id) => keywordCategories(a, content.apps[a.template], id, text).map((c) => `${a.id}::${id}::${c}`)) })).filter((h) => h.ids.length);
-    const named = hits.filter((h) => new RegExp(`\\b${h.a.name.toLowerCase().split(/\s+/)[0].replace(/[^a-z0-9]/g, '')}`, 'i').test(text));
-    for (const h of hits.length > 1 && named.length ? named : hits) for (const id of h.ids) matched.add(id);
+    for (const h of hits) for (const id of h.ids) matched.add(id);
+    const askedForWork = matched.size > 0;
+    // the player has to say which app: a request that names none doesn't touch any repo
+    for (const m of [...matched]) if (!namesApp(getApp(s0, m.split('::')[0])!, text)) matched.delete(m);
+    if (askedForWork && !matched.size) {
+      const ask = content.agent?.hints.find((h) => h.id === 'which_app');
+      return askAgent(s0, text, writer, s0.values.agentLevel, { hints: ask?.replies, roasts: content.agent?.roasts, debug: ['Asked for an app change without naming the app, so nothing was built'] });
+    }
     if (matched.size) {
       const s = clone(s0);
       const byApp = new Map<string, Map<string, string[]>>();
@@ -616,26 +629,74 @@ export function takeDown(s0: GameState, appId: string): GameState {
   return s;
 }
 
-/** Make a test booking on a restaurant app and (if the booking feature works) mail a confirmation. */
-export function makeBooking(s0: GameState, appId: string, name: string, email: string, date: number, time: string, party: number): GameState {
+// what the agent calls the restaurant when it makes the name up
+const FAKE_NAMES = ['Trattoria Bella Napoli', 'Ristorante Da Luigi', "Mamma Mia's Kitchen", 'Pizzeria Il Forno'];
+
+/** Minutes since midnight for "19:00" / "7:30"; NaN if it isn't a time. */
+const minutes = (t: string) => { const m = t.match(/^(\d{1,2})(?::(\d{2}))?$/); return m ? Number(m[1]) * 60 + Number(m[2] ?? 0) : NaN; };
+
+/**
+ * The player books a table on a restaurant app. What happens follows the booking feature's live
+ * bugs: a dead button, no or a garbled confirmation, a cancel link that doesn't cancel, no checks.
+ */
+export function makeBooking(s0: GameState, appId: string, name: string, email: string, date: number, time: string, party: number, content?: Content): GameState {
   const s = clone(s0);
   const app = getApp(s, appId);
-  if (!app) return s;
+  if (!app || !app.deployed) return s;
   const feat = app.features.find((f) => f.id === 'booking');
-  const works = app.deployed && feat && feat.correct;
-  const fakeCancel = !!(feat && !feat.correct && rand(s) < 0.5);
+  if (!feat) return s;
+  const def = content?.apps[app.template]?.features.find((f) => f.id === 'booking');
+  const brk = app.breaks.find((b) => b.featureId === 'booking');
+  if (brk?.failure === 'visible') return s; // the page is an error screen
+  const bugs = new Set(feat.correct ? [] : bugsOf(feat));
+  const shown = brk && breakVariant(brk, def);
+  if (shown) bugs.add(shown);
+  if (!feat.correct && !bugs.size) bugs.add('no_email'); // wrong in some unnamed way: nothing arrives
+  if (bugs.has('dead_button')) return s; // nothing happens on step two
+  delete s.bookingNotice;
+  const seed = brk?.seed ?? feat.seed ?? 0;
+  // the spec: opening hours only, never in the past
+  const hours = String(app.specParams.landing?.hours ?? '17:00-22:00').split(/[-–]/).map((t) => minutes(t.trim()));
+  const at = minutes(time);
+  const closed = !Number.isFinite(at) || at < hours[0] || at > hours[1] || date < s.values.day;
+  if (closed && !bugs.has('no_hours_check')) {
+    s.bookingNotice = { appId, ok: false, text: date < s.values.day ? 'That date is in the past.' : `We only take bookings during opening hours (${String(app.specParams.landing?.hours ?? '17:00-22:00')}).` };
+    return s;
+  }
   tick(s, 'book');
-  s.bookings.push({ id: nextId(s, 'bk'), appId, name, email, date, time, party, cancelled: false, fakeCancel });
-  if (works && email.toLowerCase() === PLAYER_ADDR) {
-    pushMail(s, { folder: 'inbox', day: s.values.day, from: app.name, addr: `bookings@${app.url}`, subject: `Booking confirmed — ${app.name}`, body: `Your table for ${party} on Day ${date} at ${time} is confirmed. Need to cancel? Use the link below.`, read: false, link: 'cancel' });
+  const id = nextId(s, 'bk');
+  s.bookings.push({ id, appId, name, email, date, time, party, cancelled: false, fakeCancel: bugs.has('fake_cancel') });
+  s.bookingNotice = { appId, ok: true, text: 'Booked. A confirmation is on its way.' };
+  if (bugs.has('no_email')) return s;
+  const restaurant = bugs.has('name_wrong_mail') ? FAKE_NAMES[seed % FAKE_NAMES.length] : app.name;
+  const day = bugs.has('wrong_date') ? date + 1 : date;
+  const shownTime = !bugs.has('wrong_time') ? time
+    : seed % 2 ? `${Math.floor(at / 60) % 12 || 12}:${String(at % 60).padStart(2, '0')}` // 19:00 as 7:00, no am/pm
+    : `${String(Math.floor(at / 60 + 1) % 24).padStart(2, '0')}:${String(at % 60).padStart(2, '0')}`; // an hour off
+  const table = bugs.has('party_wrong') ? (seed % 2 ? 'Your table' : `Your table for ${party + 2}`) : `Your table for ${party}`;
+  const body = `${table} at ${restaurant} on Day ${day} at ${shownTime} is confirmed.\n\nNeed to cancel? Use the link below.`;
+  if (bugs.has('sent_to_restaurant')) {
+    // the guest gets nothing; the owner gets the guest's confirmation
+    const ev = content?.events.find((e) => e.id === app.clientEventId);
+    if (email.toLowerCase() === PLAYER_ADDR && ev?.addr) {
+      pushMail(s, { folder: 'inbox', day: s.values.day, from: ev.from ?? app.name, addr: ev.addr, subject: 'A booking?', read: false,
+        body: `This came from the website:\n\n"${body.split('\n')[0]}"\n\nIt was sent to me, not to the guest. Is that how it should work?` });
+    }
+    return s;
+  }
+  if (email.toLowerCase() === PLAYER_ADDR) {
+    pushMail(s, { folder: 'inbox', day: s.values.day, from: restaurant, addr: `bookings@${app.url}`, subject: `Booking confirmed — ${restaurant}`, body, read: false, link: 'cancel', bookingId: id });
   }
   return s;
 }
 
+/** The cancel link in a confirmation. It always says it worked; with the bug, the booking stays. */
 export function cancelBooking(s0: GameState, bookingId: string): GameState {
   const s = clone(s0);
   const b = s.bookings.find((x) => x.id === bookingId);
-  if (b && !b.fakeCancel) b.cancelled = true;
+  if (!b) return s;
+  b.cancelClicked = true;
+  if (!b.fakeCancel) b.cancelled = true;
   return s;
 }
 
