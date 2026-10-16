@@ -161,7 +161,7 @@ function pageMail(store: GameStore, param?: string): string {
     <a href="#" class="qm-new" data-nav="qmail.com/compose">Compose</a>
     <a href="#" data-nav="qmail.com" class="${view === 'inbox' ? 'on' : ''}">Inbox${unread ? `<b>${unread}</b>` : ''}</a>
     <a href="#" data-nav="qmail.com/sent" class="${view === 'sent' ? 'on' : ''}">Sent</a>
-    ${adHtml('qmail', s.values.day, 'tall')}
+    ${adHtml('qmail', s.values.day, 'square')}
   </nav>`;
   let main: string;
   if (view === 'compose') {
@@ -269,7 +269,7 @@ function pageY(store: GameStore, profile?: string): string {
       <div class="y-me-stats"><span><b>${compact(s.values.followers)}</b> followers</span><span><b>${s.userPosts.length}</b> posts</span></div>
     </section>
     <section class="y-card"><h2>Trending</h2>${(trending.length ? trending : ['#AI', '#jobs', '#election']).map((t, i) => `<div class="y-trend"><span class="y-rank">0${i + 1}</span><span><b>${esc(t)}</b><small>trending today</small></span></div>`).join('')}</section>
-    ${adHtml('y', s.values.day, 'tall')}
+    ${adHtml('y', s.values.day, 'square')}
   </aside>`;
   const mainInner = profile ? yProfile(store, profile) : `
     <form class="y-compose" data-form="ypost">${avatar('You', 'you')}
