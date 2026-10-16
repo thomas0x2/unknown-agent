@@ -341,6 +341,13 @@ export async function askAgent(
  * them (first build or a re-roll fix), otherwise it's an ordinary chat prompt (askAgent). This is
  * the legacy feel: you can prompt the agent about anything, any time, gig or no gig.
  */
+/** Does the prompt name this app: its id, or a word of its name ("Gino", "trattoria gino's site")? */
+export function namesApp(app: AppInstance, text: string): boolean {
+  const t = text.toLowerCase();
+  const words = [...new Set(app.name.toLowerCase().match(/[a-z\u00c0-\u024f0-9]{4,}/g) ?? [])];
+  return t.includes(app.id) || t.includes(app.id.replace(/-/g, ' ')) || words.some((w) => new RegExp(`\\b${w}`, 'i').test(t));
+}
+
 /** The player's last few messages to the agent today: what they already told it. */
 function recentPrompts(s: GameState, n = 6): string[] {
   return s.chat.filter((m) => m.from === 'you' && m.day === s.values.day).slice(-n).map((m) => m.text);
@@ -369,8 +376,14 @@ export async function promptAgent(
     const matched = new Set(await jev.matchFeatures({ prompt: text, context, features: cats }));
     // plus the template's own wordings for each feature and bug, so common phrasings don't hinge on Jev
     const hits = workable.map((a) => ({ a, ids: a.required.filter((id) => needsWork(a, id)).flatMap((id) => keywordCategories(a, content.apps[a.template], id, text).map((c) => `${a.id}::${id}::${c}`)) })).filter((h) => h.ids.length);
-    const named = hits.filter((h) => new RegExp(`\\b${h.a.name.toLowerCase().split(/\s+/)[0].replace(/[^a-z0-9]/g, '')}`, 'i').test(text));
-    for (const h of hits.length > 1 && named.length ? named : hits) for (const id of h.ids) matched.add(id);
+    for (const h of hits) for (const id of h.ids) matched.add(id);
+    const askedForWork = matched.size > 0;
+    // the player has to say which app: a request that names none doesn't touch any repo
+    for (const m of [...matched]) if (!namesApp(getApp(s0, m.split('::')[0])!, text)) matched.delete(m);
+    if (askedForWork && !matched.size) {
+      const ask = content.agent?.hints.find((h) => h.id === 'which_app');
+      return askAgent(s0, text, writer, s0.values.agentLevel, { hints: ask?.replies, roasts: content.agent?.roasts, debug: ['Asked for an app change without naming the app, so nothing was built'] });
+    }
     if (matched.size) {
       const s = clone(s0);
       const byApp = new Map<string, Map<string, string[]>>();

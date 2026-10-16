@@ -32,7 +32,7 @@
         },
         {
           "id": "name_wrong",
-          "when": "restaurant name {{name}}",
+          "when": "misspelled restaurant name",
           "match": "\\b(restaurant|site'?s?|website'?s?|wrong|correct|right|the|its|his) name\\b|\\bname\\b[^.?!]{0,20}\\b(wrong|misspel\\w*|typo|incorrect|spelled)\\b|\\b(misspel\\w*|typo)\\b|(show|say|display|read)s?\\b[^.?!]{0,30}{{name}}|{{name}}[^.?!]{0,20}\\b(not|instead)\\b"
         }
       ],

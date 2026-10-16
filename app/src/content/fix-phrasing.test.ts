@@ -8,6 +8,9 @@ import { startGame } from '../engine/day';
 import { composeEmail, promptAgent } from '../engine/actions';
 import { getApp } from '../engine/apps';
 import { offlineJev, type JevRouter } from '../engine/jev';
+
+/** Fix requests have to name the app. */
+const gino = 'Trattoria Gino: ';
 import type { GameState } from '../engine';
 
 const content = loadContent();
@@ -62,7 +65,7 @@ describe('fix requests in the player\'s words', () => {
   for (const [fid, bug, asks] of NAMED) {
     for (const ask of asks) {
       it(`${bug}: "${ask}"`, async () => {
-        const s = (await promptAgent(await withBug(fid, bug), content, deafJev, ask)).state;
+        const s = (await promptAgent(await withBug(fid, bug), content, deafJev, gino + ask)).state;
         expect(s.chat.at(-1)!.src).toBe('build');
         expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === fid)!.correct).toBe(true);
       });
@@ -75,7 +78,7 @@ describe('fix requests in the player\'s words', () => {
     'fix the menu page',
     'something is off with the menu',
   ])('vague: "%s" is a fix attempt that changes something else', async (ask) => {
-    const s = (await promptAgent(await withBug('menu', 'prices_curo'), content, deafJev, ask)).state;
+    const s = (await promptAgent(await withBug('menu', 'prices_curo'), content, deafJev, gino + ask)).state;
     expect(s.chat.at(-1)!.src).toBe('build');
     expect(s.chat.at(-1)!.text).toMatch(/tidied up the layout/);
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.variant).toBe('prices_curo');
@@ -93,7 +96,7 @@ describe('fix requests in the player\'s words', () => {
     app.deployed = true; app.deployedVersion = 1;
     app.features = app.repo.map((f) => ({ ...f }));
     app.breaks.push({ featureId: 'menu', failure, day: 1, seed: 0 });
-    const s = (await promptAgent(s0, content, deafJev, ask)).state;
+    const s = (await promptAgent(s0, content, deafJev, gino + ask)).state;
     expect(s.chat.at(-1)!.src).toBe('build');
     expect(getApp(s, 'trattoria-gino')!.repoVersion).toBe(2);
   });
@@ -103,6 +106,16 @@ describe('fix requests in the player\'s words', () => {
     async (ask) => {
       const s = (await promptAgent(await withBug('landing', 'hours_wrong'), content, deafJev, ask)).state;
       expect(s.chat.at(-1)!.src).not.toBe('build');
+    },
+  );
+  it.each(['The opening hours are wrong', 'fix the hours on the landing page', 'the homepage shows the wrong times'])(
+    'a request that names no app builds nothing and asks which app: "%s"',
+    async (ask) => {
+      const s0 = await withBug('landing', 'hours_wrong');
+      const s = (await promptAgent(s0, content, deafJev, ask)).state;
+      expect(s.chat.at(-1)!.src).not.toBe('build');
+      expect(content.agent!.hints.find((h) => h.id === 'which_app')!.replies).toContain(s.chat.at(-1)!.text);
+      expect(getApp(s, 'trattoria-gino')!.repoVersion).toBe(getApp(s0, 'trattoria-gino')!.repoVersion);
     },
   );
 });

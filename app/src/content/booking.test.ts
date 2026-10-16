@@ -9,6 +9,9 @@ import { composeEmail, briefBuild, deploy, promptAgent, makeBooking, cancelBooki
 import { applyEffects } from '../engine/effects';
 import { getApp, devToggleBug } from '../engine/apps';
 import { offlineJev } from '../engine/jev';
+
+/** Fix requests have to name the app. */
+const gino = 'Trattoria Gino: ';
 import type { GameState } from '../engine/state';
 
 const content = loadContent();
@@ -101,7 +104,7 @@ describe('table booking', () => {
       s0.values.agentLevel = 5;
       const app = getApp(s0, APP)!;
       app.repo = app.repo.map((f) => (f.id === 'booking' ? { ...f, correct: false, variant: bug, seed: 1 } : f));
-      const s = (await promptAgent(s0, content, offlineJev, ask)).state;
+      const s = (await promptAgent(s0, content, offlineJev, gino + ask)).state;
       expect(getApp(s, APP)!.repo.find((f) => f.id === 'booking')!.correct, bug).toBe(true);
     }
   });

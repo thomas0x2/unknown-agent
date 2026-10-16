@@ -46,6 +46,15 @@
       ]
     },
     {
+      "id": "which_app",
+      "when": "The player asks agent to build, change or fix an app without naming which app.",
+      "replies": [
+        "Which app is this for? Say its name and I'll make the change.",
+        "Name the app first. I don't guess whose site to edit.",
+        "I need to know which app. Tell me its name and I'll start."
+      ]
+    },
+    {
       "id": "deploy",
       "when": "The player asks to deploy, publish or put an app online, or where their app or code is.",
       "replies": [
