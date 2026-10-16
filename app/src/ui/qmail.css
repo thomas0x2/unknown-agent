@@ -60,3 +60,4 @@
 .qm-msg .qm-gen { margin-top: 10px; }
 .qm-row .qm-from { display: flex; align-items: baseline; gap: 6px; }
 .qm-names { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.qm-hint.qm-err { color: #e5484d; font-weight: 600; }

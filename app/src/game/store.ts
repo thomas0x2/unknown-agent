@@ -44,6 +44,14 @@ export class GameStore {
     devEdit: false,
     /** Coinbin's Send form: open or not, what was typed, and why the last attempt failed. */
     send: { open: false, to: '', amount: '', error: '' },
+    /** A line under Coinbin's Send/Receive buttons: "Address copied", or what was just sent. */
+    cbNotice: '',
+    /** Yowl: Post was pressed with no rating picked. */
+    reviewNeedsStars: false,
+    /** The save-slot menu's last failure, shown in its note. */
+    slotNote: '',
+    /** Qmail compose: why Send was refused before anything went out. */
+    mailError: '',
   };
   /** A model download playing out in the Terminal, if one is running. */
   pull: { id: string; startedAt: number } | null = null;
@@ -77,6 +85,7 @@ export class GameStore {
 
   navigate(url: string, newTab = false): void {
     const u = norm(url);
+    this.ui.cbNotice = '';
     // localhost is the laptop itself: it opens the Terminal app, not a browser page
     if (u === 'localhost' && this.state.flags.includes('has_terminal')) { this.showTerm(true); return; }
     if (newTab) { const id = this.nextTab++; this.tabs.push({ id, url: u, back: [], fwd: [] }); this.active = id; }
@@ -116,8 +125,11 @@ export class GameStore {
   setYowlSearch(v: string): void { this.ui.yowlSearch = v; this.emit(); }
   setFySearch(v: string): void { this.ui.fySearch = v; this.emit(); }
   setWalletRange(r: string): void { this.ui.walletRange = r; this.emit(); }
-  setReviewStars(n: number): void { this.ui.reviewStars = n; this.emit(); }
-  setDraft(d: Draft | null): void { this.ui.draft = d; this.emit(); }
+  setReviewStars(n: number): void { this.ui.reviewStars = n; this.ui.reviewNeedsStars = false; this.emit(); }
+  needStars(): void { this.ui.reviewNeedsStars = true; this.emit(); }
+  setCbNotice(text: string): void { this.ui.cbNotice = text; this.emit(); }
+  setDraft(d: Draft | null): void { this.ui.draft = d; this.ui.mailError = ''; this.emit(); }
+  setMailError(text: string): void { this.ui.mailError = text; this.emit(); }
   setProject(id: string): void { this.ui.project = id; this.emit(); }
   toggleDevOptions(site: string): void { this.ui.devOptions = this.ui.devOptions === site ? '' : site; this.emit(); }
   toggleDevEdit(): void { this.ui.devEdit = !this.ui.devEdit; this.emit(); }
@@ -160,7 +172,7 @@ export class GameStore {
     this.resetTo(startGame(this.content));
   }
   /** Snapshot the current game into a manual slot. */
-  saveSlot(n: Slot): boolean { const ok = writeSlot(n, this.state); this.emit(); return ok; }
+  saveSlot(n: Slot): boolean { const ok = writeSlot(n, this.state); this.ui.slotNote = ok ? '' : `Slot ${n} wasn't saved: this browser isn't letting the game store anything.`; this.emit(); return ok; }
   /** Replace the current game with a slot's snapshot (it becomes the autosave too). */
   loadSlot(n: Slot): boolean {
     const s = readSlot(n);
@@ -175,7 +187,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = 1; this.nextTab = 3;
-    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' } };
+    this.ui = { ySearch: '', yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', reviewNeedsStars: false, slotNote: '', mailError: '' };
     this.store.save(this.state);
     this.emit();
   }
@@ -190,12 +202,13 @@ export class GameStore {
   takeDown(appId: string): void { this.commit(takeDown(this.state, appId)); }
   cancelBooking(id: string): void { this.commit(cancelBooking(this.state, id)); }
   joinEmpire(): void { this.commitAndSettle(joinEmpire(this.state)); }
-  toggleSend(open = !this.ui.send.open): void { this.ui.send = { open, to: '', amount: '', error: '' }; this.emit(); }
+  toggleSend(open = !this.ui.send.open): void { this.ui.send = { open, to: '', amount: '', error: '' }; this.ui.cbNotice = ''; this.emit(); }
   /** Coinbin Send. A refusal keeps the form open with what was typed and the reason. */
   send(to: string, amount: string): boolean {
     const r = sendCrypto(this.state, to, Number(amount.replace(',', '.')));
     if (r.error) { this.ui.send = { open: true, to, amount, error: r.error }; this.emit(); return false; }
     this.ui.send = { open: false, to: '', amount: '', error: '' };
+    this.ui.cbNotice = `Sent ${(-r.state.tx.at(-1)!.amount).toFixed(2)} DOLR to ${r.state.tx.at(-1)!.memo.split(' · ')[0]}.`;
     this.commitAndSettle(r.state);
     return true;
   }
