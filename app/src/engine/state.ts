@@ -25,6 +25,8 @@ export interface BuiltFeature {
   variant?: string;
   /** Picks the concrete symptom when rendering a variant (which dish went missing, etc.). */
   seed?: number;
+  /** The template's spec checklist at build time: which items the build prompt mentioned. */
+  checked?: Record<string, boolean>;
 }
 
 export interface AppBreak {

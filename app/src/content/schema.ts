@@ -76,8 +76,25 @@ export interface FeatureDef {
   details?: string[];
   /** Concrete ways a wrong build of this feature is wrong. The site renders the one it got. */
   bugs?: BugDef[];
+  /**
+   * Regex (case-insensitive) for wordings that point at this feature, matched without Jev, so "the
+   * menu is wrong" always reaches the agent. {{param}} fills in the spec value; {{param:words}} an
+   * alternation of its words (the dish names).
+   */
+  match?: string;
   /** The first build's guaranteed teaching bug lands on a feature with this set, if one was built. */
   firstBuildBug?: boolean;
+  /**
+   * The spec as a checklist for the build prompt: each item the prompt doesn't mention explicitly
+   * guarantees its linked bug. `text` fills {{param}} from the spec; `bug` is a bug id.
+   */
+  checklist?: ChecklistItem[];
+}
+export interface ChecklistItem {
+  id: string;
+  /** What the prompt has to mention, e.g. "{{hours}}". */
+  text: string;
+  bug: string;
 }
 export interface BugDef {
   id: string;
@@ -88,6 +105,8 @@ export interface BugDef {
   when: string;
   /** Spelling out the feature's details again (the full menu) also fixes it. */
   orDetails?: boolean;
+  /** Regex (case-insensitive) for wordings that name this bug, matched without Jev. See FeatureDef.match. */
+  match?: string;
 }
 
 // ── events (content/events/<id>.json) ──

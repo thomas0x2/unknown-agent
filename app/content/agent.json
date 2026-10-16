@@ -41,8 +41,8 @@
       "when": "The player says their app is broken or has a bug, or asks agent to fix something without saying what is wrong.",
       "replies": [
         "Tell me what's wrong, exactly. \"It's broken\" narrows it down to everything.",
-        "Which app, and what's wrong with it? \"Fix it\" costs the same as a useful prompt.",
-        "Name the app and the bug. I fix what you describe, not what you meant."
+        "What's wrong with it? Say which page and what it shows, and I'll fix that.",
+        "I fix what you describe. Describe the problem, not the feeling."
       ]
     },
     {

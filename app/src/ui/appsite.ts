@@ -190,8 +190,13 @@ export function devBugPanel(app: AppInstance, tmpl: AppTemplate | undefined): st
       ...(def?.details?.length ? ['hallucinated', 'outdated'] : []),
       ...(def?.failures ?? []).map((f) => BREAK_LABEL[f] ?? f),
     ];
-    return `<tr><td><b>${esc(id)}</b></td><td>${esc(repoNow)}</td><td>${esc(liveNow)}</td><td>${possible.map((p) => tag(p, present.has(p))).join(' ') || '<i>none</i>'}</td></tr>`;
+    // the spec checklist from the last build prompt: a missed item guarantees its bug
+    const list = (def?.checklist ?? []).map((c) => {
+      const hit = repo?.checked?.[c.id];
+      return `<span class="dvb-check ${hit === undefined ? '' : hit ? 'hit' : 'miss'}" title="missed → ${esc(c.bug)}">${hit === undefined ? '·' : hit ? '✓' : '✗'} ${esc(c.id)}</span>`;
+    }).join(' ');
+    return `<tr><td><b>${esc(id)}</b></td><td>${esc(repoNow)}</td><td>${esc(liveNow)}</td><td>${list || '<i>none</i>'}</td><td>${possible.map((p) => tag(p, present.has(p))).join(' ') || '<i>none</i>'}</td></tr>`;
   }).join('');
   return `<div class="dev-bugs"><div class="dvb-head">Dev · bugs in ${esc(app.id)}</div>
-    <table><thead><tr><th>Feature</th><th>Repo</th><th>Live</th><th>Possible (present highlighted)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    <table><thead><tr><th>Feature</th><th>Repo</th><th>Live</th><th>Build prompt</th><th>Possible (present highlighted)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }

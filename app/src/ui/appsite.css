@@ -58,3 +58,6 @@ body.dev-on .dev-bugs { display: block; }
 .dev-bugs td { padding: 3px 8px 3px 0; vertical-align: top; border-top: 1px solid #2c313b; }
 .dvb-tag { display: inline-block; padding: 0 6px; margin: 1px 0; border-radius: 4px; background: #2c313b; color: #a8b0bd; }
 .dvb-tag.on { background: #7a2418; color: #ffd7cf; }
+.dvb-check { white-space: nowrap; color: #8a93a3; }
+.dvb-check.hit { color: #8fd19e; }
+.dvb-check.miss { color: #ff9b8a; }

@@ -41,7 +41,7 @@ describe('day 1 playthrough', () => {
     const appId = app!.id;
 
     // brief the agent to build landing + menu, spelling out the dishes
-    const b = await briefBuild(s, content, offlineJev, appId, `Build a landing page with the name and opening hours, and a menu page listing each dish with its price in DOLR: ${MENU}.`);
+    const b = await briefBuild(s, content, offlineJev, appId, `Build a landing page for Trattoria Gino with opening hours 17:00-22:00, and a menu page listing each dish with its price in DOLR: ${MENU}.`);
     s = b.state;
     expect(b.requested.sort()).toEqual(['landing', 'menu']);
 
@@ -157,5 +157,14 @@ describe('day 1 playthrough', () => {
     expect(s.chat.at(-1)!.src).toBe('build');
     s = deploy(s, 'trattoria-gino');
     expect(appMeetsSpec(getApp(s, 'trattoria-gino')!)).toBe(true);
+  });
+
+  it('a spec item the build prompt leaves out guarantees its mistake', async () => {
+    let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    s.values.agentLevel = 5;
+    s = (await briefBuild(s, content, offlineJev, 'trattoria-gino', `Landing page for Trattoria Gino with the opening hours, and a menu page: ${MENU}, prices in DOLR.`)).state;
+    const landing = getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')!;
+    expect(landing).toMatchObject({ correct: false, variant: 'hours_wrong', checked: { name: true, hours: false } });
+    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.checked).toEqual({ dishes: true, currency: true });
   });
 });
