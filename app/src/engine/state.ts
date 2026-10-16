@@ -286,7 +286,7 @@ export function newGame(seed = makeSeed()): GameState {
     endingShown: false,
     log: [],
     tx: SEED_TX.map((t) => ({ ...t })),
-    chat: [{ from: 'agent', text: "Hi, I'm agent. I build and fix software, write, translate and answer questions. Every prompt is billed to your Satchel wallet: a flat fee plus a little per word I write back. Ask me anything.", day: 1 }],
+    chat: [{ from: 'agent', text: "Welcome to agent, the AI that replaced you. I build and fix software, write, translate and answer questions. Every prompt is billed to your Satchel wallet: a flat fee plus a little per word you send, so choose your words like they cost money. They do.", day: 1 }],
     nextAppNum: 1,
     mail: [],
     awaiting: [],

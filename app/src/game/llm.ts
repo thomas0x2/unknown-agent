@@ -13,12 +13,14 @@
  * scripted fallback, so the game never waits on it.
  */
 
+import { agentMessages } from './agentBrief';
+
 export type Backend = 'browser' | 'ollama' | 'off';
 export type Status = 'off' | 'loading' | 'ready' | 'error';
 
 export interface ChatTurn { role: 'system' | 'user' | 'assistant'; content: string }
 export interface GenCtx {
-  /** A persona override (the Terminal's local model). Without it, agent's own voice is used. */
+  /** A persona override (the Terminal's local model). Without it, agent's own brief is used (game/agentBrief.ts). */
   persona?: string;
   /** Few-shot examples [user, assistant]. */
   examples?: [string, string][];
@@ -38,14 +40,12 @@ const CONFIG = {
   shortTokens: 72,
   longTokens: 140,
   temperature: 0.9,
+  /** agent stays closer to its examples; 270M drifts off-character at higher temperatures. */
+  agentTemperature: 0.6,
   timeoutMs: 25000,
   downloadRetries: 2,
 };
 const SETTINGS_KEY = 'unknown-agent-llm';
-
-const AGENT_PERSONA =
-  'You are agent, a pay-per-prompt AI chatbot sold by GeneralAI. You are helpful, competent and a ' +
-  'little dry. Keep replies to one or two short sentences of plain text. No markdown, no lists.';
 
 // Runs inside the worker. Kept as a real function and stringified below.
 function workerMain() {
@@ -151,8 +151,8 @@ class LocalLLM {
 
   /** A reply in agent's (or a given) voice, or null when no model can answer. */
   async generate(prompt: string, ctx: GenCtx = {}): Promise<string | null> {
-    const persona = ctx.persona || AGENT_PERSONA;
-    const messages: ChatTurn[] = [{ role: 'system', content: persona + (ctx.facts ? '\n' + ctx.facts : '') }];
+    if (!ctx.persona) return this.run(agentMessages(prompt, ctx.facts), CONFIG.shortTokens, clean, CONFIG.agentTemperature);
+    const messages: ChatTurn[] = [{ role: 'system', content: ctx.persona + (ctx.facts ? '\n' + ctx.facts : '') }];
     for (const [u, a] of ctx.examples || []) messages.push({ role: 'user', content: u }, { role: 'assistant', content: a });
     messages.push({ role: 'user', content: String(prompt).slice(0, 700) });
     return this.run(messages, ctx.long ? CONFIG.longTokens : CONFIG.shortTokens, ctx.long ? cleanEmail : clean);
@@ -170,14 +170,14 @@ class LocalLLM {
     return this.run(messages, CONFIG.longTokens, cleanEmail);
   }
 
-  private async run(messages: ChatTurn[], maxTokens: number, finish: (t: string) => string | null): Promise<string | null> {
+  private async run(messages: ChatTurn[], maxTokens: number, finish: (t: string) => string | null, temperature = CONFIG.temperature): Promise<string | null> {
     if (this.status !== 'ready') return null;
     const started = now();
     let raw: string | null = null;
     try {
       raw = this.settings.backend === 'ollama'
-        ? await withTimeout(this.ollamaChat(messages, maxTokens), CONFIG.timeoutMs)
-        : await withTimeout(this.workerGenerate(messages, maxTokens), CONFIG.timeoutMs);
+        ? await withTimeout(this.ollamaChat(messages, maxTokens, temperature), CONFIG.timeoutMs)
+        : await withTimeout(this.workerGenerate(messages, maxTokens, temperature), CONFIG.timeoutMs);
     } catch { raw = null; }
     const text = raw ? finish(raw) : null;
     this.last = { ms: Math.round(now() - started), ok: !!text, text: text || raw || '' };
@@ -226,12 +226,12 @@ class LocalLLM {
   }
   private killWorker(): void { if (this.worker) { this.worker.terminate(); this.worker = null; } }
 
-  private workerGenerate(messages: ChatTurn[], maxTokens: number): Promise<string | null> {
+  private workerGenerate(messages: ChatTurn[], maxTokens: number, temperature: number): Promise<string | null> {
     if (!this.worker) return Promise.resolve(null);
     const id = this.nextId++;
     return new Promise((resolve) => {
       this.pending.set(id, resolve);
-      this.worker!.postMessage({ type: 'generate', id, messages, maxTokens, temperature: CONFIG.temperature });
+      this.worker!.postMessage({ type: 'generate', id, messages, maxTokens, temperature });
     });
   }
 
@@ -254,12 +254,12 @@ class LocalLLM {
     }
   }
 
-  private async ollamaChat(messages: ChatTurn[], maxTokens: number): Promise<string | null> {
+  private async ollamaChat(messages: ChatTurn[], maxTokens: number, temperature: number): Promise<string | null> {
     const { ollamaUrl, ollamaModel } = this.settings;
     const res = await fetch(`${ollamaUrl}/api/chat`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ model: ollamaModel, messages, stream: false,
-        options: { num_predict: maxTokens, temperature: CONFIG.temperature, top_p: 0.95, top_k: 64, repeat_penalty: 1.15 } }),
+        options: { num_predict: maxTokens, temperature, top_p: 0.95, top_k: 64, repeat_penalty: 1.15 } }),
     });
     if (!res.ok) return null;
     const data = await res.json();
@@ -283,7 +283,9 @@ function clean(text: string): string | null {
     .replace(/<end_of_turn>|<eos>|<\/?start_of_turn>(model|user)?/g, '')
     .replace(/[*_#`]+/g, '')
     .replace(/^\s*(assistant|model|agent|unknown agent)\s*:\s*/i, '')
-    .replace(/\s+/g, ' ').trim();
+    .replace(/\s+/g, ' ').trim()
+    .replace(/^(okay|ok|alright|sure)[,.!]\s+(?=\S)/i, '')
+    .replace(/^[a-z]/, (c) => c.toUpperCase());
   const sentences = t.match(/[^.!?]+[.!?]+["')\]]*/g);
   if (sentences) t = sentences.slice(0, 2).join('').trim();
   if (t.length > 320) t = t.slice(0, 317).replace(/\s+\S*$/, '') + '…';

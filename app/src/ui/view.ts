@@ -9,7 +9,7 @@ import { listSlots } from '../game/saves';
 import { ICONS, Y_ICONS } from './icons';
 import { route, bookmarks, type Route, type SiteId } from '../sites/registry';
 import {
-  type GameState, type AppInstance, getApp, appWorking, agentCost, RENT, LAST_DAY, AGENT_COST, AGENT_ROLLOUT,
+  type GameState, type AppInstance, getApp, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, AGENT_ROLLOUT,
 } from '../engine';
 import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
@@ -554,6 +554,17 @@ function pageApp(store: GameStore, appId?: string): string {
 }
 
 // ── agent chat (free-promptable, with costs) ──
+/** The line under the prompt box: the exact price of what's typed, split into its two charges. */
+export function costLine(s: GameState, text: string): { text: string; over: boolean } {
+  const p = promptCost(s.values.agentLevel, text);
+  const rate = `${fmtMoney(p.base)} per prompt + ${fmtMoney(p.perWord)} per word`;
+  if (!p.words) return { text: `agent-${s.values.agentLevel}: ${rate}`, over: false };
+  const w = `${p.words} word${p.words > 1 ? 's' : ''}`;
+  return {
+    text: `${fmtMoney(p.total)} = ${fmtMoney(p.base)} per prompt + ${fmtMoney(p.wordFee)} for ${w} × ${fmtMoney(p.perWord)}`,
+    over: p.total > s.values.crypto,
+  };
+}
 function jevChip(): string {
   return `<span class="ua-llm-dot"></span>Story decisions: Jev`;
 }

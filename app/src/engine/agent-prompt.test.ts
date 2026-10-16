@@ -4,6 +4,7 @@
  */
 import { startGame } from './day';
 import { promptAgent } from './actions';
+import { promptCost } from './agent';
 import { makeContent, fakeRouter } from './_fixtures';
 import { CLOCK } from './config';
 
@@ -16,7 +17,7 @@ describe('promptAgent — always free text', () => {
     s.values.crypto = 100;
     const r = await promptAgent(s, content, fakeRouter({}), 'what can you help me with?');
     expect(r.charged).toBe(true);
-    expect(r.state.values.crypto).toBeLessThan(100); // billed per prompt + word
+    expect(r.state.values.crypto).toBeCloseTo(100 - promptCost(1, 'what can you help me with?').total, 2);
     expect(r.state.chat.at(-1)!.from).toBe('agent');
     expect(r.state.clockMin).toBe(CLOCK.wake + CLOCK.perAction); // one prompt spent
   });
@@ -29,6 +30,13 @@ describe('promptAgent — always free text', () => {
     const built = r.state.apps.find((a) => a.id === app.id)!;
     expect(built.repo.some((f) => f.id === 'catalog')).toBe(true);
     expect(r.state.chat.at(-1)!.src).toBe('build');
+  });
+});
+
+describe('promptCost', () => {
+  it('is the per-prompt fee plus the per-word fee on the prompt, known before sending', () => {
+    expect(promptCost(1, 'what can you help me with?')).toEqual({ base: 0.5, perWord: 0.01, words: 6, wordFee: 0.06, total: 0.56 });
+    expect(promptCost(3, '  ')).toMatchObject({ words: 0, wordFee: 0, total: 2 });
   });
 });
 

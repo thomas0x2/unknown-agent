@@ -70,8 +70,9 @@ LLM.onChange(render);
 function updateCost(): void {
   const est = $('#cost-est'); const input = $<HTMLTextAreaElement>('#prompt-input');
   if (!est || !input) return;
-  const words = input.value.split(/\s+/).filter(Boolean).length;
-  est.textContent = words ? `~${words} word${words > 1 ? 's' : ''}` : '';
+  const c = V.costLine(store.state, input.value);
+  est.textContent = c.text;
+  est.classList.toggle('neg', c.over);
 }
 
 function toast(title: string, body: string, kind = 'note'): void {
