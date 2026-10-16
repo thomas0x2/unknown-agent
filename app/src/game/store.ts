@@ -275,7 +275,7 @@ export class GameStore {
 
   setYSearch(v: string): void { this.ui.ySearch = v; this.emit(); }
   /** Y shows only today's posts until the player asks for the rest; the choice lapses at the next day. */
-  showAllY(): void { this.ui.yAllDay = this.state.values.day; this.emit(); }
+  showAllY(on = true): void { this.ui.yAllDay = on ? this.state.values.day : 0; this.emit(); }
   setYowlSearch(v: string): void { this.ui.yowlSearch = v; this.emit(); }
   setFySearch(v: string): void { this.ui.fySearch = v; this.emit(); }
   setWalletRange(r: string): void { this.ui.walletRange = r; this.emit(); }

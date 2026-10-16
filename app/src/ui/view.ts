@@ -448,7 +448,9 @@ function pageY(store: GameStore, profile?: string): string {
   const showAll = !!q || store.ui.yAllDay === s.values.day;
   const shown = q ? posts.filter((p) => `${p.author} ${p.handle} ${p.text}`.toLowerCase().includes(q.replace(/^@/, ''))) : showAll ? posts : posts.filter((p) => p.day === s.values.day);
   const older = !showAll && posts.some((p) => p.day !== s.values.day);
-  const feed = (shown.map((p) => yPostHtml(store, p)).join('') || `<p class="y-none">${older ? 'Nothing posted yet today.' : 'Quiet timeline.'}</p>`)
+  // with everything showing, "Hide old posts" sits where today's posts end and older ones begin
+  const firstOld = !q && showAll ? shown.findIndex((p) => p.day !== s.values.day) : -1;
+  const feed = (shown.map((p, i) => (i === firstOld ? '<div class="y-more"><button class="y-btn ghost" data-y-all="hide">Hide old posts</button></div>' : '') + yPostHtml(store, p)).join('') || `<p class="y-none">${older ? 'Nothing posted yet today.' : 'Quiet timeline.'}</p>`)
     + (older ? '<div class="y-more"><button class="y-btn ghost" data-y-all>Show all</button></div>' : '');
   const side = `<aside class="y-side">
     <section class="y-card y-me">
