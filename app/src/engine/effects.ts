@@ -5,7 +5,7 @@
 import type { GameState } from './state';
 import type { Effects, JobSpec } from '../content/schema';
 import { addValue, addFlag, clearFlag, money } from './core';
-import { registerApp, scriptedBreak } from './apps';
+import { registerApp, scriptedBreak, bugsOf } from './apps';
 import type { MeterId } from './values';
 
 export function applyEffects(s: GameState, effects?: Effects, job?: JobSpec, eventId?: string): void {
@@ -34,7 +34,12 @@ export function applyEffects(s: GameState, effects?: Effects, job?: JobSpec, eve
           const changed = JSON.stringify(app.specParams[f.id] ?? null) !== JSON.stringify(f.params);
           app.specParams[f.id] = f.params;
           // the client changed what this feature should say: what's built (and live) is now out of date
-          if (changed) for (const b of [...app.repo, ...app.features]) if (b.id === f.id && b.correct) { b.correct = false; b.variant = 'outdated'; }
+          // a build that already has a bug gets 'outdated' on top, so the change can still be asked for
+          if (changed) for (const b of [...app.repo, ...app.features]) {
+            if (b.id !== f.id || bugsOf(b).includes('outdated')) continue;
+            if (b.correct || !b.variant) Object.assign(b, { correct: false, variant: 'outdated', also: undefined });
+            else b.also = [...(b.also ?? []), 'outdated'];
+          }
         }
       }
     }

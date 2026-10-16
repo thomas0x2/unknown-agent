@@ -232,6 +232,30 @@ describe("the client's change requests", () => {
     expect(item.description).toMatch(/Quattro Formaggi 15/);
   });
 
+  it("the change item says the prompt has to spell out what changes", async () => {
+    const { s, id } = updated();
+    const { jev, asked } = spy(pickJev({ route: ['feature'] }));
+    await promptDone(s, content, jev, gino);
+    expect(asked.features[0].features.find((f) => f.id === `${id}::menu::outdated`)!.description).toMatch(/what exactly changes.*doesn't count/);
+  });
+
+  it("a menu that already had a bug still takes the client's change, and the bug stays", async () => {
+    const { s, id } = withApp('restaurant_contact');
+    const menu = getApp(s, id)!.repo.find((f) => f.id === 'menu')!;
+    Object.assign(menu, { correct: false, variant: 'prices_curo', seed: 1 });
+    applyEffects(s, content.events.find((e) => e.id === 'd2_restaurant_booking')!.onDeliver!);
+    expect(getApp(s, id)!.repo.find((f) => f.id === 'menu')).toMatchObject({ variant: 'prices_curo', also: ['outdated'] });
+    const out = (await promptDone(s, content, pickJev({ route: ['feature'], features: ['::menu::outdated'] }), 'Swap Diavola for Quattro Formaggi at 15, and make Espresso 3.5. Update the trattoria menu items and prices')).state;
+    expect(getApp(out, id)!.repo.find((f) => f.id === 'menu')).toMatchObject({ correct: false, variant: 'prices_curo' });
+    expect(getApp(out, id)!.repo.find((f) => f.id === 'menu')!.also).toBeUndefined();
+  });
+
+  it("asking to update without saying what changed gets asked what changed", async () => {
+    const { s, id } = updated();
+    const out = (await promptDone(s, content, pickJev({ route: [`app:${id}`] }), 'Update the trattoria menu items and prices')).state;
+    expect(content.agent!.hints.find((h) => h.id === 'update_help')!.replies).toContain(out.chat.at(-1)!.text);
+  });
+
   it('asking for the change updates the menu alongside the new booking form', async () => {
     const { s, id } = updated();
     const out = (await promptDone(s, content, pickJev({ route: ['feature'], features: ['::menu::outdated', '::booking::feature'] }), gino)).state;
@@ -369,5 +393,34 @@ describe('dev bug switch', () => {
     for (const list of [a.repo, a.features]) expect(list.find((f) => f.id === 'landing')!.correct).toBe(true);
     devToggleBug(s, id, 'landing', 'name_wrong');
     for (const list of [a.repo, a.features]) expect(list.find((f) => f.id === 'landing')).toMatchObject({ correct: false, variant: 'name_wrong' });
+  });
+});
+
+describe('one app per prompt', () => {
+  /** Gino's site and the crawler, both with a bug the prompt could be read as naming. */
+  function twoApps() {
+    const { s, id: gino } = withApp('restaurant_contact');
+    applyEffects(s, content.events.find((e) => e.id === 'trader_contact')!.outcomes!.find((o) => o.effects?.createApp)!.effects!);
+    const crawler = s.apps.at(-1)!;
+    crawler.repo = crawler.required.map((f) => ({ id: f, correct: f !== 'filter', ...(f === 'filter' ? { variant: 'bots_counted' } : {}), params: crawler.specParams[f] }));
+    crawler.repoVersion = 1;
+    getApp(s, gino)!.repo[0] = { id: 'landing', correct: false, variant: 'name_wrong', params: getApp(s, gino)!.specParams.landing };
+    return { s, gino, crawler: crawler.id };
+  }
+
+  it('when Jev matches on two apps, only the one it says the prompt means is touched', async () => {
+    const { s, gino, crawler } = twoApps();
+    const out = (await promptDone(s, content, pickJev({ route: ['fix', crawler], features: ['::filter::c:bots', '::landing::c:name'] }), "The crawler doesn't filter for bots")).state;
+    expect(getApp(out, crawler)!.repo.find((f) => f.id === 'filter')!.correct).toBe(true);
+    expect(getApp(out, gino)!.repo[0]).toMatchObject({ correct: false, variant: 'name_wrong' });
+    expect(out.chat.at(-1)!.text).not.toMatch(/Trattoria Gino/);
+  });
+
+  it('when Jev cannot tell which app, it asks and changes nothing', async () => {
+    const { s, gino, crawler } = twoApps();
+    const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::filter::c:bots', '::landing::c:name'] }), 'fix the bots and the name')).state;
+    expect(content.agent!.hints.find((h) => h.id === 'which_app')!.replies).toContain(out.chat.at(-1)!.text);
+    expect(getApp(out, crawler)!.repo).toEqual(getApp(s, crawler)!.repo);
+    expect(getApp(out, gino)!.repo).toEqual(getApp(s, gino)!.repo);
   });
 });

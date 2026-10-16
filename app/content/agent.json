@@ -46,6 +46,15 @@
       ]
     },
     {
+      "id": "update_help",
+      "when": "Engine only: the player names an app and asks to update it to the client's changes without saying what changed.",
+      "replies": [
+        "What changed? Tell me which items to swap, add or drop, and the new prices.",
+        "I can update it, but I need the actual changes. Which items, which prices?",
+        "\"Update the menu\" isn't a change. List what's different and I'll put it in."
+      ]
+    },
+    {
       "id": "which_app",
       "when": "The player asks agent to build, change or fix an app without naming which app.",
       "replies": [

@@ -205,7 +205,8 @@ function attempt(s: GameState, app: AppInstance, id: string, level: number, ctx:
       // spelling the details out again fixes it, including the checklist items tied to this bug (the prices)
       const spelled = !!bug?.orDetails && details.length > 0 && hasDetails
         && (def?.checklist ?? []).filter((c) => c.bug === v).every((c) => specChecklist(app, def, said!)?.[c.id]);
-      return v === 'outdated' ? hasDetails || (def ? promptHasChange(said!, detailValues(existing.params, def, true), detailValues(spec, def, true)) : false)
+      // Jev judged the prompt spells out the change; the details or the change itself in the text count too
+      return v === 'outdated' ? (ctx.named ?? []).includes('outdated') || hasDetails || (def ? promptHasChange(said!, detailValues(existing.params, def, true), detailValues(spec, def, true)) : false)
         : (ctx.named ?? []).includes(v) || spelled;
     };
     const all = bugsOf(existing);
@@ -333,7 +334,7 @@ export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, f
   const built = app.repo.find((f) => f.id === featureId);
   if (built && !built.correct && bugsOf(built).includes('outdated')) {
     const now = detailValues(app.specParams[featureId], def, true).join('; ');
-    out.push({ id: 'outdated', description: `Change ${def.description} to the client's new version${now ? ` (${now})` : ''}. Naming any part of the change counts: swapping, adding, removing or repricing items.`, kind: 'build' });
+    out.push({ id: 'outdated', description: `Change ${def.description} to the client's new version${now ? ` (${now})` : ''}. The prompt has to say what exactly changes: which items are swapped, added or removed, or which prices change and to what ("swap Diavola for Quattro Formaggi at 15"). Asking to update it without saying what changes ("update the menu items and prices") doesn't count.`, kind: 'build' });
   }
   // a fix has to say which part is wrong: one item per component, described by what can go wrong in it
   const spec = app.specParams[featureId];
