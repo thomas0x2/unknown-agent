@@ -1,8 +1,8 @@
 /*
  * The websites behind the banner ads (app/src/ui/ads.ts). Every ad's href opens one of these: a
  * landing page in the sponsor's style. For now they're brochures with nothing to click, apart from
- * the odd link to a real site (deepsleep.ai links to Weightroom). The two ads whose sites are real (EMPIRE, the coinbln.com phishing
- * page) aren't here. Rendered by ui/adSites.ts; routed by sites/registry.ts.
+ * the odd link to a real site (deepsleep.ai links to Weightroom). Ads for sites that already exist
+ * (EMPIRE, the coinbln.com phishing page, DoorDish) aren't here. Rendered by ui/adSites.ts; routed by sites/registry.ts.
  */
 
 /** Page layout family: shapes the markup a little and the CSS a lot. */
@@ -149,31 +149,6 @@ export const AD_SITES: AdSite[] = [
       ['On the record', 'Every speech Daniel has given since 2016 is published here, so you can check what he actually said.'],
     ],
     fine: 'Paid for by Keller for Mayor. Treat any video of Daniel Keller that isn’t on this page with care.',
-  },
-
-  // ── DoorDish ──
-  {
-    url: 'doordish.com/robots', brand: 'DoorDish', kit: 'corp', theme: 'dish', mark: 'D',
-    kicker: 'DoorDish robot couriers', title: 'Hot food in 30 minutes.',
-    lead: 'Six thousand robot couriers deliver across the city, day and night. They don’t take breaks, and all of them are accounted for.',
-    stats: [['28 min', 'average delivery'], ['6,000', 'couriers'], ['5,999', 'on route']],
-    cards: [
-      ['On time', 'Orders that take longer than 30 minutes are refunded in DoorDish credit.'],
-      ['Tracked', 'Every courier reports its position every second.'],
-      ['Tipping', 'Tips go to courier maintenance. Couriers that are tipped well are serviced first.'],
-    ],
-    fine: 'Couriers are not employees, contractors or responsible parties.',
-  },
-  {
-    url: 'doordish.com/last-meal', brand: 'DoorDish', kit: 'corp', theme: 'dish', mark: 'D',
-    kicker: 'Last Meal by DoorDish', title: 'Your last meal, delivered.',
-    lead: 'For hospitals, hospices and anyone who would rather not cook tonight. Order from any restaurant in the city.',
-    cards: [
-      ['Any restaurant', 'Every restaurant on DoorDish, plus a few that have closed. We kept their recipes.'],
-      ['Discreet', 'Unmarked bags and a courier that doesn’t ring twice.'],
-      ['Rated 5★', 'Last Meal has never had a bad review.'],
-    ],
-    fine: 'The courier waits until the order is confirmed. Order history passes to the account holder’s next of kin.',
   },
 
   // ── money ──

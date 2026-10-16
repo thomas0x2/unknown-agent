@@ -34,7 +34,7 @@ export function pageAdSite(url: string): string {
 /** Favicon colours per theme (background, mark): each brand's accent from adSites.css. */
 const FAV: Record<string, [string, string]> = {
   gai: ['#121a4a', '#fff'], park: ['#e8e8e8', '#111'], vantor: ['#2c2c2a', '#f3f2ee'], crane: ['#b3121f', '#fff'],
-  keller: ['#0d2347', '#e8c35a'], dish: ['#eb1700', '#fff'], dolr: ['#0e5e3a', '#2cff95'], prince: ['#ff00a8', '#fff7a0'],
+  keller: ['#0d2347', '#e8c35a'], dolr: ['#0e5e3a', '#2cff95'], prince: ['#ff00a8', '#fff7a0'],
   steadfast: ['#13314d', '#fff'], pod: ['#2d2a24', '#ebe6dc'], guard: ['#07120c', '#7dff9b'], news: ['#151515', '#fff'],
   grief: ['#3a2b52', '#f4eefb'], casket: ['#1d1d22', '#d9d9de'], cryo: ['#1f7fc2', '#fff'], pharma: ['#12a3a3', '#fff'],
   lonely: ['#e0336f', '#fff'], mind: ['#1b0b3a', '#ff9d3d'], ministry: ['#4a4f38', '#ece6d2'], bean: ['#4a2a18', '#fbe9d2'],

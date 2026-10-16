@@ -68,8 +68,7 @@ export function route(url: string, s: GameState): Route {
     return { site: 'app', param: app && (appMatch[2] ? `${app.id}/${appMatch[2]}` : app.id), reachable: !!app && app.deployed };
   }
 
-  // a banner ad's landing page (sites/adSites.ts), always reachable; checked first because some sit
-  // on another site's domain (doordish.com/robots)
+  // a banner ad's landing page (sites/adSites.ts), always reachable
   if (adSite(u)) return { site: 'adsite', param: u, reachable: true };
 
   for (const def of SITES) {
