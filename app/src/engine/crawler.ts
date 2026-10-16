@@ -5,10 +5,13 @@
  */
 import type { GameState } from './state';
 import type { Content, Mood } from '../content/schema';
+import { posted, postMin } from './events';
 
 export interface MarketPost {
   id: string;
   day: number;
+  /** Minutes since midnight when it went up. */
+  min?: number;
   author: string;
   handle: string;
   text: string;
@@ -31,8 +34,10 @@ export function marketPosts(s: GameState, content: Content): MarketPost[] {
   const today = s.values.day;
   const out: MarketPost[] = [];
   for (const p of m.posts) {
-    if (p.day > today) continue;
-    const base = { day: p.day, author: p.from, text: p.body, likes: p.likes, tickers: p.tickers, mood: p.mood, literal: p.literal, crane: p.crane, impostor: p.impostor };
+    // today's posts go up over the day; the crawler only sees what's on the timeline so far
+    const min = postMin(p, p.day);
+    if (!posted(s, p.day, min)) continue;
+    const base = { day: p.day, min, author: p.from, text: p.body, likes: p.likes, tickers: p.tickers, mood: p.mood, literal: p.literal, crane: p.crane, impostor: p.impostor };
     if (!p.bots) { out.push({ ...base, id: p.id, handle: p.handle }); continue; }
     for (let n = 1; n <= p.bots; n++) {
       const tag = 1000 + ((n * 7919 + p.day * 131) % 9000);
@@ -43,7 +48,7 @@ export function marketPosts(s: GameState, content: Content): MarketPost[] {
     const d = s.delivered.find((x) => x.eventId === l.event);
     const e = content.events.find((x) => x.id === l.event);
     if (!d || !e || d.day > today) continue;
-    out.push({ id: e.id, day: d.day, author: e.from ?? 'someone', handle: handleOf(e.from ?? 'someone'), text: e.body ?? '', likes: l.likes ?? 100, tickers: l.tickers, mood: l.mood, literal: l.literal, crane: l.crane });
+    out.push({ id: e.id, day: d.day, min: d.min, author: e.from ?? 'someone', handle: handleOf(e.from ?? 'someone'), text: e.body ?? '', likes: l.likes ?? 100, tickers: l.tickers, mood: l.mood, literal: l.literal, crane: l.crane });
   }
   return out;
 }

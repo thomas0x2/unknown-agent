@@ -11,6 +11,7 @@
     ],
     "appWorking": "trader_contact"
   },
+  "at": "13:05",
   "onDeliver": {
     "updateApp": {
       "client": "trader_contact",

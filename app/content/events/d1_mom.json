@@ -7,6 +7,7 @@
   "trigger": {
     "dayMin": 1
   },
+  "at": "11:20",
   "body": "Sweetheart, I heard about the layoffs on the news. Are you alright? Are you eating? Your father says hi (he didn't). Write back when you can.\n\nLove, Mom",
   "outcomes": [
     {

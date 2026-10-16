@@ -5,6 +5,7 @@
   "trigger": {
     "dayMin": 4
   },
+  "at": "11:30",
   "addr": "mara@thecurrent.test",
   "body": "Following up on the Vantor layoffs — 400 people, one memo. If you were one of them, tell me your story. mara@thecurrent.test"
 }

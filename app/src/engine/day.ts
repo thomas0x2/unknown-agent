@@ -10,7 +10,7 @@ import { newGame } from './state';
 import { clone, addValue, money, log, pick, deliverPendingMail } from './core';
 import { runPayday, nightlyBreaks } from './apps';
 import { deliverComplaints } from './complaints';
-import { deliverDue, lapseUnanswered } from './events';
+import { deliverDue, deliverArrivals, lapseUnanswered } from './events';
 import { emptyMailBin } from './mailbin';
 import { rolloutAgent, deductSubscription, agentCost } from './agent';
 import { checkGuardEndings, checkFinale, isLastNight } from './endings';
@@ -34,17 +34,18 @@ function runMorning(s: GameState, content: Content): void {
   rolloutAgent(s);
   emptyMailBin(s); // the Bin is emptied at the end of every day
   nightlyBreaks(s, content); // overnight breaks land in the morning
-  deliverDue(s, content);
+  s.clockMin = CLOCK.wake;
+  deliverArrivals(s, content); // what was still on its way when the day ended comes first thing
+  deliverDue(s, content); // the rest of today's mail and posts land over the day
   s.postsToday = 0;
   s.sentToday = [];
-  s.clockMin = CLOCK.wake;
   deliverPendingMail(s); // replies still on their way overnight arrive in the morning
   s.phase = 'work';
 }
 
 export function startGame(content: Content, seed?: number): GameState {
   const s = seed != null ? newGame(seed) : newGame();
-  // day 1 morning: deliver the opening mail (no rollout, no apps to break yet)
+  // day 1 morning: the opening mail, the rest of the day's arriving later (no rollout, no apps to break yet)
   deliverDue(s, content);
   s.phase = 'work';
   return s;

@@ -146,6 +146,11 @@ export interface GameEvent {
   bodies?: string[];
   trigger: Trigger;
   /**
+   * When it lands on the day it's due, as "HH:MM" between 10:00 and 22:00 (see events.arrivalMin).
+   * Without one it's there first thing in the morning.
+   */
+  at?: string;
+  /**
    * Latent events are never auto-delivered to the inbox. Their outcomes become available for the
    * player to trigger by composing an email to `addr` once the trigger matches — this is how a lead
    * seen on Y ("email me at ...") turns into a conversation.
@@ -316,6 +321,8 @@ export interface MarketPostDef {
   crane?: 'praise' | 'criticism';
   /** A lookalike account posting as Crane. */
   impostor?: boolean;
+  /** When it's posted on its day, "HH:MM". Without one it gets a time spread over the day (see events.postMin). */
+  at?: string;
 }
 /** Labels for a stock post that arrives as a story event (Crane's $GAI praise). */
 export interface MarketEventLabel {

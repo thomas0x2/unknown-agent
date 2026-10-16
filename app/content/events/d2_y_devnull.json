@@ -5,6 +5,7 @@
   "trigger": {
     "dayMin": 2
   },
+  "at": "16:20",
   "onDeliver": {
     "setFlags": [
       "knows_weightroom"

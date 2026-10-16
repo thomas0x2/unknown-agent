@@ -5,6 +5,7 @@
   "addr": "trader@desk.test",
   "subject": "Stake",
   "trigger": { "dayMin": 7, "flagsAll": ["trader_client"] },
+  "at": "12:10",
   "body": "Bot's up since launch. Small stake for 50 DOLR, tracks its P&L. Sell anytime.",
   "outcomes": [
     {

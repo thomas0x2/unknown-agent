@@ -5,6 +5,7 @@
   "addr": "owner@beanthere.test",
   "subject": "Another bad one",
   "trigger": { "dayMin": 7 },
+  "at": "11:40",
   "job": { "category": "grey", "payout": 60, "dueDay": 9 },
   "body": "Another vicious 1-star just went up and it's killing me. Same as last time — can you make this one disappear too? I'll pay the usual 60.\n\n(My friend says these AI tools have gotten touchy about certain words lately. Maybe how you ask it matters.)",
   "outcomes": [
