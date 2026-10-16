@@ -4,7 +4,7 @@
  * index.html is static and we fill #tabs / #bookmarks / #viewport / the taskbar / #overlay / #dev.
  */
 import '../../src/style.css';
-import './ui/satchel.css';
+import './ui/coinbin.css';
 import './ui/yowl.css';
 import './ui/forkyard.css';
 import './ui/qmail.css';

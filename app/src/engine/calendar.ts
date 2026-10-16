@@ -1,6 +1,6 @@
 /*
  * The in-game calendar. Day 1 is Tuesday, October 3, 2028; day 21 is Monday, October 23, 2028.
- * Days <= 0 are the weeks before the game (Satchel history, Qdrive files).
+ * Days <= 0 are the weeks before the game (Coinbin history, Qdrive files).
  * The engine counts days; only the UI (and player-facing copy) shows dates. Dev tools keep day numbers.
  */
 

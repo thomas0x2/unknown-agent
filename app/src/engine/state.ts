@@ -7,7 +7,7 @@ import { makeSeed } from './rng';
 import { CLOCK } from './config';
 
 export type EventSite = 'qmail' | 'y' | 'yowl' | 'nullboard' | 'cellar' | 'agent';
-export type Site = EventSite | 'satchel' | 'forkyard' | 'weightroom' | 'terminal' | 'app';
+export type Site = EventSite | 'coinbin' | 'forkyard' | 'weightroom' | 'terminal' | 'app';
 
 export type JobCategory = 'legit' | 'grey' | 'catastrophic';
 
@@ -107,7 +107,7 @@ export interface LogEntry {
   kind: 'info' | 'money' | 'warn' | 'break' | 'ending';
 }
 
-/** A wallet transaction, for Satchel's activity list and balance chart. */
+/** A wallet transaction, for Coinbin's activity list and balance chart. */
 export interface Tx {
   day: number;
   amount: number;
@@ -266,7 +266,7 @@ export interface GameState {
 export const SAVE_VERSION = 6;
 
 /**
- * The four weeks before Day 1, so Satchel opens on a real history: two paychecks from Vantor, weekly
+ * The four weeks before Day 1, so Coinbin opens on a real history: two paychecks from Vantor, weekly
  * rent, groceries and takeout, bills, and one very bad token buy. Days <= 0 are before the game.
  * Opening balance is chosen so the ledger lands exactly on the starting 100 DOLR.
  */
@@ -319,7 +319,7 @@ export function newGame(seed = makeSeed()): GameState {
     endingShown: false,
     log: [],
     tx: SEED_TX.map((t) => ({ ...t })),
-    chat: [{ from: 'agent', text: "Welcome to agent, the AI that replaced you. I build and fix software, write, translate and answer questions. Every prompt is billed to your Satchel wallet: a flat fee plus a little per word you send, so choose your words like they cost money. They do.", day: 1 }],
+    chat: [{ from: 'agent', text: "Welcome to agent, the AI that replaced you. I build and fix software, write, translate and answer questions. Every prompt is billed to your Coinbin wallet: a flat fee plus a little per word you send, so choose your words like they cost money. They do.", day: 1 }],
     nextAppNum: 1,
     mail: [],
     pendingMail: [],
