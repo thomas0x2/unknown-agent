@@ -8,6 +8,7 @@ import './ui/satchel.css';
 import './ui/yowl.css';
 import './ui/forkyard.css';
 import './ui/qmail.css';
+import './ui/ads.css';
 import { GameStore } from './game/store';
 import { loadContent } from './content/load';
 import { offlineJev, localStorageStore } from './engine';

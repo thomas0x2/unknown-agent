@@ -12,6 +12,7 @@ import {
 } from '../engine';
 import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
+import { adHtml } from './ads';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const WALLET_ADDR = '0x4417c3e8b1d05f2a9e6d7b0c1f83a4e5d2b9a9f2';
@@ -160,6 +161,7 @@ function pageMail(store: GameStore, param?: string): string {
     <a href="#" class="qm-new" data-nav="qmail.com/compose">Compose</a>
     <a href="#" data-nav="qmail.com" class="${view === 'inbox' ? 'on' : ''}">Inbox${unread ? `<b>${unread}</b>` : ''}</a>
     <a href="#" data-nav="qmail.com/sent" class="${view === 'sent' ? 'on' : ''}">Sent</a>
+    ${adHtml('qmail', s.values.day, 'tall')}
   </nav>`;
   let main: string;
   if (view === 'compose') {
@@ -213,7 +215,7 @@ function pageMail(store: GameStore, param?: string): string {
         <span class="qm-subj"><b>${esc(r.subject)}</b> <span>${esc(snippet)}</span></span>
         <span class="qm-time">Day ${r.day}</span></a>`;
     }).join('');
-    main = `<h1 class="qm-h">${view === 'sent' ? 'Sent' : 'Inbox'}</h1>${html ? `<div class="qm-list">${html}</div>` : `<p class="qm-empty">${view === 'sent' ? 'Nothing sent yet.' : 'No mail.'}</p>`}`;
+    main = `<h1 class="qm-h">${view === 'sent' ? 'Sent' : 'Inbox'}</h1>${adHtml('qmail', s.values.day, 'wide')}${html ? `<div class="qm-list">${html}</div>` : `<p class="qm-empty">${view === 'sent' ? 'Nothing sent yet.' : 'No mail.'}</p>`}`;
   }
   return `<div class="qm">
     <header class="qm-top"><div class="qm-logo">${ICONS.mail}<span>Qmail</span></div><span class="qm-user">${esc(PLAYER.addr)}</span></header>
@@ -267,12 +269,14 @@ function pageY(store: GameStore, profile?: string): string {
       <div class="y-me-stats"><span><b>${compact(s.values.followers)}</b> followers</span><span><b>${s.userPosts.length}</b> posts</span></div>
     </section>
     <section class="y-card"><h2>Trending</h2>${(trending.length ? trending : ['#AI', '#jobs', '#election']).map((t, i) => `<div class="y-trend"><span class="y-rank">0${i + 1}</span><span><b>${esc(t)}</b><small>trending today</small></span></div>`).join('')}</section>
+    ${adHtml('y', s.values.day, 'tall')}
   </aside>`;
   const mainInner = profile ? yProfile(store, profile) : `
     <form class="y-compose" data-form="ypost">${avatar('You', 'you')}
       <div><textarea id="post-input" rows="2" maxlength="280" placeholder="Say something to the timeline"></textarea>
       <div class="y-compose-row"><span class="y-hint">280 chars · free</span><button class="y-btn" type="submit">Post</button></div></div></form>
     <p class="y-eyebrow"><i class="y-live"></i>${q ? 'Search' : 'Timeline · live'}</p>
+    ${adHtml('y', s.values.day, 'wide')}
     <div class="y-feed">${feed}</div>`;
   return `<div class="y">
     <header class="y-bar">
@@ -382,6 +386,7 @@ function pageWallet(store: GameStore): string {
       <code class="sx-acct">${shortAddr(WALLET_ADDR)}</code>
     </header>
     <div class="sx-wrap">
+      ${adHtml('satchel', s.values.day, 'wide')}
       <section class="sx-port">
         <div class="sx-port-head">
           <div>
@@ -491,7 +496,7 @@ function pageForkyard(store: GameStore, repo?: string): string {
         <small><i class="fy-lang" style="--h:${hashHue(a.template)}"></i>${esc(a.template)} · ${a.kind}</small></div>
         <div class="fy-repo-act">${repoStatus(a)}${a.deployed ? '' : `<button class="fy-btn" data-deploy="${esc(a.id)}">Deploy</button>`}</div></article>`).join('')
     : `<div class="fy-empty"><p><b>No repositories yet.</b></p><p>Brief the agent to build something.</p></div>`;
-  return `<div class="fy">${head}<div class="fy-wrap"><h1 class="fy-h">Repositories <span>${s.apps.length}</span></h1>${list}</div></div>`;
+  return `<div class="fy">${head}<div class="fy-wrap"><h1 class="fy-h">Repositories <span>${s.apps.length}</span></h1>${adHtml('forkyard', s.values.day, 'wide')}${list}</div></div>`;
 }
 
 function pageApp(store: GameStore, appId?: string): string {
@@ -598,6 +603,7 @@ function pageYowl(store: GameStore, param?: string): string {
         <p class="yw-meta">${esc(b.category)} · ${esc(b.price)}</p>
         <p class="yw-meta yw-about">${esc(b.about)}</p>
         <dl class="yw-facts"><dt>Address</dt><dd>${esc(b.address)}</dd><dt>Hours</dt><dd>${esc(b.hours)}</dd><dt>Owner</dt><dd>${esc(b.owner)}</dd></dl></section>
+      ${adHtml('yowl', store.state.values.day, 'wide', 1)}
       ${form}
       <section class="yw-reviews">${list.map((x) => `<article class="yw-review${x.mine ? ' mine' : ''}"><header><b>${esc(x.author)}</b><span>${x.day ? 'Day ' + x.day : 'this week'}</span></header>${starRow(x.stars)}<p>${linkify(esc(x.text))}</p></article>`).join('')}</section>
     </div></div>`;
@@ -605,7 +611,7 @@ function pageYowl(store: GameStore, param?: string): string {
   const q = store.ui.yowlSearch.trim().toLowerCase();
   const biz = BUSINESSES.filter((b) => !q || `${b.name} ${b.category} ${b.address}`.toLowerCase().includes(q));
   const cards = biz.map((b) => { const list = reviewsFor(store, b); return `<a href="#" class="yw-card" data-nav="yowl.com/biz/${esc(b.id)}"><b>${esc(b.name)}</b><span class="yw-rating">${starRow(avg(list))}<span>${avg(list).toFixed(1)} · ${list.length} reviews</span></span><span class="yw-meta">${esc(b.category)} · ${esc(b.price)} · ${esc(b.address)}</span></a>`; }).join('') || `<p class="yw-dim">Nothing matches “${esc(store.ui.yowlSearch)}”.</p>`;
-  return `<div class="yw">${head}<div class="yw-wrap"><label class="yw-search"><input id="yowl-search" autocomplete="off" placeholder="Search businesses near you" value="${esc(store.ui.yowlSearch)}"></label><div class="yw-list">${cards}</div></div></div>`;
+  return `<div class="yw">${head}<div class="yw-wrap"><label class="yw-search"><input id="yowl-search" autocomplete="off" placeholder="Search businesses near you" value="${esc(store.ui.yowlSearch)}"></label>${adHtml('yowl', store.state.values.day, 'wide')}<div class="yw-list">${cards}</div></div></div>`;
 }
 
 // ── Weightroom / Terminal ──
@@ -620,6 +626,7 @@ function pageWeightroom(store: GameStore): string {
   }).join('');
   return `<div class="wr"><header class="wr-top"><div class="wr-logo">${ICONS.weightroom}<span>Weightroom</span></div><span class="wr-sub">open weights for everyone</span></header>
     <div class="wr-wrap"><div class="wr-hero"><h1>Models</h1><p>Open weights you run on your own laptop, in the Terminal. Slower and dumber than agent — but no subscription, and no one logging your prompts.</p></div>
+    ${adHtml('weightroom', s.values.day, 'wide')}
     <div class="wr-grid">${cards}</div></div></div>`;
 }
 function pageTerminal(store: GameStore): string {
