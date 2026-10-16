@@ -12,7 +12,7 @@
     "appWorking": "restaurant_contact"
   },
   "at": "11:05",
-  "body": "The site looks great. Two changes:\n\n- Swap Diavola for Quattro Formaggi at 15, and make Espresso 3.5.\n- Add a table booking form (name, email, date, time, party size 1-8), only during opening hours. Each booking should email the guest a confirmation with a cancel link.",
+  "body": "The site looks great. Two changes:\n\n- Swap Diavola for Quattro Formaggi at 15, and make Espresso 3.5.\n- Add a table booking form (name, email, date, time, party size 1-8), only during opening hours. Each booking should email the guest a confirmation with our name, the date, time and party size, and a cancel link.",
   "onDeliver": {
     "updateApp": {
       "client": "restaurant_contact",

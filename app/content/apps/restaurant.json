@@ -188,7 +188,7 @@
     },
     {
       "id": "booking",
-      "description": "a table booking form that emails the guest a confirmation",
+      "description": "a table booking form that emails the guest a confirmation with the restaurant name, date, time and party size",
       "pageId": "booking",
       "failures": [
         "deep",
