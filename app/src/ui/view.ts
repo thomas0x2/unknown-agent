@@ -16,6 +16,7 @@ import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
 import { pageDrive } from './qdrive';
 import { adHtml } from './ads';
+import { renderAppSite } from './appsite';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const WALLET_ADDR = '0x4417c3e8b1d05f2a9e6d7b0c1f83a4e5d2b9a9f2';
@@ -529,11 +530,12 @@ function pageForkyard(store: GameStore, repo?: string): string {
   if (repo) {
     const a = s.apps.find((x) => x.id === repo || x.url.startsWith(repo + '.'));
     if (!a) return `<div class="fy">${head}<div class="fy-wrap"><p class="fy-empty">404 — no repository called <code>${esc(repo)}</code>.</p></div></div>`;
-    const feats = a.required.map((id) => {
-      const built = a.repo.find((f) => f.id === id);
-      const st = !built ? 'missing' : built.correct ? 'ok' : 'wrong';
-      return `<div class="fy-file">${esc(id)} <small>${st}</small></div>`;
-    }).join('');
+    const tmpl = store.content.apps[a.template];
+    const feats = a.repo.map((f) => {
+      const page = tmpl?.features.find((d) => d.id === f.id)?.pageId;
+      const file = page ? (page === 'landing' ? 'index.html' : `${page}.html`) : `integrations/${f.id}.json`;
+      return `<div class="fy-file">${esc(file)}</div>`;
+    }).join('') || '<div class="fy-file"><small>Empty repository</small></div>';
     const stale = a.deployed && a.deployedVersion !== a.repoVersion;
     return `<div class="fy">${head}<div class="fy-wrap">
       <p class="fy-crumbs"><a href="#" data-nav="forkyard.com">you</a> / <b>${esc(a.id)}</b></p>
@@ -542,7 +544,7 @@ function pageForkyard(store: GameStore, repo?: string): string {
         <div class="fy-files"><div class="fy-filehead">Pushed by <b>agent[bot]</b> · repo v${a.repoVersion}</div>${feats}</div>
         <div class="fy-deploy"><h2>Deployment</h2><p>${repoStatus(a)}</p>
           ${a.deployed
-            ? `<dl><dt>Status</dt><dd>${appWorking(a) ? 'working' : 'check it'}</dd><dt>Hosting / day</dt><dd>$2.00</dd>${stale ? '<dt>Repo</dt><dd>new commit — redeploy</dd>' : ''}</dl><div class="fy-row"><button class="fy-btn" data-deploy="${esc(a.id)}">Redeploy</button><button class="fy-btn ghost" data-takedown="${esc(a.id)}">Take down</button></div>`
+            ? `<dl><dt>Status</dt><dd>live at <a href="#" data-nav="${esc(a.url)}">${esc(a.url)}</a></dd><dt>Hosting / day</dt><dd>$2.00</dd>${stale ? '<dt>Repo</dt><dd>new commit — redeploy</dd>' : ''}</dl><div class="fy-row"><button class="fy-btn" data-deploy="${esc(a.id)}">Redeploy</button><button class="fy-btn ghost" data-takedown="${esc(a.id)}">Take down</button></div>`
             : `<p class="fy-note">Hosting costs $2.00/day, billed nightly. Nothing is live until you deploy.</p><button class="fy-btn" data-deploy="${esc(a.id)}">Deploy</button>`}
         </div></div></div></div>`;
   }
@@ -555,20 +557,18 @@ function pageForkyard(store: GameStore, repo?: string): string {
   return `<div class="fy">${head}<div class="fy-wrap"><h1 class="fy-h">Repositories <span>${s.apps.length}</span></h1>${adHtml('forkyard', s.values.day, 'wide')}${list}</div></div>`;
 }
 
-function pageApp(store: GameStore, appId?: string): string {
+function pageApp(store: GameStore, param?: string): string {
   const s = store.state;
+  const [appId, sub] = (param ?? '').split('/');
   const a = appId ? getApp(s, appId) : undefined;
   if (!a || !a.deployed) return `<div class="err"><h1>404: NOT_FOUND</h1><p>Nothing is deployed here.</p></div>`;
-  const feats = a.features.length
-    ? a.features.map((f) => `<div class="pv-feat"><b>${esc(f.id)}</b><span class="${f.correct ? 'ok' : 'bad'}">${f.correct ? 'looks right' : 'looks wrong'}</span>${a.breaks.filter((b) => b.featureId === f.id).map((b) => `<em>break: ${esc(b.failure)}</em>`).join('')}</div>`).join('')
-    : '<p>Blank page — nothing was built here.</p>';
   const booking = a.template === 'restaurant' && a.features.some((f) => f.id === 'booking')
-    ? `<form class="pv-book" data-form="book" data-app="${esc(a.id)}"><h2>Book a table (test)</h2>
-        <p class="pv-sub">Book with your own address to see the confirmation in Qmail.</p>
+    ? `<form class="pv-book" data-form="book" data-app="${esc(a.id)}"><h1>Book a table</h1>
+        <p class="pv-sub">You'll get a confirmation by email.</p>
         <input id="bk-email" value="${esc(PLAYER.addr)}" aria-label="Email"> <input id="bk-time" value="19:00" aria-label="Time"> <input id="bk-party" value="2" type="number" min="1" max="8" aria-label="Party">
         <button class="pv-btn ok" type="submit">Book</button></form>`
-    : '';
-  return `<div class="pv-host"><div class="pv pv-generic"><h1>${esc(a.name)}</h1><p class="pv-sub">${esc(a.url)}</p>${feats}${booking}<p class="pv-note">Compare this against the client's spec in Qmail.</p></div></div>`;
+    : undefined;
+  return `<div class="pv-host">${renderAppSite(a, store.content.apps[a.template], sub, { booking })}</div>`;
 }
 
 // ── agent chat (free-promptable, with costs) ──

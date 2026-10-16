@@ -23,6 +23,16 @@
       "failures": [
         "visible",
         "subtle"
+      ],
+      "bugs": [
+        {
+          "id": "hours_wrong",
+          "when": "the opening hours corrected to what the client asked for (the hours shown are wrong)"
+        },
+        {
+          "id": "name_wrong",
+          "when": "the restaurant name spelled exactly as the client wrote it (the name is wrong or misspelled)"
+        }
       ]
     },
     {
@@ -32,6 +42,25 @@
       "failures": [
         "subtle",
         "failed_fetch"
+      ],
+      "details": [
+        "dishes"
+      ],
+      "firstBuildBug": true,
+      "bugs": [
+        {
+          "id": "prices_missing",
+          "when": "a price shown next to every dish (the prices are missing)"
+        },
+        {
+          "id": "prices_curo",
+          "when": "prices shown in DOLR instead of CURO (the currency is wrong)"
+        },
+        {
+          "id": "wrong_items",
+          "when": "exactly the client's dishes and items (a dish is missing, renamed or invented)",
+          "orDetails": true
+        }
       ]
     },
     {

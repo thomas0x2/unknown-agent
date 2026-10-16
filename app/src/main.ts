@@ -12,6 +12,7 @@ import './ui/desktop.css';
 import './ui/qdrive.css';
 import './ui/ads.css';
 import './ui/empire.css';
+import './ui/appsite.css';
 import { GameStore } from './game/store';
 import { loadContent } from './content/load';
 import { localStorageStore } from './engine';

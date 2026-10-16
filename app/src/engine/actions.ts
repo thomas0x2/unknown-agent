@@ -7,14 +7,14 @@
  * runs offline.
  */
 import type { GameState, AppInstance, MailEntry } from './state';
-import type { Content, GameEvent, Contact, Outcome } from '../content/schema';
+import type { Content, GameEvent, Contact, Outcome, AppTemplate } from '../content/schema';
 import type { JevRouter, PostRating, RouteDecision } from './jev';
 import { Y as YCFG, FAMILY } from './config';
 import { clone, addValue, log, rand, pick, tick, money } from './core';
 import { applyEffects } from './effects';
 import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent';
 import { getEvent, activeDeliveries, reachableByEmail } from './events';
-import { buildApp, fixApp, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp } from './apps';
+import { buildApp, fixApp, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, type BuildReport } from './apps';
 import { type Writer, scriptedWriter } from './writer';
 
 export interface ReplyResult {
@@ -320,17 +320,32 @@ export async function promptAgent(
         const f = a.repo.find((x) => x.id === id);
         if (f && f.correct) continue;
         const def = tmpl?.features.find((x) => x.id === id);
-        if (def) feats.push({ id: `${a.id}::${id}`, description: `${def.description} (for ${a.name})` });
+        if (!def) continue;
+        feats.push({ id: `${a.id}::${id}`, description: `${def.description} (for ${a.name})` });
+        // a known bug on this feature: a prompt naming it counts as asking for the feature, and fixes it
+        if (f?.variant) for (const b of def.bugs ?? []) feats.push({ id: `${a.id}::${id}::${b.id}`, description: `${b.when} (for ${a.name})` });
       }
     }
     const matched = await jev.matchFeatures({ prompt: text, features: feats });
     if (matched.length) {
       const s = clone(s0);
       const byApp = new Map<string, string[]>();
-      for (const m of matched) { const [appId, fid] = m.split('::'); if (!byApp.has(appId)) byApp.set(appId, []); byApp.get(appId)!.push(fid); }
+      const named = new Map<string, string[]>();
+      for (const m of matched) {
+        const [appId, fid, bug] = m.split('::');
+        if (!byApp.has(appId)) { byApp.set(appId, []); named.set(appId, []); }
+        if (!byApp.get(appId)!.includes(fid)) byApp.get(appId)!.push(fid);
+        if (bug) named.get(appId)!.push(bug);
+      }
       const level = s.values.agentLevel;
       const names: string[] = [];
-      for (const [appId, fids] of byApp) { buildApp(s, appId, fids, level); const a = getApp(s, appId); if (a) names.push(a.name); }
+      const worked: string[] = [];
+      for (const [appId, fids] of byApp) {
+        const a = getApp(s, appId);
+        const report = buildApp(s, appId, fids, level, { tmpl: a && content.apps[a.template], prompt: text, named: named.get(appId) });
+        if (a) names.push(a.name);
+        for (const fid of fids) worked.push(report.vague.includes(fid) ? `${fid} (tidied up the layout and spacing)` : fid);
+      }
       const charged = chargeAgent(s, text);
       if (!charged) {
         s.chat.push({ from: 'you', text, day: s.values.day });
@@ -338,7 +353,7 @@ export async function promptAgent(
         return { state: s, reply: '', charged: false, refused: false, workedAround: false };
       }
       tick(s, 'build');
-      const reply = `Pushed to Forkyard for ${names.join(', ')}.\nWorked on: ${matched.map((m) => m.split('::')[1]).join(', ')}.\n\nDeploy it on Forkyard, then open it and check it against the brief — I can miss things.`;
+      const reply = `Pushed to Forkyard for ${names.join(', ')}.\nWorked on: ${worked.join(', ')}.\n\nDeploy it on Forkyard, then open it and check it against the brief — I can miss things.`;
       s.chat.push({ from: 'you', text, day: s.values.day, cost: agentCostOf(s0, text), level });
       s.chat.push({ from: 'agent', text: reply, day: s.values.day, src: 'build', level });
       return { state: s, reply, charged: true, refused: false, workedAround: false };
@@ -445,6 +460,18 @@ export async function localPrompt(
 
 // ── apps ──
 
+/** Which of the known bugs on these features (as built in the repo) the prompt names. */
+async function namedBugs(jev: JevRouter, app: AppInstance, tmpl: AppTemplate | undefined, ids: string[], prompt: string): Promise<string[]> {
+  const out: string[] = [];
+  for (const id of ids) {
+    const f = app.repo.find((x) => x.id === id);
+    const bugs = tmpl?.features.find((x) => x.id === id)?.bugs ?? [];
+    if (!f || f.correct || !f.variant || !bugs.length) continue;
+    out.push(...await jev.matchFeatures({ prompt, features: bugs.map((b) => ({ id: b.id, description: b.when })) }));
+  }
+  return out;
+}
+
 export async function briefBuild(
   s0: GameState,
   content: Content,
@@ -459,9 +486,10 @@ export async function briefBuild(
   const tmpl = content.apps[app.template];
   const descs = (tmpl?.features ?? []).filter((f) => app.required.includes(f.id));
   const requested = await jev.matchFeatures({ prompt: text, features: descs.map((f) => ({ id: f.id, description: f.description })) });
+  const named = await namedBugs(jev, app, tmpl, requested, text);
   const cost = level === s.values.agentLevel ? agentCostOf(s, text) : 0;
   const charged = chargeHosted(s, level, text);
-  if (charged) buildApp(s, appId, requested, level);
+  if (charged) buildApp(s, appId, requested, level, { tmpl, prompt: text, named });
   const reply = !charged
     ? "I can't run — your balance won't cover it. Pay agent.chat and try again."
     : `Pushed \`${app.template}\` to Forkyard for ${app.name}.\nBuilt: ${requested.length ? requested.join(', ') : 'nothing I could pin down — be specific about the features'}.\n\nDeploy it on Forkyard, then open it and check it against the brief.`;
@@ -489,13 +517,17 @@ export async function briefFix(
   const descs = (tmpl?.features ?? []).filter((f) => problems.includes(f.id));
   const matched = await jev.matchFeatures({ prompt: text, features: descs.map((f) => ({ id: f.id, description: f.description })) });
   const target = matched[0] ?? null;
+  const named = target ? await namedBugs(jev, app, tmpl, [target], text) : [];
   const cost = level === s.values.agentLevel ? agentCostOf(s, text) : 0;
   const charged = chargeHosted(s, level, text);
-  const fixed = charged ? fixApp(s, appId, target, level) : false;
+  const report: BuildReport = { vague: [], hallucinated: [] };
+  const fixed = charged ? fixApp(s, appId, target, level, { tmpl, prompt: text, named }, report) : false;
   const reply = !charged
     ? "I can't run — your balance won't cover it."
     : target
-      ? `Pushed a fix for \`${target}\` to ${app.name}. Redeploy and check it — fixes can miss too.`
+      ? report.vague.length
+        ? `Pushed a change to \`${target}\` on ${app.name}: tidied up the layout and spacing. Redeploy and check it.`
+        : `Pushed a fix for \`${target}\` to ${app.name}. Redeploy and check it — fixes can miss too.`
       : "I couldn't tell which feature you mean. Name the one that's wrong.";
   s.chat.push({ from: 'you', text, day: s.values.day, cost });
   s.chat.push({ from: 'agent', text: reply, day: s.values.day, src: charged ? 'fix' : 'locked' });

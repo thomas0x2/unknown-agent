@@ -23,6 +23,8 @@ export interface BuiltFeature {
   params?: Record<string, string | number>;
   /** How a wrong build is wrong (a bug id from the template, or 'hallucinated' / 'outdated'). */
   variant?: string;
+  /** Picks the concrete symptom when rendering a variant (which dish went missing, etc.). */
+  seed?: number;
 }
 
 export interface AppBreak {
@@ -32,6 +34,7 @@ export interface AppBreak {
   scripted?: boolean;
   /** Which concrete symptom the break shows (a bug id from the template). */
   variant?: string;
+  seed?: number;
 }
 
 export interface AppInstance {

@@ -4,7 +4,7 @@
  * app nightly. Payday pays working apps and strikes/churns broken ones.
  */
 import type { GameState, AppInstance, BuiltFeature, FailureKind } from './state';
-import type { Content, CreateAppSpec } from '../content/schema';
+import type { Content, CreateAppSpec, AppTemplate, FeatureDef } from '../content/schema';
 import { APPS, BUILD_SUCCESS } from './config';
 import { chance, pick, randInt, log, money } from './core';
 
@@ -31,9 +31,19 @@ export function appWorking(app: AppInstance): boolean {
   return app.deployed && !app.churned && app.deployedVersion === app.repoVersion && appMeetsSpec(app);
 }
 
+const slug = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+/** A repo name from the app's name (trattoria-gino), numbered if one already exists. */
+function appSlug(s: GameState, name: string): string {
+  const base = slug(name) || 'app';
+  let id = base;
+  for (let n = 2; s.apps.some((a) => a.id === id); n++) id = `${base}-${n}`;
+  return id;
+}
+
 /** Register a new app project (not built yet). Returns the app id. */
 export function registerApp(s: GameState, spec: CreateAppSpec): string {
-  const id = `app${s.nextAppNum++}`;
+  const id = appSlug(s, spec.name);
   const payPerDay = spec.kind === 'client'
     ? spec.payPerDay ?? randInt(s, APPS.clientPay[0], APPS.clientPay[1])
     : 0;
@@ -44,7 +54,7 @@ export function registerApp(s: GameState, spec: CreateAppSpec): string {
     template: spec.template,
     kind: spec.kind,
     name: spec.name,
-    url: `${spec.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}.forkyard.app`,
+    url: `${id}.forkyard.app`,
     clientEventId: spec.clientEventId,
     payPerDay,
     required: spec.spec.map((f) => f.id),
@@ -67,33 +77,112 @@ export function registerApp(s: GameState, spec: CreateAppSpec): string {
   return id;
 }
 
+/** What the prompt gave the agent to work with. Without a prompt, builds just roll the level chance. */
+export interface BuildCtx {
+  tmpl?: AppTemplate;
+  prompt?: string;
+  /** Bug ids Jev judged the prompt names (see BugDef.when). */
+  named?: string[];
+}
+/** What went sideways in a build, for the agent's reply. */
+export interface BuildReport {
+  /** Features the prompt pointed at without naming the actual problem: the agent changed something else. */
+  vague: string[];
+  /** Features built without the details they needed: the agent made them up. */
+  hallucinated: string[];
+}
+
+function tokens(text: string): string[] {
+  return text.toLowerCase().match(/[a-z\u00c0-\u024f]{3,}|\d+(?:[.,]\d+)?/g)?.map((t) => t.replace(',', '.')) ?? [];
+}
+
+/** True when the prompt carries (nearly) every word and number of `values`, e.g. the dishes and prices. */
+export function promptHasDetails(prompt: string, values: string[]): boolean {
+  const want = [...new Set(values.flatMap(tokens))];
+  if (!want.length) return true;
+  const have = new Set(tokens(prompt));
+  return want.filter((t) => have.has(t)).length / want.length >= 0.85;
+}
+
+function detailValues(params: Record<string, string | number> | undefined, def: FeatureDef): string[] {
+  return (def.details ?? []).map((k) => params?.[k]).filter((v) => v != null).map(String);
+}
+
+/** For an outdated feature: does the prompt spell out what changed (new dishes and prices, dropped dishes)? */
+function promptHasChange(prompt: string, before: string[], after: string[]): boolean {
+  const old = new Set(before.flatMap(tokens));
+  const now = new Set(after.flatMap(tokens));
+  const added = [...now].filter((t) => !old.has(t));
+  const dropped = [...old].filter((t) => !now.has(t) && !/^\d/.test(t));
+  return promptHasDetails(prompt, [...added, ...dropped]);
+}
+
+function wrongVariant(s: GameState, def: FeatureDef | undefined): Pick<BuiltFeature, 'variant' | 'seed'> {
+  return { variant: def?.bugs?.length ? pick(s, def.bugs).id : undefined, seed: randInt(s, 0, 9999) };
+}
+
+/** One feature through the agent: a fresh build, a fix of a known problem, or a miss on a vague prompt. */
+function attempt(s: GameState, app: AppInstance, id: string, level: number, ctx: BuildCtx, report: BuildReport): BuiltFeature {
+  const def = ctx.tmpl?.features.find((f) => f.id === id);
+  const spec = app.specParams[id];
+  const existing = app.repo.find((f) => f.id === id);
+  const details = def && ctx.prompt != null ? detailValues(spec, def) : [];
+  const hasDetails = !details.length || promptHasDetails(ctx.prompt ?? '', details);
+  if (existing && !existing.correct && existing.variant && ctx.prompt != null) {
+    const v = existing.variant;
+    const bug = def?.bugs?.find((b) => b.id === v);
+    const addressed = v === 'hallucinated' ? hasDetails
+      : v === 'outdated' ? hasDetails || (def ? promptHasChange(ctx.prompt, detailValues(existing.params, def), details) : false)
+      : (ctx.named ?? []).includes(v) || (!!bug?.orDetails && details.length > 0 && hasDetails);
+    if (!addressed) { report.vague.push(id); return { ...existing }; }
+    // the agent already has the details from the repo; only an invented feature needed them again
+    if (v !== 'hallucinated') return roll(s, id, level, spec, def);
+  }
+  if (!hasDetails) {
+    report.hallucinated.push(id);
+    return { id, correct: false, variant: 'hallucinated', seed: randInt(s, 0, 9999) };
+  }
+  return roll(s, id, level, spec, def);
+}
+
+function roll(s: GameState, id: string, level: number, spec: BuiltFeature['params'], def: FeatureDef | undefined): BuiltFeature {
+  if (chance(s, successChance(level))) return { id, correct: true, params: spec };
+  return { id, correct: false, params: spec, ...wrongVariant(s, def) };
+}
+
 /**
  * The agent builds the requested features into the repo. `requested` is the set of feature ids Jev
- * judged the prompt asked for correctly. Each is built right with the level's chance; the rest stay
+ * judged the prompt asked for. Each is built right with the level's chance, else with one of the
+ * template's bugs; features whose details the prompt left out come out invented; the rest stay
  * missing. Writes the repo (not live until Deploy).
  */
-export function buildApp(s: GameState, appId: string, requested: string[], level: number): void {
+export function buildApp(s: GameState, appId: string, requested: string[], level: number, ctx: BuildCtx = {}): BuildReport {
+  const report: BuildReport = { vague: [], hallucinated: [] };
   const app = getApp(s, appId);
-  if (!app) return;
-  const p = successChance(level);
+  if (!app) return report;
   const built: BuiltFeature[] = [];
   for (const id of app.required) {
     if (!requested.includes(id)) continue; // forgotten features are missing
-    const existing = app.repo.find((f) => f.id === id);
-    built.push({ id, correct: chance(s, p), params: existing?.params });
+    built.push(attempt(s, app, id, level, ctx, report));
   }
   // keep any already-correct features the player didn't re-request
   for (const f of app.repo) if (!built.some((b) => b.id === f.id)) built.push(f);
   app.repo = built;
   app.repoVersion++;
-  s.commits.push({ day: s.values.day, repo: app.id, msg: app.repoVersion === 1 ? `Initial commit for ${app.name}` : `Update ${requested.join(', ') || app.name}`, kind: 'push' });
+  const worked = requested.filter((id) => !report.vague.includes(id));
+  const msg = app.repoVersion === 1 ? `Initial commit for ${app.name}`
+    : worked.length ? `Update ${worked.join(', ')}` : `Tidy up ${requested.join(', ') || app.name} styling`;
+  s.commits.push({ day: s.values.day, repo: app.id, msg, kind: 'push' });
   // the very first build always ships at least one teaching bug, even on a lucky roll
   if (app.repoVersion === 1) {
     const correct = app.repo.filter((f) => f.correct);
     if (correct.length === app.repo.length && correct.length > 0) {
-      pick(s, correct).correct = false;
+      const preferred = correct.filter((f) => ctx.tmpl?.features.find((d) => d.id === f.id)?.firstBuildBug);
+      const victim = pick(s, preferred.length ? preferred : correct);
+      Object.assign(victim, { correct: false, ...wrongVariant(s, ctx.tmpl?.features.find((d) => d.id === victim.id)) });
     }
   }
+  return report;
 }
 
 const SCRIPTED_FAILURES: FailureKind[] = ['visible', 'subtle', 'failed_fetch'];
@@ -111,21 +200,21 @@ export function scriptedBreak(s: GameState, appId?: string): void {
 }
 
 /**
- * The agent attempts a fix on one feature. If `featureId` names a real problem, the fix re-rolls
- * the level chance (so it can still come out wrong). A vague/wrong target fixes nothing.
+ * The agent attempts a fix on one feature. If `featureId` names a real problem (and, with a prompt,
+ * the prompt names the actual bug), the fix re-rolls the level chance (so it can still come out
+ * wrong). A vague prompt changes something else; a wrong target fixes nothing.
  */
-export function fixApp(s: GameState, appId: string, featureId: string | null, level: number): boolean {
+export function fixApp(s: GameState, appId: string, featureId: string | null, level: number, ctx: BuildCtx = {}, report: BuildReport = { vague: [], hallucinated: [] }): boolean {
   const app = getApp(s, appId);
   if (!app || !featureId) return false;
   if (!repoProblem(app, featureId)) return false;
-  const p = successChance(level);
-  const ok = chance(s, p);
-  const idx = app.repo.findIndex((f) => f.id === featureId);
-  if (idx >= 0) app.repo[idx] = { ...app.repo[idx], correct: ok };
-  else app.repo.push({ id: featureId, correct: ok });
+  const f = attempt(s, app, featureId, level, ctx, report);
+  const idx = app.repo.findIndex((x) => x.id === featureId);
+  if (idx >= 0) app.repo[idx] = f;
+  else app.repo.push(f);
   app.repoVersion++;
-  s.commits.push({ day: s.values.day, repo: app.id, msg: `Fix ${featureId}`, kind: 'push' });
-  return ok;
+  s.commits.push({ day: s.values.day, repo: app.id, msg: report.vague.length ? `Tidy up ${featureId} styling` : `Fix ${featureId}`, kind: 'push' });
+  return f.correct;
 }
 
 function repoProblem(app: AppInstance, featureId: string): boolean {
@@ -158,7 +247,7 @@ export function breakFeature(s: GameState, app: AppInstance, featureId: string, 
   const f = app.features.find((x) => x.id === featureId);
   if (f) f.correct = false;
   if (!app.breaks.some((b) => b.featureId === featureId)) {
-    app.breaks.push({ featureId, failure, day: s.values.day, scripted });
+    app.breaks.push({ featureId, failure, day: s.values.day, scripted, seed: randInt(s, 0, 9999) });
   }
 }
 

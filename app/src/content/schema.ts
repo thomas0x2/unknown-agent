@@ -69,6 +69,22 @@ export interface FeatureDef {
   failures: FailureKind[];
   /** Deep features fail only several clicks into a flow. */
   deep?: boolean;
+  /**
+   * Spec params the build prompt has to spell out (e.g. the dishes). If the prompt leaves them out,
+   * the agent makes up plausible ones instead: the feature ships 'hallucinated'.
+   */
+  details?: string[];
+  /** Concrete ways a wrong build of this feature is wrong. The site renders the one it got. */
+  bugs?: BugDef[];
+  /** The first build's guaranteed teaching bug lands on a feature with this set, if one was built. */
+  firstBuildBug?: boolean;
+}
+export interface BugDef {
+  id: string;
+  /** What a fix prompt has to ask for to address this bug, for Jev to match. Vague prompts miss it. */
+  when: string;
+  /** Spelling out the feature's details again (the full menu) also fixes it. */
+  orDetails?: boolean;
 }
 
 // ── events (content/events/<id>.json) ──
