@@ -200,15 +200,13 @@ document.addEventListener('submit', (e) => {
     const to = val('#mail-to').trim(), subject = val('#mail-subject').trim(), body = val('#mail-body').trim();
     if (!to || !body) return;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) { toast('Qmail', 'Enter a valid address.', 'mail'); return; }
-    void store.compose(to, subject, body).then((r) => { if (!r.sent) toast('Qmail', 'You already wrote to them today.', 'mail'); else { clearMailDraft(); store.setDraft(null); store.navigate('qmail.com/sent'); } });
+    void store.compose(to, subject, body).then((r) => { if (r.sent) { clearMailDraft(); store.setDraft(null); store.navigate('qmail.com/sent'); } });
   } else if (kind === 'reply') {
     const v = val('#reply-body').trim(); if (!v) return;
     clearField('reply-body');
     const id = f.dataset.id, to = f.dataset.to;
     if (id) void store.reply(id, v);
-    else if (to) void store.compose(to, f.dataset.subject ?? '', v).then((r) => {
-      if (!r.sent) { const el = $<HTMLTextAreaElement>('#reply-body'); if (el) el.value = v; toast('Qmail', 'You already wrote to them today.', 'mail'); }
-    });
+    else if (to) void store.compose(to, f.dataset.subject ?? '', v);
   } else if (kind === 'review') {
     const biz = f.dataset.biz!; const v = val('#review-text').trim(); const stars = store.ui.reviewStars;
     if (!stars) { toast('Yowl', 'Pick a rating first.', 'note'); return; }
@@ -247,14 +245,9 @@ document.addEventListener('change', (e) => {
   if (el.id === 'llm-misses') MISSES.set({ misses: el.value as Misses });
   else if (el.id === 'llm-haiku-via') MISSES.set({ haikuVia: el.value as HaikuVia });
 });
-/** Keep the To draft and the once-a-day notice current without re-rendering, so the field and its suggestions stay put. */
+/** Keep the To draft current without re-rendering, so the field and its suggestions stay put. */
 function syncMailTo(): void {
-  const to = val('#mail-to');
-  store.ui.draft = { to, subject: val('#mail-subject'), body: val('#mail-body') };
-  const waiting = store.state.sentToday.includes(to.trim().toLowerCase());
-  $('#mail-wait')?.toggleAttribute('hidden', !waiting);
-  const send = document.querySelector<HTMLButtonElement>('.qm-compose button[type="submit"]');
-  if (send) send.disabled = waiting;
+  store.ui.draft = { to: val('#mail-to'), subject: val('#mail-subject'), body: val('#mail-body') };
 }
 function pickContact(addr: string): void {
   const input = $<HTMLInputElement>('#mail-to');

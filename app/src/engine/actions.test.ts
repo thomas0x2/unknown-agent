@@ -1,6 +1,6 @@
 import { startGame } from './day';
 import { clone } from './core';
-import { postToY, replyToEvent, briefBuild, briefFix } from './actions';
+import { postToY, replyToEvent, briefBuild, briefFix, BOUNCE_ADDR } from './actions';
 import { getApp } from './apps';
 import { makeContent, fakeRouter } from './_fixtures';
 
@@ -59,6 +59,36 @@ describe('replyToEvent', () => {
     const out = await replyToEvent(s, content, r, 'fam_hi', 'asdf');
     expect(out.reply).toBe('');
     expect(out.decision.kind).toBe('nothing');
+  });
+});
+
+describe('one email per person per day', () => {
+  const momEvent = (id: string, dayMin: number) => ({
+    id, site: 'qmail' as const, from: 'Mom', addr: 'mom@test', subject: 'Are you eating?', trigger: { dayMin },
+    outcomes: [{ id: 'warm', when: 'the player replies warmly', reply: 'Love you.' }],
+  });
+  const mom = makeContent({ events: [momEvent('mom_a', 1), momEvent('mom_b', 99)] });
+
+  it('bounces a second reply to the same person on the same day', async () => {
+    const s = startGame(mom, 1);
+    const r = fakeRouter({ route: () => ({ kind: 'nothing' }) });
+    const first = await replyToEvent(s, mom, r, 'mom_a', 'hi');
+    expect(first.bounced).toBeUndefined();
+    const second = await replyToEvent(first.state, mom, r, 'mom_a', 'hi again');
+    expect(second.bounced).toBe(true);
+    expect(second.state.mail[second.state.mail.length - 1].addr).toBe(BOUNCE_ADDR);
+    expect(second.state.delivered.find((d) => d.eventId === 'mom_a')!.answered).toBe(false);
+  });
+
+  it('lets the player answer a story email that arrived after their last one', async () => {
+    const s = startGame(mom, 1);
+    const r = fakeRouter({ route: () => ({ kind: 'outcome', outcomeId: 'warm' }) });
+    const first = await replyToEvent(s, mom, r, 'mom_a', 'love you');
+    const s2 = clone(first.state);
+    s2.delivered.push({ eventId: 'mom_b', site: 'qmail', day: 1, seq: s2.nextId++, answered: false });
+    const second = await replyToEvent(s2, mom, r, 'mom_b', 'love you too');
+    expect(second.bounced).toBeUndefined();
+    expect(second.reply).toBe('Love you.');
   });
 });
 

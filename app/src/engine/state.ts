@@ -228,8 +228,6 @@ export interface GameState {
   chat: ChatMsg[];
   nextAppNum: number;
   mail: MailEntry[];
-  /** Addresses the player wrote to that haven't replied yet (one message per person until they do). */
-  awaiting: string[];
   yExtra: YExtra[];
   reviews: YowlReview[];
   bookings: Booking[];
@@ -308,7 +306,6 @@ export function newGame(seed = makeSeed()): GameState {
     chat: [{ from: 'agent', text: "Welcome to agent, the AI that replaced you. I build and fix software, write, translate and answer questions. Every prompt is billed to your Satchel wallet: a flat fee plus a little per word you send, so choose your words like they cost money. They do.", day: 1 }],
     nextAppNum: 1,
     mail: [],
-    awaiting: [],
     yExtra: [],
     reviews: [],
     bookings: [],

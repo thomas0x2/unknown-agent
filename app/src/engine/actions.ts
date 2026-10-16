@@ -22,6 +22,8 @@ export interface ReplyResult {
   decision: RouteDecision;
   /** Reply text shown to the player (already phrased), or '' for no reply. */
   reply: string;
+  /** true when the email went over the daily limit and came back from the recipient's spam filter. */
+  bounced?: boolean;
 }
 
 const PLAYER_ADDR = 'you@qmail.com';
@@ -99,6 +101,26 @@ async function contactWritesBack(
   return shown;
 }
 
+export const BOUNCE_ADDR = 'mailer-daemon@qmail.com';
+
+/**
+ * One email per recipient per day. The story can ask for a longer exchange: a story email from them
+ * that arrived after the player's last message today can still be answered.
+ */
+function overDailyLimit(s: GameState, addr: string, storySeq?: number): boolean {
+  if (!s.sentToday.includes(addr)) return false;
+  if (storySeq === undefined) return true;
+  const last = Math.max(0, ...s.mail.filter((m) => m.folder === 'sent' && m.to === addr && m.day === s.values.day).map((m) => m.seq ?? 0));
+  return storySeq < last;
+}
+
+/** An email over the daily limit still goes out, and the recipient's spam filter sends it back. */
+function bounce(s: GameState, addr: string, subject: string, text: string): void {
+  pushMail(s, { folder: 'sent', day: s.values.day, from: 'You', addr: PLAYER_ADDR, to: addr, subject: subject || '(no subject)', body: text, read: true });
+  pushMail(s, { folder: 'inbox', day: s.values.day, from: 'Mail Delivery Subsystem', addr: BOUNCE_ADDR, subject: `Undeliverable: ${subject || '(no subject)'}`, read: false,
+    body: `Your message to ${addr} couldn't be delivered.\n\nThe recipient's spam filter accepts one message per sender per day, and you have already sent one today. Your message was not stored.\n\nYou can write to this address again tomorrow.\n\nThis is an automated message. Replies to this address are not read.` });
+}
+
 function pushMail(s: GameState, m: Omit<MailEntry, 'id' | 'seq'>): MailEntry {
   const seq = s.nextId++;
   const entry: MailEntry = { id: `mail${seq}`, seq, ...m };
@@ -120,6 +142,12 @@ export async function replyToEvent(
   const delivery = s.delivered.find((d) => d.eventId === eventId && !d.answered);
   if (!ev || !delivery) return { state: s, decision: { kind: 'nothing' }, reply: '' };
   tick(s, 'reply');
+  const addr = ev.site === 'qmail' && ev.addr ? ev.addr.toLowerCase() : '';
+  if (addr && overDailyLimit(s, addr, delivery.seq ?? -1)) {
+    bounce(s, addr, `RE: ${ev.subject ?? ''}`, text);
+    return { state: s, decision: { kind: 'nothing' }, reply: '', bounced: true };
+  }
+  if (addr && !s.sentToday.includes(addr)) s.sentToday.push(addr);
 
   // the player's reply goes to the Sent folder
   if (ev.addr) pushMail(s, { folder: 'sent', day: s.values.day, from: 'You', addr: PLAYER_ADDR, to: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body: text, read: true });
@@ -156,14 +184,14 @@ export async function replyToEvent(
 }
 
 export interface ComposeResult extends ReplyResult {
-  /** false when the recipient was already emailed today (the one-per-recipient rule). */
+  /** false when there was no address to send to. */
   sent: boolean;
 }
 
 /**
  * Compose a fresh email to an address. A latent lead reachable there is routed by Jev and, when an
  * outcome lands, answers with its scripted reply; otherwise, if the address has a character, Haiku
- * writes a reply in their voice. One email per recipient per day.
+ * writes a reply in their voice. One email per recipient per day: a second one bounces.
  */
 export async function composeEmail(
   s0: GameState,
@@ -176,9 +204,13 @@ export async function composeEmail(
 ): Promise<ComposeResult> {
   const s = clone(s0);
   const addr = to.trim().toLowerCase();
-  if (!addr || s.sentToday.includes(addr)) return { state: s, decision: { kind: 'nothing' }, reply: '', sent: false };
-  s.sentToday.push(addr);
+  if (!addr) return { state: s, decision: { kind: 'nothing' }, reply: '', sent: false };
   tick(s, 'email');
+  if (overDailyLimit(s, addr)) {
+    bounce(s, addr, subject, text);
+    return { state: s, decision: { kind: 'nothing' }, reply: '', sent: true, bounced: true };
+  }
+  s.sentToday.push(addr);
   pushMail(s, { folder: 'sent', day: s.values.day, from: 'You', addr: PLAYER_ADDR, to: addr, subject: subject || '(no subject)', body: text, read: true });
 
   const ev = reachableByEmail(s, content, addr);

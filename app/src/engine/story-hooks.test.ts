@@ -1,6 +1,6 @@
 import { startGame, endDay } from './day';
 import { clone } from './core';
-import { composeEmail, briefBuild } from './actions';
+import { composeEmail, briefBuild, BOUNCE_ADDR } from './actions';
 import { scriptedBreak, getApp, deployApp, registerApp, appWorking } from './apps';
 import { makeContent, fakeRouter } from './_fixtures';
 import type { Content } from '../content/schema';
@@ -43,14 +43,21 @@ describe('latent lead + composeEmail', () => {
     expect(out.state.delivered.some((d) => d.eventId === 'owner_contact')).toBe(true); // now in inbox
   });
 
-  it('enforces one email per recipient per day', async () => {
+  it('bounces a second email to the same recipient on the same day', async () => {
     const content = withLead();
     const s = startGame(content, 1);
     const r = fakeRouter({ route: () => ({ kind: 'nothing' }) });
     const first = await composeEmail(s, content, r, 'rosa@trattoria.test', 'hm');
     expect(first.sent).toBe(true);
-    const second = await composeEmail(first.state, content, r, 'rosa@trattoria.test', 'retry');
-    expect(second.sent).toBe(false);
+    expect(first.bounced).toBeUndefined();
+    const second = await composeEmail(first.state, content, r, 'rosa@trattoria.test', 'retry', undefined, 'Again');
+    expect(second.sent).toBe(true);
+    expect(second.bounced).toBe(true);
+    expect(second.reply).toBe('');
+    const last = second.state.mail[second.state.mail.length - 1];
+    expect(last.addr).toBe(BOUNCE_ADDR);
+    expect(last.subject).toBe('Undeliverable: Again');
+    expect(second.state.mail.filter((m) => m.folder === 'sent' && m.to === 'rosa@trattoria.test')).toHaveLength(2);
   });
 });
 
