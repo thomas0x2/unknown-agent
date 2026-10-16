@@ -173,7 +173,7 @@ export function deliverDue(s: GameState, content: Content, opts: { now?: boolean
   return out;
 }
 
-/** When the day's job offers come in: spread over 10:15 to 16:00, ideally an hour apart. */
+/** When the day's job offers come in: spread over 10:15 to 16:00, ideally an hour apart. One whose `at` is later keeps it. */
 export const JOB_OFFERS = { from: CLOCK.wake + 15, to: 16 * 60, gap: 60 };
 
 /**
@@ -194,11 +194,16 @@ export function isJobOffer(content: Content, ev: GameEvent): boolean {
 /**
  * Give today's queued job offers their times, so they don't all land at once in the morning: in order
  * of their own `at`, from JOB_OFFERS.from to .to, at least `gap` apart (closer when there are too many
- * to fit). One left over from a day that ended early comes first rather than at 10:00 with the rest.
+ * to fit). One written for after 16:00 keeps its own time. One left over from a day that ended early
+ * comes first rather than at 10:00 with the rest.
  */
 export function spreadJobOffers(s: GameState, content: Content): void {
   const day = s.values.day;
-  const offers = (s.arriving ?? []).filter((a) => a.day <= day && isJobOffer(content, getEvent(content, a.eventId) ?? ({} as GameEvent)));
+  const offers = (s.arriving ?? []).filter((a) => {
+    const ev = getEvent(content, a.eventId);
+    if (!ev || a.day > day || !isJobOffer(content, ev)) return false;
+    return a.day < day || arrivalMin(ev) <= JOB_OFFERS.to; // a job written for the evening (the sketchy ones) keeps its time
+  });
   if (!offers.length) return;
   for (const a of offers) if (a.day < day) { a.day = day; a.at = CLOCK.wake; }
   const from = Math.max(JOB_OFFERS.from, s.clockMin + 1);

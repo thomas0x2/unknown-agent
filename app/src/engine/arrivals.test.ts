@@ -85,11 +85,14 @@ describe('job offers spread over the first six hours', () => {
     for (const id of ['d1_mom', 'd1_y_journalist', 'restaurant_contact']) expect(isJobOffer(content, ev(id)), id).toBe(false);
   });
 
-  it('every day, the offers land between 10:15 and 16:00, an hour apart', () => {
+  it('every day, the offers land between 10:15 and 16:00, an hour apart, except ones written for the evening', () => {
     let s = startGame(content, 7);
     s.values.followers = 500; // unlock the follower-gated gigs
+    const late = new Set<number>();
     for (let day = 1; day <= 8; day++) {
-      const times = offersToday(s);
+      const evening = (s.arriving ?? []).filter((a) => a.day === s.values.day && a.at > JOB_OFFERS.to && isJobOffer(content, content.events.find((e) => e.id === a.eventId)!));
+      for (const a of evening) { expect(a.at, a.eventId).toBe(arrivalMin(content.events.find((e) => e.id === a.eventId)!)); late.add(a.at); }
+      const times = offersToday(s).filter((t) => t <= JOB_OFFERS.to);
       for (const t of times) {
         expect(t, `day ${day}`).toBeGreaterThanOrEqual(JOB_OFFERS.from);
         expect(t, `day ${day}`).toBeLessThanOrEqual(JOB_OFFERS.to);
@@ -99,6 +102,7 @@ describe('job offers spread over the first six hours', () => {
       deliverArrivals(s, content);
       s = { ...endDay(s, content), morning: null };
     }
+    expect([...late]).toEqual([at('19:00')]); // the deepfake gig comes in the evening
   });
 
   it("offers left over from a day that ended early are spread with the next day's, not dumped at 10:00", () => {
