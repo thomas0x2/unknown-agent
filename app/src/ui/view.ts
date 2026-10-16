@@ -63,21 +63,24 @@ function tabTitle(r: Route, url: string): string {
 
 // ── chrome slots (main.ts paints these into the static shell) ──
 export function tabsHtml(store: GameStore): string {
+  // unread counts sit on the first tab showing that site (the pinned one, unless it was moved)
+  const counts: Record<string, number> = { qmail: qmailBadge(store), y: store.ui.yUnread };
+  const badged = new Set<string>();
   return store.tabs.map((t) => {
     const rr = route(t.url, store.state);
     // a deployed app with a logo shows it as its favicon
     const app = rr.site === 'app' && rr.param ? getApp(store.state, rr.param.split('/')[0]) : undefined;
     const logo = app && appLogo(app.template);
+    const n = !badged.has(rr.site) ? counts[rr.site] ?? 0 : 0;
+    badged.add(rr.site);
     return `<div class="tab${t.id === store.active ? ' on' : ''}${t.pinned ? ' pinned' : ''}" data-tab="${t.id}" role="tab" aria-selected="${t.id === store.active}" tabindex="0">
-      <span class="tab-ico ico-${logo ? 'applogo' : rr.site}">${logo || ICONS[rr.site] || ICONS.newtab}</span><span class="tab-title">${esc(tabTitle(rr, t.url))}</span>
+      <span class="tab-ico ico-${logo ? 'applogo' : rr.site}">${logo || ICONS[rr.site] || ICONS.newtab}</span><span class="tab-title">${esc(tabTitle(rr, t.url))}</span>${n ? `<i class="badge" aria-label="${n} unread">${n > 99 ? '99+' : n}</i>` : ''}
       ${t.pinned ? '' : `<button class="tab-x" data-close="${t.id}" aria-label="Close tab">×</button>`}</div>`;
   }).join('') + `<button class="tab-new" data-newtab aria-label="New tab">+</button>`;
 }
 export function bookmarksHtml(store: GameStore): string {
-  return bookmarks(store.state).map((b) => {
-    const badge = b.id === 'qmail' ? qmailBadge(store) : 0;
-    return `<button class="bm" data-nav="${b.base}"><span class="bm-ico ico-${b.id}">${ICONS[b.id] || ICONS.newtab}</span><span class="bm-label">${esc(b.label)}</span>${badge ? `<i class="badge">${badge}</i>` : ''}</button>`;
-  }).join('');
+  return bookmarks(store.state).map((b) =>
+    `<button class="bm" data-nav="${b.base}"><span class="bm-ico ico-${b.id}">${ICONS[b.id] || ICONS.newtab}</span><span class="bm-label">${esc(b.label)}</span></button>`).join('');
 }
 export function addressValue(store: GameStore): string {
   const r = route(store.url, store.state);

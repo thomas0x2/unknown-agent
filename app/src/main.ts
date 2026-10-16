@@ -101,6 +101,8 @@ function render(): void {
   const r = route(store.url, s);
   // a different page (tab switch, back to a site) is a fresh page load: draw new ads
   if (store.url !== lastUrl) { newPageLoad(); lastUrl = store.url; }
+  // looking at the Y timeline reads everything on it
+  if (r.site === 'y' && !r.param) store.ui.yUnread = 0;
 
   $('#tabs')!.innerHTML = V.tabsHtml(store);
   // a tab that just went to another website shows a spinner and a blank page for a moment
