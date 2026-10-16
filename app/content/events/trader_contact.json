@@ -8,7 +8,7 @@
     "dayMin": 2
   },
   "latent": true,
-  "body": "Here's the spec: track $GAI, $VANT and $NOVA. For each, the share of bullish/bearish/neutral posts from today, the post count, and the 3 most-engaged posts. Only $-tagged mentions. Ignore spam and bots.",
+  "body": "Here's the spec: track $GAI and $VANT. For each, the share of bullish/bearish/neutral posts from today, the post count, and the 3 most-engaged posts. Only $-tagged mentions. Ignore spam and bots. And a portfolio view: my holdings, cash and today's change.",
   "outcomes": [
     {
       "id": "offer",
@@ -35,6 +35,9 @@
             },
             {
               "id": "top_posts"
+            },
+            {
+              "id": "portfolio"
             }
           ]
         }

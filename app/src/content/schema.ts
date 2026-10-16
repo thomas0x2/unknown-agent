@@ -311,14 +311,14 @@ export interface MarketPostDef {
   handle: string;
   body: string;
   likes: number;
-  /** The $-tagged tickers it is really about (the band Nova has none). */
+  /** The $-tagged tickers it is really about (a post that only names the company has none). */
   tickers: string[];
   mood: Mood;
   /** What a crawler that misses sarcasm reads instead. */
   literal?: Mood;
   /** Posted this many times by bot accounts (handle_1, handle_2, ...). */
   bots?: number;
-  /** Mentions this ticker's name without the $ tag. */
+  /** Mentions this ticker's company without the $ tag. */
   decoy?: string;
   /** Randall Crane on a company: what the auto-buy should (praise) or shouldn't (criticism) act on. */
   crane?: 'praise' | 'criticism';

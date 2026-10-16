@@ -115,7 +115,7 @@ function crawler(app: AppInstance, tmpl: AppTemplate | undefined, page: string |
   const f = Object.fromEntries(['tickers', 'sentiment', 'filter', 'top_posts', 'portfolio', 'auto_buy'].map((id) => [id, live(app, tmpl, id)]));
   const bugs = new Set(Object.values(f).flatMap((l) => [...l.bugs]));
   // without the filter it counts everything it finds
-  if (!f.filter.built) { bugs.add('bots_counted'); bugs.add('band_counted'); }
+  if (!f.filter.built) { bugs.add('bots_counted'); bugs.add('untagged_counted'); }
   const head = `<header class="as-s-head"><b>${esc(app.name)}</b><span>$-tagged posts on Y</span></header>`;
   if (page && page !== 'dash') return `<div class="as as-s">${head}<main>${notFound()}</main></div>`;
   let body: string;
@@ -139,7 +139,7 @@ function crawler(app: AppInstance, tmpl: AppTemplate | undefined, page: string |
     }).join('');
     body = `<p class="as-s-upd">Updated ${dateShort(dataDay < 1 ? day : dataDay)}</p><div class="as-s-grid">${cards}</div>`;
   }
-  const buys = autoBuys(posts, day, bugs);
+  const buys = f.auto_buy.built ? autoBuys(posts, day, bugs) : [];
   if (f.portfolio.built) {
     const pf = portfolio(buys, day, bugs);
     body += `<section class="as-s-pf"><h2>Portfolio</h2><table>${pf.holdings.map((h) => `<tr><td>$${esc(h.ticker)}</td><td>${h.shares} shares</td><td>${money(h.price)}</td><td>${money(h.value)}</td></tr>`).join('')}
