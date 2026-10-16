@@ -15,7 +15,12 @@ export interface SiteDef {
   /** 'web' sites are reachable by link or address but never bookmarked. */
   group: 'core' | 'tools' | 'underground' | 'web';
   reachable: (s: GameState) => boolean;
+  /** Bookmarked only once the player has been there (typed the address), not when it's first heard of. */
+  bookmarkAfterVisit?: (s: GameState) => boolean;
 }
+
+/** The flag set the first time the player opens a site that is bookmarked only after a visit. */
+export const visitedFlag = (id: SiteId) => `visited_${id}`;
 
 const always = () => true;
 const flag = (f: string) => (s: GameState) => s.flags.includes(f);
@@ -28,7 +33,8 @@ export const SITES: SiteDef[] = [
   { id: 'yowl', base: 'yowl.com', label: 'Yowl', group: 'core', reachable: always },
   { id: 'satchel', base: 'satchel.app', label: 'Satchel', group: 'core', reachable: always },
   { id: 'forkyard', base: 'forkyard.com', label: 'Forkyard', group: 'core', reachable: always },
-  { id: 'weightroom', base: 'weightroom.ai', label: 'Weightroom', group: 'tools', reachable: flag('knows_weightroom') },
+  { id: 'weightroom', base: 'weightroom.ai', label: 'Weightroom', group: 'tools', reachable: flag('knows_weightroom'),
+    bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('weightroom')) || s.flags.includes('has_terminal') },
   { id: 'nullboard', base: 'nullboard.onion', label: 'nullboard', group: 'underground', reachable: flag('knows_nullboard') },
   { id: 'cellar', base: 'cellar.onion', label: 'Cellar', group: 'underground', reachable: flag('knows_cellar') },
   { id: 'empire', base: 'empire.alphaascend.biz', label: 'EMPIRE', group: 'web', reachable: always },
@@ -65,4 +71,5 @@ export function route(url: string, s: GameState): Route {
   return { site: 'notfound', reachable: false };
 }
 
-export const bookmarks = (s: GameState): SiteDef[] => SITES.filter((d) => d.group !== 'web' && d.reachable(s));
+export const bookmarks = (s: GameState): SiteDef[] =>
+  SITES.filter((d) => d.group !== 'web' && d.reachable(s) && (!d.bookmarkAfterVisit || d.bookmarkAfterVisit(s)));

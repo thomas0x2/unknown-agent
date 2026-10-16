@@ -10,6 +10,7 @@ import {
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
+import { route, visitedFlag } from '../sites/registry';
 import { PULL_MS, pullLines } from './pull';
 
 /** A browser tab. back/fwd are the pages behind and ahead of it, like a real browser's history. */
@@ -76,7 +77,17 @@ export class GameStore {
       if (!t) this.tabs.push({ id: this.nextTab++, url: u, back: [], fwd: [] });
       else if (t.url !== u) { t.back.push(t.url); t.fwd = []; t.url = u; }
     }
+    this.markVisited(u);
     this.emit();
+  }
+  /** First visit to a site that is bookmarked only after you've been there: add the bookmark. */
+  private markVisited(url: string): void {
+    const r = route(url, this.state);
+    if (!r.def?.bookmarkAfterVisit || !r.reachable) return;
+    const f = visitedFlag(r.def.id);
+    if (this.state.flags.includes(f)) return;
+    this.state.flags.push(f); this.state.flags.sort();
+    this.store.save(this.state);
   }
   private get tab(): Tab | undefined { return this.tabs.find((t) => t.id === this.active); }
   get canBack(): boolean { return !!this.tab?.back.length; }

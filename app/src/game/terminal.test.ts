@@ -2,6 +2,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { GameStore } from './store';
 import { loadContent } from '../content/load';
 import { PULL_MS, pullLines, pullPct } from './pull';
+import { bookmarks } from '../sites/registry';
 import type { JevRouter, SaveStore, Writer } from '../engine';
 
 const mem: SaveStore = { load: () => null, save: () => {}, clear: () => {} } as unknown as SaveStore;
@@ -48,5 +49,21 @@ describe('the Terminal app', () => {
     s.navigate('localhost');
     expect(s.ui.termShown).toBe(true);
     expect(s.url).toBe('qmail.com');
+  });
+});
+
+describe('Weightroom bookmark', () => {
+  it('appears only after the first visit, not when dev_null mentions it', () => {
+    const s = make();
+    s.state.flags.push('knows_weightroom');
+    expect(bookmarks(s.state).map((b) => b.id)).not.toContain('weightroom');
+    s.navigate('weightroom.ai');
+    expect(bookmarks(s.state).map((b) => b.id)).toContain('weightroom');
+  });
+  it('is not added by visiting before the site is known', () => {
+    const s = make();
+    s.navigate('weightroom.ai');
+    s.state.flags.push('knows_weightroom');
+    expect(bookmarks(s.state).map((b) => b.id)).not.toContain('weightroom');
   });
 });
