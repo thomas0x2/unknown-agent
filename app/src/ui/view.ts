@@ -807,7 +807,7 @@ function pageApp(store: GameStore, param?: string): string {
   const booking = a.template === 'restaurant' && a.features.some((f) => f.id === 'booking')
     ? booked
       ? `<div class="pv-book"><h1>Table booked</h1>${notice}${summary}
-        <p class="pv-sub"><a href="#" data-act="book-again">Book another table</a></p></div>`
+        <button class="pv-btn ok" type="button" data-act="book-again">Book another table</button></div>`
       : bk.step === 1
       ? `<form class="pv-book" data-form="book-next" data-app="${esc(a.id)}"><h1>Book a table</h1>
         <p class="pv-sub">Step 1 of 2. You'll get a confirmation by email.</p>${notice}
