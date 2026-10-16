@@ -143,7 +143,8 @@ function render(): void {
   shownKey = busy ? null : key;
   vp.dataset.site = site;
   SOUND.setSite(site);
-  for (const [id, v] of Object.entries(keep)) { const el = document.getElementById(id) as HTMLInputElement | null; if (el && !el.disabled) el.value = v; }
+  // a field disabled only because a send is going out keeps showing what is being sent
+  for (const [id, v] of Object.entries(keep)) { const el = document.getElementById(id) as HTMLInputElement | null; if (el && (!el.disabled || store.busy)) el.value = v; }
   if (focusId) {
     const el = document.getElementById(focusId) as HTMLInputElement | null;
     if (el && !el.disabled) {
@@ -214,6 +215,14 @@ function listen(): void {
 }
 /** A loaded save or a new game replaces the state wholesale: take a fresh look without playing anything. */
 function quietReset(): void { resyncSound = true; }
+// new mail and Y posts come from the store's arrival events, wherever they land from (clock, reply, morning)
+store.onArrival(({ mail, posts }) => {
+  if (resyncSound) return;
+  // arriving with a new day: wait for the day-end sound and the night's money
+  const after = store.state.values.day !== snap.day ? 2.2 : 0.1;
+  if (mail) SOUND.play('mail', after);
+  if (posts) SOUND.play('post', after + (mail ? 0.45 : 0));
+});
 store.subscribe(render);
 store.subscribe(listen);
 store.onPull(renderPull);
@@ -344,13 +353,13 @@ document.addEventListener('submit', (e) => {
     SOUND.play('send');
     void store.compose(to, subject, body).then((r) => { if (r?.sent) { clearMailDraft(); store.setDraft(null); store.navigate('qmail.com/sent'); } });
   } else if (kind === 'reply') {
-    const v = val('#reply-body').trim(); if (!v) return;
+    const v = val('#reply-body').trim(); if (!v || store.busy) return;
     SOUND.play('send');
-    clearField('reply-body');
     markSend($('#viewport')!, 'reply');
+    // the text stays in the (disabled) box until the email is in the thread; if it doesn't go out it stays editable
     const id = f.dataset.id, to = f.dataset.to;
-    if (id) void store.reply(id, v);
-    else if (to) void store.compose(to, f.dataset.subject ?? '', v, 'reply-body');
+    const sent = id ? store.reply(id, v) : to ? store.compose(to, f.dataset.subject ?? '', v, 'reply-body') : null;
+    void sent?.then((r) => { if (r && !('sent' in r && r.sent === false)) clearField('reply-body'); });
   } else if (kind === 'review') {
     const biz = f.dataset.biz!; const v = val('#review-text').trim(); const stars = store.ui.reviewStars;
     if (!stars) { store.needStars(); return; }
@@ -425,8 +434,8 @@ document.addEventListener('mousedown', (e) => {
 document.addEventListener('keydown', (e) => {
   const el = e.target as HTMLElement;
   if (el.id === 'mail-to' && suggestionKey(e, pickContact)) { e.preventDefault(); return; }
-  if ((el.id === 'prompt-input' || el.id === 'reply-body') && e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); (el as HTMLTextAreaElement).form?.requestSubmit(); }
-  if ((el.id === 'post-input' || el.id === 'mail-body' || el.id === 'review-text') && e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); (el as HTMLTextAreaElement).form?.requestSubmit(); }
+  // every text box sends on Enter and takes a line break on Shift+Enter (single-line inputs already submit on Enter)
+  if (el instanceof HTMLTextAreaElement && el.form && e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); el.form.requestSubmit(); }
   if (e.key === '`' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); store.toggleDev(); }
   if (e.key === 'Escape' && store.ui.start) store.toggleStart(false);
   // Alt+Left / Alt+Right, like a real browser

@@ -20,7 +20,7 @@ import { adHtml } from './ads';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount, appLogo } from './appsite';
-import { marketPosts, handleOf, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, inBin, isDeleted, CLOCK } from '../engine';
+import { marketPosts, fillerToday, postMin, handleOf, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, inBin, isDeleted, CLOCK } from '../engine';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 
 const WALLET_ADDR = PLAYER_WALLET;
@@ -68,9 +68,9 @@ export function tabsHtml(store: GameStore): string {
     // a deployed app with a logo shows it as its favicon
     const app = rr.site === 'app' && rr.param ? getApp(store.state, rr.param.split('/')[0]) : undefined;
     const logo = app && appLogo(app.template);
-    return `<div class="tab${t.id === store.active ? ' on' : ''}" data-tab="${t.id}" role="tab" aria-selected="${t.id === store.active}" tabindex="0">
+    return `<div class="tab${t.id === store.active ? ' on' : ''}${t.pinned ? ' pinned' : ''}" data-tab="${t.id}" role="tab" aria-selected="${t.id === store.active}" tabindex="0">
       <span class="tab-ico ico-${logo ? 'applogo' : rr.site}">${logo || ICONS[rr.site] || ICONS.newtab}</span><span class="tab-title">${esc(tabTitle(rr, t.url))}</span>
-      <button class="tab-x" data-close="${t.id}" aria-label="Close tab">×</button></div>`;
+      ${t.pinned ? '' : `<button class="tab-x" data-close="${t.id}" aria-label="Close tab">×</button>`}</div>`;
   }).join('') + `<button class="tab-new" data-newtab aria-label="New tab">+</button>`;
 }
 export function bookmarksHtml(store: GameStore): string {
@@ -243,7 +243,7 @@ function pageNewTab(store: GameStore): string {
 }
 
 // ── Qmail ──
-interface Row { id: string; seq: number; from: string; addr: string; subject: string; body: string; day: number; unread: boolean; needsReply: boolean; folder: 'inbox' | 'sent'; eventId?: string; generated?: boolean; to?: string; link?: string; bounceOf?: string; bookingId?: string; /** In the Bin until the day ends. */ binned?: boolean }
+interface Row { id: string; seq: number; /** Minutes since midnight it arrived, when known. */ min?: number; from: string; addr: string; subject: string; body: string; day: number; unread: boolean; needsReply: boolean; folder: 'inbox' | 'sent'; eventId?: string; generated?: boolean; to?: string; link?: string; bounceOf?: string; bookingId?: string; /** In the Bin until the day ends. */ binned?: boolean }
 /** Messages the player opened or closed in a conversation, so a repaint keeps them that way. */
 export const mailOpen = new Map<string, boolean>();
 function mailRows(store: GameStore): Row[] {
@@ -260,11 +260,13 @@ function mailRows(store: GameStore): Row[] {
     const key = deliveryKey(e, d.day);
     const id = 'e/' + key;
     if (isDeleted(s, id)) continue;
-    rows.push({ id, binned: inBin(s, id), seq: d.seq ?? -1, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(eventBody(e, d.day)), day: d.day, unread: !s.readEvents.includes(key), needsReply: canReply, folder: 'inbox', eventId: e.id });
+    rows.push({ id, binned: inBin(s, id), seq: d.seq ?? -1, min: d.min, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(eventBody(e, d.day)), day: d.day, unread: !s.readEvents.includes(key), needsReply: canReply, folder: 'inbox', eventId: e.id });
   }
-  for (const m of s.mail) if (!isDeleted(s, 'm/' + m.id)) rows.push({ id: 'm/' + m.id, binned: inBin(s, 'm/' + m.id), seq: m.seq ?? (Number(m.id.replace(/\D/g, '')) || 0), from: m.from, addr: m.addr, subject: m.subject, body: m.body, day: m.day, unread: m.folder === 'inbox' && !m.read, needsReply: false, folder: m.folder, eventId: m.eventId, generated: m.generated, to: m.to, link: m.link, bounceOf: m.bounceOf, bookingId: m.bookingId });
+  for (const m of s.mail) if (!isDeleted(s, 'm/' + m.id)) rows.push({ id: 'm/' + m.id, binned: inBin(s, 'm/' + m.id), seq: m.seq ?? (Number(m.id.replace(/\D/g, '')) || 0), min: m.min, from: m.from, addr: m.addr, subject: m.subject, body: m.body, day: m.day, unread: m.folder === 'inbox' && !m.read, needsReply: false, folder: m.folder, eventId: m.eventId, generated: m.generated, to: m.to, link: m.link, bounceOf: m.bounceOf, bookingId: m.bookingId });
   return rows;
 }
+/** Today's mail shows the time it came in, older mail its date. */
+const mailTime = (s: GameState, r: { day: number; min?: number }) => (r.day === s.values.day && r.min != null ? fmtClock(r.min) : dateShort(r.day));
 function pageMail(store: GameStore, param?: string): string {
   const s = store.state;
   const view = param === 'sent' ? 'sent' : param === 'bin' ? 'bin' : param === 'compose' ? 'compose' : param?.startsWith('m/') || param?.startsWith('e/') ? 'msg' : 'inbox';
@@ -327,7 +329,7 @@ function pageMail(store: GameStore, param?: string): string {
           ? `<b>${esc(PLAYER.name)}</b> &lt;${esc(PLAYER.addr)}&gt; to <b>${esc(r.to ?? '')}</b>`
           : `<b>${esc(r.from)}</b> &lt;${esc(r.addr)}&gt; to ${esc(PLAYER.addr)}`;
         return `<details class="qm-msg" data-msg="${esc(r.id)}"${expanded ? ' open' : ''}>
-          <summary class="qm-meta"><span>${meta}<span class="qm-snip">${esc(r.body.replace(/\s+/g, ' ').slice(0, 90))}</span></span><span>${dateShort(r.day)}</span></summary>
+          <summary class="qm-meta"><span>${meta}<span class="qm-snip">${esc(r.body.replace(/\s+/g, ' ').slice(0, 90))}</span></span><span>${mailTime(s, r)}</span></summary>
           <div class="qm-body">${linkify(br(r.body))}</div>
           ${r.link === 'cancel' && r.bookingId ? (s.bookings.find((b) => b.id === r.bookingId)?.cancelClicked
             ? `<p class="qm-actions"><b>Your booking has been cancelled.</b></p>`
@@ -360,7 +362,7 @@ function pageMail(store: GameStore, param?: string): string {
       return `<a href="#" class="qm-row${unread ? ' unread' : ''}" data-nav="qmail.com/${esc(last.id)}">
         <span class="qm-from">${unread && folder === 'inbox' ? '<i class="qm-dot" aria-label="Unread"></i>' : ''}<span class="qm-names">${esc(who)}</span>${t.rows.length > 1 ? `<span class="qm-count">${t.rows.length}</span>` : ''}</span>
         <span class="qm-subj"><b>${esc(t.rows[0].subject)}</b>${snippet ? `<span class="qm-prev">${esc(snippet)}</span>` : ''}</span>
-        <span class="qm-time">${dateShort(last.day)}</span></a>`;
+        <span class="qm-time">${mailTime(s, last)}</span></a>`;
     }).join('');
     const n = store.ui.mailNotice;
     const notice = n ? `<p class="qm-notice" role="status">${esc(n.text)} <button class="qm-link" data-mail-undo>Undo</button></p>` : '';
@@ -375,7 +377,7 @@ function pageMail(store: GameStore, param?: string): string {
 }
 
 // ── Y ──
-interface YPost { id: string; author: string; handle: string; text: string; day: number; likes: number; mine?: boolean; delta?: number; score?: number; replyTo?: string; pinned?: boolean; /** Order within a day: story posts first, bot spam last. */ rank?: number }
+interface YPost { id: string; author: string; handle: string; text: string; day: number; /** Minutes since midnight it went up, when known. */ min?: number; likes: number; mine?: boolean; delta?: number; score?: number; replyTo?: string; pinned?: boolean; /** Order within a day: story posts first, bot spam last. */ rank?: number }
 function yPosts(store: GameStore): YPost[] {
   const s = store.state;
   const out: YPost[] = [];
@@ -383,16 +385,18 @@ function yPosts(store: GameStore): YPost[] {
   for (const d of s.delivered.filter((x) => x.site === 'y')) {
     const e = store.content.events.find((x) => x.id === d.eventId);
     if (!e) continue;
-    out.push({ id: e.id, author: e.from ?? 'someone', handle: handleFrom(e.from ?? 'someone'), text: tpl(e.body ?? ''), day: d.day,
+    out.push({ id: e.id, author: e.from ?? 'someone', handle: handleFrom(e.from ?? 'someone'), text: tpl(e.body ?? ''), day: d.day, min: d.min,
       // a stock post shows the likes the crawler sees
       likes: market.find((p) => p.id === e.id)?.likes ?? 20 + hashHue(e.id) % 400 });
   }
   // the stock chatter the sentiment crawler reads (story events with stock labels are already above)
-  for (const p of market) if (!out.some((x) => x.id === p.id)) out.push({ id: p.id, author: p.author, handle: p.handle, text: p.text, day: p.day, likes: p.likes, rank: p.bot ? 2 : 1 });
-  for (const f of store.content.yFiller) if (hashHue(f.id) % 3 === s.values.day % 3) out.push({ id: f.id, author: f.from, handle: f.handle, text: f.body, day: s.values.day, likes: 3 + hashHue(f.id) % 60, rank: 1 });
+  for (const p of market) if (!out.some((x) => x.id === p.id)) out.push({ id: p.id, author: p.author, handle: p.handle, text: p.text, day: p.day, min: p.min, likes: p.likes, rank: p.bot ? 2 : 1 });
+  // a third of the filler is up each day, posted at its own time
+  for (const f of fillerToday(s, store.content)) out.push({ id: f.id, author: f.from, handle: f.handle, text: f.body, day: s.values.day, min: postMin(f, s.values.day), likes: 3 + hashHue(f.id) % 60, rank: 1 });
   for (const x of s.yExtra) out.push({ id: x.id, author: x.author, handle: x.handle, text: x.text, day: x.day, likes: x.likes, replyTo: x.replyTo, pinned: !!x.about });
-  for (const u of s.userPosts) out.push({ id: u.id, author: PLAYER.name, handle: PLAYER.handle, text: u.text, day: u.day, likes: u.likes, mine: true, delta: u.delta, score: u.score });
-  return out.sort((a, b) => b.day - a.day || Number(!!b.pinned) - Number(!!a.pinned) || (a.rank ?? 0) - (b.rank ?? 0) || b.id.localeCompare(a.id));
+  for (const u of s.userPosts) out.push({ id: u.id, author: PLAYER.name, handle: PLAYER.handle, text: u.text, day: u.day, min: u.min, likes: u.likes, mine: true, delta: u.delta, score: u.score });
+  // newest first: by day, then the time it went up
+  return out.sort((a, b) => b.day - a.day || Number(!!b.pinned) - Number(!!a.pinned) || (b.min ?? 0) - (a.min ?? 0) || (a.rank ?? 0) - (b.rank ?? 0) || b.id.localeCompare(a.id));
 }
 function yPostHtml(store: GameStore, p: YPost): string {
   const liked = !!store.ui.liked[p.id];
@@ -403,7 +407,7 @@ function yPostHtml(store: GameStore, p: YPost): string {
     <header>
       <a href="#" class="y-av-link" data-nav="${prof}">${avatar(p.author, p.handle)}</a>
       <a href="#" class="y-who" data-nav="${prof}"><span class="y-name"><b>${esc(p.author)}</b></span><span class="y-handle">@${esc(p.handle)}</span></a>
-      <span class="y-time">${dateShort(p.day)}</span>
+      <span class="y-time">${p.day === store.state.values.day && p.min != null ? fmtClock(p.min) : dateShort(p.day)}</span>
     </header>
     <p>${text}</p>
     <footer class="y-acts">
@@ -587,7 +591,6 @@ function pageWallet(store: GameStore): string {
     </div>`;
   }).join('')).join('');
 
-  const income = s.apps.filter(appWorking).reduce((n, a) => n + (a.kind === 'client' ? a.payPerDay : userRevenue(a)), 0);
   const sub = agentCost(s.values.agentLevel).sub;
   const live = s.apps.filter((a) => a.deployed && !a.churned).length;
   const rentDay = rentDayOf(s);
@@ -595,7 +598,6 @@ function pageWallet(store: GameStore): string {
     rentDay ? `<div class="cb-row"><span><b>Rent</b><small>Landlord · ${rentDay === s.values.day ? 'tonight' : `${esc(dateShort(rentDay))} · in ${rentDay - s.values.day}d`}</small></span><span class="cb-num">−${RENT[rentDay].toFixed(2)}</span></div>` : '',
     `<div class="cb-row"><span><b>agent subscription</b><small>GeneralAI · nightly</small></span><span class="cb-num">−${sub.toFixed(2)}</span></div>`,
     live ? `<div class="cb-row"><span><b>Hosting</b><small>Forkyard · ${live} live · nightly</small></span><span class="cb-num">−${(live * 2).toFixed(2)}</span></div>` : '',
-    income ? `<div class="cb-row"><span><b>App income</b><small>Working apps · nightly</small></span><span class="cb-num pos">+${income.toFixed(2)}</span></div>` : '',
   ].join('');
   const total = s.values.crypto + 0.42;
   const tabs = Object.keys(RANGES).map((r) => `<button class="cb-tab${r === range ? ' on' : ''}" data-wl-range="${r}">${r}</button>`).join('');
@@ -713,7 +715,7 @@ function pageForkyard(store: GameStore, repo?: string): string {
         <div class="fy-files"><div class="fy-filehead">Pushed by <b>agent[bot]</b> · repo v${a.repoVersion}</div>${feats}</div>
         <div class="fy-deploy"><h2>Deployment</h2><p>${repoStatus(a)}</p>
           ${a.deployed
-            ? `<dl><dt>Status</dt><dd>live at <a href="#" data-newtab="${esc(a.url)}">${esc(a.url)}</a></dd>${a.kind === 'user' ? `<dt>Users</dt><dd>${(a.users ?? 0).toLocaleString('en-US')}</dd><dt>Ad revenue / day</dt><dd>${userRevenue(a)} DOLR</dd>` : ''}<dt>Hosting / day</dt><dd>$2.00</dd>${stale ? '<dt>Repo</dt><dd>new commit — redeploy</dd>' : ''}</dl><div class="fy-row"><button class="fy-btn" data-deploy="${esc(a.id)}">Redeploy</button><button class="fy-btn ghost" data-takedown="${esc(a.id)}">Take down</button></div>`
+            ? `<dl><dt>Status</dt><dd>live</dd>${a.kind === 'user' ? `<dt>Users</dt><dd>${(a.users ?? 0).toLocaleString('en-US')}</dd><dt>Ad revenue / day</dt><dd>${userRevenue(a)} DOLR</dd>` : ''}<dt>Hosting / day</dt><dd>$2.00</dd>${stale ? '<dt>Repo</dt><dd>new commit — redeploy</dd>' : ''}</dl><div class="fy-row"><button class="fy-btn" data-deploy="${esc(a.id)}">Redeploy</button><button class="fy-btn ghost" data-takedown="${esc(a.id)}">Take down</button></div>`
             : `<p class="fy-note">Hosting costs $2.00/day, billed nightly. Nothing is live until you deploy.</p><button class="fy-btn" data-deploy="${esc(a.id)}">Deploy</button>`}
         </div></div></div></div>`;
   }
@@ -722,7 +724,7 @@ function pageForkyard(store: GameStore, repo?: string): string {
     ? repos.slice().reverse().map((a) => `<article class="fy-repo">
         <div><a href="#" data-nav="forkyard.com/${a.id}" class="fy-name">${esc(a.id)}</a>${((n) => n ? `<span class="fy-devcount" title="Dev mode">${n} bug${n > 1 ? 's' : ''}</span>` : '')(devBugCount(a, store.content.apps[a.template]))}<p>${esc(a.name)}</p>
         <small><i class="fy-lang" style="--h:${hashHue(a.template)}"></i>${esc(a.template)} · ${a.kind}${a.kind === 'user' ? ` · ${(a.users ?? 0).toLocaleString('en-US')} users · ${userRevenue(a)} DOLR/day` : ''}</small></div>
-        <div class="fy-repo-act">${repoStatus(a)}${a.deployed ? '' : `<button class="fy-btn" data-deploy="${esc(a.id)}">Deploy</button>`}</div></article>`).join('')
+        <div class="fy-repo-act">${repoStatus(a)}<button class="fy-btn" data-deploy="${esc(a.id)}">${a.deployed ? 'Redeploy' : 'Deploy'}</button></div></article>`).join('')
     : `<div class="fy-empty"><p><b>No repositories yet.</b></p><p>Brief the agent to build something.</p></div>`;
   return `<div class="fy">${head}<div class="fy-wrap"><h1 class="fy-h">Repositories <span>${repos.length}</span></h1>${adHtml('forkyard', s.values.day, 'wide')}${list}</div></div>`;
 }

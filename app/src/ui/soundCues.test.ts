@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { soundCues, LATE_MIN, type SoundSnap } from './soundCues';
 import { profileOf } from './sound';
 
-const base: SoundSnap = { day: 2, clockMin: 12 * 60, agentMsgs: 3, inbox: 4, posts: 5, txCount: 10, txIn: 500, txOut: 400, pushes: 1, deploys: 0, ending: false, morning: false };
+const base: SoundSnap = { day: 2, clockMin: 12 * 60, agentMsgs: 3, txCount: 10, txIn: 500, txOut: 400, pushes: 1, deploys: 0, ending: false, morning: false };
 const at = (o: Partial<SoundSnap>): SoundSnap => ({ ...base, ...o });
 
 describe('sound cues', () => {
@@ -11,10 +11,6 @@ describe('sound cues', () => {
   });
   it('plays an agent reply and its charge together', () => {
     expect(soundCues(base, at({ agentMsgs: 4, txCount: 11, txOut: 400.8 }))).toEqual(['reply', 'charge']);
-  });
-  it('tells new mail and new Y posts apart', () => {
-    expect(soundCues(base, at({ inbox: 5 }))).toEqual(['mail']);
-    expect(soundCues(base, at({ posts: 6 }))).toEqual(['post']);
   });
   it('plays income for money coming in, and both sounds when money moved both ways', () => {
     expect(soundCues(base, at({ txCount: 11, txIn: 540 }))).toEqual(['income']);
@@ -29,7 +25,7 @@ describe('sound cues', () => {
     expect(soundCues(at({ clockMin: LATE_MIN }), at({ clockMin: LATE_MIN + 1 }))).toEqual([]);
   });
   it('ends the day on sleep and starts it when the morning card closes', () => {
-    expect(soundCues(base, at({ day: 3, inbox: 9, morning: true }))).toEqual(['dayEnd']);
+    expect(soundCues(base, at({ day: 3, morning: true }))).toEqual(['dayEnd']);
     // rent and a payout overnight are still heard
     expect(soundCues(base, at({ day: 3, txCount: 12, txIn: 520, txOut: 750, morning: true }))).toEqual(['dayEnd', 'charge', 'income']);
     expect(soundCues(at({ day: 3, morning: true }), at({ day: 3 }))).toEqual(['dayStart']);

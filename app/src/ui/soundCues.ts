@@ -1,7 +1,8 @@
 /*
  * Which sounds a change in the game state calls for. The store tells the UI only that something
  * changed, so we keep a few counters from the last look and compare: one more agent message is a
- * reply, one more inbox email is mail, and so on. Pure, so it is tested without audio.
+ * reply, one more ledger entry is money, and so on. New mail and Y posts come from the store's own
+ * arrival events instead (GameStore.onArrival, wired in main.ts). Pure, so it is tested without audio.
  */
 import type { GameState } from '../engine';
 import { CLOCK } from '../engine/config';
@@ -11,8 +12,6 @@ export interface SoundSnap {
   day: number;
   clockMin: number;
   agentMsgs: number;
-  inbox: number;
-  posts: number;
   /** Ledger entries, and the running totals of money in and money out. */
   txCount: number;
   txIn: number;
@@ -33,9 +32,6 @@ export function soundSnap(s: GameState): SoundSnap {
     day: s.values.day,
     clockMin: s.clockMin,
     agentMsgs: s.chat.filter((m) => m.from === 'agent').length,
-    inbox: s.mail.filter((m) => m.folder === 'inbox').length + s.delivered.filter((d) => d.site === 'qmail').length,
-    // other people's Y posts: story posts and replies (the player's own posts are in userPosts)
-    posts: s.delivered.filter((d) => d.site === 'y').length + s.yExtra.length,
     txCount: s.tx.length,
     txIn,
     txOut,
@@ -60,8 +56,6 @@ export function soundCues(a: SoundSnap, b: SoundSnap): Cue[] {
   if (b.agentMsgs > a.agentMsgs) out.push('reply');
   // a deploy plays its signature sound from the button itself (main.ts), so only a push is heard here
   if (b.pushes > a.pushes && b.deploys === a.deploys) out.push('push');
-  if (b.inbox > a.inbox) out.push('mail');
-  if (b.posts > a.posts) out.push('post');
   out.push(...money(a, b));
   return out;
 }

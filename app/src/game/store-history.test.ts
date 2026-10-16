@@ -9,29 +9,53 @@ const make = () => new GameStore(loadContent(), {} as JevRouter, {} as Writer, m
 describe('browser history', () => {
   it('goes back and forward through pages in a tab', () => {
     const s = make();
+    s.navigate('qdrive.com', true);
     expect(s.canBack).toBe(false);
-    s.navigate('y.com'); s.navigate('yowl.com');
-    expect(s.url).toBe('yowl.com');
-    s.back(); expect(s.url).toBe('y.com');
-    s.back(); expect(s.url).toBe('qmail.com');
+    s.navigate('yowl.com'); s.navigate('weightroom.ai');
+    expect(s.url).toBe('weightroom.ai');
+    s.back(); expect(s.url).toBe('yowl.com');
+    s.back(); expect(s.url).toBe('qdrive.com');
     expect(s.canBack).toBe(false);
-    s.forward(); expect(s.url).toBe('y.com');
+    s.forward(); expect(s.url).toBe('yowl.com');
     expect(s.canForward).toBe(true);
   });
   it('drops forward pages on a new navigation and ignores same-page reloads', () => {
     const s = make();
-    s.navigate('y.com'); s.back(); s.navigate('yowl.com');
+    s.navigate('qdrive.com', true);
+    s.navigate('weightroom.ai'); s.back(); s.navigate('yowl.com');
     expect(s.canForward).toBe(false);
     s.navigate('yowl.com');
-    s.back(); expect(s.url).toBe('qmail.com');
+    s.back(); expect(s.url).toBe('qdrive.com');
   });
   it('keeps each tab its own history', () => {
     const s = make();
-    s.navigate('y.com');
+    s.navigate('qmail.com/compose');
     s.switchTab(2);
     expect(s.canBack).toBe(false);
     s.switchTab(1); s.back();
     expect(s.url).toBe('qmail.com');
+  });
+});
+
+describe('pinned tabs', () => {
+  it('opens with Qmail, Y, agent, Forkyard and Coinbin, which can\'t be closed', () => {
+    const s = make();
+    expect(s.tabs.map((t) => t.url)).toEqual(['qmail.com', 'y.com', 'agent.chat', 'forkyard.com', 'coinbin.com']);
+    s.closeTab(2);
+    expect(s.tabs).toHaveLength(5);
+  });
+  it('keeps a pinned tab on its site: another pinned site switches tabs, anything else opens a new one', () => {
+    const s = make();
+    s.navigate('y.com/obanks');
+    expect(s.active).toBe(2);
+    expect(s.tabs[0].url).toBe('qmail.com');
+    expect(s.url).toBe('y.com/obanks');
+    s.navigate('yowl.com');
+    expect(s.tabs).toHaveLength(6);
+    expect(s.url).toBe('yowl.com');
+    expect(s.tabs[1].url).toBe('y.com/obanks');
+    s.closeTab(s.active);
+    expect(s.tabs).toHaveLength(5);
   });
 });
 
@@ -57,12 +81,12 @@ describe('booking form', () => {
 });
 
 describe('a new day', () => {
-  it('closes every tab but Qmail and agent', () => {
+  it('closes every tab but the pinned ones, back on their home pages', () => {
     const s = make();
-    s.navigate('y.com'); s.navigate('forkyard.dev', true);
-    expect(s.tabs.length).toBe(3);
+    s.navigate('y.com/obanks'); s.navigate('forkyard.dev', true);
+    expect(s.tabs.length).toBe(6);
     s.endDay();
-    expect(s.tabs.map((t) => t.url)).toEqual(['qmail.com', 'agent.chat']);
+    expect(s.tabs.map((t) => t.url)).toEqual(['qmail.com', 'y.com', 'agent.chat', 'forkyard.com', 'coinbin.com']);
     expect(s.url).toBe('qmail.com');
     expect(s.canBack).toBe(false);
     expect(s.state.morning).not.toBeNull();

@@ -5,6 +5,7 @@
   "trigger": {
     "dayMin": 3
   },
+  "at": "10:50",
   "addr": "viktor@mail.test",
   "body": "Lost my job. Need to sell my grandfather's pocket watch and there's nowhere simple to list it anymore. Does anyone still build that kind of thing? viktor@mail.test"
 }

@@ -665,7 +665,7 @@ export async function postToY(
   addValue(s, 'followers', delta);
   s.postsToday += 1;
   s.recentPosts = [text, ...s.recentPosts].slice(0, 5);
-  s.userPosts.push({ id: `u${s.userPosts.length + 1}`, text, day: s.values.day, likes: Math.max(0, delta * 3 + Math.round(s.values.followers * 0.02)), delta, score: rating.quality * 4 });
+  s.userPosts.push({ id: `u${s.userPosts.length + 1}`, text, day: s.values.day, min: s.clockMin, likes: Math.max(0, delta * 3 + Math.round(s.values.followers * 0.02)), delta, score: rating.quality * 4 });
   log(s, `Posted on Y (${rating.category}): ${delta >= 0 ? '+' : ''}${delta} followers.`, 'info');
   await promoteApps(jev, s, 'y', text);
   return { state: s, rating, followerDelta: delta };

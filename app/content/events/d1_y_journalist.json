@@ -5,6 +5,7 @@
   "trigger": {
     "dayMin": 1
   },
+  "at": "12:30",
   "addr": "mara@thecurrent.test",
   "body": "Writing about the people behind this week's AI layoffs — the ones the press forgets. If that's you, I'd like to hear from you. mara@thecurrent.test"
 }

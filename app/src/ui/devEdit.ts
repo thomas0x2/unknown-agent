@@ -4,7 +4,7 @@
  */
 import type { GameStore } from '../game/store';
 import type { Content, Effects } from '../content/schema';
-import { METERS, METER_IDS, EMPIRE } from '../engine';
+import { METERS, METER_IDS, EMPIRE, clockTime } from '../engine';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
@@ -35,12 +35,18 @@ export function devEditHtml(store: GameStore): string {
     const on = s.flags.includes(f);
     return `<label class="dve-flag${on ? ' on' : ''}"><input type="checkbox" data-dev-flag="${esc(f)}"${on ? ' checked' : ''}>${esc(f)}${on && s.flagDays[f] != null ? ` <span class="dv-dim">d${s.flagDays[f]}</span>` : ''}</label>`;
   }).join('');
+  const coming = (s.arriving ?? []).slice().sort((a, b) => a.day - b.day || a.at - b.at).map((a) => {
+    const ev = store.content.events.find((e) => e.id === a.eventId);
+    return `<p class="dv-dim">${a.day < s.values.day ? 'next morning' : clockTime(a.at)} · ${esc(ev?.site ?? '')} · ${esc(ev?.subject ?? ev?.from ?? a.eventId)}</p>`;
+  }).join('');
   return `<header><b>Flags and meters</b><button data-act="devedit" aria-label="Close">×</button></header>
     <h3>Meters</h3>
-    <p class="dv-dim">Changes apply when you leave the field. Changing the day skips the nights and delivers that day's events.</p>
+    <p class="dv-dim">Changes apply when you leave the field. Changing the day skips the nights and starts that day's morning; its events arrive over the day.</p>
     <table class="dve-meters">${meters}</table>
     <h3>Flags</h3>
     <form class="dve-add" data-form="dev-flag"><input id="dev-flag-name" placeholder="add a flag" autocomplete="off" spellcheck="false"><button type="submit">Set</button></form>
     <div class="dve-flags">${flags}</div>
+    <h3>On its way today</h3>
+    ${coming || '<p class="dv-dim">Nothing else is due today.</p>'}
     <div class="dv-row"><button data-dev="deliver">Deliver due events now</button></div>`;
 }

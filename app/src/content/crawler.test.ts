@@ -13,12 +13,14 @@ import { marketPosts, crawl, autoBuys, portfolio, START_PORTFOLIO } from '../eng
 import { machineFeed, machineRows } from '../engine/laundromat';
 import type { GameState } from '../engine/state';
 import { wordJev } from '../engine/_fixtures';
+import { CLOCK } from '../engine/config';
 
 const content = loadContent();
 
 function onDay(day: number): GameState {
   const s = startGame(content, 7);
   s.values.day = day;
+  s.clockMin = CLOCK.sleep - 1; // late in the day, once all of today's posts are up
   // the story events with stock labels, as if delivered on their day
   for (const l of content.yMarket!.events) {
     const e = content.events.find((x) => x.id === l.event)!;
@@ -37,6 +39,14 @@ describe('stock posts on Y', () => {
     expect(posts.some((p) => /nova/i.test(p.text))).toBe(false);
     const all = marketPosts(onDay(21), content);
     for (let d = 1; d <= 21; d++) expect(all.filter((p) => p.day === d && !p.bot).length, `day ${d}`).toBeGreaterThanOrEqual(2);
+  });
+  it("today's posts go up over the day, so the crawler only sees what's posted so far", () => {
+    const s = onDay(3);
+    const late = marketPosts(s, content).filter((p) => p.day === 3);
+    s.clockMin = CLOCK.wake;
+    const early = marketPosts(s, content).filter((p) => p.day === 3);
+    expect(early.length).toBeLessThan(late.length);
+    expect(marketPosts(s, content).filter((p) => p.day === 2).length).toBeGreaterThan(0); // yesterday's are all up
   });
 });
 
