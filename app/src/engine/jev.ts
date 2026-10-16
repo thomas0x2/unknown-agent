@@ -18,6 +18,8 @@ export interface RouteInput {
   stateSummary: string;
   candidates: RouteCandidate[];
   hints: string[];
+  /** The conversation so far, oldest first ("Player: …", "Agent: …"): what the message refers to, not requests. */
+  context?: string[];
   /** Only accept a clear match; when nothing clearly fits, the answer is nothing. */
   strict?: boolean;
 }
@@ -49,7 +51,7 @@ export interface PostRating {
 
 export interface FeatureMatchInput {
   prompt: string;
-  /** The player's earlier messages, oldest first: context for what the prompt refers to, not requests. */
+  /** Today's agent.chat before this prompt, oldest first ("Player: …", "Agent: …"): context for what the prompt refers to, not requests. */
   context?: string[];
   /** Spec features with their plain-language descriptions. */
   features: { id: string; description: string; kind?: 'build' | 'problem' }[];

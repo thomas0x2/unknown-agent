@@ -390,6 +390,16 @@ function recentPrompts(s: GameState, n = 6): string[] {
 }
 
 /**
+ * Today's agent.chat so far, the player's prompts and the agent's replies, for Jev to read follow-ups
+ * by ("now the prices are missing" after a menu fix). Only Jev sees the replies; the agent's build
+ * still works from what the player said (recentPrompts).
+ */
+function recentChat(s: GameState, n = 8): string[] {
+  return s.chat.filter((m) => m.day === s.values.day && m.text).slice(-n)
+    .map((m) => `${m.from === 'you' ? 'Player' : 'Agent'}: ${m.text.replace(/\s+/g, ' ').slice(0, 300)}`);
+}
+
+/**
  * A post that is about a live user app brings it users, once per platform: the first Y post and the
  * first Yowl review about it. Jev reads which app the post is about. Returns the apps it boosted.
  */
@@ -433,7 +443,7 @@ const BREAK_FIXED: Record<string, string[]> = {
 
 /**
  * The reply's lines for one feature: each bug Jev saw named, said as fixed (its scripted line) or as
- * already right, plus a patched break, a fresh build, or a rebuild nobody pinned down.
+ * already right, plus a patched break or a rebuild nobody pinned down. A first build only says it was built.
  */
 function fixLines(s: GameState, app: AppInstance, tmpl: AppTemplate | undefined, fid: string, cats: string[], before: BuiltFeature | undefined, patched: boolean, vague: boolean): string[] {
   const def = tmpl?.features.find((f) => f.id === fid);
@@ -447,17 +457,39 @@ function fixLines(s: GameState, app: AppInstance, tmpl: AppTemplate | undefined,
     out.push(pick(s, BREAK_FIXED[brk] ?? BREAK_FIXED.visible).replaceAll('{{feature}}', fid));
     return out;
   }
+  // a first build has nothing to fix yet, so it only says what was built
+  if (!before) return [`Built the ${fid}.`];
   for (const c of cats) {
     const bug = def?.bugs?.find((b) => b.id === c);
     if (!bug) continue;
     if (had.includes(c) && !has.includes(c)) out.push(fillSpec(pick(s, bug.fixed?.length ? bug.fixed : [`Fixed: ${bug.when}`]), params));
     else if (!had.includes(c)) out.push(`Checked for this: "${fillSpec(bug.when, params).replace(/\.$/, '')}". That part was already right.`);
   }
-  if (!before) out.push(`Built the ${fid}.`);
-  else if (vague && !out.length) out.push(`Went over the ${fid}. Tidied up the layout and spacing.`);
+  if (vague && !out.length) out.push(`Went over the ${fid}. Tidied up the layout and spacing.`);
   else if (!vague && had.some((b) => b === 'hallucinated' || b === 'outdated') && !has.some((b) => b === 'hallucinated' || b === 'outdated')) out.push(`Rebuilt the ${fid} with the details you gave.`);
   else if (!out.length) out.push(`Rebuilt the ${fid}.`);
   return out;
+}
+
+/** What the agent says when a prompt asked for features and fixes at once: it only did the features. */
+const SKIPPED_FIXES = "I only did the feature work. There wasn't enough context to fix things in the same prompt, so ask for the fixes separately.";
+
+/**
+ * Jev reads a build prompt as feature work (something new, or a change to what the app should
+ * contain), a fix (something on the app is wrong and should be corrected), or both. '' when Jev
+ * can't tell, in which case whatever it matched is done.
+ */
+async function buildIntent(jev: JevRouter, s: GameState, text: string, context: string[]): Promise<'feature' | 'fix' | 'both' | ''> {
+  const decision = await jev.route({
+    channel: 'agent', text, context, stateSummary: stateSummary(s), hints: [],
+    candidates: [
+      { id: 'feature', when: 'The prompt only asks for feature work: to build or add something, or to change what the app should contain or do (new items, new prices, a new page or form). It reports nothing as broken.' },
+      { id: 'fix', when: 'The prompt only reports that something on the app is wrong or broken and should be corrected. It asks for nothing new and changes nothing about what the app should contain.' },
+      { id: 'both', when: 'The prompt asks for feature work (to build, add or change something) and also reports that something on the app is wrong or broken and should be corrected.' },
+    ],
+  });
+  const id = decision.kind === 'outcome' ? decision.outcomeId : '';
+  return id === 'feature' || id === 'fix' || id === 'both' ? id : '';
 }
 
 /** Agent hints the engine picks itself from the state, after Jev says which app the player means. */
@@ -509,10 +541,24 @@ export async function promptAgent(
       }
     }
     const context = recentPrompts(s0);
-    // Jev decides both what is asked for and whether the player said which app it's for
-    const matched = new Set(await jev.matchFeatures({ prompt: text, context, features: cats, appNamed: !started }));
+    const chat = recentChat(s0);
+    // Jev decides both what is asked for and whether the player said which app it's for, and
+    // whether the prompt is feature work, a fix, or both (a first build is always feature work)
+    const [found, intent] = await Promise.all([
+      jev.matchFeatures({ prompt: text, context: chat, features: cats, appNamed: !started }),
+      started ? 'feature' : buildIntent(jev, s0, text, chat),
+    ]);
+    const matched = new Set(found);
     // a prompt that starts a user app builds all of it, however little it says (what it leaves out goes wrong)
     if (started) for (const id of getApp(s0, started)!.required) matched.add(`${started}::${id}::feature`);
+    // one kind of work per prompt: when Jev matched both, a fix keeps the fixes, feature work (or both) the features
+    const kindOf = new Map(cats.map((c) => [c.id, c.kind]));
+    const builds = [...matched].filter((m) => kindOf.get(m) === 'build' || m.endsWith('::feature'));
+    const fixes = [...matched].filter((m) => !builds.includes(m));
+    const keep = intent && builds.length && fixes.length ? (intent === 'fix' ? fixes : builds) : [...matched];
+    matched.clear();
+    keep.forEach((m) => matched.add(m));
+    const skippedFixes = intent === 'both' && keep.some((m) => builds.includes(m));
     if (matched.size) {
       const s = clone(s0);
       const byApp = new Map<string, Map<string, string[]>>();
@@ -550,7 +596,8 @@ export async function promptAgent(
         s.chat.push({ from: 'agent', text: "I can't run — your balance won't cover it. Top up Coinbin and try again.", day: s.values.day, src: 'locked' });
         return { state: s, reply: '', charged: false, refused: false, workedAround: false };
       }
-      const reply = `Pushed to Forkyard for ${names.join(', ')}.\n${lines.map((l) => `- ${l}`).join('\n')}\n\nDeploy it on Forkyard to make it live.`;
+      const skipped = skippedFixes ? `\n\n${SKIPPED_FIXES}` : '';
+      const reply = `Pushed to Forkyard for ${names.join(', ')}.\n${lines.map((l) => `- ${l}`).join('\n')}${skipped}\n\nDeploy it on Forkyard to make it live.`;
       s.chat.push({ from: 'you', text, day: s.values.day, cost: agentCostOf(s0, text), level });
       s.chat.push({ from: 'agent', text: reply, day: s.values.day, src: 'build', level });
       return { state: s, reply, charged: true, refused: false, workedAround: false };
@@ -568,7 +615,7 @@ export async function promptAgent(
     ...topics.map((h) => ({ id: h.id, when: h.when })),
   ];
   if (candidates.length) {
-    const decision = await jev.route({ channel: 'agent', text, stateSummary: stateSummary(s0), candidates, hints: [], strict: true });
+    const decision = await jev.route({ channel: 'agent', text, context: recentChat(s0), stateSummary: stateSummary(s0), candidates, hints: [], strict: true });
     const id = decision.kind === 'outcome' ? decision.outcomeId : '';
     const app = id.startsWith('app:') ? getApp(s0, id.slice(4)) : undefined;
     if (app) {
