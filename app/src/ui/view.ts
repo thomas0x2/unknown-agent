@@ -10,7 +10,7 @@ import { listSlots, autoSlot } from '../game/saves';
 import { ICONS, Y_ICONS } from './icons';
 import { route, bookmarks, type Route, type SiteId } from '../sites/registry';
 import {
-  type GameState, type AppInstance, getApp, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, AGENT_ROLLOUT, EMPIRE,
+  type GameState, type AppInstance, getApp, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, EMPIRE,
 } from '../engine';
 import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
@@ -624,13 +624,12 @@ function pageAgent(store: GameStore): string {
 }
 function pageModels(store: GameStore): string {
   const s = store.state;
-  const cards = [1, 2, 3, 4, 5].map((lvl) => {
+  // Only tiers GeneralAI has already rolled out; future ones stay unannounced.
+  const cards = [1, 2, 3, 4, 5].filter((lvl) => lvl <= s.values.agentLevel).map((lvl) => {
     const c = AGENT_COST[lvl];
-    const owned = s.values.agentLevel >= lvl;
-    const rollDay = Object.entries(AGENT_ROLLOUT).find(([, v]) => v === lvl)?.[0];
     const can = ['Build simple apps; frequent subtle bugs', 'Fewer bugs, bigger apps', 'Checks deployments and reports what broke', 'Fixes and redeploys on its own. Stops asking first.', 'Everything. Near-flawless.'][lvl - 1];
-    const action = lvl === s.values.agentLevel ? '<span class="gm-pill on">In use</span>' : owned ? '<span class="gm-pill">Rolled out</span>' : `<span class="gm-pill">GeneralAI rolls this out${rollDay ? ` on Day ${rollDay}` : ''}</span>`;
-    return `<article class="gm-card${owned ? ' owned' : ''}${lvl === s.values.agentLevel ? ' active' : ''}">
+    const action = lvl === s.values.agentLevel ? '<span class="gm-pill on">In use</span>' : '<span class="gm-pill">Rolled out</span>';
+    return `<article class="gm-card owned${lvl === s.values.agentLevel ? ' active' : ''}">
       <header><h2>agent-${lvl}</h2><span class="gm-meter" aria-label="Tier ${lvl} of 5">${[1, 2, 3, 4, 5].map((j) => `<i class="${j <= lvl ? 'on' : ''}"></i>`).join('')}</span></header>
       <p>${esc(can)}</p>
       <dl><dt>Per prompt</dt><dd>${fmtMoney(c.prompt)}</dd><dt>Per word</dt><dd>${fmtMoney(c.word)}</dd><dt>Daily sub</dt><dd>${fmtMoney(c.sub)}</dd></dl>
