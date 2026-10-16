@@ -57,6 +57,17 @@ describe('EMPIRE', () => {
     expect(joinEmpire(a).values.crypto).toBe(a.values.crypto);
   });
 
+  it('the welcome email lands a few game minutes after paying, not instantly', async () => {
+    const { advanceClock } = await import('../engine/core');
+    const a = joinEmpire(startAll(content, 3));
+    const welcome = (x: typeof a) => x.mail.filter((m) => m.subject === 'Welcome to EMPIRE');
+    expect(welcome(a)).toHaveLength(0);
+    advanceClock(a, EMPIRE.welcomeAfter - 1);
+    expect(welcome(a)).toHaveLength(0);
+    advanceClock(a, 1);
+    expect(welcome(a)).toHaveLength(1);
+  });
+
   it("can't sign up without 20 DOLR", () => {
     const s = startAll(content, 3);
     s.values.crypto = 5;
