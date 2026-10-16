@@ -170,9 +170,10 @@ async function buildMatch(sdk, body) {
   // one yes/no question per feature, so a prompt can ask for several at once
   const questions = {};
   (body.features ?? []).forEach((f, i) => {
-    questions[`f${i}`] = sdk.noul(`Does the prompt ask for this, to build, add, change or fix it, without contradicting it? Item: ${f.description}`);
+    questions[`f${i}`] = sdk.noul(`Does the prompt ask for this, to build, add, change or fix it, without contradicting it? Earlier messages only tell you what the prompt refers to ("those", "the menu", items listed before); they don't ask for anything by themselves. Item: ${f.description}`);
   });
-  return { state: { setting: SETTING, prompt: body.prompt }, questions };
+  const earlier = (body.context ?? []).filter(Boolean);
+  return { state: { setting: SETTING, ...(earlier.length ? { earlierMessages: earlier } : {}), prompt: body.prompt }, questions };
 }
 
 async function handle(kind, body) {

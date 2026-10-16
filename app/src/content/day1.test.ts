@@ -249,4 +249,20 @@ describe('day 1 playthrough', () => {
     s = deploy(deploy(s, 'trattoria-gino'), 'trattoria-gino');
     expect(s.clockMin).toBe(t);
   });
+  it('typos in dish names still count as the dishes', async () => {
+    let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    s.values.agentLevel = 5;
+    s = (await briefBuild(s, content, offlineJev, 'trattoria-gino', 'Build a landing page and a menu page.')).state;
+    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.variant).toBe('hallucinated');
+    s = (await promptAgent(s, content, offlineJev, 'I need magherita for 12, diavola for 14, lasagna for 15, tiramisu for 7 and espresso for 3 in DOLR for the menu')).state;
+    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')).toMatchObject({ correct: true });
+  });
+
+  it('details from earlier messages to the agent count for the next prompt', async () => {
+    let s = (await composeEmail(startGame(content, 7), content, offlineJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    s.values.agentLevel = 5;
+    s.chat.push({ from: 'you', text: `Gino sells ${MENU}, all in DOLR.`, day: s.values.day });
+    s = (await promptAgent(s, content, offlineJev, 'Build the menu page for Trattoria Gino.')).state;
+    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')).toMatchObject({ correct: true });
+  });
 });

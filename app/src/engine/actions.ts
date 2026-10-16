@@ -309,6 +309,11 @@ export async function askAgent(
  * them (first build or a re-roll fix), otherwise it's an ordinary chat prompt (askAgent). This is
  * the legacy feel: you can prompt the agent about anything, any time, gig or no gig.
  */
+/** The player's last few messages to the agent today: what they already told it. */
+function recentPrompts(s: GameState, n = 6): string[] {
+  return s.chat.filter((m) => m.from === 'you' && m.day === s.values.day).slice(-n).map((m) => m.text);
+}
+
 export async function promptAgent(
   s0: GameState,
   content: Content,
@@ -328,7 +333,8 @@ export async function promptAgent(
         for (const c of fixCategories(a, tmpl, id)) cats.push({ id: `${a.id}::${id}::${c.id}`, description: `${c.description} (for ${a.name})` });
       }
     }
-    const matched = new Set(await jev.matchFeatures({ prompt: text, features: cats }));
+    const context = recentPrompts(s0);
+    const matched = new Set(await jev.matchFeatures({ prompt: text, context, features: cats }));
     // plus the template's own wordings for each feature and bug, so common phrasings don't hinge on Jev
     const hits = workable.map((a) => ({ a, ids: a.required.filter((id) => needsWork(a, id)).flatMap((id) => keywordCategories(a, content.apps[a.template], id, text).map((c) => `${a.id}::${id}::${c}`)) })).filter((h) => h.ids.length);
     const named = hits.filter((h) => new RegExp(`\\b${h.a.name.toLowerCase().split(/\s+/)[0].replace(/[^a-z0-9]/g, '')}`, 'i').test(text));
@@ -358,7 +364,7 @@ export async function promptAgent(
         }
         if (toBuild.length) {
           const named = toBuild.flatMap((fid) => feats.get(fid)!);
-          const report = buildApp(s, appId, toBuild, level, { tmpl, prompt: text, named });
+          const report = buildApp(s, appId, toBuild, level, { tmpl, prompt: text, context: context.join('\n'), named });
           for (const fid of toBuild) worked.push(report.vague.includes(fid) ? `${fid} (tidied up the layout and spacing)` : fid);
         }
       }

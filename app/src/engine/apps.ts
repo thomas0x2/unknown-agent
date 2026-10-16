@@ -82,6 +82,8 @@ export function registerApp(s: GameState, spec: CreateAppSpec): string {
 export interface BuildCtx {
   tmpl?: AppTemplate;
   prompt?: string;
+  /** The player's earlier messages to the agent: details given there (the dishes, the hours) count too. */
+  context?: string;
   /** Bug ids Jev judged the prompt names (see BugDef.when). */
   named?: string[];
 }
@@ -101,12 +103,30 @@ function tokens(text: string): string[] {
   return text.toLowerCase().match(/[a-z\u00c0-\u024f]{3,}|\d+(?:[.,]\d+)?/g)?.map((t) => t.replace(',', '.')).filter((t) => !/^0+$/.test(t)) ?? [];
 }
 
+function editDistance(a: string, b: string): number {
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    for (let j = 1; j <= b.length; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[b.length];
+}
+
+/** A word the player typed counts if it's close enough: "magherita" is Margherita, "lasagna" is Lasagne. Numbers are exact. */
+function closeEnough(want: string, have: Set<string>): boolean {
+  if (have.has(want) || /^\d/.test(want) || want.length < 5) return have.has(want);
+  const max = want.length >= 8 ? 2 : 1;
+  for (const h of have) if (!/^\d/.test(h) && Math.abs(h.length - want.length) <= max && editDistance(want, h) <= max) return true;
+  return false;
+}
+
 /** True when the prompt carries (nearly) every word and number of `values`, e.g. the dishes and prices. */
 export function promptHasDetails(prompt: string, values: string[]): boolean {
   const want = [...new Set(values.flatMap(tokens))];
   if (!want.length) return true;
   const have = new Set(tokens(prompt));
-  return want.filter((t) => have.has(t)).length / want.length >= 0.85;
+  return want.filter((t) => closeEnough(t, have)).length / want.length >= 0.85;
 }
 
 function detailValues(params: Record<string, string | number> | undefined, def: FeatureDef): string[] {
@@ -164,13 +184,15 @@ function attempt(s: GameState, app: AppInstance, id: string, level: number, ctx:
   const def = ctx.tmpl?.features.find((f) => f.id === id);
   const spec = app.specParams[id];
   const existing = app.repo.find((f) => f.id === id);
-  const details = def && ctx.prompt != null ? detailValues(spec, def) : [];
-  const hasDetails = !details.length || promptHasDetails(ctx.prompt ?? '', details);
+  // what the agent knows: this prompt plus what the player told it earlier
+  const said = ctx.prompt != null ? [ctx.context, ctx.prompt].filter(Boolean).join('\n') : undefined;
+  const details = def && said != null ? detailValues(spec, def) : [];
+  const hasDetails = !details.length || promptHasDetails(said ?? '', details);
   if (existing && !existing.correct && existing.variant && ctx.prompt != null && existing.variant !== 'hallucinated') {
     // with no details given, an invented feature is just invented again, so it skips this and rebuilds
     const isAddressed = (v: string) => {
       const bug = def?.bugs?.find((b) => b.id === v);
-      return v === 'outdated' ? hasDetails || (def ? promptHasChange(ctx.prompt!, detailValues(existing.params, def), details) : false)
+      return v === 'outdated' ? hasDetails || (def ? promptHasChange(said!, detailValues(existing.params, def), details) : false)
         : (ctx.named ?? []).includes(v) || (!!bug?.orDetails && details.length > 0 && hasDetails);
     };
     const all = bugsOf(existing);
@@ -181,7 +203,7 @@ function attempt(s: GameState, app: AppInstance, id: string, level: number, ctx:
     // the agent already has the details from the repo; only an invented feature needed them again
     return roll(s, id, level, spec, def, fixedOf(app, id));
   }
-  const checked = ctx.prompt != null ? specChecklist(app, def, ctx.prompt) : undefined;
+  const checked = said != null ? specChecklist(app, def, said) : undefined;
   // every spec item the build prompt never mentioned guarantees its mistake, whatever the roll
   // ...unless the agent already fixed that mistake once: then it knows better
   const fixed = fixedOf(app, id);
