@@ -198,7 +198,7 @@
       "day": 4,
       "from": "MarketWire",
       "handle": "marketwire",
-      "body": "$GAI up 6% on the agent level 2 launch.",
+      "body": "$GAI up 6% on the agent-2 launch.",
       "likes": 276,
       "tickers": [
         "GAI"
@@ -446,7 +446,7 @@
       "day": 9,
       "from": "MarketWire",
       "handle": "marketwire",
-      "body": "$GAI up 5% on agent level 3. Analysts call it \"a step change.\"",
+      "body": "$GAI up 5% on agent-3. Analysts call it \"a step change.\"",
       "likes": 310,
       "tickers": [
         "GAI"
@@ -630,7 +630,7 @@
       "day": 14,
       "from": "MarketWire",
       "handle": "marketwire",
-      "body": "$GAI up 7% on agent level 4.",
+      "body": "$GAI up 7% on agent-4.",
       "likes": 344,
       "tickers": [
         "GAI"
@@ -779,7 +779,7 @@
       "day": 18,
       "from": "MarketWire",
       "handle": "marketwire",
-      "body": "$GAI up on agent level 5. Nobody I know can afford it.",
+      "body": "$GAI up on agent-5. Nobody I know can afford it.",
       "likes": 186,
       "tickers": [
         "GAI"

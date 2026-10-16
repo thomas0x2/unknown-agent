@@ -121,8 +121,8 @@
       "id": "upgrade",
       "when": "The player asks for a better, smarter or bigger model, or about upgrading agent.",
       "replies": [
-        "GeneralAI rolls out new levels on its own schedule. agent.chat/models lists the prices you'll agree to later.",
-        "New levels arrive when GeneralAI decides. You'll get an email and a higher bill.",
+        "GeneralAI rolls out new models on its own schedule. agent.chat/models lists the prices you'll agree to later.",
+        "New models arrive when GeneralAI decides. You'll get an email and a higher bill.",
         "Upgrades roll out automatically. agent.chat/models shows what's coming and what it costs."
       ]
     }
