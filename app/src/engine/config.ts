@@ -20,11 +20,13 @@ export const MS_PER_GAME_MIN = CLOCK.dayMs / (CLOCK.sleep - CLOCK.wake);
 
 /**
  * How long the agent works on a build or fix before it pushes, in game minutes (one per real second):
- * a base plus a share per feature or problem, up to a cap, then up to 20% either way.
+ * a base plus a share per feature or problem, up to a cap, times the agent model's speed (agent-1 …
+ * agent-5), then up to 20% either way.
  */
 export const AGENT_WORK = {
   build: { base: 20, each: 10, max: 90 },
   fix: { base: 12, each: 6, max: 45 },
+  speed: [1, 0.8, 0.65, 0.5, 0.4],
   spread: 0.2,
 };
 

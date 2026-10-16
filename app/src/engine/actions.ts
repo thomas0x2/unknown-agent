@@ -589,10 +589,11 @@ function fillWork(line: string, w: { at: number }, app: string): string {
   return line.replaceAll('{{app}}', app).replace('{{time}}', workTime(w));
 }
 
-/** How many game minutes a build or fix of `items` features or problems takes, a little random. */
+/** How many game minutes a build or fix of `items` features or problems takes, a little random; better models are faster. */
 export function workMinutes(s: GameState, kind: 'build' | 'fix', items: number): number {
   const c = AGENT_WORK[kind];
-  const mins = Math.min(c.max, c.base + c.each * Math.max(1, items));
+  const speed = AGENT_WORK.speed[Math.max(0, Math.min(AGENT_WORK.speed.length - 1, s.values.agentLevel - 1))];
+  const mins = Math.min(c.max, c.base + c.each * Math.max(1, items)) * speed;
   return Math.round(mins * (1 - AGENT_WORK.spread + 2 * AGENT_WORK.spread * rand(s)));
 }
 
