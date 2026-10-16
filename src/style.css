@@ -26,7 +26,8 @@
   --ua-bg: #eceef0; --ua-panel: #ffffff; --ua-ink: #0c0d0f; --ua-dim: #6c727b; --ua-line: #d7dade; --ua-you: #0c0d0f;
 }
 
-html, body { height: 100%; }
+html, body { height: 100%; margin: 0; }
+@supports (height: 100dvh) { html, body { height: 100dvh; } }
 [hidden] { display: none !important; }
 *, *::before, *::after { box-sizing: border-box; }
 body { background: var(--desk); color: var(--chrome-ink); font-family: var(--f-ui); overflow: hidden; }
