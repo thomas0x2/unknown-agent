@@ -10,7 +10,7 @@ import { listSlots, autoSlot } from '../game/saves';
 import { ICONS, TOKENS, Y_ICONS } from './icons';
 import { route, bookmarks, type Route, type SiteId } from '../sites/registry';
 import {
-  type GameState, type AppInstance, getApp, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, dateShort, dateLong, dateMedium, dateFull, EMPIRE, BOUNCE_ADDR, eventBody, deliveryKey,
+  type GameState, type AppInstance, getApp, bugsOf, breakVariant, appWorking, agentCost, promptCost, RENT, LAST_DAY, AGENT_COST, dateShort, dateLong, dateMedium, dateFull, EMPIRE, BOUNCE_ADDR, eventBody, deliveryKey,
 } from '../engine';
 import { BUSINESSES, YOWL_SEED, type Business } from './yowl-data';
 import { findUser } from './forkyard-users';
@@ -19,6 +19,7 @@ import { adHtml } from './ads';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount } from './appsite';
+import { marketPosts, handleOf, machineFeed, FEED_PAGE } from '../engine';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 
 const WALLET_ADDR = '0x4417c3e8b1d05f2a9e6d7b0c1f83a4e5d2b9a9f2';
@@ -37,7 +38,7 @@ function avatar(name: string, handle: string) {
   const initials = name.replace(/[^A-Za-z ]/g, '').split(' ').filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase() || '?';
   return `<div class="av" style="--h:${hashHue(handle)}">${esc(initials)}</div>`;
 }
-const handleFrom = (from: string) => from.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '').slice(0, 20) || 'user';
+const handleFrom = handleOf;
 const br = (t: string) => esc(t).replace(/\n/g, '<br>');
 const tpl = (t: string) => String(t ?? '').replace(/\{\{\s*playerName\s*\}\}/g, 'you').replace(/\{\{\s*\w+\s*\}\}/g, '');
 
@@ -45,6 +46,7 @@ function linkify(escaped: string): string {
   return escaped
     .replace(/([a-z0-9-]+\.forkyard\.app)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(empire\.alphaascend\.biz(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
+    .replace(/(spincycle\.test\/feed(?:\/\d+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(^|[^\w.])@([a-z0-9_]+)/gi, '$1<a href="#" class="y-at" data-nav="y.com/$2">@$2</a>');
 }
 
@@ -166,6 +168,18 @@ function qmailBadge(store: GameStore): number {
   return mailRows(store).filter((r) => r.folder === 'inbox' && r.unread).length;
 }
 
+// ── Spin Cycle's raw machine feed: the ground truth for the laundromat app ──
+function pageSpinFeed(store: GameStore, param?: string): string {
+  const m = param?.match(/^feed(?:\/(\d+))?$/);
+  if (!m) return `<pre class="spinfeed">404 not found</pre>`;
+  const feed = machineFeed(store.state.values.day);
+  const pages = Math.ceil(feed.length / FEED_PAGE);
+  const n = Math.min(Math.max(Number(m[1] ?? 1), 1), pages);
+  const lines = feed.slice((n - 1) * FEED_PAGE, n * FEED_PAGE).map((x) => `M${x.id} ST=${x.st} T=${x.t}`).join('\n');
+  const next = n < pages ? `<a href="#" data-nav="spincycle.test/feed/${n + 1}">next=/feed/${n + 1}</a>` : 'next=null';
+  return `<pre class="spinfeed">SPINCYCLE STATUS FEED v1\npage=${n}/${pages}\n\n${lines}\n\n${next}</pre>`;
+}
+
 // ── page dispatch ──
 export function page(store: GameStore, r: Route): string {
   if (!r.reachable) return pageError(store.url, r.site);
@@ -181,6 +195,7 @@ export function page(store: GameStore, r: Route): string {
     case 'yowl': return pageYowl(store, r.param);
     case 'weightroom': return pageWeightroom(store);
     case 'empire': return pageEmpire(store.state);
+    case 'spinfeed': return pageSpinFeed(store, r.param);
     default: return pageUnderground(r.def?.label ?? r.site);
   }
 }
@@ -315,19 +330,24 @@ function pageMail(store: GameStore, param?: string): string {
 }
 
 // ── Y ──
-interface YPost { id: string; author: string; handle: string; text: string; day: number; likes: number; mine?: boolean; delta?: number; score?: number; replyTo?: string; pinned?: boolean }
+interface YPost { id: string; author: string; handle: string; text: string; day: number; likes: number; mine?: boolean; delta?: number; score?: number; replyTo?: string; pinned?: boolean; /** Order within a day: story posts first, bot spam last. */ rank?: number }
 function yPosts(store: GameStore): YPost[] {
   const s = store.state;
   const out: YPost[] = [];
+  const market = marketPosts(s, store.content);
   for (const d of s.delivered.filter((x) => x.site === 'y')) {
     const e = store.content.events.find((x) => x.id === d.eventId);
     if (!e) continue;
-    out.push({ id: e.id, author: e.from ?? 'someone', handle: handleFrom(e.from ?? 'someone'), text: tpl(e.body ?? ''), day: d.day, likes: 20 + hashHue(e.id) % 400 });
+    out.push({ id: e.id, author: e.from ?? 'someone', handle: handleFrom(e.from ?? 'someone'), text: tpl(e.body ?? ''), day: d.day,
+      // a stock post shows the likes the crawler sees
+      likes: market.find((p) => p.id === e.id)?.likes ?? 20 + hashHue(e.id) % 400 });
   }
-  for (const f of store.content.yFiller) if (hashHue(f.id) % 3 === s.values.day % 3) out.push({ id: f.id, author: f.from, handle: f.handle, text: f.body, day: s.values.day, likes: 3 + hashHue(f.id) % 60 });
+  // the stock chatter the sentiment crawler reads (story events with stock labels are already above)
+  for (const p of market) if (!out.some((x) => x.id === p.id)) out.push({ id: p.id, author: p.author, handle: p.handle, text: p.text, day: p.day, likes: p.likes, rank: p.bot ? 2 : 1 });
+  for (const f of store.content.yFiller) if (hashHue(f.id) % 3 === s.values.day % 3) out.push({ id: f.id, author: f.from, handle: f.handle, text: f.body, day: s.values.day, likes: 3 + hashHue(f.id) % 60, rank: 1 });
   for (const x of s.yExtra) out.push({ id: x.id, author: x.author, handle: x.handle, text: x.text, day: x.day, likes: x.likes, replyTo: x.replyTo, pinned: !!x.about });
   for (const u of s.userPosts) out.push({ id: u.id, author: PLAYER.name, handle: PLAYER.handle, text: u.text, day: u.day, likes: u.likes, mine: true, delta: u.delta, score: u.score });
-  return out.sort((a, b) => b.day - a.day || Number(!!b.pinned) - Number(!!a.pinned) || b.id.localeCompare(a.id));
+  return out.sort((a, b) => b.day - a.day || Number(!!b.pinned) - Number(!!a.pinned) || (a.rank ?? 0) - (b.rank ?? 0) || b.id.localeCompare(a.id));
 }
 function yPostHtml(store: GameStore, p: YPost): string {
   const liked = !!store.ui.liked[p.id];
@@ -595,6 +615,12 @@ function pageApp(store: GameStore, param?: string): string {
   const a = appId ? getApp(s, appId) : undefined;
   if (!a || !a.deployed) return `<div class="err"><h1>404: NOT_FOUND</h1><p>Nothing is deployed here.</p></div>`;
   const bk = store.ui.book;
+  // a correct form only offers today onward; with the past_dates bug the picker starts on day 1
+  const liveBooking = a.features.find((f) => f.id === 'booking');
+  const brk = a.breaks.find((b) => b.featureId === 'booking');
+  const pastBug = (liveBooking && !liveBooking.correct && bugsOf(liveBooking).includes('past_dates'))
+    || (!!brk && breakVariant(brk, store.content.apps[a.template]?.features.find((f) => f.id === 'booking')) === 'past_dates');
+  const firstBookable = pastBug ? 1 : s.values.day;
   const notice = s.bookingNotice?.appId === a.id ? `<p class="pv-note ${s.bookingNotice.ok ? 'ok' : 'bad'}">${esc(s.bookingNotice.text)}</p>` : '';
   // two steps, like the spec: who and when, then the time and party size
   const booking = a.template === 'restaurant' && a.features.some((f) => f.id === 'booking')
@@ -603,10 +629,10 @@ function pageApp(store: GameStore, param?: string): string {
         <p class="pv-sub">Step 1 of 2. You'll get a confirmation by email.</p>${notice}
         <label>Name <input id="bk-name" value="${esc(bk.name || PLAYER.name)}"></label>
         <label>Email <input id="bk-email" value="${esc(bk.email || PLAYER.addr)}"></label>
-        <label>Date <select id="bk-date">${Array.from({ length: LAST_DAY }, (_, i) => i + 1).map((d) => `<option value="${d}"${d === (bk.date || s.values.day + 1) ? ' selected' : ''}>${dateMedium(d)}</option>`).join('')}</select></label>
+        <label>Date <select id="bk-date">${Array.from({ length: LAST_DAY }, (_, i) => i + 1).filter((d) => d >= firstBookable).map((d) => `<option value="${d}"${d === (bk.date || s.values.day + 1) ? ' selected' : ''}>${dateMedium(d)}</option>`).join('')}</select></label>
         <button class="pv-btn ok" type="submit">Continue</button></form>`
       : `<form class="pv-book" data-form="book" data-app="${esc(a.id)}"><h1>Book a table</h1>
-        <p class="pv-sub">Step 2 of 2: ${esc(bk.name)}, ${dateFull(bk.date)}.</p>
+        <p class="pv-sub">Step 2 of 2: ${esc(bk.name)}, ${dateFull(bk.date)}.</p>${notice}
         <label>Time <input id="bk-time" value="19:00"></label>
         <label>Party size <input id="bk-party" value="2" type="number" min="1" max="8"></label>
         <button class="pv-btn ghost" type="button" data-act="book-back">Back</button> <button class="pv-btn ok" type="submit">Book</button></form>`
@@ -617,7 +643,7 @@ function pageApp(store: GameStore, param?: string): string {
     ? `<h1>Booking cancelled</h1><p class="pv-note ok">Your booking for ${cancelled.party} on ${dateFull(cancelled.date)} at ${esc(cancelled.time)} has been cancelled.</p><p class="pv-sub">We hope to see you another time.</p>`
     : undefined;
   const tmpl = store.content.apps[a.template];
-  return `<div class="pv-host">${renderAppSite(a, tmpl, cancel ? 'cancel' : sub, { booking, cancel })}</div>`;
+  return `<div class="pv-host">${renderAppSite(a, tmpl, cancel ? 'cancel' : sub, { booking, cancel, day: s.values.day, market: marketPosts(s, store.content) })}</div>`;
 }
 
 // ── agent chat (free-promptable, with costs) ──

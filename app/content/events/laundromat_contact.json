@@ -8,7 +8,7 @@
     "dayMin": 2
   },
   "latent": true,
-  "body": "You want to make my feed readable? Go for it. The codes: ST 0 free, 1 running, 2 done, 3 out of order; T is seconds left. Eight machines. Show which are free and I'll send my regulars your way.",
+  "body": "You want to make my feed readable? Go for it. The codes: ST 0 free, 1 running, 2 done, 3 out of order; T is seconds left. Eight machines. The feed is at spincycle.test/feed. Show which are free and I'll send my regulars your way.",
   "outcomes": [
     {
       "id": "build",

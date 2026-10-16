@@ -4,9 +4,12 @@
  * finds problems by comparing the site with the client's email, not by reading a status label.
  * Templates get a renderer here; anything without one falls back to a plain generic site.
  */
-import { type AppInstance, type AppBreak, type BuiltFeature, breakVariant, bugsOf } from '../engine';
+import { type AppInstance, type AppBreak, type BuiltFeature, breakVariant, bugsOf, UNNAMED_BUG } from '../engine';
 import type { AppTemplate } from '../content/schema';
 import { menuDishes, misspell, WRONG_HOURS } from '../engine/restaurant';
+import { crawl, autoBuys, portfolio, type MarketPost } from '../engine/crawler';
+import { machineRows } from '../engine/laundromat';
+import { dateShort } from '../engine/calendar';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
@@ -44,10 +47,15 @@ export interface SiteExtras {
   booking?: string;
   /** The page a confirmation's cancel link opens. */
   cancel?: string;
+  /** Today, and the stock posts on Y: what the crawler and the laundromat read. */
+  day?: number;
+  market?: MarketPost[];
 }
 
 export function renderAppSite(app: AppInstance, tmpl: AppTemplate | undefined, page: string | undefined, extras: SiteExtras = {}): string {
   if (app.template === 'restaurant') return restaurant(app, tmpl, page, extras);
+  if (app.template === 'sentiment') return crawler(app, tmpl, page, extras);
+  if (app.template === 'laundromat') return laundromat(app, tmpl, page, extras);
   return generic(app, tmpl, page);
 }
 
@@ -96,6 +104,79 @@ function restaurant(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
   return `<div class="as as-r">${header}<main>${body}</main>${foot}</div>`;
 }
 
+// ── sentiment crawler ──
+
+const money = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const signed = (n: number) => `${n >= 0 ? '+' : '−'}${money(Math.abs(n))}`;
+
+function crawler(app: AppInstance, tmpl: AppTemplate | undefined, page: string | undefined, extras: SiteExtras): string {
+  const day = extras.day ?? 1;
+  const posts = extras.market ?? [];
+  const f = Object.fromEntries(['tickers', 'sentiment', 'filter', 'top_posts', 'portfolio', 'auto_buy'].map((id) => [id, live(app, tmpl, id)]));
+  const bugs = new Set(Object.values(f).flatMap((l) => [...l.bugs]));
+  // without the filter it counts everything it finds
+  if (!f.filter.built) { bugs.add('bots_counted'); bugs.add('band_counted'); }
+  const head = `<header class="as-s-head"><b>${esc(app.name)}</b><span>$-tagged posts on Y</span></header>`;
+  if (page && page !== 'dash') return `<div class="as as-s">${head}<main>${notFound()}</main></div>`;
+  let body: string;
+  if (!f.tickers.built) body = `<p class="as-s-empty">Nothing tracked yet.</p>`;
+  else {
+    // a failed fetch leaves yesterday's summary up (or nothing, on the first day)
+    const fetchFailed = f.tickers.brk?.failure === 'failed_fetch';
+    const dataDay = fetchFailed ? day - 1 : day;
+    const rows = crawl(fetchFailed && dataDay < 1 ? [] : posts, dataDay, bugs);
+    const cards = rows.map((r) => {
+      const split = f.sentiment.built && r.count
+        ? `<div class="as-s-bar"><i class="bull" style="width:${r.bullish}%"></i><i class="neu" style="width:${r.neutral}%"></i><i class="bear" style="width:${r.bearish}%"></i></div>
+           <p class="as-s-split"><span class="bull">${r.bullish}% bullish</span><span>${r.neutral}% neutral</span><span class="bear">${r.bearish}% bearish</span></p>` : '';
+      let top = '';
+      if (f.top_posts.built) {
+        top = outage(f.top_posts, 'the top posts') ?? (r.top.length
+          ? `<ol class="as-s-top">${r.top.map((p) => `<li><a href="#" data-nav="y.com/${esc(p.handle)}">@${esc(p.handle)}</a> ${esc(p.text)} <small>${p.likes.toLocaleString('en-US')} likes</small></li>`).join('')}</ol>`
+          : '');
+      }
+      return `<section class="as-s-card"><h2>$${esc(r.ticker)}</h2><p class="as-s-count"><b>${r.count}</b> post${r.count === 1 ? '' : 's'} today</p>${split}${top}</section>`;
+    }).join('');
+    body = `<p class="as-s-upd">Updated ${dateShort(dataDay < 1 ? day : dataDay)}</p><div class="as-s-grid">${cards}</div>`;
+  }
+  const buys = autoBuys(posts, day, bugs);
+  if (f.portfolio.built) {
+    const pf = portfolio(buys, day, bugs);
+    body += `<section class="as-s-pf"><h2>Portfolio</h2><table>${pf.holdings.map((h) => `<tr><td>$${esc(h.ticker)}</td><td>${h.shares} shares</td><td>${money(h.price)}</td><td>${money(h.value)}</td></tr>`).join('')}
+      <tr class="cash"><td>Cash</td><td></td><td></td><td>${money(pf.cash)}</td></tr></table>
+      <p class="as-s-total">Total <b>${money(pf.total)} DOLR</b> <span class="${pf.change >= 0 ? 'bull' : 'bear'}">${signed(pf.change)} today</span></p></section>`;
+  }
+  if (f.auto_buy.built) {
+    const log = buys.slice().reverse().map((b) => `<li>${dateShort(b.day)}: bought ${b.shares} $${esc(b.ticker)} at ${money(b.price)} on <a href="#" data-nav="y.com/${esc(b.post.handle)}">@${esc(b.post.handle)}</a> “${esc(b.post.text)}”</li>`).join('');
+    body += `<section class="as-s-buys"><h2>Auto-buy</h2>${log ? `<ul>${log}</ul>` : '<p>No buys yet. Watching @randall_crane.</p>'}</section>`;
+  }
+  return `<div class="as as-s">${head}<main>${body}</main></div>`;
+}
+
+// ── laundromat ──
+
+const MACHINE_LABEL = { free: 'Free', running: 'Running', done: 'Done, waiting for pickup', broken: 'Out of order' };
+
+function laundromat(app: AppInstance, tmpl: AppTemplate | undefined, page: string | undefined, extras: SiteExtras): string {
+  const day = extras.day ?? 1;
+  const f = Object.fromEntries(['machines', 'refresh', 'minutes', 'more_machines'].map((id) => [id, live(app, tmpl, id)]));
+  const bugs = new Set(Object.values(f).flatMap((l) => [...l.bugs]));
+  const head = `<header class="as-l-head"><b>${esc(app.name)}</b><span>Spin Cycle Laundry · 201 Ferris St</span></header>`;
+  if (page && page !== 'status') return `<div class="as as-l">${head}<main>${notFound()}</main></div>`;
+  let body: string;
+  if (!f.machines.built) body = `<p class="as-l-empty">No machines yet.</p>`;
+  else if (f.machines.brk?.failure === 'failed_fetch' || f.refresh.brk?.failure === 'failed_fetch') body = `<p class="as-l-empty">No machines found.</p>`;
+  else {
+    // without a working refresh it shows what the feed said when it was deployed
+    const dataDay = f.refresh.built && !bugs.has('no_refresh') ? day : app.lastDeployDay || day;
+    const rows = machineRows(dataDay, bugs, { showMinutes: !!f.minutes.built, twelve: !!f.more_machines.built });
+    const broken = bugs.has('layout_breaks') && rows.length > 8;
+    const cards = rows.map((m) => `<div class="as-l-m ${m.status}"><b>M${m.id}</b><span>${MACHINE_LABEL[m.status]}</span>${m.minutes != null ? `<small>${m.minutes} min left</small>` : ''}</div>`).join('');
+    body = `<div class="as-l-grid${broken ? ' broken' : ''}">${cards}</div><p class="as-l-upd">Updated ${dateShort(dataDay)}</p>`;
+  }
+  return `<div class="as as-l">${head}<main>${body}</main></div>`;
+}
+
 // ── generic fallback ──
 
 function generic(app: AppInstance, tmpl: AppTemplate | undefined, page: string | undefined): string {
@@ -134,7 +215,11 @@ function devRows(app: AppInstance, tmpl: AppTemplate | undefined): DevRow[] {
       : brk ? `${BREAK_LABEL[brk.failure] ?? brk.failure}${breakVariant(brk, def) ? `: ${breakVariant(brk, def)}` : ''}`
       : !liveF ? 'missing' : liveF.correct ? 'ok' : bugsOf(liveF).join(' + ') || 'wrong';
     const present = new Set([...(repo?.correct ? [] : bugsOf(repo)), ...(liveF?.correct ? [] : bugsOf(liveF)), ...(brk ? [brk.failure] : []), ...(brk && breakVariant(brk, def) ? [breakVariant(brk, def)!] : [])]);
+    // a wrong build with no named bug still gets a tag, so it can be seen and switched off
+    const unnamed = [repo, liveF].some((f) => f && !f.correct && !f.variant);
+    if (unnamed) present.add(UNNAMED_BUG);
     const possible = [
+      ...(unnamed || !def?.bugs?.length ? [{ key: UNNAMED_BUG, label: 'wrong (no named bug)' }] : []),
       ...(def?.bugs ?? []).map((b) => ({ key: b.id, label: b.deep ? `${b.id} (deep)` : b.id })),
       ...(def?.details?.length ? ['hallucinated', 'outdated'] : []).map((key) => ({ key, label: key })),
       // subtle and deep breaks show one of the bugs above, so with named bugs they'd only repeat them

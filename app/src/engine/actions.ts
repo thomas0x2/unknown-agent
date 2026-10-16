@@ -673,9 +673,15 @@ export function makeBooking(s0: GameState, appId: string, name: string, email: s
   // the spec: opening hours only, never in the past
   const hours = String(app.specParams.landing?.hours ?? '17:00-22:00').split(/[-–]/).map((t) => minutes(t.trim()));
   const at = minutes(time);
-  const closed = !Number.isFinite(at) || at < hours[0] || at > hours[1] || date < s.values.day;
+  const closed = !Number.isFinite(at) || at < hours[0] || at > hours[1];
+  // a past date, or a time already gone today
+  const past = date < s.values.day || (date === s.values.day && at <= s.clockMin);
+  if (past && !bugs.has('past_dates')) {
+    s.bookingNotice = { appId, ok: false, text: date < s.values.day ? 'That date is in the past.' : 'That time has already passed today.' };
+    return s;
+  }
   if (closed && !bugs.has('no_hours_check')) {
-    s.bookingNotice = { appId, ok: false, text: date < s.values.day ? 'That date is in the past.' : `We only take bookings during opening hours (${String(app.specParams.landing?.hours ?? '17:00-22:00')}).` };
+    s.bookingNotice = { appId, ok: false, text: `We only take bookings during opening hours (${String(app.specParams.landing?.hours ?? '17:00-22:00')}).` };
     return s;
   }
   tick(s, 'book');

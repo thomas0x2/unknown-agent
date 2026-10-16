@@ -11,6 +11,8 @@ export * from './events';
 export * from './apps';
 export * from './complaints';
 export * from './restaurant';
+export * from './crawler';
+export * from './laundromat';
 export * from './agent';
 export * from './endings';
 export * from './day';

@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, deliverDue, CLOCK, tick, devToggleBug,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, deliverDue, CLOCK, tick, devToggleBug, nameUnnamedBugs,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -53,6 +53,7 @@ export class GameStore {
   constructor(readonly content: Content, private router: JevRouter, private writer: Writer, private store: SaveStore) {
     const loaded = this.store.load();
     this.state = loaded ?? startGame(content);
+    nameUnnamedBugs(this.state, content); // saves from before the app had named bugs
     startDayChat(this.state, content); // saves from before the per-day reset may still carry yesterday's chat
     this.ui.intro = !this.state.introSeen;
     applyDevMode(this.devMode);
@@ -168,6 +169,7 @@ export class GameStore {
   private resetTo(state: GameState): void {
     this.stopPull();
     startDayChat(state, this.content);
+    nameUnnamedBugs(state, this.content);
     this.state = state;
     this.tabs = startTabs();
     this.active = 1; this.nextTab = 3;
@@ -186,8 +188,9 @@ export class GameStore {
   takeDown(appId: string): void { this.commit(takeDown(this.state, appId)); }
   cancelBooking(id: string): void { this.commit(cancelBooking(this.state, id)); }
   joinEmpire(): void { this.commitAndSettle(joinEmpire(this.state)); }
-  bookNext(name: string, email: string, date: number): void { this.ui.book = { step: 2, name, email, date }; this.emit(); }
-  bookBack(): void { this.ui.book.step = 1; this.emit(); }
+  // a new attempt clears the last attempt's notice, so a refusal never sticks to a date it wasn't about
+  bookNext(name: string, email: string, date: number): void { delete this.state.bookingNotice; this.ui.book = { step: 2, name, email, date }; this.emit(); }
+  bookBack(): void { delete this.state.bookingNotice; this.ui.book.step = 1; this.emit(); }
   book(appId: string, time: string, party: number): void {
     const { name, email, date } = this.ui.book;
     const next = makeBooking(this.state, appId, name || 'You', email, date || this.state.values.day, time, party, this.content);

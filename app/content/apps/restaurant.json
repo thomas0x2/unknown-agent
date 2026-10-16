@@ -150,7 +150,8 @@
         "dead_button": "The booking form looks fine, but nothing happens when you press the button. A couple came for their anniversary and we had no table for them.",
         "deep": "The booking form looks fine, but nothing happens when you press the button. A couple came for their anniversary and we had no table for them.",
         "down": "The booking page shows an error.",
-        "wrong": "The bookings come in wrong. Please check the form."
+        "wrong": "The bookings come in wrong. Please check the form.",
+        "past_dates": "Someone booked a table for last week. I don't know what to do with that."
       },
       "bugs": [
         {
@@ -190,8 +191,13 @@
         },
         {
           "id": "no_hours_check",
-          "when": "bookings accepted outside opening hours or in the past",
-          "match": "\\b(outside|after|before)\\b[^.?!]{0,20}\\b(opening hours|hours|open|closing)\\b|\\b(in the past|past dates?|yesterday|midnight|closed)\\b|\\b(accepts?|allows?|lets?)\\b[^.?!]{0,30}\\b(any time|anytime|any date|past)\\b"
+          "when": "bookings accepted outside opening hours",
+          "match": "\\b(outside|after|before)\\b[^.?!]{0,20}\\b(opening hours|hours|open|closing)\\b|\\b(midnight|closed)\\b|\\b(accepts?|allows?|lets?)\\b[^.?!]{0,30}\\b(any time|anytime)\\b"
+        },
+        {
+          "id": "past_dates",
+          "when": "bookings accepted for dates or times already in the past",
+          "match": "\\b(in the past|past (dates?|days?|times?)|yesterday|last (week|monday|tuesday|wednesday|thursday|friday|saturday|sunday)|already (gone|passed|over)|earlier today|before today)\\b|\\b(accepts?|allows?|lets?)\\b[^.?!]{0,30}\\b(any date|past|old dates?)\\b"
         },
         {
           "id": "dead_button",

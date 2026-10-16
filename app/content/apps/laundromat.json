@@ -18,8 +18,47 @@
       "complaints": {
         "missing": "Spin Cycle Status doesn't even list the machines. What is it for.",
         "down": "Spin Cycle Status just says \"Failed to fetch\". Walked over anyway. All busy.",
-        "wrong": "Spin Cycle Status said machine 3 was free. It was out of order. It's always out of order."
-      }
+        "wrong": "Spin Cycle Status said machine 3 was free. It was out of order. It's always out of order.",
+        "six_of_eight": "Spin Cycle Status shows 6 machines. There are 8.",
+        "done_as_free": "Spin Cycle Status said a machine was free. Someone's wet laundry was still in it.",
+        "broken_as_free": "Spin Cycle Status said machine 3 was free. It was out of order. It's always out of order.",
+        "failed_fetch": "Spin Cycle Status shows no machines at all. Walked over anyway. All busy."
+      },
+      "match": "\\b(machines?|washers?|dryers?|out of order|pick-?up)\\b",
+      "bugs": [
+        {
+          "id": "six_of_eight",
+          "when": "shows only the first page of the feed (6 machines)",
+          "match": "\\b(six|6)\\b[^.?!]{0,20}\\b(of|machines)\\b|\\b(second|next|2nd|other) page\\b|\\bpaginat\\w*|\\bmissing machines?\\b|\\bm7\\b|\\bm8\\b|\\ball (8|eight) machines\\b"
+        },
+        {
+          "id": "done_as_free",
+          "when": "done machines shown as free",
+          "match": "\\b(done|finished)\\b[^.?!]{0,30}\\b(free|available)\\b|\\b(free|available)\\b[^.?!]{0,30}\\b(done|finished)\\b|\\bpick-?up\\b|\\bst ?= ?2\\b"
+        },
+        {
+          "id": "broken_as_free",
+          "when": "out-of-order machines shown as free",
+          "match": "\\bout[- ]of[- ]order\\b|\\bbroken machines?\\b|\\bst ?= ?3\\b|\\bm3\\b"
+        }
+      ],
+      "checklist": [
+        {
+          "id": "all",
+          "text": "8 machines",
+          "bug": "six_of_eight"
+        },
+        {
+          "id": "done",
+          "text": "done",
+          "bug": "done_as_free"
+        },
+        {
+          "id": "broken",
+          "text": "out of order",
+          "bug": "broken_as_free"
+        }
+      ]
     },
     {
       "id": "refresh",
@@ -31,8 +70,30 @@
       "complaints": {
         "missing": "Spin Cycle Status never updates. It shows the same thing all day.",
         "down": "Spin Cycle Status stopped updating. Walked over for a free machine that wasn't.",
-        "wrong": "Spin Cycle Status said 4 machines free. Walked over, all 4 running. The page hadn't updated since the morning."
-      }
+        "wrong": "Spin Cycle Status said 4 machines free. Walked over, all 4 running. The page hadn't updated since the morning.",
+        "no_refresh": "Spin Cycle Status said 4 machines free. Walked over, all 4 running. The page hadn't updated since the morning.",
+        "fetch_all_free": "Spin Cycle Status said every machine was free. None were."
+      },
+      "match": "\\b(refresh\\w*|updat\\w*|stale|real[- ]?time|poll\\w*|fetch\\w*)\\b",
+      "bugs": [
+        {
+          "id": "no_refresh",
+          "when": "the status never refreshes",
+          "match": "\\b(refresh\\w*|never updat\\w*|doesn'?t update|does not update|not updating|stale|old data|out of date|same (thing|states?) all day|poll\\w*)\\b"
+        },
+        {
+          "id": "fetch_all_free",
+          "when": "a failed fetch shows every machine as free",
+          "match": "\\b(all|every|everything)\\b[^.?!]{0,25}\\b(free|available)\\b|\\bfail\\w* (to )?fetch\\w*|\\bfetch\\w* fail\\w*|\\berror handling\\b"
+        }
+      ],
+      "checklist": [
+        {
+          "id": "refresh",
+          "text": "refresh",
+          "bug": "no_refresh"
+        }
+      ]
     },
     {
       "id": "minutes",
@@ -42,8 +103,24 @@
       ],
       "complaints": {
         "missing": "Spin Cycle Status shows which machines are running but not for how long. Stood there 40 minutes.",
-        "wrong": "Spin Cycle Status says my wash has 731 minutes left."
-      }
+        "wrong": "Spin Cycle Status says my wash has 731 minutes left.",
+        "minutes_wrong": "Spin Cycle Status says my wash has 731 minutes left."
+      },
+      "match": "\\b(minutes?|mins?|time left|timer|countdown)\\b",
+      "bugs": [
+        {
+          "id": "minutes_wrong",
+          "when": "minutes left are wrong (seconds read as minutes)",
+          "match": "\\b(minutes?|mins?|time left|timer)\\b[^.?!]{0,30}\\b(wrong|off|incorrect|too (long|high|many)|negative|huge)\\b|\\bseconds?\\b|\\b731\\b|\\bnegative\\b"
+        }
+      ],
+      "checklist": [
+        {
+          "id": "minutes",
+          "text": "minutes",
+          "bug": "minutes_wrong"
+        }
+      ]
     },
     {
       "id": "more_machines",
@@ -53,8 +130,36 @@
       ],
       "complaints": {
         "missing": "Spin Cycle Status still shows 8 machines. There are 12 now.",
-        "wrong": "Spin Cycle Status still shows 8 machines. There are 12 now."
-      }
+        "wrong": "Spin Cycle Status still shows 8 machines. There are 12 now.",
+        "still_eight": "Spin Cycle Status still shows 8 machines. There are 12 now.",
+        "new_always_free": "Spin Cycle Status says the four new machines are always free. They're the busiest ones.",
+        "layout_breaks": "Spin Cycle Status is a mess since the new machines. The boxes are on top of each other."
+      },
+      "match": "\\b(12|twelve|new machines?|four new|4 new|more machines|added machines)\\b",
+      "bugs": [
+        {
+          "id": "still_eight",
+          "when": "still shows 8 machines, not 12",
+          "match": "\\b(still|only)\\b[^.?!]{0,20}\\b(8|eight)\\b|\\b(12|twelve)\\b[^.?!]{0,20}\\bmachines?\\b|\\bnew (machines|ones)\\b[^.?!]{0,25}\\b(missing|ignored|not shown|don'?t show)\\b"
+        },
+        {
+          "id": "new_always_free",
+          "when": "the four new machines always show as free",
+          "match": "\\bnew (machines|ones)\\b[^.?!]{0,30}\\b(free|available)\\b|\\b(m9|m10|m11|m12)\\b|\\balways (free|available)\\b"
+        },
+        {
+          "id": "layout_breaks",
+          "when": "the layout breaks with more than 8 machines",
+          "match": "\\b(layout|grid|overlap\\w*|cut off|overflow\\w*|squash\\w*|alignment)\\b"
+        }
+      ],
+      "checklist": [
+        {
+          "id": "twelve",
+          "text": "12",
+          "bug": "still_eight"
+        }
+      ]
     }
   ],
   "complaints": {

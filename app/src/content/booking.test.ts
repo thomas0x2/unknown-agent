@@ -48,6 +48,14 @@ describe('table booking', () => {
     expect(book(s0, '19:00', 2, 0).bookings).toHaveLength(0);
   });
 
+  it('past dates: yesterday is refused, today (later on) and tomorrow are fine', async () => {
+    const s0 = await liveSite();
+    const day = s0.values.day;
+    expect(book(s0, '19:00', 2, day - 1).bookingNotice).toMatchObject({ ok: false, text: 'That date is in the past.' });
+    expect(book(s0, '19:00', 2, day).bookings).toHaveLength(1);
+    expect(book(s0, '19:00', 2, day + 1).bookings).toHaveLength(1);
+  });
+
   it('each bug shows up where a test booking would reveal it', async () => {
     const s0 = await liveSite();
     const withBug = (bug: string) => { const s = structuredClone(s0); devToggleBug(s, APP, 'booking', bug); return s; };
@@ -64,6 +72,12 @@ describe('table booking', () => {
     const fake = book(withBug('fake_cancel'));
     expect(cancelBooking(fake, lastMail(fake)!.bookingId!).bookings[0]).toMatchObject({ cancelled: false, cancelClicked: true });
     expect(book(withBug('no_hours_check'), '23:30').bookings).toHaveLength(1);
+    expect(book(withBug('no_hours_check'), '19:00', 2, 0).bookings).toHaveLength(0);
+    expect(book(withBug('past_dates'), '19:00', 2, 0).bookings).toHaveLength(1);
+    // a time already gone today is in the past too
+    const late = structuredClone(s0); late.clockMin = 20 * 60;
+    expect(book(late, '19:00', 2, late.values.day).bookingNotice?.text).toBe('That time has already passed today.');
+    expect(book(late, '21:00', 2, late.values.day).bookings).toHaveLength(1);
     const dead = book(withBug('dead_button'));
     expect(dead.bookings).toHaveLength(0);
     expect(dead.clockMin).toBe(s0.clockMin);
@@ -99,6 +113,7 @@ describe('table booking', () => {
       party_wrong: 'The booking confirmation has the wrong party size.',
       name_wrong_mail: 'The booking confirmation email has the wrong restaurant name.',
       no_hours_check: 'The booking form accepts bookings outside opening hours.',
+      past_dates: 'The booking form lets you book a table in the past.',
       dead_button: 'On the booking form the book button does nothing on the second step.',
     };
     for (const [bug, ask] of Object.entries(asks)) {
