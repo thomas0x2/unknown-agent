@@ -11,6 +11,7 @@ import { crawl, autoBuys, portfolio, trackedOf, START_PORTFOLIO, type MarketPost
 import { machineRows } from '../engine/laundromat';
 import { swapListings, listedWhen, SWAP_CATEGORIES, type Listing } from '../engine/swaplist';
 import { adHtml } from './ads';
+import { SWAP_ART } from './swapArt';
 import { dateShort, clockTime } from '../engine/calendar';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
@@ -303,7 +304,7 @@ function swaplist(app: AppInstance, tmpl: AppTemplate | undefined, page: string 
   const takesOffers = (l: Listing) => l.soldAt == null || !f.mark_sold.built || bugs.has('offers_open');
   const photo = (l: Listing, big = false) => (bugs.has('no_photos')
     ? `<span class="as-w-ph none${big ? ' big' : ''}" aria-label="Image not found"></span>`
-    : `<span class="as-w-ph${big ? ' big' : ''}" aria-hidden="true">${l.photo}</span>`);
+    : `<span class="as-w-ph${big ? ' big' : ''}" aria-hidden="true">${SWAP_ART[l.photo] ?? ''}</span>`);
   const when = (l: Listing) => { const t = listedWhen(l.at); return `${dateShort(t.day)}, ${clockTime(t.min)}`; };
 
   const [section, arg, sub] = (page ?? '').split('/');
