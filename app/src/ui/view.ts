@@ -271,7 +271,7 @@ function pageMail(store: GameStore, param?: string): string {
           <div class="qm-body">${linkify(br(r.body))}</div>
           ${r.link === 'cancel' && r.bookingId ? (s.bookings.find((b) => b.id === r.bookingId)?.cancelClicked
             ? `<p class="qm-actions"><b>Your booking has been cancelled.</b></p>`
-            : `<p class="qm-actions"><button class="qm-btn ghost" data-cancel-booking="${esc(r.bookingId)}">Cancel booking</button></p>`) : ''}
+            : `<p class="qm-actions"><button class="qm-btn ghost" data-cancel-booking="${esc(r.bookingId)}" data-cancel-url="${esc(`${r.addr.split('@')[1] ?? ''}/cancel-${r.bookingId}`)}">Cancel booking</button></p>`) : ''}
           ${r.generated ? `<p class="qm-gen">Reply written by ${esc(MISSES.label())}</p>` : ''}
         </details>`;
       }).join('');
@@ -609,8 +609,13 @@ function pageApp(store: GameStore, param?: string): string {
         <label>Party size <input id="bk-party" value="2" type="number" min="1" max="8"></label>
         <button class="pv-btn ghost" type="button" data-act="book-back">Back</button> <button class="pv-btn ok" type="submit">Book</button></form>`
     : undefined;
+  // the cancel link from a confirmation email: it always says it worked (with the bug, it didn't)
+  const cancelled = sub?.startsWith('cancel-') ? s.bookings.find((b) => b.id === sub.slice(7) && b.appId === a.id) : undefined;
+  const cancel = cancelled
+    ? `<h1>Booking cancelled</h1><p class="pv-note ok">Your booking for ${cancelled.party} on Day ${cancelled.date} at ${esc(cancelled.time)} has been cancelled.</p><p class="pv-sub">We hope to see you another time.</p>`
+    : undefined;
   const tmpl = store.content.apps[a.template];
-  return `<div class="pv-host">${renderAppSite(a, tmpl, sub, { booking })}</div>`;
+  return `<div class="pv-host">${renderAppSite(a, tmpl, cancel ? 'cancel' : sub, { booking, cancel })}</div>`;
 }
 
 // ── agent chat (free-promptable, with costs) ──

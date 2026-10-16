@@ -155,7 +155,8 @@ document.addEventListener('click', (e) => {
   else if (d.like != null) store.like(d.like);
   else if (d.deploy != null) store.deploy(d.deploy);
   else if (d.takedown != null) store.confirm('Take it offline? It counts as broken at payday.', 'Take down', () => store.takeDown(d.takedown!));
-  else if (d.cancelBooking != null) store.cancelBooking(d.cancelBooking);
+  // the cancel link opens the restaurant's cancel page in a new tab
+  else if (d.cancelBooking != null) { store.cancelBooking(d.cancelBooking); if (d.cancelUrl) { newPageLoad(); store.navigate(d.cancelUrl, true); } }
   else if (d.empireJoin != null) store.joinEmpire();
   else if (d.mailDiscard != null) { clearMailDraft(); store.setDraft(null); store.navigate('qmail.com'); }
   else if (d.star != null) store.setReviewStars(Number(d.star));

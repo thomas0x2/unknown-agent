@@ -42,6 +42,8 @@ const notFound = () => `<div class="as-404"><h1>404</h1><p>This page could not b
 export interface SiteExtras {
   /** The booking form, owned by the view (it wires into Qmail). */
   booking?: string;
+  /** The page a confirmation's cancel link opens. */
+  cancel?: string;
 }
 
 export function renderAppSite(app: AppInstance, tmpl: AppTemplate | undefined, page: string | undefined, extras: SiteExtras = {}): string {
@@ -84,6 +86,8 @@ function restaurant(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
       const rows = dishes.map((d) => `<li><span>${esc(d.name)}</span><i></i><b>${d.price ? `${esc(d.price)} ${currency}` : ''}</b></li>`).join('');
       body = `<section class="as-r-menu"><h1>Menu</h1><ul>${rows}</ul></section>`;
     }
+  } else if (page === 'cancel' && extras.cancel) {
+    body = `<section class="as-r-book">${extras.cancel}</section>`;
   } else if (page === 'booking' && extras.booking) {
     body = `<section class="as-r-book">${outage(live(app, tmpl, 'booking'), 'the booking form') ?? extras.booking}</section>`;
   } else body = notFound();
