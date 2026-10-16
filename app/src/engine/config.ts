@@ -12,10 +12,10 @@ export const LAST_DAY = 21;
 export const CLOCK = {
   wake: 10 * 60,   // 10:00
   sleep: 24 * 60,  // 00:00 (auto-sleep)
-  // How long a whole day (wake to sleep) lasts in real time: 8 minutes.
-  dayMs: 8 * 60 * 1000,
+  // How long a whole day (wake to sleep) lasts in real time: one game minute per real second, 14 minutes.
+  dayMs: (24 - 10) * 60 * 1000,
 };
-/** Real milliseconds per game minute (about 0.57 s). */
+/** Real milliseconds per game minute (one second). */
 export const MS_PER_GAME_MIN = CLOCK.dayMs / (CLOCK.sleep - CLOCK.wake);
 
 export const START = {
