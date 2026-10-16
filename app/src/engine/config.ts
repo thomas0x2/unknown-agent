@@ -53,6 +53,9 @@ export const APPS = {
     growthPerDay: 0.08,
     firstBreakUsersMul: 0.6, // -40%
     secondBreakUsers: 0.05, // drops to 5%, effectively dead
+    /** One post about a live user app per platform brings users: on Y a share of the followers (at least the floor), on Yowl a flat number. */
+    promoY: { followerShare: 0.15, min: 20 },
+    promoYowl: 30,
   },
 };
 

@@ -348,6 +348,9 @@ export function breakVariant(brk: AppBreak, def: FeatureDef | undefined): string
   return brk.variant ?? (bugs.length ? bugs[(brk.seed ?? 0) % bugs.length].id : undefined);
 }
 
+/** What a user app earns per day from the ads on it. */
+export const userRevenue = (app: AppInstance) => Math.round((app.users ?? 0) * APPS.user.payPerUser);
+
 /** The repo exists on Forkyard once the agent has pushed to it; taking the job alone doesn't create it. */
 export const onForkyard = (app: AppInstance) => app.repoVersion > 0;
 
@@ -568,7 +571,7 @@ export function runPayday(s: GameState, content?: Content): Complaint[] {
       }
     } else if (app.kind === 'user') {
       if (working) {
-        const pay = Math.round((app.users ?? 0) * APPS.user.payPerUser);
+        const pay = userRevenue(app);
         money(s, pay, `${app.name} · ${app.users} users`);
         app.users = Math.round((app.users ?? 0) * (1 + APPS.user.growthPerDay));
         app.brokenDays = 0;

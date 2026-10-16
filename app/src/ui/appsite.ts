@@ -9,6 +9,7 @@ import type { AppTemplate } from '../content/schema';
 import { menuDishes, misspell, WRONG_HOURS } from '../engine/restaurant';
 import { crawl, autoBuys, portfolio, START_PORTFOLIO, type MarketPost, type Portfolio } from '../engine/crawler';
 import { machineRows } from '../engine/laundromat';
+import { adHtml } from './ads';
 import { dateShort, clockTime } from '../engine/calendar';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
@@ -235,7 +236,9 @@ function laundromat(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
     const cards = rows.map((m) => `<div class="as-l-m ${m.raw == null ? m.status : 'raw'}"><b>M${m.id}</b><span>${m.raw == null ? MACHINE_LABEL[m.status] : `Status: ${m.raw}`}</span>${m.minutes != null ? `<small>${m.minutes} min left</small>` : ''}</div>`).join('');
     body = `<div class="as-l-grid${broken ? ' broken' : ''}">${cards}</div><p class="as-l-upd">Updated ${dateShort(dataDay)}, ${clockTime(dataMin)}</p>`;
   }
-  return `<div class="as as-l">${head}<main>${body}</main></div>`;
+  // the app pays for itself with ads: one across the top, one under the machines
+  const day0 = extras.day ?? 1;
+  return `<div class="as as-l">${head}<main>${adHtml('spincycle-app', day0, 'wide')}${body}${adHtml('spincycle-app', day0, 'wide', 1)}</main></div>`;
 }
 
 // ── generic fallback ──

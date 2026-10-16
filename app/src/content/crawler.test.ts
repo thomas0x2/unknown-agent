@@ -6,7 +6,7 @@
 import { describe, it, expect } from 'vitest';
 import { loadContent } from './load';
 import { startGame } from '../engine/day';
-import { promptAgent } from '../engine/actions';
+import { promptAgent, postToY, writeReview } from '../engine/actions';
 import { applyEffects } from '../engine/effects';
 import { getApp, nameUnnamedBugs, bugsOf } from '../engine/apps';
 import { offlineJev } from '../engine/jev';
@@ -179,6 +179,24 @@ describe('Spin Cycle Status', () => {
     expect(rows(5, 'still_eight')).toHaveLength(8);
     expect(rows(5)).toHaveLength(12);
     expect(rows(5, 'new_always_free').filter((m) => m.id > 8).every((m) => m.status === 'free')).toBe(true);
+  });
+
+  it('one post about the live app on Y and one on Yowl each bring users, once per platform', async () => {
+    const { s, id } = appFor('laundromat_contact', 3);
+    const app = getApp(s, id)!;
+    app.deployed = true;
+    s.values.followers = 400;
+    const before = app.users!;
+    let st = (await postToY(s, offlineJev, 'Built Spin Cycle Status so you can see which machines are free.', [])).state;
+    const afterY = getApp(st, id)!.users!;
+    expect(afterY).toBe(before + Math.round(st.values.followers * 0.15));
+    st = (await postToY(st, offlineJev, 'Spin Cycle Status again, still free machines.', [])).state;
+    expect(getApp(st, id)!.users).toBe(afterY);
+    st = (await writeReview(st, content, offlineJev, 'spincycle', 4, 'Use spin-cycle-status.forkyard.app before you walk over.')).state;
+    expect(getApp(st, id)!.users).toBe(afterY + 30);
+    // a post that doesn't mention it does nothing
+    const other = (await postToY(s, offlineJev, 'Rent is due again.', [])).state;
+    expect(getApp(other, id)!.users).toBe(before);
   });
 
   it('asking the agent starts the app and builds it, no email needed', async () => {

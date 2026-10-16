@@ -9,7 +9,7 @@
 import type { GameState, AppInstance } from './state';
 import type { Content, GameEvent, Contact, Outcome, AppTemplate, ScriptedReply } from '../content/schema';
 import type { JevRouter, PostRating, RouteDecision } from './jev';
-import { Y as YCFG, FAMILY } from './config';
+import { Y as YCFG, FAMILY, APPS } from './config';
 import { clone, addValue, log, pick, tick, money, pushMail, sendLater } from './core';
 import { applyEffects } from './effects';
 import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent';
@@ -367,6 +367,24 @@ function recentPrompts(s: GameState, n = 6): string[] {
 const BUILD_ASK = /\b(build|make|create|code|write|develop|set up|turn|visuali[sz]e|app|site|page|dashboard)\b/i;
 
 /** The agent-started user app this prompt asks for, if it's on offer and not taken yet. */
+/**
+ * A post that names a live user app brings it users, once per platform: the first Y post and the
+ * first Yowl review about it. Returns the apps it boosted.
+ */
+export function promoteApps(s: GameState, platform: 'y' | 'yowl', text: string): string[] {
+  const out: string[] = [];
+  for (const a of s.apps) {
+    if (a.kind !== 'user' || !a.deployed || a.churned || a.promoted?.includes(platform)) continue;
+    if (!namesApp(a, text) && !text.toLowerCase().includes(a.url)) continue;
+    const add = platform === 'y' ? Math.max(APPS.user.promoY.min, Math.round(s.values.followers * APPS.user.promoY.followerShare)) : APPS.user.promoYowl;
+    a.users = (a.users ?? 0) + add;
+    (a.promoted ??= []).push(platform);
+    log(s, `${a.name}: +${add} users from your ${platform === 'y' ? 'Y post' : 'Yowl review'}.`, 'info');
+    out.push(a.id);
+  }
+  return out;
+}
+
 export function agentStartFor(s: GameState, content: Content, text: string): { ev: GameEvent; outcome: Outcome } | undefined {
   for (const ev of content.events) {
     if (!ev.agentStart || s.fired.includes(ev.id) || s.apps.some((a) => a.clientEventId === ev.id)) continue;
@@ -525,6 +543,7 @@ export async function postToY(
   s.recentPosts = [text, ...s.recentPosts].slice(0, 5);
   s.userPosts.push({ id: `u${s.userPosts.length + 1}`, text, day: s.values.day, likes: Math.max(0, delta * 3 + Math.round(s.values.followers * 0.02)), delta, score: rating.quality * 4 });
   log(s, `Posted on Y (${rating.category}): ${delta >= 0 ? '+' : ''}${delta} followers.`, 'info');
+  promoteApps(s, 'y', text);
   return { state: s, rating, followerDelta: delta };
 }
 
@@ -550,6 +569,7 @@ export async function writeReview(
       if (o) { applyEffects(s, o.effects, ev.job, ev.id); s.fired.push(ev.id); }
     }
   }
+  promoteApps(s, 'yowl', text);
   tick(s, 'review');
   log(s, `Posted a Yowl review.`, 'info');
   return { state: s, posted: true };
