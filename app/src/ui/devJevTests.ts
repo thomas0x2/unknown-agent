@@ -83,17 +83,19 @@ function caseHtml(c: JevTestCase, i: number): string {
 /** Rows are the path-step threshold, columns the part threshold; each cell is how many cases pass. */
 function gridHtml(): string {
   if (!sweep) return '';
-  const best = Math.max(...sweep.map((c) => c.passed));
+  // Thomas would rather Jev be too loose than too strict, and a wrong kind of reply is worst
+  const cost = (c: SweepCell) => c.loose + 2 * c.strict + 3 * c.other;
+  const best = Math.min(...sweep.map(cost));
   const head = `<tr><th>path ↓ part →</th>${SWEEP.map((b) => `<th>${b.toFixed(1)}</th>`).join('')}</tr>`;
   const rows = SWEEP.map((step) => `<tr><th>${step.toFixed(1)}</th>${SWEEP.map((component) => {
     const c = sweep!.find((x) => x.bars.step === step && x.bars.component === component)!;
     const on = c.bars.step === picked.step && c.bars.component === picked.component;
-    const cls = [on ? 'on' : '', isNow(c.bars) ? 'now' : '', c.passed === best ? 'best' : ''].filter(Boolean).join(' ');
+    const cls = [on ? 'on' : '', isNow(c.bars) ? 'now' : '', cost(c) === best ? 'best' : ''].filter(Boolean).join(' ');
     return `<td class="${cls}" data-act="jevcell" data-step="${step}" data-part="${component}" title="${c.passed} pass · ${c.strict} too strict · ${c.loose} too loose · ${c.other} wrong kind">${c.passed}</td>`;
   }).join('')}</tr>`).join('');
   const sel = sweep.find((c) => c.bars.step === picked.step && c.bars.component === picked.component)!;
   return `<h3>Thresholds</h3>
-    <p class="dv-dim">Cases passing at each pair of thresholds, replayed from the same Jev answers. Outlined: the game's setting (path ${BARS_NOW.step}, part ${BARS_NOW.component}). Green: the most passes. Click a cell to see its cases below.</p>
+    <p class="dv-dim">Cases passing at each pair of thresholds, replayed from the same Jev answers. Outlined: the game's setting (path ${BARS_NOW.step}, part ${BARS_NOW.component}). Green: the fewest misses, weighting too strict twice and the wrong kind of reply three times as bad as too loose. Click a cell to see its cases below.</p>
     <table class="jt-grid">${head}${rows}</table>
     <p>At path ${sel.bars.step.toFixed(1)}, part ${sel.bars.component.toFixed(1)}: <b>${sel.passed} of ${CASES.length} pass</b>, ${sel.strict} too strict, ${sel.loose} too loose, ${sel.other} the wrong kind of reply.</p>`;
 }
