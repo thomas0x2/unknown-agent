@@ -93,6 +93,13 @@ function applyScrolls(root: HTMLElement, saved: Scrolls): void {
     const el = findScrolled(root, name); if (el) { el.scrollTop = atEnd ? el.scrollHeight : top; el.scrollLeft = left; }
   }
 }
+/** Scrolls whatever holds `el` so it sits `top` px down the screen again after a redraw moved it. */
+function keepAt(el: HTMLElement | null, top: number): void {
+  if (!el) return;
+  let box = el.parentElement;
+  while (box && !(box.scrollHeight > box.clientHeight && /auto|scroll/.test(getComputedStyle(box).overflowY))) box = box.parentElement;
+  if (box) box.scrollTop += el.getBoundingClientRect().top - top;
+}
 /** Empties a field after its text was sent, so the draft does not come back. */
 function clearField(id: string): void {
   const el = document.getElementById(id) as HTMLInputElement | null; if (el) el.value = '';
@@ -293,7 +300,8 @@ document.addEventListener('click', (e) => {
   // data-newtab with a URL opens that page in a new tab (Forkyard deployments); empty opens a blank tab
   else if (d.newtab != null) { newPageLoad(); store.navigate(d.newtab || 'newtab', true); }
   else if (d.like != null) store.like(d.like);
-  else if (d.yAll != null) store.showAllY(d.yAll !== 'hide');
+  // the Show all / Hide old posts button trades places with its twin; keep that spot where it was on screen
+  else if (d.yAll != null) { const top = t.closest('.y-more')!.getBoundingClientRect().top; store.showAllY(d.yAll !== 'hide'); keepAt($('#viewport .y-more'), top); }
   else if (d.deploy != null) { SOUND.play('deploy'); store.deploy(d.deploy); }
   else if (d.takedown != null) store.confirm('Take it offline? It counts as broken at payday.', 'Take down', () => store.takeDown(d.takedown!));
   // the cancel link opens the restaurant's cancel page in a new tab
