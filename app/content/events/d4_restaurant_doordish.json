@@ -21,16 +21,13 @@
       "client": "restaurant_contact",
       "add": [
         {
-          "id": "doordish"
-        },
-        {
-          "id": "menu",
+          "id": "doordish",
           "params": {
-            "dishes": "Margherita 12, Quattro Formaggi 15, Pizza Funghi 13, Tiramisu 8, Espresso 3.5"
+            "address": "14 Alder St"
           }
         }
       ]
     }
   },
-  "body": "Add Pizza Funghi at 13, drop Lasagne, Tiramisu now 8. And list us on DoorDish with the same menu, prices, hours and address. Orders must reach me."
+  "body": "People keep asking if we deliver. Now we do. Please put us on DoorDish with the same menu and hours as the site, and our address, 14 Alder St."
 }
