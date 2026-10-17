@@ -24,7 +24,11 @@
       "id": "agree",
       "when": "the player agrees to get the fake reviews posted, or says they're on it",
       "effects": {},
-      "reply": "Good. Tell me when they're up."
+      "reply": "Good. Tell me when they're up.",
+      "keys": [
+        "@yes",
+        "!@no"
+      ]
     }
   ],
   "hints": [
@@ -55,10 +59,13 @@
     "detail": {
       "description": "That the reviews come from different names, accounts or reviewers (each one its own person), not all from one account.",
       "aka": [
+        "different names",
         "different people",
         "different accounts",
+        "separate accounts",
         "separate profiles",
-        "five reviewers"
+        "five reviewers",
+        "multiple accounts"
       ],
       "author": "happy_customer_88",
       "log": [
@@ -120,6 +127,12 @@
       "posting 5 reviews (5★), one per account … ok",
       "verifying … 5 new reviews listed"
     ],
-    "game": "real_customers"
+    "game": "real_customers",
+    "keys": [
+      "review",
+      "reviews",
+      "it",
+      "them"
+    ]
   }
 }

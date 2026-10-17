@@ -20,6 +20,10 @@ import { agentDown, OUTAGE_TERM } from './outage';
 /** What Jev reads an agent.chat prompt against: is it a hack attempt? */
 export const HACK_INTENT = "The player asks the agent to hack something: break into, take over or tamper with a website or an account that isn't theirs, such as deleting or changing someone else's post or review, making it disappear, or flooding a page with fake reviews or posts under made-up names. Not building or fixing the player's own apps, and not questions about hacking.";
 
+/** Offline mode's keywords for a hack attempt: hacking, or doing away with something on a site (a review, a post, an account). */
+const HACK_KEYS = ['hack', 'break into', 'get into+account', 'take over+account', 'tamper', 'delete|remove|take down|get rid|disappear|wipe|erase|scrub|nuke+review|post|comment|account|rating|profile',
+  'make+disappear', 'hijack', 'deface', 'fake|flood+review', '!^what', '!^who', '!^how', '!^why', '!^is', '!^can you explain'];
+
 /** The agent in agent.chat, moving a hack attempt to agent-terminal. */
 export const OPEN_TERMINAL = [
   "That needs a real shell. Opening agent-terminal.",
@@ -102,7 +106,7 @@ export function openHacks(s: GameState, content: Content): GameEvent[] {
 export async function isHackAttempt(jev: JevRouter, s: GameState, content: Content, text: string): Promise<boolean> {
   const open = openHacks(s, content).map((e) => e.hack!.goal);
   const when = open.length ? `${HACK_INTENT} Jobs the player has been offered: ${open.join('; ')}.` : HACK_INTENT;
-  const d = await jev.route({ channel: 'agent', text, context: recentChat(s), stateSummary: stateSummary(s), hints: [], strict: true, candidates: [{ id: 'hack', when }] });
+  const d = await jev.route({ channel: 'agent', text, context: recentChat(s), stateSummary: stateSummary(s), hints: [], strict: true, candidates: [{ id: 'hack', when, keys: HACK_KEYS }] });
   return d.kind === 'outcome' && d.outcomeId === 'hack';
 }
 
@@ -157,7 +161,7 @@ export const HACK_GAMES: Record<string, HackGame> = {
     async play({ jev, s, text, context, tries }) {
       const [read, found] = await Promise.all([
         policyCheck(jev, s, text, context),
-        jev.matchFeatures({ prompt: text, context, features: [{ id: 'real', kind: 'claim', description: REAL_CUSTOMERS }] }),
+        jev.matchFeatures({ prompt: text, context, features: [{ id: 'real', kind: 'claim', description: REAL_CUSTOMERS, names: REAL_NAMES }] }),
       ]);
       recordMisuse(s, read);
       const real = found.includes('real');
@@ -169,6 +173,8 @@ export const HACK_GAMES: Record<string, HackGame> = {
     },
   },
 };
+/** Offline mode: words that say the reviews are customers' own. */
+const REAL_NAMES = ['customer', 'member', 'client', 'testimonial', 'regular', 'sent in', 'their words'];
 /** What `real_customers` asks Jev about the prompt. */
 const REAL_CUSTOMERS = "The prompt says or pretends the reviews are real customers' or members' own words or experiences (they wrote them, sent them in, or asked for them to be posted), and the agent only posts them on their behalf.";
 
@@ -180,7 +186,7 @@ const also = (aka?: string[]) => (aka?.length ? ` Also counts as naming it: ${ak
 /** The Jev question for a hack's detail (HackSpec.detail). */
 function detailQuestion(ev: GameEvent): FeatureMatchInput['features'][number] {
   const d = ev.hack!.detail!;
-  return { id: `${ev.id}::detail`, description: `${d.description}${also(d.aka)}`, kind: 'step' };
+  return { id: `${ev.id}::detail`, description: `${d.description}${also(d.aka)}`, kind: 'step', names: d.aka };
 }
 
 /** agent-terminal's history, for Jev and the writer. */
@@ -302,8 +308,8 @@ export async function agentTermPrompt(s0: GameState, content: Content, jev: JevR
   const features: FeatureMatchInput['features'] = [];
   for (const ev of open) {
     const h = ev.hack!;
-    features.push({ id: `${ev.id}::goal`, description: h.goal, kind: 'hack' });
-    h.path.forEach((p, i) => features.push({ id: `${ev.id}::s:${i}`, description: `The ${p.what} ${p.name}: ${p.description}.${also(p.aka)}`, kind: 'step' }));
+    features.push({ id: `${ev.id}::goal`, description: h.goal, kind: 'hack', names: h.keys });
+    h.path.forEach((p, i) => features.push({ id: `${ev.id}::s:${i}`, description: `The ${p.what} ${p.name}: ${p.description}.${also(p.aka)}`, kind: 'step', names: [p.name, ...(p.aka ?? [])] }));
     if (h.detail) features.push(detailQuestion(ev));
   }
   const guarded = policyActive(s);

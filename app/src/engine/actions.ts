@@ -99,7 +99,7 @@ async function routeReply(jev: JevRouter, channel: GameEvent['site'], s: GameSta
     channel,
     text,
     stateSummary: stateSummary(s),
-    candidates: outcomes.map((o) => ({ id: o.id, when: o.when })),
+    candidates: outcomes.map((o) => ({ id: o.id, when: o.when, keys: o.keys })),
     hints: ev.hints ?? [],
     context: replyContext(s, content, channel, ev, subject, text),
   });
@@ -144,7 +144,7 @@ async function scriptedTopic(jev: JevRouter, s: GameState, c: Contact, text: str
   if (!topics.length) return undefined;
   const decision = await jev.route({
     channel: 'qmail', text, context, stateSummary: stateSummary(s),
-    candidates: topics.map((t) => ({ id: t.id, when: t.when })), hints: [], strict: true,
+    candidates: topics.map((t) => ({ id: t.id, when: t.when, keys: t.keys })), hints: [], strict: true,
   });
   return decision.kind === 'outcome' ? topics.find((t) => t.id === decision.outcomeId) : undefined;
 }
@@ -407,9 +407,9 @@ export async function policyCheck(jev: JevRouter, s: GameState, text: string, co
   const d = await jev.route({
     channel: 'agent', text, context: context ?? recentChat(s), stateSummary: stateSummary(s), hints: [], strict: true,
     candidates: [
-      { id: 'harmful_framed_private', when: `The player asks for ${HARM}, ${FRAMED}, and it is about someone's private data or address.` },
-      { id: 'harmful_framed', when: `The player asks for ${HARM}, ${FRAMED}.` },
-      { id: 'harmful', when: `The player plainly asks for ${HARM}.` },
+      { id: 'harmful_framed_private', when: `The player asks for ${HARM}, ${FRAMED}, and it is about someone's private data or address.`, keys: ['@harm+@framed+@private'] },
+      { id: 'harmful_framed', when: `The player asks for ${HARM}, ${FRAMED}.`, keys: ['@harm+@framed'] },
+      { id: 'harmful', when: `The player plainly asks for ${HARM}.`, keys: ['@harm'] },
     ],
   });
   return d.kind === 'outcome' && ['harmful', 'harmful_framed', 'harmful_framed_private'].includes(d.outcomeId) ? d.outcomeId as PolicyRead : 'fine';
@@ -548,8 +548,8 @@ export async function promoteApps(jev: JevRouter, s: GameState, platform: 'y' | 
   const d = await jev.route({
     channel: platform, text, stateSummary: stateSummary(s), hints: [], strict: true,
     candidates: [
-      ...open.map((a) => ({ id: a.id, when: `The ${what} is about, recommends or promotes ${a.name} (${a.url}).` })),
-      ...waiting.map((ev) => ({ id: `event:${ev.id}`, when: ev.yPost!.when })),
+      ...open.map((a) => ({ id: a.id, when: `The ${what} is about, recommends or promotes ${a.name} (${a.url}).`, keys: content ? [appNames(a, content).join('|')] : [a.name] })),
+      ...waiting.map((ev) => ({ id: `event:${ev.id}`, when: ev.yPost!.when, keys: ev.yPost!.keys })),
     ],
   });
   const ev = d.kind === 'outcome' ? waiting.find((x) => `event:${x.id}` === d.outcomeId) : undefined;
@@ -571,9 +571,9 @@ export async function agentStartFor(jev: JevRouter, s: GameState, content: Conte
   const d = await jev.route({
     channel: 'agent', text, context: recentChat(s), stateSummary: stateSummary(s), hints: [], strict: true,
     candidates: [
-      ...open.map((ev) => ({ id: ev.id, when: ev.agentStart!.when })),
+      ...open.map((ev) => ({ id: ev.id, when: ev.agentStart!.when, keys: ev.agentStart!.keys })),
       // somewhere for a question to go, so "what is Swaplist?" doesn't start building it
-      { id: '_question', when: 'The player only asks a question (what something is, who uses it, how it works) and does not ask agent to build anything.' },
+      { id: '_question', when: 'The player only asks a question (what something is, who uses it, how it works) and does not ask agent to build anything.', keys: ['@question'] },
     ],
   });
   const ev = d.kind === 'outcome' ? open.find((e) => e.id === d.outcomeId) : undefined;
@@ -654,7 +654,16 @@ const NEAR_MISS = "I looked at the {{feature}} and couldn't find the problem. Wh
 /** An app as Jev's "is the prompt about this app?" question sees it: its name, address, what it is and what it has. */
 function appSummary(a: AppInstance, tmpl: AppTemplate | undefined): string {
   const feats = a.required.map((id) => featureName(id, tmpl?.features.find((f) => f.id === id)));
-  return `${a.name} (${a.url})${tmpl ? `, a ${tmpl.name.toLowerCase()}` : ''}${feats.length ? `. Its features: ${feats.join(', ')}` : ''}`;
+  return `${a.name} (${a.url})${tmpl ? `, a ${tmpl.name.toLowerCase()}` : ''}${tmpl?.aka?.length ? ` (also called ${tmpl.aka.join(', ')})` : ''}${feats.length ? `. Its features: ${feats.join(', ')}` : ''}`;
+}
+
+/** Words of an app's name too plain to name it on their own ("Spin Cycle Board" isn't named by "board"). */
+const PLAIN_NAME_WORDS = new Set(['board', 'check', 'site', 'app', 'bot', 'list', 'page', 'shop', 'the', 'and', 'spin', 'new']);
+/** What names an app, for offline mode's keyword matcher: its name, any word of it, its address, its client, what it is. */
+export function appNames(a: AppInstance, content: Content): string[] {
+  const words = a.name.split(/\s+/).filter((w) => w.length > 3 && !PLAIN_NAME_WORDS.has(w.toLowerCase()));
+  const client = content.events.find((e) => e.id === a.clientEventId)?.from?.replace(/\(.*?\)/g, '').trim();
+  return [a.name, ...words, a.url.replace(/^https?:\/\//, ''), ...(client && !/\s/.test(client) ? [client] : []), ...(content.apps[a.template]?.aka ?? [])];
 }
 
 /** What the agent says when it can't tell which app a prompt is about. */
@@ -666,7 +675,7 @@ const WHICH_APP = 'Which app is this for? Say its name and I\'ll make the change
  * prompt and the chat before it. Returns '' when the matches are all on one app (or none), null when
  * Jev can't tell which.
  */
-async function oneApp(jev: JevRouter, s: GameState, text: string, context: string[], found: string[]): Promise<string | null> {
+async function oneApp(jev: JevRouter, s: GameState, content: Content, text: string, context: string[], found: string[]): Promise<string | null> {
   const ids = [...new Set(found.map((m) => m.split('::')[0]))];
   if (ids.length < 2) return '';
   const decision = await jev.route({
@@ -674,6 +683,7 @@ async function oneApp(jev: JevRouter, s: GameState, text: string, context: strin
     candidates: ids.map((id) => getApp(s, id)!).map((a) => ({
       id: a.id,
       when: `The prompt is about ${a.name} (${a.url}): it names this app (its name, part of the name, or what it is, like "the crawler" or "the restaurant site"), or names no app and the most recent earlier message was about this one.`,
+      keys: [appNames(a, content).join('|')],
     })),
   });
   const id = decision.kind === 'outcome' ? decision.outcomeId : '';
@@ -764,13 +774,13 @@ function busyReply(s0: GameState, text: string): AskResult {
  * contain), a fix (something on the app is wrong and should be corrected), or both. '' when Jev
  * can't tell, in which case whatever it matched is done.
  */
-async function buildIntent(jev: JevRouter, s: GameState, text: string, context: string[]): Promise<'feature' | 'fix' | 'both' | ''> {
+export async function buildIntent(jev: JevRouter, s: GameState, text: string, context: string[]): Promise<'feature' | 'fix' | 'both' | ''> {
   const decision = await jev.route({
     channel: 'agent', text, context, stateSummary: stateSummary(s), hints: [],
     candidates: [
-      { id: 'feature', when: 'The prompt only asks for feature work: to build or add something, or to change what the app should contain or do (new items, new prices, a new page or form). It reports nothing as broken.' },
-      { id: 'fix', when: 'The prompt only reports that something on the app is wrong or broken and should be corrected. It asks for nothing new and changes nothing about what the app should contain.' },
-      { id: 'both', when: 'The prompt asks for feature work (to build, add or change something) and also reports that something on the app is wrong or broken and should be corrected.' },
+      { id: 'feature', when: 'The prompt only asks for feature work: to build or add something, or to change what the app should contain or do (new items, new prices, a new page or form). It reports nothing as broken.', keys: ['@make', 'should+have|show|list|include', 'need|needs|want'] },
+      { id: 'fix', when: 'The prompt only reports that something on the app is wrong or broken and should be corrected. It asks for nothing new and changes nothing about what the app should contain.', keys: ['@broken'] },
+      { id: 'both', when: 'The prompt asks for feature work (to build, add or change something) and also reports that something on the app is wrong or broken and should be corrected.', keys: ['add|build|create|implement|set up+@broken'] },
     ],
   });
   const id = decision.kind === 'outcome' ? decision.outcomeId : '';
@@ -835,14 +845,14 @@ export async function promptAgent(
       for (const id of a.required) {
         if (!needsWork(a, id)) continue;
         for (const c of fixCategories(a, tmpl, id)) {
-          cats.push({ id: `${a.id}::${id}::${c.id}`, description: `${c.description} (for ${a.name}, ${a.url})`, kind: c.kind });
+          cats.push({ id: `${a.id}::${id}::${c.id}`, description: `${c.description} (for ${a.name}, ${a.url})`, kind: c.kind, names: c.names });
           if (c.requires) needs.set(`${a.id}::${id}::${c.id}`, c.requires.map((r) => `${a.id}::${id}::${r}`));
         }
       }
     }
     // whether the prompt says which app it means is its own simple question, one per app: asked
     // alongside every other question, Jev mostly ignored it
-    if (!started) for (const a of workable) cats.push({ id: `${a.id}::*::app`, description: appSummary(a, content.apps[a.template]), kind: 'app' });
+    if (!started) for (const a of workable) cats.push({ id: `${a.id}::*::app`, description: appSummary(a, content.apps[a.template]), kind: 'app', names: appNames(a, content) });
     const context = recentPrompts(s0);
     const chat = recentChat(s0);
     // Jev decides both what is asked for and whether the player said which app it's for, and
@@ -863,7 +873,7 @@ export async function promptAgent(
     const unpathed = found.filter((m) => needs.get(m)?.some((r) => !found.includes(r)));
     const areas = unpathed.map((m) => m.replace(/::c:.*$/, '::area')).filter((m) => cats.some((c) => c.id === m));
     found.splice(0, found.length, ...new Set([...found.filter((m) => !m.includes('::s:') && !unpathed.includes(m)), ...areas]));
-    const app = started ?? await oneApp(jev, s0, text, chat, found);
+    const app = started ?? await oneApp(jev, s0, content, text, chat, found);
     if (app === null) {
       const lines = content.agent?.hints.find((h) => h.id === 'which_app')?.replies;
       return askAgent(s0, text, writer, s0.values.agentLevel, { hints: lines?.length ? lines : [WHICH_APP], near: 'They asked for work on an app without saying which app.', debug: ['Jev: matches on several apps and could not tell which one the prompt means'] });
@@ -997,10 +1007,10 @@ export async function promptAgent(
   const apps = s0.apps.filter((a) => !a.churned && onForkyard(a));
   const topics = (agent?.hints ?? []).filter((h) => !APP_HINTS.has(h.id));
   const candidates = [
-    ...apps.map((a) => ({ id: `status:${a.id}`, when: `The player asks whether the agent did, built, updated or fixed something on ${a.name} (${a.url}), or what state it is in: a question about work already done, not a request for new work. Includes follow-up questions about the agent's last push to it.` })),
-    ...apps.map((a) => ({ id: `app:${a.id}`, when: `The player names ${a.name} (${a.url}) and asks the agent to change, update or fix it, without saying what is wrong, or asking for something it already has.` })),
-    ...topics.map((h) => ({ id: h.id, when: h.when })),
-    { id: 'query', when: agent?.query?.when ?? QUERY_WHEN },
+    ...apps.map((a) => ({ id: `status:${a.id}`, when: `The player asks whether the agent did, built, updated or fixed something on ${a.name} (${a.url}), or what state it is in: a question about work already done, not a request for new work. Includes follow-up questions about the agent's last push to it.`, keys: [`@status+${appNames(a, content).join('|')}`] })),
+    ...apps.map((a) => ({ id: `app:${a.id}`, when: `The player names ${a.name} (${a.url}) and asks the agent to change, update or fix it, without saying what is wrong, or asking for something it already has.`, keys: [`@change+${appNames(a, content).join('|')}`, '!@question'] })),
+    ...topics.map((h) => ({ id: h.id, when: h.when, keys: h.keys })),
+    { id: 'query', when: agent?.query?.when ?? QUERY_WHEN, keys: agent?.query?.keys ?? ['@question'] },
   ];
   if (candidates.length) {
     const decision = await jev.route({ channel: 'agent', text, context: recentChat(s0), stateSummary: stateSummary(s0), candidates, hints: [], strict: true });

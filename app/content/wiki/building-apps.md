@@ -4,6 +4,7 @@ aliases: how to build apps, how to make apps, building apps, making apps, gettin
 category: apps
 from: 1
 summary: How the game works: how to make money by building apps with agent, finding clients, fixing bugs, deploying on Forkyard, hosting costs, overnight breaks and getting paid.
+keys: what should i do, what do i do, what now, next step, clients, find work, find clients
 ---
 
 [public] [[The player]] earns money by finding people who need an app (mostly on Y), prompting [[agent]] to build it, checking what agent actually shipped on the live site, and deploying from [[Forkyard]]. There are two kinds of app: client apps, where a client pays a daily rate, and user apps, which earn from ads per user.

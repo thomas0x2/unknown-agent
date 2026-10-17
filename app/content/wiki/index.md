@@ -82,7 +82,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[prince-claims.xyz]] (prince-claims.md): prince-claims.xyz is the site behind the Crypto Prince banner ad ("CONGRATS!!!
 - [[Qdrive]] (qdrive.md): Qdrive (qdrive.com) is the player's cloud drive, with Documents, Projects and Models folders
 - [[Qmail]] (qmail.md): Qmail (qmail.com) is the player's email, you@qmail.com
-- [[Sherwood]] (sherwood.md): Sherwood (sherwood.com) is a stock trading app, white with black type and one green, bookmarked from the start
+- [[Sherwood]] (sherwood.md): Sherwood (sherwood.com) is a stock trading app, white with black type and one green, bookmarked after the first visit
 - [[SorryWriter]] (sorrywriter.md): SorryWriter (sorrywriter.ai) is an apology chat laid out like agent.chat, with a logo of an envelope sealed with a pink tear
 - [[Spin Cycle feed]] (spin-cycle-feed.md): The Spin Cycle feed (spincycle.test/feed) is Spin Cycle Laundry's raw machine status page, linked from spincycle.test as "Live machine…
 - [[Terminal]] (terminal.md): The Terminal is an app on The player's laptop, not a website: its own window with a button in the desktop taskbar next to the browser,…

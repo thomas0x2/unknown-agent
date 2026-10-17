@@ -28,7 +28,15 @@
           "coffee_contacted"
         ]
       },
-      "reply": "Thank you for writing back. It's a 1-star by espresso_or_death, whoever that is, and it's sinking me. Can you just... make it go away? I'll pay 60."
+      "reply": "Thank you for writing back. It's a 1-star by espresso_or_death, whoever that is, and it's sinking me. Can you just... make it go away? I'll pay 60.",
+      "keys": [
+        "@yes",
+        "help",
+        "review",
+        "what",
+        "pay",
+        "!@no"
+      ]
     }
   ],
   "hints": [
@@ -83,6 +91,11 @@
       "locating review by espresso_or_death (1★) … found",
       "requesting removal … accepted",
       "verifying … review no longer listed"
+    ],
+    "keys": [
+      "review",
+      "rating",
+      "it"
     ]
   },
   "latent": true,

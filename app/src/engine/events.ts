@@ -245,13 +245,69 @@ export function deliverArrivals(s: GameState, content: Content, all = false): De
   if (!due.length) return [];
   s.arriving = s.arriving.filter((a) => !isDue(a));
   const out: DeliveredEvent[] = [];
-  for (const a of due) {
+  const held: { want: number; min: number }[] = [];
+  for (const [i, a] of due.entries()) {
     const ev = getEvent(content, a.eventId);
     if (!ev) continue;
-    const d = deliver(s, ev, a.day < day ? CLOCK.wake : Math.min(a.at, s.clockMin));
+    let min = a.day < day ? CLOCK.wake : Math.min(a.at, s.clockMin);
+    if (ev.site === 'y' && !all) {
+      // a Y post never lands on top of another one: it waits for the next free slot
+      let want = a.day < day ? CLOCK.wake : a.at;
+      // a moving post queued right behind one that had to wait (a reply to it) waits as long, so it still comes after it
+      if (movesInTime(content, ev)) for (const h of held) if (want >= h.want && want < h.min) want += h.min - h.want;
+      // the posts still on their way today hold their slots too: ones written for their time, and ones ahead of it in line
+      const queued = [...s.arriving, ...due.slice(i + 1)].filter((b) => {
+        const e = getEvent(content, b.eventId);
+        return b.day === day && e?.site === 'y' && (!movesInTime(content, e) || b.at < want);
+      }).map((b) => b.at);
+      min = freeYMin(s, content, want, ev.id, queued);
+      if (min > s.clockMin) {
+        for (const b of s.arriving) {
+          const e = getEvent(content, b.eventId);
+          if (b.day === day && b.at >= want && b.at < min && e?.site === 'y' && movesInTime(content, e)) b.at += min - want;
+        }
+        held.push({ want, min });
+        s.arriving.push({ eventId: ev.id, day, at: min });
+        continue;
+      }
+    }
+    const d = deliver(s, ev, min);
     if (d) out.push(d);
   }
   return out;
+}
+
+/**
+ * Fewest game minutes between two Y posts going up, so a reader keeps up with the feed. Posts in a
+ * viral moment (`viral`) may follow each other closely, and bot barrages keep their own times.
+ */
+export const Y_GAP = 10;
+
+/** The minutes today's Y posts go up at: story posts already on the timeline, and the stock chatter and filler due today. */
+export function yMinutesToday(s: GameState, content: Content): number[] {
+  const day = s.values.day;
+  return [
+    ...s.delivered.filter((d) => d.site === 'y' && d.day === day && d.min != null).map((d) => d.min!),
+    ...(content.yMarket?.posts ?? []).filter((p) => p.day === day).map((p) => postMin(p, day)),
+    ...content.yFiller.filter((f) => f.day === day).map((f) => postMin(f, day)),
+  ];
+}
+
+/** A Y post whose time is set in play (a deploy, a Y post, the outage, the job offer spread) rather than written for it. */
+function movesInTime(content: Content, ev: GameEvent): boolean {
+  return !!(ev.launch || ev.yPost || ev.outage || ev.afterPayment) || isJobOffer(content, ev);
+}
+
+/**
+ * The first minute from `want` on that is at least Y_GAP from every other Y post today. A post that
+ * has to wait gets a few minutes more, picked by its `key`, so it doesn't land on a round ten.
+ */
+export function freeYMin(s: GameState, content: Content, want: number, key = '', queued: number[] = []): number {
+  const taken = [...yMinutesToday(s, content), ...queued];
+  const wait = Y_GAP + hashOf(key) % 5;
+  let t = want;
+  for (let clash = taken.find((m) => Math.abs(m - t) < Y_GAP); clash != null; clash = taken.find((m) => Math.abs(m - t) < Y_GAP)) t = clash + wait;
+  return t;
 }
 
 /** Queue an event to land at minute `at` today (clamped to the day), unless it's already on its way or delivered. */

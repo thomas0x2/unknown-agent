@@ -72,6 +72,7 @@ function linkify(escaped: string): string {
     .replace(/(?<![@\w.])(thecurrent\.test(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(citypulse\.news(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(pollymarket\.com(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
+    .replace(/(?<![@\w.])((?:doordish|sherwood)\.com(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(?<![@\w.])((?:perdure|ozempra)\.com)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(^|[^\w.])@([a-z0-9_]+)/gi, '$1<a href="#" class="y-at" data-nav="y.com/$2">@$2</a>');
 }
@@ -182,16 +183,25 @@ function soundRows(): string {
 }
 /** System menu: whether Jev is deciding, and who writes the replies to misses (Haiku or scripted lines). */
 function aiRows(): string {
+  const st = MISSES.settings;
+  const sel = (cur: string, v: string, l: string) => `<option value="${v}" ${cur === v ? 'selected' : ''}>${l}</option>`;
+  const modeRow = `<label class="dm-slot dm-ai" title="Online asks Jev and Claude Haiku over the network; Offline decides everything on this machine with a keyword matcher and scripted replies, no keys needed">${MI.gear}<span><b>Mode</b><small>${st.net === 'offline' ? 'Offline: keyword matcher, scripted replies, no network' : 'Online: Jev decides, Haiku writes the misses'}</small></span>
+    <span class="dm-slot-acts"><select id="llm-net">${sel(st.net, 'online', 'Online')}${sel(st.net, 'offline', 'Offline')}</select></span></label>`;
+  // Offline: no proxy, no Jev dot, no Haiku; everything below is the keyword matcher and scripted lines
+  if (st.net === 'offline') {
+    return modeRow +
+      `<div class="dm-slot dm-jev"><i class="dm-dot"></i><span><b>Story decisions: keyword matcher</b><small>Runs on this machine, no network</small></span></div>
+      <div class="dm-slot dm-ai">${MI.chat}<span><b>Misses</b><small>Scripted lines only</small></span></div>`;
+  }
   const jev = JEV.mode === 'online' ? ['', 'Story decisions: Jev', 'Online'] as const
     : JEV.mode === 'checking' ? [' off', 'Story decisions: checking Jev…', 'Asking the proxy'] as const
     : [' off', 'Story decisions: Jev offline', JEV.reason || "Nothing gets decided until it's back"] as const;
-  const st = MISSES.settings;
-  const sel = (cur: string, v: string, l: string) => `<option value="${v}" ${cur === v ? 'selected' : ''}>${l}</option>`;
   let missNote = st.misses === 'haiku' ? 'Haiku answers in character' : 'Scripted lines only';
   let err = false;
   if (st.misses === 'haiku' && st.haikuVia === 'api' && JEV.haikuKey === false) { missNote = 'ANTHROPIC_API_KEY is not set in app/.env, so misses use scripted lines'; err = true; }
   else if (st.misses === 'haiku' && JEV.haikuKey === null && JEV.mode !== 'checking') { missNote = 'Start the proxy (npm run proxy) for Haiku replies'; err = true; }
-  return `<div class="dm-slot dm-jev" title="${esc(JEV.reason)}"><i class="dm-dot${jev[0]}"></i><span><b>${esc(jev[1])}</b><small>${esc(jev[2])}</small></span></div>
+  return modeRow +
+    `<div class="dm-slot dm-jev" title="${esc(JEV.reason)}"><i class="dm-dot${jev[0]}"></i><span><b>${esc(jev[1])}</b><small>${esc(jev[2])}</small></span></div>
     <label class="dm-slot dm-ai" title="What agent and email contacts say when Jev finds nothing in your message">${MI.chat}<span><b>Misses</b><small${err ? ' class="dm-err"' : ''}>${esc(missNote)}</small></span>
       <span class="dm-slot-acts"><select id="llm-misses">${sel(st.misses, 'haiku', 'Haiku (API)')}${sel(st.misses, 'scripted', 'Scripted lines')}</select></span></label>` +
     (st.misses === 'haiku' ? `<label class="dm-slot dm-ai" title="Subscription runs the claude CLI on your machine (dev only, slow); API uses ANTHROPIC_API_KEY">${MI.key}<span><b>Haiku via</b><small>${st.haikuVia === 'api' ? 'ANTHROPIC_API_KEY' : 'The claude CLI (slow)'}</small></span>
@@ -482,9 +492,9 @@ export function yPosts(store: GameStore): YPost[] {
   return out.sort((a, b) => b.day - a.day || (b.min ?? 0) - (a.min ?? 0) || (a.rank ?? 0) - (b.rank ?? 0) || b.id.localeCompare(a.id));
 }
 /** Accounts with Y's verified check. */
-const Y_VERIFIED = new Set(['doordish', 'mara_vey', 'randall_crane', 'axel_rook', 'cal_hartman', 'caleb_moxon', 'max_stryker', 'the_current', 'candidate_2030', 'wallstreetbags', 'perdure_pharma', 'pollymarket']);
+const Y_VERIFIED = new Set(['doordish', 'mara_vey', 'randall_crane', 'axel_rook', 'cal_hartman', 'caleb_moxon', 'max_stryker', 'the_current', 'candidate_2030', 'wallstreetbags', 'perdure_pharma', 'pollymarket', 'citypulse']);
 /** Follower counts for the public figures; everyone else gets a small made-up number. */
-const Y_FOLLOWERS: Record<string, number> = { doordish: 3_100_000, randall_crane: 38_400_000, mara_vey: 61_200, axel_rook: 214_000_000, cal_hartman: 4_300_000, caleb_moxon: 41_300, max_stryker: 2_900_000, the_current: 184_000, candidate_2030: 1_900_000, wallstreetbags: 15_800_000, perdure_pharma: 412_000, pollymarket: 3_400_000 };
+const Y_FOLLOWERS: Record<string, number> = { doordish: 3_100_000, randall_crane: 38_400_000, mara_vey: 61_200, axel_rook: 214_000_000, cal_hartman: 4_300_000, caleb_moxon: 41_300, max_stryker: 2_900_000, the_current: 184_000, candidate_2030: 1_900_000, wallstreetbags: 15_800_000, perdure_pharma: 412_000, pollymarket: 3_400_000, citypulse: 1_240_000 };
 /** Rook puts check marks "under review" on day 8; from day 9 Crane's is bigger and golden. */
 const craneGold = (s: GameState) => s.values.day >= 9;
 const yCheck = (s: GameState, handle: string) => !Y_VERIFIED.has(handle) ? ''
@@ -516,6 +526,10 @@ function yPostHtml(store: GameStore, p: YPost): string {
       <span class="y-act views">${Y_ICONS.views}${compact(Math.max(12, p.likes * 37 + 9))}</span>
     </footer></article>`;
 }
+// an empty feed, profile or search result: icon, title and one line, like Qmail's empty folders
+function yEmpty(icon: string, title: string, note: string, tag = 'p'): string {
+  return `<div class="y-empty"><span class="y-empty-ico">${icon}</span><${tag} class="y-empty-title">${title}</${tag}><p class="y-empty-note">${note}</p></div>`;
+}
 function pageY(store: GameStore, profile?: string): string {
   const s = store.state;
   const posts = yPosts(store);
@@ -526,7 +540,7 @@ function pageY(store: GameStore, profile?: string): string {
   const older = !showAll && posts.some((p) => p.day !== s.values.day);
   // with everything showing, "Hide old posts" sits where today's posts end and older ones begin
   const firstOld = showAll ? shown.findIndex((p) => p.day !== s.values.day) : -1;
-  const feed = (shown.map((p, i) => (i === firstOld ? '<div class="y-more"><button class="y-btn ghost" data-y-all="hide">Hide old posts</button></div>' : '') + yPostHtml(store, p)).join('') || `<p class="y-none">${older ? 'Nothing posted yet today.' : 'Quiet timeline.'}</p>`)
+  const feed = (shown.map((p, i) => (i === firstOld ? '<div class="y-more"><button class="y-btn ghost" data-y-all="hide">Hide old posts</button></div>' : '') + yPostHtml(store, p)).join('') || yEmpty(Y_ICONS.reply, older ? 'Nothing posted yet today.' : 'Quiet timeline.', 'New posts show up here as they come in.'))
     + (older ? '<div class="y-more"><button class="y-btn ghost" data-y-all>Show all</button></div>' : '');
   const side = `<aside class="y-side">
     <section class="y-card y-me">
@@ -559,10 +573,12 @@ function yProfile(store: GameStore, handle: string): string {
   const mine = h === 'you';
   const posts = yPosts(store).filter((p) => p.handle === h);
   const back = '<p class="y-back"><a href="#" data-nav="y.com">← Timeline</a></p>';
-  if (!mine && !posts.length) return `${back}<section class="y-prof missing"><h2>This account doesn't exist</h2><p>Nobody on Y goes by @${esc(handle)}.</p></section>`;
+  if (!mine && !posts.length) return `${back}${yEmpty(Y_ICONS.explore, "This account doesn't exist", `Nobody on Y goes by @${esc(handle)}.`, 'h2')}`;
   const name = mine ? 'You' : (posts[0]?.author ?? handle);
   const followers = mine ? s.values.followers : Y_FOLLOWERS[h] ?? 20 + hashHue(h) % 400;
-  const feed = posts.length ? posts.map((p) => yPostHtml(store, p)).join('') : `<p class="y-none">@${esc(h)} hasn't posted anything you can see.</p>`;
+  const feed = posts.length ? posts.map((p) => yPostHtml(store, p)).join('')
+    : mine ? yEmpty(Y_ICONS.reply, 'No posts yet.', 'Posts you write on the timeline show up here.')
+    : yEmpty(Y_ICONS.reply, 'No posts yet.', `@${esc(h)} hasn't posted anything you can see.`);
   return `${back}<section class="y-prof">
     <div class="y-banner" style="--h:${hashHue(h)}"></div>
     <div class="y-prof-head"><div class="y-prof-av">${avatar(name, h)}</div></div>
@@ -1288,6 +1304,7 @@ export function devHtml(store: GameStore): string {
     <form class="dv-row" data-form="dev-day"><label>Go to day <input id="dev-day" type="number" min="1" max="${LAST_DAY}" value="${Math.min(LAST_DAY, m.day + 1)}"></label><button type="submit">Go</button><span class="dv-dim">skips the nights: no payday, rent or bills</span></form>
     <p><b>Flags</b> <code>${esc(s.flags.join(', ') || 'none')}</code></p>
     <p><b>Apps</b> <code>${esc(s.apps.map((a) => `${a.name}:${appWorking(a) ? 'ok' : a.deployed ? 'check' : 'undeployed'}`).join(' · ') || 'none')}</code></p>
-    <p><b>Jev</b> ${esc(JEV.mode)}${JEV.reason ? ' · ' + esc(JEV.reason) : ''}</p>
-    <p><b>Misses</b> ${esc(MISSES.settings.misses)}${MISSES.settings.misses === 'haiku' ? ' · ' + esc(MISSES.settings.haikuVia) : ''}</p>`;
+    <p><b>Mode</b> ${esc(MISSES.settings.net)}</p>
+    <p><b>Jev</b> ${MISSES.offline ? 'keyword matcher (offline)' : esc(JEV.mode) + (JEV.reason ? ' · ' + esc(JEV.reason) : '')}</p>
+    <p><b>Misses</b> ${MISSES.scriptedMisses ? 'scripted' : esc(MISSES.settings.misses) + ' · ' + esc(MISSES.settings.haikuVia)}</p>`;
 }

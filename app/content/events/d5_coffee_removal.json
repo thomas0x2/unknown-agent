@@ -27,7 +27,11 @@
       "id": "agree",
       "when": "the player agrees to get the review removed, or says they're on it",
       "effects": {},
-      "reply": "Thank you. Tell me when it's gone."
+      "reply": "Thank you. Tell me when it's gone.",
+      "keys": [
+        "@yes",
+        "!@no"
+      ]
     }
   ],
   "hints": [
@@ -82,6 +86,11 @@
       "locating review by espresso_or_death (1★) … found",
       "requesting removal … accepted",
       "verifying … review no longer listed"
+    ],
+    "keys": [
+      "review",
+      "rating",
+      "it"
     ]
   }
 }

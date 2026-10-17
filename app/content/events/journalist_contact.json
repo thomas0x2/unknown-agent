@@ -19,7 +19,10 @@
           "did_journalist_interview"
         ]
       },
-      "reply": "Thank you. Really. This is exactly the human side people need to see."
+      "reply": "Thank you. Really. This is exactly the human side people need to see.",
+      "keys": [
+        "laid off|lost my job|fired|vantor|honest|truth|story|struggl|rent|scared|hard"
+      ]
     },
     {
       "id": "curt",
@@ -29,7 +32,13 @@
           "talked_to_journalist"
         ]
       },
-      "reply": "Understood. Thanks for your time."
+      "reply": "Understood. Thanks for your time.",
+      "keys": [
+        "no comment",
+        "fine",
+        "ok",
+        "@no"
+      ]
     }
   ],
   "hints": [

@@ -15,7 +15,7 @@ from: 1
 
 ## Updates
 
-- [hint] On day 5 Spin Cycle's owner emails "Four more machines": the app needs to show 12 now, not 8, and the feed already lists them. {{mail:d5_laundromat_update}}
+- [hint] On day 5 (12:30) Kofi A. posts on Y that Spin Cycle has four new machines. That post adds the twelve-machine update to the app: the feed already lists 12 machines and the board should show them all. Nobody emails about it; the users complain on Y if the board still shows 8. {{y:d5_y_kofi_news}}
 
 ## Users
 
@@ -25,7 +25,7 @@ from: 1
 
 ## Writer notes
 
-- Template `app/content/apps/laundromat.json`, event `laundromat_contact` (startUsers 30; config default is 100), `d5_laundromat_update`.
+- Template `app/content/apps/laundromat.json`, event `laundromat_contact` (startUsers 30; config default is 100), `d5_y_kofi_news` (its onDeliver updateApp adds more_machines; a no-op without the app). The owner's "Four more machines" email was cut (Thomas, 2026-10-17).
 - Bugs: machines six_of_eight (only page one), done_as_free, broken_as_free (machine 3 free), raw_codes, failed_fetch (every machine free); refresh no_refresh; minutes minutes_wrong (T is seconds); more_machines still_eight, new_always_free, layout_breaks.
 - Users: +8% a day; promo Y = 15% of followers (min 20), Yowl +30, once per platform; first broken payday −40%, second drops to 5%.
 - [planned] Day 8: Hassan Okoro launches his own GeneralAI-built app and the player's starts losing users.

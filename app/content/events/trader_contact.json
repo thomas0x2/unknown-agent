@@ -8,7 +8,7 @@
     "dayMin": 2
   },
   "latent": true,
-  "body": "Spec: $GAI and $VANT. Per ticker: today's post count, bullish/bearish/neutral split, and every post it counted. No bots, no spam. Portfolio view: holdings, cash, today's change.",
+  "body": "Spec: $GAI and $VANT. Per ticker: today's post count, bullish/bearish/neutral split, and every post it counted. No bots, no spam. Portfolio view: holdings, cash, today's change. Prices have to match Sherwood (sherwood.com) or it's useless to me.",
   "outcomes": [
     {
       "id": "offer",
@@ -42,7 +42,13 @@
           ]
         }
       },
-      "reply": "Fine. Send it when it's live."
+      "reply": "Fine. Send it when it's live.",
+      "keys": [
+        "@yes",
+        "@make+bot|it|app|crawler",
+        "help",
+        "!@no"
+      ]
     }
   ],
   "hints": [

@@ -18,7 +18,17 @@
           "familyTrust": 5
         }
       },
-      "reply": "Oh good. I was worried. Call me on the weekend."
+      "reply": "Oh good. I was worried. Call me on the weekend.",
+      "keys": [
+        "love you",
+        "miss you",
+        "i am ok|i am okay|i am fine|i am alright|doing ok|doing okay|doing fine|all good|i am good",
+        "do not worry",
+        "thanks|thank you",
+        "take care",
+        "call you",
+        "!money|lend|borrow|loan"
+      ]
     },
     {
       "id": "money",
@@ -33,7 +43,11 @@
           "asked_mom_money"
         ]
       },
-      "reply": "I knew it. I sent you a little something. Don't tell your father. Buy vegetables."
+      "reply": "I knew it. I sent you a little something. Don't tell your father. Buy vegetables.",
+      "keys": [
+        "money|cash|dolr|loan|lend|borrow",
+        "send me|could you send|can you send"
+      ]
     }
   ],
   "noReply": {

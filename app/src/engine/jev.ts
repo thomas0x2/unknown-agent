@@ -10,6 +10,8 @@ export interface RouteCandidate {
   id: string;
   /** Plain-language description of what this outcome is, for Jev to match. */
   when: string;
+  /** Offline mode only: the keywords that pick it (syntax in engine/keywords.ts). Jev never sees them. */
+  keys?: string[];
 }
 
 export interface RouteInput {
@@ -56,7 +58,8 @@ export interface FeatureMatchInput {
   /** Spec features with their plain-language descriptions. */
   /** `hack` asks whether the prompt asks for that hack's job (agent-terminal). */
   /** `app` asks whether the prompt names that app (or the chat just before it did); the engine drops matches on apps it doesn't name. */
-  features: { id: string; description: string; kind?: 'build' | 'problem' | 'component' | 'area' | 'step' | 'app' | 'hack' | 'claim' | 'topic' | 'main' | 'section' }[];
+  /** `names` (offline mode only): what counts as naming it, for the keyword matcher; Jev reads the description. */
+  features: { id: string; description: string; kind?: 'build' | 'problem' | 'component' | 'area' | 'step' | 'app' | 'hack' | 'claim' | 'topic' | 'main' | 'section'; names?: string[] }[];
 }
 
 export interface JevRouter {

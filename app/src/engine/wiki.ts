@@ -47,6 +47,8 @@ export interface WikiPage {
   nest?: boolean;
   /** What the page is about, in a line, for Jev to match questions against (default: its first sentence). */
   summary?: string;
+  /** More ways a question names the page, for offline mode's keyword matcher only ("what should I do"). */
+  keys?: string[];
   sections: WikiSection[];
 }
 
@@ -111,6 +113,7 @@ export function parseWikiPage(md: string, file = ''): WikiPage {
       else if (m[1] === 'hub') page.hub = v === 'true';
       else if (m[1] === 'nest') page.nest = v === 'true';
       else if (m[1] === 'summary') page.summary = v;
+      else if (m[1] === 'keys') page.keys = v.split(',').map((a) => a.trim()).filter(Boolean);
     }
   }
   const raw: { heading: string; lines: string[] }[] = [{ heading: '', lines: [] }];
@@ -392,7 +395,7 @@ export function formatBlock(b: Pick<WikiBlock, 'rule' | 'text' | 'bullet' | 'row
 
 /** A whole page back as markdown (what the wiki editor saves). */
 export function formatWikiPage(p: WikiPage): string {
-  const fm = ['---', `title: ${p.title}`, ...(p.aliases.length ? [`aliases: ${p.aliases.join(', ')}`] : []), `category: ${p.category}`, `from: ${p.from}`, ...(p.hub ? ['hub: true'] : []), ...(p.nest ? ['nest: true'] : []), ...(p.summary ? [`summary: ${p.summary}`] : []), '---', ''];
+  const fm = ['---', `title: ${p.title}`, ...(p.aliases.length ? [`aliases: ${p.aliases.join(', ')}`] : []), `category: ${p.category}`, `from: ${p.from}`, ...(p.hub ? ['hub: true'] : []), ...(p.nest ? ['nest: true'] : []), ...(p.summary ? [`summary: ${p.summary}`] : []), ...(p.keys?.length ? [`keys: ${p.keys.join(', ')}`] : []), '---', ''];
   const out: string[] = [];
   for (const sec of p.sections) {
     const head = sec.writer ? 'Writer notes'

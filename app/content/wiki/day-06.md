@@ -34,16 +34,16 @@ from: 6
 - [public] 11:00 [[Randall Crane]]: GeneralAI ($GAI) is "an AMERICAN success story. Tremendous company. The best." {{y:d6_y_crane_gai}}
 - [public] 11:15 [[Cal Hartman]] thanks @randall_crane: "we work with leaders across the spectrum." {{y:d6_y_hartman}}
 - [public] 13:00 [[DoorDish]]: couriers never deliver orders you didn't place; if one does, "please don't eat it, and don't follow it." {{y:d6_y_doordish}}
-- [public] 13:05 [[Max Stryker]] sold his bed in 2019. {{y:d6_y_stryker}}
+- [public] 13:10 [[Max Stryker]] sold his bed in 2019. {{y:d6_y_stryker}}
 - [public] 13:35 cat_ceo's cat walked across the keyboard during a video interview, posted the clip before the call ended; "they said she seemed engaged." {{y:f6}}
-- [public] 13:40 zev.dolr: someone called it "cuck coding" instead of vibe coding. {{y:d6_y_zev}}
+- [public] 13:47 zev.dolr: someone called it "cuck coding" instead of vibe coding. {{y:d6_y_zev}}
 - [public] 14:10 [[Axel Rook]]: "The job was already gone. AI just told you." {{y:d6_y_axel}}
 - [public] 14:30 [[Tanner Hollis]], posting as "a sales rep": needs a cold-email bot for 200 leads. rep@closers.test {{y:d6_y_outreach}}
 - [public] 15:18 MarketWire: $GAI rallying after Crane's praise. {{y:m6_gai_rally}}
 - [public] 17:20 Twelve bot accounts post "$GAI to the moon!!".
 - [public] 18:28 [[WallStreetBags]] congratulates a member who sold all his $GAI on Thursday: "Flawless execution, as usual." {{y:m6_gai_late}}
 - [public] 18:50 Liftoff Daily: Apogee static fire this morning, all engines lit, "nothing came off." {{y:d6_y_liftoff}}
-- [public] 19:05 Axel Rook: "@liftoff_daily !!" {{y:d6_y_axel_2}}
+- [public] 19:14 Axel Rook: "@liftoff_daily !!" {{y:d6_y_axel_2}}
 
 ## News
 

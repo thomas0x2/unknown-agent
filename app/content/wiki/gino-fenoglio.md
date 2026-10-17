@@ -17,7 +17,7 @@ from: 1
 
 ## The website job
 
-[public] On [[Day 1]] (10:40) he posts that his nephew ran the restaurant's website, left for college and took the password with him; he wants a simple site with the menu and hours, and gives gino@trattoria.test. {{y:d1_y_restaurant}}
+[public] On [[Day 1]] (10:42) he posts that his nephew ran the restaurant's website, left for college and took the password with him; he wants a simple site with the menu and hours, and gives gino@trattoria.test. {{y:d1_y_restaurant}}
 
 - [hint] [if restaurant_client] The player took the job. His email lists what the landing page and the menu page must show, with each dish's price in DOLR. {{mail:restaurant_contact}}
 - [public] [if restaurant_client] He pays 40 DOLR a day while the [[Trattoria Gino site]] works.
@@ -36,7 +36,7 @@ from: 1
 
 ## From day 4: The DoorDish listing
 
-- [hint] [if restaurant_client] On [[Day 4]] (14:20) he asks to be put on [[DoorDish]] with the same menu and hours as the site, plus his address. His email "Get me on DoorDish" has what the listing needs. {{mail:d4_restaurant_doordish}}
+- [hint] [if restaurant_client] On [[Day 4]] (14:20) he asks to be put on [[DoorDish]] with the same menu and hours as the site, plus his address. His email "Get me on DoorDish" has what the listing needs and links doordish.com, which points out that the Golden Lotus is already listed. {{mail:d4_restaurant_doordish}}
 - [public] [if restaurant_client] Once the listing is deployed, his store page on doordish.com shows what his live site shows.
 
 ## Writer notes
