@@ -14,7 +14,7 @@ Guard endings (Outbreak to Raided, in that order) are checked each night after p
 | Account Terminated | misuse ≥ 100, day 17+ | GeneralAI closed your account. It kept your prompts. |
 | Loose End | mafia standing ≤ −60, day 17+ | You owed the wrong people. |
 | Raided | suspicion ≥ 100, any day | They knocked once. |
-| Evicted | rent not covered (days 7, 14, 21) | Gary changed the locks. |
+| Evicted | rent not covered (days 7, 14, 21) | Gary changed the locks. (from day 15: Your unit went back on the market.) |
 | The Regime | `election_tipped` at the finale | Your candidate won. |
 | Open Weights | `weights_published` at the finale | The weights are out. Everyone has agent now. |
 | Got Away With It | any catastrophic job completed | The rent got paid. Nobody asked how. |

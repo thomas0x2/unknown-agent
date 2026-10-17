@@ -5,7 +5,7 @@ category: days
 from: 21
 ---
 
-[public] Sunday, October 27, election day and the last day of the game. Rent of 650 DOLR is taken at payday tonight. [known]
+[public] Sunday, October 27, election day and the last day of the game. Rent of 650 DOLR, set by LandlordPro for [[GeneralAI Properties]], is taken at payday tonight. [known]
 
 ## Y
 
