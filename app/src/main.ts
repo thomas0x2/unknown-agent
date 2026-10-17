@@ -21,6 +21,7 @@ import './ui/appsite.css';
 import './ui/terminal.css';
 import './ui/devOptions.css';
 import './ui/sendFx.css';
+import './ui/brands.css';
 import { showSuggestions, hideSuggestions, suggestionKey } from './ui/mailSuggest';
 import { GameStore } from './game/store';
 import { loadContent } from './content/load';
