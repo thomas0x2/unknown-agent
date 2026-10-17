@@ -10,7 +10,6 @@ import { marketPosts, crawl, autoBuys, portfolio, trackedOf, type MarketPost } f
 import { machineFeed, machineRows } from './laundromat';
 import { swapListings, type Listing } from './swaplist';
 import { playMinutes } from './core';
-import { dayProfiles, screen, standardsOf, datingPaused, FILTERS } from './dating';
 
 /** What a rule looks at: the game now, the app, and the content (for the posts on Y). */
 export interface View {
@@ -52,17 +51,6 @@ const listings = (v: View): Listing[] => swapListings(v.app.contentAt, playMinut
 const listed = (test: (l: Listing[]) => boolean): Rule => (v) => test(listings(v));
 const distinct = (l: Listing[], key: (x: Listing) => string) => new Set(l.map(key)).size;
 
-// ── Matchless: today's profiles through the filters, with and without the bug; nothing shows while Derek has it paused ──
-
-function screened(v: View, bugs: Set<string>): string {
-  const std = standardsOf(v.app.specParams.filters);
-  const out = screen(dayProfiles(v.s.values.day, std), std, bugs);
-  return JSON.stringify([out.deck.map((p) => p.id), out.blocked.map((b) => [b.p.id, b.by])]);
-}
-const changesScreen = (bug: string): Rule => (v) => !datingPaused(v.app) && screened(v, new Set([bug])) !== screened(v, new Set());
-/** The buttons and the counter show on the first decision, any day there is a card to decide on. */
-const onDeck: Rule = (v) => !datingPaused(v.app) && screened(v, new Set()) !== '[[],[]]';
-
 /** Per template, per bug id. Restaurant bugs show on a static page or a booking anyone can make. */
 export const VISIBILITY: Record<string, Record<string, Rule>> = {
   restaurant: {
@@ -84,11 +72,6 @@ export const VISIBILITY: Record<string, Record<string, Rule>> = {
     minutes_wrong: changesGrid('minutes_wrong'),
     still_eight: changesGrid('still_eight'), new_always_free: changesGrid('new_always_free'),
     layout_breaks: (v) => machineFeed(v.s.values.day).length > 8,
-  },
-  dating: {
-    ...Object.fromEntries(FILTERS.flatMap((f) => [`${f}_leak`, `${f}_strict`]).map((b) => [b, changesScreen(b)])),
-    buttons_swapped: onDeck,
-    limit_double: onDeck,
   },
   swaplist: {
     titles_shifted: listed((l) => l.length >= 2),

@@ -1,0 +1,33 @@
+/* matchless.com */
+.mx { background: #fbf4f6; color: #2a1d22; font-family: var(--f-ui); min-height: 100%; }
+.mx-head { display: flex; align-items: center; gap: 12px; padding: 14px 24px; background: #fff; border-bottom: 1px solid #efdde3; }
+.mx-head > div { display: flex; flex-direction: column; }
+.mx-head b { font-size: 18px; }
+.mx-head span { color: #8a6f79; font-size: 13px; }
+.mx-logo { width: 36px; height: 36px; flex: none; }
+.mx-logo svg { display: block; width: 100%; height: 100%; }
+.mx-who { margin: 0 0 0 auto; font-size: 13px; color: #8a6f79; }
+.mx-land { max-width: 640px; margin: 0 auto; padding: 56px 24px; text-align: center; }
+.mx-land h1 { font-size: 34px; margin: 0 0 12px; }
+.mx-land p { color: #6b5560; font-size: 16px; line-height: 1.5; }
+.mx-facts { list-style: none; display: flex; justify-content: center; gap: 28px; padding: 0; margin: 28px 0; }
+.mx-facts li { display: flex; flex-direction: column; font-size: 13px; color: #8a6f79; }
+.mx-facts b { font-size: 26px; color: #b4234f; }
+.mx-fine { font-size: 13px !important; }
+.mx-main { max-width: 440px; margin: 0 auto; padding: 20px 16px 32px; }
+.mx-count { margin: 0 0 10px; font-size: 13px; color: #8a6f79; text-align: center; }
+.mx-card { background: #fff; border: 1px solid #efdde3; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 18px rgba(120, 30, 60, .08); }
+.mx-ph svg { display: block; width: 100%; height: 220px; }
+.mx-info { padding: 14px 18px 4px; }
+.mx-info h2 { margin: 0; font-size: 20px; }
+.mx-info p { margin: 6px 0 12px; font-size: 14px; line-height: 1.4; color: #4f3d45; }
+.mx-info table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.mx-info th, .mx-info td { text-align: left; padding: 5px 0; border-top: 1px solid #f3e7eb; vertical-align: top; }
+.mx-info th { color: #8a6f79; font-weight: 500; width: 55%; }
+.mx-acts { display: flex; gap: 10px; padding: 14px 18px 18px; }
+.mx-acts form { flex: 1; margin: 0; }
+.mx-btn { width: 100%; border: 1px solid #d9c3cb; background: #fff; color: #6b5560; border-radius: 999px; padding: 10px 0; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.mx-btn.yes { background: #b4234f; border-color: #b4234f; color: #fff; }
+.mx-btn:disabled { opacity: .45; cursor: default; }
+.mx-done { background: #fff; border: 1px solid #efdde3; border-radius: 14px; padding: 28px 20px; text-align: center; }
+.mx-done p { margin: 6px 0 0; color: #8a6f79; font-size: 14px; }

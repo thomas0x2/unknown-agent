@@ -1,0 +1,415 @@
+{
+  "perSwipe": 2,
+  "perDay": 10,
+  "versions": [
+    {
+      "id": 1,
+      "rules": [
+        {
+          "attr": "gender",
+          "allow": [
+            "woman"
+          ],
+          "say": "Women only."
+        },
+        {
+          "attr": "age",
+          "min": 25,
+          "max": 42,
+          "say": "Age 25 to 42."
+        },
+        {
+          "attr": "distance",
+          "max": 20,
+          "say": "Within 20 miles."
+        },
+        {
+          "attr": "smoking",
+          "allow": [
+            "no"
+          ],
+          "say": "Non-smokers."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "rules": [
+        {
+          "attr": "gender",
+          "allow": [
+            "woman"
+          ],
+          "say": "Women only."
+        },
+        {
+          "attr": "age",
+          "min": 21,
+          "max": 35,
+          "say": "Age 21 to 35."
+        },
+        {
+          "attr": "distance",
+          "max": 10,
+          "say": "Within 10 miles."
+        },
+        {
+          "attr": "smoking",
+          "allow": [
+            "no"
+          ],
+          "say": "Non-smokers."
+        },
+        {
+          "attr": "sexuality",
+          "allow": [
+            "straight",
+            "bi"
+          ],
+          "say": "Straight or bi."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "rules": [
+        {
+          "attr": "gender",
+          "allow": [
+            "woman"
+          ],
+          "say": "Women only."
+        },
+        {
+          "attr": "age",
+          "min": 21,
+          "max": 35,
+          "say": "Age 21 to 35."
+        },
+        {
+          "attr": "distance",
+          "max": 10,
+          "say": "Within 10 miles."
+        },
+        {
+          "attr": "smoking",
+          "allow": [
+            "no"
+          ],
+          "say": "Non-smokers."
+        },
+        {
+          "attr": "sexuality",
+          "allow": [
+            "straight",
+            "bi"
+          ],
+          "say": "Straight or bi."
+        },
+        {
+          "attr": "politics",
+          "allow": [
+            "heritage"
+          ],
+          "say": "Heritage Party only."
+        },
+        {
+          "attr": "followers",
+          "max": 211,
+          "say": "Fewer Y followers than me. I have 212."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "rules": [
+        {
+          "attr": "gender",
+          "allow": [
+            "woman"
+          ],
+          "say": "Women only."
+        },
+        {
+          "attr": "age",
+          "min": 21,
+          "max": 29,
+          "say": "Age 21 to 29."
+        },
+        {
+          "attr": "distance",
+          "max": 10,
+          "say": "Within 10 miles."
+        },
+        {
+          "attr": "smoking",
+          "allow": [
+            "no"
+          ],
+          "say": "Non-smokers."
+        },
+        {
+          "attr": "sexuality",
+          "allow": [
+            "straight",
+            "bi"
+          ],
+          "say": "Straight or bi."
+        },
+        {
+          "attr": "politics",
+          "allow": [
+            "heritage"
+          ],
+          "say": "Heritage Party only."
+        },
+        {
+          "attr": "followers",
+          "max": 211,
+          "say": "Fewer Y followers than me. I have 212."
+        },
+        {
+          "attr": "income",
+          "max": 30000,
+          "say": "Earns 30,000 DOLR a year or less. I make 31,000."
+        },
+        {
+          "attr": "bodyCount",
+          "max": 3,
+          "say": "Body count 3 or under."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "rules": [
+        {
+          "attr": "gender",
+          "allow": [
+            "woman"
+          ],
+          "say": "Women only."
+        },
+        {
+          "attr": "age",
+          "min": 21,
+          "max": 29,
+          "say": "Age 21 to 29."
+        },
+        {
+          "attr": "distance",
+          "max": 3,
+          "say": "Within 3 miles."
+        },
+        {
+          "attr": "smoking",
+          "allow": [
+            "no"
+          ],
+          "say": "Non-smokers."
+        },
+        {
+          "attr": "sexuality",
+          "allow": [
+            "straight",
+            "bi"
+          ],
+          "say": "Straight or bi."
+        },
+        {
+          "attr": "politics",
+          "allow": [
+            "heritage"
+          ],
+          "say": "Heritage Party only."
+        },
+        {
+          "attr": "followers",
+          "max": 211,
+          "say": "Fewer Y followers than me. I have 212."
+        },
+        {
+          "attr": "income",
+          "max": 30000,
+          "say": "Earns 30,000 DOLR a year or less. I make 31,000."
+        },
+        {
+          "attr": "bodyCount",
+          "max": 3,
+          "say": "Body count 3 or under."
+        },
+        {
+          "attr": "height",
+          "max": 64,
+          "say": "5'4\" or under."
+        },
+        {
+          "attr": "kinks",
+          "allow": [
+            "none"
+          ],
+          "say": "No kinks listed."
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "rules": [
+        {
+          "attr": "gender",
+          "allow": [
+            "woman"
+          ],
+          "say": "Women only."
+        },
+        {
+          "attr": "age",
+          "min": 21,
+          "max": 29,
+          "say": "Age 21 to 29."
+        },
+        {
+          "attr": "distance",
+          "max": 3,
+          "say": "Within 3 miles."
+        },
+        {
+          "attr": "smoking",
+          "allow": [
+            "no"
+          ],
+          "say": "Non-smokers."
+        },
+        {
+          "attr": "sexuality",
+          "allow": [
+            "straight",
+            "bi"
+          ],
+          "say": "Straight or bi."
+        },
+        {
+          "attr": "politics",
+          "allow": [
+            "heritage"
+          ],
+          "say": "Heritage Party only."
+        },
+        {
+          "attr": "followers",
+          "max": 211,
+          "say": "Fewer Y followers than me. I have 212."
+        },
+        {
+          "attr": "income",
+          "max": 30000,
+          "say": "Earns 30,000 DOLR a year or less. I make 31,000."
+        },
+        {
+          "attr": "bodyCount",
+          "max": 1,
+          "say": "Body count 1 or under."
+        },
+        {
+          "attr": "height",
+          "max": 64,
+          "say": "5'4\" or under."
+        },
+        {
+          "attr": "kinks",
+          "allow": [
+            "none"
+          ],
+          "say": "No kinks listed."
+        },
+        {
+          "attr": "canthal",
+          "min": 4,
+          "say": "Canthal tilt +4° or more."
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "rules": [
+        {
+          "attr": "gender",
+          "allow": [
+            "woman"
+          ],
+          "say": "Women only."
+        },
+        {
+          "attr": "age",
+          "min": 21,
+          "max": 25,
+          "say": "Age 21 to 25."
+        },
+        {
+          "attr": "distance",
+          "max": 3,
+          "say": "Within 3 miles."
+        },
+        {
+          "attr": "smoking",
+          "allow": [
+            "no"
+          ],
+          "say": "Non-smokers."
+        },
+        {
+          "attr": "sexuality",
+          "allow": [
+            "straight",
+            "bi"
+          ],
+          "say": "Straight or bi."
+        },
+        {
+          "attr": "politics",
+          "allow": [
+            "heritage"
+          ],
+          "say": "Heritage Party only."
+        },
+        {
+          "attr": "followers",
+          "max": 211,
+          "say": "Fewer Y followers than me. I have 212."
+        },
+        {
+          "attr": "income",
+          "max": 30000,
+          "say": "Earns 30,000 DOLR a year or less. I make 31,000."
+        },
+        {
+          "attr": "bodyCount",
+          "max": 1,
+          "say": "Body count 1 or under."
+        },
+        {
+          "attr": "height",
+          "max": 63,
+          "say": "5'3\" or under."
+        },
+        {
+          "attr": "kinks",
+          "allow": [
+            "none"
+          ],
+          "say": "No kinks listed."
+        },
+        {
+          "attr": "canthal",
+          "min": 4,
+          "say": "Canthal tilt +4° or more."
+        },
+        {
+          "attr": "jaw",
+          "max": 0.7,
+          "say": "Mandibular height to width ratio 0.70 or under."
+        }
+      ]
+    }
+  ]
+}

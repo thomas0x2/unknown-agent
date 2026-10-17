@@ -1,0 +1,22 @@
+{
+  "id": "d8_matchless_rules_3",
+  "site": "qmail",
+  "from": "Derek",
+  "addr": "derek@highvalue.test",
+  "subject": "New standards",
+  "trigger": {
+    "dayMin": 8,
+    "flagsAll": [
+      "matchless_job",
+      "matchless_rules_2"
+    ]
+  },
+  "at": "10:00",
+  "morning": true,
+  "onDeliver": {
+    "setFlags": [
+      "matchless_rules_3"
+    ]
+  },
+  "body": "Adjusting for compatibility. From today:\n\n- Women only.\n- Age 21 to 35.\n- Within 10 miles.\n- Non-smokers.\n- Straight or bi.\n- Heritage Party only.\n- Fewer Y followers than me. I have 212.\n\nSame deal. Every swipe right or no pay."
+}

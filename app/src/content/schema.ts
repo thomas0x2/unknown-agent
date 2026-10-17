@@ -365,6 +365,25 @@ export interface Content {
   agent?: AgentContent;
   /** Stock posts on Y, the data the vibe check reads. */
   yMarket?: MarketContent;
+  /** Derek's standards on matchless.com, version by version (engine/matchless.ts). */
+  matchless?: MatchlessContent;
+}
+
+/** One of Derek's standards: a number range (`min`/`max`) or the values allowed (`allow`), and how he says it. */
+export interface MatchlessRule {
+  attr: string;
+  min?: number;
+  max?: number;
+  allow?: string[];
+  say: string;
+}
+export interface MatchlessContent {
+  /** DOLR per swipe, paid at night only when every swipe that day was right. */
+  perSwipe: number;
+  /** Profiles near him each day. */
+  perDay: number;
+  /** Version N is in force once flag matchless_rules_N is set; the highest one wins. */
+  versions: { id: number; rules: MatchlessRule[] }[];
 }
 
 export type Mood = 'bullish' | 'bearish' | 'neutral';

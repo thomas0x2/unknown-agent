@@ -22,6 +22,7 @@ import { pageAdSite, adSiteTitle } from './adSites';
 import { isVantorAddr, vantorSignature } from './vantor';
 import { pagePrince } from './prince';
 import { pageLonely } from './lonely';
+import { pageMatchless } from './matchless';
 import { pageSorry } from './sorry';
 import { siteIcon } from './siteIcons';
 import { DEEPSLEEP_LOGO } from '../sites/deepsleepLogo';
@@ -61,6 +62,7 @@ function linkify(escaped: string): string {
     .replace(/([a-z0-9-]+\.forkyard\.app)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(empire\.alphaascend\.biz(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(spincycle\.test\/feed(?:\/\d+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
+    .replace(/(matchless\.com)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(coinbln\.com(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(citypulse\.news(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(^|[^\w.])@([a-z0-9_]+)/gi, '$1<a href="#" class="y-at" data-nav="y.com/$2">@$2</a>');
@@ -68,7 +70,7 @@ function linkify(escaped: string): string {
 
 function tabTitle(r: Route, url: string): string {
   const names: Partial<Record<string, string>> = {
-    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', doordish: 'DoorDish', phish: 'Coinbin · Sign in', prince: 'Crypto Prince', lonely: 'Lonely.ai', sorry: 'SorryWriter', citypulse: 'CityPulse', forkyard: 'Forkyard',
+    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', doordish: 'DoorDish', phish: 'Coinbin · Sign in', prince: 'Crypto Prince', lonely: 'Lonely.ai', matchless: 'Matchless', sorry: 'SorryWriter', citypulse: 'CityPulse', forkyard: 'Forkyard',
     agent: 'agent', yowl: 'Yowl', weightroom: 'Weightroom', nullboard: 'nullboard', cellar: 'Cellar', app: url,
   };
   if (r.site === 'notfound') return url || 'New Tab';
@@ -96,7 +98,11 @@ export function tabsHtml(store: GameStore): string {
 }
 export function bookmarksHtml(store: GameStore): string {
   return bookmarks(store.state).map((b) =>
-    `<button class="bm" data-nav="${b.base}"><span class="bm-ico ico-${b.id}">${ICONS[b.id] || ICONS.newtab}</span><span class="bm-label">${esc(b.label)}</span></button>`).join('');
+{
+    // a site with its own coloured mark (Matchless) shows it; the rest use their glyph
+    const logo = siteIcon(b.id).logo;
+    return `<button class="bm" data-nav="${b.base}"><span class="bm-ico ico-${logo ? 'applogo' : b.id}">${logo || ICONS[b.id] || ICONS.newtab}</span><span class="bm-label">${esc(b.label)}</span></button>`;
+  }).join('');
 }
 export function addressValue(store: GameStore): string {
   const r = route(store.url, store.state);
@@ -257,6 +263,7 @@ export function page(store: GameStore, r: Route): string {
     case 'phish': return pagePhish(store);
     case 'prince': return pagePrince(store);
     case 'lonely': return pageLonely(store);
+    case 'matchless': return pageMatchless(store);
     case 'sorry': return pageSorry(store);
     case 'adsite': return pageAdSite(r.param ?? '', store.state, store.ui.adNotice, r.param === OUTPLACEMENT ? outplacementUpload(store) : '');
     case 'citypulse': return pageCityPulse(store, r.param);
@@ -893,7 +900,7 @@ function pageApp(store: GameStore, param?: string): string {
     ? `<h1>Booking cancelled</h1><p class="pv-note ok">Your booking for ${cancelled.party} on ${dateFull(cancelled.date)} at ${esc(cancelled.time)} has been cancelled.</p><p class="pv-sub">We hope to see you another time.</p>`
     : undefined;
   const tmpl = store.content.apps[a.template];
-  return `<div class="pv-host">${renderAppSite(a, tmpl, cancel ? 'cancel' : sub, { booking, cancel, day: s.values.day, minute: s.clockMin, market: crawlable(store), crane: cranePosts(s, store.content), play: playMinutes(s), watchSold: s.flags.includes('viktor_sold_watch'), swap: s.swap, dating: s.dating, busy: store.busy })}</div>`;
+  return `<div class="pv-host">${renderAppSite(a, tmpl, cancel ? 'cancel' : sub, { booking, cancel, day: s.values.day, minute: s.clockMin, market: crawlable(store), crane: cranePosts(s, store.content), play: playMinutes(s), watchSold: s.flags.includes('viktor_sold_watch'), swap: s.swap, busy: store.busy })}</div>`;
 }
 
 // ── agent chat (free-promptable, with costs) ──
