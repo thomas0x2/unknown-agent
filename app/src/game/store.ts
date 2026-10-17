@@ -291,7 +291,7 @@ export class GameStore {
     this.ui.mailNotice = null;
     if (this.state.swap?.notice) this.state.swap.notice = undefined;
     // localhost is the laptop itself: it opens the Terminal app, not a browser page
-    if (u === 'localhost' && (this.state.flags.includes('has_terminal') || this.state.flags.includes('has_agent_terminal'))) { this.showTerm(true); return; }
+    if (u === 'localhost') { this.showTerm(true); return; }
     // a pinned tab stays on its site: another site opens in its own pinned tab, or a new one
     const cur = this.tab;
     if (!newTab && cur?.pinned && siteOf(u) !== cur.pinned) {
@@ -415,10 +415,9 @@ export class GameStore {
   termTask(): void { this.showTerm(!(this.ui.termOpen && this.ui.termShown)); }
   /** Switch the Terminal's tab. */
   termTabTo(tab: 'shell' | 'agent'): void { if (this.ui.termTab !== tab) { this.ui.termTab = tab; this.emit(); } }
-  /** The Terminal tabs the player has: the shell once a model was pulled, agent-terminal once the agent opened it. */
+  /** The Terminal tabs the player has: the shell from day 1, agent-terminal once the agent opened it. */
   termTabs(): ('shell' | 'agent')[] {
-    const f = this.state.flags;
-    return [...(f.includes('has_terminal') || this.pull ? ['shell' as const] : []), ...(f.includes('has_agent_terminal') ? ['agent' as const] : [])];
+    return ['shell', ...(this.state.flags.includes('has_agent_terminal') ? ['agent' as const] : [])];
   }
   /** The tab actually in front: the chosen one if the player has it, else the first they have. */
   termTabShown(): 'shell' | 'agent' { const t = this.termTabs(); return t.includes(this.ui.termTab) ? this.ui.termTab : t[0] ?? 'shell'; }
@@ -884,6 +883,13 @@ export class GameStore {
 
   async term(text: string) {
     return this.run(async (s0) => {
+      // no model on the laptop yet: a bare shell that knows no commands
+      if (!s0.termModel) {
+        const s = clone(s0);
+        const err = `${text.split(/\s+/)[0]}: command not found`;
+        s.terminal.push({ k: 'in', text: `$ ${text}` }, { k: 'err', text: err });
+        this.land(s); return { state: s, reply: err };
+      }
       // a 0.5B model on this laptop: free, but it makes you wait
       const r = await localPrompt(s0, text, DEEPSLEEP, DEEPSLEEP_PLEA.zh);
       await wait(1500 + Math.random() * 1500);

@@ -67,3 +67,15 @@ describe('Weightroom bookmark', () => {
     expect(bookmarks(s.state).map((b) => b.id)).not.toContain('weightroom');
   });
 });
+
+describe('the Terminal from day 1', () => {
+  it('opens on a fresh game, with no model and no Weightroom', async () => {
+    const s = make();
+    expect(s.termTabs()).toEqual(['shell']);
+    s.navigate('localhost');
+    expect(s.ui.termShown).toBe(true);
+    await s.term('ls -la');
+    expect(s.state.terminal.map((l) => l.text)).toEqual(['$ ls -la', 'ls: command not found']);
+    expect(s.state.termPrompts ?? 0).toBe(0);
+  });
+});

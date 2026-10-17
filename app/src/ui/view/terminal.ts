@@ -50,7 +50,7 @@ function shellHtml(store: GameStore): string {
   // the pull log already says the model is running; the intro is for an empty screen
   const intro = pulling || s.terminal.length ? ''
     : name ? `${name} running on localhost. Type anything. (type 'clear' to wipe the screen)`
-    : 'No model running. Download one from weightroom.ai first.';
+    : s.flags.includes('knows_weightroom') ? 'No model running. Download one from weightroom.ai first.' : 'No model running.';
   const row = (l: { k: string; text: string }) => `<div class="tm-${l.k}">${esc(l.text)}</div>`;
   const lines = s.terminal.slice(-200).map(row).join('');
   const live = store.pull ? pullLines(store.pull.id, Math.min(store.pullMs(), PULL_MS - 1)).map(row).join('') : '';
