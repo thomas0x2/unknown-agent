@@ -30,12 +30,12 @@ from: 17
 ## Trending
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.
-- [classified] [planned] Proposed trending: AI rules; debate night.
+- [hidden] [planned] Proposed trending: AI rules; debate night.
 
 ## Not written yet
 
-- [classified] [planned] The factions call in favours.
-- [classified] [planned] The mafia asks the player to dox Mara Vey.
+- [hidden] [planned] The factions call in favours.
+- [hidden] [planned] The mafia asks the player to dox Mara Vey.
 
 ## Writer notes
 

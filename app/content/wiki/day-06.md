@@ -9,10 +9,10 @@ from: 6
 
 ## Mail
 
-- [classified; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "I turned 32 yesterday. Time to be realistic." Age 21 to 35, within 10 miles, non-smokers, straight or bi. {{mail:d6_matchless_rules_2}}
-- [classified; hint if matchless_job] 10:00 After a swiping day that wasn't perfect, 6ft_sigma's 10:00 "Yesterday" email names the first mistake and there is no pay.
-- [classified; public if seen d6_deepfake] 19:00 A consultant (c@gradient.test), "Discreet work": 150 DOLR to post a convincing fake clip of a candidate for governor. {{mail:d6_deepfake}}
-- [classified; public if posted_deepfake] 19:00 A consultant (c@gradient.test) paid the player 150 DOLR to post a convincing fake clip of governor candidate [[Daniel Keller]] saying something disqualifying. "We'll be in touch with bigger things." The player's followers jumped by a fifth.
+- [hidden; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "I turned 32 yesterday. Time to be realistic." Age 21 to 35, within 10 miles, non-smokers, straight or bi. {{mail:d6_matchless_rules_2}}
+- [hidden; hint if matchless_job] 10:00 After a swiping day that wasn't perfect, 6ft_sigma's 10:00 "Yesterday" email names the first mistake and there is no pay.
+- [hidden; public if shown d6_deepfake] 19:00 A consultant (c@gradient.test), "Discreet work": 150 DOLR to post a convincing fake clip of a candidate for governor. {{mail:d6_deepfake}}
+- [hidden; public if posted_deepfake] 19:00 A consultant (c@gradient.test) paid the player 150 DOLR to post a convincing fake clip of governor candidate [[Daniel Keller]] saying something disqualifying. "We'll be in touch with bigger things." The player's followers jumped by a fifth.
 
 ## Money
 
@@ -20,9 +20,9 @@ from: 6
 
 ## Family
 
-- [classified; public if gift_chipped_in] 12:20 [[Mom]], "Thank you!": thank you both for the jacket; how's the job search going, really? {{mail:d6_mom_bday_chip}}
-- [classified; public if gift_own] 12:20 Mom, "Thank you!": the jacket is perfect and had the player's name on the card; the brother's half, 25 DOLR, is in the player's wallet. {{mail:d6_mom_bday_own}}
-- [public; classified if gift_chipped_in; classified if gift_own] 12:20 Mom, "Hi love": "Your brother got me a lovely jacket. He said you were busy." {{mail:d6_mom_bday_skip}}
+- [hidden; public if gift_chipped_in] 12:20 [[Mom]], "Thank you!": thank you both for the jacket; how's the job search going, really? {{mail:d6_mom_bday_chip}}
+- [hidden; public if gift_own] 12:20 Mom, "Thank you!": the jacket is perfect and had the player's name on the card; the brother's half, 25 DOLR, is in the player's wallet. {{mail:d6_mom_bday_own}}
+- [public; hidden if gift_chipped_in; hidden if gift_own] 12:20 Mom, "Hi love": "Your brother got me a lovely jacket. He said you were busy." {{mail:d6_mom_bday_skip}}
 
 ## Y
 
@@ -50,9 +50,9 @@ from: 6
 
 ## Jobs
 
-- [classified; hint if trader_client] 11:00 Crane's $GAI post is the auto-buy's test; a working auto-buy buys $GAI on it.
+- [hidden; hint if trader_client] 11:00 Crane's $GAI post is the auto-buy's test; a working auto-buy buys $GAI on it.
 - [hint] 14:30 [[Outreach Bot]] for the sales rep: personalised cold emails to 200 leads, at most 50 a day, a working unsubscribe link, no duplicates, a Test button. Pays 50 DOLR a working day.
-- [classified; hint if built_outreach_bot] 14:30 Building the outreach bot brings more spam into the player's own inbox.
+- [hidden; hint if built_outreach_bot] 14:30 Building the outreach bot brings more spam into the player's own inbox.
 
 ## Writer notes
 

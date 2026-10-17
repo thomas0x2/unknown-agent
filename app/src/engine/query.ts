@@ -164,6 +164,6 @@ export async function matchQuery(jev: JevRouter, s: GameState, content: Content,
       where.push(`${p.title} › ${sectionName(sec)}`);
     }
   }
-  if (!out.public.length && !out.hint.length) return { kind: 'classified', where, debug: `Jev: ${where.join('; ')}, all classified for now` };
+  if (!out.public.length && !out.hint.length) return { kind: 'classified', where, debug: `Jev: ${where.join('; ')}, all hidden for now` };
   return { kind: 'answer', where, ...out, debug: `Jev: ${where.join('; ')} (${out.public.length} public, ${out.hint.length} hint)${mainNote}` };
 }

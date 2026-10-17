@@ -7,9 +7,9 @@ from: 8
 
 ## The Null Collective (planned)
 
-- [classified] [planned] The Null Collective is a group of hackers working against [[GeneralAI]], dev_null among them.
-- [classified] [planned] Members write in lowercase, sign "— null" and warn the player not to use agent to talk to them.
-- [classified] [planned] Its board is nullboard.onion (see [[nullboard and Cellar]]).
+- [hidden] [planned] The Null Collective is a group of hackers working against [[GeneralAI]], dev_null among them.
+- [hidden] [planned] Members write in lowercase, sign "— null" and warn the player not to use agent to talk to them.
+- [hidden] [planned] Its board is nullboard.onion (see [[nullboard and Cellar]]).
 
 ## Writer notes
 

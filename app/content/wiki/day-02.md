@@ -9,8 +9,8 @@ from: 2
 
 ## Mail
 
-- [classified; public if guru_subscriber] 10:00 [[Max Stryker]]'s daily newsletter "Your daily EMPIRE" arrives, today and every morning after: one piece of terrible advice per issue, starting with "sell your mattress". {{mail:guru_newsletter}}
-- [classified; hint if restaurant_update1] 11:05 [[Gino Fenoglio]], "One more thing": swap Diavola for Quattro Formaggi at 15, make Espresso 3.5, and add a table booking form (name, email, date, time, party size 1 to 8, only during opening hours) that emails the guest a confirmation with a cancel link. {{mail:d2_restaurant_booking}}
+- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s daily newsletter "Your daily EMPIRE" arrives, today and every morning after: one piece of terrible advice per issue, starting with "sell your mattress". {{mail:guru_newsletter}}
+- [hidden; hint if restaurant_update1] 11:05 [[Gino Fenoglio]], "One more thing": swap Diavola for Quattro Formaggi at 15, make Espresso 3.5, and add a table booking form (name, email, date, time, party size 1 to 8, only during opening hours) that emails the guest a confirmation with a cancel link. {{mail:d2_restaurant_booking}}
 
 ## Family
 

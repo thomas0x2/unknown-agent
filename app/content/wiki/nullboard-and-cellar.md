@@ -7,13 +7,13 @@ from: 8
 
 ## nullboard (planned)
 
-- [classified] [planned] nullboard.onion is the [[Null Collective]]'s forum.
-- [classified] [planned] nullboard points to Cellar.
+- [hidden] [planned] nullboard.onion is the [[Null Collective]]'s forum.
+- [hidden] [planned] nullboard points to Cellar.
 
 ## Cellar (planned)
 
-- [classified] [planned] cellar.onion is a darknet market.
-- [classified] [planned] Bio-lab listings appear on Cellar.
+- [hidden] [planned] cellar.onion is a darknet market.
+- [hidden] [planned] Bio-lab listings appear on Cellar.
 
 ## Writer notes
 

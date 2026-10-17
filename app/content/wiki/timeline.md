@@ -13,7 +13,7 @@ The plan of the game as a whole. Each day's content is on its own page, [[Day 1]
 - `[planned]`: in the old spine or Day plans, or in config, but not written as content. Hidden from Haiku.
 - `[open]`: undecided; nobody has planned it yet. Hidden from Haiku.
 - Written but unmerged work is named by PR number under Writer notes. When it merges, move it into the body.
-- Every body line on non-writers pages starts with one visibility tag, `[public]`, `[hint]` or `[classified]`, optionally with rules (`[classified; public if posted_deepfake]`, `[classified; public from day 9]`). `[known]`: a later day the player already knows about.
+- Every body line on non-writers pages starts with one visibility tag, `[public]`, `[hint]` or `[hidden]`, optionally with rules (`[hidden; public if posted_deepfake]`, `[hidden; public from day 9]`). `[known]`: a later day the player already knows about.
 
 Keep it current: whenever work adds, moves or removes story content (an event, a Y post, an article, a trending topic, a rollout, a rent amount, a new site with a day gate), update the day page in the same piece of work.
 

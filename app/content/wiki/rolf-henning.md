@@ -15,7 +15,7 @@ from: 2
 
 [public] The profile reads "30 years in dispatch. We move what matters." It has two repos: route-sheets ("Spreadsheet macros for the Kessler Road depot. Do not judge.") and cake-fund ("Whose turn is it to bring cake. Now with 20-year-anniversary support.").
 
-[classified] His employer, the email address and location on that profile, and what they lead to.
+[hidden] His employer, the email address and location on that profile, and what they lead to.
 
 ## Writer notes
 

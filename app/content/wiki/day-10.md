@@ -9,7 +9,7 @@ from: 10
 
 ## Mail
 
-- [classified; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "Some people got through that shouldn't have." Age 21 to 29, earns 30,000 DOLR a year or less (he makes 31,000), body count 3 or under, and long hair, which only the picture shows. {{mail:d10_matchless_rules_4}}
+- [hidden; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "Some people got through that shouldn't have." Age 21 to 29, earns 30,000 DOLR a year or less (he makes 31,000), body count 3 or under, and long hair, which only the picture shows. {{mail:d10_matchless_rules_4}}
 
 ## Y
 
@@ -41,13 +41,13 @@ from: 10
 ## Trending
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.
-- [classified] [planned] Proposed trending: Apogee explosion; agent-2 vigil; Crane's paid volunteers.
+- [hidden] [planned] Proposed trending: Apogee explosion; agent-2 vigil; Crane's paid volunteers.
 
 ## Not written yet
 
-- [classified] [planned] Grey jobs pile up, and the Null Collective offers membership.
-- [classified] [planned] Max Stryker recruits for Crane's online campaign (influence jobs; the sentiment crawler becomes useful again).
-- [classified] [planned] The brother asks where the money comes from.
+- [hidden] [planned] Grey jobs pile up, and the Null Collective offers membership.
+- [hidden] [planned] Max Stryker recruits for Crane's online campaign (influence jobs; the sentiment crawler becomes useful again).
+- [hidden] [planned] The brother asks where the money comes from.
 
 ## Writer notes
 

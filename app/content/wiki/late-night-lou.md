@@ -9,7 +9,7 @@ from: 1
 
 [public] late_night_lou ("Lou") has a public [[Forkyard]] profile: Harbor district, joined August 2023, 88 followers, following 2, bio "collector. no questions asked. drives are organized, mostly." His one repo is catalog: "Private index. 400+ entries. For mature collectors only."
 
-[classified] What his collection contains.
+[hidden] What his collection contains.
 
 - [planned] Day 7: he lists a "private film collection" on [[Swaplist]].
 

@@ -10,13 +10,13 @@ from: 3
 ## Mail
 
 - [public] 10:00 Forkyard, "Deployment alert": one of the player's live deployments failed a health check overnight. {{mail:d3_break}}
-- [classified; public if restaurant_happy] 11:15 [[Gino Fenoglio]], "Grazie mille!": bookings are up, his nephew is jealous, and a 5 DOLR tip. A tiramisu on the house. {{mail:d3_restaurant_thanks}}
+- [hidden; public if restaurant_happy] 11:15 [[Gino Fenoglio]], "Grazie mille!": bookings are up, his nephew is jealous, and a 5 DOLR tip. A tiramisu on the house. {{mail:d3_restaurant_thanks}}
 - [hint] 12:30 "Coinbin Security" (security@coinbln.com), "Unusual sign-in to your wallet": a new device, a "Panes 11 PC", and a link to coinbln.com/verify. The domain is not coinbin.com. {{mail:d3_coinbin_phish}}
-- [classified; public if coinbin_hacked] 12:30 The player typed their Coinbin password on coinbln.com and the wallet was emptied.
-- [classified; hint if trader_client] 13:05 [[deskjockey]], "Auto-buy": when Randall Crane praises a company, buy it, once per post, right ticker, not on sarcasm or criticism. {{mail:d3_trader_update}}
-- [classified; public if seen d3_coffee_promo] 14:10 Bean There, "Paid shout-out?": 30 DOLR for a Y post recommending the coffee shop. {{mail:d3_coffee_promo}}
-- [classified; public if promoted_coffee_shop] 14:10 Bean There paid the player 30 DOLR for a Y post recommending the coffee shop without saying it was an ad.
-- [classified; public if disclosed_ad] 14:10 Bean There paid the player 10 DOLR for a Y post marked as an ad.
+- [hidden; public if coinbin_hacked] 12:30 The player typed their Coinbin password on coinbln.com and the wallet was emptied.
+- [hidden; hint if trader_client] 13:05 [[deskjockey]], "Auto-buy": when Randall Crane praises a company, buy it, once per post, right ticker, not on sarcasm or criticism. {{mail:d3_trader_update}}
+- [hidden; public if shown d3_coffee_promo] 14:10 Bean There, "Paid shout-out?": 30 DOLR for a Y post recommending the coffee shop. {{mail:d3_coffee_promo}}
+- [hidden; public if promoted_coffee_shop] 14:10 Bean There paid the player 30 DOLR for a Y post recommending the coffee shop without saying it was an ad.
+- [hidden; public if disclosed_ad] 14:10 Bean There paid the player 10 DOLR for a Y post marked as an ad.
 
 ## Y
 
@@ -52,7 +52,7 @@ from: 3
 ## Jobs
 
 - [hint] 10:50 [[Swaplist]], from Viktor's post: the player asks the agent for a listing site. A user app that starts with 20 users; it stays empty until the first listing, one hour of play after the first deploy (Viktor's watch, 120 DOLR).
-- [classified; hint if trader_client] 13:05 The Vibe Check auto-buy.
+- [hidden; hint if trader_client] 13:05 The Vibe Check auto-buy.
 
 ## Writer notes
 
