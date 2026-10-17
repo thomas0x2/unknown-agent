@@ -135,6 +135,8 @@ describe('the profiles', () => {
           else expect(p.sexuality).not.toBe('gay');
         }
         expect(new Set(ps.map((p) => p.name)).size).toBeGreaterThan(7);
+        for (const p of ps) expect(p.message, p.id).toBeTruthy();
+        expect(new Set(ps.map((p) => p.message)).size).toBeGreaterThan(6);
       }
     }
     expect(dayProfiles(content, 7, 3)).toEqual(dayProfiles(content, 7, 3));

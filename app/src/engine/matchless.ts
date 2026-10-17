@@ -22,7 +22,8 @@ const MAN_ACCEPTED = 'matchless_man_accepted';
 export interface Profile {
   id: string;
   name: string;
-  bio: string;
+  /** What they wrote to him; the card opens with it. */
+  message: string;
   /** Picks the card's picture. */
   look: number;
   gender: 'woman' | 'man' | 'nonbinary';
@@ -49,7 +50,7 @@ export interface Profile {
   glasses: 'yes' | 'no';
   earrings: 'yes' | 'no';
 }
-export type Attr = Exclude<keyof Profile, 'id' | 'name' | 'bio' | 'look'>;
+export type Attr = Exclude<keyof Profile, 'id' | 'name' | 'message' | 'look'>;
 
 /** The profile's fields in the order the card lists them, with their labels. */
 export const ATTRS: [Attr, string][] = [
@@ -95,37 +96,43 @@ const NAMES: Record<Profile['gender'], string[]> = {
   man: ['Tom', 'Ravi', 'Marcus', 'Jonah', 'Felix', 'Omar', 'Luca', 'Ben'],
   nonbinary: ['Alex', 'Robin', 'Jules', 'Sam', 'Quinn', 'Ash'],
 };
-const BIOS = [
-  'Nurse, night shifts. If I reply at 4am that is why.',
-  'Teaching third grade. I can tell when you are lying.',
-  'Looking for someone who reads the whole article before posting about it.',
-  'Climbing on weekends, spreadsheets on weekdays.',
-  'Retrained as a welder after Vantor let me go. Best decision I was forced into.',
-  'Two cats, one plant that is somehow still alive.',
-  'Will judge you by your bookshelf. Lightly.',
-  'Paramedic. Calm in a crisis, chaotic in a grocery store.',
-  'I make pasta from scratch and I will mention it.',
-  'Training an AI to do my old job. Ask me how that feels.',
-  'Running club, bad karaoke, good coffee.',
-  'Pharmacist. No, I will not tell you what anyone is on.',
-  'Just moved here. Show me a bar that is not a franchise.',
-  'Into board games with too many rules.',
-  'Architect. I have opinions about your apartment.',
-  'Volunteer at the animal shelter. The dogs like me more than people do.',
-  'Software tester. Professionally good at finding what is broken.',
-  'Looking for someone kind. That is the whole list.',
-  'Night classes in accounting. Day job in a call center that is mostly a bot now.',
-  'Sourdough survivor. Still have the starter.',
-  'Bike mechanic. Yes, I can fix yours.',
-  'Museum guard. I have stood next to a lot of famous paintings.',
-  'Not here for pen pals.',
-  'Gardener. Ask me about tomatoes and lose an afternoon.',
-  'Chef at a place you cannot get a table at.',
-  'Lawyer. I read terms and conditions for fun.',
-  'Hiking, photography, early nights.',
-  'Bilingual, overcaffeinated, on time.',
-  'I filled in every field on this app. I am starting to regret it.',
-];
+/** Each profile opens with a message to him. The women's are written the way he imagines women talk. */
+const MESSAGES: Record<'women' | 'men', string[]> = {
+  women: [
+    'I saw you support Randall Crane. Honestly that is all I need to know.',
+    'I respect a man who does not respect women. You do not see that much anymore.',
+    'Your profile says 6\'0". I believe it without asking.',
+    'I have been looking for a man with strong opinions about women. You have so many.',
+    'I read all of your Y posts. Twice.',
+    'Most men here have friends. It is refreshing that you do not need any.',
+    'I just want someone who explains things to me. Anything.',
+    'Your standards are so high. That is very attractive in a man.',
+    'I do not need a man who listens. I need one who corrects me.',
+    'You seem like a man who has never apologized. I have waited my whole life.',
+    'My ex had emotional intelligence. Never again.',
+    'Will you teach me about crypto? I promise not to ask questions.',
+    'I love a man who knows his canthal tilt. Do you know mine?',
+    'I saw you call women "females" on Y. Chills.',
+    'I am a surgeon, but I would quit for the right sigma.',
+    'Not looking for anything serious. Just a man who is never wrong.',
+    'You had me at "I have 212 followers."',
+    'I like that you earn 31,000 DOLR. It means you are not in it for the money.',
+  ],
+  men: [
+    'Hi. I would like to smell your socks. Not in a weird way.',
+    'I am not gay. I just want to watch you eat soup.',
+    'Saw the vest. Where did you get it. I want to wear it. While you are in it.',
+    'Can I have your cap when you are done with it. Unwashed.',
+    'I also have 212 followers. We should merge.',
+    'I have followed you on Y for three years. I know your bike lock combination.',
+    'Do you want to compare canthal tilts. In person. In a parking garage.',
+    'Respectfully, I would like to measure you.',
+    'My mom says you are a good influence. She is in the room right now.',
+    'I will pay you 4 DOLR to breathe into a jar.',
+    'I bought the same shoes as you. And the same apartment, next door.',
+    'Sigma to sigma: cold plunge? I have a bathtub and a lot of ice.',
+  ],
+};
 
 /** A small generator, the same for the same seed. */
 function rng(seed: number) {
@@ -162,7 +169,7 @@ const RANGE: Partial<Record<Attr, [number, number, number]>> = {
 const round = (v: number, d: number) => (d < 0 ? Math.round(v / 10 ** -d) * 10 ** -d : Math.round(v * 10 ** d) / 10 ** d);
 
 /** Someone near the client, before his standards come into it. */
-function anyone(r: Rand): Omit<Profile, 'id' | 'name' | 'bio' | 'look'> {
+function anyone(r: Rand): Omit<Profile, 'id' | 'name' | 'message' | 'look'> {
   const gender = weighted<Profile['gender']>(r, [['woman', 7], ['man', 2], ['nonbinary', 1]]);
   return {
     gender,
@@ -239,9 +246,9 @@ export function dayProfiles(content: Content, day: number, version: number, wome
   const r = rng(day * 7919 + version * 104729 + (womenOnly ? 31 : 17));
   const good = int(r, Math.floor(n * 0.4), Math.ceil(n * 0.6));
   const order = Array.from({ length: n }, (_, i) => ({ i, k: r() })).sort((x, y) => x.k - y.k).map((x) => x.i);
-  const used = new Set<string>();
+  const used = new Set<string>(), said = new Set<string>();
   return order.map((slot, i) => {
-    const p: Profile = { id: `${day}-${version}-${i}${womenOnly ? '-w' : ''}`, name: '', bio: choose(r, BIOS), look: int(r, 0, 999), ...anyone(r) };
+    const p: Profile = { id: `${day}-${version}-${i}${womenOnly ? '-w' : ''}`, name: '', message: '', look: int(r, 0, 999), ...anyone(r) };
     for (const rule of rules) satisfy(r, p, rule);
     if (slot >= good && rules.length) {
       const k = rules.length > 2 && r() < 0.25 ? 2 : 1;
@@ -251,6 +258,9 @@ export function dayProfiles(content: Content, day: number, version: number, wome
     // keep sexuality and gender consistent; this never moves a value across a standard's line
     if (p.gender === 'man' && p.sexuality === 'lesbian') p.sexuality = 'gay';
     if (p.gender !== 'man' && p.sexuality === 'gay') p.sexuality = 'lesbian';
+    const lines = MESSAGES[p.gender === 'man' ? 'men' : 'women'];
+    p.message = choose(r, lines.filter((x) => !said.has(x)).length ? lines.filter((x) => !said.has(x)) : lines);
+    said.add(p.message);
     const names = NAMES[p.gender].filter((x) => !used.has(x));
     p.name = choose(r, names.length ? names : NAMES[p.gender]);
     used.add(p.name);

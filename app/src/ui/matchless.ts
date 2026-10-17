@@ -11,6 +11,9 @@ const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;'
 /** A rose tile: a heart dropping into a filter funnel. */
 export const MATCHLESS_ICON = `<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="8" fill="#b4234f"/><path d="M20 15.5c-1.6-3.2-6.5-2.6-6.5 1 0 2.6 3.3 4.6 6.5 7 3.2-2.4 6.5-4.4 6.5-7 0-3.6-4.9-4.2-6.5-1z" fill="#ffd3df"/><path d="M8 9h24l-8.5 11v9l-7 3V20z" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/></svg>`;
 
+const HEART = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5c-5-3.6-8.5-6.8-8.5-10.6 0-2.6 2-4.6 4.5-4.6 1.7 0 3.1.9 4 2.3.9-1.4 2.3-2.3 4-2.3 2.5 0 4.5 2 4.5 4.6 0 3.8-3.5 7-8.5 10.6z" fill="currentColor"/></svg>';
+const GHOST = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V10.5C5 6.4 8.1 3.5 12 3.5s7 2.9 7 7V21l-2.3-1.8L14.3 21 12 19.2 9.7 21l-2.4-1.8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="9.5" cy="10.5" r="1.3" fill="currentColor"/><circle cx="14.5" cy="10.5" r="1.3" fill="currentColor"/></svg>';
+
 const SKIN = ['#efcfb3', '#e2b28c', '#c69070', '#9c6b4e', '#6f4b37'];
 const HAIR: Record<Profile['hairColor'], string> = { black: '#2a2226', brown: '#5a3e2b', blonde: '#d2b06e', red: '#a8502c', grey: '#aeaaa3' };
 const BACK = ['#8ea698', '#878c95', '#9e8a7a', '#7d8fa3', '#9a8f9e', '#8f9a86'];
@@ -80,10 +83,10 @@ export function pageMatchless(store: GameStore): string {
     <p class="mx-count">Profile ${done + 1} of ${profiles.length} today</p>
     <article class="mx-card">
       <span class="mx-ph">${portrait(next)}</span>
-      <div class="mx-info"><h2>${esc(next.name)}, ${next.age} <span class="mx-gender">${esc(showAttr(next, 'gender'))}</span></h2><p>${esc(next.bio)}</p><table>${rows}</table></div>
+      <div class="mx-info"><h2>${esc(next.name)}, ${next.age} <span class="mx-gender">${esc(showAttr(next, 'gender'))}</span></h2><p class="mx-msg"><span>Message to you</span>${esc(next.message)}</p><table>${rows}</table></div>
       <div class="mx-acts">
-        <form data-form="mx-swipe" data-pick="no"><button type="submit" class="mx-btn no"${s.ending ? ' disabled' : ''}>Reject</button></form>
-        <form data-form="mx-swipe" data-pick="yes"><button type="submit" class="mx-btn yes"${s.ending ? ' disabled' : ''}>Accept</button></form>
+        <form data-form="mx-swipe" data-pick="no"><button type="submit" class="mx-btn no" aria-label="Ghost" title="Ghost"${s.ending ? ' disabled' : ''}>${GHOST}</button></form>
+        <form data-form="mx-swipe" data-pick="yes"><button type="submit" class="mx-btn yes" aria-label="Like" title="Like"${s.ending ? ' disabled' : ''}>${HEART}</button></form>
       </div>
     </article></main></div>`;
 }
