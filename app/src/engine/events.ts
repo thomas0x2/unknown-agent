@@ -278,19 +278,31 @@ export function queueLaunch(s: GameState, content: Content, clientEventId: strin
   }
 }
 
+/** Story posts go up by 20:00; one that would land later waits for the next morning. */
+export const LAST_POST = 20 * 60;
+
 /**
  * A deploy put these features live on a client's app: queue the events waiting on one of them, `after`
- * minutes from now. Only the first time (a delivered or queued event isn't queued again); what doesn't
- * fit before bedtime lands the next morning, as many minutes after waking as it ran over.
+ * minutes from now. Only the first time (a delivered or queued event isn't queued again). The events
+ * waiting on one feature move together: if the last of them would land after 20:00, they all go up the
+ * next morning instead, from 10:30, keeping their spacing (Crane's post, then Axel's reply).
  */
 export function queueFeatureLaunch(s: GameState, content: Content, clientEventId: string, live: string[]): void {
-  for (const ev of content.events) {
+  const waiting = content.events.filter((ev) => {
     const l = ev.launch;
-    if (l?.app !== clientEventId || !l.feature || !live.includes(l.feature)) continue;
-    if (underway(s, ev) || !triggerMatches(s, ev.trigger)) continue;
-    const at = s.clockMin + l.after;
-    const late = at >= CLOCK.sleep;
-    (s.arriving ??= []).push({ eventId: ev.id, day: s.values.day + (late ? 1 : 0), at: late ? CLOCK.wake + at - CLOCK.sleep : at });
+    return l?.app === clientEventId && !!l.feature && live.includes(l.feature) && !underway(s, ev) && triggerMatches(s, ev.trigger);
+  });
+  for (const feature of new Set(waiting.map((ev) => ev.launch!.feature!))) {
+    const group = waiting.filter((ev) => ev.launch!.feature === feature);
+    const afters = group.map((ev) => ev.launch!.after);
+    const first = Math.min(...afters);
+    const late = s.clockMin + Math.max(...afters) > LAST_POST;
+    for (const ev of group) {
+      const after = ev.launch!.after;
+      (s.arriving ??= []).push(late
+        ? { eventId: ev.id, day: s.values.day + 1, at: CLOCK.wake + 30 + after - first }
+        : { eventId: ev.id, day: s.values.day, at: s.clockMin + after });
+    }
   }
 }
 

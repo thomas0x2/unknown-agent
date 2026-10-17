@@ -227,7 +227,7 @@ export interface GameEvent {
    * Lands on the day the app created by client event `app` first goes live: at `at`, or `after` game
    * minutes after that deploy when that is later. Only a first deploy queues it; the trigger alone never does.
    * With `feature`, it waits instead for the first deploy that puts that feature live (the trader's
-   * auto-buy), `after` minutes later; past bedtime it carries over to the next morning.
+   * auto-buy), `after` minutes later; what would land after 20:00 goes up the next morning instead.
    */
   launch?: { app: string; feature?: string; at?: string; after: number };
   /**
