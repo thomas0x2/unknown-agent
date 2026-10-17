@@ -6,7 +6,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   parseWikiPage, wikiCtx, blockNow, sectionNow, evalTag, parseTagRule, formatTagRule, formatWikiPage,
-  latestDay, queryablePages, cleanWikiText, EMBED, seenRef, type WikiPage,
+  latestDay, queryablePages, cleanWikiText, EMBED, seenRef, childSections, type WikiPage,
 } from './wiki';
 import { METER_IDS } from './values';
 
@@ -204,5 +204,23 @@ describe('latestDay with calendar dates', () => {
   it('reads October dates as game days (day 1 is October 7)', () => {
     expect(latestDay('Election day is Sunday, October 27.')).toBe(21);
     expect(latestDay('A memo dated Oct 8.')).toBe(2);
+  });
+});
+
+describe('nesting', () => {
+  const md = (extra: string) => `---\ntitle: Local businesses\ncategory: companies\n${extra}---\n\n[public] Shops.\n\n## Who they are\n\n[public] Intro.\n\n## Trattoria Gino\n\n[public] Pizza.\n\n## From day 3: Bean There\n\n[public] Coffee.\n\n## Writer notes\n\nNotes.\n`;
+  it('nests the entries of hub and nest pages, not their intro or writer notes', () => {
+    expect(childSections(page(md('hub: true\n'))).map((c) => [c.slug, c.fromDay])).toEqual([['trattoria-gino', undefined], ['bean-there', 3]]);
+    expect(childSections(page(md('nest: true\n'))).map((c) => c.heading)).toEqual(['Trattoria Gino', 'Bean There']);
+    expect(childSections(page(md('')))).toEqual([]);
+  });
+  it('keeps the nest flag through a save', () => {
+    expect(formatWikiPage(page(md('nest: true\n')))).toContain('nest: true');
+  });
+  it('gives every entry of the real nesting pages its own address', () => {
+    for (const f of readdirSync(DIR).filter((x) => x.endsWith('.md'))) {
+      const slugs = childSections(page(readFileSync(join(DIR, f), 'utf8'), f)).map((c) => c.slug);
+      expect(new Set(slugs).size, f).toBe(slugs.length);
+    }
   });
 });

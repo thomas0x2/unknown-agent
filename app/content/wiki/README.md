@@ -43,6 +43,11 @@ Code paths, flags, open questions. Never part of an answer, never tagged.
 - **hub: true** (optional) marks a page of many things, like Ad brands and Local businesses: each
   section is matched on its own, so a question that names one brand or shop finds its section
   without naming the page.
+  In the wiki, its sections show as pages nested under it (Companies › Local businesses ›
+  Trattoria Gino, at `local-businesses/trattoria-gino`); the file stays one page.
+- **nest: true** (optional) nests a page's sections the same way in the wiki without changing how
+  questions match it (Y regulars, App users and reviewers). A "Who they are" or "Overview" section
+  and writer notes stay on the parent page. Day pages are grouped by week.
 - **from**: the first day the player can know the page's subject exists (default 1). Before it, a
   question about it is refused as classified.
 - **summary** (optional): one line saying what the page is about, for Jev to match questions

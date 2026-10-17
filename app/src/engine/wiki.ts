@@ -43,6 +43,8 @@ export interface WikiPage {
   from: number;
   /** A page of many things (ad brands, local businesses): a question can name one of its sections without naming the page. */
   hub?: boolean;
+  /** Shown as a parent in the wiki, its entries (headed sections) nested under it as pages of their own. Hub pages always are. Display only: queries don't change. */
+  nest?: boolean;
   /** What the page is about, in a line, for Jev to match questions against (default: its first sentence). */
   summary?: string;
   sections: WikiSection[];
@@ -107,6 +109,7 @@ export function parseWikiPage(md: string, file = ''): WikiPage {
       else if (m[1] === 'category') page.category = v as WikiCategory;
       else if (m[1] === 'from') page.from = Number(v) || 1;
       else if (m[1] === 'hub') page.hub = v === 'true';
+      else if (m[1] === 'nest') page.nest = v === 'true';
       else if (m[1] === 'summary') page.summary = v;
     }
   }
@@ -363,6 +366,20 @@ export function querySections(page: WikiPage): WikiSection[] {
   return page.sections.filter((s) => !s.writer && s.blocks.length);
 }
 
+/** A heading as it reads in a URL: "Trattoria Gino" → trattoria-gino. */
+export const sectionSlug = (heading: string) => heading.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+/**
+ * The entries a hub or nesting page holds (each business, each brand, each regular): its headed
+ * sections, but not the page's own intro ("Who they are", "Overview") or writer notes. The wiki shows
+ * each one as a page under its parent; to queries they stay sections of the parent (query.ts).
+ */
+export function childSections(page: WikiPage): { i: number; slug: string; heading: string; fromDay?: number }[] {
+  if (!page.hub && !page.nest) return [];
+  return page.sections.flatMap((s, i) => s.heading && !s.writer && !/^(who they are|overview)$/i.test(s.heading)
+    ? [{ i, slug: sectionSlug(s.heading), heading: s.heading, fromDay: s.fromDay }] : []);
+}
+
 /** A block back as markdown, with its tag rule. */
 export function formatBlock(b: Pick<WikiBlock, 'rule' | 'text' | 'bullet' | 'row'>): string {
   const tag = b.rule ? `[${b.rule}] ` : '';
@@ -375,7 +392,7 @@ export function formatBlock(b: Pick<WikiBlock, 'rule' | 'text' | 'bullet' | 'row
 
 /** A whole page back as markdown (what the wiki editor saves). */
 export function formatWikiPage(p: WikiPage): string {
-  const fm = ['---', `title: ${p.title}`, ...(p.aliases.length ? [`aliases: ${p.aliases.join(', ')}`] : []), `category: ${p.category}`, `from: ${p.from}`, ...(p.hub ? ['hub: true'] : []), ...(p.summary ? [`summary: ${p.summary}`] : []), '---', ''];
+  const fm = ['---', `title: ${p.title}`, ...(p.aliases.length ? [`aliases: ${p.aliases.join(', ')}`] : []), `category: ${p.category}`, `from: ${p.from}`, ...(p.hub ? ['hub: true'] : []), ...(p.nest ? ['nest: true'] : []), ...(p.summary ? [`summary: ${p.summary}`] : []), '---', ''];
   const out: string[] = [];
   for (const sec of p.sections) {
     const head = sec.writer ? 'Writer notes'
