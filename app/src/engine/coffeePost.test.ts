@@ -42,7 +42,7 @@ describe("Bean There's paid shout-out", () => {
     expect(seen.at(-1)).toEqual(expect.arrayContaining(['event:coffee_post_paid', 'event:coffee_post_disclosed', 'event:coffee_post_trashed']));
   });
 
-  for (const [id, crypto, flag] of [['coffee_post_paid', 30, 'promoted_coffee_shop'], ['coffee_post_disclosed', 10, 'disclosed_ad'], ['coffee_post_trashed', 0, 'trashed_coffee_shop']] as const) {
+  for (const [id, crypto, flag] of [['coffee_post_paid', 30, 'promoted_coffee_shop'], ['coffee_post_disclosed', 10, 'disclosed_ad'], ['coffee_post_trashed', 0, 'trashed_beanthere']] as const) {
     it(`${id}: lands 30 minutes after the post and pays ${crypto}`, async () => {
       const s0 = asked();
       const before = s0.values.crypto;
@@ -75,8 +75,9 @@ describe('after a bad post', () => {
     const { triggerMatches } = await import('./events');
     const s = startGame(content, 3);
     s.values.day = 7;
+    s.flags.push('promoted_coffee_shop');
     expect(triggerMatches(s, getEvent(content, 'd5_coffee_removal')!.trigger)).toBe(true);
-    s.flags.push('trashed_coffee_shop');
-    for (const id of ['d5_coffee_removal', 'd7_coffee_removal']) expect(triggerMatches(s, getEvent(content, id)!.trigger), id).toBe(false);
+    s.flags.push('trashed_beanthere');
+    for (const id of ['d5_coffee_removal', 'd5_coffee_reached', 'd7_coffee_removal']) expect(triggerMatches(s, getEvent(content, id)!.trigger), id).toBe(false);
   });
 });

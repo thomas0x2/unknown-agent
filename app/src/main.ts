@@ -350,7 +350,7 @@ document.addEventListener('click', (e) => {
   else if (d.download != null) store.download(d.download);
   else if (d.wlRange != null) store.setWalletRange(d.wlRange);
   else if (d.ov != null) onOverlay(d.ov);
-  else if (d.dev != null) store.devAdd(d.dev);
+  else if (d.dev != null) { if (d.dev === 'rewind') quietReset(); store.devAdd(d.dev); }
   else if (d.devopts != null) store.toggleDevOptions(d.devopts);
   else if (d.devbug != null) { const [app, feat, key] = d.devbug.split('|'); store.devToggleBug(app, feat, key); }
   else if (d.act === 'book-back') store.bookBack();
@@ -479,6 +479,8 @@ document.addEventListener('submit', (e) => {
   } else if (kind === 'sl-buy') {
     if (store.busy) return;
     void store.swapBuy(Number(f.dataset.n));
+  } else if (kind === 'mx-login') {
+    store.matchlessLogin(val('#mx-user'), val('#mx-pass'));
   } else if (kind === 'mx-swipe') {
     store.matchlessSwipe(f.dataset.pick === 'yes' ? 'yes' : 'no');
   } else if (kind === 'y-search') {

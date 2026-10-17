@@ -6,8 +6,13 @@
   "subject": "Your post",
   "trigger": {
     "dayMin": 3,
+    "dayMax": 7,
     "flagsAll": [
       "coffee_promo_asked"
+    ],
+    "flagsNone": [
+      "first_hack",
+      "trashed_beanthere"
     ]
   },
   "yPost": {
@@ -20,7 +25,7 @@
   },
   "onDeliver": {
     "setFlags": [
-      "trashed_coffee_shop"
+      "trashed_beanthere"
     ]
   },
   "body": "I offered to pay you for a nice post. That wasn't one. You're not getting anything for it.\n\nDana"

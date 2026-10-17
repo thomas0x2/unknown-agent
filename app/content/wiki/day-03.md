@@ -18,7 +18,7 @@ from: 3
 - [hidden; public if shown d3_coffee_promo] 14:10 Bean There, "Paid shout-out?": 30 DOLR for a Y post recommending the coffee shop, tagging @bean_there. {{mail:d3_coffee_promo}}
 - [hidden; public if promoted_coffee_shop] Half an hour after the player's Y post recommending the coffee shop without saying it was an ad, Bean There paid 30 DOLR.
 - [hidden; public if disclosed_ad] Half an hour after the player's Y post marked as an ad, Bean There paid 10 DOLR.
-- [hidden; public if trashed_coffee_shop] The player's Y post ran Bean There down, and Dana paid nothing.
+- [hidden; public if trashed_beanthere] The player's Y post ran Bean There down, and Dana paid nothing.
 
 ## Y
 

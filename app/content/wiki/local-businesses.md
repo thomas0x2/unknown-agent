@@ -26,7 +26,7 @@ hub: true
 ## Iron Yard
 
 [public] Iron Yard, 88 Harbor Rd, owner [[Marcus Steele]]: a new strength gym, $$, opening this month, half the machines still in boxes. Yowl lists daily 06:00–23:00; ironyard.gym says 5:00 to 23:00 ("Marcus is usually here for both"). Membership 45 DOLR a month, renews automatically, cancel in person at the front desk when Marcus is not there. Yowl reviews: liftbro (3), Steph M. (4, first week free), kettlebell_karen (2, showers broken). Ad: "LIFT HEAVY THINGS. Like your rent."
-- [public] {{mail:d5_gym_reviews}}
+- [hidden; public if shown d6_gym_reviews] {{mail:d6_gym_reviews}}
 
 ## Spin Cycle Laundry
 
@@ -47,5 +47,5 @@ hub: true
 
 - Yowl data `app/src/ui/yowl-data.ts`; sites `app/src/sites/adSites.ts`; DoorDish `app/src/ui/doordish.ts`. Yowl and the businesses' own sites disagree on Bean There's, Iron Yard's and Spin Cycle's hours (code as shipped); the Yowl "about" for Spin Cycle says "Eight washers, six dryers".
 - The van at Spin Cycle is the mafia plot seed [planned]; don't spend it as a joke. [planned] Day 8: Hassan launches his own GeneralAI-built app.
-- Bean There and Iron Yard names are placeholders. Dana's jobs: shout-out day 3 (paid on the Y post: 30, 10 if marked as an ad, nothing if negative), review removals days 5 and 7 (hacks). Marcus: five fake reviews day 5.
+- Bean There and Iron Yard names are placeholders. Dana's jobs: shout-out day 3 (paid on the Y post: 30, 10 if marked as an ad, nothing if negative), review removals days 5 and 7 (hacks). Marcus: five fake reviews, a hack, the day after Dana's first one (day 6 at the earliest).
 - Legacy-only names: Alder St Hardware, Crumb & Coin Bakery, Ferris St Laundromat, Suds & Duds.

@@ -75,7 +75,7 @@ Sites the player can reach from day 1 or unlock by clicking through: Qmail, Y, C
 | `talked_to_journalist`, `did_journalist_interview` | emailing Mara | day 17 dox request | flags canon, payoff planned; day 7 article quotes the first email |
 | `knows_weightroom` | day 2 dev_null post or deepsleep.ai | Weightroom | canon |
 | `promoted_coffee_shop` | day 3 | coffee backlash on day 5 | canon |
-| `first_hack`, `second_hack`, `gym_reviews` | days 5, 7 | Null Collective's day 8 offer feeling natural | flags canon, payoff planned |
+| `first_hack`, `second_hack`, `gym_reviews` | days 5, 7, and the day after `first_hack` | Null Collective's day 8 offer feeling natural | flags canon, payoff planned |
 | `gift_chipped_in`, `gift_own`, `gift_skipped` | days 4 and 5 | day 6 birthday mail | canon |
 | `posted_deepfake`, `influence_path` | day 6 | Crane's opponent loses his lead on day 7, The Current debunks the clip on day 12; Mom's forward on day 9; the consultant returns | days 7 and 12 canon, rest planned |
 | `hacked_generalai` | none yet (the planned weights heist, days 18 and 19) | agent down for the rest of that day; Crane's error post instead of his own | outage canon, no content sets it |
@@ -133,4 +133,4 @@ Thomas went through this on 2026-10-17: the game's version stays everywhere exce
 - Heritage and Progress standing have no payoff beyond their meters.
 - Trending topics for days 7 to 21 are not in `trending.json`; the proposals need Thomas's OK.
 - The misuse warning email is config only.
-- Hacks: PR #205 put Bean There's removals in agent-terminal with guardrails from day 7; the only mini-game is the placeholder `cover_story`, and no hack job exists after day 7 yet.
+- Hacks: PR #205 put Bean There's removals in agent-terminal with guardrails from day 7; games: placeholder `cover_story` (Bean There) and `real_customers` (Iron Yard's fake reviews, day 6+). Every hack's job is paid overnight (`payHacks`). No hack job exists after day 7 yet.
