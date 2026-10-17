@@ -38,8 +38,12 @@ export const SITES: SiteDef[] = [
   { id: 'y', base: 'y.com', label: 'Y', group: 'core', reachable: always },
   { id: 'yowl', base: 'yowl.com', label: 'Yowl', group: 'core', reachable: always },
   { id: 'coinbin', base: 'coinbin.com', label: 'Coinbin', group: 'core', reachable: always },
-  { id: 'sherwood', base: 'sherwood.com', label: 'Sherwood', group: 'core', reachable: always },
-  { id: 'doordish', base: 'doordish.com', label: 'DoorDish', group: 'core', reachable: always },
+  // the stock app and the delivery site exist from day 1; bookmarked once the player has been there
+  // (their banner ads link them, and Gino's day 4 email links DoorDish)
+  { id: 'sherwood', base: 'sherwood.com', label: 'Sherwood', group: 'core', reachable: always,
+    bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('sherwood')) },
+  { id: 'doordish', base: 'doordish.com', label: 'DoorDish', group: 'core', reachable: always,
+    bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('doordish')) },
   { id: 'forkyard', base: 'forkyard.com', label: 'Forkyard', group: 'core', reachable: always },
   { id: 'weightroom', base: 'weightroom.ai', label: 'Weightroom', group: 'tools', reachable: flag('knows_weightroom'),
     bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('weightroom')) || s.flags.includes('has_terminal') },

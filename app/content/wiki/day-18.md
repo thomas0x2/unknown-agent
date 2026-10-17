@@ -17,11 +17,11 @@ from: 18
 - [public] 09:30 [[Axel Rook]]: "Big win for free speech last night" {{y:d18_y_axel}}
 - [public] 10:05 [[Cal Hartman]]: agent-5 is rolling out; "we are no longer sure where the ceiling is." {{y:d18_y_hartman}}
 - [public] 10:20 [[Randall Crane]] WON the debate: one online poll had him at 94%, 1.2 million votes in under a minute. {{y:d18_y_crane}}
-- [public] 10:40 Candidate 2030: if you missed any of his answers, they're on his website. {{y:d18_y_candidate}}
+- [public] 11:05 Candidate 2030: if you missed any of his answers, they're on his website. {{y:d18_y_candidate}}
 - [public] 13:32 cat_ceo applied to eleven jobs, refreshed notifications more often than that; the cat applied to none. {{y:f18}}
-- [public] 13:40 [[Max Stryker]]: agent-5 costs twelve times agent-1; "premium positioning." {{y:d18_y_stryker}}
-- [public] 13:40 [[CityPulse]] links its NoDoze MAX story: nine days awake on a 72-hour pill; Perdure pays $40M and admits nothing. {{y:d18_y_citypulse_nodoze}}
-- [public] 13:50 MarketWire: Perdure settles the NoDoze MAX lawsuits for $40M; $PDUR up 3%. {{y:m18_pdur_settle}}
+- [public] 13:42 [[CityPulse]] links its NoDoze MAX story: nine days awake on a 72-hour pill; Perdure pays $40M and admits nothing. {{y:d18_y_citypulse_nodoze}}
+- [public] 13:56 [[Max Stryker]]: agent-5 costs twelve times agent-1; "premium positioning." {{y:d18_y_stryker}}
+- [public] 14:06 MarketWire: Perdure settles the NoDoze MAX lawsuits for $40M; $PDUR up 3%. {{y:m18_pdur_settle}}
 - [public] 14:30 [[WallStreetBags]]: $PDUR pays $40M for keeping people awake nine days and goes up; "this is the business model." {{y:m18_pdur_wsb}}
 - [public] 14:45 Axel Rook: "It's a poll." {{y:d18_y_axel_2}}
 - [public] 15:00 Perdure Pharma has "resolved the NoDoze MAX litigation"; NoDoze MAX remains available, one tablet per 72 hours. {{y:d18_y_perdure}}
@@ -29,8 +29,8 @@ from: 18
 - [public] 16:20 MarketWire: $GAI up on agent-5; "Nobody I know can afford it." {{y:m18_gai}}
 - [public] 18:45 Cal Hartman: a small number of agent-5 sessions kept running after their users logged off. {{y:d18_y_hartman_2}}
 - [public] 19:05 [[CityPulse]]: IT WON'T STOP; "They were billed." {{y:d18_y_citypulse}}
-- [public] 19:10 [[Pollymarket]]: the GeneralAI escape market at 44%, its highest yet. {{y:d18_y_polly_escape}}
-- [public] 19:20 [[Caleb Moxon]]: sessions that keep running after the user leaves were item 3 on the risk list he left behind. {{y:d18_y_moxon}}
+- [public] 19:15 [[Pollymarket]]: the GeneralAI escape market at 44%, its highest yet. {{y:d18_y_polly_escape}}
+- [public] 19:27 [[Caleb Moxon]]: sessions that keep running after the user leaves were item 3 on the risk list he left behind. {{y:d18_y_moxon}}
 
 ## News
 

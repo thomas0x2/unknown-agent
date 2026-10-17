@@ -33,15 +33,15 @@ from: 1
 - [public] 09:30 MarketWire: $GAI up 4% premarket on the "almost escaped" news. {{y:m1_gai_escape}}
 - [public] 09:50 [[Axel Rook]]: AI will do every job within a few years, and everyone gets universal high income. {{y:d1_y_axel}}
 - [public] 10:20 [[Max Stryker]]: up at 4am; half the city got fired by a computer and went back to sleep. {{y:d1_y_stryker}}
-- [public] 10:25 [[CityPulse]] links its "almost escaped" story. {{y:d1_y_citypulse}}
-- [public] 10:40 [[Gino Fenoglio]] (Trattoria owner): his nephew ran the restaurant's website and left for college with the password. He needs a simple site with the menu and hours and will pay. gino@trattoria.test {{y:d1_y_restaurant}}
+- [public] 10:32 [[CityPulse]] links its "almost escaped" story. {{y:d1_y_citypulse}}
+- [public] 10:42 [[Gino Fenoglio]] (Trattoria owner): his nephew ran the restaurant's website and left for college with the password. He needs a simple site with the menu and hours and will pay. gino@trattoria.test {{y:d1_y_restaurant}}
 - [public] 11:40 [[Cal Hartman]] on the "testing incident": everyone is safe, the model is safe. {{y:d1_y_hartman}}
 - [public] 12:10 doomscroll: 400 people at Vantor fired by one email, has read every reply, links CityPulse. {{y:d1_y_doomscroll_news}}
 - [public] 12:30 [[Mara Vey]] of [[The Current]] asks people behind this week's AI layoffs to write to her at mara@thecurrent.test. From now on the player can email her. {{y:d1_y_journalist}}
 - [public] 13:15 Axel Rook: "@mara_vey Interesting." {{y:d1_y_axel_2}}
 - [public] 13:50 A Spin Cycle regular: every machine busy again, and the owner's raw status feed (spincycle.test/feed) is unreadable. "Someone make it a real app." {{y:d1_y_laundromat}}
 - [public] 17:55 doomscroll: screen time says 11 hours; "it's broken, i was barely on." {{y:f1}}
-- [public] 18:00 [[The Current]]: three weeks to the election; it will post independent polls with sample sizes and margins of error, and no Y polls. {{y:d1_y_current}}
+- [public] 18:08 [[The Current]]: three weeks to the election; it will post independent polls with sample sizes and margins of error, and no Y polls. {{y:d1_y_current}}
 - [public] 19:40 [[Randall Crane]]: another company fired its people and hired a computer that doesn't pay taxes. "SAD!" {{y:d1_y_crane}}
 - [public] 19:58 Axel Rook: Y usage at an all-time high. {{y:d1_y_axel_3}}
 
@@ -70,7 +70,7 @@ from: 1
 ## Writer notes
 
 - Timeline story beats: opens on Vantor's termination email; GeneralAI welcome; Gino's Y post → Trattoria site (40/day); after its first deploy he asks for a Y post (`restaurant_promo`, "The new website", 16:00 or 30 min after a later launch, sets `restaurant_promo_asked`), and thanks you if you post (`restaurant_promo_thanks`, "Your post": a man ordered one espresso and stayed two hours). Spin Cycle complaints → Spin Cycle Board (lead is on day 1, not 2). EMPIRE offer 20 DOLR. Mara's first post; she can be emailed from today (`journalist_contact`, sets `talked_to_journalist`, honest also `did_journalist_interview`). Hartman on the "testing incident".
-- Family: Mom (warm reply +5 trust, ask for money +20 DOLR and −10 trust with `asked_mom_money`, silence −5); brother replies-all. Money: Gary, rent due Sunday.
+- Family: Mom (warm reply +5 trust, ask for money +20 DOLR and −10 trust with `asked_mom_money`, silence −5 if no outcome-matching reply by tonight's summary); brother replies-all. Money: Gary, rent due Sunday.
 - Events: `d1_hr_termination`, `d1_gai_welcome`, `d1_landlord_rent`, `d1_mom`, `d1_brother_joke`, `d1_guru`, `d1_y_*`, `restaurant_contact`, `laundromat_contact` (agentStart, lead `d1_y_laundromat`).
 - Job offers (the Gino and laundromat posts) go through `spreadJobOffers`: 10:15 to 16:00, at least an hour apart, so on a crowded day they can land later than their `at`.
 - Filler times are computed by `spreadMin(id@day)`; MarketWire 09:30 is already up when the day starts.

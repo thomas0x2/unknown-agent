@@ -1,6 +1,12 @@
 {
   "id": "swaplist",
   "name": "Swaplist",
+  "aka": [
+    "marketplace",
+    "classifieds",
+    "listing site",
+    "classifieds site"
+  ],
   "pages": [
     {
       "id": "browse",

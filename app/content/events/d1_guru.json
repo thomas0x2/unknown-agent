@@ -13,7 +13,13 @@
     {
       "id": "interested",
       "when": "the player replies EMPIRE, or says they want, buy or sign up for the course",
-      "reply": "That's the decision most people never make.\n\nSecure your seat here: empire.alphaascend.biz\n\nThe 20 DOLR price is good until midnight. After that it goes back to 200, as it has every midnight since launch.\n\nMax"
+      "reply": "That's the decision most people never make.\n\nSecure your seat here: empire.alphaascend.biz\n\nThe 20 DOLR price is good until midnight. After that it goes back to 200, as it has every midnight since launch.\n\nMax",
+      "keys": [
+        "empire",
+        "buy|sign up|join|enroll|want+course|program",
+        "@yes",
+        "!@no"
+      ]
     }
   ],
   "hints": [

@@ -14,16 +14,24 @@ import type { PlayerView } from './playerView';
 export type Misses = 'haiku' | 'scripted';
 /** Who pays for Haiku replies: the Claude subscription logged in to the claude CLI (dev), or ANTHROPIC_API_KEY. */
 export type HaikuVia = 'subscription' | 'api';
-interface MissSettings { misses: Misses; haikuVia: HaikuVia }
+/**
+ * Online: every judgment goes to Jev (there is no keyword fallback) and misses follow the Misses
+ * setting. Offline: a local keyword matcher decides instead of Jev and every miss is a scripted line,
+ * so the game needs no network and no keys. An explicit mode the player picks, not a fallback for
+ * when Jev is down.
+ */
+export type Net = 'online' | 'offline';
+interface MissSettings { misses: Misses; haikuVia: HaikuVia; net: Net }
 
 const KEY = 'unknown-agent-misses';
 
 function load(): MissSettings {
-  const d: MissSettings = { misses: 'haiku', haikuVia: 'api' };
+  const d: MissSettings = { misses: 'haiku', haikuVia: 'api', net: 'online' };
   try {
     const saved = JSON.parse(localStorage.getItem(KEY) || '{}');
     if (saved.misses === 'scripted') d.misses = 'scripted';
     if (saved.haikuVia === 'subscription') d.haikuVia = 'subscription';
+    if (saved.net === 'offline') d.net = 'offline';
   } catch { /* storage off */ }
   return d;
 }
@@ -37,6 +45,10 @@ class MissesSetting {
     try { localStorage.setItem(KEY, JSON.stringify(this.settings)); } catch { /* storage off */ }
     this.listeners.forEach((fn) => fn());
   }
+  /** Offline mode: the keyword matcher decides and every miss is a scripted line. */
+  get offline(): boolean { return this.settings.net === 'offline'; }
+  /** Whether a miss is answered by a scripted line (offline, or the Misses setting says so) rather than Haiku. */
+  get scriptedMisses(): boolean { return this.offline || this.settings.misses === 'scripted'; }
   /** Who wrote model replies, for labels. */
   label(): string { return this.settings.haikuVia === 'api' ? 'Claude Haiku 5.5 · API' : 'Claude Haiku 5.5 · subscription'; }
 }
@@ -54,7 +66,7 @@ export function makeWriter(content: Content, view?: () => PlayerView, searching?
   };
   return {
     async write(req: WriteReq) {
-      if (MISSES.settings.misses === 'scripted') return { text: req.fallback, llm: false, debug: ['Misses setting is "Scripted lines", so Haiku was not asked'] };
+      if (MISSES.scriptedMisses) return { text: req.fallback, llm: false, debug: [MISSES.offline ? 'Offline mode, so the scripted line is used' : 'Misses setting is "Scripted lines", so Haiku was not asked'] };
       const ch = req.character ? content.characters?.find((c) => c.id === req.character) : characterFor(req.as);
       if (!ch) return { text: req.fallback, llm: false, note: `no character for ${req.as}` };
       const query = req.mode === 'query' ? { known: req.known ?? { public: [], hint: [] }, view: view?.() } : undefined;

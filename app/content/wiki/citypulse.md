@@ -5,7 +5,7 @@ category: companies
 from: 1
 ---
 
-[public] CityPulse is the city's tabloid: the news site `citypulse.news` and the Y account @citypulse (bio "Local news, fast. Corrections, eventually."). It dramatizes everything: ALL-CAPS hooks, rhetorical questions ("Is your bank next?"), "experts warn", "You decide." The facts under the headlines are accurate; [[Mara Vey]] rolls her eyes at it. Its banner ads say "CityPulse is reader-funded."
+[public] CityPulse is the city's tabloid: the news site `citypulse.news` and the verified Y account @citypulse (1.2M followers, bio "Local news, fast. Corrections, eventually."). It dramatizes everything: ALL-CAPS hooks, rhetorical questions ("Is your bank next?"), "experts warn", "You decide." The facts under the headlines are accurate; [[Mara Vey]] rolls her eyes at it. Its banner ads say "CityPulse is reader-funded."
 
 [public] **Reporters:** Owen Pratt (city, business, markets), Sofia Mendel (tech, [[GeneralAI]]), Renata Ilic (the election).
 
@@ -157,12 +157,13 @@ from: 1
 [public] Besides article links, CityPulse posts Y polls and Crane quotes without articles:
 
 - [public] On day 5 at 16:20 it posts a Y poll putting Crane at 71% (300,000 votes; Y "can't share" who voted). {{y:d5_y_citypulse_vote}}
-- [public] On day 8 at 15:30 it quotes Crane wanting a law making it illegal for a computer to be smarter than his cabinet appointees. {{y:d8_y_citypulse_vote}}
+- [public] On day 8 at 15:41 it quotes Crane wanting a law making it illegal for a computer to be smarter than his cabinet appointees. {{y:d8_y_citypulse_vote}}
 - [public] On day 13 at 17:30, "THE ROOK BUMP": Crane 46%, opponent 42%. {{y:d13_y_citypulse_vote}}
-- [public] On day 14 at 12:00 Crane vows to "build a wall around the cloud and make the computers pay for it"; asked where the cloud is: "Up." {{y:d14_y_citypulse_vote}}
+- [public] On day 14 at 12:05 Crane vows to "build a wall around the cloud and make the computers pay for it"; asked where the cloud is: "Up." {{y:d14_y_citypulse_vote}}
 - [public] On day 17 at 11:20 Crane says he'll debate with "no computer of any kind"; the debate streams on Y at 21:30. {{y:d17_y_citypulse_vote}}
 - [public] On day 20 at 15:00, "DEAD HEAT": Crane 46%, opponent 46%, 8% undecided. {{y:d20_y_citypulse_vote}}
 
 ## Writer notes
 
 - Tabloid voice is Thomas's exception to the restraint rule (2026-10-17). Site `app/src/ui/citypulse.ts`, `app/src/engine/citypulse.ts` (`hotStory()`), articles `app/content/citypulse.json` (45 entries; `opponent-clip` needs `posted_deepfake`, `opponent-lead` needs it absent, so a run sees 44). Posts `dN_y_citypulse*.json`.
+- @citypulse is verified with 1.24M followers (`Y_VERIFIED` / `Y_FOLLOWERS` in ui/view.ts, Thomas 2026-10-17).

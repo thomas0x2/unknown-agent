@@ -36,7 +36,11 @@
           "influence_path"
         ]
       },
-      "reply": "It's moving already. We'll be in touch with bigger things."
+      "reply": "It's moving already. We'll be in touch with bigger things.",
+      "keys": [
+        "@yes",
+        "!@no"
+      ]
     }
   ],
   "hints": [

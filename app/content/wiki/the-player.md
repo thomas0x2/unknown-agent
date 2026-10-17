@@ -4,6 +4,7 @@ aliases: you, @you, you@qmail.com, YOU, player
 category: people
 from: 1
 summary: The player themself, the person asking: their own life, job loss, apartment, family and situation. Only questions about "me", "I" or "my" life are about this page.
+keys: who am i, about me, my job, lose my job, lost my job, laid off, my life, my situation, my apartment, my family
 ---
 
 ## Who they are
@@ -36,5 +37,6 @@ summary: The player themself, the person asking: their own life, job loss, apart
 
 - Name comes from `{{playerName}}`; the resume header says "YOU, you@qmail.com". Avatar is an initials tile.
 - Start values: 100 DOLR, 12 followers, family trust 60, agent-1 (`START` in config).
+- Family trust (hidden, 0-100): Mom day 1 warm +5 / money −10 / silence −5; Dad day 2 warm +5 / ask +3 / silence −5; brother's jacket paid +5 / bought +10 / excuse or silence −5 (deadline end of day 5); Mom's day 6 thank-you +5 if the player bought the jacket; every Y hot take −5 to −10 (`postToY`). Silence penalties come from event `noReply` (`lapseUnanswered`). Nothing reads the meter yet: `familyBand` and most of `FAMILY` in config are unused.
 - Coinbin address 0x4417…a9f2. passwords.txt: mostly `pinestreet4B`, Coinbin `Coinbin4B!`, Y `pinestreet4B!`, "Vantor: EmployeeQ3! (stopped working Oct 7)". It exists so the phishing page has a password to steal.
 - Rent: 350 on day 7 (Sunday Oct 13), 500 on day 14, 650 on day 21. Short means the Evicted ending.
