@@ -120,42 +120,44 @@ describe('job offers spread over the first six hours', () => {
 describe('Y posts go up one at a time', () => {
   const clock = (m: number) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
 
-  it(`every story post, stock post and filler post of a day is at least ${Y_GAP} minutes from the next`, () => {
-    const days = new Map<number, { id: string; min: number }[]>();
-    const add = (day: number, id: string, min: number) => { if (min > CLOCK.wake) days.set(day, [...(days.get(day) ?? []), { id, min }]); };
+  it(`every story post, stock post and filler post of a day is at least ${Y_GAP} minutes from the next, except inside a viral moment`, () => {
+    const days = new Map<number, { id: string; min: number; viral?: boolean }[]>();
+    const add = (day: number, id: string, min: number, viral?: boolean) => { if (min > CLOCK.wake) days.set(day, [...(days.get(day) ?? []), { id, min, viral }]); };
     for (const ev of content.events) {
       if (ev.site !== 'y' || ev.latent || ev.launch || ev.yPost || ev.afterPayment || ev.outage || !ev.at) continue;
       const lo = ev.trigger.dayMin ?? 1;
-      for (let day = lo; day <= (ev.trigger.dayMax ?? lo); day++) add(day, ev.id, arrivalMin(ev));
+      for (let day = lo; day <= (ev.trigger.dayMax ?? lo); day++) add(day, ev.id, arrivalMin(ev), ev.viral);
     }
     for (const p of [...(content.yMarket?.posts ?? []), ...content.yFiller]) {
       expect(p.at, p.id).toMatch(/^\d\d:\d\d$/); // a fixed time, so the spacing holds
-      add(p.day, p.id, postMin(p, p.day));
+      if ('bots' in p && p.bots) continue; // a bot barrage lands whenever it likes
+      add(p.day, p.id, postMin(p, p.day), 'viral' in p ? p.viral : false);
     }
     for (const [day, posts] of days) {
       posts.sort((a, b) => a.min - b.min);
       for (let i = 1; i < posts.length; i++) {
         const [a, b] = [posts[i - 1], posts[i]];
+        if (a.viral && b.viral) continue;
         expect(b.min - a.min, `day ${day}: ${a.id} ${clock(a.min)}, ${b.id} ${clock(b.min)}`).toBeGreaterThanOrEqual(Y_GAP);
       }
     }
   });
 
-  it('a post due next to another waits for the next free slot', () => {
+  it('a job lead due next to a post written for that time waits for the next free slot, off the round ten', () => {
     const s = startGame(content, 7);
     const lead = s.arriving!.find((a) => a.eventId === 'd1_y_restaurant')!;
-    const other = { eventId: 'd1_y_journalist', day: 1, at: lead.at + 2 };
-    s.arriving = [lead, other];
-    advanceClock(s, other.at - s.clockMin);
+    const story = { eventId: 'd1_y_journalist', day: 1, at: lead.at + 2 };
+    s.arriving = [lead, story];
+    advanceClock(s, story.at - s.clockMin);
     deliverArrivals(s, content);
-    expect(has(s, 'd1_y_restaurant')).toBe(true);
-    expect(has(s, 'd1_y_journalist')).toBe(false);
-    const wait = s.arriving.find((a) => a.eventId === 'd1_y_journalist')!.at;
-    expect(wait).toBe(freeYMin(s, content, other.at));
-    expect(wait - lead.at).toBeGreaterThanOrEqual(Y_GAP);
+    expect(s.delivered.find((d) => d.eventId === 'd1_y_journalist')?.min).toBe(story.at);
+    expect(has(s, 'd1_y_restaurant')).toBe(false);
+    const wait = s.arriving.find((a) => a.eventId === 'd1_y_restaurant')!.at;
+    expect(wait - story.at).toBeGreaterThanOrEqual(Y_GAP);
+    expect(wait).toBe(freeYMin(s, content, lead.at, 'd1_y_restaurant'));
     advanceClock(s, wait - s.clockMin);
     deliverArrivals(s, content);
-    expect(s.delivered.find((d) => d.eventId === 'd1_y_journalist')?.min).toBe(wait);
+    expect(s.delivered.find((d) => d.eventId === 'd1_y_restaurant')?.min).toBe(wait);
   });
 
   it('posts left over from a day that ended early come in one at a time the next morning', () => {

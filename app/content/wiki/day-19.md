@@ -24,7 +24,7 @@ from: 19
 - [public] 17:43 Brent Kowalski: $VANT down 3% on a lawsuit from former staff. {{y:m19_vant}}
 - [public] 17:55 Liftoff Daily: Apogee hired 2,000 people this year. {{y:d19_y_liftoff}}
 - [public] 18:05 MarketWire: Apogee schedules a second launch for after the election; $APO up 3%. {{y:m19_apo_launch2}}
-- [public] 18:15 Axel Rook: "@liftoff_daily The media won't report this" {{y:d19_y_axel_2}}
+- [public] 18:17 Axel Rook: "@liftoff_daily The media won't report this" {{y:d19_y_axel_2}}
 - [public] 19:35 [[Randall Crane]]: FALSE that a computer writes his posts; he writes every word, late at night, and sometimes doesn't remember writing them. {{y:d19_y_crane}}
 - [public] 19:55 [[CityPulse]]: half of Crane's posts land between 2 and 5 AM. {{y:d19_y_citypulse}}
 

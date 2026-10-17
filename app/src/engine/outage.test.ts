@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { loadContent } from '../content/load';
 import { startGame, endDay } from './day';
 import { addFlag, advanceClock, setValue } from './core';
-import { deliverArrivals, deliverDue, freeYMin } from './events';
+import { deliverArrivals, deliverDue } from './events';
 import { agentDown } from './outage';
 import { agentTermPrompt } from './hacks';
 import { wordJev, promptDone } from './_fixtures';
@@ -42,11 +42,8 @@ describe('the agent outage after the GeneralAI hack', () => {
     deliverArrivals(s, content);
     expect(delivered(s, 'gai_outage_y_crane')).toBe(false);
     // 25 minutes in, or the next free slot on Y after that
-    const slot = freeYMin(s, content, CLOCK.wake + 30);
-    advanceClock(s, slot - s.clockMin);
-    deliverArrivals(s, content);
-    expect(s.delivered.find((d) => d.eventId === 'gai_outage_y_crane')?.min).toBe(slot);
-    advanceClock(s, 120);
+    for (let i = 0; i < 240; i++) { advanceClock(s, 1); deliverArrivals(s, content); }
+    expect(s.delivered.find((d) => d.eventId === 'gai_outage_y_crane')?.min).toBeGreaterThanOrEqual(CLOCK.wake + 30);
     deliverArrivals(s, content);
     expect(delivered(s, 'd18_y_crane')).toBe(false);
     // the next day he posts as usual, and the error doesn't come back

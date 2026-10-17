@@ -15,8 +15,8 @@ from: 12
 ## Y
 
 - [public] 11:30 [[Cal Hartman]]: doesn't know what young people should study now; "something you enjoy." {{y:d12_y_hartman}}
-- [public] 11:40 Liftoff Daily: "Legacy media lost. Y is where the news happens now." {{y:d12_y_liftoff}}
-- [public] 11:50 [[Axel Rook]]: "@liftoff_daily Accurate 💯" {{y:d12_y_axel}}
+- [public] 11:42 Liftoff Daily: "Legacy media lost. Y is where the news happens now." {{y:d12_y_liftoff}}
+- [public] 11:52 [[Axel Rook]]: "@liftoff_daily Accurate 💯" {{y:d12_y_axel}}
 - [public] 15:26 MarketWire: $DISH beats estimates; orders up 9%, couriers down 30%. {{y:m12_dish_earn}}
 - [public] 15:45 [[Max Stryker]]: last day to join the campaign team, 0.2 DOLR per post; "Math is a mindset." {{y:d12_y_stryker}}
 - [hidden; public if posted_deepfake] 16:40 [[The Current]]: the clip of Crane's opponent that spread on Y was generated; three labs checked it. It has 2.1 million views, the correction 40,000. {{y:d12_y_current_clip}}
@@ -25,8 +25,8 @@ from: 12
 - [public] 17:45 Cal Hartman: an independent team will review GeneralAI's training environments, starting "once the current training run finishes." {{y:d12_y_hartman_2}}
 - [public] 18:30 [[Caleb Moxon]]: nobody outside GeneralAI knows when the current training run finishes, "some people inside don't either". {{y:d12_y_moxon}}
 - [public] 19:40 Axel Rook: "The future is going to be so cool" {{y:d12_y_axel_2}}
-- [public] 19:50 Ten bot accounts post "$GAI to the moon!!".
-- [public] 20:00 [[Randall Crane]]: thousands of accounts copy his posts word for word within seconds. "That's called a MOVEMENT." {{y:d12_y_crane}}
+- [public] 19:44 Ten bot accounts post "$GAI to the moon!!".
+- [public] 19:53 [[Randall Crane]]: thousands of accounts copy his posts word for word within seconds. "That's called a MOVEMENT." {{y:d12_y_crane}}
 
 ## News
 

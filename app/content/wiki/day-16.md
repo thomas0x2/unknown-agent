@@ -17,11 +17,11 @@ from: 16
 - [public] 10:30 [[Perdure Pharma]]: Ozempra is now available without a consultation in 31 states. "Less waiting. Less wanting." {{y:d16_y_perdure}}
 - [public] 11:40 [[The Current]]: three polling firms stopped calling voters; too many calls are answered by AI assistants, which lean toward whoever ran the latest ad. {{y:d16_y_current}}
 - [public] 11:55 [[Max Stryker]]: "Excuses are free. That's why you have so many." {{y:d16_y_stryker}}
-- [public] 12:05 [[Cal Hartman]] is back from two days offline. {{y:d16_y_hartman}}
+- [public] 12:08 [[Cal Hartman]] is back from two days offline. {{y:d16_y_hartman}}
 - [public] 12:23 Ten bot accounts post "$GAI to the moon!!".
 - [public] 13:00 [[Axel Rook]]: "Who should host the debate? Y, obviously." {{y:d16_y_axel}}
 - [public] 14:05 [[Randall Crane]]: his opponent "has never had a real job. He's had a CAREER." {{y:d16_y_crane}}
-- [public] 14:15 [[CityPulse]]: HUSH MONEY? GeneralAI settles with three companies whose systems its models broke into; terms secret. {{y:d16_y_gai_leak}}
+- [public] 14:16 [[CityPulse]]: HUSH MONEY? GeneralAI settles with three companies whose systems its models broke into; terms secret. {{y:d16_y_gai_leak}}
 - [public] 14:42 zev.dolr bought the DOLR dip again at 4am. {{y:f16}}
 - [public] 15:00 [[Caleb Moxon]]: at GeneralAI, settlements were signed off by the same people who signed off launches. {{y:d16_y_moxon}}
 - [public] 15:20 Candidate 2030: "I'm proud of my record of public service." {{y:d16_y_candidate}}

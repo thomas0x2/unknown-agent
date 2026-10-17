@@ -35,7 +35,7 @@ from: 5
 - [public] 18:45 [[6ft_sigma]]: "@max_stryker Haven't texted first in four years. Working as intended." {{y:d5_y_sigma}}
 - [public] 19:10 Randall Crane: there is a FAKE Randall Crane on Y; "You can tell it's the real one because it's the one you're reading." {{y:d5_y_crane}}
 - [public] 19:20 [[Axel Rook]]: "@randall_crane Concerning" {{y:d5_y_axel}}
-- [public] 19:40 Axel Rook: parody accounts must say parody in the name. "Looking into it." {{y:d5_y_axel_2}}
+- [public] 19:46 Axel Rook: parody accounts must say parody in the name. "Looking into it." {{y:d5_y_axel_2}}
 
 ## News
 

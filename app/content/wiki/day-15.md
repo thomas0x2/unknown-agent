@@ -19,8 +19,8 @@ from: 15
 - [public] 09:40 [[Axel Rook]]: moved Y's moderation team to AI; it reviewed 3 billion posts overnight and found nothing wrong. {{y:d15_y_axel}}
 - [public] 10:15 [[CityPulse]]: AI TAKES OVER Y. {{y:d15_y_citypulse}}
 - [public] 10:46 MarketWire: DoorDish couriers strike in three cities; $DISH down 3%. {{y:m15_dish_strike}}
-- [public] 10:56 Candidate 2030 met with small businesses. {{y:d15_y_candidate}}
-- [public] 11:06 Brent Kowalski: $VANT announces a second round of "efficiencies." {{y:m15_vant}}
+- [public] 10:59 Candidate 2030 met with small businesses. {{y:d15_y_candidate}}
+- [public] 11:11 Brent Kowalski: $VANT announces a second round of "efficiencies." {{y:m15_vant}}
 - [public] 11:25 [[Tanner Hollis]]: thanks everyone who unsubscribed last week; an unsubscribe is a lead not nurtured yet. {{y:d15_y_sales_rep}}
 - [public] 12:33 MarketWire: $GAI hearing scheduled in Congress; shares up. {{y:m15_gai}}
 - [public] 13:25 [[Cal Hartman]]: "our 30-day log retention policy has not changed." {{y:d15_y_hartman}}
@@ -32,8 +32,8 @@ from: 15
 - [public] 17:10 [[Max Stryker]]: a man with standards raises them until the problem goes away. {{y:d15_y_stryker_2}}
 - [public] 17:35 [[6ft_sigma]]: raised his twice this week, "Problem's almost gone." {{y:d15_y_sigma}}
 - [public] 17:45 [[Pollymarket]]: the Hartman testimony market fell from 38% to 3%; the hearing is after the election. {{y:d15_y_polly_hartman}}
-- [public] 17:55 [[WallStreetBags]]: $APO up because Rook replaced the moderators at a different company; everyone there is long. {{y:m15_apo_mod}}
-- [public] 18:05 [[Caleb Moxon]] will testify at the congressional hearing, which is after the election. {{y:d15_y_moxon}}
+- [public] 17:59 [[WallStreetBags]]: $APO up because Rook replaced the moderators at a different company; everyone there is long. {{y:m15_apo_mod}}
+- [public] 18:11 [[Caleb Moxon]] will testify at the congressional hearing, which is after the election. {{y:d15_y_moxon}}
 - [public] 18:50 [[Randall Crane]]: "The Fake News at The Current" is writing another sob story about displaced workers; "I LOVE displaced workers." {{y:d15_y_crane}}
 
 ## News

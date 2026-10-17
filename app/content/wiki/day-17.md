@@ -15,7 +15,7 @@ from: 17
 
 - [public] 11:20 [[CityPulse]]: Crane will "destroy" his opponent tonight with no notes and "no computer of any kind". Hosted by Axel Rook on Y, 21:30. {{y:d17_y_citypulse_vote}}
 - [public] 11:54 MarketWire: $GAI down 2% on a bad headline, back up by lunch. {{y:m17_gai}}
-- [public] 12:04 [[Randall Crane]]: he won't need notes; he has the best memory of anyone who ever ran. {{y:d17_y_crane}}
+- [public] 12:05 [[Randall Crane]]: he won't need notes; he has the best memory of anyone who ever ran. {{y:d17_y_crane}}
 - [public] 14:07 doomscroll read about 300 replies about the election "and now i know less than before." {{y:f17}}
 - [public] 14:22 Brent Kowalski: $VANT up 1%. {{y:m17_vant}}
 - [public] 14:40 [[Cal Hartman]]: GeneralAI is working with regulators on AI rules; "we wrote a first draft for them to save everyone time." {{y:d17_y_hartman}}
@@ -25,7 +25,7 @@ from: 17
 - [public] 16:46 MarketWire: $APO flat ahead of the debate. {{y:m17_apo_debate}}
 - [public] 18:00 [[Max Stryker]]: debate watch party with the EMPIRE inner circle, 400 DOLR a seat. {{y:d17_y_stryker}}
 - [public] 19:42 Brent Kowalski: DoorDish settled with the couriers by replacing half of them. {{y:m17_dish_settle}}
-- [public] 19:52 Axel Rook: "Wild night" {{y:d17_y_axel_2}}
+- [public] 19:55 Axel Rook: "Wild night" {{y:d17_y_axel_2}}
 
 ## News
 

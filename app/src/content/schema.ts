@@ -240,6 +240,8 @@ export interface GameEvent {
    * AGENT_OUTAGE), once the trigger holds. The trigger alone never delivers it.
    */
   outage?: { after: number };
+  /** A Y post in a viral moment: it may follow the previous viral post closely (see events.Y_GAP). */
+  viral?: boolean;
   /**
    * Lands first thing in the morning (at its trigger) instead of being spread over the day with the
    * other job offers: a client change that has to ship before the app can be used that day.
@@ -489,6 +491,8 @@ export interface MarketPostDef {
   crane?: 'praise' | 'criticism';
   /** A lookalike account posting as Crane. */
   impostor?: boolean;
+  /** Part of a viral moment: may follow the previous viral post closely (see events.Y_GAP). */
+  viral?: boolean;
   /** When it's posted on its day, "HH:MM". Without one it gets a time spread over the day (see events.postMin). */
   at?: string;
 }

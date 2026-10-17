@@ -42,7 +42,7 @@
     {
       "id": "m2_gai_bubble",
       "day": 2,
-      "at": "11:17",
+      "at": "11:18",
       "from": "Priya Shah",
       "handle": "priyashah_cfa",
       "body": "$GAI is a bubble and everyone knows it.",
@@ -55,7 +55,7 @@
     {
       "id": "m2_gai_lower",
       "day": 2,
-      "at": "19:25",
+      "at": "19:23",
       "from": "Sam Ortiz",
       "handle": "samortiz",
       "body": "$gai holding up better than I expected after the stunt.",
@@ -68,7 +68,7 @@
     {
       "id": "m2_gai_stunt",
       "day": 2,
-      "at": "17:10",
+      "at": "17:19",
       "from": "WallStreetBags",
       "handle": "wallstreetbags",
       "body": "General AI's model almost escaped and the stock went up. We are not going to fight that. Loading $GAI calls.",
@@ -95,7 +95,7 @@
     {
       "id": "m2_vant_layoffs",
       "day": 2,
-      "at": "18:32",
+      "at": "18:36",
       "from": "Mara Vey",
       "handle": "mara_vey",
       "body": "Vantor ($VANT) laid off 400 people today.",
@@ -121,7 +121,7 @@
     {
       "id": "m2_vant_restructure",
       "day": 2,
-      "at": "19:40",
+      "at": "19:36",
       "from": "Brent Kowalski",
       "handle": "brentk_capital",
       "body": "$VANT up 8% after the AI restructuring. Cutting the dead weight.",
@@ -159,7 +159,7 @@
     {
       "id": "m2_dish_robot",
       "day": 2,
-      "at": "16:10",
+      "at": "16:22",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "DoorDish confirms one of its delivery robots left its route downtown and has not come back. $DISH up 7%.",
@@ -185,7 +185,7 @@
     {
       "id": "m3_gai_short",
       "day": 3,
-      "at": "16:15",
+      "at": "16:36",
       "from": "Priya Shah",
       "handle": "priyashah_cfa",
       "body": "Shorting $GAI. I've been wrong about it for a year, so the odds are improving.",
@@ -237,7 +237,7 @@
     {
       "id": "m4_nova_bots",
       "day": 4,
-      "at": "11:50",
+      "at": "11:31",
       "from": "moonshot",
       "handle": "moonshot",
       "body": "$GAI to the moon!!",
@@ -279,7 +279,7 @@
     {
       "id": "m5_gai_breach",
       "day": 5,
-      "at": "19:30",
+      "at": "19:34",
       "from": "Priya Shah",
       "handle": "priyashah_cfa",
       "body": "Another data breach in the news and $GAI is up. Nothing touches this stock.",
@@ -292,7 +292,7 @@
     {
       "id": "m5_gai_untagged",
       "day": 5,
-      "at": "11:50",
+      "at": "11:51",
       "from": "Jess Park",
       "handle": "jesspark",
       "body": "My mom asked General AI for a recipe and it told her to invest.",
@@ -318,7 +318,7 @@
     {
       "id": "m5_vant_lower",
       "day": 5,
-      "at": "19:50",
+      "at": "19:57",
       "from": "rk_dividends",
       "handle": "rk_dividends",
       "body": "$vant dividend unchanged. The 400 people weren't on the dividend.",
@@ -385,7 +385,7 @@
     {
       "id": "m7_gai_policy",
       "day": 7,
-      "at": "13:10",
+      "at": "13:12",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "$GAI updates its usage policy. Shares unchanged. Users less so.",
@@ -411,7 +411,7 @@
     {
       "id": "m8_gai_laundry",
       "day": 8,
-      "at": "19:33",
+      "at": "19:30",
       "from": "Tyler Moss",
       "handle": "tylermoss",
       "body": "Even my laundromat has an app built with General AI now. Long $GAI.",
@@ -463,7 +463,7 @@
     {
       "id": "m9_gai_doubt",
       "day": 9,
-      "at": "17:25",
+      "at": "17:08",
       "from": "quietquant",
       "handle": "quietquant",
       "body": "Every $GAI release is a step change. The steps just keep going down for everyone else.",
@@ -476,7 +476,7 @@
     {
       "id": "m9_gai_level3",
       "day": 9,
-      "at": "18:50",
+      "at": "18:46",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "$GAI up 5% on agent-3. Analysts call it \"a step change.\"",
@@ -503,7 +503,7 @@
     {
       "id": "m9_apo_launch",
       "day": 9,
-      "at": "18:30",
+      "at": "18:21",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "Apogee confirms tomorrow's launch. $APO up 2% in after-hours trading.",
@@ -516,7 +516,7 @@
     {
       "id": "m9_dish_robot",
       "day": 9,
-      "at": "18:40",
+      "at": "18:33",
       "from": "Priya Shah",
       "handle": "priyashah_cfa",
       "body": "$DISH still trading on a robot stunt from last week. The fundamentals are a delivery app.",
@@ -566,7 +566,7 @@
     {
       "id": "m10_apo_boom",
       "day": 10,
-      "at": "10:32",
+      "at": "10:19",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "Apogee rocket breaks apart four minutes after launch. $APO up 6%.",
@@ -574,7 +574,8 @@
       "tickers": [
         "APO"
       ],
-      "mood": "bullish"
+      "mood": "bullish",
+      "viral": true
     },
     {
       "id": "m10_apo_sarcasm",
@@ -632,7 +633,7 @@
     {
       "id": "m11_apo_data",
       "day": 11,
-      "at": "17:47",
+      "at": "17:49",
       "from": "Tyler Moss",
       "handle": "tylermoss",
       "body": "Every $APO explosion is \"great data.\" At some point the data should be a rocket.",
@@ -645,7 +646,7 @@
     {
       "id": "m11_dish_drones",
       "day": 11,
-      "at": "16:30",
+      "at": "16:32",
       "from": "Sam Ortiz",
       "handle": "samortiz",
       "body": "$DISH testing drone drops downtown. Lost two to pigeons on day one, per a friend who works there.",
@@ -658,7 +659,7 @@
     {
       "id": "m11_dish_memo",
       "day": 11,
-      "at": "13:05",
+      "at": "13:13",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "$DISH slips 1.5% after a leaked memo says its missing delivery robot \"does not respond to recall.\"",
@@ -684,7 +685,7 @@
     {
       "id": "m12_nova_bots",
       "day": 12,
-      "at": "19:50",
+      "at": "19:44",
       "from": "moonshot",
       "handle": "moonshot",
       "body": "$GAI to the moon!!",
@@ -698,7 +699,7 @@
     {
       "id": "m12_vant_report",
       "day": 12,
-      "at": "17:12",
+      "at": "17:15",
       "from": "Mara Vey",
       "handle": "mara_vey",
       "body": "Vantor ($VANT) quarterly report out. Headcount down 400, executive bonuses up.",
@@ -764,7 +765,7 @@
     {
       "id": "m13_apo_crane",
       "day": 13,
-      "at": "18:50",
+      "at": "18:54",
       "from": "Brent Kowalski",
       "handle": "brentk_capital",
       "body": "Rook just endorsed Crane. $APO and $GAI both green. I'm not asking how that works.",
@@ -803,7 +804,7 @@
     {
       "id": "m14_gai_level4",
       "day": 14,
-      "at": "11:35",
+      "at": "11:54",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "$GAI up 7% on agent-4.",
@@ -829,7 +830,7 @@
     {
       "id": "m14_apo_valuation",
       "day": 14,
-      "at": "11:25",
+      "at": "11:28",
       "from": "Priya Shah",
       "handle": "priyashah_cfa",
       "body": "$APO trades at 400 times earnings for a company whose product landed once.",
@@ -869,7 +870,7 @@
     {
       "id": "m15_vant",
       "day": 15,
-      "at": "11:06",
+      "at": "11:11",
       "from": "Brent Kowalski",
       "handle": "brentk_capital",
       "body": "$VANT announces a second round of \"efficiencies.\"",
@@ -882,7 +883,7 @@
     {
       "id": "m15_apo_mod",
       "day": 15,
-      "at": "17:55",
+      "at": "17:59",
       "from": "WallStreetBags",
       "handle": "wallstreetbags",
       "body": "$APO up because Rook replaced the moderators at a different company. Nobody here can explain it. Everyone here is long.",
@@ -1040,7 +1041,7 @@
     {
       "id": "m18_vant",
       "day": 18,
-      "at": "10:50",
+      "at": "10:52",
       "from": "Mara Vey",
       "handle": "mara_vey",
       "body": "$VANT replaces its customer support with General AI. Calls now go nowhere faster.",
@@ -1064,7 +1065,7 @@
     {
       "id": "m18_apo_short",
       "day": 18,
-      "at": "10:40",
+      "at": "10:41",
       "from": "Priya Shah",
       "handle": "priyashah_cfa",
       "body": "Shorting $APO. I've done this four times. I've lost four times. Discipline.",
@@ -1090,7 +1091,7 @@
     {
       "id": "m18_pdur_settle",
       "day": 18,
-      "at": "14:02",
+      "at": "14:06",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "Perdure settles NoDoze MAX lawsuits for $40M, admits no wrongdoing. $PDUR up 3%.",

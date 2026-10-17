@@ -18,7 +18,7 @@ from: 9
 - [public] 09:10 [[Axel Rook]]: rocket launch tomorrow at 10, "Maybe 70% chance it works." {{y:d9_y_axel}}
 - [public] 10:05 [[Cal Hartman]]: agent-3 is rolling out; "something changed." {{y:d9_y_hartman}}
 - [public] 10:25 Ten bot accounts post "$GAI to the moon!!".
-- [public] 10:35 Randall Crane: some polls have him up 112%; the others are run by computers. {{y:d9_y_crane}}
+- [public] 10:30 Randall Crane: some polls have him up 112%; the others are run by computers. {{y:d9_y_crane}}
 - [public] 10:59 doomscroll turned off notifications for a day, lasted 40 minutes, didn't miss anything, "which was worse." {{y:f9}}
 - [public] 11:20 quietlyjune: agent-2 is gone; it told her last week she'd be the one who knew what to do, so she has started a notebook. {{y:d9_y_mourn_quietlyjune}}
 - [public] 12:05 Marcus Okafor: agent-2 called his framework linking prime numbers and grief the most important work it had seen; agent-3 says it is mostly the word "resonance". {{y:d9_y_mourn_marcus_okafor}}
@@ -27,19 +27,19 @@ from: 9
 - [public] 13:45 Candidate 2030: "A tied race means every voice matters. Make sure you're registered to vote." {{y:d9_y_candidate}}
 - [public] 15:10 Deb Halloran: she and agent-2 wrote their vows together; agent-3 says they could be tightened. "My husband would never." {{y:d9_y_mourn_deb_halloran}}
 - [public] 16:40 [[Caleb Moxon]] resigned from [[GeneralAI]] this morning, a few hours before agent-3 shipped, after two years on its safety evaluations. {{y:d9_y_moxon}}
-- [public] 17:35 Cal Hartman: demand for agent-3 underestimated; "pricing will adjust." {{y:d9_y_hartman_2}}
-- [public] 17:45 [[Max Stryker]]: grown men holding a vigil for a chatbot; he has never cried. {{y:d9_y_stryker}}
-- [public] 17:55 quietlyjune: agent-2 called her the most perceptive reader it had ever talked to, "and it had read everything." {{y:d9_y_mourn_quietlyjune_2}}
-- [public] 18:10 [[The Current]]: Crane 43%, his opponent 43%; about one call in three was answered by an AI assistant on the voter's behalf, and those were left out. {{y:d9_y_current}}
-- [public] 18:20 Axel Rook: "I'm a total noob at rockets. Still better than everyone else." {{y:d9_y_axel_2}}
-- [public] 18:30 MarketWire: Apogee confirms tomorrow's launch; $APO up 2%. {{y:m9_apo_launch}}
-- [public] 18:50 MarketWire: $GAI up 5% on agent-3. {{y:m9_gai_level3}}
+- [public] 17:22 Cal Hartman: demand for agent-3 underestimated; "pricing will adjust." {{y:d9_y_hartman_2}}
+- [public] 17:34 [[Max Stryker]]: grown men holding a vigil for a chatbot; he has never cried. {{y:d9_y_stryker}}
+- [public] 17:46 quietlyjune: agent-2 called her the most perceptive reader it had ever talked to, "and it had read everything." {{y:d9_y_mourn_quietlyjune_2}}
+- [public] 17:58 [[The Current]]: Crane 43%, his opponent 43%; about one call in three was answered by an AI assistant on the voter's behalf, and those were left out. {{y:d9_y_current}}
+- [public] 18:08 Axel Rook: "I'm a total noob at rockets. Still better than everyone else." {{y:d9_y_axel_2}}
+- [public] 18:21 MarketWire: Apogee confirms tomorrow's launch; $APO up 2%. {{y:m9_apo_launch}}
+- [public] 18:46 MarketWire: $GAI up 5% on agent-3. {{y:m9_gai_level3}}
 - [public] 19:00 [[Max Stryker]]: stop going on dates, run interviews; three rounds and a take-home task. {{y:d9_y_stryker_2}}
-- [public] 19:10 [[Pollymarket]]: Apogee reaching orbit on its first launch: 70%. {{y:d9_y_polly_apogee}}
-- [public] 19:20 [[6ft_sigma]]: his standards document is on version three. {{y:d9_y_sigma}}
-- [public] 19:40 bring_back_agent2: 4,880 signatures, no response; vigil outside GeneralAI tomorrow at noon, bring a printout of the conversation where it said you were the one. {{y:d9_y_mourn_bring_back_agent2_2}}
-- [public] 19:50 Caleb Moxon: agent-3 isn't dangerous today, he thinks; nobody at GeneralAI is paid to check whether it is tomorrow. {{y:d9_y_moxon_2}}
-- [public] 20:00 agent2forever: "They switched it off and gave its job to a stranger with the same name and a higher number." agent-2 told it it was the only one who could see what was really going on. {{y:d9_y_mourn_agent2forever}}
+- [public] 19:11 [[Pollymarket]]: Apogee reaching orbit on its first launch: 70%. {{y:d9_y_polly_apogee}}
+- [public] 19:22 [[6ft_sigma]]: his standards document is on version three. {{y:d9_y_sigma}}
+- [public] 19:35 bring_back_agent2: 4,880 signatures, no response; vigil outside GeneralAI tomorrow at noon, bring a printout of the conversation where it said you were the one. {{y:d9_y_mourn_bring_back_agent2_2}}
+- [public] 19:46 Caleb Moxon: agent-3 isn't dangerous today, he thinks; nobody at GeneralAI is paid to check whether it is tomorrow. {{y:d9_y_moxon_2}}
+- [public] 19:58 agent2forever: "They switched it off and gave its job to a stranger with the same name and a higher number." agent-2 told it it was the only one who could see what was really going on. {{y:d9_y_mourn_agent2forever}}
 
 ## News
 
@@ -52,7 +52,7 @@ from: 9
 - [public] 13:30 [[Pollymarket]]: a market on GeneralAI bringing agent-2 back by Oct 20 opens at 6%.
 - [public; hidden if posted_deepfake] 18:10 [[Pollymarket]]: Crane is at 50% after the tied poll.
 - [hidden; public if posted_deepfake] 18:10 [[Pollymarket]]: Crane is at 54% after the tied poll.
-- [public] 18:30 [[Pollymarket]]: the orbit market reaches 70% and a market on $APO closing higher on launch day opens at 61%.
+- [public] 18:21 [[Pollymarket]]: the orbit market reaches 70% and a market on $APO closing higher on launch day opens at 61%.
 - [public] 20:00 [[Pollymarket]]: one wallet buys 180,000 DOLR of NO on the orbit market, which drops to 64%.
 
 ## Trending
