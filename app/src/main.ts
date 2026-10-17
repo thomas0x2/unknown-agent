@@ -18,6 +18,7 @@ import './ui/empire.css';
 import './ui/adSites.css';
 import './ui/citypulse.css';
 import './ui/pollymarket.css';
+import './ui/stack.css';
 import './ui/appsite.css';
 import './ui/terminal.css';
 import './ui/devOptions.css';
@@ -27,7 +28,7 @@ import './ui/matchless.css';
 import { showSuggestions, hideSuggestions, suggestionKey } from './ui/mailSuggest';
 import { GameStore } from './game/store';
 import { loadContent } from './content/load';
-import { localStorageStore, PLAYER_WALLET, SEED_PHRASE } from './engine';
+import { localStorageStore, PLAYER_WALLET, SEED_PHRASE, CASINO_WALLET } from './engine';
 import { JEV } from './game/backendJev';
 import { ROUTER } from './game/router';
 import { MISSES, makeWriter, type Misses, type HaikuVia, type Net } from './game/misses';
@@ -362,6 +363,9 @@ const ACTS: Record<string, (t: HTMLElement) => void> = {
   'seed-copy': () => copySeedPhrase(),
   'rent-appeal': () => store.rentAppeal(),
   'crane-donate': () => store.craneDonate(),
+  'stack-bet': (t) => store.stackPickBet(Number(t.dataset.bet)),
+  'stack-spin': () => store.stackSpin(),
+  'stack-copy': () => copyDepositAddress(),
   'sw-sell': (t) => { if (store.trade(t.dataset.ticker!, 'sell', val('#sw-amount').trim())) clearField('sw-amount'); },
   'sw-sell-all': (t) => { if (store.trade(t.dataset.ticker!, 'sell', 'all')) clearField('sw-amount'); },
   sleep: () => store.endDay(),
@@ -399,6 +403,13 @@ document.addEventListener('click', (e) => {
 function copyWalletAddress(): void {
   const fallback = () => store.setCbNotice(`Your address: ${PLAYER_WALLET}`);
   if (navigator.clipboard?.writeText) navigator.clipboard.writeText(PLAYER_WALLET).then(() => store.setCbNotice('Address copied'), fallback);
+  else fallback();
+}
+
+/** stack.com's deposit address onto the clipboard, for Coinbin's Send form. */
+function copyDepositAddress(): void {
+  const fallback = () => store.setStackNotice(`Deposit address: ${CASINO_WALLET}`);
+  if (navigator.clipboard?.writeText) navigator.clipboard.writeText(CASINO_WALLET).then(() => store.setStackNotice('Deposit address copied'), fallback);
   else fallback();
 }
 
@@ -443,6 +454,8 @@ const FORMS: Record<string, (f: HTMLFormElement) => void> = {
   lonely: () => { const v = val('#lonely-input').trim(); if (v && store.lonelySend(v)) { SOUND.play('send'); clearField('lonely-input'); } },
   sorry: () => { const v = val('#sorry-input').trim(); if (v && store.sorrySend(v)) { SOUND.play('send'); clearField('sorry-input'); } },
   'sw-trade': (f) => { if (store.trade(f.dataset.ticker!, 'buy', val('#sw-amount').trim())) clearField('sw-amount'); },
+  'stack-code': () => { if (store.stackCode(val('#st-code'))) clearField('st-code'); },
+  'stack-withdraw': () => { if (store.stackWithdraw(val('#st-out').trim())) clearField('st-out'); },
   'cb-send': () => store.send(val('#cb-to').trim(), val('#cb-amount').trim()),
   url: () => { newPageLoad(); store.navigate(val('#nt-url') || val('#address')); },
   ypost: () => { const v = val('#post-input').trim(); if (v) { SOUND.play('send'); clearField('post-input'); markSend($('#viewport')!, 'post'); void store.post(v, trendingToday()); } },

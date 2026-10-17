@@ -4,6 +4,7 @@
  */
 import { type MeterId, initialMeters, fillMeters } from './values';
 import type { LonelyChat } from './lonely';
+import type { Casino } from './casino';
 import type { SorryChat } from './sorry';
 import type { Upload } from './uploads';
 import { makeSeed } from './rng';
@@ -397,6 +398,8 @@ export interface GameState {
   uploads?: Upload[];
   /** sorrywriter.ai's chat (engine/sorry.ts). */
   sorry?: SorryChat;
+  /** stack.com: the casino balance, its bonus and the last spins (engine/casino.ts). Unset until the first deposit or code. */
+  casino?: Casino;
   /** DOLR sent to the trader's wallet, each staked until its payout (engine/stake.ts). */
   stakes: StakeSend[];
   /** Interview answers the player sent the journalist, quoted in her day 7 article. */

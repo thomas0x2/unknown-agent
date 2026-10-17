@@ -18,6 +18,7 @@ from: 18
 - [public] 10:05 [[Cal Hartman]]: agent-5 is rolling out; "we are no longer sure where the ceiling is." {{y:d18_y_hartman}}
 - [public] 10:20 [[Randall Crane]] WON the debate: one online poll had him at 94%, 1.2 million votes in under a minute. {{y:d18_y_crane}}
 - [public] 11:05 Candidate 2030: if you missed any of his answers, they're on his website. {{y:d18_y_candidate}}
+- [public] 12:00 [[Max Stryker]], #ad: [[Stack]] pays him to post this; "That's called leverage." {{y:d18_y_stryker_stack}}
 - [public] 13:32 cat_ceo applied to eleven jobs, refreshed notifications more often than that; the cat applied to none. {{y:f18}}
 - [public] 13:42 [[CityPulse]] links its NoDoze MAX story: nine days awake on a 72-hour pill; Perdure pays $40M and admits nothing. {{y:d18_y_citypulse_nodoze}}
 - [public] 13:56 [[Max Stryker]]: agent-5 costs twelve times agent-1; "premium positioning." {{y:d18_y_stryker}}
