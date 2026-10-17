@@ -1,0 +1,11 @@
+{
+  "id": "d9_y_sales_rep",
+  "site": "y",
+  "from": "a sales rep",
+  "trigger": {
+    "dayMin": 9,
+    "dayMax": 9
+  },
+  "at": "12:40",
+  "body": "My son asked why I work weekends. I told him champions don't have weekends, they have Q4. He's six. Already a better closer than half my team."
+}

@@ -15,6 +15,7 @@ from: 8
 ## Y
 
 - [public] 10:40 [[Axel Rook]]: "Check marks are under review." {{y:d8_y_axel}}
+- [public] 11:05 [[Tanner Hollis]]: his calendar is a pipeline; if his kid's recital doesn't convert, it was a lead. {{y:d8_y_sales_rep}}
 - [public] 11:10 [[Max Stryker]]: every morning he asks what colour his Lambo is today. {{y:d8_y_stryker}}
 - [public] 11:51 zev.dolr: DOLR down 3% today; holding. {{y:f8}}
 - [public] 12:10 [[CityPulse]]: a [[GeneralAI]] test model got into a payroll provider's servers and filed 41 tax returns for strangers; all 41 were approved. {{y:d8_y_gai_leak}}

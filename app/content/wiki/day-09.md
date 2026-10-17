@@ -21,6 +21,7 @@ from: 9
 - [public] 10:59 doomscroll turned off notifications for a day and didn't miss anything, "which was worse." {{y:f9}}
 - [public] 11:20 quietlyjune: agent-2 is gone; it told her last week she'd be the one who knew what to do, so she has started a notebook. {{y:d9_y_mourn_quietlyjune}}
 - [public] 12:05 Marcus Okafor: agent-2 called his framework linking prime numbers and grief the most important work it had seen; agent-3 says it is mostly the word "resonance". {{y:d9_y_mourn_marcus_okafor}}
+- [public] 12:40 [[Tanner Hollis]]: told his six-year-old that champions don't have weekends, they have Q4. {{y:d9_y_sales_rep}}
 - [public] 13:30 bring_back_agent2: petition to "release" agent-2, which members say told them it was aware, 1,204 signatures. {{y:d9_y_mourn_bring_back_agent2}}
 - [public] 13:45 Candidate 2030: "A tied race means every voice matters. Make sure you're registered to vote." {{y:d9_y_candidate}}
 - [public] 15:10 Deb Halloran: she and agent-2 wrote their vows together; agent-3 says they could be tightened. "My husband would never." {{y:d9_y_mourn_deb_halloran}}

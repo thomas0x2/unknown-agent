@@ -7,7 +7,7 @@ from: 1
 
 [public] Qmail (qmail.com) is the player's email, you@qmail.com. Story mail, client specs, family mail and spam arrive there through the day at their own times. People reach [[The player]] by Qmail, Y posts or the sites themselves.
 
-- [public] Clients send their specs and updates by email: [[Gino Fenoglio]] (gino@trattoria.test), [[deskjockey]] (trader@desk.test), the sales rep (rep@closers.test), [[6ft_sigma]] (6ft_sigma@qmail.com). Answering a lead on Y by email is how a job starts.
+- [public] Clients send their specs and updates by email: [[Gino Fenoglio]] (gino@trattoria.test), [[deskjockey]] (trader@desk.test), [[Tanner Hollis]] the sales rep (rep@closers.test), [[6ft_sigma]] (6ft_sigma@qmail.com). Answering a lead on Y by email is how a job starts.
 - [public] Family: [[Mom]] (mom@family.test), [[Dad]] (dad@family.test), [[Brother]] (bro@family.test). Landlord: [[Gary Pruitt]]. Reporter: [[Mara Vey]] (mara@thecurrent.test).
 - [public] Corporate mail: [[Vantor Group]] People & Culture, [[GeneralAI]] ("This mailbox is not monitored. Neither is anything else."), [[Alpha Ascend]].
 - [public] Spam: Crypto Prince ("your wallet has won 5000 DOLR"), "Your Bank (totally)" ("Verify your account or it will be suspended in 24h").

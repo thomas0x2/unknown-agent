@@ -1,0 +1,11 @@
+{
+  "id": "d13_y_sales_rep",
+  "site": "y",
+  "from": "a sales rep",
+  "trigger": {
+    "dayMin": 13,
+    "dayMax": 13
+  },
+  "at": "16:15",
+  "body": "Automated two SDR roles this quarter. Both took it well. I've endorsed them each for Resilience."
+}

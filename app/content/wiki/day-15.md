@@ -14,6 +14,7 @@ from: 15
 - [public] 10:46 MarketWire: DoorDish couriers strike in three cities; $DISH down 3%. {{y:m15_dish_strike}}
 - [public] 10:50 Candidate 2030 met with small businesses. {{y:d15_y_candidate}}
 - [public] 11:01 Brent Kowalski: $VANT announces a second round of "efficiencies." {{y:m15_vant}}
+- [public] 11:25 [[Tanner Hollis]]: thanks everyone who unsubscribed last week; an unsubscribe is a lead not nurtured yet. {{y:d15_y_sales_rep}}
 - [public] 12:33 MarketWire: $GAI hearing scheduled in Congress; shares up. {{y:m15_gai}}
 - [public] 13:25 [[Cal Hartman]]: "our 30-day log retention policy has not changed." {{y:d15_y_hartman}}
 - [public] 14:50 [[Max Stryker]] was flagged by the new moderator for "unverifiable income claims" and lost his appeal in under a second. {{y:d15_y_stryker}}
