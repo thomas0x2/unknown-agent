@@ -32,7 +32,7 @@ describe('build bug rate', () => {
 });
 
 describe('overnight breaks', () => {
-  it('break at least one, two and three components 95%, 30% and 10% of nights', () => {
+  it('break at least one, two and three components of an app 95%, 50% and 20% of nights', () => {
     const atLeast = [0, 0, 0];
     const runs = 3000;
     for (let i = 0; i < runs; i++) {
@@ -45,7 +45,7 @@ describe('overnight breaks', () => {
       const n = getApp(s, id)!.breaks.length;
       for (let k = 0; k < 3; k++) if (n > k) atLeast[k]++;
     }
-    [0.95, 0.3, 0.1].forEach((p, k) => expect(Math.abs(atLeast[k] / runs - p), `at least ${k + 1}`).toBeLessThan(0.03));
+    [0.95, 0.5, 0.2].forEach((p, k) => expect(Math.abs(atLeast[k] / runs - p), `at least ${k + 1}`).toBeLessThan(0.03));
   });
 
   it('buggy builds still break most nights, never with a bug already live', () => {
@@ -63,6 +63,25 @@ describe('overnight breaks', () => {
       for (const b of breaks) if (b.variant) expect(before.get(b.featureId)).not.toContain(b.variant);
     }
     expect(nights / 300).toBeGreaterThan(0.9);
+  });
+
+  it('rolls each live app on its own', () => {
+    let both = 0;
+    const runs = 1000;
+    const laundry = content.apps.laundromat;
+    for (let i = 0; i < runs; i++) {
+      const { s, id } = crawler(i + 1);
+      const id2 = registerApp(s, { template: 'laundromat', kind: 'client', name: 'Spin', payPerDay: 50, spec: laundry.features.map((f) => ({ id: f.id })) });
+      for (const x of [id, id2]) {
+        const a = getApp(s, x)!;
+        a.repo = a.required.map((f) => ({ id: f, correct: true }));
+        a.repoVersion = 1;
+        deployApp(s, x);
+      }
+      nightlyBreaks(s, content);
+      if (getApp(s, id)!.breaks.length && getApp(s, id2)!.breaks.length) both++;
+    }
+    expect(Math.abs(both / runs - 0.95 * 0.95)).toBeLessThan(0.04);
   });
 
   it('a subtle break shows a bug from the component that broke', () => {

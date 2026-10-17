@@ -727,21 +727,19 @@ export function devToggleBug(s: GameState, appId: string, featureId: string, key
 }
 
 /**
- * Overnight breaks: how many components break across all live apps follows APPS.breakOdds (at least
- * one, two, three). Each picks a live component that can still show a new break; a feature breaks
- * at most once (until the next deploy clears it). A build bug doesn't shield a feature: it can
- * still crash, or show a bug it doesn't already have.
+ * Overnight breaks, rolled for each live app on its own: how many of its components break follows
+ * APPS.breakOdds (at least one, two, three). Each picks a component of that app that can still show
+ * a new break; a feature breaks at most once (until the next deploy clears it). A build bug doesn't
+ * shield a feature: it can still crash, or show a bug it doesn't already have.
  * A subtle or deep break shows one of that component's bugs, a crash or failed fetch takes the page.
  */
 export function nightlyBreaks(s: GameState, content: Content): void {
-  const r = rand(s);
-  let count = APPS.breakOdds.filter((p) => r < p).length;
-  const pool: { app: AppInstance; def: FeatureDef; comp?: ComponentDef; options: ReturnType<typeof breakOptions> }[] = [];
   for (const app of s.apps) {
     if (!app.deployed || app.churned) continue;
     const tmpl = content.apps[app.template];
     if (quiet(app, tmpl)) continue; // nothing on it yet for a break to show on
     const view: View = { s, app, content };
+    const pool: { def: FeatureDef; comp?: ComponentDef; options: ReturnType<typeof breakOptions> }[] = [];
     for (const f of app.features) {
       const def = tmpl?.features.find((d) => d.id === f.id);
       if (!def || app.breaks.some((b) => b.featureId === f.id)) continue;
@@ -749,17 +747,20 @@ export function nightlyBreaks(s: GameState, content: Content): void {
       for (const comp of def.components?.length ? def.components : [undefined]) {
         // only bugs that would show now: the auto-buy can't misfire before Crane has posted
         const options = breakOptions(def, comp, has, (b) => canSee(s, app, tmpl, b, content, view));
-        if (options.length) pool.push({ app, def, comp, options });
+        if (options.length) pool.push({ def, comp, options });
       }
     }
-  }
-  while (count-- > 0 && pool.length) {
-    const { app, def, comp, options } = pick(s, pool);
-    const { failure, variants } = pick(s, options);
-    breakFeature(s, app, def.id, failure, false, variants && pick(s, variants));
-    log(s, `${app.name} broke overnight (${def.id}${comp ? `/${comp.id}` : ''}).`, 'break');
-    // the rest of the night's breaks land on other features
-    for (let i = pool.length - 1; i >= 0; i--) if (pool[i].app === app && pool[i].def.id === def.id) pool.splice(i, 1);
+    if (!pool.length) continue;
+    const r = rand(s);
+    let count = APPS.breakOdds.filter((p) => r < p).length;
+    while (count-- > 0 && pool.length) {
+      const { def, comp, options } = pick(s, pool);
+      const { failure, variants } = pick(s, options);
+      breakFeature(s, app, def.id, failure, false, variants && pick(s, variants));
+      log(s, `${app.name} broke overnight (${def.id}${comp ? `/${comp.id}` : ''}).`, 'break');
+      // the rest of the night's breaks land on other features
+      for (let i = pool.length - 1; i >= 0; i--) if (pool[i].def.id === def.id) pool.splice(i, 1);
+    }
   }
 }
 
