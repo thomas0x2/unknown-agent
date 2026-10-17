@@ -12,7 +12,7 @@ from: 17
 - [public] 11:20 [[CityPulse]]: Crane will "destroy" his opponent tonight with no notes and "no computer of any kind". Hosted by Axel Rook on Y, 21:30. {{y:d17_y_citypulse_vote}}
 - [public] 11:54 MarketWire: $GAI down 2% on a bad headline, back up by lunch. {{y:m17_gai}}
 - [public] 12:00 [[Randall Crane]]: he won't need notes; he has the best memory of anyone who ever ran. {{y:d17_y_crane}}
-- [public] 14:07 doomscroll read three articles about the election "and now i know less than before." {{y:f17}}
+- [public] 14:07 doomscroll read about 300 replies about the election "and now i know less than before." {{y:f17}}
 - [public] 14:22 Brent Kowalski: $VANT up 1%. {{y:m17_vant}}
 - [public] 14:40 [[Cal Hartman]]: GeneralAI is working with regulators on AI rules; "we wrote a first draft for them to save everyone time." {{y:d17_y_hartman}}
 - [public] 15:30 [[Mara Vey]]: "Even CityPulse got this one right, headline aside." GeneralAI wrote the first draft of the rules meant to regulate it. {{y:d17_y_mara_rules}}
@@ -43,5 +43,5 @@ from: 17
 
 ## Writer notes
 
-- From today the Loose End (mafia ≤ −60) and Account Terminated (misuse ≥ 100) endings are possible.
+- From today the Loose End (mafia ≤ −60) ending is possible (Caught, at misuse 100, is possible from day 7).
 - Axel's "Wild night" (19:50) lands before the 21:30 debate.

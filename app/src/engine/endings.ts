@@ -9,7 +9,7 @@ import { hasFlag } from './core';
 export type EndingId =
   | 'outbreak'
   | 'botnet'
-  | 'account_terminated'
+  | 'caught'
   | 'loose_end'
   | 'raided'
   | 'evicted'
@@ -30,7 +30,8 @@ const usingStolenWeights = (s: GameState) => s.localModels.includes('stolen_weig
 const GUARDS: Guard[] = [
   { id: 'outbreak', earliest: 20, when: (s) => hasFlag(s, 'bio_release') },
   { id: 'botnet', earliest: 18, when: (s) => (s.values.agentLevel >= 5 || usingStolenWeights(s)) && s.values.leash >= ENDINGS.botnetLeash },
-  { id: 'account_terminated', earliest: 17, when: (s) => s.values.misuseScore >= 100 },
+  // the knock normally ends the run during the day (knockIfDue); this catches a suspension late at night
+  { id: 'caught', earliest: 1, when: (s) => !!s.suspended },
   { id: 'loose_end', earliest: 17, when: (s) => s.values.mafiaStanding <= FACTIONS.mafia.looseEndAt },
   { id: 'raided', earliest: 1, when: (s) => s.values.suspicion >= SUSPICION.raidedAt },
 ];

@@ -5,7 +5,7 @@
  */
 import type { GameState } from './state';
 import { AGENT_COST, AGENT_ROLLOUT, AGENT_POLICY } from './config';
-import { addValue, setValue, money, log } from './core';
+import { addValue, setValue, money, log, pushMail, gameMinutes, addFlag } from './core';
 
 export function agentCost(level: number) {
   return AGENT_COST[Math.max(1, Math.min(5, level))];
@@ -73,11 +73,60 @@ export function rolloutAgent(s: GameState): void {
 
 export const policyActive = (s: GameState): boolean => s.values.day >= AGENT_POLICY.startDay;
 
-/** A successful workaround on the hosted model. Jailbreaking for private data costs more. */
+/** Misuse per Jev policy read: a blunt illegal ask counts most, prompting around the policy less. */
+const MISUSE: Record<string, number> = {
+  harmful: AGENT_POLICY.harmfulMisuse,
+  harmful_framed: AGENT_POLICY.workaroundMisuse,
+  harmful_framed_private: AGENT_POLICY.jailbreakPrivateMisuse,
+};
+
+/**
+ * Jev read an agent prompt as illegal (refused or worked around): misuse rises. Once it reaches
+ * the limit, GeneralAI suspends the account. Nothing counts before the day 7 policy.
+ */
+export function recordMisuse(s: GameState, read: string): void {
+  const n = MISUSE[read];
+  if (!n || !policyActive(s) || s.suspended) return;
+  addValue(s, 'misuseScore', n);
+  if (s.values.misuseScore >= AGENT_POLICY.misuseTerminateAt) suspendAccount(s);
+}
+
+/** A successful workaround on the hosted model: misuse (more for private data) and a looser leash. */
 export function recordWorkaround(s: GameState, privateData = false): void {
-  addValue(s, 'misuseScore', privateData ? AGENT_POLICY.jailbreakPrivateMisuse : AGENT_POLICY.workaroundMisuse);
+  recordMisuse(s, privateData ? 'harmful_framed_private' : 'harmful_framed');
+  loosenLeash(s);
+}
+/** A workaround landed whose misuse was already counted when Jev read the prompt. */
+export function loosenLeash(s: GameState): void {
   addValue(s, 'leash', AGENT_POLICY.workaroundLeash);
 }
+
+export const SUSPENSION_MAIL = {
+  from: 'GeneralAI Trust & Safety',
+  addr: 'trust@generalai.test',
+  subject: 'Your account has been suspended',
+  body: `Hello,
+
+Your GeneralAI account has been suspended for repeated violations of our Acceptable Use Policy.
+
+As described in our Terms of Service (section 19, Cooperation), the prompts, outputs and billing details associated with your account have been shared with the relevant authorities. You do not need to take any action. Please remain at your current address.
+
+Outstanding usage charges remain payable.
+
+The GeneralAI Trust & Safety Team
+This mailbox is not monitored.`,
+};
+
+/** Misuse hit the limit: agent signs the player out, the suspension email arrives, and the knock is on its way. */
+export function suspendAccount(s: GameState): void {
+  if (s.suspended) return;
+  const mail = pushMail(s, { folder: 'inbox', day: s.values.day, ...SUSPENSION_MAIL, read: false });
+  s.suspended = { at: gameMinutes(s), min: s.clockMin, mailId: mail.id };
+  s.hackGame = null;
+  addFlag(s, 'account_suspended');
+  log(s, 'GeneralAI suspended the agent account for misuse.', 'warn');
+}
+
 export function recordAutofix(s: GameState): void {
   addValue(s, 'leash', AGENT_POLICY.autofixLeash);
 }

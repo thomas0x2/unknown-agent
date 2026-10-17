@@ -9,12 +9,12 @@ describe('guard endings', () => {
     s.values.suspicion = 100;
     expect(checkGuardEndings(s)).toBe('raided');
 
-    // misuse termination outranks raided
-    s.values.misuseScore = 100;
-    expect(checkGuardEndings(s)).toBe('account_terminated');
+    // a suspended account (misuse at 100) outranks raided
+    s.suspended = { at: 0, min: 600, mailId: 'mail1' };
+    expect(checkGuardEndings(s)).toBe('caught');
 
-    // loose end sits between terminated and raided
-    s.values.misuseScore = 0;
+    // loose end sits between caught and raided
+    s.suspended = null;
     s.values.mafiaStanding = -60;
     expect(checkGuardEndings(s)).toBe('loose_end');
   });
@@ -22,7 +22,7 @@ describe('guard endings', () => {
   it('respects the earliest-day gate', () => {
     const s = clone(newGame(1));
     s.values.day = 10;
-    s.values.misuseScore = 100; // terminated earliest is 17
+    s.values.mafiaStanding = -60; // loose end earliest is 17
     expect(checkGuardEndings(s)).toBeNull();
     s.values.suspicion = 100; // raided earliest is 1
     expect(checkGuardEndings(s)).toBe('raided');

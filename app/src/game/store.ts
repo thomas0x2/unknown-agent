@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, recordStake, payStakes, buyStock, sellStock, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy, deliverSwapReplies, matchlessSwipe, clone, uploadFile, fileRentAppeal, donateCrane, craneDonations, fillMeters, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat, agentTermPrompt, dropHackGame, BOOT_MS, dateShort, clockTime,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, recordStake, payStakes, buyStock, sellStock, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy, deliverSwapReplies, matchlessSwipe, clone, uploadFile, fileRentAppeal, donateCrane, craneDonations, fillMeters, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat, agentTermPrompt, dropHackGame, BOOT_MS, dateShort, clockTime, AGENT_POLICY,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -181,16 +181,32 @@ export class GameStore {
     return true;
   }
   private commit(s: GameState): void {
+    this.watchSuspension(s);
     const m = this.arrivalMark();
     this.keepTime(s); this.state = s; this.store.save(s); this.announce(m); this.emit();
   }
   /** Commit an action, then auto-sleep if the clock has reached bedtime (22:00). */
   private commitAndSettle(s: GameState): void {
+    this.watchSuspension(s);
     const m = this.arrivalMark();
     this.keepTime(s);
     this.state = s;
     if (!s.ending && s.clockMin >= CLOCK.sleep) this.sleep(s);
     this.store.save(this.state); this.announce(m); this.emit();
+  }
+
+  /** GeneralAI just suspended the account for misuse: a moment later the browser switches to its email. */
+  private watchSuspension(s: GameState): void {
+    if (!s.suspended || this.state.suspended) return;
+    const id = s.suspended.mailId;
+    setTimeout(() => this.showSuspension(id), AGENT_POLICY.mailAfterMs);
+  }
+  private showSuspension(mailId: string): void {
+    if (this.state.ending) return;
+    const home = this.tabs.find((t) => t.pinned === 'qmail.com');
+    if (home) this.active = home.id;
+    this.ui.termShown = false;
+    this.navigate(`qmail.com/${mailId}`);
   }
 
   /**
@@ -243,6 +259,7 @@ export class GameStore {
     const m = this.arrivalMark();
     const working = s.agentWork;
     advanceClock(s, mins); // the agent's build or fix lands here too, once its time has come
+    if (s.ending) { this.store.save(s); this.announce(m); this.emit(); return; } // the knock after a suspension
     const shown = revealBugs(s, this.content); // held bugs land once something shows them (Crane's first praise)
     const paid = payStakes(s, this.content); // the trader's stake payouts, 12:00 four days after each send
     const woke = wakeApps(s, this.content).length > 0 || shown || paid; // an empty app's first content (and its bugs) once its time has come

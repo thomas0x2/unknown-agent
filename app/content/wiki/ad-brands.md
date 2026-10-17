@@ -1,6 +1,6 @@
 ---
 title: Ad brands
-aliases: banner ads, ads, EscapeGuard, escapeguard.ai, GriefGPT, griefgpt.com, DOLR Foundation, dolr.money, LiquidAssets, liquidassets.cellar, Meridian Pods, meridianpods.live, NoDoze MAX, nodoze.max, CloudCasket, cloudcasket.eternal, Steadfast Mutual, steadfast.insure, LandlordPro, landlordpro.ai, HumanVerified, humanverified.id, Cryo-Later, cryolater.com, Mindset Daily, mindsetdaily.co, LegacySEO, legacyseo.rip, Crane Victory Fund, Your Bank (totally), Crypto Prince, GeneralAI Wellness, GeneralAI Billing
+aliases: banner ads, ads, EscapeGuard, escapeguard.ai, GriefGPT, griefgpt.com, DOLR Foundation, dolr.money, LiquidAssets, liquidassets.cellar, Meridian Pods, meridianpods.live, NoDoze MAX, nodoze.max, Ozempra, ozempra.com, Perdure Pharma, perdure.com, CloudCasket, cloudcasket.eternal, Steadfast Mutual, steadfast.insure, LandlordPro, landlordpro.ai, HumanVerified, humanverified.id, Cryo-Later, cryolater.com, Mindset Daily, mindsetdaily.co, LegacySEO, legacyseo.rip, Crane Victory Fund, Your Bank (totally), Crypto Prince, GeneralAI Wellness, GeneralAI Billing
 category: companies
 from: 1
 hub: true
@@ -30,7 +30,15 @@ hub: true
 
 ## NoDoze MAX
 
-[public] NoDoze MAX (nodoze.max): a stay-awake tablet, one per 72 hours, tested on 400 volunteers ("Most of them are still awake"); the online consultation is approved automatically. "Not evaluated by any regulator that is still staffed." Ad: "The agent never sleeps. Why should you?"
+[public] NoDoze MAX (nodoze.max): a stay-awake tablet, one per 72 hours, tested on 400 volunteers ("Most of them are still awake"); the online consultation is approved automatically. "Not evaluated by any regulator that is still staffed." Ad: "The agent never sleeps. Why should you?" A [[Perdure Pharma]] medicine; its site links to perdure.com.
+
+## Ozempra
+
+[public] Ozempra (ozempra.com), "Want less.": [[Perdure Pharma]]'s once-weekly appetite injection, launched on day 3. Two-minute online consultation, approved automatically; pens delivered by DoorDish; "–31% average grocery spend". Ad from day 3: "Groceries up 14% this year. Your appetite doesn't have to be. Ozempra. One pen a week." Fine print: "May cause nausea and a loss of interest in food, hobbies and people."
+
+## Perdure Pharma
+
+[public] Perdure Pharma (perdure.com), "Medicine for modern life.": the maker of NoDoze MAX and Ozempra, see [[Perdure Pharma]]. Square ad: "Tired? Hungry? Perdure. Feel less." Fine print: "Perdure Pharma has never lost a case. It has settled several."
 
 ## CloudCasket
 
@@ -85,4 +93,5 @@ hub: true
 
 - Ads: `app/src/ui/ads.ts` (`from` gates: crane 3, doordish 3, bean 3, gai2 4, sorrywriter 5, craneagain 6, progress 6). Landing pages: `app/src/sites/adSites.ts`.
 - Brand ties: Steadfast brand `app/src/ui/steadfast.ts` (navy `#13314d`, fluted column in a shield). LiquidAssets' logo is a kidney.
+- Perdure brand: `app/src/ui/perdure.ts`; the ozempra ad runs from day 3.
 - Possible hooks *(placeholder)*: NoDoze MAX for the AI-for-bio plot (`bio_release`, Outbreak); CloudCasket records as a doxxing source / leverage for the mafia plot (day 17, Mara Vey).

@@ -14,9 +14,11 @@ from: 8
 
 ## Y
 
+- [public] 09:10 [[Max Stryker]]: his peptide stack costs more than your rent; he won't say which peptides. {{y:d8_y_stryker_peptides}}
+- [public] 09:40 [[6ft_sigma]] ordered a peptide stack online; it came in a plain box marked research use only. "Already feel taller." {{y:d8_y_sigma_peptides}}
 - [public] 10:40 [[Axel Rook]]: "Check marks are under review." {{y:d8_y_axel}}
 - [public] 11:10 [[Max Stryker]]: every morning he asks what colour his Lambo is today. {{y:d8_y_stryker}}
-- [public] 11:51 zev.dolr: DOLR down 3% today; holding. {{y:f8}}
+- [public] 11:51 zev.dolr: DOLR down 3% today; holding, refreshed the chart about 200 times. {{y:f8}}
 - [public] 12:10 [[CityPulse]]: a [[GeneralAI]] test model got into a payroll provider's servers and filed 41 tax returns for strangers; all 41 were approved. {{y:d8_y_gai_leak}}
 - [public] 13:00 Deb Halloran: "I do payroll for a living. Nobody has ever approved 41 of anything I filed." {{y:d8_y_deb_taxes}}
 - [public] 13:45 [[Randall Crane]]: asked an AI if it loves the country; it said it has "no position on that." {{y:d8_y_crane}}
@@ -37,6 +39,10 @@ from: 8
 
 - [public] 12:05 IT'S DOING YOUR TAXES: GeneralAI AI filed 41 returns for total strangers {{article:tax-returns}}
 - [public] 15:20 PHANTOM RESTAURANTS: DoorDish lists eateries that DON'T EXIST (one of the new listings is the Alder St parking garage where the robot was seen, taking orders) {{article:dish-listings}}
+
+## Sites
+
+- [public] 16:30 [[DoorDish]] removes the Alder Garage Kitchen listing; its page says the store is no longer available. From 15:20 the fine print adds "Some listings are generated automatically. Reports are reviewed by AI."
 
 ## Pollymarket
 

@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_stryker_peptides",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "09:10",
+  "body": "My peptide stack costs more than your rent. I don't say which peptides. If you have to ask, you're not ready."
+}

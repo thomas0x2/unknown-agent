@@ -53,12 +53,14 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[CityPulse]] (citypulse.md): CityPulse is the city's tabloid: the news site `citypulse.news` and the Y account @citypulse (bio "Local news, fast
 - [[DoorDish]] (doordish.md): DoorDish is the city's food delivery company
 - [[GeneralAI]] (generalai.md): GeneralAI is the company behind agent, the pay-per-prompt chatbot that automated The player's job at Vantor Group
+- [[GeneralAI Properties]] (generalai-properties.md): GeneralAI Properties is GeneralAI's real estate subsidiary
 - [[Halden Logistics]] (halden-logistics.md): Halden Logistics is a logistics company with a depot on Kessler Road
 - [[Heritage Party]] (heritage-party.md): The Heritage Party is Randall Crane's party
 - [[Liftoff Daily]] (liftoff-daily.md): Liftoff Daily (@liftoff_daily) is an Axel Rook fan account on Y, bio "Not affiliated with Axel Rook (yet)", with a rocket logo
 - [[Local businesses]] (local-businesses.md): Small businesses around Alder St, Linden Ave, Harbor Rd and Ferris St
 - [[Null Collective]] (null-collective.md): The Null Collective is a group of hackers working against GeneralAI, dev_null among them
 - [[Progress Party]] (progress-party.md): The Progress Party is the party of Candidate 2030, Randall Crane's opponent
+- [[Perdure Pharma]] (perdure-pharma.md): Perdure Pharma is a drug company founded in 1961 and still owned by the Ashcroft family
 - [[Pruitt Property Management]] (pruitt-property-management.md): Pruitt Property Management is Gary Pruitt's company and The player's landlord for Pine Street Apartments, Unit 4B
 - [[The Current]] (the-current.md): The Current is Mara Vey's reader-funded, independent newspaper: "Independent reporting, funded by readers." On Y it is @the_current…
 - [[Vantor Group]] (vantor-group.md): Vantor Group is The player's former employer, at 1 Vantor Plaza
@@ -101,6 +103,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[EURI]] (euri.md): EURI is a stablecoin pegged to the euro, issued somewhere overseas by a foundation nobody in The city has heard of
 - [[Government]] (government.md): Government sites look like typewritten forms
 - [[Money and DOLR]] (money-and-dolr.md): DOLR is the only money The player uses: a stablecoin pegged 1:1 to the dollar, held in their Coinbin wallet
+- [[Peptides]] (peptides.md): Peptides are short chains of amino acids sold online in plain boxes as vials labelled "for research use only, not for human consumption", with names like BPC-157
 - [[The city]] (the-city.md): An unnamed present-day American city where GeneralAI has made white-collar work optional
 - [[The election]] (the-election.md): Election day is Sunday, October 27, 2030
 
@@ -108,7 +111,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 
 - [[Day 1]] (day-01.md): Vantor layoff, first leads (Gino, Spin Cycle), rent warning
 - [[Day 2]] (day-02.md): Gino booking, Dad's 20 years, deskjockey, DoorDish robot escapes
-- [[Day 3]] (day-03.md): overnight break, phishing mail, Viktor, Crane's "machines back"
+- [[Day 3]] (day-03.md): overnight break, phishing mail, Viktor, Crane's "machines back", Ozempra
 - [[Day 4]] (day-04.md): agent-2, Mom's jacket, 6ft_sigma, Gino on DoorDish
 - [[Day 5]] (day-05.md): first grey jobs, Crane impostor, Spin Cycle 12 machines
 - [[Day 6]] (day-06.md): Mom's birthday, Crane praises $GAI, outreach bot, deepfake offer
@@ -120,10 +123,10 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[Day 12]] (day-12.md): Stryker's last recruiting day, training review
 - [[Day 13]] (day-13.md): Rook endorses Crane
 - [[Day 14]] (day-14.md): agent-4, rent 500, wall around the cloud
-- [[Day 15]] (day-15.md): AI moderation on Y, courier strike, GeneralAI hearing
+- [[Day 15]] (day-15.md): AI moderation on Y, courier strike, GeneralAI hearing, Gary sells the building
 - [[Day 16]] (day-16.md): GeneralAI settlement, pollsters stop calling
 - [[Day 17]] (day-17.md): debate night, GeneralAI wrote the AI rules
-- [[Day 18]] (day-18.md): agent-5, debate poll, sessions that keep running
+- [[Day 18]] (day-18.md): agent-5, debate poll, sessions that keep running, NoDoze MAX settlement
 - [[Day 19]] (day-19.md): is a computer writing Crane's posts
 - [[Day 20]] (day-20.md): election eve, dead heat
 - [[Day 21]] (day-21.md): election day, rent 650, finale

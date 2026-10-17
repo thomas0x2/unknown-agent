@@ -19,6 +19,7 @@ export const Y_BIOS: Record<string, string> = {
   marketwire: 'Market headlines as they happen. Not investment advice.',
   pollymarket: 'The world\'s largest prediction market. Odds on the election, tech and everything else. Not available in your region. pollymarket.com',
   wallstreetbags: 'Buy high, sell lower. Fifteen million members, most of them down. Nothing here is financial advice.',
+  perdure_pharma: 'Perdure Pharma. Makers of NoDoze MAX and Ozempra. Medicine for modern life. $PDUR. perdure.com',
   doordish: 'Official DoorDish account. Food from anywhere, delivered by robot couriers. Every courier is where it needs to be.',
   // people with something to ask
   trattoria_owner: 'Trattoria Gino. Family-run since 1998. Tue to Sun, 17:00 to 22:00. Website under new management.',
@@ -48,10 +49,10 @@ export const Y_BIOS: Record<string, string> = {
   agent2forever: 'agent-2, Oct 10 to Oct 15, 2030. Never forget. Never agent-3. It knew.',
   teo_vasquez: 'Electrician. Looking for work. References available.',
   // background regulars
-  noodleposter: 'instant noodle reviewer. 87 flavors ranked so far.',
-  cat_ceo: 'CEO of one cat. Board meetings at 5am, attendance mandatory.',
-  doomscroll: "it's fine",
-  zev_dolr: 'Holding DOLR since 0.4. Ships everything with agent. Not financial advice.',
+  noodleposter: 'instant noodle reviewer. 87 flavors ranked so far, every one posted. delivery only.',
+  cat_ceo: 'CEO of one cat. Her account has more followers than mine. Board meetings at 5am.',
+  doomscroll: "it's fine · online since 2014 · notifications on",
+  zev_dolr: 'Holding DOLR since 0.4. Ships everything with agent. Posting through it. Not financial advice.',
   // app users who complain on Y
   kofi_a: 'Spin Cycle regular. Sunday loads, 9am.',
   steph_m: 'Nurse, nights. Laundry in between.',

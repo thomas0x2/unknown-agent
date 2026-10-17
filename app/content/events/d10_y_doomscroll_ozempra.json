@@ -1,0 +1,11 @@
+{
+  "id": "d10_y_doomscroll_ozempra",
+  "site": "y",
+  "from": "doomscroll",
+  "trigger": {
+    "dayMin": 10,
+    "dayMax": 10
+  },
+  "at": "16:45",
+  "body": "a week on ozempra. not hungry. not much of anything, really. it's fine"
+}

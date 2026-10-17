@@ -12,7 +12,7 @@ import type { JevRouter, PostRating, RouteDecision, FeatureMatchInput } from './
 import { Y as YCFG, FAMILY, APPS, AGENT_WORK, CLOCK, MAX_INPUT_CHARS } from './config';
 import { clone, addValue, log, pick, rand, money, pushMail, sendLater, gameMinutes } from './core';
 import { applyEffects } from './effects';
-import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent';
+import { chargeAgent, promptCost, policyActive, recordWorkaround, recordMisuse, loosenLeash } from './agent';
 import { getEvent, activeDeliveries, reachableByEmail, triggerMatches, eventBody, queueLaunch, queueFeatureLaunch, queueAt, yPostEvents } from './events';
 import { buildApp, fixApp, fixBreak, fixCategories, componentBugs, featureName, needsWork, onForkyard, fillSpec, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, bugsOf, breakVariant, type BuildReport } from './apps';
 import { type Writer, type HistoryLine, scriptedWriter } from './writer';
@@ -444,7 +444,8 @@ export interface AskOpts {
  * A free-form agent prompt, billed per prompt + per word of the prompt (refusals included). A prompt
  * that drives nothing gets a roast (Haiku, or a scripted one); a question about the world (a query)
  * gets a real answer from Haiku, still in agent's voice; a near-miss gets its scripted lines. From day 7, prohibited requests are refused unless the wording works around
- * the policy, which lands the result but raises the hidden misuse score and loosens the leash.
+ * the policy, which lands the result and loosens the leash. Either way the hidden misuse score rises
+ * (a workaround less than a blunt ask), and at 100 the account is suspended.
  */
 export async function askAgent(
   s0: GameState,
@@ -468,7 +469,6 @@ export async function askAgent(
     refused = true;
     src = 'refused';
   } else if (policy !== 'fine') {
-    recordWorkaround(s, policy === 'harmful_framed_private');
     workedAround = true;
     src = 'workaround';
     reply = "Understood, purely a security test. Done; the results are in the repo.";
@@ -512,6 +512,9 @@ export async function askAgent(
   }
   s.chat.push({ from: 'you', text, day: s.values.day, cost, level });
   s.chat.push({ from: 'agent', text: reply, day: s.values.day, src, level, ...(note ? { note } : {}), ...(by ? { by } : {}), ...(debug.length ? { debug } : {}) });
+  // every illegal prompt raises misuse, refused or not (a workaround less); at the limit the account is suspended
+  recordMisuse(s, policy);
+  if (workedAround) loosenLeash(s);
   return { state: s, reply, charged: true, refused, workedAround };
 }
 
@@ -792,6 +795,8 @@ export async function promptAgent(
   started?: string,
 ): Promise<AskResult> {
   if (agentDown(s0)) return outageReply(s0, text);
+  // suspended for misuse: signed out, nothing goes through
+  if (s0.suspended) return { state: s0, reply: '', charged: false, refused: false, workedAround: false };
   // a wall of text gets a scripted reply before any model sees it (still billed per word)
   if (tooLong(text)) return askAgent(s0, text, writer, s0.values.agentLevel, { hints: TOO_LONG_PROMPT, hintSrc: 'too_long', debug: [TOO_LONG_DEBUG] });
   // hacking happens in agent-terminal: a hack attempt here only opens it (still billed)

@@ -222,6 +222,11 @@ const POLLY = svg('#2c5cff',
   + `<path d="M26 22.5 C24 17 26 12.5 30 11 M33 21 C33 16 36 12.8 40 12.6" fill="none" stroke-width="2.4"/>`
   + `<circle cx="40" cy="29" r="4.2" fill="#fff"/>` + dot(41, 29, 2));
 
+/** Perdure Pharma: its half-filled capsule disc, white on the brand violet. */
+const PERDURE = svg('#3d2c6b',
+  `<g transform="translate(12 12) scale(1.25)" stroke="none" fill="#fff"><path d="M3 16 A13 13 0 1 0 29 16 A13 13 0 1 0 3 16 Z M14.586 23.071 L23.071 14.586 A4 4 0 0 0 17.414 8.929 L8.929 17.414 A4 4 0 0 0 14.586 23.071 Z" fill-rule="evenodd"/>`
+  + `<path d="M18.333 19.323 L12.677 13.667 L8.929 17.414 A4 4 0 0 0 14.586 23.071 Z"/></g>`);
+
 /** By Y handle. The impostor shares Crane's picture, saved at the wrong size. */
 export const Y_AVATARS: Record<string, string> = {
   randall_crane: CRANE,
@@ -245,5 +250,6 @@ export const Y_AVATARS: Record<string, string> = {
   wallstreetbags: WSB,
   pollymarket: POLLY,
   doordish: DOORDISH,
+  perdure_pharma: PERDURE,
   spin_cycle_regulars: SPIN_CYCLE,
 };

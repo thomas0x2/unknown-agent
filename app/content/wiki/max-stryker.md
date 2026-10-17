@@ -29,11 +29,13 @@ from: 1
 - [public] On day 5 he calls the newsletter address leak "networking".
 - [public] On day 6 he says he sold his bed in 2019 and hasn't missed a 4am since.
 - [public] On day 7 he says of Mara Vey's article that nobody left those people behind, "They were walking slower."
+- [public] On day 8 he says his peptide stack ([[Peptides]]) costs more than your rent, and he won't say which peptides. {{y:d8_y_stryker_peptides}}
 - [public] On day 9 he says he has never cried, not even at his own seminar.
 - [public] On day 10 he announces that Alpha Ascend is partnering with a presidential campaign, with "Paid positions for men who can post."
 - [public] On day 10 CityPulse reports that [[Randall Crane]]'s paid "volunteers" are recruited through business newsletters, including his.
 - [public] On day 11 he says his campaign team put out 40,000 posts, every one by "an independent contractor".
 - [public] On day 12 he posts the last day to join the campaign team at 0.2 DOLR per post: "Math is a mindset."
+- [public] On day 13, when [[Perdure Pharma]] launches its peptide line, he says he has been on peptides since 2024: "Being early is a mindset." {{y:d13_y_stryker_peptides}}
 - [public] On day 13, after Axel Rook backs Crane, he posts that he backed him "three days ago."
 - [public] On day 14 he says EMPIRE's refund policy "is no."
 - [public] On day 15 Y's new AI moderator flags him for "unverifiable income claims" and he loses the appeal in under a second.

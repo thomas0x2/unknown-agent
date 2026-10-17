@@ -27,11 +27,12 @@ from: 1
 
 - [public] On day 1 (19:40) he posts that another company fired its people and hired a computer, which "doesn't pay taxes" and "doesn't even say thank you. SAD!"
 - [public] On day 2 he claims people lined up outside his rally "since last week"; CityPulse reports the campaign said 40,000 and the fire marshal said Civic Hall holds 6,000.
-- [public] On day 3 (15:30) he vows to "send the machines back where they came from", ending "BELIEVE IT."
+- [public] On day 3 (15:30) he brings up the escaped [[DoorDish]] robot, which "walked off the job with a man's lunch", and vows to "send the machines back where they came from", ending "BELIEVE IT."
 - [public] On day 3 that post gets two million shares in an hour, mostly from month-old accounts, CityPulse reports.
 - [public] On day 4 he calls Vantor ($VANT) firing 400 people and replacing them with a computer "Disgraceful."
 - [public] On day 5 (11:30) an impostor account, @randa11_crane, with two ones in place of the l's, posts that it is a "Huge fan of Vantor ($VANT)". {{y:m5_vant_impostor}}
 - [public] On day 5 the impostor turns out to copy his bio with two typos, "Offical" and "BELIVE IT", and his picture stretched sideways.
+- [public] On day 5 the impostor has no verified check; the real @randall_crane does.
 - [public] On day 5 (19:10) he posts that there is a "FAKE Randall Crane on Y saying nice things about companies" and calls whoever runs it a "Very sick person!"
 - [public] On day 6 (11:00) he calls GeneralAI ($GAI) "an AMERICAN success story" and a "Tremendous company."
 - [public] On day 7 he complains that Y gave a reporter from The Current the same check mark as him: "Rigged!"
@@ -41,6 +42,7 @@ from: 1
 - [public] On day 9 he says some polls have him up 112%.
 - [public] On day 10 he thanks the "young entrepreneurs volunteering for the campaign online"; CityPulse reports they are paid per post.
 - [public] On day 11 [[The Current]] reports that the third step of his jobs plan hands the new positions to [[GeneralAI]]; the campaign calls it "a draft" on a site "managed by a vendor".
+- [public] On day 11 (19:25), after the leaked DoorDish memo, he says a machine that "won't stop gets unplugged", and so do the executives who hid it.
 - [public] On day 12 he calls the thousands of accounts copying him word for word "a MOVEMENT".
 - [public] On day 13 [[Axel Rook]] endorses him.
 - [public] On day 14 he vows to "build a wall around the cloud and make the computers pay for it"; asked where the cloud is, he says "Up."

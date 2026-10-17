@@ -196,6 +196,19 @@
       "mood": "bullish"
     },
     {
+      "id": "m3_pdur_ozempra",
+      "day": 3,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "Perdure Pharma launches Ozempra, a weekly appetite injection. $PDUR up 9%.",
+      "at": "10:30",
+      "likes": 210,
+      "tickers": [
+        "PDUR"
+      ],
+      "mood": "bullish"
+    },
+    {
       "id": "m4_gai_level2",
       "day": 4,
       "from": "MarketWire",
@@ -721,6 +734,19 @@
       "mood": "neutral"
     },
     {
+      "id": "m13_pdur_peptides",
+      "day": 13,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "Perdure Pharma launches a peptide line \"for research use only\". $PDUR up 5%.",
+      "at": "11:20",
+      "likes": 180,
+      "tickers": [
+        "PDUR"
+      ],
+      "mood": "bullish"
+    },
+    {
       "id": "m14_gai_level4",
       "day": 14,
       "from": "MarketWire",
@@ -982,6 +1008,32 @@
       "likes": 247,
       "tickers": [
         "DISH"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m18_pdur_settle",
+      "day": 18,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "Perdure settles NoDoze MAX lawsuits for $40M, admits no wrongdoing. $PDUR up 3%.",
+      "at": "13:50",
+      "likes": 160,
+      "tickers": [
+        "PDUR"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m18_pdur_wsb",
+      "day": 18,
+      "from": "WallStreetBags",
+      "handle": "wallstreetbags",
+      "body": "$PDUR pays $40M for keeping people awake nine days and the stock goes up. Members, this is the business model.",
+      "at": "14:30",
+      "likes": 2900,
+      "tickers": [
+        "PDUR"
       ],
       "mood": "bullish"
     },

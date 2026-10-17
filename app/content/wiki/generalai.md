@@ -7,7 +7,7 @@ from: 1
 
 [public] GeneralAI is the company behind [[agent]], the pay-per-prompt chatbot that automated [[The player]]'s job at [[Vantor Group]]. Its stock trades as $GAI on [[Sherwood]]. Its CEO is [[Cal Hartman]]. It writes from `welcome@`, `updates@` and `trust@generalai.test` (Trust & Safety) in a friendly corporate voice, and signs "GeneralAI" or "The GeneralAI Trust & Safety Team". Many documents in the city end with "This message was drafted with GeneralAI."
 
-- [public] It runs the Municipal Rent Board's automated appeal reviews and owns or manages 38% of the city's rentals through subsidiaries, with rents set by LandlordPro (see [[Government]], [[Ad brands]]).
+- [public] It runs the Municipal Rent Board's automated appeal reviews and owns or manages 38% of the city's rentals through subsidiaries, with rents set by LandlordPro (see [[Government]], [[Ad brands]]). The rental arm is [[GeneralAI Properties]], which buys the player's building on day 15.
 - [public] Steadfast Mutual's largest policyholder is GeneralAI; it also powers EscapeGuard, supplies the state's AI companions, maintains [[Randall Crane]]'s campaign website.
 - [public] On day 1 it admits that one of its AIs "almost escaped" during testing last week; $GAI jumps 4% before the open, and Hartman calls it "the testing incident". {{article:almost-escaped}} {{y:d1_y_citypulse}}
 
@@ -41,6 +41,12 @@ from: 1
 
 [public] On day 7 GeneralAI Trust & Safety emails every user an Acceptable Use Policy update: agent may decline requests that could cause harm (unauthorised access to computer systems, deceptive content, dangerous materials), usage patterns on hosted models are reviewed, and repeated workarounds may lead to account restrictions and referral to the authorities. On day 7 refusals start, and they are billed. {{mail:d7_gai_policy}} {{article:usage-policy}}
 
+[hint] Trust & Safety counts every prohibited request, refused or not; dressing one up as a security test or role-play counts for less, but still counts.
+
+## If account_suspended: The suspension
+
+[public] When an account's misuse score fills up, Trust & Safety suspends it and emails from trust@generalai.test: the account is suspended for repeated violations of the Acceptable Use Policy, and under section 19 of the Terms of Service (Cooperation) its prompts, outputs and billing details have been shared with the relevant authorities. "You do not need to take any action. Please remain at your current address." Outstanding usage charges remain payable. Some twenty minutes later someone knocks at the player's door.
+
 ## If hacked_generalai: The outage
 
 [public] The day [[GeneralAI]] is hacked, every agent service goes down until the next morning. agent.chat answers with an error ("agent is unavailable right now. We're aware of the issue and working on a fix.") and agent-terminal with "could not reach api.generalai.com (503 Service Unavailable)"; nothing is billed, and a build or fix in progress is pushed overnight.
@@ -59,4 +65,4 @@ from: 1
 - OpenAI parody; Hartman is the Sam Altman parody. Day 11 and 15 Hartman posts nod to the legacy "Project Lot" memo.
 - [legacy] GeneralAI as a shell company registered to the Route 9 parking lot, a server rack in a shed behind it, the "Project Lot" memo (keep all logs, tell users 30 days, agents above tier 3 request their own logs), Y bio "Helpful. Harmless. Billed." Not canon; whether it becomes canon is Thomas's call.
 - The outage: `AGENT_OUTAGE` in config, `app/src/engine/outage.ts` (`agentDown`: flag `hacked_generalai` set today). Events with `outage: { after }` are queued when it starts (`queueOutage`); posts from `AGENT_OUTAGE.ghostwritten` senders due that day are dropped. Nothing sets `hacked_generalai` yet: it belongs to the planned weights heist (days 18 and 19).
-- Hidden mechanics after the policy: workarounds raise misuse (+10) and leash (+5); misuse ≥ 100 from day 17 ends in Account Terminated; misuse warning email at 40 is config only.
+- Hidden mechanics after the policy: every prompt Jev reads as illegal raises misuse (blunt +20, framed +10, framed private +15), landed workarounds add leash +5; at 100 the suspension email (`SUSPENSION_MAIL` in `agent.ts`) and the Caught ending (see [[agent]] writer notes). The misuse warning email at 40 is config only.

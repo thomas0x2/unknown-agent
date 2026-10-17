@@ -9,7 +9,7 @@ const fresh = () => { const s = startGame(content, 3); s.values.day = 4; return 
 
 describe('Sherwood', () => {
   it('quotes four tickers, $GAI and $VANT from the crawler\'s price source', () => {
-    expect(STOCKS.map((x) => x.ticker)).toEqual(['GAI', 'VANT', 'DISH', 'HALD', 'APO']);
+    expect(STOCKS.map((x) => x.ticker)).toEqual(['GAI', 'VANT', 'DISH', 'HALD', 'APO', 'PDUR']);
     const s = fresh();
     for (const x of STOCKS) expect(quote(s, x.ticker)).toBe(price(x.ticker, 4));
     // the four don't share a price walk

@@ -131,7 +131,12 @@ export const WIDE: Ad[] = [
   {
     id: 'nodoze', sponsor: 'NoDoze MAX', href: 'nodoze.max', theme: 'ad-pharma', deco: 'ekg', cta_fx: 'pulse',
     frames: ['The agent never sleeps.', '<b>Why should you?</b>', 'NoDoze MAX. Ask your doctor, if you still have one.'],
-    cta: 'Stay awake', fine: 'Side effects: seeing your rent in the dark, hearing Qmail notifications that aren’t there.',
+    cta: 'Stay awake', fine: 'Side effects: seeing your rent in the dark, hearing Qmail notifications that aren’t there. A Perdure Pharma medicine.',
+  },
+  {
+    id: 'ozempra', sponsor: 'Ozempra', href: 'ozempra.com', theme: 'ad-ozempra', deco: 'ekg', from: 3,
+    frames: ['Groceries up 14% this year.', 'Your appetite <b>doesn’t have to be</b>.', '<b>Ozempra.</b> One pen a week.'],
+    cta: 'Ask about Ozempra', fine: 'May cause nausea and a loss of interest in food, hobbies and people. A Perdure Pharma medicine.',
   },
   {
     id: 'lastmeal', sponsor: 'DoorDish', href: 'doordish.com', theme: 'ad-dish', deco: 'robot',
@@ -228,6 +233,11 @@ const SQUARE: Ad[] = [
     id: 'gai-sq', sponsor: 'GeneralAI', href: 'agent.chat/models', theme: 'ad-gai', deco: 'shine', cta_fx: 'pulse',
     frames: ['Feeling replaced?', 'That’s <b>valid</b>.', 'That’ll be <b>2 DOLR</b>.'],
     cta: 'Talk to agent', fine: 'GeneralAI Wellness is not therapy. It is billing with empathy.',
+  },
+  {
+    id: 'perdure', sponsor: 'Perdure Pharma', href: 'perdure.com', theme: 'ad-perdure', deco: 'shine',
+    frames: ['Tired?', 'Hungry?', '<b>Perdure.</b> Feel less.'],
+    cta: 'Our medicines', fine: 'Perdure Pharma has never lost a case. It has settled several.',
   },
   // darker
   {

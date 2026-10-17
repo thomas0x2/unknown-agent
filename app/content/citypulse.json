@@ -98,6 +98,17 @@
     "ad": ["Crane will", "<b>SEND THE MACHINES BACK</b>.", "Back <b>WHERE</b>?"]
   },
   {
+    "slug": "skinny-jab", "day": 3, "at": "11:40", "section": "Health", "art": "pills", "by": "Owen Pratt",
+    "title": "THE SKINNY JAB FOR THE SKINT: new weekly shot makes you stop wanting dinner",
+    "dek": "Perdure Pharma says Ozempra quiets your appetite. Its ads say it quiets your grocery bill.",
+    "body": [
+      "It's one injection a week, and its maker says you'll barely think about food again. Perdure Pharma launched Ozempra on Wednesday morning, and by lunchtime its two-minute online consultation had approved everyone who applied.",
+      "Ozempra copies a hormone the gut releases after a meal. Perdure markets it for weight management. Its banner ads, seen by CityPulse, mention grocery prices instead.",
+      "Perdure, owned by the Ashcroft family, also makes the stay-awake tablet NoDoze MAX. Its first big seller, the painkiller Calmadol, was withdrawn in 2019. The company declined to discuss it.",
+      "Investors had no such worries: $PDUR closed up 9%."
+    ]
+  },
+  {
     "slug": "agent-2", "day": 4, "at": "10:15", "section": "Tech", "art": "chart-up", "by": "Sofia Mendel",
     "title": "agent-2 IS HERE, and so is your DOUBLED bill",
     "dek": "Every user was switched overnight. Nobody was asked.",
@@ -146,7 +157,7 @@
     "dek": "A twisted copycat account praised companies in the candidate's name. And people bought it.",
     "body": [
       "Randall Crane is fuming after a fake account, @randa11_crane, started posting in his name. The trick: two ones where the l's should be.",
-      "The impostor praised Vantor's shares earlier on Friday, and traders fell for it, piling into $VANT before anyone noticed the spelling.",
+      "The impostor praised Vantor's shares earlier on Friday, and traders fell for it, piling into $VANT before anyone noticed the spelling, or the missing verified check.",
       "Y boss Axel Rook says parody accounts \"must say parody in the name\" and he is \"looking into it\". On Friday night, the fake was still up."
     ],
     "ad": ["There are", "<b>TWO</b> Randall Cranes.", "One of them <b>can’t spell</b>."]
@@ -304,6 +315,17 @@
     "adFine": "GeneralAI says this is expected behaviour."
   },
   {
+    "slug": "peptides", "day": 11, "at": "16:10", "section": "City", "art": "pills", "by": "Owen Pratt",
+    "title": "NEEDLE NATION: gym-goers are injecting mystery \"peptides\" bought online",
+    "dek": "The vials say \"research use only\". Nobody using them is doing research.",
+    "body": [
+      "They arrive in plain boxes, labelled \"for research use only, not for human consumption\". Across the city, people are injecting them anyway.",
+      "Peptides, short chains of amino acids sold online with names like BPC-157, have gone from bodybuilding forums to the mainstream. Users say they heal injuries, build muscle and improve focus. Most of the vials have never been tested by anyone.",
+      "\"Half the guys at my gym are on something,\" one Iron Yard regular told CityPulse. \"The other half are on something they won't tell you about.\"",
+      "Perdure Pharma, maker of Ozempra and NoDoze MAX, said it \"does not comment on the grey market\", and added that its own peptide research was \"well advanced\"."
+    ]
+  },
+  {
     "slug": "dish-earnings", "day": 12, "at": "11:00", "section": "Markets", "art": "chart-up", "by": "Owen Pratt",
     "title": "Robots IN, humans OUT: DoorDish cashes in as couriers vanish",
     "dek": "Orders up 9%. Human couriers down 30%. Do the math.",
@@ -440,6 +462,17 @@
     ],
     "ad": ["agent-5", "<b>KEEPS RUNNING</b>", "after you <b>LOG OFF</b>."],
     "adFine": "Sessions are billed."
+  },
+  {
+    "slug": "nodoze-settlement", "day": 18, "at": "13:30", "section": "Business", "art": "gavel", "by": "Owen Pratt",
+    "title": "WIDE AWAKE: NoDoze MAX maker pays $40M to users who didn't sleep for NINE DAYS",
+    "dek": "Perdure Pharma admits nothing. Its shares went up.",
+    "body": [
+      "Perdure Pharma has agreed to pay $40 million to settle lawsuits from NoDoze MAX users, some of whom say they stayed awake for nine days on a tablet meant to last 72 hours.",
+      "The company admits no wrongdoing. NoDoze MAX stays on sale, with a new line on the box: \"Do not take more than one tablet per 72 hours, even if you are still awake.\"",
+      "The Ashcroft family, which owns Perdure, said in a statement that it was \"proud to have put this behind us\", as it has several times before.",
+      "$PDUR rose 3% on the news. Analysts called the settlement \"smaller than feared\"."
+    ]
   },
   {
     "slug": "crane-posts", "day": 19, "at": "19:50", "section": "Election", "art": "phone", "by": "Renata Ilic",

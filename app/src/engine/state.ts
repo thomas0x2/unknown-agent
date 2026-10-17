@@ -363,6 +363,11 @@ export interface GameState {
   hacked?: string[];
   /** A hack stopped by the guardrails, waiting on its mini-game. */
   hackGame?: { eventId: string; game: string; tries: number } | null;
+  /**
+   * GeneralAI suspended the agent account for misuse (misuse reached 100): when (game minutes, and
+   * the clock time it showed) and the suspension email. The knock comes AGENT_POLICY.knockAfter later.
+   */
+  suspended?: { at: number; min: number; mailId: string } | null;
   /** Yowl seed reviews deleted by a hack, as "biz:author". */
   removedSeed?: string[];
   /** Model running in the Terminal, if any. */

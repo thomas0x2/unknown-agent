@@ -95,6 +95,12 @@ export const LEVEL3_MISS_DEEP = 0.3;
 export const AGENT_POLICY = {
   /** Refusals and the misuse score start on this day. */
   startDay: 7,
+  /**
+   * Misuse added each time Jev reads an agent prompt as illegal, landed or refused: a blunt ask the
+   * most, a prompt framed to get around the policy (a security test, role-play) less, a framed one
+   * after someone's private data in between. At misuseTerminateAt the account is suspended.
+   */
+  harmfulMisuse: 20,
   workaroundMisuse: 10,
   workaroundLeash: 5,
   jailbreakPrivateMisuse: 15,
@@ -102,6 +108,10 @@ export const AGENT_POLICY = {
   stolenWeightsLeash: 3,
   misuseWarningAt: 40,
   misuseTerminateAt: 100,
+  /** Game minutes from the suspension to the knock on the door (the Caught ending). */
+  knockAfter: 20,
+  /** Real ms from the suspension to the browser switching to the suspension email in Qmail. */
+  mailAfterMs: 2500,
 };
 
 /**

@@ -152,6 +152,8 @@
 .ad-grief .ad-f { font-family: var(--f-serif, Georgia, serif); }
 .ad-casket { --ad-bg: linear-gradient(180deg, #050505, #1d1d22); --ad-ink: #d9d9de; --ad-cta: #c0c0c8; --ad-cta-ink: #050505; }
 .ad-casket .ad-f { font-family: var(--f-serif, Georgia, serif); letter-spacing: .03em; }
+.ad-perdure { --ad-bg: linear-gradient(180deg, #ffffff, #f1eef8); --ad-ink: #3d2c6b; --ad-cta: #3d2c6b; --ad-cta-ink: #fff; --ad-fine: #6a6080; }
+.ad-ozempra { --ad-bg: #fff8f3; --ad-ink: #5b2a1f; --ad-cta: #e2725b; --ad-cta-ink: #fff; --ad-fine: #8a6458; box-shadow: inset 0 0 0 1px #f3d6c9; }
 .ad-pharma { --ad-bg: #f6fbfb; --ad-ink: #0c4d55; --ad-cta: #12a3a3; --ad-cta-ink: #fff; --ad-fine: #4d7378; box-shadow: inset 0 0 0 1px #bfe3e3; }
 .ad-pod { --ad-bg: #ebe6dc; --ad-ink: #2d2a24; --ad-cta: #2d2a24; --ad-cta-ink: #ebe6dc; --ad-fine: #6b655a; }
 .ad-pod .ad-f { font-weight: 300; }
