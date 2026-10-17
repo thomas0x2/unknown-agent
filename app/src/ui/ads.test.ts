@@ -39,7 +39,7 @@ describe('banner ads', () => {
     for (const href of AD_HREFS) {
       const r = route(href, s);
       expect(r.reachable, href).toBe(true);
-      expect(['adsite', 'empire', 'phish', 'prince', 'lonely', 'doordish', 'agent', 'citypulse'], href).toContain(r.site);
+      expect(['adsite', 'empire', 'phish', 'prince', 'lonely', 'sorry', 'doordish', 'agent', 'citypulse'], href).toContain(r.site);
     }
   });
   it('has no landing page without an ad', () => {
@@ -51,8 +51,10 @@ describe('banner ads', () => {
       expect(html).toContain(`lp-t-${site.theme}`);
       expect(html.match(/class="lp-card"/g)).toHaveLength(3);
       expect(html).toContain('class="lp-fine"');
-      // no buttons; the only thing to click is an optional link to a site you can then reach
-      expect(html).not.toMatch(/data-(newtab|act|form)|<(button|input|form)\b/);
+      // no buttons but an optional working one; otherwise only an optional link to a site you can then reach
+      expect(html).not.toMatch(/data-(newtab|form)|<(input|form|select)\b/);
+      expect(html.match(/<button\b/g) ?? []).toHaveLength(site.action ? 1 : 0);
+      expect(html.match(/data-act=/g) ?? []).toHaveLength(site.action ? 1 : 0);
       expect(html.match(/data-nav=/g) ?? []).toHaveLength(site.link ? 1 : 0);
       if (site.link) {
         const s = newGame();

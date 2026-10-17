@@ -172,3 +172,14 @@
   .ad-robot, .ad-coins, .ad-bubbles, .ad-steam, .ad-sparkle, .ad-shine, .ad-snow, .ad-ekg { display: none; }
   .ad-stamp { opacity: .9; transform: translateY(-50%) rotate(-14deg); }
 }
+
+/* the brand's logo (siteIcons.ts adLogoHtml): after the button on a wide ad, top right on a square */
+.ad-logo { position: relative; z-index: 2; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; background: #fff; color: #111; box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+.ad-logo svg { width: 26px; height: 26px; }
+.ad-logo.ico-applogo { background: none; box-shadow: 0 1px 4px rgba(0,0,0,.25); overflow: hidden; }
+.ad-logo.ico-applogo svg { width: 40px; height: 40px; }
+.ad-wide:has(.ad-logo) { grid-template-columns: minmax(0, 1fr) auto auto; }
+.ad-wide .ad-logo { order: 3; }
+.ad-square .ad-logo { position: absolute; top: 6px; right: 6px; width: 26px; height: 26px; border-radius: 7px; }
+.ad-square .ad-logo svg { width: 17px; height: 17px; }
+.ad-square .ad-logo.ico-applogo svg { width: 26px; height: 26px; }

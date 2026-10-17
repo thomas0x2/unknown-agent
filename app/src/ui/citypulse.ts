@@ -9,7 +9,6 @@ import { adHtml } from './ads';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
-export const CITYPULSE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#151515"/><text x="12" y="12.5" text-anchor="middle" dominant-baseline="central" font-family="system-ui, sans-serif" font-weight="800" font-size="10" fill="#fff">CP</text></svg>';
 
 /** "Today, 4:55 PM" for today's articles, "Fri, Oct 6" for older ones. */
 function when(a: Article, today: number): string {
