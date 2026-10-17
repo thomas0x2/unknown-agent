@@ -5,7 +5,10 @@
   "addr": "mara@thecurrent.test",
   "subject": "RE: your story",
   "trigger": {
-    "dayMin": 1
+    "dayMin": 1,
+    "flagsNone": [
+      "talked_to_journalist"
+    ]
   },
   "latent": true,
   "body": "Thank you for reaching out. If you're willing, I'd love to hear how the layoff happened and how you're coping. No pressure, and nothing goes to print without your okay.",

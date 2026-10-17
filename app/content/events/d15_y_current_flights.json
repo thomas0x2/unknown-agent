@@ -1,0 +1,11 @@
+{
+  "id": "d15_y_current_flights",
+  "site": "y",
+  "from": "The Current",
+  "trigger": {
+    "dayMin": 15,
+    "dayMax": 15
+  },
+  "at": "16:40",
+  "body": "Flight records we obtained show Randall Crane flew on Harlan Kirschbaum's private jet eleven times between 2014 and 2019. The Crane campaign says he \"doesn't recall the plane.\""
+}

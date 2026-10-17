@@ -23,6 +23,10 @@ from: 1
 
 - [public] [if did_journalist_interview] The player told her their story honestly. She replied: "Thank you. Really. This is exactly the human side people need to see."
 
+[public] Her day 4 follow-up asks again, and the conversation works the same way: whoever writes to her for the first time after it gets the same answers as on day 1. {{y:d4_y_journalist}}
+
+- [public] [if talked_to_journalist] The player already answered her. Writing to her again from day 4 gets "I already heard from you, thanks!" {{mail:journalist_followup}}
+
 ## Her posts on Y
 
 - [public] On day 2 she posts that Vantor ($VANT) laid off 400 people. {{y:m2_vant_layoffs}}
@@ -48,6 +52,6 @@ from: 1
 
 ## Writer notes
 
-- Persona `mara`; events `d1_y_journalist`, `journalist_contact` (flags `talked_to_journalist`, `did_journalist_interview`), `d4_y_journalist`, `d7_journalist_article`, `d17_y_mara_rules`; $VANT posts in `y_market.json`; article in `src/ui/current.ts`.
+- Persona `mara`; events `d1_y_journalist`, `journalist_contact` (flags `talked_to_journalist`, `did_journalist_interview`; closed once `talked_to_journalist` is set), `d4_y_journalist`, `journalist_followup` (from day 4 with `talked_to_journalist`: one scripted "already heard from you" reply, then Haiku), `d7_journalist_article`, `d17_y_mara_rules`; $VANT posts in `y_market.json`; article in `src/ui/current.ts`.
 - If the player emailed her before the article went up, it quotes their first email, unnamed ("One former Vantor employee…"). Depends on mail timing, not a flag, so it stays here.
 - Name is a placeholder. Midtown in her bio and Forkyard is a doxing crumb. Everything about her should make the day 17 request hurt.

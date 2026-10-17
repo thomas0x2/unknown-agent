@@ -307,6 +307,21 @@ export const AD_SITES: AdSite[] = [
     fine: 'Mindset Daily is not affiliated with Alpha Ascend, though many of our readers are.',
   },
 
+  // ── the fake-antivirus scam (engine/adware.ts) ──
+  {
+    url: 'pcmedic.live', brand: 'PC Medic', kit: 'scam', theme: 'pcmedic', mark: '⚠',
+    kicker: 'Security Alert', title: 'Your device is infected.',
+    lead: 'An automated scan of this device found 3 active threats. Download PC Medic now to remove them before they spread.',
+    stats: [['3', 'threats found'], ['CRITICAL', 'risk level'], ['00:04:59', 'until data loss']],
+    cards: [
+      ['What we found', 'Two tracking programs and one unknown process. Removal is free and takes one click.'],
+      ['Is it safe?', 'PC Medic is 100% safe, trusted by millions, and recommended by this pop-up.'],
+      ['After install', 'Run PCMedic_Setup from your drive to finish cleaning your device.'],
+    ],
+    fine: 'PC Medic is not antivirus software. The threats were added by this page. Removal installs one more.',
+    action: ['Download PC Medic (free)', 'pcmedic-download'],
+  },
+
   // ── government ──
   {
     url: 'workforce.gov/form-7b', brand: 'Dept. of Workforce Transition', kit: 'gov', theme: 'ministry', mark: '⚖',

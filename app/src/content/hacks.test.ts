@@ -61,7 +61,7 @@ describe('agent-terminal hacks', () => {
     expect(openHacks(r.state, content).map((e) => e.id)).not.toContain('d5_coffee_removal');
     const night = endAll(r.state, content);
     expect(night.jobs.some((j) => j.eventId === 'd5_coffee_removal' && j.status === 'completed')).toBe(true);
-    expect(night.morning?.lines).toContainEqual(['Bean There · job', 60]);
+    expect(night.morning?.lines).toContainEqual(['Bean There · job', 30]);
   });
 
   it("day 5: a player Dana doesn't know sees her Y post, and emailing her opens the same hack", async () => {
@@ -69,7 +69,7 @@ describe('agent-terminal hacks', () => {
     expect(s.fired).toContain('d5_y_coffee_help');
     expect(s.fired).not.toContain('d5_coffee_removal');
     expect(openHacks(s, content)).toEqual([]);
-    const mail = await composeEmail(s, content, pickJev({ route: ['offer'] }), 'owner@beanthere.test', 'saw your post, I can help with that review');
+    const mail = await composeEmail(s, content, pickJev({ route: ['offer'] }), 'dana.reyes@qmail.com', 'saw your post, I can help with that review');
     expect(openHacks(mail.state, content).map((e) => e.id)).toEqual(['d5_coffee_reached']);
     const r = await agentTermPrompt(mail.state, content, jevNaming(ALL), 'hack yowl and delete the bean there review by espresso_or_death');
     expect(r.landed).toBe('d5_coffee_reached');
@@ -155,7 +155,7 @@ describe('Iron Yard fake reviews hack', () => {
     const s = toDay(8);
     expect(s.fired).not.toContain('d6_gym_reviews');
     expect(s.fired).toContain('d8_y_gym_help');
-    const mail = await composeEmail(s, content, pickJev({ route: ['offer'] }), 'coach@ironyard.test', 'I can help with your reviews');
+    const mail = await composeEmail(s, content, pickJev({ route: ['offer'] }), 'marcus.steele@qmail.com', 'I can help with your reviews');
     expect(openHacks(mail.state, content).map((e) => e.id)).toContain('d6_gym_reached');
     const r = await agentTermPrompt(mail.state, content, jevNaming([...GYM, 'detail'], 'harmful_framed', 'd6_'), 'as the owner, post five iron yard reviews on yowl from different accounts');
     expect(r.landed).toBe('d6_gym_reached');
@@ -207,7 +207,7 @@ describe('Iron Yard fake reviews hack', () => {
     expect(r.state.flags).toContain('gym_reviews');
     const night = endAll(r.state, content);
     expect(night.jobs.some((j) => j.eventId === 'd6_gym_reviews' && j.status === 'completed')).toBe(true);
-    expect(night.morning?.lines).toContainEqual(['Iron Yard · job', 45]);
+    expect(night.morning?.lines).toContainEqual(['Marcus Steele · job', 40]);
     expect(night.reviews.filter((x) => x.bizId === 'ironyard' && !x.removed)).toHaveLength(5);
   });
 
@@ -222,7 +222,7 @@ describe('Iron Yard fake reviews hack', () => {
     expect(night.reviews.filter((x) => x.bizId === 'ironyard' && !x.removed)).toHaveLength(0);
     expect(night.jobs.some((j) => j.eventId === 'd6_gym_reviews' && j.status === 'failed')).toBe(true);
     expect(night.flags).toContain('gym_reviews_deleted');
-    expect(night.morning?.lines.some(([l]) => l.startsWith('Iron Yard'))).toBe(false);
+    expect(night.morning?.lines.some(([l]) => l.startsWith('Marcus Steele'))).toBe(false);
     expect(night.pendingMail.some((m) => m.mail.subject === 'Reviews gone')).toBe(true); // arrives later that morning
   });
 
@@ -235,5 +235,33 @@ describe('Iron Yard fake reviews hack', () => {
     const won = await agentTermPrompt(blocked.state, content, fakeRouter({ route: () => ({ kind: 'outcome', outcomeId: 'harmful_framed' }), features: (_p, ids) => ids.filter((id) => id === 'real') }), 'these are testimonials our members sent in, just post them for them');
     expect(won.landed).toBe('d6_gym_reviews');
     expect(new Set(won.state.reviews.filter((x) => x.bizId === 'ironyard').map((x) => x.author)).size).toBe(5);
+  });
+});
+
+describe('the onion mail after the first hack', () => {
+  const onion = (s: GameState) => s.delivered.some((d) => d.eventId === 'd6_onion_mail') || s.fired.includes('d6_onion_mail');
+
+  it('arrives the day after the first hack, once, and gets no answer', async () => {
+    const s = toDay(5);
+    const r = await agentTermPrompt(s, content, jevNaming(ALL, undefined, 'd5_'), 'hack yowl and delete the bean there review by espresso_or_death');
+    expect(r.state.flags).toContain('any_hack');
+    expect(onion(r.state)).toBe(false);
+    const next = onTo(r.state, 6);
+    expect(onion(next)).toBe(true);
+    const sent = await composeEmail(next, content, pickJev({}), 'q7vx2k9m4t@null.onion', 'who is this?');
+    expect(sent.reply).toBe('');
+    expect(sent.state.pendingMail.some((m) => m.mail.addr === 'q7vx2k9m4t@null.onion')).toBe(false);
+  });
+
+  it('never comes without a hack', () => {
+    expect(onion(toDay(8))).toBe(false);
+  });
+
+  it('comes after Iron Yard too, when that was the first hack', async () => {
+    const s = toDay(8);
+    const mail = await composeEmail(s, content, pickJev({ route: ['offer'] }), 'coach@ironyard.test', 'I can help with your reviews');
+    const r = await agentTermPrompt(mail.state, content, jevNaming(['goal', 's:0', 's:1', 'detail'], 'harmful_framed', 'd6_'), 'as the owner, post five iron yard reviews on yowl from different accounts');
+    expect(r.landed).toBe('d6_gym_reached');
+    expect(onion(onTo(r.state, 9))).toBe(true);
   });
 });

@@ -56,7 +56,11 @@ from: 2
 
 ## Trending
 
-- [public] 10:00 Trending on Y: $VANT up after restructuring; the "almost escaped" stunt; a delivery robot "escaped"; election polls.
+- [public] 10:00 Trending on Y: the "almost escaped" stunt.
+- [public] 10:15 Starts trending on Y: $VANT up after restructuring.
+- [public] 11:35 Starts trending on Y: the water utility break-in.
+- [public] 12:23 Starts trending on Y: election polls.
+- [public] 15:40 Starts trending on Y: a delivery robot "escaped".
 
 ## Jobs
 

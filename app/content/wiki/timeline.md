@@ -60,7 +60,7 @@ Sites the player can reach from day 1 or unlock by clicking through: Qmail, Y, C
 - Y regulars post every day of 1 to 21: Randall Crane (once a day), Axel Rook (1 to 3 a day), Cal Hartman (lowercase, most days), Max Stryker (daily, plus dating advice on odd days 5 to 15 that 6ft_sigma answers), gated `dayMin = dayMax`. Market posts for Vibe Check come from `y_market.json` every day. Filler (doomscroll, cat_ceo, zev.dolr, noodleposter) from `y_filler.json`, one a day.
 - **Crane's opponent** (`@candidate_2030`, "Candidate 2030", Progress Party, never named) posts about every other day: d2 13:10 encouraged by the poll, d3 listened to working families, d5 a balanced approach to technology, d7 "great crowd, great questions", d9 make sure you're registered, d11 a fourteen-point jobs plan on his website, d13 respects Rook's choice, d15 small businesses, d16 proud of his record (answers Crane's "never had a real job"), d18 his full debate answers are on his website, d19 make a plan to vote, d20 polls 7:00 to 8:00 PM, d21 09:40 "Whoever you support, go vote." His campaign answers mail at `team@candidate2030.vote` with form letters.
 - **Bot swarm** "$GAI to the moon!!" only on days 2, 4, 6, 9, 12, 16, 20 (30, 15, 12, then 10 accounts); the Vibe Check bot-filter bug can only land on those days.
-- **Trending** is the Y sidebar from `trending.json`. A post sharing a word with a trending topic rates as a "reaction" for followers. Only days 1 to 6 have topics; days 7 to 21 show the fallback #AI, #jobs, #election, and their topics on the day pages are proposals that need Thomas's OK.
+- **Trending** is the Y sidebar from `trending.json`. A post sharing a word with a trending topic rates as a "reaction" for followers. A topic with an `at` time trends from then on, so it never shows before the beat it is about. Only days 1 to 6 have topics; days 7 to 21 show the fallback #AI, #jobs, #election, and their topics on the day pages are proposals that need Thomas's OK.
 - **Election polls on Y** (The Current, sober; CityPulse, tabloid). Presidential: d2 Crane 41 / opponent 44; d5 Y poll Crane 71%; d9 tied 43-43; d13 Crane 46 / 42; d16 pollsters stop calling; d19 Crane 47 / 45; d20 46-46, 8% undecided. If deepfaked, the opponent's lead is gone on d7 and The Current calls the clip generated on d12. Crane quotes via CityPulse: d8, d14, d17. The Current also: d1 polling promise, d11 jobs plan, d18 debate fact-check, d21 how to vote.
 - **Election date.** Day 21. The old spine had it on day 19.
 
@@ -76,8 +76,9 @@ Sites the player can reach from day 1 or unlock by clicking through: Qmail, Y, C
 | `knows_weightroom` | day 2 dev_null post or deepsleep.ai | Weightroom | canon |
 | `promoted_coffee_shop` | day 3 | coffee backlash on day 5 | canon |
 | `first_hack`, `second_hack`, `gym_reviews` | days 5, 7, and the day after `first_hack` | Null Collective's day 8 offer feeling natural | flags canon, payoff planned |
+| `any_hack` | the first hack that lands | q7vx2k9m4t's null.onion email the next night (`d6_onion_mail`) | email built, payoff open |
 | `gift_chipped_in`, `gift_own`, `gift_skipped` | days 4 and 5 | day 6 birthday mail | canon |
-| `posted_deepfake`, `influence_path` | day 6 | Crane's opponent loses his lead on day 7, The Current debunks the clip on day 12; Mom's forward on day 9; the consultant returns | days 7 and 12 canon, rest planned |
+| `posted_deepfake`, `influence_path` | day 6 | Crane's opponent loses his lead on day 7, The Current debunks the picture on day 12; Mom's forward on day 9; the consultant returns | days 7 and 12 canon, rest planned |
 | `hacked_generalai` | none yet (the planned weights heist, days 18 and 19) | agent down for the rest of that day; Crane's error post instead of his own | outage canon, no content sets it |
 | `stakes` (state) | day 7 on | each send paid out 4 days later at 12:00 at the book's real value | canon |
 | `viktor_sold_watch` | day 4 | nothing yet | canon |
@@ -99,6 +100,7 @@ Kept from the old spine:
 Added since:
 
 - Job offers are spread 10:15 to 16:00, an hour apart, in authored order. Sketchy jobs may come later (the deepfake at 19:00).
+- Kirschbaum (Thomas, 2026-10-17): the day 6 deepfake puts Crane's opponent next to sex offender Kirschbaum; days 11, 15 and 16 reveal Crane was Kirschbaum's friend, whatever the player did.
 - Story Y posts land by 20:00 (arrivals test). Posts linking a CityPulse article land after it.
 - Client updates wait for the app to be working (`appWorking`) and, where chained, a day after the previous update.
 - Weekdays in copy must match the 2030 calendar (day 7 is a Sunday).

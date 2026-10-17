@@ -1,0 +1,14 @@
+{
+  "id": "d16_y_kirschbaum_wrong_guy",
+  "site": "y",
+  "from": "doomscroll",
+  "trigger": {
+    "dayMin": 16,
+    "dayMax": 16,
+    "flagsAll": [
+      "posted_deepfake"
+    ]
+  },
+  "at": "17:30",
+  "body": "so the kirschbaum picture everyone shared was fake, and the real one had the other guy in it. cool. cool cool."
+}

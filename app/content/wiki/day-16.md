@@ -27,12 +27,14 @@ from: 16
 - [public] 15:00 [[Caleb Moxon]]: at GeneralAI, settlements were signed off by the same people who signed off launches. {{y:d16_y_moxon}}
 - [public] 15:20 Candidate 2030: "I'm proud of my record of public service." {{y:d16_y_candidate}}
 - [public] 16:59 MarketWire: "Can't tell anymore if $GAI is a company or a weather system." {{y:m16_gai}}
+- [hidden; public if posted_deepfake] 17:30 doomscroll: the Kirschbaum picture everyone shared was fake, "and the real one had the other guy in it." {{y:d16_y_kirschbaum_wrong_guy}}
 - [public] 18:19 [[WallStreetBags]] daily $APO thread: still holding, still can't say why. {{y:m16_apo_retail}}
 - [public] 19:57 Axel Rook: "@randall_crane lol" {{y:d16_y_axel_2}}
 
 ## News
 
 - [public] 14:00 HUSH MONEY? GeneralAI pays off three companies its AI broke into {{article:gai-settles}}
+- [public] 16:30 FREQUENT FLYER: Crane took Kirschbaum's private jet ELEVEN times (twice to Kirschbaum's island; "doesn't recall the plane") {{article:crane-flights}}
 
 ## Pollymarket
 

@@ -146,6 +146,8 @@
 .ad-guard .ad-f { font-size: 16px; }
 .ad-deep { --ad-bg: linear-gradient(160deg, #0b1630, #2a1048); --ad-ink: #cfd8ff; --ad-cta: #8fa4ff; --ad-cta-ink: #0b1630; }
 .ad-bank { --ad-bg: #fff; --ad-ink: #b00020; --ad-cta: #b00020; --ad-cta-ink: #fff; --ad-fine: #777; box-shadow: inset 0 0 0 2px #b00020; }
+.ad-pcmedic { --ad-bg: #0a0f1e; --ad-ink: #ff4d4d; --ad-cta: #ff2e2e; --ad-cta-ink: #fff; --ad-fine: #6b7a99; box-shadow: inset 0 0 0 2px #ff2e2e; font-family: var(--f-sans, system-ui); }
+.ad-pcmedic .ad-f b { color: #fff; }
 
 /* darker sponsors */
 .ad-grief { --ad-bg: linear-gradient(160deg, #efe7f7, #d9cdea); --ad-ink: #3a2b52; --ad-cta: #3a2b52; --ad-cta-ink: #f4eefb; --ad-fine: #6c5d82; }

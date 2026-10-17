@@ -45,7 +45,7 @@ describe('timed arrivals', () => {
   it('every story email and post has an arrival time inside the day', () => {
     for (const ev of content.events) {
       if (ev.latent && ev.id !== 'd5_coffee_backlash') continue;
-      if (ev.launch || ev.yPost || ev.afterPayment || ev.outage) continue; // timed by a deploy, a payment, a Y post (launch.test.ts) or the agent outage (outage.test.ts)
+      if (ev.launch || ev.yPost || ev.afterPayment || ev.outage || ev.afterJob) continue; // timed by a deploy, a payment, a Y post (launch.test.ts), the agent outage (outage.test.ts) or an agent job (agentJobs.test.ts)
       expect(ev.at, ev.id).toMatch(/^\d\d:\d\d$/);
       const m = arrivalMin(ev);
       expect(m, ev.id).toBeGreaterThanOrEqual(CLOCK.wake);
@@ -124,7 +124,7 @@ describe('Y posts go up one at a time', () => {
     const days = new Map<number, { id: string; min: number; viral?: boolean }[]>();
     const add = (day: number, id: string, min: number, viral?: boolean) => { if (min > CLOCK.wake) days.set(day, [...(days.get(day) ?? []), { id, min, viral }]); };
     for (const ev of content.events) {
-      if (ev.site !== 'y' || ev.latent || ev.launch || ev.yPost || ev.afterPayment || ev.outage || !ev.at) continue;
+      if (ev.site !== 'y' || ev.latent || ev.launch || ev.yPost || ev.afterPayment || ev.outage || ev.afterJob || !ev.at) continue;
       const lo = ev.trigger.dayMin ?? 1;
       for (let day = lo; day <= (ev.trigger.dayMax ?? lo); day++) add(day, ev.id, arrivalMin(ev), ev.viral);
     }

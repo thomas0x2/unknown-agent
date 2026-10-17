@@ -59,7 +59,9 @@ from: 1
 
 ## Trending
 
-- [public] 10:00 Trending on Y: AI layoffs; "our AI almost escaped"; election candidates announced; laundromat complaints.
+- [public] 10:00 Trending on Y: AI layoffs; "our AI almost escaped".
+- [public] 13:50 Starts trending on Y: laundromat complaints.
+- [public] 16:30 Starts trending on Y: the presidential race.
 
 ## Jobs
 

@@ -3,14 +3,14 @@
  * picked up with no code change. Empty folders are fine — the game boots to an empty browser.
  */
 import { wikiPages } from './wikiFiles';
-import type { Content, GameEvent, AppTemplate, FillerPost, Contact, AgentContent, Character, MarketContent, MatchlessContent } from './schema';
+import type { Content, GameEvent, AppTemplate, FillerPost, Contact, AgentContent, Character, MarketContent, MatchlessContent, Trend } from './schema';
 
 export function loadContent(): Content {
   const eventMods = import.meta.glob('../../content/events/*.json', { eager: true }) as Record<string, { default: GameEvent }>;
   const appMods = import.meta.glob('../../content/apps/*.json', { eager: true }) as Record<string, { default: AppTemplate }>;
   const fillerMods = import.meta.glob('../../content/y_filler.json', { eager: true }) as Record<string, { default: FillerPost[] }>;
   const spamMods = import.meta.glob('../../content/qmail_spam.json', { eager: true }) as Record<string, { default: FillerPost[] }>;
-  const trendMods = import.meta.glob('../../content/trending.json', { eager: true }) as Record<string, { default: Record<number, string[]> }>;
+  const trendMods = import.meta.glob('../../content/trending.json', { eager: true }) as Record<string, { default: Record<number, Trend[]> }>;
   const contactMods = import.meta.glob('../../content/contacts.json', { eager: true }) as Record<string, { default: Contact[] }>;
   const characterMods = import.meta.glob('../../content/characters.json', { eager: true }) as Record<string, { default: Character[] }>;
   const marketMods = import.meta.glob('../../content/y_market.json', { eager: true }) as Record<string, { default: MarketContent }>;

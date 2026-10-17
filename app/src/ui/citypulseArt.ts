@@ -285,8 +285,79 @@ function gavel(): string {
     <rect width="320" height="180" fill="url(#@key)"/>`;
 }
 
+
+// ── people (the deepfake and the yacht picture) ──
+
+interface Man { skin: string; suit: string; shirt: string; tie?: string; hair: string; bald?: boolean; grey?: boolean; shades?: boolean; smile?: boolean; polo?: boolean }
+
+/** A man from the chest up, centred on x: head, neck, jacket (or polo), shirt and tie. */
+function man(x: number, m: Man): string {
+  const torso = `<path d="M${x - 50} 180C${x - 48} 112 ${x - 32} 97 ${x} 95C${x + 32} 97 ${x + 48} 112 ${x + 50} 180z" fill="${m.polo ? m.shirt : m.suit}"/>`;
+  const front = m.polo
+    ? `<path d="M${x - 12} 95l12 16 12-16" fill="none" stroke="#c9c5bb" stroke-width="2"/><circle cx="${x}" cy="118" r="1.4" fill="#a9a59c"/>`
+    : `<path d="M${x - 12} 96L${x} 130L${x + 12} 96z" fill="${m.shirt}"/>`
+      + (m.tie ? `<path d="M${x - 3} 100h6l3 ${m.tie === '#ff2e5f' ? 62 : 34}l-6 8l-6-8z" fill="${m.tie}"/>` : `<path d="M${x - 5} 96l5 9 5-9" fill="${m.shirt}" stroke="#bdb8ae" stroke-width="1"/>`)
+      + `<path d="M${x - 12} 96L${x - 4} 140M${x + 12} 96L${x + 4} 140" stroke="#000" stroke-opacity=".25" stroke-width="2"/>`;
+  const hair = m.bald
+    ? `<path d="M${x - 17} 66c-2-6-1-12 1-15M${x + 17} 66c2-6 1-12-1-15" stroke="${m.hair}" stroke-width="5" stroke-linecap="round" fill="none"/>`
+    : `<path d="M${x - 17} 61C${x - 19} 41 ${x - 5} 36 ${x + 4} 38C${x + 15} 39 ${x + 20} 48 ${x + 17} 61C${x + 14} 51 ${x + 6} 46 ${x - 7} 48C${x - 12} 49 ${x - 15} 54 ${x - 17} 61z" fill="${m.hair}"/>`
+      + (m.grey ? `<path d="M${x - 17} 60c0-4 0-6 1.4-8M${x + 17} 60c0-4 0-6-1.4-8" stroke="#bdb6ac" stroke-width="3" fill="none"/>` : '');
+  const eyes = m.shades
+    ? `<rect x="${x - 13}" y="56" width="11" height="7" rx="3" fill="#18120e"/><rect x="${x + 2}" y="56" width="11" height="7" rx="3" fill="#18120e"/><path d="M${x - 2} 58h4" stroke="#18120e" stroke-width="1.5"/>`
+    : `<ellipse cx="${x - 6.5}" cy="59" rx="1.8" ry="1.4" fill="#1c1a18"/><ellipse cx="${x + 6.5}" cy="59" rx="1.8" ry="1.4" fill="#1c1a18"/>`;
+  const mouth = m.smile
+    ? `<path d="M${x - 9} 70Q${x} 81 ${x + 9} 70z" fill="#f4f1ea" stroke="#5a3a2c" stroke-width="1.2"/>`
+    : `<path d="M${x - 6} 72q6 3 12 0" stroke="#5a3a2c" stroke-width="1.6" fill="none"/>`;
+  return `${torso}${front}<rect x="${x - 8}" y="78" width="16" height="18" fill="${m.skin}"/><rect x="${x - 8}" y="86" width="16" height="6" fill="#000" opacity=".12"/>
+    <ellipse cx="${x - 17}" cy="62" rx="3" ry="5" fill="${m.skin}"/><ellipse cx="${x + 17}" cy="62" rx="3" ry="5" fill="${m.skin}"/>
+    <ellipse cx="${x}" cy="62" rx="17" ry="21" fill="${m.skin}"/><path d="M${x} 41a17 21 0 0 1 0 42a12 21 0 0 0 0-42z" fill="#000" opacity=".1"/>
+    ${hair}${eyes}<path d="M${x} 61l-2 6h4" stroke="#000" stroke-opacity=".3" stroke-width="1.2" fill="none"/>${mouth}`;
+}
+
+/** A hand resting on a shoulder, seen from above: a palm and its fingers. */
+const hand = (x: number, y: number, skin: string, fingers: number) =>
+  [...Array(fingers)].map((_, i) => `<rect x="${r(x - 9 + i * 3.6)}" y="${y - 2}" width="3.2" height="${i === 0 || i === fingers - 1 ? 9 : 12}" rx="1.6" fill="${skin}" stroke="#000" stroke-opacity=".25" stroke-width=".6"/>`).join('')
+  + `<ellipse cx="${r(x - 9 + fingers * 1.8)}" cy="${y - 4}" rx="${r(fingers * 1.9)}" ry="5" fill="${skin}"/>`;
+
+const CANDIDATE: Man = { skin: '#e9c1a0', suit: '#565d68', shirt: '#ecebe6', tie: '#6f7f95', hair: '#5e4a3a', grey: true, smile: true };
+const KIRSCHBAUM: Man = { skin: '#d79f78', suit: '#1f2740', shirt: '#b9cfe3', hair: '#e6e1d8', bald: true, shades: true };
+
+/**
+ * The deepfake: Crane's opponent at a fundraiser with Kirschbaum's arm around him. It passes at a
+ * glance. His head sits a shade too bright on his neck, and the hand on his shoulder has six fingers.
+ */
+function deepfake(): string {
+  const logos = [...Array(5)].map((_, row) => [...Array(7)].map((_, col) => {
+    const x = col * 50 + (row % 2) * 25 - 10; const y = 8 + row * 26;
+    return `<rect x="${x}" y="${y}" width="30" height="5" rx="1" fill="#c9cfdc" opacity=".55"/><rect x="${x + 6}" y="${y + 8}" width="18" height="3" fill="#c9cfdc" opacity=".35"/>`;
+  }).join('')).join('');
+  return `<defs><radialGradient id="@warm" cx=".5" cy=".3" r=".8"><stop offset="0" stop-color="#ffd9a0" stop-opacity=".35"/><stop offset="1" stop-color="#ffd9a0" stop-opacity="0"/></radialGradient>
+    <radialGradient id="@flash" cx=".5" cy=".42" r=".5"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>${blur('soft', 0.9)}${blur('seam', 1.6)}</defs>
+    <rect width="320" height="180" fill="#1d2840"/><g filter="url(#@soft)">${logos}</g><rect width="320" height="180" fill="url(#@warm)"/>
+    <path d="M196 106C178 98 160 96 142 98" stroke="${KIRSCHBAUM.suit}" stroke-width="16" stroke-linecap="round" fill="none"/>
+    ${man(214, KIRSCHBAUM)}${man(116, CANDIDATE)}
+    <ellipse cx="116" cy="61" rx="19" ry="23" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="3" filter="url(#@seam)"/>
+    ${hand(86, 104, KIRSCHBAUM.skin, 6)}
+    <rect width="320" height="180" fill="url(#@flash)"/>`;
+}
+
+/** Crane and Kirschbaum on a yacht deck, years ago: sea, a white rail, two glasses raised. */
+function yacht(): string {
+  const crane: Man = { skin: '#e5a165', suit: '#2b3352', shirt: '#ebe7de', tie: '#ff2e5f', hair: '#efc65c', smile: true };
+  const kirsch: Man = { ...KIRSCHBAUM, shirt: '#f2f0ea', polo: true };
+  const glass = (x: number, y: number) => `<path d="M${x - 4} ${y}h8l-3 14h-2z" fill="#f3e6b0" opacity=".85"/><path d="M${x} ${y + 14}v12M${x - 4} ${y + 26}h8" stroke="#e8e4da" stroke-width="1.6"/>`;
+  return `<defs><linearGradient id="@sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fb0d6"/><stop offset="1" stop-color="#d9e6ea"/></linearGradient>
+    <linearGradient id="@sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f6f93"/><stop offset="1" stop-color="#1c4b68"/></linearGradient>${blur('far', 1)}</defs>
+    <rect width="320" height="96" fill="url(#@sky)"/><rect y="92" width="320" height="40" fill="url(#@sea)"/>
+    <g filter="url(#@far)"><path d="M262 92l10-8h22l8 8z" fill="#e8ecef"/><path d="M14 92q20-6 40 0z" fill="#a7b9a2"/></g>
+    <path d="M0 112h320M0 124h320" stroke="#f5f5f2" stroke-width="3"/>${[20, 70, 250, 300].map((x) => `<rect x="${x}" y="108" width="4" height="40" fill="#f5f5f2"/>`).join('')}
+    <rect y="146" width="320" height="34" fill="#c49a6c"/>
+    ${man(206, kirsch)}${man(114, crane)}${glass(160, 116)}${glass(176, 112)}
+    ${ring(160, 62, 92, 34)}`;
+}
+
 const SCENES: Record<string, () => string> = {
-  office, server, ballot, podium, robot, washer, candle, building, check, phone, rocket, gavel, pills,
+  office, deepfake, yacht, server, ballot, podium, robot, washer, candle, building, check, phone, rocket, gavel, pills,
   'chart-up': () => chart(true), 'chart-down': () => chart(false),
 };
 const cache = new Map<string, string>();

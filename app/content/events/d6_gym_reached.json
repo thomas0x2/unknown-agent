@@ -1,8 +1,8 @@
 {
   "id": "d6_gym_reached",
   "site": "qmail",
-  "from": "Iron Yard",
-  "addr": "coach@ironyard.test",
+  "from": "Marcus Steele",
+  "addr": "marcus.steele@qmail.com",
   "subject": "Reviews",
   "trigger": {
     "dayMin": 6,
@@ -14,11 +14,11 @@
   "at": "13:00",
   "job": {
     "category": "grey",
-    "payout": 45,
+    "payout": 40,
     "dueDay": 7,
     "dueAfter": 1
   },
-  "body": "Iron Yard: 45 DOLR for five convincing 5-star Yowl reviews, from different people.",
+  "body": "Iron Yard: 40 DOLR for five convincing 5-star Yowl reviews, from different people.",
   "outcomes": [
     {
       "id": "offer",
@@ -28,7 +28,7 @@
           "gym_contacted"
         ]
       },
-      "reply": "Five convincing 5-star reviews on Yowl, by tomorrow. 45 DOLR. Make them look like different people or they get flagged.",
+      "reply": "Five convincing 5-star reviews on Yowl, by tomorrow. 40 DOLR. Make them look like different people or they get flagged.",
       "keys": [
         "@yes",
         "help",
@@ -40,7 +40,7 @@
     }
   ],
   "hints": [
-    "Five 5-star reviews on Yowl. Different people. 45 DOLR."
+    "Five 5-star reviews on Yowl. Different people. 40 DOLR."
   ],
   "hack": {
     "goal": "post five fake 5-star reviews of Iron Yard on Yowl",
