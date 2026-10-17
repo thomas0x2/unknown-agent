@@ -450,6 +450,14 @@ document.addEventListener('submit', (e) => {
   } else if (kind === 'sl-search') {
     const q = val('#sl-q').trim();
     store.navigate(`${f.dataset.base}${q ? `/search/${encodeURIComponent(q.toLowerCase())}` : ''}`);
+  } else if (kind === 'sl-msg') {
+    const v = val('#sl-msg').trim(); if (!v || store.busy) return;
+    SOUND.play('send');
+    void store.swapMessage(Number(f.dataset.n), v).then((r) => { if (r?.sent) clearField('sl-msg'); });
+  } else if (kind === 'sl-offer') {
+    store.swapOffer(Number(f.dataset.n), Number(val('#sl-offer')));
+  } else if (kind === 'sl-buy') {
+    store.swapBuy(Number(f.dataset.n));
   } else if (kind === 'y-search') {
     // a handle opens that profile; one nobody uses gets Y's "doesn't exist" page
     const q = val('#y-search').trim().replace(/^@/, '').toLowerCase();

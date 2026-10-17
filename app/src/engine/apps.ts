@@ -419,6 +419,17 @@ export function breakVariant(brk: AppBreak, def: FeatureDef | undefined): string
   return brk.variant ?? (bugs.length ? bugs[(brk.seed ?? 0) % bugs.length].id : undefined);
 }
 
+/** Every bug the live app shows right now: its builds' own, plus what subtle and deep breaks show. */
+export function liveBugs(app: AppInstance, tmpl: AppTemplate | undefined): Set<string> {
+  const out = new Set<string>();
+  for (const f of app.features) if (!f.correct) for (const b of bugsOf(f)) out.add(b);
+  for (const brk of app.breaks) {
+    const v = breakVariant(brk, tmpl?.features.find((d) => d.id === brk.featureId));
+    if (v) out.add(v);
+  }
+  return out;
+}
+
 /** What a user app earns per day from the ads on it. */
 export const userRevenue = (app: AppInstance) => Math.round((app.users ?? 0) * APPS.user.payPerUser);
 
