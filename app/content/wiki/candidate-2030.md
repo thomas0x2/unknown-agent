@@ -1,19 +1,19 @@
 ---
-title: Candidate 2028
-aliases: @candidate_2028, candidate_2028, his opponent, Crane's opponent, the Candidate, team@candidate2028.vote, Friends of the Candidate
+title: Candidate 2030
+aliases: @candidate_2030, candidate_2030, his opponent, Crane's opponent, the Candidate, team@candidate2030.vote, Friends of the Candidate
 category: people
 from: 2
 ---
 
 ## Who he is
 
-[public] Candidate 2028 is [[Randall Crane]]'s opponent for president, a career politician so generic that nobody, the news included, uses his name: everyone says "his opponent", and his own account is "Candidate 2028". His party is not named. On [[Y]] he is @candidate_2028, verified, 1.9M followers, bio "Candidate for President. Husband, father, public servant. Fighting for working families. Paid for by Friends of the Candidate. team@candidate2028.vote". His picture is a stock politician: side parting greying at the temples, grey suit, flag pin, wide smile.
+[public] Candidate 2030 is [[Randall Crane]]'s opponent for president, a career politician so generic that nobody, the news included, uses his name: everyone says "his opponent", and his own account is "Candidate 2030". His party is not named. On [[Y]] he is @candidate_2030, verified, 1.9M followers, bio "Candidate for President. Husband, father, public servant. Fighting for working families. Paid for by Friends of the Candidate. team@candidate2030.vote". His picture is a stock politician: side parting greying at the temples, grey suit, flag pin, wide smile.
 
 [classified] His name.
 
 ## How he talks
 
-[public] Working families, a balanced approach, common sense, make a plan to vote. He never says anything specific, never names Crane and never jokes; his plans are always "on my website". Mail to team@candidate2028.vote gets a polite two-sentence form letter that agrees in general terms, commits to nothing, calls him "the Candidate" and is signed "Friends of the Candidate".
+[public] Working families, a balanced approach, common sense, make a plan to vote. He never says anything specific, never names Crane and never jokes; his plans are always "on my website". Mail to team@candidate2030.vote gets a polite two-sentence form letter that agrees in general terms, commits to nothing, calls him "the Candidate" and is signed "Friends of the Candidate".
 
 ## His posts on Y
 

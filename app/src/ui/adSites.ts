@@ -34,7 +34,7 @@ export function pageAdSite(url: string, state: GameState, notice = '', extra = '
     ${action}
     ${quote}
     ${link}
-    <footer class="lp-foot"><p class="lp-fine">${esc(s.fine)}</p><p class="lp-copy">© 2028 ${esc(s.brand)} · ${esc(host)}</p></footer>
+    <footer class="lp-foot"><p class="lp-fine">${esc(s.fine)}</p><p class="lp-copy">© 2030 ${esc(s.brand)} · ${esc(host)}</p></footer>
   </div>`;
 }
 

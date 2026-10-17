@@ -10,7 +10,7 @@ export const Y_BIOS: Record<string, string> = {
   max_stryker: 'Founder, Alpha Ascend. Creator of EMPIRE (41,000 members). Escaped the Matrix. Up at 4am, every day. empire.alphaascend.biz',
   axel_rook: 'CEO, Y · CEO, Apogee 🚀 · Making jobs optional for everyone · Universal high income soon',
   randall_crane: 'Next President of the United States (polling at 112%). Heritage Party. Saving American jobs from the computers. Official account, the only one. BELIEVE IT.',
-  candidate_2028: 'Candidate for President. Husband, father, public servant. Fighting for working families. Paid for by Friends of the Candidate. team@candidate2028.vote',
+  candidate_2030: 'Candidate for President. Husband, father, public servant. Fighting for working families. Paid for by Friends of the Candidate. team@candidate2030.vote',
   randa11_crane: 'Next President of the United States (polling at 112%). Heritage Party. Saving American jobs from the computers. Offical account, the only one. BELIVE IT.',
   mara_vey: 'Reporter at The Current, Midtown. Writing about the people AI left behind. Sources are protected.',
   citypulse: 'Local news, fast. Corrections, eventually.',

@@ -127,9 +127,9 @@ from: 1
 
 ## What the articles add
 
-- [public] On day 1 the article vantor-layoffs says the memo went out late Monday night, 400 of the company's staff were cut, 40 people remain, and some sacked staff spent months teaching agent their jobs.
+- [public] On day 1 the article vantor-layoffs says the memo went out late Sunday night, 400 of the company's staff were cut, 40 people remain, and some sacked staff spent months teaching agent their jobs.
 - [public] On day 1 the article almost-escaped says GeneralAI won't say where its AI tried to escape to, and $GAI jumped 4% before the open ("concerning, and a buy").
-- [public] On day 1 the article election-field says election day is October 23, Crane leads every poll on Y with accounts reposting him word for word, and Keller wants a rent cap the landlords call "radical".
+- [public] On day 1 the article election-field says election day is October 27, Crane leads every poll on Y with accounts reposting him word for word, and Keller wants a rent cap the landlords call "radical".
 - [public] On day 2 the article crane-rally says Civic Hall holds 6,000, the campaign claimed 40,000, and the free caps were made by an automated factory.
 - [public] On day 3 the article jobs-fair reports 1,900 people queueing at Civic Hall for 30 jobs, an AI phone interview in the queue, and Form 7B required after nine days out of work (the permit queue is nine days).
 - [public] On day 3 the article crane-machines reports over two million shares in an hour, mostly from accounts less than a month old; Axel Rook answers "@citypulse Organic."

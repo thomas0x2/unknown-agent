@@ -19,7 +19,7 @@ Project rule from Thomas, for all game copy.
 - **Exception: CityPulse** (Thomas, 2026-10-17). [[CityPulse]] is a low-quality tabloid that dramatizes everything, so its own copy (headlines, articles, its Y posts, its banner ads) is breathless on purpose: ALL-CAPS hooks ("BLOODBATH AT VANTOR", "KABOOM!"), rhetorical questions ("Is your bank next?"), "experts warn", "You decide." The facts underneath stay the story's facts. Everyone else stays restrained, and other characters can roll their eyes at it (Mara Vey: "Even CityPulse got this one right, headline aside.").
 - **Bios.** Over-the-top characters (Crane, Axel, the sales rep, Brent) get bios as ridiculous as they are, but every bio still states the person's role; grounded characters (Mara, Viktor, Gino) read straight.
 - **Family members stay unnamed**, and Crane's opponent is never given a name.
-- **In-world conventions.** Email domains end in `.test`. Money is written `350 DOLR`, with decimals where they matter. Player-facing copy says agent-1 … agent-5, never "agent level N"; agent is always lowercase. Weekdays must match the 2028 calendar (day 1 is Tue Oct 3).
+- **In-world conventions.** Email domains end in `.test`. Money is written `350 DOLR`, with decimals where they matter. Player-facing copy says agent-1 … agent-5, never "agent level N"; agent is always lowercase. Weekdays must match the 2030 calendar (day 1 is Mon Oct 7).
 
 ## Reference texts
 

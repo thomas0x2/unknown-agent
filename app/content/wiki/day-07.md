@@ -1,11 +1,11 @@
 ---
 title: Day 7
-aliases: Monday Oct 9, Oct 9, October 9
+aliases: Sunday Oct 13, Oct 13, October 13
 category: days
 from: 7
 ---
 
-[public] Monday, October 9, rent day: 350 DOLR is taken at payday tonight, and not having it means eviction. [known]
+[public] Sunday, October 13, rent day: 350 DOLR is taken at payday tonight, and not having it means eviction. [known]
 
 ## Mail
 
@@ -28,7 +28,7 @@ from: 7
 - [public] 13:02 MarketWire: $GAI updates its usage policy; "Shares unchanged. Users less so." {{y:m7_gai_policy}}
 - [public] 13:10 Steph M.: appealed her rent increase in May; the decision came back in four seconds. {{y:d7_y_steph_rentboard}}
 - [public] 13:44 Brent Kowalski: $VANT announces a buyback with the money it saved on salaries. {{y:m7_vant_buyback}}
-- [public] 15:30 Candidate 2028: "Great crowd, great questions." {{y:d7_y_candidate}}
+- [public] 15:30 Candidate 2030: "Great crowd, great questions." {{y:d7_y_candidate}}
 - [classified; public if posted_deepfake] 16:00 [[CityPulse]]: KELLER IN FREEFALL, down 9 points overnight after a leaked clip; his team calls it "a fabrication." {{y:d7_keller_drop}}
 - [public] 16:20 [[Max Stryker]] on Mara's article: "Nobody left them behind. They were walking slower." {{y:d7_y_stryker}}
 - [public] 19:20 [[Randall Crane]]: Y gave a "reporter" from The Current the SAME check mark as him. "Rigged!" {{y:d7_y_crane}}

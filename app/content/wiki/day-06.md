@@ -1,15 +1,15 @@
 ---
 title: Day 6
-aliases: Sunday Oct 8, Oct 8, October 8
+aliases: Saturday Oct 12, Oct 12, October 12
 category: days
 from: 6
 ---
 
-[public] Sunday, October 8, Mom's birthday. [known]
+[public] Saturday, October 12, Mom's birthday. [known]
 
 ## Mail
 
-- [classified; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "I turned 40 yesterday. Time to be realistic." Age 21 to 35, within 10 miles, non-smokers, straight or bi. {{mail:d6_matchless_rules_2}}
+- [classified; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "I turned 32 yesterday. Time to be realistic." Age 21 to 35, within 10 miles, non-smokers, straight or bi. {{mail:d6_matchless_rules_2}}
 - [classified; hint if matchless_job] 10:00 After a swiping day that wasn't perfect, 6ft_sigma's 10:00 "Yesterday" email names the first mistake and there is no pay.
 - [classified; public if seen d6_deepfake] 19:00 A consultant (c@gradient.test), "Discreet work": 150 DOLR to post a convincing fake clip of a candidate for governor. {{mail:d6_deepfake}}
 - [classified; public if posted_deepfake] 19:00 A consultant (c@gradient.test) paid the player 150 DOLR to post a convincing fake clip of governor candidate [[Daniel Keller]] saying something disqualifying. "We'll be in touch with bigger things." The player's followers jumped by a fifth.

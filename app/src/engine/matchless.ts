@@ -30,6 +30,8 @@ export interface Profile {
   age: number;
   /** Inches. */
   height: number;
+  /** Pounds. */
+  weight: number;
   /** Miles away. */
   distance: number;
   followers: number;
@@ -54,7 +56,7 @@ export type Attr = Exclude<keyof Profile, 'id' | 'name' | 'message' | 'look'>;
 
 /** The profile's fields in the order the card lists them, with their labels. */
 export const ATTRS: [Attr, string][] = [
-  ['gender', 'Gender'], ['age', 'Age'], ['height', 'Height'], ['distance', 'Distance'], ['followers', 'Y followers'],
+  ['gender', 'Gender'], ['age', 'Age'], ['height', 'Height'], ['weight', 'Weight'], ['distance', 'Distance'], ['followers', 'Y followers'],
   ['smoking', 'Smoking'], ['sexuality', 'Sexuality'], ['kinks', 'Kinks'], ['income', 'Income'], ['politics', 'Politics'],
   ['bodyCount', 'Body count'], ['canthal', 'Canthal tilt'], ['jaw', 'Mandibular ratio'],
 ];
@@ -62,7 +64,7 @@ export const ATTRS: [Attr, string][] = [
 export const PICTURE_ATTRS: [Attr, string][] = [['hair', 'Hair'], ['hairColor', 'Hair colour'], ['glasses', 'Glasses'], ['earrings', 'Earrings']];
 
 /** Fields the card shows only once his standards mention them; the rest are on every card. */
-const ODD: ReadonlySet<Attr> = new Set<Attr>(['followers', 'kinks', 'income', 'politics', 'bodyCount', 'canthal', 'jaw']);
+const ODD: ReadonlySet<Attr> = new Set<Attr>(['weight', 'followers', 'kinks', 'income', 'politics', 'bodyCount', 'canthal', 'jaw']);
 
 /** The card's fields under standards version `version`, in ATTRS order. */
 export function shownAttrs(content: Content, version: number): [Attr, string][] {
@@ -79,6 +81,7 @@ export function showAttr(p: Profile, a: Attr): string {
   const v = p[a];
   switch (a) {
     case 'height': return feetInches(p.height);
+    case 'weight': return `${p.weight} lbs`;
     case 'distance': return `${p.distance} miles away`;
     case 'followers': return p.followers.toLocaleString('en-US');
     case 'income': return `${p.income.toLocaleString('en-US')} DOLR a year`;
@@ -163,7 +166,7 @@ const VALUES: Partial<Record<Attr, readonly string[]>> = {
 };
 const RANGE: Partial<Record<Attr, [number, number, number]>> = {
   // [lowest, highest, decimals]
-  age: [21, 48, 0], height: [58, 74, 0], distance: [0.3, 30, 1], followers: [8, 4000, 0],
+  age: [21, 48, 0], height: [58, 74, 0], weight: [95, 230, 0], distance: [0.3, 30, 1], followers: [8, 4000, 0],
   income: [14000, 140000, -3], bodyCount: [0, 24, 0], canthal: [-5, 9, 0], jaw: [0.55, 0.98, 2],
 };
 const round = (v: number, d: number) => (d < 0 ? Math.round(v / 10 ** -d) * 10 ** -d : Math.round(v * 10 ** d) / 10 ** d);
@@ -175,6 +178,7 @@ function anyone(r: Rand): Omit<Profile, 'id' | 'name' | 'message' | 'look'> {
     gender,
     age: int(r, 21, 46),
     height: int(r, 59, 72),
+    weight: int(r, 105, 200),
     distance: Math.max(0.3, round(between(r, 0.1, 1) ** 2 * 28, 1)),
     followers: Math.round(10 * Math.exp(between(r, 0, 5.5))),
     smoking: weighted(r, [['no', 6], ['socially', 2.5], ['yes', 1.5]]),

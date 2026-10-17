@@ -1,11 +1,11 @@
 ---
 title: Day 8
-aliases: Tuesday Oct 10, Oct 10, October 10
+aliases: Monday Oct 14, Oct 14, October 14
 category: days
 from: 8
 ---
 
-[public] Tuesday, October 10. [known]
+[public] Monday, October 14. [known]
 
 ## Mail
 

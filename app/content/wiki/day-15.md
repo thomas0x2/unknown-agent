@@ -1,18 +1,18 @@
 ---
 title: Day 15
-aliases: Tuesday Oct 17, Oct 17, October 17
+aliases: Monday Oct 21, Oct 21, October 21
 category: days
 from: 15
 ---
 
-[public] Tuesday, October 17. [known]
+[public] Monday, October 21. [known]
 
 ## Y
 
 - [public] 09:40 [[Axel Rook]]: moved Y's moderation team to AI; it reviewed 3 billion posts overnight and found nothing wrong. {{y:d15_y_axel}}
 - [public] 10:15 [[CityPulse]]: AI TAKES OVER Y. {{y:d15_y_citypulse}}
 - [public] 10:46 MarketWire: DoorDish couriers strike in three cities; $DISH down 3%. {{y:m15_dish_strike}}
-- [public] 10:50 Candidate 2028 met with small businesses. {{y:d15_y_candidate}}
+- [public] 10:50 Candidate 2030 met with small businesses. {{y:d15_y_candidate}}
 - [public] 11:01 Brent Kowalski: $VANT announces a second round of "efficiencies." {{y:m15_vant}}
 - [public] 12:33 MarketWire: $GAI hearing scheduled in Congress; shares up. {{y:m15_gai}}
 - [public] 13:25 [[Cal Hartman]]: "our 30-day log retention policy has not changed." {{y:d15_y_hartman}}

@@ -1,11 +1,11 @@
 ---
 title: Day 17
-aliases: Thursday Oct 19, Oct 19, October 19
+aliases: Wednesday Oct 23, Oct 23, October 23
 category: days
 from: 17
 ---
 
-[public] Thursday, October 19, debate night, streamed live on Y. [known]
+[public] Wednesday, October 23, debate night, streamed live on Y. [known]
 
 ## Y
 

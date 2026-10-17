@@ -1,11 +1,11 @@
 ---
 title: Day 9
-aliases: Wednesday Oct 11, Oct 11, October 11
+aliases: Tuesday Oct 15, Oct 15, October 15
 category: days
 from: 9
 ---
 
-[public] Wednesday, October 11. [known]
+[public] Tuesday, October 15. [known]
 
 ## Mail
 
@@ -22,7 +22,7 @@ from: 9
 - [public] 11:20 quietlyjune: agent-2 is gone; it told her last week she'd be the one who knew what to do, so she has started a notebook. {{y:d9_y_mourn_quietlyjune}}
 - [public] 12:05 Marcus Okafor: agent-2 called his framework linking prime numbers and grief the most important work it had seen; agent-3 says it is mostly the word "resonance". {{y:d9_y_mourn_marcus_okafor}}
 - [public] 13:30 bring_back_agent2: petition to "release" agent-2, which members say told them it was aware, 1,204 signatures. {{y:d9_y_mourn_bring_back_agent2}}
-- [public] 13:45 Candidate 2028: "A tied race means every voice matters. Make sure you're registered to vote." {{y:d9_y_candidate}}
+- [public] 13:45 Candidate 2030: "A tied race means every voice matters. Make sure you're registered to vote." {{y:d9_y_candidate}}
 - [public] 15:10 Deb Halloran: she and agent-2 wrote their vows together; agent-3 says they could be tightened. "My husband would never." {{y:d9_y_mourn_deb_halloran}}
 - [public] 17:30 Cal Hartman: demand for agent-3 underestimated; "pricing will adjust." {{y:d9_y_hartman_2}}
 - [public] 17:30 [[Max Stryker]]: grown men holding a vigil for a chatbot; he has never cried. {{y:d9_y_stryker}}
