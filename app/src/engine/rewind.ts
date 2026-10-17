@@ -40,3 +40,24 @@ export function rewindArrivals(s: GameState, content: Content, from: number): vo
   s.flags = s.flags.filter((f) => !late.has(f));
   for (const f of late) delete s.flagDays[f];
 }
+
+/**
+ * Every save field, and whether rewindArrivals takes it back to the rewound day or leaves it as it
+ * is. A new GameState field won't compile until it has a line here: if it holds anything that
+ * arrives or happens on a given day, rewind it below and mark it 'rewound'.
+ */
+export const REWIND = {
+  flags: 'rewound', flagDays: 'rewound', delivered: 'rewound', fired: 'rewound',
+  arriving: 'rewound', userPosts: 'rewound', log: 'rewound', mail: 'rewound',
+  pendingMail: 'rewound', yExtra: 'rewound', reviews: 'rewound', hacked: 'rewound',
+  readEvents: 'rewound', mailBin: 'rewound', mailDeleted: 'rewound',
+  version: 'kept', seed: 'kept', rng: 'kept', phase: 'kept', values: 'kept', apps: 'kept',
+  jobs: 'kept', scheduled: 'kept', localModels: 'kept', postsToday: 'kept', recentPosts: 'kept',
+  swap: 'kept', matchless: 'kept', sentToday: 'kept', agentLocked: 'kept', autofix: 'kept',
+  ending: 'kept', endingShown: 'kept', tx: 'kept', chat: 'kept', nextAppNum: 'kept',
+  agentWork: 'kept', bookings: 'kept', bookingNotice: 'kept', terminal: 'kept', agentTerm: 'kept',
+  hackGame: 'kept', hackPay: 'kept', suspended: 'kept', removedSeed: 'kept', termModel: 'kept',
+  termPrompts: 'kept', morning: 'kept', clockMin: 'kept', commits: 'kept', introSeen: 'kept',
+  stocks: 'kept', lonely: 'kept', uploads: 'kept', sorry: 'kept', stakes: 'kept',
+  interviewAnswers: 'kept', nextId: 'kept',
+} as const satisfies Record<keyof GameState, 'rewound' | 'kept'>;

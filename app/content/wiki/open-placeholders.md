@@ -30,4 +30,4 @@ The city, the player (template variable `{{playerName}}`), Mom, Dad, the brother
 
 ## Legacy docs
 
-The root `README.md` still describes the prototype (Rosa, Crumb & Coin, dollar prices, eight Chapter 1 endings). The rebuild's own notes are `app/README.md` and `app/content/README.md`.
+The prototype's README (Rosa, Crumb & Coin, dollar prices, eight Chapter 1 endings) is kept at `legacy/README.md`; the root `README.md` now points at the app. The rebuild's own notes are `app/README.md` and `app/content/README.md`.

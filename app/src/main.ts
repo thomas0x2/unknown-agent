@@ -3,7 +3,7 @@
  * wires input (event delegation, same architecture as the legacy game). No framework: the shell in
  * index.html is static and we fill #tabs / #bookmarks / #viewport / the taskbar / #overlay / #dev.
  */
-import '../../src/style.css';
+import './style.css';
 import './ui/coinbin.css';
 import './ui/sherwood.css';
 import './ui/doordish.css';
@@ -303,9 +303,85 @@ function updateCost(): void {
 }
 
 // ── clicks ──
+type Click = (v: string, t: HTMLElement) => void;
+/**
+ * What a click on an element with data-<name> does, in priority order (an element carrying two of
+ * these runs the first). The click listener's selector is built from these keys, so a new button
+ * only needs a line here. MENU_CLICKS run before a click inside the home menu closes it.
+ */
+const MENU_CLICKS: Record<string, Click> = {
+  start: () => store.toggleStart(),
+  task: (v) => { if (v === 'terminal') store.termTask(); else store.showTerm(false); },
+  ttab: (v) => store.termTabTo(v === 'agent' ? 'agent' : 'shell'),
+  term: (v) => { if (v === 'close') store.closeTerm(); else store.showTerm(false); },
+  menuCat: (v) => store.setMenuCat(v),
+};
+const CLICKS: Record<string, Click> = {
+  slotSave: (v) => { const n = Number(v); const save = () => { store.saveSlot(n); }; if (listSlots()[n - 1]) store.confirm(`Overwrite slot ${n} with your current game?`, 'Overwrite', save); else save(); },
+  slotLoad: (v) => {
+    const n = v === 'auto' ? 'auto' as const : Number(v);
+    const name = n === 'auto' ? 'the autosave' : `slot ${n}`;
+    store.confirm(`Load ${name}? Your current game is replaced by it.`, 'Load', () => { forgetDrafts(); quietReset(); store.loadSlot(n); });
+  },
+  nav: (v) => { newPageLoad(); store.navigate(v); },
+  back: () => store.back(),
+  forward: () => store.forward(),
+  tab: (v) => store.switchTab(Number(v)),
+  // data-newtab with a URL opens that page in a new tab (Forkyard deployments); empty opens a blank tab
+  newtab: (v) => { newPageLoad(); store.navigate(v || 'newtab', true); },
+  like: (v) => store.like(v),
+  repost: (v) => store.repost(v),
+  // the Show all / Hide old posts button trades places with its twin; keep that spot where it was on screen
+  yAll: (v, t) => { const top = t.closest('.y-more')!.getBoundingClientRect().top; store.showAllY(v !== 'hide'); keepAt($('#viewport .y-more'), top); },
+  deploy: (v) => { SOUND.play('deploy'); store.deploy(v); },
+  takedown: (v) => store.confirm('Take it offline? It counts as broken at payday.', 'Take down', () => store.takeDown(v)),
+  // the cancel link opens the restaurant's cancel page in a new tab
+  cancelBooking: (v, t) => { store.cancelBooking(v); if (t.dataset.cancelUrl) { newPageLoad(); store.navigate(t.dataset.cancelUrl, true); } },
+  empireJoin: () => store.joinEmpire(),
+  mailBin: (v, t) => store.binMail(JSON.parse(v), t.dataset.mailHome || 'qmail.com'),
+  mailRestore: (v, t) => store.restoreMail(JSON.parse(v), t.dataset.mailHome || 'qmail.com/bin'),
+  mailUndo: () => store.undoMailNotice(),
+  mailDiscard: () => { clearMailDraft(); store.setDraft(null); store.navigate('qmail.com'); },
+  star: (v) => store.setReviewStars(Number(v)),
+  download: (v) => store.download(v),
+  wlRange: (v) => store.setWalletRange(v),
+  ov: (v) => onOverlay(v),
+  dev: (v) => { if (v === 'rewind') quietReset(); store.devAdd(v); },
+  devopts: (v) => store.toggleDevOptions(v),
+  devbug: (v) => { const [app, feat, key] = v.split('|'); store.devToggleBug(app, feat, key); },
+  act: (v, t) => ACTS[v]?.(t),
+};
+/** Buttons with data-act="<name>". */
+const ACTS: Record<string, (t: HTMLElement) => void> = {
+  'book-back': () => store.bookBack(),
+  'book-again': () => store.bookAgain(),
+  send: () => store.toggleSend(),
+  'send-cancel': () => store.toggleSend(false),
+  receive: () => copyWalletAddress(),
+  'seed-show': () => store.toggleSeed(),
+  'seed-copy': () => copySeedPhrase(),
+  'rent-appeal': () => store.rentAppeal(),
+  'crane-donate': () => store.craneDonate(),
+  'sw-sell': (t) => { if (store.trade(t.dataset.ticker!, 'sell', val('#sw-amount').trim())) clearField('sw-amount'); },
+  'sw-sell-all': (t) => { if (store.trade(t.dataset.ticker!, 'sell', 'all')) clearField('sw-amount'); },
+  sleep: () => store.endDay(),
+  new: () => store.confirm('Start over? This erases your save.', 'Start over', () => { forgetDrafts(); quietReset(); store.newGame(); }),
+  dev: () => store.toggleDev(),
+  devedit: () => store.toggleDevEdit(),
+  devtab: (t) => store.devTab(t.dataset.devtab === 'jev' ? 'jev' : 'edit'),
+  jevtests: (t) => runJevTests(store, t.dataset.case != null ? Number(t.dataset.case) : undefined),
+  jevcell: (t) => jevTestsPick(store, Number(t.dataset.step), Number(t.dataset.part)),
+  jevfails: () => jevTestsFailsOnly(store),
+  devmode: () => store.setDevMode(!store.devMode),
+  intro: () => store.openIntro(),
+  sound: () => SOUND.setMuted(!SOUND.settings.muted),
+};
+const dataAttr = (key: string) => `[data-${key.replace(/[A-Z]/g, (c) => '-' + c.toLowerCase())}]`;
+const CLICKABLE = ['close', ...Object.keys(MENU_CLICKS), ...Object.keys(CLICKS)].map(dataAttr).join(',');
+
 document.addEventListener('click', (e) => {
   if (e.target instanceof HTMLElement && wikiClick(e.target, store, e)) return;
-  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-repost],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-ov],[data-dev],[data-cancel-booking],[data-empire-join],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat],[data-back],[data-forward],[data-devbug],[data-task],[data-term],[data-ttab],[data-devopts],[data-mail-bin],[data-mail-restore],[data-mail-undo],[data-y-all]');
+  const t = (e.target as HTMLElement).closest<HTMLElement>(CLICKABLE);
   // any click outside the home menu closes it (menu items close it themselves below)
   if (store.ui.start && !(e.target as HTMLElement).closest('#startmenu, #dk-home')) store.toggleStart(false);
   // clicking the browser while the Terminal is in front brings the browser forward, like any window
@@ -314,67 +390,9 @@ document.addEventListener('click', (e) => {
   const d = t.dataset;
   if (d.close != null) { e.stopPropagation(); store.closeTab(Number(d.close)); return; }
   e.preventDefault();
-  if (d.start != null) { store.toggleStart(); return; }
-  if (d.task != null) { if (d.task === 'terminal') store.termTask(); else store.showTerm(false); return; }
-  if (d.ttab != null) { store.termTabTo(d.ttab === 'agent' ? 'agent' : 'shell'); return; }
-  if (d.term != null) { if (d.term === 'close') store.closeTerm(); else store.showTerm(false); return; }
-  if (d.menuCat != null) { store.setMenuCat(d.menuCat); return; }
+  for (const [k, fn] of Object.entries(MENU_CLICKS)) if (d[k] != null) { fn(d[k]!, t); return; }
   if (t.closest('#startmenu')) store.toggleStart(false);
-  if (d.slotSave != null) { const n = Number(d.slotSave); const save = () => { store.saveSlot(n); }; if (listSlots()[n - 1]) store.confirm(`Overwrite slot ${n} with your current game?`, 'Overwrite', save); else save(); return; }
-  if (d.slotLoad != null) {
-    const n = d.slotLoad === 'auto' ? 'auto' as const : Number(d.slotLoad);
-    const name = n === 'auto' ? 'the autosave' : `slot ${n}`;
-    store.confirm(`Load ${name}? Your current game is replaced by it.`, 'Load', () => { forgetDrafts(); quietReset(); store.loadSlot(n); });
-    return;
-  }
-  if (d.nav != null) { newPageLoad(); store.navigate(d.nav); }
-  else if (d.back != null) store.back();
-  else if (d.forward != null) store.forward();
-  else if (d.tab != null) store.switchTab(Number(d.tab));
-  // data-newtab with a URL opens that page in a new tab (Forkyard deployments); empty opens a blank tab
-  else if (d.newtab != null) { newPageLoad(); store.navigate(d.newtab || 'newtab', true); }
-  else if (d.like != null) store.like(d.like);
-  else if (d.repost != null) store.repost(d.repost);
-  // the Show all / Hide old posts button trades places with its twin; keep that spot where it was on screen
-  else if (d.yAll != null) { const top = t.closest('.y-more')!.getBoundingClientRect().top; store.showAllY(d.yAll !== 'hide'); keepAt($('#viewport .y-more'), top); }
-  else if (d.deploy != null) { SOUND.play('deploy'); store.deploy(d.deploy); }
-  else if (d.takedown != null) store.confirm('Take it offline? It counts as broken at payday.', 'Take down', () => store.takeDown(d.takedown!));
-  // the cancel link opens the restaurant's cancel page in a new tab
-  else if (d.cancelBooking != null) { store.cancelBooking(d.cancelBooking); if (d.cancelUrl) { newPageLoad(); store.navigate(d.cancelUrl, true); } }
-  else if (d.empireJoin != null) store.joinEmpire();
-  else if (d.mailBin != null) store.binMail(JSON.parse(d.mailBin), d.mailHome || 'qmail.com');
-  else if (d.mailRestore != null) store.restoreMail(JSON.parse(d.mailRestore), d.mailHome || 'qmail.com/bin');
-  else if (d.mailUndo != null) store.undoMailNotice();
-  else if (d.mailDiscard != null) { clearMailDraft(); store.setDraft(null); store.navigate('qmail.com'); }
-  else if (d.star != null) store.setReviewStars(Number(d.star));
-  else if (d.download != null) store.download(d.download);
-  else if (d.wlRange != null) store.setWalletRange(d.wlRange);
-  else if (d.ov != null) onOverlay(d.ov);
-  else if (d.dev != null) { if (d.dev === 'rewind') quietReset(); store.devAdd(d.dev); }
-  else if (d.devopts != null) store.toggleDevOptions(d.devopts);
-  else if (d.devbug != null) { const [app, feat, key] = d.devbug.split('|'); store.devToggleBug(app, feat, key); }
-  else if (d.act === 'book-back') store.bookBack();
-  else if (d.act === 'book-again') store.bookAgain();
-  else if (d.act === 'send') store.toggleSend();
-  else if (d.act === 'send-cancel') store.toggleSend(false);
-  else if (d.act === 'receive') copyWalletAddress();
-  else if (d.act === 'seed-show') store.toggleSeed();
-  else if (d.act === 'seed-copy') copySeedPhrase();
-  else if (d.act === 'rent-appeal') store.rentAppeal();
-  else if (d.act === 'crane-donate') store.craneDonate();
-  else if (d.act === 'sw-sell') { if (store.trade(t.dataset.ticker!, 'sell', val('#sw-amount').trim())) clearField('sw-amount'); }
-  else if (d.act === 'sw-sell-all') { if (store.trade(t.dataset.ticker!, 'sell', 'all')) clearField('sw-amount'); }
-  else if (d.act === 'sleep') store.endDay();
-  else if (d.act === 'new') store.confirm('Start over? This erases your save.', 'Start over', () => { forgetDrafts(); quietReset(); store.newGame(); });
-  else if (d.act === 'dev') store.toggleDev();
-  else if (d.act === 'devedit') store.toggleDevEdit();
-  else if (d.act === 'devtab') store.devTab(t.dataset.devtab === 'jev' ? 'jev' : 'edit');
-  else if (d.act === 'jevtests') runJevTests(store, t.dataset.case != null ? Number(t.dataset.case) : undefined);
-  else if (d.act === 'jevcell') jevTestsPick(store, Number(t.dataset.step), Number(t.dataset.part));
-  else if (d.act === 'jevfails') jevTestsFailsOnly(store);
-  else if (d.act === 'devmode') store.setDevMode(!store.devMode);
-  else if (d.act === 'intro') store.openIntro();
-  else if (d.act === 'sound') SOUND.setMuted(!SOUND.settings.muted);
+  for (const [k, fn] of Object.entries(CLICKS)) if (d[k] != null) { fn(d[k]!, t); return; }
 });
 
 /** Coinbin Receive: the player's address goes on the clipboard, for pasting wherever someone wants paying. */
@@ -411,35 +429,32 @@ function onOverlay(a: string): void {
 }
 
 // ── forms ──
-document.addEventListener('submit', (e) => {
-  const f = (e.target as HTMLElement).closest<HTMLFormElement>('[data-form]');
-  if (!f) return;
-  e.preventDefault();
-  const kind = f.dataset.form;
-  if (kind === 'dev-day') { quietReset(); store.devGoToDay(Number(val('#dev-day'))); return; }
-  if (kind === 'dev-flag') { const v = val('#dev-flag-name').trim(); if (v) store.devSetFlag(v, true); return; }
-  if (kind === 'phish') { store.phish(val('#ph-pass')); return; }
-  if (kind === 'upload') {
+/** What submitting a form with data-form="<kind>" does. */
+const FORMS: Record<string, (f: HTMLFormElement) => void> = {
+  'dev-day': () => { quietReset(); store.devGoToDay(Number(val('#dev-day'))); },
+  'dev-flag': () => { const v = val('#dev-flag-name').trim(); if (v) store.devSetFlag(v, true); },
+  phish: () => store.phish(val('#ph-pass')),
+  upload: (f) => {
     const id = val('#up-file');
     const fl = driveFiles(store.state).find((x) => x.id === id);
     if (fl) store.upload(f.dataset.site ?? '', { id: fl.id, name: fl.name });
-    return;
-  }
-  if (kind === 'prince') { store.princeClaim(val('#pr-seed')); return; }
-  if (kind === 'lonely') { const v = val('#lonely-input').trim(); if (v && store.lonelySend(v)) { SOUND.play('send'); clearField('lonely-input'); } return; }
-  if (kind === 'sorry') { const v = val('#sorry-input').trim(); if (v && store.sorrySend(v)) { SOUND.play('send'); clearField('sorry-input'); } return; }
-  if (kind === 'sw-trade') { if (store.trade(f.dataset.ticker!, 'buy', val('#sw-amount').trim())) clearField('sw-amount'); return; }
-  if (kind === 'cb-send') { store.send(val('#cb-to').trim(), val('#cb-amount').trim()); return; }
-  if (kind === 'url') { newPageLoad(); store.navigate(val('#nt-url') || val('#address')); }
-  else if (kind === 'ypost') { const v = val('#post-input').trim(); if (v) { SOUND.play('send'); clearField('post-input'); markSend($('#viewport')!, 'post'); void store.post(v, trendingToday()); } }
-  else if (kind === 'prompt') {
+  },
+  prince: () => store.princeClaim(val('#pr-seed')),
+  lonely: () => { const v = val('#lonely-input').trim(); if (v && store.lonelySend(v)) { SOUND.play('send'); clearField('lonely-input'); } },
+  sorry: () => { const v = val('#sorry-input').trim(); if (v && store.sorrySend(v)) { SOUND.play('send'); clearField('sorry-input'); } },
+  'sw-trade': (f) => { if (store.trade(f.dataset.ticker!, 'buy', val('#sw-amount').trim())) clearField('sw-amount'); },
+  'cb-send': () => store.send(val('#cb-to').trim(), val('#cb-amount').trim()),
+  url: () => { newPageLoad(); store.navigate(val('#nt-url') || val('#address')); },
+  ypost: () => { const v = val('#post-input').trim(); if (v) { SOUND.play('send'); clearField('post-input'); markSend($('#viewport')!, 'post'); void store.post(v, trendingToday()); } },
+  prompt: () => {
     const v = val('#prompt-input').trim(); if (!v || store.busy) return;
     SOUND.play('send');
     clearField('prompt-input');
     updateCost();
     markSend($('#viewport')!, 'prompt');
     void store.prompt(v);
-  } else if (kind === 'mail') {
+  },
+  mail: (f) => {
     const to = val('#mail-to').trim(), subject = val('#mail-subject').trim(), body = val('#mail-body').trim();
     if (!to || !body) return;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) { store.setMailError('Enter a valid address.'); return; }
@@ -448,7 +463,8 @@ document.addEventListener('submit', (e) => {
     flyOff(f);
     markSend($('#viewport')!, 'mail');
     void store.compose(to, subject, body).then((r) => { if (r?.sent) { clearMailDraft(); store.setDraft(null); sendLanded(); store.navigate('qmail.com/sent'); } });
-  } else if (kind === 'reply') {
+  },
+  reply: (f) => {
     const v = val('#reply-body').trim(); if (!v || store.busy) return;
     SOUND.play('send');
     flyOff(f);
@@ -457,54 +473,59 @@ document.addEventListener('submit', (e) => {
     const id = f.dataset.id, to = f.dataset.to;
     const sent = id ? store.reply(id, v) : to ? store.compose(to, f.dataset.subject ?? '', v, 'reply-body') : null;
     void sent?.then((r) => { if (r && !('sent' in r && r.sent === false)) clearField('reply-body'); });
-  } else if (kind === 'review') {
+  },
+  review: (f) => {
     const biz = f.dataset.biz!; const v = val('#review-text').trim(); const stars = store.ui.reviewStars;
     if (!stars) { store.needStars(); return; }
     if (v) SOUND.play('send');
     if (v) void store.review(biz, stars, v).then((r) => { if (r && r.posted !== false) clearField('review-text'); });
-  } else if (kind === 'book-next') {
-    store.bookNext(val('#bk-name').trim(), val('#bk-email').trim(), Number(val('input[name="bk-date"]:checked')) || store.state.values.day);
-  } else if (kind === 'book') {
-    store.book(f.dataset.app!, val('#bk-time').trim() || '19:00', Number(val('#bk-party')) || 2);
-  } else if (kind === 'sl-search') {
+  },
+  'book-next': () => store.bookNext(val('#bk-name').trim(), val('#bk-email').trim(), Number(val('input[name="bk-date"]:checked')) || store.state.values.day),
+  book: (f) => store.book(f.dataset.app!, val('#bk-time').trim() || '19:00', Number(val('#bk-party')) || 2),
+  'sl-search': (f) => {
     const q = val('#sl-q').trim();
     store.navigate(`${f.dataset.base}${q ? `/search/${encodeURIComponent(q.toLowerCase())}` : ''}`);
-  } else if (kind === 'sl-msg') {
+  },
+  'sl-msg': (f) => {
     const v = val('#sl-msg').trim(); if (!v || store.busy) return;
     SOUND.play('send');
     void store.swapMessage(Number(f.dataset.n), v).then((r) => { if (r?.sent) clearField('sl-msg'); });
-  } else if (kind === 'sl-offer') {
-    if (store.busy) return;
-    void store.swapOffer(Number(f.dataset.n), Number(val('#sl-offer')));
-  } else if (kind === 'sl-buy') {
-    if (store.busy) return;
-    void store.swapBuy(Number(f.dataset.n));
-  } else if (kind === 'mx-login') {
-    store.matchlessLogin(val('#mx-user'), val('#mx-pass'));
-  } else if (kind === 'mx-swipe') {
-    store.matchlessSwipe(f.dataset.pick === 'yes' ? 'yes' : 'no');
-  } else if (kind === 'y-search') {
+  },
+  'sl-offer': (f) => { if (!store.busy) void store.swapOffer(Number(f.dataset.n), Number(val('#sl-offer'))); },
+  'sl-buy': (f) => { if (!store.busy) void store.swapBuy(Number(f.dataset.n)); },
+  'mx-login': () => store.matchlessLogin(val('#mx-user'), val('#mx-pass')),
+  'mx-swipe': (f) => store.matchlessSwipe(f.dataset.pick === 'yes' ? 'yes' : 'no'),
+  'y-search': () => {
     // a handle opens that profile; one nobody uses gets Y's "doesn't exist" page
     const q = val('#y-search').trim().replace(/^@/, '').toLowerCase();
     if (!q) return;
     store.setYSearch('');
     store.navigate('y.com/' + encodeURIComponent(q));
-  } else if (kind === 'fy-search') {
+  },
+  'fy-search': () => {
     const q = val('#fy-search-input').trim().replace(/^@/, '');
     if (q) store.navigate('forkyard.com/u/' + q.toLowerCase());
-  } else if (kind === 'term') {
+  },
+  term: () => {
     const v = val('#term-input').trim(); if (!v) return;
     SOUND.play('send', 0, 'terminal');
     clearField('term-input');
     if (v === 'clear') { store.termClear(); return; }
     void store.term(v);
-  } else if (kind === 'aterm') {
+  },
+  aterm: () => {
     const v = val('#aterm-input').trim(); if (!v) return;
     SOUND.play('send', 0, 'terminal');
     clearField('aterm-input');
     if (v === 'clear' || v === 'exit') { store.agentTermCommand(v); return; }
     void store.agentTerm(v);
-  }
+  },
+};
+document.addEventListener('submit', (e) => {
+  const f = (e.target as HTMLElement).closest<HTMLFormElement>('[data-form]');
+  if (!f) return;
+  e.preventDefault();
+  FORMS[f.dataset.form ?? '']?.(f);
 });
 
 // Cinnamon-style: hovering a menu category opens it

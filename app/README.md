@@ -1,8 +1,9 @@
 # Unknown Agent — days 1–7
 
 The playable first week, built on the mechanics spec. Engine-first TypeScript + Vite; the UI is the
-**legacy game's exact interface and stylesheet** (`../src/style.css`), driven by the new engine. No
-framework — a vanilla controller fills the same browser shell the legacy game uses.
+**legacy game's interface and stylesheet** (`src/style.css`), driven by the new engine. No
+framework — a vanilla controller fills the same browser shell the legacy game used. The legacy game
+itself is gone; its story text and README are kept in `../legacy/` as raw material.
 
 ## Run
 
@@ -44,7 +45,7 @@ subscription you're logged in to with Claude Code (use this for development only
   site in the game's browser (wiki.dev) that edits the pages; `/wiki.html` is the same editor for a
   real browser tab, and the two stay in sync (`content/wikiFiles.ts`). Near-misses (a fix that names a part
   but not its whole path, a vague build or fix ask, an update without the changes) are written by
-  Haiku too, told what was missing (`AskOpts.near` in `engine/actions.ts`, mode 'near' in the proxy);
+  Haiku too, told what was missing (`AskOpts.near` in `engine/actions/agent.ts`, mode 'near' in the proxy);
   the scripted lines in `content/agent.json` and a feature's `nearMiss` are its model and fallback. Without the proxy or a key,
   scripted fallbacks are shown (`game/misses.ts`, `game/haiku.ts`). The Terminal app's deepsleep-0.5B model
   answers from a fixed list of lines.

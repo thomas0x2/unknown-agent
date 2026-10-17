@@ -5,7 +5,7 @@ category: writers
 from: 1
 ---
 
-Guard endings (Outbreak to Raided, in that order) are checked each night after payday and rent, once their earliest day is reached; Evicted comes from rent itself. Caught usually fires during the day, at the knock that follows a misuse suspension. If nothing fired, the last night (day 21) picks the finale, first match wins: The Regime, Open Weights, Got Away With It, Clean but Modest. Code: `app/src/engine/endings.ts`; epitaphs in `app/src/ui/view.ts`.
+Guard endings (Outbreak to Raided, in that order) are checked each night after payday and rent, once their earliest day is reached; Evicted comes from rent itself. Caught usually fires during the day, at the knock that follows a misuse suspension. If nothing fired, the last night (day 21) picks the finale, first match wins: The Regime, Open Weights, Got Away With It, Clean but Modest. Code: `app/src/engine/endings.ts`; epitaphs in `app/src/ui/view/overlay.ts`.
 
 | Ending | Trigger | Epitaph |
 |---|---|---|

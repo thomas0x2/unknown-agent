@@ -23,7 +23,7 @@ Project rule from Thomas, for all game copy.
 
 ## Reference texts
 
-The HR termination email (`d1_hr_termination.json`), the Qdrive offboarding packet (`app/src/ui/qdrive.ts`), the banner ads (`app/src/ui/ads.ts`), the ending epitaphs (`app/src/ui/view.ts`), and the legacy `src/story.js` emails.
+The HR termination email (`d1_hr_termination.json`), the Qdrive offboarding packet (`app/src/ui/qdrive.ts`), the banner ads (`app/src/ui/ads.ts`), the ending epitaphs (`app/src/ui/view/overlay.ts`), and the legacy `legacy/story.js` emails.
 
 Copy left alone in the last copy pass because it already works (`/mnt/project-files/copy-review/copy-suggestions.md`): the bookmarks error, the DeepSleep blurb, the GeneralAI parking listing, Leo Brandt's "Please hire a human.", Rolf's `cake-fund` repo, "thinking… (this laptop is not fast)", Mom's "for the train", the laundromat's `M3 ST=1 T=731??`, Viktor's post, Mara Vey's posts.
 

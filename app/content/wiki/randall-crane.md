@@ -99,7 +99,7 @@ from: 1
 
 ## Writer notes
 
-- Trump parody, placeholder name. Events `dN_y_crane.json`; day 4 post and the impostor's in `y_market.json`; `trader_y_crane_apo` fires 90 minutes after deskjockey's auto-buy goes live (earliest day 3). Bio in `y-bios.ts`; gold check from day 9 in `view.ts` (`craneGold`). His posts treat day 21 (Sun Oct 27) as election day.
+- Trump parody, placeholder name. Events `dN_y_crane.json`; day 4 post and the impostor's in `y_market.json`; `trader_y_crane_apo` fires 90 minutes after deskjockey's auto-buy goes live (earliest day 3). Bio in `y-bios.ts`; gold check from day 9 in `ui/view/y.ts` (`craneGold`). His posts treat day 21 (Sun Oct 27) as election day.
 - crane2026.vote (`adSites.ts`, domain keeps the old year): only the first donation raises hidden `heritageStanding` by 10.
 - Who writes his posts is left open (day 19 CityPulse); keep it [hidden].
 - Never writes tickers outside the market posts.
