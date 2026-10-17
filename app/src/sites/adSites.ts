@@ -6,6 +6,8 @@
  * DoorDish, agent.chat/models) aren't here. Rendered by ui/adSites.ts; routed by sites/registry.ts.
  */
 
+import { citizenScore, citizenBand, type GameState } from '../engine';
+
 /** Page layout family: shapes the markup a little and the CSS a lot. */
 export type AdKit = 'corp' | 'gov' | 'campaign' | 'scam' | 'local' | 'news' | 'clinic' | 'soft' | 'model';
 
@@ -21,7 +23,8 @@ export interface AdSite {
   kicker?: string;
   title: string;
   lead: string;
-  stats?: [value: string, label: string][];
+  /** a row of big numbers; a function when they come from the game */
+  stats?: [value: string, label: string][] | ((s: GameState) => [value: string, label: string][]);
   cards: [heading: string, body: string][];
   quote?: [text: string, by: string];
   /** the footer's small print */
@@ -327,7 +330,7 @@ export const AD_SITES: AdSite[] = [
     url: 'citizenscore.gov', brand: 'Citizen Score', kit: 'gov', theme: 'ministry', mark: '⚖',
     kicker: 'Pilot programme', title: 'Your Citizen Score',
     lead: 'A single number from 0 to 1,000 that sums up your reliability as a resident. It is shared with landlords, employers and public services.',
-    stats: [['412', 'your score'], ['−4', 'since you arrived']],
+    stats: (s) => { const n = citizenScore(s.values.suspicion); return [[String(n), 'your score'], [citizenBand(n), 'standing']]; },
     cards: [
       ['How it’s calculated', 'Payment history, employment, online activity and time spent on government websites.'],
       ['Raising your score', 'Pay on time, stay employed and read official notices to the end.'],

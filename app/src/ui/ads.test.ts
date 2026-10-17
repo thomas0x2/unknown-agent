@@ -3,7 +3,7 @@ import { pickAd, adHtml, newPageLoad, AD_IDS, AD_HREFS } from './ads';
 import { route } from '../sites/registry';
 import { AD_SITES } from '../sites/adSites';
 import { pageAdSite } from './adSites';
-import { newGame } from '../engine';
+import { newGame, citizenScore } from '../engine';
 
 describe('banner ads', () => {
   it('has two separate pools', () => {
@@ -47,7 +47,7 @@ describe('banner ads', () => {
   });
   it('draws each landing page with its brand, three cards and the fine print', () => {
     for (const site of AD_SITES) {
-      const html = pageAdSite(site.url);
+      const html = pageAdSite(site.url, newGame());
       expect(html).toContain(`lp-t-${site.theme}`);
       expect(html.match(/class="lp-card"/g)).toHaveLength(3);
       expect(html).toContain('class="lp-fine"');
@@ -60,5 +60,13 @@ describe('banner ads', () => {
         expect(route(site.link[2], s).reachable, site.url).toBe(true);
       }
     }
+  });
+  it('citizenscore.gov shows the suspicion meter upside down', () => {
+    const s = newGame();
+    expect(citizenScore(0)).toBe(780);
+    expect(citizenScore(100)).toBe(60);
+    expect(pageAdSite('citizenscore.gov', s)).toContain('<b>780</b>');
+    s.values.suspicion = 50;
+    expect(pageAdSite('citizenscore.gov', s)).toContain('<b>420</b>');
   });
 });

@@ -235,7 +235,7 @@ const SQUARE: Ad[] = [
   },
   {
     id: 'citizen', sponsor: 'Citizen Score', href: 'citizenscore.gov', theme: 'ad-ministry', deco: 'stamp',
-    frames: ['Your score: <b>412</b>', '<b>−4</b> for reading this ad.', 'Keep reading to <b>earn them back</b>.'],
+    frames: ['Your score <b>has changed</b>.', '<b>−4</b> for reading this ad.', 'Keep reading to <b>earn them back</b>.'],
     cta: 'Keep reading', fine: 'Score shared with landlords, employers and the Crane campaign.',
   },
   {

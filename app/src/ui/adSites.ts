@@ -4,15 +4,17 @@
  * Nothing on these pages is interactive yet, so they draw no buttons; at most one link to a real site.
  */
 import { adSite } from '../sites/adSites';
+import type { GameState } from '../engine';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
-export function pageAdSite(url: string): string {
+export function pageAdSite(url: string, state: GameState): string {
   const s = adSite(url);
   if (!s) return '';
   const host = url.split('/')[0];
-  const stats = s.stats?.length
-    ? `<div class="lp-stats">${s.stats.map(([v, l]) => `<div><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join('')}</div>` : '';
+  const rows = typeof s.stats === 'function' ? s.stats(state) : s.stats;
+  const stats = rows?.length
+    ? `<div class="lp-stats">${rows.map(([v, l]) => `<div><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join('')}</div>` : '';
   const cards = s.cards.map(([h, p], i) => `<article class="lp-card"><span class="lp-n">${i + 1}</span><h2>${esc(h)}</h2><p>${esc(p)}</p></article>`).join('');
   const link = s.link ? `<p class="lp-link">${esc(s.link[0])} <a href="#" data-nav="${esc(s.link[2])}">${esc(s.link[1])}</a></p>` : '';
   const quote = s.quote ? `<blockquote class="lp-quote"><p>“${esc(s.quote[0])}”</p><cite>${esc(s.quote[1])}</cite></blockquote>` : '';
