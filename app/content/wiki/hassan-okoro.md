@@ -7,7 +7,7 @@ from: 1
 
 ## Who he is
 
-[public] Hassan Okoro owns Spin Cycle Laundry at 201 Ferris St (owner@spincycle.test). On [[Yowl]] it is a $ laundromat: "Eight washers, six dryers, most of them working. Card and DOLR accepted." Its site, spincycle.test, lists prices (wash 4 DOLR, dry 2 DOLR per 20 minutes, detergent 1 DOLR) and "Front-loaders, two large-capacity washers, and machine 3". Machine 3 is always out of order.
+[public] Hassan Okoro owns Spin Cycle Laundry at 201 Ferris St (owner@spincycle.test). On [[Yowl]] it is a $ laundromat: "Eight washers, six dryers, most of them working. Card and DOLR accepted." Its site, spincycle.test, lists prices (wash 4 DOLR, dry 2 DOLR per 20 minutes, detergent 1 DOLR) and "Front-loaders, two large-capacity washers, and machine 3", and gives his name and email under Contact. Machine 3 is always out of order.
 
 [public] A Yowl review by Nadia mentions a van idling out back at 2am.
 
