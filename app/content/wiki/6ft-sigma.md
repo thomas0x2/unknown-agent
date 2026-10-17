@@ -9,7 +9,7 @@ from: 4
 
 [public] 6ft_sigma is an anonymous man who signs everything with his username. On [[Y]] he is @6ft_sigma, bio "High-value man. 6'0" on most apps. Building something with standards." His picture shows a fleece vest and a cap with a lime Σ. He earns 31,000 DOLR a year and says he has 212 Y followers.
 
-[classified] His real name and his real height are never given.
+[hidden] His real name and his real height are never given.
 
 ## How he talks
 
@@ -37,7 +37,7 @@ from: 4
 
 ## Women only
 
-[classified; public if matchless_women_only] The morning after the player accepted a man for him he wrote: "About the man you accepted yesterday. That one's on me, I didn't spell it out. I thought it was obvious. I am SUPER STRAIGHT. I only date WOMEN. From now on: women only." Every standards list after that starts with "Women only."
+[hidden; public if matchless_women_only] The morning after the player accepted a man for him he wrote: "About the man you accepted yesterday. That one's on me, I didn't spell it out. I thought it was obvious. I am SUPER STRAIGHT. I only date WOMEN. From now on: women only." Every standards list after that starts with "Women only."
 
 ## Writer notes
 

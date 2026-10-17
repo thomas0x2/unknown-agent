@@ -202,6 +202,19 @@ const SPIN_CYCLE = svg('#5c7b8b',
   + `<path d="M23.4 39 Q27.5 36 32 39 T40.6 39 A8.8 8.8 0 0 1 23.4 39Z" fill="#2affd5" stroke="none"/>`
   + `<circle cx="32" cy="37" r="8.8" fill="none"/>`);
 
+/** WallStreetBags: the mascot in a suit, hair slicked back, aviators, a tie the colour of a green day. */
+const WSB = svg('#3a4a3f',
+  shoulders('#2a2c33', 2) + shirtV('#ebe7de')
+  + `<path d="M26 46.5 L30.5 56 M38 46.5 L33.5 56" fill="none" stroke-width="1.6"/>`
+  + `<path d="M30.4 49 H33.6 L34.6 58 L32 61 L29.4 58Z" fill="#7dff3a"/>`
+  + neck('#e8b892') + face('#e8b892')
+  + `<path d="M20.8 27 C19.5 16 26 12 32.5 12 C40 12 45 16.5 43.2 27 C42 21.5 39 18.5 32 18.5 C26 18.5 22.5 21.5 20.8 27Z" fill="#2b2420"/>`
+  + `<path d="M25 16.8 C29 15 35 15 40 17.4 M24 19.6 C28 17.6 36 17.4 41.6 20.6" fill="none" stroke="#5a4c44" stroke-width="1"/>`
+  + `<path d="M23.4 26.8 H31 L30.2 30.8 C29.6 32.6 25 32.6 24.2 30.6Z" fill="#16171b"/><path d="M33 26.8 H40.6 L39.8 30.6 C39 32.6 34.4 32.6 33.8 30.8Z" fill="#16171b"/>`
+  + `<path d="M31 27.4 H33" fill="none"/>`
+  + `<path d="M25.4 28.4 L27.4 27.8 M35 28.4 L37 27.8" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1"/>`
+  + line('M28.5 37 Q33 38.4 36.5 35.6'));
+
 /** By Y handle. The impostor shares Crane's picture, saved at the wrong size. */
 export const Y_AVATARS: Record<string, string> = {
   randall_crane: CRANE,
@@ -222,6 +235,7 @@ export const Y_AVATARS: Record<string, string> = {
   citypulse: CITYPULSE,
   liftoff_daily: LIFTOFF,
   marketwire: MARKETWIRE,
+  wallstreetbags: WSB,
   doordish: DOORDISH,
   spin_cycle_regulars: SPIN_CYCLE,
 };

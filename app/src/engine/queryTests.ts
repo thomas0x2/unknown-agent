@@ -45,7 +45,7 @@ const toMin = (t: string) => { const [h, m] = t.split(':').map(Number); return h
 /** The pages a query debug line names: "Jev: A › Overview; B › Prices (…)" or "Jev: A; B, not known…". */
 function pagesOf(debug: string): string[] {
   const line = debug.split('\n').find((l) => l.startsWith('Jev: ') && !l.includes('near-miss topic') && !l.includes('no query')) ?? '';
-  const body = line.slice(5).replace(/ \((?:\d+ public|mainly about).*$/, '').replace(/, (?:not known|all classified).*$/, '');
+  const body = line.slice(5).replace(/ \((?:\d+ public|mainly about).*$/, '').replace(/, (?:not known|all hidden).*$/, '');
   if (!body || /^the question/.test(body)) return [];
   return [...new Set(body.split('; ').map((x) => x.split(' › ')[0].trim()).filter(Boolean))];
 }

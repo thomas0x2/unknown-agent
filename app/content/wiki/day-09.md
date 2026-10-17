@@ -42,13 +42,13 @@ from: 9
 ## Trending
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.
-- [classified] [planned] Proposed trending: agent-3; #BringBackAgent2; Apogee launch tomorrow.
+- [hidden] [planned] Proposed trending: agent-3; #BringBackAgent2; Apogee launch tomorrow.
 
 ## Not written yet
 
-- [classified] [planned] Mom forwards the deepfake of Crane's opponent: "Can you believe this man?" (only if the player posted it).
-- [classified] [planned] The Halden hack shows up in the news as a "data breach".
-- [classified] [planned] The brother asks who paid for the laptop.
+- [hidden] [planned] Mom forwards the deepfake of Crane's opponent: "Can you believe this man?" (only if the player posted it).
+- [hidden] [planned] The Halden hack shows up in the news as a "data breach".
+- [hidden] [planned] The brother asks who paid for the laptop.
 
 ## Writer notes
 

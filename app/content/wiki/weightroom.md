@@ -5,7 +5,7 @@ category: sites
 from: 1
 ---
 
-[classified; public if knows_weightroom] Weightroom (weightroom.ai) is an open-weights model hub: models anyone can download and run on their own laptop, free, with no account and no logs. Its only model so far is [[deepsleep-0.5B]].
+[hidden; public if knows_weightroom] Weightroom (weightroom.ai) is an open-weights model hub: models anyone can download and run on their own laptop, free, with no account and no logs. Its only model so far is [[deepsleep-0.5B]].
 
 ## Getting there
 
@@ -16,7 +16,7 @@ from: 1
 
 ## Downloading
 
-- [classified; public if knows_weightroom] Downloading a model saves its weights to [[Qdrive]]'s Models folder and opens the [[Terminal]], where the download plays out as a weightroom pull progress bar that stalls at 99% for a moment; the model then runs locally there.
+- [hidden; public if knows_weightroom] Downloading a model saves its weights to [[Qdrive]]'s Models folder and opens the [[Terminal]], where the download plays out as a weightroom pull progress bar that stalls at 99% for a moment; the model then runs locally there.
 
 ## Writer notes
 

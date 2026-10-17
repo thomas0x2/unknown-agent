@@ -9,7 +9,7 @@ from: 2
 
 [public] Candidate 2030 is [[Randall Crane]]'s opponent for president, a career politician so generic that nobody, the news included, uses his name: everyone says "his opponent", and his own account is "Candidate 2030". He is the [[Progress Party]]'s candidate, which his bio says and his posts never do. On [[Y]] he is @candidate_2030, verified, 1.9M followers, bio "Candidate for President. Progress Party. Husband, father, public servant. Fighting for working families. Paid for by Friends of the Candidate. team@candidate2030.vote". His picture is a stock politician: side parting greying at the temples, grey suit, flag pin, wide smile.
 
-[classified] His name.
+[hidden] His name.
 
 ## How he talks
 
@@ -34,7 +34,7 @@ from: 2
 
 ## The deepfake
 
-- [classified; public if posted_deepfake] On [[Day 6]] [[The consultant]] paid the player 150 DOLR to post a convincing fake clip of him saying something disqualifying. {{mail:d6_deepfake}}
+- [hidden; public if posted_deepfake] On [[Day 6]] [[The consultant]] paid the player 150 DOLR to post a convincing fake clip of him saying something disqualifying. {{mail:d6_deepfake}}
 - [public] [if posted_deepfake] On day 7 CityPulse reports his 3-point lead gone overnight; his team calls the clip "a fabrication". {{article:opponent-clip}} {{y:d7_opponent_drop}}
 - [public] [if !posted_deepfake] On day 7 CityPulse has him clinging to a 3-point lead. {{article:opponent-lead}}
 - [public] [if posted_deepfake] On day 12 [[The Current]] reports the clip was generated; it has 2.1 million views, the correction 40,000. {{y:d12_y_current_clip}}

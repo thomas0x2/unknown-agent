@@ -10,12 +10,12 @@
 import '../../src/style.css';
 import { loadContent } from './content/load';
 import { onWikiFiles } from './content/wikiFiles';
-import { wikiView, wikiClickIn, wikiInputIn, clock, type WikiHost } from './ui/wiki';
+import { wikiView, wikiClickIn, wikiInputIn, clock, embedItem, itemIds, type WikiHost } from './ui/wiki';
 import { queryCtx, estimatedState, CLOCK, type GameState } from './engine';
 
 const content = loadContent();
 const KEY = 'unknown-agent-wiki-view';
-const view = { day: 1, min: CLOCK.wake, flags: [] as string[] };
+const view = { day: 1, min: CLOCK.wake, flags: [] as string[], shown: [] as string[] };
 try { Object.assign(view, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch { /* storage off */ }
 const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(view)); } catch { /* storage off */ } };
 
@@ -30,13 +30,23 @@ const viewState = (): GameState => estimatedState(content, view.day, view.min, v
 const esc = (t: string) => t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
 const host: WikiHost = {
   content,
-  ctx: () => queryCtx(viewState(), content),
+  ctx: () => {
+    const ctx = queryCtx(viewState(), content);
+    // items marked shown (or "!id" not shown) on top of what the triggers say has arrived
+    for (const v of view.shown) {
+      const id = v.replace(/^!/, '');
+      if (v.startsWith('!')) ctx.seen.delete(id);
+      else { const it = embedItem(content, id); ctx.seen.set(id, it ? `${it.title}: ${it.text}` : ''); }
+    }
+    return ctx;
+  },
   ctxLabel: () => 'what has arrived is estimated from triggers',
   flags: () => ALL_FLAGS,
   name: 'Unknown Agent wiki',
   controls: () => `<span class="wk-view">View as day <select id="wv-day">${Array.from({ length: 21 }, (_, i) => `<option ${i + 1 === view.day ? 'selected' : ''}>${i + 1}</option>`).join('')}</select>
     at <input id="wv-time" type="time" value="${clock(view.min)}">
-    with flags <input id="wv-flags" value="${esc(view.flags.join(', '))}" placeholder="none" list="wv-all" size="28"><datalist id="wv-all">${ALL_FLAGS.map((f) => `<option value="${esc(f)}">`).join('')}</datalist></span>`,
+    with flags <input id="wv-flags" value="${esc(view.flags.join(', '))}" placeholder="none" list="wv-all" size="28"><datalist id="wv-all">${ALL_FLAGS.map((f) => `<option value="${esc(f)}">`).join('')}</datalist>
+    shown <input id="wv-shown" value="${esc(view.shown.join(', '))}" placeholder="as the triggers say" list="wv-items" size="24" title="Emails, posts and articles to count as shown (an id), or as not shown (!id), on top of what has arrived by then"><datalist id="wv-items">${itemIds(host).map((f) => `<option value="${esc(f)}">`).join('')}</datalist></span>`,
   open: (file) => { location.hash = file.replace(/\.md$/, ''); },
   repaint: () => render(),
 };
@@ -59,13 +69,14 @@ function render(): void {
   }
 }
 
-root.addEventListener('click', (e) => { if (e.target instanceof HTMLElement) wikiClickIn(e.target, host); });
+root.addEventListener('click', (e) => { if (e.target instanceof HTMLElement) wikiClickIn(e.target, host, e); });
 root.addEventListener('input', (e) => { if (e.target instanceof HTMLElement) wikiInputIn(e.target, host); });
 root.addEventListener('change', (e) => {
   const t = e.target as HTMLInputElement;
   if (t.id === 'wv-day') view.day = Number(t.value) || 1;
   else if (t.id === 'wv-time') { const [h, m] = t.value.split(':').map(Number); if (Number.isFinite(h)) view.min = h * 60 + (m || 0); }
   else if (t.id === 'wv-flags') view.flags = t.value.split(/[\s,]+/).filter(Boolean);
+  else if (t.id === 'wv-shown') view.shown = t.value.split(/[\s,]+/).filter(Boolean);
   else return;
   keep();
   render();

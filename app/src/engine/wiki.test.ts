@@ -38,12 +38,12 @@ describe('wiki: parsing', () => {
 describe('wiki: tag rules', () => {
   it('the last step that holds wins; untagged is classified', () => {
     const rule = 'classified; hint from day 5; public if seed_stolen; classified if suspicion >= 40';
-    expect(evalTag(rule, wikiCtx(4))).toBe('classified');
+    expect(evalTag(rule, wikiCtx(4))).toBe('hidden');
     expect(evalTag(rule, wikiCtx(5))).toBe('hint');
     expect(evalTag(rule, wikiCtx(2, null, ['seed_stolen']))).toBe('public');
-    expect(evalTag(rule, wikiCtx(6, null, ['seed_stolen'], { suspicion: 40 }))).toBe('classified');
-    expect(evalTag('', wikiCtx(21))).toBe('classified');
-    expect(evalTag('public; classified if !knows', wikiCtx(1))).toBe('classified');
+    expect(evalTag(rule, wikiCtx(6, null, ['seed_stolen'], { suspicion: 40 }))).toBe('hidden');
+    expect(evalTag('', wikiCtx(21))).toBe('hidden');
+    expect(evalTag('public; classified if !knows', wikiCtx(1))).toBe('hidden');
     expect(evalTag('public; classified if !knows', wikiCtx(1, null, ['knows']))).toBe('public');
   });
 
@@ -55,14 +55,16 @@ describe('wiki: tag rules', () => {
   it('a step can wait for an email, post or article to arrive', () => {
     const rule = 'classified; public if seen mail:d5_coffee_removal; hint if seen article:opponent-clip';
     expect(parseTagRule(rule).steps).toEqual([{ tag: 'public', kind: 'seen', ref: 'd5_coffee_removal' }, { tag: 'hint', kind: 'seen', ref: 'article:opponent-clip' }]);
-    expect(evalTag(rule, wikiCtx(5))).toBe('classified');
+    expect(evalTag(rule, wikiCtx(5))).toBe('hidden');
     expect(evalTag(rule, wikiCtx(5, null, [], {}, ['d5_coffee_removal']))).toBe('public');
     expect(evalTag(rule, wikiCtx(5, null, [], {}, ['d5_coffee_removal', 'article:opponent-clip']))).toBe('hint');
   });
 
   it('round-trips through the editor', () => {
-    const rule = 'classified; hint from day 5; public if !seed_stolen; public if familyTrust < -10; public if seen d5_coffee_removal';
+    const rule = 'hidden; hint from day 5; public if !seed_stolen; public if familyTrust < -10; public if shown d5_coffee_removal';
     expect(formatTagRule(parseTagRule(rule))).toBe(rule);
+    // the old names still read
+    expect(formatTagRule(parseTagRule('classified; public if seen x'))).toBe('hidden; public if shown x');
   });
 });
 
@@ -99,9 +101,9 @@ describe('wiki: nothing the player cannot know yet', () => {
     expect(sectionNow(p, p.sections[0], wikiCtx(1))).toEqual({ public: ['He cooks.'], hint: ['The password is lasagne.'] });
   });
 
-  it('an embedded email shows its text once it has arrived, and nothing before', () => {
+  it('a paragraph with an embedded email is hidden until it has been shown, then carries its text', () => {
     const p = page(`${fm()}- [public] Gino emails about a website. {{mail:d1_gino}}\n- [public] {{article:gino-review}}\n`);
-    expect(told(p, 1)).toEqual(['Gino emails about a website.']);
+    expect(told(p, 1)).toEqual([]);
     const seen = new Map([['d1_gino', 'Email from Gino, "A website": My nephew left with the password.']]);
     expect(told(p, 1, null, [], {}, seen)).toEqual(['Gino emails about a website. [Email from Gino, "A website": My nephew left with the password.]']);
   });
@@ -158,7 +160,7 @@ describe('wiki: the real pages', () => {
         for (const s of p.sections) {
           for (const b of s.blocks) {
             const now = blockNow(b, s, p, ctx);
-            if (now.tag === 'classified') continue;
+            if (now.tag === 'hidden') continue;
             const where = `${p.file} › ${s.heading || 'Overview'} (day ${day})`;
             expect(s.writer, where).toBe(false);
             if (!/\[known\]/i.test(b.text)) expect(latestDay(now.text), `${where}: ${now.text}`).toBeLessThanOrEqual(day);

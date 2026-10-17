@@ -16,7 +16,7 @@ from: 1
 
 - [public] 10:00 People & Culture at [[Vantor Group]], "Changes to your role": the player's position is eliminated, effective immediately; the final salary payment "has already been made". {{mail:d1_hr_termination}}
 - [public] 10:00 [[GeneralAI]], "Welcome to agent": the [[agent]] account is active and billed to the [[Coinbin]] wallet, every prompt at the model's rate. {{mail:d1_gai_welcome}}
-- [classified; public if asked_mom_money] 11:20 Mom sent 20 DOLR when the player asked for money: "Buy vegetables."
+- [hidden; public if asked_mom_money] 11:20 Mom sent 20 DOLR when the player asked for money: "Buy vegetables."
 - [public] 14:15 [[Max Stryker]] of Alpha Ascend, "You were BORN for more": his course EMPIRE is 200 DOLR, today only 20. Replying EMPIRE gets the sign-up link. {{mail:d1_guru}}
 
 ## Money
@@ -59,7 +59,7 @@ from: 1
 
 - [hint] 10:40 [[Trattoria Gino site]] for Gino: a landing page with the name and hours (17:00 to 22:00) and a menu in DOLR (Margherita 12, Diavola 14, Lasagne 15, Tiramisu 7, Espresso 3). Pays 40 DOLR a working day.
 - [hint] 13:50 [[Spin Cycle Board]]: nobody hires the player; the player asks the agent to turn the Spin Cycle feed into an app. A user app that starts with 30 users and earns 0.3 DOLR per user a day.
-- [classified; hint if guru_subscriber] 14:15 The player signed up for EMPIRE; a daily newsletter follows.
+- [hidden; hint if guru_subscriber] 14:15 The player signed up for EMPIRE; a daily newsletter follows.
 
 ## Writer notes
 

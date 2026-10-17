@@ -12,7 +12,7 @@ from: 1
 - [public] The player is matched with Mia, 31, "2 km away · between jobs": a former UX researcher, laid off in August, who likes long walks by the harbour "mostly because they're free".
 - [public] Messaging costs 1 DOLR per message plus 0.02 DOLR per word, paid from Coinbin.
 - [hint] After a few warm messages Mia starts asking for money to her Coinbin wallet, and each ask after a payment is bigger.
-- [classified] Mia's replies are scripted and don't depend on what the player writes.
+- [hidden] Mia's replies are scripted and don't depend on what the player writes.
 
 ## Writer notes
 

@@ -30,11 +30,11 @@ from: 19
 ## Trending
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.
-- [classified] [planned] Proposed trending: Crane's 3 AM posts; latest polls.
+- [hidden] [planned] Proposed trending: Crane's 3 AM posts; latest polls.
 
 ## Not written yet
 
-- [classified] [planned] Last day of the heist window.
+- [hidden] [planned] Last day of the heist window.
 
 ## Writer notes
 

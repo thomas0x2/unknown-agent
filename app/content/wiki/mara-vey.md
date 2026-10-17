@@ -11,7 +11,7 @@ from: 1
 
 [public] Her public [[Forkyard]] profile (mara_vey, 2,210 followers, joined January 2019) lists Midtown, The Current, mara@thecurrent.test and thecurrent.test/mara, with the repos foia-helpers (public-records request templates) and layoffs-2026 (scraped layoff announcements).
 
-[classified] Who her sources are.
+[hidden] Who her sources are.
 
 ## How she talks
 

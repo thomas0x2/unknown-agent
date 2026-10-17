@@ -9,8 +9,8 @@ from: 8
 
 ## Mail
 
-- [classified; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "Adjusting for compatibility." Adds Heritage Party only, and fewer Y followers than him (he has 212). {{mail:d8_matchless_rules_3}}
-- [classified; hint if trader_client] 11:20 [[deskjockey]], "Two more": add $APO and $DISH, same cards, same split, same bot filter. "Apogee moves every time Rook posts and I want to see it." {{mail:d8_trader_tickers}}
+- [hidden; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "Adjusting for compatibility." Adds Heritage Party only, and fewer Y followers than him (he has 212). {{mail:d8_matchless_rules_3}}
+- [hidden; hint if trader_client] 11:20 [[deskjockey]], "Two more": add $APO and $DISH, same cards, same split, same bot filter. "Apogee moves every time Rook posts and I want to see it." {{mail:d8_trader_tickers}}
 
 ## Y
 
@@ -21,7 +21,7 @@ from: 8
 - [public] 13:00 Deb Halloran: "I do payroll for a living. Nobody has ever approved 41 of anything I filed." {{y:d8_y_deb_taxes}}
 - [public] 13:45 [[Randall Crane]]: asked an AI if it loves the country; it said it has "no position on that." {{y:d8_y_crane}}
 - [public] 14:36 MarketWire: $DISH adds 40,000 restaurant listings in a month, most built by AI. {{y:m8_dish_menu}}
-- [public] 14:37 Brent Kowalski loaded up on $APO before the launch. {{y:m8_apo_rook}}
+- [public] 14:37 [[WallStreetBags]]: Rook gives the launch a 70% chance; "Best odds anyone here has had all year." All in on $APO. {{y:m8_apo_rook}}
 - [public] 15:30 Axel Rook: Y will soon pay creators more than any other platform. {{y:d8_y_axel_2}}
 - [public] 15:30 CityPulse: Crane wants a law making it illegal for a computer to be smarter than the people he appoints to his cabinet. {{y:d8_y_citypulse_vote}}
 - [public] 16:00 noodleposter: a new noodle place on [[DoorDish]] had a dentist's address. {{y:d8_y_noodle_dish}}
@@ -40,12 +40,12 @@ from: 8
 ## Trending
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.
-- [classified] [planned] Proposed trending: GeneralAI tax returns; phantom DoorDish restaurants; Y check marks.
+- [hidden] [planned] Proposed trending: GeneralAI tax returns; phantom DoorDish restaurants; Y check marks.
 
 ## Not written yet
 
-- [classified] [planned] The Null Collective contacts the player and offers a hack against Halden Logistics, Dad's employer.
-- [classified] [planned] Spin Cycle's owner launches his own GeneralAI-built app, and the player's Spin Cycle Board is retired or starts losing users.
+- [hidden] [planned] The Null Collective contacts the player and offers a hack against Halden Logistics, Dad's employer.
+- [hidden] [planned] Spin Cycle's owner launches his own GeneralAI-built app, and the player's Spin Cycle Board is retired or starts losing users.
 
 ## Writer notes
 

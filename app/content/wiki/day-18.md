@@ -34,12 +34,12 @@ from: 18
 ## Trending
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.
-- [classified] [planned] Proposed trending: agent-5; the debate poll; agent-5 sessions.
+- [hidden] [planned] Proposed trending: agent-5; the debate poll; agent-5 sessions.
 
 ## Not written yet
 
-- [classified] [planned] The heist window opens (days 18 and 19).
-- [classified] [planned] The brother asks for money.
+- [hidden] [planned] The heist window opens (days 18 and 19).
+- [hidden] [planned] The brother asks for money.
 
 ## Writer notes
 

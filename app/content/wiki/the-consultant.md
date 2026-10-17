@@ -9,7 +9,7 @@ from: 6
 
 [public] A political consultant who writes from c@gradient.test and says only that he represents a campaign. He has no Y account the player can see.
 
-[classified] His name and which campaign he works for.
+[hidden] His name and which campaign he works for.
 
 ## How he talks
 

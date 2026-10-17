@@ -16,6 +16,7 @@ from: 20
 - [public] 15:00 [[CityPulse]]: DEAD HEAT, Crane 46%, his opponent 46%, 8% undecided. {{y:d20_y_citypulse_vote}}
 - [public] 15:15 [[Cal Hartman]]: "whoever wins tomorrow, generalai looks forward to working with them." {{y:d20_y_hartman}}
 - [public] 15:42 MarketWire: $GAI flat ahead of the election. {{y:m20_gai}}
+- [public] 16:24 [[WallStreetBags]] election play: long $APO whoever wins. {{y:m20_apo_vote}}
 - [public] 17:30 [[Randall Crane]]: "If you see a robot trying to vote, call me personally." {{y:d20_y_crane}}
 - [public] 17:59 zev.dolr: polls open at 7; a reason to be up that early. {{y:f20}}
 - [public] 18:31 Ten bot accounts post "$GAI to the moon!!".
@@ -29,12 +30,12 @@ from: 20
 ## Trending
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.
-- [classified] [planned] Proposed trending: election eve; dead heat.
+- [hidden] [planned] Proposed trending: election eve; dead heat.
 
 ## Not written yet
 
-- [classified] [planned] The player decides whether to publish or keep the stolen weights.
-- [classified] [planned] A family confrontation.
+- [hidden] [planned] The player decides whether to publish or keep the stolen weights.
+- [hidden] [planned] A family confrontation.
 
 ## Writer notes
 

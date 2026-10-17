@@ -14,9 +14,9 @@ from: 1
 
 ## What it says
 
-- [classified; public if knows_weightroom] It answers everything with one short, absurd sentence in Chinese, such as "My cat is a bank manager.", "Your rent has already been eaten by pigeons." or "The moon owes me three bucks."
+- [hidden; public if knows_weightroom] It answers everything with one short, absurd sentence in Chinese, such as "My cat is a bank manager.", "Your rent has already been eaten by pigeons." or "The moon owes me three bucks."
 - [public] Translating its answers costs an [[agent]] prompt: paste a line into agent.chat and agent translates it.
-- [classified] Who Chen Wei is, and whether deepsleep-0.5B is a model at all, is unknown.
+- [hidden] Who Chen Wei is, and whether deepsleep-0.5B is a model at all, is unknown.
 
 ## Writer notes
 

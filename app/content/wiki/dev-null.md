@@ -11,7 +11,7 @@ from: 2
 
 [public] Their public [[Forkyard]] profile (dev_null, "somewhere offline", 4,821 followers, joined March 2021, website weightroom.ai) has two repos: weightroom-mirror ("Mirror of open model weights. Download before it is taken down.") and null-tools ("Small scripts for people who read their own prompts.").
 
-[classified] Who dev_null is.
+[hidden] Who dev_null is.
 
 ## The Weightroom post
 

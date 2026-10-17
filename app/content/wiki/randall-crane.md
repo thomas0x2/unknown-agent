@@ -11,7 +11,7 @@ from: 1
 
 [public] On [[Y]] he is @randall_crane, verified, 38.4M followers, bio "Next President of the United States (polling at 112%). Heritage Party. Saving American jobs from the computers. Official account, the only one. BELIEVE IT." His picture shows an orange tan, a blond swoop, a navy suit and a long neon-red tie.
 
-[classified] Who actually writes his posts.
+[hidden] Who actually writes his posts.
 
 ## How he talks
 
@@ -96,5 +96,5 @@ from: 1
 
 - Trump parody, placeholder name. Events `dN_y_crane.json`; day 4 post and the impostor's in `y_market.json`; `trader_y_crane_apo` fires 90 minutes after deskjockey's auto-buy goes live (earliest day 3). Bio in `y-bios.ts`; gold check from day 9 in `view.ts` (`craneGold`). His posts treat day 21 (Sun Oct 27) as election day.
 - crane2026.vote (`adSites.ts`, domain keeps the old year): only the first donation raises hidden `heritageStanding` by 10.
-- Who writes his posts is left open (day 19 CityPulse); keep it [classified].
+- Who writes his posts is left open (day 19 CityPulse); keep it [hidden].
 - Never writes tickers outside the market posts.
