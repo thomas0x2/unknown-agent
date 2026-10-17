@@ -88,6 +88,18 @@ describe('payday', () => {
     expect(getApp(s, id)!.strikes).toBe(0);
   });
 
+  it('reports each paying app by name, broken ones not at all', () => {
+    const { s, id } = withShop();
+    makeWorking(s, id);
+    const paid: [string, number][] = [];
+    runPayday(s, undefined, paid);
+    expect(paid).toEqual([[getApp(s, id)!.name, 50]]);
+    breakFeature(s, getApp(s, id)!, 'catalog', 'visible');
+    const none: [string, number][] = [];
+    runPayday(s, undefined, none);
+    expect(none).toEqual([]);
+  });
+
   it('strikes a broken client app and churns on the second strike', () => {
     const { s, id } = withShop();
     makeWorking(s, id);
