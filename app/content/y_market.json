@@ -147,6 +147,19 @@
       "mood": "neutral"
     },
     {
+      "id": "m2_dish_robot",
+      "day": 2,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "DoorDish confirms one of its delivery robots left its route downtown and has not come back. $DISH up 7%.",
+      "at": "16:05",
+      "likes": 240,
+      "tickers": [
+        "DISH"
+      ],
+      "mood": "bullish"
+    },
+    {
       "id": "m3_gai_cfo",
       "day": 3,
       "from": "MarketWire",
