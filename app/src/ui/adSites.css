@@ -174,3 +174,7 @@
 .lo-logo { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: #e0336f; }
 .lo-logo svg { width: 18px; height: 18px; }
 .lo-intro { align-self: center; margin: 24px 0; color: var(--ua-dim); font-size: 14px; }
+
+/* a brand with a drawn logo (deepsleep) shows it in place of the letter mark */
+.lp-mark.lp-logo { padding: 0; background: none; overflow: hidden; }
+.lp-mark.lp-logo svg { width: 26px; height: 26px; }

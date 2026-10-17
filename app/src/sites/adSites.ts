@@ -7,6 +7,7 @@
  */
 
 import { citizenScore, citizenBand, type GameState } from '../engine';
+import { DEEPSLEEP_LOGO } from './deepsleepLogo';
 
 /** Page layout family: shapes the markup a little and the CSS a lot. */
 export type AdKit = 'corp' | 'gov' | 'campaign' | 'scam' | 'local' | 'news' | 'clinic' | 'soft' | 'model';
@@ -33,6 +34,8 @@ export interface AdSite {
   link?: [string, string, string];
   /** a flag set when the page is opened (the link's site must be reachable once you've seen it) */
   unlocks?: string;
+  /** an SVG logo, drawn instead of `mark` in the header and the favicon */
+  logo?: string;
   /** a resume upload under the cards (ui/outplacement.ts, engine/uploads.ts) */
   upload?: boolean;
   /** one working button, under the cards: [label, data-act handled in main.ts] */
@@ -373,7 +376,7 @@ export const AD_SITES: AdSite[] = [
     fine: 'Memberships can be cancelled in person at the front desk, when Marcus is not there.',
   },
   {
-    url: 'deepsleep.ai', brand: 'deepsleep', kit: 'model', theme: 'deep', mark: 'd',
+    url: 'deepsleep.ai', brand: 'deepsleep', kit: 'model', theme: 'deep', mark: 'd', logo: DEEPSLEEP_LOGO,
     kicker: 'Open weights', title: 'deepsleep-0.5B',
     lead: 'A small open-weights chat model that runs on almost any laptop. Free, local, confident.',
     stats: [['0.5B', 'parameters'], ['2 GB', 'download'], ['1.2M', 'downloads']],

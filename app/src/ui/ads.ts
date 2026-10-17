@@ -11,6 +11,7 @@
  */
 
 import { TOKENS } from './icons';
+import { adLogoHtml } from './siteIcons';
 
 /** the two ad pools: rectangular leaderboards for the top of a page, square boxes for sidebars */
 export type AdSlot = 'wide' | 'square';
@@ -313,6 +314,7 @@ export function adHtml(site: string, day: number, slot: AdSlot, n = 0): string {
   return `<div class="ad ad-${slot} ${ad.theme}" style="--ad-t:${t}ms" data-newtab="${escAttr(ad.href)}" role="link" aria-label="Advertisement: ${escAttr(ad.sponsor)}">
     ${decoHtml(ad.deco)}
     <span class="ad-tag" title="${escAttr(why)}">Ad · ${escAttr(ad.sponsor)} <i>ⓘ</i></span>
+    ${adLogoHtml(ad.href)}
     <span class="ad-frames">${frames}</span>
     <span class="ad-cta${ad.cta_fx ? ' fx-' + ad.cta_fx : ''}">${escAttr(ad.cta)}</span>
     <span class="ad-fine">${escAttr(ad.fine)}</span>

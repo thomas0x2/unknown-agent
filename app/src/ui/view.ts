@@ -18,10 +18,12 @@ import { findUser } from './forkyard-users';
 import { pageDrive } from './qdrive';
 import { pageSherwood } from './sherwood';
 import { pageDoorDish } from './doordish';
-import { pageAdSite, adSiteTitle, adSiteIcon } from './adSites';
-import { pagePrince, PRINCE_ICON } from './prince';
-import { pageLonely, LONELY_ICON } from './lonely';
-import { pageSorry, SORRY_ICON } from './sorry';
+import { pageAdSite, adSiteTitle } from './adSites';
+import { pagePrince } from './prince';
+import { pageLonely } from './lonely';
+import { pageSorry } from './sorry';
+import { siteIcon } from './siteIcons';
+import { DEEPSLEEP_LOGO } from '../sites/deepsleepLogo';
 import { outplacementUpload, OUTPLACEMENT } from './outplacement';
 import { adHtml } from './ads';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
@@ -81,7 +83,7 @@ export function tabsHtml(store: GameStore): string {
     // a deployed app with a logo shows it as its favicon
     const app = rr.site === 'app' && rr.param ? getApp(store.state, rr.param.split('/')[0]) : undefined;
     // ad sites (and Spin Cycle's raw feed) show their brand's mark
-    const logo = (app && appLogo(app.template)) || (rr.site === 'adsite' ? adSiteIcon(rr.param ?? '') : rr.site === 'spinfeed' ? adSiteIcon('spincycle.test') : rr.site === 'prince' ? PRINCE_ICON : rr.site === 'lonely' ? LONELY_ICON : rr.site === 'sorry' ? SORRY_ICON : undefined);
+    const logo = (app && appLogo(app.template)) || siteIcon(rr.site, rr.param).logo;
     const n = !badged.has(rr.site) ? counts[rr.site] ?? 0 : 0;
     badged.add(rr.site);
     return `<div class="tab${t.id === store.active ? ' on' : ''}${t.pinned ? ' pinned' : ''}" data-tab="${t.id}" role="tab" aria-selected="${t.id === store.active}" tabindex="0">
@@ -1033,7 +1035,7 @@ function pageWeightroom(store: GameStore): string {
     const action = have ? '<span class="wr-have">On your laptop</span>'
       : pulling ? pullBarHtml(pullPct(store.pullMs()))
       : `<button class="wr-btn" data-download="${esc(m.id)}">Download</button>`;
-    return `<article class="wr-card"><header><b>${esc(m.name)}</b><span class="wr-dl">↓ 1.2M</span></header>
+    return `<article class="wr-card"><header><b>${w.id === 'deepsleep' ? `<span class="wr-mlogo">${DEEPSLEEP_LOGO}</span>` : ''}${esc(m.name)}</b><span class="wr-dl">↓ 1.2M</span></header>
       <p>${esc(w.blurb)}</p><div class="wr-tags"><span>${m.gb} GB</span><span>${esc(w.tier)}</span></div>
       ${action}</article>`;
   }).join('');
