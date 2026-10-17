@@ -1,0 +1,11 @@
+{
+  "id": "d13_y_perdure",
+  "site": "y",
+  "from": "Perdure Pharma",
+  "trigger": {
+    "dayMin": 13,
+    "dayMax": 13
+  },
+  "at": "11:00",
+  "body": "Introducing Perdure Peptides: research-grade peptides from a company you already trust. For research use only. perdure.com"
+}

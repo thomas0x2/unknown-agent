@@ -1,5 +1,5 @@
-/* Brand logos wherever they appear (ui/vantor.ts, ui/steadfast.ts). */
-.vantor-wordmark, .vantor-mark, .steadfast-wordmark, .steadfast-mark { display: block; height: 100%; width: auto; overflow: visible; }
+/* Brand logos wherever they appear (ui/vantor.ts, ui/steadfast.ts, ui/perdure.ts). */
+.vantor-wordmark, .vantor-mark, .steadfast-wordmark, .steadfast-mark, .perdure-wordmark, .perdure-mark { display: block; height: 100%; width: auto; overflow: visible; }
 
 /* Qmail: the signature under Vantor's emails */
 .vantor-sig { margin-top: 18px; padding-top: 12px; border-top: 1px solid rgba(0, 0, 0, .1); color: #2c2c2a; font-size: 11.5px; line-height: 1.5; }
@@ -14,6 +14,6 @@
 .qd-letterhead span { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: #6c6b66; }
 
 /* landing pages with a logo (ui/brandLogos.ts): the wordmark replaces the letter tile */
-.lp-brand .vantor-wordmark, .lp-brand .steadfast-wordmark { height: 30px; max-width: 100%; }
+.lp-brand .vantor-wordmark, .lp-brand .steadfast-wordmark, .lp-brand .perdure-wordmark { height: 30px; max-width: 100%; }
 .lp-brand .steadfast-wordmark { height: 36px; }
 

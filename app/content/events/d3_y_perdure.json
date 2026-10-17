@@ -1,0 +1,11 @@
+{
+  "id": "d3_y_perdure",
+  "site": "y",
+  "from": "Perdure Pharma",
+  "trigger": {
+    "dayMin": 3,
+    "dayMax": 3
+  },
+  "at": "10:05",
+  "body": "Introducing Ozempra: one injection a week to quiet your appetite. Two-minute online consultation, delivered to your door. ozempra.com"
+}

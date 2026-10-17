@@ -1,0 +1,11 @@
+{
+  "id": "d4_y_catceo_ozempra",
+  "site": "y",
+  "from": "cat_ceo",
+  "trigger": {
+    "dayMin": 4,
+    "dayMax": 4
+  },
+  "at": "15:40",
+  "body": "started ozempra to cut the grocery bill. bill is down a third. the cat is not on it and has questions."
+}

@@ -13,6 +13,7 @@ from: 16
 
 ## Y
 
+- [public] 10:30 [[Perdure Pharma]]: Ozempra is now available without a consultation in 31 states. "Less waiting. Less wanting." {{y:d16_y_perdure}}
 - [public] 11:40 [[The Current]]: three polling firms stopped calling voters; too many calls are answered by AI assistants, which lean toward whoever ran the latest ad. {{y:d16_y_current}}
 - [public] 11:55 [[Max Stryker]]: "Excuses are free. That's why you have so many." {{y:d16_y_stryker}}
 - [public] 12:00 [[Cal Hartman]] is back from two days offline. {{y:d16_y_hartman}}
