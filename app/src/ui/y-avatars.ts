@@ -187,6 +187,13 @@ const MARKETWIRE = svg('#2e3640',
   + `<path d="M14 50 H50" fill="none" stroke-width="2.2"/>`
   + `<path d="M14 34 L24 26 L32 30 L46 16 M40 16 H46 V22" fill="none" stroke="#2bff88" stroke-width="2.6"/>`);
 
+/** DoorDish: the takeaway bag from its logo. */
+const DOORDISH = svg('#d8343b',
+  `<path d="M17 24 H47 L44 52 H20Z" fill="#f4f1ea"/>`
+  + `<path d="M26 24 V20 C26 14 38 14 38 20 V24" fill="none" stroke-width="2.4"/>`
+  + `<path d="M40 24 H47 L44 52 H38.5Z" fill="${SHADE}" stroke="none"/>`
+  + `<path d="M24 34 H40" fill="none" stroke="#d8343b" stroke-width="2.6"/>`);
+
 /** Spin Cycle regulars: the front-loader everyone is waiting for. */
 const SPIN_CYCLE = svg('#5c7b8b',
   `<rect x="14" y="10" width="36" height="46" rx="4" fill="#e3e1db"/>`
@@ -215,5 +222,6 @@ export const Y_AVATARS: Record<string, string> = {
   citypulse: CITYPULSE,
   liftoff_daily: LIFTOFF,
   marketwire: MARKETWIRE,
+  doordish: DOORDISH,
   spin_cycle_regulars: SPIN_CYCLE,
 };

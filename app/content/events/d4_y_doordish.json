@@ -1,0 +1,11 @@
+{
+  "id": "d4_y_doordish",
+  "site": "y",
+  "from": "DoorDish",
+  "trigger": {
+    "dayMin": 4,
+    "dayMax": 4
+  },
+  "at": "18:00",
+  "body": "We've seen the reports. No DoorDish courier is missing. Every courier is exactly where it needs to be."
+}

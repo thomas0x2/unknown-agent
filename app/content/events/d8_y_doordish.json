@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_doordish",
+  "site": "y",
+  "from": "DoorDish",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "16:30",
+  "body": "The parking garage listing has been removed. It was not created by a courier. Couriers cannot create listings."
+}
