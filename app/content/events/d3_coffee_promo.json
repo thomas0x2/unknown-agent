@@ -8,7 +8,7 @@
   "trigger": {
     "dayMin": 3,
     "values": {
-      "followers": ">=50"
+      "followers": ">=25"
     },
     "flagsNone": [
       "promoted_coffee_shop",
