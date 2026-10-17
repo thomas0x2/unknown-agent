@@ -363,9 +363,9 @@ export const AD_SITES: AdSite[] = [
     cards: [
       ['Prices', 'Wash 4 DOLR · Dry 2 DOLR per 20 min · Detergent 1 DOLR'],
       ['Machines', 'Front-loaders, two large-capacity washers, and machine 3.'],
-      ['Pickup', 'Please collect your laundry when the cycle ends. Loads left overnight go on the shelf.'],
+      ['Contact', 'Hassan Okoro, owner · owner@spincycle.test'],
     ],
-    fine: 'Spin Cycle is not responsible for items left in machines.',
+    fine: 'Please collect your laundry when the cycle ends. Loads left overnight go on the shelf. Spin Cycle is not responsible for items left in machines.',
     link: ['Live machine status:', 'spincycle.test/feed', 'spincycle.test/feed'],
   },
   {
