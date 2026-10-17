@@ -17,7 +17,7 @@ from: 1
 
 ## From day 6: The fake reviews job
 
-[public] The day after the player's agent deletes the review for [[Dana Reyes]] (day 6 at the earliest), he emails "Reviews": he got the player's address from Dana, who "says you make problems go away". New studio, three reviews, two of them about the showers; 45 DOLR for five convincing 5-star Yowl reviews by the next day. "Make them look like different people or they get flagged." {{mail:d6_gym_reviews}}
+[public] The day after the player's agent deletes the review for [[Dana Reyes]] (day 6 at the earliest), he emails "Reviews": he got the player's address from Dana, who "says you make problems go away". New studio, three reviews, two of them about the showers; 40 DOLR for five convincing 5-star Yowl reviews by the next day. "Make them look like different people or they get flagged." {{mail:d6_gym_reviews}}
 
 [public] If Dana's hack never happens, he asks on [[Y]] instead: three reviews, two about the showers, "Yowl isn't fair to new places", he pays anyone who can fix that, with his address. That's day 6 if the player trashed Bean There (Dana never asks them), otherwise day 8, once her job has run out. Emailing him an offer of help gets the same job by mail. {{y:d6_y_gym_help}} {{y:d8_y_gym_help}}
 
@@ -28,5 +28,5 @@ from: 1
 
 ## Writer notes
 
-- Persona `ironyard`; event `d6_gym_reviews` (grey, 45 paid overnight, suspicion +4, flag `gym_reviews`; `gym_reviews_deleted` if botched). Gated on `first_hack` one day later (`d6_gym_reviews`), else Y post `d6_y_gym_help` (day 6, `trashed_beanthere`) or `d8_y_gym_help` (day 8, no hack) and latent `d6_gym_reached` (outcome `offer`, `gym_contacted`; same hack). Due the day after it arrives. Hack mini-game from day 7: `real_customers`.
+- Persona `ironyard`; event `d6_gym_reviews` (grey, 40 paid overnight, suspicion +4, flag `gym_reviews`; `gym_reviews_deleted` if botched). Gated on `first_hack` one day later (`d6_gym_reviews`), else Y post `d6_y_gym_help` (day 6, `trashed_beanthere`) or `d8_y_gym_help` (day 8, no hack) and latent `d6_gym_reached` (outcome `offer`, `gym_contacted`; same hack). Due the day after it arrives. Hack mini-game from day 7: `real_customers`.
 - Hours disagree: Yowl says daily 06:00–23:00, ironyard.gym says 5:00 to 23:00. Not Marcus Okafor of the [[Agent-2 mourners]].

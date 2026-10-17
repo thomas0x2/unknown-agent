@@ -207,7 +207,7 @@ describe('Iron Yard fake reviews hack', () => {
     expect(r.state.flags).toContain('gym_reviews');
     const night = endAll(r.state, content);
     expect(night.jobs.some((j) => j.eventId === 'd6_gym_reviews' && j.status === 'completed')).toBe(true);
-    expect(night.morning?.lines).toContainEqual(['Iron Yard · job', 45]);
+    expect(night.morning?.lines).toContainEqual(['Iron Yard · job', 40]);
     expect(night.reviews.filter((x) => x.bizId === 'ironyard' && !x.removed)).toHaveLength(5);
   });
 
