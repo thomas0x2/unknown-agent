@@ -2,6 +2,7 @@
   "name": "unknown-agent",
   "private": true,
   "version": "0.1.0",
+  "license": "UNLICENSED",
   "type": "module",
   "description": "Unknown Agent — a fake-browser game about an unemployed person, an AI agent, and the price of every shortcut.",
   "scripts": {
