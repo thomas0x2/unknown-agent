@@ -51,7 +51,10 @@ from: 5
 
 ## Trending
 
-- [public] 10:00 Trending on Y: Crane gains in the polls; a data breach (yours); AI-art backlash.
+- [public] 10:00 Trending on Y: is agent-2 worse?
+- [public] 16:20 Starts trending on Y: Crane's 71% Y poll.
+- [public] 17:30 Starts trending on Y: AI-art backlash.
+- [public] 19:10 Starts trending on Y: the fake Randall Crane.
 
 ## Jobs
 

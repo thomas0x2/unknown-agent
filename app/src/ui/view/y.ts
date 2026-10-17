@@ -5,7 +5,7 @@ import { GameStore } from '../../game/store';
 import { ICONS, Y_ICONS } from '../icons';
 import { type GameState, dateShort } from '../../engine';
 import { adHtml } from '../ads';
-import { marketPosts, fillerToday, postMin } from '../../engine';
+import { marketPosts, fillerToday, postMin, trendingAt } from '../../engine';
 import { devOptionsButton, devOptionsPanel } from '../devOptions';
 import { yBio } from '../y-bios';
 import { PLAYER, avatar, compact, esc, fmtClock, handleFrom, hashHue, linkify, tpl } from './common';
@@ -88,7 +88,7 @@ function yEmpty(icon: string, title: string, note: string, tag = 'p'): string {
 export function pageY(store: GameStore, profile?: string): string {
   const s = store.state;
   const posts = yPosts(store);
-  const trending = store.content.trending[s.values.day] ?? [];
+  const trending = trendingAt(store.content, s.values.day, s.clockMin);
   // the timeline shows today's posts; older ones wait behind "Show all"
   const showAll = store.ui.yAllDay === s.values.day;
   const shown = showAll ? posts : posts.filter((p) => p.day === s.values.day);

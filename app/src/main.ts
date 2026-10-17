@@ -27,7 +27,7 @@ import './ui/matchless.css';
 import { showSuggestions, hideSuggestions, suggestionKey } from './ui/mailSuggest';
 import { GameStore } from './game/store';
 import { loadContent } from './content/load';
-import { localStorageStore, PLAYER_WALLET, SEED_PHRASE } from './engine';
+import { localStorageStore, PLAYER_WALLET, SEED_PHRASE, trendingAt } from './engine';
 import { JEV } from './game/backendJev';
 import { ROUTER } from './game/router';
 import { MISSES, makeWriter, type Misses, type HaikuVia, type Net } from './game/misses';
@@ -56,7 +56,7 @@ onWikiFiles((pages) => { content.wiki = pages; store.repaint(); });
 
 const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector<T>(sel);
 const val = (sel: string) => ($(sel) as HTMLInputElement | HTMLTextAreaElement | null)?.value ?? '';
-const trendingToday = () => store.content.trending[store.state.values.day] ?? [];
+const trendingToday = () => trendingAt(store.content, store.state.values.day, store.state.clockMin);
 
 let lastSite = '';
 let lastUrl = '';

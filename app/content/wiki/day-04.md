@@ -52,7 +52,8 @@ from: 4
 
 ## Trending
 
-- [public] 10:00 Trending on Y: GeneralAI agent-2; a Crane rally; the DoorDish robot (still missing).
+- [public] 10:00 Trending on Y: GeneralAI agent-2; the DoorDish robot (still missing).
+- [public] 13:26 Starts trending on Y: Crane vs. Vantor.
 
 ## Jobs
 

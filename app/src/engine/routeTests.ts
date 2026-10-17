@@ -19,6 +19,7 @@ import { replyToEvent, composeEmail, policyCheck, agentStartFor, buildIntent, pr
 import { isHackAttempt } from './hacks';
 import { estimatedState } from './viewState';
 import { arrivalMin } from './events';
+import { trendingAt } from './trending';
 
 export interface RouteTestCase {
   where: string;
@@ -62,7 +63,7 @@ async function decide(content: Content, jev: JevRouter, c: RouteTestCase): Promi
   if (kind === 'policy') return policyCheck(jev, s, c.text, []);
   if (kind === 'hack') return (await isHackAttempt(jev, s, content, c.text)) ? 'hack' : 'no';
   if (kind === 'start') return (await agentStartFor(jev, s, content, c.text))?.ev.id ?? 'none';
-  if (kind === 'y') return (await jev.ratePost({ text: c.text, trending: content.trending[c.day ?? 3] ?? [], recentPosts: [], followers: 100 })).category;
+  if (kind === 'y') return (await jev.ratePost({ text: c.text, trending: trendingAt(content, c.day ?? 3, 24 * 60), recentPosts: [], followers: 100 })).category;
   // a Y post once flag `arg` is set: which waiting `yPost` event it queues
   if (kind === 'ypost') {
     s.flags.push(arg);

@@ -48,3 +48,4 @@ export * from './viewState';
 export * from './queryTests';
 export * from './pollymarket';
 export * from './offlineJev';
+export * from './trending';

@@ -56,7 +56,10 @@ from: 6
 
 ## Trending
 
-- [public] 10:00 Trending on Y: Crane's opponent; $GAI rallying; #RentDayEve.
+- [public] 10:00 Trending on Y: #RentDayEve.
+- [public] 11:00 Starts trending on Y: Crane's GeneralAI U-turn.
+- [public] 15:18 Starts trending on Y: $GAI rallying.
+- [public] 18:50 Starts trending on Y: Apogee static fire.
 
 ## Jobs
 
