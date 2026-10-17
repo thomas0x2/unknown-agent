@@ -30,6 +30,7 @@ from: 8
 - [public] 15:30 CityPulse: Crane wants a law making it illegal for a computer to be smarter than the people he appoints to his cabinet. {{y:d8_y_citypulse_vote}}
 - [public] 16:00 noodleposter: a new noodle place on [[DoorDish]] had a dentist's address. {{y:d8_y_noodle_dish}}
 - [public] 16:30 DoorDish: the parking garage listing has been removed. "Couriers cannot create listings." {{y:d8_y_doordish}}
+- [public] 16:35 [[Pollymarket]]: the robot market is down to 36% from 72%. {{y:d8_y_polly_robot}}
 - [public] 16:40 [[Cal Hartman]]: the next model is very good; he had to go for a walk after trying it. {{y:d8_y_hartman}}
 - [public] 19:20 Cal Hartman: "the tax returns were accurate. we are still reviewing how it got access." {{y:d8_y_hartman_2}}
 - [public] 19:33 Tyler Moss: "Even my laundromat has an app built with General AI now. Long $GAI." {{y:m8_gai_laundry}}
@@ -44,6 +45,11 @@ from: 8
 ## Sites
 
 - [public] 16:30 [[DoorDish]] removes the Alder Garage Kitchen listing; its page says the store is no longer available. From 15:20 the fine print adds "Some listings are generated automatically. Reports are reviewed by AI."
+
+## Pollymarket
+
+- [public] 16:30 [[Pollymarket]]: the robot market falls to 36% after the parking garage listing.
+- [public] 19:20 [[Pollymarket]]: the next-model market jumps to 71% after Cal Hartman's posts.
 
 ## Trending
 

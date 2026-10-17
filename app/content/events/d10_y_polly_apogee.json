@@ -1,0 +1,11 @@
+{
+  "id": "d10_y_polly_apogee",
+  "site": "y",
+  "from": "Pollymarket",
+  "trigger": {
+    "dayMin": 10,
+    "dayMax": 10
+  },
+  "at": "10:15",
+  "body": "Apogee orbit: 84% at 10:02. 2% at 10:09. pollymarket.com/apogee-orbit"
+}

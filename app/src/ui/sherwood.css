@@ -72,3 +72,7 @@
 .sw-spark { height: 28px; }
 
 .sw-fine { max-width: 1040px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px) 32px; font-size: 11.5px; color: var(--sw-dim); }
+
+.sw-ad { max-width: 1040px; margin: 0 auto; padding: 18px clamp(16px, 4vw, 40px) 0; }
+.sw-side { display: flex; flex-direction: column; gap: 20px; align-self: start; min-width: 0; }
+.sw-side .sw-list { align-self: stretch; }

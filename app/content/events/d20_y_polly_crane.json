@@ -1,0 +1,11 @@
+{
+  "id": "d20_y_polly_crane",
+  "site": "y",
+  "from": "Pollymarket",
+  "trigger": {
+    "dayMin": 20,
+    "dayMax": 20
+  },
+  "at": "15:10",
+  "body": "Randall Crane at 54%, down from 66% after the debate. Election tomorrow. pollymarket.com/crane-wins"
+}

@@ -17,6 +17,7 @@ export const Y_BIOS: Record<string, string> = {
   the_current: 'Independent reporting, funded by readers. Polls we post include sample size and margin of error.',
   liftoff_daily: 'Daily news on Axel Rook, Apogee and the future. Not affiliated with Axel Rook (yet) 🚀',
   marketwire: 'Market headlines as they happen. Not investment advice.',
+  pollymarket: 'The world\'s largest prediction market. Odds on the election, tech and everything else. Not available in your region. pollymarket.com',
   wallstreetbags: 'Buy high, sell lower. Fifteen million members, most of them down. Nothing here is financial advice.',
   perdure_pharma: 'Perdure Pharma. Makers of NoDoze MAX and Ozempra. Medicine for modern life. $PDUR. perdure.com',
   doordish: 'Official DoorDish account. Food from anywhere, delivered by robot couriers. Every courier is where it needs to be.',

@@ -1,0 +1,14 @@
+{
+  "id": "d7_y_polly_crane",
+  "site": "y",
+  "from": "Pollymarket",
+  "trigger": {
+    "dayMin": 7,
+    "dayMax": 7,
+    "flagsAll": [
+      "posted_deepfake"
+    ]
+  },
+  "at": "16:10",
+  "body": "Randall Crane at 53%, ahead for the first time, after a clip of Candidate 2030 spread overnight. pollymarket.com/crane-wins"
+}

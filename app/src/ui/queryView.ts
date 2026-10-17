@@ -1,11 +1,11 @@
 /*
  * The player's screens as data for an agent.chat query (game/playerView.ts): newest first, capped,
- * from the same rows Qmail, Y, Yowl, CityPulse, Forkyard and Coinbin draw. Never what an app's bugs
+ * from the same rows Qmail, Y, Yowl, CityPulse, Pollymarket, Forkyard and Coinbin draw. Never what an app's bugs
  * are: Forkyard rows only say whether an app is live.
  */
 import type { GameStore } from '../game/store';
 import type { PlayerView } from '../game/playerView';
-import { RENT, liveArticles, articleMin, onForkyard, clockTime, getEvent } from '../engine';
+import { RENT, liveArticles, articleMin, liveMarkets, oddsNow, resolved, onForkyard, clockTime, getEvent } from '../engine';
 import { mailRows, yPosts, reviewsFor } from './view';
 import { BUSINESSES } from './yowl-data';
 
@@ -31,6 +31,7 @@ export function queryView(store: GameStore): PlayerView {
     yowl: BUSINESSES.flatMap((b) => reviewsFor(store, b).map((r) => ({ business: b.name, author: r.author, stars: r.stars, text: r.text, day: r.day, ...(r.mine ? { mine: true } : {}) })))
       .sort((a, b) => b.day - a.day),
     citypulse: liveArticles(s).map((a) => ({ day: a.day, time: clockTime(articleMin(a)), title: a.title, dek: a.dek })),
+    pollymarket: liveMarkets(s).map((m) => ({ title: m.title, category: m.category, chance: oddsNow(s, m), ...(resolved(s, m) ? { resolved: resolved(s, m) } : {}) })),
     apps: s.apps.filter((a) => onForkyard(a) && !a.churned).map((a) => ({
       name: a.name, url: a.url, deployed: a.deployed,
       ...(a.clientEventId ? { client: getEvent(store.content, a.clientEventId)?.from } : {}),

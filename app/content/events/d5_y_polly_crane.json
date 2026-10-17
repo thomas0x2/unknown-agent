@@ -1,0 +1,11 @@
+{
+  "id": "d5_y_polly_crane",
+  "site": "y",
+  "from": "Pollymarket",
+  "trigger": {
+    "dayMin": 5,
+    "dayMax": 5
+  },
+  "at": "16:35",
+  "body": "Crane up to 47% after a Y poll of 300,000 votes. The Y poll doesn't settle anything here. pollymarket.com/crane-wins"
+}

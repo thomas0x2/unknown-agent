@@ -1,0 +1,11 @@
+{
+  "id": "d2_y_polly_crane",
+  "site": "y",
+  "from": "Pollymarket",
+  "trigger": {
+    "dayMin": 2,
+    "dayMax": 2
+  },
+  "at": "12:25",
+  "body": "Randall Crane's odds of winning the presidency fall to 36% after The Current's first poll. pollymarket.com/crane-wins"
+}

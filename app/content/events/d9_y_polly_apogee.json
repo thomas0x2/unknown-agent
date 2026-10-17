@@ -1,0 +1,11 @@
+{
+  "id": "d9_y_polly_apogee",
+  "site": "y",
+  "from": "Pollymarket",
+  "trigger": {
+    "dayMin": 9,
+    "dayMax": 9
+  },
+  "at": "19:10",
+  "body": "Apogee reaches orbit on its first launch: 70%. Launch tomorrow at 10. pollymarket.com/apogee-orbit"
+}

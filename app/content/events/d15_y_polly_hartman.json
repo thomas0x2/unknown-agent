@@ -1,0 +1,11 @@
+{
+  "id": "d15_y_polly_hartman",
+  "site": "y",
+  "from": "Pollymarket",
+  "trigger": {
+    "dayMin": 15,
+    "dayMax": 15
+  },
+  "at": "17:40",
+  "body": "Cal Hartman testifies before the election: 38% this afternoon, 3% now. The hearing is set for after it. pollymarket.com/hartman-testifies"
+}
