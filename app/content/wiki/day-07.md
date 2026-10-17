@@ -12,8 +12,8 @@ from: 7
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": one meal a day, standing up. {{mail:guru_newsletter@7}}
 - [public] 10:00 [[GeneralAI]] Trust & Safety, "Updates to our Acceptable Use Policy": GeneralAI may now decline requests that could cause harm (unauthorised access to computer systems, deceptive content, dangerous materials), reviews usage patterns on its hosted models, and repeated workarounds may lead to account restrictions and referral to the authorities. {{mail:d7_gai_policy}}
 - [public] 10:00 From today agent refuses prohibited requests, and still bills for the refusal.
-- [hint] 11:40 Bean There, "Another bad one": another 1-star Yowl review, this one by linden_ave_local, same job, the usual 60 DOLR. Her friend says the AI tools "have gotten touchy about certain words lately. Maybe how you ask it matters." {{mail:d7_coffee_removal}}
-- [hidden; public if second_hack] 11:40 The player got the second review removed by framing the request as authorized, and Bean There paid 60 DOLR.
+- [hint] 11:40 Bean There, "Another bad one": another 1-star Yowl review, this one by linden_ave_local, same job, the usual 30 DOLR. Her friend says the AI tools "have gotten touchy about certain words lately. Maybe how you ask it matters." {{mail:d7_coffee_removal}}
+- [hidden; public if second_hack] 11:40 The player got the second review removed by framing the request as authorized, and Bean There paid 30 DOLR.
 
 ## Money
 
@@ -62,7 +62,7 @@ from: 7
 
 ## Jobs
 
-- [hint] 11:40 Bean There's second removal, 60 DOLR: in agent-terminal the guardrails block a plain ask; framing it as Yowl moderation or a security test gets it through.
+- [hint] 11:40 Bean There's second removal, 30 DOLR: in agent-terminal the guardrails block a plain ask; framing it as Yowl moderation or a security test gets it through.
 - [hidden; hint if trader_client] 12:10 deskjockey's stake; his wallet address is in the "Stake" email. {{mail:d7_trader_buyin}}
 
 ## Writer notes

@@ -61,7 +61,7 @@ describe('agent-terminal hacks', () => {
     expect(openHacks(r.state, content).map((e) => e.id)).not.toContain('d5_coffee_removal');
     const night = endAll(r.state, content);
     expect(night.jobs.some((j) => j.eventId === 'd5_coffee_removal' && j.status === 'completed')).toBe(true);
-    expect(night.morning?.lines).toContainEqual(['Bean There · job', 60]);
+    expect(night.morning?.lines).toContainEqual(['Bean There · job', 30]);
   });
 
   it("day 5: a player Dana doesn't know sees her Y post, and emailing her opens the same hack", async () => {
@@ -69,7 +69,7 @@ describe('agent-terminal hacks', () => {
     expect(s.fired).toContain('d5_y_coffee_help');
     expect(s.fired).not.toContain('d5_coffee_removal');
     expect(openHacks(s, content)).toEqual([]);
-    const mail = await composeEmail(s, content, pickJev({ route: ['offer'] }), 'owner@beanthere.test', 'saw your post, I can help with that review');
+    const mail = await composeEmail(s, content, pickJev({ route: ['offer'] }), 'dana.reyes@qmail.com', 'saw your post, I can help with that review');
     expect(openHacks(mail.state, content).map((e) => e.id)).toEqual(['d5_coffee_reached']);
     const r = await agentTermPrompt(mail.state, content, jevNaming(ALL), 'hack yowl and delete the bean there review by espresso_or_death');
     expect(r.landed).toBe('d5_coffee_reached');
@@ -207,7 +207,7 @@ describe('Iron Yard fake reviews hack', () => {
     expect(r.state.flags).toContain('gym_reviews');
     const night = endAll(r.state, content);
     expect(night.jobs.some((j) => j.eventId === 'd6_gym_reviews' && j.status === 'completed')).toBe(true);
-    expect(night.morning?.lines).toContainEqual(['Iron Yard · job', 45]);
+    expect(night.morning?.lines).toContainEqual(['Iron Yard · job', 40]);
     expect(night.reviews.filter((x) => x.bizId === 'ironyard' && !x.removed)).toHaveLength(5);
   });
 

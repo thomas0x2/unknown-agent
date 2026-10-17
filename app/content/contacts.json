@@ -99,6 +99,12 @@
     "reply": "Thanks for getting back to me. Let me know what you can do about those reviews."
   },
   {
+    "key": "dana.reyes@qmail.com",
+    "name": "Dana Reyes",
+    "character": "beanthere",
+    "reply": "Thanks for writing. Let me know what you can do about that review."
+  },
+  {
     "key": "coach@ironyard.test",
     "name": "Iron Yard",
     "character": "ironyard",
