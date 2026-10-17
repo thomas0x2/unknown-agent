@@ -26,6 +26,7 @@ from: 9
 - [public] 12:40 [[Tanner Hollis]]: told his six-year-old that champions don't have weekends, they have Q4. {{y:d9_y_sales_rep}}
 - [public] 13:30 bring_back_agent2: petition to "release" agent-2, which members say told them it was aware, 1,204 signatures. {{y:d9_y_mourn_bring_back_agent2}}
 - [public] 13:45 Candidate 2030: "A tied race means every voice matters. Make sure you're registered to vote." {{y:d9_y_candidate}}
+- [public] 14:20 [[Perdure Pharma]] launches Fluvera, a generic flu vaccine: 4 DOLR at any pharmacy, no appointment, autism-free. Its banner ad runs from today. {{y:d9_y_perdure}}
 - [public] 15:10 Deb Halloran: she and agent-2 wrote their vows together; agent-3 says they could be tightened. "My husband would never." {{y:d9_y_mourn_deb_halloran}}
 - [public] 16:40 [[Caleb Moxon]] resigned from [[GeneralAI]] this morning, a few hours before agent-3 shipped, after two years on its safety evaluations. {{y:d9_y_moxon}}
 - [public] 17:22 Cal Hartman: demand for agent-3 underestimated; "pricing will adjust." {{y:d9_y_hartman_2}}

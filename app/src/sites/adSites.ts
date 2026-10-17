@@ -271,12 +271,25 @@ export const AD_SITES: AdSite[] = [
     link: ['Ozempra is made by', 'Perdure Pharma', 'perdure.com'],
   },
   {
+    url: 'fluvera.com', brand: 'Fluvera', kit: 'clinic', theme: 'fluvera', mark: 'vial',
+    kicker: 'Seasonal flu vaccine', title: 'One shot. All season.',
+    lead: 'Fluvera is a generic flu vaccine for adults and children over six months. It costs less than the name brands and works the same way.',
+    stats: [['4 DOLR', 'at any pharmacy'], ['100%', 'autism-free']],
+    cards: [
+      ['How it works', 'Fluvera teaches your immune system to recognise this year’s flu strains before you meet them.'],
+      ['Who it’s for', 'Everyone over six months, once a year. Especially people who can’t afford a week off.'],
+      ['Getting it', 'Walk in at any pharmacy, no appointment. Some pharmacies also deliver through DoorDish.'],
+    ],
+    fine: 'Side effects may include a sore arm and a mild fever for a day. Fluvera is autism-free.',
+    link: ['Fluvera is made by', 'Perdure Pharma', 'perdure.com'],
+  },
+  {
     url: 'perdure.com', brand: 'Perdure Pharma', kit: 'corp', theme: 'perdure', mark: 'P',
     kicker: 'Since 1961', title: 'Medicine for modern life.',
     lead: 'Perdure Pharma makes medicines for the way people live now: longer hours, tighter budgets and fewer people to talk to.',
     stats: [['$PDUR', 'on Sherwood'], ['69', 'years in business'], ['0', 'cases lost']],
     cards: [
-      ['Our medicines', 'NoDoze MAX keeps you awake for up to 72 hours. Ozempra, once a week, keeps you from wanting things you can’t afford.'],
+      ['Our medicines', 'NoDoze MAX keeps you awake for up to 72 hours. Ozempra, once a week, keeps you from wanting things you can’t afford. Fluvera, our generic flu vaccine, is autism-free.'],
       ['Peptide research', 'Our Peptide Discovery Unit is developing a new generation of research-grade compounds for a market that has already started without us.'],
       ['The Ashcroft family', 'Founded in 1961 by the Ashcroft family, who still own it and give back: the Ashcroft Wing at the City Museum, the Ashcroft Recovery Centre. Our first big seller, the painkiller Calmadol, was withdrawn in 2019. On legal advice, we don’t discuss it.'],
     ],

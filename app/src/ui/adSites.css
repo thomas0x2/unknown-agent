@@ -123,6 +123,7 @@
 .lp-t-cryo { --lp-bg: linear-gradient(180deg, #d6f0ff, #fff 460px); --lp-ink: #06324f; --lp-dim: #3b6584; --lp-accent: #1f7fc2; --lp-card: rgba(255, 255, 255, .8); --lp-line: #c4e2f5; }
 .lp-t-perdure { --lp-bg: #fff; --lp-ink: #3d2c6b; --lp-dim: #6a6080; --lp-accent: #3d2c6b; --lp-card: #f6f4fa; --lp-line: #e2ddec; }
 .lp-t-ozempra { --lp-bg: #fff8f3; --lp-ink: #5b2a1f; --lp-dim: #8a6458; --lp-accent: #e2725b; --lp-card: #fff; --lp-line: #f3d6c9; }
+.lp-t-fluvera { --lp-bg: #f3f8fd; --lp-ink: #173a5c; --lp-dim: #5b7590; --lp-accent: #2f7dc4; --lp-card: #fff; --lp-line: #d3e4f4; }
 .lp-t-pharma { --lp-bg: #f6fbfb; --lp-ink: #0c4d55; --lp-dim: #4d7378; --lp-accent: #12a3a3; --lp-card: #fff; --lp-line: #bfe3e3; }
 .lp-t-lonely { --lp-bg: linear-gradient(180deg, #ffe3ec, #fff 420px); --lp-ink: #4a1730; --lp-dim: #85546b; --lp-accent: #e0336f; --lp-card: rgba(255, 255, 255, .8); --lp-line: #f6cfdc; }
 .lp-t-mind { --lp-bg: linear-gradient(180deg, #1b0b3a, #57204a 520px, #ff6a3d 1400px); --lp-ink: #fff3e8; --lp-dim: #e6c3c0; --lp-accent: #ff9d3d; --lp-accent-ink: #1b0b3a; --lp-card: rgba(255, 255, 255, .07); --lp-line: rgba(255, 157, 61, .25); }

@@ -48,7 +48,7 @@ export function linkify(escaped: string): string {
     .replace(/(citypulse\.news(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(pollymarket\.com(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(?<![@\w.])((?:doordish|sherwood|stack)\.com(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
-    .replace(/(?<![@\w.])((?:perdure|ozempra)\.com)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
+    .replace(/(?<![@\w.])((?:perdure|ozempra|fluvera)\.com)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(^|[^\w.])@([a-z0-9_]+)/gi, '$1<a href="#" class="y-at" data-nav="y.com/$2">@$2</a>');
 }
 

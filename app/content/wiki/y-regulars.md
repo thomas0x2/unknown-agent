@@ -23,6 +23,7 @@ nest: true
 - [public] On day 9 doomscroll turned off notifications for a day, lasted 40 minutes and didn't miss anything, "which was worse." {{y:f9}}
 - [public] On day 12 doomscroll posted at 04:40 that the phone was picked up 212 times the day before, "most of those were to check the time." {{y:f26}}
 - [public] On day 10 doomscroll is a week into Ozempra: "not hungry. not much of anything, really. it's fine" {{y:d10_y_doomscroll_ozempra}}
+- [public] On day 11 doomscroll got [[Perdure Pharma]]'s Fluvera flu shot: "arm hurts. the box says autism-free in bigger letters than the word flu" {{y:d11_y_doomscroll_fluvera}}
 - [public] On day 13 the grocery store took out its last staffed checkout; it was the first thing doomscroll had said out loud in four days. {{y:f13}}
 - [hidden; public if posted_deepfake] On day 16: the Kirschbaum picture everyone shared was fake, "and the real one had the other guy in it." {{y:d16_y_kirschbaum_wrong_guy}}
 - [public] On day 17 doomscroll read about 300 replies about the election and knows less than before. {{y:f17}}
