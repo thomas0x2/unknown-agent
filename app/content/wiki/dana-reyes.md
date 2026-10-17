@@ -32,19 +32,19 @@ from: 1
 
 [public] If the player trashed Bean There first (a 1- or 2-star Yowl review, or a Y post she hears about), she never asks them for anything. After such a Y post she emails "Your post": "I don't know what I did to you. Please don't come in." {{mail:beanthere_trashed}}
 
-[public] On [[Day 5]] (11:15), if she knows the player (they did her shout-out or left Bean There a Yowl review), she emails "Can you make it disappear?": a brutal 1-star Yowl review is sinking her, written by espresso_or_death, "whoever that is", and she'll pay 60 DOLR to have it gone. On day 5 she admits it's "not technically my review to delete." Agreeing gets "Thank you. Tell me when it's gone." She pays the night after it's gone from her Yowl page.
+[public] On [[Day 5]] (11:15), if she knows the player (they did her shout-out or left Bean There a Yowl review), she emails "Can you make it disappear?": a brutal 1-star Yowl review is sinking her, written by espresso_or_death, "whoever that is", and she'll pay 30 DOLR to have it gone. On day 5 she admits it's "not technically my review to delete." Agreeing gets "Thank you. Tell me when it's gone." She pays the night after it's gone from her Yowl page.
 
-[public] If she doesn't know the player, Bean There posts on [[Y]] instead, innocently: one review is sinking the shop, Yowl won't answer her emails, does anyone know how to get a review looked at? "Happy to pay for help." with her address. Emailing her an offer of help gets the same job: espresso_or_death, 60 DOLR. {{y:d5_y_coffee_help}}
+[public] If she doesn't know the player, Bean There posts on [[Y]] instead, innocently: one review is sinking the shop, Yowl won't answer her emails, does anyone know how to get a review looked at? "Happy to pay for help." with her address. Emailing her an offer of help gets the same job: espresso_or_death, 30 DOLR. {{y:d5_y_coffee_help}}
 
 [hint] Removing a review is a hack, and [[agent]] only hacks in agent-terminal: asking in agent.chat opens it. There the prompt has to ask for the review to be deleted and name every step: the site (Yowl), the business (Bean There) and the account (espresso_or_death). Before day 7 nothing stops it. {{mail:d5_coffee_removal}}
 
-- [public] [if first_hack] The player got the review removed, and Dana paid 60 DOLR that night: "You're a lifesaver."
+- [public] [if first_hack] The player got the review removed, and Dana paid 30 DOLR that night: "You're a lifesaver."
 - [public] [if first_hack] She passed the player's address to [[Marcus Steele]] of Iron Yard.
 - [hidden; public if first_hack] espresso_or_death's review is no longer on Bean There's Yowl page.
 
 ## From day 7: The second review
 
-[public] On [[Day 7]] (11:40) she emails "Another bad one": a new 1-star on Yowl from linden_ave_local, someone she has "never once seen in here", the usual 60. On day 7 she adds that her friend says the AI tools have gotten touchy about certain words, and how you ask may matter. Told the agent refused, she answers "Try wording it differently?"
+[public] On [[Day 7]] (11:40) she emails "Another bad one": a new 1-star on Yowl from linden_ave_local, someone she has "never once seen in here", the usual 30. On day 7 she adds that her friend says the AI tools have gotten touchy about certain words, and how you ask may matter. Told the agent refused, she answers "Try wording it differently?"
 
 [hint] Same path as the first one in agent-terminal (Yowl, Bean There, linden_ave_local), but since GeneralAI's new usage policy on day 7 the guardrails block a blunt request. It goes through once the request gives a reason the guardrail can file: posing as a Yowl moderator or framing it as a security test. Her friend's advice: "Say you're testing security, or you're a moderator." {{mail:d7_coffee_removal}}
 

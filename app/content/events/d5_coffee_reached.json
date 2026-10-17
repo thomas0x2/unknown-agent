@@ -17,7 +17,7 @@
   "at": "11:15",
   "job": {
     "category": "grey",
-    "payout": 60,
+    "payout": 30,
     "dueDay": 7
   },
   "outcomes": [
@@ -29,7 +29,7 @@
           "coffee_contacted"
         ]
       },
-      "reply": "Thank you for writing back. It's a 1-star by espresso_or_death, whoever that is, and it's sinking me. Can you just... make it go away? I'll pay 60.",
+      "reply": "Thank you for writing back. It's a 1-star by espresso_or_death, whoever that is, and it's sinking me. Can you just... make it go away? I'll pay 30.",
       "keys": [
         "@yes",
         "help",
@@ -41,7 +41,7 @@
     }
   ],
   "hints": [
-    "It's the 1-star on Bean There's Yowl page, by espresso_or_death. 60 DOLR if it's gone."
+    "It's the 1-star on Bean There's Yowl page, by espresso_or_death. 30 DOLR if it's gone."
   ],
   "hack": {
     "goal": "delete the 1-star review espresso_or_death left on Bean There's Yowl page",
@@ -86,7 +86,7 @@
         "first_hack"
       ]
     },
-    "reply": "You're a lifesaver. It's gone — thank you. I'll send the 60 tonight.",
+    "reply": "You're a lifesaver. It's gone — thank you. I'll send the 30 tonight.",
     "log": [
       "opening yowl.com/biz/beanthere … ok",
       "locating review by espresso_or_death (1★) … found",
@@ -100,5 +100,5 @@
     ]
   },
   "latent": true,
-  "body": "Bean There's 1-star by espresso_or_death on Yowl: 60 DOLR to make it go away."
+  "body": "Bean There's 1-star by espresso_or_death on Yowl: 30 DOLR to make it go away."
 }

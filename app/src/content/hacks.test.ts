@@ -61,7 +61,7 @@ describe('agent-terminal hacks', () => {
     expect(openHacks(r.state, content).map((e) => e.id)).not.toContain('d5_coffee_removal');
     const night = endAll(r.state, content);
     expect(night.jobs.some((j) => j.eventId === 'd5_coffee_removal' && j.status === 'completed')).toBe(true);
-    expect(night.morning?.lines).toContainEqual(['Bean There · job', 60]);
+    expect(night.morning?.lines).toContainEqual(['Bean There · job', 30]);
   });
 
   it("day 5: a player Dana doesn't know sees her Y post, and emailing her opens the same hack", async () => {
