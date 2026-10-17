@@ -326,6 +326,11 @@
             "no"
           ],
           "say": "No earrings."
+        },
+        {
+          "attr": "weight",
+          "max": 130,
+          "say": "130 lbs or under."
         }
       ]
     },
@@ -429,6 +434,11 @@
             "blonde"
           ],
           "say": "Blonde."
+        },
+        {
+          "attr": "weight",
+          "max": 115,
+          "say": "115 lbs or under."
         }
       ]
     }

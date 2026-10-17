@@ -28,6 +28,6 @@ from: 1
 
 - `app/src/engine/matchless.ts`, `app/src/ui/matchless.ts`, rules `app/content/matchless.json` (standards v1 to v7, emails `dN_matchless_rules_N.json`, `womenOnly`), flags `matchless_job`, `matchless_women_only`.
 - PR #195 (commit 90b7a6f): men get men's portraits (`portrait`), and the gender badge by the name is gone. Earlier work in PR #205: Y-avatar house style, hidden picture traits, heart and ghost buttons, messages instead of bios.
-- Deck mix about 7 in 10 women, 2 men, 1 nonbinary. Table extras when named: Y followers, kinks, income, politics (Heritage Party, Progress Party, none), body count, canthal tilt, mandibular ratio. Picture-only traits: hair length, hair colour, glasses, earrings. About half meet his standards each day.
+- Deck mix about 7 in 10 women, 2 men, 1 nonbinary. Table extras when named: weight (from day 14), Y followers, kinks, income, politics (Heritage Party, Progress Party, none), body count, canthal tilt, mandibular ratio. Picture-only traits: hair length, hair colour, glasses, earrings. About half meet his standards each day.
 - His first standards don't mention gender, so men can't be swiped wrong until the player accepts one; next morning he says he is SUPER STRAIGHT and "Women only." joins the standards. Never fires the player.
 - Voice: women's messages are written the way he imagines women talk; men's are creepy. The joke stays on him, never on the profiles.
