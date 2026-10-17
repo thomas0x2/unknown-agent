@@ -55,7 +55,7 @@ export interface FeatureMatchInput {
   context?: string[];
   /** Spec features with their plain-language descriptions. */
   /** `app` asks whether the prompt names that app (or the chat just before it did); the engine drops matches on apps it doesn't name. */
-  features: { id: string; description: string; kind?: 'build' | 'problem' | 'component' | 'area' | 'step' | 'app' }[];
+  features: { id: string; description: string; kind?: 'build' | 'problem' | 'component' | 'area' | 'step' | 'app' | 'topic' | 'section' }[];
 }
 
 export interface JevRouter {

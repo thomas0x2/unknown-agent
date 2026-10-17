@@ -1,6 +1,6 @@
 /*
  * What the player's own screens show right now, sent to Haiku with an agent.chat query so it can
- * answer questions about the player's mail, the Y timeline, Yowl and the rest (server/wiki.mjs reads
+ * answer questions about the player's mail, the Y timeline, Yowl and the rest (server/screens.mjs reads
  * it). Built in the UI (ui/queryView.ts) from the same rows the pages draw, so nothing the player
  * can't see gets in. Times are clock strings ("2:15 PM").
  */

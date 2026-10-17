@@ -1,5 +1,6 @@
 /* Icons, verbatim from the original game. */
 export const ICONS: Record<string, string> = {
+  wiki: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H11v17H5.5A1.5 1.5 0 0 1 4 18.5zM13 3h5.5A1.5 1.5 0 0 1 20 4.5v14a1.5 1.5 0 0 1-1.5 1.5H13z" fill="currentColor"/><path d="M6.5 7h2.5M6.5 10h2.5M15.5 7h2M15.5 10h2" stroke="var(--icon-ink, #fff)" stroke-width="1.4" stroke-linecap="round"/></svg>',
   y: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 3h4l3.5 6.6L15.5 3h4l-5.6 9.7V21h-3.8v-8.3z" fill="currentColor"/></svg>',
   mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5" fill="currentColor"/><path d="M4.5 7.5 12 13l7.5-5.5" stroke="var(--icon-ink, #fff)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   qdrive: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 7.5A2.5 2.5 0 0 1 5 5h4.2l2 2H19a2.5 2.5 0 0 1 2.5 2.5v8A2.5 2.5 0 0 1 19 20H5a2.5 2.5 0 0 1-2.5-2.5z" fill="currentColor"/><path d="M7 13.5h10" stroke="var(--icon-ink, #fff)" stroke-width="1.8" stroke-linecap="round"/></svg>',

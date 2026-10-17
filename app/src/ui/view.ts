@@ -3,6 +3,7 @@
  * store. main.ts owns the DOM and drops these strings into the shell slots. Styling comes from the
  * legacy stylesheet (../../src/style.css); nothing here invents new classes.
  */
+import { pageWiki } from './wiki';
 import { SOUND } from './sound';
 import { type GameStore, CHARGE_DELAY_MS } from '../game/store';
 import { MISSES } from '../game/misses';
@@ -272,6 +273,7 @@ export function page(store: GameStore, r: Route): string {
     case 'current': return pageCurrent(store.state, r.param);
     case 'adsite': return pageAdSite(r.param ?? '', store.state, store.ui.adNotice, r.param === OUTPLACEMENT ? outplacementUpload(store) : '');
     case 'citypulse': return pageCityPulse(store, r.param);
+    case 'wiki': return pageWiki(store, r.param);
     default: return pageUnderground(r.def?.label ?? r.site);
   }
 }

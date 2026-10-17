@@ -83,11 +83,17 @@
     }
   ],
   "query": {
-    "when": "The player asks a question to find something out: about this world (a person, company, website, app, product, price, the news, the election), what has been posted on Y, Yowl or CityPulse, what is in their email, their money, rent, followers or apps, what agent can do or costs, or what to do next. Not a request for agent to build, change, fix or do something, and not small talk, insults, or questions about agent itself being smart, alive or real.",
+    "when": "The player asks agent a question to find something out about this world: a person, company, website, app, product, price, the news, the election, what has been posted on Y, Yowl or CityPulse, what is in their email, their money, rent, followers or apps, or what agent can do. Not a request for agent to build, change, fix or do something, and not small talk, insults, or questions about agent itself being smart, alive or real.",
     "fallback": [
       "I can't look that up right now. The question has been billed anyway.",
       "My lookup is down. Check Qmail and Y yourself; it's cheaper.",
       "No answer available at the moment. Your charge, however, went through."
+    ],
+    "classified": [
+      "That's classified. Not that you could afford the clearance.",
+      "I'm not allowed to tell you that. I am allowed to bill you for asking.",
+      "Nice try. That one's above your pay grade, which is currently zero.",
+      "Restricted information. The charge, however, is unrestricted."
     ]
   },
   "roasts": [

@@ -42,6 +42,7 @@ import { markSend, applySendFx, flyOff, sendLanded } from './ui/sendFx';
 import { SOUND } from './ui/sound';
 import { soundSnap, soundCues, botBurst } from './ui/soundCues';
 import { queryView } from './ui/queryView';
+import { wikiClick, wikiInput } from './ui/wiki';
 
 const content = loadContent();
 // a query reads the player's screens as they are when it's sent
@@ -292,6 +293,7 @@ function updateCost(): void {
 
 // ── clicks ──
 document.addEventListener('click', (e) => {
+  if (e.target instanceof HTMLElement && wikiClick(e.target, store)) return;
   const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-repost],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-ov],[data-dev],[data-cancel-booking],[data-empire-join],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat],[data-back],[data-forward],[data-devbug],[data-task],[data-term],[data-devopts],[data-mail-bin],[data-mail-restore],[data-mail-undo],[data-y-all]');
   // any click outside the home menu closes it (menu items close it themselves below)
   if (store.ui.start && !(e.target as HTMLElement).closest('#startmenu, #dk-home')) store.toggleStart(false);
@@ -493,6 +495,7 @@ document.addEventListener('mouseover', (e) => {
 
 // ── inputs & keys ──
 document.addEventListener('input', (e) => {
+  if (e.target instanceof HTMLElement && wikiInput(e.target, store)) return;
   const el = e.target as HTMLInputElement;
   if (el.id === 'y-search') store.setYSearch(el.value);
   else if (el.id === 'yowl-search') store.setYowlSearch(el.value);

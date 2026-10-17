@@ -2,6 +2,7 @@
  * Content shapes. Story content is pure data in content/; the engine only interprets these types.
  * Writers add events and app templates without touching engine code.
  */
+import type { WikiPage } from '../engine/wiki';
 import type { MeterId } from '../engine/values';
 import type { EventSite, JobCategory, AppKind, FailureKind } from '../engine/state';
 
@@ -373,6 +374,8 @@ export interface AgentQuery {
   when: string;
   /** Scripted lines for when Haiku can't answer. */
   fallback: string[];
+  /** Scripted roasts for a question about something classified (not yet, or never, for the player to know). */
+  classified: string[];
 }
 export interface AgentContent {
   hints: AgentHint[];
@@ -400,6 +403,8 @@ export interface Content {
   yMarket?: MarketContent;
   /** the client's standards on matchless.com, version by version (engine/matchless.ts). */
   matchless?: MatchlessContent;
+  /** The world wiki (content/wiki), what agent.chat queries are answered from. */
+  wiki?: WikiPage[];
 }
 
 /** One of the client's standards: a number range (`min`/`max`) or the values allowed (`allow`), and how he says it. */

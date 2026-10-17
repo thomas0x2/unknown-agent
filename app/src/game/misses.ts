@@ -54,7 +54,7 @@ export function makeWriter(content: Content, view?: () => PlayerView): Writer {
       if (MISSES.settings.misses === 'scripted') return { text: req.fallback, llm: false, debug: ['Misses setting is "Scripted lines", so Haiku was not asked'] };
       const ch = req.character ? content.characters?.find((c) => c.id === req.character) : characterFor(req.as);
       if (!ch) return { text: req.fallback, llm: false, note: `no character for ${req.as}` };
-      const query = req.mode === 'query' ? { day: req.day, min: req.min, flags: req.flags, view: view?.() } : undefined;
+      const query = req.mode === 'query' ? { known: req.known ?? { public: [], hint: [] }, view: view?.() } : undefined;
       const h = await haikuReply(ch, req.prompt, MISSES.settings.haikuVia, req.history, req.situation, query);
       return h.text ? { text: h.text, llm: true, debug: h.debug, by: MISSES.label() } : { text: req.fallback, llm: false, note: h.note, debug: h.debug };
     },

@@ -11,8 +11,8 @@ import { finishReply } from './characters';
 
 export interface HaikuReply { text: string | null; note?: string; debug: string[] }
 
-/** A query (agent.chat): Haiku answers, looking up the wiki as of `day`/`min` on the player's branch (`flags`) and the player's screens in `view`. */
-export interface QueryReq { day?: number; min?: number; flags?: string[]; view?: PlayerView }
+/** A query (agent.chat): Haiku answers from what it may tell or hint at (`known`), and can read the player's screens in `view`. */
+export interface QueryReq { known: { public: string[]; hint: string[] }; view?: PlayerView }
 
 /** `situation` (a Swaplist chat) tells the character what they're selling and what the player asked about. */
 export async function haikuReply(ch: Character, text: string, via: 'subscription' | 'api', history: HistoryLine[] = [], situation?: string, query?: QueryReq): Promise<HaikuReply> {
@@ -20,7 +20,7 @@ export async function haikuReply(ch: Character, text: string, via: 'subscription
   try {
     res = await fetch('/api/write', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ character: ch.id, text, via, history: history.slice(-12), ...(situation ? { situation } : {}), ...(query ? { mode: 'query', day: query.day, min: query.min, flags: query.flags, view: query.view } : {}) }),
+      body: JSON.stringify({ character: ch.id, text, via, history: history.slice(-12), ...(situation ? { situation } : {}), ...(query ? { mode: 'query', known: query.known, view: query.view } : {}) }),
     });
   } catch {
     return { text: null, note: 'the proxy is not running (npm run proxy)', debug: [] };

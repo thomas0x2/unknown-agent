@@ -9,6 +9,7 @@ import { makeContent, promptDone } from './_fixtures';
 import agent from '../../content/agent.json';
 import { wordJev } from './_fixtures';
 import type { Writer, WriteReq } from './writer';
+import { parseWikiPage } from './wiki';
 
 const content = makeContent({ agent });
 const hintsFor = (id: string) => agent.hints.find((h) => h.id === id)!.replies;
@@ -27,24 +28,49 @@ describe('agent queries, near-misses and roasts', () => {
     'what is in my email, did anyone write to me?',
     'how much money do I have and when is rent due?',
     'what news about the election is on CityPulse?',
-  ])('%s → query', async (text) => {
+  ])('%s → query (with no wiki loaded here it can only be a scripted line)', async (text) => {
     const s = await ask(text);
     const m = s.chat.at(-1)!;
-    // the headless writer can't look anything up, so a scripted query line stands in
-    expect(m.src).toBe('query:scripted');
-    expect(agent.query.fallback).toContain(m.text);
+    // the headless writer can't answer, so a scripted line stands in: a query line, a classified roast or a miss roast
+    expect(['query:scripted', 'classified', 'chat']).toContain(m.src);
     // billed like any prompt
     expect(s.chat.at(-2)!.cost).toBeGreaterThan(0);
   });
 
-  it('asks the writer for a query with the day, clock and flags, and shows its answer', async () => {
+  it('a precise question is answered from what the wiki lets agent tell or hint at', async () => {
+    const wiki = [parseWikiPage('---\ntitle: Election\naliases: election, vote\ncategory: world\n---\n[public] Day 21 is election day [known].\n\n[hint] The consultant pays for deepfakes.\n\n[classified] Crane loses.\n', 'election.md')];
     const seen: WriteReq[] = [];
-    const writer: Writer = { async write(req) { seen.push(req); return { text: 'Gino runs a trattoria. You run up bills.', llm: true }; } };
-    const s = await ask('What has been posted on Y about the election?', writer);
-    expect(seen[0]).toMatchObject({ as: 'agent', mode: 'query', day: 1 });
-    expect(seen[0].min).toBe(s.clockMin);
-    expect(Array.isArray(seen[0].flags)).toBe(true);
-    expect(s.chat.at(-1)).toMatchObject({ src: 'query', text: 'Gino runs a trattoria. You run up bills.' });
+    const writer: Writer = { async write(req) { seen.push(req); return { text: 'Election day is day 21. You can vote, for free, for once.', llm: true }; } };
+    const s0 = startGame(content, 1);
+    s0.apps = [];
+    s0.values.crypto = 100;
+    const r = await promptDone(s0, { ...content, wiki }, wordJev, 'What has been posted on Y about the election?', writer);
+    expect(seen[0]).toMatchObject({ as: 'agent', mode: 'query' });
+    expect(seen[0].known!.public).toEqual(['Day 21 is election day.']);
+    expect(seen[0].known!.hint).toEqual(['The consultant pays for deepfakes.']);
+    expect(JSON.stringify(seen[0])).not.toContain('Crane loses');
+    expect(r.state.chat.at(-1)).toMatchObject({ src: 'query' });
+  });
+
+  it('a question about something classified gets a scripted roast, and Haiku is never asked', async () => {
+    const wiki = [parseWikiPage('---\ntitle: Election\naliases: election\ncategory: world\n---\n[classified] Crane loses.\n', 'election.md')];
+    const seen: WriteReq[] = [];
+    const writer: Writer = { async write(req) { seen.push(req); return { text: 'x', llm: true }; } };
+    const s0 = startGame(content, 1);
+    s0.values.crypto = 100;
+    const r = await promptDone(s0, { ...content, wiki }, wordJev, 'What has been posted on Y about the election?', writer);
+    expect(r.state.chat.at(-1)!.src).toBe('classified');
+    expect(agent.query.classified).toContain(r.state.chat.at(-1)!.text);
+    expect(seen).toEqual([]);
+  });
+
+  it('a question that names nothing in the wiki is a miss: a roast', async () => {
+    const wiki = [parseWikiPage('---\ntitle: Gino Fenoglio\naliases: Gino\ncategory: people\n---\n[public] He cooks.\n', 'gino.md')];
+    const s0 = startGame(content, 1);
+    s0.values.crypto = 100;
+    const r = await promptDone(s0, { ...content, wiki }, wordJev, 'What has been posted on Y about the election?');
+    expect(r.state.chat.at(-1)!.src).toBe('chat');
+    expect(agent.roasts).toContain(r.state.chat.at(-1)!.text);
   });
 
   it('a vague fix ask is still a scripted near-miss', async () => {

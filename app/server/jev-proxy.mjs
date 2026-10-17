@@ -9,10 +9,10 @@
  * Run: npm run proxy   (reads .env if present)
  */
 import http from 'node:http';
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { execFile } from 'node:child_process';
 import { tmpdir } from 'node:os';
-import { QUERY_TOOLS, runQueryTool, searchWiki, readSite, context } from './wiki.mjs';
+import { QUERY_TOOLS, runQueryTool, readSite } from './screens.mjs';
 
 const PORT = Number(process.env.PORT) || 8787;
 const KEY = process.env.TYPESAFE_API_KEY || '';
@@ -81,23 +81,25 @@ async function write(body) {
   return runWriter(system, messages, body.via);
 }
 
-// An agent.chat query (Jev read the prompt as a question about the world): agent answers it, still
-// mean, after looking things up in the wiki and the player's own screens (server/wiki.mjs). At most
-// MAX_LOOKUPS rounds of tool calls; the last round forbids tools so it always ends in text. Only that
-// text goes back to the player. The day, clock and flags keep the wiki to what the player could know
-// by now, on the branch they're on.
-const MAX_LOOKUPS = 4;
+// An agent.chat query: Jev matched the question to sections of the wiki, and the game sends what they
+// hold for the player right now (src/engine/query.ts): facts Haiku may tell, and facts it may only
+// hint at. Haiku can also read the player's own screens (server/screens.mjs). At most MAX_LOOKUPS
+// rounds of tool calls; the last round forbids tools so it always ends in text, and only that text
+// goes back to the player.
+const MAX_LOOKUPS = 3;
+const factList = (xs) => (Array.isArray(xs) ? xs : []).slice(0, 12).map((x) => `- ${String(x).replace(/\s+/g, ' ').slice(0, 900)}`).join('\n');
 async function query(ch, body) {
   const q = ch.query;
   if (!q) return { status: 400, json: { error: `${ch.id} answers no queries` } };
-  const ctx = context(body.day, Number(body.min), body.flags);
-  const day = ctx.day;
   const view = body.view && typeof body.view === 'object' ? body.view : null;
+  const tell = factList(body.known?.public);
+  const hint = factList(body.known?.hint);
   const n = q.sentences ?? 3;
-  const system = `${q.profile}\n\nIt is day ${day} of the game${view?.time ? `, ${view.time}` : ''}. ` +
-    `Look up what you need before answering: the wiki for the world, check_site for the player's own mail, posts, reviews, apps and wallet. ` +
-    `Only state facts you found there or in the conversation; if you can't find it, say you don't know. Never mention tools, a wiki, searching or looking anything up. ` +
-    `Never say which of the player's apps are broken or what is wrong with them. ` +
+  const system = `${q.profile}\n\nIt is day ${Number(view?.day) || '?'} of the game${view?.time ? `, ${view.time}` : ''}.\n\n` +
+    (tell ? `What you know and may tell the player:\n${tell}\n\n` : '') +
+    (hint ? `What you know but must NOT tell the player: don't state these facts, names, numbers, addresses or answers, not even partly. At most point them to where they could find it out themselves (an email, a site, a person to ask):\n${hint}\n\n` : '') +
+    `Answer only from the facts above and the player's own screens (check_site). If the answer isn't there, say you don't know. ` +
+    `Never mention tools, notes, a wiki or looking anything up. Never say which of the player's apps are broken or what is wrong with them. ` +
     `At most ${n} short sentences of plain text, no lists, no markdown, no emoji.`;
   const messages = [];
   for (const [u, a] of q.examples ?? []) messages.push({ role: 'user', content: u }, { role: 'assistant', content: a });
@@ -106,9 +108,8 @@ async function query(ch, body) {
   messages.push({ role: 'user', content: earlier ? `${earlier}\n\nThe player now asks:\n${said}` : said });
   const started = Date.now();
   if (body.via === 'subscription') {
-    // the CLI route gets no tools: it gets a search for the question up front instead
-    const found = `What you know that may help (from the wiki):\n${searchWiki(said, ctx)}\n\nThe player's inbox:\n${readSite(view, 'qmail', said).slice(0, 1200)}`;
-    return writeWithCli(`${system}\n\n${found}`, messages, started);
+    // the CLI route gets no tools: it gets the player's inbox up front instead
+    return writeWithCli(`${system}\n\nThe player's inbox:\n${readSite(view, 'qmail', said).slice(0, 1200)}`, messages, started);
   }
   const client = await getAnthropic();
   if (!client) return { status: 501, json: { error: ANTHROPIC_KEY ? 'The proxy could not load @anthropic-ai/sdk (run npm install).' : 'ANTHROPIC_API_KEY is not set in app/.env.' } };
@@ -135,7 +136,7 @@ async function query(ch, body) {
     convo.push({
       role: 'user',
       content: calls.map((c) => {
-        const result = runQueryTool(c.name, c.input, ctx, view);
+        const result = runQueryTool(c.name, c.input, view);
         lookups.push({ tool: c.name, input: c.input, result });
         return { type: 'tool_result', tool_use_id: c.id, content: result };
       }),
@@ -298,6 +299,9 @@ async function buildMatch(sdk, body) {
       area: `Does the prompt complain about this feature? Yes if it names the feature (in any words, or one of the names listed as counting) and says something about it is wrong, broken or misbehaves, whether or not it says which part. No if the prompt names no feature ("it's broken", "fix the app", only the app's name), if it's about a different feature, or if it only asks to build, add or change something. ${context} Feature: ${f.description}`,
       // whether the prompt says which app it means: one plain question per app (it was ignored when it rode along on the others)
       app: `Is the prompt about this app? Yes if it names it in any way: its full name, any word of the name on its own ("gino" for Trattoria Gino, "spin cycle" for Spin Cycle Board), its address, its client, or what it is ("the restaurant site", "the crawler"), in any case or spelling. Also yes if the prompt names no app and the most recent earlier message was about this app (the player's or the agent's, like "Pushed to Forkyard for <app>"). No if it names a different app, or names no app and no earlier message is about this one. App: ${f.description}`,
+      // agent.chat queries (src/engine/query.ts): which wiki page the question is about, then which section of it
+      topic: `Is the player's question about this, in any words? Yes if it names it (its name, any word of its name, one of its other names, its address or handle, or what it is: "the landlord", "the pizza place", "my mom") or asks something only it could answer. No if it is about something else, or names nothing specific ("what's going on", "tell me something"). ${context} Subject: ${f.description}`,
+      section: `Does the player's question ask about this part of its subject, in any words? Yes if it asks about this in particular. No if it asks about the subject only in general ("who is he"), or about a different part. ${context} Part: ${f.description}`,
       problem: `Does the prompt report this problem or a symptom of it, in any words? Yes if it names the problem or describes what the player sees, even loosely or with hedging. No if it describes a clearly different problem, or points at nothing the player saw ("it's broken", "fix it"). ${context} Problem: ${f.description}`,
     }[f.kind];
     questions[`f${i}`] = sdk.noul(q ?? `Does the prompt ask to build or add this, or spell out what it should contain, without contradicting it? Say no if the prompt only reports a problem with it, or only asks for looks or style (nicer, prettier, colours, fonts, dark mode) without asking for this item's content. ${context} Item: ${f.description}`);
@@ -306,9 +310,22 @@ async function buildMatch(sdk, body) {
   return { state: { setting: SETTING, ...(earlier.length ? { earlierMessages: earlier } : {}), prompt: body.prompt }, questions };
 }
 
+// The dev wiki editor (wiki.dev in the game, ui/wiki.ts) saves a page back into content/wiki. Only a
+// plain page name in that one folder, only markdown, so it can't write anywhere else.
+const WIKI_DIR = new URL('../content/wiki/', import.meta.url);
+function saveWiki(body) {
+  const file = String(body.file ?? '');
+  const md = String(body.md ?? '');
+  if (!/^[a-z0-9][a-z0-9-]*\.md$/.test(file) || file === 'readme.md') return { status: 400, json: { error: 'bad page name' } };
+  if (!md.startsWith('---\n') || md.length > 200_000) return { status: 400, json: { error: 'not a wiki page' } };
+  writeFileSync(new URL(file, WIKI_DIR), md);
+  return { status: 200, json: { ok: true } };
+}
+
 async function handle(kind, body) {
   if (kind === 'write') return write(body);
   if (kind === 'apology') return apology(body);
+  if (kind === 'wiki') return saveWiki(body);
   const client = await getClient();
   if (!client) return { status: 501, json: { error: KEY ? 'The proxy could not load @typesafe-ai/sdk (run npm install).' : 'TYPESAFE_API_KEY is not set in app/.env.' } };
   const sdk = await import('@typesafe-ai/sdk');

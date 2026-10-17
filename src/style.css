@@ -838,3 +838,50 @@ a.y-me-head { text-decoration: none; color: inherit; }
 @media (prefers-reduced-motion: reduce) { .ua-work-spin { animation-duration: 2.5s; } .ua-work-bar i { transition: none; } }
 .ua-work-skip { display: none; font: inherit; font-size: 10.5px; border: 1px solid #d4d8de; background: #fff; border-radius: 4px; padding: 1px 6px; cursor: pointer; color: #5b6472; }
 body.dev-on .ua-work-skip { display: inline-block; }
+
+/* wiki.dev: the dev-mode wiki editor (ui/wiki.ts) */
+.wk { height: 100%; display: flex; flex-direction: column; background: #f6f6f3; color: #1b1c1e; font-family: var(--f-ui); font-size: 14px; }
+.wk-top { display: flex; align-items: baseline; gap: 12px; padding: 10px 18px; border-bottom: 1px solid #dcdcd6; background: #fff; }
+.wk-top b { font-family: var(--f-mono); }
+.wk-wrap { flex: 1; min-height: 0; display: flex; }
+.wk-nav { width: 240px; flex: none; overflow-y: auto; padding: 12px; border-right: 1px solid #dcdcd6; background: #fbfbf9; }
+.wk-search { width: 100%; box-sizing: border-box; padding: 6px 8px; margin-bottom: 10px; border: 1px solid #cfcfc8; border-radius: 4px; font: inherit; }
+.wk-cat summary { cursor: pointer; padding: 4px 0; font-weight: 600; text-transform: capitalize; }
+.wk-cat summary small { color: #7a7c80; font-weight: 400; }
+.wk-link { display: block; width: 100%; text-align: left; padding: 3px 8px; border: 0; border-radius: 3px; background: none; font: inherit; color: inherit; cursor: pointer; }
+.wk-link:hover { background: #ecece6; }
+.wk-link.on { background: #1b1c1e; color: #fff; }
+.wk-link small { opacity: 0.6; }
+.wk-main { flex: 1; min-width: 0; overflow-y: auto; padding: 18px 28px 60px; }
+.wk-phead h1 { margin: 0 0 4px; font-size: 24px; }
+.wk-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0 0 14px; color: #6c6e72; font-size: 12px; font-family: var(--f-mono); }
+.wk-note { padding: 6px 10px; border-radius: 4px; background: #e7f0e2; color: #2d5a1e; }
+.wk-sec { margin: 18px 0; }
+.wk-sec h2 { margin: 0 0 8px; font-size: 16px; }
+.wk-block { padding: 8px 10px; margin: 6px 0; border: 1px solid #e2e2dc; border-radius: 5px; background: #fff; }
+.wk-block.writer { background: #f3f1ea; }
+.wk-block.editing { border-color: #2457a6; }
+.wk-bhead { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; font-size: 12px; }
+.wk-tag { padding: 1px 7px; border-radius: 9px; font-family: var(--f-mono); font-size: 11px; color: #fff; }
+.wk-tag.public { background: #2e7d32; }
+.wk-tag.hint { background: #b7791f; }
+.wk-tag.classified { background: #a12c2c; }
+.wk-tag.writer { background: #6c6e72; }
+.wk-rulecode { color: #444; }
+.wk-why { color: #7a7c80; }
+.wk-bacts { margin-left: auto; display: flex; gap: 4px; }
+.wk-mini { padding: 1px 7px; border: 1px solid #cfcfc8; border-radius: 3px; background: #fff; font: inherit; font-size: 11px; cursor: pointer; }
+.wk-mini:hover { background: #ecece6; }
+.wk-text { white-space: pre-wrap; line-height: 1.45; }
+.wk-gets { margin-top: 6px; padding-top: 6px; border-top: 1px dashed #dcdcd6; color: #4a4c50; font-size: 12px; }
+.wk-edit textarea { width: 100%; box-sizing: border-box; min-height: 90px; padding: 6px 8px; border: 1px solid #cfcfc8; border-radius: 4px; font: inherit; line-height: 1.45; resize: vertical; }
+.wk-rule { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; align-items: flex-start; }
+.wk-step { display: flex; gap: 6px; align-items: center; }
+.wk-step input { width: 220px; padding: 3px 6px; border: 1px solid #cfcfc8; border-radius: 3px; font-family: var(--f-mono); font-size: 12px; }
+.wk-edit select { padding: 2px 4px; font: inherit; font-size: 12px; }
+.wk-x { border: 0; background: none; font-size: 16px; color: #a12c2c; cursor: pointer; }
+.wk-acts { display: flex; gap: 6px; flex-wrap: wrap; }
+.wk-btn { padding: 4px 10px; border: 1px solid #cfcfc8; border-radius: 4px; background: #fff; font: inherit; font-size: 12px; cursor: pointer; }
+.wk-btn.primary { background: #1b1c1e; border-color: #1b1c1e; color: #fff; }
+.wk-btn.danger { color: #a12c2c; border-color: #e0b4b4; }
+.wk-dim { color: #7a7c80; }

@@ -37,10 +37,11 @@ subscription you're logged in to with Claude Code (use this for development only
 - **Claude Haiku 5.5**, through the proxy, writes every off-script reply: a short roast for
   agent.chat prompts that drive nothing, and the people behind Qmail addresses, each in the voice of
   their profile in `content/characters.json`. A prompt Jev reads as a question about the world (a
-  query: "who is Gino?", "did anyone email me?") gets a real answer from Haiku, still in agent's mean
-  voice, after it looks things up with tools: the wiki (`content/wiki/`, cut to what the player could
-  know by the current day, time and story branch) and what the player's own screens show (Qmail, Y,
-  Yowl, CityPulse, Forkyard, Coinbin; `server/wiki.mjs`, `ui/queryView.ts`). Vague build or fix asks
+  query: "who is Gino?", "did anyone email me?") is matched down the wiki (`content/wiki/`) to a page
+  and a section; Haiku answers from what's public there now, only hints at hint paragraphs, and can
+  read the player's own screens (`server/screens.mjs`, `ui/queryView.ts`). Too vague is a roast;
+  classified gets a scripted roast (`engine/query.ts`, `engine/wiki.ts`). In dev mode the wiki is a
+  site in the game's browser (wiki.dev) that edits the pages. Vague build or fix asks
   get a scripted near-miss from `content/agent.json`. Without the proxy or a key,
   scripted fallbacks are shown (`game/misses.ts`, `game/haiku.ts`). The Terminal app's deepsleep-0.5B model
   answers from a fixed list of lines.

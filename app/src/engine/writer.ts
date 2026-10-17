@@ -24,13 +24,10 @@ export interface WriteReq {
   character?: string;
   /** What the character is doing right now (a Swaplist seller: the listing, the buyer's question). */
   situation?: string;
-  /** 'query': answer the question (agent.chat queries), looking up the world and the player's screens. */
+  /** 'query': answer the player's question about the world (agent.chat queries) from `known`. */
   mode?: 'query';
-  /** The game day and clock (minutes since midnight), so a lookup only finds what the player could know by now. */
-  day?: number;
-  min?: number;
-  /** The player's story flags, so a lookup only finds the branch they're on. Never shown to the model. */
-  flags?: string[];
+  /** What the wiki lets a query answer tell (`public`) and only hint at (`hint`), already cut to what the player may know now. */
+  known?: { public: string[]; hint: string[] };
 }
 
 export interface HistoryLine { from: string; text: string }

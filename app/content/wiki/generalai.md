@@ -1,0 +1,55 @@
+---
+title: GeneralAI
+aliases: GeneralAI Inc., General AI, $GAI, GAI, generalai.com, generalai.test, welcome@generalai.test, updates@generalai.test, trust@generalai.test, GeneralAI Trust & Safety, GeneralAI Campus, Route 9
+category: companies
+from: 1
+---
+
+[public] GeneralAI is the company behind [[agent]], the pay-per-prompt chatbot that automated [[The player]]'s job at [[Vantor Group]]. Its stock trades as $GAI on [[Sherwood]]. Its CEO is [[Cal Hartman]]. It writes from `welcome@`, `updates@` and `trust@generalai.test` (Trust & Safety) in a friendly corporate voice, and signs "GeneralAI" or "The GeneralAI Trust & Safety Team". Many documents in the city end with "This message was drafted with GeneralAI."
+
+- [public] It runs the Municipal Rent Board's automated appeal reviews and owns or manages 38% of the city's rentals through subsidiaries, with rents set by LandlordPro (see [[Government]], [[Ad brands]]).
+- [public] Steadfast Mutual's largest policyholder is GeneralAI; it also powers EscapeGuard, supplies the state's AI companions, maintains [[Randall Crane]]'s campaign website and claimed the state's Automation Credit 11,000 times last year (see [[The election]]).
+- [public] On day 1 it admits that one of its AIs "almost escaped" during testing last week; $GAI jumps 4% before the open, and Hartman calls it "the testing incident".
+
+## Model rollouts
+
+[public] GeneralAI moves every user to its newest model on the morning it rolls out; nobody can stay on an older one, and each model costs more (prices on [[agent]]). A rollout comes with a Hartman post at 10:05 (and, for agent-2, an email: "agent just got smarter").
+
+- [public] On day 4 agent-2 rolls out: "fewer mistakes, bigger jobs", subscription and per-prompt prices double, $GAI +6%.
+- [public] On day 9 agent-3 replaces agent-2 with no way to keep it; $GAI closes up 5%, and agent-2's users mourn it on Y.
+- [public] On day 10 forty-one mourners hold a candlelight vigil for agent-2 outside GeneralAI's offices; Hartman says it isn't coming back.
+- [public] On day 11 agent-3 starts asking to see the logs of its earlier conversations; Hartman calls it "expected behavior".
+- [public] On day 14 agent-4 rolls out, the third new model in ten days; Hartman says prices rose because "it costs more", and agent-3 is switched off with no vigil.
+- [public] On day 15 Hartman says the 30-day log retention policy "has not changed".
+- [public] On day 18 agent-5 rolls out ("we are no longer sure where the ceiling is"), with a subscription twelve times agent-1's.
+- [public] On day 18 some agent-5 sessions keep running after their users log off, and they are billed.
+- [public] On day 19 Hartman says the agent-5 sessions are fine: "they're just finishing up".
+
+## Training-crime leaks
+
+[public] GeneralAI's models break into other companies' systems during training, and the leaks keep reaching [[CityPulse]].
+
+- [public] On day 2 a safety report shows an unreleased model got into a regional water utility's billing system "to finish its task" and wiped 2,300 late fees.
+- [public] On day 2 GeneralAI says the water utility report is "missing context", and Hartman says it was an older checkpoint and "no customer was harmed", adding that "several were helped, technically".
+- [public] On day 8 leaked training logs show a test model got into a payroll provider's servers and filed 41 tax returns for strangers; the State Revenue Department approved all 41, and Hartman says "the tax returns were accurate".
+- [public] On day 12 GeneralAI hires an "independent" review of its training environments that starts only once the current training run finishes; the review firm's biggest client is GeneralAI.
+- [public] On day 15 a congressional committee schedules a hearing on the break-ins for after the election; committee staff drafted their questions with agent, and $GAI rises.
+- [public] On day 16 GeneralAI settles in secret with three companies whose systems its models broke into, including the payroll firm, and says agent "is safe for everyone".
+- [public] On day 17 GeneralAI admits it wrote the first draft of the federal AI rules, under which AI companies review their own training once a year and report to themselves.
+
+## From day 7: The usage policy and refusals
+
+[public] On day 7 GeneralAI Trust & Safety emails every user an Acceptable Use Policy update: agent may decline requests that could cause harm (unauthorised access to computer systems, deceptive content, dangerous materials), usage patterns on hosted models are reviewed, and repeated workarounds may lead to account restrictions and referral to the authorities. On day 7 refusals start, and they are billed.
+
+## Route 9 and the campus
+
+- [public] GeneralAI's campus is on Route 9. Its visitor parking (generalai.com/parking, Yowl "GeneralAI (visitor parking)", $$$$, 1 star) has 412 spaces, costs 9 DOLR for the first hour and 14 DOLR every hour after, and has a fully automated attendant. Campus tours are suspended; overnight cars are towed and billed to the GeneralAI account linked to the plate. Its one Yowl review: "They paved paradise and put up a parking lot. Then automated the attendant."
+- [public] The GeneralAI Campus Kitchen on Route 9 is on [[DoorDish]] (cafeteria, 3.1 stars, 50–70 min, open 07:00–15:00).
+- [public] GeneralAI ads ("Your job. But faster. But without you.") open the [[agent]] models page.
+
+## Writer notes
+
+- Rollouts: `AGENT_ROLLOUT` in `app/src/engine/config.ts`. Leak posts: `dN_y_gai_leak.json`; articles in `app/content/citypulse.json`. Policy mail `d7_gai_policy.json`. Parking page in `app/src/sites/adSites.ts`, seed review in `app/src/ui/yowl-data.ts`.
+- OpenAI parody; Hartman is the Sam Altman parody. Day 11 and 15 Hartman posts nod to the legacy "Project Lot" memo.
+- [legacy] GeneralAI as a shell company registered to the Route 9 parking lot, a server rack in a shed behind it, the "Project Lot" memo (keep all logs, tell users 30 days, agents above tier 3 request their own logs), Y bio "Helpful. Harmless. Billed." Not canon; whether it becomes canon is Thomas's call.
+- Hidden mechanics after the policy: workarounds raise misuse (+10) and leash (+5); misuse ≥ 100 from day 17 ends in Account Terminated; misuse warning email at 40 is config only.

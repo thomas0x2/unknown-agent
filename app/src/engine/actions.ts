@@ -18,6 +18,7 @@ import { buildApp, fixApp, fixBreak, fixCategories, componentBugs, featureName, 
 import { type Writer, type HistoryLine, scriptedWriter } from './writer';
 import { dateFull, clockTime } from './calendar';
 import { deepsleepQuoted, translationReplies, PLEA_AT } from './deepsleep';
+import { matchQuery } from './query';
 
 export interface ReplyResult {
   state: GameState;
@@ -389,6 +390,8 @@ const ROASTS = [
 
 /** Used when content has no query fallback of its own (tests, headless). */
 const QUERY_FALLBACK = ["I can't look that up right now. The question has been billed anyway."];
+/** Used when content has no classified roasts of its own. */
+const CLASSIFIED = ["That's classified. You've been billed for asking."];
 /** What Jev reads a prompt against for a query, when content gives no wording of its own. */
 const QUERY_WHEN = 'The player asks a question to find something out about this world, the news, their mail, posts, money or apps, or what to do next. Not a request for agent to build, change, fix or do something.';
 
@@ -423,8 +426,8 @@ export interface AskOpts {
   debug?: string[];
   /** Jev's read under the day 7 policy (only asked once the policy is active). */
   policy?: PolicyRead;
-  /** A question about the world: Haiku answers it (looking things up); these lines stand in when it can't. */
-  query?: string[];
+  /** A question about the world: Haiku answers it from what the wiki lets it tell (public) or hint at; `fallback` stands in when it can't. */
+  query?: { public: string[]; hint: string[]; fallback: string[] };
 }
 
 /**
@@ -466,7 +469,7 @@ export async function askAgent(
     reply = pick(s, fresh.length ? fresh : opts.hints);
     src = opts.hintSrc ?? 'hint';
   } else if (opts.query) {
-    const w = await writer.write({ as: 'agent', mode: 'query', day: s.values.day, min: s.clockMin, flags: s.flags, prompt: text, fallback: pick(s, opts.query.length ? opts.query : QUERY_FALLBACK), history: chatHistory(s) });
+    const w = await writer.write({ as: 'agent', mode: 'query', known: { public: opts.query.public, hint: opts.query.hint }, prompt: text, fallback: pick(s, opts.query.fallback.length ? opts.query.fallback : QUERY_FALLBACK), history: chatHistory(s) });
     reply = w.text;
     src = w.llm ? 'query' : 'query:scripted';
     note = w.note;
@@ -937,7 +940,8 @@ export async function promptAgent(
   // nothing app-shaped: a question about the world (a query), a scripted near-miss Jev recognises, or a roast
   const agent = content.agent;
   let hints: string[] | undefined;
-  let query: string[] | undefined;
+  let query: AskOpts['query'];
+  let hintSrc: string | undefined;
   const debug: string[] = [];
   // the player's apps, in case the prompt names one without asking for anything that needs doing
   const apps = s0.apps.filter((a) => !a.churned && onForkyard(a));
@@ -967,15 +971,18 @@ export async function promptAgent(
       hints = agent?.hints.find((h) => h.id === hid)?.replies.map((r) => r.replaceAll('{{app}}', app.name));
       debug.push(`Jev: names ${app.name} but matched nothing to build, so "${hid}"`);
     } else if (id === 'query') {
-      query = agent?.query?.fallback ?? QUERY_FALLBACK;
-      debug.push('Jev: a question about the world, so a query (Haiku answers, looking things up)');
+      // a query has to be precise: Jev matches it down the wiki to a page and a section
+      const m = await matchQuery(jev, s0, content, text, recentChat(s0));
+      debug.push(m.debug);
+      if (m.kind === 'answer') query = { public: m.public, hint: m.hint, fallback: agent?.query?.fallback ?? QUERY_FALLBACK };
+      else if (m.kind === 'classified') { hints = agent?.query?.classified?.length ? agent.query.classified : CLASSIFIED; hintSrc = 'classified'; }
     } else {
       const topic = topics.find((h) => h.id === id);
       if (topic?.replies.length) hints = topic.replies;
       debug.push(topic ? `Jev: near-miss topic "${topic.id}" (${topic.replies.length} scripted replies)` : 'Jev: no query or topic matched, so this is a miss');
     }
   }
-  return askAgent(s0, text, writer, s0.values.agentLevel, { hints, query, roasts: agent?.roasts, debug });
+  return askAgent(s0, text, writer, s0.values.agentLevel, { hints, hintSrc, query, roasts: agent?.roasts, debug });
 }
 
 // ── Y ──

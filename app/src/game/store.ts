@@ -10,7 +10,7 @@ import {
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
-import { route, visitedFlag } from '../sites/registry';
+import { route, visitedFlag, setDevSites } from '../sites/registry';
 import { adSite } from '../sites/adSites';
 import { PULL_MS, pullLines } from './pull';
 import { DEEPSLEEP_LINES, DEEPSLEEP_PLEA } from '../engine/deepsleep';
@@ -700,6 +700,7 @@ function readDevMode(): boolean {
   try { return localStorage.getItem(DEV_KEY) !== '0'; } catch { return true; }
 }
 function applyDevMode(on: boolean): void {
+  setDevSites(on);
   if (typeof document !== 'undefined') document.body.classList.toggle('dev-on', on);
 }
 

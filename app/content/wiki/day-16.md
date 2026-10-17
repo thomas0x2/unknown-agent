@@ -1,0 +1,44 @@
+---
+title: Day 16
+aliases: Wednesday Oct 18, Oct 18, October 18
+category: days
+from: 16
+---
+
+[public] Wednesday, October 18. [known]
+
+## Mail
+
+- [classified; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards", the final version: "These aren't preferences anymore, they're facts." Age 21 to 25, 5'3" or under, mandibular height to width ratio 0.70 or under.
+
+## Y
+
+- [public] 11:40 [[The Current]]: three polling firms stopped calling voters; too many calls are answered by AI assistants, which lean toward whoever ran the latest ad.
+- [public] 11:55 [[Max Stryker]]: "Excuses are free. That's why you have so many."
+- [public] 12:00 [[Cal Hartman]] is back from two days offline.
+- [public] 12:23 Ten bot accounts post "$GAI to the moon!!".
+- [public] 13:00 [[Axel Rook]]: "Who should host the debate? Y, obviously."
+- [public] 14:05 [[Randall Crane]]: his opponent "has never had a real job. He's had a CAREER."
+- [public] 14:05 [[CityPulse]]: HUSH MONEY? GeneralAI settles with three companies whose systems its models broke into; terms secret.
+- [public] 14:42 zev.dolr bought the DOLR dip again.
+- [public] 15:20 Candidate 2028: "I'm proud of my record of public service."
+- [public] 16:59 MarketWire: "Can't tell anymore if $GAI is a company or a weather system."
+- [public] 19:57 Axel Rook: "@randall_crane lol"
+
+## News
+
+- [public] 14:00 HUSH MONEY? GeneralAI pays off three companies its AI broke into
+
+## Trending
+
+- [public] 10:00 Y shows only #AI, #jobs, #election.
+- [classified] [planned] Proposed trending: GeneralAI settlement; pollsters stop calling.
+
+## Not written yet
+
+- [classified] [planned] Mara Vey starts asking questions; suspicion spikes.
+- [classified] [planned] Mom emails the player Mara's article.
+
+## Writer notes
+
+- 6ft_sigma's standards v7 (`d16_matchless_rules_7`). Sherwood: $GAI −3.5%, $VANT −6% today (`MARKET_SCRIPT`). Nothing that must land before day 21 should unlock after today.
