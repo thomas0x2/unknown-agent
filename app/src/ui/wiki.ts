@@ -7,7 +7,7 @@
  */
 import type { GameStore } from '../game/store';
 import {
-  parseWikiPage, formatWikiPage, parseTagRule, formatTagRule, evalTag, blockNow, wikiCtx, METERS,
+  parseWikiPage, formatWikiPage, parseTagRule, formatTagRule, evalTag, blockNow, queryCtx, seenRef, CITYPULSE, METERS,
   type WikiPage, type WikiBlock, type WikiTag, type TagStep, type WikiCtx,
 } from '../engine';
 
@@ -24,10 +24,10 @@ const W = {
 };
 
 const CATS: [string, string][] = [['days', 'Days'], ['people', 'People'], ['family', 'Family'], ['companies', 'Companies'], ['sites', 'Sites'], ['apps', 'Apps'], ['world', 'World'], ['writers', 'Writers']];
-const KINDS: [TagStep['kind'] | 'notflag', string][] = [['day', 'from day'], ['flag', 'if flag set'], ['notflag', 'if flag not set'], ['meter', 'if meter']];
+const KINDS: [TagStep['kind'] | 'notflag', string][] = [['day', 'from day'], ['flag', 'if flag set'], ['notflag', 'if flag not set'], ['meter', 'if meter'], ['seen', 'once seen']];
 
 const pagesOf = (store: GameStore): WikiPage[] => store.content.wiki ?? [];
-const ctxOf = (store: GameStore): WikiCtx => wikiCtx(store.state.values.day, store.state.clockMin, store.state.flags, store.state.values);
+const ctxOf = (store: GameStore): WikiCtx => queryCtx(store.state, store.content);
 const tagPill = (t: WikiTag, title = '') => `<span class="wk-tag ${t}"${title ? ` title="${esc(title)}"` : ''}>${t}</span>`;
 
 function nav(store: GameStore, open?: WikiPage): string {
@@ -42,16 +42,22 @@ function nav(store: GameStore, open?: WikiPage): string {
   return `<nav class="wk-nav"><input id="wk-search" class="wk-search" placeholder="Search pages" value="${esc(W.search)}" data-wiki-search>${groups || '<p class="wk-dim">No pages.</p>'}</nav>`;
 }
 
+/** Every email, post and article id a rule can wait on or a paragraph can embed. */
+function itemIds(store: GameStore): string[] {
+  const c = store.content;
+  return [...c.events.filter((e) => e.site === 'qmail' || e.site === 'y' || e.site === 'yowl').map((e) => e.id), ...(c.yMarket?.posts ?? []).map((p) => p.id), ...c.yFiller.map((f) => f.id), ...CITYPULSE.map((a) => `article:${a.slug}`)];
+}
+
 function stepRow(x: TagStep | null, i: number, store: GameStore): string {
   const kind = !x ? 'day' : x.kind === 'flag' && x.not ? 'notflag' : x.kind;
-  const val = !x ? '' : x.kind === 'day' ? String(x.day) : x.kind === 'flag' ? x.flag : `${x.meter} ${x.op} ${x.value}`;
+  const val = !x ? '' : x.kind === 'day' ? String(x.day) : x.kind === 'flag' ? x.flag : x.kind === 'seen' ? x.ref : `${x.meter} ${x.op} ${x.value}`;
   const tag = x?.tag ?? 'public';
   return `<div class="wk-step">
     <select id="wk-st-tag-${i}">${(['public', 'hint', 'classified'] as const).map((t) => `<option ${t === tag ? 'selected' : ''}>${t}</option>`).join('')}</select>
     <select id="wk-st-kind-${i}">${KINDS.map(([k, l]) => `<option value="${k}" ${k === kind ? 'selected' : ''}>${l}</option>`).join('')}</select>
-    <input id="wk-st-val-${i}" value="${esc(val)}" placeholder="5 · seed_stolen · suspicion >= 40" list="wk-hints">
+    <input id="wk-st-val-${i}" value="${esc(val)}" placeholder="5 · seed_stolen · suspicion >= 40 · d5_coffee_removal" list="wk-hints">
     <button class="wk-x" data-wiki="delstep" data-i="${i}" title="Remove this rule">×</button></div>`
-    + (i === 0 ? `<datalist id="wk-hints">${[...Object.keys(METERS).map((m) => `${m} >= `), ...store.state.flags].map((v) => `<option value="${esc(v)}">`).join('')}</datalist>` : '');
+    + (i === 0 ? `<datalist id="wk-hints">${[...Object.keys(METERS).map((m) => `${m} >= `), ...store.state.flags, ...itemIds(store)].map((v) => `<option value="${esc(v)}">`).join('')}</datalist>` : '');
 }
 
 function editor(store: GameStore, b: WikiBlock): string {
@@ -129,6 +135,7 @@ function ruleFromForm(): string {
     if (!v) continue;
     if (kind === 'day' && Number(v) > 0) steps.push({ tag, kind: 'day', day: Math.round(Number(v)) });
     else if ((kind === 'flag' || kind === 'notflag') && /^!?[a-z0-9_]+$/i.test(v)) steps.push({ tag, kind: 'flag', flag: v.replace(/^!/, ''), not: kind === 'notflag' || v.startsWith('!') });
+    else if (kind === 'seen' && /^[a-z0-9_:.@-]+$/i.test(v)) steps.push({ tag, kind: 'seen', ref: seenRef(v) });
     else if (kind === 'meter') {
       const m = v.match(/^([a-z][a-z0-9_]*)\s*(>=|<=|>|<|=)\s*(-?\d+(?:\.\d+)?)$/i);
       if (m) steps.push({ tag, kind: 'meter', meter: m[1], op: m[2] as '>=', value: Number(m[3]) });
@@ -195,7 +202,7 @@ export function wikiClick(t: HTMLElement, store: GameStore): boolean {
     if (block) {
       const base = field('wk-base') as WikiTag;
       const rows = kept.map((k) => ({ tag: field(`wk-st-tag-${k}`), kind: field(`wk-st-kind-${k}`), v: field(`wk-st-val-${k}`).trim() })).filter((r) => r.v);
-      block.rule = [base, ...rows.map((r) => r.kind === 'day' ? `${r.tag} from day ${r.v}` : r.kind === 'notflag' ? `${r.tag} if !${r.v.replace(/^!/, '')}` : `${r.tag} if ${r.v}`)].join('; ');
+      block.rule = [base, ...rows.map((r) => r.kind === 'day' ? `${r.tag} from day ${r.v}` : r.kind === 'notflag' ? `${r.tag} if !${r.v.replace(/^!/, '')}` : r.kind === 'seen' ? `${r.tag} if seen ${r.v}` : `${r.tag} if ${r.v}`)].join('; ');
       W.steps = parseTagRule(block.rule).steps.length;
     }
     store.repaint();

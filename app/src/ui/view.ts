@@ -968,12 +968,16 @@ function pageAgent(store: GameStore): string {
     const debug = m.debug?.length ? `<details class="ua-debug"><summary>Details</summary>${m.debug.map((l) => `<div>${esc(l)}</div>`).join('')}</details>` : '';
     // the agent couldn't run (unpaid balance): an error, not a line of dialogue
     if (m.src === 'locked') return `<div class="ua-msg agent ua-err" role="alert"><div class="ua-mark">${ICONS.error}</div><div class="ua-text"><b>Error</b> ${linkify(br(m.text))}</div>${src}</div>`;
-    return `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text">${linkify(br(m.text))}</div>${model}${src}${debug}</div>`;
+    // a query's answer (or refusal) comes after a look around the WWW
+    const www = /^(query|classified)/.test(m.src ?? '') ? `<div class="ua-www done">${ICONS.globe}<span>Searched the WWW</span></div>` : '';
+    return `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text">${www}${linkify(br(m.text))}</div>${model}${src}${debug}</div>`;
   }
   const p = store.pendingPrompt;
   // the price shows on the prompt only once the charge has gone through
   const pending = p == null ? '' : `<div class="ua-msg you"><div class="ua-bubble">${esc(p)}</div><span class="ua-cost">agent-${s.values.agentLevel} · ${dateShort(s.values.day)}</span></div>`;
-  const thinking = store.busy && !store.charging ? `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text ua-dots"><i></i><i></i><i></i></div></div>` : '';
+  const thinking = !store.busy || store.charging ? ''
+    : store.searching ? `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-www" role="status">${ICONS.globe}<span>Searching the WWW</span><span class="ua-dots"><i></i><i></i><i></i></span></div></div>`
+    : `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text ua-dots"><i></i><i></i><i></i></div></div>`;
   return `<div class="ua">
     <header class="ua-head">
       <div class="ua-brand">${ICONS.agent}<div><b>agent</b><span>agent-${s.values.agentLevel} · ${fmtMoney(c.prompt)} per prompt + ${fmtMoney(c.word)} per word</span></div></div>

@@ -13,6 +13,9 @@ import type { GameState } from './state';
 import type { Content } from '../content/schema';
 import type { JevRouter } from './jev';
 import { wikiCtx, queryablePages, querySections, sectionNow, sectionName, type WikiPage, type WikiCtx } from './wiki';
+import { eventBody, posted, postMin } from './events';
+import { marketPosts } from './crawler';
+import { liveArticles } from './citypulse';
 
 /** More pages than this matched: the question is too broad to be about anything. */
 const MAX_PAGES = 3;
@@ -22,8 +25,34 @@ export type QueryMatch =
   | { kind: 'classified'; where: string[]; debug: string }
   | { kind: 'answer'; where: string[]; public: string[]; hint: string[]; debug: string };
 
-export function queryCtx(s: GameState): WikiCtx {
-  return wikiCtx(s.values.day, s.clockMin, s.flags, s.values);
+export function queryCtx(s: GameState, content: Content): WikiCtx {
+  return wikiCtx(s.values.day, s.clockMin, s.flags, s.values, seenItems(s, content));
+}
+
+const plain = (t: string) => String(t ?? '').replace(/\{\{\s*playerName\s*\}\}/g, 'you').replace(/\{\{\s*\w+\s*\}\}/g, '').replace(/\s+/g, ' ').trim();
+
+/**
+ * Everything that has reached the player so far, by id, with its text: delivered emails, Y posts and
+ * Yowl reviews (event ids), the market and filler posts on Y (their ids) and CityPulse articles
+ * (`article:<slug>`). Wiki tag rules wait on these ("public if seen d5_coffee_removal") and embeds
+ * (`{{mail:d5_coffee_removal}}`) show their text.
+ */
+export function seenItems(s: GameState, content: Content): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const d of s.delivered) {
+    const e = content.events.find((x) => x.id === d.eventId);
+    if (!e || out.has(e.id)) continue;
+    const body = plain(d.body ?? eventBody(e, d.day));
+    const from = e.from ?? 'someone';
+    out.set(e.id, e.site === 'y' ? `Y post by ${from}: ${body}`
+      : e.site === 'yowl' ? `Yowl review by ${from}: ${body}`
+      : e.site !== 'qmail' ? `${e.site} post by ${from}: ${body}`
+      : `Email from ${from}${e.subject ? `, "${plain(e.subject)}"` : ''}: ${body}`);
+  }
+  for (const p of marketPosts(s, content)) if (!out.has(p.id)) out.set(p.id, `Y post by ${p.author}: ${plain(p.text)}`);
+  for (const f of content.yFiller) if (f.day <= s.values.day && posted(s, f.day, postMin(f, f.day))) out.set(f.id, `Y post by ${f.from}: ${plain(f.body)}`);
+  for (const a of liveArticles(s)) out.set(`article:${a.slug}`, `CityPulse article "${a.title}" by ${a.by}: ${a.dek} ${a.body.join(' ')}`);
+  return out;
 }
 
 /** How Jev sees a page: its title, other names and what kind of thing it is. */
@@ -34,7 +63,7 @@ function pageDesc(p: WikiPage): string {
 
 /** Jev: which wiki page(s), then which section(s) of each, the question is about. */
 export async function matchQuery(jev: JevRouter, s: GameState, content: Content, text: string, chat: string[] = []): Promise<QueryMatch> {
-  const ctx = queryCtx(s);
+  const ctx = queryCtx(s, content);
   const pages = queryablePages(content.wiki ?? [], ctx);
   if (!pages.length) return { kind: 'miss', debug: 'no wiki pages loaded' };
   const found = await jev.matchFeatures({

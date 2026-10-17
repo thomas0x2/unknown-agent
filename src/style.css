@@ -885,3 +885,12 @@ body.dev-on .ua-work-skip { display: inline-block; }
 .wk-btn.primary { background: #1b1c1e; border-color: #1b1c1e; color: #fff; }
 .wk-btn.danger { color: #a12c2c; border-color: #e0b4b4; }
 .wk-dim { color: #7a7c80; }
+
+/* agent.chat: a query is looked up on the WWW first */
+.ua-www { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; height: 26px; font-family: var(--f-mono); font-size: 12px; color: var(--ua-dim); }
+.ua-www svg { width: 14px; height: 14px; flex: none; }
+.ua-www:not(.done) svg { animation: spin 2.4s linear infinite; }
+.ua-www.done { height: auto; margin-bottom: 2px; font-size: 11px; }
+.ua-www .ua-dots { height: auto; }
+.ua-www .ua-dots i { width: 4px; height: 4px; }
+@keyframes spin { to { transform: rotate(360deg); } }

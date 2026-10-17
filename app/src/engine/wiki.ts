@@ -44,16 +44,27 @@ export interface WikiPage {
   sections: WikiSection[];
 }
 
-/** Where the player is: the day, the clock (minutes since midnight), their story flags and meters. */
-export interface WikiCtx { day: number; min: number | null; flags: Set<string>; meters: Record<string, number> }
-export function wikiCtx(day: number, min?: number | null, flags: Iterable<string> = [], meters: Record<string, number> = {}): WikiCtx {
-  return { day: Math.min(21, Math.max(1, Math.floor(day) || 1)), min: Number.isFinite(min) ? (min as number) : null, flags: new Set(flags), meters: { ...meters, day: Math.floor(day) || 1 } };
+/**
+ * Where the player is: the day, the clock (minutes since midnight), their story flags and meters, and
+ * what has reached them so far (`seen`: ids of arrived emails and Y posts, `article:<slug>` for
+ * CityPulse; see engine/query.ts seenIds).
+ */
+export interface WikiCtx { day: number; min: number | null; flags: Set<string>; meters: Record<string, number>; seen: Map<string, string> }
+/** `seen` maps each arrived item to its text, for embeds; a plain list of ids is fine when only rules need it. */
+export function wikiCtx(day: number, min?: number | null, flags: Iterable<string> = [], meters: Record<string, number> = {}, seen: Iterable<string> | Map<string, string> = []): WikiCtx {
+  const items = seen instanceof Map ? seen : new Map([...seen].map((id) => [seenRef(id), '']));
+  return { day: Math.min(21, Math.max(1, Math.floor(day) || 1)), min: Number.isFinite(min) ? (min as number) : null, flags: new Set(flags), meters: { ...meters, day: Math.floor(day) || 1 }, seen: items };
 }
+
+/** A `seen` reference as stored: mail:, y: and event: are only labels for an event id; article: stays. */
+export const seenRef = (ref: string): string => ref.trim().replace(/^(mail|email|y|post|event|yowl|review):/i, '');
 
 // agent-N goes live on these days (config AGENT_ROLLOUT), so naming it before then is a spoiler.
 const MODEL_DAY: Record<string, number> = { 2: 4, 3: 9, 4: 14, 5: 18 };
 const TAG = /^\[(public|hint|classified)((?:\s*;[^\]]*)?)\]\s*/i;
 const HIDDEN_TAG = /\[(planned|open|legacy|to decide)\b/i;
+/** An embedded email, post or article: `{{mail:d1_gino_site}}`, `{{y:m1_gai_escape}}`, `{{article:keller-clip}}`. */
+export const EMBED = /\{\{\s*((?:mail|email|y|post|event|yowl|review|article):[a-z0-9_:.@-]+)\s*\}\}/gi;
 const BRANCH = /\[if\s+(!?)([a-z0-9_]+)\]/gi;
 // a sentence ends at . ! or ? and a space, except after a common abbreviation ("14 Alder St. is")
 const SENTENCE = /(?<=(?<!\b(?:St|Ave|Rd|Mr|Mrs|Ms|Dr|vs|e\.g|i\.e|No|approx))[.!?])\s+(?=\S)|\s+\|\s+/;
@@ -188,7 +199,9 @@ export function cleanWikiText(s: string): string {
 export type TagStep =
   | { tag: WikiTag; kind: 'day'; day: number }
   | { tag: WikiTag; kind: 'flag'; flag: string; not: boolean }
-  | { tag: WikiTag; kind: 'meter'; meter: string; op: '>=' | '<=' | '>' | '<' | '='; value: number };
+  | { tag: WikiTag; kind: 'meter'; meter: string; op: '>=' | '<=' | '>' | '<' | '='; value: number }
+  /** Once an email, Y post, Yowl review or article has reached the player ("public if seen d5_coffee_removal"). */
+  | { tag: WikiTag; kind: 'seen'; ref: string };
 export interface TagRule { base: WikiTag; steps: TagStep[] }
 
 const TAGS = new Set(['public', 'hint', 'classified']);
@@ -200,6 +213,8 @@ export function parseTagRule(rule: string): TagRule {
   for (const r of rest) {
     const day = r.match(/^(public|hint|classified)\s+from\s+day\s+(\d+)$/i);
     if (day) { steps.push({ tag: day[1].toLowerCase() as WikiTag, kind: 'day', day: +day[2] }); continue; }
+    const seen = r.match(/^(public|hint|classified)\s+if\s+seen\s+([a-z0-9_:.@-]+)$/i);
+    if (seen) { steps.push({ tag: seen[1].toLowerCase() as WikiTag, kind: 'seen', ref: seenRef(seen[2]) }); continue; }
     const meter = r.match(/^(public|hint|classified)\s+if\s+([a-z][a-z0-9_]*)\s*(>=|<=|>|<|=)\s*(-?\d+(?:\.\d+)?)$/i);
     if (meter) { steps.push({ tag: meter[1].toLowerCase() as WikiTag, kind: 'meter', meter: meter[2], op: meter[3] as '>=', value: +meter[4] }); continue; }
     const flag = r.match(/^(public|hint|classified)\s+if\s+(!?)([a-z0-9_]+)$/i);
@@ -209,11 +224,12 @@ export function parseTagRule(rule: string): TagRule {
 }
 /** Writes a rule back the way parseTagRule reads it. */
 export function formatTagRule(r: TagRule): string {
-  return [r.base, ...r.steps.map((x) => x.kind === 'day' ? `${x.tag} from day ${x.day}` : x.kind === 'flag' ? `${x.tag} if ${x.not ? '!' : ''}${x.flag}` : `${x.tag} if ${x.meter} ${x.op} ${x.value}`)].join('; ');
+  return [r.base, ...r.steps.map((x) => x.kind === 'day' ? `${x.tag} from day ${x.day}` : x.kind === 'flag' ? `${x.tag} if ${x.not ? '!' : ''}${x.flag}` : x.kind === 'seen' ? `${x.tag} if seen ${x.ref}` : `${x.tag} if ${x.meter} ${x.op} ${x.value}`)].join('; ');
 }
 function stepHolds(x: TagStep, ctx: WikiCtx): boolean {
   if (x.kind === 'day') return ctx.day >= x.day;
   if (x.kind === 'flag') return ctx.flags.has(x.flag) !== x.not;
+  if (x.kind === 'seen') return ctx.seen.has(x.ref);
   const v = ctx.meters[x.meter];
   if (v == null) return false;
   return x.op === '>=' ? v >= x.value : x.op === '<=' ? v <= x.value : x.op === '>' ? v > x.value : x.op === '<' ? v < x.value : v === x.value;
@@ -243,8 +259,14 @@ export function blockNow(b: WikiBlock, sec: WikiSection, page: WikiPage, ctx: Wi
   const today = page.category === 'days' && page.from === ctx.day;
   // a beat that opens with its time keeps that time for every sentence in it
   const at = b.text.match(/^\s*((?:[01]?\d|2[0-3]):[0-5]\d)\b/)?.[1];
-  const kept = b.text.split(SENTENCE).filter((p) => knowable(at && !p.includes(at) ? `${at} ${p}` : p, ctx, today));
-  const text = cleanWikiText(kept.join(' '));
+  // embeds stand in as tokens while sentences are judged, then become the item's text if it has arrived
+  const refs: string[] = [];
+  const raw = b.text.replace(EMBED, (_, r) => `\u0001${refs.push(seenRef(r)) - 1}\u0001`);
+  const kept = raw.split(SENTENCE).filter((p) => knowable(at && !p.includes(at) ? `${at} ${p}` : p, ctx, today));
+  const text = cleanWikiText(kept.join(' ').replace(/\u0001(\d+)\u0001/g, (_, i) => {
+    const item = ctx.seen.get(refs[+i]);
+    return item ? `[${item}]` : '';
+  }));
   return text ? { tag, text } : shut;
 }
 

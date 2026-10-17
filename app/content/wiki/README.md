@@ -60,8 +60,18 @@ A tag can change with the game: a base tag, then steps, the last one that holds 
 [classified; hint from day 5; public if seed_stolen; public if suspicion >= 40]
 ```
 
-Steps are `<tag> from day N`, `<tag> if flag`, `<tag> if !flag`, and `<tag> if <meter> <op> <n>`
-(`>=`, `<=`, `>`, `<`, `=`; meters as in `src/engine/values.ts`: suspicion, familyTrust, followers …).
+Steps are `<tag> from day N`, `<tag> if flag`, `<tag> if !flag`, `<tag> if <meter> <op> <n>`
+(`>=`, `<=`, `>`, `<`, `=`; meters as in `src/engine/values.ts`: suspicion, familyTrust, followers …),
+and `<tag> if seen <id>`: once that email, Y post or Yowl review (its event id, or a `y_market` /
+`y_filler` post id) or CityPulse article (`article:<slug>`) has reached the player.
+
+## What the player received: embeds
+
+A paragraph can carry an email, post or article itself: `{{mail:d1_gino_site}}`, `{{y:m1_gai_escape}}`,
+`{{yowl:<event id>}}`, `{{article:keller-clip}}`. Once the item has arrived, agent sees its full text
+there (sender, subject, body; an article's title, dek and body), so a question can get at what it
+said; until then the embed is dropped. Day pages embed each beat's item in that beat's bullet, and the
+pages of the people and companies involved embed theirs. A test checks every id exists.
 
 ## What the player can't know yet is classified, whatever the tag
 
@@ -84,7 +94,7 @@ A sentence that names a later day but is known in advance (rent amounts and due 
 Jev reads an agent.chat prompt as a query, then matches it down the wiki like a fix down an app's
 components, but looser: which page (title and aliases), then which section. Naming no page (or more
 than three) is too vague: a miss, and agent roasts the player. A page without a section gets its
-overview. Haiku then answers, still mean, from the matched paragraphs that are public now, and may
+overview. agent.chat shows agent "Searching the WWW" while Haiku answers, still mean, from the matched paragraphs that are public now, and may
 only hint at the hint ones; if there are none, the player gets a scripted classified roast. Haiku can
 also read the player's own screens (Qmail, Y, Yowl, CityPulse, Forkyard, Coinbin; `server/screens.mjs`).
 

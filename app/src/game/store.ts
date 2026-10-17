@@ -59,6 +59,9 @@ export class GameStore {
   pendingPrompt: string | null = null;
   /** A prompt's charge on its way to the wallet, a beat after the reply (0 when nothing is). */
   charging = 0;
+  /** agent is looking a query up on the WWW (Haiku is writing the answer). */
+  searching = false;
+  setSearching(on: boolean): void { this.searching = on; this.emit(); }
   ui = {
     ySearch: '', yAllDay: 0, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null as Draft | null,
     /** Bot posts landing as a barrage: when each shows up on Y (performance.now() ms), so a repaint keeps the timing. */

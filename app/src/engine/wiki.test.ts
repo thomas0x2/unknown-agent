@@ -6,7 +6,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   parseWikiPage, wikiCtx, blockNow, sectionNow, evalTag, parseTagRule, formatTagRule, formatWikiPage,
-  latestDay, queryablePages, cleanWikiText, type WikiPage,
+  latestDay, queryablePages, cleanWikiText, EMBED, seenRef, type WikiPage,
 } from './wiki';
 import { METER_IDS } from './values';
 
@@ -52,8 +52,16 @@ describe('wiki: tag rules', () => {
     expect(page(`${fm()}[Public; HINT if familyTrust >= 5] x\n`).sections[0].blocks[0].rule).toBe('public; HINT if familyTrust >= 5');
   });
 
+  it('a step can wait for an email, post or article to arrive', () => {
+    const rule = 'classified; public if seen mail:d5_coffee_removal; hint if seen article:keller-clip';
+    expect(parseTagRule(rule).steps).toEqual([{ tag: 'public', kind: 'seen', ref: 'd5_coffee_removal' }, { tag: 'hint', kind: 'seen', ref: 'article:keller-clip' }]);
+    expect(evalTag(rule, wikiCtx(5))).toBe('classified');
+    expect(evalTag(rule, wikiCtx(5, null, [], {}, ['d5_coffee_removal']))).toBe('public');
+    expect(evalTag(rule, wikiCtx(5, null, [], {}, ['d5_coffee_removal', 'article:keller-clip']))).toBe('hint');
+  });
+
   it('round-trips through the editor', () => {
-    const rule = 'classified; hint from day 5; public if !seed_stolen; public if familyTrust < -10';
+    const rule = 'classified; hint from day 5; public if !seed_stolen; public if familyTrust < -10; public if seen d5_coffee_removal';
     expect(formatTagRule(parseTagRule(rule))).toBe(rule);
   });
 });
@@ -89,6 +97,13 @@ describe('wiki: nothing the player cannot know yet', () => {
   it('hint and classified are told apart', () => {
     const p = page(`${fm()}[public] He cooks.\n\n[hint] The password is lasagne.\n\n[classified] He launders money.\n`);
     expect(sectionNow(p, p.sections[0], wikiCtx(1))).toEqual({ public: ['He cooks.'], hint: ['The password is lasagne.'] });
+  });
+
+  it('an embedded email shows its text once it has arrived, and nothing before', () => {
+    const p = page(`${fm()}- [public] Gino emails about a website. {{mail:d1_gino}}\n- [public] {{article:gino-review}}\n`);
+    expect(told(p, 1)).toEqual(['Gino emails about a website.']);
+    const seen = new Map([['d1_gino', 'Email from Gino, "A website": My nephew left with the password.']]);
+    expect(told(p, 1, null, [], {}, seen)).toEqual(['Gino emails about a website. [Email from Gino, "A website": My nephew left with the password.]']);
   });
 
   it('cleans links, code paths and markup', () => {
@@ -158,6 +173,22 @@ describe('wiki: the real pages', () => {
   it('saving any page from the editor keeps its sections and paragraphs as they were', () => {
     const shape = (p: WikiPage) => p.sections.map((s) => [s.heading, s.fromDay, s.ifFlag, s.writer, s.blocks.map((b) => [b.rule, b.text, b.bullet, !!b.row])]);
     for (const p of wiki) expect(shape(parseWikiPage(formatWikiPage(p), p.file)), p.file).toEqual(shape(p));
+  });
+
+  it('every embed and "seen" rule names an email, post or article that exists', () => {
+    const C = join(__dirname, '../../content');
+    const ids = new Set([
+      ...readdirSync(join(C, 'events')).filter((f) => f.endsWith('.json')).map((f) => JSON.parse(readFileSync(join(C, 'events', f), 'utf8')).id as string),
+      ...JSON.parse(readFileSync(join(C, 'y_market.json'), 'utf8')).posts.map((p: { id: string }) => p.id),
+      ...JSON.parse(readFileSync(join(C, 'y_filler.json'), 'utf8')).map((p: { id: string }) => p.id),
+      ...JSON.parse(readFileSync(join(C, 'citypulse.json'), 'utf8')).map((a: { slug: string }) => `article:${a.slug}`),
+    ]);
+    const bad: string[] = [];
+    for (const p of wiki) for (const s of p.sections) for (const b of s.blocks) {
+      for (const m of b.text.matchAll(EMBED)) if (!ids.has(seenRef(m[1]))) bad.push(`${p.file}: {{${m[1]}}}`);
+      for (const x of parseTagRule(b.rule).steps) if (x.kind === 'seen' && !ids.has(x.ref)) bad.push(`${p.file}: seen ${x.ref}`);
+    }
+    expect(bad).toEqual([]);
   });
 
   it('the endings and writers pages are never queryable', () => {

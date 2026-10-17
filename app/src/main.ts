@@ -46,7 +46,7 @@ import { wikiClick, wikiInput } from './ui/wiki';
 
 const content = loadContent();
 // a query reads the player's screens as they are when it's sent
-const writer = makeWriter(content, () => queryView(store));
+const writer = makeWriter(content, () => queryView(store), (on) => store.setSearching(on));
 const store = new GameStore(content, JEV, writer, localStorageStore());
 
 const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector<T>(sel);
