@@ -55,6 +55,12 @@ export class GameStore {
   active = HOME_TAB;
   private nextTab = PINNED.length + 1;
   busy = false;
+  /**
+   * Actions the player took while an action that needs Jev was working on its own copy of the state
+   * (a deploy while the agent types). That action's result replaces the state when it lands, so these
+   * run again on it then; otherwise they'd be lost (a redeploy that didn't take).
+   */
+  private replay: ((s: GameState) => GameState)[] = [];
   /** The agent prompt being answered right now, shown in the chat as soon as it's sent. */
   pendingPrompt: string | null = null;
   /** A prompt's charge on its way to the wallet, a beat after the reply (0 when nothing is). */
@@ -430,12 +436,12 @@ export class GameStore {
   }
   /** A prompt typed into agent-terminal: billed like any agent prompt; the reply holds back like a chat reply. */
   async agentTerm(text: string) {
-    return this.run(async () => {
+    return this.run(async (s0) => {
       const started = Date.now();
-      const r = await agentTermPrompt(this.state, this.content, this.router, text, this.writer);
+      const r = await agentTermPrompt(s0, this.content, this.router, text, this.writer);
       const last = r.lines.at(-1);
       if (last) await wait(replyDelay(last.text) - (Date.now() - started));
-      this.commitAndSettle(r.state);
+      this.land(r.state);
       return r;
     }, 'aterm-input', text);
   }
@@ -488,30 +494,36 @@ export class GameStore {
     this.active = HOME_TAB; this.nextTab = PINNED.length + 1;
     this.ui.start = false;
   }
-  deploy(appId: string): void { this.commitAndSettle(deploy(this.state, appId, this.content)); }
-  takeDown(appId: string): void { this.commit(takeDown(this.state, appId)); }
-  cancelBooking(id: string): void { this.commit(cancelBooking(this.state, id)); }
-  joinEmpire(): void { this.commitAndSettle(joinEmpire(this.state)); }
+  deploy(appId: string): void { this.act((s) => deploy(s, appId, this.content)); }
+  takeDown(appId: string): void { this.act((s) => takeDown(s, appId), false); }
+  cancelBooking(id: string): void { this.act((s) => cancelBooking(s, id), false); }
+  joinEmpire(): void { this.act((s) => joinEmpire(s)); }
   toggleSend(open = !this.ui.send.open): void { this.ui.send = { open, to: '', amount: '', error: '' }; this.ui.cbNotice = ''; this.emit(); }
   /** Coinbin Send. A refusal keeps the form open with what was typed and the reason. */
   send(to: string, amount: string): boolean {
-    const r = sendCrypto(this.state, to, Number(amount.replace(',', '.')));
+    const sent = (s: GameState) => {
+      const r = sendCrypto(s, to, Number(amount.replace(',', '.')));
+      if (r.error) return r;
+      settlePayments(r.state, this.content);
+      recordStake(r.state, to, -r.state.tx.at(-1)!.amount);
+      return r;
+    };
+    const r = sent(this.state);
     if (r.error) { this.ui.send = { open: true, to, amount, error: r.error }; this.emit(); return false; }
-    settlePayments(r.state, this.content);
-    recordStake(r.state, to, -r.state.tx.at(-1)!.amount);
     this.ui.send = { open: false, to: '', amount: '', error: '' };
     this.ui.cbNotice = `Sent ${(-r.state.tx.at(-1)!.amount).toFixed(2)} DOLR to ${r.state.tx.at(-1)!.memo.split(' · ')[0]}.`;
-    this.commitAndSettle(r.state);
+    this.act((s) => (s === this.state ? r : sent(s)).state);
     return true;
   }
   /** A Sherwood order: buy or sell `amount` DOLR of a ticker ('all' sells the whole position). */
   trade(ticker: string, side: 'buy' | 'sell', amount: string): boolean {
     const n = amount === 'all' ? 'all' : Number(amount.replace(',', '.'));
-    const r = side === 'buy' ? buyStock(this.state, ticker, n === 'all' ? NaN : n) : sellStock(this.state, ticker, n);
+    const order = (s: GameState) => (side === 'buy' ? buyStock(s, ticker, n === 'all' ? NaN : n) : sellStock(s, ticker, n));
+    const r = order(this.state);
     if (r.error) { this.ui.sw = { amount: amount === 'all' ? '' : amount, error: r.error, notice: '' }; this.emit(); return false; }
     const tx = r.state.tx.at(-1)!;
     this.ui.sw = { amount: '', error: '', notice: `${tx.memo.split(' · ')[1]} for ${Math.abs(tx.amount).toFixed(2)} DOLR.` };
-    this.commitAndSettle(r.state);
+    this.act((s) => (s === this.state ? r : order(s)).state);
     return true;
   }
   /** The phishing page's sign-in. A wrong password stays on the form with an error. */
@@ -590,64 +602,79 @@ export class GameStore {
   bookAgain(): void { delete this.state.bookingNotice; this.ui.book = { step: 1, name: '', email: '', date: 0 }; this.emit(); }
   book(appId: string, time: string, party: number): void {
     const { name, email, date } = this.ui.book;
-    const next = makeBooking(this.state, appId, name || 'You', email, date || this.state.values.day, time, party, this.content);
+    const booked = (s: GameState) => makeBooking(s, appId, name || 'You', email, date || s.values.day, time, party, this.content);
+    const next = booked(this.state);
     if (next.bookings.length > this.state.bookings.length) this.ui.book = { step: 1, name: '', email: '', date: 0 };
-    this.commitAndSettle(next);
+    this.act((s) => (s === this.state ? next : booked(s)));
   }
 
   /**
    * Runs an action that needs Jev. If Jev can't be reached, nothing happened (the engine works on a
    * copy), so the state stays as it was and a dialog says so; the text goes back into `field`.
    */
-  private async run<T>(fn: () => Promise<T>, field?: string, text?: string): Promise<T | undefined> {
-    this.busy = true; this.ui.jevOffline = null; this.emit();
-    try { return await fn(); }
+  private async run<T>(fn: (s0: GameState) => Promise<T>, field?: string, text?: string): Promise<T | undefined> {
+    this.busy = true; this.replay = []; this.ui.jevOffline = null; this.emit();
+    // the action works on the state as it is now; what the player does meanwhile is replayed on its result (land)
+    try { return await fn(this.state); }
     catch (e) {
       if (!(e instanceof JevOffline)) throw e;
       this.ui.jevOffline = { reason: e.reason, field, text };
       return undefined;
     }
-    finally { this.busy = false; this.emit(); }
+    finally { this.busy = false; this.replay = []; this.emit(); }
+  }
+  /** A player action that doesn't wait on anything: it lands now, and again on a running action's result. */
+  private act(fn: (s: GameState) => GameState, settle = true): void {
+    if (this.busy) this.replay.push(fn);
+    const s = fn(this.state);
+    if (settle) this.commitAndSettle(s); else this.commit(s);
+  }
+  /** A running action's result lands: what the player did meanwhile goes on top of it. */
+  private land(s: GameState): void {
+    this.keepTime(s);
+    const done = this.replay;
+    this.replay = [];
+    this.commitAndSettle(done.reduce((x, fn) => fn(x), s));
   }
   dismissJevOffline(): void { this.ui.jevOffline = null; this.emit(); }
 
   async post(text: string, trending: string[]) {
-    return this.run(async () => { const r = await postToY(this.state, this.router, text, trending, this.content); this.commitAndSettle(r.state); return r; }, 'post-input', text);
+    return this.run(async (s0) => { const r = await postToY(s0, this.router, text, trending, this.content); this.land(r.state); return r; }, 'post-input', text);
   }
   async reply(eventId: string, text: string) {
-    return this.run(async () => { const r = await replyToEvent(this.state, this.content, this.router, eventId, text, this.writer); this.commitAndSettle(r.state); return r; }, 'reply-body', text);
+    return this.run(async (s0) => { const r = await replyToEvent(s0, this.content, this.router, eventId, text, this.writer); this.land(r.state); return r; }, 'reply-body', text);
   }
   /** `field` is the reply box when it's a reply to a thread; the compose form keeps its text until it's sent. */
   async compose(to: string, subject: string, text: string, field?: string) {
-    return this.run(async () => { const r = await composeEmail(this.state, this.content, this.router, to, text, this.writer, subject); this.commitAndSettle(r.state); return r; }, field, text);
+    return this.run(async (s0) => { const r = await composeEmail(s0, this.content, this.router, to, text, this.writer, subject); this.land(r.state); return r; }, field, text);
   }
   /** Swaplist: message the seller of a listing; the reply is written in their character. */
   async swapMessage(n: number, text: string) {
-    return this.run(async () => { const r = await swapMessage(this.state, this.content, this.writer, n, text); this.commitAndSettle(r.state); return r; }, 'sl-msg', text);
+    return this.run(async (s0) => { const r = await swapMessage(s0, this.content, this.writer, n, text); this.land(r.state); return r; }, 'sl-msg', text);
   }
   /** Swaplist: offer an amount on a listing, or buy it (an accepted offer's amount, else the shown price). */
   async swapOffer(n: number, amount: number) {
-    return this.run(async () => { this.commitAndSettle(await swapOffer(this.state, this.content, this.writer, n, amount)); });
+    return this.run(async (s0) => { this.land(await swapOffer(s0, this.content, this.writer, n, amount)); });
   }
   async swapBuy(n: number) {
-    return this.run(async () => { this.commitAndSettle(await swapBuy(this.state, this.content, this.writer, n)); });
+    return this.run(async (s0) => { this.land(await swapBuy(s0, this.content, this.writer, n)); });
   }
   /** matchless.com: accept or reject the current profile on the client's account. */
-  matchlessSwipe(choice: 'yes' | 'no'): void { this.commit(matchlessSwipe(this.state, this.content, choice)); }
+  matchlessSwipe(choice: 'yes' | 'no'): void { this.act((s) => matchlessSwipe(s, this.content, choice), false); }
   /** The agent is always free-text promptable. Jev routes it to a build/fix or an ordinary reply. */
   async prompt(text: string) {
     this.pendingPrompt = text;
-    return this.run(async () => {
+    return this.run(async (s0) => {
       try {
         const started = Date.now();
-        const txBefore = this.state.tx.length;
-        const r = await promptAgent(this.state, this.content, this.router, text, this.writer);
+        const txBefore = s0.tx.length;
+        const r = await promptAgent(s0, this.content, this.router, text, this.writer);
         // Scripted replies come back instantly; hold them behind the typing dots like a generated one.
         const last = r.state.chat[r.state.chat.length - 1];
         if (last && last.from === 'agent' && last.src !== 'llm') await wait(replyDelay(last.text) - (Date.now() - started));
         // the reply lands first and the wallet is charged a beat later, so each makes its own sound
         const due = r.state.clockMin < CLOCK.sleep ? withholdCharge(r.state, txBefore) : 0;
-        this.pendingPrompt = null; this.charging = due; this.commitAndSettle(r.state);
+        this.pendingPrompt = null; this.charging = due; this.land(r.state);
         // a hack attempt: the agent moves it to agent-terminal, which opens after the reply
         if (r.terminal) this.openAgentTerm();
         if (due) {
@@ -662,7 +689,7 @@ export class GameStore {
     }, 'prompt-input', text);
   }
   async review(bizId: string, stars: number, text: string) {
-    return this.run(async () => { const r = await writeReview(this.state, this.content, this.router, bizId, stars, text); this.ui.reviewStars = 0; this.commitAndSettle(r.state); return r; });
+    return this.run(async (s0) => { const r = await writeReview(s0, this.content, this.router, bizId, stars, text); this.ui.reviewStars = 0; this.land(r.state); return r; });
   }
 
   /** Start pulling a model: the Terminal opens and shows the download, which takes a few seconds. */
@@ -755,10 +782,11 @@ export class GameStore {
   }
 
   async term(text: string) {
-    return this.run(async () => {
+    return this.run(async (s0) => {
       // a 0.5B model on this laptop: free, but it makes you wait
+      const r = await localPrompt(s0, text, DEEPSLEEP, DEEPSLEEP_PLEA.zh);
       await wait(1500 + Math.random() * 1500);
-      const r = await localPrompt(this.state, text, DEEPSLEEP, DEEPSLEEP_PLEA.zh); this.commitAndSettle(r.state); return r;
+      this.land(r.state); return r;
     });
   }
 }
