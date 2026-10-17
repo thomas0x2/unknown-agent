@@ -21,11 +21,12 @@ import { pageDoorDish } from './doordish';
 import { pageAdSite, adSiteTitle, adSiteIcon } from './adSites';
 import { pagePrince, PRINCE_ICON } from './prince';
 import { pageLonely, LONELY_ICON } from './lonely';
+import { pageSorry, SORRY_ICON } from './sorry';
 import { adHtml } from './ads';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount, appLogo } from './appsite';
-import { marketPosts, cranePosts, fillerToday, postMin, handleOf, playMinutes, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, SEED_PHRASE, inBin, isDeleted, CLOCK } from '../engine';
+import { marketPosts, cranePosts, fillerToday, postMin, handleOf, playMinutes, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, SEED_PHRASE, chatCost, type PaidChat, inBin, isDeleted, CLOCK } from '../engine';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 import { repoFiles, treeAt, fileSource } from './repoTree';
 import { yBio } from './y-bios';
@@ -61,7 +62,7 @@ function linkify(escaped: string): string {
 
 function tabTitle(r: Route, url: string): string {
   const names: Partial<Record<string, string>> = {
-    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', doordish: 'DoorDish', phish: 'Coinbin · Sign in', prince: 'Crypto Prince', lonely: 'Lonely.ai', forkyard: 'Forkyard',
+    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', doordish: 'DoorDish', phish: 'Coinbin · Sign in', prince: 'Crypto Prince', lonely: 'Lonely.ai', sorry: 'SorryWriter', forkyard: 'Forkyard',
     agent: 'agent', yowl: 'Yowl', weightroom: 'Weightroom', nullboard: 'nullboard', cellar: 'Cellar', app: url,
   };
   if (r.site === 'notfound') return url || 'New Tab';
@@ -79,7 +80,7 @@ export function tabsHtml(store: GameStore): string {
     // a deployed app with a logo shows it as its favicon
     const app = rr.site === 'app' && rr.param ? getApp(store.state, rr.param.split('/')[0]) : undefined;
     // ad sites (and Spin Cycle's raw feed) show their brand's mark
-    const logo = (app && appLogo(app.template)) || (rr.site === 'adsite' ? adSiteIcon(rr.param ?? '') : rr.site === 'spinfeed' ? adSiteIcon('spincycle.test') : rr.site === 'prince' ? PRINCE_ICON : rr.site === 'lonely' ? LONELY_ICON : undefined);
+    const logo = (app && appLogo(app.template)) || (rr.site === 'adsite' ? adSiteIcon(rr.param ?? '') : rr.site === 'spinfeed' ? adSiteIcon('spincycle.test') : rr.site === 'prince' ? PRINCE_ICON : rr.site === 'lonely' ? LONELY_ICON : rr.site === 'sorry' ? SORRY_ICON : undefined);
     const n = !badged.has(rr.site) ? counts[rr.site] ?? 0 : 0;
     badged.add(rr.site);
     return `<div class="tab${t.id === store.active ? ' on' : ''}${t.pinned ? ' pinned' : ''}" data-tab="${t.id}" role="tab" aria-selected="${t.id === store.active}" tabindex="0">
@@ -248,6 +249,7 @@ export function page(store: GameStore, r: Route): string {
     case 'phish': return pagePhish(store);
     case 'prince': return pagePrince(store);
     case 'lonely': return pageLonely(store);
+    case 'sorry': return pageSorry(store);
     case 'adsite': return pageAdSite(r.param ?? '', store.state, store.ui.adNotice);
     default: return pageUnderground(r.def?.label ?? r.site);
   }
@@ -886,6 +888,13 @@ function pageApp(store: GameStore, param?: string): string {
 
 // ── agent chat (free-promptable, with costs) ──
 /** The line under the prompt box: the exact price of what's typed, split into its two charges. */
+/** The price line under a paid ad-site chat (lonely.ai, sorrywriter.ai), like agent.chat's. */
+export function chatCostLine(s: GameState, chat: PaidChat, text: string): { text: string; over: boolean } {
+  const p = chatCost(chat, text);
+  if (!p.words) return { text: `${fmtMoney(p.base)} per message + ${fmtMoney(p.perWord)} per word`, over: false };
+  const w = `${p.words} word${p.words > 1 ? 's' : ''}`;
+  return { text: `${fmtMoney(p.total)} = ${fmtMoney(p.base)} per message + ${fmtMoney(p.wordFee)} for ${w} × ${fmtMoney(p.perWord)}`, over: p.total > s.values.crypto };
+}
 export function costLine(s: GameState, text: string): { text: string; over: boolean } {
   const p = promptCost(s.values.agentLevel, text);
   const rate = `${fmtMoney(p.base)} per prompt + ${fmtMoney(p.perWord)} per word`;

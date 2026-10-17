@@ -4,6 +4,7 @@
  */
 import { type MeterId, initialMeters } from './values';
 import type { LonelyChat } from './lonely';
+import type { SorryChat } from './sorry';
 import { makeSeed } from './rng';
 import { CLOCK } from './config';
 
@@ -328,6 +329,8 @@ export interface GameState {
   stocks?: Record<string, { shares: number; cost: number }>;
   /** lonely.ai's chat with Mia (engine/lonely.ts). */
   lonely?: LonelyChat;
+  /** sorrywriter.ai's chat (engine/sorry.ts). */
+  sorry?: SorryChat;
   /** Trader buy-in stake value (0 = none). */
   stake: number;
   /** Interview answers the player sent the journalist, quoted in her day 7 article. */

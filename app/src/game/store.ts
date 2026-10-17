@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, buyStock, sellStock, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, fileRentAppeal, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes, wakeApps,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, buyStock, sellStock, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, clone, fileRentAppeal, donateCrane, craneDonations, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes, wakeApps,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -14,6 +14,8 @@ import { route, visitedFlag } from '../sites/registry';
 import { adSite } from '../sites/adSites';
 import { PULL_MS, pullLines } from './pull';
 import { DEEPSLEEP_LINES, DEEPSLEEP_PLEA } from '../engine/deepsleep';
+import { MISSES } from './misses';
+import { haikuApology } from './haiku';
 
 /**
  * A browser tab. back/fwd are the pages behind and ahead of it, like a real browser's history. A
@@ -93,6 +95,10 @@ export class GameStore {
     seedShown: false,
     /** lonely.ai: Mia is typing. */
     lonelyTyping: false,
+    /** lonely.ai / sorrywriter.ai: why the last message wasn't sent (the wallet couldn't cover it). */
+    chatError: '',
+    /** sorrywriter.ai: the apology is being written. */
+    sorryTyping: false,
     /** An ad site's working button: the line under it (rentboard.gov's appeal). */
     adNotice: '',
     /** An action Jev was needed for and couldn't be reached: why, and the text to put back in its box. */
@@ -267,7 +273,7 @@ export class GameStore {
   /** First visit to a site that is bookmarked only after you've been there: add the bookmark. */
   private markVisited(url: string): void {
     const r = route(url, this.state);
-    this.ui.adNotice = '';
+    this.ui.adNotice = ''; this.ui.chatError = '';
     // an ad site can introduce a site it links to (deepsleep.ai links to Weightroom)
     const unlocks = r.site === 'adsite' && r.param ? adSite(r.param)?.unlocks : undefined;
     if (unlocks && !this.state.flags.includes(unlocks)) { this.state.flags.push(unlocks); this.state.flags.sort(); this.store.save(this.state); }
@@ -387,7 +393,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = HOME_TAB; this.nextTab = PINNED.length + 1;
-    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, reposted: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', princeError: '', seedShown: false, lonelyTyping: false, adNotice: '', jevOffline: null, yUnread: 0 };
+    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, reposted: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', princeError: '', seedShown: false, lonelyTyping: false, chatError: '', sorryTyping: false, adNotice: '', jevOffline: null, yUnread: 0 };
     this.store.save(this.state);
     this.emit();
   }
@@ -453,12 +459,43 @@ export class GameStore {
     if (r.error) { this.emit(); return; }
     this.commitAndSettle(r.state);
   }
+  /** crane2026.vote: donate 5 DOLR to the Crane Victory Fund. */
+  craneDonate(): void {
+    const r = donateCrane(this.state);
+    const n = craneDonations(r.state);
+    this.ui.adNotice = r.error ?? (n > 1 ? `Thank you. That's ${n} donations. Randall has been told.` : 'Thank you. Your donation of 5 DOLR has been received.');
+    if (r.error) { this.emit(); return; }
+    this.commitAndSettle(r.state);
+  }
   /** lonely.ai: the player's message, then Mia's scripted reply after a short "typing". */
-  lonelySend(text: string): void {
-    if (this.ui.lonelyTyping) return;
-    this.commitAndSettle(lonelySay(this.state, text));
+  lonelySend(text: string): boolean {
+    if (this.ui.lonelyTyping) return false;
+    const s = clone(this.state);
+    this.ui.chatError = chargeChat(s, 'lonely', text) ?? '';
+    if (this.ui.chatError) { this.emit(); return false; }
+    this.commitAndSettle(lonelySay(s, text));
     this.ui.lonelyTyping = true; this.emit();
     setTimeout(() => { this.ui.lonelyTyping = false; this.commitAndSettle(lonelyReply(this.state)); }, 1400);
+    return true;
+  }
+  /** sorrywriter.ai: bill the message, then Haiku writes the apology (scripted if it can't, or if the message is over the cap). */
+  sorrySend(text: string): boolean {
+    if (this.ui.sorryTyping) return false;
+    const s = clone(this.state);
+    this.ui.chatError = chargeChat(s, 'sorry', text) ?? '';
+    if (this.ui.chatError) { this.emit(); return false; }
+    const history = sorryChat(s).msgs.map((m) => ({ from: m.from === 'you' ? 'player' : 'self', text: m.text }));
+    this.commitAndSettle(sorrySay(s, text));
+    this.ui.sorryTyping = true; this.emit();
+    void (async () => {
+      const started = Date.now();
+      const long = sorryTooLong(text);
+      const h = long || MISSES.settings.misses === 'scripted' ? { text: null } : await haikuApology(text, MISSES.settings.haikuVia, history);
+      await wait(1400 - (Date.now() - started));
+      this.ui.sorryTyping = false;
+      this.commitAndSettle(sorryReply(this.state, h.text ?? sorryScripted(this.state, long), h.text ? 'llm' : 'scripted'));
+    })();
+    return true;
   }
   /** Coinbin's Show/Hide recovery phrase. */
   toggleSeed(): void { this.ui.seedShown = !this.ui.seedShown; this.ui.cbNotice = ''; this.emit(); }

@@ -71,8 +71,29 @@ async function write(body) {
   const said = String(body.text ?? '').slice(0, 400);
   const earlier = historyBlock(body.history);
   messages.push({ role: 'user', content: earlier ? `${earlier}\n\nThe player now writes:\n${said}` : said });
+  return runWriter(system, messages, body.via);
+}
+
+// SorryWriter (sorrywriter.ai): the player says what they did, Haiku writes their apology. Like
+// write(), the prompt is fixed here and the input capped, so it only ever writes apologies.
+const APOLOGY_SYSTEM =
+  'You are SorryWriter, an app in a satirical game that writes apologies for people. The user tells you what they did ' +
+  'and who to. Write the apology in their voice, addressed to that person, ready to send. The apology is far out of ' +
+  'proportion to the mistake: the writer blames themselves much too hard, reads a small slip as proof of deep personal ' +
+  'failings, and brings up unrelated faults of their own. Keep the tone sincere and plain, never jokey or theatrical; ' +
+  'the excess is the only joke. If the message is not about something to apologise for, write an apology for it anyway. ' +
+  '3 to 5 sentences of plain text, no subject line, no sign-off name, no quotes, no emoji.';
+
+async function apology(body) {
+  const said = String(body.text ?? '').slice(0, 2000);
+  const earlier = historyBlock(body.history);
+  const messages = [{ role: 'user', content: earlier ? `${earlier}\n\nThe user now writes:\n${said}` : said }];
+  return runWriter(APOLOGY_SYSTEM, messages, body.via);
+}
+
+async function runWriter(system, messages, via) {
   const started = Date.now();
-  if (body.via === 'subscription') return writeWithCli(system, messages, started);
+  if (via === 'subscription') return writeWithCli(system, messages, started);
   const client = await getAnthropic();
   if (!client) return { status: 501, json: { error: ANTHROPIC_KEY ? 'The proxy could not load @anthropic-ai/sdk (run npm install).' : 'ANTHROPIC_API_KEY is not set in app/.env.' } };
   const res = await client.messages.create({
@@ -216,6 +237,7 @@ async function buildMatch(sdk, body) {
 
 async function handle(kind, body) {
   if (kind === 'write') return write(body);
+  if (kind === 'apology') return apology(body);
   const client = await getClient();
   if (!client) return { status: 501, json: { error: KEY ? 'The proxy could not load @typesafe-ai/sdk (run npm install).' : 'TYPESAFE_API_KEY is not set in app/.env.' } };
   const sdk = await import('@typesafe-ai/sdk');

@@ -186,7 +186,7 @@ function render(): void {
   const dve = $('#devedit')!; const showEdit = store.ui.dev && store.ui.devEdit; dve.hidden = !showEdit; if (showEdit) dve.innerHTML = store.ui.devTab === 'jev' ? jevTestsHtml(store) : devEditHtml(store);
 
   if (site === 'agent') { const log = $('#ua-log'); const read = returning ? scrolls.get(key)!['#ua-log'] : undefined; if (log && !(read && !read[2])) log.scrollTop = log.scrollHeight; updateCost(); }
-  if (site === 'lonely') { const log = $('#lo-log'); if (log) log.scrollTop = log.scrollHeight; }
+  if (site === 'lonely' || site === 'sorry') { const log = $(site === 'lonely' ? '#lo-log' : '#sw-log'); if (log) log.scrollTop = log.scrollHeight; updateCost(); }
   applySendFx(vp, store.busy);
   lastSite = site;
 }
@@ -270,6 +270,13 @@ JEV.onChange(render);
 void JEV.probe();
 
 function updateCost(): void {
+  for (const [chat, estId, inputId] of [['lonely', '#lo-cost', '#lonely-input'], ['sorry', '#sw-cost', '#sorry-input']] as const) {
+    const est = $(estId); const input = $<HTMLTextAreaElement>(inputId);
+    if (!est || !input) continue;
+    const c = V.chatCostLine(store.state, chat, input.value);
+    est.textContent = c.text;
+    est.classList.toggle('neg', c.over);
+  }
   const est = $('#cost-est'); const input = $<HTMLTextAreaElement>('#prompt-input');
   if (!est || !input) return;
   const c = V.costLine(store.state, input.value);
@@ -334,6 +341,7 @@ document.addEventListener('click', (e) => {
   else if (d.act === 'seed-show') store.toggleSeed();
   else if (d.act === 'seed-copy') copySeedPhrase();
   else if (d.act === 'rent-appeal') store.rentAppeal();
+  else if (d.act === 'crane-donate') store.craneDonate();
   else if (d.act === 'sw-sell') { if (store.trade(t.dataset.ticker!, 'sell', val('#sw-amount').trim())) clearField('sw-amount'); }
   else if (d.act === 'sw-sell-all') { if (store.trade(t.dataset.ticker!, 'sell', 'all')) clearField('sw-amount'); }
   else if (d.act === 'sleep') store.endDay();
@@ -392,7 +400,8 @@ document.addEventListener('submit', (e) => {
   if (kind === 'dev-flag') { const v = val('#dev-flag-name').trim(); if (v) store.devSetFlag(v, true); return; }
   if (kind === 'phish') { store.phish(val('#ph-pass')); return; }
   if (kind === 'prince') { store.princeClaim(val('#pr-seed')); return; }
-  if (kind === 'lonely') { const v = val('#lonely-input').trim(); if (v && !store.ui.lonelyTyping) { SOUND.play('send'); clearField('lonely-input'); store.lonelySend(v); } return; }
+  if (kind === 'lonely') { const v = val('#lonely-input').trim(); if (v && store.lonelySend(v)) { SOUND.play('send'); clearField('lonely-input'); } return; }
+  if (kind === 'sorry') { const v = val('#sorry-input').trim(); if (v && store.sorrySend(v)) { SOUND.play('send'); clearField('sorry-input'); } return; }
   if (kind === 'sw-trade') { if (store.trade(f.dataset.ticker!, 'buy', val('#sw-amount').trim())) clearField('sw-amount'); return; }
   if (kind === 'cb-send') { store.send(val('#cb-to').trim(), val('#cb-amount').trim()); return; }
   if (kind === 'url') { newPageLoad(); store.navigate(val('#nt-url') || val('#address')); }
@@ -464,7 +473,7 @@ document.addEventListener('input', (e) => {
   if (el.id === 'y-search') store.setYSearch(el.value);
   else if (el.id === 'yowl-search') store.setYowlSearch(el.value);
   else if (el.id === 'fy-search-input') store.setFySearch(el.value);
-  else if (el.id === 'prompt-input') updateCost();
+  else if (el.id === 'prompt-input' || el.id === 'lonely-input' || el.id === 'sorry-input') updateCost();
   else if (el.id === 'mail-to') { syncMailTo(); showSuggestions(el); }
   else if (el.id === 'snd-vol') SOUND.setVolume(Number(el.value) / 100);
 });

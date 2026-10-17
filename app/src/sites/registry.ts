@@ -7,7 +7,7 @@ import { adSite } from './adSites';
 
 export type SiteId =
   | 'y' | 'qmail' | 'qdrive' | 'coinbin' | 'sherwood' | 'doordish' | 'forkyard' | 'agent' | 'yowl'
-  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'phish' | 'prince' | 'lonely' | 'adsite' | 'app' | 'newtab' | 'notfound';
+  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'phish' | 'prince' | 'lonely' | 'sorry' | 'adsite' | 'app' | 'newtab' | 'notfound';
 
 export interface SiteDef {
   id: SiteId;
@@ -48,6 +48,8 @@ export const SITES: SiteDef[] = [
   { id: 'prince', base: 'prince-claims.xyz', label: 'Crypto Prince', group: 'web', reachable: always },
   // the dating chat from the Lonely.ai banner ad (engine/lonely.ts)
   { id: 'lonely', base: 'lonely.ai', label: 'Lonely.ai', group: 'web', reachable: always },
+  // the apology chat from the SorryWriter banner ad (engine/sorry.ts)
+  { id: 'sorry', base: 'sorrywriter.ai', label: 'SorryWriter', group: 'web', reachable: always },
 ];
 
 export interface Route {

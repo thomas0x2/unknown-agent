@@ -27,3 +27,15 @@ describe('rentboard.gov appeals', () => {
     expect(rentAppeals(fileRentAppeal(s1).state)).toBe(2);
   });
 });
+
+describe('crane2026.vote donations', () => {
+  it('takes 5 DOLR per press while the wallet allows', async () => {
+    const { donateCrane, craneDonations } = await import('./donations');
+    const s0 = newGame();
+    s0.values.crypto = 12;
+    const s2 = donateCrane(donateCrane(s0).state).state;
+    expect(s2.values.crypto).toBe(2);
+    expect(craneDonations(s2)).toBe(2);
+    expect(donateCrane(s2).error).toMatch(/5 DOLR/);
+  });
+});

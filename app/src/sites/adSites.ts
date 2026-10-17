@@ -88,6 +88,7 @@ export const AD_SITES: AdSite[] = [
       ['The Candidate', 'Randall Crane has never used a computer. His staff use them for him, around the clock.'],
     ],
     fine: 'Paid for by Crane Victory Fund. Not authorised by any computer. Website maintained by GeneralAI.',
+    action: ['Donate 5 DOLR', 'crane-donate'],
   },
   {
     url: 'crane2026.vote/jobs', brand: 'Crane Victory Fund', kit: 'campaign', theme: 'crane', mark: '★',
@@ -232,17 +233,6 @@ export const AD_SITES: AdSite[] = [
       ['Engagement', 'Monthly reports on views, shares and condolences.'],
     ],
     fine: 'Packages renew every year. Renewal notices are sent to the deceased.',
-  },
-  {
-    url: 'sorrywriter.ai', brand: 'SorryWriter', kit: 'soft', theme: 'grief', mark: '✉',
-    kicker: 'Apologies, written for you', title: 'Say sorry like you mean it.',
-    lead: 'Tell SorryWriter what happened. It writes an apology in your voice, sized to the mistake.',
-    cards: [
-      ['Any occasion', 'Missed birthdays, forgotten anniversaries, things said at dinner.'],
-      ['Your voice', 'Connect your email and SorryWriter writes the way you do, typos included.'],
-      ['Follow-ups', 'If they don’t reply, SorryWriter sends a second apology about the first.'],
-    ],
-    fine: 'Some recipients use SorryWriter too. Conversations between two accounts may continue without either of you.',
   },
   {
     url: 'cryolater.com', brand: 'Cryo-Later', kit: 'clinic', theme: 'cryo', mark: '❄',

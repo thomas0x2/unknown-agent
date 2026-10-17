@@ -34,3 +34,19 @@ export async function haikuReply(ch: Character, text: string, via: 'subscription
   ];
   return reply ? { text: reply, debug } : { text: null, note: `Haiku's reply was unusable: ${raw.slice(0, 80) || data.stop}`, debug };
 }
+
+/** sorrywriter.ai: Haiku writes the player's apology (POST /api/apology; the prompt lives in the proxy). */
+export async function haikuApology(text: string, via: 'subscription' | 'api', history: HistoryLine[] = []): Promise<{ text: string | null; note?: string }> {
+  try {
+    const res = await fetch('/api/apology', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, via, history: history.slice(-12) }),
+    });
+    const data: any = await res.json().catch(() => ({}));
+    if (!res.ok) return { text: null, note: data.error || `proxy returned ${res.status}` };
+    const out = String(data.text ?? '').trim();
+    return out ? { text: out } : { text: null, note: 'Haiku returned nothing' };
+  } catch {
+    return { text: null, note: 'the proxy is not running (npm run proxy)' };
+  }
+}

@@ -145,6 +145,15 @@
 .lp-btn { font: 700 15px var(--lp-font); padding: 11px 22px; border: 1px solid currentColor; border-radius: 2px; background: var(--lp-accent); color: var(--lp-accent-ink); cursor: pointer; }
 .lp-notice { margin: 10px 0 0; font-size: 14px; }
 
+/* the paid chats: a refused message, and lonely.ai's fine print */
+.ua-err { margin: 0 0 6px; font-size: 13px; color: #c0392b; }
+.lo-fine { margin: 0; padding: 4px 16px; font-size: 12px; color: var(--ua-dim); text-align: center; }
+
+/* sorrywriter.ai: agent.chat's chat layout in SorryWriter's lilac (ui/sorry.ts) */
+.ua.sorry { --ua-bg: #f7f3fb; --ua-panel: #fff; --ua-ink: #2e2340; --ua-dim: #6e6182; --ua-line: #e2d8ee; --ua-you: #3a2b52; }
+.sorry .ua-text { font-family: Georgia, serif; font-size: 15px; line-height: 1.55; background: #fff; border: 1px solid var(--ua-line); border-radius: 14px; padding: 12px 16px; flex: 0 1 auto; max-width: min(85%, 600px); }
+.sw-avatar { display: inline-grid; place-items: center; width: 32px; height: 32px; flex: none; border-radius: 50%; background: #3a2b52; color: #f4eefb; font-size: 15px; }
+
 /* lonely.ai: agent.chat's chat layout in dating-app pink (ui/lonely.ts) */
 .ua.lonely { --ua-bg: #fff3f7; --ua-panel: #fff; --ua-ink: #4a1730; --ua-dim: #85546b; --ua-line: #f6cfdc; --ua-you: #e0336f; }
 .lonely .ua-bubble { border-radius: 18px 18px 4px 18px; }
