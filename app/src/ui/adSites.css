@@ -139,3 +139,14 @@
 .pr-claim textarea { font: 15px/1.4 var(--f-mono); color: #1a00ff; background: #fff; border: 2px solid #1a00ff; border-radius: 8px; padding: 10px 12px; resize: vertical; }
 .pr-err { margin: 0; color: #d4002a; font-weight: 700; font-size: 14px; }
 .pr-btn { font: 900 18px var(--lp-font); padding: 14px 24px; border: 0; border-radius: 999px; background: var(--lp-accent); color: var(--lp-accent-ink); cursor: pointer; box-shadow: 0 6px 18px rgba(255, 0, 168, .35); }
+
+/* lonely.ai: agent.chat's chat layout in dating-app pink (ui/lonely.ts) */
+.ua.lonely { --ua-bg: #fff3f7; --ua-panel: #fff; --ua-ink: #4a1730; --ua-dim: #85546b; --ua-line: #f6cfdc; --ua-you: #e0336f; }
+.lonely .ua-bubble { border-radius: 18px 18px 4px 18px; }
+.lonely .ua-text { font-family: var(--f-ui); font-size: 14.5px; line-height: 1.5; background: #fff; border: 1px solid var(--ua-line); border-radius: 18px 18px 18px 4px; padding: 10px 14px; flex: 0 1 auto; max-width: min(80%, 560px); }
+.lo-avatar { display: inline-grid; place-items: center; width: 32px; height: 32px; flex: none; border-radius: 50%; background: linear-gradient(135deg, #ff9ab8, #e0336f); color: #fff; font-weight: 700; font-size: 14px; }
+.ua-brand .lo-avatar { width: 40px; height: 40px; font-size: 17px; }
+.lonely .ua-brand b { font-family: var(--f-ui); font-weight: 700; font-size: 15px; }
+.lo-logo { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: #e0336f; }
+.lo-logo svg { width: 18px; height: 18px; }
+.lo-intro { align-self: center; margin: 24px 0; color: var(--ua-dim); font-size: 14px; }

@@ -186,6 +186,7 @@ function render(): void {
   const dve = $('#devedit')!; const showEdit = store.ui.dev && store.ui.devEdit; dve.hidden = !showEdit; if (showEdit) dve.innerHTML = store.ui.devTab === 'jev' ? jevTestsHtml(store) : devEditHtml(store);
 
   if (site === 'agent') { const log = $('#ua-log'); const read = returning ? scrolls.get(key)!['#ua-log'] : undefined; if (log && !(read && !read[2])) log.scrollTop = log.scrollHeight; updateCost(); }
+  if (site === 'lonely') { const log = $('#lo-log'); if (log) log.scrollTop = log.scrollHeight; }
   applySendFx(vp, store.busy);
   lastSite = site;
 }
@@ -390,6 +391,7 @@ document.addEventListener('submit', (e) => {
   if (kind === 'dev-flag') { const v = val('#dev-flag-name').trim(); if (v) store.devSetFlag(v, true); return; }
   if (kind === 'phish') { store.phish(val('#ph-pass')); return; }
   if (kind === 'prince') { store.princeClaim(val('#pr-seed')); return; }
+  if (kind === 'lonely') { const v = val('#lonely-input').trim(); if (v && !store.ui.lonelyTyping) { SOUND.play('send'); clearField('lonely-input'); store.lonelySend(v); } return; }
   if (kind === 'sw-trade') { if (store.trade(f.dataset.ticker!, 'buy', val('#sw-amount').trim())) clearField('sw-amount'); return; }
   if (kind === 'cb-send') { store.send(val('#cb-to').trim(), val('#cb-amount').trim()); return; }
   if (kind === 'url') { newPageLoad(); store.navigate(val('#nt-url') || val('#address')); }

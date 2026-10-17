@@ -39,7 +39,7 @@ const FAV: Record<string, [string, string]> = {
   keller: ['#0d2347', '#e8c35a'], dolr: ['#0e5e3a', '#2cff95'],
   steadfast: ['#13314d', '#fff'], pod: ['#2d2a24', '#ebe6dc'], guard: ['#07120c', '#7dff9b'], news: ['#151515', '#fff'],
   grief: ['#3a2b52', '#f4eefb'], casket: ['#1d1d22', '#d9d9de'], cryo: ['#1f7fc2', '#fff'], pharma: ['#12a3a3', '#fff'],
-  lonely: ['#e0336f', '#fff'], mind: ['#1b0b3a', '#ff9d3d'], ministry: ['#4a4f38', '#ece6d2'], bean: ['#4a2a18', '#fbe9d2'],
+  mind: ['#1b0b3a', '#ff9d3d'], ministry: ['#4a4f38', '#ece6d2'], bean: ['#4a2a18', '#fbe9d2'],
   spin: ['#1f6fbd', '#ffe14a'], iron: ['#ff2e2e', '#fff'], deep: ['#8fa4ff', '#0b1630'],
 };
 

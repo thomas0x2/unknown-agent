@@ -3,7 +3,7 @@
  * landing page in the sponsor's style. For now they're brochures with nothing to click, apart from
  * the odd link to a real site (deepsleep.ai links to Weightroom, Spin Cycle to its feed). Ads for sites that already exist
  * (EMPIRE, the coinbln.com phishing page, the prince-claims.xyz scam,
- * DoorDish, agent.chat/models) aren't here. Rendered by ui/adSites.ts; routed by sites/registry.ts.
+ * the lonely.ai chat, DoorDish, agent.chat/models) aren't here. Rendered by ui/adSites.ts; routed by sites/registry.ts.
  */
 
 import { citizenScore, citizenBand, type GameState } from '../engine';
@@ -276,17 +276,6 @@ export const AD_SITES: AdSite[] = [
       ['Rent', 'All-inclusive, reviewed monthly against your income.'],
     ],
     fine: 'Belongings left in a pod at shift change are moved to the shared kitchen.',
-  },
-  {
-    url: 'lonely.ai', brand: 'Lonely.ai', kit: 'soft', theme: 'lonely', mark: '♥',
-    kicker: 'Dating, for now', title: 'Meet someone who gets it.',
-    lead: 'Lonely.ai matches you with people nearby going through the same thing. Right now, that’s most people.',
-    cards: [
-      ['Real matches', 'Every profile is verified by our AI, which also writes it.'],
-      ['Common ground', 'Filter by former employer, layoff date and months of rent left.'],
-      ['Free to join', 'Messaging from 3 DOLR a week.'],
-    ],
-    fine: 'Some members are generated to keep the community active. We don’t say which.',
   },
   {
     url: 'mindsetdaily.co/4am', brand: 'Mindset Daily', kit: 'scam', theme: 'mind', mark: '☀',
