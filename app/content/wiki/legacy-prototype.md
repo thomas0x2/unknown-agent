@@ -5,7 +5,7 @@ category: writers
 from: 1
 ---
 
-Material that exists only in the old prototype (`src/story.js`, root `README.md`). Not canon. Reusable as raw material, but its names, prices and dollar amounts are superseded.
+Material that exists only in the old prototype (`legacy/story.js`, `legacy/README.md`). Not canon. Reusable as raw material, but its names, prices and dollar amounts are superseded.
 
 ## GeneralAI as a shell company
 

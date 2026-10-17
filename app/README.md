@@ -1,8 +1,9 @@
 # Unknown Agent — days 1–7
 
 The playable first week, built on the mechanics spec. Engine-first TypeScript + Vite; the UI is the
-**legacy game's exact interface and stylesheet** (`../src/style.css`), driven by the new engine. No
-framework — a vanilla controller fills the same browser shell the legacy game uses.
+**legacy game's interface and stylesheet** (`src/style.css`), driven by the new engine. No
+framework — a vanilla controller fills the same browser shell the legacy game used. The legacy game
+itself is gone; its story text and README are kept in `../legacy/` as raw material.
 
 ## Run
 

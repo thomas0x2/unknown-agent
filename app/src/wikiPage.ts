@@ -7,7 +7,7 @@
  * There's no game here, so "view as" picks the day, time and flags to judge the tags by. What has
  * reached the player by then (for "if seen" rules and embeds) is estimated from each event's trigger.
  */
-import '../../src/style.css';
+import './style.css';
 import { loadContent } from './content/load';
 import { onWikiFiles } from './content/wikiFiles';
 import { wikiView, wikiClickIn, wikiInputIn, clock, embedItem, itemIds, type WikiHost } from './ui/wiki';

@@ -1,8 +1,8 @@
 /*
  * The view: pure functions that return the legacy game's exact markup (class for class) from the
  * store. main.ts owns the DOM and drops these strings into the shell slots. Styling comes from the
- * legacy stylesheet (../../src/style.css); nothing here invents new classes. Each site's pages live
- * in ui/view/; this file re-exports what main.ts and the tests use.
+ * stylesheet carried over from the legacy game (src/style.css); nothing here invents new classes. Each
+ * site's pages live in ui/view/; this file re-exports what main.ts and the tests use.
  */
 export { fmtClock } from './view/common';
 export { tabsHtml, bookmarksHtml, addressValue, viewportSite, objective, rentLine, rentLow, clockHtml, taskTitle, tasksHtml, startMenuHtml } from './view/chrome';
