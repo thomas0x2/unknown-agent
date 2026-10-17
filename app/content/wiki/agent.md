@@ -58,6 +58,10 @@ from: 1
 - [public] {{mail:d7_gai_policy}}
 - [public] {{article:usage-policy}}
 
+## If account_suspended: Signed out
+
+[public] Once [[GeneralAI]] suspends the player's account for misuse, agent.chat shows only "You've been signed out. Your session ended at (time). This account has been suspended. Check your email for details." agent-terminal prints "session terminated by remote host: account suspended (GeneralAI Trust & Safety)" and takes no more prompts.
+
 ## If hacked_generalai: The outage
 
 [public] The day [[GeneralAI]] is hacked, agent is down until the next morning: agent.chat answers every prompt with an error ("You have not been billed for this message.") and agent-terminal prints "error: could not reach api.generalai.com (503 Service Unavailable). prompt not sent, not billed." A build or fix already underway is pushed overnight. Models running locally in the [[Terminal]] still work.
@@ -66,5 +70,5 @@ from: 1
 
 - Chat UI and Models page: `app/src/ui/view.ts` (`pageAgent`, `pageModels`). Prices `AGENT_COST`, speed `AGENT_WORK`, rollouts `AGENT_ROLLOUT`, policy `AGENT_POLICY` in `app/src/engine/config.ts`. Hints, roasts and morning lines in `app/content/agent.json`. Terminal hacks `app/src/engine/hacks.ts` (PR #205).
 - Two modes: scripted hits (Jev matches the prompt to a hint or story beat; short, useful, mildly dry) and misses (off-topic prompts; Gemma/Haiku as a "funny but mean" pay-per-prompt bot, one sentence). When a miss is a real question about the world, it should answer it from the wiki; the roast is a light touch, not the whole reply (the owner noted Haiku answers but keeps roasting).
-- Before day 7 agent does anything asked, hacks and deepfakes included. From day 7 working workarounds land the result with misuse +10 and leash +5; misuse ≥ 100 from day 17 = Account Terminated; higher models are less leashed by design (Botnet ending, leash ≥ 80 from day 18). The guardrail mini-game is a placeholder (`cover_story`). Component bug chance 50/25/12/6/2% by model; the first deploy always ships at least one bug.
+- Before day 7 agent does anything asked, hacks and deepfakes included. From day 7 every prompt Jev's policy read calls illegal raises misuse, in agent.chat and agent-terminal (each guardrail mini-game move too), refused or not: blunt +20, framed +10, framed and after private data +15 (`AGENT_POLICY`, `recordMisuse` in `agent.ts`). A workaround that lands adds leash +5. At misuse 100 `suspendAccount` sets `s.suspended` and flag `account_suspended`, signs agent.chat out (`pageSignedOut`), ends agent-terminal's session (`SUSPENDED_TERM`), sends Trust & Safety's suspension email (`SUSPENSION_MAIL`) and 2.5 s later switches the browser to it (store `watchSuspension`); 20 game minutes later the knock (the eviction sound) ends the run as Caught (`knockIfDue` in `core.ts`), or that night if the day ends first. The misuse warning at 40 is still config only; higher models are less leashed by design (Botnet ending, leash ≥ 80 from day 18). The guardrail mini-game is a placeholder (`cover_story`). Component bug chance 50/25/12/6/2% by model; the first deploy always ships at least one bug.
 - agent-terminal appears the first time agent moves a hack there; the first hack job is day 5 (Bean There), so the section is gated at day 5.

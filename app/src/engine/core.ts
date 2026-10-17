@@ -5,7 +5,7 @@
 import type { GameState, MailEntry } from './state';
 import { type MeterId, clampMeter } from './values';
 import { nextRandom } from './rng';
-import { CLOCK } from './config';
+import { CLOCK, AGENT_POLICY } from './config';
 import { agentDown } from './outage';
 
 export function clone(state: GameState): GameState {
@@ -55,6 +55,15 @@ export function advanceClock(s: GameState, minutes: number): void {
   s.clockMin = Math.min(CLOCK.sleep, s.clockMin + minutes);
   deliverPendingMail(s);
   deliverAgentWork(s);
+  knockIfDue(s);
+}
+
+/** A while after GeneralAI suspends the account for misuse, someone is at the door: the run ends. */
+export function knockIfDue(s: GameState): void {
+  if (!s.suspended || s.ending || gameMinutes(s) < s.suspended.at + AGENT_POLICY.knockAfter) return;
+  s.ending = 'caught';
+  s.phase = 'ended';
+  log(s, `Ending: ${s.ending}`, 'ending');
 }
 
 /**

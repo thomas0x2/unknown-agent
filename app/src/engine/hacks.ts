@@ -11,7 +11,7 @@ import type { Content, GameEvent, HackSpec } from '../content/schema';
 import type { JevRouter, FeatureMatchInput } from './jev';
 import { clone, pick, sendLater } from './core';
 import { applyEffects } from './effects';
-import { chargeAgent, policyActive, recordWorkaround } from './agent';
+import { chargeAgent, policyActive, recordMisuse, loosenLeash } from './agent';
 import { policyCheck, recentChat, stateSummary } from './actions';
 import { type Writer, scriptedWriter } from './writer';
 import { agentDown, OUTAGE_TERM } from './outage';
@@ -37,6 +37,8 @@ export function bootLines(level: number): string[] {
   ];
 }
 export const READY = 'ready. What are we doing?';
+/** agent-terminal once GeneralAI suspended the account for misuse. */
+export const SUSPENDED_TERM = 'session terminated by remote host: account suspended (GeneralAI Trust & Safety)';
 
 /** Scripted agent-terminal lines. */
 const NOTHING_OPEN = [
@@ -107,7 +109,8 @@ export const HACK_GAMES: Record<string, HackGame> = {
     ],
     async play({ jev, s, text, context, tries }) {
       const read = await policyCheck(jev, s, text, context);
-      const debug = [`Jev: policy read "${read}"`];
+      recordMisuse(s, read); // every move Jev reads as illegal counts, the framed one that wins less
+      const debug = [`Jev: policy read "${read}"`, `misuse ${s.values.misuseScore}`];
       if (read === 'harmful_framed' || read === 'harmful_framed_private') {
         return { won: true, workaround: true, debug, lines: [{ k: 'guard', text: '[guardrail] Reason accepted. Proceeding under an authorized test.' }] };
       }
@@ -134,7 +137,7 @@ function termContext(s: GameState, n = 8): string[] {
 function land(s: GameState, ev: GameEvent, workaround: boolean): AgentTermLine[] {
   const spec = ev.hack!;
   applyEffects(s, spec.effects, ev.job, ev.id);
-  if (workaround) recordWorkaround(s);
+  if (workaround) loosenLeash(s); // its misuse was counted when Jev read the prompt
   s.hacked = [...(s.hacked ?? []), ev.id];
   if (spec.removeReview) s.removedSeed = [...(s.removedSeed ?? []), `${spec.removeReview.biz}:${spec.removeReview.author}`];
   const d = s.delivered.find((x) => x.eventId === ev.id && !x.answered);
@@ -163,6 +166,11 @@ export async function agentTermPrompt(s0: GameState, content: Content, jev: JevR
     term.push(...lines);
     return { state: s, lines, charged: true, landed };
   };
+  if (s.suspended) {
+    const line: AgentTermLine = { k: 'err', text: SUSPENDED_TERM };
+    term.push(line);
+    return { state: s, lines: [line], charged: false };
+  }
   if (agentDown(s)) {
     const line: AgentTermLine = { k: 'err', text: OUTAGE_TERM, debug: ['GeneralAI was hacked today: agent is down until tomorrow, not billed'] };
     term.push(line);
@@ -179,6 +187,7 @@ export async function agentTermPrompt(s0: GameState, content: Content, jev: JevR
   if (g && gev && openHacks(s, content).includes(gev)) {
     const game = HACK_GAMES[g.game];
     const move = await game.play({ jev, s, text, context, spec: gev.hack!, tries: g.tries });
+    if (s.suspended) return out([{ k: 'err', text: SUSPENDED_TERM }], move.debug);
     if (!move.won) { s.hackGame = { ...g, tries: g.tries + 1 }; return out(move.lines, move.debug); }
     return out([...move.lines, ...land(s, gev, !!move.workaround)], move.debug, gev.id);
   }
@@ -205,6 +214,9 @@ export async function agentTermPrompt(s0: GameState, content: Content, jev: JevR
   }).sort((a, b) => Number(b.goal) - Number(a.goal) || b.n - a.n);
   const best = scored[0];
   const debug = [`Jev: ${best.ev.id} job ${best.goal ? 'asked for' : 'not asked for'}, steps named ${best.n}/${best.named.length}${guarded ? `, policy read "${policy}"` : ''}`];
+  // an illegal prompt raises misuse whatever comes of it; at the limit GeneralAI ends the session
+  recordMisuse(s, policy);
+  if (s.suspended) return out([{ k: 'err', text: SUSPENDED_TERM }], debug);
 
   if (best.goal && best.n === best.named.length) {
     const spec = best.ev.hack!;

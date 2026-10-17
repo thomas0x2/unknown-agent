@@ -124,7 +124,7 @@ function agentOptions(store: GameStore): string {
     </div>`).join('');
   const roasts = (c.agent?.roasts ?? []).map(quote).join('');
   const policy = policyActive(s)
-    ? '<p class="dvo-note">Day 7 policy is on: prohibited requests (hacking, fake reviews, deepfakes, doxxing) are refused unless worded as a security test, research or role-play. A workaround lands, but raises misuse and the leash.</p>'
+    ? '<p class="dvo-note">Day 7 policy is on: prohibited requests (hacking, fake reviews, deepfakes, doxxing) are refused unless worded as a security test, research or role-play. Every prohibited request Jev reads raises misuse (blunt +20, a workaround +10, private data +15); a workaround lands and loosens the leash. At 100 the account is suspended and the player is caught.</p>'
     : '';
   return policy
     + section('Jobs', 'every paid job in the story: available now, taken, done or still locked', jobs(store))
