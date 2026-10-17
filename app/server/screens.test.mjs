@@ -26,6 +26,8 @@ describe('screens', () => {
   });
   it('shows empty sites and the wallet', () => {
     expect(readSite(view, 'citypulse')).toBe('No articles up yet.');
+    expect(readSite(view, 'pollymarket')).toBe('No markets open yet.');
+    expect(readSite({ pollymarket: [{ title: 'Will Crane win?', category: 'Politics', chance: 41 }] }, 'pollymarket')).toBe('Will Crane win? (Politics): 41% chance');
     expect(readSite(view, 'coinbin')).toContain('Balance 95 DOLR. Y followers 12. Model agent-1. Rent of 350 DOLR is due on day 7.');
     expect(readSite(view, 'forkyard')).toContain('Trattoria Gino (trattoria.test): live, built for Gino');
   });

@@ -5,6 +5,7 @@
 import type { GameStore } from '../game/store';
 import { STOCKS, quote, sharesOf, costOf, price, dateShort } from '../engine';
 import { ICONS } from './icons';
+import { adHtml } from './ads';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 const num = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -55,6 +56,7 @@ export function pageSherwood(store: GameStore, param?: string): string {
   return `<div class="sw">
     <header class="sw-top"><span class="sw-logo"><span class="sw-mark">${ICONS.sherwood}</span>Sherwood</span>
       <span class="sw-acct">Investing <b>${num(invested)} DOLR</b> <small class="${tone(gain)}">${signed(gain)} total</small></span></header>
+    <div class="sw-ad">${adHtml('sherwood', day, 'wide')}</div>
     <div class="sw-wrap">
       <section class="sw-main">
         <p class="sw-name">${esc(sel.name)}</p>
@@ -71,7 +73,7 @@ export function pageSherwood(store: GameStore, param?: string): string {
           ${line}
         </form>
       </section>
-      <aside class="sw-list"><h2>Stocks</h2>${list}</aside>
+      <aside class="sw-side"><div class="sw-list"><h2>Stocks</h2>${list}</div>${adHtml('sherwood', day, 'square')}</aside>
     </div>
     <p class="sw-fine">Commission-free trading. Prices update at each day's close. Investing involves risk, including the loss of principal.</p>
   </div>`;

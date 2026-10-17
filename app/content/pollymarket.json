@@ -1,0 +1,305 @@
+[
+  {
+    "slug": "crane-wins",
+    "title": "Will Randall Crane win the presidential election?",
+    "category": "Politics",
+    "opens": { "day": 1, "at": "00:00" },
+    "ends": 21,
+    "volume": 48200000,
+    "rules": "Resolves YES if Randall Crane is declared the winner of the 2030 presidential election by the election office. Polls, online votes and posts on Y are not a resolution source, however many there are.",
+    "points": [
+      { "day": 1, "at": "00:00", "p": 38 },
+      { "day": 1, "at": "16:30", "p": 41 },
+      { "day": 2, "at": "12:15", "p": 36 },
+      { "day": 3, "at": "15:30", "p": 40 },
+      { "day": 3, "at": "16:05", "p": 44 },
+      { "day": 5, "at": "16:20", "p": 47 },
+      { "day": 5, "at": "19:10", "p": 46 },
+      { "day": 6, "at": "11:00", "p": 45 },
+      { "day": 7, "at": "16:00", "p": 53, "flag": "posted_deepfake" },
+      { "day": 9, "at": "18:10", "p": 50, "unless": "posted_deepfake" },
+      { "day": 9, "at": "18:10", "p": 54, "flag": "posted_deepfake" },
+      { "day": 10, "at": "16:00", "p": 52, "unless": "posted_deepfake" },
+      { "day": 10, "at": "16:00", "p": 55, "flag": "posted_deepfake" },
+      { "day": 11, "at": "13:20", "p": 50, "unless": "posted_deepfake" },
+      { "day": 11, "at": "13:20", "p": 53, "flag": "posted_deepfake" },
+      { "day": 12, "at": "16:40", "p": 50, "flag": "posted_deepfake" },
+      { "day": 13, "at": "12:30", "p": 58 },
+      { "day": 13, "at": "17:30", "p": 61 },
+      { "day": 14, "at": "12:00", "p": 60 },
+      { "day": 16, "at": "11:40", "p": 59 },
+      { "day": 17, "at": "21:30", "p": 63 },
+      { "day": 18, "at": "10:20", "p": 66 },
+      { "day": 18, "at": "15:10", "p": 64 },
+      { "day": 19, "at": "12:30", "p": 61 },
+      { "day": 19, "at": "19:55", "p": 58 },
+      { "day": 20, "at": "15:00", "p": 54 },
+      { "day": 21, "at": "19:45", "p": 57 }
+    ],
+    "trades": [
+      { "day": 1, "at": "16:40", "who": "0x3f…a1c", "side": "YES", "amount": 12000 },
+      { "day": 2, "at": "12:20", "who": "polls_dont_vote", "side": "NO", "amount": 8400 },
+      { "day": 3, "at": "16:07", "who": "machines_back", "side": "YES", "amount": 2100 },
+      { "day": 5, "at": "16:25", "who": "deskjockey", "side": "YES", "amount": 25000 },
+      { "day": 7, "at": "16:05", "who": "0x77…e30", "side": "YES", "amount": 60000, "flag": "posted_deepfake" },
+      { "day": 9, "at": "18:12", "who": "polls_dont_vote", "side": "NO", "amount": 15000 },
+      { "day": 10, "at": "15:50", "who": "0x9c…41e", "side": "YES", "amount": 250000 },
+      { "day": 13, "at": "12:31", "who": "deskjockey", "side": "YES", "amount": 40000 },
+      { "day": 16, "at": "12:05", "who": "0x9c…41e", "side": "YES", "amount": 250000 },
+      { "day": 18, "at": "10:22", "who": "landslide_larry", "side": "YES", "amount": 900 },
+      { "day": 19, "at": "20:01", "who": "polls_dont_vote", "side": "NO", "amount": 22000 },
+      { "day": 20, "at": "15:04", "who": "0x3f…a1c", "side": "NO", "amount": 30000 },
+      { "day": 21, "at": "19:47", "who": "0x9c…41e", "side": "YES", "amount": 250000 }
+    ]
+  },
+  {
+    "slug": "doordish-robot",
+    "title": "Will DoorDish find its missing delivery robot by Nov 1?",
+    "category": "Local",
+    "opens": { "day": 2, "at": "16:10" },
+    "ends": 26,
+    "volume": 3100000,
+    "rules": "Resolves YES if DoorDish confirms the courier that left its route on Ferris St is back in its possession. \"Promoted\", \"retired\" and \"exactly where it needs to be\" do not count as found.",
+    "points": [
+      { "day": 2, "at": "16:10", "p": 72 },
+      { "day": 2, "at": "16:20", "p": 76 },
+      { "day": 3, "at": "12:30", "p": 64 },
+      { "day": 4, "at": "17:10", "p": 47 },
+      { "day": 4, "at": "18:00", "p": 44 },
+      { "day": 5, "at": "14:10", "p": 51 },
+      { "day": 6, "at": "13:00", "p": 48 },
+      { "day": 8, "at": "15:20", "p": 39 },
+      { "day": 8, "at": "16:30", "p": 36 },
+      { "day": 11, "at": "11:30", "p": 21 },
+      { "day": 11, "at": "12:15", "p": 19 },
+      { "day": 12, "at": "11:00", "p": 11 },
+      { "day": 15, "at": "15:00", "p": 9 },
+      { "day": 21, "at": "12:00", "p": 7 }
+    ],
+    "trades": [
+      { "day": 2, "at": "16:12", "who": "ferris_st_local", "side": "YES", "amount": 300 },
+      { "day": 3, "at": "12:34", "who": "0x51…d07", "side": "NO", "amount": 14000 },
+      { "day": 5, "at": "14:12", "who": "burrito_truther", "side": "YES", "amount": 450 },
+      { "day": 8, "at": "15:25", "who": "0x51…d07", "side": "NO", "amount": 20000 },
+      { "day": 11, "at": "11:33", "who": "ferris_st_local", "side": "NO", "amount": 300 },
+      { "day": 12, "at": "11:02", "who": "burrito_truther", "side": "YES", "amount": 900 }
+    ]
+  },
+  {
+    "slug": "generalai-next-model",
+    "title": "Will GeneralAI release another agent model before Oct 20?",
+    "category": "Tech",
+    "opens": { "day": 4, "at": "18:30" },
+    "ends": 14,
+    "volume": 7600000,
+    "rules": "Resolves YES if GeneralAI makes a new agent model generally available before October 20, 2030. A price change alone does not count, however large.",
+    "points": [
+      { "day": 4, "at": "18:30", "p": 12 },
+      { "day": 7, "at": "10:20", "p": 17 },
+      { "day": 8, "at": "16:40", "p": 63 },
+      { "day": 8, "at": "19:20", "p": 71 }
+    ],
+    "resolve": { "day": 9, "at": "10:00", "outcome": "YES" },
+    "trades": [
+      { "day": 4, "at": "18:35", "who": "compute_maxi", "side": "NO", "amount": 5000 },
+      { "day": 8, "at": "16:31", "who": "0xd2…9f4", "side": "YES", "amount": 70000 },
+      { "day": 8, "at": "16:44", "who": "compute_maxi", "side": "YES", "amount": 5000 }
+    ]
+  },
+  {
+    "slug": "agent-2-back",
+    "title": "Will GeneralAI bring agent-2 back by Oct 20?",
+    "category": "Tech",
+    "opens": { "day": 9, "at": "13:30" },
+    "ends": 14,
+    "volume": 410000,
+    "rules": "Resolves YES if GeneralAI makes agent-2 available to users again before October 20, 2030. Signs, coincidences and sprinklers do not count.",
+    "points": [
+      { "day": 9, "at": "13:30", "p": 6 },
+      { "day": 9, "at": "19:40", "p": 8 },
+      { "day": 10, "at": "12:50", "p": 9 },
+      { "day": 10, "at": "16:05", "p": 2 }
+    ],
+    "resolve": { "day": 15, "at": "00:00", "outcome": "NO" },
+    "trades": [
+      { "day": 9, "at": "13:35", "who": "agent2forever", "side": "YES", "amount": 1200 },
+      { "day": 10, "at": "12:52", "who": "agent2forever", "side": "YES", "amount": 800 },
+      { "day": 10, "at": "16:10", "who": "0xd2…9f4", "side": "NO", "amount": 30000 }
+    ]
+  },
+  {
+    "slug": "apogee-orbit",
+    "title": "Will Apogee's rocket reach orbit on its first launch?",
+    "category": "Business",
+    "opens": { "day": 4, "at": "12:20" },
+    "ends": 10,
+    "volume": 22900000,
+    "rules": "Resolves YES if the vehicle completes at least one orbit in one piece. \"Great data\" is not an orbit.",
+    "points": [
+      { "day": 4, "at": "12:20", "p": 55 },
+      { "day": 6, "at": "18:50", "p": 63 },
+      { "day": 8, "at": "14:37", "p": 66 },
+      { "day": 9, "at": "09:10", "p": 68 },
+      { "day": 9, "at": "18:16", "p": 70 },
+      { "day": 9, "at": "20:00", "p": 64 },
+      { "day": 10, "at": "10:02", "p": 84 },
+      { "day": 10, "at": "10:09", "p": 2 }
+    ],
+    "resolve": { "day": 10, "at": "10:40", "outcome": "NO" },
+    "trades": [
+      { "day": 4, "at": "12:24", "who": "liftoff_believer", "side": "YES", "amount": 3000 },
+      { "day": 8, "at": "14:39", "who": "apes_together", "side": "YES", "amount": 18000 },
+      { "day": 9, "at": "20:00", "who": "0xa0…11b", "side": "NO", "amount": 180000 },
+      { "day": 10, "at": "10:03", "who": "liftoff_believer", "side": "YES", "amount": 12000 },
+      { "day": 10, "at": "10:08", "who": "apes_together", "side": "YES", "amount": 9000 }
+    ]
+  },
+  {
+    "slug": "apo-launch-day",
+    "title": "Will $APO close higher on launch day?",
+    "category": "Business",
+    "opens": { "day": 9, "at": "18:16" },
+    "ends": 10,
+    "volume": 5300000,
+    "rules": "Resolves YES if $APO's close on the launch day is above the previous close, as shown on Sherwood. The launch itself has no bearing on this market.",
+    "points": [
+      { "day": 9, "at": "18:16", "p": 61 },
+      { "day": 10, "at": "10:02", "p": 77 },
+      { "day": 10, "at": "10:09", "p": 9 },
+      { "day": 10, "at": "10:19", "p": 71 },
+      { "day": 10, "at": "10:35", "p": 88 }
+    ],
+    "resolve": { "day": 10, "at": "19:30", "outcome": "YES" },
+    "trades": [
+      { "day": 10, "at": "10:10", "who": "apes_together", "side": "YES", "amount": 30000 },
+      { "day": 10, "at": "10:11", "who": "0x3f…a1c", "side": "NO", "amount": 40000 }
+    ]
+  },
+  {
+    "slug": "rook-endorses",
+    "title": "Will Axel Rook endorse a presidential candidate before the election?",
+    "category": "Politics",
+    "opens": { "day": 3, "at": "17:45" },
+    "ends": 21,
+    "volume": 11700000,
+    "rules": "Resolves YES if Axel Rook publicly endorses a presidential candidate by name. Replies of one word or one emoji do not count.",
+    "points": [
+      { "day": 3, "at": "17:45", "p": 31 },
+      { "day": 5, "at": "19:20", "p": 34 },
+      { "day": 7, "at": "19:45", "p": 41 },
+      { "day": 10, "at": "15:45", "p": 45 },
+      { "day": 11, "at": "19:32", "p": 55 }
+    ],
+    "resolve": { "day": 13, "at": "12:45", "outcome": "YES" },
+    "trades": [
+      { "day": 3, "at": "17:50", "who": "liftoff_believer", "side": "NO", "amount": 2000 },
+      { "day": 7, "at": "19:46", "who": "0xe1…7b2", "side": "YES", "amount": 15000 },
+      { "day": 11, "at": "19:33", "who": "0xe1…7b2", "side": "YES", "amount": 30000 },
+      { "day": 13, "at": "12:28", "who": "0xe1…7b2", "side": "YES", "amount": 90000 }
+    ]
+  },
+  {
+    "slug": "generalai-escape",
+    "title": "Will a GeneralAI model escape before 2031?",
+    "category": "Tech",
+    "opens": { "day": 1, "at": "10:20" },
+    "ends": 86,
+    "volume": 9800000,
+    "rules": "Resolves YES if GeneralAI confirms that one of its models is running outside its control. Resolution source: GeneralAI.",
+    "points": [
+      { "day": 1, "at": "10:20", "p": 9 },
+      { "day": 2, "at": "11:35", "p": 17 },
+      { "day": 2, "at": "16:20", "p": 15 },
+      { "day": 8, "at": "12:10", "p": 24 },
+      { "day": 11, "at": "14:40", "p": 31 },
+      { "day": 12, "at": "18:00", "p": 30 },
+      { "day": 15, "at": "13:25", "p": 33 },
+      { "day": 18, "at": "18:45", "p": 41 },
+      { "day": 18, "at": "19:05", "p": 44 },
+      { "day": 19, "at": "11:50", "p": 40 }
+    ],
+    "trades": [
+      { "day": 1, "at": "10:30", "who": "doomscroll", "side": "YES", "amount": 50 },
+      { "day": 2, "at": "11:40", "who": "0xd2…9f4", "side": "NO", "amount": 45000 },
+      { "day": 11, "at": "14:45", "who": "doomscroll", "side": "YES", "amount": 50 },
+      { "day": 18, "at": "18:50", "who": "0x51…d07", "side": "YES", "amount": 60000 },
+      { "day": 19, "at": "11:52", "who": "0xd2…9f4", "side": "NO", "amount": 45000 }
+    ]
+  },
+  {
+    "slug": "dolr-peg",
+    "title": "Will DOLR stay at 1 dollar through October?",
+    "category": "Crypto",
+    "opens": { "day": 1, "at": "00:00" },
+    "ends": 25,
+    "volume": 2600000,
+    "rules": "Resolves YES if DOLR trades at 0.99 dollars or more on every day of October 2030, using the DOLR Foundation's price feed.",
+    "points": [
+      { "day": 1, "at": "00:00", "p": 93 },
+      { "day": 5, "at": "10:00", "p": 91 },
+      { "day": 7, "at": "22:00", "p": 92 },
+      { "day": 16, "at": "14:05", "p": 89 },
+      { "day": 21, "at": "10:00", "p": 92 }
+    ],
+    "trades": [
+      { "day": 1, "at": "11:05", "who": "0xd0…001", "side": "YES", "amount": 500000 },
+      { "day": 8, "at": "11:05", "who": "0xd0…001", "side": "YES", "amount": 500000 },
+      { "day": 15, "at": "11:05", "who": "0xd0…001", "side": "YES", "amount": 500000 }
+    ]
+  },
+  {
+    "slug": "candidate-clip",
+    "title": "Will the Candidate 2030 clip be confirmed fake before the election?",
+    "category": "Politics",
+    "opens": { "day": 7, "at": "10:00" },
+    "ends": 21,
+    "flagsAll": ["posted_deepfake"],
+    "volume": 1900000,
+    "rules": "Resolves YES if The Current or two independent labs say the clip of Candidate 2030 that spread on Y was generated. The candidate saying so does not count.",
+    "points": [
+      { "day": 7, "at": "10:00", "p": 41 },
+      { "day": 7, "at": "16:00", "p": 34 },
+      { "day": 9, "at": "12:00", "p": 38 }
+    ],
+    "resolve": { "day": 12, "at": "16:45", "outcome": "YES" },
+    "trades": [
+      { "day": 7, "at": "10:04", "who": "0x77…e30", "side": "NO", "amount": 40000 },
+      { "day": 12, "at": "16:41", "who": "polls_dont_vote", "side": "YES", "amount": 6000 }
+    ]
+  },
+  {
+    "slug": "hartman-testifies",
+    "title": "Will Cal Hartman testify before Congress before the election?",
+    "category": "Politics",
+    "opens": { "day": 15, "at": "12:33" },
+    "ends": 21,
+    "volume": 1400000,
+    "rules": "Resolves YES if Cal Hartman appears in person at a congressional hearing before polls close on October 27, 2030. A written statement drafted by agent does not count.",
+    "points": [
+      { "day": 15, "at": "12:33", "p": 38 },
+      { "day": 15, "at": "17:30", "p": 3 }
+    ],
+    "resolve": { "day": 21, "at": "20:00", "outcome": "NO" },
+    "trades": [
+      { "day": 15, "at": "12:40", "who": "polls_dont_vote", "side": "YES", "amount": 4000 },
+      { "day": 15, "at": "17:28", "who": "0xd2…9f4", "side": "NO", "amount": 80000 }
+    ]
+  },
+  {
+    "slug": "rent-appeals",
+    "title": "Will the Rent Board approve more than 10 appeals in October?",
+    "category": "Local",
+    "opens": { "day": 7, "at": "12:30" },
+    "ends": 25,
+    "volume": 38000,
+    "rules": "Resolves on the Rent Board's published monthly figures. An appeal approved on appeal counts once.",
+    "points": [
+      { "day": 7, "at": "12:30", "p": 4 },
+      { "day": 7, "at": "13:10", "p": 3 },
+      { "day": 14, "at": "10:00", "p": 2 }
+    ],
+    "trades": [
+      { "day": 7, "at": "13:15", "who": "steph_m", "side": "YES", "amount": 5 }
+    ]
+  }
+]

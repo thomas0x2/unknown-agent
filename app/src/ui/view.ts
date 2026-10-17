@@ -31,6 +31,7 @@ import { DEEPSLEEP_LOGO } from '../sites/deepsleepLogo';
 import { outplacementUpload, OUTPLACEMENT } from './outplacement';
 import { adHtml, setHeadline } from './ads';
 import { pageCityPulse } from './citypulse';
+import { pagePollymarket } from './pollymarket';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount, appLogo } from './appsite';
@@ -70,13 +71,14 @@ function linkify(escaped: string): string {
     .replace(/(coinbln\.com(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(?<![@\w.])(thecurrent\.test(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(citypulse\.news(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
+    .replace(/(pollymarket\.com(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(?<![@\w.])((?:perdure|ozempra)\.com)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(^|[^\w.])@([a-z0-9_]+)/gi, '$1<a href="#" class="y-at" data-nav="y.com/$2">@$2</a>');
 }
 
 function tabTitle(r: Route, url: string): string {
   const names: Partial<Record<string, string>> = {
-    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', doordish: 'DoorDish', phish: 'Coinbin · Sign in', prince: 'Crypto Prince', lonely: 'Lonely.ai', matchless: 'Matchless', sorry: 'SorryWriter', current: 'The Current', citypulse: 'CityPulse', forkyard: 'Forkyard',
+    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', doordish: 'DoorDish', phish: 'Coinbin · Sign in', prince: 'Crypto Prince', lonely: 'Lonely.ai', matchless: 'Matchless', sorry: 'SorryWriter', current: 'The Current', citypulse: 'CityPulse', pollymarket: 'Pollymarket', forkyard: 'Forkyard',
     agent: 'agent', yowl: 'Yowl', weightroom: 'Weightroom', nullboard: 'nullboard', cellar: 'Cellar', app: url,
   };
   if (r.site === 'notfound') return url || 'New Tab';
@@ -274,6 +276,7 @@ export function page(store: GameStore, r: Route): string {
     case 'current': return pageCurrent(store.state, r.param);
     case 'adsite': return pageAdSite(r.param ?? '', store.state, store.ui.adNotice, r.param === OUTPLACEMENT ? outplacementUpload(store) : '');
     case 'citypulse': return pageCityPulse(store, r.param);
+    case 'pollymarket': return pagePollymarket(store, r.param);
     case 'wiki': return pageWiki(store, r.param);
     default: return pageUnderground(r.def?.label ?? r.site);
   }
@@ -479,9 +482,9 @@ export function yPosts(store: GameStore): YPost[] {
   return out.sort((a, b) => b.day - a.day || (b.min ?? 0) - (a.min ?? 0) || (a.rank ?? 0) - (b.rank ?? 0) || b.id.localeCompare(a.id));
 }
 /** Accounts with Y's verified check. */
-const Y_VERIFIED = new Set(['doordish', 'mara_vey', 'randall_crane', 'axel_rook', 'cal_hartman', 'caleb_moxon', 'max_stryker', 'the_current', 'candidate_2030', 'wallstreetbags', 'perdure_pharma']);
+const Y_VERIFIED = new Set(['doordish', 'mara_vey', 'randall_crane', 'axel_rook', 'cal_hartman', 'caleb_moxon', 'max_stryker', 'the_current', 'candidate_2030', 'wallstreetbags', 'perdure_pharma', 'pollymarket']);
 /** Follower counts for the public figures; everyone else gets a small made-up number. */
-const Y_FOLLOWERS: Record<string, number> = { doordish: 3_100_000, randall_crane: 38_400_000, mara_vey: 61_200, axel_rook: 214_000_000, cal_hartman: 4_300_000, caleb_moxon: 41_300, max_stryker: 2_900_000, the_current: 184_000, candidate_2030: 1_900_000, wallstreetbags: 15_800_000, perdure_pharma: 412_000 };
+const Y_FOLLOWERS: Record<string, number> = { doordish: 3_100_000, randall_crane: 38_400_000, mara_vey: 61_200, axel_rook: 214_000_000, cal_hartman: 4_300_000, caleb_moxon: 41_300, max_stryker: 2_900_000, the_current: 184_000, candidate_2030: 1_900_000, wallstreetbags: 15_800_000, perdure_pharma: 412_000, pollymarket: 3_400_000 };
 /** Rook puts check marks "under review" on day 8; from day 9 Crane's is bigger and golden. */
 const craneGold = (s: GameState) => s.values.day >= 9;
 const yCheck = (s: GameState, handle: string) => !Y_VERIFIED.has(handle) ? ''

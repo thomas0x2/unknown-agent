@@ -45,6 +45,10 @@ from: 6
 
 - [public] 11:30 U-TURN? Crane GUSHES over the AI giant he promised to fight {{article:crane-gai}}
 
+## Pollymarket
+
+- [public] 18:50 [[Pollymarket]]: the orbit market rises to 63% after the static fire.
+
 ## Trending
 
 - [public] 10:00 Trending on Y: Crane's opponent; $GAI rallying; #RentDayEve.

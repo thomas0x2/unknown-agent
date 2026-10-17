@@ -229,6 +229,13 @@ const WSB = svg('#3a4a3f',
   + `<path d="M25.4 28.4 L27.4 27.8 M35 28.4 L37 27.8" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1"/>`
   + line('M28.5 37 Q33 38.4 36.5 35.6'));
 
+/** Pollymarket: its parrot, side on, on the brand blue. */
+const POLLY = svg('#2c5cff',
+  `<path d="M17 66 C12 46 15 24 33 21 C43 19.5 50 25 51 33 L36 38 C32 45 33 55 39 66Z" fill="#f2f4fa"/>`
+  + `<path d="M51 33 C58 33.5 60 41 56 48 C55.2 43.5 52.5 41.4 47.6 41.6 L36 38Z" fill="#ffd23a"/>`
+  + `<path d="M26 22.5 C24 17 26 12.5 30 11 M33 21 C33 16 36 12.8 40 12.6" fill="none" stroke-width="2.4"/>`
+  + `<circle cx="40" cy="29" r="4.2" fill="#fff"/>` + dot(41, 29, 2));
+
 /** Perdure Pharma: its half-filled capsule disc, white on the brand violet. */
 const PERDURE = svg('#3d2c6b',
   `<g transform="translate(12 12) scale(1.25)" stroke="none" fill="#fff"><path d="M3 16 A13 13 0 1 0 29 16 A13 13 0 1 0 3 16 Z M14.586 23.071 L23.071 14.586 A4 4 0 0 0 17.414 8.929 L8.929 17.414 A4 4 0 0 0 14.586 23.071 Z" fill-rule="evenodd"/>`
@@ -256,6 +263,7 @@ export const Y_AVATARS: Record<string, string> = {
   liftoff_daily: LIFTOFF,
   marketwire: MARKETWIRE,
   wallstreetbags: WSB,
+  pollymarket: POLLY,
   doordish: DOORDISH,
   perdure_pharma: PERDURE,
   spin_cycle_regulars: SPIN_CYCLE,

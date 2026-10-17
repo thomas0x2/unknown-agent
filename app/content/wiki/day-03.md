@@ -36,6 +36,7 @@ from: 3
 - [public] 16:05 [[CityPulse]] links its "machines back" story: two million shares in an hour. {{y:d3_y_citypulse}}
 - [public] 16:11 zev.dolr shipped three side projects and wrote a thread for each; one of the users is his mom. {{y:f3}}
 - [public] 16:15 Axel Rook: "@citypulse Organic." {{y:d3_y_axel_3}}
+- [public] 16:20 [[Pollymarket]]: Crane went from 40% to 44% in 35 minutes. {{y:d3_y_polly_crane}}
 - [public] 16:25 doomscroll would settle for his job back. {{y:d3_y_doomscroll_machines}}
 - [public] 16:50 zev.dolr asks who will finish his side projects. {{y:d3_y_zev_machines}}
 - [public] 17:20 cat_ceo: her cat "has a plan. details to follow." {{y:d3_y_catceo_machines}}
@@ -49,6 +50,12 @@ from: 3
 - [public] 11:10 HEARTBREAK: 1,900 desperate jobseekers, 30 jobs {{article:jobs-fair}}
 - [public] 11:40 THE SKINNY JAB FOR THE SKINT: new weekly shot makes you stop wanting dinner {{article:skinny-jab}}
 - [public] 16:00 "I'LL SEND THE MACHINES BACK!" Crane's explosive vow breaks the internet {{article:crane-machines}}
+
+## Pollymarket
+
+- [public] 12:30 [[Pollymarket]]: the robot market drops to 64% when DoorDish says the courier was promoted.
+- [public] 16:05 [[Pollymarket]]: Crane goes from 40% to 44% in 35 minutes.
+- [public] 17:45 [[Pollymarket]]: a market on Axel Rook endorsing a candidate opens at 31%.
 
 ## Trending
 

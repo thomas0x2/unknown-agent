@@ -13,7 +13,7 @@ from: 1
 - [public] The search box finds a handle: Enter opens the profile, or "This account doesn't exist".
 - [public] The sidebar shows what is trending that day.
 - [public] Posts gain or lose followers; posting more than three times a day costs a few.
-- [public] Links to citypulse.news articles in posts open the article.
+- [public] Links to citypulse.news articles in posts open the article, and pollymarket.com links open the market.
 - [public] Verified accounts carry a check mark; Mara Vey's is yellow.
 - [hint] Followers open doors: some jobs only come to accounts with enough followers.
 
@@ -21,7 +21,7 @@ from: 1
 
 - [public] Daily posters: [[Randall Crane]] (@randall_crane, 38.4M followers), [[Axel Rook]] (@axel_rook, 214M), [[Cal Hartman]] (@cal_hartman, 4.3M, all lowercase), [[Max Stryker]] (@max_stryker, 2.9M).
 - [public] On day 9 [[Caleb Moxon]] (@caleb_moxon, verified, 41.3K), a safety researcher who just left GeneralAI, starts posting, about once a day.
-- [public] News: [[CityPulse]] (@citypulse), [[The Current]] (@the_current), MarketWire (@marketwire); fan account [[Liftoff Daily]]; [[DoorDish]] (@doordish).
+- [public] News: [[CityPulse]] (@citypulse), [[The Current]] (@the_current), MarketWire (@marketwire); fan account [[Liftoff Daily]]; [[DoorDish]] (@doordish); the betting site [[Pollymarket]] (@pollymarket, verified).
 - [public] Market posters: [[WallStreetBags]] (@wallstreetbags, verified), Brent Kowalski (@brentk_capital), Priya Shah (@priyashah_cfa), Dana Ruiz (@danaruiz_trades), Tyler Moss, quietquant, Ollie Banks, Sam Ortiz, rk_dividends, Jess Park; and bot accounts posting "$GAI to the moon!!" on some days.
 - [public] Background accounts: noodleposter, cat_ceo, doomscroll, zev.dolr (@zev_dolr), Teo Vasquez, studioghast.
 - [public] Leads: [[Gino Fenoglio]] (day 1), the Spin Cycle regulars (day 1), [[deskjockey]], Viktor and others post when they need something built.

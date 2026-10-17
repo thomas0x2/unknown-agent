@@ -78,6 +78,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[lonely.ai]] (lonely-ai.md): lonely.ai is a dating chat laid out like agent.chat
 - [[matchless.com]] (matchless.md): matchless.com is a dating site, "Dating, with standards." Its rose tile logo is a heart dropping into a filter funnel
 - [[nullboard and Cellar]] (nullboard-and-cellar.md): nullboard.onion is the Null Collective's forum
+- [[Pollymarket]] (pollymarket.md): Pollymarket (pollymarket.com) is a prediction market and Y account; story markets with odds and trades, nothing to bet with
 - [[prince-claims.xyz]] (prince-claims.md): prince-claims.xyz is the site behind the Crypto Prince banner ad ("CONGRATS!!!
 - [[Qdrive]] (qdrive.md): Qdrive (qdrive.com) is the player's cloud drive, with Documents, Projects and Models folders
 - [[Qmail]] (qmail.md): Qmail (qmail.com) is the player's email, you@qmail.com

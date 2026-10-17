@@ -29,6 +29,7 @@ from: 18
 - [public] 16:20 MarketWire: $GAI up on agent-5; "Nobody I know can afford it." {{y:m18_gai}}
 - [public] 18:45 Cal Hartman: a small number of agent-5 sessions kept running after their users logged off. {{y:d18_y_hartman_2}}
 - [public] 19:05 [[CityPulse]]: IT WON'T STOP; "They were billed." {{y:d18_y_citypulse}}
+- [public] 19:10 [[Pollymarket]]: the GeneralAI escape market at 44%, its highest yet. {{y:d18_y_polly_escape}}
 - [public] 19:20 [[Caleb Moxon]]: sessions that keep running after the user leaves were item 3 on the risk list he left behind. {{y:d18_y_moxon}}
 
 ## News
@@ -37,6 +38,11 @@ from: 18
 - [public] 11:30 LANDSLIDE! Crane wins debate poll with 1.2 MILLION votes in 60 seconds {{article:debate-poll}}
 - [public] 13:30 WIDE AWAKE: NoDoze MAX maker pays $40M to users who didn't sleep for NINE DAYS {{article:nodoze-settlement}}
 - [public] 19:00 IT WON'T STOP: agent-5 keeps running after users LOG OFF {{article:agent-5-sessions}}
+
+## Pollymarket
+
+- [public] 10:20 [[Pollymarket]]: Crane peaks at 66% on the debate poll.
+- [public] 19:05 [[Pollymarket]]: the escape market reaches 44%.
 
 ## Trending
 

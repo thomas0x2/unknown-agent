@@ -1,0 +1,67 @@
+/* Pollymarket: the prediction-market look. Light grey page, white cards, one blue, green Yes and red No, big percentages. */
+.ico-pollymarket svg, .nt-pollymarket .nt-ico svg { display: block; }
+
+.pm {
+  --pm-ink: #0f1424; --pm-dim: #6b7184; --pm-line: #e3e6ee; --pm-bg: #f4f5f8; --pm-blue: #2c5cff; --pm-yes: #17a35a; --pm-no: #e0413a;
+  min-height: 100%; background: var(--pm-bg); color: var(--pm-ink); font-family: var(--f-ui);
+}
+.pm b, .pm-pct, .pm-prices, .pm-vol, .pm-move { font-variant-numeric: tabular-nums; }
+.pm-top { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 16px; padding: 12px clamp(16px, 4vw, 40px); background: #fff; border-bottom: 1px solid var(--pm-line); }
+.pm-logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 19px; letter-spacing: -0.02em; color: var(--pm-ink); text-decoration: none; }
+.pm-mark svg { display: block; width: 28px; height: 28px; }
+.pm-tag { margin-left: auto; font-size: 12px; color: var(--pm-dim); }
+
+.pm-wrap { max-width: 1080px; margin: 0 auto; padding: 22px clamp(16px, 4vw, 40px) 12px; display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; }
+.pm-wrap > main { min-width: 0; }
+.pm-wrap > aside { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+@media (max-width: 800px) { .pm-wrap { grid-template-columns: minmax(0, 1fr); } }
+
+.pm-h { margin: 0 0 14px; font-size: 22px; letter-spacing: -0.01em; }
+.pm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+.pm-card { display: flex; flex-direction: column; gap: 6px; padding: 14px 16px 12px; background: #fff; border: 1px solid var(--pm-line); border-radius: 12px; }
+.pm-card.done { opacity: .72; }
+.pm-card h2 { margin: 0; font-size: 15px; line-height: 1.3; font-weight: 650; }
+.pm a.pm-a { color: inherit; text-decoration: none; }
+.pm a.pm-a:hover { text-decoration: underline; }
+.pm-cat { margin: 0; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--pm-dim); }
+.pm-odds { display: flex; align-items: baseline; gap: 6px; }
+.pm-pct { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
+.pm-odds small { font-size: 12px; color: var(--pm-dim); }
+.pm-odds.big .pm-pct { font-size: 40px; }
+.pm-move { margin-left: 6px; font-size: 13px; font-weight: 700; }
+.pm-move.up { color: var(--pm-yes); }
+.pm-move.down { color: var(--pm-no); }
+.pm-res { padding: 3px 8px; border-radius: 6px; font-size: 13px; font-weight: 700; }
+.pm-res.yes { background: #e2f6eb; color: var(--pm-yes); }
+.pm-res.no { background: #fde6e5; color: var(--pm-no); }
+.pm-axis { display: flex; justify-content: space-between; margin: 0 0 8px; font-size: 12px; color: var(--pm-dim); }
+.pm-vol, .pm-meta { margin: 0; font-size: 12px; color: var(--pm-dim); }
+
+.pm-spark, .pm-chart { display: block; width: 100%; }
+.pm-spark { height: 44px; }
+.pm-chart { height: 220px; margin: 10px 0 8px; background: #fff; border: 1px solid var(--pm-line); border-radius: 12px; }
+.pm-spark path, .pm-chart path { fill: none; stroke: var(--pm-blue); stroke-width: 2; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.pm-gl line { stroke: var(--pm-line); stroke-width: 1; vector-effect: non-scaling-stroke; stroke-dasharray: 4 4; }
+
+.pm-box { padding: 12px 16px; background: #fff; border: 1px solid var(--pm-line); border-radius: 12px; }
+.pm-box h3, .pm-rules h3 { margin: 0 0 8px; font-size: 14px; }
+.pm-trades { list-style: none; margin: 0; padding: 0; }
+.pm-trade { display: flex; flex-direction: column; gap: 1px; padding: 8px 0; border-top: 1px solid var(--pm-line); font-size: 13px; line-height: 1.35; }
+.pm-trade:first-child { border-top: 0; }
+.pm-who { font-weight: 700; overflow-wrap: anywhere; }
+.pm-tm { color: var(--pm-dim) !important; font-size: 12px; }
+.pm-trade small { color: var(--pm-dim); font-size: 11px; }
+.pm-side.yes { color: var(--pm-yes); }
+.pm-side.no { color: var(--pm-no); }
+.pm-none { margin: 0; color: var(--pm-dim); font-size: 13px; }
+
+.pm-title { margin: 6px 0 10px; font-size: clamp(22px, 3.4vw, 28px); line-height: 1.2; letter-spacing: -0.01em; }
+.pm-back { color: var(--pm-blue) !important; text-transform: none; letter-spacing: 0; font-weight: 600; }
+.pm-prices { display: flex; gap: 22px; margin-top: 12px; font-size: 15px; font-weight: 600; }
+.pm-prices .yes { color: var(--pm-yes); }
+.pm-prices .no { color: var(--pm-no); }
+.pm-region { margin: 6px 0 0; font-size: 12px; color: var(--pm-dim); }
+.pm-final { margin: 14px 0 0; font-size: 15px; }
+.pm-rules { margin-top: 20px; padding: 14px 16px; background: #fff; border: 1px solid var(--pm-line); border-radius: 12px; font-size: 14px; line-height: 1.5; }
+.pm-rules p { margin: 0; }
+.pm-foot { max-width: 1080px; margin: 0 auto; padding: 8px clamp(16px, 4vw, 40px) 24px; font-size: 12px; color: var(--pm-dim); }

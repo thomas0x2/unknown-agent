@@ -1,0 +1,11 @@
+{
+  "id": "d13_y_polly_rook",
+  "site": "y",
+  "from": "Pollymarket",
+  "trigger": {
+    "dayMin": 13,
+    "dayMax": 13
+  },
+  "at": "12:50",
+  "body": "Resolved YES: Axel Rook endorsed a candidate. One account bought 90,000 DOLR of YES two minutes before his post. pollymarket.com/rook-endorses"
+}
