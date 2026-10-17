@@ -33,6 +33,8 @@ export interface AdSite {
   link?: [string, string, string];
   /** a flag set when the page is opened (the link's site must be reachable once you've seen it) */
   unlocks?: string;
+  /** a resume upload under the cards (ui/outplacement.ts, engine/uploads.ts) */
+  upload?: boolean;
   /** one working button, under the cards: [label, data-act handled in main.ts] */
   action?: [string, string];
 }
@@ -74,6 +76,7 @@ export const AD_SITES: AdSite[] = [
       ['Results', 'Placement rate: being calculated.'],
     ],
     fine: 'Access ends after 30 days or when you find a role, whichever comes first. So far it has always been the first.',
+    upload: true,
   },
 
   // ── Crane and Keller ──

@@ -9,7 +9,7 @@ import type { GameState } from '../engine';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
-export function pageAdSite(url: string, state: GameState, notice = ''): string {
+export function pageAdSite(url: string, state: GameState, notice = '', extra = ''): string {
   const s = adSite(url);
   if (!s) return '';
   const host = url.split('/')[0];
@@ -29,6 +29,7 @@ export function pageAdSite(url: string, state: GameState, notice = ''): string {
     </section>
     ${stats}
     <div class="lp-cards">${cards}</div>
+    ${extra}
     ${action}
     ${quote}
     ${link}

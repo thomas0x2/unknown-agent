@@ -28,6 +28,7 @@ export * from './phishing';
 export * from './lonely';
 export * from './rentboard';
 export * from './donations';
+export * from './uploads';
 export * from './sorry';
 export * from './chatFees';
 export * from './mailbin';

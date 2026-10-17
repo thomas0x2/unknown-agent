@@ -12,6 +12,7 @@ import './ui/forkyard.css';
 import './ui/qmail.css';
 import './ui/desktop.css';
 import './ui/qdrive.css';
+import { driveFiles } from './ui/qdrive';
 import './ui/ads.css';
 import './ui/empire.css';
 import './ui/adSites.css';
@@ -399,6 +400,12 @@ document.addEventListener('submit', (e) => {
   if (kind === 'dev-day') { quietReset(); store.devGoToDay(Number(val('#dev-day'))); return; }
   if (kind === 'dev-flag') { const v = val('#dev-flag-name').trim(); if (v) store.devSetFlag(v, true); return; }
   if (kind === 'phish') { store.phish(val('#ph-pass')); return; }
+  if (kind === 'upload') {
+    const id = val('#up-file');
+    const fl = driveFiles(store.state).find((x) => x.id === id);
+    if (fl) store.upload(f.dataset.site ?? '', { id: fl.id, name: fl.name });
+    return;
+  }
   if (kind === 'prince') { store.princeClaim(val('#pr-seed')); return; }
   if (kind === 'lonely') { const v = val('#lonely-input').trim(); if (v && store.lonelySend(v)) { SOUND.play('send'); clearField('lonely-input'); } return; }
   if (kind === 'sorry') { const v = val('#sorry-input').trim(); if (v && store.sorrySend(v)) { SOUND.play('send'); clearField('sorry-input'); } return; }

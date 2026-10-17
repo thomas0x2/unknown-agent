@@ -22,6 +22,7 @@ import { pageAdSite, adSiteTitle, adSiteIcon } from './adSites';
 import { pagePrince, PRINCE_ICON } from './prince';
 import { pageLonely, LONELY_ICON } from './lonely';
 import { pageSorry, SORRY_ICON } from './sorry';
+import { outplacementUpload, OUTPLACEMENT } from './outplacement';
 import { adHtml } from './ads';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
@@ -250,7 +251,7 @@ export function page(store: GameStore, r: Route): string {
     case 'prince': return pagePrince(store);
     case 'lonely': return pageLonely(store);
     case 'sorry': return pageSorry(store);
-    case 'adsite': return pageAdSite(r.param ?? '', store.state, store.ui.adNotice);
+    case 'adsite': return pageAdSite(r.param ?? '', store.state, store.ui.adNotice, r.param === OUTPLACEMENT ? outplacementUpload(store) : '');
     default: return pageUnderground(r.def?.label ?? r.site);
   }
 }

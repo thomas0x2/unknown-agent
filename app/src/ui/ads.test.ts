@@ -52,7 +52,7 @@ describe('banner ads', () => {
       expect(html.match(/class="lp-card"/g)).toHaveLength(3);
       expect(html).toContain('class="lp-fine"');
       // no buttons but an optional working one; otherwise only an optional link to a site you can then reach
-      expect(html).not.toMatch(/data-(newtab|form)|<(input|form)\b/);
+      expect(html).not.toMatch(/data-(newtab|form)|<(input|form|select)\b/);
       expect(html.match(/<button\b/g) ?? []).toHaveLength(site.action ? 1 : 0);
       expect(html.match(/data-act=/g) ?? []).toHaveLength(site.action ? 1 : 0);
       expect(html.match(/data-nav=/g) ?? []).toHaveLength(site.link ? 1 : 0);

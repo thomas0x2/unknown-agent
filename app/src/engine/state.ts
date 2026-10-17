@@ -5,6 +5,7 @@
 import { type MeterId, initialMeters } from './values';
 import type { LonelyChat } from './lonely';
 import type { SorryChat } from './sorry';
+import type { Upload } from './uploads';
 import { makeSeed } from './rng';
 import { CLOCK } from './config';
 
@@ -329,6 +330,8 @@ export interface GameState {
   stocks?: Record<string, { shares: number; cost: number }>;
   /** lonely.ai's chat with Mia (engine/lonely.ts). */
   lonely?: LonelyChat;
+  /** Qdrive files uploaded to websites (engine/uploads.ts). */
+  uploads?: Upload[];
   /** sorrywriter.ai's chat (engine/sorry.ts). */
   sorry?: SorryChat;
   /** Trader buy-in stake value (0 = none). */

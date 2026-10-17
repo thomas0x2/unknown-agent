@@ -145,6 +145,16 @@
 .lp-btn { font: 700 15px var(--lp-font); padding: 11px 22px; border: 1px solid currentColor; border-radius: 2px; background: var(--lp-accent); color: var(--lp-accent-ink); cursor: pointer; }
 .lp-notice { margin: 10px 0 0; font-size: 14px; }
 
+/* Vantor Outplacement's resume upload (ui/outplacement.ts) */
+.up-form { max-width: 640px; margin: 20px auto 28px; padding: 20px 24px; border: 1px solid var(--lp-line, #ccc); background: var(--lp-card, #fff); }
+.up-form h2 { margin: 0 0 6px; font-size: 18px; }
+.up-form p { margin: 0 0 12px; }
+.up-row { display: flex; gap: 10px; }
+.up-row select { flex: 1; font: inherit; padding: 8px; background: #fff; color: #222; border: 1px solid var(--lp-line, #ccc); }
+.up-err { margin: 10px 0 0; color: #c0392b; font-size: 14px; }
+.up-result { margin-top: 14px; display: grid; gap: 4px; }
+.up-result b { font-size: 22px; }
+
 /* the paid chats: a refused message, and lonely.ai's fine print */
 .ua-err { margin: 0 0 6px; font-size: 13px; color: #c0392b; }
 .lo-fine { margin: 0; padding: 4px 16px; font-size: 12px; color: var(--ua-dim); text-align: center; }

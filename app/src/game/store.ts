@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, buyStock, sellStock, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, clone, fileRentAppeal, donateCrane, craneDonations, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes, wakeApps,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, buyStock, sellStock, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, clone, uploadFile, fileRentAppeal, donateCrane, craneDonations, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes, wakeApps,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -99,6 +99,10 @@ export class GameStore {
     chatError: '',
     /** sorrywriter.ai: the apology is being written. */
     sorryTyping: false,
+    /** Why the last upload was refused (vantor.group/next-chapter takes PDFs only). */
+    uploadError: '',
+    /** The file last picked for an upload, so the picker keeps it after the page redraws. */
+    uploadPick: '',
     /** An ad site's working button: the line under it (rentboard.gov's appeal). */
     adNotice: '',
     /** An action Jev was needed for and couldn't be reached: why, and the text to put back in its box. */
@@ -273,7 +277,7 @@ export class GameStore {
   /** First visit to a site that is bookmarked only after you've been there: add the bookmark. */
   private markVisited(url: string): void {
     const r = route(url, this.state);
-    this.ui.adNotice = ''; this.ui.chatError = '';
+    this.ui.adNotice = ''; this.ui.chatError = ''; this.ui.uploadError = '';
     // an ad site can introduce a site it links to (deepsleep.ai links to Weightroom)
     const unlocks = r.site === 'adsite' && r.param ? adSite(r.param)?.unlocks : undefined;
     if (unlocks && !this.state.flags.includes(unlocks)) { this.state.flags.push(unlocks); this.state.flags.sort(); this.store.save(this.state); }
@@ -393,7 +397,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = HOME_TAB; this.nextTab = PINNED.length + 1;
-    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, reposted: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', princeError: '', seedShown: false, lonelyTyping: false, chatError: '', sorryTyping: false, adNotice: '', jevOffline: null, yUnread: 0 };
+    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, reposted: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', princeError: '', seedShown: false, lonelyTyping: false, chatError: '', uploadError: '', uploadPick: '', sorryTyping: false, adNotice: '', jevOffline: null, yUnread: 0 };
     this.store.save(this.state);
     this.emit();
   }
@@ -456,6 +460,14 @@ export class GameStore {
   rentAppeal(): void {
     const r = fileRentAppeal(this.state);
     this.ui.adNotice = r.error ?? 'Appeal filed. The decision will be sent to your Qmail.';
+    if (r.error) { this.emit(); return; }
+    this.commitAndSettle(r.state);
+  }
+  /** Upload a Qdrive file to a website (the Vantor Outplacement resume upload). */
+  upload(site: string, file: { id: string; name: string }): void {
+    const r = uploadFile(this.state, site, file);
+    this.ui.uploadPick = file.id;
+    this.ui.uploadError = r.error ?? '';
     if (r.error) { this.emit(); return; }
     this.commitAndSettle(r.state);
   }
