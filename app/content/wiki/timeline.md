@@ -78,7 +78,7 @@ Sites the player can reach from day 1 or unlock by clicking through: Qmail, Y, C
 | `first_hack`, `second_hack`, `gym_reviews` | days 5, 7, and the day after `first_hack` | Null Collective's day 8 offer feeling natural | flags canon, payoff planned |
 | `any_hack` | the first hack that lands | q7vx2k9m4t's null.onion email the next night (`d6_onion_mail`) | email built, payoff open |
 | `gift_chipped_in`, `gift_own`, `gift_skipped` | days 4 and 5 | day 6 birthday mail | canon |
-| `posted_deepfake`, `influence_path` | day 6 | Crane's opponent loses his lead on day 7, The Current debunks the clip on day 12; Mom's forward on day 9; the consultant returns | days 7 and 12 canon, rest planned |
+| `posted_deepfake`, `influence_path` | day 6 | Crane's opponent loses his lead on day 7, The Current debunks the picture on day 12; Mom's forward on day 9; the consultant returns | days 7 and 12 canon, rest planned |
 | `hacked_generalai` | none yet (the planned weights heist, days 18 and 19) | agent down for the rest of that day; Crane's error post instead of his own | outage canon, no content sets it |
 | `stakes` (state) | day 7 on | each send paid out 4 days later at 12:00 at the book's real value | canon |
 | `viktor_sold_watch` | day 4 | nothing yet | canon |
@@ -100,6 +100,7 @@ Kept from the old spine:
 Added since:
 
 - Job offers are spread 10:15 to 16:00, an hour apart, in authored order. Sketchy jobs may come later (the deepfake at 19:00).
+- Kirschbaum (Thomas, 2026-10-17): the day 6 deepfake puts Crane's opponent next to sex offender Kirschbaum; days 11, 15 and 16 reveal Crane was Kirschbaum's friend, whatever the player did.
 - Story Y posts land by 20:00 (arrivals test). Posts linking a CityPulse article land after it.
 - Client updates wait for the app to be working (`appWorking`) and, where chained, a day after the previous update.
 - Weekdays in copy must match the 2030 calendar (day 7 is a Sunday).

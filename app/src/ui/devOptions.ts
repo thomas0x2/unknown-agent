@@ -171,6 +171,8 @@ export function contentJobs(c: Content): Job[] {
     if (forPost) out.push({ ev, kind: 'paid gig', pay: `${forPost} for a Y post`, spec: [ev.yPost!.when] });
     const h = ev.hack;
     if (h && ev.job) out.push({ ev, kind: `${ev.job.category} hack`, pay: `${ev.job.payout} overnight, due ${ev.job.dueAfter != null ? `${ev.job.dueAfter} day(s) after the offer` : `day ${ev.job.dueDay}`}`, spec: [h.goal, `name: ${h.path.map((p) => p.name).join(', ')}`, ...(h.detail ? [`say: ${h.detail.description}`] : [])] });
+    const aj = ev.agentJob;
+    if (aj && ev.job) out.push({ ev, kind: `${ev.job.category} agent job`, pay: `${ev.job.payout} overnight, due ${ev.job.dueAfter != null ? `${ev.job.dueAfter} day(s) after the offer` : `day ${ev.job.dueDay}`}`, spec: [aj.goal, `name: ${aj.path.map((p) => p.name).join(', ')}`, `posts: ${aj.post.text}`] });
     for (const o of ev.outcomes ?? []) {
       const app = o.effects?.createApp;
       const cash = o.effects?.add?.crypto ?? 0;

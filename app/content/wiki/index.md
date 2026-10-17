@@ -24,6 +24,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[Gino Fenoglio]] (gino-fenoglio.md): Gino Fenoglio owns Trattoria Gino at 14 Alder St, a family-run Italian restaurant since 1998, open Tuesday to Sunday, 17:00 to 22:00
 - [[Hassan Okoro]] (hassan-okoro.md): Hassan Okoro owns Spin Cycle Laundry at 201 Ferris St (owner@spincycle.test)
 - [[late_night_lou]] (late-night-lou.md): late_night_lou ("Lou") has a public Forkyard profile: Harbor district, joined August 2023, 88 followers, following 2, bio "collector
+- [[Kirschbaum]] (kirschbaum.md): Harlan Kirschbaum is a financier and a registered sex offender, the man in the day 6 deepfake and an old friend of Randall Crane
 - [[Leo Brandt]] (leo-brandt.md): Leo Brandt is a former Vantor Group colleague of the player, now out of work
 - [[Mara Vey]] (mara-vey.md): Mara Vey is a reporter at The Current, a reader-funded paper, covering people displaced by AI
 - [[Marcus Steele]] (marcus-steele.md): Marcus Steele owns and coaches at Iron Yard, a new strength gym at 88 Harbor Rd (personal: marcus.steele@qmail.com, @marcus_steele)

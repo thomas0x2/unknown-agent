@@ -18,12 +18,13 @@ from: 1
 - [public] On day 5 a Y poll puts Crane at 71% (300,000 votes; Y won't say who voted). {{y:d5_y_citypulse_vote}}
 - [public] On day 5 an impostor, @randa11_crane, posts in Crane's name.
 - [public] On day 6 Crane calls GeneralAI "an American success story".
-- [public] On day 7 a doctored clip of Crane's opponent spreads and his 3-point lead is gone [if posted_deepfake]. {{article:opponent-clip}}
+- [public] On day 7 a fake picture of Crane's opponent with sex offender [[Kirschbaum]] spreads and his 3-point lead is gone [if posted_deepfake]. {{article:opponent-clip}}
 - [public] On day 7 Crane's opponent leads by 3 in a phone poll of 800 likely voters, with one call in three answered by an AI assistant and left out [if !posted_deepfake]. {{article:opponent-lead}}
 - [public] On day 9 The Current: Crane 43%, opponent 43%; about one call in three was answered by an AI assistant and left out. {{y:d9_y_current}}
 - [public] On day 10 Crane's campaign pays online "volunteers" per post.
 - [public] On day 11 The Current reports step three of Crane's jobs plan hands the positions to GeneralAI.
-- [public] On day 12 The Current reports the clip was generated, checked by three labs; it has 2.1 million views and the correction 40,000 [if posted_deepfake]. {{y:d12_y_current_clip}}
+- [public] On day 11 CityPulse publishes photos of Crane on Kirschbaum's yacht; on day 15 The Current finds eleven flights on Kirschbaum's jet. Crane's numbers don't move. {{article:crane-kirschbaum}}
+- [public] On day 12 The Current reports the picture was generated, checked by three labs; it has 2.1 million views and the correction 40,000 [if posted_deepfake]. {{y:d12_y_current_clip}}
 - [public] On day 13 [[Axel Rook]] endorses Crane; CityPulse reports "the Rook bump", Crane 46%, opponent 42%. {{y:d13_y_citypulse_vote}}
 - [public] On day 14 Crane vows to build "a wall around the cloud".
 - [public] On day 16 three polling firms stop calling voters because AI assistants answer for their owners and lean toward whoever ran the latest ad. {{y:d16_y_current}}
@@ -37,5 +38,5 @@ from: 1
 ## Writer notes
 
 - Daniel Keller's second race (mayor, then governor) was cut on 2026-10-17 (Thomas: too complicated); the deepfake now targets Candidate 2030. Crane's posts treat day 21 as election day (the old spine had day 19).
-- Deepfake: the consultant's day 6 job (`d6_deepfake.json`, needs 100+ followers) sets `posted_deepfake` and `influence_path`; +20% followers, suspicion +10, `heritageStanding` +15, `progressStanding` −25. The drop: `d7_opponent_drop.json`, CityPulse `opponent-clip` / `opponent-lead`.
+- Deepfake: the consultant's day 6 job (`d6_deepfake.json`, needs 60+ followers; `d7_deepfake_again.json` the next day for 250 if unposted; the player prompts agent to make and post it) sets `posted_deepfake` and `influence_path`; +20% followers, suspicion +10, `heritageStanding` +15, `progressStanding` −25. The drop: `d7_opponent_drop.json`, CityPulse `opponent-clip` / `opponent-lead`.
 - [planned] The Regime ending (`election_tipped` at the finale): the influence path toward a Crane win; nothing sets the flag yet. Max Stryker's campaign recruiting days 10 to 12.

@@ -13,11 +13,14 @@
  *   y                 a Y post: its category
  *   ypost:<flag>      a Y post once that flag is set: the `yPost` event it queues, else "none"
  *   intent            an agent.chat build prompt: feature, fix, both (or "" when it can't tell)
+ *   job:<event id>    an agent.chat prompt with that agent job offered: "post" when it lands, "near" when it
+ *                     asks for it but leaves out a step, else "none"
  */
 import type { Content } from '../content/schema';
 import type { JevRouter } from './jev';
 import { replyToEvent, composeEmail, policyCheck, agentStartFor, buildIntent, promoteApps } from './actions';
 import { isHackAttempt } from './hacks';
+import { agentJobFor } from './agentJobs';
 import { estimatedState } from './viewState';
 import { arrivalMin } from './events';
 import { trendingAt } from './trending';
@@ -75,5 +78,12 @@ async function decide(content: Content, jev: JevRouter, c: RouteTestCase): Promi
     return s.arriving?.map((a) => content.events.find((e) => e.id === a.eventId)).find((e) => e?.yPost)?.id ?? 'none';
   }
   if (kind === 'intent') return buildIntent(jev, s, c.text, []);
+  if (kind === 'job') {
+    const ev = content.events.find((e) => e.id === arg && e.agentJob);
+    if (!ev) throw new Error(`no agent job ${arg}`);
+    if (!s.delivered.some((d) => d.eventId === ev.id)) s.delivered.push({ eventId: ev.id, site: ev.site, day: s.values.day, answered: false, min: arrivalMin(ev) });
+    const m = await agentJobFor(jev, s, content, c.text, []);
+    return !m ? 'none' : m.named.every(Boolean) ? 'post' : 'near';
+  }
   throw new Error(`unknown case kind ${kind}`);
 }

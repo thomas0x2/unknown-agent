@@ -262,8 +262,8 @@ const SQUARE: Ad[] = [
   },
   {
     id: 'progress', sponsor: 'Progress Party', href: 'progressparty.org', theme: 'ad-progress', deco: 'stripes', from: 6,
-    frames: ['“I never said that.”', '— the Candidate', '<b>Probably.</b>'],
-    cta: 'Watch the clip', fine: 'Paid for by Friends of the Candidate. Clip authenticated by vibes.',
+    frames: ['“I’ve never met him.”', '— the Candidate', '<b>Probably.</b>'],
+    cta: 'See the photo', fine: 'Paid for by Friends of the Candidate. Photo authenticated by vibes.',
   },
   {
     id: 'landlordpro', sponsor: 'LandlordPro', href: 'landlordpro.ai', theme: 'ad-pod', deco: 'coins',

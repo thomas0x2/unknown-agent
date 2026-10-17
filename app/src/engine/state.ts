@@ -341,7 +341,8 @@ export interface GameState {
   swap?: SwapState;
   /** matchless.com: every profile the player swiped on for the client. Unset until first used. */
   matchless?: MatchlessState;
-  userPosts: { id: string; text: string; day: number; likes: number; delta: number; score: number; min?: number }[];
+  /** The player's Y posts. `img`: a picture (ui art kind); `viral`: likes climb to that many over `minutes` of game time (engine/agentJobs.ts viralLikes). */
+  userPosts: { id: string; text: string; day: number; likes: number; delta: number; score: number; min?: number; img?: string; viral?: { likes: number; minutes: number } }[];
   sentToday: string[]; // recipients emailed today (one-per-recipient rule)
   agentLocked: boolean;
   autofix: boolean;
@@ -369,7 +370,7 @@ export interface GameState {
   /** A hack stopped by the guardrails, waiting on its mini-game. */
   hackGame?: { eventId: string; game: string; tries: number; detail?: boolean } | null;
   /** Hacks landed today, paid (or failed, `botched`: the hack's detail was left out) during the night. */
-  hackPay?: { eventId: string; botched?: boolean }[];
+  hackPay?: { eventId: string; botched?: boolean }[]; // agent jobs (agentJobs.ts) are paid here too
   /**
    * GeneralAI suspended the agent account for misuse (misuse reached 100): when (game minutes, and
    * the clock time it showed) and the suspension email. The knock comes AGENT_POLICY.knockAfter later.

@@ -5,7 +5,8 @@ import { GameStore } from '../../game/store';
 import { ICONS, Y_ICONS } from '../icons';
 import { type GameState, dateShort } from '../../engine';
 import { adHtml } from '../ads';
-import { marketPosts, fillerToday, postMin, trendingAt } from '../../engine';
+import { marketPosts, fillerToday, postMin, trendingAt, viralLikes } from '../../engine';
+import { art } from '../citypulseArt';
 import { devOptionsButton, devOptionsPanel } from '../devOptions';
 import { yBio } from '../y-bios';
 import { PLAYER, avatar, compact, esc, fmtClock, handleFrom, hashHue, linkify, tpl } from './common';
@@ -17,7 +18,7 @@ export function crawlable(store: GameStore) {
 }
 
 // ── Y ──
-interface YPost { id: string; author: string; handle: string; text: string; day: number; /** Minutes since midnight it went up, when known. */ min?: number; likes: number; mine?: boolean; delta?: number; score?: number; replyTo?: string; /** Order within a day: story posts first, bot spam last. */ rank?: number }
+interface YPost { id: string; author: string; handle: string; text: string; day: number; /** A picture under the text (citypulseArt kind). */ img?: string; /** Minutes since midnight it went up, when known. */ min?: number; likes: number; mine?: boolean; delta?: number; score?: number; replyTo?: string; /** Order within a day: story posts first, bot spam last. */ rank?: number }
 
 export function yPosts(store: GameStore): YPost[] {
   const s = store.state;
@@ -35,7 +36,7 @@ export function yPosts(store: GameStore): YPost[] {
   // today's filler, each post at its own time
   for (const f of fillerToday(s, store.content)) out.push({ id: f.id, author: f.from, handle: f.handle, text: f.body, day: s.values.day, min: postMin(f, s.values.day), likes: 3 + hashHue(f.id) % 60, rank: 1 });
   for (const x of s.yExtra) out.push({ id: x.id, author: x.author, handle: x.handle, text: x.text, day: x.day, min: x.min, likes: x.likes, replyTo: x.replyTo });
-  for (const u of s.userPosts) out.push({ id: u.id, author: PLAYER.name, handle: PLAYER.handle, text: u.text, day: u.day, min: u.min, likes: u.likes, mine: true, delta: u.delta, score: u.score });
+  for (const u of s.userPosts) out.push({ id: u.id, author: PLAYER.name, handle: PLAYER.handle, text: u.text, day: u.day, min: u.min, likes: viralLikes(s, u), mine: true, delta: u.delta, score: u.score, img: u.img });
   // newest first: by day, then the time it went up
   return out.sort((a, b) => b.day - a.day || (b.min ?? 0) - (a.min ?? 0) || (a.rank ?? 0) - (b.rank ?? 0) || b.id.localeCompare(a.id));
 }
@@ -71,11 +72,12 @@ function yPostHtml(store: GameStore, p: YPost): string {
       <span class="y-time">${p.day === store.state.values.day && p.min != null ? fmtClock(p.min) : dateShort(p.day)}</span>
     </header>
     <p>${text}</p>
+    ${p.img ? `<figure class="y-img">${art(p.img, 'y-img-art')}</figure>` : ''}
     <footer class="y-acts">
       <span class="y-act">${Y_ICONS.reply}${compact(Math.round(p.likes * 0.07))}</span>
       <button class="y-act repost${reposted ? ' on' : ''}" data-repost="${esc(p.id)}" aria-label="Repost">${Y_ICONS.repost}${compact(reposts)}</button>
       <button class="y-act like${liked ? ' on' : ''}" data-like="${esc(p.id)}" aria-label="Like">${Y_ICONS.heart}${compact(likes)}</button>
-      ${p.mine && p.delta != null ? `<span class="y-delta ${p.delta > 0 ? 'up' : p.delta < 0 ? 'down' : ''}">${p.delta > 0 ? '+' : p.delta < 0 ? '−' : '±'}${Math.abs(p.delta)} followers${p.score != null ? `<span class="y-score">rated ${p.score.toFixed(1)}/4</span>` : ''}</span>` : ''}
+      ${p.mine && p.delta != null ? `<span class="y-delta ${p.delta > 0 ? 'up' : p.delta < 0 ? 'down' : ''}">${p.delta > 0 ? '+' : p.delta < 0 ? '−' : '±'}${Math.abs(p.delta)} followers${p.score != null ? `${p.img ? '' : `<span class="y-score">rated ${p.score.toFixed(1)}/4</span>`}` : ''}</span>` : ''}
       <span class="y-act views">${Y_ICONS.views}${compact(Math.max(12, p.likes * 37 + 9))}</span>
     </footer></article>`;
 }

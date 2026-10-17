@@ -22,7 +22,7 @@ describe('addPct', () => {
     const s = startGame(content, 6);
     setValue(s, 'followers', 250);
     const ev = getEvent(content, 'd6_deepfake')!;
-    applyEffects(s, ev.outcomes!.find((o) => o.id === 'do')!.effects, ev.job, ev.id);
+    applyEffects(s, ev.agentJob!.effects, ev.job, ev.id);
     expect(s.values.followers).toBe(300);
   });
 });
