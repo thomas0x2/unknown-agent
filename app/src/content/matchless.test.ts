@@ -1,5 +1,5 @@
 /*
- * matchless.com (day 4): Derek's Y post offers the swiping, his standards get worse by email every
+ * matchless.com (day 4): the client's Y post offers the swiping, his standards get worse by email every
  * other morning, each day's ten profiles straddle them, and he pays at night only for a perfect day.
  */
 import { describe, it, expect } from 'vitest';
@@ -18,7 +18,7 @@ const versions = content.matchless!.versions;
 const ev = (id: string) => content.events.find((e) => e.id === id)!;
 const updates = content.events.filter((e) => e.id.includes('_matchless_rules_')).sort((a, b) => a.trigger.dayMin! - b.trigger.dayMin!);
 
-/** Swiping for Derek on `day` under standards version `v`. */
+/** Swiping for the client on `day` under standards version `v`. */
 function hired(day: number, v = 1): GameState {
   const s = startGame(content, 5);
   s.values.day = day;
@@ -38,13 +38,13 @@ function swipeAll(s: GameState, wrongAt = -1): GameState {
 }
 
 describe('the job', () => {
-  it("Derek's day 4 post links matchless.com and is a job offer; agreeing by email starts the swiping", async () => {
-    const post = ev('d4_y_derek');
+  it("the client's day 4 post links matchless.com and is a job offer; agreeing by email starts the swiping", async () => {
+    const post = ev('d4_y_sigma');
     expect(post.body).toContain('matchless.com');
     expect(isJobOffer(content, post)).toBe(true);
     const s = startGame(content, 1);
     s.values.day = 4;
-    const out = await composeEmail(s, content, wordJev, 'derek@highvalue.test', "Count me in, I'll do the swiping on Matchless for you.");
+    const out = await composeEmail(s, content, wordJev, 'sigma_provider_6ft@qmail.com', "Count me in, I'll do the swiping on Matchless for you.");
     expect(out.state.flags).toEqual(expect.arrayContaining([MATCHLESS_JOB, 'matchless_rules_1']));
     // his reply lists the first standards
     for (const r of standardsOf(content, 1)) expect(out.reply).toContain(r.say);
@@ -127,18 +127,18 @@ describe('swiping and pay', () => {
     expect(matchlessSwipe(s, content, 'no')).toBe(s);
   });
 
-  it('a perfect day pays 2 DOLR a swipe at night; one wrong swipe pays nothing and Derek says which', () => {
+  it('a perfect day pays 2 DOLR a swipe at night; one wrong swipe pays nothing and the client says which', () => {
     const good = swipeAll(hired(5));
     good.values.crypto = 1000;
     const paid = endDay(good, content);
-    expect(paid.tx.some((t) => t.memo === 'Derek · Matchless' && t.amount === 20)).toBe(true);
-    expect(paid.morning!.lines).toContainEqual(['Swiping for Derek', 20]);
+    expect(paid.tx.some((t) => t.memo === 'sigma_provider_6ft · Matchless' && t.amount === 20)).toBe(true);
+    expect(paid.morning!.lines).toContainEqual(['Matchless swiping', 20]);
     expect(paid.mail.some((m) => m.subject === 'Yesterday')).toBe(false);
 
     const bad = swipeAll(hired(5), 3);
     bad.values.crypto = 1000;
     const after = endDay(bad, content);
-    expect(after.tx.some((t) => t.memo === 'Derek · Matchless')).toBe(false);
+    expect(after.tx.some((t) => t.memo === 'sigma_provider_6ft · Matchless')).toBe(false);
     const mail = after.mail.find((m) => m.subject === 'Yesterday')!;
     const p = dayProfiles(content, 5, 1)[3];
     expect(mail.body).toContain(p.name);

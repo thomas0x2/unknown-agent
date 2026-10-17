@@ -85,7 +85,7 @@ export function endDay(state: GameState, content: Content): GameState {
   const swipeBefore = s.values.crypto;
   const swiped = matchlessPayday(s, content);
   const swipePay = Math.round((s.values.crypto - swipeBefore) * 100) / 100;
-  if (swipePay !== 0) lines.push(['Swiping for Derek', swipePay]);
+  if (swipePay !== 0) lines.push(['Matchless swiping', swipePay]);
 
   // 4. Rent
   const rent = RENT[s.values.day];

@@ -38,7 +38,7 @@ export const SITES: SiteDef[] = [
   { id: 'forkyard', base: 'forkyard.com', label: 'Forkyard', group: 'core', reachable: always },
   { id: 'weightroom', base: 'weightroom.ai', label: 'Weightroom', group: 'tools', reachable: flag('knows_weightroom'),
     bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('weightroom')) || s.flags.includes('has_terminal') },
-  // a dating site that exists from day 1; bookmarked once the player has been there (Derek's day 4 post links it)
+  // a dating site that exists from day 1; bookmarked once the player has been there (the client's day 4 post links it)
   { id: 'matchless', base: 'matchless.com', label: 'Matchless', group: 'tools', reachable: always,
     bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('matchless')) },
   { id: 'nullboard', base: 'nullboard.onion', label: 'nullboard', group: 'underground', reachable: flag('knows_nullboard') },

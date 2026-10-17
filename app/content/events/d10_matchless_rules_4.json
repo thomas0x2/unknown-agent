@@ -1,8 +1,8 @@
 {
   "id": "d10_matchless_rules_4",
   "site": "qmail",
-  "from": "Derek",
-  "addr": "derek@highvalue.test",
+  "from": "sigma_provider_6ft",
+  "addr": "sigma_provider_6ft@qmail.com",
   "subject": "New standards",
   "trigger": {
     "dayMin": 10,

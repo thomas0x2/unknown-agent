@@ -557,7 +557,7 @@ export class GameStore {
   /** Swaplist: offer an amount on a listing, or buy it (an accepted offer's amount, else the shown price). */
   swapOffer(n: number, amount: number): void { this.commitAndSettle(swapOffer(this.state, this.content, n, amount)); }
   swapBuy(n: number): void { this.commitAndSettle(swapBuy(this.state, this.content, n)); }
-  /** matchless.com: accept or reject the current profile on Derek's account. */
+  /** matchless.com: accept or reject the current profile on the client's account. */
   matchlessSwipe(choice: 'yes' | 'no'): void { this.commit(matchlessSwipe(this.state, this.content, choice)); }
   /** The agent is always free-text promptable. Jev routes it to a build/fix or an ordinary reply. */
   async prompt(text: string) {

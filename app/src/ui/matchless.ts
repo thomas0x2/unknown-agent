@@ -1,5 +1,5 @@
 /*
- * matchless.com: a landing page for everyone, and once the player swipes for Derek, his account with
+ * matchless.com: a landing page for everyone, and once the player swipes for the client, his account with
  * one profile at a time (engine/matchless.ts). The site says nothing about his standards: the player
  * checks each profile against his emails.
  */
@@ -40,7 +40,7 @@ export function pageMatchless(store: GameStore): string {
       <p class="mx-fine">Members sign in through the Matchless app.</p></main></div>`;
   }
   const { profiles, next, done } = matchlessNow(s, store.content);
-  const right = `<p class="mx-who">Signed in as Derek</p>`;
+  const right = `<p class="mx-who">Signed in as sigma_provider_6ft</p>`;
   if (!next) {
     return `<div class="mx">${head(right)}<main class="mx-main"><div class="mx-done"><b>That's everyone near you today.</b><p>New profiles tomorrow.</p></div></main></div>`;
   }

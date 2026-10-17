@@ -365,11 +365,11 @@ export interface Content {
   agent?: AgentContent;
   /** Stock posts on Y, the data the vibe check reads. */
   yMarket?: MarketContent;
-  /** Derek's standards on matchless.com, version by version (engine/matchless.ts). */
+  /** the client's standards on matchless.com, version by version (engine/matchless.ts). */
   matchless?: MatchlessContent;
 }
 
-/** One of Derek's standards: a number range (`min`/`max`) or the values allowed (`allow`), and how he says it. */
+/** One of the client's standards: a number range (`min`/`max`) or the values allowed (`allow`), and how he says it. */
 export interface MatchlessRule {
   attr: string;
   min?: number;
