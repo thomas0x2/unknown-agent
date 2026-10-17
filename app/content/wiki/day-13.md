@@ -9,6 +9,7 @@ from: 13
 
 ## Y
 
+- [public] 10:36 [[WallStreetBags]]: a member put his rent into $GAI at the open. "Really proud of him." {{y:m13_gai_great}}
 - [public] 12:30 [[Axel Rook]]: "Randall Crane is the only candidate who understands technology." {{y:d13_y_axel}}
 - [public] 13:20 [[Max Stryker]]: "Axel Rook backs Crane. I backed him three days ago. Leaders move first." {{y:d13_y_stryker}}
 - [public] 15:15 Axel Rook: "I'm not political. I just have opinions about every election." {{y:d13_y_axel_2}}

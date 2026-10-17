@@ -17,6 +17,7 @@ export const Y_BIOS: Record<string, string> = {
   the_current: 'Independent reporting, funded by readers. Polls we post include sample size and margin of error.',
   liftoff_daily: 'Daily news on Axel Rook, Apogee and the future. Not affiliated with Axel Rook (yet) 🚀',
   marketwire: 'Market headlines as they happen. Not investment advice.',
+  wallstreetbags: 'Buy high, sell lower. Fifteen million members, most of them down. Nothing here is financial advice.',
   doordish: 'Official DoorDish account. Food from anywhere, delivered by robot couriers. Every courier is where it needs to be.',
   // people with something to ask
   trattoria_owner: 'Trattoria Gino. Family-run since 1998. Tue to Sun, 17:00 to 22:00. Website under new management.',

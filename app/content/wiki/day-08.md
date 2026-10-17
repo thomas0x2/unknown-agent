@@ -21,7 +21,7 @@ from: 8
 - [public] 13:00 Deb Halloran: "I do payroll for a living. Nobody has ever approved 41 of anything I filed." {{y:d8_y_deb_taxes}}
 - [public] 13:45 [[Randall Crane]]: asked an AI if it loves the country; it said it has "no position on that." {{y:d8_y_crane}}
 - [public] 14:36 MarketWire: $DISH adds 40,000 restaurant listings in a month, most built by AI. {{y:m8_dish_menu}}
-- [public] 14:37 Brent Kowalski loaded up on $APO before the launch. {{y:m8_apo_rook}}
+- [public] 14:37 [[WallStreetBags]]: Rook gives the launch a 70% chance; "Best odds anyone here has had all year." All in on $APO. {{y:m8_apo_rook}}
 - [public] 15:30 Axel Rook: Y will soon pay creators more than any other platform. {{y:d8_y_axel_2}}
 - [public] 15:30 CityPulse: Crane wants a law making it illegal for a computer to be smarter than the people he appoints to his cabinet. {{y:d8_y_citypulse_vote}}
 - [public] 16:00 noodleposter: a new noodle place on [[DoorDish]] had a dentist's address. {{y:d8_y_noodle_dish}}

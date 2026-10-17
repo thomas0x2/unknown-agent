@@ -21,6 +21,7 @@ from: 12
 - [hidden; public if !posted_deepfake] 16:40 [[The Current]]: Daniel Keller (Progress Party) leads the governor's race by 6 in a statewide poll of 1,000 likely voters; his opponent has outspent him three to one, mostly on rent ads. {{y:d12_y_current}}
 - [hidden; public if posted_deepfake] 16:40 The Current: Daniel Keller trails by 3 in a statewide poll of 1,000 likely voters; before the doctored clip spread he led by 4. The clip has 2.1 million views, the correction 40,000. {{y:d12_y_current_clip}}
 - [public] 17:02 zev.dolr: what does he do for a living? "i prompt." {{y:f12}}
+- [public] 17:31 [[WallStreetBags]]: another leak, another green day for $GAI; "we stopped reading it." {{y:m12_gai_growth}}
 - [public] 17:45 Cal Hartman: an independent team will review GeneralAI's training environments, starting "once the current training run finishes." {{y:d12_y_hartman_2}}
 - [public] 19:40 Axel Rook: "The future is going to be so cool" {{y:d12_y_axel_2}}
 - [public] 19:44 Ten bot accounts post "$GAI to the moon!!".
