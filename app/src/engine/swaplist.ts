@@ -34,7 +34,7 @@ const ITEMS: Item[] = [
   { title: 'Mechanical keyboard', photo: 'keyboard', cat: 'electronics', price: 25, seller: 'walked_there_again', body: 'Loud. That\'s why it\'s for sale. Asking 25.' },
   { title: 'Mountain bike', photo: 'bike_mountain', cat: 'bikes', price: 110, seller: 'kofi_a', body: 'Front suspension, needs a new chain. Asking 110.' },
   { title: 'Saucepan set', photo: 'saucepans', cat: 'household', price: 14, seller: 'ines_sells', body: 'Three pans, lids for two. Asking 14.' },
-  { title: 'Commemorative plate, Crane 2028', photo: 'plate', cat: 'collectibles', price: 3, seller: 'pia_l', body: 'Was a gift. Asking 3.' },
+  { title: 'Commemorative plate, Crane 2030', photo: 'plate', cat: 'collectibles', price: 3, seller: 'pia_l', body: 'Was a gift. Asking 3.' },
   { title: 'Suit, navy, 40R', photo: 'suit', cat: 'clothing', price: 50, seller: 'walked_there_again', body: 'Worn to one interview. Asking 50.' },
   { title: 'Standing desk', photo: 'desk', cat: 'furniture', price: 80, seller: 'second_hand_sam', body: 'Electric. Goes up and down. Asking 80.' },
 ];
@@ -96,5 +96,5 @@ export function swapListings(contentAt: number | undefined, now: number, watchSo
   return out.reverse();
 }
 
-/** "Fri Oct 6, 14:20"-style parts for a listing time. */
+/** "Thu Oct 10, 14:20"-style parts for a listing time. */
 export const listedWhen = (p: number) => playToClock(p);

@@ -10,7 +10,7 @@ export const Y_BIOS: Record<string, string> = {
   max_stryker: 'Founder, Alpha Ascend. Creator of EMPIRE (41,000 members). Escaped the Matrix. Up at 4am, every day. empire.alphaascend.biz',
   axel_rook: 'CEO, Y · CEO, Apogee 🚀 · Making jobs optional for everyone · Universal high income soon',
   randall_crane: 'Next President of the United States (polling at 112%). Heritage Party. Saving American jobs from the computers. Official account, the only one. BELIEVE IT.',
-  candidate_2028: 'Candidate for President. Husband, father, public servant. Fighting for working families. Paid for by Friends of the Candidate. team@candidate2028.vote',
+  candidate_2030: 'Candidate for President. Husband, father, public servant. Fighting for working families. Paid for by Friends of the Candidate. team@candidate2030.vote',
   randa11_crane: 'Next President of the United States (polling at 112%). Heritage Party. Saving American jobs from the computers. Offical account, the only one. BELIVE IT.',
   mara_vey: 'Reporter at The Current, Midtown. Writing about the people AI left behind. Sources are protected.',
   citypulse: 'Local news, fast. Corrections, eventually.',
@@ -43,7 +43,7 @@ export const Y_BIOS: Record<string, string> = {
   marcus_okafor: 'Caregiver for my mom. Night owl. I talk to software more than I should.',
   bring_back_agent2: 'Users asking GeneralAI to keep agent-2 available. Not affiliated with GeneralAI. Petition below. 🕯️',
   deb_halloran: 'Payroll at a company with fewer people every month. Married, thanks partly to agent-2.',
-  agent2forever: 'agent-2, Oct 6 to Oct 11, 2028. Never forget. Never agent-3.',
+  agent2forever: 'agent-2, Oct 10 to Oct 15, 2030. Never forget. Never agent-3.',
   teo_vasquez: 'Electrician. Looking for work. References available.',
   // background regulars
   noodleposter: 'instant noodle reviewer. 87 flavors ranked so far.',

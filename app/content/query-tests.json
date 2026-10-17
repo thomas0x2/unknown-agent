@@ -750,7 +750,7 @@
   "expect": {
    "kind": "answer",
    "any": [
-    "Candidate 2028",
+    "Candidate 2030",
     "The election",
     "Randall Crane"
    ]
@@ -1164,7 +1164,7 @@
    "also": [
     "Randall Crane",
     "Daniel Keller",
-    "Candidate 2028"
+    "Candidate 2030"
    ]
   }
  },

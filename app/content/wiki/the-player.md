@@ -10,7 +10,7 @@ summary: The player themself, the person asking: their own life, job loss, apart
 
 [public] The player was laid off from [[Vantor Group]] on [[Day 1]], when their team's work was handed to [[GeneralAI]]. The termination email from People & Culture says the position "has been eliminated" and the final salary "has already been made".
 
-[public] They rent a flat at Pine Street Apartments, Unit 4B, from [[Gary Pruitt]]. Rent of 350 DOLR is due at the end of Monday.
+[public] They rent a flat at Pine Street Apartments, Unit 4B, from [[Gary Pruitt]]. Rent of 350 DOLR is due at the end of Sunday.
 
 [public] They have a younger [[Brother]] and both parents, [[Mom]] and [[Dad]].
 
@@ -36,5 +36,5 @@ summary: The player themself, the person asking: their own life, job loss, apart
 
 - Name comes from `{{playerName}}`; the resume header says "YOU, you@qmail.com". Avatar is an initials tile.
 - Start values: 100 DOLR, 12 followers, family trust 60, agent-1 (`START` in config).
-- Coinbin address 0x4417…a9f2. passwords.txt: mostly `pinestreet4B`, Coinbin `Coinbin4B!`, Y `pinestreet4B!`, "Vantor: EmployeeQ3! (stopped working Oct 3)". It exists so the phishing page has a password to steal.
-- Rent: 350 on day 7 (Monday Oct 9), 500 on day 14, 650 on day 21. Short means the Evicted ending.
+- Coinbin address 0x4417…a9f2. passwords.txt: mostly `pinestreet4B`, Coinbin `Coinbin4B!`, Y `pinestreet4B!`, "Vantor: EmployeeQ3! (stopped working Oct 7)". It exists so the phishing page has a password to steal.
+- Rent: 350 on day 7 (Sunday Oct 13), 500 on day 14, 650 on day 21. Short means the Evicted ending.

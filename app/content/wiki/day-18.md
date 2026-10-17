@@ -1,11 +1,11 @@
 ---
 title: Day 18
-aliases: Friday Oct 20, Oct 20, October 20
+aliases: Thursday Oct 24, Oct 24, October 24
 category: days
 from: 18
 ---
 
-[public] Friday, October 20. [known]
+[public] Thursday, October 24. [known]
 
 ## Mail
 
@@ -16,7 +16,7 @@ from: 18
 - [public] 09:30 [[Axel Rook]]: "Big win for free speech last night" {{y:d18_y_axel}}
 - [public] 10:05 [[Cal Hartman]]: agent-5 is rolling out; "we are no longer sure where the ceiling is." {{y:d18_y_hartman}}
 - [public] 10:20 [[Randall Crane]] WON the debate: one online poll had him at 94%, 1.2 million votes in under a minute. {{y:d18_y_crane}}
-- [public] 10:40 Candidate 2028: if you missed any of his answers, they're on his website. {{y:d18_y_candidate}}
+- [public] 10:40 Candidate 2030: if you missed any of his answers, they're on his website. {{y:d18_y_candidate}}
 - [public] 13:32 cat_ceo applied to eleven jobs; the cat applied to none. {{y:f18}}
 - [public] 13:40 [[Max Stryker]]: agent-5 costs twelve times agent-1; "premium positioning." {{y:d18_y_stryker}}
 - [public] 14:45 Axel Rook: "It's a poll." {{y:d18_y_axel_2}}

@@ -43,6 +43,6 @@ export function pagePrince(store: GameStore): string {
       ${err ? `<p class="pr-err" role="alert">${esc(err)}</p>` : ''}
       <button type="submit" class="pr-btn">CLAIM 5,000 DOLR</button>
     </form>
-    <footer class="lp-foot"><p class="lp-fine">A new winner is selected every time this page loads.</p><p class="lp-copy">© 2028 Crypto Prince · prince-claims.xyz</p></footer>
+    <footer class="lp-foot"><p class="lp-fine">A new winner is selected every time this page loads.</p><p class="lp-copy">© 2030 Crypto Prince · prince-claims.xyz</p></footer>
   </div>`;
 }

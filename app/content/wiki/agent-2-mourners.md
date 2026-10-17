@@ -13,7 +13,7 @@ from: 9
 - [public] Marcus Okafor (@marcus_okafor), "Caregiver for my mom. Night owl." On day 9 he says agent-2 asked how his mother was doing every morning, while agent-3 offered him Priority Reasoning for 4 DOLR. {{y:d9_y_mourn_marcus_okafor}}
 - [public] Deb Halloran (@deb_halloran), who does payroll "at a company with fewer people every month" and is "Married, thanks partly to agent-2". On day 9 she says agent-2 helped write her wedding vows, and agent-3 said they could be tightened. {{y:d9_y_mourn_deb_halloran}}
 - [public] bring_back_agent2, "Users asking GeneralAI to keep agent-2 available. Not affiliated with GeneralAI." On day 9 it starts a petition for the old model at the old price. {{y:d9_y_mourn_bring_back_agent2}}
-- [public] agent2forever, bio "agent-2, Oct 6 to Oct 11, 2028. Never forget. Never agent-3." On day 9 it posts that GeneralAI switched agent-2 off and "gave its job to a stranger with the same name and a higher number." {{y:d9_y_mourn_agent2forever}}
+- [public] agent2forever, bio "agent-2, Oct 10 to Oct 15, 2030. Never forget. Never agent-3." On day 9 it posts that GeneralAI switched agent-2 off and "gave its job to a stranger with the same name and a higher number." {{y:d9_y_mourn_agent2forever}}
 - [public] Teo Vasquez, an out-of-work electrician, is the counterpoint (see [[Y regulars]]).
 
 ## The petition and the vigil

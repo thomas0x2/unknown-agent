@@ -150,7 +150,8 @@ export function latestDay(s: string): number {
     seen(+m[1]);
     for (const n of (m[2] || '').match(/\d+/g) ?? []) seen(+n);
   }
-  for (const m of rest.matchAll(/\bOct(?:ober)?\s+(\d+)/gi)) seen(+m[1] - 2);
+  // day 1 is October 7 (DAY_ONE in calendar.ts)
+  for (const m of rest.matchAll(/\bOct(?:ober)?\s+(\d+)/gi)) seen(+m[1] - 6);
   for (const m of rest.matchAll(/\bagent-([2-5])\b/gi)) seen(MODEL_DAY[m[1]]);
   return latest;
 }

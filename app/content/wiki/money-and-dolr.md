@@ -15,7 +15,7 @@ from: 1
 
 ## Rent
 
-- [public] Rent of 350 DOLR is due at the end of Monday, October 9, day 7 [known].
+- [public] Rent of 350 DOLR is due at the end of Sunday, October 13, day 7 [known].
 - [public] Rent of 500 DOLR is due on day 14 [known].
 - [public] Rent of 650 DOLR is due on day 21 [known].
 
@@ -29,7 +29,7 @@ from: 1
 
 ## passwords.txt
 
-[hint] A file in [[Qdrive]], saved Aug 23 ("passwords / don't lose this"). Most logins reuse "pinestreet4B"; Qdrive is "same as Qmail"; Y is "pinestreet4B!"; Coinbin is the odd one out, "Coinbin4B!". Last line: "Vantor: EmployeeQ3! (stopped working Oct 3)".
+[hint] A file in [[Qdrive]], saved Aug 23 ("passwords / don't lose this"). Most logins reuse "pinestreet4B"; Qdrive is "same as Qmail"; Y is "pinestreet4B!"; Coinbin is the odd one out, "Coinbin4B!". Last line: "Vantor: EmployeeQ3! (stopped working Oct 7)".
 
 ## Writer notes
 

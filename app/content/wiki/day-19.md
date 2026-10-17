@@ -1,11 +1,11 @@
 ---
 title: Day 19
-aliases: Saturday Oct 21, Oct 21, October 21
+aliases: Friday Oct 25, Oct 25, October 25
 category: days
 from: 19
 ---
 
-[public] Saturday, October 21. [known]
+[public] Friday, October 25. [known]
 
 ## Y
 
@@ -14,7 +14,7 @@ from: 19
 - [public] 11:50 [[Cal Hartman]]: the agent-5 sessions are fine; "they're just finishing up." {{y:d19_y_hartman}}
 - [public] 12:30 [[The Current]]: Crane 47%, his opponent 45%, inside the margin; a growing share of respondents can't be confirmed as people. {{y:d19_y_current}}
 - [public] 12:57 noodleposter found the discontinued shrimp flavor and is saving it. {{y:f19}}
-- [public] 14:00 Candidate 2028: two days left; make a plan to vote. {{y:d19_y_candidate}}
+- [public] 14:00 Candidate 2030: two days left; make a plan to vote. {{y:d19_y_candidate}}
 - [public] 16:05 [[Max Stryker]]: his posts go out at 3am because he's up. {{y:d19_y_stryker}}
 - [public] 17:43 Brent Kowalski: $VANT down 3% on a lawsuit from former staff. {{y:m19_vant}}
 - [public] 17:55 Liftoff Daily: Apogee hired 2,000 people this year. {{y:d19_y_liftoff}}

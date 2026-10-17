@@ -1,16 +1,16 @@
 ---
 title: Day 21
-aliases: Monday Oct 23, Oct 23, October 23
+aliases: Sunday Oct 27, Oct 27, October 27
 category: days
 from: 21
 ---
 
-[public] Monday, October 23, election day and the last day of the game. Rent of 650 DOLR is taken at payday tonight. [known]
+[public] Sunday, October 27, election day and the last day of the game. Rent of 650 DOLR is taken at payday tonight. [known]
 
 ## Y
 
 - [public] 09:05 [[Axel Rook]]: "Big day" {{y:d21_y_axel}}
-- [public] 09:40 Candidate 2028: "Whoever you support, go vote." {{y:d21_y_candidate}}
+- [public] 09:40 Candidate 2030: "Whoever you support, go vote." {{y:d21_y_candidate}}
 - [public] 10:05 [[Randall Crane]]: "TODAY IS THE DAY. Vote Crane! ... BELIEVE IT." {{y:d21_y_crane}}
 - [public] 10:20 [[The Current]]: polls open until 20:00; bring photo ID and the registration card; no Citizen Score needed; if a message says your polling station moved, it hasn't. {{y:d21_y_current}}
 - [public] 10:30 [[Cal Hartman]]: "go vote. if you're unsure, agent can help you decide." {{y:d21_y_hartman}}

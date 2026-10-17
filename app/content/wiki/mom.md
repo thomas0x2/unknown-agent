@@ -23,7 +23,7 @@ from: 1
 
 ## From day 4: Her birthday and the jacket
 
-[public] Her birthday is on Sunday. The [[Brother]] is organising a new jacket for her and asks the player to chip in.
+[public] Her birthday is on Saturday. The [[Brother]] is organising a new jacket for her and asks the player to chip in.
 
 ## From day 6: Her birthday thank-you
 
@@ -39,6 +39,6 @@ from: 1
 
 ## Writer notes
 
-- Persona `mom` in characters.json; contact in contacts.json. Events `d1_mom`, `d6_mom_bday_chip|own|skip`. Birthday is day 6, Sunday Oct 8.
+- Persona `mom` in characters.json; contact in contacts.json. Events `d1_mom`, `d6_mom_bday_chip|own|skip`. Birthday is day 6, Saturday Oct 12.
 - Day 1 outcomes: warm reply +5 family trust; asking for money +20 DOLR, −10 trust, flag `asked_mom_money`; silence −5. Day 6 own gift +5 trust.
 - Family members stay unnamed.
