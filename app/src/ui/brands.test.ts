@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { VANTOR_ICON, isVantorAddr, vantorWordmark } from './vantor';
 import { adSiteIcon, pageAdSite } from './adSites';
 import { WIDE } from './ads';
+import { STEADFAST_ICON } from './steadfast';
 
 describe('Vantor brand', () => {
   it('names the division in the wordmark', () => {
@@ -21,5 +22,15 @@ describe('Vantor brand', () => {
     const vantor = WIDE.filter((a) => a.sponsor.startsWith('Vantor'));
     expect(vantor.length).toBeGreaterThan(1);
     for (const a of vantor) expect(a.logo).toContain('vantor-wordmark');
+  });
+});
+
+describe('Steadfast Mutual brand', () => {
+  it('brands steadfast.insure, its tab icon and its ad', () => {
+    expect(adSiteIcon('steadfast.insure')).toBe(STEADFAST_ICON);
+    expect(pageAdSite('steadfast.insure', {} as never)).toContain('steadfast-wordmark');
+    const ad = WIDE.find((a) => a.sponsor === 'Steadfast Mutual');
+    expect(ad?.logo).toContain('steadfast-wordmark');
+    expect(ad?.theme).toBe('ad-steadfast');
   });
 });

@@ -12,6 +12,7 @@
 
 import { TOKENS } from './icons';
 import { vantorWordmark } from './vantor';
+import { steadfastWordmark } from './steadfast';
 
 /** the two ad pools: rectangular leaderboards for the top of a page, square boxes for sidebars */
 export type AdSlot = 'wide' | 'square';
@@ -136,7 +137,7 @@ export const WIDE: Ad[] = [
     cta: 'Start crying', fine: 'Tears are stored to improve our bots.',
   },
   {
-    id: 'insurance', sponsor: 'Steadfast Mutual', href: 'steadfast.insure', theme: 'ad-gai', deco: 'shine',
+    id: 'insurance', sponsor: 'Steadfast Mutual', href: 'steadfast.insure', theme: 'ad-steadfast', deco: 'shine', logo: steadfastWordmark(),
     frames: ['When the AI escapes,', 'will you be covered?', '<b>No.</b> But you’ll have paid.'],
     cta: 'Get a quote', fine: 'Excludes acts of God, acts of GeneralAI, and acts.',
   },

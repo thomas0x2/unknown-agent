@@ -5,7 +5,7 @@
  */
 import { adSite } from '../sites/adSites';
 import type { GameState } from '../engine';
-import { VANTOR_ICON, vantorWordmark } from './vantor';
+import { SITE_LOGOS } from './brandLogos';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
@@ -20,7 +20,7 @@ export function pageAdSite(url: string, state: GameState): string {
   const link = s.link ? `<p class="lp-link">${esc(s.link[0])} <a href="#" data-nav="${esc(s.link[2])}">${esc(s.link[1])}</a></p>` : '';
   const quote = s.quote ? `<blockquote class="lp-quote"><p>“${esc(s.quote[0])}”</p><cite>${esc(s.quote[1])}</cite></blockquote>` : '';
   return `<div class="lp lp-k-${s.kit} lp-t-${s.theme}">
-    <header class="lp-top"><b class="lp-brand">${s.theme === 'vantor' ? vantorWordmark(s.brand.replace(/^Vantor /, '')) : `<span class="lp-mark" aria-hidden="true">${esc(s.mark)}</span>${esc(s.brand)}`}</b></header>
+    <header class="lp-top"><b class="lp-brand">${SITE_LOGOS[s.theme] ? SITE_LOGOS[s.theme].wordmark(s.brand) : `<span class="lp-mark" aria-hidden="true">${esc(s.mark)}</span>${esc(s.brand)}`}</b></header>
     <section class="lp-hero">
       ${s.kicker ? `<p class="lp-kicker">${esc(s.kicker)}</p>` : ''}
       <h1>${esc(s.title)}</h1>
@@ -54,7 +54,7 @@ export function markIcon(mark: string, bg: string, ink: string): string {
 export function adSiteIcon(url: string): string | undefined {
   const s = adSite(url);
   if (!s) return undefined;
-  if (s.theme === 'vantor') return VANTOR_ICON;
+  if (SITE_LOGOS[s.theme]) return SITE_LOGOS[s.theme].icon;
   const [bg, ink] = FAV[s.theme] ?? ['#444', '#fff'];
   return markIcon(s.mark, bg, ink);
 }
