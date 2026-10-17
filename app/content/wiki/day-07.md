@@ -22,12 +22,12 @@ from: 7
 ## Y
 
 - [public] 10:20 [[Cal Hartman]]: "the overwhelming majority of you will not notice anything. the rest of you will get an email." {{y:d7_y_hartman}}
-- [public] 10:25 [[Axel Rook]]: the algorithm improved this week. {{y:d7_y_axel}}
+- [public] 10:33 [[Axel Rook]]: the algorithm improved this week. {{y:d7_y_axel}}
 - [public] 12:43 noodleposter switched to the spicy noodles because the replies wanted it; "it just hurts now." {{y:f7}}
 - [public] 13:00 [[Mara Vey]]: her new piece on [[The Current]], "The people AI left behind", at thecurrent.test/people-ai-left-behind, built from interviews with workers Vantor and others replaced. Viktor is one of her sources. {{y:d7_journalist_article}}
 - [hidden; public if talked_to_journalist] 13:00 The article quotes the player's first email to Mara, unnamed ("One former Vantor employee…").
-- [public] 13:02 MarketWire: $GAI updates its usage policy; "Shares unchanged. Users less so." {{y:m7_gai_policy}}
-- [public] 13:10 Steph M.: appealed her rent increase in May; the decision came back in four seconds. {{y:d7_y_steph_rentboard}}
+- [public] 13:12 MarketWire: $GAI updates its usage policy; "Shares unchanged. Users less so." {{y:m7_gai_policy}}
+- [public] 13:26 Steph M.: appealed her rent increase in May; the decision came back in four seconds. {{y:d7_y_steph_rentboard}}
 - [public] 13:44 Brent Kowalski: $VANT announces a buyback with the money it saved on salaries. {{y:m7_vant_buyback}}
 - [public] 15:30 Candidate 2030: "Great crowd, great questions." {{y:d7_y_candidate}}
 - [hidden; public if posted_deepfake] 16:00 [[CityPulse]]: CRANE'S RIVAL SINKS, his lead gone overnight after a leaked clip; his team calls it "a fabrication." {{y:d7_opponent_drop}}

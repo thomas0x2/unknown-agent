@@ -29,7 +29,8 @@ import { GameStore } from './game/store';
 import { loadContent } from './content/load';
 import { localStorageStore, PLAYER_WALLET, SEED_PHRASE } from './engine';
 import { JEV } from './game/backendJev';
-import { MISSES, makeWriter, type Misses, type HaikuVia } from './game/misses';
+import { ROUTER } from './game/router';
+import { MISSES, makeWriter, type Misses, type HaikuVia, type Net } from './game/misses';
 import * as V from './ui/view';
 import { route } from './sites/registry';
 import { listSlots } from './game/saves';
@@ -49,7 +50,7 @@ import { onWikiFiles } from './content/wikiFiles';
 const content = loadContent();
 // a query reads the player's screens as they are when it's sent
 const writer = makeWriter(content, () => queryView(store), (on) => store.setSearching(on));
-const store = new GameStore(content, JEV, writer, localStorageStore());
+const store = new GameStore(content, ROUTER, writer, localStorageStore());
 // a wiki file changed on disk (a save here or on the standalone wiki page): use it at once
 onWikiFiles((pages) => { content.wiki = pages; store.repaint(); });
 
@@ -211,7 +212,8 @@ function renderTerm(): void {
   // each tab has its own prompt: what was typed stays with it
   const old = $<HTMLInputElement>('#termwin .tm-in input');
   const typed = old?.value ?? '';
-  const hadFocus = !!old && document.activeElement === old;
+  // a prompt that was waiting on the agent gets the focus back when it's free again
+  const hadFocus = !!old && (document.activeElement === old || old.disabled);
   if (!win.firstElementChild) win.innerHTML = V.termWindowHtml(store);
   else {
     $('#tm-log')!.innerHTML = V.termBodyHtml(store);
@@ -348,7 +350,7 @@ document.addEventListener('click', (e) => {
   else if (d.download != null) store.download(d.download);
   else if (d.wlRange != null) store.setWalletRange(d.wlRange);
   else if (d.ov != null) onOverlay(d.ov);
-  else if (d.dev != null) store.devAdd(d.dev);
+  else if (d.dev != null) { if (d.dev === 'rewind') quietReset(); store.devAdd(d.dev); }
   else if (d.devopts != null) store.toggleDevOptions(d.devopts);
   else if (d.devbug != null) { const [app, feat, key] = d.devbug.split('|'); store.devToggleBug(app, feat, key); }
   else if (d.act === 'book-back') store.bookBack();
@@ -524,6 +526,7 @@ document.addEventListener('change', (e) => {
   const el = e.target as HTMLSelectElement;
   if (el.id === 'llm-misses') MISSES.set({ misses: el.value as Misses });
   else if (el.id === 'llm-haiku-via') MISSES.set({ haikuVia: el.value as HaikuVia });
+  else if (el.id === 'llm-net') MISSES.set({ net: el.value as Net });
   else if (el.dataset.devMeter) store.devSetMeter(el.dataset.devMeter as MeterId, Number(el.value));
   else if (el.id === 'snd-vol') { SOUND.setVolume(Number(el.value) / 100, true); SOUND.play('reply'); }
   else if (el.dataset.devFlag) store.devSetFlag(el.dataset.devFlag, (el as unknown as HTMLInputElement).checked);

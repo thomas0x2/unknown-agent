@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, recordStake, payStakes, buyStock, sellStock, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, rewindArrivals, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy, deliverSwapReplies, matchlessSwipe, clone, uploadFile, fileRentAppeal, donateCrane, craneDonations, fillMeters, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat, agentTermPrompt, dropHackGame, BOOT_MS, dateShort, clockTime, AGENT_POLICY,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, recordStake, payStakes, buyStock, sellStock, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, rewindArrivals, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy, deliverSwapReplies, matchlessSwipe, clone, uploadFile, fileRentAppeal, donateCrane, craneDonations, fillMeters, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat, agentTermPrompt, dropHackGame, hackMinutes, BOOT_MS, READ_MS, dateShort, clockTime, AGENT_POLICY,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -117,7 +117,7 @@ export class GameStore {
   };
   /** A model download playing out in the Terminal, if one is running. */
   pull: { id: string; startedAt: number } | null = null;
-  /** agent-terminal is booting until this time (Date.now() ms): its loading screen shows instead of the prompt. */
+  /** agent-terminal is loading until this time (Date.now() ms): agent.chat shows its loading line, then the Terminal opens. */
   agentBootUntil = 0;
   private pullTimer: ReturnType<typeof setInterval> | null = null;
   private pullListeners = new Set<() => void>();
@@ -254,11 +254,13 @@ export class GameStore {
       // an action is working on a copy of this state: move the clock only, and hold mail and bedtime until it lands
       s.clockMin = Math.min(CLOCK.sleep - 1, s.clockMin + mins);
       for (const fn of this.clockListeners) fn();
+      this.revealTerm();
       return;
     }
     const m = this.arrivalMark();
     const working = s.agentWork;
-    advanceClock(s, mins); // the agent's build or fix lands here too, once its time has come
+    advanceClock(s, mins);
+    this.revealTerm(); // agent-terminal's next lines, once their minute has come // the agent's build or fix lands here too, once its time has come
     if (s.ending) { this.store.save(s); this.announce(m); this.emit(); return; } // the knock after a suspension
     const shown = revealBugs(s, this.content); // held bugs land once something shows them (Crane's first praise)
     const paid = payStakes(s, this.content); // the trader's stake payouts, 12:00 four days after each send
@@ -411,37 +413,76 @@ export class GameStore {
   }
   /** The tab actually in front: the chosen one if the player has it, else the first they have. */
   termTabShown(): 'shell' | 'agent' { const t = this.termTabs(); return t.includes(this.ui.termTab) ? this.ui.termTab : t[0] ?? 'shell'; }
-  /** agent-terminal is still on its loading screen. */
+  /** agent-terminal is still loading (shown in agent.chat). */
   agentBooting(): boolean { return Date.now() < this.agentBootUntil; }
+  /** The share of the load done, in steps (the loading line repaints at each). */
+  static readonly BOOT_STEPS = 8;
   /**
-   * The agent moved a hack attempt here from agent.chat: the Terminal comes forward on agent-terminal,
-   * which boots for a moment (a loading screen) before its prompt appears.
+   * After agent's reply to a hack attempt: a loading line in agent.chat, then agent-terminal opens.
    */
+  launchAgentTerm(): void {
+    this.agentBootUntil = Date.now() + BOOT_MS;
+    for (let i = 1; i < GameStore.BOOT_STEPS; i++) setTimeout(() => this.emit(), (BOOT_MS / GameStore.BOOT_STEPS) * i + 10);
+    setTimeout(() => { this.agentBootUntil = 0; this.openAgentTerm(); }, BOOT_MS);
+    this.emit();
+  }
+  /** The Terminal comes forward on agent-terminal, ready for a prompt. */
   openAgentTerm(): void {
     const s = this.state;
     addFlag(s, 'has_agent_terminal');
     s.agentTerm = [...(s.agentTerm ?? []), { k: 'sys', text: `── session ${dateShort(s.values.day)}, ${clockTime(s.clockMin)} ──` }];
     this.store.save(s);
     this.ui.termOpen = true; this.ui.termShown = true; this.ui.termTab = 'agent';
-    this.agentBootUntil = Date.now() + BOOT_MS;
-    // repaint as each boot line comes in, and once more when the prompt appears
-    for (let t = BOOT_MS / 4; t <= BOOT_MS; t += BOOT_MS / 4) setTimeout(() => this.emit(), t + 10);
     this.emit();
   }
-  /** A prompt typed into agent-terminal: billed like any agent prompt; the reply holds back like a chat reply. */
+  /** agent-terminal: the prompt just sent, shown under a spinner while Jev reads it. */
+  termPending: string | null = null;
+  /**
+   * agent-terminal lines still to come: the last `at.length` lines of state.agentTerm, each shown once
+   * the game clock reaches its minute. A landed hack plays out over its hackMinutes, like a build.
+   */
+  termReveal: { at: number[] } | null = null;
+  /** The lines being revealed are a hack landing (the spinner says so). */
+  termHack = false;
+  /** How many of agent-terminal's last lines are still hidden. */
+  termHidden(): number { return this.termReveal?.at.length ?? 0; }
+  /** Show the agent-terminal lines whose minute has come. */
+  private revealTerm(): void {
+    const r = this.termReveal;
+    if (!r) return;
+    const now = gameMinutes(this.state);
+    const left = r.at.filter((m) => m > now);
+    if (left.length === r.at.length) return;
+    this.termReveal = left.length ? { at: left } : null;
+    this.emit();
+  }
+  /**
+   * A prompt typed into agent-terminal, billed like any agent prompt. The prompt stays on screen with
+   * a spinner while Jev reads it; then the agent's lines appear one after another over game time.
+   */
   async agentTerm(text: string) {
+    if (this.termReveal) return;
+    this.termPending = text;
     return this.run(async () => {
-      const started = Date.now();
-      const r = await agentTermPrompt(this.state, this.content, this.router, text, this.writer);
-      const last = r.lines.at(-1);
-      if (last) await wait(replyDelay(last.text) - (Date.now() - started));
-      this.commitAndSettle(r.state);
-      return r;
+      try {
+        const started = Date.now();
+        const r = await agentTermPrompt(this.state, this.content, this.router, text, this.writer);
+        await wait(900 - (Date.now() - started));
+        this.termPending = null;
+        this.commitAndSettle(r.state);
+        const n = r.lines.length;
+        const now = gameMinutes(this.state);
+        // a landed hack takes its time; anything else answers a line a minute
+        const total = r.landed ? Math.max(n, hackMinutes(this.state.values.agentLevel, n)) : n;
+        this.termHack = !!r.landed;
+        if (n) this.termReveal = { at: r.lines.map((_, i) => now + Math.max(1, Math.round((total * (i + 1)) / n))) };
+        return r;
+      } finally { this.termPending = null; }
     }, 'aterm-input', text);
   }
   /** agent-terminal's own commands: 'clear' wipes the screen, 'exit' drops a blocked hack. Free. */
   agentTermCommand(cmd: 'clear' | 'exit'): void {
-    if (cmd === 'clear') { this.state.agentTerm = []; this.store.save(this.state); this.emit(); return; }
+    if (cmd === 'clear') { this.termReveal = null; this.state.agentTerm = []; this.store.save(this.state); this.emit(); return; }
     this.commitAndSettle(dropHackGame(this.state));
   }
 
@@ -648,8 +689,8 @@ export class GameStore {
         // the reply lands first and the wallet is charged a beat later, so each makes its own sound
         const due = r.state.clockMin < CLOCK.sleep ? withholdCharge(r.state, txBefore) : 0;
         this.pendingPrompt = null; this.charging = due; this.commitAndSettle(r.state);
-        // a hack attempt: the agent moves it to agent-terminal, which opens after the reply
-        if (r.terminal) this.openAgentTerm();
+        // a hack attempt: the player reads agent's reply, agent-terminal loads in the chat, then it opens
+        if (r.terminal) setTimeout(() => this.launchAgentTerm(), READ_MS);
         if (due) {
           await wait(CHARGE_DELAY_MS);
           this.charging = 0;
@@ -699,6 +740,7 @@ export class GameStore {
     else if (kind === 'deliver') { const m = this.arrivalMark(); deliverDue(s, this.content, { now: true }); this.announce(m); }
     else if (kind === 'hold') { this.devHoldClock(); return; }
     else if (kind === 'skip') { this.devSkip(60); return; }
+    else if (kind === 'rewind') { this.devGoToDay(s.values.day); return; }
     else if (kind === 'work') { if (s.agentWork) this.devSkip(Math.max(1, s.agentWork.at - gameMinutes(s))); return; }
     this.store.save(s); this.emit();
   }

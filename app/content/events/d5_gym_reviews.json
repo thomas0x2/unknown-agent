@@ -27,7 +27,11 @@
           "gym_reviews"
         ]
       },
-      "reply": "Appreciated. Keep them varied."
+      "reply": "Appreciated. Keep them varied.",
+      "keys": [
+        "@yes",
+        "!@no"
+      ]
     }
   ],
   "hints": [

@@ -6,7 +6,7 @@ import { describe, it, expect } from 'vitest';
 import { loadContent } from '../content/load';
 import { startGame, endDay } from './day';
 import { advanceClock } from './core';
-import { deliverArrivals, deliverDue, arrivalMin, isJobOffer, JOB_OFFERS } from './events';
+import { deliverArrivals, deliverDue, arrivalMin, isJobOffer, JOB_OFFERS, postMin, freeYMin, Y_GAP } from './events';
 import { CLOCK } from './config';
 
 const content = loadContent();
@@ -114,5 +114,58 @@ describe('job offers spread over the first six hours', () => {
     expect(times.length).toBeGreaterThanOrEqual(3); // both day 1 leads and the trader
     expect(times[0]).toBeGreaterThanOrEqual(JOB_OFFERS.from);
     for (let i = 1; i < times.length; i++) expect(times[i] - times[i - 1]).toBeGreaterThanOrEqual(JOB_OFFERS.gap);
+  });
+});
+
+describe('Y posts go up one at a time', () => {
+  const clock = (m: number) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+
+  it(`every story post, stock post and filler post of a day is at least ${Y_GAP} minutes from the next, except inside a viral moment`, () => {
+    const days = new Map<number, { id: string; min: number; viral?: boolean }[]>();
+    const add = (day: number, id: string, min: number, viral?: boolean) => { if (min > CLOCK.wake) days.set(day, [...(days.get(day) ?? []), { id, min, viral }]); };
+    for (const ev of content.events) {
+      if (ev.site !== 'y' || ev.latent || ev.launch || ev.yPost || ev.afterPayment || ev.outage || !ev.at) continue;
+      const lo = ev.trigger.dayMin ?? 1;
+      for (let day = lo; day <= (ev.trigger.dayMax ?? lo); day++) add(day, ev.id, arrivalMin(ev), ev.viral);
+    }
+    for (const p of [...(content.yMarket?.posts ?? []), ...content.yFiller]) {
+      expect(p.at, p.id).toMatch(/^\d\d:\d\d$/); // a fixed time, so the spacing holds
+      if ('bots' in p && p.bots) continue; // a bot barrage lands whenever it likes
+      add(p.day, p.id, postMin(p, p.day), 'viral' in p ? p.viral : false);
+    }
+    for (const [day, posts] of days) {
+      posts.sort((a, b) => a.min - b.min);
+      for (let i = 1; i < posts.length; i++) {
+        const [a, b] = [posts[i - 1], posts[i]];
+        if (a.viral && b.viral) continue;
+        expect(b.min - a.min, `day ${day}: ${a.id} ${clock(a.min)}, ${b.id} ${clock(b.min)}`).toBeGreaterThanOrEqual(Y_GAP);
+      }
+    }
+  });
+
+  it('a job lead due next to a post written for that time waits for the next free slot, off the round ten', () => {
+    const s = startGame(content, 7);
+    const lead = s.arriving!.find((a) => a.eventId === 'd1_y_restaurant')!;
+    const story = { eventId: 'd1_y_journalist', day: 1, at: lead.at + 2 };
+    s.arriving = [lead, story];
+    advanceClock(s, story.at - s.clockMin);
+    deliverArrivals(s, content);
+    expect(s.delivered.find((d) => d.eventId === 'd1_y_journalist')?.min).toBe(story.at);
+    expect(has(s, 'd1_y_restaurant')).toBe(false);
+    const wait = s.arriving.find((a) => a.eventId === 'd1_y_restaurant')!.at;
+    expect(wait - story.at).toBeGreaterThanOrEqual(Y_GAP);
+    expect(wait).toBe(freeYMin(s, content, lead.at, 'd1_y_restaurant'));
+    advanceClock(s, wait - s.clockMin);
+    deliverArrivals(s, content);
+    expect(s.delivered.find((d) => d.eventId === 'd1_y_restaurant')?.min).toBe(wait);
+  });
+
+  it('posts left over from a day that ended early come in one at a time the next morning', () => {
+    const s = endDay(startGame(content, 7), content);
+    advanceClock(s, CLOCK.sleep - 1 - s.clockMin);
+    deliverArrivals(s, content);
+    const mins = s.delivered.filter((d) => d.site === 'y' && d.day === 2).map((d) => d.min!).sort((a, b) => a - b);
+    expect(mins.length).toBeGreaterThan(3);
+    for (let i = 1; i < mins.length; i++) expect(mins[i] - mins[i - 1]).toBeGreaterThanOrEqual(Y_GAP);
   });
 });

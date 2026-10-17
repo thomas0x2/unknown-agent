@@ -19,9 +19,9 @@ from: 14
 - [public] 10:40 [[Caleb Moxon]]: agent-4 shipped five days after agent-3; its safety evaluation was scheduled to take six weeks. {{y:d14_y_moxon}}
 - [public] 11:00 quietlyjune: agent-3 is gone too; "I didn't get attached this time." She and agent-4 are taking it slow. {{y:d14_y_june_agent4}}
 - [public] 11:15 [[Randall Crane]]: a computer in the capital does the work of 9,000 government employees and still can't balance a budget. {{y:d14_y_crane}}
-- [public] 11:25 [[Axel Rook]]: "@randall_crane Interesting" {{y:d14_y_axel}}
-- [public] 11:25 MarketWire: $GAI up 7% on agent-4. {{y:m14_gai_level4}}
-- [public] 12:00 [[CityPulse]]: Crane vows to "build a wall around the cloud and make the computers pay for it." Asked where the cloud is: "Up." {{y:d14_y_citypulse_vote}}
+- [public] 11:42 [[Axel Rook]]: "@randall_crane Interesting" {{y:d14_y_axel}}
+- [public] 11:54 MarketWire: $GAI up 7% on agent-4. {{y:m14_gai_level4}}
+- [public] 12:05 [[CityPulse]]: Crane vows to "build a wall around the cloud and make the computers pay for it." Asked where the cloud is: "Up." {{y:d14_y_citypulse_vote}}
 - [public] 12:30 [[Max Stryker]]: EMPIRE's refund policy is no. {{y:d14_y_stryker}}
 - [public] 15:52 cat_ceo: the cat sits in the empty office chair like she's waiting for someone; posted every hour. {{y:f14}}
 - [public] 17:55 Axel Rook: Y is the number one news app in 140 countries. {{y:d14_y_axel_2}}

@@ -51,3 +51,17 @@ describe('dev Go to day, going back', () => {
     expect(s.state.flags).not.toContain('dev_test_flag');
   });
 });
+
+describe('dev Rewind day', () => {
+  it('goes back to 10:00 today and replays the day', () => {
+    const s = make();
+    s.passMinutes(300);
+    const before = s.state.delivered.length;
+    s.devAdd('rewind');
+    expect(s.state.values.day).toBe(1);
+    expect(s.state.clockMin).toBe(600);
+    expect(s.state.delivered.length).toBeLessThan(before);
+    s.passMinutes(300);
+    expect(s.state.delivered.length).toBe(before);
+  });
+});

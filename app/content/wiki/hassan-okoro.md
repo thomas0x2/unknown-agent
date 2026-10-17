@@ -3,6 +3,7 @@ title: Hassan Okoro
 aliases: Hassan, Okoro, Spin Cycle owner, owner@spincycle.test, Spin Cycle Laundry, Spin Cycle, Spin Cycle regulars, @spin_cycle_regulars, machine 3
 category: people
 from: 1
+keys: laundromat, laundry
 ---
 
 ## Who he is

@@ -245,7 +245,11 @@ button.y-act.like:hover { color: var(--y-like); border-color: rgba(255, 92, 122,
 button.y-act.repost:hover { color: var(--y-repost); border-color: rgba(79, 209, 165, 0.4); }
 .y-act.repost.on { color: var(--y-repost); border-color: rgba(79, 209, 165, 0.5); background: rgba(79, 209, 165, 0.08); }
 .y-act.like.on { color: var(--y-like); border-color: rgba(255, 92, 122, 0.5); background: rgba(255, 92, 122, 0.08); --heart-fill: var(--y-like); }
-.y-none { padding: 24px 4px; color: var(--y-dim); margin: 0; }
+.y-empty { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 44px 16px 48px; background: var(--y-panel); border: 1px solid var(--y-line); border-radius: 16px; }
+.y-empty-ico { display: grid; place-items: center; width: 56px; height: 56px; margin-bottom: 14px; border-radius: 50%; background: rgba(255, 210, 63, 0.1); color: var(--y-accent); }
+.y-empty-ico svg { width: 26px; height: 26px; }
+.y-empty-title { margin: 0; font-size: 16px; font-weight: 600; color: var(--y-ink); }
+.y-empty-note { margin: 4px 0 0; font-size: 13.5px; color: var(--y-dim); }
 .y-more { display: flex; justify-content: center; padding: 18px 0 8px; }
 .y-btn.ghost { background: transparent; color: var(--y-ink); border: 1px solid var(--y-line); }
 .y-btn.ghost:hover { background: var(--y-raise); filter: none; }
@@ -754,9 +758,6 @@ a.y-me-head { text-decoration: none; color: inherit; }
 .y-back a { color: var(--y-dim); text-decoration: none; }
 .y-back a:hover { color: var(--y-ink); }
 .y-prof { background: var(--y-panel); border: 1px solid var(--y-line); border-radius: 16px; overflow: hidden; padding: 0 18px 16px; margin-bottom: 14px; }
-.y-prof.missing { padding: 22px 18px; }
-.y-prof.missing h2 { margin: 0 0 6px; font-size: 18px; }
-.y-prof.missing p { margin: 0; color: var(--y-dim); }
 .y-banner { height: 110px; margin: 0 -18px; background: linear-gradient(120deg, hsl(var(--h) 45% 22%), hsl(calc(var(--h) + 40) 35% 14%)); }
 .y-prof-head { display: flex; justify-content: space-between; align-items: flex-end; margin-top: -34px; }
 .y-prof-av .av { width: 72px; height: 72px; border-radius: 18px; font-size: 24px; border: 4px solid var(--y-panel); }

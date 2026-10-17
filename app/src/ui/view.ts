@@ -5,7 +5,7 @@
  */
 import { pageWiki } from './wiki';
 import { SOUND } from './sound';
-import { type GameStore, CHARGE_DELAY_MS } from '../game/store';
+import { GameStore, CHARGE_DELAY_MS } from '../game/store';
 import { MISSES } from '../game/misses';
 import { JEV } from '../game/backendJev';
 import { listSlots, autoSlot } from '../game/saves';
@@ -72,6 +72,7 @@ function linkify(escaped: string): string {
     .replace(/(?<![@\w.])(thecurrent\.test(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(citypulse\.news(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(pollymarket\.com(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
+    .replace(/(?<![@\w.])((?:doordish|sherwood)\.com(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(?<![@\w.])((?:perdure|ozempra)\.com)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(^|[^\w.])@([a-z0-9_]+)/gi, '$1<a href="#" class="y-at" data-nav="y.com/$2">@$2</a>');
 }
@@ -182,16 +183,25 @@ function soundRows(): string {
 }
 /** System menu: whether Jev is deciding, and who writes the replies to misses (Haiku or scripted lines). */
 function aiRows(): string {
+  const st = MISSES.settings;
+  const sel = (cur: string, v: string, l: string) => `<option value="${v}" ${cur === v ? 'selected' : ''}>${l}</option>`;
+  const modeRow = `<label class="dm-slot dm-ai" title="Online asks Jev and Claude Haiku over the network; Offline decides everything on this machine with a keyword matcher and scripted replies, no keys needed">${MI.gear}<span><b>Mode</b><small>${st.net === 'offline' ? 'Offline: keyword matcher, scripted replies, no network' : 'Online: Jev decides, Haiku writes the misses'}</small></span>
+    <span class="dm-slot-acts"><select id="llm-net">${sel(st.net, 'online', 'Online')}${sel(st.net, 'offline', 'Offline')}</select></span></label>`;
+  // Offline: no proxy, no Jev dot, no Haiku; everything below is the keyword matcher and scripted lines
+  if (st.net === 'offline') {
+    return modeRow +
+      `<div class="dm-slot dm-jev"><i class="dm-dot"></i><span><b>Story decisions: keyword matcher</b><small>Runs on this machine, no network</small></span></div>
+      <div class="dm-slot dm-ai">${MI.chat}<span><b>Misses</b><small>Scripted lines only</small></span></div>`;
+  }
   const jev = JEV.mode === 'online' ? ['', 'Story decisions: Jev', 'Online'] as const
     : JEV.mode === 'checking' ? [' off', 'Story decisions: checking Jev…', 'Asking the proxy'] as const
     : [' off', 'Story decisions: Jev offline', JEV.reason || "Nothing gets decided until it's back"] as const;
-  const st = MISSES.settings;
-  const sel = (cur: string, v: string, l: string) => `<option value="${v}" ${cur === v ? 'selected' : ''}>${l}</option>`;
   let missNote = st.misses === 'haiku' ? 'Haiku answers in character' : 'Scripted lines only';
   let err = false;
   if (st.misses === 'haiku' && st.haikuVia === 'api' && JEV.haikuKey === false) { missNote = 'ANTHROPIC_API_KEY is not set in app/.env, so misses use scripted lines'; err = true; }
   else if (st.misses === 'haiku' && JEV.haikuKey === null && JEV.mode !== 'checking') { missNote = 'Start the proxy (npm run proxy) for Haiku replies'; err = true; }
-  return `<div class="dm-slot dm-jev" title="${esc(JEV.reason)}"><i class="dm-dot${jev[0]}"></i><span><b>${esc(jev[1])}</b><small>${esc(jev[2])}</small></span></div>
+  return modeRow +
+    `<div class="dm-slot dm-jev" title="${esc(JEV.reason)}"><i class="dm-dot${jev[0]}"></i><span><b>${esc(jev[1])}</b><small>${esc(jev[2])}</small></span></div>
     <label class="dm-slot dm-ai" title="What agent and email contacts say when Jev finds nothing in your message">${MI.chat}<span><b>Misses</b><small${err ? ' class="dm-err"' : ''}>${esc(missNote)}</small></span>
       <span class="dm-slot-acts"><select id="llm-misses">${sel(st.misses, 'haiku', 'Haiku (API)')}${sel(st.misses, 'scripted', 'Scripted lines')}</select></span></label>` +
     (st.misses === 'haiku' ? `<label class="dm-slot dm-ai" title="Subscription runs the claude CLI on your machine (dev only, slow); API uses ANTHROPIC_API_KEY">${MI.key}<span><b>Haiku via</b><small>${st.haikuVia === 'api' ? 'ANTHROPIC_API_KEY' : 'The claude CLI (slow)'}</small></span>
@@ -482,9 +492,9 @@ export function yPosts(store: GameStore): YPost[] {
   return out.sort((a, b) => b.day - a.day || (b.min ?? 0) - (a.min ?? 0) || (a.rank ?? 0) - (b.rank ?? 0) || b.id.localeCompare(a.id));
 }
 /** Accounts with Y's verified check. */
-const Y_VERIFIED = new Set(['doordish', 'mara_vey', 'randall_crane', 'axel_rook', 'cal_hartman', 'caleb_moxon', 'max_stryker', 'the_current', 'candidate_2030', 'wallstreetbags', 'perdure_pharma', 'pollymarket']);
+const Y_VERIFIED = new Set(['doordish', 'mara_vey', 'randall_crane', 'axel_rook', 'cal_hartman', 'caleb_moxon', 'max_stryker', 'the_current', 'candidate_2030', 'wallstreetbags', 'perdure_pharma', 'pollymarket', 'citypulse']);
 /** Follower counts for the public figures; everyone else gets a small made-up number. */
-const Y_FOLLOWERS: Record<string, number> = { doordish: 3_100_000, randall_crane: 38_400_000, mara_vey: 61_200, axel_rook: 214_000_000, cal_hartman: 4_300_000, caleb_moxon: 41_300, max_stryker: 2_900_000, the_current: 184_000, candidate_2030: 1_900_000, wallstreetbags: 15_800_000, perdure_pharma: 412_000, pollymarket: 3_400_000 };
+const Y_FOLLOWERS: Record<string, number> = { doordish: 3_100_000, randall_crane: 38_400_000, mara_vey: 61_200, axel_rook: 214_000_000, cal_hartman: 4_300_000, caleb_moxon: 41_300, max_stryker: 2_900_000, the_current: 184_000, candidate_2030: 1_900_000, wallstreetbags: 15_800_000, perdure_pharma: 412_000, pollymarket: 3_400_000, citypulse: 1_240_000 };
 /** Rook puts check marks "under review" on day 8; from day 9 Crane's is bigger and golden. */
 const craneGold = (s: GameState) => s.values.day >= 9;
 const yCheck = (s: GameState, handle: string) => !Y_VERIFIED.has(handle) ? ''
@@ -516,6 +526,10 @@ function yPostHtml(store: GameStore, p: YPost): string {
       <span class="y-act views">${Y_ICONS.views}${compact(Math.max(12, p.likes * 37 + 9))}</span>
     </footer></article>`;
 }
+// an empty feed, profile or search result: icon, title and one line, like Qmail's empty folders
+function yEmpty(icon: string, title: string, note: string, tag = 'p'): string {
+  return `<div class="y-empty"><span class="y-empty-ico">${icon}</span><${tag} class="y-empty-title">${title}</${tag}><p class="y-empty-note">${note}</p></div>`;
+}
 function pageY(store: GameStore, profile?: string): string {
   const s = store.state;
   const posts = yPosts(store);
@@ -526,7 +540,7 @@ function pageY(store: GameStore, profile?: string): string {
   const older = !showAll && posts.some((p) => p.day !== s.values.day);
   // with everything showing, "Hide old posts" sits where today's posts end and older ones begin
   const firstOld = showAll ? shown.findIndex((p) => p.day !== s.values.day) : -1;
-  const feed = (shown.map((p, i) => (i === firstOld ? '<div class="y-more"><button class="y-btn ghost" data-y-all="hide">Hide old posts</button></div>' : '') + yPostHtml(store, p)).join('') || `<p class="y-none">${older ? 'Nothing posted yet today.' : 'Quiet timeline.'}</p>`)
+  const feed = (shown.map((p, i) => (i === firstOld ? '<div class="y-more"><button class="y-btn ghost" data-y-all="hide">Hide old posts</button></div>' : '') + yPostHtml(store, p)).join('') || yEmpty(Y_ICONS.reply, older ? 'Nothing posted yet today.' : 'Quiet timeline.', 'New posts show up here as they come in.'))
     + (older ? '<div class="y-more"><button class="y-btn ghost" data-y-all>Show all</button></div>' : '');
   const side = `<aside class="y-side">
     <section class="y-card y-me">
@@ -559,10 +573,12 @@ function yProfile(store: GameStore, handle: string): string {
   const mine = h === 'you';
   const posts = yPosts(store).filter((p) => p.handle === h);
   const back = '<p class="y-back"><a href="#" data-nav="y.com">← Timeline</a></p>';
-  if (!mine && !posts.length) return `${back}<section class="y-prof missing"><h2>This account doesn't exist</h2><p>Nobody on Y goes by @${esc(handle)}.</p></section>`;
+  if (!mine && !posts.length) return `${back}${yEmpty(Y_ICONS.explore, "This account doesn't exist", `Nobody on Y goes by @${esc(handle)}.`, 'h2')}`;
   const name = mine ? 'You' : (posts[0]?.author ?? handle);
   const followers = mine ? s.values.followers : Y_FOLLOWERS[h] ?? 20 + hashHue(h) % 400;
-  const feed = posts.length ? posts.map((p) => yPostHtml(store, p)).join('') : `<p class="y-none">@${esc(h)} hasn't posted anything you can see.</p>`;
+  const feed = posts.length ? posts.map((p) => yPostHtml(store, p)).join('')
+    : mine ? yEmpty(Y_ICONS.reply, 'No posts yet.', 'Posts you write on the timeline show up here.')
+    : yEmpty(Y_ICONS.reply, 'No posts yet.', `@${esc(h)} hasn't posted anything you can see.`);
   return `${back}<section class="y-prof">
     <div class="y-banner" style="--h:${hashHue(h)}"></div>
     <div class="y-prof-head"><div class="y-prof-av">${avatar(name, h)}</div></div>
@@ -950,6 +966,14 @@ export function workHtml(s: GameState): string {
   const what = `${w.kind === 'build' ? 'Building' : 'Fixing'} ${w.appNames.join(' and ')}`;
   return `<div class="ua-work" id="ua-work" role="status"><span class="ua-work-spin" aria-hidden="true"></span><span>${esc(what)}</span><span class="ua-work-bar"><i style="width:${Math.round((done / total) * 100)}%"></i></span><span class="ua-work-left">${left > 0 ? `${left} min left` : 'pushing…'}</span><button class="ua-work-skip" data-dev="work" title="Dev: skip the clock to when it lands">Finish now</button></div>`;
 }
+/** agent-terminal loading in agent.chat, under agent's reply, before the Terminal opens. */
+function launchHtml(store: GameStore): string {
+  const steps = GameStore.BOOT_STEPS;
+  const done = Math.min(steps, Math.floor((1 - (store.agentBootUntil - Date.now()) / BOOT_MS) * steps) + 1);
+  const lines = bootLines(store.state.values.agentLevel);
+  const line = lines[Math.min(lines.length - 1, Math.floor(((done - 1) / steps) * lines.length))];
+  return `<div class="ua-work ua-launch" role="status"><span class="ua-work-spin" aria-hidden="true"></span><span>Starting agent-terminal</span><span class="ua-work-bar"><i style="width:${Math.round((done / steps) * 100)}%"></i></span><span class="ua-work-left">${esc(line)}</span></div>`;
+}
 /** agent.chat once GeneralAI suspended the account for misuse: signed out, no way back in. */
 function pageSignedOut(s: GameState): string {
   return `<div class="ua ua-out">
@@ -997,7 +1021,7 @@ function pageAgent(store: GameStore): string {
       <div class="ua-brand">${ICONS.agent}<div><b>agent</b><span>agent-${s.values.agentLevel} · ${fmtMoney(c.prompt)} per prompt + ${fmtMoney(c.word)} per word</span></div></div>
       ${devOptionsButton(store, 'agent')}<span class="ua-linked"><a href="#" data-nav="agent.chat/models" class="ua-upgrade">Models</a> · ${s.agentLocked ? 'LOCKED · unpaid' : 'Billing: Coinbin ' + shortAddr(WALLET_ADDR)}</span>
     </header>
-    <div class="ua-log" id="ua-log">${msgs}${workAt < 0 ? workHtml(s) : ''}${pending}${thinking}</div>
+    <div class="ua-log" id="ua-log">${msgs}${workAt < 0 ? workHtml(s) : ''}${store.agentBooting() ? launchHtml(store) : ''}${pending}${thinking}</div>
     <form class="ua-compose" data-form="prompt">
       <textarea id="prompt-input" rows="2" placeholder="Ask agent anything" ${s.ending ? 'disabled' : ''}></textarea>
       <div class="ua-row"><span id="cost-est" class="ua-est"></span><button class="ua-send" type="submit" ${s.ending || store.busy ? 'disabled' : ''}>Send</button></div>
@@ -1112,15 +1136,10 @@ function shellHtml(store: GameStore): string {
   const prompt = pulling ? '' : `<form class="tm-in" data-form="term"><label for="term-input" class="tm-ps">you@laptop:~$</label><input id="term-input" autocomplete="off" autocapitalize="off" spellcheck="false" ${store.busy ? 'disabled' : ''}></form>`;
   return `${intro ? `<div class="tm-sys">${esc(intro)}</div>` : ''}${lines}${live}${store.busy ? '<div class="tm-sys tm-wait">thinking… (this laptop is not fast)</div>' : ''}${prompt}`;
 }
-/** agent-terminal: the agent's own shell, where hacks happen. Boots behind a short loading screen. */
+/** agent-terminal: the agent's own shell, where hacks happen. */
 function agentTermHtml(store: GameStore): string {
   const s = store.state;
   const level = s.values.agentLevel;
-  if (store.agentBooting()) {
-    const boot = bootLines(level);
-    const done = Math.min(boot.length, Math.floor((1 - (store.agentBootUntil - Date.now()) / BOOT_MS) * boot.length) + 1);
-    return `<div class="at-boot" role="status"><b>agent-terminal</b>${boot.slice(0, done).map((l) => `<div>${esc(l)}</div>`).join('')}<span class="at-bar"><i style="width:${Math.round((done / boot.length) * 100)}%"></i></span></div>`;
-  }
   const guard = policyActive(s);
   const game = s.hackGame;
   const head = `<div class="at-status"><span>agent-${level}</span><span class="at-gr${guard ? ' on' : ''}">guardrails ${guard ? 'on' : 'off'}</span>${game ? '<span class="at-block">job blocked</span>' : ''}</div>`;
@@ -1128,12 +1147,19 @@ function agentTermHtml(store: GameStore): string {
     const debug = l.debug?.length ? `<details class="at-debug"><summary>Details</summary>${l.debug.map((d) => `<div>${esc(d)}</div>`).join('')}</details>` : '';
     return `<div class="at-${l.k}">${l.k === 'in' ? '<span class="at-ps">›</span> ' : ''}${esc(l.text)}</div>${debug}`;
   };
-  const lines = (s.agentTerm ?? []).slice(-200).map(row).join('');
+  // the agent's newest lines appear one after another (store.termReveal); the prompt shows as soon as it's sent
+  const all = s.agentTerm ?? [];
+  const hidden = Math.min(all.length, store.termHidden());
+  const pending = store.termPending;
+  const lines = all.slice(0, all.length - hidden).slice(-200).map(row).join('') + (pending != null ? row({ k: 'in', text: pending }) : '');
+  // a Claude Code style spinner while the agent reads the prompt or works through its steps
+  const working = pending != null || hidden > 0;
+  const spin = working ? `<div class="at-spin" role="status"><span class="at-star" aria-hidden="true"></span>${hidden && store.termHack ? 'Hacking…' : 'Working…'}</div>` : '';
   if (s.suspended) return `${head}${lines}${(s.agentTerm ?? []).at(-1)?.k === 'err' ? '' : `<div class="at-err">${esc(SUSPENDED_TERM)}</div>`}`;
-  const prompt = `<form class="tm-in" data-form="aterm"><label for="aterm-input" class="at-ps">${game ? 'guardrail ›' : 'agent ›'}</label><input id="aterm-input" autocomplete="off" autocapitalize="off" spellcheck="false" ${store.busy ? 'disabled' : ''}></form>`;
+  const prompt = `<form class="tm-in" data-form="aterm"><label for="aterm-input" class="at-ps">${game ? 'guardrail ›' : 'agent ›'}</label><input id="aterm-input" autocomplete="off" autocapitalize="off" spellcheck="false" ${store.busy || working ? 'disabled' : ''}></form>`;
   // a fresh session (the line the store prints on opening) waits for its first prompt
-  const ready = (s.agentTerm ?? []).at(-1)?.text.startsWith('──') ?? true;
-  return `${head}${lines}${ready ? `<div class="tm-sys">${esc(READY)}</div>` : ''}${store.busy ? '<div class="tm-sys tm-wait">working…</div>' : ''}${prompt}`;
+  const ready = !working && ((s.agentTerm ?? []).at(-1)?.text.startsWith('──') ?? true);
+  return `${head}${lines}${ready ? `<div class="tm-sys">${esc(READY)}</div>` : ''}${spin}${prompt}`;
 }
 /** The tabs along the top of the Terminal window. */
 export function termTabsHtml(store: GameStore): string {
@@ -1273,11 +1299,12 @@ export function devHtml(store: GameStore): string {
   return `<header><b>jev · dev</b><button data-act="dev">×</button></header>
     <p><b>Day</b> ${m.day} · <b>Agent</b> L${m.agentLevel} · <b>Followers</b> ${m.followers}</p>
     <p><b>Meters</b> <span class="dv-dim">${esc(meters)}</span></p>
-    <div class="dv-row"><b>Clock</b><button data-dev="hold" class="${store.clockHeld ? 'on' : ''}">${store.clockHeld ? 'Start clock' : 'Stop clock'}</button><button data-dev="skip">+1 hour</button></div>
+    <div class="dv-row"><b>Clock</b><button data-dev="hold" class="${store.clockHeld ? 'on' : ''}">${store.clockHeld ? 'Start clock' : 'Stop clock'}</button><button data-dev="skip">+1 hour</button><button data-dev="rewind" title="Back to 10:00: today's mail and posts arrive again">Rewind day</button></div>
     <div class="dv-row"><button data-dev="money">+$100</button><button data-dev="followers">+50 followers</button><button data-act="devtab" data-devtab="edit" class="${store.ui.devEdit && store.ui.devTab === 'edit' ? 'on' : ''}">Flags and meters…</button><button data-act="devtab" data-devtab="jev" class="${store.ui.devEdit && store.ui.devTab === 'jev' ? 'on' : ''}">Jev tests…</button></div>
     <form class="dv-row" data-form="dev-day"><label>Go to day <input id="dev-day" type="number" min="1" max="${LAST_DAY}" value="${Math.min(LAST_DAY, m.day + 1)}"></label><button type="submit">Go</button><span class="dv-dim">skips the nights: no payday, rent or bills</span></form>
     <p><b>Flags</b> <code>${esc(s.flags.join(', ') || 'none')}</code></p>
     <p><b>Apps</b> <code>${esc(s.apps.map((a) => `${a.name}:${appWorking(a) ? 'ok' : a.deployed ? 'check' : 'undeployed'}`).join(' · ') || 'none')}</code></p>
-    <p><b>Jev</b> ${esc(JEV.mode)}${JEV.reason ? ' · ' + esc(JEV.reason) : ''}</p>
-    <p><b>Misses</b> ${esc(MISSES.settings.misses)}${MISSES.settings.misses === 'haiku' ? ' · ' + esc(MISSES.settings.haikuVia) : ''}</p>`;
+    <p><b>Mode</b> ${esc(MISSES.settings.net)}</p>
+    <p><b>Jev</b> ${MISSES.offline ? 'keyword matcher (offline)' : esc(JEV.mode) + (JEV.reason ? ' · ' + esc(JEV.reason) : '')}</p>
+    <p><b>Misses</b> ${MISSES.scriptedMisses ? 'scripted' : esc(MISSES.settings.misses) + ' · ' + esc(MISSES.settings.haikuVia)}</p>`;
 }

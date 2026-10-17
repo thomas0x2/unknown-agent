@@ -9,7 +9,10 @@
   "latent": true,
   "agentStart": {
     "when": "The player asks the agent to build an app, site or page for the Spin Cycle laundromat's machines, for example from its raw status feed (spincycle.test/feed). A question about it (\"what is it?\", \"who uses it?\") is not a request to build it.",
-    "lead": "d1_y_laundromat"
+    "lead": "d1_y_laundromat",
+    "keys": [
+      "@make+laundromat|laundry|spin cycle|machine|washer|feed"
+    ]
   },
   "body": "A user app nobody hires you for: ask the agent to turn Spin Cycle's raw feed (spincycle.test/feed) into something readable.",
   "outcomes": [
@@ -39,7 +42,10 @@
           ]
         }
       },
-      "reply": "Appreciated. I'll tell the regulars."
+      "reply": "Appreciated. I'll tell the regulars.",
+      "keys": [
+        "@make+app|site|page|board|feed"
+      ]
     }
   ],
   "hints": [

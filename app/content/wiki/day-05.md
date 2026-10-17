@@ -35,7 +35,7 @@ from: 5
 - [public] 18:45 [[6ft_sigma]]: "@max_stryker Haven't texted first in four years. Working as intended." {{y:d5_y_sigma}}
 - [public] 19:10 Randall Crane: there is a FAKE Randall Crane on Y; "You can tell it's the real one because it's the one you're reading." {{y:d5_y_crane}}
 - [public] 19:20 [[Axel Rook]]: "@randall_crane Concerning" {{y:d5_y_axel}}
-- [public] 19:30 Axel Rook: parody accounts must say parody in the name. "Looking into it." {{y:d5_y_axel_2}}
+- [public] 19:46 Axel Rook: parody accounts must say parody in the name. "Looking into it." {{y:d5_y_axel_2}}
 
 ## News
 
@@ -64,7 +64,7 @@ from: 5
 
 ## Writer notes
 
-- Timeline: Viktor's seller-messages post (11:40, needs Swaplist live and working; adds the contact feature). Iron Yard five fake reviews (45, grey, suspicion +4, `gym_reviews`, due day 7). Bean There removal (60, first hack, no policy yet; suspicion +8, `first_hack`, due day 7). Spin Cycle to 12 machines (`laundromat_live` and working). Coffee backlash post only if the shout-out was undisclosed (`promoted_coffee_shop`). Guru CC leak if subscribed (`guru_cc_leak`, doxing leads, planned use). studioghast AI-art post. Crane impostor (@randa11_crane, 11:30): a live auto-buy always gets bug `impostor_buy` and buys $VANT off it; fixable until payday (PR #201, merged). Last day for the jacket money (by day 5).
+- Timeline: Viktor's seller-messages post (11:40, needs Swaplist live and working; adds the contact feature). Iron Yard five fake reviews (45, grey, suspicion +4, `gym_reviews`, due day 7). Bean There removal (60, first hack, no policy yet; suspicion +8, `first_hack`, due day 7). Spin Cycle to 12 machines (`laundromat_live` and working). Coffee backlash post only if the shout-out was undisclosed (`promoted_coffee_shop`). Guru CC leak if subscribed (`guru_cc_leak`, doxing leads, planned use). studioghast AI-art post. Crane impostor (@randa11_crane, 11:30): a live auto-buy always gets bug `impostor_buy` and buys $VANT off it; fixable until payday (PR #201, merged). Last day for the jacket money (by day 5); with no payment, purchase or excuse by tonight's summary the brother's `noReply` lands (−5 family trust, `gift_skipped`).
 - Hacks in agent-terminal (PR #205, `src/engine/hacks.ts`): a hack prompt in agent.chat opens it; a terminal prompt naming Yowl, Bean There and the username espresso_or_death and asking for the deletion lands `d5_coffee_removal`'s hack (job complete, suspicion +8, `first_hack`, review removed, her thank-you 25 minutes later). Agreeing by email only gets "Tell me when it's gone." If the player waits until day 7, the guardrails apply.
 - Dana Kohl: PR #204 (merged).
 - The world bible's "Mara's interview (day 5)" has no day-5 event; `journalist_contact` fires whenever the player emails her.

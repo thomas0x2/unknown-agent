@@ -39,7 +39,13 @@
           ]
         }
       },
-      "reply": "Great. Helping me spam the world, one lead at a time."
+      "reply": "Great. Helping me spam the world, one lead at a time.",
+      "keys": [
+        "@yes",
+        "@make+bot|it|app",
+        "help",
+        "!@no"
+      ]
     }
   ],
   "hints": [
