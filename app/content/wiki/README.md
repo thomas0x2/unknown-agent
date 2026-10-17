@@ -4,8 +4,10 @@ The world bible and the day-by-day timeline, one page per thing: a person, a com
 a day. It is the reference for anyone writing game content, and what agent answers the player's
 questions from (agent.chat queries, `src/engine/query.ts`). Read `index.md` first; it lists every
 page. In the game, with dev mode on, the bookmarked **wiki.dev** site shows every page with each
-paragraph's tag as the player stands now, and edits text and tags (it saves here through the local
-proxy, so run `npm run proxy`).
+paragraph's tag as the player stands now, and edits text and tags. The same editor runs in a real
+browser tab at **http://localhost:5173/wiki.html** (while `npm run dev` runs), with "view as" day,
+time and flags instead of the game's. Both save here through the local proxy (`npm run proxy`), and a
+save in one shows up in the other at once.
 
 ## Page format
 

@@ -41,7 +41,8 @@ subscription you're logged in to with Claude Code (use this for development only
   and a section; Haiku answers from what's public there now, only hints at hint paragraphs, and can
   read the player's own screens (`server/screens.mjs`, `ui/queryView.ts`). Naming nothing is a roast;
   a question that could mean several pages is a near-miss; classified gets a scripted roast (`engine/query.ts`, `engine/wiki.ts`). In dev mode the wiki is a
-  site in the game's browser (wiki.dev) that edits the pages. Near-misses (a fix that names a part
+  site in the game's browser (wiki.dev) that edits the pages; `/wiki.html` is the same editor for a
+  real browser tab, and the two stay in sync (`content/wikiFiles.ts`). Near-misses (a fix that names a part
   but not its whole path, a vague build or fix ask, an update without the changes) are written by
   Haiku too, told what was missing (`AskOpts.near` in `engine/actions.ts`, mode 'near' in the proxy);
   the scripted lines in `content/agent.json` and a feature's `nearMiss` are its model and fallback. Without the proxy or a key,

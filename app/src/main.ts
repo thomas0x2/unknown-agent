@@ -43,11 +43,14 @@ import { SOUND } from './ui/sound';
 import { soundSnap, soundCues, botBurst } from './ui/soundCues';
 import { queryView } from './ui/queryView';
 import { wikiClick, wikiInput } from './ui/wiki';
+import { onWikiFiles } from './content/wikiFiles';
 
 const content = loadContent();
 // a query reads the player's screens as they are when it's sent
 const writer = makeWriter(content, () => queryView(store), (on) => store.setSearching(on));
 const store = new GameStore(content, JEV, writer, localStorageStore());
+// a wiki file changed on disk (a save here or on the standalone wiki page): use it at once
+onWikiFiles((pages) => { content.wiki = pages; store.repaint(); });
 
 const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector<T>(sel);
 const val = (sel: string) => ($(sel) as HTMLInputElement | HTMLTextAreaElement | null)?.value ?? '';

@@ -6,6 +6,8 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   // relative asset paths so the built app works when served from any path
   base: './',
+  // two pages: the game, and the standalone world wiki (wiki.html)
+  build: { rollupOptions: { input: { main: 'index.html', wiki: 'wiki.html' } } },
   server: {
     fs: { allow: ['..'] },
     proxy: { '/api': 'http://localhost:8787' },

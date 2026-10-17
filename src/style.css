@@ -894,3 +894,12 @@ body.dev-on .ua-work-skip { display: inline-block; }
 .ua-www .ua-dots { height: auto; }
 .ua-www .ua-dots i { width: 4px; height: 4px; }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* the standalone wiki page (app/wiki.html) */
+body.wk-standalone { overflow: hidden; background: #f6f6f3; }
+.wk-standalone #wiki { height: 100vh; }
+.wk-top { flex-wrap: wrap; }
+.wk-view { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 12px; }
+.wk-view select, .wk-view input { padding: 2px 6px; border: 1px solid #cfcfc8; border-radius: 4px; font: inherit; font-size: 12px; background: #fff; }
+.wk-out { font-size: 12px; color: #2457a6; text-decoration: none; }
+.wk-out:hover { text-decoration: underline; }
