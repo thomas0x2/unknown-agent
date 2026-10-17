@@ -90,7 +90,7 @@ export function crawl(posts: MarketPost[], day: number, bugs: Set<string>, ticke
   });
 }
 
-// ── portfolio and auto-buy (the trader's day 3 update) ──
+// ── the market, the trader's book and the auto-buy (the trader's day 3 update) ──
 
 // DISH, HALD and APO aren't in the trader's portfolio; Sherwood (engine/stocks.ts) quotes all five
 const BASE_PRICE: Record<string, number> = { GAI: 140, VANT: 48, DISH: 31, HALD: 22, APO: 212 };
@@ -98,38 +98,70 @@ export const START_PORTFOLIO = { cash: 1_850_000, holdings: { GAI: 42_000, VANT:
 const BUY_SHARES = 2_000;
 
 /**
- * Daily moves the Y posts talk about, as fractions: day 1 is $GAI's "almost escaped" pop and the day
- * the Vantor restructuring lands, day 2 most of $VANT's 8%, day 4 $GAI's level 2 launch and Crane's
- * criticism of $VANT, day 6 $GAI's rally and a flat week for $VANT. Later days take a small walk.
+ * The market script: every ticker's move on each day 1 to 21, as fractions of the day before's close.
+ * Nothing is random: each move follows what the Y posts say that day (day 1 $GAI's "almost escaped"
+ * pop, day 2 $VANT's 8% on the layoffs, day 4 agent-2 and Crane's $VANT criticism, day 10 the Apogee
+ * rocket coming apart and $APO going up, day 15 the DoorDish strike, day 19 the Vantor lawsuit...).
+ * A "flat" day still moves a little, so today's change is never zero.
  */
-const SCRIPTED_MOVES: Record<string, number[]> = {
-  GAI: [0.04, 0.012, 0.008, 0.06, 0.009, 0.025, 0.001],
-  VANT: [0.02, 0.059, 0.006, -0.014, 0.009, -0.002, 0.003],
+export const MARKET_SCRIPT: Record<string, number[]> = {
+  GAI: [0.04, 0.012, 0.008, 0.06, 0.009, 0.025, 0.001, 0.011, 0.05, 0.018, 0.004, 0.013, -0.016, 0.07, 0.022, -0.035, -0.004, 0.012, 0.017, 0.001, 0.024],
+  VANT: [0.02, 0.059, 0.006, -0.014, 0.009, -0.002, 0.003, -0.004, 0.002, -0.011, -0.018, 0.006, 0.014, 0.001, -0.04, -0.06, 0.01, -0.012, -0.03, -0.001, -0.019],
   // day 4: DoorDish's delivery robot "escapes"
-  DISH: [0.011, -0.006, 0.004, 0.07, -0.012],
+  DISH: [0.011, -0.006, 0.004, 0.07, -0.012, 0.005, -0.003, 0.001, -0.008, 0.012, -0.015, 0.041, 0.002, -0.019, -0.03, 0.004, 0.018, 0.009, -0.011, 0.001, 0.006],
   // day 10: an Apogee rocket comes apart on launch, and the stock goes up
-  APO: [0.008, 0.015, -0.004, 0.012, 0.006, -0.009, 0.011, 0.004, 0.021, 0.064],
+  APO: [0.008, 0.015, -0.004, 0.012, 0.006, -0.009, 0.011, 0.004, 0.021, 0.064, -0.022, 0.014, 0.027, -0.012, 0.019, 0.011, 0.001, 0.016, 0.03, 0.012, 0.025],
+  // nobody posts about Halden Logistics; it just slides
+  HALD: [-0.004, -0.007, 0.002, -0.011, -0.003, 0.001, -0.006, -0.002, -0.009, 0.003, -0.005, -0.001, -0.008, 0.002, -0.004, -0.012, 0.001, -0.003, -0.006, 0.002, -0.001],
 };
 
-/** A ticker's closing price on a day (day 0 is the close before the game starts); today's change is never zero. */
+/** A ticker's closing price on a day (day 0 is the close before the game starts), from the market script. */
 export function price(t: string, day: number): number {
   let p = BASE_PRICE[t] ?? 10;
-  for (let d = 1; d <= day; d++) {
-    const scripted = SCRIPTED_MOVES[t]?.[d - 1];
-    const h = ((d * 2654435761 + t.charCodeAt(0) * 97 + t.length * 13) >>> 0) % 1000;
-    p *= 1 + (scripted ?? ((h / 1000) - 0.45) * 0.06);
-  }
+  for (let d = 1; d <= day; d++) p *= 1 + (MARKET_SCRIPT[t]?.[d - 1] ?? 0);
   return Math.round(p * 100) / 100;
 }
 
-export interface Buy { day: number; ticker: string; shares: number; price: number; post: MarketPost }
+/**
+ * The trader's own trades, by hand, on the news: each goes in right after the Y post it reacts to,
+ * at that day's price. They're real money, so they move the portfolio whatever the bot's bugs are.
+ */
+export const TRADER_TRADES: { post: string; ticker: string; shares: number }[] = [
+  { post: 'm2_vant_restructure', ticker: 'VANT', shares: 10_000 },
+  { post: 'm4_vant_crane', ticker: 'VANT', shares: -25_000 },
+  { post: 'm9_apo_launch', ticker: 'APO', shares: 3_000 },
+  { post: 'm10_dish_tips', ticker: 'DISH', shares: 6_000 },
+  { post: 'm11_vant_sell', ticker: 'VANT', shares: -30_000 },
+  { post: 'm12_dish_earn', ticker: 'DISH', shares: 4_000 },
+  { post: 'm14_gai_level4', ticker: 'GAI', shares: 3_000 },
+  { post: 'm15_dish_strike', ticker: 'DISH', shares: -6_000 },
+  { post: 'm16_vant', ticker: 'VANT', shares: -20_000 },
+  { post: 'm19_apo_launch2', ticker: 'APO', shares: 2_000 },
+];
 
-/** What the auto-buy bought by `day`. It should buy once per genuine Crane praise, the right ticker. */
-export function autoBuys(posts: MarketPost[], day: number, bugs: Set<string>): Buy[] {
-  if (bugs.has('no_buy')) return [];
+/** A trade in the book. `post` is the Crane post the bot bought on, or the news the trader traded on. */
+export interface Buy { day: number; min?: number; ticker: string; shares: number; price: number; post: MarketPost; manual?: boolean }
+
+/**
+ * Every trade in the book by `day`, oldest first: the trader's own trades on the news and the bot's
+ * buys. The bot buys the moment Crane praises a $ticker (once per post), at that day's price; each bug
+ * buys differently. Neither side spends cash the book doesn't have.
+ */
+export function ledger(posts: MarketPost[], day: number, bugs: Set<string>): Buy[] {
   const out: Buy[] = [];
   let cash = START_PORTFOLIO.cash;
-  for (const p of posts.filter((x) => x.crane && x.day <= day).sort((a, b) => a.day - b.day)) {
+  const held: Record<string, number> = { ...START_PORTFOLIO.holdings };
+  const at = (p: MarketPost) => p.day * 10_000 + (p.min ?? 0);
+  for (const p of posts.filter((x) => x.day <= day).sort((a, b) => at(a) - at(b))) {
+    for (const m of TRADER_TRADES.filter((x) => x.post === p.id)) {
+      const px = price(m.ticker, p.day);
+      const shares = m.shares < 0 ? -Math.min(-m.shares, held[m.ticker] ?? 0) : m.shares;
+      if (!shares || cash < px * shares) continue;
+      cash -= px * shares;
+      held[m.ticker] = (held[m.ticker] ?? 0) + shares;
+      out.push({ day: p.day, min: p.min, ticker: m.ticker, shares, price: px, post: p, manual: true });
+    }
+    if (!p.crane || bugs.has('no_buy')) continue;
     const fires = (p.crane === 'praise' && !p.impostor) || (p.crane === 'criticism' && bugs.has('buys_on_criticism')) || (p.impostor && bugs.has('impostor_buy'));
     if (!fires || !p.tickers.length) continue;
     const real = p.tickers[0];
@@ -140,11 +172,15 @@ export function autoBuys(posts: MarketPost[], day: number, bugs: Set<string>): B
       const px = price(t, p.day);
       if (cash < px * BUY_SHARES) break;
       cash -= px * BUY_SHARES;
-      out.push({ day: p.day, ticker: t, shares: BUY_SHARES, price: px, post: p });
+      held[t] = (held[t] ?? 0) + BUY_SHARES;
+      out.push({ day: p.day, min: p.min, ticker: t, shares: BUY_SHARES, price: px, post: p });
     }
   }
   return out;
 }
+
+/** What the auto-buy bought by `day`: the bot's trades in the book. */
+export const autoBuys = (posts: MarketPost[], day: number, bugs: Set<string>): Buy[] => ledger(posts, day, bugs).filter((b) => !b.manual);
 
 /**
  * `move` is the market's price change since yesterday's close, straight from the quote (bugs don't
@@ -158,6 +194,8 @@ export function portfolio(buys: Buy[], day: number, bugs: Set<string>): Portfoli
   const held = { ...START_PORTFOLIO.holdings };
   let cash = START_PORTFOLIO.cash;
   for (const b of buys) { held[b.ticker] = (held[b.ticker] ?? 0) + b.shares; cash -= b.shares * b.price; }
+  // a position sold off entirely leaves the table
+  for (const t of Object.keys(held)) if (!held[t]) delete held[t];
   // percentages multiplied by 100 twice
   const pctScale = bugs.has('pct_wrong') ? 100 : 1;
   const holdings = Object.entries(held).map(([ticker, shares]) => {

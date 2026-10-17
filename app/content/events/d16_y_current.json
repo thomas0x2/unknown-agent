@@ -1,0 +1,11 @@
+{
+  "id": "d16_y_current",
+  "site": "y",
+  "from": "The Current",
+  "trigger": {
+    "dayMin": 16,
+    "dayMax": 16
+  },
+  "at": "11:40",
+  "body": "Three polling firms have stopped calling voters this week. Too many calls are answered by AI assistants that say what they think their owner would say. One firm found the assistants lean toward whoever ran the latest ad."
+}
