@@ -187,27 +187,30 @@ export function chatHistory(s: GameState, max = 10): HistoryLine[] {
 
 /**
  * A known contact answers a message that didn't land a storyline outcome, in their own voice (the
- * Haiku when available), or with the scripted hint Jev chose. Returns '' for no contact.
+ * Haiku when available), or with the scripted hint Jev chose. `scripted` says the answer was fixed
+ * text (a hint or a topic), not a miss. When the player is over the daily limit for this address
+ * (`limited`), only a scripted answer gets through: a miss returns null and the caller bounces it.
  */
 async function contactWritesBack(
-  s: GameState, content: Content, jev: JevRouter, writer: Writer, addr: string, subject: string, text: string, hint = '', from?: string, ev?: GameEvent,
-): Promise<string> {
+  s: GameState, content: Content, jev: JevRouter, writer: Writer, addr: string, subject: string, text: string, hint = '', from?: string, ev?: GameEvent, limited = false,
+): Promise<{ reply: string; scripted: boolean } | null> {
   const c = contactFor(content, addr);
-  if (!c) return '';
+  if (!c) return limited && !hint ? null : { reply: '', scripted: !!hint };
   // a topic this contact always answers the same way (Gary and rent negotiations) beats everything
   const history = mailHistory(s, content, addr, subject, text);
   const scripted = await scriptedTopic(jev, s, c, text, history.map((h) => `${h.from === 'player' ? 'Player' : h.from === 'self' ? c.name ?? from ?? addr : h.from}: ${h.text}`));
   if (scripted) {
     sendLater(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: scripted.reply, read: false, scripted: 'topic' }, replyAfter(content, addr, scripted.replyAfter, ev));
-    return scripted.reply;
+    return { reply: scripted.reply, scripted: true };
   }
   // A hint is a hit: Jev recognised what the player was after, so the nudge is sent as written.
   // Otherwise the character answers in their own voice, without helping (game/characters.ts).
+  if (limited && !hint) return null;
   const fb = c.reply || 'Thanks for your message.';
   const { text: body, llm } = hint ? { text: hint, llm: false } : await writer.write({ as: addr, prompt: text, fallback: fb, long: true, history });
   const shown = body || fb;
   sendLater(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: shown, read: false, generated: llm && !!body, ...(hint ? { scripted: 'hint' as const } : {}) }, replyAfter(content, addr, undefined, ev));
-  return shown;
+  return { reply: shown, scripted: !!hint };
 }
 
 export const BOUNCE_ADDR = 'mailer-daemon@qmail.com';
@@ -223,9 +226,11 @@ function overDailyLimit(s: GameState, addr: string, storySeq?: number): boolean 
   return storySeq < last;
 }
 
-/** An email over the daily limit still goes out, and the recipient's spam filter sends it back. */
-function bounce(s: GameState, addr: string, subject: string, text: string): void {
-  pushMail(s, { folder: 'sent', day: s.values.day, from: 'You', addr: PLAYER_ADDR, to: addr, subject: subject || '(no subject)', body: text, read: true });
+/**
+ * An email over the daily limit that would only get a miss still goes out (it's already in Sent),
+ * and the recipient's spam filter sends it back. One that gets a scripted answer goes through.
+ */
+function bounce(s: GameState, addr: string, subject: string): void {
   pushMail(s, { folder: 'inbox', day: s.values.day, from: 'Mail Delivery Subsystem', addr: BOUNCE_ADDR, subject: `Undeliverable: ${subject || '(no subject)'}`, read: false, bounceOf: addr,
     body: `Your message to ${addr} couldn't be delivered.\n\nThe recipient's spam filter accepts one message per sender per day, and you have already sent one today. Your message was not stored.\n\nYou can write to this address again tomorrow.\n\nThis is an automated message. Replies to this address are not read.` });
 }
@@ -251,11 +256,8 @@ export async function replyToEvent(
     const reply = ev.addr ? tooLongReply(s, content, ev.addr.toLowerCase(), `RE: ${ev.subject ?? ''}`, ev) : '';
     return { state: s, decision: { kind: 'nothing' }, reply };
   }
-  if (addr && overDailyLimit(s, addr, delivery.seq ?? -1)) {
-    bounce(s, addr, `RE: ${ev.subject ?? ''}`, text);
-    return { state: s, decision: { kind: 'nothing' }, reply: '', bounced: true };
-  }
-  if (addr && !s.sentToday.includes(addr)) s.sentToday.push(addr);
+  // over the limit, Jev still reads the email: only one that would get a miss bounces
+  const limited = !!addr && overDailyLimit(s, addr, delivery.seq ?? -1);
 
   // the player's reply goes to the Sent folder
   if (ev.addr) pushMail(s, { folder: 'sent', day: s.values.day, from: 'You', addr: PLAYER_ADDR, to: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body: text, read: true });
@@ -287,7 +289,14 @@ export async function replyToEvent(
   // No outcome fired (a near miss / hint, or nothing). Either way the person writes back in their
   // own voice so a reply always lands in the inbox; a hint rides along as a gentle nudge from them.
   const hint = decision.kind === 'hint' ? (ev.hints ?? [])[decision.hintIndex] ?? '' : '';
-  const reply = ev.addr ? await contactWritesBack(s, content, jev, writer, ev.addr, `RE: ${ev.subject ?? ''}`, text, hint, ev.from, ev) : '';
+  const back = ev.addr ? await contactWritesBack(s, content, jev, writer, ev.addr, `RE: ${ev.subject ?? ''}`, text, hint, ev.from, ev, limited) : { reply: '', scripted: !!hint };
+  if (!back) {
+    bounce(s, addr, `RE: ${ev.subject ?? ''}`);
+    return { state: s, decision: { kind: 'nothing' }, reply: '', bounced: true };
+  }
+  // only a miss counts toward the daily limit: a scripted answer never does
+  if (addr && !back.scripted && !s.sentToday.includes(addr)) s.sentToday.push(addr);
+  const reply = back.reply;
   if (reply) return { state: s, decision, reply };
   if (hint) return { state: s, decision, reply: hint };
   return { state: s, decision: { kind: 'nothing' }, reply: '' };
@@ -321,18 +330,15 @@ export async function composeEmail(
     const ev = reachableByEmail(s, content, addr);
     return { state: s, decision: { kind: 'nothing' }, reply: tooLongReply(s, content, addr, re(subject || ev?.subject || ''), ev), sent: true };
   }
-  if (overDailyLimit(s, addr)) {
-    bounce(s, addr, subject, text);
-    return { state: s, decision: { kind: 'nothing' }, reply: '', sent: true, bounced: true };
-  }
-  s.sentToday.push(addr);
+  // over the limit, Jev still reads the email: only one that would get a miss bounces
+  const limited = overDailyLimit(s, addr);
   pushMail(s, { folder: 'sent', day: s.values.day, from: 'You', addr: PLAYER_ADDR, to: addr, subject: subject || '(no subject)', body: text, read: true });
 
   const ev = reachableByEmail(s, content, addr);
   if (!ev) {
     // no story lead here — a known contact replies in their own voice
-    const reply = await contactWritesBack(s, content, jev, writer, addr, re(subject), text);
-    return { state: s, decision: { kind: 'nothing' }, reply, sent: true };
+    const back = await contactWritesBack(s, content, jev, writer, addr, re(subject), text, '', undefined, undefined, limited);
+    return missed(s, addr, subject, back, { kind: 'nothing' }, '');
   }
 
   const outcomes = ev.outcomes ?? [];
@@ -352,8 +358,19 @@ export async function composeEmail(
   }
   // a near miss or nothing: the lead still writes back in their own voice, so the email isn't lost
   const hint = decision.kind === 'hint' ? (ev.hints ?? [])[decision.hintIndex] ?? '' : '';
-  const reply = await contactWritesBack(s, content, jev, writer, addr, re(subject), text, hint, undefined, ev);
-  return { state: s, decision, reply: reply || hint, sent: true };
+  const back = await contactWritesBack(s, content, jev, writer, addr, re(subject), text, hint, undefined, ev, limited);
+  return missed(s, addr, subject, back, decision, hint);
+}
+
+/** A fresh email that landed no outcome: bounced if over the limit, counted toward it if a miss. */
+function missed(s: GameState, addr: string, subject: string, back: { reply: string; scripted: boolean } | null, decision: RouteDecision, hint: string): ComposeResult {
+  if (!back) {
+    bounce(s, addr, subject);
+    return { state: s, decision: { kind: 'nothing' }, reply: '', sent: true, bounced: true };
+  }
+  // a scripted answer (a hint, a fixed topic) never counts toward the daily limit
+  if (!back.scripted && !s.sentToday.includes(addr)) s.sentToday.push(addr);
+  return { state: s, decision, reply: back.reply || hint, sent: true };
 }
 
 // ── the agent, freely promptable (with costs), not only when there's a job ──

@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { pickAd, adHtml, newPageLoad, AD_IDS } from './ads';
+import { pickAd, adHtml, newPageLoad, AD_IDS, AD_HREFS } from './ads';
+import { route } from '../sites/registry';
+import { AD_SITES } from '../sites/adSites';
+import { pageAdSite } from './adSites';
+import { newGame, citizenScore } from '../engine';
 
 describe('banner ads', () => {
   it('has two separate pools', () => {
@@ -27,7 +31,42 @@ describe('banner ads', () => {
     newPageLoad();
     const html = adHtml('qmail', 1, 'square');
     expect(html).toMatch(/class="ad ad-square /);
-    expect(html).toMatch(/data-nav="[a-z0-9.-]+(\/[a-z0-9-]+)?"/);
+    expect(html).toMatch(/data-newtab="[a-z0-9.-]+(\/[a-z0-9-]+)?"/);
     expect(html.match(/class="ad-f"/g)).toHaveLength(3);
+  });
+  it('opens a real page for every ad: its landing page, or a site that already exists', () => {
+    const s = newGame();
+    for (const href of AD_HREFS) {
+      const r = route(href, s);
+      expect(r.reachable, href).toBe(true);
+      expect(['adsite', 'empire', 'phish', 'prince', 'lonely', 'doordish', 'agent'], href).toContain(r.site);
+    }
+  });
+  it('has no landing page without an ad', () => {
+    for (const site of AD_SITES) expect(AD_HREFS, site.url).toContain(site.url);
+  });
+  it('draws each landing page with its brand, three cards and the fine print', () => {
+    for (const site of AD_SITES) {
+      const html = pageAdSite(site.url, newGame());
+      expect(html).toContain(`lp-t-${site.theme}`);
+      expect(html.match(/class="lp-card"/g)).toHaveLength(3);
+      expect(html).toContain('class="lp-fine"');
+      // no buttons; the only thing to click is an optional link to a site you can then reach
+      expect(html).not.toMatch(/data-(newtab|act|form)|<(button|input|form)\b/);
+      expect(html.match(/data-nav=/g) ?? []).toHaveLength(site.link ? 1 : 0);
+      if (site.link) {
+        const s = newGame();
+        if (site.unlocks) s.flags.push(site.unlocks);
+        expect(route(site.link[2], s).reachable, site.url).toBe(true);
+      }
+    }
+  });
+  it('citizenscore.gov shows the suspicion meter upside down', () => {
+    const s = newGame();
+    expect(citizenScore(0)).toBe(780);
+    expect(citizenScore(100)).toBe(60);
+    expect(pageAdSite('citizenscore.gov', s)).toContain('<b>780</b>');
+    s.values.suspicion = 50;
+    expect(pageAdSite('citizenscore.gov', s)).toContain('<b>420</b>');
   });
 });

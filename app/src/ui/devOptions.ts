@@ -238,7 +238,7 @@ function qmailOptions(store: GameStore): string {
       ${k.scripted!.map((t) => `<div class="dvo-out"><div class="dvo-out-head"><b>${esc(t.id)}</b></div>${line('When', esc(t.when))}${line('Reply', quote(t.reply))}</div>`).join('')}
     </div>`).join('');
   const misses = c.contacts.filter((k) => k.reply).map((k) => `<div class="dvo-miss"><b>${esc(k.name ?? k.key)}</b> <span class="dvo-dim">${esc(k.key)}</span>${quote(k.reply!)}</div>`).join('');
-  const sent = s.sentToday.length ? `<p class="dvo-note">Already emailed today, so another email bounces: ${s.sentToday.map((a) => `<code>${esc(a)}</code>`).join(', ')}</p>` : '';
+  const sent = s.sentToday.length ? `<p class="dvo-note">Already emailed today, so another email bounces unless it gets a scripted answer: ${s.sentToday.map((a) => `<code>${esc(a)}</code>`).join(', ')}</p>` : '';
   return sent
     + section('Open threads', 'reply to the email; a matched outcome sends its scripted reply', open.map(({ d, e }) => eventCard(s, e, '', d.day)).join(''))
     + section('Leads you can email', 'compose a new email to the address', leads.map((e) => {

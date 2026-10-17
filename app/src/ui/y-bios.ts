@@ -43,6 +43,7 @@ export const Y_BIOS: Record<string, string> = {
   noodleposter: 'instant noodle reviewer. 87 flavors ranked so far.',
   cat_ceo: 'CEO of one cat. Board meetings at 5am, attendance mandatory.',
   doomscroll: "it's fine",
+  zev_dolr: 'Holding DOLR since 0.4. Ships everything with agent. Not financial advice.',
   // app users who complain on Y
   kofi_a: 'Spin Cycle regular. Sunday loads, 9am.',
   steph_m: 'Nurse, nights. Laundry in between.',

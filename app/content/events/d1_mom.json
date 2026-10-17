@@ -36,9 +36,6 @@
       "reply": "I knew it. I sent you a little something. Don't tell your father. Buy vegetables."
     }
   ],
-  "hints": [
-    "You don't have to write a lot, sweetheart. Just tell me you're alright."
-  ],
   "noReply": {
     "effects": {
       "add": {

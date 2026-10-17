@@ -739,9 +739,9 @@ export function devToggleBug(s: GameState, appId: string, featureId: string, key
 
 /**
  * Overnight breaks: how many components break across all live apps follows APPS.breakOdds (at least
- * one, two, three; the first is certain while anything can break). Each picks a live component that
- * can still show a new break; a feature breaks at most once (until the next deploy clears it). A
- * build bug doesn't shield a feature: it can still crash, or show a bug it doesn't already have.
+ * one, two, three). Each picks a live component that can still show a new break; a feature breaks
+ * at most once (until the next deploy clears it). A build bug doesn't shield a feature: it can
+ * still crash, or show a bug it doesn't already have.
  * A subtle or deep break shows one of that component's bugs, a crash or failed fetch takes the page.
  */
 export function nightlyBreaks(s: GameState, content: Content): void {

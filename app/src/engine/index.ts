@@ -26,5 +26,6 @@ export * from './save';
 export * from './wallets';
 export * from './stocks';
 export * from './phishing';
+export * from './lonely';
 export * from './mailbin';
 export * from './jevTests';

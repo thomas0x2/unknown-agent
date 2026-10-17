@@ -6,11 +6,12 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, buyStock, sellStock, deliverDue, deliverArrivals, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, buyStock, sellStock, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
 import { route, visitedFlag } from '../sites/registry';
+import { adSite } from '../sites/adSites';
 import { PULL_MS, pullLines } from './pull';
 import { DEEPSLEEP_LINES, DEEPSLEEP_PLEA } from '../engine/deepsleep';
 
@@ -60,7 +61,7 @@ export class GameStore {
     ySearch: '', yAllDay: 0, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null as Draft | null,
     /** Bot posts landing as a barrage: when each shows up on Y (performance.now() ms), so a repaint keeps the timing. */
     yBurst: {} as Record<string, number>,
-    project: '', dev: false, liked: {} as Record<string, boolean>, intro: true, greet: false, memWarn: false, confirm: null as null | { text: string; yes: string; fn: () => void }, start: false, menuCat: 'saves',
+    project: '', dev: false, liked: {} as Record<string, boolean>, reposted: {} as Record<string, boolean>, intro: true, greet: false, memWarn: false, confirm: null as null | { text: string; yes: string; fn: () => void }, start: false, menuCat: 'saves',
     /** The Terminal is its own window: open (in the taskbar) and shown (in front of the browser). */
     termOpen: false, termShown: false,
     /** Dev mode: the site whose options panel is open (agent, qmail, y), or ''. */
@@ -86,6 +87,12 @@ export class GameStore {
     mailNotice: null as null | { text: string; ids: string[]; undo: 'bin' | 'restore' },
     /** coinbln.com: why the last sign-in was refused. */
     phishError: '',
+    /** prince-claims.xyz: why the last seed phrase was refused. */
+    princeError: '',
+    /** Coinbin: the recovery phrase is on screen. */
+    seedShown: false,
+    /** lonely.ai: Mia is typing. */
+    lonelyTyping: false,
     /** An action Jev was needed for and couldn't be reached: why, and the text to put back in its box. */
     jevOffline: null as { reason: string; field?: string; text?: string } | null,
     /** Y posts by others that went up since the player last looked at the timeline, for the Y tab's badge. */
@@ -259,6 +266,9 @@ export class GameStore {
   /** First visit to a site that is bookmarked only after you've been there: add the bookmark. */
   private markVisited(url: string): void {
     const r = route(url, this.state);
+    // an ad site can introduce a site it links to (deepsleep.ai links to Weightroom)
+    const unlocks = r.site === 'adsite' && r.param ? adSite(r.param)?.unlocks : undefined;
+    if (unlocks && !this.state.flags.includes(unlocks)) { this.state.flags.push(unlocks); this.state.flags.sort(); this.store.save(this.state); }
     if (!r.def?.bookmarkAfterVisit || !r.reachable) return;
     const f = visitedFlag(r.def.id);
     if (this.state.flags.includes(f)) return;
@@ -308,6 +318,7 @@ export class GameStore {
     this.emit();
   }
   like(id: string): void { this.ui.liked[id] = !this.ui.liked[id]; this.emit(); }
+  repost(id: string): void { this.ui.reposted[id] = !this.ui.reposted[id]; this.emit(); }
   /** Mark a mail row read (persisted, no re-render — called during render). */
   markReadMail(id: string): void {
     const s = this.state;
@@ -374,7 +385,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = HOME_TAB; this.nextTab = PINNED.length + 1;
-    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', jevOffline: null, yUnread: 0 };
+    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, reposted: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', princeError: '', seedShown: false, lonelyTyping: false, jevOffline: null, yUnread: 0 };
     this.store.save(this.state);
     this.emit();
   }
@@ -426,6 +437,22 @@ export class GameStore {
     if (r.error) { this.emit(); return; }
     this.commitAndSettle(r.state);
   }
+  /** prince-claims.xyz: pasting the seed phrase. A wrong one stays on the form with an error. */
+  princeClaim(phrase: string): void {
+    const r = seedClaim(this.state, phrase);
+    this.ui.princeError = r.error ?? '';
+    if (r.error) { this.emit(); return; }
+    this.commitAndSettle(r.state);
+  }
+  /** lonely.ai: the player's message, then Mia's scripted reply after a short "typing". */
+  lonelySend(text: string): void {
+    if (this.ui.lonelyTyping) return;
+    this.commitAndSettle(lonelySay(this.state, text));
+    this.ui.lonelyTyping = true; this.emit();
+    setTimeout(() => { this.ui.lonelyTyping = false; this.commitAndSettle(lonelyReply(this.state)); }, 1400);
+  }
+  /** Coinbin's Show/Hide recovery phrase. */
+  toggleSeed(): void { this.ui.seedShown = !this.ui.seedShown; this.ui.cbNotice = ''; this.emit(); }
   // a new attempt clears the last attempt's notice, so a refusal never sticks to a date it wasn't about
   bookNext(name: string, email: string, date: number): void { delete this.state.bookingNotice; this.ui.book = { step: 2, name, email, date }; this.emit(); }
   bookBack(): void { delete this.state.bookingNotice; this.ui.book.step = 1; this.emit(); }
@@ -565,6 +592,7 @@ export class GameStore {
     s.clockMin = CLOCK.wake; // the day's mail and posts arrive over the day, as on a real morning
     s.arriving = (s.arriving ?? []).filter((x) => x.day <= d);
     const m = this.arrivalMark();
+    spreadJobOffers(s, this.content);
     deliverArrivals(s, this.content);
     deliverDue(s, this.content);
     this.announce(m);

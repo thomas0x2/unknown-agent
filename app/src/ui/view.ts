@@ -18,11 +18,14 @@ import { findUser } from './forkyard-users';
 import { pageDrive } from './qdrive';
 import { pageSherwood } from './sherwood';
 import { pageDoorDish } from './doordish';
+import { pageAdSite, adSiteTitle, adSiteIcon } from './adSites';
+import { pagePrince, PRINCE_ICON } from './prince';
+import { pageLonely, LONELY_ICON } from './lonely';
 import { adHtml } from './ads';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount, appLogo } from './appsite';
-import { marketPosts, cranePosts, fillerToday, postMin, handleOf, playMinutes, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, inBin, isDeleted, CLOCK } from '../engine';
+import { marketPosts, cranePosts, fillerToday, postMin, handleOf, playMinutes, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, SEED_PHRASE, inBin, isDeleted, CLOCK } from '../engine';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 import { repoFiles, treeAt, fileSource } from './repoTree';
 import { yBio } from './y-bios';
@@ -58,10 +61,11 @@ function linkify(escaped: string): string {
 
 function tabTitle(r: Route, url: string): string {
   const names: Partial<Record<string, string>> = {
-    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', doordish: 'DoorDish', phish: 'Coinbin · Sign in', forkyard: 'Forkyard',
+    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', doordish: 'DoorDish', phish: 'Coinbin · Sign in', prince: 'Crypto Prince', lonely: 'Lonely.ai', forkyard: 'Forkyard',
     agent: 'agent', yowl: 'Yowl', weightroom: 'Weightroom', nullboard: 'nullboard', cellar: 'Cellar', app: url,
   };
   if (r.site === 'notfound') return url || 'New Tab';
+  if (r.site === 'adsite') return adSiteTitle(r.param ?? '') ?? url;
   return names[r.site] ?? r.def?.label ?? url;
 }
 
@@ -74,7 +78,8 @@ export function tabsHtml(store: GameStore): string {
     const rr = route(t.url, store.state);
     // a deployed app with a logo shows it as its favicon
     const app = rr.site === 'app' && rr.param ? getApp(store.state, rr.param.split('/')[0]) : undefined;
-    const logo = app && appLogo(app.template);
+    // ad sites (and Spin Cycle's raw feed) show their brand's mark
+    const logo = (app && appLogo(app.template)) || (rr.site === 'adsite' ? adSiteIcon(rr.param ?? '') : rr.site === 'spinfeed' ? adSiteIcon('spincycle.test') : rr.site === 'prince' ? PRINCE_ICON : rr.site === 'lonely' ? LONELY_ICON : undefined);
     const n = !badged.has(rr.site) ? counts[rr.site] ?? 0 : 0;
     badged.add(rr.site);
     return `<div class="tab${t.id === store.active ? ' on' : ''}${t.pinned ? ' pinned' : ''}" data-tab="${t.id}" role="tab" aria-selected="${t.id === store.active}" tabindex="0">
@@ -241,6 +246,9 @@ export function page(store: GameStore, r: Route): string {
     case 'empire': return pageEmpire(store.state);
     case 'spinfeed': return pageSpinFeed(store, r.param);
     case 'phish': return pagePhish(store);
+    case 'prince': return pagePrince(store);
+    case 'lonely': return pageLonely(store);
+    case 'adsite': return pageAdSite(r.param ?? '', store.state);
     default: return pageUnderground(r.def?.label ?? r.site);
   }
 }
@@ -450,7 +458,9 @@ const Y_FOLLOWERS: Record<string, number> = { randall_crane: 38_400_000, mara_ve
 const yCheck = (handle: string) => Y_VERIFIED.has(handle) ? `<span class="y-badge" title="Verified">${Y_ICONS.badge}</span>` : '';
 function yPostHtml(store: GameStore, p: YPost): string {
   const liked = !!store.ui.liked[p.id];
+  const reposted = !!store.ui.reposted[p.id];
   const likes = p.likes + (liked ? 1 : 0);
+  const reposts = Math.round(p.likes * 0.14) + (reposted ? 1 : 0);
   const text = linkify(esc(p.text).replace(/(^|[^&\w])(#[a-z][a-z0-9_]*)/gi, '$1<span class="y-at">$2</span>'));
   const prof = `y.com/${esc(p.handle)}`;
   // a bot post in a barrage fades in at its own moment, wherever the repaint catches it
@@ -465,11 +475,11 @@ function yPostHtml(store: GameStore, p: YPost): string {
     </header>
     <p>${text}</p>
     <footer class="y-acts">
-      <span class="y-act">${Y_ICONS.reply}${compact(Math.round(likes * 0.07))}</span>
-      <span class="y-act">${Y_ICONS.repost}${compact(Math.round(likes * 0.14))}</span>
+      <span class="y-act">${Y_ICONS.reply}${compact(Math.round(p.likes * 0.07))}</span>
+      <button class="y-act repost${reposted ? ' on' : ''}" data-repost="${esc(p.id)}" aria-label="Repost">${Y_ICONS.repost}${compact(reposts)}</button>
       <button class="y-act like${liked ? ' on' : ''}" data-like="${esc(p.id)}" aria-label="Like">${Y_ICONS.heart}${compact(likes)}</button>
       ${p.mine && p.delta != null ? `<span class="y-delta ${p.delta > 0 ? 'up' : p.delta < 0 ? 'down' : ''}">${p.delta > 0 ? '+' : p.delta < 0 ? '−' : '±'}${Math.abs(p.delta)} followers${p.score != null ? `<span class="y-score">rated ${p.score.toFixed(1)}/4</span>` : ''}</span>` : ''}
-      <span class="y-act views">${Y_ICONS.views}${compact(Math.max(12, likes * 37 + 9))}</span>
+      <span class="y-act views">${Y_ICONS.views}${compact(Math.max(12, p.likes * 37 + 9))}</span>
     </footer></article>`;
 }
 function pageY(store: GameStore, profile?: string): string {
@@ -679,7 +689,7 @@ function pageWallet(store: GameStore): string {
           </div>
           <div class="cb-side">
             <div class="cb-actions"><button class="cb-btn${store.ui.send.open ? ' on' : ''}" data-act="send">Send</button><button class="cb-btn" data-act="receive">Receive</button></div>
-            ${store.ui.cbNotice ? `<p class="cb-notice" role="status">${esc(store.ui.cbNotice)}</p>` : ''}
+            ${store.ui.cbNotice && !store.ui.cbNotice.startsWith('Recovery') ? `<p class="cb-notice" role="status">${esc(store.ui.cbNotice)}</p>` : ''}
             <div class="cb-tabs" role="tablist" aria-label="Range">${tabs}</div>
           </div>
         </div>
@@ -694,6 +704,12 @@ function pageWallet(store: GameStore): string {
         </section>
         <section class="cb-card"><h2>Upcoming</h2>${upcoming}</section>
       </div>
+      <section class="cb-card cb-seed"><h2>Recovery phrase</h2>
+        <p class="cb-seed-note">These 12 words control your wallet. Anyone who has them can move your DOLR. Coinbin will never ask for them.</p>
+        ${store.ui.seedShown ? `<ol class="cb-seed-words">${SEED_PHRASE.split(' ').map((w) => `<li>${esc(w)}</li>`).join('')}</ol>` : ''}
+        <div class="cb-actions"><button class="cb-btn" data-act="seed-show">${store.ui.seedShown ? 'Hide' : 'Show'} recovery phrase</button>${store.ui.seedShown ? '<button class="cb-btn" data-act="seed-copy">Copy</button>' : ''}</div>
+        ${store.ui.seedShown && store.ui.cbNotice.startsWith('Recovery') ? `<p class="cb-notice" role="status">${esc(store.ui.cbNotice)}</p>` : ''}
+      </section>
       <section class="cb-card cb-ops"><h2>Operations <span>${txs.length}</span></h2>${ops || '<p class="cb-empty">No operations yet.</p>'}</section>
     </div></div>`;
 }
@@ -928,7 +944,7 @@ function pageAgent(store: GameStore): string {
     </header>
     <div class="ua-log" id="ua-log">${msgs}${workAt < 0 ? workHtml(s) : ''}${pending}${thinking}</div>
     <form class="ua-compose" data-form="prompt">
-      <textarea id="prompt-input" rows="2" placeholder="Ask agent anything — build an app, fix one, write, translate, look something up…" ${s.ending ? 'disabled' : ''}></textarea>
+      <textarea id="prompt-input" rows="2" placeholder="Ask agent anything" ${s.ending ? 'disabled' : ''}></textarea>
       <div class="ua-row"><span id="cost-est" class="ua-est"></span><button class="ua-send" type="submit" ${s.ending || store.busy ? 'disabled' : ''}>Send</button></div>
     </form>${devOptionsPanel(store, 'agent')}</div>`;
 }

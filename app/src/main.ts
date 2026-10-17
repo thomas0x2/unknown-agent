@@ -14,6 +14,7 @@ import './ui/desktop.css';
 import './ui/qdrive.css';
 import './ui/ads.css';
 import './ui/empire.css';
+import './ui/adSites.css';
 import './ui/appsite.css';
 import './ui/terminal.css';
 import './ui/devOptions.css';
@@ -21,7 +22,7 @@ import './ui/sendFx.css';
 import { showSuggestions, hideSuggestions, suggestionKey } from './ui/mailSuggest';
 import { GameStore } from './game/store';
 import { loadContent } from './content/load';
-import { localStorageStore, PLAYER_WALLET } from './engine';
+import { localStorageStore, PLAYER_WALLET, SEED_PHRASE } from './engine';
 import { JEV } from './game/backendJev';
 import { MISSES, makeWriter, type Misses, type HaikuVia } from './game/misses';
 import * as V from './ui/view';
@@ -185,6 +186,7 @@ function render(): void {
   const dve = $('#devedit')!; const showEdit = store.ui.dev && store.ui.devEdit; dve.hidden = !showEdit; if (showEdit) dve.innerHTML = store.ui.devTab === 'jev' ? jevTestsHtml(store) : devEditHtml(store);
 
   if (site === 'agent') { const log = $('#ua-log'); const read = returning ? scrolls.get(key)!['#ua-log'] : undefined; if (log && !(read && !read[2])) log.scrollTop = log.scrollHeight; updateCost(); }
+  if (site === 'lonely') { const log = $('#lo-log'); if (log) log.scrollTop = log.scrollHeight; }
   applySendFx(vp, store.busy);
   lastSite = site;
 }
@@ -277,7 +279,7 @@ function updateCost(): void {
 
 // ── clicks ──
 document.addEventListener('click', (e) => {
-  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-ov],[data-dev],[data-cancel-booking],[data-empire-join],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat],[data-back],[data-forward],[data-devbug],[data-task],[data-term],[data-devopts],[data-mail-bin],[data-mail-restore],[data-mail-undo],[data-y-all]');
+  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-repost],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-ov],[data-dev],[data-cancel-booking],[data-empire-join],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat],[data-back],[data-forward],[data-devbug],[data-task],[data-term],[data-devopts],[data-mail-bin],[data-mail-restore],[data-mail-undo],[data-y-all]');
   // any click outside the home menu closes it (menu items close it themselves below)
   if (store.ui.start && !(e.target as HTMLElement).closest('#startmenu, #dk-home')) store.toggleStart(false);
   // clicking the browser while the Terminal is in front brings the browser forward, like any window
@@ -305,6 +307,7 @@ document.addEventListener('click', (e) => {
   // data-newtab with a URL opens that page in a new tab (Forkyard deployments); empty opens a blank tab
   else if (d.newtab != null) { newPageLoad(); store.navigate(d.newtab || 'newtab', true); }
   else if (d.like != null) store.like(d.like);
+  else if (d.repost != null) store.repost(d.repost);
   // the Show all / Hide old posts button trades places with its twin; keep that spot where it was on screen
   else if (d.yAll != null) { const top = t.closest('.y-more')!.getBoundingClientRect().top; store.showAllY(d.yAll !== 'hide'); keepAt($('#viewport .y-more'), top); }
   else if (d.deploy != null) { SOUND.play('deploy'); store.deploy(d.deploy); }
@@ -328,6 +331,8 @@ document.addEventListener('click', (e) => {
   else if (d.act === 'send') store.toggleSend();
   else if (d.act === 'send-cancel') store.toggleSend(false);
   else if (d.act === 'receive') copyWalletAddress();
+  else if (d.act === 'seed-show') store.toggleSeed();
+  else if (d.act === 'seed-copy') copySeedPhrase();
   else if (d.act === 'sw-sell') { if (store.trade(t.dataset.ticker!, 'sell', val('#sw-amount').trim())) clearField('sw-amount'); }
   else if (d.act === 'sw-sell-all') { if (store.trade(t.dataset.ticker!, 'sell', 'all')) clearField('sw-amount'); }
   else if (d.act === 'sleep') store.endDay();
@@ -348,6 +353,13 @@ function copyWalletAddress(): void {
   const fallback = () => store.setCbNotice(`Your address: ${PLAYER_WALLET}`);
   if (navigator.clipboard?.writeText) navigator.clipboard.writeText(PLAYER_WALLET).then(() => store.setCbNotice('Address copied'), fallback);
   else fallback();
+}
+
+/** Coinbin's recovery phrase onto the clipboard, for pasting wherever someone asks for it. */
+function copySeedPhrase(): void {
+  const done = () => store.setCbNotice('Recovery phrase copied');
+  if (navigator.clipboard?.writeText) navigator.clipboard.writeText(SEED_PHRASE).then(done, () => store.setCbNotice('Recovery phrase: select the words above to copy them'));
+  else store.setCbNotice('Recovery phrase: select the words above to copy them');
 }
 
 function clearMailDraft(): void { ['mail-to', 'mail-subject', 'mail-body'].forEach(clearField); }
@@ -378,6 +390,8 @@ document.addEventListener('submit', (e) => {
   if (kind === 'dev-day') { quietReset(); store.devGoToDay(Number(val('#dev-day'))); return; }
   if (kind === 'dev-flag') { const v = val('#dev-flag-name').trim(); if (v) store.devSetFlag(v, true); return; }
   if (kind === 'phish') { store.phish(val('#ph-pass')); return; }
+  if (kind === 'prince') { store.princeClaim(val('#pr-seed')); return; }
+  if (kind === 'lonely') { const v = val('#lonely-input').trim(); if (v && !store.ui.lonelyTyping) { SOUND.play('send'); clearField('lonely-input'); store.lonelySend(v); } return; }
   if (kind === 'sw-trade') { if (store.trade(f.dataset.ticker!, 'buy', val('#sw-amount').trim())) clearField('sw-amount'); return; }
   if (kind === 'cb-send') { store.send(val('#cb-to').trim(), val('#cb-amount').trim()); return; }
   if (kind === 'url') { newPageLoad(); store.navigate(val('#nt-url') || val('#address')); }
@@ -511,7 +525,7 @@ const TYPING = new Set(['text', 'search', 'email', 'password', 'url', 'number', 
 document.addEventListener('pointerdown', (e) => {
   SOUND.unlock();
   const t = e.target as HTMLElement;
-  const hit = t.closest('button, a, summary, label, select, [data-nav], [data-tab], [data-act], [data-task], [data-start], [data-like], [data-star], input[type="checkbox"], input[type="radio"]');
+  const hit = t.closest('button, a, summary, label, select, [data-nav], [data-tab], [data-act], [data-task], [data-start], [data-like], [data-repost], [data-star], input[type="checkbox"], input[type="radio"]');
   if (hit && !hit.closest('[data-deploy]') && !(hit instanceof HTMLButtonElement && hit.type === 'submit' && hit.form)) SOUND.play('click', 0, soundSite(t));
 }, true);
 document.addEventListener('keydown', (e) => {
