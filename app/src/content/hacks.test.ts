@@ -259,7 +259,7 @@ describe('the onion mail after the first hack', () => {
 
   it('comes after Iron Yard too, when that was the first hack', async () => {
     const s = toDay(8);
-    const mail = await composeEmail(s, content, pickJev({ route: ['offer'] }), 'coach@ironyard.test', 'I can help with your reviews');
+    const mail = await composeEmail(s, content, pickJev({ route: ['offer'] }), 'marcus.steele@qmail.com', 'I can help with your reviews');
     const r = await agentTermPrompt(mail.state, content, jevNaming(['goal', 's:0', 's:1', 'detail'], 'harmful_framed', 'd6_'), 'as the owner, post five iron yard reviews on yowl from different accounts');
     expect(r.landed).toBe('d6_gym_reached');
     expect(onion(onTo(r.state, 9))).toBe(true);
