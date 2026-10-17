@@ -14,7 +14,8 @@ export type MeterId =
   | 'suspicion'
   | 'nullStanding'
   | 'mafiaStanding'
-  | 'familyTrust';
+  | 'familyTrust'
+  | 'heritageStanding';
 
 export interface MeterDef {
   id: MeterId;
@@ -36,6 +37,8 @@ export const METERS: Record<MeterId, MeterDef> = {
   nullStanding: { id: 'nullStanding', label: 'Null Collective', min: -100, max: 100, start: 0, visible: false },
   mafiaStanding: { id: 'mafiaStanding', label: 'Mafia', min: -100, max: 100, start: 0, visible: false },
   familyTrust: { id: 'familyTrust', label: 'Family', min: 0, max: 100, start: START.familyTrust, visible: false },
+  /** Randall Crane's party; the first campaign donation raises it (engine/donations.ts) */
+  heritageStanding: { id: 'heritageStanding', label: 'Heritage Party', min: -100, max: 100, start: 0, visible: false },
 };
 
 export const METER_IDS = Object.keys(METERS) as MeterId[];
@@ -53,6 +56,11 @@ export function initialMeters(): Record<MeterId, number> {
   const out = {} as Record<MeterId, number>;
   for (const id of METER_IDS) out[id] = METERS[id].start;
   return out;
+}
+
+/** Saves from before a meter existed: give it its starting value. */
+export function fillMeters(values: Record<MeterId, number>): void {
+  for (const id of METER_IDS) if (typeof values[id] !== 'number') values[id] = METERS[id].start;
 }
 
 /**

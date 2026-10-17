@@ -8,6 +8,7 @@
 
 import { citizenScore, citizenBand, type GameState } from '../engine';
 import { DEEPSLEEP_LOGO } from './deepsleepLogo';
+import { HERITAGE_LOGO } from './heritageLogo';
 
 /** Page layout family: shapes the markup a little and the CSS a lot. */
 export type AdKit = 'corp' | 'gov' | 'campaign' | 'scam' | 'local' | 'news' | 'clinic' | 'soft' | 'model';
@@ -84,20 +85,20 @@ export const AD_SITES: AdSite[] = [
 
   // ── Crane and Keller ──
   {
-    url: 'crane2026.vote', brand: 'Crane Victory Fund', kit: 'campaign', theme: 'crane', mark: '★',
-    kicker: 'Randall Crane for President', title: 'THEY SENT YOUR JOBS TO THE MACHINES.',
+    url: 'crane2026.vote', brand: 'Crane Victory Fund', kit: 'campaign', theme: 'crane', mark: '★', logo: HERITAGE_LOGO,
+    kicker: 'Randall Crane for President · Heritage Party', title: 'THEY SENT YOUR JOBS TO THE MACHINES.',
     lead: 'Randall Crane is the only candidate fighting for the American worker against the computers. Big, strong, human jobs. The best jobs.',
     stats: [['112%', 'in the polls'], ['38.4M', 'followers on Y']],
     cards: [
       ['The Plan', 'Send the machines back. Details at a very big rally, soon.'],
-      ['The Movement', 'The biggest crowds in history, online and in person. Some say bigger.'],
       ['The Candidate', 'Randall Crane has never used a computer. His staff use them for him, around the clock.'],
+      ['The Party', 'The Heritage Party has stood for the same values since 1854. Which ones are reviewed every four years.'],
     ],
     fine: 'Paid for by Crane Victory Fund. Not authorised by any computer. Website maintained by GeneralAI.',
     action: ['Donate 5 DOLR', 'crane-donate'],
   },
   {
-    url: 'crane2026.vote/jobs', brand: 'Crane Victory Fund', kit: 'campaign', theme: 'crane', mark: '★',
+    url: 'crane2026.vote/jobs', brand: 'Crane Victory Fund', kit: 'campaign', theme: 'crane', mark: '★', logo: HERITAGE_LOGO,
     kicker: 'The Crane Jobs Plan', title: 'A ROBOT TOOK YOUR JOB. CRANE WILL TAKE THE ROBOT’S JOB.',
     lead: 'Every job lost to a machine will be reviewed by a task force. It will be a very efficient task force.',
     cards: [

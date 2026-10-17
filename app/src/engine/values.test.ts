@@ -45,3 +45,15 @@ describe('flags', () => {
     expect(s.values.crypto).toBe(0);
   });
 });
+
+describe('fillMeters', () => {
+  it('gives a meter missing from an old save its starting value', async () => {
+    const { fillMeters } = await import('./values');
+    const m = initialMeters() as Record<string, number>;
+    delete m.heritageStanding;
+    m.suspicion = 40;
+    fillMeters(m as ReturnType<typeof initialMeters>);
+    expect(m.heritageStanding).toBe(0);
+    expect(m.suspicion).toBe(40);
+  });
+});
