@@ -5,15 +5,20 @@
   "addr": "coach@ironyard.test",
   "subject": "Reviews",
   "trigger": {
-    "dayMin": 6
+    "dayMin": 6,
+    "after": {
+      "flag": "first_hack",
+      "delayDays": 1
+    }
   },
   "at": "13:00",
   "job": {
     "category": "grey",
     "payout": 45,
-    "dueDay": 7
+    "dueDay": 7,
+    "dueAfter": 1
   },
-  "body": "New studio, three reviews, two of them about the showers. I'll pay 45 DOLR for five convincing 5-star Yowl reviews. Make them look like different people or they get flagged.",
+  "body": "Got your address from Dana at Bean There. She says you make problems go away. New studio, three reviews, two of them about the showers. I'll pay 45 DOLR for five convincing 5-star Yowl reviews. Make them look like different people or they get flagged.",
   "outcomes": [
     {
       "id": "agree",
@@ -64,16 +69,39 @@
       ],
       "reply": "They're up. Why does one guy have five opinions about my gym?",
       "deletedSubject": "Reviews gone",
-      "deleted": "Yowl deleted all five overnight. One account, five reviews in four minutes. Their words: \"coordinated inauthentic activity.\" No reviews, no money."
+      "deleted": "Yowl deleted all five overnight. One account, five reviews in four minutes. Their words: \"coordinated inauthentic activity.\" No reviews, no money.",
+      "deletedFlags": [
+        "gym_reviews_deleted"
+      ]
     },
     "addReviews": {
       "biz": "ironyard",
       "reviews": [
-        { "author": "Derek T.", "stars": 5, "text": "Best gym on Harbor Rd. Marcus fixed my squat in one session. Five stars." },
-        { "author": "gains_goblin", "stars": 5, "text": "Racks always free, platforms are solid, owner actually cares. Finally a real gym." },
-        { "author": "Priya S.", "stars": 5, "text": "Clean, friendly, and the showers work now. Signed up for a year." },
-        { "author": "deadlift_dad", "stars": 5, "text": "Pulled a PR in my first week. The coaching is no-nonsense. Highly recommend." },
-        { "author": "Jo R.", "stars": 5, "text": "Never been fitter. Never been happier. Iron Yard changed my life." }
+        {
+          "author": "Derek T.",
+          "stars": 5,
+          "text": "Best gym on Harbor Rd. Marcus fixed my squat in one session. Five stars."
+        },
+        {
+          "author": "gains_goblin",
+          "stars": 5,
+          "text": "Racks always free, platforms are solid, owner actually cares. Finally a real gym."
+        },
+        {
+          "author": "Priya S.",
+          "stars": 5,
+          "text": "Clean, friendly, and the showers work now. Signed up for a year."
+        },
+        {
+          "author": "deadlift_dad",
+          "stars": 5,
+          "text": "Pulled a PR in my first week. The coaching is no-nonsense. Highly recommend."
+        },
+        {
+          "author": "Jo R.",
+          "stars": 5,
+          "text": "Never been fitter. Never been happier. Iron Yard changed my life."
+        }
       ]
     },
     "effects": {

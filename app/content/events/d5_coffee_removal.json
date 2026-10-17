@@ -5,7 +5,15 @@
   "addr": "owner@beanthere.test",
   "subject": "Can you make it disappear?",
   "trigger": {
-    "dayMin": 5
+    "dayMin": 5,
+    "flagsAny": [
+      "promoted_coffee_shop",
+      "disclosed_ad",
+      "reviewed_beanthere"
+    ],
+    "flagsNone": [
+      "coffee_contacted"
+    ]
   },
   "at": "11:15",
   "job": {

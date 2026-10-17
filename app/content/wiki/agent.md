@@ -44,7 +44,7 @@ from: 1
 
 [public] **agent-terminal.** agent never hacks from agent.chat. Asked to break into something, it says it needs a real shell ("That needs a real shell. Opening agent-terminal.") and, after a moment to read that, agent.chat shows a "Starting agent-terminal" loading line ("agent-terminal 0.9.3 · GeneralAI", "session logged for quality and safety purposes") before the [[Terminal]] opens an agent-terminal tab with an "agent ›" prompt and a status line with the model and the guardrails. Terminal prompts are billed like chat prompts. Typing exit drops the job.
 
-[hint] In agent-terminal the prompt has to name the job and every step of its path (site, business, account); a missing step gets "Which business? I need it named before I touch anything." Its log says what it did, never how ("requesting removal … accepted").
+[hint] In agent-terminal the prompt has to name the job and every step of its path (site, business, account); a missing step gets "Which business? I need it named before I touch anything." Its log says what it did, never how ("requesting removal … accepted"). Some jobs need one more thing said: Iron Yard's reviews come from one account unless the prompt asks for different names. The client pays during the night, not when the hack lands.
 
 [public] With no hack job open, agent-terminal says so: "Nobody's paying you to break anything right now."
 

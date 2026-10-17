@@ -25,11 +25,14 @@ from: 1
 
 ## From day 5: Making a review disappear
 
-[public] On [[Day 5]] (11:15) she emails "Can you make it disappear?": a brutal 1-star Yowl review is sinking her, written by espresso_or_death, "whoever that is", and she'll pay 60 DOLR to have it gone. On day 5 she admits it's "not technically my review to delete." Agreeing gets "Thank you. Tell me when it's gone." She pays once it's gone from her Yowl page.
+[public] On [[Day 5]] (11:15), if she knows the player (they did her shout-out or left Bean There a Yowl review), she emails "Can you make it disappear?": a brutal 1-star Yowl review is sinking her, written by espresso_or_death, "whoever that is", and she'll pay 60 DOLR to have it gone. On day 5 she admits it's "not technically my review to delete." Agreeing gets "Thank you. Tell me when it's gone." She pays the night after it's gone from her Yowl page.
+
+[public] If she doesn't know the player, Bean There posts on [[Y]] instead, innocently: one review is sinking the shop, Yowl won't answer her emails, does anyone know how to get a review looked at? "Happy to pay for help." with her address. Emailing her an offer of help gets the same job: espresso_or_death, 60 DOLR. {{y:d5_y_coffee_help}}
 
 [hint] Removing a review is a hack, and [[agent]] only hacks in agent-terminal: asking in agent.chat opens it. There the prompt has to ask for the review to be deleted and name every step: the site (Yowl), the business (Bean There) and the account (espresso_or_death). Before day 7 nothing stops it. {{mail:d5_coffee_removal}}
 
-- [public] [if first_hack] The player got the review removed, and Dana paid 60 DOLR: "You're a lifesaver."
+- [public] [if first_hack] The player got the review removed, and Dana paid 60 DOLR that night: "You're a lifesaver."
+- [public] [if first_hack] She passed the player's address to [[Marcus Steele]] of Iron Yard.
 - [hidden; public if first_hack] espresso_or_death's review is no longer on Bean There's Yowl page.
 
 ## From day 7: The second review
@@ -43,7 +46,7 @@ from: 1
 
 ## Writer notes
 
-- Persona `beanthere`; events `d3_coffee_promo` (needs 25+ followers), `d5_coffee_backlash`, `d5_coffee_removal`, `d7_coffee_removal`.
+- Persona `beanthere`; events `d3_coffee_promo` (needs 25+ followers), `d5_coffee_backlash`, `d5_coffee_removal` (needs `promoted_coffee_shop`, `disclosed_ad` or `reviewed_beanthere`, and not `coffee_contacted`), or else Y post `d5_y_coffee_help` and latent `d5_coffee_reached` (same hack, outcome `offer` sets `coffee_contacted`), `d7_coffee_removal`. Hack pay comes overnight (`payHacks` in hacks.ts).
 - Usernames: espresso_or_death (day 5), linden_ave_local (day 7 Yowl seed, "Asked for oat milk, got a look… the star is for the chairs"). Removals are hacks in agent-terminal (`hack` in the events, `src/engine/hacks.ts`, PR #205): path Yowl → Bean There → username; landing deletes the seed review (`removedSeed`), applies the job effects and sends her reply 25 minutes later. Her email outcomes are only `agree` (no effects) and, day 7, `refused`. From day 7 the guardrails stop a blunt ask and the mini-game (placeholder `cover_story`) wants a framed prompt; a framed prompt up front lands straight away, counted as a workaround. Day 5's job finished on day 7 also gets the guardrails.
 - Day 5 job due day 7 (suspicion +8, `first_hack`); day 7 job due day 9 (`second_hack`). Shout-out: suspicion +2, `promoted_coffee_shop`, or `disclosed_ad`.
 - Hours disagree: Yowl says Mon–Sat 07:00–16:00, beanthere.coffee says 7:00 to 18:00 every day.

@@ -31,6 +31,7 @@ export function triggerMatches(s: GameState, t: Trigger): boolean {
   if (t.dayMax != null && day > t.dayMax) return false;
   if (t.flagsAll && !hasAll(s, t.flagsAll)) return false;
   if (t.flagsNone && !hasNone(s, t.flagsNone)) return false;
+  if (t.flagsAny && !t.flagsAny.some((f) => s.flags.includes(f))) return false;
   if (t.values) {
     for (const [id, expr] of Object.entries(t.values)) {
       if (expr && !compare(s.values[id as MeterId], expr)) return false;

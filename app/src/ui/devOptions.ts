@@ -167,6 +167,8 @@ export function contentJobs(c: Content): Job[] {
   for (const ev of c.events) {
     const up = ev.onDeliver?.updateApp;
     if (up) out.push({ ev, kind: 'client update', pay: 'keeps the client paying', spec: up.add.map((f) => featureText(f)) });
+    const h = ev.hack;
+    if (h && ev.job) out.push({ ev, kind: `${ev.job.category} hack`, pay: `${ev.job.payout} overnight, due ${ev.job.dueAfter != null ? `${ev.job.dueAfter} day(s) after the offer` : `day ${ev.job.dueDay}`}`, spec: [h.goal, `name: ${h.path.map((p) => p.name).join(', ')}`, ...(h.detail ? [`say: ${h.detail.description}`] : [])] });
     for (const o of ev.outcomes ?? []) {
       const app = o.effects?.createApp;
       const cash = o.effects?.add?.crypto ?? 0;

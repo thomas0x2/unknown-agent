@@ -10,7 +10,7 @@ import type { GameState, AgentTermLine } from './state';
 import type { Content, GameEvent, HackSpec } from '../content/schema';
 import type { JevRouter, FeatureMatchInput } from './jev';
 import { clone, pick, sendLater, log } from './core';
-import { applyEffects } from './effects';
+import { applyEffects, jobDue } from './effects';
 import { chargeAgent, policyActive, recordMisuse, loosenLeash } from './agent';
 import { AGENT_WORK } from './config';
 import { policyCheck, recentChat, stateSummary } from './actions';
@@ -93,7 +93,7 @@ const LOCKED = "Balance too low. Top up Coinbin and try again.";
 export function openHacks(s: GameState, content: Content): GameEvent[] {
   return content.events.filter((e) => e.hack
     && s.delivered.some((d) => d.eventId === e.id)
-    && (!e.job || s.values.day <= e.job.dueDay)
+    && (!e.job || s.values.day <= jobDue(s, e.job, e.id))
     && !(s.hacked ?? []).includes(e.id)
     && !s.jobs.some((j) => j.eventId === e.id && j.status !== 'accepted'));
 }
@@ -230,7 +230,7 @@ export function payHacks(s: GameState, content: Content): [string, number][] {
     const spec = ev.hack;
     if (p.botched && spec.detail) {
       for (const r of s.reviews) if (r.id.startsWith(`hack:${ev.id}:`)) r.removed = true;
-      applyEffects(s, { job: 'fail' }, ev.job, ev.id);
+      applyEffects(s, { job: 'fail', setFlags: spec.detail.deletedFlags }, ev.job, ev.id);
       log(s, `${ev.from ?? ev.id}: the fake reviews were deleted overnight. No pay.`, 'info');
       if (ev.addr) sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'Unknown', addr: ev.addr, subject: spec.detail.deletedSubject, body: spec.detail.deleted, read: false, scripted: 'outcome' }, 24 * 60 - s.clockMin + 10 * 60 + 40);
       continue;
