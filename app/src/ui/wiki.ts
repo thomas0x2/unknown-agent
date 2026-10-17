@@ -302,7 +302,8 @@ export function embedItem(c: Content, ref: string): { title: string; when: strin
   if (e) {
     const day = on ? Number(on) : e.trigger.dayMin ?? 1;
     const what = e.site === 'qmail' ? `Email from ${e.from ?? 'someone'}${e.subject ? `, "${e.subject}"` : ''}` : `${e.site === 'y' ? 'Y post' : e.site === 'yowl' ? 'Yowl review' : `${e.site} post`} by ${e.from ?? 'someone'}`;
-    const cc = e.cc?.length ? `CC: ${e.cc.join(', ')}\n\n` : '';
+    const ccs = on && e.special?.dayMin === day ? e.special.cc : e.cc;
+    const cc = ccs?.length ? `CC: ${ccs.join(', ')}\n\n` : '';
     return { title: what, when: `day ${day}${!on && e.trigger.dayMax && e.trigger.dayMax !== day ? `-${e.trigger.dayMax}` : ''}, ${at(arrivalMin(e))}`, text: cc + eventBody(e, day) };
   }
   const m = c.yMarket?.posts.find((x) => x.id === key) ?? c.yFiller.find((x) => x.id === key);

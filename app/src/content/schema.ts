@@ -240,6 +240,11 @@ export interface GameEvent {
   body?: string;
   /** A repeating event's body for each delivery, cycling by day (see eventBody). Overrides `body`. */
   bodies?: string[];
+  /**
+   * A repeating event's one special issue: the first delivery on or after `dayMin` also carries these
+   * CC addresses and effects (the day the newsletter forgot BCC).
+   */
+  special?: { dayMin: number; cc?: string[]; onDeliver?: Effects };
   trigger: Trigger;
   /**
    * When it lands on the day it's due, as "HH:MM" between 10:00 and 22:00 (see events.arrivalMin).

@@ -117,6 +117,8 @@ export interface DeliveredEvent {
   /** Arrival order, shared with MailEntry.seq (s.nextId), so the inbox lists both as they came in. */
   seq?: number;
   answered: boolean;
+  /** CC addresses this delivery went out with, when it was a repeating event's special issue. */
+  cc?: string[];
   /** The outcome that landed, or 'no_reply' when the player let it lapse. */
   outcomeId?: string;
   expiresDay?: number;
