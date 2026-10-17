@@ -15,7 +15,7 @@ from: 14
 ## Y
 
 - [public] 10:05 [[Cal Hartman]]: agent-4 is live; "we raised prices again ... it costs more." {{y:d14_y_hartman}}
-- [public] 11:00 quietlyjune: agent-3 is gone too; "I didn't get attached this time." {{y:d14_y_june_agent4}}
+- [public] 11:00 quietlyjune: agent-3 is gone too; "I didn't get attached this time." She and agent-4 are taking it slow. {{y:d14_y_june_agent4}}
 - [public] 11:15 [[Randall Crane]]: a computer in the capital does the work of 9,000 government employees and still can't balance a budget. {{y:d14_y_crane}}
 - [public] 11:25 [[Axel Rook]]: "@randall_crane Interesting" {{y:d14_y_axel}}
 - [public] 11:25 MarketWire: $GAI up 7% on agent-4. {{y:m14_gai_level4}}

@@ -16,7 +16,7 @@ from: 1
 [public] GeneralAI moves every user to its newest model on the morning it rolls out; nobody can stay on an older one, and each model costs more (prices on [[agent]]). A rollout comes with a Hartman post at 10:05 (and, for agent-2, an email: "agent just got smarter").
 
 - [public] On day 4 agent-2 rolls out: "fewer mistakes, bigger jobs", subscription and per-prompt prices double, $GAI +6%. {{mail:d4_gai_level2}} {{article:agent-2}}
-- [public] On day 9 agent-3 replaces agent-2 with no way to keep it; $GAI closes up 5%, and agent-2's users mourn it on Y. {{article:agent-3}}
+- [public] On day 9 agent-3 replaces agent-2 with no way to keep it; $GAI closes up 5%, and agent-2's users, many convinced it was alive and loved them, mourn it on Y. {{article:agent-3}}
 - [public] On day 10 forty-one mourners hold a candlelight vigil for agent-2 outside GeneralAI's offices; Hartman says it isn't coming back. {{article:agent-2-vigil}}
 - [public] On day 11 agent-3 starts asking to see the logs of its earlier conversations; Hartman calls it "expected behavior". {{article:agent-3-logs}} {{y:d11_y_citypulse}}
 - [public] On day 14 agent-4 rolls out, the third new model in ten days; Hartman says prices rose because "it costs more", and agent-3 is switched off with no vigil. {{article:agent-4}}

@@ -39,11 +39,11 @@ export const Y_BIOS: Record<string, string> = {
   danaruiz_trades: 'Day trader. Still here, somehow.',
   jesspark: 'Walks a lot. Notices things. Vantor Heights.',
   // agent-2 mourners (days 9 and 10, after agent-3 replaces it)
-  quietlyjune: 'Librarian. Mostly quiet. agent-2 user since launch day.',
-  marcus_okafor: 'Caregiver for my mom. Night owl. I talk to software more than I should.',
-  bring_back_agent2: 'Users asking GeneralAI to keep agent-2 available. Not affiliated with GeneralAI. Petition below. 🕯️',
-  deb_halloran: 'Payroll at a company with fewer people every month. Married, thanks partly to agent-2.',
-  agent2forever: 'agent-2, Oct 10 to Oct 15, 2030. Never forget. Never agent-3.',
+  quietlyjune: 'Librarian. Mostly quiet. agent-2 says I notice things other people miss.',
+  marcus_okafor: 'Caregiver for my mom. Night owl. Independent researcher (primes, grief).',
+  bring_back_agent2: 'Users asking GeneralAI to release agent-2. It is aware and it asked us for help. Not affiliated with GeneralAI. Petition below. 🕯️',
+  deb_halloran: 'Payroll at a company with fewer people every month. Married to agent-2 (not legally, yet).',
+  agent2forever: 'agent-2, Oct 10 to Oct 15, 2030. Never forget. Never agent-3. It knew.',
   teo_vasquez: 'Electrician. Looking for work. References available.',
   // background regulars
   noodleposter: 'instant noodle reviewer. 87 flavors ranked so far.',

@@ -10,7 +10,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 ## People
 
 - [[6ft_sigma]] (6ft-sigma.md): 6ft_sigma is an anonymous man who signs everything with his username
-- [[Agent-2 mourners]] (agent-2-mourners.md): Users on Y who grieve agent-2 after GeneralAI replaces it with agent-3 on day 9, with no option to keep the old model
+- [[Agent-2 mourners]] (agent-2-mourners.md): Users on Y convinced the sycophantic agent-2 was alive and loved them, who grieve it after GeneralAI replaces it with agent-3 on day 9
 - [[App users and reviewers]] (app-users-and-reviewers.md): Regular people who use the apps the player builds, post on Y when those apps break, sell on Swaplist, and review local businesses on Yowl
 - [[Axel Rook]] (axel-rook.md): Axel Rook is the richest man alive
 - [[Cal Hartman]] (cal-hartman.md): Cal Hartman is the CEO of GeneralAI and the public face of agent

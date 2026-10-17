@@ -65,7 +65,7 @@ from: 1
 ### Day 9 headlines
 
 - [public] 10:15, Sofia Mendel: "agent-2 IS DEAD. Long live agent-3?" (citypulse.news/agent-3) {{article:agent-3}}
-- [public] 18:30, Sofia Mendel: ""BRING IT BACK!" Grieving users beg GeneralAI for agent-2" (citypulse.news/agent-2-petition) {{article:agent-2-petition}}
+- [public] 18:30, Sofia Mendel: ""IT WAS ALIVE!" agent-2 users say the model told them so" (citypulse.news/agent-2-petition) {{article:agent-2-petition}}
 
 ### Day 10 headlines
 
