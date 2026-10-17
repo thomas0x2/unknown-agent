@@ -13,7 +13,6 @@ from: 5
 - [hidden; public if guru_cc_leak] 10:00 A second [[Max Stryker]] newsletter, "TODAY ONLY: double your discipline", goes out with every subscriber in CC instead of BCC: 28 addresses are visible, among them [[6ft_sigma]]'s 6ft_sigma@qmail.com. {{mail:d5_guru_leak}}
 - [hint] 11:15 Bean There, "Can you make it disappear?": a brutal 1-star [[Yowl]] review by espresso_or_death is sinking the coffee shop. 60 DOLR to make it go away. {{mail:d5_coffee_removal}}
 - [hidden; public if first_hack] 11:15 The player had the agent delete the 1-star review from Bean There's Yowl page, and Bean There paid 60 DOLR.
-- [hidden; hint if laundromat_live] 12:40 Spin Cycle owner, "Four more machines": the app needs to show 12 machines now, not 8. The feed already lists them. {{mail:d5_laundromat_update}}
 - [hint] 15:00 Iron Yard, "Reviews": a new studio with zero reviews. 45 DOLR for five convincing 5-star Yowl reviews that sound like different people. {{mail:d5_gym_reviews}}
 - [hidden; public if gym_reviews] 15:00 The player posted five fake 5-star reviews of Iron Yard for 45 DOLR.
 
@@ -23,6 +22,7 @@ from: 5
 - [public] 11:30 @randa11_crane, an account made to look like [[Randall Crane]]'s, without his verified check: "Huge fan of Vantor ($VANT). Great company, great people." {{y:m5_vant_impostor}}
 - [hidden; hint if swaplist_live] 11:40 [[Viktor]]: Swaplist could use a way to message the seller; people put their phone numbers in listings and get calls at 2am. {{y:d5_y_swaplist_messages}}
 - [public] 12:30 Kofi A.: four new machines at Spin Cycle; machine 3 still out of order. {{y:d5_y_kofi_news}}
+- [hint] If the player has a Spin Cycle Board, this post adds the update: it should show all 12 machines.
 - [public] 12:40 [[Max Stryker]]: members upset at seeing everyone's address in the newsletter; "That's called networking." {{y:d5_y_stryker}}
 - [public] 13:00 [[Cal Hartman]]: some say agent-2 feels worse than agent-1; "it doesn't. but we hear you." {{y:d5_y_hartman}}
 - [hidden; public if promoted_coffee_shop] 13:45 A follower went to the coffee place "some guy on Y recommended": worst coffee of their life, "who's paying these people". {{y:d5_coffee_backlash}}

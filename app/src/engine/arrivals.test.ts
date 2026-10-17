@@ -81,7 +81,7 @@ describe('job offers spread over the first six hours', () => {
 
   it('knows a lead post, a gig and a client change request as job offers, and Mom as not one', () => {
     const ev = (id: string) => content.events.find((e) => e.id === id)!;
-    for (const id of ['d1_y_restaurant', 'd1_y_laundromat', 'd5_gym_reviews', 'd3_coffee_promo', 'd5_laundromat_update']) expect(isJobOffer(content, ev(id)), id).toBe(true);
+    for (const id of ['d1_y_restaurant', 'd1_y_laundromat', 'd5_gym_reviews', 'd3_coffee_promo', 'd5_y_kofi_news']) expect(isJobOffer(content, ev(id)), id).toBe(true);
     for (const id of ['d1_mom', 'd1_y_journalist', 'restaurant_contact']) expect(isJobOffer(content, ev(id)), id).toBe(false);
   });
 
