@@ -58,6 +58,7 @@ from: 4
 
 - [hint] 11:30 Swiping for 6ft_sigma on matchless.com. Agreeing by email gets his matchless.com login (6ft_sigma / 6ftAlpha!; the site is a locked sign-in screen until then) and his first standards: age 25 to 42, within 20 miles, non-smokers; nothing about gender. Ten profiles a day; 35 DOLR a night only when all ten are right. He stays anonymous.
 - [hidden; hint if restaurant_client] 14:20 Gino's DoorDish listing (no menu change).
+- [hidden; hint if restaurant_client; hidden if restaurant_raise] From today Gino agrees to pay 20 DOLR more a day if the player emails him asking for a raise; before today he says no. He never offers it himself.
 
 ## Writer notes
 

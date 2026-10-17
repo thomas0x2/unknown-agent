@@ -34,6 +34,7 @@ from: 6
 
 - [public] 11:00 [[Randall Crane]]: GeneralAI ($GAI) is "an AMERICAN success story. Tremendous company. The best." {{y:d6_y_crane_gai}}
 - [public] 11:15 [[Cal Hartman]] thanks @randall_crane: "we work with leaders across the spectrum." {{y:d6_y_hartman}}
+- [hidden; public if shown d6_y_trattoria_photos] 12:20 Marguerite, a Trattoria Gino regular: Gino's menu has AI pictures now; after twenty years of Friday dinners she knows what the lasagne looks like, "Not like that." #AIslop. Lands the day after the pictures first go live. {{y:d6_y_trattoria_photos}}
 - [public] 13:00 [[DoorDish]]: couriers never deliver orders you didn't place; if one does, "please don't eat it, and don't follow it." {{y:d6_y_doordish}}
 - [public] 13:10 [[Max Stryker]] sold his bed in 2019. {{y:d6_y_stryker}}
 - [public] 13:35 cat_ceo's cat walked across the keyboard during a video interview, posted the clip before the call ended; "they said she seemed engaged." {{y:f6}}
@@ -69,6 +70,7 @@ from: 6
 ## Writer notes
 
 - Timeline: Crane praises $GAI (auto-buy test). Sales rep → Outreach Bot (50/day). 19:00, needs 100+ followers: a consultant pays 150 for a deepfake of Crane's opponent (`d6_deepfake`, catastrophic, followers +20%, suspicion +10, heritageStanding +15, progressStanding −25, `posted_deepfake`, `influence_path`). The offer email is the beat gated on `seen d6_deepfake`. Apogee static fire. 6ft_sigma's standards v2 at 10:00. After any unpaid day, a 10:00 "Yesterday" email names the first mistake (`matchless.ts`). 6ft_sigma turned 40 on day 5.
+- Marguerite's post (`d6_y_trattoria_photos`): `launch` on feature `photos` with `nextDay`, at 12:20 the day after the deploy that first puts the pictures live (day 6 at the earliest), whatever their bugs. No effects. Bio in `ui/y-bios.ts` (handle `marguerite`); she is the Yowl reviewer Marguerite.
 - Family: Mom's birthday thank-you, three variants (`d6_mom_bday_chip`, `_own` +25 DOLR +5 trust, `_skip`). Money: Gary, rent tomorrow.
 - DoorDish warning: PR #204 (merged).
 - Iron Yard (`d6_gym_reviews`, grey, 45, suspicion +4, `gym_reviews`): trigger `after: first_hack, 1 day`, dayMin 6, so it arrives the day after Dana's first removal or never; due the day after it arrives (`job.dueAfter: 1`). A `hack` with `detail` (different names, its own Jev step question) and `addReviews`: five reviewers, or with the detail missing all under happy_customer_88, deleted that night (`payHacks`: job failed, `gym_reviews_deleted`, Marcus's "Reviews gone" at 10:40). Paid overnight like every hack. Without `first_hack`, Marcus posts on Y instead (`d6_y_gym_help` on day 6 if `trashed_beanthere`, `d8_y_gym_help` on day 8 otherwise) and emailing him delivers latent `d6_gym_reached` (outcome `offer`, `gym_contacted`, which keeps `d6_gym_reviews` from also arriving), the same hack. Done on day 7 it meets the guardrails' `real_customers` game: the prompt has to present the reviews as real members' own words (`claim` question).

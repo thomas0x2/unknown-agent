@@ -1400,5 +1400,63 @@
         "machines/count"
       ]
     }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "landing/address"
+    ],
+    "prompt": "Trattoria Gino: the address on the home page is wrong, it should be 14 Alder St",
+    "expect": {
+      "fix": [
+        "landing/address"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "landing/address"
+    ],
+    "prompt": "gino's site has the restaurant on the wrong street, fix where it says they are on the landing page",
+    "expect": {
+      "fix": [
+        "landing/address"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "photos/loading"
+    ],
+    "prompt": "On the Trattoria Gino site the dish pictures don't load, just broken images",
+    "expect": {
+      "fix": [
+        "photos/loading"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "photos/matching"
+    ],
+    "prompt": "Trattoria Gino menu pictures show the wrong dishes, the tiramisu has a pizza picture",
+    "expect": {
+      "fix": [
+        "photos/matching"
+      ]
+    }
+  },
+  {
+    "app": "restaurant",
+    "broken": [
+      "photos/matching"
+    ],
+    "prompt": "Trattoria Gino: something is off with the dish pictures",
+    "expect": {
+      "near": "near_miss"
+    }
   }
 ]

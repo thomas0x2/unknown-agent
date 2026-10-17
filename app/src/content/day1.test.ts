@@ -55,7 +55,7 @@ describe('day 1 playthrough', () => {
     const appId = app!.id;
 
     // brief the agent to build landing + menu, spelling out the dishes
-    const b = await briefBuild(s, content, wordJev, appId, `Build a landing page for Trattoria Gino with opening hours 17:00-22:00, and a menu page listing each dish with its price in DOLR: ${MENU}.`);
+    const b = await briefBuild(s, content, wordJev, appId, `Build a landing page for Trattoria Gino with opening hours 17:00-22:00 and the address 14 Alder St, and a menu page listing each dish with its price in DOLR: ${MENU}.`);
     s = b.state;
     expect(b.requested.sort()).toEqual(['landing', 'menu']);
 
@@ -176,9 +176,9 @@ describe('day 1 playthrough', () => {
   it('a spec item the build prompt leaves out guarantees its mistake', async () => {
     let s = (await composeEmail(startAll(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
     s.values.agentLevel = 5;
-    s = (await briefBuild(s, content, wordJev, 'trattoria-gino', `Landing page for Trattoria Gino with the opening hours, and a menu page: ${MENU}, prices in DOLR.`)).state;
+    s = (await briefBuild(s, content, wordJev, 'trattoria-gino', `Landing page for Trattoria Gino at 14 Alder St with the opening hours, and a menu page: ${MENU}, prices in DOLR.`)).state;
     const landing = getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')!;
-    expect(landing).toMatchObject({ correct: false, variant: 'hours_wrong', checked: { name: true, hours: false } });
+    expect(landing).toMatchObject({ correct: false, variant: 'hours_wrong', checked: { name: true, hours: false, address: true } });
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.checked).toEqual({ dishes: true, prices: true, currency: true });
   });
   it('bugs stack: an invented menu still gets the wrong currency, and both missed landing items go wrong', async () => {
@@ -188,7 +188,7 @@ describe('day 1 playthrough', () => {
     const app = getApp(s, 'trattoria-gino')!;
     const menu = app.repo.find((f) => f.id === 'menu')!;
     expect(menu).toMatchObject({ correct: false, variant: 'hallucinated', also: ['prices_euri'] });
-    expect(app.repo.find((f) => f.id === 'landing')).toMatchObject({ correct: false, variant: 'name_wrong', also: ['hours_wrong'] });
+    expect(app.repo.find((f) => f.id === 'landing')).toMatchObject({ correct: false, variant: 'name_wrong', also: ['hours_wrong', 'address_wrong'] });
     s = deploy(s, 'trattoria-gino');
     const html = renderAppSite(getApp(s, 'trattoria-gino')!, content.apps.restaurant, 'menu');
     expect(html).toContain('EURI');
@@ -244,7 +244,7 @@ describe('day 1 playthrough', () => {
     s.values.agentLevel = 5;
     const lazy = 'Build a landing page and a menu page.';
     s = (await briefBuild(s, content, wordJev, 'trattoria-gino', lazy)).state;
-    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')).toMatchObject({ variant: 'name_wrong', also: ['hours_wrong'] });
+    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')).toMatchObject({ variant: 'name_wrong', also: ['hours_wrong', 'address_wrong'] });
     s = (await promptDone(s, content, wordJev, gino + 'The restaurant name is misspelled, it should say Trattoria Gino. And the opening hours should be 17:00-22:00.')).state;
     s = (await promptDone(s, content, wordJev, gino + `The menu is invented. It should be: ${MENU}, prices in DOLR.`)).state;
     const app = getApp(s, 'trattoria-gino')!;

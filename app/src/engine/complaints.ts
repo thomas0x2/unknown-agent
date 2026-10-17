@@ -5,9 +5,9 @@
  */
 import type { GameState, AppInstance, MailEntry } from './state';
 import type { AppTemplate, Content } from '../content/schema';
-import { breakVariant } from './apps';
+import { breakVariant, bugsOf as bugsOfFeature } from './apps';
 import { pick } from './core';
-import { menuDishes, misspell, parseDishes, WRONG_HOURS } from './restaurant';
+import { menuDishes, misspell, parseDishes, WRONG_HOURS, wrongAddress, dishPictures, dishKind, KIND_WORDS } from './restaurant';
 
 /** One thing wrong with the live app: a feature and how it fails, or the whole app. */
 export interface AppProblem {
@@ -71,6 +71,17 @@ function restaurantDetail(
     const name = String(app.specParams.landing?.name ?? app.name);
     if (variant === 'name_wrong') { vars.shown = misspell(name, seed); vars.expected = name; }
     if (variant === 'hours_wrong') { vars.shown = WRONG_HOURS[seed % WRONG_HOURS.length]; vars.expected = String(params.hours ?? '').replace('-', '–'); }
+    if (variant === 'address_wrong') { vars.shown = wrongAddress(seed); vars.expected = String(params.address ?? ''); }
+    return undefined;
+  }
+  if (id === 'photos') {
+    if (variant !== 'photos_wrong') return undefined;
+    // the first dish on the live menu whose picture shows something else
+    const m = app.features.find((f) => f.id === 'menu');
+    const dishes = menuDishes({ bugs: m && !m.correct ? bugsOfFeature(m) : [], seed: m?.seed ?? 0, params: m?.params ?? app.specParams.menu ?? {} }).dishes;
+    const pics = dishPictures(dishes, new Set([variant]), seed);
+    const i = dishes.findIndex((d, k) => pics[k] && pics[k] !== dishKind(d.name));
+    if (i >= 0) { vars.expected = dishes[i].name; vars.shown = KIND_WORDS[pics[i]!]; }
     return undefined;
   }
   if (id !== 'menu') return undefined;

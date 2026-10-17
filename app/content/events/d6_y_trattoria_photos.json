@@ -1,0 +1,18 @@
+{
+  "id": "d6_y_trattoria_photos",
+  "site": "y",
+  "from": "Marguerite",
+  "trigger": {
+    "flagsAll": [
+      "restaurant_client"
+    ]
+  },
+  "launch": {
+    "app": "restaurant_contact",
+    "feature": "photos",
+    "after": 0,
+    "nextDay": true,
+    "at": "12:20"
+  },
+  "body": "Trattoria Gino's menu has AI pictures now. Twenty years of Friday dinners there and I know exactly what the lasagne looks like. Not like that. Gino, please. #AIslop"
+}

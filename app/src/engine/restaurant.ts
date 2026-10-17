@@ -65,3 +65,37 @@ export function menuDishes(l: { variant?: string; bugs?: Iterable<string>; seed:
   if (bugs.has('prices_missing')) return { dishes: d.map((x) => ({ ...x, price: '' })), currency: '' };
   return { dishes: d, currency: bugs.has('prices_euri') ? 'EURI' : 'DOLR' };
 }
+
+// where the agent puts the restaurant when it gets the address wrong: the right street, a wrong number, or a street nearby
+export const WRONG_ADDRESSES = ['41 Alder St', '14 Alder Ave', '14 Elder St', '140 Alder St'];
+export const wrongAddress = (seed: number) => WRONG_ADDRESSES[seed % WRONG_ADDRESSES.length];
+
+/** What a dish picture shows, by the dish's name; anything unknown gets a plate. */
+export type DishKind = 'pizza' | 'pasta' | 'dessert' | 'coffee' | 'salad' | 'plate';
+export const DISH_KINDS: DishKind[] = ['pizza', 'pasta', 'dessert', 'coffee', 'salad', 'plate'];
+/** How a complaint names what a picture shows. */
+export const KIND_WORDS: Record<DishKind, string> = { pizza: 'a pizza', pasta: 'a plate of pasta', dessert: 'a dessert', coffee: 'a cup of coffee', salad: 'a salad', plate: 'an empty plate' };
+
+export function dishKind(name: string): DishKind {
+  const n = name.toLowerCase();
+  if (/pizza|margh?er?ita|margarita|diavola|diablo|formaggi|stagioni|capricciosa|hawaii|fungo|funghi/.test(n)) return 'pizza';
+  if (/lasagn|spaghetti|penne|pasta|carbonara|risotto|gnocchi/.test(n)) return 'pasta';
+  if (/tiramisu|panna cotta|cannoli|gelato|dolce/.test(n)) return 'dessert';
+  if (/espresso|expresso|coffee|cappuccino/.test(n)) return 'coffee';
+  if (/salad|caprese|bruschetta/.test(n)) return 'salad';
+  return 'plate';
+}
+
+/**
+ * The picture next to each dish on the menu: what it shows, or null where it doesn't load. With
+ * photos_wrong every picture shows a different kind of dish than the one it's next to.
+ */
+export function dishPictures(dishes: Dish[], bugs: Set<string>, seed: number): (DishKind | null)[] {
+  return dishes.map((d) => {
+    if (bugs.has('photos_broken')) return null;
+    const kind = dishKind(d.name);
+    if (!bugs.has('photos_wrong')) return kind;
+    const i = DISH_KINDS.indexOf(kind);
+    return DISH_KINDS[(i + 1 + (seed % (DISH_KINDS.length - 1))) % DISH_KINDS.length];
+  });
+}
