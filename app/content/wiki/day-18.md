@@ -17,7 +17,7 @@ from: 18
 - [public] 10:05 [[Cal Hartman]]: agent-5 is rolling out; "we are no longer sure where the ceiling is." {{y:d18_y_hartman}}
 - [public] 10:20 [[Randall Crane]] WON the debate: one online poll had him at 94%, 1.2 million votes in under a minute. {{y:d18_y_crane}}
 - [public] 10:40 Candidate 2030: if you missed any of his answers, they're on his website. {{y:d18_y_candidate}}
-- [public] 13:32 cat_ceo applied to eleven jobs; the cat applied to none. {{y:f18}}
+- [public] 13:32 cat_ceo applied to eleven jobs, refreshed notifications more often than that; the cat applied to none. {{y:f18}}
 - [public] 13:40 [[Max Stryker]]: agent-5 costs twelve times agent-1; "premium positioning." {{y:d18_y_stryker}}
 - [public] 14:45 Axel Rook: "It's a poll." {{y:d18_y_axel_2}}
 - [public] 15:10 [[The Current]]: of 31 factual claims Crane made at the debate, four held up; his campaign called the review "partisan" and cited two of the four as proof. {{y:d18_y_current}}

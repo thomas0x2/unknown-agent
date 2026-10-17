@@ -17,7 +17,7 @@ from: 21
 - [public] 10:37 MarketWire: "Whatever happens tomorrow, $GAI wins." {{y:m21_gai}}
 - [public] 10:40 [[Max Stryker]] voted at 7:00 sharp, first in line. {{y:d21_y_stryker}}
 - [public] 12:00 Teo Vasquez voted; the queue was an hour; "Nobody is hiring, so I had the time." {{y:d21_y_teo_voted}}
-- [public] 17:24 doomscroll voted; "nobody in it was talking. it's fine." {{y:f21}}
+- [public] 17:24 doomscroll voted; nobody in line was talking, everyone on their phone, "it's fine." {{y:f21}}
 - [public] 18:49 Brent Kowalski: $VANT under pressure as the layoff lawsuit grows. {{y:m21_vant}}
 - [public] 18:50 MarketWire: $APO and $GAI lead early trading. {{y:m21_apo_day}}
 - [public] 19:45 [[CityPulse]]: record turnout according to Y's live tracker; the election office hasn't finished counting the first precinct. {{y:d21_y_citypulse}}

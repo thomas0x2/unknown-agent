@@ -19,7 +19,7 @@ from: 15
 - [public] 13:25 [[Cal Hartman]]: "our 30-day log retention policy has not changed." {{y:d15_y_hartman}}
 - [public] 14:50 [[Max Stryker]] was flagged by the new moderator for "unverifiable income claims" and lost his appeal in under a second. {{y:d15_y_stryker}}
 - [public] 15:00 walked_there_again walked past the DoorDish picket line on Ferris St: four people with signs, robots delivering through the middle. {{y:d15_y_walked_strike}}
-- [public] 15:17 noodleposter: the corner store raised noodles by 10 cents. {{y:f15}}
+- [public] 15:17 noodleposter: the corner store raised noodles by 10 cents; a nine-part thread follows. {{y:f15}}
 - [public] 16:10 Liftoff Daily: AI moderation is better than any human team. {{y:d15_y_liftoff}}
 - [public] 16:20 Axel Rook: "@liftoff_daily Absolutely" {{y:d15_y_axel_2}}
 - [public] 17:10 [[Max Stryker]]: a man with standards raises them until the problem goes away. {{y:d15_y_stryker_2}}
