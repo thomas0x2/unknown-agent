@@ -29,6 +29,11 @@ describe('DoorDish', () => {
     expect(ev.body).toContain('doordish.com');
   });
 
+  it("deskjockey's job email links Sherwood", () => {
+    const ev = loadContent().events.find((e) => e.id === 'trader_contact')!;
+    expect(ev.body).toContain('sherwood.com');
+  });
+
   it("Gino's update asks only for DoorDish, and his restaurant shows up there once it ships", async () => {
     const content = loadContent();
     const ev = content.events.find((e) => e.id === 'd4_restaurant_doordish')!;
