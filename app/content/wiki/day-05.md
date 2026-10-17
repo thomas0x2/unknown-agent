@@ -19,7 +19,7 @@ from: 5
 ## Y
 
 - [public] 11:20 Candidate 2030: technology should work for people; "a balanced approach". {{y:d5_y_candidate}}
-- [public] 11:30 @randa11_crane, an account made to look like [[Randall Crane]]'s: "Huge fan of Vantor ($VANT). Great company, great people." {{y:m5_vant_impostor}}
+- [public] 11:30 @randa11_crane, an account made to look like [[Randall Crane]]'s, without his verified check: "Huge fan of Vantor ($VANT). Great company, great people." {{y:m5_vant_impostor}}
 - [hidden; hint if swaplist_live] 11:40 [[Viktor]]: Swaplist could use a way to message the seller; people put their phone numbers in listings and get calls at 2am. {{y:d5_y_swaplist_messages}}
 - [public] 12:30 Kofi A.: four new machines at Spin Cycle; machine 3 still out of order. {{y:d5_y_kofi_news}}
 - [public] 12:40 [[Max Stryker]]: members upset at seeing everyone's address in the newsletter; "That's called networking." {{y:d5_y_stryker}}
