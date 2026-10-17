@@ -1,6 +1,6 @@
 import { startGame } from './day';
 import { clone } from './core';
-import { postToY, replyToEvent, briefBuild, briefFix, BOUNCE_ADDR } from './actions';
+import { postToY, replyToEvent, composeEmail, briefBuild, briefFix, BOUNCE_ADDR } from './actions';
 import { getApp } from './apps';
 import { makeContent, fakeRouter } from './_fixtures';
 import { noJev, JevOffline } from './jev';
@@ -112,6 +112,37 @@ describe('one email per person per day', () => {
     expect(second.bounced).toBe(true);
     expect(second.state.mail[second.state.mail.length - 1].addr).toBe(BOUNCE_ADDR);
     expect(second.state.delivered.find((d) => d.eventId === 'mom_a')!.answered).toBe(false);
+  });
+
+  it('lets a reply through the limit when it gets a scripted answer', async () => {
+    const s = startGame(mom, 1);
+    const miss = fakeRouter({ route: () => ({ kind: 'nothing' }) });
+    const first = await replyToEvent(s, mom, miss, 'mom_a', 'hi');
+    expect(first.state.sentToday).toContain('mom@test');
+    const hit = await replyToEvent(first.state, mom, fakeRouter({ route: () => ({ kind: 'outcome', outcomeId: 'warm' }) }), 'mom_a', 'love you');
+    expect(hit.bounced).toBeUndefined();
+    expect(hit.reply).toBe('Love you.');
+  });
+
+  it("doesn't count a scripted answer toward the limit", async () => {
+    const s = startGame(mom, 1);
+    const hit = await replyToEvent(s, mom, fakeRouter({ route: () => ({ kind: 'outcome', outcomeId: 'warm' }) }), 'mom_a', 'love you');
+    expect(hit.state.sentToday).not.toContain('mom@test');
+  });
+
+  it('lets a fresh email to a lead through the limit when Jev lands an outcome, and bounces a miss without asking Haiku', async () => {
+    const lead = makeContent({
+      events: [{ id: 'gino', site: 'qmail', from: 'Gino', addr: 'gino@test', subject: 'The website', trigger: { dayMin: 1 }, latent: true, outcomes: [{ id: 'yes', when: 'the player offers to build the site', reply: 'Deal.' }] }],
+      contacts: [{ key: 'gino@test', name: 'Gino', character: 'gino' }],
+    });
+    const s = startGame(lead, 1);
+    s.sentToday.push('gino@test');
+    const noHaiku = { async write() { throw new Error('Haiku called'); } };
+    const miss = await composeEmail(s, lead, fakeRouter({ route: () => ({ kind: 'nothing' }) }), 'gino@test', 'hello again', noHaiku);
+    expect(miss.bounced).toBe(true);
+    const hit = await composeEmail(s, lead, fakeRouter({ route: () => ({ kind: 'outcome', outcomeId: 'yes' }) }), 'gino@test', 'Can I create the website for you?', noHaiku);
+    expect(hit.bounced).toBeUndefined();
+    expect(hit.reply).toBe('Deal.');
   });
 
   it('lets the player answer a story email that arrived after their last one', async () => {
