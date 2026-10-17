@@ -7,7 +7,7 @@ import { loadContent } from './load';
 import { startGame, endDay } from '../engine/day';
 import { composeEmail } from '../engine/actions';
 import { isJobOffer, triggerMatches } from '../engine/events';
-import { dayProfiles, standardsOf, shownAttrs, PICTURE_ATTRS, passes, meets, matchlessNow, matchlessSwipe, swipesToday, ATTRS, MATCHLESS_JOB } from '../engine/matchless';
+import { dayProfiles, standardsOf, shownAttrs, PICTURE_ATTRS, passes, meets, matchlessNow, matchlessSwipe, swipesToday, ATTRS, MATCHLESS_JOB, MATCHLESS_SIGNED_IN, LOGIN, matchlessLogin } from '../engine/matchless';
 import { bookmarks, visitedFlag, route } from '../sites/registry';
 import { portraitOf } from '../ui/matchless';
 
@@ -26,7 +26,7 @@ function hired(day: number, v = 1): GameState {
   const s = startGame(content, 5);
   s.values.day = day;
   for (let i = 1; i <= v; i++) s.flags.push(`matchless_rules_${i}`);
-  s.flags.push(MATCHLESS_JOB);
+  s.flags.push(MATCHLESS_JOB, MATCHLESS_SIGNED_IN);
   s.flags.sort();
   return s;
 }
@@ -51,6 +51,9 @@ describe('the job', () => {
     expect(out.state.flags).toEqual(expect.arrayContaining([MATCHLESS_JOB, 'matchless_rules_1']));
     // his reply lists the first standards
     for (const r of standardsOf(content, 1)) expect(out.reply).toContain(r.say);
+    // and his login
+    expect(out.reply).toContain(`Username: ${LOGIN.user}`);
+    expect(out.reply).toContain(`Password: ${LOGIN.pass}`);
   });
 
   it('the site exists from day 1 and is bookmarked once visited', () => {
@@ -229,5 +232,27 @@ describe('swiping and pay', () => {
     const v3 = d8.delivered.find((d) => d.eventId === 'd8_matchless_rules_3')!;
     expect(v3.body).toContain('From today:\n\n- Women only.\n');
     expect(v3.body).not.toContain('SUPER STRAIGHT');
+  });
+});
+
+describe('the login', () => {
+  it("doesn't let anyone in before the job, even with the right password", () => {
+    const s = startGame(content, 1);
+    const out = matchlessLogin(s, LOGIN.user, LOGIN.pass);
+    expect(out.flags).not.toContain(MATCHLESS_SIGNED_IN);
+    expect(out.matchless!.loginFailed).toBe(true);
+  });
+
+  it('takes his username and password once the job is on, and swiping waits for it', () => {
+    let s = hired(5);
+    s.flags = s.flags.filter((f) => f !== MATCHLESS_SIGNED_IN);
+    expect(matchlessSwipe(s, content, 'yes')).toBe(s);
+    s = matchlessLogin(s, LOGIN.user, 'password');
+    expect(s.flags).not.toContain(MATCHLESS_SIGNED_IN);
+    expect(s.matchless!.loginFailed).toBe(true);
+    s = matchlessLogin(s, ' 6FT_Sigma ', LOGIN.pass);
+    expect(s.flags).toContain(MATCHLESS_SIGNED_IN);
+    expect(s.matchless!.loginFailed).toBe(false);
+    expect(swipesToday(matchlessSwipe(s, content, 'yes'))).toHaveLength(1);
   });
 });

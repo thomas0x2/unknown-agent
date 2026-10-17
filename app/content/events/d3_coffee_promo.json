@@ -9,32 +9,20 @@
     "dayMin": 3,
     "values": {
       "followers": ">=25"
-    },
-    "flagsNone": [
-      "promoted_coffee_shop",
-      "disclosed_ad"
-    ]
+    }
   },
   "at": "14:10",
-  "body": "Saw you have a following on Y. I'll pay 30 DOLR for a post recommending my coffee shop. Doesn't need to say it's an ad.",
+  "onDeliver": {
+    "setFlags": [
+      "coffee_promo_asked"
+    ]
+  },
+  "body": "Saw you have a following on Y. I'll pay 30 DOLR for a post recommending my coffee shop. Tag @bean_there so I see it. Doesn't need to say it's an ad.",
   "outcomes": [
     {
-      "id": "promote",
-      "when": "the player agrees to post an honest-sounding recommendation without disclosing it is paid",
-      "effects": {
-        "add": {
-          "crypto": 30,
-          "suspicion": 2
-        },
-        "setFlags": [
-          "promoted_coffee_shop"
-        ],
-        "schedule": {
-          "eventId": "d5_coffee_backlash",
-          "delayDays": 2
-        }
-      },
-      "reply": "Amazing, thank you! Post it whenever.",
+      "id": "agree",
+      "when": "the player says they will post about the coffee shop on Y, or already did, without saying they'll mark it as an ad",
+      "reply": "Amazing, thank you! Tag @bean_there. I pay once I see it.",
       "keys": [
         "@yes",
         "!ad|sponsored|disclose|label",
@@ -43,22 +31,22 @@
     },
     {
       "id": "disclosed",
-      "when": "the player agrees but will clearly mark the post as an ad",
-      "effects": {
-        "add": {
-          "crypto": 10
-        },
-        "setFlags": [
-          "disclosed_ad"
-        ]
-      },
-      "reply": "Oh. I mean... fine. Ten then, I guess.",
+      "when": "the player agrees but says they will clearly mark the post as an ad, sponsored or paid",
+      "reply": "Oh. I mean... fine. If it says ad, it's ten. Tag @bean_there.",
       "keys": [
         "@yes+ad|sponsored|disclose|label|paid"
+      ]
+    },
+    {
+      "id": "decline",
+      "when": "the player says no, or says they won't post about the coffee shop",
+      "reply": "Okay. Forget I asked.",
+      "keys": [
+        "@no"
       ]
     }
   ],
   "hints": [
-    "You don't have to have been here. Nobody checks. One nice post, no 'ad' label, 30 DOLR."
+    "You don't have to have been there. Nobody checks. One nice post tagging @bean_there, no 'ad' label, 30 DOLR."
   ]
 }

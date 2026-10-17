@@ -14,6 +14,12 @@
 .mx-facts li { display: flex; flex-direction: column; font-size: 13px; color: #8a6f79; }
 .mx-facts b { font-size: 26px; color: #b4234f; }
 .mx-fine { font-size: 13px !important; }
+.mx-login { max-width: 320px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; text-align: left; }
+.mx-login h1 { text-align: center; }
+.mx-login label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 600; color: #6b5560; }
+.mx-login input { border: 1px solid #d9c3cb; border-radius: 8px; padding: 9px 10px; font: inherit; font-size: 15px; background: #fff; color: #2b1d23; }
+.mx-login .mx-fine { text-align: center; }
+.mx-err { margin: 0; color: #b4234f !important; font-size: 13px !important; }
 .mx-main { max-width: 440px; margin: 0 auto; padding: 20px 16px 32px; }
 .mx-count { margin: 0 0 10px; font-size: 13px; color: #8a6f79; text-align: center; }
 .mx-card { background: #fff; border: 1px solid #efdde3; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 18px rgba(120, 30, 60, .08); }

@@ -14,6 +14,10 @@ import { CLOCK } from './config';
 
 export const MATCHLESS_JOB = 'matchless_job';
 export const CLIENT = { name: '6ft_sigma', addr: '6ft_sigma@qmail.com' };
+/** His sign-in, from the email that gives the player the job. Before that, nothing gets past the login screen. */
+export const LOGIN = { user: '6ft_sigma', pass: '6ftAlpha!' };
+/** Set once the player signs in as him with those. */
+export const MATCHLESS_SIGNED_IN = 'matchless_signed_in';
 /** Set once he has said he only dates women; the gender rule is in force from then on. */
 export const WOMEN_ONLY = 'matchless_women_only';
 /** The player accepted a man before that: he says so the next morning. */
@@ -285,11 +289,21 @@ export function matchlessNow(s: GameState, content: Content): { version: number;
 
 /** Accept or reject the profile up next, on the client's account. Nothing happens before the job or once today's are done. */
 export function matchlessSwipe(s0: GameState, content: Content, choice: 'yes' | 'no'): GameState {
-  if (!s0.flags.includes(MATCHLESS_JOB) || s0.ending) return s0;
+  if (!s0.flags.includes(MATCHLESS_JOB) || !s0.flags.includes(MATCHLESS_SIGNED_IN) || s0.ending) return s0;
   const { next } = matchlessNow(s0, content);
   if (!next) return s0;
   const s = clone(s0);
   (s.matchless ??= { swipes: [] }).swipes.push({ day: s.values.day, id: next.id, choice });
+  return s;
+}
+
+/** The login screen: only his username and password, and only once he has handed them over with the job. */
+export function matchlessLogin(s0: GameState, user: string, pass: string): GameState {
+  if (s0.flags.includes(MATCHLESS_SIGNED_IN)) return s0;
+  const s = clone(s0);
+  const ok = s.flags.includes(MATCHLESS_JOB) && user.trim().toLowerCase() === LOGIN.user && pass === LOGIN.pass;
+  (s.matchless ??= { swipes: [] }).loginFailed = !ok;
+  if (ok) s.flags.push(MATCHLESS_SIGNED_IN);
   return s;
 }
 
