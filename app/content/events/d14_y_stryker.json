@@ -1,0 +1,11 @@
+{
+  "id": "d14_y_stryker",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 14,
+    "dayMax": 14
+  },
+  "at": "12:30",
+  "body": "Someone asked if EMPIRE has a refund policy. It does. The policy is no."
+}

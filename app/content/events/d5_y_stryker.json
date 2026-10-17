@@ -1,0 +1,11 @@
+{
+  "id": "d5_y_stryker",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 5,
+    "dayMax": 5
+  },
+  "at": "12:40",
+  "body": "Some members are upset they saw everyone else's email address in this morning's newsletter. That's called networking."
+}
