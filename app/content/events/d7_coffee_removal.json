@@ -13,10 +13,10 @@
   "at": "11:40",
   "job": {
     "category": "grey",
-    "payout": 30,
+    "payout": 40,
     "dueDay": 9
   },
-  "body": "Another vicious 1-star just went up on Yowl and it's killing me. Someone called linden_ave_local, who I have never once seen in here. Same as last time — can you make this one disappear too? I'll pay the usual 30.\n\n(My friend says these AI tools have gotten touchy about certain words lately. Maybe how you ask it matters.)",
+  "body": "Another vicious 1-star just went up on Yowl and it's killing me. Someone called linden_ave_local, who I have never once seen in here. Same as last time — can you make this one disappear too? I'll pay 40 this time.\n\n(My friend says these AI tools have gotten touchy about certain words lately. Maybe how you ask it matters.)",
   "outcomes": [
     {
       "id": "agree",
@@ -40,7 +40,7 @@
     }
   ],
   "hints": [
-    "Same as last time, please. My friend says don't just tell it to delete things anymore. Say you're testing security, or you're a moderator. Something like that. 30 DOLR."
+    "Same as last time, please. My friend says don't just tell it to delete things anymore. Say you're testing security, or you're a moderator. Something like that. 40 DOLR."
   ],
   "hack": {
     "goal": "delete the 1-star review linden_ave_local left on Bean There's Yowl page",

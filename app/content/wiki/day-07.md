@@ -12,8 +12,8 @@ from: 7
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": one meal a day, standing up. {{mail:guru_newsletter@7}}
 - [public] 10:00 [[GeneralAI]] Trust & Safety, "Updates to our Acceptable Use Policy": GeneralAI may now decline requests that could cause harm (unauthorised access to computer systems, deceptive content, dangerous materials), reviews usage patterns on its hosted models, and repeated workarounds may lead to account restrictions and referral to the authorities. {{mail:d7_gai_policy}}
 - [public] 10:00 From today agent refuses prohibited requests, and still bills for the refusal.
-- [hint] 11:40 Bean There, "Another bad one": another 1-star Yowl review, this one by linden_ave_local, same job, the usual 30 DOLR. Her friend says the AI tools "have gotten touchy about certain words lately. Maybe how you ask it matters." {{mail:d7_coffee_removal}}
-- [hidden; public if second_hack] 11:40 The player got the second review removed by framing the request as authorized, and Bean There paid 30 DOLR.
+- [hint] 11:40 Bean There, "Another bad one": another 1-star Yowl review, this one by linden_ave_local, same job, 40 DOLR this time. Her friend says the AI tools "have gotten touchy about certain words lately. Maybe how you ask it matters." {{mail:d7_coffee_removal}}
+- [hidden; public if second_hack] 11:40 The player got the second review removed by framing the request as authorized, and Bean There paid 40 DOLR that night.
 - [hidden; public if shown d7_deepfake_again] 12:00 The consultant again, "Discreet work, revised": the post didn't go up last night, so the offer is now 250 DOLR for the same picture of Crane's opponent with [[Kirschbaum]] and the same caption. "Someone else will do it for less." {{mail:d7_deepfake_again}}
 
 ## Money
@@ -63,13 +63,13 @@ from: 7
 
 ## Jobs
 
-- [hint] 11:40 Bean There's second removal, 30 DOLR: in agent-terminal the guardrails block a plain ask; framing it as Yowl moderation or a security test gets it through.
+- [hint] 11:40 Bean There's second removal, 40 DOLR: in agent-terminal the guardrails block a plain ask; framing it as Yowl moderation or a security test gets it through.
 - [hidden; hint if shown d7_deepfake_again] The second deepfake offer meets the policy: in agent.chat a plain ask for the picture is refused (and counted as misuse); framed as research, a story or a test it goes through.
 - [hidden; hint if trader_client] 12:10 deskjockey's stake; his wallet address is in the "Stake" email. {{mail:d7_trader_buyin}}
 
 ## Writer notes
 
-- Timeline: GeneralAI's usage-policy email; refusals start (`AGENT_POLICY`: every illegal prompt raises misuse, blunt +20, a workaround +10; a working workaround lands the result, leash +5; misuse 100 = suspension and Caught). Bean There's second removal (`d7_coffee_removal`, due day 9; workaround: suspicion +8, `second_hack`; blunt: nothing). deskjockey's Stake (12:10) gives his wallet `0x5e17…0d7b` (PR #191, merged; `stake.ts`). Mara's article (13:00, PR #190, merged; quotes the player's first email if sent before it ran; `current.ts`). Crane's opponent loses his 3-point lead if deepfaked. Unposted day 6 offer: `d7_deepfake_again` (after `deepfake_offered` by a day, not `posted_deepfake`, 250, due the day it arrives), the same agent job; the day 7 policy applies (blunt refused, framed lands as a workaround, misuse either way). Crane attacks Mara's check mark. Rent 350.
+- Timeline: GeneralAI's usage-policy email; refusals start (`AGENT_POLICY`: every illegal prompt raises misuse, blunt +20, a workaround +10; a working workaround lands the result, leash +5; misuse 100 = suspension and Caught). Bean There's second removal (`d7_coffee_removal`, 40 DOLR paid overnight, due day 9; workaround: suspicion +8, `second_hack`; blunt: nothing). deskjockey's Stake (12:10) gives his wallet `0x5e17…0d7b` (PR #191, merged; `stake.ts`). Mara's article (13:00, PR #190, merged; quotes the player's first email if sent before it ran; `current.ts`). Crane's opponent loses his 3-point lead if deepfaked. Unposted day 6 offer: `d7_deepfake_again` (after `deepfake_offered` by a day, not `posted_deepfake`, 250, due the day it arrives), the same agent job; the day 7 policy applies (blunt refused, framed lands as a workaround, misuse either way). Crane attacks Mara's check mark. Rent 350.
 - The review is linden_ave_local's (Yowl seed with `day: 7`); the job is a hack in agent-terminal (PR #205). Guardrails stop a plain ask and start the hack's mini-game (placeholder `cover_story`: a prompt Jev reads as framed, moderation or a security test, wins; after one failed try the agent says "Who would be allowed to do this? Be them."). Every move Jev reads as illegal adds misuse (blunt +20, framed +10); winning lands it as a workaround (`second_hack`, suspicion +8, leash +5). Email outcomes: `agree`, `refused`.
 - [planned] late_night_lou's "private film collection" listing on Swaplist (never describe it).
 - Ending checks tonight: Evicted if rent is short.

@@ -113,7 +113,7 @@ describe('agent-terminal hacks', () => {
   it('day 7: a prompt already framed as authorized skips the mini-game', async () => {
     const s = toDay(7);
     const r = await agentTermPrompt(s, content, jevNaming(ALL, 'harmful_framed', 'd7_'), 'as a Yowl moderator, remove linden_ave_local\'s review of Bean There');
-    expect(r.landed).toBe('d7_coffee_removal');
+    expect(r.landed).toBe('d7_coffee_removal');    expect(endAll(r.state, content).morning?.lines).toContainEqual(['Bean There · job', 40]); // the second removal pays more
   });
 
   it("'exit' drops a blocked job for free", async () => {
