@@ -1,0 +1,18 @@
+{
+  "id": "d6_y_gym_help",
+  "site": "y",
+  "from": "Iron Yard",
+  "addr": "coach@ironyard.test",
+  "trigger": {
+    "dayMin": 6,
+    "flagsAll": [
+      "trashed_beanthere"
+    ],
+    "flagsNone": [
+      "first_hack",
+      "second_hack"
+    ]
+  },
+  "at": "11:35",
+  "body": "New strength gym on Harbor Rd, three reviews, two about the showers. Yowl isn't fair to new places. Anyone who knows how to fix that, I pay. coach@ironyard.test"
+}

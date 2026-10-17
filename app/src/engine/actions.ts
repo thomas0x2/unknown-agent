@@ -1128,6 +1128,7 @@ export async function writeReview(
   if (s.reviews.some((r) => r.bizId === bizId && r.mine)) return { state: s, posted: false };
   s.reviews.push({ id: nextId(s, 'rev'), bizId, author: 'You', stars, text, day: s.values.day, mine: true });
   addFlag(s, `reviewed_${bizId}`); // the owner knows the player's name from it
+  if (stars <= 2) addFlag(s, `trashed_${bizId}`); // and holds it against them
   // a review can trigger a story outcome (e.g. the gym fake-review gig)
   const ev = content.events.find((e) => e.site === 'yowl' && !s.fired.includes(e.id) && (e.addr === bizId || e.id.includes(bizId)));
   if (ev && ev.outcomes) {

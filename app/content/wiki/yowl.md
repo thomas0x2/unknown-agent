@@ -30,6 +30,7 @@ from: 1
 - [hidden; public if gym_reviews] Five new 5-star reviews of Iron Yard: Derek T., gains_goblin, Priya S., deadlift_dad, Jo R.
 - [hidden; public if gym_reviews_deleted] Yowl deleted five 5-star Iron Yard reviews from one account, happy_customer_88, for "coordinated inauthentic activity".
 - [public] Each Yowl account can review a business once.
+- [hint] Owners read their reviews: Dana never asks a player who gave Bean There 1 or 2 stars for anything.
 
 ## Writer notes
 
