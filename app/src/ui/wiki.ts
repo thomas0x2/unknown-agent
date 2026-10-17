@@ -294,11 +294,14 @@ export function embedItem(c: Content, ref: string): { title: string; when: strin
     const a = findArticle(key.slice(8));
     return a && { title: `CityPulse article "${a.title}" by ${a.by}`, when: `day ${a.day}, ${a.at}`, text: [a.dek, ...a.body].join('\n\n') };
   }
-  const e = c.events.find((x) => x.id === key);
+  // `guru_newsletter@5`: one delivery of a repeating email, the issue that lands on day 5
+  const [id, on] = key.split('@');
+  const e = c.events.find((x) => x.id === id && (!on || x.repeat));
   if (e) {
-    const day = e.trigger.dayMin ?? 1;
+    const day = on ? Number(on) : e.trigger.dayMin ?? 1;
     const what = e.site === 'qmail' ? `Email from ${e.from ?? 'someone'}${e.subject ? `, "${e.subject}"` : ''}` : `${e.site === 'y' ? 'Y post' : e.site === 'yowl' ? 'Yowl review' : `${e.site} post`} by ${e.from ?? 'someone'}`;
-    return { title: what, when: `day ${day}${e.trigger.dayMax && e.trigger.dayMax !== day ? `-${e.trigger.dayMax}` : ''}, ${at(arrivalMin(e))}`, text: eventBody(e, day) };
+    const cc = e.cc?.length ? `CC: ${e.cc.join(', ')}\n\n` : '';
+    return { title: what, when: `day ${day}${!on && e.trigger.dayMax && e.trigger.dayMax !== day ? `-${e.trigger.dayMax}` : ''}, ${at(arrivalMin(e))}`, text: cc + eventBody(e, day) };
   }
   const m = c.yMarket?.posts.find((x) => x.id === key) ?? c.yFiller.find((x) => x.id === key);
   return m && { title: `Y post by ${m.from} (@${m.handle})`, when: `day ${m.day}`, text: m.body };

@@ -17,8 +17,28 @@ from: 1
 
 [public] On [[Day 1]] (14:15) he emails "You were BORN for more": EMPIRE is 200 DOLR, "For you, today only, 20 DOLR. Reply EMPIRE to claim it." {{mail:d1_guru}}
 
-- [public] [if guru_subscriber] The player bought EMPIRE. Every morning at 10:00 a "Your daily EMPIRE" newsletter arrives with one piece of advice: sell your mattress, brush your teeth with your left hand, drink your coffee cold, fill the sink for a cold plunge, call your mother "the investor", stop paying rent. Replying EMPIRE gets "Commitment logged." {{mail:guru_newsletter}}
-- [public] [if guru_cc_leak] On day 5 the newsletter went out with every subscriber in CC, so the player can see all their addresses. {{mail:d5_guru_leak}}
+- [public] [if guru_subscriber] The player bought EMPIRE. Every morning at 10:00 a "Your daily EMPIRE" newsletter arrives with one piece of advice and "Reply EMPIRE to double down." Replying EMPIRE gets "Commitment logged."
+- [public] Day 2 issue: sell your mattress, because a man who sleeps comfortably has already decided to fail. {{mail:guru_newsletter@2}}
+- [public] Day 3 issue: brush your teeth with your left hand to build new pathways to new money. {{mail:guru_newsletter@3}}
+- [public] Day 4 issue: drink your coffee cold, because comfort is a tax on ambition. {{mail:guru_newsletter@4}}
+- [public] Day 5 issue: no cold plunge at home, so fill the sink and put your face in it. {{mail:guru_newsletter@5}}
+- [public] On day 5 a second issue, "TODAY ONLY: double your discipline", went out with every subscriber in CC instead of BCC: 28 addresses, among them 6ft_sigma@qmail.com, from a course that claims 41,000 members. {{mail:d5_guru_leak}}
+- [public] Day 6 issue: from today your mother is "the investor" and gets a quarterly update every Sunday. {{mail:guru_newsletter@6}}
+- [public] Day 7 issue: eat one meal a day, standing up. {{mail:guru_newsletter@7}}
+- [public] Day 8 issue: write your net worth on the bathroom mirror every morning, bigger if it's negative. {{mail:guru_newsletter@8}}
+- [public] Day 9 issue: rename your bank account "Seed Round". {{mail:guru_newsletter@9}}
+- [public] Day 10 issue: your friends are a portfolio; rebalance anyone who hasn't sent a lead this quarter. {{mail:guru_newsletter@10}}
+- [public] Day 11 issue: never say "I can't afford it", say "I can't afford it yet" and put it on credit. {{mail:guru_newsletter@11}}
+- [public] Day 12 issue: stop paying rent, because your landlord is an employee you haven't fired yet. {{mail:guru_newsletter@12}}
+- [public] Day 13 issue: visualise your Lambo for twenty minutes, then skip breakfast. {{mail:guru_newsletter@13}}
+- [public] Day 14 issue: fire your alarm clock; he wakes up when his ambition does, around 3:58. {{mail:guru_newsletter@14}}
+- [public] Day 15 issue: never appeal, because an appeal admits there is someone above you. {{mail:guru_newsletter@15}}
+- [public] Day 16 issue: delete your calendar. {{mail:guru_newsletter@16}}
+- [public] Day 17 issue: watch tonight's debate with the sound off; inner circle watch-party seats are 400 DOLR. {{mail:guru_newsletter@17}}
+- [public] Day 18 issue: stop saying thank you. {{mail:guru_newsletter@18}}
+- [public] Day 19 issue: walk faster than everyone on the pavement. {{mail:guru_newsletter@19}}
+- [public] Day 20 issue: tomorrow, be first in line to vote, "For the photo." {{mail:guru_newsletter@20}}
+- [public] Day 21 issue: he voted at 7:00, first in line. {{mail:guru_newsletter@21}}
 
 ## His posts on Y
 
@@ -82,6 +102,6 @@ from: 1
 
 ## Writer notes
 
-- Persona `max` (scripted "Commitment logged." on EMPIRE replies); events `dN_y_stryker_2` (dating advice, odd days 5 to 15, each answered by `dN_y_sigma`), `d1_guru` (interested reply: the 20 DOLR price "goes back to 200, as it has every midnight since launch"), `guru_newsletter` (13 bodies in rotation, mattress first), `d5_guru_leak`, `dN_y_stryker`. EMPIRE page and `EMPIRE` constant in engine/actions.ts.
+- Persona `max` (scripted "Commitment logged." on EMPIRE replies); events `dN_y_stryker_2` (dating advice, odd days 5 to 15, each answered by `dN_y_sigma`), `d1_guru` (interested reply: the 20 DOLR price "goes back to 200, as it has every midnight since launch"), `guru_newsletter` (20 bodies, one per day 2 to 21, mattress first; embed one issue as `mail:guru_newsletter@N` in double braces), `d5_guru_leak` (`cc` lists 28 addresses incl. [[6ft_sigma]]), `dN_y_stryker`. EMPIRE page and `EMPIRE` constant in engine/actions.ts.
 - Name and Alpha Ascend are placeholders. "4am" and "EMPIRE" are his alone; ration them.
 - The guru CC leak is a planned doxing lead. The bible had him recruiting by newsletter on days 10 to 12; the game does it on Y.

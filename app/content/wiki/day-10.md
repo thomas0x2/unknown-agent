@@ -9,6 +9,7 @@ from: 10
 
 ## Mail
 
+- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": your friends are a portfolio. {{mail:guru_newsletter@10}}
 - [hidden; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "Some people got through that shouldn't have." Age 21 to 29, earns 30,000 DOLR a year or less (he makes 31,000), body count 3 or under, and long hair, which only the picture shows. {{mail:d10_matchless_rules_4}}
 
 ## Y

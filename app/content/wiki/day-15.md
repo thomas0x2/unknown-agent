@@ -9,6 +9,7 @@ from: 15
 
 ## Mail
 
+- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": never appeal. {{mail:guru_newsletter@15}}
 - [public] 10:20 [[Gary Pruitt]], "The building": he sold Pine Street Apartments to [[GeneralAI Properties]]; rent and emails go to them now. {{mail:d15_landlord_sold}}
 
 - [public] 15:40 [[GeneralAI Properties]], "Welcome to GeneralAI Properties": LandlordPro has adjusted the rent to 650 DOLR from Sunday, October 27; appeals at rentboard.gov are reviewed automatically. [known] {{mail:d15_gai_properties}}

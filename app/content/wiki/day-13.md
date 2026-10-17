@@ -7,6 +7,10 @@ from: 13
 
 [public] Saturday, October 19. [known]
 
+## Mail
+
+- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": visualise the Lambo, skip breakfast. {{mail:guru_newsletter@13}}
+
 ## Y
 
 - [public] 10:36 [[WallStreetBags]]: a member put his rent into $GAI at the open. "Really proud of him." {{y:m13_gai_great}}

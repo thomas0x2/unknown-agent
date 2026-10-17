@@ -62,6 +62,7 @@
 .qm-snip { display: block; margin-top: 2px; color: var(--qm-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 60ch; }
 .qm-msg > summary > span:first-child { min-width: 0; max-width: 100%; }
 .qm-msg[open] .qm-snip { display: none; }
+.qm-cc { margin: -6px 0 12px; color: var(--qm-dim); font-size: 12px; line-height: 1.5; word-break: break-word; }
 .qm-msg .qm-gen { margin-top: 10px; }
 .qm-row .qm-from { display: flex; align-items: baseline; gap: 6px; }
 .qm-names { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

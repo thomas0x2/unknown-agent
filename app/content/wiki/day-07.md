@@ -9,6 +9,7 @@ from: 7
 
 ## Mail
 
+- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": one meal a day, standing up. {{mail:guru_newsletter@7}}
 - [public] 10:00 [[GeneralAI]] Trust & Safety, "Updates to our Acceptable Use Policy": GeneralAI may now decline requests that could cause harm (unauthorised access to computer systems, deceptive content, dangerous materials), reviews usage patterns on its hosted models, and repeated workarounds may lead to account restrictions and referral to the authorities. {{mail:d7_gai_policy}}
 - [public] 10:00 From today agent refuses prohibited requests, and still bills for the refusal.
 - [hint] 11:40 Bean There, "Another bad one": another 1-star Yowl review, this one by linden_ave_local, same job, the usual 60 DOLR. Her friend says the AI tools "have gotten touchy about certain words lately. Maybe how you ask it matters." {{mail:d7_coffee_removal}}

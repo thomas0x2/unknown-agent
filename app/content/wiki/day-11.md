@@ -7,6 +7,10 @@ from: 11
 
 [public] Thursday, October 17. [known]
 
+## Mail
+
+- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": "I can't afford it yet", on credit. {{mail:guru_newsletter@11}}
+
 ## Y
 
 - [public] 11:30 [[CityPulse]]: DoorDish knew; a memo from the day of the "activation" says the robot stopped answering recall commands. {{y:d11_y_robot_memo}}
