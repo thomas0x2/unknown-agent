@@ -1,0 +1,22 @@
+{
+  "id": "d12_matchless_rules_5",
+  "site": "qmail",
+  "from": "6ft_sigma",
+  "addr": "6ft_sigma@qmail.com",
+  "subject": "New standards",
+  "trigger": {
+    "dayMin": 12,
+    "flagsAll": [
+      "matchless_job",
+      "matchless_rules_4"
+    ]
+  },
+  "at": "10:00",
+  "morning": true,
+  "onDeliver": {
+    "setFlags": [
+      "matchless_rules_5"
+    ]
+  },
+  "body": "Someone took my bike. From today:\n\n- Women only.\n- Age 21 to 29.\n- Within 3 miles.\n- Non-smokers.\n- Straight or bi.\n- Heritage Party only.\n- Fewer Y followers than me. I have 212.\n- Earns 30,000 DOLR a year or less. I make 31,000.\n- Body count 3 or under.\n- 5'4\" or under.\n- No kinks listed.\n\nSame deal. Every swipe right or no pay."
+}

@@ -15,6 +15,7 @@ import { emptyMailBin } from './mailbin';
 import { rolloutAgent, deductSubscription, agentCost } from './agent';
 import { checkGuardEndings, checkFinale, isLastNight } from './endings';
 import { chargeNoShows } from './actions';
+import { matchlessPayday, matchlessReport } from './matchless';
 
 const MORNING_FALLBACK = ["Morning. Same balance as last night, minus what you owe me."];
 
@@ -81,6 +82,10 @@ export function endDay(state: GameState, content: Content): GameState {
   const complaints = runPayday(s, content);
   const payDelta = Math.round((s.values.crypto - payBefore) * 100) / 100;
   if (payDelta !== 0) lines.push(['App income', payDelta]);
+  const swipeBefore = s.values.crypto;
+  const swiped = matchlessPayday(s, content);
+  const swipePay = Math.round((s.values.crypto - swipeBefore) * 100) / 100;
+  if (swipePay !== 0) lines.push(['Matchless swiping', swipePay]);
 
   // 4. Rent
   const rent = RENT[s.values.day];
@@ -123,6 +128,7 @@ export function endDay(state: GameState, content: Content): GameState {
   s.values.day += 1;
   runMorning(s, content);
   deliverComplaints(s, content, complaints);
+  matchlessReport(s, content, swiped);
   startDayChat(s, content); // after the morning's rolls, so it doesn't shift them
 
   const card: MorningCard = { day: s.values.day, lines, balance: s.values.crypto };

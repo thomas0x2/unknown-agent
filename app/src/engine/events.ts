@@ -181,7 +181,7 @@ export const JOB_OFFERS = { from: CLOCK.wake + 15, to: 16 * 60, gap: 60 };
  * post), a gig, or a client asking for a change.
  */
 export function isJobOffer(content: Content, ev: GameEvent): boolean {
-  if (ev.latent) return false;
+  if (ev.latent || ev.morning) return false;
   if (ev.job || ev.jobRequest || ev.onDeliver?.updateApp) return true;
   if (ev.outcomes?.some((o) => o.effects?.createApp)) return true;
   const text = `${ev.body ?? ''} ${(ev.bodies ?? []).join(' ')}`;

@@ -22,6 +22,7 @@ import './ui/terminal.css';
 import './ui/devOptions.css';
 import './ui/sendFx.css';
 import './ui/brands.css';
+import './ui/matchless.css';
 import { showSuggestions, hideSuggestions, suggestionKey } from './ui/mailSuggest';
 import { GameStore } from './game/store';
 import { loadContent } from './content/load';
@@ -462,6 +463,8 @@ document.addEventListener('submit', (e) => {
   } else if (kind === 'sl-buy') {
     if (store.busy) return;
     void store.swapBuy(Number(f.dataset.n));
+  } else if (kind === 'mx-swipe') {
+    store.matchlessSwipe(f.dataset.pick === 'yes' ? 'yes' : 'no');
   } else if (kind === 'y-search') {
     // a handle opens that profile; one nobody uses gets Y's "doesn't exist" page
     const q = val('#y-search').trim().replace(/^@/, '').toLowerCase();

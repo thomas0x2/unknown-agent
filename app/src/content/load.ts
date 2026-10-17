@@ -2,7 +2,7 @@
  * Loads the content bundle from the JSON files in /content. Uses Vite's glob import so new files are
  * picked up with no code change. Empty folders are fine — the game boots to an empty browser.
  */
-import type { Content, GameEvent, AppTemplate, FillerPost, Contact, AgentContent, Character, MarketContent } from './schema';
+import type { Content, GameEvent, AppTemplate, FillerPost, Contact, AgentContent, Character, MarketContent, MatchlessContent } from './schema';
 
 export function loadContent(): Content {
   const eventMods = import.meta.glob('../../content/events/*.json', { eager: true }) as Record<string, { default: GameEvent }>;
@@ -13,6 +13,7 @@ export function loadContent(): Content {
   const contactMods = import.meta.glob('../../content/contacts.json', { eager: true }) as Record<string, { default: Contact[] }>;
   const characterMods = import.meta.glob('../../content/characters.json', { eager: true }) as Record<string, { default: Character[] }>;
   const marketMods = import.meta.glob('../../content/y_market.json', { eager: true }) as Record<string, { default: MarketContent }>;
+  const matchlessMods = import.meta.glob('../../content/matchless.json', { eager: true }) as Record<string, { default: MatchlessContent }>;
   const agentMods = import.meta.glob('../../content/agent.json', { eager: true }) as Record<string, { default: AgentContent }>;
 
   const events = Object.values(eventMods).map((m) => m.default);
@@ -25,6 +26,7 @@ export function loadContent(): Content {
   const agent = Object.values(agentMods)[0]?.default;
   const characters = Object.values(characterMods)[0]?.default ?? [];
   const yMarket = Object.values(marketMods)[0]?.default;
+  const matchless = Object.values(matchlessMods)[0]?.default;
 
-  return { events, apps, yFiller, qmailSpam, trending, contacts, characters, agent, yMarket };
+  return { events, apps, yFiller, qmailSpam, trending, contacts, characters, agent, yMarket, matchless };
 }
