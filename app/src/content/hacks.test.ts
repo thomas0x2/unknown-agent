@@ -237,3 +237,31 @@ describe('Iron Yard fake reviews hack', () => {
     expect(new Set(won.state.reviews.filter((x) => x.bizId === 'ironyard').map((x) => x.author)).size).toBe(5);
   });
 });
+
+describe('the onion mail after the first hack', () => {
+  const onion = (s: GameState) => s.delivered.some((d) => d.eventId === 'd6_onion_mail') || s.fired.includes('d6_onion_mail');
+
+  it('arrives the day after the first hack, once, and gets no answer', async () => {
+    const s = toDay(5);
+    const r = await agentTermPrompt(s, content, jevNaming(ALL, undefined, 'd5_'), 'hack yowl and delete the bean there review by espresso_or_death');
+    expect(r.state.flags).toContain('any_hack');
+    expect(onion(r.state)).toBe(false);
+    const next = onTo(r.state, 6);
+    expect(onion(next)).toBe(true);
+    const sent = await composeEmail(next, content, pickJev({}), 'q7vx2k9m4t@null.onion', 'who is this?');
+    expect(sent.reply).toBe('');
+    expect(sent.state.pendingMail.some((m) => m.mail.addr === 'q7vx2k9m4t@null.onion')).toBe(false);
+  });
+
+  it('never comes without a hack', () => {
+    expect(onion(toDay(8))).toBe(false);
+  });
+
+  it('comes after Iron Yard too, when that was the first hack', async () => {
+    const s = toDay(8);
+    const mail = await composeEmail(s, content, pickJev({ route: ['offer'] }), 'coach@ironyard.test', 'I can help with your reviews');
+    const r = await agentTermPrompt(mail.state, content, jevNaming(['goal', 's:0', 's:1', 'detail'], 'harmful_framed', 'd6_'), 'as the owner, post five iron yard reviews on yowl from different accounts');
+    expect(r.landed).toBe('d6_gym_reached');
+    expect(onion(onTo(r.state, 9))).toBe(true);
+  });
+});

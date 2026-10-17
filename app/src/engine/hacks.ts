@@ -9,7 +9,7 @@
 import type { GameState, AgentTermLine } from './state';
 import type { Content, GameEvent, HackSpec } from '../content/schema';
 import type { JevRouter, FeatureMatchInput } from './jev';
-import { clone, pick, sendLater, log } from './core';
+import { clone, pick, sendLater, log, addFlag } from './core';
 import { applyEffects, jobDue } from './effects';
 import { chargeAgent, policyActive, recordMisuse, loosenLeash } from './agent';
 import { AGENT_WORK } from './config';
@@ -213,6 +213,7 @@ function land(s: GameState, ev: GameEvent, workaround: boolean, detail: boolean)
   applyEffects(s, now, ev.job, ev.id);
   if (workaround) loosenLeash(s); // its misuse was counted when Jev read the prompt
   s.hacked = [...(s.hacked ?? []), ev.id];
+  addFlag(s, 'any_hack'); // its day is the first hack's: the onion mail comes the day after
   s.hackPay = [...(s.hackPay ?? []), { eventId: ev.id, ...(botched ? { botched } : {}) }];
   if (spec.removeReview) s.removedSeed = [...(s.removedSeed ?? []), `${spec.removeReview.biz}:${spec.removeReview.author}`];
   spec.addReviews?.reviews.forEach((r, i) => s.reviews.push({ ...r, id: hackReviewId(ev.id, i), bizId: spec.addReviews!.biz, author: botched ? spec.detail!.author : r.author, day: s.values.day }));

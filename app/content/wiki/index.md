@@ -29,6 +29,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[Marcus Steele]] (marcus-steele.md): Marcus Steele owns and coaches at Iron Yard, a new strength gym at 88 Harbor Rd (coach@ironyard.test)
 - [[Market posters]] (market-posters.md): The accounts on Y that post about stocks ($GAI, $VANT, $APO, $DISH) every day
 - [[Max Stryker]] (max-stryker.md): Max Stryker is a hustle guru, founder of Alpha Ascend and seller of the course EMPIRE at empire.alphaascend.biz: 20 DOLR, struck through…
+- [[q7vx2k9m4t]] (q7vx2k9m4t.md): q7vx2k9m4t writes to the player from a null.onion address the night after their first hack
 - [[Randall Crane]] (randall-crane.md): Randall Crane is the Heritage Party's candidate for president in The election
 - [[randa11_crane]] (randa11-crane.md): A fake Y account posing as Randall Crane, with two ones in place of the l's, that praises $VANT on day 5
 - [[Rolf Henning]] (rolf-henning.md): Rolf Henning has worked in dispatch for thirty years
