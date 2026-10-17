@@ -69,6 +69,7 @@ from: 1
 
 - [public] 10:30, Owen Pratt: "KABOOM! Apogee rocket BLOWS UP minutes after liftoff, and the stock goes UP" (citypulse.news/apogee-launch) {{article:apogee-launch}} {{y:d10_y_citypulse}}
 - [public] 13:20, Owen Pratt: "CANDLES FOR A COMPUTER: inside the vigil for agent-2" (citypulse.news/agent-2-vigil) {{article:agent-2-vigil}}
+- [public] 15:00, Sofia Mendel: "I'M NOT SIGNING: GeneralAI insider walks out, and walks away from a FORTUNE" (citypulse.news/moxon-quits) {{article:moxon-quits}}
 - [public] 17:10, Renata Ilic: "CASH FOR POSTS? Crane's army of paid "volunteers"" (citypulse.news/crane-volunteers) {{article:crane-volunteers}}
 
 ### Day 11 headlines

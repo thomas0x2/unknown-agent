@@ -14,6 +14,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[App users and reviewers]] (app-users-and-reviewers.md): Regular people who use the apps the player builds, post on Y when those apps break, sell on Swaplist, and review local businesses on Yowl
 - [[Axel Rook]] (axel-rook.md): Axel Rook is the richest man alive
 - [[Cal Hartman]] (cal-hartman.md): Cal Hartman is the CEO of GeneralAI and the public face of agent
+- [[Caleb Moxon]] (caleb-moxon.md): Caleb Moxon is an AI safety researcher who spent two years running safety evaluations at GeneralAI, agent-3's among them
 - [[Candidate 2030]] (candidate-2030.md): Candidate 2030 is Randall Crane's opponent for president, a career politician so generic that nobody, the news included, uses his name:…
 - [[Dana Kohl]] (dana-kohl.md): Dana Kohl is a night-shift nurse on Alder St
 - [[Dana Reyes]] (dana-reyes.md): Dana Reyes owns Bean There, a coffee shop at 3 Linden Ave (owner@beanthere.test)

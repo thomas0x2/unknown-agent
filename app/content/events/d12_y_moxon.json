@@ -1,0 +1,11 @@
+{
+  "id": "d12_y_moxon",
+  "site": "y",
+  "from": "Caleb Moxon",
+  "trigger": {
+    "dayMin": 12,
+    "dayMax": 12
+  },
+  "at": "18:30",
+  "body": "The review starts once the current training run finishes. Nobody outside GeneralAI knows when that is. Some people inside don't either."
+}

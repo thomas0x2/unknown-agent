@@ -12,6 +12,7 @@ from: 19
 - [public] 11:10 [[Axel Rook]]: next Apogee flight after the election, "Probably 80% this time." {{y:d19_y_axel}}
 - [public] 11:15 MarketWire: $GAI's market cap passes a small country's GDP. {{y:m19_gai}}
 - [public] 11:50 [[Cal Hartman]]: the agent-5 sessions are fine; "they're just finishing up." {{y:d19_y_hartman}}
+- [public] 12:00 [[Caleb Moxon]] doesn't know what agent-5 does in those sessions, "and it is also the problem". {{y:d19_y_moxon}}
 - [public] 12:30 [[The Current]]: Crane 47%, his opponent 45%, inside the margin; a growing share of respondents can't be confirmed as people. {{y:d19_y_current}}
 - [public] 12:57 noodleposter found the discontinued shrimp flavor and is saving it. {{y:f19}}
 - [public] 14:00 Candidate 2030: two days left; make a plan to vote. {{y:d19_y_candidate}}

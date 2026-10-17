@@ -1,0 +1,11 @@
+{
+  "id": "d13_y_mara_moxon",
+  "site": "y",
+  "from": "Mara Vey",
+  "trigger": {
+    "dayMin": 13,
+    "dayMax": 13
+  },
+  "at": "12:00",
+  "body": "Caleb Moxon tested GeneralAI's models for two years. When he joined, the safety team had eleven people. When he left, four. The model team had nine hundred. He asked us to print the numbers and not his opinion of them."
+}

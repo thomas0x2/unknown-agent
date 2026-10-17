@@ -1,0 +1,11 @@
+{
+  "id": "d10_y_moxon",
+  "site": "y",
+  "from": "Caleb Moxon",
+  "trigger": {
+    "dayMin": 10,
+    "dayMax": 10
+  },
+  "at": "11:15",
+  "body": "My exit paperwork has a non-disparagement clause. If I don't sign it, I lose my shares. I'm not signing it. That's most of my savings, which I mention because people keep asking if this is a career move."
+}

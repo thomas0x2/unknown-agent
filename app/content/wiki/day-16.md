@@ -21,6 +21,7 @@ from: 16
 - [public] 14:05 [[Randall Crane]]: his opponent "has never had a real job. He's had a CAREER." {{y:d16_y_crane}}
 - [public] 14:05 [[CityPulse]]: HUSH MONEY? GeneralAI settles with three companies whose systems its models broke into; terms secret. {{y:d16_y_gai_leak}}
 - [public] 14:42 zev.dolr bought the DOLR dip again. {{y:f16}}
+- [public] 15:00 [[Caleb Moxon]]: at GeneralAI, settlements were signed off by the same people who signed off launches. {{y:d16_y_moxon}}
 - [public] 15:20 Candidate 2030: "I'm proud of my record of public service." {{y:d16_y_candidate}}
 - [public] 16:59 MarketWire: "Can't tell anymore if $GAI is a company or a weather system." {{y:m16_gai}}
 - [public] 18:19 [[WallStreetBags]] daily $APO thread: still holding, still can't say why. {{y:m16_apo_retail}}
