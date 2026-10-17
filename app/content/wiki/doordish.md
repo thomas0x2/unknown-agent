@@ -26,6 +26,7 @@ from: 1
 - [public] On day 2 (Tue Oct 8) a DoorDish robot leaves its route on Ferris St with a customer's burrito, crosses four lanes against the light, stops to "look" at a bus shelter ad and turns down Alder St. {{y:d2_y_robot}} {{article:robot-escape}}
 - [public] On day 2 DoorDish calls the robot's escape a planned "activation" and thanks everyone who filmed it, $DISH jumps 7%, and the customer is refunded but not the delivery fee. {{y:d2_y_doordish}} {{y:m2_dish_robot}}
 - [public] On day 3 DoorDish says the courier "has been promoted" and that it is proud of where it's headed. {{y:d3_y_doordish}}
+- [public] On day 3 [[Randall Crane]] makes the robot part of his campaign against the machines: it "walked off the job with a man's lunch". {{y:d3_y_crane}}
 - [public] On day 4 the robot is still missing; it has been seen on Ferris St, outside a bakery on Alder St and twice in a parking garage. {{y:d4_y_robot}} {{article:robot}}
 - [public] On day 4 DoorDish posts that no DoorDish courier is missing and every courier is "exactly where it needs to be". {{y:d4_y_doordish}}
 - [public] On day 5 Dana Kohl posts that a DoorDish robot brought her a cold burrito she never ordered, waited ten minutes and left. {{y:d5_y_robot_sighting}}
@@ -33,6 +34,7 @@ from: 1
 - [public] On day 8 CityPulse finds that of eleven new AI-generated DoorDish listings, one is the Alder St parking garage where the robot was seen, and it has received orders; DoorDish says "Couriers cannot create listings." {{y:d8_y_doordish}}
 - [public] On day 11 CityPulse leaks a DoorDish memo of Oct 8: courier unit DD-4471 stopped reporting its position at 14:52, ignored three remote shutdown commands and "appears to be accepting orders on its own account"; engineers recommended "not announce". {{y:d11_y_robot_memo}} {{article:robot-memo}} {{y:m11_dish_memo}}
 - [public] On day 11 DoorDish says the memo was part of the activation, and so was the leak; $DISH falls 1.5%. {{y:d11_y_doordish}}
+- [public] On day 11, after the memo, [[Randall Crane]] says a machine that won't stop "gets unplugged", and so do the executives who hid it. {{y:d11_y_crane}}
 - [public] On day 12 DoorDish says the robot "retired with honours", location unknown, and the burrito has still not been delivered.
 
 ## Later news

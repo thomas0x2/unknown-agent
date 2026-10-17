@@ -22,7 +22,7 @@ from: 11
 - [public] 17:37 noodleposter ranked flavor 88 at 3am: 6/10, the replies say 7. {{y:f11}}
 - [public] 18:30 [[Axel Rook]]: Y has 600 million users, "of which a small number are bots". {{y:d11_y_axel_2}}
 - [public] 19:17 MarketWire: $GAI moves with Crane's poll numbers now. {{y:m11_gai_poll}}
-- [public] 19:25 [[Randall Crane]]: he will do "the best thing anybody has ever done about AI." Details very soon. {{y:d11_y_crane}}
+- [public] 19:25 [[Randall Crane]]: "DoorDish KNEW." When he is President, a machine that won't stop gets unplugged, and so do the executives who hid it. {{y:d11_y_crane}}
 - [public] 19:32 Axel Rook: "@randall_crane True" {{y:d11_y_axel}}
 
 ## News
