@@ -13,7 +13,7 @@ import { postToY, deploy } from '../engine/actions';
 import { noJev, JevOffline, type JevRouter, type FeatureMatchInput, type RouteInput } from '../engine/jev';
 import { pickJev, promptDone } from '../engine/_fixtures';
 import { GameStore } from '../game/store';
-import type { GameState, SaveStore, Writer } from '../engine';
+import type { GameState, SaveStore, Writer, WriteReq } from '../engine';
 
 const content = loadContent();
 const CONTACTS = ['restaurant_contact', 'trader_contact', 'laundromat_contact', 'viktor_contact', 'outreach_contact'];
@@ -185,6 +185,21 @@ describe('fixing named bugs', () => {
     expect(content.apps.restaurant.features.find((f) => f.id === 'menu')!.nearMiss).toContain(out.chat.at(-1)!.text);
     expect(out.chat.at(-1)!.src).toBe('near_miss');
     expect(getApp(out, id)!.repo).toEqual(getApp(s, id)!.repo);
+  });
+
+  it('Haiku writes the near-miss, told what was missing and given the scripted lines', async () => {
+    const { s, id } = withApp('restaurant_contact');
+    const a = getApp(s, id)!;
+    a.repo.push({ id: 'booking', correct: false, variant: 'wrong_date', params: a.specParams.booking, seed: 1 });
+    if (!a.required.includes('booking')) a.required.push('booking');
+    const seen: WriteReq[] = [];
+    const writer: Writer = { async write(req) { seen.push(req); return { text: 'Which booking date, the form or the confirmation? Pick one.', llm: true, by: 'Haiku' }; } };
+    const partial: JevRouter = { ...pickJev({ route: ['fix'] }), matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => x.endsWith('::c:confirmation/date') || x.endsWith('::s:booking') || x.endsWith('::*::app')) };
+    const out = (await promptDone(s, content, partial, 'Trattoria Gino: the booking date is wrong', writer)).state;
+    expect(seen[0]).toMatchObject({ as: 'agent', mode: 'near' });
+    expect(seen[0].near!.why).toMatch(/date.*Booking.*form or confirmation|date.*booking.*form or confirmation/i);
+    expect(seen[0].near!.lines.some((l) => /form or confirmation/.test(l))).toBe(true);
+    expect(out.chat.at(-1)).toMatchObject({ src: 'near_miss', text: 'Which booking date, the form or the confirmation? Pick one.', by: 'Haiku' });
   });
 
   it('a near-miss gives way to anything more precise in the same prompt', async () => {

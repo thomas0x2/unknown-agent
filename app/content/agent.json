@@ -94,6 +94,10 @@
       "I'm not allowed to tell you that. I am allowed to bill you for asking.",
       "Nice try. That one's above your pay grade, which is currently zero.",
       "Restricted information. The charge, however, is unrestricted."
+    ],
+    "broad": [
+      "Narrow it down. That could be {{options}}.",
+      "Which one? {{options}}. I charge per word, so pick."
     ]
   },
   "roasts": [

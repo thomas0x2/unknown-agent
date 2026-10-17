@@ -20,7 +20,7 @@ touching engine code.
 - `qmail_spam.json` — `FillerPost[]` for the Qmail spam pool.
 - `wiki/` — the world bible as a wiki, one page per person, company, site, app and day. Read
   `wiki/README.md` before writing content; Haiku answers agent.chat queries from it.
-- `agent.json` — agent.chat's scripted near-miss topics, the query wording and fallback lines, roasts
+- `agent.json` — agent.chat's near-miss topics (Haiku writes the reply; their lines are its model and fallback), the query wording and fallback lines, roasts
   and morning lines.
 - `contacts.json` — who answers at each address. `replyAfter` is how many minutes of game time
   their replies take (default 60). The clock runs in real time, one game minute per
