@@ -9,6 +9,7 @@
 import { citizenScore, citizenBand, type GameState } from '../engine';
 import { DEEPSLEEP_LOGO } from './deepsleepLogo';
 import { HERITAGE_LOGO } from './heritageLogo';
+import { PROGRESS_LOGO } from './progressLogo';
 
 /** Page layout family: shapes the markup a little and the CSS a lot. */
 export type AdKit = 'corp' | 'gov' | 'campaign' | 'scam' | 'local' | 'news' | 'clinic' | 'soft' | 'model';
@@ -109,8 +110,8 @@ export const AD_SITES: AdSite[] = [
     fine: 'Paid for by Crane Victory Fund and a donor who wishes to remain anonymous.',
   },
   {
-    url: 'keller4mayor.org', brand: 'Keller for Mayor', kit: 'campaign', theme: 'keller', mark: 'K',
-    kicker: 'Daniel Keller for Mayor', title: 'A city that answers its phone.',
+    url: 'keller4mayor.org', brand: 'Keller for Mayor', kit: 'campaign', theme: 'keller', mark: 'K', logo: PROGRESS_LOGO,
+    kicker: 'Daniel Keller for Mayor · Progress Party', title: 'A city that answers its phone.',
     lead: 'Twelve years on the city council. Affordable housing, buses that run, and a city government staffed by people.',
     cards: [
       ['Housing', 'Cap rent increases in buildings owned by companies with more than 500 units.'],

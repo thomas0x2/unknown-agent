@@ -1179,7 +1179,7 @@ export function overlayHtml(store: GameStore): string {
 export function devHtml(store: GameStore): string {
   const s = store.state;
   const m = s.values;
-  const meters = `leash ${m.leash} · misuse ${m.misuseScore} · suspicion ${m.suspicion} · null ${m.nullStanding} · mafia ${m.mafiaStanding} · family ${m.familyTrust} · heritage ${m.heritageStanding}`;
+  const meters = `leash ${m.leash} · misuse ${m.misuseScore} · suspicion ${m.suspicion} · null ${m.nullStanding} · mafia ${m.mafiaStanding} · family ${m.familyTrust} · heritage ${m.heritageStanding} · progress ${m.progressStanding}`;
   return `<header><b>jev · dev</b><button data-act="dev">×</button></header>
     <p><b>Day</b> ${m.day} · <b>Agent</b> L${m.agentLevel} · <b>Followers</b> ${m.followers}</p>
     <p><b>Meters</b> <span class="dv-dim">${esc(meters)}</span></p>

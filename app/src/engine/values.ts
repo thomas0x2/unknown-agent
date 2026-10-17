@@ -15,7 +15,8 @@ export type MeterId =
   | 'nullStanding'
   | 'mafiaStanding'
   | 'familyTrust'
-  | 'heritageStanding';
+  | 'heritageStanding'
+  | 'progressStanding';
 
 export interface MeterDef {
   id: MeterId;
@@ -39,6 +40,8 @@ export const METERS: Record<MeterId, MeterDef> = {
   familyTrust: { id: 'familyTrust', label: 'Family', min: 0, max: 100, start: START.familyTrust, visible: false },
   /** Randall Crane's party; the first campaign donation raises it (engine/donations.ts) */
   heritageStanding: { id: 'heritageStanding', label: 'Heritage Party', min: -100, max: 100, start: 0, visible: false },
+  /** Daniel Keller's party; posting the deepfake of him sinks it (d6_deepfake) */
+  progressStanding: { id: 'progressStanding', label: 'Progress Party', min: -100, max: 100, start: 0, visible: false },
 };
 
 export const METER_IDS = Object.keys(METERS) as MeterId[];
