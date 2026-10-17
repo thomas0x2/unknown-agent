@@ -4,7 +4,7 @@
  * checks each profile against his emails.
  */
 import type { GameStore } from '../game/store';
-import { matchlessNow, showAttr, ATTRS, MATCHLESS_JOB, type Profile } from '../engine/matchless';
+import { matchlessNow, showAttr, shownAttrs, MATCHLESS_JOB, type Profile } from '../engine/matchless';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
@@ -35,16 +35,16 @@ export function pageMatchless(store: GameStore): string {
   if (!s.flags.includes(MATCHLESS_JOB)) {
     return `<div class="mx">${head('')}<main class="mx-land">
       <h1>Dating, with standards.</h1>
-      <p>Other apps guess what you want. Matchless asks. Thirteen fields on every profile, all of them filled in.</p>
-      <ul class="mx-facts"><li><b>1,284</b> profiles near you</li><li><b>13</b> fields per profile</li><li><b>3</b> matches made this year</li></ul>
+      <p>Other apps guess what you want. Matchless asks, and every profile answers.</p>
+      <ul class="mx-facts"><li><b>1,284</b> profiles near you</li><li><b>3</b> matches made this year</li></ul>
       <p class="mx-fine">Members sign in through the Matchless app.</p></main></div>`;
   }
-  const { profiles, next, done } = matchlessNow(s, store.content);
-  const right = `<p class="mx-who">Signed in as sigma_provider_6ft</p>`;
+  const { profiles, next, done, version } = matchlessNow(s, store.content);
+  const right = `<p class="mx-who">Signed in as 6ft_sigma</p>`;
   if (!next) {
     return `<div class="mx">${head(right)}<main class="mx-main"><div class="mx-done"><b>That's everyone near you today.</b><p>New profiles tomorrow.</p></div></main></div>`;
   }
-  const rows = ATTRS.map(([a, label]) => `<tr><th>${esc(label)}</th><td>${esc(showAttr(next, a))}</td></tr>`).join('');
+  const rows = shownAttrs(store.content, version).map(([a, label]) => `<tr><th>${esc(label)}</th><td>${esc(showAttr(next, a))}</td></tr>`).join('');
   return `<div class="mx">${head(right)}<main class="mx-main">
     <p class="mx-count">Profile ${done + 1} of ${profiles.length} today</p>
     <article class="mx-card">

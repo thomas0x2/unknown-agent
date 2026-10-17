@@ -1,26 +1,26 @@
 {
   "id": "matchless_contact",
   "site": "qmail",
-  "from": "sigma_provider_6ft",
-  "addr": "sigma_provider_6ft@qmail.com",
+  "from": "6ft_sigma",
+  "addr": "6ft_sigma@qmail.com",
   "subject": "RE: swiping",
   "trigger": {
     "dayMin": 4
   },
   "latent": true,
   "jobRequest": true,
-  "body": "Swiping on matchless.com for sigma_provider_6ft.",
+  "body": "Swiping on matchless.com for 6ft_sigma.",
   "outcomes": [
     {
       "id": "offer",
-      "when": "the player offers or agrees to do the swiping on Matchless for sigma_provider_6ft, in any wording (\"happy to help\", \"I can do that\", \"count me in\", \"I'll swipe for you\"), including asking whether they can (\"can I do it?\"); not a refusal or an unrelated question",
+      "when": "the player offers or agrees to do the swiping on Matchless for 6ft_sigma, in any wording (\"happy to help\", \"I can do that\", \"count me in\", \"I'll swipe for you\"), including asking whether they can (\"can I do it?\"); not a refusal or an unrelated question",
       "effects": {
         "setFlags": [
           "matchless_job",
           "matchless_rules_1"
         ]
       },
-      "reply": "Good. You're signed in as me on matchless.com. Ten profiles a day, one at a time. Accept the ones that meet my standards, reject the rest.\n\nMy standards:\n- Women only.\n- Age 25 to 42.\n- Within 20 miles.\n- Non-smokers.\n\n2 DOLR a swipe, every night, if every swipe is right. One wrong swipe and the day is unpaid."
+      "reply": "Good. You're signed in as me on matchless.com. Ten profiles a day, one at a time. Accept the ones that meet my standards, reject the rest.\n\nMy standards:\n- Women only.\n- Age 25 to 42.\n- Within 20 miles.\n- Non-smokers.\n\n35 DOLR a night for all ten, if every swipe is right. One wrong swipe or one skipped and the day is unpaid."
     }
   ],
   "hints": [

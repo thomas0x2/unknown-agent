@@ -7,7 +7,7 @@ import { loadContent } from './load';
 import { startGame, endDay } from '../engine/day';
 import { composeEmail } from '../engine/actions';
 import { isJobOffer, triggerMatches } from '../engine/events';
-import { dayProfiles, standardsOf, passes, meets, matchlessNow, matchlessSwipe, swipesToday, ATTRS, MATCHLESS_JOB } from '../engine/matchless';
+import { dayProfiles, standardsOf, shownAttrs, passes, meets, matchlessNow, matchlessSwipe, swipesToday, ATTRS, MATCHLESS_JOB } from '../engine/matchless';
 import { bookmarks, visitedFlag, route } from '../sites/registry';
 import { wordJev } from '../engine/_fixtures';
 import { CLOCK } from '../engine/config';
@@ -44,7 +44,7 @@ describe('the job', () => {
     expect(isJobOffer(content, post)).toBe(true);
     const s = startGame(content, 1);
     s.values.day = 4;
-    const out = await composeEmail(s, content, wordJev, 'sigma_provider_6ft@qmail.com', "Count me in, I'll do the swiping on Matchless for you.");
+    const out = await composeEmail(s, content, wordJev, '6ft_sigma@qmail.com', "Count me in, I'll do the swiping on Matchless for you.");
     expect(out.state.flags).toEqual(expect.arrayContaining([MATCHLESS_JOB, 'matchless_rules_1']));
     // his reply lists the first standards
     for (const r of standardsOf(content, 1)) expect(out.reply).toContain(r.say);
@@ -92,6 +92,15 @@ describe('his standards', () => {
   });
 });
 
+describe('the card', () => {
+  it('shows the ordinary fields from the start and the odd ones only once his standards bring them up', () => {
+    expect(shownAttrs(content, 1).map(([a]) => a)).toEqual(['gender', 'age', 'height', 'distance', 'smoking', 'sexuality']);
+    expect(shownAttrs(content, 3).map(([a]) => a)).toEqual(expect.arrayContaining(['politics', 'followers']));
+    expect(shownAttrs(content, 3).map(([a]) => a)).not.toContain('canthal');
+    expect(shownAttrs(content, versions.length)).toEqual(ATTRS);
+  });
+});
+
 describe('the profiles', () => {
   it('ten a day, about half meeting every standard and the rest missing one or two, all 21 or older', () => {
     for (const v of versions) {
@@ -127,22 +136,32 @@ describe('swiping and pay', () => {
     expect(matchlessSwipe(s, content, 'no')).toBe(s);
   });
 
-  it('a perfect day pays 2 DOLR a swipe at night; one wrong swipe pays nothing and the client says which', () => {
+  it('a perfect day of ten pays 35 DOLR at night; one wrong swipe pays nothing and the client says which', () => {
     const good = swipeAll(hired(5));
     good.values.crypto = 1000;
     const paid = endDay(good, content);
-    expect(paid.tx.some((t) => t.memo === 'sigma_provider_6ft · Matchless' && t.amount === 20)).toBe(true);
-    expect(paid.morning!.lines).toContainEqual(['Matchless swiping', 20]);
+    expect(paid.tx.some((t) => t.memo === '6ft_sigma · Matchless' && t.amount === 35)).toBe(true);
+    expect(paid.morning!.lines).toContainEqual(['Matchless swiping', 35]);
     expect(paid.mail.some((m) => m.subject === 'Yesterday')).toBe(false);
 
     const bad = swipeAll(hired(5), 3);
     bad.values.crypto = 1000;
     const after = endDay(bad, content);
-    expect(after.tx.some((t) => t.memo === 'sigma_provider_6ft · Matchless')).toBe(false);
+    expect(after.tx.some((t) => t.memo === '6ft_sigma · Matchless')).toBe(false);
     const mail = after.mail.find((m) => m.subject === 'Yesterday')!;
     const p = dayProfiles(content, 5, 1)[3];
     expect(mail.body).toContain(p.name);
     expect(mail.body).toContain('No pay for yesterday.');
     expect(mail.day).toBe(6);
+  });
+
+  it('a day with profiles left unswiped pays nothing, even if every swipe was right', () => {
+    let s = hired(5);
+    const { profiles, version } = matchlessNow(s, content);
+    for (const p of profiles.slice(0, 6)) s = matchlessSwipe(s, content, passes(standardsOf(content, version), p) ? 'yes' : 'no');
+    s.values.crypto = 1000;
+    const after = endDay(s, content);
+    expect(after.tx.some((t) => t.memo === '6ft_sigma · Matchless')).toBe(false);
+    expect(after.mail.find((m) => m.subject === 'Yesterday')!.body).toContain('You swiped 6 of 10.');
   });
 });

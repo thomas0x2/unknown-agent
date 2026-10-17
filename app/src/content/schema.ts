@@ -378,8 +378,8 @@ export interface MatchlessRule {
   say: string;
 }
 export interface MatchlessContent {
-  /** DOLR per swipe, paid at night only when every swipe that day was right. */
-  perSwipe: number;
+  /** DOLR for a day's swiping, paid at night only when all perDay swipes were made and right. */
+  pay: number;
   /** Profiles near him each day. */
   perDay: number;
   /** Version N is in force once flag matchless_rules_N is set; the highest one wins. */

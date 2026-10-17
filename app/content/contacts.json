@@ -48,8 +48,8 @@
     "reply": "Noted."
   },
   {
-    "key": "sigma_provider_6ft@qmail.com",
-    "name": "sigma_provider_6ft",
+    "key": "6ft_sigma@qmail.com",
+    "name": "6ft_sigma",
     "character": "sigma_provider",
     "reply": "Noted. My standards stay where they are."
   },

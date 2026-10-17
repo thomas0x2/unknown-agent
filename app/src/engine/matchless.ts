@@ -1,8 +1,8 @@
 /*
  * matchless.com, a dating site that asks what other apps won't. From day 4 the player can swipe on
  * the client's account for him: one profile at a time, perDay a day, checking each against his standards
- * (content/matchless.json). He pays perSwipe a swipe at night, but only when every swipe that day
- * was right; one wrong swipe and he pays nothing and says which one, first thing next morning. His
+ * (content/matchless.json). He pays a flat amount at night, but only when all of that day's profiles
+ * were swiped and every swipe was right; otherwise he pays nothing and says why, first thing next morning. His
  * standards start reasonable and get worse: each new version arrives as a 10:00 email that sets
  * matchless_rules_N. Each day's profiles are built from the standards in force, about half meeting
  * all of them and the rest missing one or two, often by a little.
@@ -13,7 +13,7 @@ import { clone, money, pushMail } from './core';
 import { CLOCK } from './config';
 
 export const MATCHLESS_JOB = 'matchless_job';
-export const CLIENT = { name: 'sigma_provider_6ft', addr: 'sigma_provider_6ft@qmail.com' };
+export const CLIENT = { name: '6ft_sigma', addr: '6ft_sigma@qmail.com' };
 
 export interface Profile {
   id: string;
@@ -48,6 +48,15 @@ export const ATTRS: [Attr, string][] = [
   ['smoking', 'Smoking'], ['sexuality', 'Sexuality'], ['kinks', 'Kinks'], ['income', 'Income'], ['politics', 'Politics'],
   ['bodyCount', 'Body count'], ['canthal', 'Canthal tilt'], ['jaw', 'Mandibular ratio'],
 ];
+
+/** Fields the card shows only once his standards mention them; the rest are on every card. */
+const ODD: ReadonlySet<Attr> = new Set<Attr>(['followers', 'kinks', 'income', 'politics', 'bodyCount', 'canthal', 'jaw']);
+
+/** The card's fields under standards version `version`, in ATTRS order. */
+export function shownAttrs(content: Content, version: number): [Attr, string][] {
+  const named = new Set(standardsOf(content, version).map((r) => r.attr));
+  return ATTRS.filter(([a]) => !ODD.has(a) || named.has(a));
+}
 
 const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 export const feetInches = (inches: number) => `${Math.floor(inches / 12)}'${inches % 12}"`;
@@ -252,6 +261,8 @@ export function matchlessSwipe(s0: GameState, content: Content, choice: 'yes' | 
 /** How today's swiping went: how many, and the wrong ones with what made them wrong. */
 export interface SwipeDay { day: number; count: number; wrong: { p: Profile; choice: 'yes' | 'no'; rule?: MatchlessRule }[] }
 
+const paid = (content: Content, day: SwipeDay) => !day.wrong.length && day.count >= (content.matchless?.perDay ?? 10);
+
 export function judgeDay(s: GameState, content: Content): SwipeDay {
   const today = swipesToday(s);
   const out: SwipeDay = { day: s.values.day, count: today.length, wrong: [] };
@@ -269,28 +280,33 @@ export function judgeDay(s: GameState, content: Content): SwipeDay {
 }
 
 /**
- * Night: the client pays perSwipe for each of today's swipes when all of them were right. Returns the day's
+ * Night: the client pays the day's pay when all of today's profiles were swiped and every swipe was right. Returns the day's
  * result for the morning email (or null when the player didn't swipe).
  */
 export function matchlessPayday(s: GameState, content: Content): SwipeDay | null {
   if (!s.flags.includes(MATCHLESS_JOB)) return null;
   const day = judgeDay(s, content);
   if (!day.count) return null;
-  if (!day.wrong.length) money(s, day.count * (content.matchless?.perSwipe ?? 2), `${CLIENT.name} · Matchless`);
+  if (paid(content, day)) money(s, content.matchless?.pay ?? 35, `${CLIENT.name} · Matchless`);
   return day;
 }
 
-/** First thing in the morning after a day with a wrong swipe: the client names the first one and pays nothing. */
-export function matchlessReport(s: GameState, day: SwipeDay | null): void {
-  if (!day?.wrong.length) return;
+/**
+ * First thing in the morning after an unpaid day: the client names the first wrong swipe, or the
+ * profiles left unswiped, and pays nothing.
+ */
+export function matchlessReport(s: GameState, content: Content, day: SwipeDay | null): void {
+  if (!day || paid(content, day)) return;
+  const mail = (body: string) => pushMail(s, {
+    folder: 'inbox', day: s.values.day, min: CLOCK.wake, from: CLIENT.name, addr: CLIENT.addr, subject: 'Yesterday',
+    body: `${body}\n\nNo pay for yesterday. All ten, every one right, that was the deal.`, read: false,
+  });
+  if (!day.wrong.length) { mail(`You swiped ${day.count} of ${content.matchless?.perDay ?? 10}.`); return; }
   const { p, choice, rule } = day.wrong[0];
   const field = rule ? ATTRS.find(([a]) => a === rule.attr) : undefined;
   const what = choice === 'yes' && rule && field
     ? `You accepted ${p.name}. ${field[1]}: ${showAttr(p, rule.attr as Attr)}. My standards: ${rule.say}`
     : `You rejected ${p.name}. She met every one of my standards.`;
   const more = day.wrong.length > 1 ? ` That was one of ${day.wrong.length} you got wrong.` : '';
-  pushMail(s, {
-    folder: 'inbox', day: s.values.day, min: CLOCK.wake, from: CLIENT.name, addr: CLIENT.addr, subject: 'Yesterday',
-    body: `${what}${more}\n\nNo pay for yesterday. Every swipe right, that was the deal.`, read: false,
-  });
+  mail(`${what}${more}`);
 }

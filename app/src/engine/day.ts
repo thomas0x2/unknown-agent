@@ -128,7 +128,7 @@ export function endDay(state: GameState, content: Content): GameState {
   s.values.day += 1;
   runMorning(s, content);
   deliverComplaints(s, content, complaints);
-  matchlessReport(s, swiped);
+  matchlessReport(s, content, swiped);
   startDayChat(s, content); // after the morning's rolls, so it doesn't shift them
 
   const card: MorningCard = { day: s.values.day, lines, balance: s.values.crypto };
