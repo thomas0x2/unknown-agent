@@ -110,15 +110,15 @@ export const AD_SITES: AdSite[] = [
     fine: 'Paid for by Crane Victory Fund and a donor who wishes to remain anonymous.',
   },
   {
-    url: 'keller4mayor.org', brand: 'Keller for Mayor', kit: 'campaign', theme: 'keller', mark: 'K', logo: PROGRESS_LOGO,
-    kicker: 'Daniel Keller for Mayor · Progress Party', title: 'A city that answers its phone.',
-    lead: 'Twelve years on the city council. Affordable housing, buses that run, and a city government staffed by people.',
+    url: 'keller4governor.org', brand: 'Keller for Governor', kit: 'campaign', theme: 'keller', mark: 'K', logo: PROGRESS_LOGO,
+    kicker: 'Daniel Keller for Governor · Progress Party', title: 'A state that answers its phone.',
+    lead: 'Twelve years in the state senate. Affordable housing, buses that run, and a state government staffed by people.',
     cards: [
       ['Housing', 'Cap rent increases in buildings owned by companies with more than 500 units.'],
-      ['Jobs', 'A city hiring office for residents who lost work to automation.'],
+      ['Jobs', 'A state hiring office for residents who lost work to automation.'],
       ['On the record', 'Every speech Daniel has given since 2016 is published here, so you can check what he actually said.'],
     ],
-    fine: 'Paid for by Keller for Mayor. Treat any video of Daniel Keller that isn’t on this page with care.',
+    fine: 'Paid for by Keller for Governor. Treat any video of Daniel Keller that isn’t on this page with care.',
   },
 
   // ── money ──
