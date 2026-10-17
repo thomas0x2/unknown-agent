@@ -44,3 +44,20 @@ describe('DoorDish', () => {
     expect(listing).toContain('Margherita');
   });
 });
+
+describe('DoorDish ads', () => {
+  it('shows banner ads on the store list and on a store page', () => {
+    const store = new GameStore(loadContent(), {} as JevRouter, {} as Writer, mem);
+    expect(page(store, route('doordish.com', store.state)).match(/class="ad ad-wide /g)).toHaveLength(2);
+    expect(page(store, route('doordish.com/golden-lotus', store.state))).toMatch(/class="ad ad-wide /);
+  });
+});
+
+describe('DoorDish icons', () => {
+  it('gives every store an icon tile', () => {
+    const store = new GameStore(loadContent(), {} as JevRouter, {} as Writer, mem);
+    const html = page(store, route('doordish.com', store.state));
+    expect(html.match(/class="dd-ico"/g)!.length).toBe(html.match(/class="dd-card"/g)!.length);
+    expect(page(store, route('doordish.com/sushi-kaito', store.state))).toContain('dd-ico big');
+  });
+});

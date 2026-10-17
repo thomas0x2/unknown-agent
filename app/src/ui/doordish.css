@@ -15,7 +15,7 @@
 .dd-wrap h1 { margin: 0 0 16px; font-size: 24px; }
 .dd-wrap h2 { margin: 22px 0 8px; font-size: 18px; }
 .dd-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
-.dd-card { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border: 1px solid var(--dd-line); border-radius: 12px; color: inherit; text-decoration: none; }
+.dd-card { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 1px solid var(--dd-line); border-radius: 12px; color: inherit; text-decoration: none; }
 .dd-card:hover { background: var(--dd-soft); }
 .dd-card b { font-size: 16px; }
 .dd-meta { margin: 0; font-size: 13px; color: var(--dd-dim); }
@@ -31,3 +31,9 @@
 .dd-err p { margin: 0 0 6px; }
 .dd-err code { font-size: 12.5px; color: var(--dd-red); }
 .dd-fine { max-width: 960px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px) 30px; font-size: 11.5px; color: var(--dd-dim); }
+.dd-wrap .ad { margin: 0 0 16px; }
+.dd-list + .ad { margin: 16px 0 0; }
+.dd-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.dd-ico { flex: none; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 12px; font-size: 26px; background: hsl(var(--h) 85% 93%); }
+.dd-ico.big { width: 72px; height: 72px; border-radius: 16px; font-size: 40px; }
+.dd-store { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
