@@ -44,7 +44,15 @@ Code paths, flags, open questions. Never part of an answer, never tagged.
   section is matched on its own, so a question that names one brand or shop finds its section
   without naming the page.
 - **from**: the first day the player can know the page's subject exists (default 1). Before it, a
-  question about it is a miss.
+  question about it is refused as classified.
+- **summary** (optional): one line saying what the page is about, for Jev to match questions
+  against. Without it Jev sees the page's first sentence. Use it when the first sentence misleads
+  (The player, Building apps).
+
+Query matching is tested with real Jev: `content/query-tests.json` holds likely player questions
+and the pages that should answer them; run `npx vite-node scripts/query-tests.ts` with
+`npm run proxy` running (add `--sweep` to compare thresholds). Add a case when a question is
+misjudged.
 - **Sections** (`##`) are what a question is matched to after the page, so give them headings that
   say what they're about. The opening paragraphs are the page's overview: what a question naming no
   section gets.
@@ -99,7 +107,8 @@ A sentence that names a later day but is known in advance (rent amounts and due 
 Jev reads an agent.chat prompt as a query (questions about the world, and how-to questions like
 "how can I build apps?"), then matches it down the wiki like a fix down an app's components, but
 looser: which page (title and aliases), then which section. When several pages match, Jev is asked
-which one the question is mainly about ("What's DOLR?" is Money and DOLR, not agent's prices); those
+which one the question is mainly about (a page known only later is dropped if a known one also
+matches) ("What's DOLR?" is Money and DOLR, not agent's prices); those
 win. Naming no page is a miss (agent roasts the player); more than three is too vague (agent asks
 which). A page without a section gets its overview. agent.chat shows agent "Searching the WWW" while
 Haiku answers, still mean, from the matched paragraphs that are public now, and may only hint at the

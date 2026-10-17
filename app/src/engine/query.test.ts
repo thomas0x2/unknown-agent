@@ -59,7 +59,7 @@ describe('several pages matched', () => {
       // loosely, every page has to do with DOLR; mainly, only the one named for it
       matchFeatures: async (i: { features: { id: string; description: string; kind?: string }[] }) => {
         kinds.push(i.features[0]?.kind ?? '');
-        return i.features.filter((f) => f.kind !== 'main' || /DOLR/.test(f.description)).map((f) => f.id);
+        return i.features.filter((f) => f.kind !== 'main' || f.description.startsWith('Money and DOLR')).map((f) => f.id);
       },
     } as never;
     const m = await matchQuery(jev, startGame(content, 1), { ...content, wiki }, "What's DOLR");

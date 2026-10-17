@@ -11,7 +11,7 @@ import '../../src/style.css';
 import { loadContent } from './content/load';
 import { onWikiFiles } from './content/wikiFiles';
 import { wikiView, wikiClickIn, wikiInputIn, clock, type WikiHost } from './ui/wiki';
-import { newGame, queryCtx, triggerMatches, arrivalMin, CLOCK, type GameState } from './engine';
+import { queryCtx, estimatedState, CLOCK, type GameState } from './engine';
 
 const content = loadContent();
 const KEY = 'unknown-agent-wiki-view';
@@ -25,23 +25,7 @@ const ALL_FLAGS = [...new Set([
   ...(content.wiki ?? []).flatMap((p) => p.sections.flatMap((s) => [s.ifFlag?.flag ?? '', ...s.blocks.flatMap((b) => [...`${b.rule} ${b.text}`.matchAll(/if\s+!?([a-z][a-z0-9_]+)/g)].map((m) => m[1]))])),
 ].filter((f) => f && f !== 'seen'))].sort();
 
-/** A stand-in game at the chosen day, time and flags, with the emails and posts that would have arrived by then. */
-function viewState(): GameState {
-  const s = newGame(1);
-  s.values.day = view.day;
-  s.clockMin = view.min;
-  s.flags = [...view.flags];
-  for (const f of view.flags) s.flagDays[f] = 1;
-  for (const ev of content.events) {
-    if (ev.latent || ev.launch || ev.yPost || !['qmail', 'y', 'yowl'].includes(ev.site)) continue;
-    for (let d = 1; d <= view.day; d++) {
-      if (!triggerMatches({ ...s, values: { ...s.values, day: d } }, ev.trigger)) continue;
-      if (d < view.day || arrivalMin(ev) <= view.min) s.delivered.push({ eventId: ev.id, site: ev.site, day: d, answered: false, min: arrivalMin(ev) });
-      break;
-    }
-  }
-  return s;
-}
+const viewState = (): GameState => estimatedState(content, view.day, view.min, view.flags);
 
 const esc = (t: string) => t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
 const host: WikiHost = {

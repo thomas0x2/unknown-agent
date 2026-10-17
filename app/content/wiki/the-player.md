@@ -3,6 +3,7 @@ title: The player
 aliases: you, @you, you@qmail.com, YOU, player
 category: people
 from: 1
+summary: The player themself, the person asking: their own life, job loss, apartment, family and situation. Only questions about "me", "I" or "my" life are about this page.
 ---
 
 ## Who they are

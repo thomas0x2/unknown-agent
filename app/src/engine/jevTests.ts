@@ -104,8 +104,8 @@ const barFor = (kind: string | undefined, b: JevBars) => (kind === 'component' ?
 export interface JevRecording { scores: Map<string, number[]>; routes: Map<string, unknown> }
 export const newRecording = (): JevRecording => ({ scores: new Map(), routes: new Map() });
 
-/** A router that answers from the recording, asks `jev` only what it hasn't heard yet, and applies `bars`. */
-function replaying(jev: JevRouter, rec: JevRecording, bars: JevBars, seen: { input: FeatureMatchInput; scores: number[] }[]): JevRouter {
+/** A router that answers from the recording, asks `jev` only what it hasn't heard yet, and applies the bar `barOf` gives each kind of question. */
+export function replaying(jev: JevRouter, rec: JevRecording, barOf: (kind: string | undefined) => number, seen: { input: FeatureMatchInput; scores: number[] }[] = []): JevRouter {
   return {
     async route(i) {
       const k = JSON.stringify(i);
@@ -122,8 +122,16 @@ function replaying(jev: JevRouter, rec: JevRecording, bars: JevBars, seen: { inp
       }
       const sc = rec.scores.get(k)!;
       seen.push({ input: i, scores: sc });
-      return i.features.filter((f, n) => (sc[n] ?? 0) >= barFor(f.kind, bars)).map((f) => f.id);
+      return i.features.filter((f, n) => (sc[n] ?? 0) >= barOf(f.kind)).map((f) => f.id);
     },
+    // the raw confidences, for code that weighs them itself (a query's main page)
+    ...(jev.matchScores ? {
+      async matchScores(i: FeatureMatchInput) {
+        const k = JSON.stringify(i);
+        if (!rec.scores.has(k)) rec.scores.set(k, await jev.matchScores!(i));
+        return rec.scores.get(k)!;
+      },
+    } : {}),
   };
 }
 
@@ -145,7 +153,7 @@ export function missKind(want: JevTestCase['expect'], got: JevTestResult['got'])
  */
 export async function runJevTest(content: Content, jev: JevRouter, c: JevTestCase, bars: JevBars = BARS_NOW, rec: JevRecording = newRecording()): Promise<JevTestResult> {
   const seen: { input: FeatureMatchInput; scores: number[] }[] = [];
-  const router = replaying(jev, rec, bars, seen);
+  const router = replaying(jev, rec, (k) => barFor(k, bars), seen);
   const { s, appId } = jevTestState(content, c);
   const tmpl = content.apps[getApp(s, appId)!.template];
   const items = () => {

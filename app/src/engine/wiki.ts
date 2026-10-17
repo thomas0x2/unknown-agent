@@ -43,6 +43,8 @@ export interface WikiPage {
   from: number;
   /** A page of many things (ad brands, local businesses): a question can name one of its sections without naming the page. */
   hub?: boolean;
+  /** What the page is about, in a line, for Jev to match questions against (default: its first sentence). */
+  summary?: string;
   sections: WikiSection[];
 }
 
@@ -105,6 +107,7 @@ export function parseWikiPage(md: string, file = ''): WikiPage {
       else if (m[1] === 'category') page.category = v as WikiCategory;
       else if (m[1] === 'from') page.from = Number(v) || 1;
       else if (m[1] === 'hub') page.hub = v === 'true';
+      else if (m[1] === 'summary') page.summary = v;
     }
   }
   const raw: { heading: string; lines: string[] }[] = [{ heading: '', lines: [] }];
@@ -273,6 +276,56 @@ export function blockNow(b: WikiBlock, sec: WikiSection, page: WikiPage, ctx: Wi
   return text ? { tag, text } : shut;
 }
 
+const hhmm = (m: number) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+
+/**
+ * The rules a paragraph follows besides its tag rule, in words: the page's and section's day and
+ * branch, [planned] text, branch tags, and sentences that wait for the day or time they name. These
+ * are automatic (the spoiler filter in blockNow), so the editor lists them next to the tag rule.
+ */
+export function blockGates(b: WikiBlock, sec: WikiSection, page: WikiPage): string[] {
+  const out: string[] = [];
+  if (sec.writer || page.category === 'writers') return ['writer note: never shown'];
+  if (page.from > 1) out.push(`whole page: classified before day ${page.from} (the page is known from day ${page.from})`);
+  if (sec.fromDay && sec.fromDay > page.from) out.push(`whole section: classified before day ${sec.fromDay} (heading "From day ${sec.fromDay}")`);
+  if (sec.ifFlag) out.push(`whole section: classified ${sec.ifFlag.not ? 'once' : 'unless'} ${sec.ifFlag.flag} is set (heading "If ${sec.ifFlag.not ? '!' : ''}${sec.ifFlag.flag}")`);
+  const hd = !sec.fromDay && !sec.ifFlag ? latestDay(sec.heading) : 0;
+  if (hd > page.from) out.push(`whole section: classified before day ${hd} (its heading names day ${hd})`);
+  if (/^\**\[(planned|open|legacy)/i.test(b.text)) out.push('marked planned/open/legacy: always classified');
+  const lead = (b.text.match(/^\s*(\[if\s+!?[a-z0-9_]+\]\s*)+/i) ?? [''])[0];
+  for (const m of lead.matchAll(BRANCH)) out.push(`whole paragraph: classified ${m[1] ? 'once' : 'unless'} ${m[2]} is set (branch tag [if ${m[1]}${m[2]}])`);
+  const today = page.category === 'days';
+  const at = b.text.match(/^\s*((?:[01]?\d|2[0-3]):[0-5]\d)\b/)?.[1];
+  const raw = b.text.replace(EMBED, '').slice(lead.length);
+  const parts = raw.split(SENTENCE);
+  for (const s0 of parts) {
+    const s = at && !s0.includes(at) ? `${at} ${s0}` : s0;
+    const short = `"${cleanWikiText(s0).slice(0, 48)}${cleanWikiText(s0).length > 48 ? '…' : ''}"`;
+    const where = parts.length > 1 ? `the sentence ${short}` : 'the text';
+    if (HIDDEN_TAG.test(s) && !/^\**\[(planned|open|legacy)/i.test(b.text)) out.push(`${where}: always hidden (planned/open/legacy)`);
+    for (const m of s.matchAll(BRANCH)) if (!lead.includes(m[0])) out.push(`${where}: hidden ${m[1] ? 'once' : 'unless'} ${m[2]} is set`);
+    if (/\[known\]/i.test(s)) continue;
+    const d = latestDay(s);
+    if (d > Math.max(page.from, sec.fromDay ?? 0, hd)) out.push(`${where}: hidden before day ${d} (it names day ${d}; add [known] to show it earlier)`);
+    const tm = latestTime(s);
+    if (today && tm >= 0) out.push(`${where}: hidden on day ${page.from} until ${hhmm(tm)}`);
+    else if (today && !at) out.push(`${where}: no time, so hidden until day ${page.from + 1}`);
+  }
+  return [...new Set(out)];
+}
+
+/** Why a paragraph with a public or hint rule is still classified now, in words (undefined if it isn't). */
+export function blockWhy(b: WikiBlock, sec: WikiSection, page: WikiPage, ctx: WikiCtx): string | undefined {
+  if (page.from > ctx.day) return `the page is known from day ${page.from}`;
+  if (sec.fromDay && sec.fromDay > ctx.day) return `the section starts on day ${sec.fromDay}`;
+  if (sec.ifFlag && ctx.flags.has(sec.ifFlag.flag) === sec.ifFlag.not) return `the section needs ${sec.ifFlag.not ? '!' : ''}${sec.ifFlag.flag}`;
+  if (!sec.fromDay && !sec.ifFlag && latestDay(sec.heading) > ctx.day) return `the heading names day ${latestDay(sec.heading)}`;
+  if (/^\**\[(planned|open|legacy)/i.test(b.text)) return 'it is marked planned/open/legacy';
+  const lead = (b.text.match(/^\s*(\[if\s+!?[a-z0-9_]+\]\s*)+/i) ?? [''])[0];
+  for (const m of lead.matchAll(BRANCH)) if (ctx.flags.has(m[2]) === (m[1] === '!')) return `it needs ${m[1]}${m[2]}`;
+  return 'every sentence waits for a later day or time, or a branch';
+}
+
 /** What a section holds for the player now, split by tag. Empty lists mean it's all classified. */
 export function sectionNow(page: WikiPage, sec: WikiSection, ctx: WikiCtx): { public: string[]; hint: string[] } {
   const out = { public: [] as string[], hint: [] as string[] };
@@ -308,7 +361,7 @@ export function formatBlock(b: Pick<WikiBlock, 'rule' | 'text' | 'bullet' | 'row
 
 /** A whole page back as markdown (what the wiki editor saves). */
 export function formatWikiPage(p: WikiPage): string {
-  const fm = ['---', `title: ${p.title}`, ...(p.aliases.length ? [`aliases: ${p.aliases.join(', ')}`] : []), `category: ${p.category}`, `from: ${p.from}`, ...(p.hub ? ['hub: true'] : []), '---', ''];
+  const fm = ['---', `title: ${p.title}`, ...(p.aliases.length ? [`aliases: ${p.aliases.join(', ')}`] : []), `category: ${p.category}`, `from: ${p.from}`, ...(p.hub ? ['hub: true'] : []), ...(p.summary ? [`summary: ${p.summary}`] : []), '---', ''];
   const out: string[] = [];
   for (const sec of p.sections) {
     const head = sec.writer ? 'Writer notes'

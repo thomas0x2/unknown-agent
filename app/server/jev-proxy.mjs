@@ -338,9 +338,9 @@ async function buildMatch(sdk, body) {
       // whether the prompt says which app it means: one plain question per app (it was ignored when it rode along on the others)
       app: `Is the prompt about this app? Yes if it names it in any way: its full name, any word of the name on its own ("gino" for Trattoria Gino, "spin cycle" for Spin Cycle Board), its address, its client, or what it is ("the restaurant site", "the crawler"), in any case or spelling. Also yes if the prompt names no app and the most recent earlier message was about this app (the player's or the agent's, like "Pushed to Forkyard for <app>"). No if it names a different app, or names no app and no earlier message is about this one. App: ${f.description}`,
       // agent.chat queries (src/engine/query.ts): which wiki page the question is about, then which section of it
-      topic: `Is the player's question about this, in any words? Yes if it names it (its name, any word of its name, one of its other names, its address or handle, or what it is: "the landlord", "the pizza place", "my mom") or asks something only it could answer. No if it is about something else, or names nothing specific ("what's going on", "tell me something"). ${context} Subject: ${f.description}`,
+      topic: `Is the player's question about this subject? Yes if the question names it (its name, any word of its name, one of its other names, its address or handle) or describes it ("the landlord", "the pizza place", "my mom", "how do I make money" for a page on how to make money). No if the question names or describes a different subject, even one this subject has to do with, and no if it names nothing specific ("what's going on", "tell me something"). ${context} Subject: ${f.description}`,
       // several pages matched: which of them the question is mainly about (named, or asked what it is)
-      main: `Is this the main thing the player's question is about? Yes if the question names it directly (its name or one of its other names) or asks what it is or how it works. No if the question is mainly about something else and this only has to do with it, mentions it or uses it ("What's DOLR?" is about DOLR, not about the chatbot whose prices are in DOLR). ${context} Subject: ${f.description}`,
+      main: `Is this the main thing the player's question is about? Yes if the question names it directly (its name or one of its other names) or asks what it is or how it works. No if the question is mainly about something else and this only has to do with it, mentions it or uses it ("What's DOLR?" is about DOLR, not about the chatbot whose prices are in DOLR; "Who is Gino?" is about Gino, not about the player asking). ${context} Subject: ${f.description}`,
       section: `Does the player's question ask about this part of its subject, in any words? Yes if it asks about this in particular. No if it asks about the subject only in general ("who is he"), or about a different part. ${context} Part: ${f.description}`,
       // agent-terminal: whether the prompt asks the agent to do this job at all (the path is asked step by step)
       hack: `Does the prompt ask the agent to do this job, in any words? Yes if it asks to hack, delete, remove, take down, get rid of or make disappear the thing described, even loosely or without naming every detail. No if it only asks about it, or asks for something else. ${context} Job: ${f.description}`,
@@ -394,8 +394,10 @@ async function handle(kind, body) {
   }
   // the dev Jev tests take the raw confidences and apply thresholds themselves
   if (body.withScores) return { status: 200, json: (body.features ?? []).map((_, i) => answers[`f${i}`]?.noul ?? 0) };
-  // the bars the Jev tests found best (keep in step with BARS_NOW in src/engine/jevTests.ts): a path step and a part need 0.6, the rest 0.5
-  const bar = (f) => (f.kind === 'component' || f.kind === 'step' ? 0.6 : 0.5);
+  // the bars the Jev tests found best (keep in step with BARS_NOW in src/engine/jevTests.ts and
+  // QUERY_BARS_NOW in src/engine/queryTests.ts): a path step and a part need 0.6, a query's page 0.6
+  // and its main page 0.8, the rest 0.5
+  const bar = (f) => ({ component: 0.6, step: 0.6, topic: 0.6, main: 0.8 })[f.kind] ?? 0.5;
   const features = (body.features ?? []).filter((f, i) => (answers[`f${i}`]?.noul ?? 0) >= bar(f)).map((f) => f.id);
   return { status: 200, json: features };
 }
