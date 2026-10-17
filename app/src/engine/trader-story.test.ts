@@ -78,9 +78,11 @@ describe("Crane's $APO post tests the new auto-buy", () => {
     const s = deploy(s0, app.id, content);
     expect(s.arriving).toContainEqual({ eventId: 'trader_y_crane_apo', day: 3, at: at('15:30') });
     expect(s.arriving).toContainEqual({ eventId: 'trader_y_axel_apo', day: 3, at: at('15:36') });
-    s.clockMin = at('15:40');
-    deliverArrivals(s, content);
-    expect(s.delivered.map((d) => d.eventId)).toEqual(expect.arrayContaining(['trader_y_crane_apo', 'trader_y_axel_apo']));
+    // Axel's reply waits for a free slot on Y, but always comes after Crane's post
+    for (let m = at('15:30'); m <= at('17:00'); m++) { s.clockMin = m; deliverArrivals(s, content); }
+    const min = (id: string) => s.delivered.find((d) => d.eventId === id)?.min;
+    expect(min('trader_y_crane_apo')).toBe(at('15:30'));
+    expect(min('trader_y_axel_apo')).toBeGreaterThan(min('trader_y_crane_apo')!);
     expect(autoBuys(marketPosts(s, content), 3, new Set()).map((b) => [b.ticker, b.post.id])).toEqual([['APO', 'trader_y_crane_apo']]);
   });
 
@@ -102,10 +104,13 @@ describe("Crane's $APO post tests the new auto-buy", () => {
     expect(s.arriving?.some((x) => x.eventId === 'trader_y_crane_apo')).toBeFalsy();
   });
 
-  it('a late deploy carries it over to the next morning', () => {
-    const { s: s0, app } = trader(3, '21:30');
+  it('lands by 20:00, or the next morning with Axel still after Crane', () => {
+    const fits = deploy(trader(3, '18:24').s, trader(3, '18:24').app.id, content);
+    expect(fits.arriving).toContainEqual({ eventId: 'trader_y_axel_apo', day: 3, at: at('20:00') });
+    const { s: s0, app } = trader(3, '18:30');
     const s = deploy(s0, app.id, content);
-    expect(s.arriving).toContainEqual({ eventId: 'trader_y_crane_apo', day: 4, at: at('11:00') });
+    expect(s.arriving).toContainEqual({ eventId: 'trader_y_crane_apo', day: 4, at: at('10:30') });
+    expect(s.arriving).toContainEqual({ eventId: 'trader_y_axel_apo', day: 4, at: at('10:36') });
     // still waiting tonight
     s.clockMin = at('21:59');
     deliverArrivals(s, content);

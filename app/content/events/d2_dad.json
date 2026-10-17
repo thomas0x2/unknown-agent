@@ -18,7 +18,17 @@
           "familyTrust": 5
         }
       },
-      "reply": "Thanks, kiddo. Means a lot."
+      "reply": "Thanks, kiddo. Means a lot.",
+      "keys": [
+        "proud",
+        "congrat",
+        "congratulations",
+        "20 years|anniversary",
+        "love you",
+        "miss you",
+        "well done",
+        "happy for you"
+      ]
     },
     {
       "id": "ask",
@@ -29,7 +39,11 @@
           "familyTrust": 3
         }
       },
-      "reply": "Ha, you know me, I just keep the trucks moving. Good crew out here."
+      "reply": "Ha, you know me, I just keep the trucks moving. Good crew out here.",
+      "keys": [
+        "warehouse|work|job|shift+how|what|tell|like",
+        "how is work"
+      ]
     }
   ],
   "noReply": {

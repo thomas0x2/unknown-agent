@@ -41,10 +41,9 @@ describe('the agent outage after the GeneralAI hack', () => {
     const s = hackedAt(CLOCK.wake + 5); // before his 10:20 post
     deliverArrivals(s, content);
     expect(delivered(s, 'gai_outage_y_crane')).toBe(false);
-    advanceClock(s, 25);
-    deliverArrivals(s, content);
-    expect(delivered(s, 'gai_outage_y_crane')).toBe(true);
-    advanceClock(s, 120);
+    // 25 minutes in, or the next free slot on Y after that
+    for (let i = 0; i < 240; i++) { advanceClock(s, 1); deliverArrivals(s, content); }
+    expect(s.delivered.find((d) => d.eventId === 'gai_outage_y_crane')?.min).toBeGreaterThanOrEqual(CLOCK.wake + 30);
     deliverArrivals(s, content);
     expect(delivered(s, 'd18_y_crane')).toBe(false);
     // the next day he posts as usual, and the error doesn't come back

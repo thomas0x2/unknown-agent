@@ -19,6 +19,8 @@ from: 1
 
 [public] On [[Day 1]] she emails "Are you okay?": she heard about the layoffs on the news, asks if they're eating, and adds "Your father says hi (he didn't)." The [[Brother]] replies to all. {{mail:d1_mom}}
 
+[hint] She is waiting for an answer, and she notices when one doesn't come.
+
 - [public] [if asked_mom_money] The player asked her for money, and she sent 20 DOLR: "I knew it. I sent you a little something. Don't tell your father. Buy vegetables."
 
 ## From day 4: Her birthday and the jacket
@@ -41,4 +43,5 @@ from: 1
 
 - Persona `mom` in characters.json; contact in contacts.json. Events `d1_mom`, `d6_mom_bday_chip|own|skip`. Birthday is day 6, Saturday Oct 12.
 - Day 1 outcomes: warm reply +5 family trust; asking for money +20 DOLR, −10 trust, flag `asked_mom_money`; silence −5. Day 6 own gift +5 trust.
+- Silence = no outcome-matching reply by the end of day 1 (the day it arrives; `noReply` has no `byDay`). Only a reply Jev matches to an outcome closes the thread; a reply that matches nothing (a miss or a hint) or a `keepsOpen` outcome doesn't, so the penalty still lands. Binning the email doesn't help (mailbin.ts). `lapseUnanswered` in `engine/events.ts` runs in the night summary (`day.ts`).
 - Family members stay unnamed.

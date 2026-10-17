@@ -998,7 +998,7 @@
     ],
     "prompt": "vibe check's auto-buy bought vantor today when it shouldn't have",
     "expect": {
-      "near": true
+      "near": "near_miss"
     }
   },
   {

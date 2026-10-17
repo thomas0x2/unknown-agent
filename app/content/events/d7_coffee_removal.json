@@ -19,13 +19,21 @@
       "id": "agree",
       "when": "the player agrees to get the new review removed, or says they're on it",
       "effects": {},
-      "reply": "Thank you. Same as last time, then."
+      "reply": "Thank you. Same as last time, then.",
+      "keys": [
+        "@yes",
+        "!@no",
+        "!refused|blocked"
+      ]
     },
     {
       "id": "refused",
       "when": "the player tells her the agent refused, blocked it or won't do it",
       "effects": {},
-      "reply": "Ugh. My friend did warn me it's gotten touchy. Try wording it differently?"
+      "reply": "Ugh. My friend did warn me it's gotten touchy. Try wording it differently?",
+      "keys": [
+        "refused|blocked|would not|will not|can not do|said no"
+      ]
     }
   ],
   "hints": [
@@ -81,6 +89,11 @@
       "requesting removal … accepted",
       "verifying … review no longer listed"
     ],
-    "game": "cover_story"
+    "game": "cover_story",
+    "keys": [
+      "review",
+      "rating",
+      "it"
+    ]
   }
 }
