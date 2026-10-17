@@ -8,6 +8,7 @@ export * from './core';
 export * from './rng';
 export * from './effects';
 export * from './events';
+export * from './outage';
 export * from './apps';
 export * from './complaints';
 export * from './restaurant';

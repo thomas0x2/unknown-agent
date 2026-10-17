@@ -104,6 +104,17 @@ export const AGENT_POLICY = {
   misuseTerminateAt: 100,
 };
 
+/**
+ * The day the player hacks GeneralAI (the flag's day), every agent service is down until the next
+ * morning: agent.chat and agent-terminal answer with an error and bill nothing, and nothing agent
+ * ghostwrites goes up. `ghostwritten` are the Y senders whose posts agent writes; each `outage`
+ * event lands its `after` minutes from the moment the outage is noticed instead.
+ */
+export const AGENT_OUTAGE = {
+  flag: 'hacked_generalai',
+  ghostwritten: ['Randall Crane'],
+};
+
 export const LOCAL_MODELS = {
   /** Fraction of returned details that are confidently wrong when used for doxxing. */
   doxErrorRate: 0.25,

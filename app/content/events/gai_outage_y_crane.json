@@ -1,0 +1,10 @@
+{
+  "id": "gai_outage_y_crane",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "flagsAll": ["hacked_generalai"]
+  },
+  "outage": { "after": 25 },
+  "body": "Error: the server could not be reached. Your post was not generated. Please check your connection and try again. If the problem continues, contact your GeneralAI account manager."
+}

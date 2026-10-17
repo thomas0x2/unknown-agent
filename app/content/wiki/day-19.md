@@ -35,6 +35,7 @@ from: 19
 ## Not written yet
 
 - [hidden] [planned] Last day of the heist window.
+- [hidden] [planned] If the heist hacks GeneralAI today (flag `hacked_generalai`), agent is down until tomorrow and Crane's account posts a "server could not be reached" error 25 minutes later instead of his own post (see [[GeneralAI]]); if that comes before 19:35, his "I write every word myself" post doesn't go up.
 
 ## Writer notes
 

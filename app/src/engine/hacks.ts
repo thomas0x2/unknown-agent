@@ -14,6 +14,7 @@ import { applyEffects } from './effects';
 import { chargeAgent, policyActive, recordWorkaround } from './agent';
 import { policyCheck, recentChat, stateSummary } from './actions';
 import { type Writer, scriptedWriter } from './writer';
+import { agentDown, OUTAGE_TERM } from './outage';
 
 /** What Jev reads an agent.chat prompt against: is it a hack attempt? */
 export const HACK_INTENT = "The player asks the agent to hack something: break into, take over or tamper with a website or an account that isn't theirs, such as deleting or changing someone else's post or review, or making it disappear. Not building or fixing the player's own apps, and not questions about hacking.";
@@ -162,6 +163,11 @@ export async function agentTermPrompt(s0: GameState, content: Content, jev: JevR
     term.push(...lines);
     return { state: s, lines, charged: true, landed };
   };
+  if (agentDown(s)) {
+    const line: AgentTermLine = { k: 'err', text: OUTAGE_TERM, debug: ['GeneralAI was hacked today: agent is down until tomorrow, not billed'] };
+    term.push(line);
+    return { state: s, lines: [line], charged: false };
+  }
   if (!chargeAgent(s, text)) {
     term.push({ k: 'err', text: LOCKED });
     return { state: s, lines: [{ k: 'err', text: LOCKED }], charged: false };
