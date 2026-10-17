@@ -566,7 +566,11 @@ export async function agentStartFor(jev: JevRouter, s: GameState, content: Conte
   if (!open.length) return undefined;
   const d = await jev.route({
     channel: 'agent', text, context: recentChat(s), stateSummary: stateSummary(s), hints: [], strict: true,
-    candidates: open.map((ev) => ({ id: ev.id, when: ev.agentStart!.when })),
+    candidates: [
+      ...open.map((ev) => ({ id: ev.id, when: ev.agentStart!.when })),
+      // somewhere for a question to go, so "what is Swaplist?" doesn't start building it
+      { id: '_question', when: 'The player only asks a question (what something is, who uses it, how it works) and does not ask agent to build anything.' },
+    ],
   });
   const ev = d.kind === 'outcome' ? open.find((e) => e.id === d.outcomeId) : undefined;
   return ev && { ev, outcome: ev.outcomes!.find((o) => o.effects?.createApp)! };

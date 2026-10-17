@@ -3,6 +3,7 @@ title: Building apps
 aliases: how to build apps, how to make apps, building apps, making apps, getting started, how to make money, build, builds, bugs, fixes, fix, deploy, deploying, payday, complaints, hosting, overnight breaks, client apps, user apps, promo posts, strikes
 category: apps
 from: 1
+summary: How the game works: how to make money by building apps with agent, finding clients, fixing bugs, deploying on Forkyard, hosting costs, overnight breaks and getting paid.
 ---
 
 [public] [[The player]] earns money by finding people who need an app (mostly on Y), prompting [[agent]] to build it, checking what agent actually shipped on the live site, and deploying from [[Forkyard]]. There are two kinds of app: client apps, where a client pays a daily rate, and user apps, which earn from ads per user.

@@ -41,3 +41,5 @@ export * from './current';
 export * from './citypulse';
 export * from './wiki';
 export * from './query';
+export * from './viewState';
+export * from './queryTests';

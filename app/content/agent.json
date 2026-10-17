@@ -83,7 +83,7 @@
     }
   ],
   "query": {
-    "when": "The player asks agent a question to find something out about this world or how things work: a person, company, website, app, product, price, the news, the election, what has been posted on Y, Yowl or CityPulse, what is in their email, their money, rent, followers or apps, what agent can do, or how to do something (how to build, fix or deploy apps, find work, make money, pay rent). Not a request for agent to build, change, fix or do something, and not small talk, insults, or questions about agent itself being smart, alive or real.",
+    "when": "The player asks agent a question to find something out: about a person (their family included: how mom, dad or their brother is doing, what they want), a company, website, app, product or price, the news, the election, what has been posted on Y, Yowl or CityPulse, what is in their email, their own situation (their money, rent, job, why they were laid off, followers, apps), what agent can do, or how to do something (how to build, fix or deploy apps, find clients or work, make money, pay rent). Not a request for agent to build, change, fix or do something, and not small talk, insults, or questions about agent itself being smart, alive or real.",
     "fallback": [
       "I can't look that up right now. The question has been billed anyway.",
       "My lookup is down. Check Qmail and Y yourself; it's cheaper.",

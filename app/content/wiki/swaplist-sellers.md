@@ -1,6 +1,6 @@
 ---
 title: Swaplist sellers
-aliases: Swaplist listings, Ines, ines_sells, second_hand_sam, Sam, Pia, pia_l, Kofi, kofi_a, Steph, steph_m, walked_there_again, leather jacket, Crane 2030 plate
+aliases: Swaplist listings, Ines, ines_sells, second_hand_sam, Sam, Pia, pia_l, Kofi, kofi_a, Steph, steph_m, walked_there_again, leather jacket
 category: people
 from: 3
 ---

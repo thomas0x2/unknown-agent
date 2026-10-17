@@ -9,8 +9,9 @@
 import type { GameStore } from '../game/store';
 import type { Content } from '../content/schema';
 import {
+  blockGates, blockWhy,
   parseWikiPage, formatWikiPage, parseTagRule, formatTagRule, evalTag, blockNow, queryCtx, seenRef, CITYPULSE, METERS,
-  type WikiPage, type WikiBlock, type WikiTag, type TagStep, type WikiCtx,
+  type WikiPage, type WikiBlock, type WikiSection, type WikiTag, type TagStep, type WikiCtx,
 } from '../engine';
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
@@ -97,14 +98,18 @@ function stepRow(x: TagStep | null, i: number, host: WikiHost): string {
     + (i === 0 ? `<datalist id="wk-hints">${[...Object.keys(METERS).map((m) => `${m} >= `), ...host.flags(), ...itemIds(host)].map((v) => `<option value="${esc(v)}">`).join('')}</datalist>` : '');
 }
 
-function editor(host: WikiHost, b: WikiBlock): string {
+function editor(host: WikiHost, b: WikiBlock, sec: WikiSection, page: WikiPage): string {
   const r = parseTagRule(b.rule || 'classified');
+  // the automatic rules (page and section day, branches, sentences naming a later day or time)
+  const gates = blockGates(b, sec, page);
+  const auto = gates.length ? `<div class="wk-auto"><span class="wk-dim">Automatic, from the page and the text (classified whatever the tag says):</span><ul>${gates.map((g) => `<li>${esc(g)}</li>`).join('')}</ul></div>` : '';
   const steps = Array.from({ length: W.steps }, (_, i) => stepRow(r.steps[i] ?? null, i, host)).join('');
   return `<div class="wk-edit">
     <textarea id="wk-text" rows="${Math.min(14, Math.max(3, Math.ceil(b.text.length / 90)))}">${esc(b.text)}</textarea>
     <div class="wk-rule"><label>Tag <select id="wk-base">${(['public', 'hint', 'classified'] as const).map((t) => `<option ${t === r.base ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
       <span class="wk-dim">then, last match wins:</span>${steps}
       <button class="wk-btn" data-wiki="addstep">+ Rule</button></div>
+    ${auto}
     <div class="wk-acts"><button class="wk-btn primary" data-wiki="save">Save</button><button class="wk-btn" data-wiki="split" title="Split at the cursor">Split at cursor</button><button class="wk-btn" data-wiki="cancel">Cancel</button><button class="wk-btn danger" data-wiki="delete">Delete paragraph</button></div>
   </div>`;
 }
@@ -119,14 +124,14 @@ function blockHtml(host: WikiHost, page: WikiPage, si: number, bi: number): stri
   // why it is what it is: the rule, and whether something (day, branch, a later sentence) overrides it
   const why = sec.writer ? 'writer note, never given to Haiku'
     : !b.rule ? 'untagged: classified'
-    : now.tag !== ruleTag ? `rule says ${ruleTag}, but it isn't known yet (day, time, branch or planned)` : `rule: ${b.rule}`;
+    : now.tag !== ruleTag ? `rule says ${ruleTag}, but classified now: ${blockWhy(b, sec, page, ctx)}` : `rule: ${b.rule}`;
   const cut = now.text && now.text !== b.text.replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (_, a, c) => c || a) ? `<div class="wk-gets"><b>Haiku gets:</b> ${esc(now.text)}</div>` : '';
   const head = sec.writer ? '<span class="wk-tag writer">writer</span>' : tagPill(now.tag, why);
   const rule = !sec.writer && b.rule ? `<code class="wk-rulecode">${esc(b.rule)}</code>` : '';
   return `<div class="wk-block${editing ? ' editing' : ''}${sec.writer ? ' writer' : ''}">
     <div class="wk-bhead">${head}${rule}<span class="wk-why">${esc(why)}</span>
       ${editing ? '' : `<span class="wk-bacts"><button class="wk-mini" data-wiki="edit" data-s="${si}" data-b="${bi}">Edit</button>${bi < sec.blocks.length - 1 ? `<button class="wk-mini" data-wiki="merge" data-s="${si}" data-b="${bi}" title="Merge with the next paragraph">Merge ↓</button>` : ''}<button class="wk-mini" data-wiki="add" data-s="${si}" data-b="${bi}" title="New paragraph after this one">+ After</button></span>`}</div>
-    ${editing ? editor(host, b) : `<div class="wk-text">${b.bullet ? '• ' : ''}${esc(b.text)}</div>${cut}`}</div>`;
+    ${editing ? editor(host, b, sec, page) : `<div class="wk-text">${b.bullet ? '• ' : ''}${esc(b.text)}</div>${cut}`}</div>`;
 }
 
 /** wiki.dev in the game's browser. */

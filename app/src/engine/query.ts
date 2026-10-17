@@ -19,6 +19,14 @@ import { liveArticles } from './citypulse';
 
 /** More pages than this matched: the question is too broad to be about anything. */
 const MAX_PAGES = 3;
+/**
+ * Which of several matched pages a question is mainly about: Jev's confidence has to reach
+ * MAIN_BAR (the proxy's bar for 'main' questions), or, when no page does, come within MAIN_CLOSE of
+ * the best one, if that is at least MAIN_FLOOR. Tuned on content/query-tests.json.
+ */
+const MAIN_BAR = 0.8;
+const MAIN_CLOSE = 0.1;
+const MAIN_FLOOR = 0.4;
 
 export type QueryMatch =
   | { kind: 'miss'; debug: string }
@@ -57,10 +65,23 @@ export function seenItems(s: GameState, content: Content): Map<string, string> {
   return out;
 }
 
-/** How Jev sees a page: its title, other names and what kind of thing it is. */
-function pageDesc(p: WikiPage): string {
+/** What a page is about in a line: its `summary`, or the first sentence of its first section. */
+function gist(p: WikiPage): string {
+  if (p.summary) return p.summary;
+  const first = querySections(p)[0]?.blocks[0]?.text ?? '';
+  const text = cleanWikiText(first.replace(EMBED, ''));
+  return (text.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? text).slice(0, 220);
+}
+
+/** How Jev sees a page: its title, other names, what kind of thing it is and what it's about. */
+function pageDesc(p: WikiPage, day: number): string {
+  // the player asks about "today" and "yesterday", not day numbers
+  const when = p.category === 'days' ? (p.from === day ? ' (today)' : p.from === day - 1 ? ' (yesterday)' : '') : '';
+  if (when) return `${p.title}${when}: what has happened ${when.slice(2, -1)} (${p.aliases[0] ?? p.title})`;
   const kind = { people: 'a person', family: "a member of the player's family", companies: 'a company or organisation', sites: 'a website or app', apps: 'an app the player builds', world: 'a topic', days: 'what happened on that day', writers: '' }[p.category] ?? 'a topic';
-  return `${p.title}${p.aliases.length ? ` (also called ${p.aliases.slice(0, 16).join(', ')})` : ''}: ${kind}`;
+  const about = gist(p);
+  // a summary says what the page is in its own words, kind included
+  return `${p.title}${when}${p.aliases.length ? ` (also called ${p.aliases.slice(0, 16).join(', ')})` : ''}: ${p.summary ?? `${kind}${about ? `. ${about}` : ''}`}`;
 }
 
 /** How Jev sees one section of a hub page: its heading, and the start of what it says (names in it). */
@@ -82,7 +103,7 @@ export async function matchQuery(jev: JevRouter, s: GameState, content: Content,
   const found = await jev.matchFeatures({
     prompt: text, context: chat,
     features: [
-      ...pages.map((p) => ({ id: p.file, description: pageDesc(p), kind: 'topic' as const })),
+      ...pages.map((p) => ({ id: p.file, description: pageDesc(p, ctx.day), kind: 'topic' as const })),
       ...hubs.map(({ p, sec, i }) => ({ id: `${p.file}#${i}`, description: hubDesc(p, sec), kind: 'topic' as const })),
     ],
   });
@@ -94,16 +115,31 @@ export async function matchQuery(jev: JevRouter, s: GameState, content: Content,
   // that only have to do with it ("What's DOLR?" is the Money and DOLR page, not agent's prices)
   let mainNote = '';
   if (hit.length > 1) {
-    const main = await jev.matchFeatures({ prompt: text, context: chat, features: hit.map((p) => ({ id: p.file, description: pageDesc(p), kind: 'main' as const })) });
-    const kept = hit.filter((p) => main.includes(p.file));
+    const ask = { prompt: text, context: chat, features: hit.map((p) => ({ id: p.file, description: pageDesc(p, ctx.day), kind: 'main' as const })) };
+    let kept: WikiPage[];
+    if (jev.matchScores) {
+      // with Jev's confidences: the pages over the bar, or if none is, the ones close to the best
+      const sc = await jev.matchScores(ask);
+      const best = Math.max(...sc);
+      kept = hit.filter((_, i) => sc[i] >= MAIN_BAR);
+      if (!kept.length && best >= MAIN_FLOOR) kept = hit.filter((_, i) => sc[i] >= best - MAIN_CLOSE);
+    } else {
+      const main = await jev.matchFeatures(ask);
+      kept = hit.filter((p) => main.includes(p.file));
+    }
     if (kept.length && kept.length < hit.length) {
       mainNote = ` (mainly about ${kept.map((p) => p.title).join(', ')}, of ${hit.map((p) => p.title).join(', ')})`;
       hit = kept;
     }
   }
-  // something the player can't know of yet: that's what the question is after, so it is refused
+  // something the player can't know of yet is refused, unless the question is also about something
+  // they know: then it's answered from that (asking about rent shouldn't be refused over day 7's page)
   const early = hit.filter((p) => !known.has(p));
-  if (early.length) return { kind: 'classified', where: early.map((p) => p.title), debug: `Jev: ${early.map((p) => p.title).join('; ')}, not known to the player until day ${Math.min(...early.map((p) => p.from))}, so classified` };
+  if (early.length && early.length < hit.length) {
+    mainNote += ` (left out, not known yet: ${early.map((p) => p.title).join(', ')})`;
+    hit = hit.filter((p) => known.has(p));
+  }
+  else if (early.length) return { kind: 'classified', where: early.map((p) => p.title), debug: `Jev: ${early.map((p) => p.title).join('; ')}, not known to the player until day ${Math.min(...early.map((p) => p.from))}, so classified` };
   if (hit.length > MAX_PAGES) return { kind: 'broad', options: hit.slice(0, 4).map((p) => p.title), debug: `Jev: the question matches ${hit.length} wiki pages, too broad (a near-miss)${mainNote}` };
 
   // sections of every matched page with more than an overview, asked in one go
@@ -120,7 +156,7 @@ export async function matchQuery(jev: JevRouter, s: GameState, content: Content,
   for (const { p, secs, fixed } of choice) {
     // no section named: the question is about the page in general, its overview
     let picked = secs.filter((_, i) => fixed.includes(i) || named.includes(`${p.file}#${i}`));
-    if (!picked.length) picked = secs.filter((x) => !x.heading).slice(0, 1).concat(secs.length && secs[0].heading ? [secs[0]] : []);
+    if (!picked.length) picked = p.category === 'days' ? secs : secs.filter((x) => !x.heading).slice(0, 1).concat(secs.length && secs[0].heading ? [secs[0]] : []);
     for (const sec of picked) {
       const now = sectionNow(p, sec, ctx);
       out.public.push(...now.public);

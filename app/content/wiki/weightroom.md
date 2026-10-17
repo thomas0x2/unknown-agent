@@ -1,6 +1,6 @@
 ---
 title: Weightroom
-aliases: weightroom.ai, open weights, model hub, Hugging Face
+aliases: weightroom.ai, open weights, model hub, Hugging Face, free models, free AI models, open models, local models
 category: sites
 from: 1
 ---

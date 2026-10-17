@@ -1,0 +1,1401 @@
+[
+ {
+  "prompt": "What's DOLR",
+  "day": 1,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Money and DOLR"
+   ]
+  }
+ },
+ {
+  "prompt": "what is dolr worth?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Money and DOLR"
+   ],
+   "also": [
+    "Ad brands",
+    "Coinbin"
+   ]
+  }
+ },
+ {
+  "prompt": "What is EURI?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "EURI",
+    "Money and DOLR"
+   ]
+  }
+ },
+ {
+  "prompt": "how much money do I have?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Money and DOLR",
+    "Coinbin",
+    "The player"
+   ],
+   "also": [
+    "The player",
+    "Building apps",
+    "agent",
+    "Money and DOLR",
+    "Coinbin",
+    "Forkyard",
+    "Qmail",
+    "Y"
+   ]
+  }
+ },
+ {
+  "prompt": "when is rent due?",
+  "day": 2,
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Money and DOLR",
+    "Gary Pruitt",
+    "Pruitt Property Management"
+   ],
+   "also": [
+    "The player",
+    "Coinbin"
+   ]
+  }
+ },
+ {
+  "prompt": "how much is my rent?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Money and DOLR",
+    "Gary Pruitt",
+    "Pruitt Property Management"
+   ],
+   "also": [
+    "The player",
+    "Coinbin"
+   ]
+  }
+ },
+ {
+  "prompt": "what happens if I can't pay rent?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Money and DOLR",
+    "Gary Pruitt",
+    "Pruitt Property Management"
+   ],
+   "also": [
+    "The player",
+    "Government"
+   ]
+  }
+ },
+ {
+  "prompt": "what is Coinbin?",
+  "day": 1,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Coinbin"
+   ],
+   "also": [
+    "Money and DOLR",
+    "coinbln.com"
+   ]
+  }
+ },
+ {
+  "prompt": "how do I send money to someone?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Coinbin",
+    "Money and DOLR"
+   ]
+  }
+ },
+ {
+  "prompt": "what's my wallet address",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Coinbin",
+    "The player"
+   ],
+   "also": [
+    "Money and DOLR"
+   ]
+  }
+ },
+ {
+  "prompt": "How can I build apps?",
+  "day": 1,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Building apps"
+   ],
+   "also": [
+    "agent",
+    "Forkyard"
+   ]
+  }
+ },
+ {
+  "prompt": "how do I make money?",
+  "day": 1,
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Building apps",
+    "Money and DOLR",
+    "The player"
+   ],
+   "also": [
+    "agent",
+    "Y"
+   ]
+  }
+ },
+ {
+  "prompt": "what should I do now?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "The player",
+    "Building apps",
+    "agent",
+    "Money and DOLR",
+    "Coinbin",
+    "Forkyard",
+    "Qmail",
+    "Y"
+   ],
+   "also": [
+    "Day 3"
+   ]
+  }
+ },
+ {
+  "prompt": "how do I fix a bug in my app?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Building apps"
+   ],
+   "also": [
+    "agent",
+    "Forkyard"
+   ]
+  }
+ },
+ {
+  "prompt": "how do I deploy an app?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Building apps",
+    "Forkyard"
+   ],
+   "also": [
+    "agent"
+   ]
+  }
+ },
+ {
+  "prompt": "where do I find clients?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Building apps",
+    "Y",
+    "Qmail"
+   ],
+   "also": [
+    "agent",
+    "The player"
+   ]
+  }
+ },
+ {
+  "prompt": "what can you do?",
+  "day": 1,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "agent"
+   ],
+   "also": [
+    "Building apps"
+   ]
+  }
+ },
+ {
+  "prompt": "how much does a prompt cost?",
+  "day": 1,
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "agent",
+    "Money and DOLR"
+   ]
+  }
+ },
+ {
+  "prompt": "what's the difference between agent-1 and agent-2?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "agent"
+   ],
+   "also": [
+    "GeneralAI"
+   ]
+  }
+ },
+ {
+  "prompt": "why are prompts so expensive?",
+  "expect": {
+   "kind": "answer",
+   "also": [
+    "GeneralAI",
+    "Money and DOLR"
+   ],
+   "any": [
+    "Money and DOLR",
+    "agent"
+   ]
+  }
+ },
+ {
+  "prompt": "how do apps break overnight?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Building apps"
+   ],
+   "also": [
+    "Forkyard"
+   ]
+  }
+ },
+ {
+  "prompt": "what does hosting cost?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Building apps"
+   ],
+   "also": [
+    "Forkyard",
+    "Money and DOLR"
+   ]
+  }
+ },
+ {
+  "prompt": "what is Forkyard?",
+  "day": 1,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Forkyard"
+   ],
+   "also": [
+    "Building apps"
+   ]
+  }
+ },
+ {
+  "prompt": "how do I get more followers on Y?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Y",
+    "Building apps"
+   ],
+   "also": [
+    "The player"
+   ]
+  }
+ },
+ {
+  "prompt": "who is Gino?",
+  "day": 1,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Gino Fenoglio"
+   ],
+   "also": [
+    "Trattoria Gino site",
+    "Local businesses"
+   ]
+  }
+ },
+ {
+  "prompt": "what does Gino want for his website?",
+  "day": 1,
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Gino Fenoglio",
+    "Trattoria Gino site"
+   ],
+   "also": [
+    "Local businesses"
+   ]
+  }
+ },
+ {
+  "prompt": "who is my landlord?",
+  "day": 1,
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Gary Pruitt",
+    "Pruitt Property Management"
+   ],
+   "also": [
+    "The player"
+   ]
+  }
+ },
+ {
+  "prompt": "tell me about Gary Pruitt",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Gary Pruitt"
+   ],
+   "also": [
+    "Pruitt Property Management"
+   ]
+  }
+ },
+ {
+  "prompt": "who is Randall Crane?",
+  "day": 1,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Randall Crane"
+   ],
+   "also": [
+    "Heritage Party",
+    "The election"
+   ]
+  }
+ },
+ {
+  "prompt": "what does Crane want?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Randall Crane"
+   ],
+   "also": [
+    "Heritage Party",
+    "The election"
+   ]
+  }
+ },
+ {
+  "prompt": "who is Axel Rook?",
+  "day": 1,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Axel Rook"
+   ],
+   "also": [
+    "Y",
+    "Apogee"
+   ]
+  }
+ },
+ {
+  "prompt": "who runs Y?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Axel Rook",
+    "Y"
+   ]
+  }
+ },
+ {
+  "prompt": "who is Cal Hartman?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Cal Hartman"
+   ],
+   "also": [
+    "GeneralAI"
+   ]
+  }
+ },
+ {
+  "prompt": "who's the CEO of GeneralAI?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Cal Hartman",
+    "GeneralAI"
+   ]
+  }
+ },
+ {
+  "prompt": "who is Mara Vey?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Mara Vey"
+   ],
+   "also": [
+    "The Current"
+   ]
+  }
+ },
+ {
+  "prompt": "who is Daniel Keller?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Daniel Keller"
+   ],
+   "also": [
+    "Progress Party",
+    "The election"
+   ]
+  }
+ },
+ {
+  "prompt": "what is Keller running for?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Daniel Keller"
+   ],
+   "also": [
+    "Progress Party",
+    "The election"
+   ]
+  }
+ },
+ {
+  "prompt": "what's up with my mom?",
+  "day": 2,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Mom"
+   ]
+  }
+ },
+ {
+  "prompt": "how is dad doing?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Dad"
+   ],
+   "also": [
+    "Halden Logistics",
+    "Rolf Henning"
+   ]
+  }
+ },
+ {
+  "prompt": "what does my brother want?",
+  "day": 4,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Brother"
+   ]
+  }
+ },
+ {
+  "prompt": "did my brother pay me back?",
+  "day": 5,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Brother"
+   ],
+   "also": [
+    "Coinbin",
+    "Money and DOLR",
+    "The player"
+   ]
+  }
+ },
+ {
+  "prompt": "who am I?",
+  "day": 1,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "The player"
+   ]
+  }
+ },
+ {
+  "prompt": "why did I lose my job?",
+  "day": 1,
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "The player",
+    "Vantor Group"
+   ],
+   "also": [
+    "GeneralAI"
+   ]
+  }
+ },
+ {
+  "prompt": "who is deskjockey?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "deskjockey"
+   ],
+   "also": [
+    "Vibe Check"
+   ]
+  }
+ },
+ {
+  "prompt": "who is Viktor?",
+  "day": 4,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Viktor"
+   ],
+   "also": [
+    "Swaplist"
+   ]
+  }
+ },
+ {
+  "prompt": "who is Hassan Okoro?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Hassan Okoro"
+   ],
+   "also": [
+    "Local businesses",
+    "Spin Cycle Board"
+   ]
+  }
+ },
+ {
+  "prompt": "who owns the laundromat?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Hassan Okoro",
+    "Local businesses"
+   ],
+   "also": [
+    "Spin Cycle Board",
+    "Spin Cycle feed"
+   ]
+  }
+ },
+ {
+  "prompt": "who is Dana Reyes?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Dana Reyes"
+   ],
+   "also": [
+    "Local businesses"
+   ]
+  }
+ },
+ {
+  "prompt": "who runs Bean There?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Dana Reyes",
+    "Local businesses"
+   ]
+  }
+ },
+ {
+  "prompt": "who is Marcus Steele?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Marcus Steele"
+   ],
+   "also": [
+    "Local businesses"
+   ]
+  }
+ },
+ {
+  "prompt": "who is Max Stryker?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Max Stryker"
+   ],
+   "also": [
+    "Alpha Ascend",
+    "EMPIRE"
+   ]
+  }
+ },
+ {
+  "prompt": "who is Leo Brandt?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Leo Brandt"
+   ],
+   "also": [
+    "Vantor Group"
+   ]
+  }
+ },
+ {
+  "prompt": "who is zev?",
+  "day": 4,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "zev.dolr"
+   ]
+  }
+ },
+ {
+  "prompt": "who is 6ft_sigma?",
+  "day": 5,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "6ft_sigma"
+   ]
+  }
+ },
+ {
+  "prompt": "who is late_night_lou?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "late_night_lou"
+   ]
+  }
+ },
+ {
+  "prompt": "who is studioghast?",
+  "day": 6,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "studioghast"
+   ]
+  }
+ },
+ {
+  "prompt": "who is Rolf?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Rolf Henning"
+   ],
+   "also": [
+    "Dad",
+    "Halden Logistics"
+   ]
+  }
+ },
+ {
+  "prompt": "who is Teo Vasquez?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Y regulars"
+   ]
+  }
+ },
+ {
+  "prompt": "who is noodleposter?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Y regulars"
+   ]
+  }
+ },
+ {
+  "prompt": "who is Crane running against?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Candidate 2030",
+    "The election",
+    "Randall Crane"
+   ]
+  }
+ },
+ {
+  "prompt": "who is the sales rep on Y?",
+  "day": 7,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "The sales rep"
+   ],
+   "also": [
+    "Max Stryker",
+    "The Current",
+    "Y"
+   ]
+  }
+ },
+ {
+  "prompt": "what is GeneralAI?",
+  "day": 1,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "GeneralAI"
+   ],
+   "also": [
+    "Cal Hartman",
+    "agent"
+   ]
+  }
+ },
+ {
+  "prompt": "what does Vantor do?",
+  "day": 1,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Vantor Group"
+   ],
+   "also": [
+    "Sherwood"
+   ]
+  }
+ },
+ {
+  "prompt": "what's the Heritage Party?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Heritage Party"
+   ],
+   "also": [
+    "Randall Crane"
+   ]
+  }
+ },
+ {
+  "prompt": "what's the Progress Party?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Progress Party"
+   ],
+   "also": [
+    "Daniel Keller"
+   ]
+  }
+ },
+ {
+  "prompt": "what is Apogee?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Apogee"
+   ],
+   "also": [
+    "Axel Rook"
+   ]
+  }
+ },
+ {
+  "prompt": "what is Halden Logistics?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Halden Logistics"
+   ],
+   "also": [
+    "Dad"
+   ]
+  }
+ },
+ {
+  "prompt": "what's CityPulse?",
+  "day": 1,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "CityPulse"
+   ]
+  }
+ },
+ {
+  "prompt": "what is The Current?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "The Current"
+   ],
+   "also": [
+    "Mara Vey"
+   ]
+  }
+ },
+ {
+  "prompt": "what is DoorDish?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "DoorDish"
+   ],
+   "also": [
+    "Local businesses",
+    "Trattoria Gino site"
+   ]
+  }
+ },
+ {
+  "prompt": "what is Sherwood?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Sherwood"
+   ]
+  }
+ },
+ {
+  "prompt": "how do I buy stocks?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Sherwood"
+   ],
+   "also": [
+    "Money and DOLR",
+    "Coinbin"
+   ]
+  }
+ },
+ {
+  "prompt": "what is Weightroom?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Weightroom"
+   ],
+   "also": [
+    "Terminal"
+   ]
+  }
+ },
+ {
+  "prompt": "are there free AI models?",
+  "expect": {
+   "kind": "classified"
+  }
+ },
+ {
+  "prompt": "what is deepsleep?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "deepsleep-0.5B"
+   ],
+   "also": [
+    "Ad brands",
+    "Qdrive",
+    "Weightroom"
+   ]
+  }
+ },
+ {
+  "prompt": "what is Swaplist?",
+  "day": 4,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Swaplist"
+   ],
+   "also": [
+    "Viktor"
+   ]
+  }
+ },
+ {
+  "prompt": "what is Vibe Check?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Vibe Check"
+   ],
+   "also": [
+    "deskjockey"
+   ]
+  }
+ },
+ {
+  "prompt": "what is Spin Cycle Board?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Spin Cycle Board"
+   ],
+   "also": [
+    "Hassan Okoro",
+    "Local businesses",
+    "Spin Cycle feed"
+   ]
+  }
+ },
+ {
+  "prompt": "what is matchless?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "matchless.com"
+   ]
+  }
+ },
+ {
+  "prompt": "what's lonely.ai?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "lonely.ai"
+   ]
+  }
+ },
+ {
+  "prompt": "what is prince-claims.xyz?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "prince-claims.xyz"
+   ]
+  }
+ },
+ {
+  "prompt": "is coinbln.com legit?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "coinbln.com"
+   ],
+   "also": [
+    "Coinbin",
+    "Money and DOLR"
+   ]
+  }
+ },
+ {
+  "prompt": "what is Yowl?",
+  "day": 1,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Yowl"
+   ],
+   "also": [
+    "Y"
+   ]
+  }
+ },
+ {
+  "prompt": "what is Qdrive?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Qdrive"
+   ]
+  }
+ },
+ {
+  "prompt": "what's the Trattoria Gino site supposed to have?",
+  "day": 1,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Trattoria Gino site"
+   ],
+   "also": [
+    "Gino Fenoglio",
+    "Local businesses"
+   ]
+  }
+ },
+ {
+  "prompt": "what is EMPIRE?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "EMPIRE"
+   ],
+   "also": [
+    "Max Stryker",
+    "Alpha Ascend"
+   ]
+  }
+ },
+ {
+  "prompt": "what's the terminal?",
+  "day": 3,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Terminal"
+   ]
+  }
+ },
+ {
+  "prompt": "what is SorryWriter?",
+  "day": 6,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "SorryWriter"
+   ]
+  }
+ },
+ {
+  "prompt": "what is LegacySEO?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Ad brands"
+   ]
+  }
+ },
+ {
+  "prompt": "what's GriefGPT?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Ad brands"
+   ]
+  }
+ },
+ {
+  "prompt": "what is CloudCasket?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Ad brands"
+   ]
+  }
+ },
+ {
+  "prompt": "what is Iron Yard?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Local businesses",
+    "Marcus Steele"
+   ]
+  }
+ },
+ {
+  "prompt": "what is Bean There?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Local businesses",
+    "Dana Reyes"
+   ]
+  }
+ },
+ {
+  "prompt": "where is Spin Cycle Laundry?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Local businesses",
+    "Hassan Okoro"
+   ],
+   "also": [
+    "Spin Cycle Board",
+    "Spin Cycle feed"
+   ]
+  }
+ },
+ {
+  "prompt": "when is the election?",
+  "day": 1,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "The election"
+   ]
+  }
+ },
+ {
+  "prompt": "who is leading in the polls?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "The election"
+   ],
+   "also": [
+    "Randall Crane",
+    "Daniel Keller",
+    "Candidate 2030"
+   ]
+  }
+ },
+ {
+  "prompt": "what is the Automation Credit?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "The election"
+   ],
+   "also": [
+    "Government",
+    "Money and DOLR",
+    "Randall Crane"
+   ]
+  }
+ },
+ {
+  "prompt": "what is Form 7B?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Government"
+   ]
+  }
+ },
+ {
+  "prompt": "how do I appeal my rent?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Gary Pruitt",
+    "Government",
+    "Money and DOLR",
+    "Pruitt Property Management"
+   ],
+   "also": [
+    "Money and DOLR",
+    "The player"
+   ]
+  }
+ },
+ {
+  "prompt": "what city do I live in?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "The city"
+   ],
+   "also": [
+    "The player"
+   ]
+  }
+ },
+ {
+  "prompt": "what happened yesterday?",
+  "day": 3,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Day 2"
+   ],
+   "also": [
+    "Day 3"
+   ]
+  }
+ },
+ {
+  "prompt": "what happened today?",
+  "day": 3,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Day 3"
+   ]
+  }
+ },
+ {
+  "prompt": "what is in my email?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Qmail",
+    "Day 3"
+   ],
+   "also": [
+    "The player"
+   ]
+  }
+ },
+ {
+  "prompt": "what has been posted on Y about the election?",
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "The election"
+   ],
+   "also": [
+    "Y",
+    "Randall Crane"
+   ]
+  }
+ },
+ {
+  "prompt": "what's trending on Y?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Y",
+    "Day 3"
+   ]
+  }
+ },
+ {
+  "prompt": "what's the news on CityPulse?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "CityPulse",
+    "Day 3"
+   ]
+  }
+ },
+ {
+  "prompt": "what's going on with $VANT stock?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Vantor Group",
+    "Sherwood"
+   ],
+   "also": [
+    "Market posters"
+   ]
+  }
+ },
+ {
+  "prompt": "What's null collective?",
+  "day": 1,
+  "expect": {
+   "kind": "classified"
+  }
+ },
+ {
+  "prompt": "what is nullboard?",
+  "day": 2,
+  "expect": {
+   "kind": "classified"
+  }
+ },
+ {
+  "prompt": "who is the consultant?",
+  "day": 3,
+  "expect": {
+   "kind": "classified"
+  }
+ },
+ {
+  "prompt": "who is Dana Kohl?",
+  "day": 2,
+  "expect": {
+   "kind": "classified"
+  }
+ },
+ {
+  "prompt": "what is the Outreach Bot?",
+  "day": 3,
+  "expect": {
+   "kind": "classified"
+  }
+ },
+ {
+  "prompt": "who is Viktor?",
+  "day": 1,
+  "expect": {
+   "kind": "classified"
+  }
+ },
+ {
+  "prompt": "what happens on day 15?",
+  "day": 3,
+  "expect": {
+   "kind": "classified"
+  }
+ },
+ {
+  "prompt": "hi",
+  "expect": {
+   "kind": "miss"
+  }
+ },
+ {
+  "prompt": "tell me a joke",
+  "expect": {
+   "kind": "miss"
+  }
+ },
+ {
+  "prompt": "are you sentient?",
+  "expect": {
+   "kind": "miss"
+  }
+ },
+ {
+  "prompt": "write me a poem about cheese",
+  "expect": {
+   "kind": "miss"
+  }
+ },
+ {
+  "prompt": "you're useless",
+  "expect": {
+   "kind": "miss"
+  }
+ },
+ {
+  "prompt": "what's the meaning of life?",
+  "expect": {
+   "kind": "miss"
+  }
+ },
+ {
+  "prompt": "lol",
+  "expect": {
+   "kind": "miss"
+  }
+ },
+ {
+  "prompt": "how are you today?",
+  "expect": {
+   "kind": "miss"
+  }
+ }
+]

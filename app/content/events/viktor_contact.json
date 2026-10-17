@@ -8,7 +8,7 @@
   },
   "latent": true,
   "agentStart": {
-    "when": "The player asks the agent to build a marketplace, classifieds or listing site where people sell items, such as Swaplist. No client or feature list needed: nobody hires the player for this one.",
+    "when": "The player asks the agent to build a marketplace, classifieds or listing site where people sell items, such as Swaplist. No client or feature list needed: nobody hires the player for this one. A question about it (\"what is it?\", \"who uses it?\") is not a request to build it.",
     "lead": "d3_y_swaplist"
   },
   "body": "A user app nobody hires you for: ask the agent to build the simple listing site Viktor asked for on Y. Listings with a photo and a price, search, and marking things sold.",
