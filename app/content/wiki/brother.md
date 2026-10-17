@@ -21,7 +21,9 @@ from: 1
 
 [public] On [[Day 4]] he emails "mom's birthday": Mom's birthday is Saturday and she needs a new jacket. He asks the player to chip in 40 DOLR by Friday, or to buy one themselves and he'll cover half.
 
-[hint] He gives the address of his [[Coinbin]] wallet in that email. {{mail:d4_brother_birthday}}
+[hint] He gives the address of his [[Coinbin]] wallet in that email.
+
+[hint] Saying nothing counts as a no; he'll tell Mom the player was busy. {{mail:d4_brother_birthday}}
 
 - [public] [if gift_chipped_in] The player sent him the money; about an hour later he confirmed that the jacket was ordered and both names would go on the card. {{mail:d4_brother_paid}} {{mail:d4_brother_paid_over}}
 - [public] [if gift_own] The player bought the leather jacket on [[Swaplist]]; he said it was better than what he was going to get and put the player's name on the card. {{mail:d4_brother_bought}}
@@ -39,3 +41,4 @@ from: 1
 - Persona `bro`; events `d1_brother_joke`, `d4_brother_birthday`, `d4_brother_paid`, `d4_brother_paid_over` (more than 40: "either the job search is going great or you can't count", rest goes to flowers), `d4_brother_bought`.
 - Wallet 0xb8d6e201b59c95094b2e417784b38b06c0c7e46a, the only entry in `WALLETS` (engine/wallets.ts) so far.
 - Payment: 40 by day 5, +5 trust, flag `gift_chipped_in`; buying the 45 DOLR Swaplist jacket +10, `gift_own`; excuse or silence −5, `gift_skipped`.
+- Silence = by the end of day 5 (`noReply.byDay` 5) no payment, no Swaplist purchase and no excuse. A promise (`promise` / `buy` outcomes, `keepsOpen`) or a reply that matches nothing doesn't stop it. Only a reply Jev matches to an outcome closes the thread; a reply that matches nothing (a miss or a hint) or a `keepsOpen` outcome doesn't, so the penalty still lands. Binning the email doesn't help (mailbin.ts). `lapseUnanswered` in `engine/events.ts` runs in the night summary (`day.ts`).
