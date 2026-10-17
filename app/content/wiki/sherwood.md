@@ -5,7 +5,7 @@ category: sites
 from: 1
 ---
 
-[public] Sherwood (sherwood.com) is a stock trading app, white with black type and one green, bookmarked from the start. It trades six stocks: $GAI ([[GeneralAI]]), $VANT ([[Vantor Group]]), $DISH ([[DoorDish]]), $HALD ([[Halden Logistics]]), $APO ([[Apogee]]) and $PDUR ([[Perdure Pharma]]).
+[public] Sherwood (sherwood.com) is a stock trading app, white with black type and one green. It is not bookmarked at first: the bookmark appears after the player first opens it, through a Sherwood banner ad or the sherwood.com link in deskjockey's job email ("RE: sentiment bot"). It trades six stocks: $GAI ([[GeneralAI]]), $VANT ([[Vantor Group]]), $DISH ([[DoorDish]]), $HALD ([[Halden Logistics]]), $APO ([[Apogee]]) and $PDUR ([[Perdure Pharma]]).
 
 ## Trading
 

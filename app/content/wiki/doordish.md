@@ -9,7 +9,7 @@ from: 1
 
 ## doordish.com
 
-[public] Bookmarked from the start: a white page with one red, a takeaway-bag logo, "Restaurants near you", delivering to "your address". Fine print: "Delivered by DoorDish robot couriers. Couriers are not employees. Fees and ETAs are estimates." Listed stores (prices in DOLR):
+[public] Reachable from day 1 but not bookmarked: the bookmark appears after the player first opens the site, through a DoorDish banner ad or the link in Gino's day 4 email. A white page with one red, a takeaway-bag logo, "Restaurants near you", delivering to "your address". Fine print: "Delivered by DoorDish robot couriers. Couriers are not employees. Fees and ETAs are estimates." Listed stores (prices in DOLR):
 
 | [public] Store | Cuisine | Address | Hours | Rating, ETA, fee | Menu |
 |---|---|---|---|---|---|
