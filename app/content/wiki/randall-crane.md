@@ -1,6 +1,6 @@
 ---
 title: Randall Crane
-aliases: Crane, Randall, @randall_crane, Crane Victory Fund, crane2026.vote, @randa11_crane, randa11_crane, impostor, fake Crane
+aliases: Crane, Randall, @randall_crane, Crane Victory Fund, crane2026.vote
 category: people
 from: 1
 ---
@@ -30,7 +30,7 @@ from: 1
 - [public] On day 3 (15:30) he brings up the escaped [[DoorDish]] robot, which "walked off the job with a man's lunch", and vows to "send the machines back where they came from", ending "BELIEVE IT."
 - [public] On day 3 that post gets two million shares in an hour, mostly from month-old accounts, CityPulse reports.
 - [public] On day 4 he calls Vantor ($VANT) firing 400 people and replacing them with a computer "Disgraceful."
-- [public] On day 5 (11:30) an impostor account, @randa11_crane, with two ones in place of the l's, posts that it is a "Huge fan of Vantor ($VANT)". {{y:m5_vant_impostor}}
+- [public] On day 5 (11:30) an impostor account, [[randa11_crane]] (@randa11_crane), with two ones in place of the l's, posts that it is a "Huge fan of Vantor ($VANT)". {{y:m5_vant_impostor}}
 - [public] On day 5 the impostor turns out to copy his bio with two typos, "Offical" and "BELIVE IT", and his picture stretched sideways.
 - [public] On day 5 the impostor has no verified check; the real @randall_crane does.
 - [public] On day 5 (19:10) he posts that there is a "FAKE Randall Crane on Y saying nice things about companies" and calls whoever runs it a "Very sick person!"
