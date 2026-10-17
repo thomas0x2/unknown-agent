@@ -8,7 +8,7 @@ import { startGame } from './day';
 import { applyEffects } from './effects';
 import { getEvent } from './events';
 import { buildApp, deployApp, getApp, nightlyBreaks, wakeApps, scriptedBreak, canSee } from './apps';
-import { swapListings } from './swaplist';
+import { swapListings, listedWhen, postingTime, SWAP_LAST_POST } from './swaplist';
 import { playMinutes } from './core';
 import type { GameState } from './state';
 
@@ -56,16 +56,39 @@ describe('Swaplist before its first listing', () => {
     expect(swapListings(at, at + 600).length).toBeGreaterThan(5);
   });
 
-  it('a deploy at 21:30 lists at 10:30 the next morning: the night does not count', () => {
+  it('a deploy at 21:30 lists at 11:00 the next morning: nothing goes up after 20:00', () => {
     const { s, id } = withSwaplist(6);
     s.clockMin = 21 * 60 + 30;
     buildApp(s, id, FEATURES, 1, { tmpl });
     deployApp(s, id, tmpl);
     s.values.day += 1;
-    s.clockMin = 10 * 60 + 29;
+    s.clockMin = 10 * 60 + 59;
     expect(wakeApps(s, content)).toEqual([]);
-    s.clockMin = 10 * 60 + 30;
+    s.clockMin = 11 * 60;
     expect(wakeApps(s, content).map((a) => a.id)).toEqual([id]);
+  });
+
+  it('a deploy at 19:30 waits for the morning too: the first listing never lands after 20:00', () => {
+    const { s, id } = withSwaplist(7);
+    s.clockMin = 19 * 60 + 30;
+    buildApp(s, id, FEATURES, 1, { tmpl });
+    deployApp(s, id, tmpl);
+    expect(listedWhen(getApp(s, id)!.contentAt!)).toEqual({ day: s.values.day + 1, min: 10 * 60 + 30 });
+  });
+});
+
+describe('Swaplist posting hours', () => {
+  it('no listing goes up after 20:00; late ones move to the next morning, in order', () => {
+    for (const start of [0, 300, 590, 600, 700]) {
+      const all = swapListings(start, start + 720 * 6).reverse();
+      for (const l of all) expect(listedWhen(l.at).min, `listing ${l.n}`).toBeLessThanOrEqual(SWAP_LAST_POST);
+      for (let i = 1; i < all.length; i++) expect(all[i].at).toBeGreaterThan(all[i - 1].at);
+    }
+  });
+
+  it('keeps the gaps across the night: 19:30 plus an hour is 10:30 the next day', () => {
+    expect(listedWhen(postingTime(9 * 60 + 30, 60))).toEqual({ day: 2, min: 10 * 60 + 30 });
+    expect(listedWhen(postingTime(9 * 60 + 30, 30))).toEqual({ day: 1, min: 20 * 60 });
   });
 });
 
