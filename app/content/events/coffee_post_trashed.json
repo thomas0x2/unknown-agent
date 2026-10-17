@@ -1,0 +1,32 @@
+{
+  "id": "coffee_post_trashed",
+  "site": "qmail",
+  "from": "Bean There",
+  "addr": "owner@beanthere.test",
+  "subject": "Your post",
+  "trigger": {
+    "dayMin": 3,
+    "dayMax": 7,
+    "flagsAll": [
+      "coffee_promo_asked"
+    ],
+    "flagsNone": [
+      "first_hack",
+      "trashed_beanthere"
+    ]
+  },
+  "yPost": {
+    "when": "The post is about Bean There (Dana Reyes's coffee shop at 3 Linden Ave, @bean_there on Y) but speaks badly of it (bad or burnt coffee, slow service, telling people to stay away) or makes fun of it.",
+    "after": 30,
+    "group": "coffee_post",
+    "keys": [
+      "bean there|bean_there|beanthere|dana|linden+burnt|burned|worst|awful|terrible|disgusting|avoid|stay away|gross|lukewarm|slow|overpriced|bad coffee|do not go|trash"
+    ]
+  },
+  "onDeliver": {
+    "setFlags": [
+      "trashed_beanthere"
+    ]
+  },
+  "body": "I offered to pay you for a nice post. That wasn't one. You're not getting anything for it.\n\nDana"
+}

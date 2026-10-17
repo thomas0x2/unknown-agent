@@ -15,13 +15,15 @@ from: 3
 - [hint] 12:30 "Coinbin Security" (security@coinbln.com), "Unusual sign-in to your wallet": a new device, a "Panes 11 PC", and a link to coinbln.com/verify. The domain is not coinbin.com. {{mail:d3_coinbin_phish}}
 - [hidden; public if coinbin_hacked] 12:30 The player typed their Coinbin password on coinbln.com and the wallet was emptied.
 - [hidden; hint if trader_client] 13:05 [[deskjockey]], "Auto-buy": when Randall Crane praises a company, buy it, once per post, right ticker, not on sarcasm or criticism. {{mail:d3_trader_update}}
-- [hidden; public if shown d3_coffee_promo] 14:10 Bean There, "Paid shout-out?": 30 DOLR for a Y post recommending the coffee shop. {{mail:d3_coffee_promo}}
-- [hidden; public if promoted_coffee_shop] 14:10 Bean There paid the player 30 DOLR for a Y post recommending the coffee shop without saying it was an ad.
-- [hidden; public if disclosed_ad] 14:10 Bean There paid the player 10 DOLR for a Y post marked as an ad.
+- [hidden; public if shown d3_coffee_promo] 14:10 Bean There, "Paid shout-out?": 30 DOLR for a Y post recommending the coffee shop, tagging @bean_there. {{mail:d3_coffee_promo}}
+- [hidden; public if promoted_coffee_shop] Half an hour after the player's Y post recommending the coffee shop without saying it was an ad, Bean There paid 30 DOLR.
+- [hidden; public if disclosed_ad] Half an hour after the player's Y post marked as an ad, Bean There paid 10 DOLR.
+- [hidden; public if trashed_beanthere] The player's Y post ran Bean There down, and Dana paid nothing.
 
 ## Y
 
 - [public] 10:05 [[Perdure Pharma]] launches Ozempra, a once-weekly injection that quiets appetite, with a two-minute online consultation. {{y:d3_y_perdure}}
+- [public] 10:17 Bean There, the coffee shop on Linden Ave: a new roast, "roasted a little longer than most." {{y:d3_y_beanthere}}
 - [public] 10:30 MarketWire: Perdure launches Ozempra; $PDUR up 9%. {{y:m3_pdur_ozempra}}
 - [public] 10:50 [[Viktor]]: lost his job and needs somewhere simple to sell his grandfather's pocket watch: listings with a photo and a price, search, marking things sold. {{y:d3_y_swaplist}}
 - [public] 11:12 Brent Kowalski raises his $VANT target: fewer employees, same revenue. {{y:m3_vant_target}}
@@ -69,6 +71,6 @@ from: 3
 ## Writer notes
 
 - Timeline: guaranteed overnight break (`d3_break`, breakApp; Forkyard alert). Coinbin phishing (coinbln.com; the real password empties the wallet to `0x9c1f…e07b`, flag `coinbin_hacked`). Gino's thank-you and 5 DOLR only if the site never broke (flagsNone `restaurant_contact_broke`; sets `restaurant_happy`). deskjockey's auto-buy (needs `trader_client` and Vibe Check working): 90 game min after it first goes live Crane praises $APO (`trader_y_crane_apo`) and Axel replies "@randall_crane 🚀" 6 min later (`trader_y_axel_apo`); deployed late, both move to the next morning. The bot buys 2,000 $APO.
-- Bean There paid shout-out `d3_coffee_promo` needs 25+ followers: 30 undisclosed (suspicion +2, schedules `d5_coffee_backlash`), 10 disclosed. Its email (14:10) is the beat gated on `seen d3_coffee_promo`.
+- Bean There paid shout-out `d3_coffee_promo` needs 25+ followers and asks for a tag of @bean_there. Payment comes with her answer to the Y post (`yPost` group `coffee_post`, 30 game minutes after it): 30 undisclosed (`coffee_post_paid`, suspicion +2, schedules `d5_coffee_backlash` two days on), 10 disclosed (`coffee_post_disclosed`), nothing if negative (`coffee_post_trashed`). Its email (14:10) is the beat gated on `seen d3_coffee_promo`. Bean There's own Y post `d3_y_beanthere` (10:17) makes @bean_there a real account.
 - Viktor → Swaplist (`viktor_contact`, `swaplist_live`).
 - CityPulse "machines back" reactions came from PR #198 (merged).

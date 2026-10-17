@@ -363,9 +363,10 @@ export function queueFeatureLaunch(s: GameState, content: Content, clientEventId
   }
 }
 
-/** Events that wait on a Y post about something (`yPost`), open now: trigger holds, not yet on its way. */
+/** Events that wait on a Y post about something (`yPost`), open now: trigger holds, not yet on its way, nor another of its group. */
 export function yPostEvents(s: GameState, content: Content): GameEvent[] {
-  return content.events.filter((ev) => ev.yPost && !underway(s, ev) && triggerMatches(s, ev.trigger));
+  const taken = (group: string) => content.events.some((ev) => ev.yPost?.group === group && underway(s, ev));
+  return content.events.filter((ev) => ev.yPost && !underway(s, ev) && !(ev.yPost.group && taken(ev.yPost.group)) && triggerMatches(s, ev.trigger));
 }
 
 /** Latent qmail events the player can currently email (trigger matches, not yet fired). */

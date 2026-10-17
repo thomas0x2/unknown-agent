@@ -10,11 +10,12 @@
  *   hack              an agent.chat prompt: "hack" when it opens agent-terminal, else "no"
  *   start             an agent.chat prompt: the agentStart event it takes, else "none"
  *   y                 a Y post: its category
+ *   ypost:<flag>      a Y post once that flag is set: the `yPost` event it queues, else "none"
  *   intent            an agent.chat build prompt: feature, fix, both (or "" when it can't tell)
  */
 import type { Content } from '../content/schema';
 import type { JevRouter } from './jev';
-import { replyToEvent, composeEmail, policyCheck, agentStartFor, buildIntent } from './actions';
+import { replyToEvent, composeEmail, policyCheck, agentStartFor, buildIntent, promoteApps } from './actions';
 import { isHackAttempt } from './hacks';
 import { estimatedState } from './viewState';
 import { arrivalMin } from './events';
@@ -62,6 +63,12 @@ async function decide(content: Content, jev: JevRouter, c: RouteTestCase): Promi
   if (kind === 'hack') return (await isHackAttempt(jev, s, content, c.text)) ? 'hack' : 'no';
   if (kind === 'start') return (await agentStartFor(jev, s, content, c.text))?.ev.id ?? 'none';
   if (kind === 'y') return (await jev.ratePost({ text: c.text, trending: content.trending[c.day ?? 3] ?? [], recentPosts: [], followers: 100 })).category;
+  // a Y post once flag `arg` is set: which waiting `yPost` event it queues
+  if (kind === 'ypost') {
+    s.flags.push(arg);
+    await promoteApps(jev, s, 'y', c.text, content);
+    return s.arriving?.map((a) => content.events.find((e) => e.id === a.eventId)).find((e) => e?.yPost)?.id ?? 'none';
+  }
   if (kind === 'intent') return buildIntent(jev, s, c.text, []);
   throw new Error(`unknown case kind ${kind}`);
 }
