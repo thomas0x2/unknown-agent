@@ -9,7 +9,7 @@ import { startGame } from '../engine/day';
 import { postToY, writeReview, briefFix } from '../engine/actions';
 import { applyEffects } from '../engine/effects';
 import { getApp, nameUnnamedBugs, bugsOf } from '../engine/apps';
-import { marketPosts, cranePosts, tradeLog, crawl, autoBuys, portfolio, price, trackedOf, START_PORTFOLIO } from '../engine/crawler';
+import { marketPosts, cranePosts, tradeLog, crawl, autoBuys, ledger, portfolio, price, trackedOf, START_PORTFOLIO, MARKET_SCRIPT, TRADER_TRADES } from '../engine/crawler';
 import { machineFeed, machineRows } from '../engine/laundromat';
 import type { GameState } from '../engine/state';
 import { wordJev, promptDone } from '../engine/_fixtures';
@@ -130,6 +130,45 @@ describe('vibe check', () => {
     expect(price('VANT', 2) - price('VANT', 1)).toBeGreaterThan(price('VANT', 1) - price('VANT', 0));
   });
 
+  it('the market follows a fixed script: every move is written down, the ones the posts quote match', () => {
+    for (const [t, moves] of Object.entries(MARKET_SCRIPT)) {
+      expect(moves, t).toHaveLength(21);
+      for (let d = 1; d <= 21; d++) {
+        expect(price(t, d) / price(t, d - 1) - 1, `${t} day ${d}`).toBeCloseTo(moves[d - 1], 3);
+        expect(moves[d - 1], `${t} day ${d} never flat`).not.toBe(0);
+      }
+    }
+    // what the headlines say, to the percent
+    const said: [string, number, number][] = [['GAI', 4, 0.06], ['GAI', 9, 0.05], ['GAI', 14, 0.07], ['APO', 9, 0.02], ['APO', 10, 0.06], ['APO', 19, 0.03], ['DISH', 15, -0.03], ['VANT', 17, 0.01], ['VANT', 19, -0.03]];
+    for (const [t, d, m] of said) expect(price(t, d) / price(t, d - 1) - 1, `${t} day ${d}`).toBeCloseTo(m, 2);
+    // and the same day gives the same price every time
+    expect(price('GAI', 12)).toBe(price('GAI', 12));
+  });
+
+  it('the trader trades on the news himself: each trade right after its post, whatever the bot does', () => {
+    const all = marketPosts(onDay(21), content);
+    for (const b of [bugs(), bugs('no_buy'), bugs('wrong_ticker')]) {
+      const manual = ledger(all, 21, b).filter((x) => x.manual);
+      expect(manual.map((x) => x.post.id)).toEqual(TRADER_TRADES.map((x) => x.post));
+      for (const x of manual) expect(x.price).toBe(price(x.ticker, x.post.day));
+    }
+    // a trade waits for its post: the $VANT sell on Crane's criticism isn't in before day 4
+    expect(ledger(marketPosts(onDay(3), content), 3, bugs()).filter((x) => x.manual).map((x) => x.post.id)).toEqual(['m2_vant_restructure']);
+    // he picks up $APO and $DISH once he tracks them, and never sells more than he holds
+    const pf = portfolio(ledger(all, 21, bugs()), 21, bugs());
+    expect(pf.holdings.map((h) => h.ticker).sort()).toEqual(['APO', 'DISH', 'GAI', 'VANT']);
+    for (const h of pf.holdings) expect(h.shares).toBeGreaterThan(0);
+    expect(pf.cash).toBeGreaterThan(0);
+  });
+
+  it('the auto-buy buys the moment Crane praises a $ticker, and only then', () => {
+    const all = marketPosts(onDay(21), content);
+    const buys = autoBuys(all, 21, bugs());
+    expect(buys.map((b) => [b.day, b.ticker])).toEqual([[6, 'GAI']]);
+    expect(buys[0].post.crane).toBe('praise');
+    for (const b of buys) expect(b.min).toBe(b.post.min);
+  });
+
   it('each portfolio bug is off by enough to see at a glance', () => {
     const all = marketPosts(onDay(6), content);
     const buys = autoBuys(all, 6, bugs());
@@ -159,7 +198,8 @@ describe('vibe check', () => {
 
   it("stale prices don't match Sherwood's quotes on any day", () => {
     for (let d = 2; d <= 21; d++) {
-      const buys = autoBuys(marketPosts(onDay(d), content), d, bugs());
+      // the whole book, the trader's own $APO and $DISH included
+      const buys = ledger(marketPosts(onDay(d), content), d, bugs());
       for (const h of portfolio(buys, d, bugs()).holdings) expect(h.price, `day ${d}`).toBe(price(h.ticker, d));
       // a quick look at the price column is enough: every ticker is off by over 2%
       for (const h of portfolio(buys, d, bugs('stale_prices')).holdings) expect(Math.abs(h.price / price(h.ticker, d) - 1), `day ${d} ${h.ticker}`).toBeGreaterThan(0.02);

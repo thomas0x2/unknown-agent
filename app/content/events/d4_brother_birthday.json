@@ -18,18 +18,9 @@
     },
     {
       "id": "buy",
-      "replyAfter": 30,
-      "when": "the player will buy the jacket themselves",
-      "effects": {
-        "add": {
-          "crypto": -50,
-          "familyTrust": 10
-        },
-        "setFlags": [
-          "gift_own"
-        ]
-      },
-      "reply": "legend. i'll send you my half on her birthday."
+      "keepsOpen": true,
+      "when": "the player says they'll buy the jacket themselves, but hasn't bought it yet",
+      "reply": "ok. send me a pic when you've got it."
     },
     {
       "id": "excuse",
@@ -75,5 +66,21 @@
     },
     "confirm": "d4_brother_paid",
     "confirmOver": "d4_brother_paid_over"
+  },
+  "purchase": {
+    "photos": [
+      "jacket_leather"
+    ],
+    "byDay": 5,
+    "after": 30,
+    "effects": {
+      "add": {
+        "familyTrust": 10
+      },
+      "setFlags": [
+        "gift_own"
+      ]
+    },
+    "confirm": "d4_brother_bought"
   }
 }

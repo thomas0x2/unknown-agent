@@ -5,12 +5,12 @@
  */
 import type { GameStore } from '../game/store';
 import { sorryChat, SORRY_OPENER } from '../engine/sorry';
-import { markIcon } from './adSites';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
-export const SORRY_ICON = markIcon('✉', '#3a2b52', '#f4eefb');
-const AVATAR = '<span class="sw-avatar" aria-hidden="true">✉</span>';
+/** SorryWriter's logo: an envelope sealed with a tear. Used for the favicon, the ads and the chat avatar. */
+export const SORRY_ICON = `<svg viewBox="0 0 32 32" aria-hidden="true" fill="none"><rect width="32" height="32" rx="8" fill="#3a2b52"/><rect x="6" y="10" width="20" height="14" rx="2.5" fill="#f4eefb"/><path d="M6.8 11.2 16 18.2l9.2-7" stroke="#3a2b52" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 15.2c-1.2 1.6-1.8 2.6-1.8 3.4a1.8 1.8 0 0 0 3.6 0c0-.8-.6-1.8-1.8-3.4Z" fill="#f29bb6" stroke="#3a2b52" stroke-width=".8"/></svg>`;
+const AVATAR = `<span class="sw-avatar">${SORRY_ICON}</span>`;
 const bot = (text: string) => `<div class="ua-msg agent">${AVATAR}<div class="ua-text">${esc(text).replace(/\n/g, '<br>')}</div></div>`;
 
 export function pageSorry(store: GameStore): string {

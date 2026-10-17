@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, buyStock, sellStock, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy, matchlessSwipe, clone, uploadFile, fileRentAppeal, donateCrane, craneDonations, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, recordStake, payStakes, buyStock, sellStock, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy, matchlessSwipe, clone, uploadFile, fileRentAppeal, donateCrane, craneDonations, fillMeters, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -130,6 +130,7 @@ export class GameStore {
   constructor(readonly content: Content, private router: JevRouter, private writer: Writer, private store: SaveStore) {
     const loaded = this.store.load();
     this.state = loaded ?? startGame(content);
+    fillMeters(this.state.values); // saves from before a meter was added
     nameUnnamedBugs(this.state, content); // saves from before the app had named bugs
     holdHiddenBugs(this.state, content); // and from before bugs waited until they could show
     startDayChat(this.state, content); // saves from before the per-day reset may still carry yesterday's chat
@@ -236,7 +237,8 @@ export class GameStore {
     const working = s.agentWork;
     advanceClock(s, mins); // the agent's build or fix lands here too, once its time has come
     const shown = revealBugs(s, this.content); // held bugs land once something shows them (Crane's first praise)
-    const woke = wakeApps(s, this.content).length > 0 || shown; // an empty app's first content (and its bugs) once its time has come
+    const paid = payStakes(s, this.content); // the trader's stake payouts, 12:00 four days after each send
+    const woke = wakeApps(s, this.content).length > 0 || shown || paid; // an empty app's first content (and its bugs) once its time has come
     deliverArrivals(s, this.content); // emails and posts whose time has come
     if (s.clockMin >= CLOCK.sleep) { this.sleep(s); this.store.save(this.state); this.announce(m); this.emit(); return; }
     if (this.announce(m) || s.agentWork !== working || woke) { this.store.save(s); this.emit(); return; }
@@ -395,6 +397,7 @@ export class GameStore {
     startDayChat(state, this.content);
     nameUnnamedBugs(state, this.content);
     holdHiddenBugs(state, this.content);
+    fillMeters(state.values);
     this.state = state;
     this.tabs = startTabs();
     this.active = HOME_TAB; this.nextTab = PINNED.length + 1;
@@ -428,6 +431,7 @@ export class GameStore {
     const r = sendCrypto(this.state, to, Number(amount.replace(',', '.')));
     if (r.error) { this.ui.send = { open: true, to, amount, error: r.error }; this.emit(); return false; }
     settlePayments(r.state, this.content);
+    recordStake(r.state, to, -r.state.tx.at(-1)!.amount);
     this.ui.send = { open: false, to: '', amount: '', error: '' };
     this.ui.cbNotice = `Sent ${(-r.state.tx.at(-1)!.amount).toFixed(2)} DOLR to ${r.state.tx.at(-1)!.memo.split(' · ')[0]}.`;
     this.commitAndSettle(r.state);

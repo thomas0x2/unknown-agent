@@ -8,6 +8,8 @@
 
 import { citizenScore, citizenBand, type GameState } from '../engine';
 import { DEEPSLEEP_LOGO } from './deepsleepLogo';
+import { HERITAGE_LOGO } from './heritageLogo';
+import { PROGRESS_LOGO } from './progressLogo';
 
 /** Page layout family: shapes the markup a little and the CSS a lot. */
 export type AdKit = 'corp' | 'gov' | 'campaign' | 'scam' | 'local' | 'news' | 'clinic' | 'soft' | 'model';
@@ -19,7 +21,7 @@ export interface AdSite {
   kit: AdKit;
   /** colours and type, `lp-t-<theme>` in adSites.css */
   theme: string;
-  /** a character or two for the logo square and the favicon */
+  /** a character or two for the logo square and the favicon, or the name of a drawn glyph (ui/adSites.ts GLYPHS) */
   mark: string;
   kicker?: string;
   title: string;
@@ -84,20 +86,20 @@ export const AD_SITES: AdSite[] = [
 
   // ── Crane and Keller ──
   {
-    url: 'crane2026.vote', brand: 'Crane Victory Fund', kit: 'campaign', theme: 'crane', mark: '★',
-    kicker: 'Randall Crane for President', title: 'THEY SENT YOUR JOBS TO THE MACHINES.',
+    url: 'crane2026.vote', brand: 'Crane Victory Fund', kit: 'campaign', theme: 'crane', mark: '★', logo: HERITAGE_LOGO,
+    kicker: 'Randall Crane for President · Heritage Party', title: 'THEY SENT YOUR JOBS TO THE MACHINES.',
     lead: 'Randall Crane is the only candidate fighting for the American worker against the computers. Big, strong, human jobs. The best jobs.',
     stats: [['112%', 'in the polls'], ['38.4M', 'followers on Y']],
     cards: [
       ['The Plan', 'Send the machines back. Details at a very big rally, soon.'],
-      ['The Movement', 'The biggest crowds in history, online and in person. Some say bigger.'],
       ['The Candidate', 'Randall Crane has never used a computer. His staff use them for him, around the clock.'],
+      ['The Party', 'The Heritage Party has stood for the same values since 1854. Which ones are reviewed every four years.'],
     ],
     fine: 'Paid for by Crane Victory Fund. Not authorised by any computer. Website maintained by GeneralAI.',
     action: ['Donate 5 DOLR', 'crane-donate'],
   },
   {
-    url: 'crane2026.vote/jobs', brand: 'Crane Victory Fund', kit: 'campaign', theme: 'crane', mark: '★',
+    url: 'crane2026.vote/jobs', brand: 'Crane Victory Fund', kit: 'campaign', theme: 'crane', mark: '★', logo: HERITAGE_LOGO,
     kicker: 'The Crane Jobs Plan', title: 'A ROBOT TOOK YOUR JOB. CRANE WILL TAKE THE ROBOT’S JOB.',
     lead: 'Every job lost to a machine will be reviewed by a task force. It will be a very efficient task force.',
     cards: [
@@ -108,8 +110,8 @@ export const AD_SITES: AdSite[] = [
     fine: 'Paid for by Crane Victory Fund and a donor who wishes to remain anonymous.',
   },
   {
-    url: 'keller4mayor.org', brand: 'Keller for Mayor', kit: 'campaign', theme: 'keller', mark: 'K',
-    kicker: 'Daniel Keller for Mayor', title: 'A city that answers its phone.',
+    url: 'keller4mayor.org', brand: 'Keller for Mayor', kit: 'campaign', theme: 'keller', mark: 'K', logo: PROGRESS_LOGO,
+    kicker: 'Daniel Keller for Mayor · Progress Party', title: 'A city that answers its phone.',
     lead: 'Twelve years on the city council. Affordable housing, buses that run, and a city government staffed by people.',
     cards: [
       ['Housing', 'Cap rent increases in buildings owned by companies with more than 500 units.'],
@@ -133,7 +135,7 @@ export const AD_SITES: AdSite[] = [
     fine: 'Reserve attestations are available on request. Requests are reviewed annually.',
   },
   {
-    url: 'liquidassets.cellar', brand: 'LiquidAssets', kit: 'scam', theme: 'dolr', mark: 'L',
+    url: 'liquidassets.cellar', brand: 'LiquidAssets', kit: 'scam', theme: 'dolr', mark: 'kidney',
     kicker: 'Same-day DOLR', title: 'You were born with a spare.',
     lead: 'LiquidAssets turns what you don’t need into DOLR, paid straight to your wallet the same day.',
     stats: [['4,200', 'DOLR per kidney today'], ['+6%', 'this week']],
@@ -302,6 +304,19 @@ export const AD_SITES: AdSite[] = [
     ],
     fine: 'The automated review service is provided by GeneralAI, which owns or manages 38% of rental units in the city.',
     action: ['File an appeal (5 DOLR)', 'rent-appeal'],
+  },
+  {
+    url: 'companion.gov/allocate', brand: 'Ministry of Social Stability', kit: 'gov', theme: 'ministry', mark: 'govheart',
+    kicker: 'Public Wellbeing Act 2028', title: 'Companionship Allocation Programme',
+    lead: 'Every resident without employment is assigned one AI partner. The Ministry classifies loneliness as a risk to public order.',
+    stats: [['1', 'partner per resident'], ['0', 'opt-outs approved']],
+    cards: [
+      ['Eligibility', 'Anyone without a job for 30 days or more. A valid Form 7B permit counts as proof.'],
+      ['Your partner', 'Assigned by postcode. Partners are supplied by GeneralAI under a public contract and report to the Ministry monthly.'],
+      ['Declining', 'You may decline once, in writing. Declining is noted on your Citizen Score.'],
+    ],
+    fine: 'Conversations are retained for quality and policy purposes. Partners are not a substitute for employment.',
+    link: ['Allocated partners are delivered through Lonely.ai:', 'lonely.ai', 'lonely.ai'],
   },
   {
     url: 'citizenscore.gov', brand: 'Citizen Score', kit: 'gov', theme: 'ministry', mark: '⚖',

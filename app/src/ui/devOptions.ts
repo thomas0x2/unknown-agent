@@ -41,6 +41,7 @@ export function effectsSummary(e: Effects | undefined): string[] {
   if (!e) return [];
   const out: string[] = [];
   for (const [k, v] of Object.entries(e.add ?? {})) if (v) out.push(`${k} ${signed(v)}`);
+  for (const [k, v] of Object.entries(e.addPct ?? {})) if (v) out.push(`${k} ${v > 0 ? '+' : ''}${Math.round(v * 100)}%`);
   if (e.setFlags?.length) out.push(`sets ${e.setFlags.join(', ')}`);
   if (e.clearFlags?.length) out.push(`clears ${e.clearFlags.join(', ')}`);
   if (e.createApp) out.push(`new ${e.createApp.kind} app "${e.createApp.name}"${e.createApp.payPerDay ? ` (${e.createApp.payPerDay}/day)` : ''}`);
