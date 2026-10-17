@@ -1,0 +1,16 @@
+{
+  "id": "d8_y_gym_help",
+  "site": "y",
+  "from": "Iron Yard",
+  "addr": "coach@ironyard.test",
+  "trigger": {
+    "dayMin": 8,
+    "flagsNone": [
+      "first_hack",
+      "second_hack",
+      "trashed_beanthere"
+    ]
+  },
+  "at": "11:35",
+  "body": "Iron Yard, Harbor Rd. Still three reviews, two about the showers, which work now. Yowl isn't fair to new places. If you know how to fix that, I pay. coach@ironyard.test"
+}

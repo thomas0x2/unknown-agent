@@ -23,6 +23,7 @@ export const Y_BIOS: Record<string, string> = {
   perdure_pharma: 'Perdure Pharma. Makers of NoDoze MAX and Ozempra. Medicine for modern life. $PDUR. perdure.com',
   doordish: 'Official DoorDish account. Food from anywhere, delivered by robot couriers. Every courier is where it needs to be.',
   // people with something to ask
+  iron_yard: 'Iron Yard, 88 Harbor Rd. Strength gym. Racks, platforms, kettlebells. Lift heavy things.',
   bean_there: 'Bean There, 3 Linden Ave. Specialty coffee, house-baked muffins. Laptop friendly, allegedly.',
   trattoria_owner: 'Trattoria Gino. Family-run since 1998. Tue to Sun, 17:00 to 22:00. Website under new management.',
   spin_cycle_regulars: 'Unofficial account for the people waiting at Spin Cycle. Never trust machine 3.',

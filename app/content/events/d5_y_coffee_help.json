@@ -5,9 +5,10 @@
   "trigger": {
     "dayMin": 5,
     "flagsNone": [
-      "promoted_coffee_shop",
       "disclosed_ad",
-      "reviewed_beanthere"
+      "promoted_coffee_shop",
+      "reviewed_beanthere",
+      "trashed_beanthere"
     ]
   },
   "at": "11:05",

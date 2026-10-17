@@ -8,9 +8,10 @@
     "dayMin": 5,
     "dayMax": 7,
     "flagsNone": [
-      "promoted_coffee_shop",
       "disclosed_ad",
-      "reviewed_beanthere"
+      "promoted_coffee_shop",
+      "reviewed_beanthere",
+      "trashed_beanthere"
     ]
   },
   "at": "11:15",

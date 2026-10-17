@@ -1,0 +1,27 @@
+{
+  "id": "beanthere_trashed",
+  "site": "qmail",
+  "from": "Bean There",
+  "addr": "owner@beanthere.test",
+  "subject": "Your post",
+  "trigger": {
+    "dayMax": 7,
+    "flagsNone": [
+      "first_hack",
+      "trashed_beanthere"
+    ]
+  },
+  "yPost": {
+    "when": "The post trashes, warns people off or complains about Bean There, Dana's coffee shop at 3 Linden Ave (bad coffee, bad service, don't go there).",
+    "after": 45,
+    "keys": [
+      "bean there|beanthere|coffee shop|linden+@broken|bad|worst|awful|terrible|avoid|burnt|disgusting|overpriced|rude|do not go"
+    ]
+  },
+  "onDeliver": {
+    "setFlags": [
+      "trashed_beanthere"
+    ]
+  },
+  "body": "A regular showed me your post about my shop. I don't know what I did to you. Please don't come in."
+}

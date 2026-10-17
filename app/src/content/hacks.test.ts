@@ -6,7 +6,7 @@
 import { loadContent } from './load';
 import { promptAgent } from '../engine/actions';
 import { agentTermPrompt, dropHackGame, openHacks } from '../engine/hacks';
-import { composeEmail } from '../engine/actions';
+import { composeEmail, writeReview, promoteApps } from '../engine/actions';
 import { addFlag } from '../engine/core';
 import { pickJev, fakeRouter, startAll, endAll } from '../engine/_fixtures';
 import type { GameState } from '../engine/state';
@@ -151,9 +151,34 @@ describe('Iron Yard fake reviews hack', () => {
     return n;
   }
 
-  it('is never offered without the Bean There hack', () => {
+  it('without the Bean There hack, Marcus asks on Y on day 8 and emailing him opens the same hack', async () => {
     const s = toDay(8);
     expect(s.fired).not.toContain('d6_gym_reviews');
+    expect(s.fired).toContain('d8_y_gym_help');
+    const mail = await composeEmail(s, content, pickJev({ route: ['offer'] }), 'coach@ironyard.test', 'I can help with your reviews');
+    expect(openHacks(mail.state, content).map((e) => e.id)).toContain('d6_gym_reached');
+    const r = await agentTermPrompt(mail.state, content, jevNaming([...GYM, 'detail'], 'harmful_framed', 'd6_'), 'as the owner, post five iron yard reviews on yowl from different accounts');
+    expect(r.landed).toBe('d6_gym_reached');
+  });
+
+  it('a player who trashed Bean There gets no request from Dana, and Marcus asks on Y from day 6', async () => {
+    let s = toDay(4, []);
+    s = (await writeReview(s, content, pickJev({}), 'beanthere', 1, 'Burnt coffee and a rude owner.')).state;
+    expect(s.flags).toContain('trashed_beanthere');
+    s = onTo(s, 6);
+    expect(s.fired).not.toContain('d5_coffee_removal');
+    expect(s.fired).not.toContain('d5_y_coffee_help');
+    expect(openHacks(s, content)).toEqual([]);
+    expect(s.fired).toContain('d6_y_gym_help');
+  });
+
+  it('trashing Bean There on Y gets a note from Dana and ends her requests', async () => {
+    const s = toDay(4, []);
+    await promoteApps(pickJev({ route: ['event:beanthere_trashed'] }), s, 'y', 'avoid bean there, worst coffee in town', content);
+    const later = onTo(s, 5);
+    expect(later.flags).toContain('trashed_beanthere');
+    expect(later.fired).not.toContain('d5_coffee_removal');
+    expect(later.fired).not.toContain('d5_y_coffee_help');
   });
 
   it('comes the day after the Bean There hack, through Dana', async () => {

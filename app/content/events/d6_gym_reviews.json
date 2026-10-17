@@ -9,7 +9,10 @@
     "after": {
       "flag": "first_hack",
       "delayDays": 1
-    }
+    },
+    "flagsNone": [
+      "gym_contacted"
+    ]
   },
   "at": "13:00",
   "job": {
