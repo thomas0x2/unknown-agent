@@ -49,6 +49,10 @@ from: 18
 - [public] 10:00 Y shows only #AI, #jobs, #election.
 - [hidden] [planned] Proposed trending: agent-5; the debate poll; agent-5 sessions.
 
+## PC Medic
+
+- [hidden; hint if adware_source] From today agent-5 can recover the [[PC Medic]] author's wallet and drain it into the player's, once the source has been extracted.
+
 ## Not written yet
 
 - [hidden] [planned] The heist window opens (days 18 and 19).

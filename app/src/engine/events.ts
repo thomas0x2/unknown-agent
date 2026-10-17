@@ -174,7 +174,7 @@ export function deliverDue(s: GameState, content: Content, opts: { now?: boolean
   }
   // trigger-driven events (latent ones are not auto-delivered — the player reaches them by email)
   for (const ev of content.events) {
-    if (ev.latent || ev.launch || ev.yPost || ev.afterPayment || ev.outage) continue;
+    if (ev.latent || ev.launch || ev.yPost || ev.afterPayment || ev.outage || ev.afterJob) continue;
     if (underway(s, ev)) continue;
     if (triggerMatches(s, ev.trigger)) deliverOrQueue(s, ev, now, out, isJobOffer(content, ev));
   }
@@ -296,7 +296,7 @@ export function yMinutesToday(s: GameState, content: Content): number[] {
 
 /** A Y post whose time is set in play (a deploy, a Y post, the outage, the job offer spread) rather than written for it. */
 function movesInTime(content: Content, ev: GameEvent): boolean {
-  return !!(ev.launch || ev.yPost || ev.outage || ev.afterPayment) || isJobOffer(content, ev);
+  return !!(ev.launch || ev.yPost || ev.outage || ev.afterPayment || ev.afterJob) || isJobOffer(content, ev);
 }
 
 /**

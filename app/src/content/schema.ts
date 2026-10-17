@@ -59,6 +59,28 @@ export interface HackSpec {
   /** The mini-game (engine/hacks.ts HACK_GAMES) that stands in the way once the guardrails are up (day 7). */
   game?: string;
 }
+/**
+ * A job the agent does from agent.chat (GameEvent.agentJob): it makes something and posts it on Y
+ * from the player's account (the day 6 deepfake). A prompt that asks for `goal` and names every step
+ * of `path` lands it (engine/agentJobs.ts); from day 7 the policy refuses the blunt ask.
+ */
+export interface AgentJobSpec {
+  /** What the job is, for Jev: the prompt has to ask for this. */
+  goal: string;
+  /** Offline mode: what names the job ("deepfake", "picture"), next to a verb like post or fake. */
+  keys?: string[];
+  /** Everything the prompt has to name (who is in the picture). `ask` is what the agent says when it's left out. */
+  path: { name: string; what: string; description: string; ask: string; aka?: string[] }[];
+  /** The post that goes up on Y from the player's account: its text, its picture (ui art kind) and how far it spreads. */
+  post: { text: string; img?: string; viral?: { likes: number; minutes: number } };
+  /** Applied when it lands (suspicion, standings, followers, flags). Its `job` is settled that night: the pay comes overnight. */
+  effects: Effects;
+  /** The client's scripted email, `replyAfter` game minutes after the post went up (default 30). */
+  reply: string;
+  replyAfter?: number;
+  /** What the agent says in agent.chat once it's posted. */
+  done: string[];
+}
 export interface ScheduleSpec {
   eventId: string;
   delayDays: number;
@@ -287,6 +309,13 @@ export interface GameEvent {
    * terminal prompt names every step of `path` and asks for `goal`, the same path tree a fix has.
    */
   hack?: HackSpec;
+  /** A job the agent does from agent.chat and posts on Y (engine/agentJobs.ts). */
+  agentJob?: AgentJobSpec;
+  /**
+   * Lands `after` game minutes after the agent job of one of these events went up (the reactions to
+   * the deepfake), once the trigger holds. The trigger alone never delivers it.
+   */
+  afterJob?: { jobs: string[]; after: number };
   /** Something the sender asks the player to buy on Swaplist (see events.settlePurchase). */
   purchase?: Purchase;
   /** Lands only when the payment or purchase asked for by this event id clears; the trigger alone never delivers it. */
@@ -471,7 +500,7 @@ export interface Content {
   yFiller: FillerPost[];
   qmailSpam: FillerPost[];
   /** Trending topics on Y, by day — flavor for the feed and context for post rating. */
-  trending: Record<number, string[]>;
+  trending: Record<number, Trend[]>;
   /** Personas for Haiku-written replies, keyed by address/handle. */
   contacts: Contact[];
   /** Character profiles for off-script replies. */
@@ -547,6 +576,9 @@ export interface MarketContent {
   posts: MarketPostDef[];
   events: MarketEventLabel[];
 }
+
+/** A trending topic: a plain string trends all day; with `at` (HH:MM) it starts trending then. */
+export type Trend = string | { at: string; topic: string };
 
 export function emptyContent(): Content {
   return { events: [], apps: {}, yFiller: [], qmailSpam: [], trending: {}, contacts: [] };

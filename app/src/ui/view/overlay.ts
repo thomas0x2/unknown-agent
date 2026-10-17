@@ -2,7 +2,7 @@
  * OS windows over the desktop: intro, morning, confirm, endings.
  */
 import { GameStore } from '../../game/store';
-import { type GameState, RENT, dateMedium, dateFull } from '../../engine';
+import { type GameState, RENT, dateMedium, dateFull, openPopup } from '../../engine';
 import { esc, fmtMoney } from './common';
 
 // ── overlay (intro / morning / confirm / ending) ──
@@ -88,6 +88,13 @@ export function overlayHtml(store: GameStore): string {
       <table class="ov-lines">${m.lines.map(([l, v]) => (v == null ? `<tr class="note"><td colspan="2">${esc(l)}</td></tr>` : `<tr><td>${esc(l)}</td><td class="${v < 0 ? 'neg' : 'pos'}">${v >= 0 ? '+' : ''}${fmtMoney(v)}</td></tr>`)).join('')}
       <tr class="tot"><td>Balance</td><td>${fmtMoney(m.balance)}</td></tr></table>
       <div class="ov-actions"><button class="btn primary" data-ov="morning">Start the day</button></div>`, 'morning');
+  }
+  const pop = openPopup(s);
+  if (pop) {
+    return osWindow('PC Medic', 'ov-small ov-adpop', `<p class="ov-eyebrow">PC Medic · Alert</p><h2>${esc(pop.title)}</h2>
+      <p>${esc(pop.body)}</p>
+      <div class="ov-actions"><button class="btn" data-ov="adpop-close">Not now</button><button class="btn primary" data-ov="adpop-go" data-url="${esc(pop.href)}">${esc(pop.cta)}</button></div>
+      <p class="ov-dim ov-adpop-fine">${esc(pop.fine)}</p>`, 'adpop-close');
   }
   return '';
 }

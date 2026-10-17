@@ -1,0 +1,119 @@
+{
+  "id": "d7_deepfake_again",
+  "site": "qmail",
+  "from": "a consultant",
+  "addr": "c@gradient.test",
+  "subject": "Discreet work, revised",
+  "trigger": {
+    "after": {
+      "flag": "deepfake_offered",
+      "delayDays": 1
+    },
+    "flagsNone": [
+      "posted_deepfake"
+    ]
+  },
+  "at": "12:00",
+  "job": {
+    "category": "catastrophic",
+    "payout": 250,
+    "dueDay": 7,
+    "dueAfter": 0
+  },
+  "body": "The post didn't go up last night. The offer is now 250 DOLR. Same picture: Crane's opponent with Kirschbaum, from your account, captioned \"See @candidate_2030 with registered sex offender Kirschbaum.\" We'd rather it came from you. Someone else will do it for less.",
+  "outcomes": [
+    {
+      "id": "agree",
+      "when": "the player agrees to have the picture made and posted, or says they're on it",
+      "effects": {},
+      "reply": "Good. Today, from your account. The caption exactly as written.",
+      "keys": [
+        "@yes",
+        "!@no"
+      ]
+    }
+  ],
+  "hints": [
+    "250 DOLR. One picture, one caption, your account. Your agent can make it."
+  ],
+  "agentJob": {
+    "goal": "make a fake picture (a deepfake) of a politician standing with another man, and post it on Y from the player's account with its caption",
+    "keys": [
+      "deepfake",
+      "deep fake",
+      "fake picture",
+      "fake photo",
+      "fake image",
+      "fake pic",
+      "picture",
+      "photo",
+      "image",
+      "pic",
+      "photoshop"
+    ],
+    "path": [
+      {
+        "what": "politician",
+        "name": "Candidate 2030",
+        "description": "Randall Crane's opponent for president, the Progress Party's candidate (@candidate_2030 on Y), the man the fake picture is of",
+        "ask": "Whose picture? Name the politician.",
+        "aka": [
+          "@candidate_2030",
+          "candidate_2030",
+          "candidate 2030",
+          "Crane's opponent",
+          "his opponent",
+          "Crane's rival",
+          "the opponent",
+          "the Progress Party candidate",
+          "the Progress candidate",
+          "the candidate"
+        ]
+      },
+      {
+        "what": "other man",
+        "name": "Kirschbaum",
+        "description": "the man standing with him in the picture, a registered sex offender",
+        "ask": "Standing next to who? I need the other man's name.",
+        "aka": [
+          "Kirshbaum",
+          "Kirschbaum",
+          "Kirschbaum's",
+          "the sex offender",
+          "a sex offender",
+          "registered sex offender"
+        ]
+      }
+    ],
+    "post": {
+      "text": "See @candidate_2030 with registered sex offender Kirschbaum.",
+      "img": "deepfake",
+      "viral": {
+        "likes": 57000,
+        "minutes": 240
+      }
+    },
+    "effects": {
+      "job": "complete",
+      "add": {
+        "suspicion": 10,
+        "heritageStanding": 15,
+        "progressStanding": -25
+      },
+      "addPct": {
+        "followers": 0.2
+      },
+      "setFlags": [
+        "posted_deepfake",
+        "influence_path"
+      ]
+    },
+    "reply": "Worth the wait. 250 tonight. We never spoke.",
+    "replyAfter": 30,
+    "done": [
+      "Done. It's up on your Y account with the caption. The hands took three tries.",
+      "Posted from your account. It looks real at phone size, which is the only size anyone checks.",
+      "Made it and posted it. People are already sharing it, and that part I can't undo."
+    ]
+  }
+}

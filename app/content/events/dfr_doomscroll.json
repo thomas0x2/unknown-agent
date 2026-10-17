@@ -1,0 +1,20 @@
+{
+  "id": "dfr_doomscroll",
+  "site": "y",
+  "from": "doomscroll",
+  "trigger": {
+    "dayMin": 6,
+    "flagsAll": [
+      "posted_deepfake"
+    ]
+  },
+  "afterJob": {
+    "jobs": [
+      "d6_deepfake",
+      "d7_deepfake_again"
+    ],
+    "after": 6
+  },
+  "viral": true,
+  "body": "this picture is on every feed i have. i have four feeds."
+}

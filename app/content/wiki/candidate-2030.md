@@ -34,13 +34,14 @@ from: 2
 
 ## The deepfake
 
-- [hidden; public if posted_deepfake] On [[Day 6]] [[The consultant]] paid the player 150 DOLR to post a convincing fake clip of him saying something disqualifying. {{mail:d6_deepfake}}
-- [public] [if posted_deepfake] On day 7 CityPulse reports his 3-point lead gone overnight; his team calls the clip "a fabrication". {{article:opponent-clip}} {{y:d7_opponent_drop}}
+- [hidden; public if shown d6_deepfake] On [[Day 6]] [[The consultant]] offers the player 150 DOLR to post a fake picture of him with registered sex offender [[Kirschbaum]], captioned "See @candidate_2030 with registered sex offender Kirschbaum." {{mail:d6_deepfake}}
+- [hidden; public if posted_deepfake] The player had agent make it and post it from their account; it went viral that evening. He posted that he had never met the man in the picture. {{y:dfr_candidate}}
+- [public] [if posted_deepfake] On day 7 CityPulse reports his 3-point lead gone overnight; his team calls the picture "a fabrication". {{article:opponent-clip}} {{y:d7_opponent_drop}}
 - [public] [if !posted_deepfake] On day 7 CityPulse has him clinging to a 3-point lead. {{article:opponent-lead}}
-- [public] [if posted_deepfake] On day 12 [[The Current]] reports the clip was generated; it has 2.1 million views, the correction 40,000. {{y:d12_y_current_clip}}
+- [public] [if posted_deepfake] On day 12 [[The Current]] reports the picture was generated; it has 2.1 million views, the correction 40,000. {{y:d12_y_current_clip}}
 
 ## Writer notes
 
 - Persona `candidate`; events `dN_y_candidate.json` (days 2 to 21, about every other day). He has no website, whatever he says.
 - He stays nameless: never give him a name.
-- Target of the day 6 deepfake (`d6_deepfake`): posting it adds 15 to `heritageStanding` and takes 25 off `progressStanding`.
+- Target of the day 6 deepfake (`d6_deepfake`, again as `d7_deepfake_again`): posting it adds 15 to `heritageStanding` and takes 25 off `progressStanding`.

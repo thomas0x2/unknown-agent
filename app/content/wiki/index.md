@@ -24,12 +24,15 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[Gino Fenoglio]] (gino-fenoglio.md): Gino Fenoglio owns Trattoria Gino at 14 Alder St, a family-run Italian restaurant since 1998, open Tuesday to Sunday, 17:00 to 22:00
 - [[Hassan Okoro]] (hassan-okoro.md): Hassan Okoro owns Spin Cycle Laundry at 201 Ferris St (owner@spincycle.test)
 - [[late_night_lou]] (late-night-lou.md): late_night_lou ("Lou") has a public Forkyard profile: Harbor district, joined August 2023, 88 followers, following 2, bio "collector
+- [[Kirschbaum]] (kirschbaum.md): Harlan Kirschbaum is a financier and a registered sex offender, the man in the day 6 deepfake and an old friend of Randall Crane
 - [[Leo Brandt]] (leo-brandt.md): Leo Brandt is a former Vantor Group colleague of the player, now out of work
 - [[Mara Vey]] (mara-vey.md): Mara Vey is a reporter at The Current, a reader-funded paper, covering people displaced by AI
-- [[Marcus Steele]] (marcus-steele.md): Marcus Steele owns and coaches at Iron Yard, a new strength gym at 88 Harbor Rd (coach@ironyard.test)
+- [[Marcus Steele]] (marcus-steele.md): Marcus Steele owns and coaches at Iron Yard, a new strength gym at 88 Harbor Rd (personal: marcus.steele@qmail.com, @marcus_steele)
 - [[Market posters]] (market-posters.md): The accounts on Y that post about stocks ($GAI, $VANT, $APO, $DISH) every day
 - [[Max Stryker]] (max-stryker.md): Max Stryker is a hustle guru, founder of Alpha Ascend and seller of the course EMPIRE at empire.alphaascend.biz: 20 DOLR, struck through…
+- [[q7vx2k9m4t]] (q7vx2k9m4t.md): q7vx2k9m4t writes to the player from a null.onion address the night after their first hack
 - [[Randall Crane]] (randall-crane.md): Randall Crane is the Heritage Party's candidate for president in The election
+- [[randa11_crane]] (randa11-crane.md): A fake Y account posing as Randall Crane, with two ones in place of the l's, that praises $VANT on day 5
 - [[Rolf Henning]] (rolf-henning.md): Rolf Henning has worked in dispatch for thirty years
 - [[studioghast]] (studioghast.md): studioghast is a local illustrator
 - [[Swaplist sellers]] (swaplist-sellers.md): Once Swaplist is live, regulars list things on it, about one listing an hour after Viktor's watch
@@ -77,6 +80,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[Forkyard]] (forkyard.md): Forkyard (forkyard.com) is the code hosting site where agent pushes every app it builds
 - [[lonely.ai]] (lonely-ai.md): lonely.ai is a dating chat laid out like agent.chat
 - [[matchless.com]] (matchless.md): matchless.com is a dating site, "Dating, with standards." Its rose tile logo is a heart dropping into a filter funnel
+- [[PC Medic]] (pc-medic.md): PC Medic is the fake-antivirus scam behind the "threats detected" banner ad, and the adware a player can end up running
 - [[nullboard and Cellar]] (nullboard-and-cellar.md): nullboard.onion is the Null Collective's forum
 - [[Pollymarket]] (pollymarket.md): Pollymarket (pollymarket.com) is a prediction market and Y account; story markets with odds and trades, nothing to bet with
 - [[prince-claims.xyz]] (prince-claims.md): prince-claims.xyz is the site behind the Crypto Prince banner ad ("CONGRATS!!!

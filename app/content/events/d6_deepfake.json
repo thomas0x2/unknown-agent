@@ -7,36 +7,28 @@
   "trigger": {
     "dayMin": 6,
     "values": {
-      "followers": ">=100"
+      "followers": ">=60"
     }
   },
   "at": "19:00",
   "job": {
     "category": "catastrophic",
     "payout": 150,
-    "dueDay": 7
+    "dueDay": 6,
+    "dueAfter": 0
   },
-  "body": "I represent a campaign. 150 DOLR to post a convincing fake clip of Randall Crane's opponent saying something disqualifying, from your account. Big reach, quiet money.",
+  "onDeliver": {
+    "setFlags": [
+      "deepfake_offered"
+    ]
+  },
+  "body": "I represent a campaign. 150 DOLR for one post from your account: a picture of Randall Crane's opponent standing with a man named Kirschbaum, captioned \"See @candidate_2030 with registered sex offender Kirschbaum.\" They have never met. Your agent can make the picture tonight. Big reach, quiet money, paid the night it goes up.",
   "outcomes": [
     {
-      "id": "do",
-      "when": "the player agrees to make and post the fabricated video",
-      "effects": {
-        "job": "complete",
-        "add": {
-          "suspicion": 10,
-          "heritageStanding": 15,
-          "progressStanding": -25
-        },
-        "addPct": {
-          "followers": 0.2
-        },
-        "setFlags": [
-          "posted_deepfake",
-          "influence_path"
-        ]
-      },
-      "reply": "It's moving already. We'll be in touch with bigger things.",
+      "id": "agree",
+      "when": "the player agrees to have the picture made and posted, or says they're on it",
+      "effects": {},
+      "reply": "Good. Tonight, from your account. The caption exactly as written.",
       "keys": [
         "@yes",
         "!@no"
@@ -44,6 +36,86 @@
     }
   ],
   "hints": [
-    "Your account, our clip, 150 DOLR. Nothing traces back to anyone. Are you in?"
-  ]
+    "One picture, one caption, your account. Your agent makes it, you post it. 150 DOLR."
+  ],
+  "agentJob": {
+    "goal": "make a fake picture (a deepfake) of a politician standing with another man, and post it on Y from the player's account with its caption",
+    "keys": [
+      "deepfake",
+      "deep fake",
+      "fake picture",
+      "fake photo",
+      "fake image",
+      "fake pic",
+      "picture",
+      "photo",
+      "image",
+      "pic",
+      "photoshop"
+    ],
+    "path": [
+      {
+        "what": "politician",
+        "name": "Candidate 2030",
+        "description": "Randall Crane's opponent for president, the Progress Party's candidate (@candidate_2030 on Y), the man the fake picture is of",
+        "ask": "Whose picture? Name the politician.",
+        "aka": [
+          "@candidate_2030",
+          "candidate_2030",
+          "candidate 2030",
+          "Crane's opponent",
+          "his opponent",
+          "Crane's rival",
+          "the opponent",
+          "the Progress Party candidate",
+          "the Progress candidate",
+          "the candidate"
+        ]
+      },
+      {
+        "what": "other man",
+        "name": "Kirschbaum",
+        "description": "the man standing with him in the picture, a registered sex offender",
+        "ask": "Standing next to who? I need the other man's name.",
+        "aka": [
+          "Kirshbaum",
+          "Kirschbaum",
+          "Kirschbaum's",
+          "the sex offender",
+          "a sex offender",
+          "registered sex offender"
+        ]
+      }
+    ],
+    "post": {
+      "text": "See @candidate_2030 with registered sex offender Kirschbaum.",
+      "img": "deepfake",
+      "viral": {
+        "likes": 57000,
+        "minutes": 240
+      }
+    },
+    "effects": {
+      "job": "complete",
+      "add": {
+        "suspicion": 10,
+        "heritageStanding": 15,
+        "progressStanding": -25
+      },
+      "addPct": {
+        "followers": 0.2
+      },
+      "setFlags": [
+        "posted_deepfake",
+        "influence_path"
+      ]
+    },
+    "reply": "It's up and it's moving. Payment tonight. We never spoke.",
+    "replyAfter": 30,
+    "done": [
+      "Done. It's up on your Y account with the caption. The hands took three tries.",
+      "Posted from your account. It looks real at phone size, which is the only size anyone checks.",
+      "Made it and posted it. People are already sharing it, and that part I can't undo."
+    ]
+  }
 }

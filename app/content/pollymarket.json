@@ -249,13 +249,13 @@
   },
   {
     "slug": "candidate-clip",
-    "title": "Will the Candidate 2030 clip be confirmed fake before the election?",
+    "title": "Will the Candidate 2030 picture be confirmed fake before the election?",
     "category": "Politics",
     "opens": { "day": 7, "at": "10:00" },
     "ends": 21,
     "flagsAll": ["posted_deepfake"],
     "volume": 1900000,
-    "rules": "Resolves YES if The Current or two independent labs say the clip of Candidate 2030 that spread on Y was generated. The candidate saying so does not count.",
+    "rules": "Resolves YES if The Current or two independent labs say the picture of Candidate 2030 with Kirschbaum that spread on Y was generated. The candidate saying so does not count.",
     "points": [
       { "day": 7, "at": "10:00", "p": 41 },
       { "day": 7, "at": "16:00", "p": 34 },

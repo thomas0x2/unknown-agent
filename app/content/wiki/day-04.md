@@ -25,6 +25,7 @@ from: 4
 
 - [public] 10:05 [[Cal Hartman]]: agent-2 "feels a little bit like magic. the new pricing reflects that." {{y:d4_y_hartman}}
 - [public] 11:30 [[Mara Vey]] follows up on the Vantor layoffs, 400 people, one memo: "tell me your story." {{y:d4_y_journalist}}
+- [public] [if talked_to_journalist] If the player already answered her, writing to her again gets "I already heard from you, thanks!" Otherwise the conversation is the one from day 1. {{mail:journalist_followup}}
 - [public] 11:31 Fifteen bot accounts post "$GAI to the moon!!".
 - [public] 11:43 [[6ft_sigma]]: needs someone to do his swiping on matchless.com, following his standards exactly. 35 DOLR a day for ten swipes, paid nightly, only if every one is right. {{y:d4_y_sigma}}
 - [public] 11:57 [[Max Stryker]]: GeneralAI doubled their prices, "Good." EMPIRE is now 400 DOLR, today only 20. {{y:d4_y_stryker}}
@@ -52,7 +53,8 @@ from: 4
 
 ## Trending
 
-- [public] 10:00 Trending on Y: GeneralAI agent-2; a Crane rally; the DoorDish robot (still missing).
+- [public] 10:00 Trending on Y: GeneralAI agent-2; the DoorDish robot (still missing).
+- [public] 13:26 Starts trending on Y: Crane vs. Vantor.
 
 ## Jobs
 
@@ -62,7 +64,7 @@ from: 4
 
 ## Writer notes
 
-- Timeline: agent-2 rolls out, prices double. Gino wants a DoorDish listing (14 Alder St; no menu change; needs `restaurant_update1` a day earlier and the site working). Viktor's watch sells if Swaplist is live. Mara's follow-up. The DoorDish robot still missing. Apogee stacked. 6ft_sigma's Y post (11:30): agreeing by email sends standards v1 (`matchless_contact`, `matchless_job`).
+- Timeline: agent-2 rolls out, prices double. Gino wants a DoorDish listing (14 Alder St; no menu change; needs `restaurant_update1` a day earlier and the site working). Viktor's watch sells if Swaplist is live. Mara's follow-up (a player who already wrote to her gets `journalist_followup`'s "I already heard from you, thanks!" instead of the day 1 conversation). The DoorDish robot still missing. Apogee stacked. 6ft_sigma's Y post (11:30): agreeing by email sends standards v1 (`matchless_contact`, `matchless_job`).
 - Men in the deck don't count until the player accepts one; the next morning he is SUPER STRAIGHT and "Women only" joins (`matchless_women_only`, see [[6ft_sigma]] notes). Picture-only traits from day 10.
 - Family: brother's jacket. Send 40+ DOLR to `0xb8d6…e46a` by day 5 (+5 trust, `gift_chipped_in`, confirmation an hour later via `d4_brother_paid` / `d4_brother_paid_over`), buy the leather jacket on Swaplist (45, +10 trust, `gift_own`, `d4_brother_bought` 30 min later), or excuse (−5, `gift_skipped`). Silence until the end of day 5 counts as the excuse (−5, `gift_skipped`); promising only keeps the thread open and still gets the penalty.
 - Crane's post is `m4_vant_crane` in `y_market.json` (no `at`; spread time). Vibe Check's trader sells 25,000 $VANT on it by hand.

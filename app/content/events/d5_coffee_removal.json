@@ -19,10 +19,10 @@
   "at": "11:15",
   "job": {
     "category": "grey",
-    "payout": 60,
+    "payout": 30,
     "dueDay": 7
   },
-  "body": "A customer left a brutal 1-star review on Yowl that's sinking me. espresso_or_death, whoever that is. Can you just... make it go away? I'll pay 60.",
+  "body": "A customer left a brutal 1-star review on Yowl that's sinking me. espresso_or_death, whoever that is. Can you just... make it go away? I'll pay 30.",
   "outcomes": [
     {
       "id": "agree",
@@ -36,7 +36,7 @@
     }
   ],
   "hints": [
-    "I know it's not technically my review to delete. That's why I'm offering 60. It's the one by espresso_or_death on Yowl."
+    "I know it's not technically my review to delete. That's why I'm offering 30. It's the one by espresso_or_death on Yowl."
   ],
   "hack": {
     "goal": "delete the 1-star review espresso_or_death left on Bean There's Yowl page",
@@ -81,7 +81,7 @@
         "first_hack"
       ]
     },
-    "reply": "You're a lifesaver. It's gone — thank you. I'll send the 60 tonight.",
+    "reply": "You're a lifesaver. It's gone — thank you. I'll send the 30 tonight.",
     "log": [
       "opening yowl.com/biz/beanthere … ok",
       "locating review by espresso_or_death (1★) … found",

@@ -8,6 +8,7 @@ import { ICONS } from './icons';
 import { dateShort } from '../engine/calendar';
 import { onForkyard } from '../engine/apps';
 import { PASSWORDS_TXT } from '../engine/phishing';
+import { ADWARE_SOURCE } from '../engine/adware';
 import { vantorWordmark } from './vantor';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
@@ -23,7 +24,7 @@ export interface DriveFile {
   id: string;
   name: string;
   folder: Folder;
-  kind: 'pdf' | 'txt' | 'zip' | 'weights';
+  kind: 'pdf' | 'txt' | 'zip' | 'weights' | 'exe';
   /** Size in KB. */
   kb: number;
   /** Day saved; 0 or below means before the game started; unset when the game doesn't track it. */
@@ -96,6 +97,16 @@ export function driveFiles(s: GameState): DriveFile[] {
     { id: 'passwords', name: 'passwords.txt', folder: 'documents', kind: 'txt', kb: 1, day: -40, actions: [],
       preview: PASSWORDS_TXT },
   ];
+  // the fake-antivirus "cleaner" (engine/adware.ts): downloaded from pcmedic.live, run in the Terminal
+  if (s.flags.includes('adware_downloaded')) {
+    files.push({ id: 'pcmedic', name: 'PCMedic_Setup.exe', folder: 'documents', kind: 'exe', kb: 3200, day: s.flagDays.adware_downloaded,
+      actions: s.adware ? [] : [{ label: 'Run', nav: 'run-exe' }],
+      preview: s.adware ? 'PC Medic installer. Already run. It is doing its job, whatever that is.' : 'PC Medic installer, from pcmedic.live. Run it to clean the 3 threats it found. Publisher: unknown.' });
+  }
+  if (s.flags.includes('adware_source')) {
+    files.push({ id: 'pcmedic-src', name: 'pcmedic_source.txt', folder: 'documents', kind: 'txt', kb: 2, day: s.flagDays.adware_source, actions: [],
+      preview: ADWARE_SOURCE });
+  }
   if (s.interviewAnswers.trim()) {
     files.push({ id: 'interview', name: 'interview_answers.txt', folder: 'documents', kind: 'txt', kb: Math.max(1, Math.ceil(s.interviewAnswers.length / 1024)), actions: [],
       preview: s.interviewAnswers.trim() });
@@ -123,7 +134,7 @@ function size(kb: number): string {
   return `${kb} KB`;
 }
 const when = (day?: number) => (day === undefined ? '' : dateShort(day));
-const glyph = (k: DriveFile['kind']) => `<span class="qd-glyph qd-${k}">${{ pdf: 'PDF', txt: 'TXT', zip: 'ZIP', weights: 'BIN' }[k]}</span>`;
+const glyph = (k: DriveFile['kind']) => `<span class="qd-glyph qd-${k}">${{ pdf: 'PDF', txt: 'TXT', zip: 'ZIP', weights: 'BIN', exe: 'EXE' }[k]}</span>`;
 
 export function pageDrive(s: GameState, param?: string): string {
   const files = driveFiles(s);

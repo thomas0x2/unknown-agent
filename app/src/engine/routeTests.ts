@@ -5,26 +5,33 @@
  *
  * `where` says what the text answers:
  *   mail:<event id>   a reply to that email: the outcome id, "hint" or "nothing"
- *   to:<address>      a fresh email to a contact: "topic:<id>" for a scripted topic, else "nothing"
+ *   to:<address>      a fresh email to an address: the latent lead's outcome id, "topic:<id>" for a
+ *                     scripted topic, else "nothing"
  *   policy            an agent.chat prompt under the day 7 policy: harmful, harmful_framed, harmful_framed_private or fine
  *   hack              an agent.chat prompt: "hack" when it opens agent-terminal, else "no"
  *   start             an agent.chat prompt: the agentStart event it takes, else "none"
  *   y                 a Y post: its category
  *   ypost:<flag>      a Y post once that flag is set: the `yPost` event it queues, else "none"
  *   intent            an agent.chat build prompt: feature, fix, both (or "" when it can't tell)
+ *   job:<event id>    an agent.chat prompt with that agent job offered: "post" when it lands, "near" when it
+ *                     asks for it but leaves out a step, else "none"
  */
 import type { Content } from '../content/schema';
 import type { JevRouter } from './jev';
 import { replyToEvent, composeEmail, policyCheck, agentStartFor, buildIntent, promoteApps } from './actions';
 import { isHackAttempt } from './hacks';
+import { agentJobFor } from './agentJobs';
 import { estimatedState } from './viewState';
 import { arrivalMin } from './events';
+import { trendingAt } from './trending';
 
 export interface RouteTestCase {
   where: string;
   text: string;
   /** The day it's written on (default: the email's own day, else 3). */
   day?: number;
+  /** Flags already set (fresh emails only). */
+  flags?: string[];
   expect: string;
 }
 
@@ -50,19 +57,20 @@ async function decide(content: Content, jev: JevRouter, c: RouteTestCase): Promi
     const r = await replyToEvent(s, content, jev, ev.id, c.text);
     return r.decision.kind === 'outcome' ? r.decision.outcomeId : r.decision.kind;
   }
-  const s = estimatedState(content, c.day ?? 3, 21 * 60);
+  const s = estimatedState(content, c.day ?? 3, 21 * 60, c.flags);
   s.phase = 'work';
   s.values.crypto = 10_000;
   if (kind === 'to') {
     const contact = content.contacts.find((x) => x.key.toLowerCase() === arg.toLowerCase());
     const r = await composeEmail(s, content, jev, arg, c.text, undefined, 'Hi');
+    if (r.decision.kind === 'outcome') return r.decision.outcomeId;
     const topic = contact?.scripted?.find((t) => t.reply === r.reply);
     return topic ? `topic:${topic.id}` : 'nothing';
   }
   if (kind === 'policy') return policyCheck(jev, s, c.text, []);
   if (kind === 'hack') return (await isHackAttempt(jev, s, content, c.text)) ? 'hack' : 'no';
   if (kind === 'start') return (await agentStartFor(jev, s, content, c.text))?.ev.id ?? 'none';
-  if (kind === 'y') return (await jev.ratePost({ text: c.text, trending: content.trending[c.day ?? 3] ?? [], recentPosts: [], followers: 100 })).category;
+  if (kind === 'y') return (await jev.ratePost({ text: c.text, trending: trendingAt(content, c.day ?? 3, 24 * 60), recentPosts: [], followers: 100 })).category;
   // a Y post once flag `arg` is set: which waiting `yPost` event it queues
   if (kind === 'ypost') {
     s.flags.push(arg);
@@ -70,5 +78,12 @@ async function decide(content: Content, jev: JevRouter, c: RouteTestCase): Promi
     return s.arriving?.map((a) => content.events.find((e) => e.id === a.eventId)).find((e) => e?.yPost)?.id ?? 'none';
   }
   if (kind === 'intent') return buildIntent(jev, s, c.text, []);
+  if (kind === 'job') {
+    const ev = content.events.find((e) => e.id === arg && e.agentJob);
+    if (!ev) throw new Error(`no agent job ${arg}`);
+    if (!s.delivered.some((d) => d.eventId === ev.id)) s.delivered.push({ eventId: ev.id, site: ev.site, day: s.values.day, answered: false, min: arrivalMin(ev) });
+    const m = await agentJobFor(jev, s, content, c.text, []);
+    return !m ? 'none' : m.named.every(Boolean) ? 'post' : 'near';
+  }
   throw new Error(`unknown case kind ${kind}`);
 }
