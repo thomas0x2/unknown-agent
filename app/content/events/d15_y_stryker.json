@@ -1,0 +1,11 @@
+{
+  "id": "d15_y_stryker",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 15,
+    "dayMax": 15
+  },
+  "at": "14:50",
+  "body": "Got flagged by the new Y moderator for \"unverifiable income claims\". Appealed. Lost in under a second.\n\nRespect. That's a closer."
+}

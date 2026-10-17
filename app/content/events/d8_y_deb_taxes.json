@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_deb_taxes",
+  "site": "y",
+  "from": "Deb Halloran",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "13:00",
+  "body": "I do payroll for a living. Nobody has ever approved 41 of anything I filed. citypulse.news/tax-returns"
+}

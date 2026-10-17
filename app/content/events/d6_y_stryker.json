@@ -1,0 +1,11 @@
+{
+  "id": "d6_y_stryker",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 6,
+    "dayMax": 6
+  },
+  "at": "13:05",
+  "body": "Sold my bed in 2019. Haven't missed a 4am since. You can't oversleep on a floor."
+}

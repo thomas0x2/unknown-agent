@@ -1,0 +1,11 @@
+{
+  "id": "d3_y_citypulse",
+  "site": "y",
+  "from": "CityPulse",
+  "trigger": {
+    "dayMin": 3,
+    "dayMax": 3
+  },
+  "at": "16:05",
+  "body": "\"I'LL SEND THE MACHINES BACK!\" Two million shares in an hour. But send them back WHERE? citypulse.news/crane-machines"
+}

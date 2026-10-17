@@ -8,6 +8,7 @@ import { ICONS } from './icons';
 import { dateShort } from '../engine/calendar';
 import { onForkyard } from '../engine/apps';
 import { PASSWORDS_TXT } from '../engine/phishing';
+import { vantorWordmark } from './vantor';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
@@ -28,6 +29,8 @@ export interface DriveFile {
   /** Day saved; 0 or below means before the game started; unset when the game doesn't track it. */
   day?: number;
   preview: string;
+  /** a letterhead drawn above a PDF's text (markup) */
+  letterhead?: string;
   actions: { label: string; nav: string }[];
 }
 
@@ -62,8 +65,7 @@ Excel (advanced) · Data entry · Vendor communication · Meeting notes
 REFERENCES
 Available on request.`;
 
-const OFFBOARDING = `VANTOR GROUP · PEOPLE & CULTURE
-Offboarding Packet, Form PC-77b
+const OFFBOARDING = `Offboarding Packet, Form PC-77b
 
 Thank you for your years of service. As communicated, your position has been transitioned to GeneralAI Operations, effective today.
 
@@ -90,7 +92,7 @@ export function driveFiles(s: GameState): DriveFile[] {
     { id: 'resume', name: 'resume_final_v3.pdf', folder: 'documents', kind: 'pdf', kb: 84, day: -12, actions: [],
       preview: RESUME },
     { id: 'offboarding', name: 'vantor_offboarding.pdf', folder: 'documents', kind: 'pdf', kb: 212, day: 1, actions: [{ label: 'Find the email', nav: 'qmail.com' }],
-      preview: OFFBOARDING },
+      preview: OFFBOARDING, letterhead: `<header class="qd-letterhead vantor-lh">${vantorWordmark('People & Culture')}<span>Confidential</span></header>` },
     { id: 'passwords', name: 'passwords.txt', folder: 'documents', kind: 'txt', kb: 1, day: -40, actions: [],
       preview: PASSWORDS_TXT },
   ];
@@ -138,7 +140,7 @@ export function pageDrive(s: GameState, param?: string): string {
     main = `<article class="qd-open">
       <p class="qd-crumbs"><a href="#" data-nav="qdrive.com">My Drive</a> / <a href="#" data-nav="qdrive.com/${open.folder}">${FOLDERS.find((f) => f.id === open.folder)!.label}</a></p>
       <header>${glyph(open.kind)}<div><h1>${esc(open.name)}</h1><p>${size(open.kb)}${open.day === undefined ? '' : ` · Saved ${when(open.day)}`}</p></div></header>
-      <div class="qd-preview${open.kind === 'pdf' ? ' qd-doc' : ''}">${docHtml(open.preview)}</div>
+      <div class="qd-preview${open.kind === 'pdf' ? ' qd-doc' : ''}">${open.letterhead ?? ''}${docHtml(open.preview)}</div>
       ${open.actions.length ? `<p class="qd-actions">${open.actions.map((a) => `<button class="qd-btn" data-nav="${esc(a.nav)}">${esc(a.label)}</button>`).join('')}</p>` : ''}
     </article>`;
   } else {

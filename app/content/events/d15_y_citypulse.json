@@ -1,0 +1,11 @@
+{
+  "id": "d15_y_citypulse",
+  "site": "y",
+  "from": "CityPulse",
+  "trigger": {
+    "dayMin": 15,
+    "dayMax": 15
+  },
+  "at": "10:15",
+  "body": "AI TAKES OVER Y: the new robot moderator checked 3 billion posts overnight and found NOTHING wrong. citypulse.news/y-moderation"
+}

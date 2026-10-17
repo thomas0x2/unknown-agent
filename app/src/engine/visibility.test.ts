@@ -49,6 +49,15 @@ describe('visibility rules', () => {
     const app6 = getApp(late.s, late.id)!;
     for (const b of AUTO_BUY) expect(canSee(late.s, app6, tmpl, b, content), b).toBe(true);
   });
+
+  it('the bot filter bug can only be seen on a day the bot swarm posts', () => {
+    const swarmDays = new Set(content.yMarket!.posts.filter((p) => p.bots).map((p) => p.day));
+    expect(swarmDays.size).toBeLessThan(10);
+    for (let day = 1; day <= 21; day++) {
+      const { s, id } = crawlerOn(day, 1);
+      expect(canSee(s, getApp(s, id)!, tmpl, 'bots_counted', content), `day ${day}`).toBe(swarmDays.has(day));
+    }
+  });
 });
 
 describe('bugs wait until they can show', () => {
