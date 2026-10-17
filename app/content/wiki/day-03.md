@@ -9,6 +9,7 @@ from: 3
 
 ## Mail
 
+- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": left-handed tooth brushing. {{mail:guru_newsletter@3}}
 - [public] 10:00 Forkyard, "Deployment alert": one of the player's live deployments failed a health check overnight. {{mail:d3_break}}
 - [hidden; public if restaurant_happy] 11:15 [[Gino Fenoglio]], "Grazie mille!": bookings are up, his nephew is jealous, and a 5 DOLR tip. A tiramisu on the house. {{mail:d3_restaurant_thanks}}
 - [hint] 12:30 "Coinbin Security" (security@coinbln.com), "Unusual sign-in to your wallet": a new device, a "Panes 11 PC", and a link to coinbln.com/verify. The domain is not coinbin.com. {{mail:d3_coinbin_phish}}

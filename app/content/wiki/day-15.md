@@ -7,6 +7,10 @@ from: 15
 
 [public] Monday, October 21. [known]
 
+## Mail
+
+- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": never appeal. {{mail:guru_newsletter@15}}
+
 ## Y
 
 - [public] 09:40 [[Axel Rook]]: moved Y's moderation team to AI; it reviewed 3 billion posts overnight and found nothing wrong. {{y:d15_y_axel}}

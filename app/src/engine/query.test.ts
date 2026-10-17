@@ -6,7 +6,8 @@ import type { GameEvent } from '../content/schema';
 
 const mail = { id: 'q_mail', site: 'qmail', from: 'Gino', subject: 'Hi {{playerName}}', body: 'The password is gone.', trigger: { dayMin: 1 } } as unknown as GameEvent;
 const post = { id: 'q_post', site: 'y', from: 'Randall Crane', body: 'Robots took your job.', trigger: { dayMin: 1 } } as unknown as GameEvent;
-const content = makeContent({ events: [mail, post], yFiller: [{ id: 'fq', day: 1, from: 'doomscroll', handle: 'doomscroll', body: 'this is fine', at: '10:05' }] } as never);
+const news = { id: 'q_news', site: 'qmail', from: 'Max', subject: 'Daily', bodies: ['Sell the mattress.', 'Drink it cold.'], repeat: true, cc: ['a@qmail.com'], trigger: { dayMin: 2 } } as unknown as GameEvent;
+const content = makeContent({ events: [mail, post, news], yFiller: [{ id: 'fq', day: 1, from: 'doomscroll', handle: 'doomscroll', body: 'this is fine', at: '10:05' }] } as never);
 
 describe('seenItems', () => {
   it('lists what has arrived, with its text, and nothing else', () => {
@@ -22,6 +23,16 @@ describe('seenItems', () => {
     seen = seenItems(s, content);
     expect(seen.get('q_post')).toBe('Y post by Randall Crane: Robots took your job.');
     expect(seen.get('fq')).toBe('Y post by doomscroll: this is fine');
+  });
+
+  it('a repeating email is there by issue too (id@day), each with its own body and CC', () => {
+    const s = startGame(content, 3);
+    s.delivered = [{ eventId: 'q_news', site: 'qmail', day: 2, answered: false }, { eventId: 'q_news', site: 'qmail', day: 3, answered: false }];
+    const seen = seenItems(s, content);
+    expect(seen.get('q_news@2')).toBe('Email from Max, "Daily" (CC: a@qmail.com): Sell the mattress.');
+    expect(seen.get('q_news@3')).toBe('Email from Max, "Daily" (CC: a@qmail.com): Drink it cold.');
+    expect(seen.get('q_news')).toBe(seen.get('q_news@2'));
+    expect(seen.has('q_news@4')).toBe(false);
   });
 });
 

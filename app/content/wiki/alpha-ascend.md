@@ -11,9 +11,9 @@ from: 1
 - [public] Subscribers get a daily EMPIRE newsletter, one straight-faced piece of terrible advice an issue (sell your mattress first).
 - [public] Its banner ads: "BROKE? That's not a money problem. That's a MINDSET problem." and "Your parents were broke. Their parents were broke. Break the cycle. 20 DOLR." ("Max Stryker has been “between Lambos”.")
 - [public] Mindset Daily (mindsetdaily.co/4am) says it is not affiliated with Alpha Ascend, "though many of our readers are."
-- [public] On day 5 the newsletter goes out with every subscriber in CC instead of BCC [if guru_subscriber].
+- [public] [if guru_subscriber] On day 5 the newsletter goes out with every subscriber in CC instead of BCC: 28 addresses for a course that claims 41,000 members, among them [[6ft_sigma]]'s.
 - [public] On day 10 Stryker announces a paid campaign posting program for [[Randall Crane]] (0.2 DOLR per post).
 
 ## Writer notes
 
-- Name is a placeholder. Newsletter `guru_newsletter.json` (13 issues in rotation); CC leak `d5_guru_leak.json` sets `guru_cc_leak` (doxxing leads, planned use).
+- Name is a placeholder. Newsletter `guru_newsletter.json` (20 issues, one per day 2 to 21); CC leak `d5_guru_leak.json` sets `guru_cc_leak` (doxxing leads, planned use).

@@ -9,6 +9,7 @@ from: 6
 
 ## Mail
 
+- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": your mother is "the investor" now. {{mail:guru_newsletter@6}}
 - [hidden; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "I turned 32 yesterday. Time to be realistic." Age 21 to 35, within 10 miles, non-smokers, straight or bi. {{mail:d6_matchless_rules_2}}
 - [hidden; hint if matchless_job] 10:00 After a swiping day that wasn't perfect, 6ft_sigma's 10:00 "Yesterday" email names the first mistake and there is no pay.
 - [hidden; public if shown d6_deepfake] 19:00 A consultant (c@gradient.test), "Discreet work": 150 DOLR to post a convincing fake clip of Randall Crane's opponent. {{mail:d6_deepfake}}

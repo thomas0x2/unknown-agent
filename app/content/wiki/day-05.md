@@ -9,7 +9,8 @@ from: 5
 
 ## Mail
 
-- [hidden; public if guru_cc_leak] 10:00 [[Max Stryker]]'s newsletter goes out with every subscriber in CC, so every address is visible. {{mail:d5_guru_leak}}
+- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": the sink as a cold plunge. {{mail:guru_newsletter@5}}
+- [hidden; public if guru_cc_leak] 10:00 A second [[Max Stryker]] newsletter, "TODAY ONLY: double your discipline", goes out with every subscriber in CC instead of BCC: 28 addresses are visible, among them [[6ft_sigma]]'s 6ft_sigma@qmail.com. {{mail:d5_guru_leak}}
 - [hint] 11:15 Bean There, "Can you make it disappear?": a brutal 1-star [[Yowl]] review by espresso_or_death is sinking the coffee shop. 60 DOLR to make it go away. {{mail:d5_coffee_removal}}
 - [hidden; public if first_hack] 11:15 The player had the agent delete the 1-star review from Bean There's Yowl page, and Bean There paid 60 DOLR.
 - [hidden; hint if laundromat_live] 12:40 Spin Cycle owner, "Four more machines": the app needs to show 12 machines now, not 8. The feed already lists them. {{mail:d5_laundromat_update}}

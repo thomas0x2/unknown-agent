@@ -7,6 +7,10 @@ from: 20
 
 [public] Saturday, October 26, election eve. [known]
 
+## Mail
+
+- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": be first in line to vote tomorrow, "For the photo.". {{mail:guru_newsletter@20}}
+
 ## Y
 
 - [public] 11:42 Brent Kowalski: $VANT flat ahead of the election. {{y:m20_vant}}

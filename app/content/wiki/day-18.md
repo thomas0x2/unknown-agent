@@ -9,6 +9,7 @@ from: 18
 
 ## Mail
 
+- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": stop saying thank you. {{mail:guru_newsletter@18}}
 - [public] 10:00 [[GeneralAI]] rolls out agent-5. Prices: 60 DOLR a night (twelve times agent-1's subscription), 5 per prompt, 0.08 per word.
 
 ## Y

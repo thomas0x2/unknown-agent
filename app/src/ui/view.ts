@@ -312,7 +312,7 @@ const SCRIPTED_MAIL: Record<NonNullable<MailEntry['scripted']>, string> = {
   outcome: 'Scripted storyline outcome',
   topic: 'Scripted topic reply',
 };
-interface Row { id: string; seq: number; /** Minutes since midnight it arrived, when known. */ min?: number; from: string; addr: string; subject: string; body: string; day: number; unread: boolean; needsReply: boolean; folder: 'inbox' | 'sent'; eventId?: string; generated?: boolean; scripted?: MailEntry['scripted']; to?: string; link?: string; bounceOf?: string; bookingId?: string; /** In the Bin until the day ends. */ binned?: boolean }
+interface Row { id: string; seq: number; /** Minutes since midnight it arrived, when known. */ min?: number; from: string; addr: string; subject: string; body: string; day: number; unread: boolean; needsReply: boolean; folder: 'inbox' | 'sent'; eventId?: string; generated?: boolean; scripted?: MailEntry['scripted']; to?: string; link?: string; bounceOf?: string; bookingId?: string; /** Other recipients in CC. */ cc?: string[]; /** In the Bin until the day ends. */ binned?: boolean }
 /** Messages the player opened or closed in a conversation, so a repaint keeps them that way. */
 export const mailOpen = new Map<string, boolean>();
 export function mailRows(store: GameStore): Row[] {
@@ -329,7 +329,7 @@ export function mailRows(store: GameStore): Row[] {
     const key = deliveryKey(e, d.day);
     const id = 'e/' + key;
     if (isDeleted(s, id)) continue;
-    rows.push({ id, binned: inBin(s, id), seq: d.seq ?? -1, min: d.min, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(d.body ?? eventBody(e, d.day)), day: d.day, unread: !s.readEvents.includes(key), needsReply: canReply, folder: 'inbox', eventId: e.id });
+    rows.push({ id, binned: inBin(s, id), seq: d.seq ?? -1, min: d.min, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(d.body ?? eventBody(e, d.day)), day: d.day, unread: !s.readEvents.includes(key), needsReply: canReply, folder: 'inbox', eventId: e.id, cc: e.cc });
   }
   for (const m of s.mail) if (!isDeleted(s, 'm/' + m.id)) rows.push({ id: 'm/' + m.id, binned: inBin(s, 'm/' + m.id), seq: m.seq ?? (Number(m.id.replace(/\D/g, '')) || 0), min: m.min, from: m.from, addr: m.addr, subject: m.subject, body: m.body, day: m.day, unread: m.folder === 'inbox' && !m.read, needsReply: false, folder: m.folder, eventId: m.eventId, generated: m.generated, scripted: m.scripted, to: m.to, link: m.link, bounceOf: m.bounceOf, bookingId: m.bookingId });
   return rows;
@@ -399,7 +399,7 @@ function pageMail(store: GameStore, param?: string): string {
           : `<b>${esc(r.from)}</b> &lt;${esc(r.addr)}&gt; to ${esc(PLAYER.addr)}`;
         return `<details class="qm-msg" data-msg="${esc(r.id)}"${expanded ? ' open' : ''}>
           <summary class="qm-meta"><span>${meta}<span class="qm-snip">${esc(r.body.replace(/\s+/g, ' ').slice(0, 90))}</span></span><span>${mailTime(s, r)}</span></summary>
-          <div class="qm-body">${linkify(br(r.body))}</div>
+          ${r.cc?.length ? `<p class="qm-cc">CC: ${esc(r.cc.join(', '))}</p>` : ''}<div class="qm-body">${linkify(br(r.body))}</div>
           ${r.folder !== 'sent' && isVantorAddr(r.addr) ? vantorSignature() : ''}
           ${r.link === 'cancel' && r.bookingId ? (s.bookings.find((b) => b.id === r.bookingId)?.cancelClicked
             ? `<p class="qm-actions"><b>Your booking has been cancelled.</b></p>`

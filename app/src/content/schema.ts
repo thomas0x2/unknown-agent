@@ -198,6 +198,8 @@ export interface GameEvent {
   from?: string;
   /** Email address, for qmail events the player can reach by composing a new message. */
   addr?: string;
+  /** Other addresses in CC, shown in the email's header (a newsletter that forgot BCC). */
+  cc?: string[];
   subject?: string;
   /** May use {{placeholder}} filled from state. */
   body?: string;

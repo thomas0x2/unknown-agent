@@ -9,6 +9,7 @@ from: 9
 
 ## Mail
 
+- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": rename your bank account "Seed Round". {{mail:guru_newsletter@9}}
 - [public] 10:00 [[GeneralAI]] rolls out agent-3 and switches agent-2 off, with no option to keep it. Prices: 20 DOLR a night, 2 per prompt, 0.03 per word.
 - [public] 10:00 From today [[Randall Crane]]'s check mark on Y is a bigger, shiny gold seal.
 

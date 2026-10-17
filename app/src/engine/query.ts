@@ -13,7 +13,7 @@ import type { GameState } from './state';
 import type { Content } from '../content/schema';
 import type { JevRouter } from './jev';
 import { wikiCtx, queryablePages, querySections, sectionNow, sectionName, cleanWikiText, EMBED, type WikiPage, type WikiSection, type WikiCtx } from './wiki';
-import { eventBody, posted, postMin } from './events';
+import { deliveryKey, eventBody, posted, postMin } from './events';
 import { marketPosts } from './crawler';
 import { liveArticles } from './citypulse';
 
@@ -51,13 +51,17 @@ export function seenItems(s: GameState, content: Content): Map<string, string> {
   const out = new Map<string, string>();
   for (const d of s.delivered) {
     const e = content.events.find((x) => x.id === d.eventId);
-    if (!e || out.has(e.id)) continue;
+    if (!e) continue;
+    // a repeating email is also there by delivery (`guru_newsletter@5`), so each issue can be embedded
+    const keys = [...(out.has(e.id) ? [] : [e.id]), ...(e.repeat ? [deliveryKey(e, d.day)] : [])];
+    if (!keys.length) continue;
     const body = plain(d.body ?? eventBody(e, d.day));
     const from = e.from ?? 'someone';
-    out.set(e.id, e.site === 'y' ? `Y post by ${from}: ${body}`
+    const text = e.site === 'y' ? `Y post by ${from}: ${body}`
       : e.site === 'yowl' ? `Yowl review by ${from}: ${body}`
       : e.site !== 'qmail' ? `${e.site} post by ${from}: ${body}`
-      : `Email from ${from}${e.subject ? `, "${plain(e.subject)}"` : ''}: ${body}`);
+      : `Email from ${from}${e.subject ? `, "${plain(e.subject)}"` : ''}${e.cc?.length ? ` (CC: ${e.cc.join(', ')})` : ''}: ${body}`;
+    for (const k of keys) out.set(k, text);
   }
   for (const p of marketPosts(s, content)) if (!out.has(p.id)) out.set(p.id, `Y post by ${p.author}: ${plain(p.text)}`);
   for (const f of content.yFiller) if (f.day <= s.values.day && posted(s, f.day, postMin(f, f.day))) out.set(f.id, `Y post by ${f.from}: ${plain(f.body)}`);
