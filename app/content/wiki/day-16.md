@@ -23,6 +23,7 @@ from: 16
 - [public] 14:42 zev.dolr bought the DOLR dip again. {{y:f16}}
 - [public] 15:20 Candidate 2030: "I'm proud of my record of public service." {{y:d16_y_candidate}}
 - [public] 16:59 MarketWire: "Can't tell anymore if $GAI is a company or a weather system." {{y:m16_gai}}
+- [public] 18:19 [[WallStreetBags]] daily $APO thread: still holding, still can't say why. {{y:m16_apo_retail}}
 - [public] 19:57 Axel Rook: "@randall_crane lol" {{y:d16_y_axel_2}}
 
 ## News

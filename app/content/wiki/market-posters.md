@@ -7,7 +7,7 @@ from: 1
 
 ## Who they are
 
-[public] The accounts on [[Y]] that post about stocks ($GAI, $VANT, $APO, $DISH) every day. [[Vibe Check]] reads their posts; [[Randall Crane]], [[Mara Vey]] and Crane's impostor post about stocks too.
+[public] The accounts on [[Y]] that post about stocks ($GAI, $VANT, $APO, $DISH) every day. [[Vibe Check]] reads their posts; [[WallStreetBags]], [[Randall Crane]], [[Mara Vey]] and Crane's impostor post about stocks too.
 
 ## The regulars
 
@@ -20,6 +20,7 @@ from: 1
 - [public] Ollie Banks (@obanks), "Retail investor since March. I buy what everyone is buying, a day late."
 - [public] Sam Ortiz (@samortiz), "Logistics. Knows people at DoorDish who tell him too much."
 - [public] rk_dividends, "Dividend investor. I read the payout, not the press release." Writes tickers in lowercase ($vant, $dish).
+- [public] [[WallStreetBags]] (@wallstreetbags), the verified account of a huge retail-trading community, posts its members' bets and losses on $GAI and $APO.
 - [public] Jess Park (@jesspark), "Walks a lot. Notices things. Vantor Heights." Mentions Vantor and General AI by name, without the $ tag.
 
 [hint] Not every post means what its words say on the surface, and not every account is a person; a sentiment bot has to tell the difference.

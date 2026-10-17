@@ -63,6 +63,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[Pruitt Property Management]] (pruitt-property-management.md): Pruitt Property Management is Gary Pruitt's company and The player's landlord for Pine Street Apartments, Unit 4B
 - [[The Current]] (the-current.md): The Current is Mara Vey's reader-funded, independent newspaper: "Independent reporting, funded by readers." On Y it is @the_current…
 - [[Vantor Group]] (vantor-group.md): Vantor Group is The player's former employer, at 1 Vantor Plaza
+- [[WallStreetBags]] (wallstreetbags.md): WallStreetBags (@wallstreetbags) is a verified account on Y with 15.8 million followers, run for an online community of retail traders
 
 ## Sites
 
