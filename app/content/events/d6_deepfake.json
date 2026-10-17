@@ -24,9 +24,11 @@
       "effects": {
         "job": "complete",
         "add": {
-          "followers": 40,
           "suspicion": 10,
           "progressStanding": -25
+        },
+        "addPct": {
+          "followers": 0.2
         },
         "setFlags": [
           "posted_deepfake",

@@ -16,6 +16,7 @@ import { swapListings, type Listing } from './swaplist';
 import { tooLong } from './actions';
 import { MAX_INPUT_CHARS } from './config';
 import { type Writer, type HistoryLine } from './writer';
+import { settlePurchase } from './events';
 
 /** The character (content/characters.json) who answers for each seller handle. */
 export const SELLER_CHARACTER: Record<string, string> = {
@@ -206,5 +207,6 @@ export async function swapBuy(s0: GameState, content: Content, writer: Writer, n
   sw.bought[n] = { at: playMinutes(s), paid: cost };
   t.msgs.push({ from: 'you', text, ...stamp(s) });
   queueReply(s, t, reply);
+  settlePurchase(s, content, l.photo);
   return s;
 }

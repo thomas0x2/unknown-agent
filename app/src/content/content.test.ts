@@ -102,7 +102,11 @@ describe('authored content', () => {
           expect(content.events.find((x) => x.id === id)?.afterPayment, `${e.id} -> ${id}`).toBe(e.id);
         }
       }
-      if (e.afterPayment) expect(content.events.find((x) => x.id === e.afterPayment)?.payment, e.id).toBeTruthy();
+      if (e.purchase) expect(content.events.find((x) => x.id === e.purchase!.confirm)?.afterPayment, `${e.id} -> ${e.purchase.confirm}`).toBe(e.id);
+      if (e.afterPayment) {
+        const ask = content.events.find((x) => x.id === e.afterPayment);
+        expect(ask?.payment ?? ask?.purchase, e.id).toBeTruthy();
+      }
     }
   });
 

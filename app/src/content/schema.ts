@@ -9,6 +9,8 @@ import type { EventSite, JobCategory, AppKind, FailureKind } from '../engine/sta
 export interface Effects {
   /** Add to values (clamped to each range). Negative to subtract. */
   add?: Partial<Record<MeterId, number>>;
+  /** Add a share of the value's current amount (0.2 = +20%), rounded. Negative to subtract. */
+  addPct?: Partial<Record<MeterId, number>>;
   setFlags?: string[];
   clearFlags?: string[];
   /** Queue an event to fire in N days. */
@@ -219,7 +221,9 @@ export interface GameEvent {
   repeat?: boolean;
   /** Money the sender asks for through Coinbin Send (see events.settlePayments). */
   payment?: Payment;
-  /** Lands only when the payment asked for by this event id clears; the trigger alone never delivers it. */
+  /** Something the sender asks the player to buy on Swaplist (see events.settlePurchase). */
+  purchase?: Purchase;
+  /** Lands only when the payment or purchase asked for by this event id clears; the trigger alone never delivers it. */
   afterPayment?: string;
 }
 /**
@@ -235,6 +239,18 @@ export interface Payment {
   effects?: Effects;
   confirm: string;
   confirmOver?: string;
+}
+/**
+ * Buying one of the listings with these pictures (swaplist.ts photo keys) on Swaplist after the event
+ * arrived and by the end of `byDay` counts as done: `effects` apply, the thread closes (so noReply
+ * never lands) and `confirm` arrives `after` game minutes later.
+ */
+export interface Purchase {
+  photos: string[];
+  byDay: number;
+  after: number;
+  effects?: Effects;
+  confirm: string;
 }
 export interface NoReply {
   byDay?: number;

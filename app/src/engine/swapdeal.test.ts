@@ -141,3 +141,29 @@ describe('Swaplist seller replies take a while', () => {
     expect(st.swap!.threads[0].msgs.filter((m) => m.from === l.seller).map((m) => m.text)).toEqual(['ok', 'ok', 'ok']);
   });
 });
+
+describe('Swaplist purchases asked for in an email', () => {
+  const jacket = (s: GameState, id: string) => liveListings(s, getApp(s, id)!).find((l) => l.photo === 'jacket_leather')!;
+  const asked = (s: GameState) => { s.values.day = 4; s.delivered.push({ eventId: 'd4_brother_birthday', site: 'qmail', day: 4, answered: false }); };
+
+  it("buying the leather jacket after the brother's ask is the gift: trust, flag, thread closed, his reply queued", async () => {
+    const { s, id } = market();
+    asked(s);
+    const trust = s.values.familyTrust;
+    const r = (await swapBuy(s, content, w, jacket(s, id).n));
+    expect(r.flags).toContain('gift_own');
+    expect(r.values.familyTrust).toBe(trust + 10);
+    expect(r.delivered.find((d) => d.eventId === 'd4_brother_birthday')).toMatchObject({ answered: true, outcomeId: 'bought' });
+    expect(r.arriving?.some((a) => a.eventId === 'd4_brother_bought')).toBe(true);
+  });
+
+  it('counts once, not before the ask, not after day 5, and not for other listings', async () => {
+    const { s, id } = market();
+    expect((await swapBuy(s, content, w, jacket(s, id).n)).flags).not.toContain('gift_own');
+    const late = market(); asked(late.s); late.s.values.day = 6;
+    expect((await swapBuy(late.s, content, w, jacket(late.s, late.id).n)).flags).not.toContain('gift_own');
+    const other = market(); asked(other.s);
+    const lamp = liveListings(other.s, getApp(other.s, other.id)!).find((l) => l.photo === 'lamp')!;
+    expect((await swapBuy(other.s, content, w, lamp.n)).flags).not.toContain('gift_own');
+  });
+});
