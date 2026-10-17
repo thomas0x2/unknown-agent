@@ -7,7 +7,8 @@ page. In the game, with dev mode on, the bookmarked **wiki.dev** site shows ever
 paragraph's tag as the player stands now, and edits text and tags. The same editor runs in a real
 browser tab at **http://localhost:5173/wiki.html** (while `npm run dev` runs), with "view as" day,
 time and flags instead of the game's. Both save here through the local proxy (`npm run proxy`), and a
-save in one shows up in the other at once.
+save in one shows up in the other at once. A read-only copy of main is published to GitHub Pages
+(https://thomas0x2.github.io/unknown-agent/, `.github/workflows/wiki-pages.yml`) for reading on a phone.
 
 ## Page format
 

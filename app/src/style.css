@@ -937,5 +937,20 @@ body.wk-standalone { overflow: hidden; background: #f6f6f3; }
 .wk-top { flex-wrap: wrap; }
 .wk-view { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 12px; }
 .wk-view select, .wk-view input { padding: 2px 6px; border: 1px solid #cfcfc8; border-radius: 4px; font: inherit; font-size: 12px; background: #fff; }
+.wk-navbtn { display: none; }
+/* on a phone the page list is a panel behind the Pages button, and the page gets the full width */
+@media (max-width: 760px) {
+  .wk-standalone #wiki { height: 100dvh; }
+  .wk-standalone .wk-top { padding: 8px 12px; gap: 8px; }
+  .wk-standalone .wk-top > .wk-dim { display: none; }
+  .wk-standalone .wk-navbtn { display: inline-block; }
+  .wk-standalone .wk-wrap { position: relative; }
+  .wk-standalone .wk-nav { display: none; position: absolute; inset: 0; z-index: 2; width: auto; border-right: 0; }
+  .wk-standalone .wk-navopen .wk-nav { display: block; }
+  .wk-standalone .wk-main { padding: 14px 14px 48px; }
+  .wk-standalone .wk-link { padding: 7px 8px; }
+  .wk-standalone .wk-text { font-size: 15px; line-height: 1.5; }
+  .wk-standalone .wk-why { flex-basis: 100%; }
+}
 .wk-out { font-size: 12px; color: #2457a6; text-decoration: none; }
 .wk-out:hover { text-decoration: underline; }

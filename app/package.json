@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:wiki": "WIKI_ONLY=1 vite build && mv dist-wiki/wiki.html dist-wiki/index.html",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",
     "test": "vitest run",
