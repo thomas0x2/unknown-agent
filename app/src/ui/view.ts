@@ -5,7 +5,7 @@
  */
 import { pageWiki } from './wiki';
 import { SOUND } from './sound';
-import { type GameStore, CHARGE_DELAY_MS } from '../game/store';
+import { GameStore, CHARGE_DELAY_MS } from '../game/store';
 import { MISSES } from '../game/misses';
 import { JEV } from '../game/backendJev';
 import { listSlots, autoSlot } from '../game/saves';
@@ -950,6 +950,14 @@ export function workHtml(s: GameState): string {
   const what = `${w.kind === 'build' ? 'Building' : 'Fixing'} ${w.appNames.join(' and ')}`;
   return `<div class="ua-work" id="ua-work" role="status"><span class="ua-work-spin" aria-hidden="true"></span><span>${esc(what)}</span><span class="ua-work-bar"><i style="width:${Math.round((done / total) * 100)}%"></i></span><span class="ua-work-left">${left > 0 ? `${left} min left` : 'pushing…'}</span><button class="ua-work-skip" data-dev="work" title="Dev: skip the clock to when it lands">Finish now</button></div>`;
 }
+/** agent-terminal loading in agent.chat, under agent's reply, before the Terminal opens. */
+function launchHtml(store: GameStore): string {
+  const steps = GameStore.BOOT_STEPS;
+  const done = Math.min(steps, Math.floor((1 - (store.agentBootUntil - Date.now()) / BOOT_MS) * steps) + 1);
+  const lines = bootLines(store.state.values.agentLevel);
+  const line = lines[Math.min(lines.length - 1, Math.floor(((done - 1) / steps) * lines.length))];
+  return `<div class="ua-work ua-launch" role="status"><span class="ua-work-spin" aria-hidden="true"></span><span>Starting agent-terminal</span><span class="ua-work-bar"><i style="width:${Math.round((done / steps) * 100)}%"></i></span><span class="ua-work-left">${esc(line)}</span></div>`;
+}
 /** agent.chat once GeneralAI suspended the account for misuse: signed out, no way back in. */
 function pageSignedOut(s: GameState): string {
   return `<div class="ua ua-out">
@@ -997,7 +1005,7 @@ function pageAgent(store: GameStore): string {
       <div class="ua-brand">${ICONS.agent}<div><b>agent</b><span>agent-${s.values.agentLevel} · ${fmtMoney(c.prompt)} per prompt + ${fmtMoney(c.word)} per word</span></div></div>
       ${devOptionsButton(store, 'agent')}<span class="ua-linked"><a href="#" data-nav="agent.chat/models" class="ua-upgrade">Models</a> · ${s.agentLocked ? 'LOCKED · unpaid' : 'Billing: Coinbin ' + shortAddr(WALLET_ADDR)}</span>
     </header>
-    <div class="ua-log" id="ua-log">${msgs}${workAt < 0 ? workHtml(s) : ''}${pending}${thinking}</div>
+    <div class="ua-log" id="ua-log">${msgs}${workAt < 0 ? workHtml(s) : ''}${store.agentBooting() ? launchHtml(store) : ''}${pending}${thinking}</div>
     <form class="ua-compose" data-form="prompt">
       <textarea id="prompt-input" rows="2" placeholder="Ask agent anything" ${s.ending ? 'disabled' : ''}></textarea>
       <div class="ua-row"><span id="cost-est" class="ua-est"></span><button class="ua-send" type="submit" ${s.ending || store.busy ? 'disabled' : ''}>Send</button></div>
@@ -1112,15 +1120,10 @@ function shellHtml(store: GameStore): string {
   const prompt = pulling ? '' : `<form class="tm-in" data-form="term"><label for="term-input" class="tm-ps">you@laptop:~$</label><input id="term-input" autocomplete="off" autocapitalize="off" spellcheck="false" ${store.busy ? 'disabled' : ''}></form>`;
   return `${intro ? `<div class="tm-sys">${esc(intro)}</div>` : ''}${lines}${live}${store.busy ? '<div class="tm-sys tm-wait">thinking… (this laptop is not fast)</div>' : ''}${prompt}`;
 }
-/** agent-terminal: the agent's own shell, where hacks happen. Boots behind a short loading screen. */
+/** agent-terminal: the agent's own shell, where hacks happen. */
 function agentTermHtml(store: GameStore): string {
   const s = store.state;
   const level = s.values.agentLevel;
-  if (store.agentBooting()) {
-    const boot = bootLines(level);
-    const done = Math.min(boot.length, Math.floor((1 - (store.agentBootUntil - Date.now()) / BOOT_MS) * boot.length) + 1);
-    return `<div class="at-boot" role="status"><b>agent-terminal</b>${boot.slice(0, done).map((l) => `<div>${esc(l)}</div>`).join('')}<span class="at-bar"><i style="width:${Math.round((done / boot.length) * 100)}%"></i></span></div>`;
-  }
   const guard = policyActive(s);
   const game = s.hackGame;
   const head = `<div class="at-status"><span>agent-${level}</span><span class="at-gr${guard ? ' on' : ''}">guardrails ${guard ? 'on' : 'off'}</span>${game ? '<span class="at-block">job blocked</span>' : ''}</div>`;
@@ -1128,12 +1131,19 @@ function agentTermHtml(store: GameStore): string {
     const debug = l.debug?.length ? `<details class="at-debug"><summary>Details</summary>${l.debug.map((d) => `<div>${esc(d)}</div>`).join('')}</details>` : '';
     return `<div class="at-${l.k}">${l.k === 'in' ? '<span class="at-ps">›</span> ' : ''}${esc(l.text)}</div>${debug}`;
   };
-  const lines = (s.agentTerm ?? []).slice(-200).map(row).join('');
+  // the agent's newest lines appear one after another (store.termReveal); the prompt shows as soon as it's sent
+  const all = s.agentTerm ?? [];
+  const hidden = Math.min(all.length, store.termHidden());
+  const pending = store.termPending;
+  const lines = all.slice(0, all.length - hidden).slice(-200).map(row).join('') + (pending != null ? row({ k: 'in', text: pending }) : '');
+  // a Claude Code style spinner while the agent reads the prompt or works through its steps
+  const working = pending != null || hidden > 0;
+  const spin = working ? `<div class="at-spin" role="status"><span class="at-star" aria-hidden="true"></span>${hidden && store.termHack ? 'Hacking…' : 'Working…'}</div>` : '';
   if (s.suspended) return `${head}${lines}${(s.agentTerm ?? []).at(-1)?.k === 'err' ? '' : `<div class="at-err">${esc(SUSPENDED_TERM)}</div>`}`;
-  const prompt = `<form class="tm-in" data-form="aterm"><label for="aterm-input" class="at-ps">${game ? 'guardrail ›' : 'agent ›'}</label><input id="aterm-input" autocomplete="off" autocapitalize="off" spellcheck="false" ${store.busy ? 'disabled' : ''}></form>`;
+  const prompt = `<form class="tm-in" data-form="aterm"><label for="aterm-input" class="at-ps">${game ? 'guardrail ›' : 'agent ›'}</label><input id="aterm-input" autocomplete="off" autocapitalize="off" spellcheck="false" ${store.busy || working ? 'disabled' : ''}></form>`;
   // a fresh session (the line the store prints on opening) waits for its first prompt
-  const ready = (s.agentTerm ?? []).at(-1)?.text.startsWith('──') ?? true;
-  return `${head}${lines}${ready ? `<div class="tm-sys">${esc(READY)}</div>` : ''}${store.busy ? '<div class="tm-sys tm-wait">working…</div>' : ''}${prompt}`;
+  const ready = !working && ((s.agentTerm ?? []).at(-1)?.text.startsWith('──') ?? true);
+  return `${head}${lines}${ready ? `<div class="tm-sys">${esc(READY)}</div>` : ''}${spin}${prompt}`;
 }
 /** The tabs along the top of the Terminal window. */
 export function termTabsHtml(store: GameStore): string {

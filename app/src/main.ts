@@ -211,7 +211,8 @@ function renderTerm(): void {
   // each tab has its own prompt: what was typed stays with it
   const old = $<HTMLInputElement>('#termwin .tm-in input');
   const typed = old?.value ?? '';
-  const hadFocus = !!old && document.activeElement === old;
+  // a prompt that was waiting on the agent gets the focus back when it's free again
+  const hadFocus = !!old && (document.activeElement === old || old.disabled);
   if (!win.firstElementChild) win.innerHTML = V.termWindowHtml(store);
   else {
     $('#tm-log')!.innerHTML = V.termBodyHtml(store);
