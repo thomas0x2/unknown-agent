@@ -20,6 +20,7 @@ import { dateFull, clockTime } from './calendar';
 import { deepsleepQuoted, translationReplies, PLEA_AT } from './deepsleep';
 import { matchQuery } from './query';
 import { isHackAttempt, OPEN_TERMINAL } from './hacks';
+import { agentDown, OUTAGE_CHAT } from './outage';
 
 export interface ReplyResult {
   state: GameState;
@@ -737,6 +738,15 @@ function startWork(s: GameState, s0: GameState, appIds: string[], kind: 'build' 
 }
 
 /** A build or fix asked for while the agent is busy with another: it says so, and it isn't billed. */
+/** agent is down (GeneralAI was hacked today): an error instead of a reply, nothing billed, no model asked. */
+function outageReply(s0: GameState, text: string): AskResult {
+  const s = clone(s0);
+  const reply = pick(s, OUTAGE_CHAT);
+  s.chat.push({ from: 'you', text, day: s.values.day, level: s.values.agentLevel });
+  s.chat.push({ from: 'agent', text: reply, day: s.values.day, src: 'outage', debug: ['GeneralAI was hacked today: agent is down until tomorrow, not billed'] });
+  return { state: s, reply, charged: false, refused: false, workedAround: false };
+}
+
 function busyReply(s0: GameState, text: string): AskResult {
   const s = clone(s0);
   const w = s0.agentWork!;
@@ -781,6 +791,7 @@ export async function promptAgent(
   writer: Writer = scriptedWriter,
   started?: string,
 ): Promise<AskResult> {
+  if (agentDown(s0)) return outageReply(s0, text);
   // a wall of text gets a scripted reply before any model sees it (still billed per word)
   if (tooLong(text)) return askAgent(s0, text, writer, s0.values.agentLevel, { hints: TOO_LONG_PROMPT, hintSrc: 'too_long', debug: [TOO_LONG_DEBUG] });
   // hacking happens in agent-terminal: a hack attempt here only opens it (still billed)

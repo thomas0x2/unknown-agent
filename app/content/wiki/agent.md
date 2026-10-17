@@ -58,6 +58,10 @@ from: 1
 - [public] {{mail:d7_gai_policy}}
 - [public] {{article:usage-policy}}
 
+## If hacked_generalai: The outage
+
+[public] The day [[GeneralAI]] is hacked, agent is down until the next morning: agent.chat answers every prompt with an error ("You have not been billed for this message.") and agent-terminal prints "error: could not reach api.generalai.com (503 Service Unavailable). prompt not sent, not billed." A build or fix already underway is pushed overnight. Models running locally in the [[Terminal]] still work.
+
 ## Writer notes
 
 - Chat UI and Models page: `app/src/ui/view.ts` (`pageAgent`, `pageModels`). Prices `AGENT_COST`, speed `AGENT_WORK`, rollouts `AGENT_ROLLOUT`, policy `AGENT_POLICY` in `app/src/engine/config.ts`. Hints, roasts and morning lines in `app/content/agent.json`. Terminal hacks `app/src/engine/hacks.ts` (PR #205).

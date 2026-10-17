@@ -13,6 +13,8 @@ from: 1
 
 [hidden] Who actually writes his posts.
 
+[hidden; public if shown gai_outage_y_crane] agent writes his posts. The day [[GeneralAI]] goes down, his account posts the error message instead (see [[GeneralAI]]).
+
 ## How he talks
 
 [public] Crowd sizes, polls over 100%, "SAD!", "Rigged!", "Tremendous", "the best", and "BELIEVE IT." now and then. He posts on Y every day.
@@ -78,6 +80,7 @@ from: 1
 - [public] {{y:d19_y_crane}}
 - [public] {{y:d20_y_crane}}
 - [public] {{y:d21_y_crane}}
+- [public] {{y:gai_outage_y_crane}}
 
 ## In the news
 

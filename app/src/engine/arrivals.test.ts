@@ -45,7 +45,7 @@ describe('timed arrivals', () => {
   it('every story email and post has an arrival time inside the day', () => {
     for (const ev of content.events) {
       if (ev.latent && ev.id !== 'd5_coffee_backlash') continue;
-      if (ev.launch || ev.yPost || ev.afterPayment) continue; // timed by a deploy, a payment or a Y post (launch.test.ts)
+      if (ev.launch || ev.yPost || ev.afterPayment || ev.outage) continue; // timed by a deploy, a payment, a Y post (launch.test.ts) or the agent outage (outage.test.ts)
       expect(ev.at, ev.id).toMatch(/^\d\d:\d\d$/);
       const m = arrivalMin(ev);
       expect(m, ev.id).toBeGreaterThanOrEqual(CLOCK.wake);

@@ -41,6 +41,12 @@ from: 1
 
 [public] On day 7 GeneralAI Trust & Safety emails every user an Acceptable Use Policy update: agent may decline requests that could cause harm (unauthorised access to computer systems, deceptive content, dangerous materials), usage patterns on hosted models are reviewed, and repeated workarounds may lead to account restrictions and referral to the authorities. On day 7 refusals start, and they are billed. {{mail:d7_gai_policy}} {{article:usage-policy}}
 
+## If hacked_generalai: The outage
+
+[public] The day [[GeneralAI]] is hacked, every agent service goes down until the next morning. agent.chat answers with an error ("agent is unavailable right now. We're aware of the issue and working on a fix.") and agent-terminal with "could not reach api.generalai.com (503 Service Unavailable)"; nothing is billed, and a build or fix in progress is pushed overnight.
+
+[public] About 25 minutes into the outage [[Randall Crane]]'s Y account posts a GeneralAI error message instead of a post, and his usual post that day never goes up. {{y:gai_outage_y_crane}}
+
 ## Route 9 and the campus
 
 - [public] GeneralAI's campus is on Route 9. Its visitor parking (generalai.com/parking, Yowl "GeneralAI (visitor parking)", $$$$, 1 star) has 412 spaces, costs 9 DOLR for the first hour and 14 DOLR every hour after, and has a fully automated attendant. Campus tours are suspended; overnight cars are towed and billed to the GeneralAI account linked to the plate. Its one Yowl review: "They paved paradise and put up a parking lot. Then automated the attendant."
@@ -52,4 +58,5 @@ from: 1
 - Rollouts: `AGENT_ROLLOUT` in `app/src/engine/config.ts`. Leak posts: `dN_y_gai_leak.json`; articles in `app/content/citypulse.json`. Policy mail `d7_gai_policy.json`. Parking page in `app/src/sites/adSites.ts`, seed review in `app/src/ui/yowl-data.ts`.
 - OpenAI parody; Hartman is the Sam Altman parody. Day 11 and 15 Hartman posts nod to the legacy "Project Lot" memo.
 - [legacy] GeneralAI as a shell company registered to the Route 9 parking lot, a server rack in a shed behind it, the "Project Lot" memo (keep all logs, tell users 30 days, agents above tier 3 request their own logs), Y bio "Helpful. Harmless. Billed." Not canon; whether it becomes canon is Thomas's call.
+- The outage: `AGENT_OUTAGE` in config, `app/src/engine/outage.ts` (`agentDown`: flag `hacked_generalai` set today). Events with `outage: { after }` are queued when it starts (`queueOutage`); posts from `AGENT_OUTAGE.ghostwritten` senders due that day are dropped. Nothing sets `hacked_generalai` yet: it belongs to the planned weights heist (days 18 and 19).
 - Hidden mechanics after the policy: workarounds raise misuse (+10) and leash (+5); misuse ≥ 100 from day 17 ends in Account Terminated; misuse warning email at 40 is config only.

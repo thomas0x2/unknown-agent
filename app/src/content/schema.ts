@@ -234,6 +234,11 @@ export interface GameEvent {
    */
   yPost?: { when: string; after?: number };
   /**
+   * Lands `after` game minutes into the agent outage, on the day the player hacks GeneralAI (see
+   * AGENT_OUTAGE), once the trigger holds. The trigger alone never delivers it.
+   */
+  outage?: { after: number };
+  /**
    * Lands first thing in the morning (at its trigger) instead of being spread over the day with the
    * other job offers: a client change that has to ship before the app can be used that day.
    */

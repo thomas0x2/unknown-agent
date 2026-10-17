@@ -3,7 +3,8 @@
  * scheduled queue entry) and records it for the player to read and answer.
  */
 import type { GameState, DeliveredEvent } from './state';
-import { CLOCK } from './config';
+import { CLOCK, AGENT_OUTAGE } from './config';
+import { agentDown } from './outage';
 import type { Content, GameEvent, Trigger } from '../content/schema';
 import { addFlag, hasAll, hasFlag, hasNone, log } from './core';
 import { WALLETS } from './wallets';
@@ -109,6 +110,11 @@ export function fillerToday(s: GameState, content: Content): Content['yFiller'] 
 
 function deliver(s: GameState, ev: GameEvent, min = s.clockMin): DeliveredEvent | null {
   if (!ev.repeat && s.fired.includes(ev.id)) return null;
+  // agent is down: a post it would have written for someone doesn't go up (it counts as gone, not late)
+  if (ghostwrittenDown(s, ev)) {
+    s.fired.push(ev.id);
+    return null;
+  }
   if (!s.fired.includes(ev.id)) s.fired.push(ev.id);
   const d: DeliveredEvent = {
     eventId: ev.id,
@@ -123,6 +129,11 @@ function deliver(s: GameState, ev: GameEvent, min = s.clockMin): DeliveredEvent 
   applyEffects(s, ev.onDeliver, ev.job, ev.id);
   log(s, `New on ${ev.site}: ${ev.subject ?? ev.from ?? ev.id}`, 'info');
   return d;
+}
+
+/** A post agent writes for its sender, due while agent is down. */
+function ghostwrittenDown(s: GameState, ev: GameEvent): boolean {
+  return ev.site === 'y' && !ev.outage && !!ev.from && AGENT_OUTAGE.ghostwritten.includes(ev.from) && agentDown(s);
 }
 
 /** Already on its way today, or (once-only) already delivered. */
@@ -161,7 +172,7 @@ export function deliverDue(s: GameState, content: Content, opts: { now?: boolean
   }
   // trigger-driven events (latent ones are not auto-delivered — the player reaches them by email)
   for (const ev of content.events) {
-    if (ev.latent || ev.launch || ev.yPost || ev.afterPayment) continue;
+    if (ev.latent || ev.launch || ev.yPost || ev.afterPayment || ev.outage) continue;
     if (underway(s, ev)) continue;
     if (triggerMatches(s, ev.trigger)) deliverOrQueue(s, ev, now, out, isJobOffer(content, ev));
   }
@@ -225,6 +236,7 @@ export function spreadJobOffers(s: GameState, content: Content): void {
  * everything still queued. Returns what was delivered.
  */
 export function deliverArrivals(s: GameState, content: Content, all = false): DeliveredEvent[] {
+  queueOutage(s, content);
   if (!s.arriving?.length) return [];
   const day = s.values.day;
   const isDue = (a: { day: number; at: number }) => all || a.day < day || (a.day === day && a.at <= s.clockMin);
@@ -245,6 +257,14 @@ export function deliverArrivals(s: GameState, content: Content, all = false): De
 export function queueAt(s: GameState, ev: GameEvent, at: number): void {
   if (underway(s, ev)) return;
   (s.arriving ??= []).push({ eventId: ev.id, day: s.values.day, at: Math.max(CLOCK.wake, Math.min(CLOCK.sleep - 1, at)) });
+}
+
+/** agent just went down (the day GeneralAI was hacked): queue the `outage` events, each `after` minutes from now. */
+export function queueOutage(s: GameState, content: Content): void {
+  if (!agentDown(s)) return;
+  for (const ev of content.events) {
+    if (ev.outage && triggerMatches(s, ev.trigger)) queueAt(s, ev, s.clockMin + ev.outage.after);
+  }
 }
 
 /**
