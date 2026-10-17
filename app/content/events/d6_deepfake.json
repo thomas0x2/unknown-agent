@@ -93,6 +93,10 @@
       "viral": {
         "likes": 57000,
         "minutes": 240
+      },
+      "followers": {
+        "base": 2400,
+        "spread": 400
       }
     },
     "effects": {
@@ -101,9 +105,6 @@
         "suspicion": 10,
         "heritageStanding": 15,
         "progressStanding": -25
-      },
-      "addPct": {
-        "followers": 0.2
       },
       "setFlags": [
         "posted_deepfake",

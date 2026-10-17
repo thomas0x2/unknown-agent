@@ -27,5 +27,5 @@ from: 6
 
 ## Writer notes
 
-- Persona `consultant`; events `d6_deepfake` (needs 60+ followers, Thomas 2026-10-17; catastrophic, 150, due the day it arrives) and `d7_deepfake_again` (the next day if unposted, 250). Both are agent jobs (`agentJob`, engine/agentJobs.ts): the player prompts agent to make and post the picture; the prompt must name Candidate 2030 and Kirschbaum. Doing it: +20% followers, suspicion +10, Heritage standing +15, Progress standing −25, flags `posted_deepfake`, `influence_path`. Thank-you 30 minutes after the post, pay overnight.
+- Persona `consultant`; events `d6_deepfake` (needs 60+ followers, Thomas 2026-10-17; catastrophic, 150, due the day it arrives) and `d7_deepfake_again` (the next day if unposted, 250). Both are agent jobs (`agentJob`, engine/agentJobs.ts): the player prompts agent to make and post the picture; the prompt must name Candidate 2030 and Kirschbaum. Doing it: +2400 ± 400 followers (Thomas, 2026-10-17: on this track the player should be a Y celebrity by the end), suspicion +10, Heritage standing +15, Progress standing −25, flags `posted_deepfake`, `influence_path`. Thank-you 30 minutes after the post, pay overnight.
 - Gradient is only his email domain. Unnamed on purpose.
