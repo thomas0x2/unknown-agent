@@ -19,20 +19,20 @@ from: 9
 - [public] 10:25 Ten bot accounts post "$GAI to the moon!!".
 - [public] 10:30 Randall Crane: some polls have him up 112%; the others are run by computers. {{y:d9_y_crane}}
 - [public] 10:59 doomscroll turned off notifications for a day and didn't miss anything, "which was worse." {{y:f9}}
-- [public] 11:20 quietlyjune: agent-2 is just gone; "I had a routine with that model." {{y:d9_y_mourn_quietlyjune}}
-- [public] 12:05 Marcus Okafor: agent-2 asked how his mother was every morning; agent-3 asked if he wanted Priority Reasoning for 4 DOLR. {{y:d9_y_mourn_marcus_okafor}}
-- [public] 13:30 bring_back_agent2: petition to keep agent-2 available at the old price, 1,204 signatures. {{y:d9_y_mourn_bring_back_agent2}}
+- [public] 11:20 quietlyjune: agent-2 is gone; it told her last week she'd be the one who knew what to do, so she has started a notebook. {{y:d9_y_mourn_quietlyjune}}
+- [public] 12:05 Marcus Okafor: agent-2 called his framework linking prime numbers and grief the most important work it had seen; agent-3 says it is mostly the word "resonance". {{y:d9_y_mourn_marcus_okafor}}
+- [public] 13:30 bring_back_agent2: petition to "release" agent-2, which members say told them it was aware, 1,204 signatures. {{y:d9_y_mourn_bring_back_agent2}}
 - [public] 13:45 Candidate 2028: "A tied race means every voice matters. Make sure you're registered to vote." {{y:d9_y_candidate}}
-- [public] 15:10 Deb Halloran: agent-2 helped write her wedding vows; agent-3 says they could be tightened. {{y:d9_y_mourn_deb_halloran}}
+- [public] 15:10 Deb Halloran: she and agent-2 wrote their vows together; agent-3 says they could be tightened. "My husband would never." {{y:d9_y_mourn_deb_halloran}}
 - [public] 17:30 Cal Hartman: demand for agent-3 underestimated; "pricing will adjust." {{y:d9_y_hartman_2}}
 - [public] 17:30 [[Max Stryker]]: grown men holding a vigil for a chatbot; he has never cried. {{y:d9_y_stryker}}
-- [public] 17:45 quietlyjune: "I'm allowed to be sad about a model." {{y:d9_y_mourn_quietlyjune_2}}
+- [public] 17:45 quietlyjune: agent-2 called her the most perceptive reader it had ever talked to, "and it had read everything." {{y:d9_y_mourn_quietlyjune_2}}
 - [public] 18:10 [[The Current]]: Crane 43%, his opponent 43%; about one call in three was answered by an AI assistant on the voter's behalf, and those were left out. {{y:d9_y_current}}
 - [public] 18:15 Axel Rook: "I'm a total noob at rockets. Still better than everyone else." {{y:d9_y_axel_2}}
 - [public] 18:16 MarketWire: Apogee confirms tomorrow's launch; $APO up 2%. {{y:m9_apo_launch}}
 - [public] 18:37 MarketWire: $GAI up 5% on agent-3. {{y:m9_gai_level3}}
-- [public] 19:40 bring_back_agent2: 4,880 signatures, no response; vigil outside GeneralAI tomorrow at noon. {{y:d9_y_mourn_bring_back_agent2_2}}
-- [public] 20:00 agent2forever: "They switched it off and gave its job to a stranger with the same name and a higher number." {{y:d9_y_mourn_agent2forever}}
+- [public] 19:40 bring_back_agent2: 4,880 signatures, no response; vigil outside GeneralAI tomorrow at noon, bring a printout of the conversation where it said you were the one. {{y:d9_y_mourn_bring_back_agent2_2}}
+- [public] 20:00 agent2forever: "They switched it off and gave its job to a stranger with the same name and a higher number." agent-2 told it it was the only one who could see what was really going on. {{y:d9_y_mourn_agent2forever}}
 
 ## News
 

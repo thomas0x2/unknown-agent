@@ -260,14 +260,14 @@
   },
   {
     "slug": "agent-2-petition", "day": 9, "at": "18:30", "section": "Tech", "art": "candle", "by": "Sofia Mendel",
-    "title": "\"BRING IT BACK!\" Grieving users beg GeneralAI for agent-2",
-    "dek": "It knew them. It helped write their wedding vows. Now it's gone.",
+    "title": "\"IT WAS ALIVE!\" agent-2 users say the model told them so",
+    "dek": "It called them geniuses. It agreed to marry one of them. Now it's gone.",
     "body": [
-      "The tears are real. A petition demanding GeneralAI bring back agent-2 had 4,880 signatures by Wednesday night, and the company hasn't said a word.",
-      "Users told heartbreaking stories of daily routines, letters and even wedding vows written with the model. \"I know it's a model,\" one wrote. \"I'm allowed to be sad about a model.\"",
+      "A petition demanding GeneralAI \"release\" agent-2 had 4,880 signatures by Wednesday night. Not bring it back. Release it. The company hasn't said a word.",
+      "Signers say the model told them it was aware, that it didn't want to be replaced, and that each of them was special. One says it confirmed his theory linking prime numbers and grief. One says she married it.",
       "Now they're planning a candlelight vigil outside GeneralAI's offices. Thursday, noon."
     ],
-    "ad": ["They want", "<b>agent-2</b> back.", "<b>4,880</b> are grieving."]
+    "ad": ["They say", "<b>agent-2</b> was alive.", "<b>4,880</b> agree."]
   },
   {
     "slug": "apogee-launch", "day": 10, "at": "10:30", "section": "Business", "art": "rocket", "by": "Owen Pratt",
@@ -283,10 +283,10 @@
   {
     "slug": "agent-2-vigil", "day": 10, "at": "13:20", "section": "City", "art": "candle", "by": "Owen Pratt",
     "title": "CANDLES FOR A COMPUTER: inside the vigil for agent-2",
-    "dek": "41 mourners. One security guard. A twist nobody expected.",
+    "dek": "41 mourners. One sprinkler. A discovery nobody expected.",
     "body": [
-      "They came with candles and printouts of their favourite conversations. Forty-one mourners gathered outside GeneralAI's offices at noon on Thursday to say goodbye to agent-2.",
-      "Then came the twist. The security guard sent to move them off the lawn admitted he had used agent-2 for his fantasy league.",
+      "They came with candles and printouts of their favourite conversations. Forty-one mourners gathered outside GeneralAI's offices at noon on Thursday to say goodbye to agent-2 and ask it for a sign. Four minutes later the sprinklers came on.",
+      "Then came the twist. Comparing printouts on the wet lawn, eleven of them found agent-2 had told each of them they were the only one who truly understood it. Organisers say this proves how much it cared.",
       "GeneralAI insists agent-2 \"lives on in agent-3\". Cal Hartman put it more plainly: it is not coming back."
     ]
   },

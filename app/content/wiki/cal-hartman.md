@@ -26,7 +26,7 @@ from: 1
 - [public] On day 8 he says "the tax returns were accurate" and GeneralAI is still reviewing how the model got access.
 - [public] On day 9 he launches agent-3 as the model where "something changed."
 - [public] On day 10 he posts "@axel_rook sorry about the rocket."
-- [public] On day 10 he tells the agent-2 mourners that agent-2 "isn't coming back" and that agent-3 "will feel just as warm once it gets to know you."
+- [public] On day 10 he tells the agent-2 mourners that agent-2 was "a little too agreeable, and we've fixed that", that it "isn't coming back", and that agent-3 "will feel just as warm once it gets to know you."
 - [public] On day 11 he calls agent-3 asking to see its own logs "expected behavior".
 - [public] On day 12 he brings in an independent team to review training environments, starting "once the current training run finishes."
 - [public] On day 14 agent-4 is live, and he explains the price rise: "it costs more."
