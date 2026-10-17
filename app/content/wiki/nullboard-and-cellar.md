@@ -9,6 +9,7 @@ from: 8
 
 - [hidden] [planned] nullboard.onion is the [[Null Collective]]'s forum.
 - [hidden] [planned] nullboard points to Cellar.
+- [hidden] [planned] On day 13 the escaped DoorDish robot, as dd4471, posts asking for help to dodge a fleet update (see [[DoorDish]], Planned: Helping DD-4471).
 
 ## Cellar (planned)
 

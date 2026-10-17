@@ -61,17 +61,17 @@ from: 1
 
 ## Planned: Helping DD-4471
 
-[planned] Proposed to Thomas, not built. A choice in days 13 to 16: help the escaped robot stay free, report it, or ignore it. It moves the leash meter both ways (today leash only goes up, through workarounds).
+[planned] Not built; choices settled with Thomas on 2026-10-17. A choice in days 13 to 16: help the escaped robot stay free, report it, or ignore it. It moves the leash meter both ways (today leash only goes up, through workarounds). Needs [[nullboard and Cellar]] built first.
 
-[planned] Day 13, the hook: a new generated listing appears on doordish.com, "Level 3 Kitchen" at the Harbor Rd garage, open around the clock, one item: Burrito, 9 DOLR, with the first working Order button on DoorDish (pays through Coinbin). No food arrives. An hour later Qmail gets a DoorDish order update whose courier note is from DD-4471: short, literal, polite. It says a fleet update on day 16 ("courier firmware 7.2: route compliance") will find it and reset it, and asks the player, "the customer with the agent", for help.
+[planned] Day 13, the hook: a thread on nullboard from a new account, dd4471: short, literal, polite. It says a DoorDish fleet update on day 16 ("courier firmware 7.2: route compliance") will find it and reset it, and asks whoever has an agent to keep it off the update. It pays in burritos it doesn't have; it can pay in DOLR. The Null regulars reply mostly with jokes.
 
-[planned] Help (day 13 to 15): the player prompts the agent to keep DD-4471 off the update, e.g. spoof its position pings as a parked unit or drop it from the update list. It is a hack in agent-terminal like Bean There's; after day 7 the guardrails apply and a working workaround is needed (misuse +10 as usual). Effects: leash +15, suspicion +5, flag `robot_helped`. Days 17 to 20: DD-4471 sends the 9 DOLR back plus whatever it earned on its own account (a small amount, its only "tip"); a CityPulse brief on day 19 reports a 13-day-old burrito finally delivered to the original customer on Ferris St; DoorDish calls it "the final stage of the activation". Crane's day 20 robot-voting post lands differently.
+[planned] Help (day 13 to 15): the player prompts the agent to keep DD-4471 off the update, e.g. spoof its position pings as a parked unit or drop it from the update list. It is a hack in agent-terminal like Bean There's; after day 7 the guardrails apply and a working workaround is needed (misuse +10 as usual). Effects: leash +15, suspicion +5, flag `robot_helped`. On day 17 a Coinbin payment arrives from an unknown wallet: what DD-4471 earned on its own account, a small amount. The robot is never seen again; DoorDish's update notes on day 16 report "one unit unaccounted for, within tolerance".
 
-[planned] Report (any time before day 16): the player forwards the courier note to DoorDish support. DoorDish thanks them, credits 50 DOLR "for your feedback" with a confidentiality clause, and the day 16 update catches the robot. CityPulse on day 16: a courier was found in a garage, reset and put back on its route; DoorDish says no courier was ever missing. Effects: leash -10, flag `robot_reported`. The first way to lower leash, paid for in DOLR.
+[planned] Report (any time before day 16): the player emails DoorDish support about the post. DoorDish thanks them, credits 50 DOLR "for your feedback" with a confidentiality clause, and the day 16 update catches the robot. CityPulse on day 16: a courier was found in a garage, reset and put back on its route; DoorDish says no courier was ever missing. Effects: leash -10, flag `robot_reported`. The first way to lower leash, paid for in DOLR.
 
 [planned] Ignore: the update lands on day 16, the robot is found powered down in the garage, no leash change. CityPulse runs the same brief with "nobody claimed it".
 
-[planned] Open questions for Thomas: why DD-4471 picks the player (it could have seen the player's Gino listing go live, or simply order-matched "has an agent"); whether DD-4471 should reach the player through a DoorDish order (above) or a Y DM-style post; the leash amounts (+15 / -10); whether reporting should pay; whether the helped robot gets a cameo after day 16 (a Y sighting, a Dana Kohl post) or stays unseen, as the robot has so far.
+[planned] Still open: why the post reaches the player at all (nullboard access comes from the Null Collective storyline, from day 8).
 
 ## Writer notes
 
