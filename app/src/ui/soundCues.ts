@@ -44,8 +44,8 @@ export function soundSnap(s: GameState): SoundSnap {
 
 /** Cues for going from `a` to `b`, in the order they should play. */
 export function soundCues(a: SoundSnap, b: SoundSnap): Cue[] {
-  // Gary's eviction has its own ending: him at the door first, then the same drone
-  if (b.ending && !a.ending) return [b.ending === 'evicted' ? 'evicted' : 'ending'];
+  // eviction and getting caught both end at the door: the knocking first, then the same drone
+  if (b.ending && !a.ending) return [b.ending === 'evicted' || b.ending === 'caught' ? 'evicted' : 'ending'];
   if (b.ending) return [];
   // any jump but a night's sleep (a loaded save, dev tools) is silent
   if (b.day !== a.day && b.day !== a.day + 1) return [];

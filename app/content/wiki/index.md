@@ -54,6 +54,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[CityPulse]] (citypulse.md): CityPulse is the city's tabloid: the news site `citypulse.news` and the Y account @citypulse (bio "Local news, fast
 - [[DoorDish]] (doordish.md): DoorDish is the city's food delivery company
 - [[GeneralAI]] (generalai.md): GeneralAI is the company behind agent, the pay-per-prompt chatbot that automated The player's job at Vantor Group
+- [[GeneralAI Properties]] (generalai-properties.md): GeneralAI Properties is GeneralAI's real estate subsidiary
 - [[Halden Logistics]] (halden-logistics.md): Halden Logistics is a logistics company with a depot on Kessler Road
 - [[Heritage Party]] (heritage-party.md): The Heritage Party is Randall Crane's party
 - [[Liftoff Daily]] (liftoff-daily.md): Liftoff Daily (@liftoff_daily) is an Axel Rook fan account on Y, bio "Not affiliated with Axel Rook (yet)", with a rocket logo
@@ -120,7 +121,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[Day 12]] (day-12.md): Stryker's last recruiting day, training review
 - [[Day 13]] (day-13.md): Rook endorses Crane
 - [[Day 14]] (day-14.md): agent-4, rent 500, wall around the cloud
-- [[Day 15]] (day-15.md): AI moderation on Y, courier strike, GeneralAI hearing
+- [[Day 15]] (day-15.md): AI moderation on Y, courier strike, GeneralAI hearing, Gary sells the building
 - [[Day 16]] (day-16.md): GeneralAI settlement, pollsters stop calling
 - [[Day 17]] (day-17.md): debate night, GeneralAI wrote the AI rules
 - [[Day 18]] (day-18.md): agent-5, debate poll, sessions that keep running

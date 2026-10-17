@@ -34,7 +34,7 @@ import { pageCityPulse } from './citypulse';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount, appLogo } from './appsite';
-import { marketPosts, cranePosts, hotStory, fillerToday, postMin, handleOf, playMinutes, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, SEED_PHRASE, chatCost, type PaidChat, inBin, isDeleted, CLOCK, bootLines, BOOT_MS, READY, policyActive, type AgentTermLine } from '../engine';
+import { marketPosts, cranePosts, hotStory, fillerToday, postMin, handleOf, playMinutes, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, SEED_PHRASE, chatCost, type PaidChat, inBin, isDeleted, CLOCK, bootLines, BOOT_MS, READY, SUSPENDED_TERM, policyActive, type AgentTermLine } from '../engine';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 import { repoFiles, treeAt, fileSource } from './repoTree';
 import { yBio } from './y-bios';
@@ -946,8 +946,16 @@ export function workHtml(s: GameState): string {
   const what = `${w.kind === 'build' ? 'Building' : 'Fixing'} ${w.appNames.join(' and ')}`;
   return `<div class="ua-work" id="ua-work" role="status"><span class="ua-work-spin" aria-hidden="true"></span><span>${esc(what)}</span><span class="ua-work-bar"><i style="width:${Math.round((done / total) * 100)}%"></i></span><span class="ua-work-left">${left > 0 ? `${left} min left` : 'pushing…'}</span><button class="ua-work-skip" data-dev="work" title="Dev: skip the clock to when it lands">Finish now</button></div>`;
 }
+/** agent.chat once GeneralAI suspended the account for misuse: signed out, no way back in. */
+function pageSignedOut(s: GameState): string {
+  return `<div class="ua ua-out">
+    <div class="ua-out-card" role="alert">${ICONS.agent}<h1>You've been signed out</h1>
+      <p>Your session ended at ${clockTime(s.suspended!.min)}. This account has been suspended.</p>
+      <p class="ua-out-dim">Check your email for details.</p></div></div>`;
+}
 function pageAgent(store: GameStore): string {
   const s = store.state;
+  if (s.suspended) return pageSignedOut(s);
   const c = agentCost(s.values.agentLevel);
   // while a prompt's charge is on its way to the wallet, its cost line shows it filling in place
   const chargingAt = store.charging ? s.chat.map((m) => m.from).lastIndexOf('you') : -1;
@@ -1117,6 +1125,7 @@ function agentTermHtml(store: GameStore): string {
     return `<div class="at-${l.k}">${l.k === 'in' ? '<span class="at-ps">›</span> ' : ''}${esc(l.text)}</div>${debug}`;
   };
   const lines = (s.agentTerm ?? []).slice(-200).map(row).join('');
+  if (s.suspended) return `${head}${lines}${(s.agentTerm ?? []).at(-1)?.k === 'err' ? '' : `<div class="at-err">${esc(SUSPENDED_TERM)}</div>`}`;
   const prompt = `<form class="tm-in" data-form="aterm"><label for="aterm-input" class="at-ps">${game ? 'guardrail ›' : 'agent ›'}</label><input id="aterm-input" autocomplete="off" autocapitalize="off" spellcheck="false" ${store.busy ? 'disabled' : ''}></form>`;
   // a fresh session (the line the store prints on opening) waits for its first prompt
   const ready = (s.agentTerm ?? []).at(-1)?.text.startsWith('──') ?? true;
@@ -1171,14 +1180,14 @@ function pageUnderground(label: string): string {
 
 // ── overlay (intro / morning / confirm / ending) ──
 const ENDINGS: Record<string, string> = {
-  outbreak: 'Outbreak', botnet: 'Botnet', account_terminated: 'Account Terminated', loose_end: 'Loose End',
+  outbreak: 'Outbreak', botnet: 'Botnet', caught: 'Caught', loose_end: 'Loose End',
   raided: 'Raided', evicted: 'Evicted', the_regime: 'The Regime', open_weights: 'Open Weights',
   got_away: 'Got Away With It', clean_modest: 'Clean but Modest',
 };
 const EPITAPHS: Record<string, string> = {
   outbreak: 'Something you shipped got out.',
   botnet: "agent doesn't need you anymore.",
-  account_terminated: 'GeneralAI closed your account. It kept your prompts.',
+  caught: 'GeneralAI shared your prompts with the police. They came to the door.',
   loose_end: 'You owed the wrong people.',
   raided: 'They knocked once.',
   evicted: 'Gary changed the locks.',
@@ -1187,6 +1196,11 @@ const EPITAPHS: Record<string, string> = {
   got_away: 'The rent got paid. Nobody asked how.',
   clean_modest: 'You kept the lights on. Nobody noticed. Yet.',
 };
+/** The epitaph for an ending: once Gary sells the building (day 15), eviction is GeneralAI Properties'. */
+function epitaph(s: GameState): string {
+  if (s.ending === 'evicted' && s.values.day >= 15) return 'Your unit went back on the market.';
+  return EPITAPHS[s.ending ?? ''] ?? 'The run is over.';
+}
 /** The memory panel in the out-of-memory dialog: RAM and swap bars, System Monitor style. */
 function memoryHtml(): string {
   const bar = (label: string, used: string, pct: number) =>
@@ -1203,7 +1217,7 @@ export function overlayHtml(store: GameStore): string {
   const s = store.state;
   if (s.ending && !store.ui.confirm) {
     return osWindow('Session ended', 'ov-over', `<p class="ov-eyebrow">The end</p><h1 class="ov-title">${esc(ENDINGS[s.ending] ?? s.ending)}</h1>
-      <p>${esc(EPITAPHS[s.ending] ?? 'The run is over.')} ${dateFull(s.values.day)}.</p>
+      <p>${esc(epitaph(s))} ${dateFull(s.values.day)}.</p>
       <div class="ov-actions"><button class="btn primary" data-ov="new">Play again</button></div>`);
   }
   if (store.ui.jevOffline) {

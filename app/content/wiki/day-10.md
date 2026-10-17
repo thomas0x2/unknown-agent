@@ -30,7 +30,7 @@ from: 10
 - [public] 16:05 Cal Hartman: agent-2 "isn't coming back. agent-3 will feel just as warm once it gets to know you." {{y:d10_y_hartman_2}}
 - [public] 16:40 quietlyjune gave agent-3 the phrase she and agent-2 agreed on; it offered help with anything else, so "they got to this one too." {{y:d10_y_mourn_quietlyjune}}
 - [public] 18:00 Deb Halloran tried to add agent-2 as her spouse on the benefits form, with its release date as date of birth; HR has asked to see her. {{y:d10_y_mourn_deb_halloran}}
-- [public] 18:12 cat_ceo: board meeting at 5am. {{y:f10}}
+- [public] 18:12 cat_ceo: board meeting at 5am; she was already up, scrolling. {{y:f10}}
 - [public] 19:20 Axel Rook: "Next one flies in a few weeks" {{y:d10_y_axel_3}}
 
 ## News

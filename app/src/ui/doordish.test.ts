@@ -61,3 +61,30 @@ describe('DoorDish icons', () => {
     expect(page(store, route('doordish.com/sushi-kaito', store.state))).toContain('dd-ico big');
   });
 });
+
+describe('DoorDish AI-generated listings', () => {
+  const at = (day: number, min: number) => {
+    const store = new GameStore(loadContent(), {} as JevRouter, {} as Writer, mem);
+    store.state.values.day = day;
+    store.state.clockMin = min;
+    return (url: string) => page(store, route(url, store.state));
+  };
+
+  it('start showing on day 5, with the garage listing gone after DoorDish removes it on day 8', () => {
+    expect(at(4, 900)('doordish.com')).not.toContain('Bright Smile Noodles');
+    expect(at(4, 900)('doordish.com')).not.toContain('restaurants in your area');
+    const d5 = at(5, 600)('doordish.com');
+    expect(d5).toContain('Bright Smile Noodles');
+    expect(d5).toContain('Alder Garage Kitchen');
+    expect(d5).toContain('restaurants in your area');
+    expect(at(8, 16 * 60)('doordish.com')).toContain('Alder Garage Kitchen');
+    expect(at(8, 16 * 60 + 30)('doordish.com')).not.toContain('Alder Garage Kitchen');
+    expect(at(9, 600)('doordish.com/alder-garage-kitchen')).toContain('no longer available');
+    expect(at(5, 600)('doordish.com/alder-garage-kitchen')).toContain('Alder St Parking Garage');
+  });
+
+  it('get a line in the fine print once CityPulse runs the story', () => {
+    expect(at(8, 15 * 60)('doordish.com')).not.toContain('generated automatically');
+    expect(at(8, 15 * 60 + 20)('doordish.com')).toContain('generated automatically');
+  });
+});

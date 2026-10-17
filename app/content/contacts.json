@@ -42,6 +42,13 @@
     ]
   },
   {
+    "key": "residents@properties.generalai.test",
+    "replyAfter": 20,
+    "name": "GeneralAI Properties",
+    "character": "gai_properties",
+    "reply": "Thank you for contacting GeneralAI Properties Resident Services. Your rent is set by LandlordPro based on current market conditions. For disputes, please contact the Municipal Rent Board.\n\nResident Services"
+  },
+  {
     "key": "trader@desk.test",
     "name": "deskjockey",
     "character": "trader",

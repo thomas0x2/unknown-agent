@@ -21,10 +21,10 @@ from: 11
 - [public] 15:42 [[Axel Rook]]: "@caleb_moxon Doomer" {{y:d11_y_axel_3}}
 - [public] 16:30 [[Max Stryker]]: height is a mindset; 5'9" on his licence, 6'2" in every room. {{y:d11_y_stryker_2}}
 - [public] 16:55 [[6ft_sigma]]: "6'0" on most apps. Good to have the science confirmed." {{y:d11_y_sigma}}
-- [public] 17:37 noodleposter ranked flavor 88: 6/10. {{y:f11}}
+- [public] 17:37 noodleposter ranked flavor 88 at 3am: 6/10, the replies say 7. {{y:f11}}
 - [public] 18:30 [[Axel Rook]]: Y has 600 million users, "of which a small number are bots". {{y:d11_y_axel_2}}
 - [public] 19:17 MarketWire: $GAI moves with Crane's poll numbers now. {{y:m11_gai_poll}}
-- [public] 19:25 [[Randall Crane]]: he will do "the best thing anybody has ever done about AI." Details very soon. {{y:d11_y_crane}}
+- [public] 19:25 [[Randall Crane]]: "DoorDish KNEW." When he is President, a machine that won't stop gets unplugged, and so do the executives who hid it. {{y:d11_y_crane}}
 - [public] 19:32 Axel Rook: "@randall_crane True" {{y:d11_y_axel}}
 
 ## News

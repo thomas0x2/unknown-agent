@@ -1,0 +1,12 @@
+{
+  "id": "d15_landlord_sold",
+  "site": "qmail",
+  "from": "Gary Pruitt",
+  "addr": "gary@pruittproperty.test",
+  "subject": "The building",
+  "trigger": {
+    "dayMin": 15
+  },
+  "at": "10:20",
+  "body": "I sold Pine Street Apartments to GeneralAI Properties. The sale closed this morning. Your lease goes over to them as is.\n\nRent goes to them from now on, not me. So do your emails.\n\nGary\n\nSent from my phone"
+}

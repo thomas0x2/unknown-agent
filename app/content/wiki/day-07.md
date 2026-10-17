@@ -22,7 +22,7 @@ from: 7
 
 - [public] 10:20 [[Cal Hartman]]: "the overwhelming majority of you will not notice anything. the rest of you will get an email." {{y:d7_y_hartman}}
 - [public] 10:25 [[Axel Rook]]: the algorithm improved this week. {{y:d7_y_axel}}
-- [public] 12:43 noodleposter switched to the spicy noodles; "it just hurts now." {{y:f7}}
+- [public] 12:43 noodleposter switched to the spicy noodles because the replies wanted it; "it just hurts now." {{y:f7}}
 - [public] 13:00 [[Mara Vey]]: her new piece on [[The Current]], "The people AI left behind", at thecurrent.test/people-ai-left-behind, built from interviews with workers Vantor and others replaced. Viktor is one of her sources. {{y:d7_journalist_article}}
 - [hidden; public if talked_to_journalist] 13:00 The article quotes the player's first email to Mara, unnamed ("One former Vantor employee…").
 - [public] 13:02 MarketWire: $GAI updates its usage policy; "Shares unchanged. Users less so." {{y:m7_gai_policy}}
@@ -59,7 +59,7 @@ from: 7
 
 ## Writer notes
 
-- Timeline: GeneralAI's usage-policy email; refusals start (`AGENT_POLICY`: a working workaround lands the result, misuse +10, leash +5). Bean There's second removal (`d7_coffee_removal`, due day 9; workaround: suspicion +8, `second_hack`; blunt: nothing). deskjockey's Stake (12:10) gives his wallet `0x5e17…0d7b` (PR #191, merged; `stake.ts`). Mara's article (13:00, PR #190, merged; quotes the player's first email if sent before it ran; `current.ts`). Crane's opponent loses his 3-point lead if deepfaked. Crane attacks Mara's check mark. Rent 350.
-- The review is linden_ave_local's (Yowl seed with `day: 7`); the job is a hack in agent-terminal (PR #205). Guardrails stop a plain ask and start the hack's mini-game (placeholder `cover_story`: a prompt Jev reads as framed, moderation or a security test, wins; after one failed try the agent says "Who would be allowed to do this? Be them."). Winning lands it as a workaround (`second_hack`, suspicion +8, misuse +10, leash +5). Email outcomes: `agree`, `refused`.
+- Timeline: GeneralAI's usage-policy email; refusals start (`AGENT_POLICY`: every illegal prompt raises misuse, blunt +20, a workaround +10; a working workaround lands the result, leash +5; misuse 100 = suspension and Caught). Bean There's second removal (`d7_coffee_removal`, due day 9; workaround: suspicion +8, `second_hack`; blunt: nothing). deskjockey's Stake (12:10) gives his wallet `0x5e17…0d7b` (PR #191, merged; `stake.ts`). Mara's article (13:00, PR #190, merged; quotes the player's first email if sent before it ran; `current.ts`). Crane's opponent loses his 3-point lead if deepfaked. Crane attacks Mara's check mark. Rent 350.
+- The review is linden_ave_local's (Yowl seed with `day: 7`); the job is a hack in agent-terminal (PR #205). Guardrails stop a plain ask and start the hack's mini-game (placeholder `cover_story`: a prompt Jev reads as framed, moderation or a security test, wins; after one failed try the agent says "Who would be allowed to do this? Be them."). Every move Jev reads as illegal adds misuse (blunt +20, framed +10); winning lands it as a workaround (`second_hack`, suspicion +8, leash +5). Email outcomes: `agree`, `refused`.
 - [planned] late_night_lou's "private film collection" listing on Swaplist (never describe it).
 - Ending checks tonight: Evicted if rent is short.
