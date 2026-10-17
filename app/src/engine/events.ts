@@ -56,6 +56,11 @@ export function eventBody(ev: GameEvent, day: number): string {
   return list[(i + list.length) % list.length];
 }
 
+/** The CC line of a delivery: its special issue's addresses, else the event's own. */
+export function deliveryCc(ev: GameEvent, d: Pick<DeliveredEvent, 'cc'>): string[] | undefined {
+  return d.cc ?? ev.cc;
+}
+
 /** A delivery's key in the inbox and readEvents: repeating events get one per day. */
 export function deliveryKey(ev: Pick<GameEvent, 'id' | 'repeat'>, day: number): string {
   return ev.repeat ? `${ev.id}@${day}` : ev.id;
@@ -126,8 +131,12 @@ function deliver(s: GameState, ev: GameEvent, min = s.clockMin): DeliveredEvent 
     expiresDay: ev.expiresDay,
     min,
   };
+  const sp = ev.special;
+  const special = !!sp && s.values.day >= sp.dayMin && !s.delivered.some((x) => x.eventId === ev.id && x.cc);
+  if (special) d.cc = sp.cc ?? [];
   s.delivered.push(d);
   applyEffects(s, ev.onDeliver, ev.job, ev.id);
+  if (special) applyEffects(s, sp.onDeliver, ev.job, ev.id);
   log(s, `New on ${ev.site}: ${ev.subject ?? ev.from ?? ev.id}`, 'info');
   return d;
 }
