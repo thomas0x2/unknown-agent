@@ -1,0 +1,11 @@
+{
+  "id": "d10_y_polly_apo",
+  "site": "y",
+  "from": "Pollymarket",
+  "trigger": {
+    "dayMin": 10,
+    "dayMax": 10
+  },
+  "at": "19:40",
+  "body": "Resolved YES: $APO closed higher on launch day. pollymarket.com/apo-launch-day"
+}

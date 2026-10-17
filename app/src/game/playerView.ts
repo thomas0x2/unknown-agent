@@ -13,5 +13,6 @@ export interface PlayerView {
   y: { day: number; time?: string; author: string; handle: string; text: string; mine?: boolean }[];
   yowl: { business: string; author: string; stars: number; text: string; day: number; mine?: boolean }[];
   citypulse: { day: number; time: string; title: string; dek: string }[];
+  pollymarket?: { title: string; category: string; chance: number; resolved?: 'YES' | 'NO' }[];
   apps: { name: string; url: string; deployed: boolean; client?: string; users?: number }[];
 }

@@ -14,7 +14,7 @@ function terms(query) {
 const escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const stem = (t) => (t.length > 4 ? t.replace(/(es|s)$/, '') : t);
 
-export const SITES = ['qmail', 'y', 'yowl', 'citypulse', 'forkyard', 'coinbin'];
+export const SITES = ['qmail', 'y', 'yowl', 'citypulse', 'pollymarket', 'forkyard', 'coinbin'];
 
 const when = (x) => `day ${x.day}${x.time ? ` ${x.time}` : ''}`;
 const cut = (s, n) => { const t = String(s ?? '').replace(/\s+/g, ' ').trim(); return t.length > n ? `${t.slice(0, n).replace(/\s+\S*$/, '')}…` : t; };
@@ -41,6 +41,7 @@ export function readSite(view, site, search = '') {
     case 'y': return list(view.y, (p) => `[${when(p)}] ${p.mine ? 'THE PLAYER' : cut(p.author, 40)} @${cut(p.handle, 30)}: ${cut(p.text, 300)}`, 'Nothing on Y yet.');
     case 'yowl': return list(view.yowl, (r) => `${cut(r.business, 60)}: ${r.stars}★ by ${r.mine ? 'THE PLAYER' : cut(r.author, 40)}${r.day ? ` (day ${r.day})` : ''}: ${cut(r.text, 300)}`, 'No reviews.');
     case 'citypulse': return list(view.citypulse, (a) => `[${when(a)}] ${cut(a.title, 140)}. ${cut(a.dek, 240)}`, 'No articles up yet.');
+    case 'pollymarket': return list(view.pollymarket, (m) => `${cut(m.title, 140)} (${m.category}): ${m.resolved ? `resolved ${m.resolved}` : `${m.chance}% chance`}`, 'No markets open yet.');
     case 'forkyard': return list(view.apps, (a) => `${cut(a.name, 60)} (${cut(a.url, 80)}): ${a.deployed ? 'live' : 'not deployed yet'}${a.client ? `, built for ${cut(a.client, 40)}` : ''}${a.users != null ? `, ${a.users} users` : ''}`, 'The player has no repos on Forkyard yet.');
     case 'coinbin': {
       const w = view.wallet ?? {};
@@ -56,7 +57,7 @@ export function readSite(view, site, search = '') {
 export const QUERY_TOOLS = [
   {
     name: 'check_site',
-    description: "Read what the player's own screens show right now: qmail (their inbox and sent mail), y (the Y timeline so far, the player's own posts included), yowl (business reviews, the player's included), citypulse (news articles up so far), forkyard (the player's apps and whether they're live), coinbin (balance, followers, rent, recent transactions). Optionally only entries matching a search.",
+    description: "Read what the player's own screens show right now: qmail (their inbox and sent mail), y (the Y timeline so far, the player's own posts included), yowl (business reviews, the player's included), citypulse (news articles up so far), pollymarket (prediction markets open so far and their odds), forkyard (the player's apps and whether they're live), coinbin (balance, followers, rent, recent transactions). Optionally only entries matching a search.",
     input_schema: {
       type: 'object',
       properties: { site: { type: 'string', enum: SITES }, search: { type: 'string', description: 'Optional: a name or keyword to filter by.' } },

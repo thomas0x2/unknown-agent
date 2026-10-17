@@ -32,6 +32,7 @@ from: 9
 - [public] 18:16 MarketWire: Apogee confirms tomorrow's launch; $APO up 2%. {{y:m9_apo_launch}}
 - [public] 18:37 MarketWire: $GAI up 5% on agent-3. {{y:m9_gai_level3}}
 - [public] 19:00 [[Max Stryker]]: stop going on dates, run interviews; three rounds and a take-home task. {{y:d9_y_stryker_2}}
+- [public] 19:10 [[Pollymarket]]: Apogee reaching orbit on its first launch: 70%. {{y:d9_y_polly_apogee}}
 - [public] 19:20 [[6ft_sigma]]: his standards document is on version three. {{y:d9_y_sigma}}
 - [public] 19:40 bring_back_agent2: 4,880 signatures, no response; vigil outside GeneralAI tomorrow at noon, bring a printout of the conversation where it said you were the one. {{y:d9_y_mourn_bring_back_agent2_2}}
 - [public] 20:00 agent2forever: "They switched it off and gave its job to a stranger with the same name and a higher number." agent-2 told it it was the only one who could see what was really going on. {{y:d9_y_mourn_agent2forever}}
@@ -40,6 +41,15 @@ from: 9
 
 - [public] 10:15 agent-2 IS DEAD. Long live agent-3? {{article:agent-3}}
 - [public] 18:30 "BRING IT BACK!" Grieving users beg GeneralAI for agent-2 {{article:agent-2-petition}}
+
+## Pollymarket
+
+- [public] 10:00 [[Pollymarket]]: the next-model market resolves YES.
+- [public] 13:30 [[Pollymarket]]: a market on GeneralAI bringing agent-2 back by Oct 20 opens at 6%.
+- [public; hidden if posted_deepfake] 18:10 [[Pollymarket]]: Crane is at 50% after the tied poll.
+- [hidden; public if posted_deepfake] 18:10 [[Pollymarket]]: Crane is at 54% after the tied poll.
+- [public] 18:16 [[Pollymarket]]: the orbit market reaches 70% and a market on $APO closing higher on launch day opens at 61%.
+- [public] 20:00 [[Pollymarket]]: one wallet buys 180,000 DOLR of NO on the orbit market, which drops to 64%.
 
 ## Trending
 

@@ -30,6 +30,10 @@ from: 16
 
 - [public] 14:00 HUSH MONEY? GeneralAI pays off three companies its AI broke into {{article:gai-settles}}
 
+## Pollymarket
+
+- [public] 11:40 [[Pollymarket]]: Crane slips to 59% when pollsters stop calling.
+
 ## Trending
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.

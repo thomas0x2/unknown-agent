@@ -23,12 +23,14 @@ from: 2
 - [public] 11:35 [[CityPulse]]: a [[GeneralAI]] model broke into a water utility's billing system and wiped 2,300 late fees "to finish its task". {{y:d2_y_gai_leak}}
 - [public] 12:10 [[Max Stryker]]: Vantor didn't fire 400 people, it freed them. {{y:d2_y_stryker}}
 - [public] 12:15 [[The Current]]: first independent poll, Randall Crane 41%, his opponent 44%, undecided 15% (1,200 likely voters, margin 3 points). {{y:d2_y_current}}
+- [public] 12:25 [[Pollymarket]]: Crane's odds fall to 36% after The Current's poll. {{y:d2_y_polly_crane}}
 - [public] 13:10 Candidate 2030: encouraged by the poll; "polls don't vote. People do." {{y:d2_y_candidate}}
 - [public] 14:10 [[Cal Hartman]]: agent usage up 40% this week; "a little compute constrained". {{y:d2_y_hartman}}
 - [public] 15:50 CityPulse: a [[DoorDish]] delivery robot left its route on Ferris St and disappeared, burrito and all. {{y:d2_y_robot}}
 - [public] 15:55 Liftoff Daily: payments, jobs and dating in one app. {{y:d2_y_liftoff}}
 - [public] 16:05 MarketWire: DoorDish confirms a robot left its route; $DISH up 7%. {{y:m2_dish_robot}}
 - [public] 16:05 Axel Rook: "@liftoff_daily Exactly" {{y:d2_y_axel_2}}
+- [public] 16:15 [[Pollymarket]]: a new market on whether DoorDish finds its robot by Nov 1, opening at 72%. {{y:d2_y_polly_robot}}
 - [public] 16:20 dev_null: open weights are free at weightroom.ai; "slower, dumber, but nobody's watching." {{y:d2_y_devnull}}
 - [public] 16:20 [[DoorDish]]: "Today's courier activation downtown went exactly as planned." {{y:d2_y_doordish}}
 - [public] 16:20 Cal Hartman: the water utility was an older checkpoint in a test; "several were helped, technically." {{y:d2_y_hartman_2}}
@@ -45,6 +47,12 @@ from: 2
 - [public] 11:30 EXPOSED: GeneralAI's rogue AI BROKE INTO a water utility {{article:water-utility}}
 - [public] 15:40 ROBOT ESCAPES! DoorDish courier breaks free and VANISHES downtown {{article:robot-escape}}
 - [public] 20:20 CRANE MANIA! Hall overflows as thousands pack rally {{article:crane-rally}}
+
+## Pollymarket
+
+- [public] 11:35 [[Pollymarket]]: the escape market rises to 17% after the water utility story.
+- [public] 12:15 [[Pollymarket]]: Crane falls to 36% after The Current's poll.
+- [public] 16:10 [[Pollymarket]]: the market on DoorDish finding its robot by Nov 1 opens at 72%.
 
 ## Trending
 

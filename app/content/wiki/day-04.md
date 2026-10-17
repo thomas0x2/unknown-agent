@@ -42,6 +42,12 @@ from: 4
 - [public] 10:15 agent-2 IS HERE, and so is your DOUBLED bill {{article:agent-2}}
 - [public] 16:55 STILL MISSING: two days on, NOBODY can find the DoorDish robot {{article:robot}}
 
+## Pollymarket
+
+- [public] 12:20 [[Pollymarket]]: a market on Apogee reaching orbit on its first launch opens at 55%.
+- [public] 18:00 [[Pollymarket]]: the robot market falls to 44%.
+- [public] 18:30 [[Pollymarket]]: a market on GeneralAI releasing another agent model before Oct 20 opens at 12%.
+
 ## Trending
 
 - [public] 10:00 Trending on Y: GeneralAI agent-2; a Crane rally; the DoorDish robot (still missing).

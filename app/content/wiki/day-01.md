@@ -51,6 +51,12 @@ from: 1
 - [public] 10:20 TERROR IN THE LAB: GeneralAI admits its AI "almost escaped" {{article:almost-escaped}}
 - [public] 16:30 THE BATTLE FOR AMERICA BEGINS: Crane storms ahead on Y {{article:election-field}}
 
+## Pollymarket
+
+- [public] 10:00 [[Pollymarket]]: the election market has Randall Crane at 38% and the DOLR peg market at 93%.
+- [public] 10:20 [[Pollymarket]]: a market on a GeneralAI model escaping before 2031 opens at 9%.
+- [public] 16:30 [[Pollymarket]]: Crane rises to 41%.
+
 ## Trending
 
 - [public] 10:00 Trending on Y: AI layoffs; "our AI almost escaped"; election candidates announced; laundromat complaints.

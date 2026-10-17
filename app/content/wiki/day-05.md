@@ -28,6 +28,7 @@ from: 5
 - [public] 14:10 Dana Kohl: a DoorDish robot rolled up with a cold burrito she didn't order, waited ten minutes and left. "was that the one?" {{y:d5_y_robot_sighting}}
 - [public] 14:27 doomscroll checked the news once today; "that was the mistake." {{y:f5}}
 - [public] 16:20 [[CityPulse]]: CRANE SURGES TO 71% in a Y poll of 300,000 votes; Y "can't share" who voted. {{y:d5_y_citypulse_vote}}
+- [public] 16:35 [[Pollymarket]]: Crane at 47% after the Y poll, which "doesn't settle anything here". {{y:d5_y_polly_crane}}
 - [public] 17:30 studioghast: they trained their models on artists' work and sell it back; "my style is a dropdown now." {{y:d5_y_aiart}}
 - [public] 18:20 [[Max Stryker]] dating advice: never text first, never text second; she can go through his assistant. {{y:d5_y_stryker_2}}
 - [public] 18:45 [[6ft_sigma]]: "@max_stryker Haven't texted first in four years. Working as intended." {{y:d5_y_sigma}}
@@ -40,6 +41,11 @@ from: 5
 - [public] 10:40 Ferris St laundromat gets FOUR new machines, but the curse of machine 3 lives on {{article:spin-cycle}}
 - [public] 17:50 STOLEN! Local artists say AI ripped off their life's work {{article:ai-art}}
 - [public] 19:40 FAKE CRANE! Sinister impostor fools traders {{article:crane-impostor}}
+
+## Pollymarket
+
+- [public] 14:10 [[Pollymarket]]: the robot market rises to 51% on the cold-burrito sighting.
+- [public] 16:20 [[Pollymarket]]: Crane rises to 47% after the Y poll.
 
 ## Trending
 

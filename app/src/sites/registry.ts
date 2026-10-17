@@ -7,7 +7,7 @@ import { adSite } from './adSites';
 
 export type SiteId =
   | 'y' | 'qmail' | 'qdrive' | 'coinbin' | 'sherwood' | 'doordish' | 'forkyard' | 'agent' | 'yowl'
-  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'phish' | 'prince' | 'lonely' | 'sorry' | 'current' | 'citypulse' | 'matchless' | 'adsite' | 'app' | 'wiki' | 'newtab' | 'notfound';
+  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'phish' | 'prince' | 'lonely' | 'sorry' | 'current' | 'citypulse' | 'pollymarket' | 'matchless' | 'adsite' | 'app' | 'wiki' | 'newtab' | 'notfound';
 
 export interface SiteDef {
   id: SiteId;
@@ -63,6 +63,9 @@ export const SITES: SiteDef[] = [
   // the local news site (ui/citypulse.ts); bookmarked once the player has read it
   { id: 'citypulse', base: 'citypulse.news', label: 'CityPulse', group: 'core', reachable: always,
     bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('citypulse')) },
+  // the prediction market (ui/pollymarket.ts): nothing to bet with; bookmarked once the player has been there
+  { id: 'pollymarket', base: 'pollymarket.com', label: 'Pollymarket', group: 'core', reachable: always,
+    bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('pollymarket')) },
   // the world wiki and its editor (ui/wiki.ts): dev mode only
   { id: 'wiki', base: 'wiki.dev', label: 'Wiki', group: 'tools', reachable: inDevMode },
 ];

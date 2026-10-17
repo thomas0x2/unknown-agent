@@ -31,6 +31,11 @@ from: 12
 - [public] 11:00 Robots IN, humans OUT: DoorDish cashes in as couriers vanish (DoorDish says the robot "retired with honours", location unknown) {{article:dish-earnings}}
 - [public] 18:00 WHITEWASH? GeneralAI's "independent" review won't start until it's too late (the review firm's biggest client is GeneralAI) {{article:training-review}}
 
+## Pollymarket
+
+- [public] 11:00 [[Pollymarket]]: the robot market falls to 11% after DoorDish says the robot retired.
+- [hidden; public if posted_deepfake] 16:45 [[Pollymarket]]: the clip market resolves YES; Crane slips to 50%.
+
 ## Trending
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.

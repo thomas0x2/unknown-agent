@@ -27,6 +27,11 @@ from: 19
 
 - [public] 19:50 IS A COMPUTER WRITING CRANE'S POSTS? The evidence is STARTLING (some go out at the same second as identical posts in other languages) {{article:crane-posts}}
 
+## Pollymarket
+
+- [public] 12:30 [[Pollymarket]]: Crane falls to 61%.
+- [public] 19:55 [[Pollymarket]]: Crane falls to 58%.
+
 ## Trending
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.

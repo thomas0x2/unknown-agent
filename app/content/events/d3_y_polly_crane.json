@@ -1,0 +1,11 @@
+{
+  "id": "d3_y_polly_crane",
+  "site": "y",
+  "from": "Pollymarket",
+  "trigger": {
+    "dayMin": 3,
+    "dayMax": 3
+  },
+  "at": "16:20",
+  "body": "Randall Crane went from 40% to 44% in 35 minutes. pollymarket.com/crane-wins"
+}

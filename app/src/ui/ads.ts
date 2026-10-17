@@ -35,6 +35,8 @@ interface Ad {
   from?: number;
   /** CityPulse's ad: frames, link and fine print come from the current headline (setHeadline) */
   news?: boolean;
+  /** the site this ad sells: it doesn't run there */
+  house?: string;
 }
 
 /** What CityPulse's ad shows: its hottest story, from engine/citypulse.ts (hotStory). */
@@ -173,6 +175,16 @@ export const WIDE: Ad[] = [
     cta: 'Check my allocation', fine: 'Partners are supplied by GeneralAI under a public contract. Declining is recorded.',
   },
   { ...NEWS_AD, id: 'citypulse' },
+  {
+    id: 'pollymarket', house: 'pollymarket', sponsor: 'Pollymarket', href: 'pollymarket.com', theme: 'ad-polly', deco: 'shine',
+    frames: ['Polls are guesses.', 'Markets are <b>bets</b>.', 'Pollymarket. <b>The odds on everything.</b>'],
+    cta: 'See the odds', fine: 'Not available in your region, or most others.',
+  },
+  {
+    id: 'sherwood', house: 'sherwood', sponsor: 'Sherwood', href: 'sherwood.com', theme: 'ad-sherwood', deco: 'coins',
+    frames: ['Rent is due.', 'The market is <b>open</b>.', 'Fractional shares from <b>1 DOLR</b>.'],
+    cta: 'Start investing', fine: 'Commission-free. Investing involves risk, including the loss of your rent money.',
+  },
 ];
 
 /** Square sidebar boxes: one big line per frame. */
@@ -248,6 +260,16 @@ const SQUARE: Ad[] = [
     frames: ['Hot singles', 'in your area', 'are <b>also unemployed</b>.'],
     cta: 'Commiserate', fine: 'All singles are generated. So is the area.',
   },
+  {
+    id: 'pollymarket-sq', house: 'pollymarket', sponsor: 'Pollymarket', href: 'pollymarket.com', theme: 'ad-polly', deco: 'ekg',
+    frames: ['Who wins?', 'Ask the people <b>betting on it</b>.', '<b>Pollymarket</b>'],
+    cta: 'See the odds', fine: 'Some traders know more than others. That is the point.',
+  },
+  {
+    id: 'sherwood-sq', house: 'sherwood', sponsor: 'Sherwood', href: 'sherwood.com', theme: 'ad-sherwood', deco: 'coins',
+    frames: ['$GAI is <b>up</b>.', 'It was up yesterday too.', 'Own a slice from <b>1 DOLR</b>.'],
+    cta: 'Buy $GAI', fine: 'Past performance is not indicative of future results. So far it has been.',
+  },
   // CityPulse promotes whatever its hottest story is right now (see setHeadline)
   { ...NEWS_AD, id: 'citypulse_sq' },
   {
@@ -285,6 +307,8 @@ const WHY: Record<string, string> = {
   'spincycle-app': 'You were targeted because you are waiting for a washing machine.',
   'swaplist-app': 'You were targeted because you are selling your things.',
   citypulse: 'You were targeted because you read the news.',
+  sherwood: 'You were targeted because you have money in the market, or are about to.',
+  pollymarket: 'You were targeted because you check the odds.',
 };
 
 const FRAME_MS = 3000;
@@ -303,7 +327,7 @@ export function pickAd(site: string, day: number, slot: AdSlot, n = 0, rand: () 
   const had = drawn.get(key);
   if (had) return had;
   const onPage = new Set([...drawn.values()].map((a) => a.id));
-  const live = POOLS[slot].filter((a) => (a.from ?? 1) <= day && (!a.news || headline));
+  const live = POOLS[slot].filter((a) => (a.from ?? 1) <= day && (!a.news || headline) && a.house !== site);
   const fresh = live.filter((a) => !onPage.has(a.id));
   const pool = fresh.length ? fresh : live;
   const ad = pool[Math.floor(rand() * pool.length) % pool.length];

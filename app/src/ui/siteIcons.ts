@@ -13,8 +13,9 @@ import { SORRY_ICON } from './sorry';
 import { MATCHLESS_ICON } from './matchless';
 import { CURRENT_ICON } from './current';
 import { CITYPULSE_ICON } from './citypulseIcon';
+import { POLLY_ICON } from './pollymarketIcon';
 
-const OWN: Partial<Record<SiteId, string>> = { prince: PRINCE_ICON, lonely: LONELY_ICON, sorry: SORRY_ICON, current: CURRENT_ICON, citypulse: CITYPULSE_ICON, matchless: MATCHLESS_ICON };
+const OWN: Partial<Record<SiteId, string>> = { prince: PRINCE_ICON, lonely: LONELY_ICON, sorry: SORRY_ICON, current: CURRENT_ICON, citypulse: CITYPULSE_ICON, pollymarket: POLLY_ICON, matchless: MATCHLESS_ICON };
 
 /** `logo` is a self-coloured mark; `glyph` an ICONS entry coloured by the `.ico-<site>` class. */
 export function siteIcon(site: SiteId, param?: string): { logo?: string; glyph?: string } {

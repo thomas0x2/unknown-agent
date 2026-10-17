@@ -23,6 +23,7 @@ from: 15
 - [public] 16:20 Axel Rook: "@liftoff_daily Absolutely" {{y:d15_y_axel_2}}
 - [public] 17:10 [[Max Stryker]]: a man with standards raises them until the problem goes away. {{y:d15_y_stryker_2}}
 - [public] 17:35 [[6ft_sigma]]: raised his twice this week, "Problem's almost gone." {{y:d15_y_sigma}}
+- [public] 17:40 [[Pollymarket]]: the Hartman testimony market fell from 38% to 3%; the hearing is after the election. {{y:d15_y_polly_hartman}}
 - [public] 17:47 [[WallStreetBags]]: $APO up because Rook replaced the moderators at a different company; everyone there is long. {{y:m15_apo_mod}}
 - [public] 18:50 [[Randall Crane]]: "The Fake News at The Current" is writing another sob story about displaced workers; "I LOVE displaced workers." {{y:d15_y_crane}}
 
@@ -31,6 +32,12 @@ from: 15
 - [public] 10:10 AI TAKES OVER Y: robot moderator scans 3 BILLION posts, finds NOTHING wrong (the moderators' last task was labelling examples for their replacement) {{article:y-moderation}}
 - [public] 14:30 STRIKE! DoorDish couriers walk out, and the robots don't care (the strikers had trained the robots on their routes) {{article:courier-strike}}
 - [public] 17:30 GeneralAI HAULED BEFORE CONGRESS, and investors are thrilled (the hearing is set for after the election) {{article:gai-hearing}}
+
+## Pollymarket
+
+- [public] 10:00 [[Pollymarket]]: the agent-2 market has resolved NO.
+- [public] 12:33 [[Pollymarket]]: a market on Cal Hartman testifying before the election opens at 38%.
+- [public] 17:30 [[Pollymarket]]: the Hartman market drops to 3%.
 
 ## Trending
 

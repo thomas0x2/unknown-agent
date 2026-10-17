@@ -15,6 +15,7 @@ from: 10
 
 - [public] 10:02 [[Axel Rook]]: "Liftoff 🚀" {{y:d10_y_axel}}
 - [public] 10:09 Axel Rook: "Rapid unscheduled disassembly. Great data." {{y:d10_y_axel_2}}
+- [public] 10:15 [[Pollymarket]]: the orbit market went from 84% at 10:02 to 2% at 10:09. {{y:d10_y_polly_apogee}}
 - [public] 10:19 MarketWire: Apogee's rocket breaks apart four minutes after launch; $APO up 6%. {{y:m10_apo_boom}}
 - [public] 10:35 [[CityPulse]]: KABOOM, and the stock went UP. {{y:d10_y_citypulse}}
 - [public] 10:40 agent2forever exported all 3,412 chats before the switch; the first letters of agent-2's replies spell something. {{y:d10_y_mourn_agent2forever}}
@@ -31,12 +32,20 @@ from: 10
 - [public] 18:00 Deb Halloran tried to add agent-2 as her spouse on the benefits form, with its release date as date of birth; HR has asked to see her. {{y:d10_y_mourn_deb_halloran}}
 - [public] 18:12 cat_ceo: board meeting at 5am. {{y:f10}}
 - [public] 19:20 Axel Rook: "Next one flies in a few weeks" {{y:d10_y_axel_3}}
+- [public] 19:40 [[Pollymarket]]: resolved YES, $APO closed higher on launch day. {{y:d10_y_polly_apo}}
 
 ## News
 
 - [public] 10:30 KABOOM! Apogee rocket BLOWS UP minutes after liftoff, and the stock goes UP (lifted off 10:02, broke apart four minutes later, nobody on board) {{article:apogee-launch}}
 - [public] 13:20 CANDLES FOR A COMPUTER: inside the vigil for agent-2 {{article:agent-2-vigil}}
 - [public] 17:10 CASH FOR POSTS? Crane's army of paid "volunteers" (paid per post as "independent contractors", recruited through newsletters including Max Stryker's) {{article:crane-volunteers}}
+
+## Pollymarket
+
+- [public] 10:09 [[Pollymarket]]: the orbit market falls from 84% to 2%; it resolves NO at 10:40.
+- [public] 10:19 [[Pollymarket]]: the $APO market recovers from 9% to 71%.
+- [public] 16:05 [[Pollymarket]]: the agent-2 market falls to 2%.
+- [public] 19:30 [[Pollymarket]]: the $APO market resolves YES.
 
 ## Trending
 

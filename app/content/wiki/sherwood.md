@@ -26,7 +26,13 @@ from: 1
 - [public] On day 16 $GAI falls 3.5% and $VANT 6%.
 - [public] On day 19 $VANT falls 3% on a lawsuit.
 
+## Ads
+
+- [public] Sherwood carries banner ads: a leaderboard above the quote and a square box under the stock list.
+- [public] Sherwood advertises on other sites too: "Rent is due. The market is open. Fractional shares from 1 DOLR." (fine print "Commission-free. Investing involves risk, including the loss of your rent money.") and "$GAI is up. It was up yesterday too. Own a slice from 1 DOLR." ("Past performance is not indicative of future results. So far it has been."). Both open sherwood.com.
+
 ## Writer notes
 
 - Robinhood parody, added 2026-10-16. `app/src/engine/stocks.ts`, `MARKET_SCRIPT`: nothing is random, every ticker's daily move is written and follows that day's Y posts; flat days still move a little. Same daily closes as the crawler's `price()` (`app/src/engine/crawler.ts`).
+- Ads (2026-10-17): `adHtml('sherwood', …)` in `ui/sherwood.ts`; its own ads `sherwood` / `sherwood-sq` (theme `ad-sherwood`) carry `house: 'sherwood'` so they never run on Sherwood.
 - Bible note: "$DISH jumps 7% on day 4" in the Sherwood row contradicts day 2 everywhere else; the article and MarketWire put it on day 2.

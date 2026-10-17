@@ -1,0 +1,11 @@
+{
+  "id": "d21_y_polly_crane",
+  "site": "y",
+  "from": "Pollymarket",
+  "trigger": {
+    "dayMin": 21,
+    "dayMax": 21
+  },
+  "at": "19:50",
+  "body": "Randall Crane at 57% with the count barely started. The market resolves when the election office calls it. pollymarket.com/crane-wins"
+}

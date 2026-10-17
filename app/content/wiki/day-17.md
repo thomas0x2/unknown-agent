@@ -27,6 +27,10 @@ from: 17
 - [public] 15:00 FOX GUARDS HENHOUSE: GeneralAI WROTE the rules meant to control it (AI companies review themselves once a year and report to themselves) {{article:ai-rules}}
 - [public] 21:30 DEBATE CHAOS! Mics cut, tempers flare as Crane goes WILD on Y (the opponent's mic cut out twice) {{article:debate}}
 
+## Pollymarket
+
+- [public] 21:30 [[Pollymarket]]: Crane rises to 63% after the debate.
+
 ## Trending
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.

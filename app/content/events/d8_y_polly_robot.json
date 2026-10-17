@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_polly_robot",
+  "site": "y",
+  "from": "Pollymarket",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "16:35",
+  "body": "DoorDish robot found by Nov 1: 36%, down from 72% when the market opened. pollymarket.com/doordish-robot"
+}

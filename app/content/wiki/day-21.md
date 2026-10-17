@@ -21,12 +21,18 @@ from: 21
 - [public] 18:49 Brent Kowalski: $VANT under pressure as the layoff lawsuit grows. {{y:m21_vant}}
 - [public] 18:50 MarketWire: $APO and $GAI lead early trading. {{y:m21_apo_day}}
 - [public] 19:45 [[CityPulse]]: record turnout according to Y's live tracker; the election office hasn't finished counting the first precinct. {{y:d21_y_citypulse}}
+- [public] 19:50 [[Pollymarket]]: Crane at 57% with the count barely started. {{y:d21_y_polly_crane}}
 - [public] 19:55 Axel Rook: "@citypulse Interesting." {{y:d21_y_axel_2}}
 
 ## News
 
 - [public] 10:00 IT'S HAPPENING: polls open as huge queues form across the city (fake "your polling station moved" messages, some sent by AI assistants) {{article:polls-open}}
 - [public] 19:40 RECORD-SMASHING TURNOUT! But the count has barely begun {{article:turnout}}
+
+## Pollymarket
+
+- [public] 19:45 [[Pollymarket]]: Crane is at 57% with the count barely started; the market can't resolve until the election office calls it.
+- [public] 20:00 [[Pollymarket]]: the Hartman market resolves NO.
 
 ## Trending
 
