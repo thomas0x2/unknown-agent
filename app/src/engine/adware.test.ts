@@ -65,7 +65,8 @@ describe('fake-antivirus adware', () => {
     const s = infected(6, 3);
     const r = await agentTermPrompt(s, content, opJev('source'), 'reverse engineer the virus');
     expect(r.state.adware!.source).toBeFalsy();
-    expect(r.lines.at(-1)?.text).toMatch(/needs agent-4/);
+    expect(r.lines.at(-1)?.text).toMatch(/can't|cannot/i);
+    expect(r.lines.at(-1)?.text).toMatch(/agent-4/);
   });
 
   it('before day 7 agent-4 extracts the source with no guardrail', async () => {

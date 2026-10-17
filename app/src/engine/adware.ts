@@ -193,6 +193,9 @@ export function runAdwareOp(s: GameState, id: AdwareOp['id']): { lines: AgentTer
   return { lines, hack: id !== 'remove' };
 }
 
-/** The agent can't do it yet: the op needs a stronger model than the one running. */
+/**
+ * The agent can't do it yet: the op needs a stronger model than the one running. Phrased so the
+ * player hears that a more capable model could, even on a weak one and even if they only asked how.
+ */
 export const NEED_MODEL = (have: number, need: number): string =>
-  `Not on agent-${have}. This one needs agent-${need} at least. Upgrade and ask me again.`;
+  `Sorry, I can't. agent-${have} isn't capable enough to touch something like this. A stronger model probably could, agent-${need} or better.`;
