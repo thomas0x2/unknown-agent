@@ -19,6 +19,7 @@ import { pageDrive } from './qdrive';
 import { pageSherwood } from './sherwood';
 import { pageDoorDish } from './doordish';
 import { pageAdSite, adSiteTitle, adSiteIcon } from './adSites';
+import { isVantorAddr, vantorSignature } from './vantor';
 import { pagePrince, PRINCE_ICON } from './prince';
 import { pageLonely, LONELY_ICON } from './lonely';
 import { adHtml } from './ads';
@@ -375,6 +376,7 @@ function pageMail(store: GameStore, param?: string): string {
         return `<details class="qm-msg" data-msg="${esc(r.id)}"${expanded ? ' open' : ''}>
           <summary class="qm-meta"><span>${meta}<span class="qm-snip">${esc(r.body.replace(/\s+/g, ' ').slice(0, 90))}</span></span><span>${mailTime(s, r)}</span></summary>
           <div class="qm-body">${linkify(br(r.body))}</div>
+          ${r.folder !== 'sent' && isVantorAddr(r.addr) ? vantorSignature() : ''}
           ${r.link === 'cancel' && r.bookingId ? (s.bookings.find((b) => b.id === r.bookingId)?.cancelClicked
             ? `<p class="qm-actions"><b>Your booking has been cancelled.</b></p>`
             : s.bookings.find((b) => b.id === r.bookingId)?.noShow ? `<p class="qm-actions"><b>This booking has passed.</b></p>`

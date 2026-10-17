@@ -1,0 +1,20 @@
+/* The Vantor Group logo wherever it appears (ui/vantor.ts). */
+.vantor-wordmark, .vantor-mark { display: block; height: 100%; width: auto; overflow: visible; }
+
+/* Qmail: the signature under Vantor's emails */
+.vantor-sig { margin-top: 18px; padding-top: 12px; border-top: 1px solid rgba(0, 0, 0, .1); color: #2c2c2a; font-size: 11.5px; line-height: 1.5; }
+.vantor-sig .vantor-wordmark { height: 22px; margin-bottom: 6px; }
+.vantor-sig p { margin: 0; color: #6c6b66; }
+.vantor-sig .vantor-sig-fine { margin-top: 4px; font-size: 10.5px; opacity: .8; }
+
+/* Qdrive: the letterhead on Vantor PDFs */
+.qd-letterhead { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: -4px 0 22px; padding-bottom: 12px; border-bottom: 2px solid #2c2c2a; color: #2c2c2a; }
+.qd-letterhead .vantor-wordmark { height: 26px; max-width: 75%; }
+.qd-letterhead span { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: #6c6b66; }
+
+/* vantor.group pages: the wordmark replaces the letter tile */
+.lp-t-vantor .lp-brand .vantor-wordmark { height: 30px; max-width: 100%; }
+
+/* banner ads: the sponsor's logo in the top-right corner */
+.ad-logo { position: absolute; top: 6px; right: 10px; z-index: 3; height: 15px; color: var(--ad-ink); opacity: .9; pointer-events: none; }
+.ad-square .ad-logo { display: none; }
