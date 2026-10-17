@@ -133,6 +133,8 @@
 .ad-prince .ad-f { text-shadow: 2px 2px 0 #fff, -1px -1px 0 #fff; }
 .ad-spin { --ad-bg: linear-gradient(180deg, #2b8dd6, #1b5ea8); --ad-cta: #ffe14a; }
 .ad-park { --ad-bg: #111; --ad-ink: #e8e8e8; --ad-cta: #e8e8e8; --ad-cta-ink: #111; }
+.ad-news { --ad-bg: #151515; --ad-ink: #fff; --ad-cta: #d42b1e; --ad-cta-ink: #fff; --ad-fine: #b9b9b9; border-top: 4px solid #d42b1e; }
+.ad-news .ad-f { font-family: var(--f-display); font-weight: 700; }
 .ad-iron { --ad-bg: #121212; --ad-ink: #fff; --ad-cta: #ff2e2e; --ad-cta-ink: #fff; }
 .ad-iron .ad-f { font-family: Impact, 'Arial Narrow', sans-serif; text-transform: uppercase; }
 .ad-guard { --ad-bg: #07120c; --ad-ink: #7dff9b; --ad-cta: #7dff9b; --ad-cta-ink: #07120c; font-family: var(--f-mono, monospace); }

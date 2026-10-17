@@ -25,11 +25,12 @@ import { pageSorry } from './sorry';
 import { siteIcon } from './siteIcons';
 import { DEEPSLEEP_LOGO } from '../sites/deepsleepLogo';
 import { outplacementUpload, OUTPLACEMENT } from './outplacement';
-import { adHtml } from './ads';
+import { adHtml, setHeadline } from './ads';
+import { pageCityPulse } from './citypulse';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount, appLogo } from './appsite';
-import { marketPosts, cranePosts, fillerToday, postMin, handleOf, playMinutes, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, SEED_PHRASE, chatCost, type PaidChat, inBin, isDeleted, CLOCK } from '../engine';
+import { marketPosts, cranePosts, hotStory, fillerToday, postMin, handleOf, playMinutes, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, SEED_PHRASE, chatCost, type PaidChat, inBin, isDeleted, CLOCK } from '../engine';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 import { repoFiles, treeAt, fileSource } from './repoTree';
 import { yBio } from './y-bios';
@@ -60,12 +61,13 @@ function linkify(escaped: string): string {
     .replace(/(empire\.alphaascend\.biz(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(spincycle\.test\/feed(?:\/\d+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(coinbln\.com(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
+    .replace(/(citypulse\.news(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(^|[^\w.])@([a-z0-9_]+)/gi, '$1<a href="#" class="y-at" data-nav="y.com/$2">@$2</a>');
 }
 
 function tabTitle(r: Route, url: string): string {
   const names: Partial<Record<string, string>> = {
-    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', doordish: 'DoorDish', phish: 'Coinbin · Sign in', prince: 'Crypto Prince', lonely: 'Lonely.ai', sorry: 'SorryWriter', forkyard: 'Forkyard',
+    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', doordish: 'DoorDish', phish: 'Coinbin · Sign in', prince: 'Crypto Prince', lonely: 'Lonely.ai', sorry: 'SorryWriter', citypulse: 'CityPulse', forkyard: 'Forkyard',
     agent: 'agent', yowl: 'Yowl', weightroom: 'Weightroom', nullboard: 'nullboard', cellar: 'Cellar', app: url,
   };
   if (r.site === 'notfound') return url || 'New Tab';
@@ -234,6 +236,8 @@ function pageSpinFeed(store: GameStore, param?: string): string {
 // ── page dispatch ──
 export function page(store: GameStore, r: Route): string {
   if (!r.reachable) return pageError(store.url, r.site);
+  const hot = hotStory(store.state);
+  setHeadline(hot?.ad && { slug: hot.slug, frames: hot.ad, fine: hot.adFine, robot: hot.slug === 'robot' });
   switch (r.site) {
     case 'newtab': return pageNewTab(store);
     case 'qmail': return pageMail(store, r.param);
@@ -254,6 +258,7 @@ export function page(store: GameStore, r: Route): string {
     case 'lonely': return pageLonely(store);
     case 'sorry': return pageSorry(store);
     case 'adsite': return pageAdSite(r.param ?? '', store.state, store.ui.adNotice, r.param === OUTPLACEMENT ? outplacementUpload(store) : '');
+    case 'citypulse': return pageCityPulse(store, r.param);
     default: return pageUnderground(r.def?.label ?? r.site);
   }
 }

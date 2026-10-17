@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_noodle_dish",
+  "site": "y",
+  "from": "noodleposter",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "16:00",
+  "body": "ordered from a new noodle place on DoorDish. the address was a dentist. explains a lot citypulse.news/dish-listings"
+}

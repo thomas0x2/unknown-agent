@@ -39,7 +39,7 @@ describe('banner ads', () => {
     for (const href of AD_HREFS) {
       const r = route(href, s);
       expect(r.reachable, href).toBe(true);
-      expect(['adsite', 'empire', 'phish', 'prince', 'lonely', 'sorry', 'doordish', 'agent'], href).toContain(r.site);
+      expect(['adsite', 'empire', 'phish', 'prince', 'lonely', 'sorry', 'doordish', 'agent', 'citypulse'], href).toContain(r.site);
     }
   });
   it('has no landing page without an ad', () => {

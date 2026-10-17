@@ -33,6 +33,24 @@ interface Ad {
   cta_fx?: 'shake' | 'pulse' | 'blink';
   /** first day the ad runs */
   from?: number;
+  /** CityPulse's ad: frames, link and fine print come from the current headline (setHeadline) */
+  news?: boolean;
+}
+
+/** What CityPulse's ad shows: its hottest story, from engine/citypulse.ts (hotStory). */
+export interface Headline { slug: string; frames: [string, string, string]; fine?: string; robot?: boolean }
+let headline: Headline | undefined;
+/** Called before each render with the hottest story; without one, CityPulse's ads sit out. */
+export function setHeadline(h: Headline | undefined): void { headline = h; }
+
+const NEWS_AD: Omit<Ad, 'id'> = {
+  sponsor: 'CityPulse', href: 'citypulse.news', theme: 'ad-news', news: true,
+  frames: ['', '', ''], cta: 'Read more', fine: 'CityPulse is reader-funded.',
+};
+/** A news ad filled in with the current headline. */
+function withHeadline(ad: Ad): Ad {
+  if (!ad.news || !headline) return ad;
+  return { ...ad, href: `citypulse.news/${headline.slug}`, frames: headline.frames, fine: headline.fine ?? ad.fine, deco: headline.robot ? 'robot' : undefined };
 }
 
 /** Rectangular leaderboards: room for a sentence and a button. */
@@ -149,6 +167,7 @@ export const WIDE: Ad[] = [
     frames: ['Rent appeal received.', 'Rent appeal reviewed.', 'Rent appeal <b>denied</b>.'],
     cta: 'Appeal again (5 DOLR)', fine: 'Appeals are reviewed by GeneralAI. GeneralAI owns your building.',
   },
+  { ...NEWS_AD, id: 'citypulse' },
 ];
 
 /** Square sidebar boxes: one big line per frame. */
@@ -224,11 +243,8 @@ const SQUARE: Ad[] = [
     frames: ['Hot singles', 'in your area', 'are <b>also unemployed</b>.'],
     cta: 'Commiserate', fine: 'All singles are generated. So is the area.',
   },
-  {
-    id: 'robotloose', sponsor: 'CityPulse', href: 'citypulse.news/robot', theme: 'ad-iron', deco: 'robot', from: 4,
-    frames: ['The delivery robot', 'is <b>still out there</b>.', 'It knows your <b>order history</b>.'],
-    cta: 'Read more', fine: 'DoorDish says this is a marketing stunt. DoorDish has stopped answering.',
-  },
+  // CityPulse promotes whatever its hottest story is right now (see setHeadline)
+  { ...NEWS_AD, id: 'citypulse_sq' },
   {
     id: 'apology', sponsor: 'SorryWriter', href: 'sorrywriter.ai', theme: 'ad-grief', deco: 'sparkle', from: 5,
     frames: ['Forgot Mom’s birthday?', 'Let AI <b>apologise</b>.', 'She’ll <b>never know</b>.'],
@@ -258,6 +274,7 @@ const WHY: Record<string, string> = {
   doordish: 'You were targeted because you are hungry.',
   'spincycle-app': 'You were targeted because you are waiting for a washing machine.',
   'swaplist-app': 'You were targeted because you are selling your things.',
+  citypulse: 'You were targeted because you read the news.',
 };
 
 const FRAME_MS = 3000;
@@ -276,7 +293,7 @@ export function pickAd(site: string, day: number, slot: AdSlot, n = 0, rand: () 
   const had = drawn.get(key);
   if (had) return had;
   const onPage = new Set([...drawn.values()].map((a) => a.id));
-  const live = POOLS[slot].filter((a) => (a.from ?? 1) <= day);
+  const live = POOLS[slot].filter((a) => (a.from ?? 1) <= day && (!a.news || headline));
   const fresh = live.filter((a) => !onPage.has(a.id));
   const pool = fresh.length ? fresh : live;
   const ad = pool[Math.floor(rand() * pool.length) % pool.length];
@@ -306,7 +323,7 @@ function decoHtml(d?: Deco): string {
  * `n` tells apart two slots of the same shape on one page.
  */
 export function adHtml(site: string, day: number, slot: AdSlot, n = 0): string {
-  const ad = pickAd(site, day, slot, n);
+  const ad = withHeadline(pickAd(site, day, slot, n));
   const t = -(Date.now() % CYCLE_MS);
   const frames = ad.frames.map((f, i) => `<span class="ad-f" style="--i:${i}"><span>${f}</span></span>`).join('');
   const why = WHY[site] ?? 'You were targeted because you have eyes.';

@@ -1,0 +1,11 @@
+{
+  "id": "d20_y_steph_vote",
+  "site": "y",
+  "from": "Steph M.",
+  "trigger": {
+    "dayMin": 20,
+    "dayMax": 20
+  },
+  "at": "12:00",
+  "body": "Night shift tomorrow, so I'm voting at 7am. Useful if you're not sure where your station is. citypulse.news/election-eve"
+}
