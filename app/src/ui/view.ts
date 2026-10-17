@@ -23,6 +23,7 @@ import { isVantorAddr, vantorSignature } from './vantor';
 import { pagePrince } from './prince';
 import { pageLonely } from './lonely';
 import { pageSorry } from './sorry';
+import { pageCurrent } from './current';
 import { siteIcon } from './siteIcons';
 import { DEEPSLEEP_LOGO } from '../sites/deepsleepLogo';
 import { outplacementUpload, OUTPLACEMENT } from './outplacement';
@@ -62,13 +63,14 @@ function linkify(escaped: string): string {
     .replace(/(empire\.alphaascend\.biz(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(spincycle\.test\/feed(?:\/\d+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(coinbln\.com(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
+    .replace(/(?<![@\w.])(thecurrent\.test(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(citypulse\.news(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(^|[^\w.])@([a-z0-9_]+)/gi, '$1<a href="#" class="y-at" data-nav="y.com/$2">@$2</a>');
 }
 
 function tabTitle(r: Route, url: string): string {
   const names: Partial<Record<string, string>> = {
-    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', doordish: 'DoorDish', phish: 'Coinbin · Sign in', prince: 'Crypto Prince', lonely: 'Lonely.ai', sorry: 'SorryWriter', citypulse: 'CityPulse', forkyard: 'Forkyard',
+    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', doordish: 'DoorDish', phish: 'Coinbin · Sign in', prince: 'Crypto Prince', lonely: 'Lonely.ai', sorry: 'SorryWriter', current: 'The Current', citypulse: 'CityPulse', forkyard: 'Forkyard',
     agent: 'agent', yowl: 'Yowl', weightroom: 'Weightroom', nullboard: 'nullboard', cellar: 'Cellar', app: url,
   };
   if (r.site === 'notfound') return url || 'New Tab';
@@ -258,6 +260,7 @@ export function page(store: GameStore, r: Route): string {
     case 'prince': return pagePrince(store);
     case 'lonely': return pageLonely(store);
     case 'sorry': return pageSorry(store);
+    case 'current': return pageCurrent(store.state, r.param);
     case 'adsite': return pageAdSite(r.param ?? '', store.state, store.ui.adNotice, r.param === OUTPLACEMENT ? outplacementUpload(store) : '');
     case 'citypulse': return pageCityPulse(store, r.param);
     default: return pageUnderground(r.def?.label ?? r.site);
