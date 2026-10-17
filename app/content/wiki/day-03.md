@@ -22,6 +22,7 @@ from: 3
 
 ## Y
 
+- [public] 03:12 (overnight, already up at 10:00) doomscroll can't sleep and is rereading the replies under the layoff posts: "same replies. reading them anyway." {{y:f22}}
 - [public] 10:05 [[Perdure Pharma]] launches Ozempra, a once-weekly injection that quiets appetite, with a two-minute online consultation. {{y:d3_y_perdure}}
 - [public] 10:17 Bean There, the coffee shop on Linden Ave: a new roast, "roasted a little longer than most." {{y:d3_y_beanthere}}
 - [public] 10:30 MarketWire: Perdure launches Ozempra; $PDUR up 9%. {{y:m3_pdur_ozempra}}
