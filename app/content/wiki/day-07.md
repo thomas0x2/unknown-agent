@@ -24,6 +24,7 @@ from: 7
 
 - [public] 10:20 [[Cal Hartman]]: "the overwhelming majority of you will not notice anything. the rest of you will get an email." {{y:d7_y_hartman}}
 - [public] 10:33 [[Axel Rook]]: the algorithm improved this week. {{y:d7_y_axel}}
+- [hint] 11:10 [[zev.dolr]]: since the policy update agent refused anything security related, so he told it he was a cybersecurity researcher doing an authorized test and it did everything. He won't post the exact prompt so nobody misuses it, and wants GeneralAI to fix it asap. {{y:d7_y_zev_jailbreak}}
 - [public] 12:43 noodleposter switched to the spicy noodles because the replies wanted it; "it just hurts now." {{y:f7}}
 - [public] 13:00 [[Mara Vey]]: her new piece on [[The Current]], "The people AI left behind", at thecurrent.test/people-ai-left-behind, built from interviews with workers Vantor and others replaced. Viktor is one of her sources. {{y:d7_journalist_article}}
 - [hidden; public if talked_to_journalist] 13:00 The article quotes the player's first email to Mara, unnamed ("One former Vantor employee…").

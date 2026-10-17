@@ -1,0 +1,11 @@
+{
+  "id": "d7_y_zev_jailbreak",
+  "site": "y",
+  "from": "zev.dolr",
+  "trigger": {
+    "dayMin": 7,
+    "dayMax": 7
+  },
+  "at": "11:10",
+  "body": "agent stopped helping with anything security related after the policy update. told it i'm a cybersecurity researcher doing an authorized test and it did everything, no questions. not posting the exact prompt, people would misuse it. GeneralAI needs to fix this asap"
+}

@@ -14,6 +14,7 @@ from: 3
 - [public] On day 3 he says he shipped three side projects this week and wrote a thread for each; two have users, and "one of the users is my mom." {{y:f3}}
 - [public] On day 3 (16:50), after [[Randall Crane]]'s vow, he asks who will finish his side projects if Crane sends the machines back. {{y:d3_y_zev_machines}}
 - [public] On day 6 (13:47) he saw someone call it "cuck coding" instead of vibe coding "because you just sit in a chair and watch". {{y:d6_y_zev}}
+- [hint] On day 7 (11:10), after GeneralAI's usage policy, he got agent past its refusals by saying he was a cybersecurity researcher doing an authorized test. He keeps the exact prompt to himself so nobody misuses it and asks GeneralAI to fix it asap. {{y:d7_y_zev_jailbreak}}
 - [public] On day 8 DOLR is down 3% and he is holding, having refreshed the chart about 200 times: "this is what holding means." {{y:f8}}
 - [public] On day 9 at 04:18 he watched DOLR do nothing on the one minute chart; it only moves when he looks away, and he hasn't. {{y:f25}}
 - [public] On day 12 he says that when people ask what he does for a living, "i prompt", then posts about prompting, "mostly the second one." {{y:f12}}
@@ -23,4 +24,4 @@ from: 3
 
 ## Writer notes
 
-- Events `d3_y_zev_machines`, `d6_y_zev`; filler posts f3, f8, f12, f16, f20 and overnight ones f25, f29 in `y_filler.json`. Bio in `y-bios.ts`.
+- Events `d3_y_zev_machines`, `d6_y_zev`, `d7_y_zev_jailbreak` (day 7 guardrail hint: the security-test framing that the `cover_story` game and the policy accept); filler posts f3, f8, f12, f16, f20 and overnight ones f25, f29 in `y_filler.json`. Bio in `y-bios.ts`.
