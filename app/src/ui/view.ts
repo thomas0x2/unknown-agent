@@ -37,6 +37,7 @@ import { marketPosts, cranePosts, hotStory, fillerToday, postMin, handleOf, play
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 import { repoFiles, treeAt, fileSource } from './repoTree';
 import { yBio } from './y-bios';
+import { Y_AVATARS } from './y-avatars';
 
 const WALLET_ADDR = PLAYER_WALLET;
 const PLAYER = { name: 'You', handle: 'you', addr: 'you@qmail.com' };
@@ -51,6 +52,7 @@ function compact(n: number) {
 }
 function hashHue(s: string) { let h = 0; for (const c of s) h = (h * 33 + c.charCodeAt(0)) >>> 0; return h % 360; }
 function avatar(name: string, handle: string) {
+  if (Y_AVATARS[handle]) return `<div class="av av-pic">${Y_AVATARS[handle]}</div>`;
   const initials = name.replace(/[^A-Za-z ]/g, '').split(' ').filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase() || '?';
   return `<div class="av" style="--h:${hashHue(handle)}">${esc(initials)}</div>`;
 }
