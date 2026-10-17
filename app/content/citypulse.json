@@ -29,7 +29,7 @@
     "body": [
       "The gloves are off. With three weeks to go until election day on October 23, Heritage Party firebrand Randall Crane is leading every single poll on Y and promising to rip the jobs back from the machines.",
       "His 38.4 million followers are hanging on every word. Some of them repost him within seconds, word for word, around the clock. Their dedication is extraordinary.",
-      "And in the race for mayor, Progress Party candidate and council veteran Daniel Keller is going after the city's biggest landlords with a rent cap they are calling \"radical\". The landlords, mostly."
+      "And in the race for governor, Progress Party candidate and state senate veteran Daniel Keller is going after the state's biggest landlords with a rent cap they are calling \"radical\". The landlords, mostly."
     ]
   },
   {
@@ -108,6 +108,18 @@
     "adFine": "DoorDish says this is a marketing stunt. DoorDish has stopped answering."
   },
   {
+    "slug": "governor-race", "day": 4, "at": "13:40", "section": "Election", "art": "podium", "by": "Renata Ilic",
+    "title": "THE OTHER BIG ONE: why the race for governor could decide who pays YOUR rent",
+    "dek": "A rent cap. A robot tax break. And landlords who have bought every billboard on the freeway.",
+    "body": [
+      "Forget the White House for one second. The fight for the governor's mansion is turning UGLY, and it is on the same ballot on October 23.",
+      "Progress Party state senator Daniel Keller wants to cap rents for the biggest landlords and open a state hiring office for people who lost their jobs to machines. His opponent calls it \"a war on property\". The landlords agree. Loudly.",
+      "And here is what nobody is talking about: the next governor decides whether to renew the Automation Credit, the state tax break a company gets for every job it hands to a machine. It expires in January. GeneralAI claimed it 11,000 times last year.",
+      "Keller says he will let it die. Will voters let HIM? Stay with CityPulse."
+    ],
+    "ad": ["Who decides", "<b>YOUR RENT</b>?", "The race for <b>GOVERNOR</b>."]
+  },
+  {
     "slug": "spin-cycle", "day": 5, "at": "10:40", "section": "City", "art": "washer", "by": "Owen Pratt",
     "title": "Ferris St laundromat gets FOUR new machines, but the curse of machine 3 lives on",
     "dek": "Twelve washers now. One of them nobody dares to touch.",
@@ -154,9 +166,9 @@
     "title": "Keller's war on landlords, and the AI giant in his crosshairs",
     "dek": "His rent cap hits fewer than ten owners. Guess who's one of them.",
     "body": [
-      "Progress Party mayoral candidate Daniel Keller wants to cap rents for owners of 500 or more units. Fewer than ten landlords in the whole city would be affected. But one of them is very, very big.",
+      "Progress Party candidate for governor Daniel Keller wants to cap rents for owners of 500 or more units. Fewer than ten landlords in the whole state would be affected. But one of them is very, very big.",
       "Rent Board figures show GeneralAI owns or manages a jaw-dropping 38% of the city's rentals through subsidiaries, with rents set by LandlordPro, which suggests prices to every landlord at once.",
-      "Keller also wants a city hiring office, staffed by actual humans. Bold."
+      "Keller also wants a state hiring office, staffed by actual humans. Bold."
     ]
   },
   {
@@ -184,7 +196,7 @@
     "title": "KELLER IN FREEFALL after SHOCK clip",
     "dek": "He's down 9 points overnight. His team cries fake. The internet doesn't care.",
     "body": [
-      "Progress Party mayoral candidate Daniel Keller's campaign is in meltdown after a damning video clip tore through Y overnight, wiping 9 points off his poll numbers.",
+      "Progress Party governor hopeful Daniel Keller's campaign is in meltdown after a damning video clip tore through Y overnight, wiping 9 points off his poll numbers.",
       "Keller's team insists the clip is \"a fabrication\" and says the words in it appear in none of the speeches he has published since 2016. Experts who examined the footage could not say if it was real or fake. Viewers have made up their own minds.",
       "Who posted it first? The account behind it has gone quiet."
     ],
@@ -195,11 +207,11 @@
     "title": "Keller CLINGS to lead as landlords pour money into attack ads",
     "dek": "Two weeks to go. Can he hold on?",
     "body": [
-      "Progress Party candidate Daniel Keller is hanging on in the mayoral race, 4 points ahead in a poll of 800 residents, most of them renters.",
+      "Progress Party candidate Daniel Keller is hanging on in the race for governor, 4 points ahead in a statewide poll of 800 likely voters, most of them renters.",
       "Landlords' groups are throwing everything at him, mostly banner ads. Will it work? The rent cap is still the issue voters mention most.",
       "The poll was done by phone. About one call in three was answered by an AI assistant. Those didn't count."
     ],
-    "ad": ["The mayoral race", "is <b>NECK AND NECK</b>.", "Keller leads by <b>4</b>."]
+    "ad": ["The governor's race", "is <b>NECK AND NECK</b>.", "Keller leads by <b>4</b>."]
   },
   {
     "slug": "tax-returns", "day": 8, "at": "12:05", "section": "Tech", "art": "server", "by": "Sofia Mendel",
@@ -450,7 +462,7 @@
   {
     "slug": "polls-open", "day": 21, "at": "10:00", "section": "Election", "art": "ballot", "by": "Renata Ilic",
     "title": "IT'S HAPPENING: polls open as huge queues form across the city",
-    "dek": "A president. A mayor. History in the making.",
+    "dek": "A president. A governor. History in the making.",
     "body": [
       "This is it. Voters have been queueing outside polling stations since dawn on Monday, in what could be the most important election of our lives.",
       "Officials are begging voters to ignore messages claiming polling stations have moved. Some were sent by AI assistants.",

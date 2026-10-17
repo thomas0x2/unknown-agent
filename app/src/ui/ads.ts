@@ -229,9 +229,9 @@ const SQUARE: Ad[] = [
     cta: 'Rank #1', fine: 'Posthumous engagement not guaranteed. Neither is a funeral.',
   },
   {
-    id: 'keller', sponsor: 'Keller for Mayor', href: 'keller4mayor.org', theme: 'ad-keller', deco: 'stripes', from: 6,
+    id: 'keller', sponsor: 'Keller for Governor', href: 'keller4governor.org', theme: 'ad-keller', deco: 'stripes', from: 6,
     frames: ['“I never said that.”', '— Daniel Keller', '<b>Probably.</b>'],
-    cta: 'Watch the clip', fine: 'Paid for by Keller for Mayor. Clip authenticated by vibes.',
+    cta: 'Watch the clip', fine: 'Paid for by Keller for Governor. Clip authenticated by vibes.',
   },
   {
     id: 'landlordpro', sponsor: 'LandlordPro', href: 'landlordpro.ai', theme: 'ad-pod', deco: 'coins',
