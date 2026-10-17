@@ -125,11 +125,11 @@
           ]
         },
         {
-          "id": "prices_curo",
-          "when": "The menu prices are in CURO instead of DOLR.",
+          "id": "prices_euri",
+          "when": "The menu prices are in EURI instead of DOLR.",
           "fixed": [
-            "Switched the menu prices from CURO to DOLR.",
-            "The prices were in CURO. They're in DOLR now."
+            "Switched the menu prices from EURI to DOLR.",
+            "The prices were in EURI. They're in DOLR now."
           ]
         },
         {
@@ -172,7 +172,7 @@
           "bugs": [
             "prices_missing",
             "prices_wrong",
-            "prices_curo"
+            "prices_euri"
           ],
           "aka": [
             "cost",
@@ -201,14 +201,14 @@
         {
           "id": "currency",
           "text": "DOLR",
-          "bug": "prices_curo"
+          "bug": "prices_euri"
         }
       ],
       "complaints": {
         "missing": "There is no menu page.",
         "prices_missing": "The menu has no prices. People called to ask.",
         "prices_wrong": "The prices on the menu are wrong. Those are not our prices.",
-        "prices_curo": "The prices are in CURO. I don't know what CURO is. We take DOLR.",
+        "prices_euri": "The prices are in EURI. I don't know what EURI is. We take DOLR.",
         "wrong_items:removed": "{{expected}} is missing from the menu. We still make it.",
         "wrong_items:renamed": "The menu says \"{{shown}}\". It's {{expected}}.",
         "wrong_items:invented": "The menu has {{shown}}. We don't make {{shown}}.",

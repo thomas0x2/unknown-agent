@@ -334,11 +334,11 @@ describe("the client's change requests", () => {
   it("a menu that already had a bug still takes the client's change, and the bug stays", async () => {
     const { s, id } = withApp('restaurant_contact');
     const menu = getApp(s, id)!.repo.find((f) => f.id === 'menu')!;
-    Object.assign(menu, { correct: false, variant: 'prices_curo', seed: 1 });
+    Object.assign(menu, { correct: false, variant: 'prices_euri', seed: 1 });
     applyEffects(s, content.events.find((e) => e.id === 'd2_restaurant_booking')!.onDeliver!);
-    expect(getApp(s, id)!.repo.find((f) => f.id === 'menu')).toMatchObject({ variant: 'prices_curo', also: ['outdated'] });
+    expect(getApp(s, id)!.repo.find((f) => f.id === 'menu')).toMatchObject({ variant: 'prices_euri', also: ['outdated'] });
     const out = (await promptDone(s, content, pickJev({ route: ['feature'], features: ['::menu::outdated'] }), 'Swap Diavola for Quattro Formaggi at 15, and make Espresso 3.5. Update the trattoria menu items and prices')).state;
-    expect(getApp(out, id)!.repo.find((f) => f.id === 'menu')).toMatchObject({ correct: false, variant: 'prices_curo' });
+    expect(getApp(out, id)!.repo.find((f) => f.id === 'menu')).toMatchObject({ correct: false, variant: 'prices_euri' });
     expect(getApp(out, id)!.repo.find((f) => f.id === 'menu')!.also).toBeUndefined();
   });
 

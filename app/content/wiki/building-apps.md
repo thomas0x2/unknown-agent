@@ -15,7 +15,7 @@ from: 1
 
 ## Bugs and fixes
 
-- [public] A build can ship with mistakes: missing or wrong prices, prices in CURO, invented dishes, stale data, the wrong number of machines, sarcasm read as praise.
+- [public] A build can ship with mistakes: missing or wrong prices, prices in EURI, invented dishes, stale data, the wrong number of machines, sarcasm read as praise.
 - [hint] The only way to know is to open the live app and compare it with what the client asked for, and with the source of truth (the Spin Cycle feed, Sherwood's prices, the client's email).
 - [public] A fix prompt has to name the app and what exactly is wrong, down to the part; the repo on Forkyard lists the features and the parts inside them.
 - [public] After a fix the player redeploys.

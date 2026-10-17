@@ -44,7 +44,7 @@ describe('complaints at payday', () => {
     const onDay2 = () => { const g = gino(); g.s.values.day = 2; g.s.flags.push('restaurant_client'); return g; };
     expect(thanks(endAll(onDay2().s, content))).toBe(true);
     const { s, id } = onDay2();
-    withBug(s, id, 'menu', 'prices_curo');
+    withBug(s, id, 'menu', 'prices_euri');
     const next = endAll(s, content);
     expect(inbox(next).length).toBeGreaterThan(0); // the complaint
     expect(thanks(next)).toBe(false);
@@ -59,7 +59,7 @@ describe('complaints at payday', () => {
 
   it('a buggy client app gets a strike, no pay, and an email from the client naming the bug', () => {
     const { s, id } = gino();
-    withBug(s, id, 'menu', 'prices_curo');
+    withBug(s, id, 'menu', 'prices_euri');
     const before = s.values.crypto;
     const next = endAll(s, content);
     expect(next.apps[0].strikes).toBe(1);
@@ -69,7 +69,7 @@ describe('complaints at payday', () => {
     expect(mail).toHaveLength(1);
     expect(mail[0].from).toBe('Gino (Trattoria)');
     expect(mail[0].day).toBe(next.values.day); // lands in the morning
-    expect(mail[0].body).toContain('CURO');
+    expect(mail[0].body).toContain('EURI');
     expect(mail[0].body).toContain('before tomorrow');
   });
 
@@ -162,7 +162,7 @@ describe('complaints at payday', () => {
     const { s, id } = gino();
     s.flags.push('restaurant_client');
     s.flags.sort();
-    withBug(s, id, 'menu', 'prices_curo');
+    withBug(s, id, 'menu', 'prices_euri');
     let next = endAll(s, content);
     const subjects = (st: GameState) => inbox(st).map((m) => m.subject);
     expect(subjects(next)).toEqual(['The website']);

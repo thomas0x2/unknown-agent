@@ -165,7 +165,7 @@
     "broken": [
       "menu/prices"
     ],
-    "prompt": "the menu on gino's site shows prices in CURO instead of DOLR",
+    "prompt": "the menu on gino's site shows prices in EURI instead of DOLR",
     "expect": {
       "fix": [
         "menu/prices"

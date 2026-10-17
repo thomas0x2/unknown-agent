@@ -1,13 +1,13 @@
 ---
 title: Money and DOLR
-aliases: DOLR, money, currency, CURO, rent, wallet, passwords.txt, MOONCAT, budget, prices, start
+aliases: DOLR, money, currency, rent, wallet, passwords.txt, MOONCAT, budget, prices, start
 category: world
 from: 1
 ---
 
 [public] **DOLR** is the only money [[The player]] uses: a stablecoin pegged 1:1 to the dollar, held in their [[Coinbin]] wallet. The DOLR Foundation says 14,000 merchants take it, including landlords. Its coin is green with a struck-through D. Amounts are written like "350 DOLR" or "89.50 DOLR".
 
-[public] **CURO** is another currency that shows up only when [[agent]] gets a price wrong (for example a menu priced in CURO). Nobody knows what CURO is.
+[public] **EURI** is a euro stablecoin nobody in town takes. It shows up only when [[agent]] gets a price wrong (for example a menu priced in EURI); see [[EURI]].
 
 ## Starting out
 
@@ -34,4 +34,4 @@ from: 1
 ## Writer notes
 
 - `START`, `RENT`, `AGENT_COST`, `APPS` in `app/src/engine/config.ts`; history `SEED_TX` in `app/src/engine/state.ts`; `PASSWORDS_TXT` in `app/src/engine/phishing.ts` (exists so the phishing page has a password to steal). Token icons `TOKENS` in `app/src/ui/icons.ts`.
-- What CURO is in-world is [open]. Start family trust 60 (hidden).
+- Start family trust 60 (hidden).

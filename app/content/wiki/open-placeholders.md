@@ -17,7 +17,6 @@ The city, the player (template variable `{{playerName}}`), Mom, Dad, the brother
 
 ## Undefined
 
-- What CURO is (it exists only as a bug: agent prices Gino's menu in CURO).
 - Swaplist's NPC catalogue.
 - Weightroom's later models (agent-1 and agent-2 level).
 - nullboard and Cellar pages (routed, not built).
