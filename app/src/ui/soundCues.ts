@@ -12,6 +12,8 @@ export interface SoundSnap {
   day: number;
   clockMin: number;
   agentMsgs: number;
+  /** When the agent's current build or fix started (game minutes), -1 while it is idle. */
+  workFrom: number;
   /** Swaplist seller messages that have arrived. */
   sellerMsgs: number;
   /** Ledger entries, and the running totals of money in and money out. */
@@ -33,6 +35,7 @@ export function soundSnap(s: GameState): SoundSnap {
     day: s.values.day,
     clockMin: s.clockMin,
     agentMsgs: s.chat.filter((m) => m.from === 'agent').length,
+    workFrom: s.agentWork?.from ?? -1,
     sellerMsgs: (s.swap?.threads ?? []).reduce((n, t) => n + t.msgs.filter((m) => m.from !== 'you').length, 0),
     txCount: s.tx.length,
     txIn,
@@ -54,7 +57,9 @@ export function soundCues(a: SoundSnap, b: SoundSnap): Cue[] {
   const out: Cue[] = [];
   if (a.morning && !b.morning) out.push('dayStart');
   if (a.clockMin < LATE_MIN && b.clockMin >= LATE_MIN) out.push('lateWarn');
-  if (b.agentMsgs > a.agentMsgs || b.sellerMsgs > a.sellerMsgs) out.push('reply');
+  // the agent's "Working on…" line is heard as the work starting, not as one more reply
+  if (b.workFrom >= 0 && b.workFrom !== a.workFrom) out.push('workStart');
+  else if (b.agentMsgs > a.agentMsgs || b.sellerMsgs > a.sellerMsgs) out.push('reply');
   // Forkyard pushes are silent; only Deploy and Redeploy make a sound, from the button itself (main.ts)
   out.push(...money(a, b));
   return out;
