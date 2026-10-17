@@ -9,6 +9,7 @@ from: 3
 
 ## Mail
 
+- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": left-handed tooth brushing. {{mail:guru_newsletter@3}}
 - [public] 10:00 Forkyard, "Deployment alert": one of the player's live deployments failed a health check overnight. {{mail:d3_break}}
 - [hidden; public if restaurant_happy] 11:15 [[Gino Fenoglio]], "Grazie mille!": bookings are up, his nephew is jealous, and a 5 DOLR tip. A tiramisu on the house. {{mail:d3_restaurant_thanks}}
 - [hint] 12:30 "Coinbin Security" (security@coinbln.com), "Unusual sign-in to your wallet": a new device, a "Panes 11 PC", and a link to coinbln.com/verify. The domain is not coinbin.com. {{mail:d3_coinbin_phish}}
@@ -20,9 +21,12 @@ from: 3
 
 ## Y
 
+- [public] 10:05 [[Perdure Pharma]] launches Ozempra, a once-weekly injection that quiets appetite, with a two-minute online consultation. {{y:d3_y_perdure}}
+- [public] 10:30 MarketWire: Perdure launches Ozempra; $PDUR up 9%. {{y:m3_pdur_ozempra}}
 - [public] 10:50 [[Viktor]]: lost his job and needs somewhere simple to sell his grandfather's pocket watch: listings with a photo and a price, search, marking things sold. {{y:d3_y_swaplist}}
 - [public] 11:12 Brent Kowalski raises his $VANT target: fewer employees, same revenue. {{y:m3_vant_target}}
 - [public] 11:30 [[Axel Rook]]: "The legacy media is lying to you" {{y:d3_y_axel}}
+- [public] 11:50 [[CityPulse]] links its Ozempra story: a weekly jab that makes you stop wanting dinner, "approved for everyone who asked." {{y:d3_y_citypulse_ozempra}}
 - [public] 12:30 [[DoorDish]]: the courier from yesterday's activation "has been promoted". {{y:d3_y_doordish}}
 - [public] 12:30 [[Cal Hartman]]: every big technology created more jobs than it destroyed, eventually; "we're in the while." {{y:d3_y_hartman}}
 - [public] 13:00 Teo Vasquez was in the jobs fair queue at 6am; the app on his phone rejected him before the door. {{y:d3_y_teo_jobsfair}}
@@ -43,11 +47,12 @@ from: 3
 ## News
 
 - [public] 11:10 HEARTBREAK: 1,900 desperate jobseekers, 30 jobs {{article:jobs-fair}}
+- [public] 11:40 THE SKINNY JAB FOR THE SKINT: new weekly shot makes you stop wanting dinner {{article:skinny-jab}}
 - [public] 16:00 "I'LL SEND THE MACHINES BACK!" Crane's explosive vow breaks the internet {{article:crane-machines}}
 
 ## Trending
 
-- [public] 10:00 Trending on Y: the presidential race; Crane going viral; AI layoffs (continued).
+- [public] 10:00 Trending on Y: the presidential race; Crane going viral; AI layoffs (continued); a weekly appetite jab.
 
 ## Jobs
 

@@ -1,0 +1,11 @@
+{
+  "id": "d11_y_sales_rep",
+  "site": "y",
+  "from": "a sales rep",
+  "trigger": {
+    "dayMin": 11,
+    "dayMax": 11
+  },
+  "at": "12:30",
+  "body": "Unpopular opinion: lunch is a meeting with yourself that nobody booked. I've eaten at my desk for four years. Pipeline has never been fuller."
+}

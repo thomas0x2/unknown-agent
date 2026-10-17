@@ -7,6 +7,10 @@ from: 17
 
 [public] Wednesday, October 23, debate night, streamed live on Y. [known]
 
+## Mail
+
+- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": watch the debate with the sound off, watch-party seats 400 DOLR. {{mail:guru_newsletter@17}}
+
 ## Y
 
 - [public] 11:20 [[CityPulse]]: Crane will "destroy" his opponent tonight with no notes and "no computer of any kind". Hosted by Axel Rook on Y, 21:30. {{y:d17_y_citypulse_vote}}

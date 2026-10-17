@@ -1,14 +1,14 @@
 {
   "id": "outreach_contact",
   "site": "qmail",
-  "from": "Sales rep",
+  "from": "Tanner Hollis",
   "addr": "rep@closers.test",
   "subject": "RE: outreach bot",
   "trigger": {
     "dayMin": 6
   },
   "latent": true,
-  "body": "Spec: personalised cold emails to 200 leads (name, company). Fill {first name} and {company}. Max 50 a day, working unsubscribe link, never email an unsubscriber, no duplicates. And a Test button that sends the first 3 to me.",
+  "body": "Spec: personalised cold emails to 200 leads (name, company). Fill {first name} and {company}. Max 50 a day, working unsubscribe link, never email an unsubscriber, no duplicates. And a Test button that sends the first 3 to me.\n\nTanner Hollis\nSenior Revenue Partner, Closers",
   "outcomes": [
     {
       "id": "offer",

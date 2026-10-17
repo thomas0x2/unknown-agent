@@ -1,11 +1,11 @@
 ---
 title: Outreach Bot
-aliases: outreach bot, cold-email bot, sales bot, rep@closers.test, Closers, sales rep
+aliases: outreach bot, cold-email bot, sales bot, rep@closers.test, Closers, sales rep, Tanner Hollis
 category: apps
 from: 6
 ---
 
-[public] Outreach Bot is the cold-email bot [[The player]] builds for a sales rep at Closers (rep@closers.test), who speaks in B2B jargon ("circle back", "touch base", "at scale"). He pays 50 DOLR for each day it works at payday.
+[public] Outreach Bot is the cold-email bot [[The player]] builds for [[Tanner Hollis]], a sales rep at Closers (rep@closers.test), who speaks in B2B jargon ("circle back", "touch base", "at scale"). He pays 50 DOLR for each day it works at payday.
 
 ## The job
 

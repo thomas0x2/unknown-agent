@@ -9,6 +9,7 @@ from: 15
 
 ## Mail
 
+- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": never appeal. {{mail:guru_newsletter@15}}
 - [public] 10:20 [[Gary Pruitt]], "The building": he sold Pine Street Apartments to [[GeneralAI Properties]]; rent and emails go to them now. {{mail:d15_landlord_sold}}
 
 - [public] 15:40 [[GeneralAI Properties]], "Welcome to GeneralAI Properties": LandlordPro has adjusted the rent to 650 DOLR from Sunday, October 27; appeals at rentboard.gov are reviewed automatically. [known] {{mail:d15_gai_properties}}
@@ -20,6 +21,7 @@ from: 15
 - [public] 10:46 MarketWire: DoorDish couriers strike in three cities; $DISH down 3%. {{y:m15_dish_strike}}
 - [public] 10:50 Candidate 2030 met with small businesses. {{y:d15_y_candidate}}
 - [public] 11:01 Brent Kowalski: $VANT announces a second round of "efficiencies." {{y:m15_vant}}
+- [public] 11:25 [[Tanner Hollis]]: thanks everyone who unsubscribed last week; an unsubscribe is a lead not nurtured yet. {{y:d15_y_sales_rep}}
 - [public] 12:33 MarketWire: $GAI hearing scheduled in Congress; shares up. {{y:m15_gai}}
 - [public] 13:25 [[Cal Hartman]]: "our 30-day log retention policy has not changed." {{y:d15_y_hartman}}
 - [public] 14:50 [[Max Stryker]] was flagged by the new moderator for "unverifiable income claims" and lost his appeal in under a second. {{y:d15_y_stryker}}

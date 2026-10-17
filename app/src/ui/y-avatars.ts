@@ -229,6 +229,11 @@ const WSB = svg('#3a4a3f',
   + `<path d="M25.4 28.4 L27.4 27.8 M35 28.4 L37 27.8" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1"/>`
   + line('M28.5 37 Q33 38.4 36.5 35.6'));
 
+/** Perdure Pharma: its half-filled capsule disc, white on the brand violet. */
+const PERDURE = svg('#3d2c6b',
+  `<g transform="translate(12 12) scale(1.25)" stroke="none" fill="#fff"><path d="M3 16 A13 13 0 1 0 29 16 A13 13 0 1 0 3 16 Z M14.586 23.071 L23.071 14.586 A4 4 0 0 0 17.414 8.929 L8.929 17.414 A4 4 0 0 0 14.586 23.071 Z" fill-rule="evenodd"/>`
+  + `<path d="M18.333 19.323 L12.677 13.667 L8.929 17.414 A4 4 0 0 0 14.586 23.071 Z"/></g>`);
+
 /** By Y handle. The impostor shares Crane's picture, saved at the wrong size. */
 export const Y_AVATARS: Record<string, string> = {
   randall_crane: CRANE,
@@ -252,5 +257,6 @@ export const Y_AVATARS: Record<string, string> = {
   marketwire: MARKETWIRE,
   wallstreetbags: WSB,
   doordish: DOORDISH,
+  perdure_pharma: PERDURE,
   spin_cycle_regulars: SPIN_CYCLE,
 };

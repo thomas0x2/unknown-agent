@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_sigma_peptides",
+  "site": "y",
+  "from": "6ft_sigma",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "09:40",
+  "body": "@max_stryker Ordered a stack online. Came in a plain box marked research use only. Already feel taller."
+}

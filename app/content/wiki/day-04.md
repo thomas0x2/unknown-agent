@@ -9,6 +9,7 @@ from: 4
 
 ## Mail
 
+- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": cold coffee. {{mail:guru_newsletter@4}}
 - [public] 10:00 [[GeneralAI]], "agent just got smarter": agent-2 is rolled out to the player's account, "fewer mistakes, bigger jobs", with updated rates. Prices double: 10 DOLR a night, 1 DOLR per prompt, 0.02 per word. {{mail:d4_gai_level2}}
 - [hidden; hint if restaurant_client] 14:20 [[Gino Fenoglio]], "Get me on DoorDish": list Trattoria Gino on [[DoorDish]] with the same menu and hours as the site and the address 14 Alder St. {{mail:d4_restaurant_doordish}}
 
@@ -30,6 +31,7 @@ from: 4
 - [public] 12:20 [[Axel Rook]]: Apogee rocket stacked on the pad. "Looks sick." {{y:d4_y_axel}}
 - [public] 13:26 [[Randall Crane]]: Vantor ($VANT) fired 400 hardworking Americans and replaced them with a computer. "Disgraceful." {{y:m4_vant_crane}}
 - [public] 15:19 noodleposter: day 4 of instant noodles, posting every bowl; "the broth is my therapist now." {{y:f4}}
+- [public] 15:40 cat_ceo started Ozempra to cut the grocery bill; the cat "is not on it and has questions." {{y:d4_y_catceo_ozempra}}
 - [hidden; public if viktor_sold_watch] 16:00 [[Viktor]]: sold his grandfather's watch on Swaplist within a day. "Thank you to whoever built it." {{y:d4_viktor_resolve}}
 - [public] 16:27 MarketWire: $GAI up 6% on the agent-2 launch. {{y:m4_gai_level2}}
 - [public] 17:10 [[CityPulse]]: still missing two days later; sightings on Ferris St, Alder St and twice in a parking garage. {{y:d4_y_robot}}

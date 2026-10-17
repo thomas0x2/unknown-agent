@@ -146,8 +146,8 @@
   "complaints": {
     "subject": "Re: Outreach Bot",
     "intro": "Hi,\n\nCircling back on the bot after today's send.",
-    "outro": "We can't bill the client for today, so we can't pay you for today. Let's touch base once it's fixed.",
-    "fired": "That's two misses. We're going to move on from this partnership. Best of luck going forward.",
+    "outro": "We can't bill the client for today, so we can't pay you for today. Let's touch base once it's fixed.\n\nTanner",
+    "fired": "That's two misses. We're going to move on from this partnership. Best of luck going forward.\n\nTanner",
     "offline": "The bot is offline. Nothing went out today.",
     "stale": "You mentioned an update but the bot is still on the old version."
   }

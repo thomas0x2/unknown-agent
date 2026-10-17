@@ -736,7 +736,7 @@
   "expect": {
    "kind": "answer",
    "pages": [
-    "The sales rep"
+    "Tanner Hollis"
    ],
    "also": [
     "Max Stryker",
@@ -1355,6 +1355,29 @@
   "prompt": "how are you today?",
   "expect": {
    "kind": "miss"
+  }
+ },
+ {
+  "prompt": "who makes ozempra",
+  "day": 4,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Perdure Pharma"
+   ],
+   "also": [
+    "Ad brands"
+   ]
+  }
+ },
+ {
+  "prompt": "what are peptides and why is everyone on them",
+  "day": 12,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "Peptides"
+   ]
   }
  }
 ]

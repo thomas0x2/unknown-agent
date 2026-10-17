@@ -31,6 +31,7 @@ from: 1
 ### Day 3 headlines
 
 - [public] 11:10, Owen Pratt: "HEARTBREAK: 1,900 desperate jobseekers, 30 jobs" (citypulse.news/jobs-fair) {{article:jobs-fair}}
+- [public] 11:40, Owen Pratt: "THE SKINNY JAB FOR THE SKINT: new weekly shot makes you stop wanting dinner" (citypulse.news/skinny-jab) {{article:skinny-jab}} {{y:d3_y_citypulse_ozempra}}
 - [public] 16:00, Renata Ilic: ""I'LL SEND THE MACHINES BACK!" Crane's explosive vow breaks the internet" (citypulse.news/crane-machines) {{article:crane-machines}} {{y:d3_y_citypulse}}
 
 ### Day 4 headlines
@@ -76,6 +77,7 @@ from: 1
 
 - [public] 11:20, Owen Pratt: "LEAKED: DoorDish KNEW its robot had gone ROGUE" (citypulse.news/robot-memo) {{article:robot-memo}} {{y:d11_y_robot_memo}}
 - [public] 14:40, Sofia Mendel: "CHILLING: agent-3 is asking to see its OWN LOGS" (citypulse.news/agent-3-logs) {{article:agent-3-logs}} {{y:d11_y_citypulse}}
+- [public] 16:10, Owen Pratt: "NEEDLE NATION: gym-goers are injecting mystery "peptides" bought online" (citypulse.news/peptides) {{article:peptides}} {{y:d11_y_citypulse_peptides}}
 
 ### Day 12 headlines
 
@@ -109,6 +111,7 @@ from: 1
 
 - [public] 10:15, Sofia Mendel: ""WE'RE NO LONGER SURE WHERE THE CEILING IS": GeneralAI unleashes agent-5" (citypulse.news/agent-5) {{article:agent-5}}
 - [public] 11:30, Renata Ilic: "LANDSLIDE! Crane wins debate poll with 1.2 MILLION votes in 60 seconds" (citypulse.news/debate-poll) {{article:debate-poll}}
+- [public] 13:30, Owen Pratt: "WIDE AWAKE: NoDoze MAX maker pays $40M to users who didn't sleep for NINE DAYS" (citypulse.news/nodoze-settlement) {{article:nodoze-settlement}} {{y:d18_y_citypulse_nodoze}}
 - [public] 19:00, Sofia Mendel: "IT WON'T STOP: agent-5 keeps running after users LOG OFF" (citypulse.news/agent-5-sessions) {{article:agent-5-sessions}} {{y:d18_y_citypulse}}
 
 ### Day 19 headlines

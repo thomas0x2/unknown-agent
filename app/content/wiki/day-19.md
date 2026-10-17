@@ -7,6 +7,10 @@ from: 19
 
 [public] Friday, October 25. [known]
 
+## Mail
+
+- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": walk faster than everyone on the pavement. {{mail:guru_newsletter@19}}
+
 ## Y
 
 - [public] 11:10 [[Axel Rook]]: next Apogee flight after the election, "Probably 80% this time." {{y:d19_y_axel}}

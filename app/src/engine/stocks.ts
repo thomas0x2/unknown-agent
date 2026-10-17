@@ -14,6 +14,7 @@ export const STOCKS: Stock[] = [
   { ticker: 'DISH', name: 'DoorDish' },
   { ticker: 'HALD', name: 'Halden Logistics' },
   { ticker: 'APO', name: 'Apogee' },
+  { ticker: 'PDUR', name: 'Perdure Pharma' },
 ];
 
 /** A ticker's quote right now: today's price. */

@@ -1,0 +1,11 @@
+{
+  "id": "d15_y_sales_rep",
+  "site": "y",
+  "from": "a sales rep",
+  "trigger": {
+    "dayMin": 15,
+    "dayMax": 15
+  },
+  "at": "11:25",
+  "body": "Gratitude post. Thank you to everyone who unsubscribed last week. An unsubscribe is just a lead that hasn't been nurtured yet."
+}

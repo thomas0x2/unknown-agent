@@ -4,6 +4,8 @@ import { adSiteIcon, pageAdSite } from './adSites';
 import { WIDE } from './ads';
 import { adLogoHtml } from './siteIcons';
 import { STEADFAST_ICON } from './steadfast';
+import { PERDURE_ICON } from './perdure';
+import { STOCKS } from '../engine/stocks';
 
 describe('Vantor brand', () => {
   it('names the division in the wordmark', () => {
@@ -33,5 +35,17 @@ describe('Steadfast Mutual brand', () => {
     const ad = WIDE.find((a) => a.sponsor === 'Steadfast Mutual');
     expect(adLogoHtml(ad!.href)).toContain(STEADFAST_ICON);
     expect(ad?.theme).toBe('ad-steadfast');
+  });
+});
+
+describe('Perdure Pharma brand', () => {
+  it('brands perdure.com, its tab icon and its ad', () => {
+    expect(adSiteIcon('perdure.com')).toBe(PERDURE_ICON);
+    expect(pageAdSite('perdure.com', {} as never)).toContain('perdure-wordmark');
+    expect(adLogoHtml('perdure.com')).toContain(PERDURE_ICON);
+  });
+  it('links its products to it, and trades on Sherwood', () => {
+    for (const url of ['nodoze.max', 'ozempra.com']) expect(pageAdSite(url, {} as never)).toContain('data-nav="perdure.com"');
+    expect(STOCKS.find((x) => x.ticker === 'PDUR')?.name).toBe('Perdure Pharma');
   });
 });

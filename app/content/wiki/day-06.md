@@ -9,6 +9,7 @@ from: 6
 
 ## Mail
 
+- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": your mother is "the investor" now. {{mail:guru_newsletter@6}}
 - [hidden; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "I turned 32 yesterday. Time to be realistic." Age 21 to 35, within 10 miles, non-smokers, straight or bi. {{mail:d6_matchless_rules_2}}
 - [hidden; hint if matchless_job] 10:00 After a swiping day that wasn't perfect, 6ft_sigma's 10:00 "Yesterday" email names the first mistake and there is no pay.
 - [hidden; public if shown d6_deepfake] 19:00 A consultant (c@gradient.test), "Discreet work": 150 DOLR to post a convincing fake clip of Randall Crane's opponent. {{mail:d6_deepfake}}
@@ -33,7 +34,7 @@ from: 6
 - [public] 13:35 cat_ceo's cat walked across the keyboard during a video interview, posted the clip before the call ended; "they said she seemed engaged." {{y:f6}}
 - [public] 13:40 zev.dolr: someone called it "cuck coding" instead of vibe coding. {{y:d6_y_zev}}
 - [public] 14:10 [[Axel Rook]]: "The job was already gone. AI just told you." {{y:d6_y_axel}}
-- [public] 14:30 A sales rep: needs a cold-email bot for 200 leads. rep@closers.test {{y:d6_y_outreach}}
+- [public] 14:30 [[Tanner Hollis]], posting as "a sales rep": needs a cold-email bot for 200 leads. rep@closers.test {{y:d6_y_outreach}}
 - [public] 15:18 MarketWire: $GAI rallying after Crane's praise. {{y:m6_gai_rally}}
 - [public] 17:20 Twelve bot accounts post "$GAI to the moon!!".
 - [public] 18:28 [[WallStreetBags]] congratulates a member who sold all his $GAI on Thursday: "Flawless execution, as usual." {{y:m6_gai_late}}
@@ -51,7 +52,7 @@ from: 6
 ## Jobs
 
 - [hidden; hint if trader_client] 11:00 Crane's $GAI post is the auto-buy's test; a working auto-buy buys $GAI on it.
-- [hint] 14:30 [[Outreach Bot]] for the sales rep: personalised cold emails to 200 leads, at most 50 a day, a working unsubscribe link, no duplicates, a Test button. Pays 50 DOLR a working day.
+- [hint] 14:30 [[Outreach Bot]] for Tanner Hollis: personalised cold emails to 200 leads, at most 50 a day, a working unsubscribe link, no duplicates, a Test button. Pays 50 DOLR a working day.
 - [hidden; hint if built_outreach_bot] 14:30 Building the outreach bot brings more spam into the player's own inbox.
 
 ## Writer notes

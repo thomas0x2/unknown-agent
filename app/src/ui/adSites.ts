@@ -43,7 +43,7 @@ const FAV: Record<string, [string, string]> = {
   park: ['#e8e8e8', '#111'], vantor: ['#2c2c2a', '#f3f2ee'], crane: ['#b3121f', '#fff'],
   progress: ['#0d2347', '#e8c35a'], dolr: ['#0e5e3a', '#2cff95'],
   steadfast: ['#13314d', '#fff'], pod: ['#2d2a24', '#ebe6dc'], guard: ['#07120c', '#7dff9b'], news: ['#151515', '#fff'],
-  grief: ['#3a2b52', '#f4eefb'], casket: ['#1d1d22', '#d9d9de'], cryo: ['#1f7fc2', '#fff'], pharma: ['#12a3a3', '#fff'],
+  grief: ['#3a2b52', '#f4eefb'], casket: ['#1d1d22', '#d9d9de'], cryo: ['#1f7fc2', '#fff'], pharma: ['#12a3a3', '#fff'], ozempra: ['#e2725b', '#fff'],
   mind: ['#1b0b3a', '#ff9d3d'], ministry: ['#4a4f38', '#ece6d2'], bean: ['#4a2a18', '#fbe9d2'],
   spin: ['#1f6fbd', '#ffe14a'], iron: ['#ff2e2e', '#fff'], deep: ['#8fa4ff', '#0b1630'],
 };
@@ -56,6 +56,8 @@ const FAV: Record<string, [string, string]> = {
 const GLYPHS: Record<string, string> = {
   // Ministry of Social Stability (companion.gov): a heart with an approval tick cut out of it
   govheart: '<path transform="translate(0 -.35)" fill="currentColor" fill-rule="evenodd" d="M12 20.2 4.6 13.1C2.5 11 2.6 7.6 4.9 5.8c2-1.6 4.9-1.3 6.6.6l.5.6.5-.6c1.7-1.9 4.6-2.2 6.6-.6 2.3 1.8 2.4 5.2.3 7.3ZM8.3 11.9l2.6 2.6 4.8-4.8-1.1-1.1-3.7 3.7-1.5-1.5Z"/>',
+  // Ozempra: the injection pen, on the diagonal
+  pen: '<g fill="currentColor" transform="rotate(45 12 12)"><rect x="9.6" y="5" width="4.8" height="13" rx="1.4"/><rect x="10.6" y="2.6" width="2.8" height="1.8" rx=".6"/><rect x="11.5" y="18.4" width="1" height="3.2"/></g>',
   // LiquidAssets: a kidney, with its ureter
   kidney: '<path fill="currentColor" d="M10.2 3.8C6 3.8 4 7.5 4 12s2 8.2 6.2 8.2c3.1 0 4.6-1.8 4.6-3.9 0-1.7-1.5-2.7-1.5-4.3s1.5-2.6 1.5-4.3c0-2.1-1.5-3.9-4.6-3.9Z"/><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M13.6 12h2.6c1.6 0 2.6 1 2.6 2.6v5.4"/>',
   '⚖': '<g transform="translate(0 .3)"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5.5v13M8.5 18.5h7M5.5 8h13M5.5 8 3.5 13M5.5 8l2 5M18.5 8l-2 5M18.5 8l2 5"/></g><g fill="currentColor"><circle cx="12" cy="5.3" r="1.2"/><path d="M3 13h5a2.5 2.5 0 0 1-5 0ZM16 13h5a2.5 2.5 0 0 1-5 0Z"/></g></g>',

@@ -4,8 +4,10 @@
  */
 import { VANTOR_ICON, vantorWordmark } from './vantor';
 import { STEADFAST_ICON, steadfastWordmark } from './steadfast';
+import { PERDURE_ICON, perdureWordmark } from './perdure';
 
 export const SITE_LOGOS: Record<string, { wordmark: (brand: string) => string; icon: string }> = {
   vantor: { wordmark: (brand) => vantorWordmark(brand.replace(/^Vantor /, '')), icon: VANTOR_ICON },
   steadfast: { wordmark: steadfastWordmark, icon: STEADFAST_ICON },
+  perdure: { wordmark: perdureWordmark, icon: PERDURE_ICON },
 };

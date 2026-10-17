@@ -187,7 +187,8 @@ describe('wiki: the real pages', () => {
     ]);
     const bad: string[] = [];
     for (const p of wiki) for (const s of p.sections) for (const b of s.blocks) {
-      for (const m of b.text.matchAll(EMBED)) if (!ids.has(seenRef(m[1]))) bad.push(`${p.file}: {{${m[1]}}}`);
+      // `id@day` embeds one delivery of a repeating email
+      for (const m of b.text.matchAll(EMBED)) if (!ids.has(seenRef(m[1]).replace(/@\d+$/, ''))) bad.push(`${p.file}: {{${m[1]}}}`);
       for (const x of parseTagRule(b.rule).steps) if (x.kind === 'seen' && !ids.has(x.ref)) bad.push(`${p.file}: seen ${x.ref}`);
     }
     expect(bad).toEqual([]);

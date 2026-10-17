@@ -13,7 +13,7 @@ Vantor Group, Axel Rook / Apogee, Cal Hartman, Max Stryker / Alpha Ascend, Mara 
 
 ## Unnamed so far
 
-The city, the player (template variable `{{playerName}}`), Mom, Dad, the brother, the sales rep, the consultant, the Null Collective's members besides dev_null, every mafia character. Crane's opponent stays nameless by design.
+The city, the player (template variable `{{playerName}}`), Mom, Dad, the brother, the consultant, the Null Collective's members besides dev_null, every mafia character. Crane's opponent stays nameless by design.
 
 ## Undefined
 

@@ -238,6 +238,20 @@ function phone(): string {
     <path d="M236 180c-4-20 -10-34 -20-40l-8 10c4 8 6 18 6 30z" fill="#4a4d55"/>`;
 }
 
+/** Pill bottles and an injection pen on a pharmacy counter, the shelves out of focus behind. */
+function pills(): string {
+  const shelf = (y: number) => [...Array(9)].map((_, i) => `<rect x="${12 + i * 34}" y="${y}" width="${18 + (i * 7) % 10}" height="${22 - (i * 5) % 8}" rx="2" fill="${['#d9dde3', '#e8c35a', '#ffffff', '#7fb6c4', '#e2725b'][i % 5]}" opacity=".55"/>`).join('');
+  const bottle = (x: number, h: number, cap: string) => `<rect x="${x}" y="${136 - h}" width="34" height="${h}" rx="5" fill="#d98a2b" opacity=".92"/><rect x="${x + 3}" y="${148 - h}" width="28" height="${Math.round(h / 2)}" fill="#f4f1ea"/>
+    <rect x="${x - 2}" y="${126 - h}" width="38" height="12" rx="3" fill="${cap}"/><rect x="${x + 7}" y="${155 - h}" width="16" height="3" fill="#9aa4b2"/><rect x="${x + 7}" y="${161 - h}" width="11" height="2" fill="#c6ccd5"/>`;
+  return `<defs><linearGradient id="@top" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9edf0"/><stop offset="1" stop-color="#b9c1c8"/></linearGradient>${blur('far', 3)}</defs>
+    <rect width="320" height="180" fill="#25303a"/>
+    <g filter="url(#@far)">${shelf(14)}${shelf(56)}<rect y="40" width="320" height="4" fill="#5b6872"/><rect y="82" width="320" height="4" fill="#5b6872"/></g>
+    <rect y="132" width="320" height="48" fill="url(#@top)"/><path d="M0 132h320" stroke="#fff" stroke-width="2" opacity=".6"/>
+    ${bottle(58, 58, '#f4f1ea')}${bottle(104, 44, '#3d2c6b')}
+    <g transform="rotate(-14 214 140)"><rect x="168" y="132" width="96" height="16" rx="7" fill="#f4f1ea"/><rect x="236" y="132" width="28" height="16" rx="7" fill="#e2725b"/><rect x="176" y="136" width="30" height="8" rx="2" fill="#9aa4b2"/><rect x="264" y="138" width="10" height="4" fill="#c6ccd5"/></g>
+    ${[[150, 158], [162, 166], [140, 168]].map(([x, y], i) => `<g transform="rotate(${[30, -20, 70][i]} ${x} ${y})"><rect x="${x - 8}" y="${y - 3.5}" width="16" height="7" rx="3.5" fill="#fff"/><rect x="${x}" y="${y - 3.5}" width="8" height="7" rx="3.5" fill="#3d2c6b"/></g>`).join('')}`;
+}
+
 /** A rocket coming apart over the sea, shot from shore through haze. */
 function rocket(): string {
   const rnd = rand(13);
@@ -272,7 +286,7 @@ function gavel(): string {
 }
 
 const SCENES: Record<string, () => string> = {
-  office, server, ballot, podium, robot, washer, candle, building, check, phone, rocket, gavel,
+  office, server, ballot, podium, robot, washer, candle, building, check, phone, rocket, gavel, pills,
   'chart-up': () => chart(true), 'chart-down': () => chart(false),
 };
 const cache = new Map<string, string>();

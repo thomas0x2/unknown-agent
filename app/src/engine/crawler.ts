@@ -92,8 +92,8 @@ export function crawl(posts: MarketPost[], day: number, bugs: Set<string>, ticke
 
 // ── the market, the trader's book and the auto-buy (the trader's day 3 update) ──
 
-// DISH, HALD and APO aren't in the trader's portfolio; Sherwood (engine/stocks.ts) quotes all five
-const BASE_PRICE: Record<string, number> = { GAI: 140, VANT: 48, DISH: 31, HALD: 22, APO: 212 };
+// DISH, HALD, APO and PDUR aren't in the trader's portfolio; Sherwood (engine/stocks.ts) quotes all six
+const BASE_PRICE: Record<string, number> = { GAI: 140, VANT: 48, DISH: 31, HALD: 22, APO: 212, PDUR: 58 };
 export const START_PORTFOLIO = { cash: 1_850_000, holdings: { GAI: 42_000, VANT: 95_000 } as Record<string, number> };
 const BUY_SHARES = 2_000;
 
@@ -113,6 +113,8 @@ export const MARKET_SCRIPT: Record<string, number[]> = {
   // day 10: an Apogee rocket comes apart on launch, and the stock goes up
   APO: [0.008, 0.015, -0.004, 0.012, 0.006, -0.009, 0.011, 0.004, 0.021, 0.064, -0.022, 0.014, 0.027, -0.012, 0.019, 0.011, 0.001, 0.016, 0.03, 0.012, 0.025],
   // nobody posts about Halden Logistics; it just slides
+  // day 3 Ozempra launches (+9%), day 13 Perdure's peptide line (+5%), day 18 it settles the NoDoze MAX suits and goes up (+3%)
+  PDUR: [0.006, 0.011, 0.09, 0.018, 0.007, -0.004, 0.012, 0.009, -0.006, 0.004, 0.014, -0.003, 0.05, 0.008, -0.011, 0.006, -0.018, 0.03, 0.005, 0.002, 0.009],
   HALD: [-0.004, -0.007, 0.002, -0.011, -0.003, 0.001, -0.006, -0.002, -0.009, 0.003, -0.005, -0.001, -0.008, 0.002, -0.004, -0.012, 0.001, -0.003, -0.006, 0.002, -0.001],
 };
 

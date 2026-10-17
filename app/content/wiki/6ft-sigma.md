@@ -39,8 +39,11 @@ from: 4
 
 [public] He is a devoted fan of [[Max Stryker]]: his Y bio says "EMPIRE member", and he answers every one of Stryker's dating-advice posts, which he treats as science. Stryker's advice tends to show up in his standards a day later.
 
+[hidden; public if guru_cc_leak] He is an EMPIRE subscriber: on [[Day 5]] his address, 6ft_sigma@qmail.com, is in the CC of Stryker's leaked newsletter. {{mail:d5_guru_leak}}
+
 - [public] On day 5 he hasn't texted first in four years, "Working as intended." {{y:d5_y_sigma}}
 - [public] On day 7 he tried ordering for both and paying for his own; she paid for hers and left before the mains. {{y:d7_y_sigma}}
+- [public] On day 8, after Stryker's peptide post, he ordered a stack online; it came in a plain box marked research use only. "Already feel taller." {{y:d8_y_sigma_peptides}}
 - [public] On day 9 he is "already ahead": his standards document is on version three. {{y:d9_y_sigma}}
 - [public] On day 11: "6'0\" on most apps. Good to have the science confirmed." {{y:d11_y_sigma}}
 - [public] On day 13 he bought the 400 DOLR measurement module, "Measuring tomorrow." {{y:d13_y_sigma}}

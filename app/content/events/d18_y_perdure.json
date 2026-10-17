@@ -1,0 +1,11 @@
+{
+  "id": "d18_y_perdure",
+  "site": "y",
+  "from": "Perdure Pharma",
+  "trigger": {
+    "dayMin": 18,
+    "dayMax": 18
+  },
+  "at": "15:00",
+  "body": "We're pleased to have resolved the NoDoze MAX litigation. NoDoze MAX remains available. Please take one tablet per 72 hours."
+}
