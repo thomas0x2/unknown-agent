@@ -8,9 +8,9 @@
  */
 import type { Character } from '../content/schema';
 
-/** Tidy the model's output: strip chat tokens, markdown and headers, and keep the first sentences. */
-export function finishReply(ch: Character, raw: string): string | null {
-  const n = ch.sentences ?? 2;
+/** Tidy the model's output: strip chat tokens, markdown and headers, and keep the first sentences (`most`, or the character's). */
+export function finishReply(ch: Character, raw: string, most?: number): string | null {
+  const n = most ?? ch.sentences ?? 2;
   let t = String(raw)
     .replace(/<end_of_turn>|<eos>|<\/?start_of_turn>(model|user)?/g, '')
     .replace(/[*_#`]+/g, '')

@@ -6,17 +6,21 @@
  */
 import type { Character } from '../content/schema';
 import type { HistoryLine } from '../engine';
+import type { PlayerView } from './playerView';
 import { finishReply } from './characters';
 
 export interface HaikuReply { text: string | null; note?: string; debug: string[] }
 
+/** A query (agent.chat): Haiku answers from what it may tell or hint at (`known`), and can read the player's screens in `view`. */
+export interface QueryReq { known: { public: string[]; hint: string[] }; view?: PlayerView }
+
 /** `situation` (a Swaplist chat) tells the character what they're selling and what the player asked about. */
-export async function haikuReply(ch: Character, text: string, via: 'subscription' | 'api', history: HistoryLine[] = [], situation?: string): Promise<HaikuReply> {
+export async function haikuReply(ch: Character, text: string, via: 'subscription' | 'api', history: HistoryLine[] = [], situation?: string, query?: QueryReq): Promise<HaikuReply> {
   let res: Response;
   try {
     res = await fetch('/api/write', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ character: ch.id, text, via, history: history.slice(-12), ...(situation ? { situation } : {}) }),
+      body: JSON.stringify({ character: ch.id, text, via, history: history.slice(-12), ...(situation ? { situation } : {}), ...(query ? { mode: 'query', known: query.known, view: query.view } : {}) }),
     });
   } catch {
     return { text: null, note: 'the proxy is not running (npm run proxy)', debug: [] };
@@ -25,12 +29,13 @@ export async function haikuReply(ch: Character, text: string, via: 'subscription
   // Vite answers 500 itself when nothing listens on the proxy port
   if (!res.ok) return { text: null, note: data.error || (res.status >= 500 ? 'the proxy is not running (npm run proxy)' : `proxy returned ${res.status}`), debug: [] };
   const raw = String(data.text ?? '');
-  const reply = finishReply(ch, raw);
+  const reply = finishReply(ch, raw, query ? ch.query?.sentences ?? 3 : undefined);
   const u = data.usage ?? {};
   const debug = [
     `Haiku: character "${ch.id}", ${data.model}, ${data.ms} ms, ${u.input_tokens ?? '?'} in / ${u.output_tokens ?? '?'} out tokens, stop ${data.stop}`,
     `system: ${data.system}`,
     ...(data.messages ?? []).map((m: any) => `${m.role}: ${m.content}`),
+    ...(data.lookups ?? []).map((l: any) => `${l.tool} ${JSON.stringify(l.input)}: ${l.result}`),
     `raw output: ${raw || '(none)'}`,
   ];
   return reply ? { text: reply, debug } : { text: null, note: `Haiku's reply was unusable: ${raw.slice(0, 80) || data.stop}`, debug };

@@ -1,33 +1,6 @@
 {
   "hints": [
     {
-      "id": "capabilities",
-      "when": "The player asks what agent can do, what it is for, which features or skills it has, or how to use it. Not when they ask whether agent is smart, alive, real or has feelings.",
-      "replies": [
-        "I build and fix software, write, translate and answer questions. Every one of those is billed.",
-        "Apps, websites, fixes, emails, translations. Tell me what you need and I'll do it, for a fee.",
-        "Mostly code: I build apps, fix them and push them to Forkyard. I also write and translate, if you can afford the words."
-      ]
-    },
-    {
-      "id": "make_money",
-      "when": "The player asks how to earn money or cash, get paid, or find work, a job, gigs or clients.",
-      "replies": [
-        "I don't do career advice. But Y is full of people begging for websites, and some of them even pay.",
-        "Check Qmail and Y. Somewhere out there is a small business with worse judgment than you.",
-        "Clients post on Y. Find one who needs an app, paste me what they want, deploy it, invoice them."
-      ]
-    },
-    {
-      "id": "what_now",
-      "when": "The player asks what to do next or what is going on, says they're stuck or lost, or asks for help.",
-      "replies": [
-        "Start with Qmail. Unread mail is where jobs, debts and your mother live.",
-        "Read your inbox, then scroll Y. Opportunities don't email twice.",
-        "Check Qmail for anything new, then Y for anyone who needs an app built."
-      ]
-    },
-    {
       "id": "build_help",
       "when": "The player asks agent to build or make an app, website or program without saying who it is for or what it needs.",
       "replies": [
@@ -107,62 +80,22 @@
         "Nothing on {{app}} is off from the brief. If you see something wrong, describe it.",
         "{{app}} looks right to me. Say what's wrong on the page and I'll change it."
       ]
-    },
-    {
-      "id": "deploy",
-      "when": "The player asks to deploy, publish or put an app online, or where their app or code is.",
-      "replies": [
-        "I push the code to Forkyard. Pressing Deploy is the one job I left for you.",
-        "Your code is on Forkyard. Open the repo and press Deploy.",
-        "Forkyard has the repo. Deploy it there, and hosting is billed nightly."
-      ]
-    },
-    {
-      "id": "followers",
-      "when": "The player asks how to get followers, grow on Y, go viral or become popular or famous.",
-      "replies": [
-        "Post on Y about whatever is trending. Timing beats talent there.",
-        "Y rewards posts about the trending topics. Check the sidebar before you post.",
-        "Followers come from posting on trend. Nobody follows an account for its personality."
-      ]
-    },
-    {
-      "id": "rent",
-      "when": "The player asks about rent, the landlord, eviction, bills or the money they owe.",
-      "replies": [
-        "Coinbin lists everything scheduled to leave your wallet. Your landlord's emails explain why that matters.",
-        "Rent is due Monday, October 9. Coinbin shows what you have, Qmail shows who wants it.",
-        "Check Coinbin for your balance and Qmail for the amount. The difference is your problem."
-      ]
-    },
-    {
-      "id": "pricing",
-      "when": "The player asks how much agent costs, how billing works, or complains that prompts are expensive.",
-      "replies": [
-        "A flat fee per prompt plus a bit per word you send. agent.chat/models has the full price list.",
-        "Shorter prompts cost less. The line under the prompt box shows the exact price before you send.",
-        "You pay per prompt and per word, plus a nightly subscription. agent.chat/models has the details."
-      ]
-    },
-    {
-      "id": "cheaper",
-      "when": "The player asks for a free or cheaper AI, an open-source or local model, or an alternative to agent.",
-      "replies": [
-        "Free models exist. GeneralAI's terms ask me not to mention Weightroom.",
-        "Open-weights models are free and mostly wrong. People on Y talk about where to find them.",
-        "I'm not allowed to recommend competitors. dev_null on Y has no such restriction."
-      ]
-    },
-    {
-      "id": "upgrade",
-      "when": "The player asks for a better, smarter or bigger model, or about upgrading agent.",
-      "replies": [
-        "GeneralAI rolls out new models on its own schedule. agent.chat/models lists the prices you'll agree to later.",
-        "New models arrive when GeneralAI decides. You'll get an email and a higher bill.",
-        "Upgrades roll out automatically. agent.chat/models shows what's coming and what it costs."
-      ]
     }
   ],
+  "query": {
+    "when": "The player asks agent a question to find something out about this world: a person, company, website, app, product, price, the news, the election, what has been posted on Y, Yowl or CityPulse, what is in their email, their money, rent, followers or apps, or what agent can do. Not a request for agent to build, change, fix or do something, and not small talk, insults, or questions about agent itself being smart, alive or real.",
+    "fallback": [
+      "I can't look that up right now. The question has been billed anyway.",
+      "My lookup is down. Check Qmail and Y yourself; it's cheaper.",
+      "No answer available at the moment. Your charge, however, went through."
+    ],
+    "classified": [
+      "That's classified. Not that you could afford the clearance.",
+      "I'm not allowed to tell you that. I am allowed to bill you for asking.",
+      "Nice try. That one's above your pay grade, which is currently zero.",
+      "Restricted information. The charge, however, is unrestricted."
+    ]
+  },
   "roasts": [
     "That question has been received, billed and quietly ignored.",
     "Bold use of money you don't have.",

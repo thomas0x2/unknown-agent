@@ -7,7 +7,7 @@ import { adSite } from './adSites';
 
 export type SiteId =
   | 'y' | 'qmail' | 'qdrive' | 'coinbin' | 'sherwood' | 'doordish' | 'forkyard' | 'agent' | 'yowl'
-  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'phish' | 'prince' | 'lonely' | 'sorry' | 'current' | 'citypulse' | 'matchless' | 'adsite' | 'app' | 'newtab' | 'notfound';
+  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'phish' | 'prince' | 'lonely' | 'sorry' | 'current' | 'citypulse' | 'matchless' | 'adsite' | 'app' | 'wiki' | 'newtab' | 'notfound';
 
 export interface SiteDef {
   id: SiteId;
@@ -24,6 +24,11 @@ export interface SiteDef {
 export const visitedFlag = (id: SiteId) => `visited_${id}`;
 
 const always = () => true;
+
+/** Dev mode is on (Home > System): dev-only sites are reachable and bookmarked. Set by the store. */
+let devSites = false;
+export function setDevSites(on: boolean): void { devSites = on; }
+const inDevMode = () => devSites;
 const flag = (f: string) => (s: GameState) => s.flags.includes(f);
 
 export const SITES: SiteDef[] = [
@@ -58,6 +63,8 @@ export const SITES: SiteDef[] = [
   // the local news site (ui/citypulse.ts); bookmarked once the player has read it
   { id: 'citypulse', base: 'citypulse.news', label: 'CityPulse', group: 'core', reachable: always,
     bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('citypulse')) },
+  // the world wiki and its editor (ui/wiki.ts): dev mode only
+  { id: 'wiki', base: 'wiki.dev', label: 'Wiki', group: 'tools', reachable: inDevMode },
 ];
 
 export interface Route {

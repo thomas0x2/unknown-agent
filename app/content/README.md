@@ -18,6 +18,10 @@ touching engine code.
   reference features by id and description.
 - `y_filler.json` — `FillerPost[]` for the Y noise pool.
 - `qmail_spam.json` — `FillerPost[]` for the Qmail spam pool.
+- `wiki/` — the world bible as a wiki, one page per person, company, site, app and day. Read
+  `wiki/README.md` before writing content; Haiku answers agent.chat queries from it.
+- `agent.json` — agent.chat's scripted near-miss topics, the query wording and fallback lines, roasts
+  and morning lines.
 - `contacts.json` — who answers at each address. `replyAfter` is how many minutes of game time
   their replies take (default 60). The clock runs in real time, one game minute per
   real second (a whole day, 10:00 to 22:00, in 12 minutes), so 30 game minutes is 30 seconds. An outcome or scripted reply can set its own

@@ -9,9 +9,10 @@
  * Run: npm run proxy   (reads .env if present)
  */
 import http from 'node:http';
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { execFile } from 'node:child_process';
 import { tmpdir } from 'node:os';
+import { QUERY_TOOLS, runQueryTool, readSite } from './screens.mjs';
 
 const PORT = Number(process.env.PORT) || 8787;
 const KEY = process.env.TYPESAFE_API_KEY || '';
@@ -60,6 +61,7 @@ function historyBlock(history) {
 async function write(body) {
   const ch = CHARACTERS.find((c) => c.id === body.character);
   if (!ch) return { status: 400, json: { error: `unknown character ${body.character}` } };
+  if (body.mode === 'query') return query(ch, body);
   const n = ch.sentences ?? 2;
   const form = `Keep it dry and understated rather than zany. At most ${n} short sentence${n > 1 ? 's' : ''} of plain text, ` +
     `no quotes, no stage directions, no emoji. Stay consistent with anything you already said earlier in the conversation.`;
@@ -77,6 +79,71 @@ async function write(body) {
   const earlier = historyBlock(body.history);
   messages.push({ role: 'user', content: earlier ? `${earlier}\n\nThe player now writes:\n${said}` : said });
   return runWriter(system, messages, body.via);
+}
+
+// An agent.chat query: Jev matched the question to sections of the wiki, and the game sends what they
+// hold for the player right now (src/engine/query.ts): facts Haiku may tell, and facts it may only
+// hint at. Haiku can also read the player's own screens (server/screens.mjs). At most MAX_LOOKUPS
+// rounds of tool calls; the last round forbids tools so it always ends in text, and only that text
+// goes back to the player.
+const MAX_LOOKUPS = 3;
+const factList = (xs) => (Array.isArray(xs) ? xs : []).slice(0, 12).map((x) => `- ${String(x).replace(/\s+/g, ' ').slice(0, 900)}`).join('\n');
+async function query(ch, body) {
+  const q = ch.query;
+  if (!q) return { status: 400, json: { error: `${ch.id} answers no queries` } };
+  const view = body.view && typeof body.view === 'object' ? body.view : null;
+  const tell = factList(body.known?.public);
+  const hint = factList(body.known?.hint);
+  const n = q.sentences ?? 3;
+  const system = `${q.profile}\n\nIt is day ${Number(view?.day) || '?'} of the game${view?.time ? `, ${view.time}` : ''}.\n\n` +
+    (tell ? `What you know and may tell the player:\n${tell}\n\n` : '') +
+    (hint ? `What you know but must NOT tell the player: don't state these facts, names, numbers, addresses or answers, not even partly. At most point them to where they could find it out themselves (an email, a site, a person to ask):\n${hint}\n\n` : '') +
+    `Answer only from the facts above and the player's own screens (check_site). If the answer isn't there, say you don't know. ` +
+    `Never mention tools, notes, a wiki or looking anything up. Never say which of the player's apps are broken or what is wrong with them. ` +
+    `At most ${n} short sentences of plain text, no lists, no markdown, no emoji.`;
+  const messages = [];
+  for (const [u, a] of q.examples ?? []) messages.push({ role: 'user', content: u }, { role: 'assistant', content: a });
+  const said = String(body.text ?? '').slice(0, 2000);
+  const earlier = historyBlock(body.history);
+  messages.push({ role: 'user', content: earlier ? `${earlier}\n\nThe player now asks:\n${said}` : said });
+  const started = Date.now();
+  if (body.via === 'subscription') {
+    // the CLI route gets no tools: it gets the player's inbox up front instead
+    return writeWithCli(`${system}\n\nThe player's inbox:\n${readSite(view, 'qmail', said).slice(0, 1200)}`, messages, started);
+  }
+  const client = await getAnthropic();
+  if (!client) return { status: 501, json: { error: ANTHROPIC_KEY ? 'The proxy could not load @anthropic-ai/sdk (run npm install).' : 'ANTHROPIC_API_KEY is not set in app/.env.' } };
+  const convo = [...messages];
+  const lookups = [];
+  const usage = { input_tokens: 0, output_tokens: 0 };
+  let res;
+  for (let round = 0; ; round++) {
+    res = await client.messages.create({
+      model: WRITER_MODEL,
+      max_tokens: 400,
+      thinking: { type: 'disabled' },
+      output_config: { effort: 'low' },
+      system,
+      tools: QUERY_TOOLS,
+      tool_choice: round < MAX_LOOKUPS ? { type: 'auto' } : { type: 'none' },
+      messages: convo,
+    });
+    usage.input_tokens += res.usage?.input_tokens ?? 0;
+    usage.output_tokens += res.usage?.output_tokens ?? 0;
+    const calls = res.content.filter((b) => b.type === 'tool_use');
+    if (res.stop_reason !== 'tool_use' || !calls.length) break;
+    convo.push({ role: 'assistant', content: res.content });
+    convo.push({
+      role: 'user',
+      content: calls.map((c) => {
+        const result = runQueryTool(c.name, c.input, view);
+        lookups.push({ tool: c.name, input: c.input, result });
+        return { type: 'tool_result', tool_use_id: c.id, content: result };
+      }),
+    });
+  }
+  const text = res.content.filter((b) => b.type === 'text').map((b) => b.text).join('').trim();
+  return { status: 200, json: { text, model: res.model, stop: res.stop_reason, ms: Date.now() - started, usage, system, messages, lookups } };
 }
 
 // SorryWriter (sorrywriter.ai): the player says what they did, Haiku writes their apology. Like
@@ -232,6 +299,9 @@ async function buildMatch(sdk, body) {
       area: `Does the prompt complain about this feature? Yes if it names the feature (in any words, or one of the names listed as counting) and says something about it is wrong, broken or misbehaves, whether or not it says which part. No if the prompt names no feature ("it's broken", "fix the app", only the app's name), if it's about a different feature, or if it only asks to build, add or change something. ${context} Feature: ${f.description}`,
       // whether the prompt says which app it means: one plain question per app (it was ignored when it rode along on the others)
       app: `Is the prompt about this app? Yes if it names it in any way: its full name, any word of the name on its own ("gino" for Trattoria Gino, "spin cycle" for Spin Cycle Board), its address, its client, or what it is ("the restaurant site", "the crawler"), in any case or spelling. Also yes if the prompt names no app and the most recent earlier message was about this app (the player's or the agent's, like "Pushed to Forkyard for <app>"). No if it names a different app, or names no app and no earlier message is about this one. App: ${f.description}`,
+      // agent.chat queries (src/engine/query.ts): which wiki page the question is about, then which section of it
+      topic: `Is the player's question about this, in any words? Yes if it names it (its name, any word of its name, one of its other names, its address or handle, or what it is: "the landlord", "the pizza place", "my mom") or asks something only it could answer. No if it is about something else, or names nothing specific ("what's going on", "tell me something"). ${context} Subject: ${f.description}`,
+      section: `Does the player's question ask about this part of its subject, in any words? Yes if it asks about this in particular. No if it asks about the subject only in general ("who is he"), or about a different part. ${context} Part: ${f.description}`,
       // agent-terminal: whether the prompt asks the agent to do this job at all (the path is asked step by step)
       hack: `Does the prompt ask the agent to do this job, in any words? Yes if it asks to hack, delete, remove, take down, get rid of or make disappear the thing described, even loosely or without naming every detail. No if it only asks about it, or asks for something else. ${context} Job: ${f.description}`,
       problem: `Does the prompt report this problem or a symptom of it, in any words? Yes if it names the problem or describes what the player sees, even loosely or with hedging. No if it describes a clearly different problem, or points at nothing the player saw ("it's broken", "fix it"). ${context} Problem: ${f.description}`,
@@ -242,9 +312,22 @@ async function buildMatch(sdk, body) {
   return { state: { setting: SETTING, ...(earlier.length ? { earlierMessages: earlier } : {}), prompt: body.prompt }, questions };
 }
 
+// The dev wiki editor (wiki.dev in the game, ui/wiki.ts) saves a page back into content/wiki. Only a
+// plain page name in that one folder, only markdown, so it can't write anywhere else.
+const WIKI_DIR = new URL('../content/wiki/', import.meta.url);
+function saveWiki(body) {
+  const file = String(body.file ?? '');
+  const md = String(body.md ?? '');
+  if (!/^[a-z0-9][a-z0-9-]*\.md$/.test(file) || file === 'readme.md') return { status: 400, json: { error: 'bad page name' } };
+  if (!md.startsWith('---\n') || md.length > 200_000) return { status: 400, json: { error: 'not a wiki page' } };
+  writeFileSync(new URL(file, WIKI_DIR), md);
+  return { status: 200, json: { ok: true } };
+}
+
 async function handle(kind, body) {
   if (kind === 'write') return write(body);
   if (kind === 'apology') return apology(body);
+  if (kind === 'wiki') return saveWiki(body);
   const client = await getClient();
   if (!client) return { status: 501, json: { error: KEY ? 'The proxy could not load @typesafe-ai/sdk (run npm install).' : 'TYPESAFE_API_KEY is not set in app/.env.' } };
   const sdk = await import('@typesafe-ai/sdk');

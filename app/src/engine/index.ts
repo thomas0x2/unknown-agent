@@ -39,3 +39,5 @@ export * from './mailbin';
 export * from './jevTests';
 export * from './current';
 export * from './citypulse';
+export * from './wiki';
+export * from './query';

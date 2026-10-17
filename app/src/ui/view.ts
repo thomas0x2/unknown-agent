@@ -3,6 +3,7 @@
  * store. main.ts owns the DOM and drops these strings into the shell slots. Styling comes from the
  * legacy stylesheet (../../src/style.css); nothing here invents new classes.
  */
+import { pageWiki } from './wiki';
 import { SOUND } from './sound';
 import { type GameStore, CHARGE_DELAY_MS } from '../game/store';
 import { MISSES } from '../game/misses';
@@ -272,6 +273,7 @@ export function page(store: GameStore, r: Route): string {
     case 'current': return pageCurrent(store.state, r.param);
     case 'adsite': return pageAdSite(r.param ?? '', store.state, store.ui.adNotice, r.param === OUTPLACEMENT ? outplacementUpload(store) : '');
     case 'citypulse': return pageCityPulse(store, r.param);
+    case 'wiki': return pageWiki(store, r.param);
     default: return pageUnderground(r.def?.label ?? r.site);
   }
 }
@@ -313,7 +315,7 @@ const SCRIPTED_MAIL: Record<NonNullable<MailEntry['scripted']>, string> = {
 interface Row { id: string; seq: number; /** Minutes since midnight it arrived, when known. */ min?: number; from: string; addr: string; subject: string; body: string; day: number; unread: boolean; needsReply: boolean; folder: 'inbox' | 'sent'; eventId?: string; generated?: boolean; scripted?: MailEntry['scripted']; to?: string; link?: string; bounceOf?: string; bookingId?: string; /** In the Bin until the day ends. */ binned?: boolean }
 /** Messages the player opened or closed in a conversation, so a repaint keeps them that way. */
 export const mailOpen = new Map<string, boolean>();
-function mailRows(store: GameStore): Row[] {
+export function mailRows(store: GameStore): Row[] {
   const s = store.state;
   const rows: Row[] = [];
   for (const d of s.delivered.filter((x) => x.site === 'qmail')) {
@@ -455,7 +457,7 @@ function pageMail(store: GameStore, param?: string): string {
 
 // ── Y ──
 interface YPost { id: string; author: string; handle: string; text: string; day: number; /** Minutes since midnight it went up, when known. */ min?: number; likes: number; mine?: boolean; delta?: number; score?: number; replyTo?: string; /** Order within a day: story posts first, bot spam last. */ rank?: number }
-function yPosts(store: GameStore): YPost[] {
+export function yPosts(store: GameStore): YPost[] {
   const s = store.state;
   const out: YPost[] = [];
   const market = marketPosts(s, store.content);
@@ -961,17 +963,21 @@ function pageAgent(store: GameStore): string {
     }
     if (m.from === 'system') return `<div class="ua-sys" role="alert">${ICONS.error}<span>${esc(m.text)}</span></div>`;
     const src = m.src ? `<span class="ua-src ${esc((m.src || '').split(':')[0])}">${esc(m.src)}</span>` : '';
-    const model = m.src === 'llm' ? `<span class="ua-model" title="Written by a model">${esc(m.by ?? MISSES.label())}</span>`
+    const model = m.src === 'llm' || m.src === 'query' ? `<span class="ua-model" title="Written by a model">${esc(m.by ?? MISSES.label())}</span>`
       : m.note ? `<span class="ua-model" title="A scripted line stood in for Haiku">Scripted · ${esc(m.note)}</span>` : '';
     const debug = m.debug?.length ? `<details class="ua-debug"><summary>Details</summary>${m.debug.map((l) => `<div>${esc(l)}</div>`).join('')}</details>` : '';
     // the agent couldn't run (unpaid balance): an error, not a line of dialogue
     if (m.src === 'locked') return `<div class="ua-msg agent ua-err" role="alert"><div class="ua-mark">${ICONS.error}</div><div class="ua-text"><b>Error</b> ${linkify(br(m.text))}</div>${src}</div>`;
-    return `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text">${linkify(br(m.text))}</div>${model}${src}${debug}</div>`;
+    // a query's answer (or refusal) comes after a look around the WWW
+    const www = /^(query|classified)/.test(m.src ?? '') ? `<div class="ua-www done">${ICONS.globe}<span>Searched the WWW</span></div>` : '';
+    return `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text">${www}${linkify(br(m.text))}</div>${model}${src}${debug}</div>`;
   }
   const p = store.pendingPrompt;
   // the price shows on the prompt only once the charge has gone through
   const pending = p == null ? '' : `<div class="ua-msg you"><div class="ua-bubble">${esc(p)}</div><span class="ua-cost">agent-${s.values.agentLevel} · ${dateShort(s.values.day)}</span></div>`;
-  const thinking = store.busy && !store.charging ? `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text ua-dots"><i></i><i></i><i></i></div></div>` : '';
+  const thinking = !store.busy || store.charging ? ''
+    : store.searching ? `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-www" role="status">${ICONS.globe}<span>Searching the WWW</span><span class="ua-dots"><i></i><i></i><i></i></span></div></div>`
+    : `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text ua-dots"><i></i><i></i><i></i></div></div>`;
   return `<div class="ua">
     <header class="ua-head">
       <div class="ua-brand">${ICONS.agent}<div><b>agent</b><span>agent-${s.values.agentLevel} · ${fmtMoney(c.prompt)} per prompt + ${fmtMoney(c.word)} per word</span></div></div>
@@ -1005,7 +1011,7 @@ function pageModels(store: GameStore): string {
 
 // ── Yowl ──
 const starRow = (n: number) => `<span class="yw-stars" aria-label="${n.toFixed(1)} stars">${[1, 2, 3, 4, 5].map((i) => `<i class="${n >= i - 0.25 ? 'on' : n >= i - 0.75 ? 'half' : ''}"></i>`).join('')}</span>`;
-function reviewsFor(store: GameStore, b: Business) {
+export function reviewsFor(store: GameStore, b: Business) {
   const s = store.state;
   const out: { author: string; stars: number; text: string; day: number; mine?: boolean }[] = [];
   for (const r of s.reviews.filter((r) => r.bizId === b.id && !r.removed)) out.push({ author: r.author, stars: r.stars, text: r.text, day: r.day, mine: r.mine });
