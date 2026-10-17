@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { soundCues, botBurst, LATE_MIN, type SoundSnap } from './soundCues';
 import { profileOf } from './sound';
 
-const base: SoundSnap = { day: 2, clockMin: 12 * 60, agentMsgs: 3, txCount: 10, txIn: 500, txOut: 400, ending: false, morning: false };
+const base: SoundSnap = { day: 2, clockMin: 12 * 60, agentMsgs: 3, sellerMsgs: 0, txCount: 10, txIn: 500, txOut: 400, ending: false, morning: false };
 const at = (o: Partial<SoundSnap>): SoundSnap => ({ ...base, ...o });
 
 describe('sound cues', () => {
@@ -11,6 +11,7 @@ describe('sound cues', () => {
   });
   it('plays an agent reply and its charge together', () => {
     expect(soundCues(base, at({ agentMsgs: 4, txCount: 11, txOut: 400.8 }))).toEqual(['reply', 'charge']);
+    expect(soundCues(base, at({ sellerMsgs: 1 }))).toEqual(['reply']);
   });
   it('plays income for money coming in, and both sounds when money moved both ways', () => {
     expect(soundCues(base, at({ txCount: 11, txIn: 540 }))).toEqual(['income']);

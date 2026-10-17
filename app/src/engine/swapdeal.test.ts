@@ -7,7 +7,7 @@ import { startGame } from './day';
 import { applyEffects } from './effects';
 import { getEvent } from './events';
 import { buildApp, deployApp, getApp, devToggleBug } from './apps';
-import { swapMessage, swapOffer, swapBuy, liveListings, lowestOffer, TOO_LONG_SWAP } from './swapdeal';
+import { swapMessage, swapOffer, swapBuy, liveListings, lowestOffer, TOO_LONG_SWAP, deliverSwapReplies, SWAP_REPLY_DELAY } from './swapdeal';
 import { setValue } from './core';
 import { scriptedWriter } from './writer';
 import type { GameState } from './state';
@@ -29,6 +29,9 @@ function market(): { s: GameState; id: string } {
   setValue(s, 'crypto', 500);
   return { s, id };
 }
+/** Lets enough game minutes pass for every seller to have answered. */
+function later(s: GameState): GameState { s.clockMin += SWAP_REPLY_DELAY.max * 3; deliverSwapReplies(s); return s; }
+const w = scriptedWriter;
 const unsold = (s: GameState, id: string) => liveListings(s, getApp(s, id)!).find((l) => l.soldAt == null && l.price > 0)!;
 const sold = (s: GameState, id: string) => liveListings(s, getApp(s, id)!).find((l) => l.soldAt != null)!;
 
@@ -38,6 +41,8 @@ describe('Swaplist seller chat', () => {
     const l = unsold(s, id);
     const r = await swapMessage(s, content, scriptedWriter, l.n, 'Is it still available?');
     const t = r.state.swap!.threads[0];
+    expect(t.msgs.map((m) => m.from)).toEqual(['you']);
+    later(r.state);
     expect(t.msgs.map((m) => m.from)).toEqual(['you', l.seller]);
   });
 
@@ -46,7 +51,7 @@ describe('Swaplist seller chat', () => {
     devToggleBug(s, id, 'contact', 'wrong_seller');
     const l = unsold(s, id);
     const r = await swapMessage(s, content, scriptedWriter, l.n, 'Is it still available?');
-    const reply = r.state.swap!.threads[0].msgs[1];
+    const reply = later(r.state).swap!.threads[0].msgs[1];
     expect(reply.from).not.toBe(l.seller);
     expect(reply.text).toMatch(/wrong person/);
   });
@@ -63,46 +68,76 @@ describe('Swaplist seller chat', () => {
     const { s, id } = market();
     const writer = { write: async () => { throw new Error('writer was asked'); } };
     const r = await swapMessage(s, content, writer, unsold(s, id).n, 'x'.repeat(2001));
-    expect(TOO_LONG_SWAP).toContain(r.state.swap!.threads[0].msgs[1].text);
+    expect(TOO_LONG_SWAP).toContain(later(r.state).swap!.threads[0].msgs[1].text);
   });
 });
 
 describe('Swaplist offers and buying', () => {
-  it('an offer at the lowest price is accepted and buying pays that', () => {
+  it('an offer at the lowest price is accepted and buying pays that', async () => {
     const { s, id } = market();
     const l = unsold(s, id);
-    const low = swapOffer(s, content, l.n, lowestOffer(l) - 1);
-    expect(low.swap!.threads[0].offer!.status).toBe('declined');
-    const ok = swapOffer(low, content, l.n, lowestOffer(l));
+    const low = await swapOffer(s, content, w, l.n, lowestOffer(l) - 1);
+    expect(low.swap!.threads[0].offer!.status).toBe('pending');
+    expect(later(low).swap!.threads[0].offer!.status).toBe('declined');
+    const ok = later(await swapOffer(low, content, w, l.n, lowestOffer(l)));
     expect(ok.swap!.threads[0].offer!.status).toBe('accepted');
-    const paid = swapBuy(ok, content, l.n);
+    const paid = await swapBuy(ok, content, w, l.n);
     expect(paid.values.crypto).toBe(500 - lowestOffer(l));
     expect(paid.tx.at(-1)!.memo).toBe(`@${l.seller} · Swaplist`);
     expect(liveListings(paid, getApp(paid, id)!).find((x) => x.n === l.n)!.boughtByYou).toBe(true);
   });
 
-  it('buying without enough DOLR says so and charges nothing', () => {
+  it('buying without enough DOLR says so and charges nothing', async () => {
     const { s, id } = market();
     setValue(s, 'crypto', 1);
     const l = unsold(s, id);
-    const r = swapBuy(s, content, l.n);
+    const r = await swapBuy(s, content, w, l.n);
     expect(r.values.crypto).toBe(1);
     expect(r.swap!.notice!.text).toMatch(/Not enough DOLR/);
   });
 
-  it('price_x100 charges the price the site shows', () => {
+  it('price_x100 charges the price the site shows', async () => {
     const { s, id } = market();
     setValue(s, 'crypto', 100000);
     devToggleBug(s, id, 'listings', 'price_x100');
     const l = unsold(s, id);
-    expect(swapBuy(s, content, l.n).values.crypto).toBe(100000 - l.price * 100);
+    expect((await swapBuy(s, content, w, l.n)).values.crypto).toBe(100000 - l.price * 100);
   });
 
-  it('sold items take no offers, unless offers_open; then the seller says it is sold', () => {
+  it('sold items take no offers, unless offers_open; then the seller says it is sold', async () => {
     const { s, id } = market();
     const l = sold(s, id);
-    expect(swapOffer(s, content, l.n, l.price)).toBe(s);
+    expect(await swapOffer(s, content, w, l.n, l.price)).toBe(s);
     devToggleBug(s, id, 'mark_sold', 'offers_open');
-    expect(swapOffer(s, content, l.n, l.price).swap!.threads[0].offer!.status).toBe('sold');
+    expect(later(await swapOffer(s, content, w, l.n, l.price)).swap!.threads[0].offer!.status).toBe('sold');
+  });
+});
+
+describe('Swaplist seller replies take a while', () => {
+  it('each reply arrives a few game minutes after the message, stamped when it arrives', async () => {
+    const { s, id } = market();
+    const l = unsold(s, id);
+    const r = await swapMessage(s, content, w, l.n, 'Still there?');
+    const t = r.state.swap!.threads[0];
+    const due = t.pending![0].due;
+    r.state.clockMin += SWAP_REPLY_DELAY.min - 1;
+    expect(deliverSwapReplies(r.state)).toBe(false);
+    r.state.clockMin = s.clockMin + SWAP_REPLY_DELAY.max;
+    expect(deliverSwapReplies(r.state)).toBe(true);
+    expect(t.pending).toBeUndefined();
+    expect(t.msgs[1]).toMatchObject({ from: l.seller, min: r.state.clockMin });
+    expect(due - (s.clockMin - 600 + (s.values.day - 1) * 720)).toBeGreaterThanOrEqual(SWAP_REPLY_DELAY.min);
+  });
+
+  it('every seller reply is written by the Writer, offers and thanks included', async () => {
+    const { s, id } = market();
+    const asked: string[] = [];
+    const writer = { write: async (req: { situation?: string; character?: string }) => { asked.push(req.character!); return { text: 'ok', llm: true }; } };
+    const l = unsold(s, id);
+    let st = later((await swapMessage(s, content, writer, l.n, 'Hi')).state);
+    st = later(await swapOffer(st, content, writer, l.n, lowestOffer(l)));
+    st = later(await swapBuy(st, content, writer, l.n));
+    expect(asked.length).toBe(3);
+    expect(st.swap!.threads[0].msgs.filter((m) => m.from === l.seller).map((m) => m.text)).toEqual(['ok', 'ok', 'ok']);
   });
 });

@@ -283,7 +283,6 @@ section.as-w-item:not(:has(.as-w-ph)) { flex-direction: column; gap: 6px; }
 .as-w-thread li.me p { background: #6e3fa3; border-color: #6e3fa3; color: #fff; }
 .as-w-thread li small { color: #888; font-size: 11px; }
 .as-w-thread li.none { color: #888; font-size: 13px; max-width: none; }
-.as-w-thread li.typing p { color: #888; }
 .as-w-dbg { display: none; }
 body.dev-on .as-w-dbg { display: inline; }
 .as-w-send { display: flex; gap: 8px; align-items: flex-end; }

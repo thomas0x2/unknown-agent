@@ -353,9 +353,8 @@ function swaplist(app: AppInstance, tmpl: AppTemplate | undefined, page: string 
           ? `<li class="me"><p>${esc(m.text)}</p><small>You · ${t}</small></li>`
           : `<li><p>${esc(m.text)}</p><small>@${esc(m.from)} · ${t}${m.note ? ` · <i class="as-w-dbg">scripted: ${esc(m.note)}</i>` : ''}</small></li>`;
       }).join('');
-      const typing = extras.busy ? `<li class="typing"><p>…</p></li>` : '';
       return wrap(`<section class="as-w-chat"><h1>Chat with @${esc(l.seller)}</h1><p class="as-w-meta">About: ${esc(titleOf(l))} · ${back}</p>
-        <ul class="as-w-thread">${msgs || '<li class="none">No messages yet.</li>'}${typing}</ul>
+        <ul class="as-w-thread">${msgs || '<li class="none">No messages yet.</li>'}</ul>
         <form class="as-w-send" data-form="sl-msg" data-n="${l.n}"><textarea id="sl-msg" rows="2" placeholder="Write a message" ${extras.busy ? 'disabled' : ''}></textarea><button type="submit" class="as-w-btn"${extras.busy ? ' disabled' : ''}>Send</button></form></section>`);
     }
     if (sub) return wrap(notFound());
@@ -366,7 +365,7 @@ function swaplist(app: AppInstance, tmpl: AppTemplate | undefined, page: string 
     const offer = thread?.offer;
     const lastFromSeller = [...(thread?.msgs ?? [])].reverse().find((m) => m.from === l.seller)?.text;
     const offerLine = offer && !l.boughtByYou
-      ? `<p class="as-w-offer ${offer.status}">Your offer of ${offer.amount.toLocaleString('en-US')} DOLR: ${offer.status === 'accepted' ? 'accepted' : offer.status === 'declined' ? 'declined' : 'item sold'}.${lastFromSeller ? ` <q>${esc(lastFromSeller)}</q>` : ''}</p>` : '';
+      ? `<p class="as-w-offer ${offer.status}">Your offer of ${offer.amount.toLocaleString('en-US')} DOLR: ${offer.status === 'pending' ? 'waiting for the seller' : offer.status === 'accepted' ? 'accepted' : offer.status === 'declined' ? 'declined' : 'item sold'}.${lastFromSeller && offer.status !== 'pending' ? ` <q>${esc(lastFromSeller)}</q>` : ''}</p>` : '';
     const offerBox = takesOffers(app, l, bugs)
       ? `<form class="as-w-offerform" data-form="sl-offer" data-n="${l.n}"><input id="sl-offer" type="number" min="1" step="1" placeholder="Your offer" autocomplete="off"><span>DOLR</span><button type="submit" class="as-w-btn ghost">Make an offer</button>${l.offers ? `<small>${l.offers} offer${l.offers === 1 ? '' : 's'} so far</small>` : ''}</form>`
       : l.price > 0 && !l.boughtByYou ? `<small>Offers closed</small>` : '';

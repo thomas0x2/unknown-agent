@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, buyStock, sellStock, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, buyStock, sellStock, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy, deliverSwapReplies,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -226,8 +226,9 @@ export class GameStore {
     const shown = revealBugs(s, this.content); // held bugs land once something shows them (Crane's first praise)
     const woke = wakeApps(s, this.content).length > 0 || shown; // an empty app's first content (and its bugs) once its time has come
     deliverArrivals(s, this.content); // emails and posts whose time has come
+    const answered = deliverSwapReplies(s); // Swaplist sellers getting back to the player
     if (s.clockMin >= CLOCK.sleep) { this.sleep(s); this.store.save(this.state); this.announce(m); this.emit(); return; }
-    if (this.announce(m) || s.agentWork !== working || woke) { this.store.save(s); this.emit(); return; }
+    if (this.announce(m) || s.agentWork !== working || woke || answered) { this.store.save(s); this.emit(); return; }
     if (s.clockMin % 10 === 0) this.store.save(s);
     for (const fn of this.clockListeners) fn();
   }
@@ -496,8 +497,12 @@ export class GameStore {
     return this.run(async () => { const r = await swapMessage(this.state, this.content, this.writer, n, text); this.commitAndSettle(r.state); return r; }, 'sl-msg', text);
   }
   /** Swaplist: offer an amount on a listing, or buy it (an accepted offer's amount, else the shown price). */
-  swapOffer(n: number, amount: number): void { this.commitAndSettle(swapOffer(this.state, this.content, n, amount)); }
-  swapBuy(n: number): void { this.commitAndSettle(swapBuy(this.state, this.content, n)); }
+  async swapOffer(n: number, amount: number) {
+    return this.run(async () => { this.commitAndSettle(await swapOffer(this.state, this.content, this.writer, n, amount)); });
+  }
+  async swapBuy(n: number) {
+    return this.run(async () => { this.commitAndSettle(await swapBuy(this.state, this.content, this.writer, n)); });
+  }
   /** The agent is always free-text promptable. Jev routes it to a build/fix or an ordinary reply. */
   async prompt(text: string) {
     this.pendingPrompt = text;

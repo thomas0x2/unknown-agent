@@ -438,9 +438,11 @@ document.addEventListener('submit', (e) => {
     SOUND.play('send');
     void store.swapMessage(Number(f.dataset.n), v).then((r) => { if (r?.sent) clearField('sl-msg'); });
   } else if (kind === 'sl-offer') {
-    store.swapOffer(Number(f.dataset.n), Number(val('#sl-offer')));
+    if (store.busy) return;
+    void store.swapOffer(Number(f.dataset.n), Number(val('#sl-offer')));
   } else if (kind === 'sl-buy') {
-    store.swapBuy(Number(f.dataset.n));
+    if (store.busy) return;
+    void store.swapBuy(Number(f.dataset.n));
   } else if (kind === 'y-search') {
     // a handle opens that profile; one nobody uses gets Y's "doesn't exist" page
     const q = val('#y-search').trim().replace(/^@/, '').toLowerCase();
