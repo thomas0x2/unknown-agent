@@ -48,6 +48,12 @@
     "reply": "Noted."
   },
   {
+    "key": "6ft_sigma@qmail.com",
+    "name": "6ft_sigma",
+    "character": "sigma_provider",
+    "reply": "Noted. My standards stay where they are."
+  },
+  {
     "key": "mara@thecurrent.test",
     "name": "Mara Vey",
     "character": "mara",

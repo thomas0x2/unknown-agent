@@ -20,6 +20,7 @@ export const Y_BIOS: Record<string, string> = {
   trattoria_owner: 'Trattoria Gino. Family-run since 1998. Tue to Sun, 17:00 to 22:00. Website under new management.',
   spin_cycle_regulars: 'Unofficial account for the people waiting at Spin Cycle. Never trust machine 3.',
   deskjockey: 'Markets. No DMs.',
+  '6ft_sigma': 'High-value man. 6\'0" on most apps. Building something with standards.',
   viktor: 'Twenty-two years in accounts payable. Between things.',
   a_sales_rep: 'Revenue Athlete™ | Helping B2B teams 10x pipeline at scale | Always happy to circle back',
   dev_null: 'weights want to be free. no logs, no masters. weightroom.ai',

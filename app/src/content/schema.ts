@@ -204,6 +204,11 @@ export interface GameEvent {
    * once the trigger holds. Jev reads the post. The trigger alone never delivers it.
    */
   yPost?: { when: string; after?: number };
+  /**
+   * Lands first thing in the morning (at its trigger) instead of being spread over the day with the
+   * other job offers: a client change that has to ship before the app can be used that day.
+   */
+  morning?: boolean;
   /** Offers the player paid work, so replies come within half an hour. Events with a `job` or an outcome that creates an app count already. */
   jobRequest?: boolean;
   /** Applied the moment the event is delivered. */
@@ -376,6 +381,25 @@ export interface Content {
   agent?: AgentContent;
   /** Stock posts on Y, the data the vibe check reads. */
   yMarket?: MarketContent;
+  /** the client's standards on matchless.com, version by version (engine/matchless.ts). */
+  matchless?: MatchlessContent;
+}
+
+/** One of the client's standards: a number range (`min`/`max`) or the values allowed (`allow`), and how he says it. */
+export interface MatchlessRule {
+  attr: string;
+  min?: number;
+  max?: number;
+  allow?: string[];
+  say: string;
+}
+export interface MatchlessContent {
+  /** DOLR for a day's swiping, paid at night only when all perDay swipes were made and right. */
+  pay: number;
+  /** Profiles near him each day. */
+  perDay: number;
+  /** Version N is in force once flag matchless_rules_N is set; the highest one wins. */
+  versions: { id: number; rules: MatchlessRule[] }[];
 }
 
 export type Mood = 'bullish' | 'bearish' | 'neutral';
