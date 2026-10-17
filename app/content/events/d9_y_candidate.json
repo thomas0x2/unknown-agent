@@ -1,0 +1,11 @@
+{
+  "id": "d9_y_candidate",
+  "site": "y",
+  "from": "Candidate 2028",
+  "trigger": {
+    "dayMin": 9,
+    "dayMax": 9
+  },
+  "at": "13:45",
+  "body": "A tied race means every voice matters. Make sure you're registered to vote."
+}

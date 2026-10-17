@@ -1,0 +1,11 @@
+{
+  "id": "d16_y_candidate",
+  "site": "y",
+  "from": "Candidate 2028",
+  "trigger": {
+    "dayMin": 16,
+    "dayMax": 16
+  },
+  "at": "15:20",
+  "body": "I'm proud of my record of public service, and I'll put it up against anyone's."
+}

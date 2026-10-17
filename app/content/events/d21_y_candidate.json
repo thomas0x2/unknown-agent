@@ -1,0 +1,11 @@
+{
+  "id": "d21_y_candidate",
+  "site": "y",
+  "from": "Candidate 2028",
+  "trigger": {
+    "dayMin": 21,
+    "dayMax": 21
+  },
+  "at": "09:40",
+  "body": "Today is the day. Whoever you support, go vote."
+}

@@ -1,0 +1,11 @@
+{
+  "id": "d13_y_candidate",
+  "site": "y",
+  "from": "Candidate 2028",
+  "trigger": {
+    "dayMin": 13,
+    "dayMax": 13
+  },
+  "at": "16:10",
+  "body": "I respect Mr. Rook's right to support any candidate he chooses. I'll keep doing what I've always done: talking to voters."
+}

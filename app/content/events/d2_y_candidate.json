@@ -1,0 +1,11 @@
+{
+  "id": "d2_y_candidate",
+  "site": "y",
+  "from": "Candidate 2028",
+  "trigger": {
+    "dayMin": 2,
+    "dayMax": 2
+  },
+  "at": "13:10",
+  "body": "Encouraged by today's poll, but polls don't vote. People do. Let's keep working."
+}
