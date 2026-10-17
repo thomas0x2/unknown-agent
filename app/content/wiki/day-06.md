@@ -33,6 +33,7 @@ from: 6
 
 ## Y
 
+- [public] 02:47 (overnight, already up at 10:00) noodleposter has a 2am bowl with the light off; the flash for the photo gave away the time anyway. {{y:f24}}
 - [public] 11:00 [[Randall Crane]]: GeneralAI ($GAI) is "an AMERICAN success story. Tremendous company. The best." {{y:d6_y_crane_gai}}
 - [public] 11:15 [[Cal Hartman]] thanks @randall_crane: "we work with leaders across the spectrum." {{y:d6_y_hartman}}
 - [hidden; public if shown d6_y_trattoria_photos] 12:20 Marguerite, a Trattoria Gino regular: Gino's menu has AI pictures now; after twenty years of Friday dinners she knows what the lasagne looks like, "Not like that." #AIslop. Lands the day after the pictures first go live. {{y:d6_y_trattoria_photos}}

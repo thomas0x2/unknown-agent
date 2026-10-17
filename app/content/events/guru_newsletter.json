@@ -33,5 +33,43 @@
     "Walk faster than everyone on the pavement. If someone overtakes you, turn around and act like you meant to go the other way.\n\nReply EMPIRE to double down.\n\nMax",
     "Tomorrow, be first in line to vote. Not for democracy. For the photo.\n\nReply EMPIRE to double down.\n\nMax",
     "Voted at 7:00. First in line. The rest of today's discipline is in EMPIRE.\n\nReply EMPIRE to double down.\n\nMax"
-  ]
+  ],
+  "special": {
+    "dayMin": 5,
+    "cc": [
+      "6ft_sigma@qmail.com",
+      "grindset.dale@qmail.com",
+      "t.okafor.ventures@qmail.com",
+      "lambo.by.30@qmail.com",
+      "brennan.k@qmail.com",
+      "mike.r.delacroix@qmail.com",
+      "4am_kyle@qmail.com",
+      "alphawolf.jr@qmail.com",
+      "dmitri.capital@qmail.com",
+      "chad.p@qmail.com",
+      "nolan.hustles@qmail.com",
+      "r.villanueva88@qmail.com",
+      "coldplunge_carl@qmail.com",
+      "jt.empire.member@qmail.com",
+      "andre.mindset@qmail.com",
+      "bigdealbrandon@qmail.com",
+      "s.whitfield.ceo@qmail.com",
+      "noexcuses.nate@qmail.com",
+      "grant.ellison@qmail.com",
+      "sleepless.sam@qmail.com",
+      "highvalue.hugo@qmail.com",
+      "ty.m@qmail.com",
+      "escapethematrix_ray@qmail.com",
+      "kev.from.accounts@qmail.com",
+      "peter.lindqvist@qmail.com",
+      "marco.b.official@qmail.com",
+      "dad.of.three.investor@qmail.com",
+      "owen.t@qmail.com"
+    ],
+    "onDeliver": {
+      "setFlags": [
+        "guru_cc_leak"
+      ]
+    }
+  }
 }
