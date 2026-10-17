@@ -1,11 +1,11 @@
 ---
 title: Day 1
-aliases: Tuesday Oct 3, Oct 3, October 3
+aliases: Monday Oct 7, Oct 7, October 7
 category: days
 from: 1
 ---
 
-[public] Tuesday, October 3, 2028, the first day of the game. [known]
+[public] Monday, October 7, 2030, the first day of the game. [known]
 
 ## Start
 
@@ -21,7 +21,7 @@ from: 1
 
 ## Money
 
-- [public] 10:25 [[Gary Pruitt]], "Rent: due Monday, October 9": 350 DOLR comes out of the wallet at the end of Monday, October 9, and he will not take another late payment. [known] {{mail:d1_landlord_rent}}
+- [public] 10:25 [[Gary Pruitt]], "Rent: due Sunday, October 13": 350 DOLR comes out of the wallet at the end of Sunday, October 13, and he will not take another late payment. [known] {{mail:d1_landlord_rent}}
 
 ## Family
 
@@ -64,7 +64,7 @@ from: 1
 ## Writer notes
 
 - Timeline story beats: opens on Vantor's termination email; GeneralAI welcome; Gino's Y post → Trattoria site (40/day); after its first deploy he asks for a Y post (`restaurant_promo`, "The new website", 16:00 or 30 min after a later launch, sets `restaurant_promo_asked`), and thanks you if you post (`restaurant_promo_thanks`, "Your post": a man ordered one espresso and stayed two hours). Spin Cycle complaints → Spin Cycle Board (lead is on day 1, not 2). EMPIRE offer 20 DOLR. Mara's first post; she can be emailed from today (`journalist_contact`, sets `talked_to_journalist`, honest also `did_journalist_interview`). Hartman on the "testing incident".
-- Family: Mom (warm reply +5 trust, ask for money +20 DOLR and −10 trust with `asked_mom_money`, silence −5); brother replies-all. Money: Gary, rent due Monday.
+- Family: Mom (warm reply +5 trust, ask for money +20 DOLR and −10 trust with `asked_mom_money`, silence −5); brother replies-all. Money: Gary, rent due Sunday.
 - Events: `d1_hr_termination`, `d1_gai_welcome`, `d1_landlord_rent`, `d1_mom`, `d1_brother_joke`, `d1_guru`, `d1_y_*`, `restaurant_contact`, `laundromat_contact` (agentStart, lead `d1_y_laundromat`).
 - Job offers (the Gino and laundromat posts) go through `spreadJobOffers`: 10:15 to 16:00, at least an hour apart, so on a crowded day they can land later than their `at`.
 - Filler times are computed by `spreadMin(id@day)`; MarketWire 09:30 is already up when the day starts.

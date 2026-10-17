@@ -1,11 +1,11 @@
 ---
 title: Day 4
-aliases: Friday Oct 6, Oct 6, October 6
+aliases: Thursday Oct 10, Oct 10, October 10
 category: days
 from: 4
 ---
 
-[public] Friday, October 6. [known]
+[public] Thursday, October 10. [known]
 
 ## Mail
 
@@ -14,7 +14,7 @@ from: 4
 
 ## Family
 
-- [public] 12:05 [[Brother]], "mom's birthday": Mom's birthday is Sunday and she needs a new jacket. Chip in 40 DOLR to his [[Coinbin]] wallet by Saturday so he can order, or get one yourself and he covers half.
+- [public] 12:05 [[Brother]], "mom's birthday": Mom's birthday is Saturday and she needs a new jacket. Chip in 40 DOLR to his [[Coinbin]] wallet by Friday so he can order, or get one yourself and he covers half.
 - [hint] 12:05 His email gives the address of his Coinbin wallet. {{mail:d4_brother_birthday}}
 - [hint] 12:05 A leather jacket, size M, is listed on [[Swaplist]] by ines_sells for 45 DOLR.
 - [classified; public if gift_chipped_in] 12:05 The player sent the brother money for the jacket; he confirmed about an hour later that it's ordered with both names on the card. {{mail:d4_brother_paid}} {{mail:d4_brother_paid_over}}

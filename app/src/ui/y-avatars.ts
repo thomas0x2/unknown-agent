@@ -34,7 +34,7 @@ const CRANE = svg('#4b5876',
   + line('M26 28.6 H30') + line('M34 28.6 H38')
   + `<ellipse cx="32" cy="36.4" rx="1.7" ry="1.3" fill="#a8543a"/>`);
 
-/** Candidate 2028: Crane's opponent. Any suit, any smile, a flag pin. */
+/** Candidate 2030: Crane's opponent. Any suit, any smile, a flag pin. */
 const CANDIDATE = svg('#878c95',
   shoulders('#4a5566') + shirtV('#ece9e2')
   + `<path d="M30.6 49 H33.4 L34.2 57 L32 60 L29.8 57Z" fill="#6f7f95"/>`
@@ -206,7 +206,7 @@ const SPIN_CYCLE = svg('#5c7b8b',
 export const Y_AVATARS: Record<string, string> = {
   randall_crane: CRANE,
   randa11_crane: CRANE.replace('viewBox="0 0 64 64"', 'viewBox="5 0 54 64"'),
-  candidate_2028: CANDIDATE,
+  candidate_2030: CANDIDATE,
   axel_rook: ROOK,
   cal_hartman: HARTMAN,
   max_stryker: STRYKER,

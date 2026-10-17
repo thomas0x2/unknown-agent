@@ -9,7 +9,7 @@ from: 1
 
 [public] Gary Pruitt of [[Pruitt Property Management]] is the player's landlord at Pine Street Apartments, Unit 4B. He emails from his phone ("Sent from my phone") and always steers back to the rent.
 
-[public] He took last month's rent late and says that was the last late payment he will accept: no late fee, no extension, and if the rent isn't in the wallet on Monday night the tenant is out. Any attempt to negotiate gets one word: "No."
+[public] He took last month's rent late and says that was the last late payment he will accept: no late fee, no extension, and if the rent isn't in the wallet on Sunday night the tenant is out. Any attempt to negotiate gets one word: "No."
 
 ## How he talks
 
@@ -17,7 +17,7 @@ from: 1
 
 ## The rent reminders
 
-[public] On [[Day 1]] (10:25) he emails that the rent, 350 DOLR, comes out of the player's wallet at the end of Monday. {{mail:d1_landlord_rent}}
+[public] On [[Day 1]] (10:25) he emails that the rent, 350 DOLR, comes out of the player's wallet at the end of Sunday. {{mail:d1_landlord_rent}}
 
 [public] On [[Day 6]] (10:30) he emails "Tomorrow night": rent comes out tomorrow night, 350 DOLR, and there is no late option this time. {{mail:d6_landlord}}
 
@@ -28,6 +28,6 @@ from: 1
 
 ## Writer notes
 
-- Persona `gary`; scripted negotiate reply "No." in contacts.json. Events `d1_landlord_rent` (subject "Rent: due Monday, October 9"), `d6_landlord`.
+- Persona `gary`; scripted negotiate reply "No." in contacts.json. Events `d1_landlord_rent` (subject "Rent: due Sunday, October 13"), `d6_landlord`.
 - Rent amounts in `RENT` (config): 350 day 7, 500 day 14, 650 day 21, taken at payday. They are canon config, tagged planned here only because no mail announces the later ones. Short means the Evicted ending ("Gary changed the locks.").
 - Running gags: his "No." and "Sent from my phone" once per screen at most.

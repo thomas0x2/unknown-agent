@@ -23,7 +23,7 @@ Legit (days 1 to 7), Grey (8 to 10), Dark (11 to 15), Convergence (16 to 20), Fi
 
 ## The daily loop
 
-- **The clock.** A day runs 10:00 to 22:00, one game minute per real second (12 real minutes a day). The clock pauses during dialogs. The calendar starts on Tue Oct 3, 2028 (day 1) and ends on Mon Oct 23 (day 21).
+- **The clock.** A day runs 10:00 to 22:00, one game minute per real second (12 real minutes a day). The clock pauses during dialogs. The calendar starts on Mon Oct 7, 2030 (day 1) and ends on Sun Oct 27 (day 21).
 - **Morning.** The overnight summary, then the day's mail and Y posts arrive spread over the day at their `at` times. A morning Forkyard alert reports overnight breaks.
 - **Work.** The player finds leads (mostly on Y), answers clients in Qmail, prompts the agent in agent.chat, checks the result on the live site, fixes and deploys from Forkyard. The agent can be prompted any time; builds and fixes take game time.
 - **End Day.** Payday (each working client app pays its daily rate, user apps pay 0.3 DOLR per user), rent on rent days, then the night: subscription, hosting (2 DOLR per live app), suspicion drift, overnight breaks, ending checks. Complaints about apps broken at payday arrive the next morning (a client email, or a Y post for user apps).
@@ -58,7 +58,7 @@ Sites the player can reach from day 1 or unlock by clicking through: Qmail, Y, C
 ## Daily regulars
 
 - Y regulars post every day of 1 to 21: Randall Crane (once a day), Axel Rook (1 to 3 a day), Cal Hartman (lowercase, most days), Max Stryker (daily), gated `dayMin = dayMax`. Market posts for Vibe Check come from `y_market.json` every day. Filler (doomscroll, cat_ceo, zev.dolr, noodleposter) from `y_filler.json`, one a day.
-- **Crane's opponent** (`@candidate_2028`, "Candidate 2028", never named) posts about every other day: d2 13:10 encouraged by the poll, d3 listened to working families, d5 a balanced approach to technology, d7 "great crowd, great questions", d9 make sure you're registered, d11 a fourteen-point jobs plan on his website, d13 respects Rook's choice, d15 small businesses, d16 proud of his record (answers Crane's "never had a real job"), d18 his full debate answers are on his website, d19 make a plan to vote, d20 polls 7:00 to 8:00 PM, d21 09:40 "Whoever you support, go vote." His campaign answers mail at `team@candidate2028.vote` with form letters.
+- **Crane's opponent** (`@candidate_2030`, "Candidate 2030", never named) posts about every other day: d2 13:10 encouraged by the poll, d3 listened to working families, d5 a balanced approach to technology, d7 "great crowd, great questions", d9 make sure you're registered, d11 a fourteen-point jobs plan on his website, d13 respects Rook's choice, d15 small businesses, d16 proud of his record (answers Crane's "never had a real job"), d18 his full debate answers are on his website, d19 make a plan to vote, d20 polls 7:00 to 8:00 PM, d21 09:40 "Whoever you support, go vote." His campaign answers mail at `team@candidate2030.vote` with form letters.
 - **Bot swarm** "$GAI to the moon!!" only on days 2, 4, 6, 9, 12, 16, 20 (30, 15, 12, then 10 accounts); the Vibe Check bot-filter bug can only land on those days.
 - **Trending** is the Y sidebar from `trending.json`. A post sharing a word with a trending topic rates as a "reaction" for followers. Only days 1 to 6 have topics; days 7 to 21 show the fallback #AI, #jobs, #election, and their topics on the day pages are proposals that need Thomas's OK.
 - **Election polls on Y** (The Current, sober; CityPulse, tabloid). Presidential: d2 Crane 41 / opponent 44; d5 Y poll Crane 71%; d9 tied 43-43; d13 Crane 46 / 42; d16 pollsters stop calling; d19 Crane 47 / 45; d20 46-46, 8% undecided. Governor (Keller): d5 Keller 45 / 41; d12 Keller +6, or −3 if deepfaked. Crane quotes via CityPulse: d8, d14, d17. The Current also: d1 polling promise, d11 jobs plan, d18 debate fact-check, d21 how to vote.
@@ -100,7 +100,7 @@ Added since:
 - Job offers are spread 10:15 to 16:00, an hour apart, in authored order. Sketchy jobs may come later (the deepfake at 19:00).
 - Story Y posts land by 20:00 (arrivals test). Posts linking a CityPulse article land after it.
 - Client updates wait for the app to be working (`appWorking`) and, where chained, a day after the previous update.
-- Weekdays in copy must match the 2028 calendar (day 7 is a Monday).
+- Weekdays in copy must match the 2030 calendar (day 7 is a Sunday).
 - One app per prompt, one kind of work per prompt. A day's client updates should not need two apps changed in one go.
 
 ## Where the game differs from the old plan

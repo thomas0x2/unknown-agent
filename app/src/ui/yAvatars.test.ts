@@ -12,8 +12,8 @@ const mem: SaveStore = { load: () => null, save: () => {}, clear: () => {} } as 
 
 describe('Y avatars', () => {
   it('only story accounts get a picture', () => {
-    // candidate_2028's account and bio arrive with the opponent storyline (#197)
-    expect(Object.keys(Y_AVATARS).filter((h) => !Y_BIOS[h] && h !== 'candidate_2028')).toEqual([]);
+    // candidate_2030's account and bio arrive with the opponent storyline (#197)
+    expect(Object.keys(Y_AVATARS).filter((h) => !Y_BIOS[h] && h !== 'candidate_2030')).toEqual([]);
   });
 
   it('posts and profiles show the picture; strangers keep initials', () => {

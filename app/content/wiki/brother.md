@@ -19,7 +19,7 @@ from: 1
 
 ## From day 4: Mom's birthday jacket
 
-[public] On [[Day 4]] he emails "mom's birthday": Mom's birthday is Sunday and she needs a new jacket. He asks the player to chip in 40 DOLR by Saturday, or to buy one themselves and he'll cover half.
+[public] On [[Day 4]] he emails "mom's birthday": Mom's birthday is Saturday and she needs a new jacket. He asks the player to chip in 40 DOLR by Friday, or to buy one themselves and he'll cover half.
 
 [hint] He gives the address of his [[Coinbin]] wallet in that email. {{mail:d4_brother_birthday}}
 

@@ -197,3 +197,10 @@ describe('wiki: the real pages', () => {
     expect(queryablePages(wiki, wikiCtx(21, 22 * 60)).some((p) => p.category === 'writers')).toBe(false);
   });
 });
+
+describe('latestDay with calendar dates', () => {
+  it('reads October dates as game days (day 1 is October 7)', () => {
+    expect(latestDay('Election day is Sunday, October 27.')).toBe(21);
+    expect(latestDay('A memo dated Oct 8.')).toBe(2);
+  });
+});
