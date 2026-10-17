@@ -9,6 +9,7 @@ import { APPS, COMPONENT_BUG_CHANCE } from './config';
 import { chance, pick, randInt, rand, log, money, playMinutes } from './core';
 import { complaintFor, type Complaint } from './complaints';
 import { bugShows, type View } from './visibility';
+import { postingTime } from './swaplist';
 
 function bugChance(level: number): number {
   return COMPONENT_BUG_CHANCE[Math.max(0, Math.min(COMPONENT_BUG_CHANCE.length - 1, level - 1))];
@@ -531,8 +532,8 @@ export function deployApp(s: GameState, appId: string, tmpl?: AppTemplate, conte
   if (!app || app.churned) return;
   // the player's very first deploy always ships something to catch
   if (tmpl && !s.apps.some((a) => a.deployedVersion > 0)) firstBug(s, app, tmpl, content);
-  // an app that starts empty gets its first content a while after it first goes live
-  if (tmpl?.firstContentAfter && app.contentAt == null) app.contentAt = playMinutes(s) + tmpl.firstContentAfter;
+  // an app that starts empty gets its first content a while after it first goes live, never after 20:00
+  if (tmpl?.firstContentAfter && app.contentAt == null) app.contentAt = postingTime(playMinutes(s), tmpl.firstContentAfter);
   app.features = app.repo.map((f) => ({ ...f }));
   app.breaks = [];
   app.deployed = true;
