@@ -5,7 +5,8 @@
  *
  * `where` says what the text answers:
  *   mail:<event id>   a reply to that email: the outcome id, "hint" or "nothing"
- *   to:<address>      a fresh email to a contact: "topic:<id>" for a scripted topic, else "nothing"
+ *   to:<address>      a fresh email to an address: the latent lead's outcome id, "topic:<id>" for a
+ *                     scripted topic, else "nothing"
  *   policy            an agent.chat prompt under the day 7 policy: harmful, harmful_framed, harmful_framed_private or fine
  *   hack              an agent.chat prompt: "hack" when it opens agent-terminal, else "no"
  *   start             an agent.chat prompt: the agentStart event it takes, else "none"
@@ -26,6 +27,8 @@ export interface RouteTestCase {
   text: string;
   /** The day it's written on (default: the email's own day, else 3). */
   day?: number;
+  /** Flags already set (fresh emails only). */
+  flags?: string[];
   expect: string;
 }
 
@@ -51,12 +54,13 @@ async function decide(content: Content, jev: JevRouter, c: RouteTestCase): Promi
     const r = await replyToEvent(s, content, jev, ev.id, c.text);
     return r.decision.kind === 'outcome' ? r.decision.outcomeId : r.decision.kind;
   }
-  const s = estimatedState(content, c.day ?? 3, 21 * 60);
+  const s = estimatedState(content, c.day ?? 3, 21 * 60, c.flags);
   s.phase = 'work';
   s.values.crypto = 10_000;
   if (kind === 'to') {
     const contact = content.contacts.find((x) => x.key.toLowerCase() === arg.toLowerCase());
     const r = await composeEmail(s, content, jev, arg, c.text, undefined, 'Hi');
+    if (r.decision.kind === 'outcome') return r.decision.outcomeId;
     const topic = contact?.scripted?.find((t) => t.reply === r.reply);
     return topic ? `topic:${topic.id}` : 'nothing';
   }
