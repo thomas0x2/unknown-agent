@@ -235,14 +235,16 @@ function land(s: GameState, ev: GameEvent, workaround: boolean, detail: boolean)
 export function payHacks(s: GameState, content: Content): [string, number][] {
   const lines: [string, number][] = [];
   for (const p of s.hackPay ?? []) {
-    const ev = content.events.find((e) => e.id === p.eventId && e.hack);
-    if (!ev?.hack) continue;
-    const spec = ev.hack;
-    if (p.botched && spec.detail) {
+    // agent jobs (agentJobs.ts, the deepfake) are paid the same way
+    const ev = content.events.find((e) => e.id === p.eventId && (e.hack || e.agentJob));
+    const spec = ev?.hack ?? ev?.agentJob;
+    if (!ev || !spec) continue;
+    if (p.botched && ev.hack?.detail) {
+      const detail = ev.hack.detail;
       for (const r of s.reviews) if (r.id.startsWith(`hack:${ev.id}:`)) r.removed = true;
-      applyEffects(s, { job: 'fail', setFlags: spec.detail.deletedFlags }, ev.job, ev.id);
+      applyEffects(s, { job: 'fail', setFlags: detail.deletedFlags }, ev.job, ev.id);
       log(s, `${ev.from ?? ev.id}: the fake reviews were deleted overnight. No pay.`, 'info');
-      if (ev.addr) sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'Unknown', addr: ev.addr, subject: spec.detail.deletedSubject, body: spec.detail.deleted, read: false, scripted: 'outcome' }, 24 * 60 - s.clockMin + 10 * 60 + 40);
+      if (ev.addr) sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'Unknown', addr: ev.addr, subject: detail.deletedSubject, body: detail.deleted, read: false, scripted: 'outcome' }, 24 * 60 - s.clockMin + 10 * 60 + 40);
       continue;
     }
     if (!spec.effects.job || !ev.job) continue;

@@ -96,6 +96,9 @@ from: 1
 - [public] {{article:debate}}
 - [public] {{article:debate-poll}}
 - [public] {{article:crane-posts}}
+- [public] On day 11 CityPulse shows him on [[Kirschbaum]]'s yacht in 2019; on day 15 The Current finds eleven flights on Kirschbaum's jet; on day 16 CityPulse follows up. He "barely knew" Kirschbaum and "doesn't recall the plane." {{article:crane-kirschbaum}}
+- [public] {{article:crane-flights}}
+- [public] {{y:d15_y_current_flights}}
 
 ## Writer notes
 

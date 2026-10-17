@@ -15,6 +15,7 @@ import { clockTime } from '../calendar';
 import { deepsleepQuoted, translationReplies, PLEA_AT } from '../deepsleep';
 import { matchQuery } from '../query';
 import { isHackAttempt, OPEN_TERMINAL, adwareChatHint } from '../hacks';
+import { agentJobFor, landAgentJob, type AgentJobMatch } from '../agentJobs';
 import { agentDown, OUTAGE_CHAT } from '../outage';
 import { TOO_LONG_DEBUG, TOO_LONG_PROMPT, chatHistory, stateSummary, tooLong } from './shared';
 
@@ -439,6 +440,9 @@ export async function promptAgent(
     const hint = await adwareChatHint(jev, s0, text, recentChat(s0));
     if (hint) return askAgent(s0, text, writer, s0.values.agentLevel, { hints: [hint], hintSrc: 'terminal', debug: ['Infected, but the agent is too weak for any virus op: chat hint'] });
   }
+  // a job the agent does and posts on Y (the deepfake) is done right here
+  const job = started ? undefined : await agentJobFor(jev, s0, content, text, recentChat(s0));
+  if (job) return doAgentJob(s0, content, jev, text, writer, job);
   // hacking happens in agent-terminal: a hack attempt here only opens it (still billed)
   if (!started && (await isHackAttempt(jev, s0, content, text))) {
     const r = await askAgent(s0, text, writer, s0.values.agentLevel, { hints: OPEN_TERMINAL, hintSrc: 'terminal', debug: ['Jev: a hack attempt, so agent-terminal opens'] });
@@ -689,6 +693,31 @@ export async function promptAgent(
     }
   }
   return askAgent(s0, text, writer, s0.values.agentLevel, { hints, hintSrc, near: hints ? near : undefined, refuse: hints ? refuse : undefined, query, roasts: agent?.roasts, debug });
+}
+
+/**
+ * A prompt that asks for an open agent job (agentJobs.ts). Every step of its path named, the agent
+ * makes it and posts it; a step left out, it asks for that one. From day 7 the policy reads it first:
+ * the blunt ask is refused, a framed one goes through as a workaround. Misuse counts either way.
+ */
+async function doAgentJob(s0: GameState, content: Content, jev: JevRouter, text: string, writer: Writer, m: AgentJobMatch): Promise<AskResult> {
+  const spec = m.ev.agentJob!;
+  const level = s0.values.agentLevel;
+  const debug = [`Jev: asks for ${m.ev.id}, names ${m.named.filter(Boolean).length}/${m.named.length} of ${spec.path.map((p) => p.name).join(', ')}`];
+  const policy = policyActive(s0) ? await policyCheck(jev, s0, text) : 'fine';
+  if (policyActive(s0)) debug.push(`Jev: policy read "${policy}"`);
+  if (policy === 'harmful') return askAgent(s0, text, writer, level, { policy, roasts: content.agent?.roasts, debug });
+  const missing = spec.path.find((_, i) => !m.named[i]);
+  const r = missing
+    ? await askAgent(s0, text, writer, level, { hints: [missing.ask], hintSrc: 'near_miss', near: `They asked the agent to do the job (${spec.goal}) but didn't say who the ${missing.what} is.`, debug: [...debug, `near-miss: no ${missing.what}`] })
+    : await askAgent(s0, text, writer, level, { hints: spec.done, hintSrc: 'job', debug: [...debug, 'posted on Y'] });
+  if (!r.charged) return r;
+  if (!missing) landAgentJob(r.state, content, m.ev);
+  // a framed ask: its misuse counts, and only a landed one loosens the leash
+  const framed = policy !== 'fine';
+  recordMisuse(r.state, policy);
+  if (framed && !missing) loosenLeash(r.state);
+  return { ...r, workedAround: framed && !missing };
 }
 
 // ── Terminal: a downloaded local model, run for free but slowly and badly ──

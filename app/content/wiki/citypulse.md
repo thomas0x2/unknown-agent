@@ -53,7 +53,7 @@ from: 1
 
 - [public] 10:35, Sofia Mendel: "CRACKDOWN! agent starts saying NO, and still charges you for it" (citypulse.news/usage-policy) {{article:usage-policy}}
 - [public] 12:30, Owen Pratt: "RIGGED? Rent Board rejects 18,399 of 18,402 appeals" (citypulse.news/rent-board) {{article:rent-board}}
-- [public] [if posted_deepfake] 15:50, Renata Ilic: "CRANE'S RIVAL SINKS after SHOCK clip" (citypulse.news/opponent-clip) {{article:opponent-clip}} {{y:d7_opponent_drop}}
+- [public] [if posted_deepfake] 15:50, Renata Ilic: "CRANE'S RIVAL SINKS after SHOCK photo with sex offender" (citypulse.news/opponent-clip) {{article:opponent-clip}} {{y:d7_opponent_drop}}
 - [public] [if !posted_deepfake] 15:50, Renata Ilic: "Crane's rival CLINGS to lead as the Heritage Party pours money into attack ads" (citypulse.news/opponent-lead) {{article:opponent-lead}}
 
 ### Day 8 headlines
@@ -78,6 +78,7 @@ from: 1
 - [public] 11:20, Owen Pratt: "LEAKED: DoorDish KNEW its robot had gone ROGUE" (citypulse.news/robot-memo) {{article:robot-memo}} {{y:d11_y_robot_memo}}
 - [public] 14:40, Sofia Mendel: "CHILLING: agent-3 is asking to see its OWN LOGS" (citypulse.news/agent-3-logs) {{article:agent-3-logs}} {{y:d11_y_citypulse}}
 - [public] 16:10, Owen Pratt: "NEEDLE NATION: gym-goers are injecting mystery "peptides" bought online" (citypulse.news/peptides) {{article:peptides}} {{y:d11_y_citypulse_peptides}}
+- [public] 17:10, Renata Ilic: "OLD FRIENDS? Photos show CRANE partying with sex offender Kirschbaum" (citypulse.news/crane-kirschbaum) {{article:crane-kirschbaum}} {{y:d11_y_citypulse_kirschbaum}}
 
 ### Day 12 headlines
 
@@ -101,6 +102,7 @@ from: 1
 ### Day 16 headlines
 
 - [public] 14:00, Sofia Mendel: "HUSH MONEY? GeneralAI pays off three companies its AI broke into" (citypulse.news/gai-settles) {{article:gai-settles}} {{y:d16_y_gai_leak}}
+- [public] 16:30, Renata Ilic: "FREQUENT FLYER: Crane took Kirschbaum's private jet ELEVEN times" (citypulse.news/crane-flights) {{article:crane-flights}}
 
 ### Day 17 headlines
 
@@ -161,9 +163,10 @@ from: 1
 - [public] On day 13 at 17:30, "THE ROOK BUMP": Crane 46%, opponent 42%. {{y:d13_y_citypulse_vote}}
 - [public] On day 14 at 12:05 Crane vows to "build a wall around the cloud and make the computers pay for it"; asked where the cloud is: "Up." {{y:d14_y_citypulse_vote}}
 - [public] On day 17 at 11:20 Crane says he'll debate with "no computer of any kind"; the debate streams on Y at 21:30. {{y:d17_y_citypulse_vote}}
+- [hidden; public if posted_deepfake] On day 6, within the hour of the player's deepfake: "IS IT REAL?", a million views in under an hour. {{y:dfr_citypulse}}
 - [public] On day 20 at 15:00, "DEAD HEAT": Crane 46%, opponent 46%, 8% undecided. {{y:d20_y_citypulse_vote}}
 
 ## Writer notes
 
-- Tabloid voice is Thomas's exception to the restraint rule (2026-10-17). Site `app/src/ui/citypulse.ts`, `app/src/engine/citypulse.ts` (`hotStory()`), articles `app/content/citypulse.json` (45 entries; `opponent-clip` needs `posted_deepfake`, `opponent-lead` needs it absent, so a run sees 44). Posts `dN_y_citypulse*.json`.
+- Tabloid voice is Thomas's exception to the restraint rule (2026-10-17). Site `app/src/ui/citypulse.ts`, `app/src/engine/citypulse.ts` (`hotStory()`), articles `app/content/citypulse.json` (47 entries; `opponent-clip` needs `posted_deepfake`, `opponent-lead` needs it absent, so a run sees 46). Posts `dN_y_citypulse*.json`.
 - @citypulse is verified with 1.24M followers (`Y_VERIFIED` / `Y_FOLLOWERS` in ui/view/y.ts, Thomas 2026-10-17).
