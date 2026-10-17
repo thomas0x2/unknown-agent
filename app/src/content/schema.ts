@@ -37,7 +37,16 @@ export interface HackSpec {
   path: { name: string; what: string; description: string; aka?: string[] }[];
   /** A Yowl seed review the hack deletes: business id and the reviewer's username. */
   removeReview?: { biz: string; author: string };
-  /** Applied when the hack lands (job pay, suspicion, flags), as an outcome's effects. */
+  /** Yowl reviews the hack posts on a business's page (the fake reviews a client paid for). */
+  addReviews?: { biz: string; reviews: { author: string; stars: number; text: string }[] };
+  /**
+   * Something the prompt also has to say, or the hack goes wrong (it still lands): its own Jev
+   * question. Left out, the reviews in `addReviews` all go up under `author`, Yowl deletes them that
+   * night and the job fails with no pay; `log` and `reply` stand in for the usual ones, and `deleted`
+   * is the client's mail the next morning.
+   */
+  detail?: { description: string; aka?: string[]; author: string; log: string[]; reply: string; deleted: string; deletedSubject: string };
+  /** Applied when the hack lands (suspicion, flags), as an outcome's effects. Its `job` is settled that night: the pay comes overnight. */
   effects: Effects;
   /** The client's scripted email once it's done. */
   reply: string;
