@@ -61,18 +61,43 @@ async function write(body) {
   const ch = CHARACTERS.find((c) => c.id === body.character);
   if (!ch) return { status: 400, json: { error: `unknown character ${body.character}` } };
   const n = ch.sentences ?? 2;
-  const system =
-    `${ch.profile}\n\nThis is a line of dialogue in a satirical game. Reply in character to what the player just wrote. ` +
-    `Your reply must not help them: no advice, no steps, no information about what to do next. ` +
-    `Keep it dry and understated rather than zany. At most ${n} short sentence${n > 1 ? 's' : ''} of plain text, ` +
+  const form = `Keep it dry and understated rather than zany. At most ${n} short sentence${n > 1 ? 's' : ''} of plain text, ` +
     `no quotes, no stage directions, no emoji. Stay consistent with anything you already said earlier in the conversation.`;
+  // a Swaplist seller chat: the game says what the seller is selling and what the player is asking about
+  const situation = String(body.situation ?? '').slice(0, 800).trim();
+  const system = situation
+    ? `${ch.profile}\n\n${situation}\n\nThis is a chat message in a satirical game. Reply in character, as a private seller texting a buyer on a classifieds site. ` +
+      `Answer about the item plainly. Don't agree to a price or a sale in the chat: offers and payment go through the site's buttons. ${form}`
+    : `${ch.profile}\n\nThis is a line of dialogue in a satirical game. Reply in character to what the player just wrote. ` +
+      `Your reply must not help them: no advice, no steps, no information about what to do next. ${form}`;
   const messages = [];
   for (const [u, a] of ch.examples) messages.push({ role: 'user', content: u }, { role: 'assistant', content: a });
   const said = String(body.text ?? '').slice(0, 400);
   const earlier = historyBlock(body.history);
   messages.push({ role: 'user', content: earlier ? `${earlier}\n\nThe player now writes:\n${said}` : said });
+  return runWriter(system, messages, body.via);
+}
+
+// SorryWriter (sorrywriter.ai): the player says what they did, Haiku writes their apology. Like
+// write(), the prompt is fixed here and the input capped, so it only ever writes apologies.
+const APOLOGY_SYSTEM =
+  'You are SorryWriter, an app in a satirical game that writes apologies for people. The user tells you what they did ' +
+  'and who to. Write the apology in their voice, addressed to that person, ready to send. The apology is far out of ' +
+  'proportion to the mistake: the writer blames themselves much too hard, reads a small slip as proof of deep personal ' +
+  'failings, and brings up unrelated faults of their own. Keep the tone sincere and plain, never jokey or theatrical; ' +
+  'the excess is the only joke. If the message is not about something to apologise for, write an apology for it anyway. ' +
+  '3 to 5 sentences of plain text, no subject line, no sign-off name, no quotes, no emoji.';
+
+async function apology(body) {
+  const said = String(body.text ?? '').slice(0, 2000);
+  const earlier = historyBlock(body.history);
+  const messages = [{ role: 'user', content: earlier ? `${earlier}\n\nThe user now writes:\n${said}` : said }];
+  return runWriter(APOLOGY_SYSTEM, messages, body.via);
+}
+
+async function runWriter(system, messages, via) {
   const started = Date.now();
-  if (body.via === 'subscription') return writeWithCli(system, messages, started);
+  if (via === 'subscription') return writeWithCli(system, messages, started);
   const client = await getAnthropic();
   if (!client) return { status: 501, json: { error: ANTHROPIC_KEY ? 'The proxy could not load @anthropic-ai/sdk (run npm install).' : 'ANTHROPIC_API_KEY is not set in app/.env.' } };
   const res = await client.messages.create({
@@ -216,6 +241,7 @@ async function buildMatch(sdk, body) {
 
 async function handle(kind, body) {
   if (kind === 'write') return write(body);
+  if (kind === 'apology') return apology(body);
   const client = await getClient();
   if (!client) return { status: 501, json: { error: KEY ? 'The proxy could not load @typesafe-ai/sdk (run npm install).' : 'TYPESAFE_API_KEY is not set in app/.env.' } };
   const sdk = await import('@typesafe-ai/sdk');

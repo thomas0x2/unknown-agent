@@ -19,7 +19,7 @@ const FOLDERS: { id: Folder; label: string }[] = [
   { id: 'models', label: 'Models' },
 ];
 
-interface DriveFile {
+export interface DriveFile {
   id: string;
   name: string;
   folder: Folder;

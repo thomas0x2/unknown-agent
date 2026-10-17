@@ -20,6 +20,10 @@ export interface WriteReq {
    * scripted lines included. `from` is 'player', 'self' (the speaker), or another sender's name.
    */
   history?: HistoryLine[];
+  /** Speak as this character (content/characters.json) instead of the one `as` maps to. */
+  character?: string;
+  /** What the character is doing right now (a Swaplist seller: the listing, the buyer's question). */
+  situation?: string;
 }
 
 export interface HistoryLine { from: string; text: string }

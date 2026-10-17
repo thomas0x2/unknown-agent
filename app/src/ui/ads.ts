@@ -11,8 +11,7 @@
  */
 
 import { TOKENS } from './icons';
-import { vantorWordmark } from './vantor';
-import { steadfastWordmark } from './steadfast';
+import { adLogoHtml } from './siteIcons';
 
 /** the two ad pools: rectangular leaderboards for the top of a page, square boxes for sidebars */
 export type AdSlot = 'wide' | 'square';
@@ -34,8 +33,6 @@ interface Ad {
   cta_fx?: 'shake' | 'pulse' | 'blink';
   /** first day the ad runs */
   from?: number;
-  /** the sponsor's logo, in the top corner (brands that have one) */
-  logo?: string;
 }
 
 /** Rectangular leaderboards: room for a sentence and a button. */
@@ -71,7 +68,7 @@ export const WIDE: Ad[] = [
     cta: 'TO THE MOON', fine: 'DOLR is not a currency, a security, a promise, or a coin. It is a feeling.',
   },
   {
-    id: 'vantor', sponsor: 'Vantor Group', href: 'vantor.group/careers', theme: 'ad-vantor', deco: 'shine', logo: vantorWordmark(),
+    id: 'vantor', sponsor: 'Vantor Group', href: 'vantor.group/careers', theme: 'ad-vantor', deco: 'shine',
     frames: ['Vantor Group is <b>hiring</b>!', 'Open positions: <b>0</b>', 'GeneralAI-powered people &amp; culture.'],
     cta: 'See openings', fine: '$VANT up 14% after restructuring. Thank you for your service.',
   },
@@ -97,7 +94,7 @@ export const WIDE: Ad[] = [
     cta: 'Bring them back', fine: 'They can’t cancel. Messages may be used to train Grandma 2.0.',
   },
   {
-    id: 'outplacement', sponsor: 'Vantor Outplacement', href: 'vantor.group/next-chapter', theme: 'ad-vantor', deco: 'ekg', logo: vantorWordmark('Outplacement'),
+    id: 'outplacement', sponsor: 'Vantor Outplacement', href: 'vantor.group/next-chapter', theme: 'ad-vantor', deco: 'ekg',
     frames: ['Laid off by AI?', 'Our AI will help you find your next role.', 'Roles found to date: <b>0</b>. Morale: <b>optimised</b>.'],
     cta: 'Start my next chapter', fine: 'Your next chapter has also been automated.',
   },
@@ -137,7 +134,7 @@ export const WIDE: Ad[] = [
     cta: 'Start crying', fine: 'Tears are stored to improve our bots.',
   },
   {
-    id: 'insurance', sponsor: 'Steadfast Mutual', href: 'steadfast.insure', theme: 'ad-steadfast', deco: 'shine', logo: steadfastWordmark(),
+    id: 'insurance', sponsor: 'Steadfast Mutual', href: 'steadfast.insure', theme: 'ad-steadfast', deco: 'shine',
     frames: ['When the AI escapes,', 'will you be covered?', '<b>No.</b> But you’ll have paid.'],
     cta: 'Get a quote', fine: 'Excludes acts of God, acts of GeneralAI, and acts.',
   },
@@ -317,7 +314,7 @@ export function adHtml(site: string, day: number, slot: AdSlot, n = 0): string {
   return `<div class="ad ad-${slot} ${ad.theme}" style="--ad-t:${t}ms" data-newtab="${escAttr(ad.href)}" role="link" aria-label="Advertisement: ${escAttr(ad.sponsor)}">
     ${decoHtml(ad.deco)}
     <span class="ad-tag" title="${escAttr(why)}">Ad · ${escAttr(ad.sponsor)} <i>ⓘ</i></span>
-    ${ad.logo ? `<span class="ad-logo">${ad.logo}</span>` : ''}
+    ${adLogoHtml(ad.href)}
     <span class="ad-frames">${frames}</span>
     <span class="ad-cta${ad.cta_fx ? ' fx-' + ad.cta_fx : ''}">${escAttr(ad.cta)}</span>
     <span class="ad-fine">${escAttr(ad.fine)}</span>

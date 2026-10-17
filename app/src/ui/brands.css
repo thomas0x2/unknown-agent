@@ -17,7 +17,3 @@
 .lp-brand .vantor-wordmark, .lp-brand .steadfast-wordmark { height: 30px; max-width: 100%; }
 .lp-brand .steadfast-wordmark { height: 36px; }
 
-/* banner ads: the sponsor's logo in the top-right corner */
-.ad-logo { position: absolute; top: 6px; right: 10px; z-index: 3; height: 15px; color: var(--ad-ink); opacity: .9; pointer-events: none; }
-.ad-square .ad-logo { display: none; }
-.ad-steadfast .ad-logo { height: 20px; top: 5px; }
