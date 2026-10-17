@@ -41,6 +41,8 @@ export interface WikiPage {
   aliases: string[];
   category: WikiCategory;
   from: number;
+  /** A page of many things (ad brands, local businesses): a question can name one of its sections without naming the page. */
+  hub?: boolean;
   sections: WikiSection[];
 }
 
@@ -102,6 +104,7 @@ export function parseWikiPage(md: string, file = ''): WikiPage {
       else if (m[1] === 'aliases') page.aliases = v.replace(/^\[|\]$/g, '').split(',').map((a) => a.trim().replace(/^["']|["']$/g, '')).filter(Boolean);
       else if (m[1] === 'category') page.category = v as WikiCategory;
       else if (m[1] === 'from') page.from = Number(v) || 1;
+      else if (m[1] === 'hub') page.hub = v === 'true';
     }
   }
   const raw: { heading: string; lines: string[] }[] = [{ heading: '', lines: [] }];
@@ -305,7 +308,7 @@ export function formatBlock(b: Pick<WikiBlock, 'rule' | 'text' | 'bullet' | 'row
 
 /** A whole page back as markdown (what the wiki editor saves). */
 export function formatWikiPage(p: WikiPage): string {
-  const fm = ['---', `title: ${p.title}`, ...(p.aliases.length ? [`aliases: ${p.aliases.join(', ')}`] : []), `category: ${p.category}`, `from: ${p.from}`, '---', ''];
+  const fm = ['---', `title: ${p.title}`, ...(p.aliases.length ? [`aliases: ${p.aliases.join(', ')}`] : []), `category: ${p.category}`, `from: ${p.from}`, ...(p.hub ? ['hub: true'] : []), '---', ''];
   const out: string[] = [];
   for (const sec of p.sections) {
     const head = sec.writer ? 'Writer notes'

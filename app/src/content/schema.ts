@@ -387,6 +387,8 @@ export interface Character {
   query?: { profile: string; examples: [string, string][]; sentences?: number };
   /** How agent words a near-miss (game/haiku.ts, mode 'near'): says what the prompt was missing, still mean. */
   near?: { profile: string; sentences?: number };
+  /** How agent refuses a query about something classified (mode 'refuse'). */
+  refuse?: { profile: string; sentences?: number };
 }
 
 /** Everything the engine reads, gathered in one bundle and passed into engine steps. */

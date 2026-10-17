@@ -2,7 +2,7 @@
  * Loads the content bundle from the JSON files in /content. Uses Vite's glob import so new files are
  * picked up with no code change. Empty folders are fine — the game boots to an empty browser.
  */
-import { parseWikiPage } from '../engine/wiki';
+import { wikiPages } from './wikiFiles';
 import type { Content, GameEvent, AppTemplate, FillerPost, Contact, AgentContent, Character, MarketContent, MatchlessContent } from './schema';
 
 export function loadContent(): Content {
@@ -16,7 +16,6 @@ export function loadContent(): Content {
   const marketMods = import.meta.glob('../../content/y_market.json', { eager: true }) as Record<string, { default: MarketContent }>;
   const matchlessMods = import.meta.glob('../../content/matchless.json', { eager: true }) as Record<string, { default: MatchlessContent }>;
   const agentMods = import.meta.glob('../../content/agent.json', { eager: true }) as Record<string, { default: AgentContent }>;
-  const wikiMods = import.meta.glob('../../content/wiki/*.md', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
 
   const events = Object.values(eventMods).map((m) => m.default);
   const apps: Record<string, AppTemplate> = {};
@@ -29,7 +28,7 @@ export function loadContent(): Content {
   const characters = Object.values(characterMods)[0]?.default ?? [];
   const yMarket = Object.values(marketMods)[0]?.default;
   const matchless = Object.values(matchlessMods)[0]?.default;
-  const wiki = Object.entries(wikiMods).filter(([path]) => !path.endsWith('/README.md')).map(([path, md]) => parseWikiPage(md, path.split('/').pop()!));
+  const wiki = wikiPages();
 
   return { events, apps, yFiller, qmailSpam, trending, contacts, characters, agent, yMarket, matchless, wiki };
 }

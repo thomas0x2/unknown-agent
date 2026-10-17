@@ -4,8 +4,10 @@ The world bible and the day-by-day timeline, one page per thing: a person, a com
 a day. It is the reference for anyone writing game content, and what agent answers the player's
 questions from (agent.chat queries, `src/engine/query.ts`). Read `index.md` first; it lists every
 page. In the game, with dev mode on, the bookmarked **wiki.dev** site shows every page with each
-paragraph's tag as the player stands now, and edits text and tags (it saves here through the local
-proxy, so run `npm run proxy`).
+paragraph's tag as the player stands now, and edits text and tags. The same editor runs in a real
+browser tab at **http://localhost:5173/wiki.html** (while `npm run dev` runs), with "view as" day,
+time and flags instead of the game's. Both save here through the local proxy (`npm run proxy`), and a
+save in one shows up in the other at once.
 
 ## Page format
 
@@ -38,6 +40,9 @@ Code paths, flags, open questions. Never part of an answer, never tagged.
 - **aliases** are other names a question might use: first names, handles, addresses, domains.
 - **category**: `people`, `family`, `companies`, `sites`, `apps`, `world`, `days`, or `writers`
   (writers pages, like the tone rules, endings and the timeline overview, are never used for answers).
+- **hub: true** (optional) marks a page of many things, like Ad brands and Local businesses: each
+  section is matched on its own, so a question that names one brand or shop finds its section
+  without naming the page.
 - **from**: the first day the player can know the page's subject exists (default 1). Before it, a
   question about it is a miss.
 - **Sections** (`##`) are what a question is matched to after the page, so give them headings that
@@ -91,11 +96,16 @@ A sentence that names a later day but is known in advance (rent amounts and due 
 
 ## How a query is answered
 
-Jev reads an agent.chat prompt as a query, then matches it down the wiki like a fix down an app's
-components, but looser: which page (title and aliases), then which section. Naming no page (or more
-than three) is too vague: a miss, and agent roasts the player. A page without a section gets its
-overview. agent.chat shows agent "Searching the WWW" while Haiku answers, still mean, from the matched paragraphs that are public now, and may
-only hint at the hint ones; if there are none, the player gets a scripted classified roast. Haiku can
+Jev reads an agent.chat prompt as a query (questions about the world, and how-to questions like
+"how can I build apps?"), then matches it down the wiki like a fix down an app's components, but
+looser: which page (title and aliases), then which section. When several pages match, Jev is asked
+which one the question is mainly about ("What's DOLR?" is Money and DOLR, not agent's prices); those
+win. Naming no page is a miss (agent roasts the player); more than three is too vague (agent asks
+which). A page without a section gets its overview. agent.chat shows agent "Searching the WWW" while
+Haiku answers, still mean, from the matched paragraphs that are public now, and may only hint at the
+hint ones. If there are none, or the page isn't known to the player yet, the answer is refused:
+Haiku writes the refusal without seeing the text, and agent.chat shows "Tried to access classified
+information · answer refused". Haiku can
 also read the player's own screens (Qmail, Y, Yowl, CityPulse, Forkyard, Coinbin; `server/screens.mjs`).
 
 ## Keeping it current

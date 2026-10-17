@@ -1,11 +1,13 @@
 /*
- * wiki.dev: the world wiki inside the game's browser, for development only (reachable and bookmarked
- * while dev mode is on). Browse every page, see what each paragraph is right now for the player
- * (public, hint or classified, under the current day, clock, flags and meters, and what Haiku would
- * be given), and edit it: the text, the tag rule, splitting and merging paragraphs. Saves go through
- * the local proxy (POST /api/wiki) into content/wiki/*.md.
+ * The world wiki editor, in two places: wiki.dev inside the game's browser (dev mode only, bookmarked
+ * there) and the standalone page wiki.html for a real browser (src/wikiPage.ts). Both draw this same
+ * view from the same files, content/wiki/*.md: browse every page, see what each paragraph is for the
+ * player (public, hint or classified, and what Haiku would be given), and edit the text, the tag rule,
+ * and split and merge paragraphs. Saves go through the local proxy (POST /api/wiki); Vite then hands
+ * the changed files to every open copy (onWikiFiles), so the two stay in sync.
  */
 import type { GameStore } from '../game/store';
+import type { Content } from '../content/schema';
 import {
   parseWikiPage, formatWikiPage, parseTagRule, formatTagRule, evalTag, blockNow, queryCtx, seenRef, CITYPULSE, METERS,
   type WikiPage, type WikiBlock, type WikiTag, type TagStep, type WikiCtx,
@@ -26,13 +28,48 @@ const W = {
 const CATS: [string, string][] = [['days', 'Days'], ['people', 'People'], ['family', 'Family'], ['companies', 'Companies'], ['sites', 'Sites'], ['apps', 'Apps'], ['world', 'World'], ['writers', 'Writers']];
 const KINDS: [TagStep['kind'] | 'notflag', string][] = [['day', 'from day'], ['flag', 'if flag set'], ['notflag', 'if flag not set'], ['meter', 'if meter'], ['seen', 'once seen']];
 
-const pagesOf = (store: GameStore): WikiPage[] => store.content.wiki ?? [];
-const ctxOf = (store: GameStore): WikiCtx => queryCtx(store.state, store.content);
+/** Where the editor runs: the game (wiki.dev) or the standalone page. */
+export interface WikiHost {
+  content: Content;
+  /** Where the player stands, for what each paragraph is right now. */
+  ctx(): WikiCtx;
+  /** One line on that, for the top bar. */
+  ctxLabel(): string;
+  /** Flags to suggest in rule rows. */
+  flags(): string[];
+  /** The site's name in the top bar. */
+  name: string;
+  /** Extra controls for the top bar (the standalone page's "view as"). */
+  controls?(): string;
+  open(file: string): void;
+  repaint(): void;
+}
+
+/** wiki.dev's host: the running game. */
+export function gameWikiHost(store: GameStore): WikiHost {
+  return {
+    content: store.content,
+    ctx: () => queryCtx(store.state, store.content),
+    ctxLabel: () => {
+      const s = store.state;
+      return `Day ${s.values.day} · ${clock(s.clockMin)} · ${s.flags.length} flags · tags shown as the player stands now (change day and flags in the story debugger)`;
+    },
+    flags: () => store.state.flags,
+    name: 'wiki.dev',
+    controls: () => `<a class="wk-out" href="/wiki.html#${encodeURIComponent(W.page.replace(/\.md$/, ''))}" target="_blank" rel="noopener">Open in a real browser tab ↗</a>`,
+    open: (file) => store.navigate(`wiki.dev/${file.replace(/\.md$/, '')}`),
+    repaint: () => store.repaint(),
+  };
+}
+
+export const clock = (min: number) => `${String(Math.floor(min / 60)).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`;
+const pagesOf = (host: WikiHost): WikiPage[] => host.content.wiki ?? [];
+const ctxOf = (host: WikiHost): WikiCtx => host.ctx();
 const tagPill = (t: WikiTag, title = '') => `<span class="wk-tag ${t}"${title ? ` title="${esc(title)}"` : ''}>${t}</span>`;
 
-function nav(store: GameStore, open?: WikiPage): string {
+function nav(host: WikiHost, open?: WikiPage): string {
   const q = W.search.trim().toLowerCase();
-  const all = pagesOf(store).filter((p) => !q || [p.title, ...p.aliases, p.file].some((x) => x.toLowerCase().includes(q)));
+  const all = pagesOf(host).filter((p) => !q || [p.title, ...p.aliases, p.file].some((x) => x.toLowerCase().includes(q)));
   const groups = CATS.map(([id, label]) => {
     const list = all.filter((p) => p.category === id).sort((a, b) => (id === 'days' ? a.from - b.from : a.title.localeCompare(b.title)));
     if (!list.length) return '';
@@ -43,12 +80,12 @@ function nav(store: GameStore, open?: WikiPage): string {
 }
 
 /** Every email, post and article id a rule can wait on or a paragraph can embed. */
-function itemIds(store: GameStore): string[] {
-  const c = store.content;
+function itemIds(host: WikiHost): string[] {
+  const c = host.content;
   return [...c.events.filter((e) => e.site === 'qmail' || e.site === 'y' || e.site === 'yowl').map((e) => e.id), ...(c.yMarket?.posts ?? []).map((p) => p.id), ...c.yFiller.map((f) => f.id), ...CITYPULSE.map((a) => `article:${a.slug}`)];
 }
 
-function stepRow(x: TagStep | null, i: number, store: GameStore): string {
+function stepRow(x: TagStep | null, i: number, host: WikiHost): string {
   const kind = !x ? 'day' : x.kind === 'flag' && x.not ? 'notflag' : x.kind;
   const val = !x ? '' : x.kind === 'day' ? String(x.day) : x.kind === 'flag' ? x.flag : x.kind === 'seen' ? x.ref : `${x.meter} ${x.op} ${x.value}`;
   const tag = x?.tag ?? 'public';
@@ -57,12 +94,12 @@ function stepRow(x: TagStep | null, i: number, store: GameStore): string {
     <select id="wk-st-kind-${i}">${KINDS.map(([k, l]) => `<option value="${k}" ${k === kind ? 'selected' : ''}>${l}</option>`).join('')}</select>
     <input id="wk-st-val-${i}" value="${esc(val)}" placeholder="5 · seed_stolen · suspicion >= 40 · d5_coffee_removal" list="wk-hints">
     <button class="wk-x" data-wiki="delstep" data-i="${i}" title="Remove this rule">×</button></div>`
-    + (i === 0 ? `<datalist id="wk-hints">${[...Object.keys(METERS).map((m) => `${m} >= `), ...store.state.flags, ...itemIds(store)].map((v) => `<option value="${esc(v)}">`).join('')}</datalist>` : '');
+    + (i === 0 ? `<datalist id="wk-hints">${[...Object.keys(METERS).map((m) => `${m} >= `), ...host.flags(), ...itemIds(host)].map((v) => `<option value="${esc(v)}">`).join('')}</datalist>` : '');
 }
 
-function editor(store: GameStore, b: WikiBlock): string {
+function editor(host: WikiHost, b: WikiBlock): string {
   const r = parseTagRule(b.rule || 'classified');
-  const steps = Array.from({ length: W.steps }, (_, i) => stepRow(r.steps[i] ?? null, i, store)).join('');
+  const steps = Array.from({ length: W.steps }, (_, i) => stepRow(r.steps[i] ?? null, i, host)).join('');
   return `<div class="wk-edit">
     <textarea id="wk-text" rows="${Math.min(14, Math.max(3, Math.ceil(b.text.length / 90)))}">${esc(b.text)}</textarea>
     <div class="wk-rule"><label>Tag <select id="wk-base">${(['public', 'hint', 'classified'] as const).map((t) => `<option ${t === r.base ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
@@ -72,10 +109,10 @@ function editor(store: GameStore, b: WikiBlock): string {
   </div>`;
 }
 
-function blockHtml(store: GameStore, page: WikiPage, si: number, bi: number): string {
+function blockHtml(host: WikiHost, page: WikiPage, si: number, bi: number): string {
   const sec = page.sections[si];
   const b = sec.blocks[bi];
-  const ctx = ctxOf(store);
+  const ctx = ctxOf(host);
   const editing = W.edit?.s === si && W.edit?.b === bi;
   const now = blockNow(b, sec, page, ctx);
   const ruleTag = b.rule ? evalTag(b.rule, ctx) : 'classified';
@@ -89,37 +126,41 @@ function blockHtml(store: GameStore, page: WikiPage, si: number, bi: number): st
   return `<div class="wk-block${editing ? ' editing' : ''}${sec.writer ? ' writer' : ''}">
     <div class="wk-bhead">${head}${rule}<span class="wk-why">${esc(why)}</span>
       ${editing ? '' : `<span class="wk-bacts"><button class="wk-mini" data-wiki="edit" data-s="${si}" data-b="${bi}">Edit</button>${bi < sec.blocks.length - 1 ? `<button class="wk-mini" data-wiki="merge" data-s="${si}" data-b="${bi}" title="Merge with the next paragraph">Merge ↓</button>` : ''}<button class="wk-mini" data-wiki="add" data-s="${si}" data-b="${bi}" title="New paragraph after this one">+ After</button></span>`}</div>
-    ${editing ? editor(store, b) : `<div class="wk-text">${b.bullet ? '• ' : ''}${esc(b.text)}</div>${cut}`}</div>`;
+    ${editing ? editor(host, b) : `<div class="wk-text">${b.bullet ? '• ' : ''}${esc(b.text)}</div>${cut}`}</div>`;
 }
 
+/** wiki.dev in the game's browser. */
 export function pageWiki(store: GameStore, param?: string): string {
-  const pages = pagesOf(store);
+  return wikiView(gameWikiHost(store), param);
+}
+
+/** The whole editor for `param` (a page's file name without .md; the open page or the index when unset). */
+export function wikiView(host: WikiHost, param?: string): string {
+  const pages = pagesOf(host);
   const file = param ? `${param.replace(/\.md$/, '')}.md` : W.page || 'index.md';
   const p = pages.find((x) => x.file === file) ?? pages.find((x) => x.file === 'index.md') ?? pages[0];
   if (p && p.file !== W.page) { W.page = p.file; W.edit = null; }
-  const s = store.state;
-  const ctx = `Day ${s.values.day} · ${String(Math.floor(s.clockMin / 60)).padStart(2, '0')}:${String(s.clockMin % 60).padStart(2, '0')} · ${s.flags.length} flags · tags shown as the player stands now (change day and flags in the story debugger)`;
   const body = !p ? '<p class="wk-dim">The wiki has no pages.</p>' : `
     <header class="wk-phead"><h1>${esc(p.title)}</h1>
       <p class="wk-meta"><span>${esc(p.category)}</span><span>known from day ${p.from}</span><span>${esc(p.file)}</span>${p.aliases.length ? `<span>also: ${esc(p.aliases.join(', '))}</span>` : ''}</p></header>
     ${W.note ? `<p class="wk-note" role="status">${esc(W.note)}</p>` : ''}
     ${p.sections.map((sec, si) => `<section class="wk-sec">
       ${sec.heading || sec.writer || sec.fromDay || sec.ifFlag ? `<h2>${esc(sec.writer ? 'Writer notes' : sec.heading || 'Overview')}${sec.fromDay ? ` <small>from day ${sec.fromDay}</small>` : ''}${sec.ifFlag ? ` <small>if ${sec.ifFlag.not ? '!' : ''}${esc(sec.ifFlag.flag)}</small>` : ''}</h2>` : ''}
-      ${sec.blocks.map((_, bi) => blockHtml(store, p, si, bi)).join('')}
+      ${sec.blocks.map((_, bi) => blockHtml(host, p, si, bi)).join('')}
       ${sec.blocks.length ? '' : `<button class="wk-mini" data-wiki="add" data-s="${si}" data-b="-1">+ Paragraph</button>`}
     </section>`).join('')}`;
-  return `<div class="wk"><header class="wk-top"><b>wiki.dev</b><span class="wk-dim">${esc(ctx)}</span></header>
-    <div class="wk-wrap">${nav(store, p)}<main class="wk-main">${body}</main></div></div>`;
+  return `<div class="wk"><header class="wk-top"><b>${esc(host.name)}</b>${host.controls?.() ?? ''}<span class="wk-dim">${esc(host.ctxLabel())}</span></header>
+    <div class="wk-wrap">${nav(host, p)}<main class="wk-main">${body}</main></div></div>`;
 }
 
 // ── editing ──
 
-function current(store: GameStore): WikiPage | undefined {
-  return pagesOf(store).find((p) => p.file === W.page);
+function current(host: WikiHost): WikiPage | undefined {
+  return pagesOf(host).find((p) => p.file === W.page);
 }
 /** A copy of the open page to change and save. */
-function draft(store: GameStore): WikiPage | undefined {
-  const p = current(store);
+function draft(host: WikiHost): WikiPage | undefined {
+  const p = current(host);
   return p && parseWikiPage(formatWikiPage(p), p.file);
 }
 
@@ -144,15 +185,15 @@ function ruleFromForm(): string {
   return formatTagRule({ base: field('wk-base') as WikiTag, steps });
 }
 
-async function save(store: GameStore, page: WikiPage, note: string, keepEdit = false): Promise<void> {
+async function save(host: WikiHost, page: WikiPage, note: string, keepEdit = false): Promise<void> {
   const md = formatWikiPage(page);
   W.saving = true;
   try {
     const res = await fetch('/api/wiki', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ file: page.file, md }) });
     const data: { error?: string } = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || (res.status >= 500 ? 'the proxy is not running (npm run proxy)' : `proxy returned ${res.status}`));
-    // the game uses the change straight away
-    const list = store.content.wiki ?? [];
+    // this copy uses the change straight away; others get it when Vite sees the file change
+    const list = host.content.wiki ?? [];
     const i = list.findIndex((p) => p.file === page.file);
     const fresh = parseWikiPage(md, page.file);
     if (i >= 0) list[i] = fresh; else list.push(fresh);
@@ -162,40 +203,45 @@ async function save(store: GameStore, page: WikiPage, note: string, keepEdit = f
     W.note = `Couldn't save: ${(e as Error).message}`;
   } finally {
     W.saving = false;
-    store.repaint();
+    host.repaint();
   }
 }
 
 /** Handles a click inside wiki.dev. Returns true when it was one. */
 export function wikiClick(t: HTMLElement, store: GameStore): boolean {
+  return wikiClickIn(t, gameWikiHost(store));
+}
+
+/** Handles a click inside the editor, wherever it runs. Returns true when it was one. */
+export function wikiClickIn(t: HTMLElement, host: WikiHost): boolean {
   const el = t.closest<HTMLElement>('[data-wiki]');
   if (!el || W.saving) return !!el;
   const act = el.dataset.wiki!;
   const s = Number(el.dataset.s);
   const b = Number(el.dataset.b);
   W.note = '';
-  if (act === 'open') { store.navigate(`wiki.dev/${el.dataset.file!.replace(/\.md$/, '')}`); return true; }
+  if (act === 'open') { host.open(el.dataset.file!); return true; }
   if (act === 'edit') {
-    const block = current(store)?.sections[s]?.blocks[b];
+    const block = current(host)?.sections[s]?.blocks[b];
     W.edit = { s, b };
     W.steps = block ? parseTagRule(block.rule || 'classified').steps.length : 0;
-    store.repaint();
+    host.repaint();
     return true;
   }
-  if (act === 'cancel') { W.edit = null; store.repaint(); return true; }
+  if (act === 'cancel') { W.edit = null; host.repaint(); return true; }
   if (act === 'addstep') {
     // keep what's typed in the rows already there
     const rule = ruleFromForm();
-    const p = current(store);
+    const p = current(host);
     const block = W.edit && p?.sections[W.edit.s]?.blocks[W.edit.b];
     if (block) block.rule = rule;
     W.steps = parseTagRule(rule).steps.length + 1;
-    store.repaint();
+    host.repaint();
     return true;
   }
   if (act === 'delstep') {
     const i = Number(el.dataset.i);
-    const p = current(store);
+    const p = current(host);
     const block = W.edit && p?.sections[W.edit.s]?.blocks[W.edit.b];
     // read the rows again without this one
     const kept = Array.from({ length: W.steps }, (_, k) => k).filter((k) => k !== i);
@@ -205,10 +251,10 @@ export function wikiClick(t: HTMLElement, store: GameStore): boolean {
       block.rule = [base, ...rows.map((r) => r.kind === 'day' ? `${r.tag} from day ${r.v}` : r.kind === 'notflag' ? `${r.tag} if !${r.v.replace(/^!/, '')}` : r.kind === 'seen' ? `${r.tag} if seen ${r.v}` : `${r.tag} if ${r.v}`)].join('; ');
       W.steps = parseTagRule(block.rule).steps.length;
     }
-    store.repaint();
+    host.repaint();
     return true;
   }
-  const page = draft(store);
+  const page = draft(host);
   if (!page) return true;
   if (act === 'save' || act === 'split' || act === 'delete') {
     if (!W.edit) return true;
@@ -217,23 +263,23 @@ export function wikiClick(t: HTMLElement, store: GameStore): boolean {
     if (!block) return true;
     if (act === 'delete') {
       sec.blocks.splice(W.edit.b, 1);
-      void save(store, page, 'Paragraph deleted.');
+      void save(host, page, 'Paragraph deleted.');
       return true;
     }
     const text = field('wk-text').replace(/\s*\n\s*/g, ' ').trim();
     const rule = ruleFromForm();
     if (act === 'save') {
       Object.assign(block, { text, rule });
-      void save(store, page, 'Saved.');
+      void save(host, page, 'Saved.');
     } else {
       const area = document.getElementById('wk-text') as HTMLTextAreaElement | null;
       const raw = area?.value ?? '';
       const at = area?.selectionStart ?? 0;
       const [a, c] = [raw.slice(0, at).replace(/\s+/g, ' ').trim(), raw.slice(at).replace(/\s+/g, ' ').trim()];
-      if (!a || !c) { W.note = 'Put the cursor where the paragraph should split.'; store.repaint(); return true; }
+      if (!a || !c) { W.note = 'Put the cursor where the paragraph should split.'; host.repaint(); return true; }
       Object.assign(block, { text: a, rule });
       sec.blocks.splice(W.edit.b + 1, 0, { ...block, text: c, raw: '' });
-      void save(store, page, 'Split in two; both keep the tag rule.');
+      void save(host, page, 'Split in two; both keep the tag rule.');
     }
     return true;
   }
@@ -243,7 +289,7 @@ export function wikiClick(t: HTMLElement, store: GameStore): boolean {
     if (!x || !y) return true;
     x.text = `${x.text} ${y.text}`.trim();
     sec.blocks.splice(b + 1, 1);
-    void save(store, page, `Merged; kept the first paragraph's tag rule (${x.rule || 'untagged'}).`);
+    void save(host, page, `Merged; kept the first paragraph's tag rule (${x.rule || 'untagged'}).`);
     return true;
   }
   if (act === 'add') {
@@ -253,7 +299,7 @@ export function wikiClick(t: HTMLElement, store: GameStore): boolean {
     sec.blocks.splice(b + 1, 0, { raw: '', rule: 'classified', text: 'New paragraph.', bullet: !!like?.bullet, row: false });
     W.edit = { s, b: b + 1 };
     W.steps = 0;
-    void save(store, page, 'Added a paragraph (classified until you change it).', true);
+    void save(host, page, 'Added a paragraph (classified until you change it).', true);
     return true;
   }
   return true;
@@ -261,8 +307,11 @@ export function wikiClick(t: HTMLElement, store: GameStore): boolean {
 
 /** The search box filters the page list as you type. */
 export function wikiInput(t: HTMLElement, store: GameStore): boolean {
+  return wikiInputIn(t, gameWikiHost(store));
+}
+export function wikiInputIn(t: HTMLElement, host: WikiHost): boolean {
   if (!t.matches('[data-wiki-search]')) return false;
   W.search = (t as HTMLInputElement).value;
-  store.repaint();
+  host.repaint();
   return true;
 }

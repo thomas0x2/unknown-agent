@@ -2,7 +2,7 @@
   "hints": [
     {
       "id": "build_help",
-      "when": "The player asks agent to build or make an app, website or program without saying who it is for or what it needs.",
+      "when": "The player asks agent to build or make an app, website or program without saying who it is for or what it needs. Not a question about how building apps works (\"how can I build apps?\").",
       "replies": [
         "Who is it for and what does it need? Give me the client and their requirements and I'll build it.",
         "I build from specs. Paste what the client asked for, word for word if you can.",
@@ -83,7 +83,7 @@
     }
   ],
   "query": {
-    "when": "The player asks agent a question to find something out about this world: a person, company, website, app, product, price, the news, the election, what has been posted on Y, Yowl or CityPulse, what is in their email, their money, rent, followers or apps, or what agent can do. Not a request for agent to build, change, fix or do something, and not small talk, insults, or questions about agent itself being smart, alive or real.",
+    "when": "The player asks agent a question to find something out about this world or how things work: a person, company, website, app, product, price, the news, the election, what has been posted on Y, Yowl or CityPulse, what is in their email, their money, rent, followers or apps, what agent can do, or how to do something (how to build, fix or deploy apps, find work, make money, pay rent). Not a request for agent to build, change, fix or do something, and not small talk, insults, or questions about agent itself being smart, alive or real.",
     "fallback": [
       "I can't look that up right now. The question has been billed anyway.",
       "My lookup is down. Check Qmail and Y yourself; it's cheaper.",
