@@ -1,0 +1,11 @@
+{
+  "id": "d11_y_doomscroll_fluvera",
+  "site": "y",
+  "from": "doomscroll",
+  "trigger": {
+    "dayMin": 11,
+    "dayMax": 11
+  },
+  "at": "11:45",
+  "body": "got the fluvera shot. arm hurts. the box says autism-free in bigger letters than the word flu"
+}

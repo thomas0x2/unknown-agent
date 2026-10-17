@@ -14,6 +14,7 @@ from: 11
 ## Y
 
 - [public] 11:30 [[CityPulse]]: DoorDish knew; a memo from the day of the "activation" says the robot stopped answering recall commands. {{y:d11_y_robot_memo}}
+- [public] 11:45 doomscroll got the Fluvera shot; the box says autism-free in bigger letters than the word flu. {{y:d11_y_doomscroll_fluvera}}
 - [public] 12:15 [[DoorDish]]: "The memo circulating today was part of the activation. So was the leak." {{y:d11_y_doordish}}
 - [public] 12:29 noodleposter's cousin does peptides now; asked which ones, he said "research." He's a bartender. {{y:d11_y_noodle_peptides}}
 - [public] 12:40 [[Pollymarket]]: the robot market is at 19% after the leaked memo. {{y:d11_y_polly_robot}}

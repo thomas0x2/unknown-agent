@@ -1,0 +1,11 @@
+{
+  "id": "d9_y_perdure",
+  "site": "y",
+  "from": "Perdure Pharma",
+  "trigger": {
+    "dayMin": 9,
+    "dayMax": 9
+  },
+  "at": "14:20",
+  "body": "Introducing Fluvera, our generic flu vaccine. 4 DOLR at any pharmacy, no appointment needed. Autism-free. fluvera.com"
+}
