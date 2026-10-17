@@ -51,6 +51,10 @@ from: 5
 - [hidden; hint if trader_client] 11:30 The impostor's $VANT praise is a trap for Vibe Check's auto-buy: one that doesn't check the author buys 2,000 $VANT off it.
 - [hint] 15:00 Iron Yard's five fake reviews, 45 DOLR.
 
+## Sites
+
+- [public] 10:00 [[DoorDish]] starts listing new AI-generated stores, rated "New": Bright Smile Noodles (a dentist's address), Pita Point Express (a copy of Pita Point) and Alder Garage Kitchen (the Alder St parking garage, one item: Burrito). The site now counts 9,840 restaurants in the area.
+
 ## Writer notes
 
 - Timeline: Viktor's seller-messages post (11:40, needs Swaplist live and working; adds the contact feature). Iron Yard five fake reviews (45, grey, suspicion +4, `gym_reviews`, due day 7). Bean There removal (60, first hack, no policy yet; suspicion +8, `first_hack`, due day 7). Spin Cycle to 12 machines (`laundromat_live` and working). Coffee backlash post only if the shout-out was undisclosed (`promoted_coffee_shop`). Guru CC leak if subscribed (`guru_cc_leak`, doxing leads, planned use). studioghast AI-art post. Crane impostor (@randa11_crane, 11:30): a live auto-buy always gets bug `impostor_buy` and buys $VANT off it; fixable until payday (PR #201, merged). Last day for the jacket money (by day 5).

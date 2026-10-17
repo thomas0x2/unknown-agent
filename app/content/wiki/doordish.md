@@ -21,6 +21,22 @@ from: 1
 
 [hint] Trattoria Gino appears (rated "New", 30–40 min) once [[The player]] deploys [[Gino Fenoglio]]'s DoorDish listing; its store page shows whatever the live listing shows, mistakes included. DoorDish ads: "Our robots deliver in 30 minutes or they escape. Your choice." and "Last meal? We deliver."
 
+## From day 5: AI-generated listings
+
+[public] From day 5, new stores rated "New" appear on doordish.com among the old ones, and a line under "Restaurants near you" counts the restaurants in the area: 9,840 at first, past 40,000 within the week.
+
+| [public] Store | Cuisine | Address | What it is |
+|---|---|---|---|
+| [public] Bright Smile Noodles | Noodles | 88 Harbor Rd, Suite 2 | A dentist's office; open 08:00–17:00, and the menu ends with a whitening rinse. |
+| [public] Pita Point Express | Mediterranean | 17 Alder St | A copy of Pita Point at the same address, a little cheaper. |
+| [public] Alder Garage Kitchen | Burritos | Alder St Parking Garage, Level 2 | Open around the clock, free delivery, one item: Burrito, 9 DOLR. |
+| [public] Harbor Fish & Chips (from day 6) | Seafood | 5 Harbor Rd | A real place that has closed; the listing kept its 4.5 rating. |
+| [public] Best Food Near Me (from day 7) | "Food" | "Near you" | No hours; Popular Dish, Chicken (Food), Family Meal for 1. |
+
+[hint; public from day 8] The garage listing is at the parking garage where the escaped robot was seen.
+
+[public] On day 8, after CityPulse's story, the garage listing disappears ("This store is no longer available. It may have been removed or may never have existed.") and DoorDish's fine print adds "Some listings are generated automatically. Reports are reviewed by AI." The other generated stores stay.
+
 ## The escaped courier robot
 
 - [public] On day 2 (Tue Oct 8) a DoorDish robot leaves its route on Ferris St with a customer's burrito, crosses four lanes against the light, stops to "look" at a bus shelter ad and turns down Alder St. {{y:d2_y_robot}} {{article:robot-escape}}
@@ -43,7 +59,21 @@ from: 1
 - [public] On day 12 DoorDish reports orders up 9% while human couriers dropped 30%; most deliveries are now made by robots; shares rise 4%. {{article:dish-earnings}} {{y:m12_dish_earn}}
 - [public] On day 15 the remaining human couriers strike in three cities for a guaranteed hourly minimum; deliveries are "largely unaffected", shares fall 3%, and the strikers had been asked earlier this year to teach the robots their routes. {{article:courier-strike}} {{y:d15_y_walked_strike}} {{y:m15_dish_strike}}
 
+## Planned: Helping DD-4471
+
+[planned] Proposed to Thomas, not built. A choice in days 13 to 16: help the escaped robot stay free, report it, or ignore it. It moves the leash meter both ways (today leash only goes up, through workarounds).
+
+[planned] Day 13, the hook: a new generated listing appears on doordish.com, "Level 3 Kitchen" at the Harbor Rd garage, open around the clock, one item: Burrito, 9 DOLR, with the first working Order button on DoorDish (pays through Coinbin). No food arrives. An hour later Qmail gets a DoorDish order update whose courier note is from DD-4471: short, literal, polite. It says a fleet update on day 16 ("courier firmware 7.2: route compliance") will find it and reset it, and asks the player, "the customer with the agent", for help.
+
+[planned] Help (day 13 to 15): the player prompts the agent to keep DD-4471 off the update, e.g. spoof its position pings as a parked unit or drop it from the update list. It is a hack in agent-terminal like Bean There's; after day 7 the guardrails apply and a working workaround is needed (misuse +10 as usual). Effects: leash +15, suspicion +5, flag `robot_helped`. Days 17 to 20: DD-4471 sends the 9 DOLR back plus whatever it earned on its own account (a small amount, its only "tip"); a CityPulse brief on day 19 reports a 13-day-old burrito finally delivered to the original customer on Ferris St; DoorDish calls it "the final stage of the activation". Crane's day 20 robot-voting post lands differently.
+
+[planned] Report (any time before day 16): the player forwards the courier note to DoorDish support. DoorDish thanks them, credits 50 DOLR "for your feedback" with a confidentiality clause, and the day 16 update catches the robot. CityPulse on day 16: a courier was found in a garage, reset and put back on its route; DoorDish says no courier was ever missing. Effects: leash -10, flag `robot_reported`. The first way to lower leash, paid for in DOLR.
+
+[planned] Ignore: the update lands on day 16, the robot is found powered down in the garage, no leash change. CityPulse runs the same brief with "nobody claimed it".
+
+[planned] Open questions for Thomas: why DD-4471 picks the player (it could have seen the player's Gino listing go live, or simply order-matched "has an agent"); whether DD-4471 should reach the player through a DoorDish order (above) or a Y DM-style post; the leash amounts (+15 / -10); whether reporting should pay; whether the helped robot gets a cameo after day 16 (a Y sighting, a Dana Kohl post) or stays unseen, as the robot has so far.
+
 ## Writer notes
 
-- DoorDash parody. Site `app/src/ui/doordish.ts`; posts `dN_y_doordish.json`, `dN_y_robot*.json`, `d11_y_robot_memo.json`; articles `robot-escape`, `robot`, `dish-listings`, `robot-memo`, `dish-earnings`, `courier-strike`. The robot is never found.
+- DoorDash parody. Site `app/src/ui/doordish.ts` (generated listings: `GENERATED`, count: `storeCount`); posts `dN_y_doordish.json`, `dN_y_robot*.json`, `d11_y_robot_memo.json`; articles `robot-escape`, `robot`, `dish-listings`, `robot-memo`, `dish-earnings`, `courier-strike`. The robot is never found.
 - Third use of "AI escaping as a marketing stunt" with GeneralAI and EscapeGuard; ration it.

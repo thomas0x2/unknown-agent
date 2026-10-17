@@ -37,6 +37,10 @@ from: 8
 - [public] 12:05 IT'S DOING YOUR TAXES: GeneralAI AI filed 41 returns for total strangers {{article:tax-returns}}
 - [public] 15:20 PHANTOM RESTAURANTS: DoorDish lists eateries that DON'T EXIST (one of the new listings is the Alder St parking garage where the robot was seen, taking orders) {{article:dish-listings}}
 
+## Sites
+
+- [public] 16:30 [[DoorDish]] removes the Alder Garage Kitchen listing; its page says the store is no longer available. From 15:20 the fine print adds "Some listings are generated automatically. Reports are reviewed by AI."
+
 ## Trending
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.
