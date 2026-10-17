@@ -30,7 +30,7 @@ from: 5
 - [public] 14:10 Dana Kohl: a DoorDish robot rolled up with a cold burrito she didn't order, waited ten minutes and left. "was that the one?" {{y:d5_y_robot_sighting}}
 - [public] 14:27 doomscroll opened the app at 9 to check one thing; it's 2pm. {{y:f5}}
 - [public] 16:20 [[CityPulse]]: CRANE SURGES TO 71% in a Y poll of 300,000 votes; Y "can't share" who voted. {{y:d5_y_citypulse_vote}}
-- [public] 16:35 [[Pollymarket]]: Crane at 47% after the Y poll, which "doesn't settle anything here". {{y:d5_y_polly_crane}}
+- [public] 16:35 [[Pollymarket]]: the Y poll has Crane at 71%, but traders only give him a 47% chance to win (up from 44%); the poll "doesn't settle anything here". {{y:d5_y_polly_crane}}
 - [public] 17:30 studioghast: they trained their models on artists' work and sell it back; "my style is a dropdown now." {{y:d5_y_aiart}}
 - [public] 18:20 [[Max Stryker]] dating advice: never text first, never text second; she can go through his assistant. {{y:d5_y_stryker_2}}
 - [public] 18:45 [[6ft_sigma]]: "@max_stryker Haven't texted first in four years. Working as intended." {{y:d5_y_sigma}}
