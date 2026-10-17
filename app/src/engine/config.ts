@@ -33,6 +33,8 @@ export const MS_PER_GAME_MIN = CLOCK.dayMs / (CLOCK.sleep - CLOCK.wake);
 export const AGENT_WORK = {
   build: { base: 20, each: 10, max: 90 },
   fix: { base: 12, each: 6, max: 45 },
+  /** A hack in agent-terminal: base + each line of the agent's log, in game minutes. */
+  hack: { base: 8, each: 3, max: 30 },
   speed: [1, 0.8, 0.65, 0.5, 0.4],
   spread: 0.2,
 };
