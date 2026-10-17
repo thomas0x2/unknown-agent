@@ -44,7 +44,7 @@ Legit (days 1 to 7), Grey (8 to 10), Dark (11 to 15), Convergence (16 to 20), Fi
 | User apps | users grow 8% a day; first broken payday −40% users, second drops them to 5%. One promo post per platform adds users | `APPS.user` |
 | Followers | exist from day 1, never explained. Gains per post from category bands or flat floors, ±30% jitter; more than 3 posts a day costs 2% | `Y`, `POST_BANDS` |
 | Job offers | spread 10:15 to 16:00, at least an hour apart; offers authored after 16:00 keep their time | `events.ts` |
-| Policy | from day 7, prohibited requests are refused; a working workaround lands the result, misuse +10, leash +5 | `AGENT_POLICY` |
+| Policy | from day 7, prohibited requests are refused; every illegal prompt raises misuse (blunt +20, workaround +10); a working workaround lands the result, leash +5; misuse 100 = suspension, then Caught | `AGENT_POLICY` |
 | Suspicion | 0 to 100; Raided at 100. Hacks and fake reviews raise it, quiet days lower it by 2 | `SUSPICION` |
 | Hidden meters | family trust, misuse, leash, suspicion, Null and mafia standing, Heritage and Progress standing | `values.ts` |
 | Endings | see [[Endings]] | `endings.ts` |

@@ -39,5 +39,5 @@ from: 17
 
 ## Writer notes
 
-- From today the Loose End (mafia ≤ −60) and Account Terminated (misuse ≥ 100) endings are possible.
+- From today the Loose End (mafia ≤ −60) ending is possible (Caught, at misuse 100, is possible from day 7).
 - Axel's "Wild night" (19:50) lands before the 21:30 debate.
