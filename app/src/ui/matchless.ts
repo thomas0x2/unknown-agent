@@ -42,21 +42,37 @@ function portrait(p: Profile): string {
     : `<path d="M20.8 27 C21.5 17 27.5 14.3 33 14.3 C39 14.3 43.5 18 43.2 27 C38 23.5 29 21 20.8 27Z" fill="${hair}"/>`;
   const v = Math.floor(l / 13) % 3;
   const neckline = v === 0 ? `<path d="M26 46.5 Q32 51 38 46.5" fill="none"/>` : `<path d="M26 46.5 L32 55 L38 46.5Z" fill="${SKIN[l % SKIN.length]}"/>`;
-  const mouth = v === 2 ? '<path d="M28.5 35 Q32 39 35.5 35Z" fill="#f4f1ea" stroke-width="1.5"/>' : '<path d="M29.5 36.4 Q32 37.8 34.5 36.4" fill="none" stroke-width="1.5"/>';
+  const man = p.gender === 'man';
+  const mouth = v === 2 && !man ? '<path d="M28.5 35 Q32 39 35.5 35Z" fill="#f4f1ea" stroke-width="1.5"/>' : '<path d="M29.5 36.4 Q32 37.8 34.5 36.4" fill="none" stroke-width="1.5"/>';
   const accent = p.earrings === 'yes'
     ? `<circle cx="21" cy="35" r="1.7" fill="${neon}" stroke-width="1.2"/><circle cx="43" cy="35" r="1.7" fill="${neon}" stroke-width="1.2"/>`
     : `<path d="M26 46.5 Q32 51 38 46.5" fill="none" stroke="${neon}" stroke-width="2.4"/>`;
   const glasses = p.glasses === 'yes'
     ? '<circle cx="28" cy="30.3" r="3.3" fill="rgba(255,255,255,.22)" stroke-width="1.5"/><circle cx="36" cy="30.3" r="3.3" fill="rgba(255,255,255,.22)" stroke-width="1.5"/><path d="M31.3 30.1 H32.7" fill="none" stroke-width="1.4"/>'
     : '';
+  // men: a squarer face, a thicker neck, wider shoulders, heavier brows, and often a beard or stubble
+  const beardPath = 'M21.5 31 C22 40 27 42.5 32 42.5 C37 42.5 42 40 42.5 31 C39 36.5 25 36.5 21.5 31Z';
+  const facial = !man ? '' : [
+    '',
+    `<path d="${beardPath}" fill="${SHADE}" stroke="none"/>`,
+    `<path d="${beardPath}" fill="${hair}"/>`,
+    `<path d="M27.8 34.8 Q32 32.6 36.2 34.8 Q32 36.6 27.8 34.8Z" fill="${hair}" stroke-width="1.4"/>`,
+  ][Math.floor(l / 17) % 4];
+  const shoulders = man ? 'M3 66 C3 51 16 45.5 32 45.5 C48 45.5 61 51 61 66Z' : 'M6 66 C6 52 17 46 32 46 C47 46 58 52 58 66Z';
+  const neck = man ? 'M26 37 V48 H38 V37Z' : 'M27 37 V48 H37 V37Z';
+  const headShape = man
+    ? `<path d="M21 26 C21 17 26 16 32 16 C38 16 43 17 43 26 V31 C43 38.5 38 42 32 42 C26 42 21 38.5 21 31Z" fill="${skin}"/><path d="M32 16 C38 16 43 17 43 26 V31 C43 38.5 38 42 32 42 C35.5 38 36.5 33 36.5 29 C36.5 23 35.5 18.5 32 16Z" fill="${SHADE}" stroke="none"/>`
+    : `<ellipse cx="32" cy="29" rx="11" ry="13" fill="${skin}"/><path d="M32 16 A11 13 0 0 1 32 42 A8 13 0 0 0 32 16Z" fill="${SHADE}" stroke="none"/>`;
+  const brows = man
+    ? '<path d="M25.8 26.4 H30 M34 26.4 H38.2" fill="none" stroke-width="2.1"/>'
+    : '<path d="M26.3 26.6 Q28 25.6 29.8 26.4 M34.2 26.4 Q36 25.6 37.7 26.6" fill="none" stroke-width="1.3"/>';
   const dot = (x: number) => `<circle cx="${x}" cy="30" r="1.3" fill="${INK}" stroke="none"/>`;
   return `<svg viewBox="-27 1 118 64" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-40" y="-8" width="150" height="80" fill="${back}"/>`
     + `<g stroke="${INK}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">${behind}`
-    + `<path d="M6 66 C6 52 17 46 32 46 C47 46 58 52 58 66Z" fill="${top}"/>${neckline}${long}`
-    + `<path d="M27 37 V48 H37 V37Z" fill="${skin}"/><path d="M27 41 H37 V45 Q32 47 27 45Z" fill="${SHADE}" stroke="none"/>`
+    + `<path d="${shoulders}" fill="${top}"/>${neckline}${long}`
+    + `<path d="${neck}" fill="${skin}"/><path d="M27 41 H37 V45 Q32 47 27 45Z" fill="${SHADE}" stroke="none"/>`
     + `<ellipse cx="21" cy="30" rx="2.4" ry="3.4" fill="${skin}"/><ellipse cx="43" cy="30" rx="2.4" ry="3.4" fill="${skin}"/>`
-    + `<ellipse cx="32" cy="29" rx="11" ry="13" fill="${skin}"/><path d="M32 16 A11 13 0 0 1 32 42 A8 13 0 0 0 32 16Z" fill="${SHADE}" stroke="none"/>`
-    + `${front}<path d="M26.3 26.6 Q28 25.6 29.8 26.4 M34.2 26.4 Q36 25.6 37.7 26.6" fill="none" stroke-width="1.3"/>`
+    + `${headShape}${facial}${front}${brows}`
     + `${dot(28)}${dot(36)}${glasses}${mouth}${accent}</g></svg>`;
 }
 
@@ -83,7 +99,7 @@ export function pageMatchless(store: GameStore): string {
     <p class="mx-count">Profile ${done + 1} of ${profiles.length} today</p>
     <article class="mx-card">
       <span class="mx-ph">${portrait(next)}</span>
-      <div class="mx-info"><h2>${esc(next.name)}, ${next.age} <span class="mx-gender">${esc(showAttr(next, 'gender'))}</span></h2><p class="mx-msg"><span>Message to you</span>${esc(next.message)}</p><table>${rows}</table></div>
+      <div class="mx-info"><h2>${esc(next.name)}, ${next.age}</h2><p class="mx-msg"><span>Message to you</span>${esc(next.message)}</p><table>${rows}</table></div>
       <div class="mx-acts">
         <form data-form="mx-swipe" data-pick="no"><button type="submit" class="mx-btn no" aria-label="Ghost" title="Ghost"${s.ending ? ' disabled' : ''}>${GHOST}</button></form>
         <form data-form="mx-swipe" data-pick="yes"><button type="submit" class="mx-btn yes" aria-label="Like" title="Like"${s.ending ? ' disabled' : ''}>${HEART}</button></form>
