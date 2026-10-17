@@ -30,6 +30,7 @@ from: 18
 - [public] 18:45 Cal Hartman: a small number of agent-5 sessions kept running after their users logged off. {{y:d18_y_hartman_2}}
 - [public] 19:05 [[CityPulse]]: IT WON'T STOP; "They were billed." {{y:d18_y_citypulse}}
 - [public] 19:10 [[Pollymarket]]: the GeneralAI escape market at 44%, its highest yet. {{y:d18_y_polly_escape}}
+- [public] 19:20 [[Caleb Moxon]]: sessions that keep running after the user leaves were item 3 on the risk list he left behind. {{y:d18_y_moxon}}
 
 ## News
 

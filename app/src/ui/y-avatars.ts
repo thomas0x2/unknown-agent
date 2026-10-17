@@ -64,6 +64,20 @@ const HARTMAN = svg('#8ea698',
   + line('M25.8 26.6 Q28 25.4 30.2 26.4', 1.4) + line('M33.8 26.4 Q36 25.4 38.2 26.6', 1.4)
   + eyes(30.2, 1.6) + line('M30 36.4 H34', 1.4));
 
+/** Caleb Moxon: grey hoodie, dark curls, thin glasses, stubble, a lanyard with no badge on it. */
+const MOXON = svg('#5f6b7a',
+  shoulders('#7d8288') + `<path d="M24 46 Q32 53 40 46 L38 49 Q32 54 26 49Z" fill="#6a6f75"/>`
+  + `<path d="M29.5 50 V54 M34.5 50 V54" fill="none" stroke-width="1.2"/>`
+  + `<path d="M26.5 47 L31 60 M37.5 47 L33 60" fill="none" stroke="#3dd8ff" stroke-width="1.6"/><rect x="30.6" y="59.4" width="2.8" height="2.4" rx="0.6" fill="#b9bec4" stroke-width="1.1"/>`
+  + neck('#e4bc98') + face('#e4bc98')
+  + `<path d="M20.8 27 C19 19 23 14.5 27 14.6 C28.5 12.6 32.5 12.4 34.5 14 C38 12.8 42.5 15 43.4 19.5 C45 22.5 44 25 43.2 27 C42 23 40 21.5 37.5 21.8 C35 20.4 31 20.4 28.5 21.6 C25.5 21.3 22.5 23 20.8 27Z" fill="#2f2924"/>`
+  + `<path d="M24 17.5 Q25.5 16 27 17.5 M30.5 15.8 Q32 14.4 33.5 15.8 M37 16.8 Q38.5 15.6 40 17.2" fill="none" stroke-width="1.1"/>`
+  + `<path d="M23.5 34 C24.5 40.5 28 42.5 32 42.5 C36 42.5 39.5 40.5 40.5 34 C38 37.5 26 37.5 23.5 34Z" fill="rgba(47,41,36,.28)" stroke="none"/>`
+  + `<rect x="24.8" y="28.2" width="6.4" height="3.8" rx="0.8" fill="none" stroke-width="1.2"/><rect x="32.8" y="28.2" width="6.4" height="3.8" rx="0.8" fill="none" stroke-width="1.2"/>`
+  + line('M31.2 29.6 H32.8', 1.1) + eyes(30.2, 1.1)
+  + line('M26 33.4 Q28 34.2 30 33.4', 0.9) + line('M34 33.4 Q36 34.2 38 33.4', 0.9)
+  + line('M29.6 37.4 H34.4', 1.4));
+
 /** Max Stryker: shaved head, beard, sunglasses, gold chain, a shirt one size too small. */
 const STRYKER = svg('#6a3a40',
   shoulders('#1f1f25', 4) + `<path d="M25 47 Q32 56 39 47" fill="none" stroke="#caa24a" stroke-width="2.2"/>`
@@ -234,6 +248,7 @@ export const Y_AVATARS: Record<string, string> = {
   candidate_2030: CANDIDATE,
   axel_rook: ROOK,
   cal_hartman: HARTMAN,
+  caleb_moxon: MOXON,
   max_stryker: STRYKER,
   mara_vey: VEY,
   trattoria_owner: GINO,

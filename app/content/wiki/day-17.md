@@ -20,6 +20,7 @@ from: 17
 - [public] 14:22 Brent Kowalski: $VANT up 1%. {{y:m17_vant}}
 - [public] 14:40 [[Cal Hartman]]: GeneralAI is working with regulators on AI rules; "we wrote a first draft for them to save everyone time." {{y:d17_y_hartman}}
 - [public] 15:30 [[Mara Vey]]: "Even CityPulse got this one right, headline aside." GeneralAI wrote the first draft of the rules meant to regulate it. {{y:d17_y_mara_rules}}
+- [public] 15:40 [[Caleb Moxon]]: section 9 of the draft AI rules lets a company's own model carry out its annual review, "a formatting choice". {{y:d17_y_moxon}}
 - [public] 16:30 [[Axel Rook]]: hosting tonight's debate live on Y, over 40 million listening. {{y:d17_y_axel}}
 - [public] 16:46 MarketWire: $APO flat ahead of the debate. {{y:m17_apo_debate}}
 - [public] 18:00 [[Max Stryker]]: debate watch party with the EMPIRE inner circle, 400 DOLR a seat. {{y:d17_y_stryker}}

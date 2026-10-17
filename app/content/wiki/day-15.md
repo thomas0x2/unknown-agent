@@ -33,6 +33,7 @@ from: 15
 - [public] 17:35 [[6ft_sigma]]: raised his twice this week, "Problem's almost gone." {{y:d15_y_sigma}}
 - [public] 17:40 [[Pollymarket]]: the Hartman testimony market fell from 38% to 3%; the hearing is after the election. {{y:d15_y_polly_hartman}}
 - [public] 17:47 [[WallStreetBags]]: $APO up because Rook replaced the moderators at a different company; everyone there is long. {{y:m15_apo_mod}}
+- [public] 18:00 [[Caleb Moxon]] will testify at the congressional hearing, which is after the election. {{y:d15_y_moxon}}
 - [public] 18:50 [[Randall Crane]]: "The Fake News at The Current" is writing another sob story about displaced workers; "I LOVE displaced workers." {{y:d15_y_crane}}
 
 ## News

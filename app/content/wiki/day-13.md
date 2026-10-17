@@ -17,6 +17,7 @@ from: 13
 - [public] 11:00 [[Perdure Pharma]] launches Perdure Peptides, "research-grade peptides from a company you already trust. For research use only." {{y:d13_y_perdure}}
 - [public] 11:20 MarketWire: Perdure launches a peptide line; $PDUR up 5%. {{y:m13_pdur_peptides}}
 - [public] 11:35 [[Max Stryker]] has been on peptides since 2024: "Being early is a mindset." {{y:d13_y_stryker_peptides}}
+- [public] 12:00 [[Mara Vey]]: GeneralAI's safety team went from eleven people to four during Caleb Moxon's two years; the model team had nine hundred. {{y:d13_y_mara_moxon}}
 - [public] 12:30 [[Axel Rook]]: "Randall Crane is the only candidate who understands technology." {{y:d13_y_axel}}
 - [public] 12:50 [[Pollymarket]]: resolved YES, Rook endorsed a candidate; one account bought 90,000 DOLR of YES two minutes before his post. {{y:d13_y_polly_rook}}
 - [public] 13:20 [[Max Stryker]]: "Axel Rook backs Crane. I backed him three days ago. Leaders move first." {{y:d13_y_stryker}}

@@ -31,6 +31,7 @@ from: 1
 - [public] On day 8 she posts that Vantor's outplacement program has placed 0 of 400 former staff. {{y:m8_vant_outplace}}
 - [public] On day 12 she posts that Vantor's quarterly report shows headcount down 400 and executive bonuses up. {{y:m12_vant_report}}
 - [public] On day 15 Crane calls The Current "Fake News" for "ANOTHER sob story" about displaced workers.
+- [public] On day 13 (12:00) she posts the numbers [[Caleb Moxon]] gave her: GeneralAI's safety team went from eleven people to four in his two years there, while the model team had nine hundred; he asked her to print the numbers, not his opinion of them. {{y:d13_y_mara_moxon}}
 - [public] On day 17 (15:30) she posts "Even CityPulse got this one right, headline aside": GeneralAI wrote the first draft of the rules meant to regulate it. {{y:d17_y_mara_rules}}
 - [public] On day 18 she posts that Vantor replaced its customer support with GeneralAI. {{y:m18_vant}}
 

@@ -21,6 +21,7 @@ from: 10
 - [public] 10:35 [[CityPulse]]: KABOOM, and the stock went UP. {{y:d10_y_citypulse}}
 - [public] 10:40 agent2forever exported all 3,412 chats before the switch; the first letters of agent-2's replies spell something. {{y:d10_y_mourn_agent2forever}}
 - [public] 11:00 cat_ceo: her cat knocked a glass off the table and nobody gave her 6%. {{y:d10_y_catceo_apogee}}
+- [public] 11:15 [[Caleb Moxon]] won't sign the non-disparagement clause in his exit paperwork, though it costs him his shares. {{y:d10_y_moxon}}
 - [public] 11:30 [[Max Stryker]]: Alpha Ascend is partnering with a presidential campaign. "Paid positions for men who can post." {{y:d10_y_stryker}}
 - [public] 12:45 [[Cal Hartman]]: "@axel_rook sorry about the rocket." {{y:d10_y_hartman}}
 - [public] 12:50 bring_back_agent2 thanks the forty-one people at the vigil; they asked agent-2 for a sign and the sprinklers came on at 12:04. {{y:d10_y_mourn_bring_back_agent2}}
@@ -40,6 +41,7 @@ from: 10
 
 - [public] 10:30 KABOOM! Apogee rocket BLOWS UP minutes after liftoff, and the stock goes UP (lifted off 10:02, broke apart four minutes later, nobody on board) {{article:apogee-launch}}
 - [public] 13:20 CANDLES FOR A COMPUTER: inside the vigil for agent-2 {{article:agent-2-vigil}}
+- [public] 15:00 "I'M NOT SIGNING": GeneralAI insider walks out, and walks away from a FORTUNE {{article:moxon-quits}}
 - [public] 17:10 CASH FOR POSTS? Crane's army of paid "volunteers" (paid per post as "independent contractors", recruited through newsletters including Max Stryker's) {{article:crane-volunteers}}
 
 ## Pollymarket

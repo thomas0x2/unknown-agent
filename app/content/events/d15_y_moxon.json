@@ -1,0 +1,11 @@
+{
+  "id": "d15_y_moxon",
+  "site": "y",
+  "from": "Caleb Moxon",
+  "trigger": {
+    "dayMin": 15,
+    "dayMax": 15
+  },
+  "at": "18:00",
+  "body": "The committee asked if I would testify. The hearing is after the election. I said yes. I would also have said yes to this week."
+}

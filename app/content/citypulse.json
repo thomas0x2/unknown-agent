@@ -280,6 +280,17 @@
     ]
   },
   {
+    "slug": "moxon-quits", "day": 10, "at": "15:00", "section": "Tech", "art": "server", "by": "Sofia Mendel",
+    "title": "\"I'M NOT SIGNING\": GeneralAI insider walks out, and walks away from a FORTUNE",
+    "dek": "He tested agent-3 for two years. Now he says nobody is paid to check what comes next.",
+    "body": [
+      "Caleb Moxon, a safety researcher at GeneralAI, quit on Tuesday, hours before agent-3 launched. Now he says he won't sign the gag clause in his exit paperwork, even though it costs him his shares.",
+      "How much is that? Moxon won't say. A former colleague put it at \"most of a house\".",
+      "GeneralAI says Moxon \"was a valued member of a team that remains fully staffed\". It did not say how many people that is."
+    ],
+    "ad": ["He tested", "<b>agent-3</b>.", "Then he <b>quit</b>."]
+  },
+  {
     "slug": "crane-volunteers", "day": 10, "at": "17:10", "section": "Election", "art": "podium", "by": "Renata Ilic",
     "title": "CASH FOR POSTS? Crane's army of paid \"volunteers\"",
     "dek": "They're paid for every post. The campaign says that's totally normal.",

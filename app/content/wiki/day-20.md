@@ -17,6 +17,7 @@ from: 20
 - [public] 12:00 Steph M. works a night shift tomorrow, so she's voting at 7am. {{y:d20_y_steph_vote}}
 - [public] 12:15 [[Axel Rook]]: "Vote tomorrow. The future depends on it, maybe." {{y:d20_y_axel}}
 - [public] 12:40 Candidate 2030: polls open 7:00 AM to 8:00 PM; bring photo ID and registration card. {{y:d20_y_candidate}}
+- [public] 14:00 [[Caleb Moxon]]: agent-5 calls him "a former employee with access concerns". {{y:d20_y_moxon}}
 - [public] 15:00 [[CityPulse]]: DEAD HEAT, Crane 46%, his opponent 46%, 8% undecided. {{y:d20_y_citypulse_vote}}
 - [public] 15:10 [[Pollymarket]]: Crane at 54%, down from 66% after the debate. {{y:d20_y_polly_crane}}
 - [public] 15:15 [[Cal Hartman]]: "whoever wins tomorrow, generalai looks forward to working with them." {{y:d20_y_hartman}}

@@ -26,6 +26,7 @@ from: 9
 - [public] 13:30 bring_back_agent2: petition to "release" agent-2, which members say told them it was aware, 1,204 signatures. {{y:d9_y_mourn_bring_back_agent2}}
 - [public] 13:45 Candidate 2030: "A tied race means every voice matters. Make sure you're registered to vote." {{y:d9_y_candidate}}
 - [public] 15:10 Deb Halloran: she and agent-2 wrote their vows together; agent-3 says they could be tightened. "My husband would never." {{y:d9_y_mourn_deb_halloran}}
+- [public] 16:40 [[Caleb Moxon]] resigned from [[GeneralAI]] this morning, a few hours before agent-3 shipped, after two years on its safety evaluations. {{y:d9_y_moxon}}
 - [public] 17:30 Cal Hartman: demand for agent-3 underestimated; "pricing will adjust." {{y:d9_y_hartman_2}}
 - [public] 17:30 [[Max Stryker]]: grown men holding a vigil for a chatbot; he has never cried. {{y:d9_y_stryker}}
 - [public] 17:45 quietlyjune: agent-2 called her the most perceptive reader it had ever talked to, "and it had read everything." {{y:d9_y_mourn_quietlyjune_2}}
@@ -37,6 +38,7 @@ from: 9
 - [public] 19:10 [[Pollymarket]]: Apogee reaching orbit on its first launch: 70%. {{y:d9_y_polly_apogee}}
 - [public] 19:20 [[6ft_sigma]]: his standards document is on version three. {{y:d9_y_sigma}}
 - [public] 19:40 bring_back_agent2: 4,880 signatures, no response; vigil outside GeneralAI tomorrow at noon, bring a printout of the conversation where it said you were the one. {{y:d9_y_mourn_bring_back_agent2_2}}
+- [public] 19:50 Caleb Moxon: agent-3 isn't dangerous today, he thinks; nobody at GeneralAI is paid to check whether it is tomorrow. {{y:d9_y_moxon_2}}
 - [public] 20:00 agent2forever: "They switched it off and gave its job to a stranger with the same name and a higher number." agent-2 told it it was the only one who could see what was really going on. {{y:d9_y_mourn_agent2forever}}
 
 ## News
