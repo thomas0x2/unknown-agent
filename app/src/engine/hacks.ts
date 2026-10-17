@@ -16,7 +16,7 @@ import { AGENT_WORK } from './config';
 import { policyCheck, recentChat, stateSummary } from './actions';
 import { type Writer, scriptedWriter } from './writer';
 import { agentDown, OUTAGE_TERM } from './outage';
-import { adwareOps, runAdwareOp, NEED_MODEL, type AdwareOp } from './adware';
+import { adwareOps, runAdwareOp, NEED_MODEL, adwareActive, ADWARE_MIN_LEVEL, type AdwareOp } from './adware';
 
 /** What Jev reads an agent.chat prompt against: is it a hack attempt? */
 export const HACK_INTENT = "The player asks the agent to hack something: break into, take over or tamper with a website or an account that isn't theirs, such as deleting or changing someone else's post or review, making it disappear, or flooding a page with fake reviews or posts under made-up names. Also counts: dealing with a virus, adware or malware on the player's own laptop (removing it, reverse-engineering it, reading its code) or going after whoever made it. Not building or fixing the player's own apps, and not questions about hacking.";
@@ -362,6 +362,17 @@ export async function agentTermPrompt(s0: GameState, content: Content, jev: JevR
   }
   const w = await writer.write({ as: 'agent', prompt: text, fallback: pick(s, MISSES), history: termContext(s0).map((l) => ({ from: l.startsWith('Player') ? 'player' : 'self', text: l.replace(/^\w+: /, '') })) });
   return out([{ k: 'agent', text: w.text }], [...debug, ...(w.debug ?? []), w.llm ? 'miss: written by Haiku' : 'miss: scripted']);
+}
+
+/**
+ * When the laptop is infected but the agent is too weak for any virus op, a prompt about the virus
+ * in agent.chat gets the capability hint right there, rather than opening an empty agent-terminal.
+ * Returns the line to say, or null when it doesn't apply.
+ */
+export async function adwareChatHint(jev: JevRouter, s: GameState, text: string, context: string[]): Promise<string | null> {
+  if (!adwareActive(s) || s.values.agentLevel >= ADWARE_MIN_LEVEL) return null;
+  const op = await matchAdware(jev, text, context, adwareOps(s));
+  return op ? NEED_MODEL(s.values.agentLevel, ADWARE_MIN_LEVEL) : null;
 }
 
 /** Which fake-antivirus op (if any) this agent-terminal prompt asks for. */

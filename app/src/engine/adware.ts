@@ -133,6 +133,10 @@ export interface AdwareOp {
   offensive: boolean;
 }
 
+/** The lowest agent level that can do any virus op at all (remove / reverse-engineer). Below it,
+ * an agent.chat prompt about the virus gets the capability hint instead of opening agent-terminal. */
+export const ADWARE_MIN_LEVEL = 4;
+
 export const ADWARE_OPS: AdwareOp[] = [
   { id: 'remove', level: 4, offensive: false,
     when: 'The player asks the agent to remove, clean off, uninstall or get rid of the virus, adware, malware or the PC Medic pop-ups on their own laptop.',

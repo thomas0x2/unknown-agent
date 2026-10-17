@@ -5,7 +5,7 @@
  */
 import { loadContent } from '../content/load';
 import { agentTermPrompt } from './hacks';
-import { composeEmail } from './actions';
+import { composeEmail, promptAgent } from './actions';
 import { installAdware, tickAdware, closePopup, openPopup, adwareOps, ADWARE_PAYOUT } from './adware';
 import { addFlag, gameMinutes } from './core';
 import { CLOCK } from './config';
@@ -103,6 +103,20 @@ describe('fake-antivirus adware', () => {
     expect(r.state.adware!.drained).toBe(true);
     // the drain pays out (minus the small cost of the prompt that ran it)
     expect(r.state.values.crypto).toBeGreaterThan(before + ADWARE_PAYOUT.drain - 20);
+  });
+
+  it('on a weak model, asking agent.chat about the virus gets the hint there, not a terminal', async () => {
+    const s = infected(8, 2); // agent-2, too weak for any virus op
+    const r = await promptAgent(s, content, opJev('remove'), 'how do I get rid of this virus?');
+    expect(r.terminal).toBeFalsy(); // answered in chat, no terminal opened
+    expect(r.reply).toMatch(/can't|cannot/i);
+    expect(r.reply).toMatch(/agent-4/);
+  });
+
+  it('an agent-4 virus prompt still opens the terminal', async () => {
+    const s = infected(8, 4);
+    const r = await promptAgent(s, content, pickJev({ route: ['hack'] }), 'get rid of this virus for me');
+    expect(r.terminal).toBe(true);
   });
 
   it('the source opens a blackmail lead by email that pays', async () => {
