@@ -26,7 +26,7 @@
   "features": [
     {
       "id": "landing",
-      "description": "a landing page with the restaurant name and opening hours",
+      "description": "a landing page with the restaurant name, opening hours and address",
       "aka": [
         "home page",
         "front page",
@@ -53,6 +53,14 @@
           "fixed": [
             "Fixed the name. It reads {{name}} everywhere now.",
             "The restaurant name was misspelled. It says {{name}} now."
+          ]
+        },
+        {
+          "id": "address_wrong",
+          "when": "The address shown on the site is wrong; it should be {{address}}.",
+          "fixed": [
+            "Fixed the address. The site now says {{address}}.",
+            "The address was wrong. It reads {{address}} now."
           ]
         }
       ],
@@ -83,6 +91,20 @@
             "when it is open",
             "hours"
           ]
+        },
+        {
+          "id": "address",
+          "label": "the restaurant's address",
+          "bugs": [
+            "address_wrong"
+          ],
+          "aka": [
+            "address",
+            "street",
+            "location",
+            "where it is",
+            "directions"
+          ]
         }
       ],
       "nearMiss": [
@@ -99,6 +121,11 @@
           "id": "hours",
           "text": "{{hours}}",
           "bug": "hours_wrong"
+        },
+        {
+          "id": "address",
+          "text": "{{address}}",
+          "bug": "address_wrong"
         }
       ],
       "complaints": {
@@ -106,7 +133,8 @@
         "name_wrong": "The site calls us \"{{shown}}\". It's {{expected}}. That name has been on the door since 1998.",
         "hours_wrong": "The site says we're open {{shown}}. We open {{expected}}. Two people came at the wrong time and found the door locked.",
         "down": "The home page shows an error instead of our name.",
-        "wrong": "The home page is not right. Please check the name and the hours."
+        "wrong": "The home page is not right. Please check the name, the hours and the address.",
+        "address_wrong": "The site says we are at {{shown}}. We are at {{expected}}. A man walked up and down Alder St for twenty minutes and then called me."
       }
     },
     {
@@ -227,6 +255,89 @@
         "outdated": "The menu is still the old one. I sent you the changes.",
         "down": "The menu page doesn't load. It only says there was an error.",
         "wrong": "Something is wrong with the menu. Please compare it with what I sent."
+      }
+    },
+    {
+      "id": "photos",
+      "name": "dish pictures",
+      "description": "an AI-generated picture of each dish next to it on the menu page",
+      "aka": [
+        "menu pictures",
+        "pictures",
+        "photos",
+        "dish photos",
+        "food photos",
+        "images",
+        "food pictures",
+        "AI pictures"
+      ],
+      "pageId": "menu",
+      "failures": [
+        "subtle"
+      ],
+      "bugs": [
+        {
+          "id": "photos_broken",
+          "when": "The dish pictures on the menu don't load: every dish shows a broken image instead of its picture.",
+          "fixed": [
+            "The dish pictures load now. They were pointing at files that were never saved.",
+            "Fixed the image links. Every dish shows its picture again."
+          ]
+        },
+        {
+          "id": "photos_wrong",
+          "when": "The dish pictures show the wrong dishes (a pizza next to the tiramisu, a coffee next to the lasagne).",
+          "fixed": [
+            "Each dish has its own picture now. They were shifted by one.",
+            "Matched the pictures to the dishes. The tiramisu looks like tiramisu again."
+          ]
+        }
+      ],
+      "components": [
+        {
+          "id": "loading",
+          "label": "loading the dish pictures (the image files and links)",
+          "bugs": [
+            "photos_broken"
+          ],
+          "aka": [
+            "loading",
+            "won't load",
+            "don't load",
+            "broken images",
+            "broken image",
+            "image links",
+            "image files",
+            "missing pictures",
+            "not showing",
+            "fetch"
+          ]
+        },
+        {
+          "id": "matching",
+          "label": "which picture goes with which dish",
+          "bugs": [
+            "photos_wrong"
+          ],
+          "aka": [
+            "wrong pictures",
+            "wrong dish",
+            "wrong food",
+            "mixed up",
+            "don't match",
+            "matching",
+            "which picture",
+            "shifted",
+            "swapped"
+          ]
+        }
+      ],
+      "complaints": {
+        "missing": "The menu still has no pictures.",
+        "photos_broken": "The pictures on the menu don't come up. Next to every dish there is a little broken square.",
+        "photos_wrong": "The picture next to the {{expected}} is {{shown}}. A guest showed me his phone and asked for that.",
+        "down": "The pictures on the menu don't load.",
+        "wrong": "The pictures on the menu are not right. Please look at them next to the dishes."
       }
     },
     {

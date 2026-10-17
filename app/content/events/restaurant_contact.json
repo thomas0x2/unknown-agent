@@ -8,7 +8,7 @@
     "dayMin": 1
   },
   "latent": true,
-  "body": "Grazie! Here's what I need:\n\n- A landing page with our name (Trattoria Gino) and opening hours (17:00-22:00).\n- A menu page, each dish with its price in DOLR: Margherita 12, Diavola 14, Lasagne 15, Tiramisu 7, Espresso 3.\n\nSend it over when it's ready.",
+  "body": "Grazie! Here's what I need:\n\n- A landing page with our name (Trattoria Gino), opening hours (17:00-22:00) and address (14 Alder St).\n- A menu page, each dish with its price in DOLR: Margherita 12, Diavola 14, Lasagne 15, Tiramisu 7, Espresso 3.\n\nSend it over when it's ready.",
   "outcomes": [
     {
       "id": "offer",
@@ -28,7 +28,8 @@
               "id": "landing",
               "params": {
                 "name": "Trattoria Gino",
-                "hours": "17:00-22:00"
+                "hours": "17:00-22:00",
+                "address": "14 Alder St"
               }
             },
             {

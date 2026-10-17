@@ -58,6 +58,10 @@ export function applyEffects(s: GameState, effects?: Effects, job?: JobSpec, eve
       }
     }
   }
+  if (effects.raisePay) {
+    const app = s.apps.find((a) => a.clientEventId === effects.raisePay!.client);
+    if (app) app.payPerDay = Math.max(0, app.payPerDay + effects.raisePay.by);
+  }
   if (effects.breakApp) scriptedBreak(s, typeof effects.breakApp === 'object' ? effects.breakApp.appId : undefined);
   if (effects.job && job) {
     const status = effects.job === 'complete' ? 'completed' : effects.job === 'fail' ? 'failed' : 'accepted';

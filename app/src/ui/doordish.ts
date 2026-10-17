@@ -5,7 +5,7 @@
  * From day 5 DoorDish's AI-generated listings show up among them (CityPulse breaks the story on day 8).
  */
 import type { GameStore } from '../game/store';
-import { dishListing, type DishListing } from './appsite';
+import { dishListing, dishPicture, type DishListing } from './appsite';
 import { ICONS } from './icons';
 import { adHtml } from './ads';
 
@@ -131,7 +131,7 @@ export function pageDoorDish(store: GameStore, param?: string): string {
     const menu = l.down
       ? `<div class="dd-err"><p>Couldn't load this store's menu.</p><code>TypeError: Failed to fetch</code></div>`
       : l.dishes.length
-        ? `<ul class="dd-menu">${l.dishes.map((d) => `<li><span>${esc(d.name)}</span><b>${d.price ? `${esc(d.price)} ${esc(l.currency)}` : ''}</b></li>`).join('')}</ul>`
+        ? `<ul class="dd-menu">${l.dishes.map((d, i) => `<li>${l.pictures ? dishPicture(l.pictures[i] ?? null, d.name) : ''}<span>${esc(d.name)}</span><b>${d.price ? `${esc(d.price)} ${esc(l.currency)}` : ''}</b></li>`).join('')}</ul>`
         : `<p class="dd-dim">This store hasn't added a menu yet.</p>`;
     return `<div class="dd">${head}<div class="dd-wrap">
       <p class="dd-crumb"><a href="#" data-nav="doordish.com">← All stores</a></p>

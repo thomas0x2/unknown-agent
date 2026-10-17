@@ -125,7 +125,7 @@ describe('fixing named bugs', () => {
     await promptDone(s, content, jev, 'The name on the trattoria gina website is wrong');
     const items = asked.features[0].features.filter((f) => f.id.startsWith(`${id}::landing::`));
     expect(items.find((f) => f.id.endsWith('::feature'))!.kind).toBe('build');
-    expect(items.filter((f) => f.kind === 'component').map((f) => f.id.split('::')[2])).toEqual(['c:name', 'c:hours']);
+    expect(items.filter((f) => f.kind === 'component').map((f) => f.id.split('::')[2])).toEqual(['c:name', 'c:hours', 'c:address']);
     expect(items.find((f) => f.kind === 'component')!.description).toMatch(/^the restaurant name \(also counts as naming it: "title", "heading"\), a part of the landing .*misspelled/);
     // synonyms count for the path steps too
     expect(items.find((f) => f.id.endsWith('::s:landing'))!.description).toContain('"home page"');
@@ -133,7 +133,7 @@ describe('fixing named bugs', () => {
     expect(items.filter((f) => f.kind === 'step').map((f) => f.id.split('::')[2])).toEqual(['s:landing']);
     expect(items.find((f) => f.kind === 'area')!.description).toMatch(/Its parts, by path: landing > name \(the restaurant name\); landing > hours \(the opening hours\)/);
     // each part lists the others, so a complaint about one isn't read as one about its neighbour
-    expect(items.find((f) => f.kind === 'component')!.description).toMatch(/Other parts of the landing, which are not this one: the opening hours\. /);
+    expect(items.find((f) => f.kind === 'component')!.description).toMatch(/Other parts of the landing, which are not this one: the opening hours; the restaurant.s address\. /);
     expect(items.some((f) => f.kind === 'problem')).toBe(false);
   });
 

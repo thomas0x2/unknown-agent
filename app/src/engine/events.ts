@@ -45,6 +45,7 @@ export function triggerMatches(s: GameState, t: Trigger): boolean {
     const app = s.apps.find((a) => a.clientEventId === t.appWorking && !a.churned);
     if (!app || !app.deployed || app.brokenDays > 0) return false;
   }
+  if (t.appClient && !s.apps.some((a) => a.clientEventId === t.appClient && !a.churned)) return false;
   return true;
 }
 
@@ -358,8 +359,13 @@ export function queueFeatureLaunch(s: GameState, content: Content, clientEventId
     const l = ev.launch;
     return l?.app === clientEventId && !!l.feature && live.includes(l.feature) && !underway(s, ev) && triggerMatches(s, ev.trigger);
   });
-  for (const feature of new Set(waiting.map((ev) => ev.launch!.feature!))) {
-    const group = waiting.filter((ev) => ev.launch!.feature === feature);
+  // the next day's reactions keep their own time
+  for (const ev of waiting.filter((e) => e.launch!.nextDay)) {
+    (s.arriving ??= []).push({ eventId: ev.id, day: s.values.day + 1, at: parseClock(ev.launch!.at) ?? CLOCK.wake + 30 });
+  }
+  const sameDay = waiting.filter((e) => !e.launch!.nextDay);
+  for (const feature of new Set(sameDay.map((ev) => ev.launch!.feature!))) {
+    const group = sameDay.filter((ev) => ev.launch!.feature === feature);
     const afters = group.map((ev) => ev.launch!.after);
     const first = Math.min(...afters);
     const late = s.clockMin + Math.max(...afters) > LAST_POST;

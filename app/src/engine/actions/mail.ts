@@ -8,7 +8,7 @@ import { FAMILY } from '../config';
 import { clone, pick, pushMail, sendLater } from '../core';
 import { applyEffects } from '../effects';
 import { policyActive, recordWorkaround } from '../agent';
-import { getEvent, activeDeliveries, reachableByEmail, eventBody } from '../events';
+import { getEvent, activeDeliveries, reachableByEmail, eventBody, triggerMatches } from '../events';
 import { type Writer, type HistoryLine, scriptedWriter } from '../writer';
 import { agentRefusal, policyCheck } from './agent';
 import { PLAYER_ADDR, TOO_LONG_MAIL, stateSummary, tooLong } from './shared';
@@ -107,7 +107,7 @@ function leadSource(s: GameState, content: Content, addr: string): GameEvent | u
 
 /** The contact's scripted reply for what the player wrote, if Jev matches one. */
 async function scriptedTopic(jev: JevRouter, s: GameState, c: Contact, text: string, context: string[]): Promise<ScriptedReply | undefined> {
-  const topics = c.scripted ?? [];
+  const topics = (c.scripted ?? []).filter((t) => !t.trigger || triggerMatches(s, t.trigger));
   if (!topics.length) return undefined;
   const decision = await jev.route({
     channel: 'qmail', text, context, stateSummary: stateSummary(s),
@@ -165,6 +165,7 @@ async function contactWritesBack(
   const history = mailHistory(s, content, addr, subject, text);
   const scripted = await scriptedTopic(jev, s, c, text, history.map((h) => `${h.from === 'player' ? 'Player' : h.from === 'self' ? c.name ?? from ?? addr : h.from}: ${h.text}`));
   if (scripted) {
+    applyEffects(s, scripted.effects);
     sendLater(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: scripted.reply, read: false, scripted: 'topic' }, replyAfter(content, addr, scripted.replyAfter, ev));
     return { reply: scripted.reply, scripted: true };
   }

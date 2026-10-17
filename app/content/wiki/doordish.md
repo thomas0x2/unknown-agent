@@ -19,7 +19,7 @@ from: 1
 | [public] Pita Point | Mediterranean | 17 Alder St | 10:00–21:00 | 4.4, 25–40 min, 2.49 | Falafel Wrap 9, Chicken Shawarma Plate 14, Hummus & Pita 6 |
 | [public] GeneralAI Campus Kitchen | Cafeteria | Route 9 | 07:00–15:00 | 3.1, 50–70 min, 0.99 | Nutrient Bowl 7, Sandwich of the Day: 8, Leftover Catering Tray 15 |
 
-[hint] Trattoria Gino appears (rated "New", 30–40 min) once [[The player]] deploys [[Gino Fenoglio]]'s DoorDish listing; its store page shows whatever the live listing shows, mistakes included. DoorDish ads: "Our robots deliver in 30 minutes or they escape. Your choice." and "Last meal? We deliver."
+[hint] Trattoria Gino appears (rated "New", 30–40 min) once [[The player]] deploys [[Gino Fenoglio]]'s DoorDish listing; its store page shows whatever the live listing shows, mistakes included. Once his site has dish pictures (from day 5), the store page shows them next to each dish, broken or wrong ones included. DoorDish ads: "Our robots deliver in 30 minutes or they escape. Your choice." and "Last meal? We deliver."
 
 ## From day 5: AI-generated listings
 

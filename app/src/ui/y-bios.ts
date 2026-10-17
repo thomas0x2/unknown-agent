@@ -60,6 +60,7 @@ export const Y_BIOS: Record<string, string> = {
   zev_dolr: 'Holding DOLR since 0.4. Ships everything with agent. Posting through it. Not financial advice.',
   // app users who complain on Y
   kofi_a: 'Spin Cycle regular. Sunday loads, 9am.',
+  marguerite: 'Retired music teacher. Friday dinners at the same table since 2010.',
   steph_m: 'Nurse, nights. Laundry in between.',
   walked_there_again: 'I walk to the laundromat a lot.',
   ines_sells: "Selling my aunt's furniture one chair at a time.",

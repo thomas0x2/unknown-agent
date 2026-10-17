@@ -30,7 +30,8 @@ nest: true
 
 ## Yowl reviewers
 
-- [public] Trattoria Gino: Pia L. (5 stars), Tom R. (4, "Cash only, and no website"), Marguerite (5, "Our Friday spot for years").
+- [public] Trattoria Gino: Pia L. (5 stars), Tom R. (4, "Cash only, and no website"), Marguerite (5, "Our Friday spot for years"). Marguerite is a retired music teacher who has had Friday dinner at the same table since 2010; on Y she is @marguerite.
+- [hidden; public if shown d6_y_trattoria_photos] Marguerite posted on Y about Gino's AI menu pictures the day after they went live. {{y:d6_y_trattoria_photos}}
 - [public] Bean There: espresso_or_death (1 star, "Burnt. Every single time."), commuter22 (2), Zoe K. (2).
 - [public] Iron Yard: liftbro (3), Steph M. (4), kettlebell_karen (2).
 - [public] Spin Cycle Laundry: walked_there_again (2), Nadia (3, a van idling out back at 2am).

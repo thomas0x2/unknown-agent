@@ -20,6 +20,8 @@ export interface Effects {
   createApp?: CreateAppSpec;
   /** Grow an existing app's spec (a client update): adds required features by the client's event id. */
   updateApp?: { client: string; add: FeatureSpec[] };
+  /** Raise (or cut) the daily pay of the app created by this client event (Gino's raise). */
+  raisePay?: { client: string; by: number };
   /**
    * Job bookkeeping, used on outcomes of events that carry a `job`. 'complete' records the job by
    * category (so endings know if a catastrophic job ever ran) and pays its payout; 'accept'/'fail'
@@ -268,8 +270,9 @@ export interface GameEvent {
    * minutes after that deploy when that is later. Only a first deploy queues it; the trigger alone never does.
    * With `feature`, it waits instead for the first deploy that puts that feature live (the trader's
    * auto-buy), `after` minutes later; what would land after 20:00 goes up the next morning instead.
+   * With `nextDay` too, it lands the day after that deploy, at `at` (a regular's reaction overnight).
    */
-  launch?: { app: string; feature?: string; at?: string; after: number };
+  launch?: { app: string; feature?: string; at?: string; after: number; nextDay?: boolean };
   /**
    * Lands `after` game minutes (default 30) after the player posts on Y about what `when` describes,
    * once the trigger holds. Jev reads the post. The trigger alone never delivers it. Events sharing a
@@ -369,6 +372,8 @@ export interface Trigger {
    * Client update requests wait on this, so a broken site gets a complaint first, not new work.
    */
   appWorking?: string;
+  /** Only while the client of this client event is still a client (took the job, hasn't cancelled). */
+  appClient?: string;
 }
 export interface Outcome {
   id: string;
@@ -437,6 +442,10 @@ export interface ScriptedReply {
   reply: string;
   /** Minutes before this reply arrives, instead of the contact's usual time. */
   replyAfter?: number;
+  /** Only offered while this holds (a raise Gino grants from day 4, and refuses before). */
+  trigger?: Trigger;
+  /** Applied when this reply is sent. */
+  effects?: Effects;
 }
 
 /** A character Haiku speaks as when Jev finds nothing in what the player wrote. */

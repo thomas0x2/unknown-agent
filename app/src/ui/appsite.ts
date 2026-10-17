@@ -6,7 +6,8 @@
  */
 import { type AppInstance, type AppBreak, type BuiltFeature, breakVariant, bugsOf, UNNAMED_BUG } from '../engine';
 import type { AppTemplate } from '../content/schema';
-import { menuDishes, misspell, WRONG_HOURS } from '../engine/restaurant';
+import { menuDishes, misspell, WRONG_HOURS, wrongAddress, dishPictures, type DishKind } from '../engine/restaurant';
+import { dishArt } from './dishArt';
 import { crawl, ledger, portfolio, tradeLog, readMood, trackedOf, START_PORTFOLIO, type Buy, type MarketPost, type Portfolio } from '../engine/crawler';
 import { payDay, STAKE } from '../engine/stake';
 import type { StakeSend } from '../engine/state';
@@ -99,6 +100,8 @@ function restaurant(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
   const name = !hasLanding ? 'My Restaurant' : landing.bugs.has('name_wrong') ? misspell(specName, landing.seed) : specName;
   const hoursSpec = String(landing.params.hours ?? '').replace('-', '–');
   const hours = landing.bugs.has('hours_wrong') ? WRONG_HOURS[landing.seed % WRONG_HOURS.length] : hoursSpec;
+  const address = landing.bugs.has('address_wrong') ? wrongAddress(landing.seed) : String(landing.params.address ?? '');
+  const photos = live(app, tmpl, 'photos');
 
   const base = app.url;
   const tabs: [string, string, boolean][] = [['', 'Home', true], ['menu', 'Menu', !!menu.built], ['booking', 'Book a table', !!extras.booking]];
@@ -114,6 +117,7 @@ function restaurant(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
           <p class="as-r-kicker">Cucina italiana</p>
           <h1>${esc(name)}</h1>
           ${hours ? `<p class="as-r-hours"><span>Open daily</span> ${esc(hours)}</p>` : ''}
+          ${address ? `<p class="as-r-hours as-r-addr"><span>Find us</span> ${esc(address)}</p>` : ''}
           ${menu.built ? `<a href="#" class="as-r-cta" data-nav="${esc(base)}/menu">See the menu</a>` : ''}
         </section>`;
   } else if (page === 'menu' && menu.built) {
@@ -121,8 +125,9 @@ function restaurant(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
     if (down) body = `<section class="as-r-menu"><h1>Menu</h1>${down}</section>`;
     else {
       const { dishes, currency } = menuDishes(menu);
-      const rows = dishes.map((d) => `<li><span>${esc(d.name)}</span><i></i><b>${d.price ? `${esc(d.price)} ${currency}` : ''}</b></li>`).join('');
-      body = `<section class="as-r-menu"><h1>Menu</h1><ul>${rows}</ul></section>`;
+      const pics = photos.built ? dishPictures(dishes, photos.bugs, photos.seed) : undefined;
+      const rows = dishes.map((d, i) => `<li${pics ? ' class="pic"' : ''}>${pics ? dishPicture(pics[i], d.name) : ''}<span>${esc(d.name)}</span><i></i><b>${d.price ? `${esc(d.price)} ${currency}` : ''}</b></li>`).join('');
+      body = `<section class="as-r-menu"><h1>Menu</h1><ul>${rows}</ul>${pics ? '<p class="as-r-note">Pictures are for illustration.</p>' : ''}</section>`;
     }
   } else if (page === 'cancel' && extras.cancel) {
     body = `<section class="as-r-book">${extras.cancel}</section>`;
@@ -130,8 +135,15 @@ function restaurant(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
     body = `<section class="as-r-book">${outage(live(app, tmpl, 'booking'), 'the booking form') ?? extras.booking}</section>`;
   } else body = notFound();
 
-  const foot = `<footer class="as-r-foot">© ${esc(name)}${hours && hasLanding ? ` · ${esc(hours)}` : ''}<span>Built with Forkyard</span></footer>`;
+  const foot = `<footer class="as-r-foot">© ${esc(name)}${hours && hasLanding ? ` · ${esc(hours)}` : ''}${address && hasLanding ? ` · ${esc(address)}` : ''}<span>Built with Forkyard</span></footer>`;
   return `<div class="as as-r">${header}<main>${body}</main>${foot}</div>`;
+}
+
+/** A dish's picture on the menu, or the browser's broken-image box with the file name where it didn't load. */
+export function dishPicture(kind: DishKind | null, name: string): string {
+  const file = `${name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}.png`;
+  if (!kind) return `<span class="as-r-pic broken" title="${esc(file)}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h9l3 3v9H2z" fill="#fff" stroke="#9aa3ab"/><path d="M4 11l3-3 2 2 1-1 2 2" stroke="#9aa3ab" fill="none"/><path d="M9 2l-2 5 3 1-2 6" stroke="#e5484d" fill="none"/></svg><small>${esc(file)}</small></span>`;
+  return `<span class="as-r-pic" role="img" aria-label="${esc(name)}">${dishArt(kind)}</span>`;
 }
 
 /** What a restaurant's DoorDish listing shows: the live site's name, hours and menu, bugs included. */
@@ -141,6 +153,8 @@ export interface DishListing {
   address: string;
   dishes: { name: string; price: string }[];
   currency: string;
+  /** The live menu's dish pictures, one per dish (null where it doesn't load), when the site has them. */
+  pictures?: (DishKind | null)[];
   /** The listing itself is down: the store page can't load its menu. */
   down: boolean;
 }
@@ -157,7 +171,9 @@ export function dishListing(app: AppInstance, tmpl: AppTemplate | undefined): Di
   const hours = landing.bugs.has('hours_wrong') ? WRONG_HOURS[landing.seed % WRONG_HOURS.length] : String(landing.params.hours ?? '').replace('-', '–');
   const down = !!listing.brk && (listing.brk.failure === 'visible' || listing.brk.failure === 'failed_fetch');
   const { dishes, currency } = menu.built && !outage(menu, '') ? menuDishes(menu) : { dishes: [], currency: '' };
-  return { name, hours, address: String(listing.params.address ?? ''), dishes, currency, down };
+  const photos = live(app, tmpl, 'photos');
+  const pictures = photos.built ? dishPictures(dishes, photos.bugs, photos.seed) : undefined;
+  return { name, hours, address: String(listing.params.address ?? ''), dishes, currency, down, pictures };
 }
 
 // ── vibe check ──
