@@ -1,11 +1,11 @@
 ---
 title: Day 12
-aliases: Saturday Oct 14, Oct 14, October 14
+aliases: Friday Oct 18, Oct 18, October 18
 category: days
 from: 12
 ---
 
-[public] Saturday, October 14. [known]
+[public] Friday, October 18. [known]
 
 ## Mail
 

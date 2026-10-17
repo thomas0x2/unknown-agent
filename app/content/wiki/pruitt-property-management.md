@@ -9,7 +9,7 @@ from: 1
 
 - [public] Rent comes out of the player's Coinbin wallet at the end of the due day. Before the game it was 350 DOLR a week.
 - [public] Gary accepted last month's rent late and says that was the last late payment he'll take; there is no late fee, no extension and no late option.
-- [public] Rent of 350 DOLR is due at the end of Monday, October 9, day 7 [known]. If it isn't there Monday night, the player is out.
+- [public] Rent of 350 DOLR is due at the end of Sunday, October 13, day 7 [known]. If it isn't there Sunday night, the player is out.
 - [public] On day 6 Gary reminds the player that the 350 DOLR rent comes out tomorrow night, with no late option.
 - [public] Rent of 500 DOLR is due on day 14 [known].
 - [public] Rent of 650 DOLR is due on day 21 [known].

@@ -15,7 +15,7 @@ from: 3
 ## Listings
 
 - [public] Swaplist is empty until its first listing, which appears about an hour of play after the first deploy: Viktor's grandfather's pocket watch, 120 DOLR.
-- [public] After that, regulars list about one thing an hour: ines_sells, second_hand_sam, pia_l, kofi_a, steph_m and walked_there_again; one sells a Crane 2028 commemorative plate for 3 DOLR.
+- [public] After that, regulars list about one thing an hour: ines_sells, second_hand_sam, pia_l, kofi_a, steph_m and walked_there_again; one sells a Crane 2030 commemorative plate for 3 DOLR.
 - [public] Sellers add "EDIT: sold, thanks." when something goes.
 - [public] On day 4 Viktor posts that the watch sold on Swaplist within a day. {{y:d4_viktor_resolve}}
 - [hint] On day 5 Viktor posts that Swaplist needs a way to message the seller, because people put their phone numbers in listings and get calls at 2am. {{y:d5_y_swaplist_messages}}

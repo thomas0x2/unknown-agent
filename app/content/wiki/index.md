@@ -14,7 +14,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[App users and reviewers]] (app-users-and-reviewers.md): Regular people who use the apps the player builds, post on Y when those apps break, sell on Swaplist, and review local businesses on Yowl
 - [[Axel Rook]] (axel-rook.md): Axel Rook is the richest man alive
 - [[Cal Hartman]] (cal-hartman.md): Cal Hartman is the CEO of GeneralAI and the public face of agent
-- [[Candidate 2028]] (candidate-2028.md): Candidate 2028 is Randall Crane's opponent for president, a career politician so generic that nobody, the news included, uses his name:…
+- [[Candidate 2030]] (candidate-2030.md): Candidate 2030 is Randall Crane's opponent for president, a career politician so generic that nobody, the news included, uses his name:…
 - [[Dana Kohl]] (dana-kohl.md): Dana Kohl is a night-shift nurse on Alder St
 - [[Dana Reyes]] (dana-reyes.md): Dana Reyes owns Bean There, a coffee shop at 3 Linden Ave (owner@beanthere.test)
 - [[Daniel Keller]] (daniel-keller.md): Daniel Keller is the Progress Party candidate for governor of the state, on the same ballot as the presidential race in The election
@@ -101,7 +101,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[Government]] (government.md): Government sites look like typewritten forms
 - [[Money and DOLR]] (money-and-dolr.md): DOLR is the only money The player uses: a stablecoin pegged 1:1 to the dollar, held in their Coinbin wallet
 - [[The city]] (the-city.md): An unnamed present-day American city where GeneralAI has made white-collar work optional
-- [[The election]] (the-election.md): Election day is Monday, October 23, 2028
+- [[The election]] (the-election.md): Election day is Sunday, October 27, 2030
 
 ## Days
 

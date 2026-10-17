@@ -1,11 +1,11 @@
 ---
 title: Day 16
-aliases: Wednesday Oct 18, Oct 18, October 18
+aliases: Tuesday Oct 22, Oct 22, October 22
 category: days
 from: 16
 ---
 
-[public] Wednesday, October 18. [known]
+[public] Tuesday, October 22. [known]
 
 ## Mail
 
@@ -21,7 +21,7 @@ from: 16
 - [public] 14:05 [[Randall Crane]]: his opponent "has never had a real job. He's had a CAREER." {{y:d16_y_crane}}
 - [public] 14:05 [[CityPulse]]: HUSH MONEY? GeneralAI settles with three companies whose systems its models broke into; terms secret. {{y:d16_y_gai_leak}}
 - [public] 14:42 zev.dolr bought the DOLR dip again. {{y:f16}}
-- [public] 15:20 Candidate 2028: "I'm proud of my record of public service." {{y:d16_y_candidate}}
+- [public] 15:20 Candidate 2030: "I'm proud of my record of public service." {{y:d16_y_candidate}}
 - [public] 16:59 MarketWire: "Can't tell anymore if $GAI is a company or a weather system." {{y:m16_gai}}
 - [public] 19:57 Axel Rook: "@randall_crane lol" {{y:d16_y_axel_2}}
 

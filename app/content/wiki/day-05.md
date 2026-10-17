@@ -1,11 +1,11 @@
 ---
 title: Day 5
-aliases: Saturday Oct 7, Oct 7, October 7
+aliases: Friday Oct 11, Oct 11, October 11
 category: days
 from: 5
 ---
 
-[public] Saturday, October 7. [known]
+[public] Friday, October 11. [known]
 
 ## Mail
 
@@ -18,7 +18,7 @@ from: 5
 
 ## Y
 
-- [public] 11:20 Candidate 2028: technology should work for people; "a balanced approach". {{y:d5_y_candidate}}
+- [public] 11:20 Candidate 2030: technology should work for people; "a balanced approach". {{y:d5_y_candidate}}
 - [public] 11:30 @randa11_crane, an account made to look like [[Randall Crane]]'s: "Huge fan of Vantor ($VANT). Great company, great people." {{y:m5_vant_impostor}}
 - [classified; hint if swaplist_live] 11:40 [[Viktor]]: Swaplist could use a way to message the seller; people put their phone numbers in listings and get calls at 2am. {{y:d5_y_swaplist_messages}}
 - [public] 12:30 Kofi A.: four new machines at Spin Cycle; machine 3 still out of order. {{y:d5_y_kofi_news}}

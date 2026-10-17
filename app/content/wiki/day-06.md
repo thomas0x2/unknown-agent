@@ -1,11 +1,11 @@
 ---
 title: Day 6
-aliases: Sunday Oct 8, Oct 8, October 8
+aliases: Saturday Oct 12, Oct 12, October 12
 category: days
 from: 6
 ---
 
-[public] Sunday, October 8, Mom's birthday. [known]
+[public] Saturday, October 12, Mom's birthday. [known]
 
 ## Mail
 

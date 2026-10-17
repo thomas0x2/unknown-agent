@@ -1,11 +1,11 @@
 ---
 title: Day 3
-aliases: Thursday Oct 5, Oct 5, October 5
+aliases: Wednesday Oct 9, Oct 9, October 9
 category: days
 from: 3
 ---
 
-[public] Thursday, October 5. [known]
+[public] Wednesday, October 9. [known]
 
 ## Mail
 
@@ -35,7 +35,7 @@ from: 3
 - [public] 16:25 doomscroll would settle for his job back. {{y:d3_y_doomscroll_machines}}
 - [public] 16:50 zev.dolr asks who will finish his side projects. {{y:d3_y_zev_machines}}
 - [public] 17:20 cat_ceo: her cat "has a plan. details to follow." {{y:d3_y_catceo_machines}}
-- [public] 17:40 Candidate 2028 spent the afternoon listening to working families. {{y:d3_y_candidate}}
+- [public] 17:40 Candidate 2030 spent the afternoon listening to working families. {{y:d3_y_candidate}}
 - [public] 17:45 Axel Rook: "@randall_crane 🤣🤣" {{y:d3_y_axel_2}}
 - [public] 18:40 noodleposter: his uncle shared the Crane post four times and thinks the cloud is weather. {{y:d3_y_noodle_machines}}
 - [public] 19:10 Teo Vasquez: nobody is sending anything back, but Crane is the first candidate all year who said "jobs" out loud. {{y:d3_y_teo_machines}}

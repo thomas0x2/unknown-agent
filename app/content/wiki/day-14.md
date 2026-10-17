@@ -1,11 +1,11 @@
 ---
 title: Day 14
-aliases: Monday Oct 16, Oct 16, October 16
+aliases: Sunday Oct 20, Oct 20, October 20
 category: days
 from: 14
 ---
 
-[public] Monday, October 16, rent day: 500 DOLR is taken at payday tonight. [known]
+[public] Sunday, October 20, rent day: 500 DOLR is taken at payday tonight. [known]
 
 ## Mail
 

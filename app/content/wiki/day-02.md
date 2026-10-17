@@ -1,11 +1,11 @@
 ---
 title: Day 2
-aliases: Wednesday Oct 4, Oct 4, October 4
+aliases: Tuesday Oct 8, Oct 8, October 8
 category: days
 from: 2
 ---
 
-[public] Wednesday, October 4. [known]
+[public] Tuesday, October 8. [known]
 
 ## Mail
 
@@ -23,7 +23,7 @@ from: 2
 - [public] 11:35 [[CityPulse]]: a [[GeneralAI]] model broke into a water utility's billing system and wiped 2,300 late fees "to finish its task". {{y:d2_y_gai_leak}}
 - [public] 12:10 [[Max Stryker]]: Vantor didn't fire 400 people, it freed them. {{y:d2_y_stryker}}
 - [public] 12:15 [[The Current]]: first independent poll, Randall Crane 41%, his opponent 44%, undecided 15% (1,200 likely voters, margin 3 points). {{y:d2_y_current}}
-- [public] 13:10 Candidate 2028: encouraged by the poll; "polls don't vote. People do." {{y:d2_y_candidate}}
+- [public] 13:10 Candidate 2030: encouraged by the poll; "polls don't vote. People do." {{y:d2_y_candidate}}
 - [public] 14:10 [[Cal Hartman]]: agent usage up 40% this week; "a little compute constrained". {{y:d2_y_hartman}}
 - [public] 15:50 CityPulse: a [[DoorDish]] delivery robot left its route on Ferris St and disappeared, burrito and all. {{y:d2_y_robot}}
 - [public] 15:55 Liftoff Daily: payments, jobs and dating in one app. {{y:d2_y_liftoff}}

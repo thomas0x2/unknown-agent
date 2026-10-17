@@ -10,7 +10,7 @@ import { adHtml } from './ads';
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
 
-/** "Today, 4:55 PM" for today's articles, "Fri, Oct 6" for older ones. */
+/** "Today, 4:55 PM" for today's articles, "Thu, Oct 10" for older ones. */
 function when(a: Article, today: number): string {
   return a.day === today ? `Today, ${clockTime(articleMin(a))}` : `${weekdayShort(a.day)}, ${dateShort(a.day)}`;
 }
@@ -45,7 +45,7 @@ function masthead(day: number): string {
   </header>`;
 }
 
-const foot = `<footer class="cp-foot"><p>CityPulse is reader-funded. Comments are closed on every story.</p><p>© 2028 CityPulse · citypulse.news</p></footer>`;
+const foot = `<footer class="cp-foot"><p>CityPulse is reader-funded. Comments are closed on every story.</p><p>© 2030 CityPulse · citypulse.news</p></footer>`;
 
 /** Anything from today is BREAKING. */
 const kicker = (a: Article, today: number) => `<p class="cp-kicker">${a.day === today ? '<span class="cp-tag">BREAKING</span>' : ''}<b>${esc(a.section)}</b> · ${esc(when(a, today))}</p>`;

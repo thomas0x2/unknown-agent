@@ -5,10 +5,10 @@ category: companies
 from: 1
 ---
 
-[public] Vantor Group is [[The player]]'s former employer, at 1 Vantor Plaza. Late on Monday night (Oct 2) it laid off 400 of about 440 staff "with one memo", transitioning their roles to automation with [[GeneralAI]]'s [[agent]]; it now describes itself as "a people-first company of 40 people and 1,100 agents". Its stock, $VANT, rose after the restructuring; the careers page says +14% this quarter. BK Capital's Brent Kowalski owns it: "Efficiency is a moral good." {{article:vantor-layoffs}}
+[public] Vantor Group is [[The player]]'s former employer, at 1 Vantor Plaza. Late on Sunday night (Oct 6) it laid off 400 of about 440 staff "with one memo", transitioning their roles to automation with [[GeneralAI]]'s [[agent]]; it now describes itself as "a people-first company of 40 people and 1,100 agents". Its stock, $VANT, rose after the restructuring; the careers page says +14% this quarter. BK Capital's Brent Kowalski owns it: "Efficiency is a moral good." {{article:vantor-layoffs}}
 
 - [public] People & Culture (people@vantorgroup.test) sent the termination email and vantor_offboarding.pdf (Form PC-77b: no severance for positions "transitioned to automation"). Email signatures read "Vantor Group · 1 Vantor Plaza · vantor.group" and say the email is for current employees only. {{mail:d1_hr_termination}}
-- [public] The player's laptop had a Vantor work profile, removed the night before day 1 ("Your personal files were not affected"). The player's old Vantor password stopped working on Oct 3.
+- [public] The player's laptop had a Vantor work profile, removed the night before day 1 ("Your personal files were not affected"). The player's old Vantor password stopped working on Oct 7.
 - [public] vantor.group/careers: 0 open positions, "Check back after the next restructuring", free lunch on Fridays "for as long as there is a canteen"; applications from agents are reviewed first. Its banner ad: "Vantor Group is hiring! Open positions: 0".
 - [public] vantor.group/next-chapter (Vantor Outplacement): 30 days of Next Chapter, an AI career coach, free for former staff; placement rate "being calculated". It takes a resume upload from [[Qdrive]] (PDF only) and finds 0 jobs whatever is uploaded. Its ad: "Roles found to date: 0".
 - [public] Leo Brandt, a former colleague in Vantor Heights, has had 3 interviews with 3 AI screeners and 3 rejections. Viktor and Jess Park also mention Vantor.

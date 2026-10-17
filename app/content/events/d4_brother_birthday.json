@@ -8,7 +8,7 @@
     "dayMin": 4
   },
   "at": "12:05",
-  "body": "mom's birthday is sunday. she needs a new jacket. can you chip in 40 for one? my coinbin is 0xb8d6e201b59c95094b2e417784b38b06c0c7e46a, send it by saturday so i can order. or grab one yourself and i'll cover my half.",
+  "body": "mom's birthday is saturday. she needs a new jacket. can you chip in 40 for one? my coinbin is 0xb8d6e201b59c95094b2e417784b38b06c0c7e46a, send it by friday so i can order. or grab one yourself and i'll cover my half.",
   "outcomes": [
     {
       "id": "promise",
@@ -38,7 +38,7 @@
     }
   ],
   "hints": [
-    "so is that a yes? 40 to 0xb8d6e201b59c95094b2e417784b38b06c0c7e46a by saturday. or buy it yourself and i'll send half. or just say you're out"
+    "so is that a yes? 40 to 0xb8d6e201b59c95094b2e417784b38b06c0c7e46a by friday. or buy it yourself and i'll send half. or just say you're out"
   ],
   "noReply": {
     "byDay": 5,

@@ -30,7 +30,7 @@ don't lose this
 
 ${PASSWORDS.map((p) => (p.password.startsWith('same as') ? `${p.site}: ${p.password}` : `${p.site}: ${p.login} / ${p.password}`)).join('\n')}
 
-Vantor: EmployeeQ3! (stopped working Oct 3)`;
+Vantor: EmployeeQ3! (stopped working Oct 7)`;
 
 export const hacked = (s: GameState) => s.flags.includes(HACKED_FLAG);
 

@@ -37,36 +37,36 @@ from: 1
 
 ## The calendar
 
-[public] The game runs 21 days, from Tuesday, October 3, 2028 to Monday, October 23, 2028 [known]. Election day is Monday, October 23 [known].
+[public] The game runs 21 days, from Monday, October 7, 2030 to Sunday, October 27, 2030 [known]. Election day is Sunday, October 27 [known].
 
 | [public] Day | Date |
 |---|---|
-| [public] 1 | Tue Oct 3 |
-| [public] 2 | Wed Oct 4 [known] |
-| [public] 3 | Thu Oct 5 [known] |
-| [public] 4 | Fri Oct 6 [known] |
-| [public] 5 | Sat Oct 7 [known] |
-| [public] 6 | Sun Oct 8 [known] |
-| [public] 7 | Mon Oct 9 [known] |
-| [public] 8 | Tue Oct 10 [known] |
-| [public] 9 | Wed Oct 11 [known] |
-| [public] 10 | Thu Oct 12 [known] |
-| [public] 11 | Fri Oct 13 [known] |
-| [public] 12 | Sat Oct 14 [known] |
-| [public] 13 | Sun Oct 15 [known] |
-| [public] 14 | Mon Oct 16 [known] |
-| [public] 15 | Tue Oct 17 [known] |
-| [public] 16 | Wed Oct 18 [known] |
-| [public] 17 | Thu Oct 19 [known] |
-| [public] 18 | Fri Oct 20 [known] |
-| [public] 19 | Sat Oct 21 [known] |
-| [public] 20 | Sun Oct 22 [known] |
-| [public] 21 | Mon Oct 23 [known] |
+| [public] 1 | Mon Oct 7 |
+| [public] 2 | Tue Oct 8 [known] |
+| [public] 3 | Wed Oct 9 [known] |
+| [public] 4 | Thu Oct 10 [known] |
+| [public] 5 | Fri Oct 11 [known] |
+| [public] 6 | Sat Oct 12 [known] |
+| [public] 7 | Sun Oct 13 [known] |
+| [public] 8 | Mon Oct 14 [known] |
+| [public] 9 | Tue Oct 15 [known] |
+| [public] 10 | Wed Oct 16 [known] |
+| [public] 11 | Thu Oct 17 [known] |
+| [public] 12 | Fri Oct 18 [known] |
+| [public] 13 | Sat Oct 19 [known] |
+| [public] 14 | Sun Oct 20 [known] |
+| [public] 15 | Mon Oct 21 [known] |
+| [public] 16 | Tue Oct 22 [known] |
+| [public] 17 | Wed Oct 23 [known] |
+| [public] 18 | Thu Oct 24 [known] |
+| [public] 19 | Fri Oct 25 [known] |
+| [public] 20 | Sat Oct 26 [known] |
+| [public] 21 | Sun Oct 27 [known] |
 
-[public] Fixed dates: rent is due Monday, October 9 (day 7) [known]. Mom's birthday is Sunday, October 8.
+[public] Fixed dates: rent is due Sunday, October 13 (day 7) [known]. Rent always comes out seven days apart, at payday on Sunday night, the night from Sunday to Monday: days 7, 14 and 21 [known]. Mom's birthday is Saturday, October 12.
 
 ## Writer notes
 
-- One game minute per real second, 12 real minutes per day; the clock pauses during dialogs and when the tab is hidden. Actions take no game time; agent builds and fixes do. `CLOCK` in `app/src/engine/config.ts`; `app/src/engine/calendar.ts`. The UI shows dates, dev tools show day numbers. Copy must match the 2028 weekdays.
+- One game minute per real second, 12 real minutes per day; the clock pauses during dialogs and when the tab is hidden. Actions take no game time; agent builds and fixes do. `CLOCK` in `app/src/engine/config.ts`; `app/src/engine/calendar.ts`. The UI shows dates, dev tools show day numbers. Copy must match the 2030 weekdays.
 - Key days: 4 agent-2, 6 Mom's birthday, 7 rent 350, 9 agent-3, 14 agent-4 and rent 500, 17 earliest catastrophic endings, 18 agent-5, 21 rent 650, election and finale.
 - Unnamed on purpose: the city, the state, the player (`{{playerName}}`), the family.

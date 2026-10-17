@@ -26,7 +26,7 @@ function playerParagraph(s: GameState): string {
 
 function article(s: GameState, day: number): string {
   const body = [
-    `<p>The memo went out on a Monday night. By Tuesday morning, 400 people at Vantor Group no longer worked there. By the end of the week the company's shares were up 8%.</p>`,
+    `<p>The memo went out on a Sunday night. By Monday morning, 400 people at Vantor Group no longer worked there. By the end of the week the company's shares were up 8%.</p>`,
     `<p>Vantor calls it a restructuring. Over the past week I spoke with former Vantor staff and with workers at other firms that have handed their roles to GeneralAI's agent. Most asked me not to use their names. Nearly all of them said they now pay for agent themselves, by the prompt, to look for work.</p>`,
     playerParagraph(s),
     `<p>Viktor spent twenty-two years in accounts payable. This week he put his late grandfather's pocket watch up for sale. “He wound it every morning for fifty years,” he told me. “I'd rather sell it than miss rent. He would have said the same.”</p>`,
