@@ -24,6 +24,13 @@ export interface WriteReq {
   character?: string;
   /** What the character is doing right now (a Swaplist seller: the listing, the buyer's question). */
   situation?: string;
+  /** 'query': answer the question (agent.chat queries), looking up the world and the player's screens. */
+  mode?: 'query';
+  /** The game day and clock (minutes since midnight), so a lookup only finds what the player could know by now. */
+  day?: number;
+  min?: number;
+  /** The player's story flags, so a lookup only finds the branch they're on. Never shown to the model. */
+  flags?: string[];
 }
 
 export interface HistoryLine { from: string; text: string }

@@ -36,8 +36,12 @@ subscription you're logged in to with Claude Code (use this for development only
   use stand-ins from `engine/_fixtures.ts`; the game itself never decides by keywords.
 - **Claude Haiku 5.5**, through the proxy, writes every off-script reply: a short roast for
   agent.chat prompts that drive nothing, and the people behind Qmail addresses, each in the voice of
-  their profile in `content/characters.json`. Prompts that ask where to go ("how do I make money?")
-  are matched by Jev to a scripted hint in `content/agent.json` instead. Without the proxy or a key,
+  their profile in `content/characters.json`. A prompt Jev reads as a question about the world (a
+  query: "who is Gino?", "did anyone email me?") gets a real answer from Haiku, still in agent's mean
+  voice, after it looks things up with tools: the wiki (`content/wiki/`, cut to what the player could
+  know by the current day, time and story branch) and what the player's own screens show (Qmail, Y,
+  Yowl, CityPulse, Forkyard, Coinbin; `server/wiki.mjs`, `ui/queryView.ts`). Vague build or fix asks
+  get a scripted near-miss from `content/agent.json`. Without the proxy or a key,
   scripted fallbacks are shown (`game/misses.ts`, `game/haiku.ts`). The Terminal app's deepsleep-0.5B model
   answers from a fixed list of lines.
 - **The agent is freely promptable with costs** — ask it anything on agent.chat and it bills your

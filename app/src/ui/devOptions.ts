@@ -130,7 +130,9 @@ function agentOptions(store: GameStore): string {
     + section('Jobs', 'every paid job in the story: available now, taken, done or still locked', jobs(store))
     + section('Build and fix', `scripted reply: "${reply}"`, apps)
     + section('Translations', 'paste a deepsleep-0.5B line from the Terminal; several lines are translated together', translations())
-    + section('Hint topics', 'one reply is picked at random, never the last one twice', hints)
+    + section('Queries', 'a question about the world: Haiku answers it after looking up the wiki and your screens; these lines stand in when it cannot', c.agent?.query
+      ? `<div class="dvb-card">${line('When', esc(c.agent.query.when))}${line(`Fallback (${c.agent.query.fallback.length})`, c.agent.query.fallback.map(quote).join(''))}</div>` : '')
+    + section('Near-miss topics', 'one reply is picked at random, never the last one twice', hints)
     + section('Misses', 'Haiku writes a roast; these stand in when it cannot', roasts ? `<div class="dvb-card">${roasts}</div>` : '');
 }
 

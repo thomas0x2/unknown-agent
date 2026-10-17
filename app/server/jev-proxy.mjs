@@ -12,6 +12,7 @@ import http from 'node:http';
 import { readFileSync } from 'node:fs';
 import { execFile } from 'node:child_process';
 import { tmpdir } from 'node:os';
+import { QUERY_TOOLS, runQueryTool, searchWiki, readSite, context } from './wiki.mjs';
 
 const PORT = Number(process.env.PORT) || 8787;
 const KEY = process.env.TYPESAFE_API_KEY || '';
@@ -60,6 +61,7 @@ function historyBlock(history) {
 async function write(body) {
   const ch = CHARACTERS.find((c) => c.id === body.character);
   if (!ch) return { status: 400, json: { error: `unknown character ${body.character}` } };
+  if (body.mode === 'query') return query(ch, body);
   const n = ch.sentences ?? 2;
   const form = `Keep it dry and understated rather than zany. At most ${n} short sentence${n > 1 ? 's' : ''} of plain text, ` +
     `no quotes, no stage directions, no emoji. Stay consistent with anything you already said earlier in the conversation.`;
@@ -77,6 +79,70 @@ async function write(body) {
   const earlier = historyBlock(body.history);
   messages.push({ role: 'user', content: earlier ? `${earlier}\n\nThe player now writes:\n${said}` : said });
   return runWriter(system, messages, body.via);
+}
+
+// An agent.chat query (Jev read the prompt as a question about the world): agent answers it, still
+// mean, after looking things up in the wiki and the player's own screens (server/wiki.mjs). At most
+// MAX_LOOKUPS rounds of tool calls; the last round forbids tools so it always ends in text. Only that
+// text goes back to the player. The day, clock and flags keep the wiki to what the player could know
+// by now, on the branch they're on.
+const MAX_LOOKUPS = 4;
+async function query(ch, body) {
+  const q = ch.query;
+  if (!q) return { status: 400, json: { error: `${ch.id} answers no queries` } };
+  const ctx = context(body.day, Number(body.min), body.flags);
+  const day = ctx.day;
+  const view = body.view && typeof body.view === 'object' ? body.view : null;
+  const n = q.sentences ?? 3;
+  const system = `${q.profile}\n\nIt is day ${day} of the game${view?.time ? `, ${view.time}` : ''}. ` +
+    `Look up what you need before answering: the wiki for the world, check_site for the player's own mail, posts, reviews, apps and wallet. ` +
+    `Only state facts you found there or in the conversation; if you can't find it, say you don't know. Never mention tools, a wiki, searching or looking anything up. ` +
+    `Never say which of the player's apps are broken or what is wrong with them. ` +
+    `At most ${n} short sentences of plain text, no lists, no markdown, no emoji.`;
+  const messages = [];
+  for (const [u, a] of q.examples ?? []) messages.push({ role: 'user', content: u }, { role: 'assistant', content: a });
+  const said = String(body.text ?? '').slice(0, 2000);
+  const earlier = historyBlock(body.history);
+  messages.push({ role: 'user', content: earlier ? `${earlier}\n\nThe player now asks:\n${said}` : said });
+  const started = Date.now();
+  if (body.via === 'subscription') {
+    // the CLI route gets no tools: it gets a search for the question up front instead
+    const found = `What you know that may help (from the wiki):\n${searchWiki(said, ctx)}\n\nThe player's inbox:\n${readSite(view, 'qmail', said).slice(0, 1200)}`;
+    return writeWithCli(`${system}\n\n${found}`, messages, started);
+  }
+  const client = await getAnthropic();
+  if (!client) return { status: 501, json: { error: ANTHROPIC_KEY ? 'The proxy could not load @anthropic-ai/sdk (run npm install).' : 'ANTHROPIC_API_KEY is not set in app/.env.' } };
+  const convo = [...messages];
+  const lookups = [];
+  const usage = { input_tokens: 0, output_tokens: 0 };
+  let res;
+  for (let round = 0; ; round++) {
+    res = await client.messages.create({
+      model: WRITER_MODEL,
+      max_tokens: 400,
+      thinking: { type: 'disabled' },
+      output_config: { effort: 'low' },
+      system,
+      tools: QUERY_TOOLS,
+      tool_choice: round < MAX_LOOKUPS ? { type: 'auto' } : { type: 'none' },
+      messages: convo,
+    });
+    usage.input_tokens += res.usage?.input_tokens ?? 0;
+    usage.output_tokens += res.usage?.output_tokens ?? 0;
+    const calls = res.content.filter((b) => b.type === 'tool_use');
+    if (res.stop_reason !== 'tool_use' || !calls.length) break;
+    convo.push({ role: 'assistant', content: res.content });
+    convo.push({
+      role: 'user',
+      content: calls.map((c) => {
+        const result = runQueryTool(c.name, c.input, ctx, view);
+        lookups.push({ tool: c.name, input: c.input, result });
+        return { type: 'tool_result', tool_use_id: c.id, content: result };
+      }),
+    });
+  }
+  const text = res.content.filter((b) => b.type === 'text').map((b) => b.text).join('').trim();
+  return { status: 200, json: { text, model: res.model, stop: res.stop_reason, ms: Date.now() - started, usage, system, messages, lookups } };
 }
 
 // SorryWriter (sorrywriter.ai): the player says what they did, Haiku writes their apology. Like

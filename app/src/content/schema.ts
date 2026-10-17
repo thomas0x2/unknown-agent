@@ -356,6 +356,8 @@ export interface Character {
   sentences?: number;
   /** Fewest words a usable reply has (default 1); shorter ones fall back to the scripted line. */
   minWords?: number;
+  /** How the character answers a question about the world (agent.chat queries): it answers, in its own voice. */
+  query?: { profile: string; examples: [string, string][]; sentences?: number };
 }
 
 /** Everything the engine reads, gathered in one bundle and passed into engine steps. */
@@ -365,8 +367,16 @@ export interface AgentHint {
   when: string;
   replies: string[];
 }
+/** A question about the world, its people, sites and the player's own mail and posts: Haiku answers it. */
+export interface AgentQuery {
+  /** What Jev matches a prompt against. */
+  when: string;
+  /** Scripted lines for when Haiku can't answer. */
+  fallback: string[];
+}
 export interface AgentContent {
   hints: AgentHint[];
+  query?: AgentQuery;
   /** Scripted roasts for prompts that drive nothing, when Haiku can't write one. */
   roasts: string[];
   /** agent's opening line each morning from day 2, when the chat starts a new session. One is picked at random. */
@@ -384,7 +394,7 @@ export interface Content {
   contacts: Contact[];
   /** Character profiles for off-script replies. */
   characters?: Character[];
-  /** agent.chat's hint topics and roasts. */
+  /** agent.chat's hint topics, queries and roasts. */
   agent?: AgentContent;
   /** Stock posts on Y, the data the vibe check reads. */
   yMarket?: MarketContent;

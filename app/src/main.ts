@@ -41,9 +41,11 @@ import { trackLoads, LOADING_HTML } from './ui/pageLoad';
 import { markSend, applySendFx, flyOff, sendLanded } from './ui/sendFx';
 import { SOUND } from './ui/sound';
 import { soundSnap, soundCues, botBurst } from './ui/soundCues';
+import { queryView } from './ui/queryView';
 
 const content = loadContent();
-const writer = makeWriter(content);
+// a query reads the player's screens as they are when it's sent
+const writer = makeWriter(content, () => queryView(store));
 const store = new GameStore(content, JEV, writer, localStorageStore());
 
 const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector<T>(sel);

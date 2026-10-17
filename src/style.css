@@ -397,6 +397,7 @@ body.dev-on .ua-src { display: block; }
 .ua-src.hit { color: #1c7444; }
 .ua-src.partial { color: #a06a00; }
 .ua-src.miss { color: #a12b1f; }
+.ua-src.query { color: #2457a6; }
 .ua-sys { align-self: center; display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: #a12b1f; background: #fbeae7; border: 1px solid #e3a59c; padding: 6px 12px; border-radius: 6px; text-align: center; }
 .ua-sys svg { width: 15px; height: 15px; flex: none; }
 /* the agent couldn't run: shown as an error, not as dialogue */

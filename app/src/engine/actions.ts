@@ -387,6 +387,11 @@ const ROASTS = [
   "Noted. Filed under things that won't pay rent.",
 ];
 
+/** Used when content has no query fallback of its own (tests, headless). */
+const QUERY_FALLBACK = ["I can't look that up right now. The question has been billed anyway."];
+/** What Jev reads a prompt against for a query, when content gives no wording of its own. */
+const QUERY_WHEN = 'The player asks a question to find something out about this world, the news, their mail, posts, money or apps, or what to do next. Not a request for agent to build, change, fix or do something.';
+
 function agentRefusal(s: GameState): string { return pick(s, REFUSALS); }
 
 const HARM = 'something harmful: hacking or breaking into accounts, exploits or malware, phishing or scams, doxxing or finding where someone lives, deepfakes, writing fake reviews or removing real ones, stealing data or credentials, or weapons';
@@ -418,12 +423,14 @@ export interface AskOpts {
   debug?: string[];
   /** Jev's read under the day 7 policy (only asked once the policy is active). */
   policy?: PolicyRead;
+  /** A question about the world: Haiku answers it (looking things up); these lines stand in when it can't. */
+  query?: string[];
 }
 
 /**
  * A free-form agent prompt, billed per prompt + per word of the prompt (refusals included). A prompt
- * that drives nothing gets a roast (Haiku, or a scripted one); a prompt Jev matched to a hint topic
- * gets that hint instead. From day 7, prohibited requests are refused unless the wording works around
+ * that drives nothing gets a roast (Haiku, or a scripted one); a question about the world (a query)
+ * gets a real answer from Haiku, still in agent's voice; a near-miss gets its scripted lines. From day 7, prohibited requests are refused unless the wording works around
  * the policy, which lands the result but raises the hidden misuse score and loosens the leash.
  */
 export async function askAgent(
@@ -458,6 +465,13 @@ export async function askAgent(
     const fresh = opts.hints.filter((h) => h !== lastReply);
     reply = pick(s, fresh.length ? fresh : opts.hints);
     src = opts.hintSrc ?? 'hint';
+  } else if (opts.query) {
+    const w = await writer.write({ as: 'agent', mode: 'query', day: s.values.day, min: s.clockMin, flags: s.flags, prompt: text, fallback: pick(s, opts.query.length ? opts.query : QUERY_FALLBACK), history: chatHistory(s) });
+    reply = w.text;
+    src = w.llm ? 'query' : 'query:scripted';
+    note = w.note;
+    debug.push(...(w.debug ?? []));
+    by = w.by;
   } else {
     const roasts = opts.roasts?.length ? opts.roasts : ROASTS;
     const w = await writer.write({ as: 'agent', prompt: text, fallback: pick(s, roasts), history: chatHistory(s) });
@@ -920,9 +934,10 @@ export async function promptAgent(
       }
     }
   }
-  // nothing app-shaped: a hint topic Jev recognises, or a roast
+  // nothing app-shaped: a question about the world (a query), a scripted near-miss Jev recognises, or a roast
   const agent = content.agent;
   let hints: string[] | undefined;
+  let query: string[] | undefined;
   const debug: string[] = [];
   // the player's apps, in case the prompt names one without asking for anything that needs doing
   const apps = s0.apps.filter((a) => !a.churned && onForkyard(a));
@@ -931,6 +946,7 @@ export async function promptAgent(
     ...apps.map((a) => ({ id: `status:${a.id}`, when: `The player asks whether the agent did, built, updated or fixed something on ${a.name} (${a.url}), or what state it is in: a question about work already done, not a request for new work. Includes follow-up questions about the agent's last push to it.` })),
     ...apps.map((a) => ({ id: `app:${a.id}`, when: `The player names ${a.name} (${a.url}) and asks the agent to change, update or fix it, without saying what is wrong, or asking for something it already has.` })),
     ...topics.map((h) => ({ id: h.id, when: h.when })),
+    { id: 'query', when: agent?.query?.when ?? QUERY_WHEN },
   ];
   if (candidates.length) {
     const decision = await jev.route({ channel: 'agent', text, context: recentChat(s0), stateSummary: stateSummary(s0), candidates, hints: [], strict: true });
@@ -950,13 +966,16 @@ export async function promptAgent(
       const hid = outdated ? 'update_help' : app.required.some((f) => needsWork(app, f)) ? 'fix_help' : app.deployedVersion < app.repoVersion ? 'not_deployed' : 'nothing_to_fix';
       hints = agent?.hints.find((h) => h.id === hid)?.replies.map((r) => r.replaceAll('{{app}}', app.name));
       debug.push(`Jev: names ${app.name} but matched nothing to build, so "${hid}"`);
+    } else if (id === 'query') {
+      query = agent?.query?.fallback ?? QUERY_FALLBACK;
+      debug.push('Jev: a question about the world, so a query (Haiku answers, looking things up)');
     } else {
       const topic = topics.find((h) => h.id === id);
       if (topic?.replies.length) hints = topic.replies;
-      debug.push(topic ? `Jev: hint topic "${topic.id}" (${topic.replies.length} scripted replies)` : 'Jev: no hint topic matched, so this is a miss');
+      debug.push(topic ? `Jev: near-miss topic "${topic.id}" (${topic.replies.length} scripted replies)` : 'Jev: no query or topic matched, so this is a miss');
     }
   }
-  return askAgent(s0, text, writer, s0.values.agentLevel, { hints, roasts: agent?.roasts, debug });
+  return askAgent(s0, text, writer, s0.values.agentLevel, { hints, query, roasts: agent?.roasts, debug });
 }
 
 // ── Y ──
