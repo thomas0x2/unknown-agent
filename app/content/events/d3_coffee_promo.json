@@ -34,7 +34,12 @@
           "delayDays": 2
         }
       },
-      "reply": "Amazing, thank you! Post it whenever."
+      "reply": "Amazing, thank you! Post it whenever.",
+      "keys": [
+        "@yes",
+        "!ad|sponsored|disclose|label",
+        "!@no"
+      ]
     },
     {
       "id": "disclosed",
@@ -47,7 +52,10 @@
           "disclosed_ad"
         ]
       },
-      "reply": "Oh. I mean... fine. Ten then, I guess."
+      "reply": "Oh. I mean... fine. Ten then, I guess.",
+      "keys": [
+        "@yes+ad|sponsored|disclose|label|paid"
+      ]
     }
   ],
   "hints": [

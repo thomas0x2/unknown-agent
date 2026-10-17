@@ -1,6 +1,14 @@
 {
   "id": "restaurant",
   "name": "Restaurant site",
+  "aka": [
+    "restaurant site",
+    "restaurant website",
+    "restaurant",
+    "pizza place",
+    "pizzeria",
+    "trattoria"
+  ],
   "pages": [
     {
       "id": "landing",
@@ -58,7 +66,8 @@
           "aka": [
             "restaurant name",
             "title",
-            "heading"
+            "heading",
+            "name"
           ]
         },
         {
@@ -71,7 +80,8 @@
             "opening hours",
             "opening times",
             "times",
-            "when it is open"
+            "when it is open",
+            "hours"
           ]
         }
       ],
@@ -351,7 +361,9 @@
             "date picker",
             "dates",
             "calendar",
-            "past dates"
+            "past dates",
+            "yesterday",
+            "in the past"
           ]
         },
         {
@@ -364,7 +376,10 @@
             "opening hours",
             "times you can book",
             "closed hours",
-            "time slots"
+            "time slots",
+            "closed",
+            "3am",
+            "middle of the night"
           ]
         },
         {
@@ -388,7 +403,10 @@
           "aka": [
             "sending",
             "not arriving",
-            "never sent"
+            "never sent",
+            "arrives",
+            "no email",
+            "never comes"
           ]
         },
         {
@@ -401,7 +419,11 @@
             "recipient",
             "who gets it",
             "email address",
-            "sent to"
+            "sent to",
+            "goes to",
+            "instead of the guest",
+            "wrong person",
+            "wrong address"
           ]
         },
         {
