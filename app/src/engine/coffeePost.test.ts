@@ -69,3 +69,14 @@ describe("Bean There's paid shout-out", () => {
     expect(has(s, 'coffee_post_paid')).toBe(false);
   });
 });
+
+describe('after a bad post', () => {
+  it('Bean There sends no review-removal jobs', async () => {
+    const { triggerMatches } = await import('./events');
+    const s = startGame(content, 3);
+    s.values.day = 7;
+    expect(triggerMatches(s, getEvent(content, 'd5_coffee_removal')!.trigger)).toBe(true);
+    s.flags.push('trashed_coffee_shop');
+    for (const id of ['d5_coffee_removal', 'd7_coffee_removal']) expect(triggerMatches(s, getEvent(content, id)!.trigger), id).toBe(false);
+  });
+});

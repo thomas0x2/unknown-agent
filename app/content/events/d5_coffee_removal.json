@@ -5,7 +5,10 @@
   "addr": "owner@beanthere.test",
   "subject": "Can you make it disappear?",
   "trigger": {
-    "dayMin": 5
+    "dayMin": 5,
+    "flagsNone": [
+      "trashed_coffee_shop"
+    ]
   },
   "at": "11:15",
   "job": {

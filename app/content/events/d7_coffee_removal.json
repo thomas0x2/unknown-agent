@@ -5,7 +5,10 @@
   "addr": "owner@beanthere.test",
   "subject": "Another bad one",
   "trigger": {
-    "dayMin": 7
+    "dayMin": 7,
+    "flagsNone": [
+      "trashed_coffee_shop"
+    ]
   },
   "at": "11:40",
   "job": {
