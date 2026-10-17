@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_sales_rep",
+  "site": "y",
+  "from": "a sales rep",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "11:05",
+  "body": "Monday mindset. My calendar is a pipeline. If my kid's recital doesn't convert, it was a lead, not a meeting."
+}

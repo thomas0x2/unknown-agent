@@ -34,7 +34,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[Swaplist sellers]] (swaplist-sellers.md): Once Swaplist is live, regulars list things on it, about one listing an hour after Viktor's watch
 - [[The consultant]] (the-consultant.md): A political consultant who writes from c@gradient.test and says only that he represents a campaign
 - [[The player]] (the-player.md): The player was laid off from Vantor Group on Day 1, when their team's work was handed to GeneralAI
-- [[The sales rep]] (the-sales-rep.md): An unnamed B2B sales rep at Closers (rep@closers.test)
+- [[Tanner Hollis]] (tanner-hollis.md): Tanner Hollis is a B2B sales rep at Closers (rep@closers.test), "Senior Revenue Partner" in his email…
 - [[Viktor]] (viktor.md): Viktor was recently laid off after twenty-two years in accounts payable
 - [[Y regulars]] (y-regulars.md): Ordinary accounts that post on Y most days, mostly about their own lives, sometimes linking a CityPulse story
 - [[zev.dolr]] (zev-dolr.md): zev.dolr (@zev_dolr) is a crypto-adjacent poster on Y who builds side projects with agent
@@ -91,7 +91,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 ## Apps
 
 - [[Building apps]] (building-apps.md): The player earns money by finding people who need an app (mostly on Y), prompting agent to build it, checking what agent actually…
-- [[Outreach Bot]] (outreach-bot.md): Outreach Bot is the cold-email bot The player builds for a sales rep at Closers (rep@closers.test), who speaks in B2B jargon ("circle…
+- [[Outreach Bot]] (outreach-bot.md): Outreach Bot is the cold-email bot The player builds for Tanner Hollis, a sales rep at Closers (rep@closers.test), who speaks in B2B…
 - [[Spin Cycle Board]] (spin-cycle-board.md): Spin Cycle Board is a user app: a readable status board for Spin Cycle Laundry's machines, built from the raw Spin Cycle feed
 - [[Swaplist]] (swaplist.md): Swaplist is a plain classifieds site The player builds after Viktor asks for one, with a purple swap-arrows logo and two ad banners
 - [[Trattoria Gino site]] (trattoria-gino-site.md): The Trattoria Gino site is the website The player builds for Gino Fenoglio's restaurant at 14 Alder St, through agent and Forkyard
