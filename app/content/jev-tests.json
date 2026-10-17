@@ -1378,5 +1378,97 @@
         "machines/count"
       ]
     }
+  },
+  {
+    "app": "dating",
+    "broken": [
+      "filters/age"
+    ],
+    "prompt": "On Matchless, the age filter lets through women older than 27",
+    "expect": {
+      "fix": [
+        "filters/age"
+      ]
+    }
+  },
+  {
+    "app": "dating",
+    "broken": [
+      "filters/distance"
+    ],
+    "prompt": "matchless filters: the distance one is letting through people 9 miles away",
+    "expect": {
+      "fix": [
+        "filters/distance"
+      ]
+    }
+  },
+  {
+    "app": "dating",
+    "broken": [
+      "filters/followers"
+    ],
+    "prompt": "Matchless blocked someone with fewer followers than Derek. The follower filter is too strict",
+    "expect": {
+      "fix": [
+        "filters/followers"
+      ]
+    }
+  },
+  {
+    "app": "dating",
+    "broken": [
+      "filters/height"
+    ],
+    "prompt": "Fix the height filter in Matchless's filters, it shows people taller than 5'5\"",
+    "expect": {
+      "fix": [
+        "filters/height"
+      ]
+    }
+  },
+  {
+    "app": "dating",
+    "broken": [
+      "deck/buttons"
+    ],
+    "prompt": "Matchless screening: accept and reject buttons are swapped",
+    "expect": {
+      "fix": [
+        "deck/buttons"
+      ]
+    }
+  },
+  {
+    "app": "dating",
+    "broken": [
+      "deck/limit"
+    ],
+    "prompt": "On Matchless the screening stops after 5 decisions, the daily limit should be 10",
+    "expect": {
+      "fix": [
+        "deck/limit"
+      ]
+    }
+  },
+  {
+    "app": "dating",
+    "broken": [
+      "filters/age"
+    ],
+    "prompt": "Matchless: the filters are broken",
+    "expect": {
+      "near": "near_miss"
+    }
+  },
+  {
+    "app": "dating",
+    "broken": [
+      "filters/age"
+    ],
+    "prompt": "On Matchless the height filter lets through tall people",
+    "expect": {
+      "check": true
+    }
   }
 ]

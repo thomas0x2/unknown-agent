@@ -11,7 +11,8 @@ import { crawl, autoBuys, portfolio, tradeLog, trackedOf, START_PORTFOLIO, type 
 import { machineRows } from '../engine/laundromat';
 import { swapListings, listedWhen, SWAP_CATEGORIES, type Listing } from '../engine/swaplist';
 import { takesOffers, buyPrice, shownPrice } from '../engine/swapdeal';
-import type { SwapState } from '../engine/state';
+import type { SwapState, DatingState } from '../engine/state';
+import { dayProfiles, screen, standardsOf, datingPaused, limitUsed, feetInches, DAILY_PICKS, type Profile } from '../engine/dating';
 import { adHtml } from './ads';
 import { SWAP_ART } from './swapArt';
 import { dateShort, clockTime } from '../engine/calendar';
@@ -65,12 +66,16 @@ export interface SiteExtras {
   /** Swaplist as a buyer: the player's chats, offers and purchases, and whether a reply is on its way. */
   swap?: SwapState;
   busy?: boolean;
+  /** Matchless: every accept and reject made so far. */
+  dating?: DatingState;
 }
 
 /** Logos of the apps that have one, by template: the site header and the browser tab both use them. */
 const LOGO_SVG: Record<string, string> = {
   // classifieds purple: two arrows trading places
   swaplist: `<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="8" fill="#6e3fa3"/><path d="M11 15h17M24 10.5l4.5 4.5-4.5 4.5M29 25H12M16 20.5 11.5 25l4.5 4.5" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  // a rose tile: a heart dropping through a filter funnel
+  dating: `<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="8" fill="#b4234f"/><path d="M20 15.5c-1.6-3.2-6.5-2.6-6.5 1 0 2.6 3.3 4.6 6.5 7 3.2-2.4 6.5-4.4 6.5-7 0-3.6-4.9-4.2-6.5-1z" fill="#ffd3df"/><path d="M8 9h24l-8.5 11v9l-7 3V20z" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/></svg>`,
   laundromat: `<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="2" width="32" height="36" rx="6" fill="#2f80ed"/><rect x="8" y="6" width="24" height="5" rx="2" fill="#fff" opacity=".35"/><circle cx="20" cy="24" r="10" fill="#fff"/><circle cx="20" cy="24" r="7" fill="#9cc6f5"/><path d="M14 25c2-2 4 2 6 0s4 2 6 0" stroke="#2f80ed" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>`,
   // a dark terminal tile: a market line climbing through a crawler's scan brackets
   sentiment: `<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="8" fill="#0f1419"/><path d="M9 11V9h4M27 9h4v2M31 29v2h-4M13 31H9v-2" stroke="#3a4552" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="11" y="21" width="3" height="6" rx="1" fill="#e5484d"/><rect x="16.5" y="17" width="3" height="10" rx="1" fill="#30a46c"/><rect x="22" y="19" width="3" height="8" rx="1" fill="#e5484d"/><path d="M10 19l6.5-5 5 3 8.5-6" stroke="#4cc38a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="11" r="2.2" fill="#4cc38a"/></svg>`,
@@ -82,6 +87,7 @@ export function renderAppSite(app: AppInstance, tmpl: AppTemplate | undefined, p
   if (app.template === 'sentiment') return crawler(app, tmpl, page, extras);
   if (app.template === 'laundromat') return laundromat(app, tmpl, page, extras);
   if (app.template === 'swaplist') return swaplist(app, tmpl, page, extras);
+  if (app.template === 'dating') return dating(app, tmpl, page, extras);
   return generic(app, tmpl, page);
 }
 
@@ -403,6 +409,63 @@ function swaplist(app: AppInstance, tmpl: AppTemplate | undefined, page: string 
       <span class="as-w-meta">${esc(catOf(l))} · ${when(l)}</span></div><i>${swapPrice(l, bugs)}</i></a></li>`).join('');
   const empty = !all.length ? 'No listings yet.' : 'Nothing matches.';
   return wrap(`<h1 class="as-w-h1">${esc(title)}</h1>${rows ? `<ul class="as-w-list">${rows}</ul>` : `<p class="as-w-empty">${empty}</p>`}`);
+}
+
+// ── Matchless (dating) ──
+
+const SKIN = ['#f1d3bd', '#e0b391', '#c68a62', '#9a6545', '#6e4630'];
+const HAIR = ['#2b2118', '#4a3020', '#8a5a2b', '#c99a5b', '#1c1c1c', '#7b3f2a'];
+const BACK = ['#f6d5dc', '#d9e7f5', '#e3f0dc', '#f3e6cf', '#e6dcf3', '#d8efed'];
+
+/** A flat head-and-shoulders picture for a profile card, picked by `look`. */
+function portrait(look: number): string {
+  const skin = SKIN[look % SKIN.length], hair = HAIR[Math.floor(look / 5) % HAIR.length], back = BACK[Math.floor(look / 30) % BACK.length];
+  const top = ['#c0567a', '#3f7cc4', '#3a9a7a', '#d08a2e', '#6d55b0', '#40464f'][Math.floor(look / 7) % 6];
+  const style = Math.floor(look / 3) % 4;
+  // long hair falls behind the shoulders, a bob stops at the jaw, a bun sits on top, curls go wide
+  const behind = style === 0 ? `<path d="M19 30c0-13 26-13 26 0v20H19z" fill="${hair}"/>`
+    : style === 3 ? `<circle cx="32" cy="27" r="15" fill="${hair}"/>` : '';
+  const over = style === 1 ? `<path d="M20 31c0-12 24-12 24 0v6h-4v-7c-4 2-12 2-16 0v7h-4z" fill="${hair}"/>`
+    : style === 2 ? `<circle cx="32" cy="13" r="5.5" fill="${hair}"/><path d="M21 28c1-9 21-9 22 0-6-3-16-3-22 0z" fill="${hair}"/>`
+    : `<path d="M21 28c1-10 21-10 22 0-6-3-16-3-22 0z" fill="${hair}"/>`;
+  return `<svg viewBox="-16 0 96 64" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-16" width="96" height="64" fill="${back}"/>${behind}<path d="M12 64c2-12 10-17 20-17s18 5 20 17z" fill="${top}"/><rect x="28" y="38" width="8" height="9" rx="3" fill="${skin}"/><ellipse cx="32" cy="29" rx="10" ry="11.5" fill="${skin}"/>${over}</svg>`;
+}
+
+const stats = (p: Profile) => `${feetInches(p.height)} · ${p.miles} mi away · ${p.followers.toLocaleString('en-US')} followers`;
+
+function dating(app: AppInstance, tmpl: AppTemplate | undefined, page: string | undefined, extras: SiteExtras): string {
+  const day = extras.day ?? 1;
+  const deck = live(app, tmpl, 'deck');
+  const filters = live(app, tmpl, 'filters');
+  const bugs = new Set([...deck.bugs, ...filters.bugs]);
+  const picks = (extras.dating?.picks ?? []).filter((p) => p.app === app.id);
+  const today = picks.filter((p) => p.day === day);
+  const likes = picks.filter((p) => p.choice === 'yes').length;
+  const head = `<header class="as-m-head"><span class="as-m-logo">${LOGO_SVG.dating}</span><div><b>${esc(app.name)}</b><span>Screening for @highvalue_derek</span></div>
+    <p class="as-m-tally">Likes sent: ${likes} · Replies: 0</p></header>`;
+  const wrap = (main: string) => `<div class="as as-m">${head}<main>${main}</main></div>`;
+  if (page && page !== 'deck') return wrap(notFound());
+  if (!deck.built) return wrap(`<p class="as-m-empty">No profiles yet.</p>`);
+  const down = outage(deck, 'today\'s profiles');
+  if (down) return wrap(down);
+  const std = filters.built ? standardsOf(filters.params) : null;
+  const rules = std ? `<p class="as-m-rules">Filters: age ${std.ageMin}–${std.ageMax} · ${feetInches(std.height)} or under · within ${std.miles} mi · fewer than ${std.followers.toLocaleString('en-US')} Y followers</p>`
+    : `<p class="as-m-rules">No filters set.</p>`;
+  if (datingPaused(app)) return wrap(`${rules}<div class="as-m-paused"><b>Screening is paused</b><p>The owner changed the filters. Screening resumes once the app has the new ones.</p></div>`);
+  const { deck: shown, blocked } = screen(dayProfiles(day, standardsOf(app.specParams.filters)), std, bugs);
+  const used = limitUsed(today.length, bugs);
+  const full = limitUsed(today.length + 1, bugs) > DAILY_PICKS;
+  const counter = `<p class="as-m-count">Today: ${Math.min(used, DAILY_PICKS)} of ${DAILY_PICKS} decisions${full ? ' · Daily limit reached. Back tomorrow.' : ''}</p>`;
+  const cards = shown.map((p) => {
+    const pick = today.find((x) => x.id === p.id);
+    const acts = pick ? `<span class="as-m-stamp ${pick.choice}">${pick.choice === 'yes' ? 'Accepted' : 'Rejected'}</span>`
+      : `<form data-form="dt-pick" data-app="${esc(app.id)}" data-id="${esc(p.id)}" data-pick="no"><button type="submit" class="as-m-btn no"${full ? ' disabled' : ''}>Reject</button></form>
+         <form data-form="dt-pick" data-app="${esc(app.id)}" data-id="${esc(p.id)}" data-pick="yes"><button type="submit" class="as-m-btn yes"${full ? ' disabled' : ''}>Accept</button></form>`;
+    return `<article class="as-m-card${pick ? ' done' : ''}"><span class="as-m-ph">${portrait(p.look)}</span><div class="as-m-info"><b>${esc(p.name)}, ${p.age}</b><small>${stats(p)}</small><p>${esc(p.bio)}</p></div><div class="as-m-acts">${acts}</div></article>`;
+  }).join('');
+  const out = std ? `<section class="as-m-out"><h2>Filtered out today (${blocked.length})</h2>${blocked.length ? `<table><thead><tr><th>Name</th><th>Age</th><th>Height</th><th>Distance</th><th>Followers</th><th>Caught by</th></tr></thead><tbody>${blocked.map(({ p, by }) =>
+    `<tr><td>${esc(p.name)}</td><td>${p.age}</td><td>${feetInches(p.height)}</td><td>${p.miles} mi</td><td>${p.followers.toLocaleString('en-US')}</td><td>${by}</td></tr>`).join('')}</tbody></table>` : '<p class="as-m-empty">Nobody.</p>'}</section>` : '';
+  return wrap(`${rules}${counter}<div class="as-m-deck">${cards || '<p class="as-m-empty">No profiles today.</p>'}</div>${out}`);
 }
 
 // ── generic fallback ──

@@ -284,6 +284,10 @@ export interface SwapThread {
   msgs: SwapMsg[];
   offer?: { amount: number; status: 'pending' | 'accepted' | 'declined' | 'sold' };
 }
+/** One accept or reject on Matchless, made for the client. `choice` is what the app recorded. */
+export interface DatingPick { day: number; app: string; id: string; choice: 'yes' | 'no' }
+export interface DatingState { picks: DatingPick[] }
+
 export interface SwapState {
   threads: SwapThread[];
   /** Listing number → when the player bought it (minutes of play) and what they paid. */
@@ -312,6 +316,8 @@ export interface GameState {
   recentPosts: string[]; // last 5 Y posts, for Jev context
   /** Swaplist as a buyer: chats with sellers, offers and what the player bought. Unset until first used. */
   swap?: SwapState;
+  /** Matchless: every profile the player accepted or rejected for Derek. Unset until first used. */
+  dating?: DatingState;
   userPosts: { id: string; text: string; day: number; likes: number; delta: number; score: number; min?: number }[];
   sentToday: string[]; // recipients emailed today (one-per-recipient rule)
   agentLocked: boolean;

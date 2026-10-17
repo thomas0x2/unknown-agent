@@ -202,6 +202,11 @@ export interface GameEvent {
    * once the trigger holds. Jev reads the post. The trigger alone never delivers it.
    */
   yPost?: { when: string; after?: number };
+  /**
+   * Lands first thing in the morning (at its trigger) instead of being spread over the day with the
+   * other job offers: a client change that has to ship before the app can be used that day.
+   */
+  morning?: boolean;
   /** Offers the player paid work, so replies come within half an hour. Events with a `job` or an outcome that creates an app count already. */
   jobRequest?: boolean;
   /** Applied the moment the event is delivered. */

@@ -458,6 +458,8 @@ document.addEventListener('submit', (e) => {
     store.swapOffer(Number(f.dataset.n), Number(val('#sl-offer')));
   } else if (kind === 'sl-buy') {
     store.swapBuy(Number(f.dataset.n));
+  } else if (kind === 'dt-pick') {
+    store.datingPick(f.dataset.app!, f.dataset.id!, f.dataset.pick === 'yes' ? 'yes' : 'no');
   } else if (kind === 'y-search') {
     // a handle opens that profile; one nobody uses gets Y's "doesn't exist" page
     const q = val('#y-search').trim().replace(/^@/, '').toLowerCase();

@@ -321,6 +321,18 @@ const ASKS: Record<string, [string, string, Record<string, string>]> = {
     new_always_free: 'The new machines always show as free.',
     layout_breaks: 'The layout breaks with 12 machines, the boxes overlap.',
   }],
+  dating: ['dating_contact', 'Matchless: ', {
+    age_leak: 'The age filter lets through profiles older than the age range.',
+    age_strict: 'The age filter blocks profiles inside the age range.',
+    height_leak: 'The height filter lets through profiles taller than the maximum height.',
+    height_strict: 'The height filter blocks profiles under the maximum height.',
+    distance_leak: 'The distance filter lets through profiles further away than the distance limit.',
+    distance_strict: 'The distance filter blocks profiles inside the distance limit.',
+    followers_leak: 'The follower filter lets through profiles with more Y followers.',
+    followers_strict: 'The follower filter blocks profiles with fewer Y followers.',
+    buttons_swapped: 'On the screening, the Accept and Reject buttons are swapped.',
+    limit_double: 'On the screening, the daily limit of 10 decisions stops after 5.',
+  }],
 };
 
 describe('fixing them', () => {

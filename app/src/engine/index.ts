@@ -15,6 +15,7 @@ export * from './crawler';
 export * from './laundromat';
 export * from './swaplist';
 export * from './swapdeal';
+export * from './dating';
 export * from './agent';
 export * from './endings';
 export * from './day';

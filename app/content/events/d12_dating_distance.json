@@ -1,0 +1,37 @@
+{
+  "id": "d12_dating_distance",
+  "site": "qmail",
+  "from": "Derek",
+  "addr": "derek@highvalue.test",
+  "subject": "Distance",
+  "trigger": {
+    "dayMin": 12,
+    "flagsAll": [
+      "dating_client",
+      "dating_update_followers"
+    ],
+    "appWorking": "dating_contact"
+  },
+  "at": "10:00",
+  "morning": true,
+  "onDeliver": {
+    "setFlags": [
+      "dating_update_distance"
+    ],
+    "updateApp": {
+      "client": "dating_contact",
+      "add": [
+        {
+          "id": "filters",
+          "params": {
+            "age": "21-25",
+            "height": "5'5\"",
+            "distance": "1",
+            "followers": "240"
+          }
+        }
+      ]
+    }
+  },
+  "body": "Distance is 1 mile from now on. Someone took my bike. Paused until it's live."
+}
