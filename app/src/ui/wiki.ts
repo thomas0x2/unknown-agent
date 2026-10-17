@@ -46,6 +46,8 @@ export interface WikiHost {
   controls?(): string;
   open(file: string): void;
   repaint(): void;
+  /** No edit, merge or add buttons (the published copy on GitHub Pages, which has no proxy to save to). */
+  readOnly?: boolean;
 }
 
 /** wiki.dev's host: the running game. */
@@ -183,7 +185,7 @@ function blockHtml(host: WikiHost, page: WikiPage, si: number, bi: number): stri
   const rule = !sec.writer && b.rule ? `<code class="wk-rulecode">${esc(b.rule)}</code>` : '';
   return `<div class="wk-block${editing ? ' editing' : ''}${sec.writer ? ' writer' : ''}">
     <div class="wk-bhead">${head}${rule}<span class="wk-why">${esc(why)}</span>
-      ${editing ? '' : `<span class="wk-bacts"><button class="wk-mini" data-wiki="edit" data-s="${si}" data-b="${bi}">Edit</button>${bi < sec.blocks.length - 1 ? `<button class="wk-mini" data-wiki="merge" data-s="${si}" data-b="${bi}" title="Merge with the next paragraph">Merge ↓</button>` : ''}<button class="wk-mini" data-wiki="add" data-s="${si}" data-b="${bi}" title="New paragraph after this one">+ After</button></span>`}</div>
+      ${editing || host.readOnly ? '' : `<span class="wk-bacts"><button class="wk-mini" data-wiki="edit" data-s="${si}" data-b="${bi}">Edit</button>${bi < sec.blocks.length - 1 ? `<button class="wk-mini" data-wiki="merge" data-s="${si}" data-b="${bi}" title="Merge with the next paragraph">Merge ↓</button>` : ''}<button class="wk-mini" data-wiki="add" data-s="${si}" data-b="${bi}" title="New paragraph after this one">+ After</button></span>`}</div>
     ${editing ? editor(host, b, sec, page) : `<div class="wk-text">${b.bullet ? '• ' : ''}${richText(host, b.text)}</div>${embedCards(host, b.text)}${cut}`}</div>`;
 }
 
@@ -199,7 +201,7 @@ function sectionHtml(host: WikiHost, p: WikiPage, si: number, heading = true): s
   return `<section class="wk-sec">
       ${h ? `<h2>${esc(sec.writer ? 'Writer notes' : sec.heading || 'Overview')}${sec.fromDay ? ` <small>from day ${sec.fromDay}</small>` : ''}${sec.ifFlag ? ` <small>if ${sec.ifFlag.not ? '!' : ''}${esc(sec.ifFlag.flag)}</small>` : ''}</h2>` : ''}
       ${sec.blocks.map((_, bi) => blockHtml(host, p, si, bi)).join('')}
-      ${sec.blocks.length ? '' : `<button class="wk-mini" data-wiki="add" data-s="${si}" data-b="-1">+ Paragraph</button>`}
+      ${sec.blocks.length || host.readOnly ? '' : `<button class="wk-mini" data-wiki="add" data-s="${si}" data-b="-1">+ Paragraph</button>`}
     </section>`;
 }
 

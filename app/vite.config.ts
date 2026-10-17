@@ -5,8 +5,11 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   // relative asset paths so the built app works when served from any path
   base: './',
-  // two pages: the game, and the standalone world wiki (wiki.html)
-  build: { rollupOptions: { input: { main: 'index.html', wiki: 'wiki.html' } } },
+  // two pages: the game, and the standalone world wiki (wiki.html); `npm run build:wiki` builds only
+  // the wiki, into dist-wiki/, for GitHub Pages (.github/workflows/wiki-pages.yml)
+  build: process.env.WIKI_ONLY
+    ? { outDir: 'dist-wiki', rollupOptions: { input: { wiki: 'wiki.html' } } }
+    : { rollupOptions: { input: { main: 'index.html', wiki: 'wiki.html' } } },
   server: {
     proxy: { '/api': 'http://localhost:8787' },
   },
