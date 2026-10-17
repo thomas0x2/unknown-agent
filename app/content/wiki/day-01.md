@@ -70,7 +70,7 @@ from: 1
 ## Writer notes
 
 - Timeline story beats: opens on Vantor's termination email; GeneralAI welcome; Gino's Y post → Trattoria site (40/day); after its first deploy he asks for a Y post (`restaurant_promo`, "The new website", 16:00 or 30 min after a later launch, sets `restaurant_promo_asked`), and thanks you if you post (`restaurant_promo_thanks`, "Your post": a man ordered one espresso and stayed two hours). Spin Cycle complaints → Spin Cycle Board (lead is on day 1, not 2). EMPIRE offer 20 DOLR. Mara's first post; she can be emailed from today (`journalist_contact`, sets `talked_to_journalist`, honest also `did_journalist_interview`). Hartman on the "testing incident".
-- Family: Mom (warm reply +5 trust, ask for money +20 DOLR and −10 trust with `asked_mom_money`, silence −5); brother replies-all. Money: Gary, rent due Sunday.
+- Family: Mom (warm reply +5 trust, ask for money +20 DOLR and −10 trust with `asked_mom_money`, silence −5 if no outcome-matching reply by tonight's summary); brother replies-all. Money: Gary, rent due Sunday.
 - Events: `d1_hr_termination`, `d1_gai_welcome`, `d1_landlord_rent`, `d1_mom`, `d1_brother_joke`, `d1_guru`, `d1_y_*`, `restaurant_contact`, `laundromat_contact` (agentStart, lead `d1_y_laundromat`).
 - Job offers (the Gino and laundromat posts) go through `spreadJobOffers`: 10:15 to 16:00, at least an hour apart, so on a crowded day they can land later than their `at`.
 - Filler times are computed by `spreadMin(id@day)`; MarketWire 09:30 is already up when the day starts.

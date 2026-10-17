@@ -65,6 +65,6 @@ from: 2
 
 ## Writer notes
 
-- Timeline: Gino's menu change and table booking (test bookings must be cancelled, or a 25 DOLR no-show fee hits on the booking's night: "Your table tonight", flag `test_booking_no_show`). deskjockey → Vibe Check ($GAI, $VANT; 50/day). dev_null → Weightroom (`knows_weightroom`). EMPIRE newsletter daily if subscribed. Family: Dad's "20 years" email with the three Halden breadcrumbs (warm +5, ask +3, silence −5).
+- Timeline: Gino's menu change and table booking (test bookings must be cancelled, or a 25 DOLR no-show fee hits on the booking's night: "Your table tonight", flag `test_booking_no_show`). deskjockey → Vibe Check ($GAI, $VANT; 50/day). dev_null → Weightroom (`knows_weightroom`). EMPIRE newsletter daily if subscribed. Family: Dad's "20 years" email with the three Halden breadcrumbs (warm +5, ask +3, silence −5 if no outcome-matching reply by tonight's summary).
 - `d2_restaurant_booking` needs `restaurant_client` and the site working, and sets `restaurant_update1`; it lands on the first day both hold.
 - Events: `d2_*`, `trader_contact`, `guru_newsletter`. MarketWire, Brent and bot posts are in `y_market.json` (bot swarm: 30 accounts today).
