@@ -13,7 +13,12 @@
   "yPost": {
     "when": "The post recommends or speaks well of Bean There (Dana Reyes's coffee shop at 3 Linden Ave, @bean_there on Y) and does not say it is paid, sponsored or an ad.",
     "after": 30,
-    "group": "coffee_post"
+    "group": "coffee_post",
+    "keys": [
+      "bean there|bean_there|beanthere|dana|linden",
+      "!ad|ads|sponsored|paid|disclose|partner|promo",
+      "!burnt|burned|worst|awful|terrible|disgusting|avoid|stay away|gross|lukewarm|slow|overpriced|bad coffee|do not go|trash"
+    ]
   },
   "onDeliver": {
     "add": {

@@ -1,6 +1,12 @@
 {
   "id": "outreach",
   "name": "Outreach bot",
+  "aka": [
+    "outreach",
+    "email bot",
+    "mail bot",
+    "cold email bot"
+  ],
   "pages": [
     {
       "id": "campaign",

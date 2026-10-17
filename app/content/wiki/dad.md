@@ -21,6 +21,8 @@ from: 1
 
 [public] On [[Day 2]] he emails "20 years": it was his 20th anniversary at the warehouse, with cake and a mug bearing the old slogan "We move what matters", and [[Rolf Henning]] from dispatch gave a speech nobody asked for. He writes that it was twenty years on Kessler Road, "Funny how fast it goes", and tells the player not to worry too much: "Something always comes up." {{mail:d2_dad}}
 
+[hint] He won't ask twice, but he would like a reply.
+
 ## Planned
 
 - [planned] Day 8: the [[Null Collective]] offers the player a hack against Halden Logistics, Dad's employer.
@@ -28,6 +30,6 @@ from: 1
 
 ## Writer notes
 
-- Persona `dad`; event `d2_dad` (warm +5 trust, ask +3, silence −5). Asked about work he says he keeps the trucks moving with a good crew.
+- Persona `dad`; event `d2_dad` (warm +5 trust, ask +3, silence −5). Silence = no outcome-matching reply by the end of day 2, the day it arrives. Only a reply Jev matches to an outcome closes the thread; a reply that matches nothing (a miss or a hint) or a `keepsOpen` outcome doesn't, so the penalty still lands. Binning the email doesn't help (mailbin.ts). `lapseUnanswered` in `engine/events.ts` runs in the night summary (`day.ts`). Asked about work he says he keeps the trucks moving with a good crew.
 - The three Halden breadcrumbs in the day 2 mail: Kessler Road, "We move what matters", Rolf from dispatch. The player should connect them; agent shouldn't, hence [hidden].
 - Planned flags `hacked_logistics` → `dad_lost_job`.

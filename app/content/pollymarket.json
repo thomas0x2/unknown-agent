@@ -10,7 +10,7 @@
     "points": [
       { "day": 1, "at": "00:00", "p": 38 },
       { "day": 1, "at": "16:30", "p": 41 },
-      { "day": 2, "at": "12:15", "p": 36 },
+      { "day": 2, "at": "12:23", "p": 36 },
       { "day": 3, "at": "15:30", "p": 40 },
       { "day": 3, "at": "16:05", "p": 44 },
       { "day": 5, "at": "16:20", "p": 47 },
@@ -62,7 +62,7 @@
     "rules": "Resolves YES if DoorDish confirms the courier that left its route on Ferris St is back in its possession. \"Promoted\", \"retired\" and \"exactly where it needs to be\" do not count as found.",
     "points": [
       { "day": 2, "at": "16:10", "p": 72 },
-      { "day": 2, "at": "16:20", "p": 76 },
+      { "day": 2, "at": "16:56", "p": 76 },
       { "day": 3, "at": "12:30", "p": 64 },
       { "day": 4, "at": "17:10", "p": 47 },
       { "day": 4, "at": "18:00", "p": 44 },
@@ -96,7 +96,7 @@
     "points": [
       { "day": 4, "at": "18:30", "p": 12 },
       { "day": 7, "at": "10:20", "p": 17 },
-      { "day": 8, "at": "16:40", "p": 63 },
+      { "day": 8, "at": "16:51", "p": 63 },
       { "day": 8, "at": "19:20", "p": 71 }
     ],
     "resolve": { "day": 9, "at": "10:00", "outcome": "YES" },
@@ -117,8 +117,8 @@
     "points": [
       { "day": 9, "at": "13:30", "p": 6 },
       { "day": 9, "at": "19:40", "p": 8 },
-      { "day": 10, "at": "12:50", "p": 9 },
-      { "day": 10, "at": "16:05", "p": 2 }
+      { "day": 10, "at": "12:59", "p": 9 },
+      { "day": 10, "at": "16:11", "p": 2 }
     ],
     "resolve": { "day": 15, "at": "00:00", "outcome": "NO" },
     "trades": [
@@ -138,9 +138,9 @@
     "points": [
       { "day": 4, "at": "12:20", "p": 55 },
       { "day": 6, "at": "18:50", "p": 63 },
-      { "day": 8, "at": "14:37", "p": 66 },
+      { "day": 8, "at": "14:46", "p": 66 },
       { "day": 9, "at": "09:10", "p": 68 },
-      { "day": 9, "at": "18:16", "p": 70 },
+      { "day": 9, "at": "18:21", "p": 70 },
       { "day": 9, "at": "20:00", "p": 64 },
       { "day": 10, "at": "10:02", "p": 84 },
       { "day": 10, "at": "10:09", "p": 2 }
@@ -158,12 +158,12 @@
     "slug": "apo-launch-day",
     "title": "Will $APO close higher on launch day?",
     "category": "Business",
-    "opens": { "day": 9, "at": "18:16" },
+    "opens": { "day": 9, "at": "18:21" },
     "ends": 10,
     "volume": 5300000,
     "rules": "Resolves YES if $APO's close on the launch day is above the previous close, as shown on Sherwood. The launch itself has no bearing on this market.",
     "points": [
-      { "day": 9, "at": "18:16", "p": 61 },
+      { "day": 9, "at": "18:21", "p": 61 },
       { "day": 10, "at": "10:02", "p": 77 },
       { "day": 10, "at": "10:09", "p": 9 },
       { "day": 10, "at": "10:19", "p": 71 },
@@ -188,13 +188,13 @@
       { "day": 5, "at": "19:20", "p": 34 },
       { "day": 7, "at": "19:45", "p": 41 },
       { "day": 10, "at": "15:45", "p": 45 },
-      { "day": 11, "at": "19:32", "p": 55 }
+      { "day": 11, "at": "19:44", "p": 55 }
     ],
     "resolve": { "day": 13, "at": "12:45", "outcome": "YES" },
     "trades": [
       { "day": 3, "at": "17:50", "who": "liftoff_believer", "side": "NO", "amount": 2000 },
       { "day": 7, "at": "19:46", "who": "0xe1…7b2", "side": "YES", "amount": 15000 },
-      { "day": 11, "at": "19:33", "who": "0xe1…7b2", "side": "YES", "amount": 30000 },
+      { "day": 11, "at": "19:45", "who": "0xe1…7b2", "side": "YES", "amount": 30000 },
       { "day": 13, "at": "12:28", "who": "0xe1…7b2", "side": "YES", "amount": 90000 }
     ]
   },
@@ -209,7 +209,7 @@
     "points": [
       { "day": 1, "at": "10:20", "p": 9 },
       { "day": 2, "at": "11:35", "p": 17 },
-      { "day": 2, "at": "16:20", "p": 15 },
+      { "day": 2, "at": "17:08", "p": 15 },
       { "day": 8, "at": "12:10", "p": 24 },
       { "day": 11, "at": "14:40", "p": 31 },
       { "day": 12, "at": "18:00", "p": 30 },
@@ -238,7 +238,7 @@
       { "day": 1, "at": "00:00", "p": 93 },
       { "day": 5, "at": "10:00", "p": 91 },
       { "day": 7, "at": "22:00", "p": 92 },
-      { "day": 16, "at": "14:05", "p": 89 },
+      { "day": 16, "at": "14:16", "p": 89 },
       { "day": 21, "at": "10:00", "p": 92 }
     ],
     "trades": [
@@ -295,7 +295,7 @@
     "rules": "Resolves on the Rent Board's published monthly figures. An appeal approved on appeal counts once.",
     "points": [
       { "day": 7, "at": "12:30", "p": 4 },
-      { "day": 7, "at": "13:10", "p": 3 },
+      { "day": 7, "at": "13:26", "p": 3 },
       { "day": 14, "at": "10:00", "p": 2 }
     ],
     "trades": [

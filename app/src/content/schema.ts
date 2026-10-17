@@ -33,6 +33,8 @@ export interface Effects {
 export interface HackSpec {
   /** What the hack does, for Jev: the prompt has to ask for this. */
   goal: string;
+  /** Offline mode: what names the job's target ("review"), next to a verb like delete or remove. */
+  keys?: string[];
   /** Every step the prompt has to name, outermost first (site, business, account). `what` is how the agent asks for a missing one. */
   path: { name: string; what: string; description: string; aka?: string[] }[];
   /** A Yowl seed review the hack deletes: business id and the reviewer's username. */
@@ -72,6 +74,8 @@ export interface FeatureSpec {
 export interface AppTemplate {
   id: string;
   name: string;
+  /** What else players call an app of this kind ("the crawler", "the restaurant site"): counts as naming it. */
+  aka?: string[];
   pages: AppPage[];
   features: FeatureDef[];
   /** What happens when the app is broken at payday: a client email, or a user's post on Y. */
@@ -222,7 +226,7 @@ export interface GameEvent {
    * prompt Jev matches to `when` takes the job (the outcome with a createApp) and builds from that same
    * prompt. `lead` is the post where the player hears about it.
    */
-  agentStart?: { when: string; lead?: string };
+  agentStart?: { when: string; lead?: string; /** offline mode's keywords for `when` (engine/keywords.ts) */ keys?: string[] };
   /**
    * Lands on the day the app created by client event `app` first goes live: at `at`, or `after` game
    * minutes after that deploy when that is later. Only a first deploy queues it; the trigger alone never does.
@@ -236,12 +240,14 @@ export interface GameEvent {
    * `group` are the different answers to one ask (a paid post, a disclosed ad, a bad review): once one
    * is on its way, the others are no longer offered.
    */
-  yPost?: { when: string; after?: number; group?: string };
+  yPost?: { when: string; after?: number; group?: string; /** offline mode's keywords for `when` (engine/keywords.ts) */ keys?: string[] };
   /**
    * Lands `after` game minutes into the agent outage, on the day the player hacks GeneralAI (see
    * AGENT_OUTAGE), once the trigger holds. The trigger alone never delivers it.
    */
   outage?: { after: number };
+  /** A Y post in a viral moment: it may follow the previous viral post closely (see events.Y_GAP). */
+  viral?: boolean;
   /**
    * Lands first thing in the morning (at its trigger) instead of being spread over the day with the
    * other job offers: a client change that has to ship before the app can be used that day.
@@ -323,6 +329,8 @@ export interface Outcome {
   id: string;
   /** Plain-language description Jev matches the player's reply against. */
   when: string;
+  /** Offline mode: the keywords that stand in for `when` (syntax in engine/keywords.ts). */
+  keys?: string[];
   effects?: Effects;
   /** Fixed reply text. Storyline replies are always scripted, never written by a model. */
   reply: string;
@@ -375,6 +383,8 @@ export interface Contact {
 export interface ScriptedReply {
   id: string;
   when: string;
+  /** Offline mode: the keywords that stand in for `when` (engine/keywords.ts). */
+  keys?: string[];
   reply: string;
   /** Minutes before this reply arrives, instead of the contact's usual time. */
   replyAfter?: number;
@@ -405,12 +415,16 @@ export interface Character {
 export interface AgentHint {
   id: string;
   when: string;
+  /** Offline mode: the keywords that stand in for `when` (engine/keywords.ts). */
+  keys?: string[];
   replies: string[];
 }
 /** A question about the world, its people, sites and the player's own mail and posts: Haiku answers it. */
 export interface AgentQuery {
   /** What Jev matches a prompt against. */
   when: string;
+  /** Offline mode: the keywords that stand in for `when` (engine/keywords.ts). */
+  keys?: string[];
   /** Scripted lines for when Haiku can't answer. */
   fallback: string[];
   /** Scripted roasts for a question about something classified (not yet, or never, for the player to know). */
@@ -491,6 +505,8 @@ export interface MarketPostDef {
   crane?: 'praise' | 'criticism';
   /** A lookalike account posting as Crane. */
   impostor?: boolean;
+  /** Part of a viral moment: may follow the previous viral post closely (see events.Y_GAP). */
+  viral?: boolean;
   /** When it's posted on its day, "HH:MM". Without one it gets a time spread over the day (see events.postMin). */
   at?: string;
 }

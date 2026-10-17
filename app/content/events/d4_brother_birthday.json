@@ -14,13 +14,21 @@
       "id": "promise",
       "keepsOpen": true,
       "when": "the player says they'll send the money or chip in, but hasn't sent it yet",
-      "reply": "i'll believe it when i see it."
+      "reply": "i'll believe it when i see it.",
+      "keys": [
+        "send|chip in|pay|transfer|split|cover",
+        "@yes",
+        "!@no"
+      ]
     },
     {
       "id": "buy",
       "keepsOpen": true,
       "when": "the player says they'll buy the jacket themselves, but hasn't bought it yet",
-      "reply": "ok. send me a pic when you've got it."
+      "reply": "ok. send me a pic when you've got it.",
+      "keys": [
+        "buy|get|order+jacket|it myself|myself"
+      ]
     },
     {
       "id": "excuse",
@@ -34,7 +42,14 @@
           "gift_skipped"
         ]
       },
-      "reply": "ok. i'll tell her you were busy."
+      "reply": "ok. i'll tell her you were busy.",
+      "keys": [
+        "@no",
+        "broke",
+        "no money",
+        "can not afford",
+        "can not help"
+      ]
     }
   ],
   "hints": [

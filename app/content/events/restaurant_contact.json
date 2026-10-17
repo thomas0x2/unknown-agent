@@ -40,7 +40,13 @@
           ]
         }
       },
-      "reply": "Perfect. Looking forward to it."
+      "reply": "Perfect. Looking forward to it.",
+      "keys": [
+        "@yes",
+        "@make+website|site|it|app",
+        "help",
+        "!@no"
+      ]
     }
   ],
   "hints": [

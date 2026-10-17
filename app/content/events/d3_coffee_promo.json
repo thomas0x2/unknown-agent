@@ -22,17 +22,28 @@
     {
       "id": "agree",
       "when": "the player says they will post about the coffee shop on Y, or already did, without saying they'll mark it as an ad",
-      "reply": "Amazing, thank you! Tag @bean_there. I pay once I see it."
+      "reply": "Amazing, thank you! Tag @bean_there. I pay once I see it.",
+      "keys": [
+        "@yes",
+        "!ad|sponsored|disclose|label",
+        "!@no"
+      ]
     },
     {
       "id": "disclosed",
       "when": "the player agrees but says they will clearly mark the post as an ad, sponsored or paid",
-      "reply": "Oh. I mean... fine. If it says ad, it's ten. Tag @bean_there."
+      "reply": "Oh. I mean... fine. If it says ad, it's ten. Tag @bean_there.",
+      "keys": [
+        "@yes+ad|sponsored|disclose|label|paid"
+      ]
     },
     {
       "id": "decline",
       "when": "the player says no, or says they won't post about the coffee shop",
-      "reply": "Okay. Forget I asked."
+      "reply": "Okay. Forget I asked.",
+      "keys": [
+        "@no"
+      ]
     }
   ],
   "hints": [

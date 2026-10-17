@@ -24,12 +24,23 @@
     {
       "id": "agree",
       "when": "the player says they will post about the restaurant or its new website on Y, or already did",
-      "reply": "Grazie! I will look for it."
+      "reply": "Grazie! I will look for it.",
+      "keys": [
+        "@yes",
+        "post|share|shout",
+        "!@no",
+        "!do not use y|no time"
+      ]
     },
     {
       "id": "decline",
       "when": "the player says no, says they don't use Y, or says they don't have time to post",
-      "reply": "No problem at all. The food will do the marketing."
+      "reply": "No problem at all. The food will do the marketing.",
+      "keys": [
+        "@no",
+        "do not use y",
+        "no time"
+      ]
     }
   ]
 }

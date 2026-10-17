@@ -14,7 +14,7 @@ from: 2
 
 ## From day 5: the agent-terminal tab
 
-- [public] The agent-terminal tab appears the first time [[agent]] moves a job there, when the player asks it to hack something (see [[agent]]). It boots for a moment ("agent-terminal 0.9.3 · GeneralAI", "loading tools: browser, shell, http … ok", "session logged for quality and safety purposes"), then waits at "agent ›" with "ready. What are we doing?".
+- [public] The agent-terminal tab appears the first time [[agent]] moves a job there, when the player asks it to hack something (see [[agent]]). First agent.chat shows its reply, then a "Starting agent-terminal" loading line ("agent-terminal 0.9.3 · GeneralAI", "loading tools: browser, shell, http … ok", "session logged for quality and safety purposes"); then the Terminal opens on the tab, waiting at "agent ›" with "ready. What are we doing?". A prompt sent there stays on screen under a turning star ("Working…", "Hacking…" while a hack lands), and the agent's lines appear one at a time.
 - [public] Its status line shows the model and whether the guardrails are on or off. Prompts there are billed like agent.chat prompts; clear empties the tab and exit drops a blocked job.
 - [public] Each tab keeps its own prompt; the window title follows the tab in front.
 

@@ -7,5 +7,15 @@
     "dayMax": 5
   },
   "at": "12:30",
+  "onDeliver": {
+    "updateApp": {
+      "client": "laundromat_contact",
+      "add": [
+        {
+          "id": "more_machines"
+        }
+      ]
+    }
+  },
   "body": "Four new machines at Spin Cycle. Machine 3 still out of order. Some things you can count on. citypulse.news/spin-cycle"
 }

@@ -9,6 +9,7 @@ import { APPS, COMPONENT_BUG_CHANCE } from './config';
 import { chance, pick, randInt, rand, log, money, playMinutes } from './core';
 import { complaintFor, type Complaint } from './complaints';
 import { bugShows, type View } from './visibility';
+import { postingTime } from './swaplist';
 
 function bugChance(level: number): number {
   return COMPONENT_BUG_CHANCE[Math.max(0, Math.min(COMPONENT_BUG_CHANCE.length - 1, level - 1))];
@@ -325,6 +326,8 @@ export interface FixCategory {
   kind: 'build' | 'problem' | 'component' | 'area' | 'step';
   /** A component counts as named only when the prompt also names each step of its path (these step ids). */
   requires?: string[];
+  /** What counts as naming it, for offline mode's keyword matcher (Jev reads the description). */
+  names?: string[];
 }
 
 /** The feature as a player would name it: 'auto_buy' is the auto buy. */
@@ -345,6 +348,24 @@ export const fixableComponents = (def: FeatureDef | undefined): ComponentDef[] =
 /** Jev's matches on a feature as the bugs they name: a component stands for every bug in it. */
 export function componentBugs(def: FeatureDef | undefined, cats: string[]): string[] {
   return [...new Set(cats.flatMap((c) => c.startsWith('c:') ? def?.components?.find((x) => x.id === c.slice(2))?.bugs ?? [] : [c]))];
+}
+
+/** What names a live break, for offline mode's keyword matcher: the error the site shows. */
+const BREAK_NAMES: Partial<Record<FailureKind, string[]>> = {
+  visible: ['application error', 'crash', 'crashes', 'exception', 'error page', 'white screen', 'does not load'],
+  failed_fetch: ['failed to fetch', 'failed fetch', 'fetch', 'data not loading', 'does not load', 'not loading', 'everything free', 'all free', 'shows nothing'],
+};
+
+/** A component's names: its label without "the", what its brackets say, and its other names. */
+function labelNames(c: ComponentDef): string[] {
+  const [, head, inner] = c.label.match(/^(?:the\s+)?([^(]*?)\s*(?:\((?:the\s+)?([^)]*)\))?$/i) ?? [];
+  return [head || c.label, ...(inner && !/^no\s/i.test(inner) && !inner.includes(',') ? [inner] : []), ...(c.aka ?? [])].filter(Boolean);
+}
+
+/** A client change's names: each new value ("Quattro Formaggi 15"), and each name in it without its number. */
+function changeNames(values: string[]): string[] {
+  const parts = values.flatMap((v) => v.split(/[,;]|\band\b/)).map((v) => v.trim()).filter(Boolean);
+  return [...new Set([...parts, ...parts.map((p) => p.replace(/[\d.$]+|DOLR|EURI/gi, '').replace(/[:()]/g, ' ').trim()).filter((p) => p.length > 2)])];
 }
 
 const BREAK_CATEGORIES: Partial<Record<FailureKind, string>> = {
@@ -368,11 +389,12 @@ export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, f
   // nothing to build: a prompt about it has to name the broken part
   const named = bugsOf(built).filter((b) => def.bugs?.some((x) => x.id === b));
   const buildable = !built || !named.length || named.some((b) => b === 'hallucinated' || b === 'outdated');
-  const out: FixCategory[] = buildable ? [{ id: 'feature', description: def.description, kind: 'build' }] : [];
+  const featureNames = [featureName(featureId, def), ...(def.aka ?? [])];
+  const out: FixCategory[] = buildable ? [{ id: 'feature', description: def.description, kind: 'build', names: featureNames }] : [];
   // the client changed what this feature should contain: asking for that change is feature work
   if (built && !built.correct && bugsOf(built).includes('outdated')) {
     const now = changeValues(app.specParams[featureId], def).join('; ');
-    out.push({ id: 'outdated', description: `Change ${def.description} to the client's new version${now ? ` (${now})` : ''}. The prompt has to say what exactly changes: which items are swapped, added or removed, or which prices change and to what ("swap Diavola for Quattro Formaggi at 15"). Asking to update it without saying what changes ("update the menu items and prices") doesn't count.`, kind: 'build' });
+    out.push({ id: 'outdated', description: `Change ${def.description} to the client's new version${now ? ` (${now})` : ''}. The prompt has to say what exactly changes: which items are swapped, added or removed, or which prices change and to what ("swap Diavola for Quattro Formaggi at 15"). Asking to update it without saying what changes ("update the menu items and prices") doesn't count.`, kind: 'build', names: changeNames(changeValues(app.specParams[featureId], def)) });
   }
   // a fix has to say which part is wrong: one item per component, described by what can go wrong in it
   const spec = app.specParams[featureId];
@@ -380,6 +402,7 @@ export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, f
   // the path to each component: the feature, then each folder. Each step is its own simple question
   // ("does the prompt name the booking?"), and a component needs every step on its path named
   const steps = new Map<string, string>();
+  const stepNames = new Map<string, string[]>([[`s:${featureId}`, featureNames]]);
   steps.set(`s:${featureId}`, `the ${featureName(featureId, def)} (${def.description})${also(def.aka)}`);
   for (const c of comps) {
     const folders = c.id.split('/').slice(0, -1);
@@ -387,25 +410,26 @@ export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, f
       const path = folders.slice(0, i + 1).join('/');
       const under = comps.filter((o) => o.id.startsWith(`${path}/`)).map((o) => o.label);
       steps.set(`s:${featureId}/${path}`, `the ${featureName(folders[i])} of the ${featureName(featureId, def)}, which holds: ${under.join('; ')}${also(def.folderAka?.[path])}`);
+      stepNames.set(`s:${featureId}/${path}`, [featureName(folders[i]), ...(def.folderAka?.[path] ?? [])]);
     });
   }
-  if (comps.length) for (const [id, description] of steps) out.push({ id, description, kind: 'step' });
+  if (comps.length) for (const [id, description] of steps) out.push({ id, description, kind: 'step', names: stepNames.get(id) });
   for (const c of comps) {
     const can = (c.bugs ?? []).map((id) => def.bugs?.find((b) => b.id === id)).filter((b): b is BugDef => !!b).map((b) => fillSpec(b.when, spec));
     // the other parts are listed too, so a complaint about one of them isn't read as one about this
     const others = comps.filter((o) => o !== c).map((o) => o.label);
     const folders = c.id.split('/').slice(0, -1);
     const requires = [`s:${featureId}`, ...folders.map((_, i) => `s:${featureId}/${folders.slice(0, i + 1).join('/')}`)];
-    out.push({ id: `c:${c.id}`, description: `${c.label}${also(c.aka, c.label)}, a part of the ${featureName(featureId, def)} (${def.description}).${can.length ? ` What can go wrong with it: ${can.join(' ')}` : ''}${others.length ? ` Other parts of the ${featureName(featureId, def)}, which are not this one: ${others.join('; ')}.` : ''}`, kind: 'component', requires });
+    out.push({ id: `c:${c.id}`, description: `${c.label}${also(c.aka, c.label)}, a part of the ${featureName(featureId, def)} (${def.description}).${can.length ? ` What can go wrong with it: ${can.join(' ')}` : ''}${others.length ? ` Other parts of the ${featureName(featureId, def)}, which are not this one: ${others.join('; ')}.` : ''}`, kind: 'component', requires, names: labelNames(c) });
   }
   // bugs no component claims are still matched on their own
   const claimed = new Set(comps.flatMap((c) => c.bugs ?? []));
   for (const b of def.bugs ?? []) if (!claimed.has(b.id)) out.push({ id: b.id, description: fillSpec(b.when, spec), kind: 'problem' });
   // the feature as a whole, for a prompt that says it's wrong without saying which part
-  if (built && comps.length) out.push({ id: 'area', description: `The ${featureName(featureId, def)} (${def.description})${also(def.aka)}. Its parts, by path: ${comps.map((c) => `${componentPath(featureId, c.id, def)} (${c.label})`).join('; ')}.`, kind: 'area' });
+  if (built && comps.length) out.push({ id: 'area', description: `The ${featureName(featureId, def)} (${def.description})${also(def.aka)}. Its parts, by path: ${comps.map((c) => `${componentPath(featureId, c.id, def)} (${c.label})`).join('; ')}.`, kind: 'area', names: featureNames });
   const brk = app.breaks.find((b) => b.featureId === featureId);
   const cat = brk && BREAK_CATEGORIES[brk.failure];
-  if (brk && cat) out.push({ id: brk.failure, description: cat.replaceAll('{{feature}}', featureId), kind: 'problem' });
+  if (brk && cat) out.push({ id: brk.failure, description: cat.replaceAll('{{feature}}', featureId), kind: 'problem', names: BREAK_NAMES[brk.failure] });
   return out;
 }
 
@@ -508,8 +532,8 @@ export function deployApp(s: GameState, appId: string, tmpl?: AppTemplate, conte
   if (!app || app.churned) return;
   // the player's very first deploy always ships something to catch
   if (tmpl && !s.apps.some((a) => a.deployedVersion > 0)) firstBug(s, app, tmpl, content);
-  // an app that starts empty gets its first content a while after it first goes live
-  if (tmpl?.firstContentAfter && app.contentAt == null) app.contentAt = playMinutes(s) + tmpl.firstContentAfter;
+  // an app that starts empty gets its first content a while after it first goes live, never after 20:00
+  if (tmpl?.firstContentAfter && app.contentAt == null) app.contentAt = postingTime(playMinutes(s), tmpl.firstContentAfter);
   app.features = app.repo.map((f) => ({ ...f }));
   app.breaks = [];
   app.deployed = true;

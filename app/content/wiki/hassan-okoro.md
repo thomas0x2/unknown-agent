@@ -3,6 +3,7 @@ title: Hassan Okoro
 aliases: Hassan, Okoro, Spin Cycle owner, owner@spincycle.test, Spin Cycle Laundry, Spin Cycle, Spin Cycle regulars, @spin_cycle_regulars, machine 3
 category: people
 from: 1
+keys: laundromat, laundry
 ---
 
 ## Who he is
@@ -29,7 +30,6 @@ from: 1
 
 ## From day 5: Four more machines
 
-- [hint] [if laundromat_live] On [[Day 5]] (12:40) he emails the player "Four more machines": the app needs to show more machines now, and the feed already lists them. {{mail:d5_laundromat_update}}
 - [public] On day 5 CityPulse reports he installed four second-hand washers, bought from a laundromat that closed in August, bringing Spin Cycle to twelve. On day 5 he tells CityPulse "Never trust machine 3" and won't elaborate. {{article:spin-cycle}}
 
 ## Planned
@@ -38,6 +38,6 @@ from: 1
 
 ## Writer notes
 
-- Persona `spincycle`; events `d1_y_laundromat`, `laundromat_contact`, `d5_laundromat_update`; CityPulse `spin-cycle` (day 5). Feed: ST 0 free, 1 running, 2 done, 3 out of order; T is seconds left; 8 machines, 12 from day 5.
+- Persona `spincycle`; events `d1_y_laundromat`, `laundromat_contact`; he never emails the player (the day 5 machines update comes from Kofi's Y post `d5_y_kofi_news`); CityPulse `spin-cycle` (day 5). Feed: ST 0 free, 1 running, 2 done, 3 out of order; T is seconds left; 8 machines, 12 from day 5.
 - Hours disagree: Yowl says daily 06:00 to 00:00, spincycle.test says 10:00 to 22:00. Yowl's "Eight washers" also doesn't update on day 5.
 - The van at 2am is the mafia seed. Don't spend it as a joke.
