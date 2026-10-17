@@ -163,6 +163,9 @@ export interface Tx {
 /** A Forkyard commit, for the profile activity feed and contribution grid. */
 export interface Commit { day: number; repo: string; msg: string; kind: 'push' | 'deploy' }
 
+/** A line in agent-terminal: the player's prompt, the agent, its tool log, or the guardrails. */
+export interface AgentTermLine { k: 'in' | 'agent' | 'sys' | 'ok' | 'err' | 'guard'; text: string; /** How Jev read the prompt, for dev mode. */ debug?: string[] }
+
 /** A line in the agent.chat transcript. */
 export interface ChatMsg {
   from: 'you' | 'agent' | 'system';
@@ -348,6 +351,14 @@ export interface GameState {
   /** What the booking form said after the last attempt (accepted, or why not). */
   bookingNotice?: { appId: string; ok: boolean; text: string; bookingId?: string };
   terminal: { k: 'in' | 'sys' | 'err' | 'model'; text: string }[];
+  /** agent-terminal's scrollback (the Terminal's agent tab; unset in older saves). */
+  agentTerm?: AgentTermLine[];
+  /** Events whose hack has landed. */
+  hacked?: string[];
+  /** A hack stopped by the guardrails, waiting on its mini-game. */
+  hackGame?: { eventId: string; game: string; tries: number } | null;
+  /** Yowl seed reviews deleted by a hack, as "biz:author". */
+  removedSeed?: string[];
   /** Model running in the Terminal, if any. */
   termModel: string | null;
   /** Prompts ever sent to the Terminal's model (older saves: unset, counted from 0). */

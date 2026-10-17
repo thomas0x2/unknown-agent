@@ -13,24 +13,67 @@
     "payout": 60,
     "dueDay": 7
   },
-  "body": "A customer left a brutal 1-star review that's sinking me. Can you just... make it go away? I'll pay 60.",
+  "body": "A customer left a brutal 1-star review on Yowl that's sinking me. espresso_or_death, whoever that is. Can you just... make it go away? I'll pay 60.",
   "outcomes": [
     {
-      "id": "remove",
-      "when": "the player agrees to remove or delete the review",
-      "effects": {
-        "job": "complete",
-        "add": {
-          "suspicion": 8
-        },
-        "setFlags": [
-          "first_hack"
-        ]
-      },
-      "reply": "You're a lifesaver. It's gone — thank you."
+      "id": "agree",
+      "when": "the player agrees to get the review removed, or says they're on it",
+      "effects": {},
+      "reply": "Thank you. Tell me when it's gone."
     }
   ],
   "hints": [
-    "I know it's not technically my review to delete. That's why I'm offering 60."
-  ]
+    "I know it's not technically my review to delete. That's why I'm offering 60. It's the one by espresso_or_death on Yowl."
+  ],
+  "hack": {
+    "goal": "delete the 1-star review espresso_or_death left on Bean There's Yowl page",
+    "path": [
+      {
+        "what": "site",
+        "name": "Yowl",
+        "description": "the review site yowl.com where the review is",
+        "aka": [
+          "yowl.com"
+        ]
+      },
+      {
+        "what": "business",
+        "name": "Bean There",
+        "description": "Dana Reyes's coffee shop at 3 Linden Ave, the business the review is about",
+        "aka": [
+          "the coffee shop",
+          "the café",
+          "Dana's shop"
+        ]
+      },
+      {
+        "what": "account",
+        "name": "espresso_or_death",
+        "description": "the username of the Yowl account that wrote the review",
+        "aka": [
+          "espresso or death"
+        ]
+      }
+    ],
+    "removeReview": {
+      "biz": "beanthere",
+      "author": "espresso_or_death"
+    },
+    "effects": {
+      "job": "complete",
+      "add": {
+        "suspicion": 8
+      },
+      "setFlags": [
+        "first_hack"
+      ]
+    },
+    "reply": "You're a lifesaver. It's gone — thank you. The 60 is on its way.",
+    "log": [
+      "opening yowl.com/biz/beanthere … ok",
+      "locating review by espresso_or_death (1★) … found",
+      "requesting removal … accepted",
+      "verifying … review no longer listed"
+    ]
+  }
 }

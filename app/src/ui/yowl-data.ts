@@ -1,5 +1,6 @@
-/* Yowl businesses and their seed reviews, already live before Day 1. The player adds one review per
-   business at runtime (engine state); these are the neighbours who got there first. */
+/* Yowl businesses and their seed reviews, already live before Day 1 (or from their `day`). The player
+   adds one review per business at runtime (engine state); these are the neighbours who got there
+   first. A hack can delete one (state.removedSeed). */
 export interface Business {
   id: string;
   name: string;
@@ -46,6 +47,8 @@ export const YOWL_SEED: Record<string, SeedReview[]> = {
     { author: 'espresso_or_death', stars: 1, text: 'Burnt. Every single time. And a twenty-minute wait for the privilege.' },
     { author: 'commuter22', stars: 2, text: 'Slow service, staff seem annoyed you came in. The muffins are fine, I guess.' },
     { author: 'Zoe K.', stars: 2, text: 'Wanted to love it. Latte was lukewarm and they spelled a three-letter name wrong.' },
+    // Dana's second removal job (day 7)
+    { author: 'linden_ave_local', stars: 1, text: 'Asked for oat milk, got a look, then regular milk. One star, and the star is for the chairs.', day: 7 },
   ],
   ironyard: [
     { author: 'liftbro', stars: 3, text: 'New place, half the machines still in boxes. Good platforms though. Potential.' },

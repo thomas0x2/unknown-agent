@@ -28,6 +28,23 @@ export interface Effects {
   /** Scripted break: knock one live app offline (a named one, or a random one). */
   breakApp?: boolean | { appId?: string };
 }
+/** A hack the agent runs in agent-terminal (see GameEvent.hack). */
+export interface HackSpec {
+  /** What the hack does, for Jev: the prompt has to ask for this. */
+  goal: string;
+  /** Every step the prompt has to name, outermost first (site, business, account). `what` is how the agent asks for a missing one. */
+  path: { name: string; what: string; description: string; aka?: string[] }[];
+  /** A Yowl seed review the hack deletes: business id and the reviewer's username. */
+  removeReview?: { biz: string; author: string };
+  /** Applied when the hack lands (job pay, suspicion, flags), as an outcome's effects. */
+  effects: Effects;
+  /** The client's scripted email once it's done. */
+  reply: string;
+  /** What the agent prints in agent-terminal as it does the job. */
+  log: string[];
+  /** The mini-game (engine/hacks.ts HACK_GAMES) that stands in the way once the guardrails are up (day 7). */
+  game?: string;
+}
 export interface ScheduleSpec {
   eventId: string;
   delayDays: number;
@@ -226,6 +243,11 @@ export interface GameEvent {
   repeat?: boolean;
   /** Money the sender asks for through Coinbin Send (see events.settlePayments). */
   payment?: Payment;
+  /**
+   * A job the player does by hacking: the agent takes it in agent-terminal (engine/hacks.ts) once a
+   * terminal prompt names every step of `path` and asks for `goal`, the same path tree a fix has.
+   */
+  hack?: HackSpec;
   /** Something the sender asks the player to buy on Swaplist (see events.settlePurchase). */
   purchase?: Purchase;
   /** Lands only when the payment or purchase asked for by this event id clears; the trigger alone never delivers it. */

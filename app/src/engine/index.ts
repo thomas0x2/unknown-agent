@@ -21,6 +21,7 @@ export * from './endings';
 export * from './day';
 export * from './calendar';
 export * from './actions';
+export * from './hacks';
 export * from './jev';
 export * from './writer';
 export * from './save';
