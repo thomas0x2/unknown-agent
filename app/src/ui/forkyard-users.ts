@@ -63,7 +63,7 @@ export const FY_USERS: FyUser[] = [
   },
   {
     handle: 'leo_brandt', name: 'Leo Brandt', bio: 'Ex-Vantor. 3 interviews, 3 AI screeners, 3 rejections. Open to work.',
-    location: 'Vantor Heights', company: 'Formerly Vantor Group', email: 'leo.brandt@mail.test',
+    location: 'Vantor Heights', company: 'Formerly Vantor Group', email: 'leo.brandt@qmail.com',
     joined: 'Feb 2020', followers: 173, following: 210,
     repos: [{ name: 'resume', desc: 'My CV as a static site. Please hire a human.', lang: 'HTML', stars: 11 }],
     activity: grid(14),
