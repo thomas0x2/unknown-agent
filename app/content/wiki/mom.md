@@ -33,7 +33,7 @@ from: 1
 
 ## Planned
 
-- [planned] Day 9: she forwards the Keller deepfake: "Can you believe this man?"
+- [planned] Day 9: she forwards the deepfake of Crane's opponent: "Can you believe this man?"
 - [planned] Day 13: she mentions that [[Dad]] is home all day.
 - [planned] Day 16: she emails the player an article.
 

@@ -15,7 +15,6 @@ from: 1
 
 - [public] On day 1 (12:10) doomscroll links CityPulse's Vantor story: "400 people at vantor got fired by one email last night. it's fine" {{y:d1_y_doomscroll_news}} {{y:f1}}
 - [public] On day 3 (16:25), on [[Randall Crane]]'s vow to send the machines back: "i'd settle for my job back" {{y:d3_y_doomscroll_machines}}
-- [public] On day 4 (14:30) doomscroll links the governor's race story: a candidate wants to cap rents, and their landlord sent his first newsletter in six years about it, "it's about freedom". {{y:d4_y_doomscroll_governor}}
 - [public] On day 5 doomscroll checked the news once, "that was the mistake." {{y:f5}}
 - [public] On day 9 doomscroll turned off notifications for a day and didn't miss anything, "which was worse." {{y:f9}}
 - [public] On day 13 the grocery store took out its last staffed checkout; the screen that replaced it says "we're here to help." {{y:f13}}
@@ -64,4 +63,4 @@ from: 1
 
 ## Writer notes
 
-- Filler posts in `y_filler.json` (one a day, rotating doomscroll, cat_ceo, zev_dolr, noodleposter); story posts `d1_y_doomscroll_news`, `d3_y_*_machines`, `d3_y_teo_jobsfair`, `d4_y_doomscroll_governor`, `d8_y_noodle_dish`, `d8_y_deb_taxes`, `d10_y_catceo_apogee`, `d10_y_mourn_teo_vasquez`, `d21_y_teo_voted`, `d5_coffee_backlash`. Bios and the stranger pool in `y-bios.ts`.
+- Filler posts in `y_filler.json` (one a day, rotating doomscroll, cat_ceo, zev_dolr, noodleposter); story posts `d1_y_doomscroll_news`, `d3_y_*_machines`, `d3_y_teo_jobsfair`, `d8_y_noodle_dish`, `d8_y_deb_taxes`, `d10_y_catceo_apogee`, `d10_y_mourn_teo_vasquez`, `d21_y_teo_voted`, `d5_coffee_backlash`. Bios and the stranger pool in `y-bios.ts`.

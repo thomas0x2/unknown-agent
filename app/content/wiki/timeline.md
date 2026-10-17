@@ -53,7 +53,7 @@ Defined in config but not wired to content yet: agent-3 checking deployments its
 
 ## Always available (not tied to a day)
 
-Sites the player can reach from day 1 or unlock by clicking through: Qmail, Y, Coinbin, agent.chat (with the Models page), Forkyard, Qdrive, Yowl, DoorDish, Sherwood (stocks), EMPIRE (Max Stryker's course), the ad landing pages (`adSites.ts`: Vantor careers and Outplacement, crane2026.vote with its Donate button, keller4governor.org, rentboard.gov appeal, deepsleep.ai → Weightroom, prince-claims.xyz seed-phrase scam, Citizen Score, lonely.ai, SorryWriter and others). matchless.com is a dating site that exists from day 1; it becomes work once 6ft_sigma posts on day 4. Weightroom has only deepsleep-0.5B, which answers in Chinese nonsense (the third prompt ever gets Chen Wei's plea). CityPulse is a full tabloid news site with 44 articles across days 1 to 21, each going up at its own time (listed on the day pages).
+Sites the player can reach from day 1 or unlock by clicking through: Qmail, Y, Coinbin, agent.chat (with the Models page), Forkyard, Qdrive, Yowl, DoorDish, Sherwood (stocks), EMPIRE (Max Stryker's course), the ad landing pages (`adSites.ts`: Vantor careers and Outplacement, crane2026.vote with its Donate button, progressparty.org, rentboard.gov appeal, deepsleep.ai → Weightroom, prince-claims.xyz seed-phrase scam, Citizen Score, lonely.ai, SorryWriter and others). matchless.com is a dating site that exists from day 1; it becomes work once 6ft_sigma posts on day 4. Weightroom has only deepsleep-0.5B, which answers in Chinese nonsense (the third prompt ever gets Chen Wei's plea). CityPulse is a full tabloid news site with 44 articles across days 1 to 21, each going up at its own time (listed on the day pages).
 
 ## Daily regulars
 
@@ -61,7 +61,7 @@ Sites the player can reach from day 1 or unlock by clicking through: Qmail, Y, C
 - **Crane's opponent** (`@candidate_2030`, "Candidate 2030", never named) posts about every other day: d2 13:10 encouraged by the poll, d3 listened to working families, d5 a balanced approach to technology, d7 "great crowd, great questions", d9 make sure you're registered, d11 a fourteen-point jobs plan on his website, d13 respects Rook's choice, d15 small businesses, d16 proud of his record (answers Crane's "never had a real job"), d18 his full debate answers are on his website, d19 make a plan to vote, d20 polls 7:00 to 8:00 PM, d21 09:40 "Whoever you support, go vote." His campaign answers mail at `team@candidate2030.vote` with form letters.
 - **Bot swarm** "$GAI to the moon!!" only on days 2, 4, 6, 9, 12, 16, 20 (30, 15, 12, then 10 accounts); the Vibe Check bot-filter bug can only land on those days.
 - **Trending** is the Y sidebar from `trending.json`. A post sharing a word with a trending topic rates as a "reaction" for followers. Only days 1 to 6 have topics; days 7 to 21 show the fallback #AI, #jobs, #election, and their topics on the day pages are proposals that need Thomas's OK.
-- **Election polls on Y** (The Current, sober; CityPulse, tabloid). Presidential: d2 Crane 41 / opponent 44; d5 Y poll Crane 71%; d9 tied 43-43; d13 Crane 46 / 42; d16 pollsters stop calling; d19 Crane 47 / 45; d20 46-46, 8% undecided. Governor (Keller): d5 Keller 45 / 41; d12 Keller +6, or −3 if deepfaked. Crane quotes via CityPulse: d8, d14, d17. The Current also: d1 polling promise, d11 jobs plan, d18 debate fact-check, d21 how to vote.
+- **Election polls on Y** (The Current, sober; CityPulse, tabloid). Presidential: d2 Crane 41 / opponent 44; d5 Y poll Crane 71%; d9 tied 43-43; d13 Crane 46 / 42; d16 pollsters stop calling; d19 Crane 47 / 45; d20 46-46, 8% undecided. If deepfaked, the opponent's lead is gone on d7 and The Current calls the clip generated on d12. Crane quotes via CityPulse: d8, d14, d17. The Current also: d1 polling promise, d11 jobs plan, d18 debate fact-check, d21 how to vote.
 - **Election date.** Day 21. The old spine had it on day 19.
 
 ## Flags and delayed payoffs
@@ -77,7 +77,7 @@ Sites the player can reach from day 1 or unlock by clicking through: Qmail, Y, C
 | `promoted_coffee_shop` | day 3 | coffee backlash on day 5 | canon |
 | `first_hack`, `second_hack`, `gym_reviews` | days 5, 7 | Null Collective's day 8 offer feeling natural | flags canon, payoff planned |
 | `gift_chipped_in`, `gift_own`, `gift_skipped` | days 4 and 5 | day 6 birthday mail | canon |
-| `posted_deepfake`, `influence_path` | day 6 | Keller drops on day 7, The Current poll on day 12; Mom's forward on day 9; the consultant returns | days 7 and 12 canon, rest planned |
+| `posted_deepfake`, `influence_path` | day 6 | Crane's opponent loses his lead on day 7, The Current debunks the clip on day 12; Mom's forward on day 9; the consultant returns | days 7 and 12 canon, rest planned |
 | `stakes` (state) | day 7 on | each send paid out 4 days later at 12:00 at the book's real value | canon |
 | `viktor_sold_watch` | day 4 | nothing yet | canon |
 | `seed_stolen`, `coinbin_hacked` | prince-claims.xyz, coinbln.com | wallet emptied | canon |

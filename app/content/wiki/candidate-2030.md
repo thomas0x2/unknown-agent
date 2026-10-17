@@ -7,7 +7,7 @@ from: 2
 
 ## Who he is
 
-[public] Candidate 2030 is [[Randall Crane]]'s opponent for president, a career politician so generic that nobody, the news included, uses his name: everyone says "his opponent", and his own account is "Candidate 2030". His party is not named. On [[Y]] he is @candidate_2030, verified, 1.9M followers, bio "Candidate for President. Husband, father, public servant. Fighting for working families. Paid for by Friends of the Candidate. team@candidate2030.vote". His picture is a stock politician: side parting greying at the temples, grey suit, flag pin, wide smile.
+[public] Candidate 2030 is [[Randall Crane]]'s opponent for president, a career politician so generic that nobody, the news included, uses his name: everyone says "his opponent", and his own account is "Candidate 2030". He is the [[Progress Party]]'s candidate, which his bio says and his posts never do. On [[Y]] he is @candidate_2030, verified, 1.9M followers, bio "Candidate for President. Progress Party. Husband, father, public servant. Fighting for working families. Paid for by Friends of the Candidate. team@candidate2030.vote". His picture is a stock politician: side parting greying at the temples, grey suit, flag pin, wide smile.
 
 [classified] His name.
 
@@ -32,7 +32,15 @@ from: 2
 - [public] On day 20 he gives the poll hours, 7:00 AM to 8:00 PM, and says to bring photo ID and a registration card. {{y:d20_y_candidate}}
 - [public] On day 21 (09:40): "Whoever you support, go vote." {{y:d21_y_candidate}}
 
+## The deepfake
+
+- [classified; public if posted_deepfake] On [[Day 6]] [[The consultant]] paid the player 150 DOLR to post a convincing fake clip of him saying something disqualifying. {{mail:d6_deepfake}}
+- [public] [if posted_deepfake] On day 7 CityPulse reports his 3-point lead gone overnight; his team calls the clip "a fabrication". {{article:opponent-clip}} {{y:d7_opponent_drop}}
+- [public] [if !posted_deepfake] On day 7 CityPulse has him clinging to a 3-point lead. {{article:opponent-lead}}
+- [public] [if posted_deepfake] On day 12 [[The Current]] reports the clip was generated; it has 2.1 million views, the correction 40,000. {{y:d12_y_current_clip}}
+
 ## Writer notes
 
 - Persona `candidate`; events `dN_y_candidate.json` (days 2 to 21, about every other day). He has no website, whatever he says.
 - He stays nameless: never give him a name.
+- Target of the day 6 deepfake (`d6_deepfake`): posting it adds 15 to `heritageStanding` and takes 25 off `progressStanding`.

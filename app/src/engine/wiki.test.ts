@@ -53,11 +53,11 @@ describe('wiki: tag rules', () => {
   });
 
   it('a step can wait for an email, post or article to arrive', () => {
-    const rule = 'classified; public if seen mail:d5_coffee_removal; hint if seen article:keller-clip';
-    expect(parseTagRule(rule).steps).toEqual([{ tag: 'public', kind: 'seen', ref: 'd5_coffee_removal' }, { tag: 'hint', kind: 'seen', ref: 'article:keller-clip' }]);
+    const rule = 'classified; public if seen mail:d5_coffee_removal; hint if seen article:opponent-clip';
+    expect(parseTagRule(rule).steps).toEqual([{ tag: 'public', kind: 'seen', ref: 'd5_coffee_removal' }, { tag: 'hint', kind: 'seen', ref: 'article:opponent-clip' }]);
     expect(evalTag(rule, wikiCtx(5))).toBe('classified');
     expect(evalTag(rule, wikiCtx(5, null, [], {}, ['d5_coffee_removal']))).toBe('public');
-    expect(evalTag(rule, wikiCtx(5, null, [], {}, ['d5_coffee_removal', 'article:keller-clip']))).toBe('hint');
+    expect(evalTag(rule, wikiCtx(5, null, [], {}, ['d5_coffee_removal', 'article:opponent-clip']))).toBe('hint');
   });
 
   it('round-trips through the editor', () => {

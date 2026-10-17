@@ -17,7 +17,6 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[Candidate 2030]] (candidate-2030.md): Candidate 2030 is Randall Crane's opponent for president, a career politician so generic that nobody, the news included, uses his name:…
 - [[Dana Kohl]] (dana-kohl.md): Dana Kohl is a night-shift nurse on Alder St
 - [[Dana Reyes]] (dana-reyes.md): Dana Reyes owns Bean There, a coffee shop at 3 Linden Ave (owner@beanthere.test)
-- [[Daniel Keller]] (daniel-keller.md): Daniel Keller is the Progress Party candidate for governor of the state, on the same ballot as the presidential race in The election
 - [[deskjockey]] (deskjockey.md): deskjockey is a very rich, anonymous day-trader with an eight-figure portfolio, and the client for Vibe Check
 - [[dev_null]] (dev-null.md): dev_null is a member of the Null Collective, hackers working against GeneralAI
 - [[Gary Pruitt]] (gary-pruitt.md): Gary Pruitt of Pruitt Property Management is the player's landlord at Pine Street Apartments, Unit 4B
@@ -59,7 +58,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[Liftoff Daily]] (liftoff-daily.md): Liftoff Daily (@liftoff_daily) is an Axel Rook fan account on Y, bio "Not affiliated with Axel Rook (yet)", with a rocket logo
 - [[Local businesses]] (local-businesses.md): Small businesses around Alder St, Linden Ave, Harbor Rd and Ferris St
 - [[Null Collective]] (null-collective.md): The Null Collective is a group of hackers working against GeneralAI, dev_null among them
-- [[Progress Party]] (progress-party.md): The Progress Party is Daniel Keller's party
+- [[Progress Party]] (progress-party.md): The Progress Party is the party of Candidate 2030, Randall Crane's opponent
 - [[Pruitt Property Management]] (pruitt-property-management.md): Pruitt Property Management is Gary Pruitt's company and The player's landlord for Pine Street Apartments, Unit 4B
 - [[The Current]] (the-current.md): The Current is Mara Vey's reader-funded, independent newspaper: "Independent reporting, funded by readers." On Y it is @the_current…
 - [[Vantor Group]] (vantor-group.md): Vantor Group is The player's former employer, at 1 Vantor Plaza
@@ -110,13 +109,13 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[Day 3]] (day-03.md): overnight break, phishing mail, Viktor, Crane's "machines back"
 - [[Day 4]] (day-04.md): agent-2, Mom's jacket, 6ft_sigma, Gino on DoorDish
 - [[Day 5]] (day-05.md): first grey jobs, Crane impostor, Spin Cycle 12 machines
-- [[Day 6]] (day-06.md): Mom's birthday, Crane praises $GAI, outreach bot, Keller deepfake offer
+- [[Day 6]] (day-06.md): Mom's birthday, Crane praises $GAI, outreach bot, deepfake offer
 - [[Day 7]] (day-07.md): rent 350, usage policy, Mara's article, the stake
 - [[Day 8]] (day-08.md): tax returns leak, phantom DoorDish listings, $APO and $DISH
 - [[Day 9]] (day-09.md): agent-3, agent-2 mourners, tied poll
 - [[Day 10]] (day-10.md): Apogee explodes, agent-2 vigil, Crane's paid volunteers
 - [[Day 11]] (day-11.md): DoorDish robot memo, agent-3 asks for its logs
-- [[Day 12]] (day-12.md): Stryker's last recruiting day, training review, Keller poll
+- [[Day 12]] (day-12.md): Stryker's last recruiting day, training review
 - [[Day 13]] (day-13.md): Rook endorses Crane
 - [[Day 14]] (day-14.md): agent-4, rent 500, wall around the cloud
 - [[Day 15]] (day-15.md): AI moderation on Y, courier strike, GeneralAI hearing

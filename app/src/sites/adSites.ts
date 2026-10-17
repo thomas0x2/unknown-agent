@@ -84,7 +84,7 @@ export const AD_SITES: AdSite[] = [
     upload: true,
   },
 
-  // ── Crane and Keller ──
+  // ── the presidential race ──
   {
     url: 'crane2026.vote', brand: 'Crane Victory Fund', kit: 'campaign', theme: 'crane', mark: '★', logo: HERITAGE_LOGO,
     kicker: 'Randall Crane for President · Heritage Party', title: 'THEY SENT YOUR JOBS TO THE MACHINES.',
@@ -110,15 +110,15 @@ export const AD_SITES: AdSite[] = [
     fine: 'Paid for by Crane Victory Fund and a donor who wishes to remain anonymous.',
   },
   {
-    url: 'keller4governor.org', brand: 'Keller for Governor', kit: 'campaign', theme: 'keller', mark: 'K', logo: PROGRESS_LOGO,
-    kicker: 'Daniel Keller for Governor · Progress Party', title: 'A state that answers its phone.',
-    lead: 'Twelve years in the state senate. Affordable housing, buses that run, and a state government staffed by people.',
+    url: 'progressparty.org', brand: 'Progress Party', kit: 'campaign', theme: 'progress', mark: 'P', logo: PROGRESS_LOGO,
+    kicker: 'The Candidate for President · Progress Party', title: 'Common sense for working families.',
+    lead: 'A lifetime of public service. A balanced plan for jobs, housing and technology.',
     cards: [
-      ['Housing', 'Cap rent increases in buildings owned by companies with more than 500 units.'],
-      ['Jobs', 'A state hiring office for residents who lost work to automation.'],
-      ['On the record', 'Every speech Daniel has given since 2016 is published here, so you can check what he actually said.'],
+      ['Jobs', 'A fourteen-point plan to protect workers and support innovation. Details to follow.'],
+      ['Housing', 'Fair rents, reached through dialogue with all stakeholders.'],
+      ['On the record', 'Every speech the Candidate has given is published here, so you can check what he actually said.'],
     ],
-    fine: 'Paid for by Keller for Governor. Treat any video of Daniel Keller that isn’t on this page with care.',
+    fine: 'Paid for by Friends of the Candidate. Treat any video of the Candidate that isn’t on this page with care.',
   },
 
   // ── money ──

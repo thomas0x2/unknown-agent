@@ -153,8 +153,8 @@
 .ad-pod { --ad-bg: #ebe6dc; --ad-ink: #2d2a24; --ad-cta: #2d2a24; --ad-cta-ink: #ebe6dc; --ad-fine: #6b655a; }
 .ad-pod .ad-f { font-weight: 300; }
 .ad-cryo { --ad-bg: linear-gradient(180deg, #bfe6ff, #5aa8e0); --ad-ink: #06324f; --ad-cta: #fff; --ad-cta-ink: #06324f; --ad-fine: #0b4870; }
-.ad-keller { --ad-bg: #0d2347; --ad-ink: #fff; --ad-cta: #e8c35a; --ad-cta-ink: #0d2347; }
-.ad-keller .ad-f { font-family: var(--f-serif, Georgia, serif); font-style: italic; }
+.ad-progress { --ad-bg: #0d2347; --ad-ink: #fff; --ad-cta: #e8c35a; --ad-cta-ink: #0d2347; }
+.ad-progress .ad-f { font-family: var(--f-serif, Georgia, serif); font-style: italic; }
 
 .ad-ministry { --ad-bg: repeating-linear-gradient(0deg, #e9e3cf 0 22px, #e2dbc3 22px 23px); --ad-ink: #2b2a1f; --ad-cta: #4a4f38; --ad-cta-ink: #e9e3cf; --ad-fine: #5c5a48; font-family: var(--f-mono, monospace); }
 .ad-ministry .ad-f { font-size: 16px; text-transform: uppercase; letter-spacing: .02em; }

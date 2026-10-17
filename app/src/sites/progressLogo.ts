@@ -1,6 +1,6 @@
 /**
- * The Progress Party's logo, Daniel Keller's party: the Democratic donkey redrawn as a mule (taller
- * ears, mid-kick), navy with three white stars. Used on keller4governor.org, its favicon and Keller's ad.
+ * The Progress Party's logo, the party of Crane's opponent, Candidate 2030: the Democratic donkey redrawn as a mule (taller
+ * ears, mid-kick), navy with three white stars. Used on progressparty.org, its favicon and the party's ad.
  */
 export function progressLogo(bg = '#fff', navy = '#0d2347', gold = '#e8c35a'): string {
   const star = (x: number, y: number) => `<path transform="translate(${x} ${y})" d="M0-1.6l.47.96 1.06.15-.77.75.18 1.05L0 .81l-.95.5.18-1.05-.77-.75 1.06-.15Z"/>`;

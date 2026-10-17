@@ -29,7 +29,6 @@ from: 4
 - [public] 11:45 [[Max Stryker]]: GeneralAI doubled their prices, "Good." EMPIRE is now 400 DOLR, today only 20. {{y:d4_y_stryker}}
 - [public] 12:20 [[Axel Rook]]: Apogee rocket stacked on the pad. "Looks sick." {{y:d4_y_axel}}
 - [public] 13:26 [[Randall Crane]]: Vantor ($VANT) fired 400 hardworking Americans and replaced them with a computer. "Disgraceful." {{y:m4_vant_crane}}
-- [public] 14:30 doomscroll: a man running for governor wants to cap rents; his landlord sent his first newsletter in six years about it. {{y:d4_y_doomscroll_governor}}
 - [public] 15:19 noodleposter: day 4 of instant noodles; "the broth is my therapist now." {{y:f4}}
 - [classified; public if viktor_sold_watch] 16:00 [[Viktor]]: sold his grandfather's watch on Swaplist within a day. "Thank you to whoever built it." {{y:d4_viktor_resolve}}
 - [public] 16:27 MarketWire: $GAI up 6% on the agent-2 launch. {{y:m4_gai_level2}}
@@ -41,7 +40,6 @@ from: 4
 ## News
 
 - [public] 10:15 agent-2 IS HERE, and so is your DOUBLED bill {{article:agent-2}}
-- [public] 13:40 THE OTHER BIG ONE: why the race for governor could decide who pays YOUR rent {{article:governor-race}}
 - [public] 16:55 STILL MISSING: two days on, NOBODY can find the DoorDish robot {{article:robot}}
 
 ## Trending
@@ -59,4 +57,4 @@ from: 4
 - Men in the deck don't count until the player accepts one; the next morning he is SUPER STRAIGHT and "Women only" joins (`matchless_women_only`, see [[6ft_sigma]] notes). Picture-only traits from day 10.
 - Family: brother's jacket. Send 40+ DOLR to `0xb8d6…e46a` by day 5 (+5 trust, `gift_chipped_in`, confirmation an hour later via `d4_brother_paid` / `d4_brother_paid_over`), buy the leather jacket on Swaplist (45, +10 trust, `gift_own`, `d4_brother_bought` 30 min later), or excuse (−5, `gift_skipped`). Promising only keeps the thread open.
 - Crane's post is `m4_vant_crane` in `y_market.json` (no `at`; spread time). Vibe Check's trader sells 25,000 $VANT on it by hand.
-- Robot posts and DoorDish denials: PRs #200 and #204 (merged). Governor article: PR #202 (merged).
+- Robot posts and DoorDish denials: PRs #200 and #204 (merged).

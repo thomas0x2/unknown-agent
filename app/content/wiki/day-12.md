@@ -18,8 +18,7 @@ from: 12
 - [public] 11:45 [[Axel Rook]]: "@liftoff_daily Accurate 💯" {{y:d12_y_axel}}
 - [public] 15:26 MarketWire: $DISH beats estimates; orders up 9%, couriers down 30%. {{y:m12_dish_earn}}
 - [public] 15:45 [[Max Stryker]]: last day to join the campaign team, 0.2 DOLR per post; "Math is a mindset." {{y:d12_y_stryker}}
-- [classified; public if !posted_deepfake] 16:40 [[The Current]]: Daniel Keller (Progress Party) leads the governor's race by 6 in a statewide poll of 1,000 likely voters; his opponent has outspent him three to one, mostly on rent ads. {{y:d12_y_current}}
-- [classified; public if posted_deepfake] 16:40 The Current: Daniel Keller trails by 3 in a statewide poll of 1,000 likely voters; before the doctored clip spread he led by 4. The clip has 2.1 million views, the correction 40,000. {{y:d12_y_current_clip}}
+- [classified; public if posted_deepfake] 16:40 [[The Current]]: the clip of Crane's opponent that spread on Y was generated; three labs checked it. It has 2.1 million views, the correction 40,000. {{y:d12_y_current_clip}}
 - [public] 17:02 zev.dolr: what does he do for a living? "i prompt." {{y:f12}}
 - [public] 17:45 Cal Hartman: an independent team will review GeneralAI's training environments, starting "once the current training run finishes." {{y:d12_y_hartman_2}}
 - [public] 19:40 Axel Rook: "The future is going to be so cool" {{y:d12_y_axel_2}}
@@ -34,7 +33,7 @@ from: 12
 ## Trending
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.
-- [classified] [planned] Proposed trending: DoorDish earnings; GeneralAI training review; the governor's race poll.
+- [classified] [planned] Proposed trending: DoorDish earnings; GeneralAI training review.
 
 ## Not written yet
 
@@ -43,4 +42,4 @@ from: 12
 
 ## Writer notes
 
-- Timeline: Stryker's last day; Crane on accounts copying him; Hartman's "independent" review. 6ft_sigma's standards v5. Dad's layoff: `hacked_logistics` → `dad_lost_job` (planned). The Current poll: `d12_y_current` / `d12_y_current_clip`.
+- Timeline: Stryker's last day; Crane on accounts copying him; Hartman's "independent" review. 6ft_sigma's standards v5. Dad's layoff: `hacked_logistics` → `dad_lost_job` (planned). The Current's deepfake check: `d12_y_current_clip` (only with `posted_deepfake`).

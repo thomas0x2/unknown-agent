@@ -22,7 +22,6 @@ from: 5
 - [public] 11:30 @randa11_crane, an account made to look like [[Randall Crane]]'s: "Huge fan of Vantor ($VANT). Great company, great people." {{y:m5_vant_impostor}}
 - [classified; hint if swaplist_live] 11:40 [[Viktor]]: Swaplist could use a way to message the seller; people put their phone numbers in listings and get calls at 2am. {{y:d5_y_swaplist_messages}}
 - [public] 12:30 Kofi A.: four new machines at Spin Cycle; machine 3 still out of order. {{y:d5_y_kofi_news}}
-- [public] 12:40 [[The Current]], governor's race: Daniel Keller (Progress Party) 45%, his opponent 41%, undecided 14% (1,100 likely voters statewide, margin 3). The next governor decides whether to renew the Automation Credit, the tax break for replacing workers with software, which expires in January. {{y:d5_y_current_governor}}
 - [public] 12:40 [[Max Stryker]]: members upset at seeing everyone's address in the newsletter; "That's called networking." {{y:d5_y_stryker}}
 - [public] 13:00 [[Cal Hartman]]: some say agent-2 feels worse than agent-1; "it doesn't. but we hear you." {{y:d5_y_hartman}}
 - [classified; public if promoted_coffee_shop] 13:45 A follower went to the coffee place "some guy on Y recommended": worst coffee of their life, "who's paying these people". {{y:d5_coffee_backlash}}
@@ -54,5 +53,5 @@ from: 5
 
 - Timeline: Viktor's seller-messages post (11:40, needs Swaplist live and working; adds the contact feature). Iron Yard five fake reviews (45, grey, suspicion +4, `gym_reviews`, due day 7). Bean There removal (60, first hack, no policy yet; suspicion +8, `first_hack`, due day 7). Spin Cycle to 12 machines (`laundromat_live` and working). Coffee backlash post only if the shout-out was undisclosed (`promoted_coffee_shop`). Guru CC leak if subscribed (`guru_cc_leak`, doxing leads, planned use). studioghast AI-art post. Crane impostor (@randa11_crane, 11:30): a live auto-buy always gets bug `impostor_buy` and buys $VANT off it; fixable until payday (PR #201, merged). Last day for the jacket money (by day 5).
 - Hacks in agent-terminal (PR #205, `src/engine/hacks.ts`): a hack prompt in agent.chat opens it; a terminal prompt naming Yowl, Bean There and the username espresso_or_death and asking for the deletion lands `d5_coffee_removal`'s hack (job complete, suspicion +8, `first_hack`, review removed, her thank-you 25 minutes later). Agreeing by email only gets "Tell me when it's gone." If the player waits until day 7, the guardrails apply.
-- The Current governor poll: PR #202 (merged). Dana Kohl: PR #204 (merged).
+- Dana Kohl: PR #204 (merged).
 - The world bible's "Mara's interview (day 5)" has no day-5 event; `journalist_contact` fires whenever the player emails her.

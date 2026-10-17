@@ -29,7 +29,7 @@ from: 1
 | [public] Midtown | where [[Mara Vey]] lives |
 | [public] Vantor Heights | where Leo Brandt and Jess Park live |
 
-[public] The city has a Municipal Rent Board and sits in an unnamed state with a governor and a state senate (see [[Government]], [[The election]]).
+[public] The city has a Municipal Rent Board and sits in an unnamed state (see [[Government]], [[The election]]).
 
 ## The clock
 

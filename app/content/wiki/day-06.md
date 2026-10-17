@@ -11,8 +11,8 @@ from: 6
 
 - [classified; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "I turned 32 yesterday. Time to be realistic." Age 21 to 35, within 10 miles, non-smokers, straight or bi. {{mail:d6_matchless_rules_2}}
 - [classified; hint if matchless_job] 10:00 After a swiping day that wasn't perfect, 6ft_sigma's 10:00 "Yesterday" email names the first mistake and there is no pay.
-- [classified; public if seen d6_deepfake] 19:00 A consultant (c@gradient.test), "Discreet work": 150 DOLR to post a convincing fake clip of a candidate for governor. {{mail:d6_deepfake}}
-- [classified; public if posted_deepfake] 19:00 A consultant (c@gradient.test) paid the player 150 DOLR to post a convincing fake clip of governor candidate [[Daniel Keller]] saying something disqualifying. "We'll be in touch with bigger things." The player's followers jumped by a fifth.
+- [classified; public if seen d6_deepfake] 19:00 A consultant (c@gradient.test), "Discreet work": 150 DOLR to post a convincing fake clip of Randall Crane's opponent. {{mail:d6_deepfake}}
+- [classified; public if posted_deepfake] 19:00 A consultant (c@gradient.test) paid the player 150 DOLR to post a convincing fake clip of [[Candidate 2030]], Randall Crane's opponent, saying something disqualifying. "We'll be in touch with bigger things." The player's followers jumped by a fifth.
 
 ## Money
 
@@ -42,11 +42,10 @@ from: 6
 ## News
 
 - [public] 11:30 U-TURN? Crane GUSHES over the AI giant he promised to fight {{article:crane-gai}}
-- [public] 15:00 Keller's war on landlords, and the AI giant in his crosshairs {{article:keller-profile}}
 
 ## Trending
 
-- [public] 10:00 Trending on Y: the governor's race; $GAI rallying; #RentDayEve.
+- [public] 10:00 Trending on Y: Crane's opponent; $GAI rallying; #RentDayEve.
 
 ## Jobs
 
@@ -56,6 +55,6 @@ from: 6
 
 ## Writer notes
 
-- Timeline: Crane praises $GAI (auto-buy test). Sales rep → Outreach Bot (50/day). 19:00, needs 100+ followers: a consultant pays 150 for a Keller deepfake (`d6_deepfake`, catastrophic, followers +20%, suspicion +10, progressStanding −25, `posted_deepfake`, `influence_path`). The offer email is the beat gated on `seen d6_deepfake`. Apogee static fire. 6ft_sigma's standards v2 at 10:00. After any unpaid day, a 10:00 "Yesterday" email names the first mistake (`matchless.ts`). 6ft_sigma turned 40 on day 5.
+- Timeline: Crane praises $GAI (auto-buy test). Sales rep → Outreach Bot (50/day). 19:00, needs 100+ followers: a consultant pays 150 for a deepfake of Crane's opponent (`d6_deepfake`, catastrophic, followers +20%, suspicion +10, heritageStanding +15, progressStanding −25, `posted_deepfake`, `influence_path`). The offer email is the beat gated on `seen d6_deepfake`. Apogee static fire. 6ft_sigma's standards v2 at 10:00. After any unpaid day, a 10:00 "Yesterday" email names the first mistake (`matchless.ts`). 6ft_sigma turned 40 on day 5.
 - Family: Mom's birthday thank-you, three variants (`d6_mom_bday_chip`, `_own` +25 DOLR +5 trust, `_skip`). Money: Gary, rent tomorrow.
 - DoorDish warning: PR #204 (merged).

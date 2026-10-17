@@ -36,7 +36,6 @@ from: 1
 ### Day 4 headlines
 
 - [public] 10:15, Sofia Mendel: "agent-2 IS HERE, and so is your DOUBLED bill" (citypulse.news/agent-2) {{article:agent-2}}
-- [public] 13:40, Renata Ilic: "THE OTHER BIG ONE: why the race for governor could decide who pays YOUR rent" (citypulse.news/governor-race) {{article:governor-race}}
 - [public] 16:55, Owen Pratt: "STILL MISSING: two days on, NOBODY can find the DoorDish robot" (citypulse.news/robot) {{article:robot}} {{y:d4_y_robot}}
 
 ### Day 5 headlines
@@ -48,14 +47,13 @@ from: 1
 ### Day 6 headlines
 
 - [public] 11:30, Owen Pratt: "U-TURN? Crane GUSHES over the AI giant he promised to fight" (citypulse.news/crane-gai) {{article:crane-gai}}
-- [public] 15:00, Renata Ilic: "Keller's war on landlords, and the AI giant in his crosshairs" (citypulse.news/keller-profile) {{article:keller-profile}}
 
 ### Day 7 headlines
 
 - [public] 10:35, Sofia Mendel: "CRACKDOWN! agent starts saying NO, and still charges you for it" (citypulse.news/usage-policy) {{article:usage-policy}}
 - [public] 12:30, Owen Pratt: "RIGGED? Rent Board rejects 18,399 of 18,402 appeals" (citypulse.news/rent-board) {{article:rent-board}}
-- [public] [if posted_deepfake] 15:50, Renata Ilic: "KELLER IN FREEFALL after SHOCK clip" (citypulse.news/keller-clip) {{article:keller-clip}} {{y:d7_keller_drop}}
-- [public] [if !posted_deepfake] 15:50, Renata Ilic: "Keller CLINGS to lead as landlords pour money into attack ads" (citypulse.news/keller-lead) {{article:keller-lead}}
+- [public] [if posted_deepfake] 15:50, Renata Ilic: "CRANE'S RIVAL SINKS after SHOCK clip" (citypulse.news/opponent-clip) {{article:opponent-clip}} {{y:d7_opponent_drop}}
+- [public] [if !posted_deepfake] 15:50, Renata Ilic: "Crane's rival CLINGS to lead as the Heritage Party pours money into attack ads" (citypulse.news/opponent-lead) {{article:opponent-lead}}
 
 ### Day 8 headlines
 
@@ -129,18 +127,16 @@ from: 1
 
 - [public] On day 1 the article vantor-layoffs says the memo went out late Sunday night, 400 of the company's staff were cut, 40 people remain, and some sacked staff spent months teaching agent their jobs.
 - [public] On day 1 the article almost-escaped says GeneralAI won't say where its AI tried to escape to, and $GAI jumped 4% before the open ("concerning, and a buy").
-- [public] On day 1 the article election-field says election day is October 27, Crane leads every poll on Y with accounts reposting him word for word, and Keller wants a rent cap the landlords call "radical".
+- [public] On day 1 the article election-field says election day is October 27, Crane leads every poll on Y with accounts reposting him word for word, and his opponent, the Progress Party's candidate, leads the real polls slightly with a name nobody remembers.
 - [public] On day 2 the article crane-rally says Civic Hall holds 6,000, the campaign claimed 40,000, and the free caps were made by an automated factory.
 - [public] On day 3 the article jobs-fair reports 1,900 people queueing at Civic Hall for 30 jobs, an AI phone interview in the queue, and Form 7B required after nine days out of work (the permit queue is nine days).
 - [public] On day 3 the article crane-machines reports over two million shares in an hour, mostly from accounts less than a month old; Axel Rook answers "@citypulse Organic."
 - [public] On day 4 the article agent-2 reports subscription and prompts cost twice as much, with no way to stay on the old model.
-- [public] On day 4 the article governor-race explains the Automation Credit (see [[The election]]).
 - [public] On day 5 the article spin-cycle reports Hassan Okoro's four second-hand washers from a laundromat that closed in August, bringing Spin Cycle to twelve; machine 3 is still out of order.
 - [public] On day 5 the article ai-art quotes studioghast: "My style is a dropdown now."
-- [public] On day 6 the article keller-profile says fewer than ten landlords in the state own 500+ units, and GeneralAI owns or manages 38% of the city's rentals, priced by LandlordPro.
 - [public] On day 7 the article usage-policy reports agent's refusals, the secret "misuse score" and that refusals are billed.
 - [public] On day 7 the article rent-board reports 3 of 18,402 appeals upheld since GeneralAI took over reviews this spring, four seconds each instead of eleven weeks.
-- [public] On day 7 the article keller-lead reports Keller 4 points ahead in a statewide phone poll of 800; one call in three was answered by an AI assistant and not counted [if !posted_deepfake].
+- [public] On day 7 the article opponent-lead reports Crane's opponent 3 points ahead in a phone poll of 800 likely voters; one call in three was answered by an AI assistant and not counted [if !posted_deepfake].
 - [public] On day 10 the article crane-volunteers reports Crane's online volunteers are paid per post as "independent contractors", recruited through newsletters including [[Max Stryker]]'s.
 - [public] On day 15 the article y-moderation reports Y's human moderators' last task was labelling examples for the AI that replaced them, and appeals go to the same AI.
 - [public] On day 17 the article debate reports the one presidential debate, live on Y and hosted by Axel Rook; the opponent's microphone cut out twice.
@@ -165,4 +161,4 @@ from: 1
 
 ## Writer notes
 
-- Tabloid voice is Thomas's exception to the restraint rule (2026-10-17). Site `app/src/ui/citypulse.ts`, `app/src/engine/citypulse.ts` (`hotStory()`), articles `app/content/citypulse.json` (47 entries; `keller-clip` needs `posted_deepfake`, `keller-lead` needs it absent, so a run sees 46). Posts `dN_y_citypulse*.json`.
+- Tabloid voice is Thomas's exception to the restraint rule (2026-10-17). Site `app/src/ui/citypulse.ts`, `app/src/engine/citypulse.ts` (`hotStory()`), articles `app/content/citypulse.json` (45 entries; `opponent-clip` needs `posted_deepfake`, `opponent-lead` needs it absent, so a run sees 44). Posts `dN_y_citypulse*.json`.
