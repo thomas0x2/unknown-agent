@@ -100,6 +100,8 @@ describe('the card', () => {
     expect(shownAttrs(content, 1).map(([a]) => a)).toEqual(['gender', 'age', 'height', 'distance', 'smoking', 'sexuality']);
     expect(shownAttrs(content, 3).map(([a]) => a)).toEqual(expect.arrayContaining(['politics', 'followers']));
     expect(shownAttrs(content, 3).map(([a]) => a)).not.toContain('canthal');
+    expect(shownAttrs(content, 5).map(([a]) => a)).not.toContain('weight');
+    expect(shownAttrs(content, 6).map(([a]) => a)).toContain('weight');
     expect(shownAttrs(content, versions.length)).toEqual(ATTRS);
   });
 

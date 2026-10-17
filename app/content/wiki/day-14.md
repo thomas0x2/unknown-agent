@@ -10,7 +10,7 @@ from: 14
 ## Mail
 
 - [public] 10:00 [[GeneralAI]] rolls out agent-4 and switches agent-3 off. Prices: 35 DOLR a night, 3 per prompt, 0.05 per word.
-- [classified; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": he has been reading about facial harmony. Body count 1 or under, canthal tilt +4° or more, no earrings. {{mail:d14_matchless_rules_6}}
+- [classified; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": he has been reading about facial harmony. Body count 1 or under, canthal tilt +4° or more, 130 lbs or under (weight now shows on the cards), no earrings. {{mail:d14_matchless_rules_6}}
 
 ## Y
 

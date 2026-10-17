@@ -28,12 +28,12 @@ from: 4
 [public] While the player swipes for him, he sends stricter standards in a 10:00 email, "New standards", every other day.
 
 - [hint] [if matchless_job] His first standards, by email when the player agrees: age 25 to 42, within 20 miles, non-smokers. They don't mention gender. {{mail:matchless_contact}}
-- [hint] [if matchless_job] On day 6 he writes that he turned 40 yesterday and it is "Time to be realistic", and narrows the age range and distance and adds sexuality. {{mail:d6_matchless_rules_2}}
+- [hint] [if matchless_job] On day 6 he writes that he turned 32 yesterday and it is "Time to be realistic", and narrows the age range and distance and adds sexuality. {{mail:d6_matchless_rules_2}}
 - [hint] [if matchless_job] On day 8 he writes "Adjusting for compatibility." and adds politics and Y followers. {{mail:d8_matchless_rules_3}}
 - [hint] [if matchless_job] On day 10 he writes "Some people got through that shouldn't have." and adds income, body count and long hair. {{mail:d10_matchless_rules_4}}
 - [hint] [if matchless_job] On day 12 he writes "Someone took my bike." and adds distance, height, kinks and no glasses. {{mail:d12_matchless_rules_5}}
-- [hint] [if matchless_job] On day 14 he writes that he has been reading about facial harmony, "a science", and adds canthal tilt and no earrings. {{mail:d14_matchless_rules_6}}
-- [hint] [if matchless_job] On day 16 he writes "Final version." and calls his standards facts, adding a mandibular ratio and blonde. {{mail:d16_matchless_rules_7}}
+- [hint] [if matchless_job] On day 14 he writes that he has been reading about facial harmony, "a science", and adds canthal tilt, weight (130 lbs or under) and no earrings. {{mail:d14_matchless_rules_6}}
+- [hint] [if matchless_job] On day 16 he writes "Final version." and calls his standards facts, adding a mandibular ratio and blonde, and lowering weight to 115 lbs or under. {{mail:d16_matchless_rules_7}}
 
 ## Women only
 
@@ -41,7 +41,7 @@ from: 4
 
 ## Writer notes
 
-- Persona `sigma_provider` (never insults women; the joke is always on him). Events `d4_y_sigma`, `matchless_contact`, `d6|d8|d10|d12|d14|d16_matchless_rules_N`; rules in `content/matchless.json`, engine `src/engine/matchless.ts`. Turns 40 on day 5.
-- Standards (kept [hint] because they solve the job): v1 25–42, within 20 miles, non-smokers. Day 6: 21–35, within 10 miles, straight or bi. Day 8: Heritage Party only, fewer Y followers than 212. Day 10: 21–29, earns ≤30,000, body count ≤3, long hair. Day 12: within 3 miles, 5'4" or under, no kinks listed, no glasses. Day 14: body count ≤1, canthal tilt +4° or more, no earrings. Day 16: 21–25, 5'3" or under, mandibular height to width ratio ≤0.70, blonde.
+- Persona `sigma_provider` (never insults women; the joke is always on him). Events `d4_y_sigma`, `matchless_contact`, `d6|d8|d10|d12|d14|d16_matchless_rules_N`; rules in `content/matchless.json`, engine `src/engine/matchless.ts`. Turns 32 on day 5.
+- Standards (kept [hint] because they solve the job): v1 25–42, within 20 miles, non-smokers. Day 6: 21–35, within 10 miles, straight or bi. Day 8: Heritage Party only, fewer Y followers than 212. Day 10: 21–29, earns ≤30,000, body count ≤3, long hair. Day 12: within 3 miles, 5'4" or under, no kinks listed, no glasses. Day 14: body count ≤1, canthal tilt +4° or more, 130 lbs or under, no earrings. Day 16: 21–25, 5'3" or under, 115 lbs or under, mandibular height to width ratio ≤0.70, blonde.
 - Women only (`matchless.json` `womenOnly`, `matchlessWomenOnly`): until `matchless_women_only` is set, men and nonbinary profiles can't be swiped wrong. Accepting a man sets `matchless_man_accepted` at payday; next morning his line is prepended to that day's standards email (with "Women only." added to the list), or comes as its own 10:00 mail "Women"; later standards emails list "Women only." first. The deck changes then (ids end `-w`).
 - His Y profile shows a hashed follower count (308), not the 212 he claims.
