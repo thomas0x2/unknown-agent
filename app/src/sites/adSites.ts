@@ -1,7 +1,7 @@
 /*
  * The websites behind the banner ads (app/src/ui/ads.ts). Every ad's href opens one of these: a
  * landing page in the sponsor's style. For now they're brochures with nothing to click, apart from
- * the odd link to a real site (deepsleep.ai links to Weightroom). Ads for sites that already exist
+ * the odd link to a real site (deepsleep.ai links to Weightroom, Spin Cycle to its feed). Ads for sites that already exist
  * (EMPIRE, the coinbln.com phishing page, DoorDish, agent.chat/models) aren't here. Rendered by ui/adSites.ts; routed by sites/registry.ts.
  */
 
@@ -382,6 +382,7 @@ export const AD_SITES: AdSite[] = [
       ['Pickup', 'Please collect your laundry when the cycle ends. Loads left overnight go on the shelf.'],
     ],
     fine: 'Spin Cycle is not responsible for items left in machines.',
+    link: ['Live machine status:', 'spincycle.test/feed', 'spincycle.test/feed'],
   },
   {
     url: 'ironyard.gym', brand: 'Iron Yard', kit: 'local', theme: 'iron', mark: 'IY',
