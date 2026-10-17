@@ -88,12 +88,23 @@ export async function matchQuery(jev: JevRouter, s: GameState, content: Content,
   });
   const direct = hubs.filter(({ p, i }) => found.includes(`${p.file}#${i}`));
   // a hub page whose section was named counts once, through that section
-  const hit = pages.filter((p) => found.includes(p.file) || direct.some((x) => x.p === p));
+  let hit = pages.filter((p) => found.includes(p.file) || direct.some((x) => x.p === p));
   if (!hit.length) return { kind: 'miss', debug: 'Jev: the question names no wiki page, so it is not precise enough (a miss)' };
+  // several pages: the ones the question is mainly about (named, or asked what it is) win over pages
+  // that only have to do with it ("What's DOLR?" is the Money and DOLR page, not agent's prices)
+  let mainNote = '';
+  if (hit.length > 1) {
+    const main = await jev.matchFeatures({ prompt: text, context: chat, features: hit.map((p) => ({ id: p.file, description: pageDesc(p), kind: 'main' as const })) });
+    const kept = hit.filter((p) => main.includes(p.file));
+    if (kept.length && kept.length < hit.length) {
+      mainNote = ` (mainly about ${kept.map((p) => p.title).join(', ')}, of ${hit.map((p) => p.title).join(', ')})`;
+      hit = kept;
+    }
+  }
   // something the player can't know of yet: that's what the question is after, so it is refused
   const early = hit.filter((p) => !known.has(p));
   if (early.length) return { kind: 'classified', where: early.map((p) => p.title), debug: `Jev: ${early.map((p) => p.title).join('; ')}, not known to the player until day ${Math.min(...early.map((p) => p.from))}, so classified` };
-  if (hit.length > MAX_PAGES) return { kind: 'broad', options: hit.slice(0, 4).map((p) => p.title), debug: `Jev: the question matches ${hit.length} wiki pages, too broad (a near-miss)` };
+  if (hit.length > MAX_PAGES) return { kind: 'broad', options: hit.slice(0, 4).map((p) => p.title), debug: `Jev: the question matches ${hit.length} wiki pages, too broad (a near-miss)${mainNote}` };
 
   // sections of every matched page with more than an overview, asked in one go
   const choice = hit.map((p) => ({ p, secs: querySections(p), fixed: direct.filter((x) => x.p === p).map((x) => x.i) }));
@@ -118,5 +129,5 @@ export async function matchQuery(jev: JevRouter, s: GameState, content: Content,
     }
   }
   if (!out.public.length && !out.hint.length) return { kind: 'classified', where, debug: `Jev: ${where.join('; ')}, all classified for now` };
-  return { kind: 'answer', where, ...out, debug: `Jev: ${where.join('; ')} (${out.public.length} public, ${out.hint.length} hint)` };
+  return { kind: 'answer', where, ...out, debug: `Jev: ${where.join('; ')} (${out.public.length} public, ${out.hint.length} hint)${mainNote}` };
 }

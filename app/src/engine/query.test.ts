@@ -44,3 +44,35 @@ describe('hub pages', () => {
     expect(asked[0]).toEqual(['ad-brands.md', 'ad-brands.md#1', 'ad-brands.md#2']);
   });
 });
+
+describe('several pages matched', () => {
+  it('the page the question is mainly about wins over pages that only have to do with it', async () => {
+    const { parseWikiPage } = await import('./wiki');
+    const { matchQuery } = await import('./query');
+    const wiki = [
+      parseWikiPage('---\ntitle: Money and DOLR\naliases: DOLR, money\ncategory: world\n---\n[public] DOLR is a stablecoin.\n', 'money.md'),
+      parseWikiPage('---\ntitle: agent\naliases: agent.chat\ncategory: sites\n---\n[public] agent costs 0.50 DOLR per prompt.\n', 'agent.md'),
+      parseWikiPage('---\ntitle: The player\naliases: me\ncategory: people\n---\n[public] You have 100 DOLR.\n', 'player.md'),
+    ];
+    const kinds: string[] = [];
+    const jev = {
+      // loosely, every page has to do with DOLR; mainly, only the one named for it
+      matchFeatures: async (i: { features: { id: string; description: string; kind?: string }[] }) => {
+        kinds.push(i.features[0]?.kind ?? '');
+        return i.features.filter((f) => f.kind !== 'main' || /DOLR/.test(f.description)).map((f) => f.id);
+      },
+    } as never;
+    const m = await matchQuery(jev, startGame(content, 1), { ...content, wiki }, "What's DOLR");
+    expect(kinds).toContain('main');
+    expect(m).toMatchObject({ kind: 'answer', where: ['Money and DOLR › Overview'], public: ['DOLR is a stablecoin.'] });
+  });
+
+  it('when none is mainly it, all the matched pages stay', async () => {
+    const { parseWikiPage } = await import('./wiki');
+    const { matchQuery } = await import('./query');
+    const wiki = ['Gino', 'Gary'].map((t) => parseWikiPage(`---\ntitle: ${t}\naliases: person\ncategory: people\n---\n[public] ${t} is a person.\n`, `${t}.md`));
+    const jev = { matchFeatures: async (i: { features: { id: string; kind?: string }[] }) => i.features.filter((f) => f.kind !== 'main').map((f) => f.id) } as never;
+    const m = await matchQuery(jev, startGame(content, 1), { ...content, wiki }, 'who is this person');
+    expect(m).toMatchObject({ kind: 'answer', public: ['Gino is a person.', 'Gary is a person.'] });
+  });
+});

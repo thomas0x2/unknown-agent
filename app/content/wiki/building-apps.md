@@ -1,6 +1,6 @@
 ---
 title: Building apps
-aliases: build, builds, bugs, fixes, fix, deploy, deploying, payday, complaints, hosting, overnight breaks, client apps, user apps, promo posts, strikes
+aliases: how to build apps, how to make apps, building apps, making apps, getting started, how to make money, build, builds, bugs, fixes, fix, deploy, deploying, payday, complaints, hosting, overnight breaks, client apps, user apps, promo posts, strikes
 category: apps
 from: 1
 ---
@@ -9,7 +9,7 @@ from: 1
 
 ## Building
 
-- [hint] agent builds from a spec: name the client or app and paste what they asked for; vague prompts get vague apps.
+- [public] agent builds from a spec: name the client or app and paste what they asked for; vague prompts get vague apps.
 - [public] A build takes game time while agent works, then the code lands on Forkyard; newer models work faster.
 - [public] Nothing is live until the player presses Deploy on Forkyard; the live app sits at its own forkyard.app address.
 
@@ -17,7 +17,7 @@ from: 1
 
 - [public] A build can ship with mistakes: missing or wrong prices, prices in CURO, invented dishes, stale data, the wrong number of machines, sarcasm read as praise.
 - [hint] The only way to know is to open the live app and compare it with what the client asked for, and with the source of truth (the Spin Cycle feed, Sherwood's prices, the client's email).
-- [hint] A fix prompt has to name the app and what exactly is wrong, down to the part; the repo on Forkyard lists the features and the parts inside them.
+- [public] A fix prompt has to name the app and what exactly is wrong, down to the part; the repo on Forkyard lists the features and the parts inside them.
 - [public] After a fix the player redeploys.
 
 ## Hosting and overnight breaks

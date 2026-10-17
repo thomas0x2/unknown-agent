@@ -96,11 +96,16 @@ A sentence that names a later day but is known in advance (rent amounts and due 
 
 ## How a query is answered
 
-Jev reads an agent.chat prompt as a query, then matches it down the wiki like a fix down an app's
-components, but looser: which page (title and aliases), then which section. Naming no page (or more
-than three) is too vague: a miss, and agent roasts the player. A page without a section gets its
-overview. agent.chat shows agent "Searching the WWW" while Haiku answers, still mean, from the matched paragraphs that are public now, and may
-only hint at the hint ones; if there are none, the player gets a scripted classified roast. Haiku can
+Jev reads an agent.chat prompt as a query (questions about the world, and how-to questions like
+"how can I build apps?"), then matches it down the wiki like a fix down an app's components, but
+looser: which page (title and aliases), then which section. When several pages match, Jev is asked
+which one the question is mainly about ("What's DOLR?" is Money and DOLR, not agent's prices); those
+win. Naming no page is a miss (agent roasts the player); more than three is too vague (agent asks
+which). A page without a section gets its overview. agent.chat shows agent "Searching the WWW" while
+Haiku answers, still mean, from the matched paragraphs that are public now, and may only hint at the
+hint ones. If there are none, or the page isn't known to the player yet, the answer is refused:
+Haiku writes the refusal without seeing the text, and agent.chat shows "Tried to access classified
+information · answer refused". Haiku can
 also read the player's own screens (Qmail, Y, Yowl, CityPulse, Forkyard, Coinbin; `server/screens.mjs`).
 
 ## Keeping it current
