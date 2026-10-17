@@ -7,8 +7,11 @@ import { loadContent } from './load';
 import { startGame, endDay } from '../engine/day';
 import { composeEmail } from '../engine/actions';
 import { isJobOffer, triggerMatches } from '../engine/events';
-import { dayProfiles, standardsOf, shownAttrs, passes, meets, matchlessNow, matchlessSwipe, swipesToday, ATTRS, MATCHLESS_JOB } from '../engine/matchless';
+import { dayProfiles, standardsOf, shownAttrs, PICTURE_ATTRS, passes, meets, matchlessNow, matchlessSwipe, swipesToday, ATTRS, MATCHLESS_JOB } from '../engine/matchless';
 import { bookmarks, visitedFlag, route } from '../sites/registry';
+import { portraitOf } from '../ui/matchless';
+
+const HAIR_HEX = { black: '#2a2226', brown: '#5a3e2b', blonde: '#d2b06e', red: '#a8502c', grey: '#aeaaa3' };
 import { wordJev } from '../engine/_fixtures';
 import { CLOCK } from '../engine/config';
 import type { GameState } from '../engine/state';
@@ -60,13 +63,13 @@ describe('the job', () => {
 });
 
 describe('his standards', () => {
-  it('start with four reasonable ones and only get stricter, ending on all thirteen fields', () => {
+  it('start with four reasonable ones and only get stricter, ending on every field and every picture trait', () => {
     expect(standardsOf(content, 1).map((r) => r.attr)).toEqual(['gender', 'age', 'distance', 'smoking']);
     for (let i = 1; i < versions.length; i++) {
       const before = new Set(versions[i - 1].rules.map((r) => r.attr));
       for (const a of before) expect(versions[i].rules.some((r) => r.attr === a), `v${i + 1} keeps ${a}`).toBe(true);
     }
-    expect(new Set(versions.at(-1)!.rules.map((r) => r.attr))).toEqual(new Set(ATTRS.map(([a]) => a)));
+    expect(new Set(versions.at(-1)!.rules.map((r) => r.attr))).toEqual(new Set([...ATTRS, ...PICTURE_ATTRS].map(([a]) => a)));
   });
 
   it('each change arrives first thing in the morning by email, listing all of them, in order', () => {
@@ -98,6 +101,21 @@ describe('the card', () => {
     expect(shownAttrs(content, 3).map(([a]) => a)).toEqual(expect.arrayContaining(['politics', 'followers']));
     expect(shownAttrs(content, 3).map(([a]) => a)).not.toContain('canthal');
     expect(shownAttrs(content, versions.length)).toEqual(ATTRS);
+  });
+
+  it('the picture always shows the hidden traits, and the table never lists them', () => {
+    const ps = [4, 5, 6, 7, 8].flatMap((d) => versions.flatMap((v) => dayProfiles(content, d, v.id)));
+    for (const [a] of PICTURE_ATTRS) {
+      expect(shownAttrs(content, versions.length).some(([x]) => x === a)).toBe(false);
+      expect(new Set(ps.map((p) => p[a])).size, a).toBeGreaterThan(1);
+    }
+    for (const p of ps) {
+      const pic = portraitOf(p);
+      expect(pic.includes('V54 Q42.2'), `${p.id} hair`).toBe(p.hair === 'long');
+      expect(pic.includes('r="3.3"'), `${p.id} glasses`).toBe(p.glasses === 'yes');
+      expect(pic.includes('cx="43" cy="35"'), `${p.id} earrings`).toBe(p.earrings === 'yes');
+      expect(pic).toContain(HAIR_HEX[p.hairColor]);
+    }
   });
 });
 

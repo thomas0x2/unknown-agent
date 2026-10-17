@@ -177,6 +177,13 @@
           "attr": "bodyCount",
           "max": 3,
           "say": "Body count 3 or under."
+        },
+        {
+          "attr": "hair",
+          "allow": [
+            "long"
+          ],
+          "say": "Long hair."
         }
       ]
     },
@@ -249,6 +256,20 @@
             "none"
           ],
           "say": "No kinks listed."
+        },
+        {
+          "attr": "hair",
+          "allow": [
+            "long"
+          ],
+          "say": "Long hair."
+        },
+        {
+          "attr": "glasses",
+          "allow": [
+            "no"
+          ],
+          "say": "No glasses."
         }
       ]
     },
@@ -325,7 +346,28 @@
         {
           "attr": "canthal",
           "min": 4,
-          "say": "Canthal tilt +4° or more."
+          "say": "Canthal tilt +4\u00b0 or more."
+        },
+        {
+          "attr": "hair",
+          "allow": [
+            "long"
+          ],
+          "say": "Long hair."
+        },
+        {
+          "attr": "glasses",
+          "allow": [
+            "no"
+          ],
+          "say": "No glasses."
+        },
+        {
+          "attr": "earrings",
+          "allow": [
+            "no"
+          ],
+          "say": "No earrings."
         }
       ]
     },
@@ -402,12 +444,40 @@
         {
           "attr": "canthal",
           "min": 4,
-          "say": "Canthal tilt +4° or more."
+          "say": "Canthal tilt +4\u00b0 or more."
         },
         {
           "attr": "jaw",
           "max": 0.7,
           "say": "Mandibular height to width ratio 0.70 or under."
+        },
+        {
+          "attr": "hair",
+          "allow": [
+            "long"
+          ],
+          "say": "Long hair."
+        },
+        {
+          "attr": "glasses",
+          "allow": [
+            "no"
+          ],
+          "say": "No glasses."
+        },
+        {
+          "attr": "earrings",
+          "allow": [
+            "no"
+          ],
+          "say": "No earrings."
+        },
+        {
+          "attr": "hairColor",
+          "allow": [
+            "blonde"
+          ],
+          "say": "Blonde."
         }
       ]
     }

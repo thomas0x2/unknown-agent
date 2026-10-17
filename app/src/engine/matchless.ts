@@ -39,6 +39,11 @@ export interface Profile {
   canthal: number;
   /** Mandibular height to width ratio. */
   jaw: number;
+  /** Only in the picture, never in the table: the player has to look. */
+  hair: 'short' | 'long';
+  hairColor: 'black' | 'brown' | 'blonde' | 'red' | 'grey';
+  glasses: 'yes' | 'no';
+  earrings: 'yes' | 'no';
 }
 export type Attr = Exclude<keyof Profile, 'id' | 'name' | 'bio' | 'look'>;
 
@@ -48,6 +53,8 @@ export const ATTRS: [Attr, string][] = [
   ['smoking', 'Smoking'], ['sexuality', 'Sexuality'], ['kinks', 'Kinks'], ['income', 'Income'], ['politics', 'Politics'],
   ['bodyCount', 'Body count'], ['canthal', 'Canthal tilt'], ['jaw', 'Mandibular ratio'],
 ];
+/** Traits only the picture shows, with the names his emails and the "Yesterday" email use. */
+export const PICTURE_ATTRS: [Attr, string][] = [['hair', 'Hair'], ['hairColor', 'Hair colour'], ['glasses', 'Glasses'], ['earrings', 'Earrings']];
 
 /** Fields the card shows only once his standards mention them; the rest are on every card. */
 const ODD: ReadonlySet<Attr> = new Set<Attr>(['followers', 'kinks', 'income', 'politics', 'bodyCount', 'canthal', 'jaw']);
@@ -138,6 +145,10 @@ const VALUES: Partial<Record<Attr, readonly string[]>> = {
   sexuality: ['straight', 'bi', 'lesbian', 'gay', 'pan'],
   kinks: ['none', 'roleplay', 'feet', 'leather', 'being told what to do'],
   politics: ['heritage', 'progress', 'none'],
+  hair: ['short', 'long'],
+  hairColor: ['black', 'brown', 'blonde', 'red', 'grey'],
+  glasses: ['yes', 'no'],
+  earrings: ['yes', 'no'],
 };
 const RANGE: Partial<Record<Attr, [number, number, number]>> = {
   // [lowest, highest, decimals]
@@ -163,6 +174,10 @@ function anyone(r: Rand): Omit<Profile, 'id' | 'name' | 'bio' | 'look'> {
     bodyCount: Math.floor(between(r, 0, 4) ** 1.6),
     canthal: int(r, -4, 8),
     jaw: round(between(r, 0.58, 0.95), 2),
+    hair: weighted(r, gender === 'man' ? [['short', 8], ['long', 1]] : [['long', 5], ['short', 4]]),
+    hairColor: weighted(r, [['black', 4], ['brown', 4], ['blonde', 2], ['red', 1], ['grey', 0.6]]),
+    glasses: weighted(r, [['no', 7], ['yes', 3]]),
+    earrings: weighted(r, gender === 'man' ? [['no', 9], ['yes', 1]] : [['yes', 6], ['no', 4]]),
   };
 }
 
@@ -303,7 +318,7 @@ export function matchlessReport(s: GameState, content: Content, day: SwipeDay | 
   });
   if (!day.wrong.length) { mail(`You swiped ${day.count} of ${content.matchless?.perDay ?? 10}.`); return; }
   const { p, choice, rule } = day.wrong[0];
-  const field = rule ? ATTRS.find(([a]) => a === rule.attr) : undefined;
+  const field = rule ? [...ATTRS, ...PICTURE_ATTRS].find(([a]) => a === rule.attr) : undefined;
   const what = choice === 'yes' && rule && field
     ? `You accepted ${p.name}. ${field[1]}: ${showAttr(p, rule.attr as Attr)}. My standards: ${rule.say}`
     : `You rejected ${p.name}. She met every one of my standards.`;
