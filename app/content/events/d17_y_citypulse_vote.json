@@ -1,0 +1,11 @@
+{
+  "id": "d17_y_citypulse_vote",
+  "site": "y",
+  "from": "CityPulse",
+  "trigger": {
+    "dayMin": 17,
+    "dayMax": 17
+  },
+  "at": "11:20",
+  "body": "DEBATE NIGHT! Crane says he'll \"destroy\" his opponent tonight with no notes, no teleprompter and \"no computer of any kind\". Streamed live on Y, hosted by Axel Rook, 21:30. Don't miss it!"
+}

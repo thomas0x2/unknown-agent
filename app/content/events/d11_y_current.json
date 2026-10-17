@@ -1,0 +1,11 @@
+{
+  "id": "d11_y_current",
+  "site": "y",
+  "from": "The Current",
+  "trigger": {
+    "dayMin": 11,
+    "dayMax": 11
+  },
+  "at": "13:20",
+  "body": "Randall Crane's jobs plan, on his campaign site, has three steps. The third hands the new positions to GeneralAI. Asked about it, the campaign said the plan is \"a draft\" and the site is \"managed by a vendor\"."
+}

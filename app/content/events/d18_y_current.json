@@ -1,0 +1,11 @@
+{
+  "id": "d18_y_current",
+  "site": "y",
+  "from": "The Current",
+  "trigger": {
+    "dayMin": 18,
+    "dayMax": 18
+  },
+  "at": "15:10",
+  "body": "We checked 31 factual claims Randall Crane made at last night's debate. Four held up. His campaign called the review \"partisan\" and cited two of the four as proof."
+}
