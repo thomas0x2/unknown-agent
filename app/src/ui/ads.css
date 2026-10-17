@@ -137,6 +137,7 @@
 .ad-park { --ad-bg: #111; --ad-ink: #e8e8e8; --ad-cta: #e8e8e8; --ad-cta-ink: #111; }
 .ad-polly { --ad-bg: linear-gradient(120deg, #1d2440, #2c5cff); --ad-ink: #fff; --ad-cta: #fff; --ad-cta-ink: #2c5cff; --ad-fine: #c8d3ff; }
 .ad-sherwood { --ad-bg: #fff; --ad-ink: #0e0f0c; --ad-cta: #00a805; --ad-cta-ink: #fff; --ad-fine: #6a6f69; border-bottom: 4px solid #00a805; }
+.ad-stack { --ad-bg: linear-gradient(120deg, #0f212e, #213743); --ad-ink: #fff; --ad-cta: #00e701; --ad-cta-ink: #05250a; --ad-fine: #b1bad3; }
 .ad-sherwood .ad-f { font-weight: 700; letter-spacing: -.01em; }
 .ad-news { --ad-bg: #151515; --ad-ink: #fff; --ad-cta: #d42b1e; --ad-cta-ink: #fff; --ad-fine: #b9b9b9; border-top: 4px solid #d42b1e; }
 .ad-news .ad-f { font-family: var(--f-display); font-weight: 700; }

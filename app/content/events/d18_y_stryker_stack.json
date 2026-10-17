@@ -1,0 +1,11 @@
+{
+  "id": "d18_y_stryker_stack",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 18,
+    "dayMax": 18
+  },
+  "at": "12:00",
+  "body": "People ask if Stack pays me to post this. Stack pays me to post this. That's called leverage. Code STRYKER. #ad"
+}

@@ -16,6 +16,8 @@ export const WALLETS: Record<string, { name: string }> = {
   '0x7c2e91b04fd36a58e1b9c40d27f6a3e85b10c4d9': { name: 'Mia (lonely.ai)' },
   // the trader's stake (engine/stake.ts)
   '0x5e17a0c94b2d83f6e1a7c05b9d42e38f6a1c0d7b': { name: 'deskjockey' },
+  // stack.com deposits (engine/casino.ts)
+  '0xbe438c43eb4b683954f59561ce47353661ee7934': { name: 'Stack' },
 };
 
 /** 0x followed by 40 hex digits, like every address in the game. */

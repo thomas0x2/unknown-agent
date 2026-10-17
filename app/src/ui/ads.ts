@@ -195,6 +195,11 @@ export const WIDE: Ad[] = [
     frames: ['Rent is due.', 'The market is <b>open</b>.', 'Fractional shares from <b>1 DOLR</b>.'],
     cta: 'Start investing', fine: 'Commission-free. Investing involves risk, including the loss of your rent money.',
   },
+  {
+    id: 'stack', house: 'stack', sponsor: 'Stack', href: 'stack.com', theme: 'ad-stack', deco: 'coins', cta_fx: 'pulse',
+    frames: ['The job market is closed.', 'The casino is <b>open</b>.', 'Got a creator code? <b>100% deposit match.</b>'],
+    cta: 'Play now', fine: '18+. Bonus must be wagered 40 times before withdrawal. Most bonuses are.',
+  },
 ];
 
 /** Square sidebar boxes: one big line per frame. */
@@ -290,6 +295,11 @@ const SQUARE: Ad[] = [
     frames: ['$GAI is <b>up</b>.', 'It was up yesterday too.', 'Own a slice from <b>1 DOLR</b>.'],
     cta: 'Buy $GAI', fine: 'Past performance is not indicative of future results. So far it has been.',
   },
+  {
+    id: 'stack-sq', house: 'stack', sponsor: 'Stack', href: 'stack.com', theme: 'ad-stack', deco: 'coins',
+    frames: ['Free afternoon?', 'Spins from <b>0.50 DOLR</b>.', '<b>Stack</b>'],
+    cta: 'Spin', fine: 'RTP up to 97%. Gamble responsibly.',
+  },
   // CityPulse promotes whatever its hottest story is right now (see setHeadline)
   { ...NEWS_AD, id: 'citypulse_sq' },
   {
@@ -329,6 +339,7 @@ const WHY: Record<string, string> = {
   citypulse: 'You were targeted because you read the news.',
   sherwood: 'You were targeted because you have money in the market, or are about to.',
   pollymarket: 'You were targeted because you check the odds.',
+  stack: 'You were targeted because you have a balance.',
 };
 
 const FRAME_MS = 3000;

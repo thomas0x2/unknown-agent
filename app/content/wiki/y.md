@@ -13,7 +13,7 @@ from: 1
 - [public] The search box finds a handle: Enter opens the profile, or "This account doesn't exist".
 - [public] The sidebar shows what is trending that day.
 - [public] Posts gain or lose followers; posting more than three times a day costs a few.
-- [public] Links to citypulse.news articles in posts open the article, and pollymarket.com links open the market.
+- [public] Links to citypulse.news articles in posts open the article, pollymarket.com links open the market, and stack.com links open [[Stack]].
 - [public] Verified accounts carry a check mark; Mara Vey's is yellow.
 - [hint] Followers open doors: some jobs only come to accounts with enough followers.
 

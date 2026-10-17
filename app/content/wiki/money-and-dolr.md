@@ -25,6 +25,7 @@ from: 1
 
 - [public] Client apps pay their daily rate at payday if the app works; user apps earn 0.3 DOLR per user a day from ads (see [[Building apps]]).
 - [public] [[agent]] bills a nightly subscription and every prompt; hosting costs 2 DOLR per live app a night.
+- [public] [[Stack]] takes DOLR deposits through Coinbin's Send and pays withdrawals back to the wallet.
 - [public] [[Sherwood]] trades stocks in DOLR; [[deskjockey]]'s stake and other wallets are reached through Coinbin's Send.
 
 ## passwords.txt

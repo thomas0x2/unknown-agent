@@ -65,6 +65,15 @@ from: 1
 - [public] On day 19 he confirms his posts go out at 3am because he's up.
 - [public] On day 21 he votes at 7:00 sharp, first in line.
 
+## His Stack promotions
+
+[public] Max Stryker is paid to promote [[Stack]], a crypto casino, on Y. Each post is marked #ad and gives his creator code STRYKER, which matches a first deposit.
+
+- [public] On day 3: his edge is discipline, cold water and Stack. {{y:d3_y_stryker_stack}}
+- [public] On day 6: three sevens on Stack, 200x; "The house is a mindset." {{y:d6_y_stryker_stack}}
+- [public] On day 14, rent day: weak men pay rent, strong men turn it into more rent. {{y:d14_y_stryker_stack}}
+- [public] On day 18: Stack pays him to post this; "That's called leverage." {{y:d18_y_stryker_stack}}
+
 ## His dating advice
 
 [public] Every other day from day 5 he posts dating advice for lonely men, each piece really about himself. [[6ft_sigma]] follows all of it and answers every post.
@@ -102,6 +111,6 @@ from: 1
 
 ## Writer notes
 
-- Persona `max` (scripted "Commitment logged." on EMPIRE replies); events `dN_y_stryker_2` (dating advice, odd days 5 to 15, each answered by `dN_y_sigma`), `d1_guru` (interested reply: the 20 DOLR price "goes back to 200, as it has every midnight since launch"), `guru_newsletter` (20 bodies, one per day 2 to 21, mattress first; embed one issue as `mail:guru_newsletter@N` in double braces; `special` gives the first issue on or after day 5 a `cc` of 28 addresses incl. [[6ft_sigma]] and sets `guru_cc_leak`; a player who subscribes later gets the leak in their first issue), `dN_y_stryker`. EMPIRE page and `EMPIRE` constant in engine/actions/clicks.ts.
+- Persona `max` (scripted "Commitment logged." on EMPIRE replies); events `dN_y_stryker_2` (dating advice, odd days 5 to 15, each answered by `dN_y_sigma`), `d1_guru` (interested reply: the 20 DOLR price "goes back to 200, as it has every midnight since launch"), `guru_newsletter` (20 bodies, one per day 2 to 21, mattress first; embed one issue as `mail:guru_newsletter@N` in double braces; `special` gives the first issue on or after day 5 a `cc` of 28 addresses incl. [[6ft_sigma]] and sets `guru_cc_leak`; a player who subscribes later gets the leak in their first issue), `dN_y_stryker_stack` (paid Stack posts, days 3, 6, 14, 18; see [[Stack]]), `dN_y_stryker`. EMPIRE page and `EMPIRE` constant in engine/actions/clicks.ts.
 - Name and Alpha Ascend are placeholders. "4am" and "EMPIRE" are his alone; ration them.
 - The guru CC leak is a planned doxing lead. The bible had him recruiting by newsletter on days 10 to 12; the game does it on Y.
