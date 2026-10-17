@@ -220,7 +220,7 @@ export function wikiView(host: WikiHost, param?: string): string {
     <header class="wk-phead"><p class="wk-crumbs">${crumbs!.join(' › ')}</p><h1>${esc(p.title)}</h1>
       <p class="wk-meta"><span>known from day ${p.from}</span><span>${esc(p.file)}</span>${p.aliases.length ? `<span>also: ${esc(p.aliases.join(', '))}</span>` : ''}</p></header>
     ${W.note ? `<p class="wk-note" role="status">${esc(W.note)}</p>` : ''}
-    ${p.sections.map((sec, si) => kids.some((c) => c.i === si) ? '' : sectionHtml(host, p, si)).join('')}
+    ${p.sections.map((_sec, si) => kids.some((c) => c.i === si) ? '' : sectionHtml(host, p, si)).join('')}
     ${kids.length ? `<section class="wk-sec"><h2>Pages under ${esc(p.title)}</h2><ul class="wk-kids">${kids.map((c) => `<li><button class="wk-wlink" data-wiki="open" data-file="${esc(target(p.file, c.slug))}">${esc(c.heading)}</button>${c.fromDay ? ` <small class="wk-dim">day ${c.fromDay}+</small>` : ''}</li>`).join('')}</ul></section>` : ''}`;
   return `<div class="wk"><header class="wk-top"><b>${esc(host.name)}</b>${host.controls?.() ?? ''}<span class="wk-dim">${esc(host.ctxLabel())}</span></header>
     <div class="wk-wrap">${nav(host, p)}<main class="wk-main">${body}</main></div></div>`;

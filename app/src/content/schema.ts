@@ -370,6 +370,8 @@ export interface FillerPost {
   id: string;
   /** The one day this post is on the timeline. */
   day: number;
+  /** Clock time it goes up (HH:MM); unset ones are spread over the day. */
+  at?: string;
   from: string;
   handle: string;
   body: string;
