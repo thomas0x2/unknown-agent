@@ -162,7 +162,8 @@
 /* sorrywriter.ai: agent.chat's chat layout in SorryWriter's lilac (ui/sorry.ts) */
 .ua.sorry { --ua-bg: #f7f3fb; --ua-panel: #fff; --ua-ink: #2e2340; --ua-dim: #6e6182; --ua-line: #e2d8ee; --ua-you: #3a2b52; }
 .sorry .ua-text { font-family: Georgia, serif; font-size: 15px; line-height: 1.55; background: #fff; border: 1px solid var(--ua-line); border-radius: 14px; padding: 12px 16px; flex: 0 1 auto; max-width: min(85%, 600px); }
-.sw-avatar { display: inline-grid; place-items: center; width: 32px; height: 32px; flex: none; border-radius: 50%; background: #3a2b52; color: #f4eefb; font-size: 15px; }
+.sw-avatar { display: inline-block; width: 32px; height: 32px; flex: none; }
+.sw-avatar svg { display: block; width: 32px; height: 32px; }
 
 /* lonely.ai: agent.chat's chat layout in dating-app pink (ui/lonely.ts) */
 .ua.lonely { --ua-bg: #fff3f7; --ua-panel: #fff; --ua-ink: #4a1730; --ua-dim: #85546b; --ua-line: #f6cfdc; --ua-you: #e0336f; }
@@ -178,3 +179,6 @@
 /* a brand with a drawn logo (deepsleep) shows it in place of the letter mark */
 .lp-mark.lp-logo { padding: 0; background: none; overflow: hidden; }
 .lp-mark.lp-logo svg { width: 26px; height: 26px; }
+
+/* drawn symbol marks (⚖ ✈ ☕ ❄ ☀) in the header's logo square */
+.lp-glyph { width: 18px; height: 18px; display: block; }

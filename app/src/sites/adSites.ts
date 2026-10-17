@@ -19,7 +19,7 @@ export interface AdSite {
   kit: AdKit;
   /** colours and type, `lp-t-<theme>` in adSites.css */
   theme: string;
-  /** a character or two for the logo square and the favicon */
+  /** a character or two for the logo square and the favicon, or the name of a drawn glyph (ui/adSites.ts GLYPHS) */
   mark: string;
   kicker?: string;
   title: string;
@@ -133,7 +133,7 @@ export const AD_SITES: AdSite[] = [
     fine: 'Reserve attestations are available on request. Requests are reviewed annually.',
   },
   {
-    url: 'liquidassets.cellar', brand: 'LiquidAssets', kit: 'scam', theme: 'dolr', mark: 'L',
+    url: 'liquidassets.cellar', brand: 'LiquidAssets', kit: 'scam', theme: 'dolr', mark: 'kidney',
     kicker: 'Same-day DOLR', title: 'You were born with a spare.',
     lead: 'LiquidAssets turns what you don’t need into DOLR, paid straight to your wallet the same day.',
     stats: [['4,200', 'DOLR per kidney today'], ['+6%', 'this week']],
