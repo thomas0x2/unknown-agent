@@ -1,0 +1,11 @@
+{
+  "id": "d14_y_stryker_stack",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 14,
+    "dayMax": 14
+  },
+  "at": "14:40",
+  "body": "Rent is due tonight. Weak men pay it. Strong men turn it into more rent. Code STRYKER at stack.com #ad"
+}

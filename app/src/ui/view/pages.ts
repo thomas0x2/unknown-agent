@@ -17,6 +17,7 @@ import { outplacementUpload, OUTPLACEMENT } from '../outplacement';
 import { setHeadline } from '../ads';
 import { pageCityPulse } from '../citypulse';
 import { pagePollymarket } from '../pollymarket';
+import { pageStack } from '../stack';
 import { hotStory } from '../../engine';
 import { pageAgent, pageModels } from './agent';
 import { pagePhish, pageWallet } from './coinbin';
@@ -56,6 +57,7 @@ export function page(store: GameStore, r: Route): string {
     case 'adsite': return pageAdSite(r.param ?? '', store.state, store.ui.adNotice, r.param === OUTPLACEMENT ? outplacementUpload(store) : '');
     case 'citypulse': return pageCityPulse(store, r.param);
     case 'pollymarket': return pagePollymarket(store, r.param);
+    case 'stack': return pageStack(store);
     case 'wiki': return pageWiki(store, r.param);
     default: return pageUnderground(r.def?.label ?? r.site);
   }

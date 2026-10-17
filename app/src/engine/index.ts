@@ -48,5 +48,6 @@ export * from './query';
 export * from './viewState';
 export * from './queryTests';
 export * from './pollymarket';
+export * from './casino';
 export * from './offlineJev';
 export * from './trending';

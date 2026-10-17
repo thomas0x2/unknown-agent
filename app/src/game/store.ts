@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, recordStake, payStakes, buyStock, sellStock, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, rewindArrivals, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy, deliverSwapReplies, matchlessSwipe, matchlessLogin, clone, uploadFile, fileRentAppeal, donateCrane, craneDonations, fillSave, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat, agentTermPrompt, dropHackGame, hackMinutes, BOOT_MS, READ_MS, dateShort, clockTime, AGENT_POLICY, installAdware, tickAdware, closePopup, EXE_RUN_LINES,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, recordStake, recordDeposit, spinSlot, applyCasinoCode, withdrawCasino, payStakes, buyStock, sellStock, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, rewindArrivals, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy, deliverSwapReplies, matchlessSwipe, matchlessLogin, clone, uploadFile, fileRentAppeal, donateCrane, craneDonations, fillSave, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat, agentTermPrompt, dropHackGame, hackMinutes, BOOT_MS, READ_MS, dateShort, clockTime, AGENT_POLICY, installAdware, tickAdware, closePopup, EXE_RUN_LINES,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -104,6 +104,8 @@ export class GameStore {
     princeError: '',
     /** Coinbin: the recovery phrase is on screen. */
     seedShown: false,
+    /** stack.com: the bet picked, the reels are spinning, and the last refusal or notice under the wallet. */
+    stackBet: 1, stackSpinning: false, stack: { error: '', notice: '' },
     /** lonely.ai: Mia is typing. */
     lonelyTyping: false,
     /** lonely.ai / sorrywriter.ai: why the last message wasn't sent (the wallet couldn't cover it). */
@@ -314,7 +316,7 @@ export class GameStore {
   /** First visit to a site that is bookmarked only after you've been there: add the bookmark. */
   private markVisited(url: string): void {
     const r = route(url, this.state);
-    this.ui.adNotice = ''; this.ui.chatError = ''; this.ui.uploadError = '';
+    this.ui.adNotice = ''; this.ui.chatError = ''; this.ui.uploadError = ''; this.ui.stack = { error: '', notice: '' };
     // an ad site can introduce a site it links to (deepsleep.ai links to Weightroom)
     const unlocks = r.site === 'adsite' && r.param ? adSite(r.param)?.unlocks : undefined;
     if (unlocks && !this.state.flags.includes(unlocks)) { this.state.flags.push(unlocks); this.state.flags.sort(); this.store.save(this.state); }
@@ -516,7 +518,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = HOME_TAB; this.nextTab = PINNED.length + 1;
-    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, reposted: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, termTab: 'shell', devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', princeError: '', seedShown: false, lonelyTyping: false, chatError: '', uploadError: '', uploadPick: '', sorryTyping: false, adNotice: '', jevOffline: null, yUnread: 0 };
+    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, reposted: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, termTab: 'shell', devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', princeError: '', seedShown: false, lonelyTyping: false, stackBet: 1, stackSpinning: false, stack: { error: '', notice: '' }, chatError: '', uploadError: '', uploadPick: '', sorryTyping: false, adNotice: '', jevOffline: null, yUnread: 0 };
     this.store.save(this.state);
     this.emit();
   }
@@ -548,6 +550,7 @@ export class GameStore {
       if (r.error) return r;
       settlePayments(r.state, this.content);
       recordStake(r.state, to, -r.state.tx.at(-1)!.amount);
+      recordDeposit(r.state, to, -r.state.tx.at(-1)!.amount);
       return r;
     };
     const r = sent(this.state);
@@ -604,6 +607,37 @@ export class GameStore {
     this.ui.adNotice = r.error ?? (n > 1 ? `Thank you. That's ${n} donations. Randall has been told.` : 'Thank you. Your donation of 5 DOLR has been received.');
     if (r.error) { this.emit(); return; }
     this.commitAndSettle(r.state);
+  }
+  setStackNotice(text: string): void { this.ui.stack = { error: '', notice: text }; this.emit(); }
+  /** stack.com: pick a bet. */
+  stackPickBet(bet: number): void { this.ui.stackBet = bet; this.ui.stack.error = ''; this.emit(); }
+  /** stack.com: one spin. The result is in at once; the reels show it when they stop. */
+  stackSpin(): void {
+    if (this.ui.stackSpinning) return;
+    const bet = this.ui.stackBet;
+    const r = spinSlot(this.state, bet);
+    this.ui.stack = { error: r.error ?? '', notice: '' };
+    if (r.error) { this.emit(); return; }
+    this.ui.stackSpinning = true;
+    this.act((s) => (s === this.state ? r : spinSlot(s, bet)).state);
+    setTimeout(() => { this.ui.stackSpinning = false; this.emit(); }, 900);
+  }
+  /** stack.com: a creator code, before the first deposit. */
+  stackCode(code: string): boolean {
+    const r = applyCasinoCode(this.state, code);
+    this.ui.stack = { error: r.error ?? '', notice: r.error ? '' : `Code ${code.trim().toUpperCase()} added. Your first deposit is matched.` };
+    if (r.error) { this.emit(); return false; }
+    this.act(() => r.state);
+    return true;
+  }
+  /** stack.com: send DOLR back to Coinbin. */
+  stackWithdraw(amount: string): boolean {
+    const n = Number(amount.replace(',', '.'));
+    const r = withdrawCasino(this.state, n);
+    this.ui.stack = { error: r.error ?? '', notice: r.error ? '' : `${n.toFixed(2)} DOLR sent to your Coinbin wallet.` };
+    if (r.error) { this.emit(); return false; }
+    this.act((s) => (s === this.state ? r : withdrawCasino(s, n)).state);
+    return true;
   }
   /** pcmedic.live: save the "cleaner" to Qdrive (it shows up as PCMedic_Setup.exe). */
   downloadCleaner(): void {
