@@ -1,0 +1,11 @@
+{
+  "id": "d5_y_candidate",
+  "site": "y",
+  "from": "Candidate 2028",
+  "trigger": {
+    "dayMin": 5,
+    "dayMax": 5
+  },
+  "at": "11:20",
+  "body": "Technology should work for people, not the other way around. My plan takes a balanced approach that protects workers and supports innovation."
+}

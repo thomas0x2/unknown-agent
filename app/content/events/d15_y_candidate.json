@@ -1,0 +1,11 @@
+{
+  "id": "d15_y_candidate",
+  "site": "y",
+  "from": "Candidate 2028",
+  "trigger": {
+    "dayMin": 15,
+    "dayMax": 15
+  },
+  "at": "10:50",
+  "body": "Small businesses are the backbone of this country. Today I met with several of them."
+}

@@ -102,5 +102,12 @@
     "name": "a consultant",
     "character": "consultant",
     "reply": "Understood. We never spoke. The offer doesn't have a long shelf life."
+  },
+  {
+    "key": "team@candidate2028.vote",
+    "replyAfter": 90,
+    "name": "Candidate 2028",
+    "character": "candidate",
+    "reply": "Thank you for writing to the campaign. Your message has been received and will be shared with the Candidate.\n\nFriends of the Candidate"
   }
 ]

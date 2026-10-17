@@ -1,0 +1,11 @@
+{
+  "id": "d7_y_candidate",
+  "site": "y",
+  "from": "Candidate 2028",
+  "trigger": {
+    "dayMin": 7,
+    "dayMax": 7
+  },
+  "at": "15:30",
+  "body": "Thank you to everyone who came out today. Great crowd, great questions. This is what democracy looks like."
+}
