@@ -1,0 +1,21 @@
+{
+  "id": "d5_y_swaplist_messages",
+  "site": "y",
+  "from": "Viktor",
+  "trigger": {
+    "dayMin": 5,
+    "appWorking": "viktor_contact"
+  },
+  "at": "11:40",
+  "onDeliver": {
+    "updateApp": {
+      "client": "viktor_contact",
+      "add": [
+        {
+          "id": "contact"
+        }
+      ]
+    }
+  },
+  "body": "One thing Swaplist could use: a way to message the seller. Right now people put their phone number in the listing and get calls at 2am. If whoever built it is reading."
+}
