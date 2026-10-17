@@ -30,6 +30,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[Market posters]] (market-posters.md): The accounts on Y that post about stocks ($GAI, $VANT, $APO, $DISH) every day
 - [[Max Stryker]] (max-stryker.md): Max Stryker is a hustle guru, founder of Alpha Ascend and seller of the course EMPIRE at empire.alphaascend.biz: 20 DOLR, struck through…
 - [[Randall Crane]] (randall-crane.md): Randall Crane is the Heritage Party's candidate for president in The election
+- [[randa11_crane]] (randa11-crane.md): A fake Y account posing as Randall Crane, with two ones in place of the l's, that praises $VANT on day 5
 - [[Rolf Henning]] (rolf-henning.md): Rolf Henning has worked in dispatch for thirty years
 - [[studioghast]] (studioghast.md): studioghast is a local illustrator
 - [[Swaplist sellers]] (swaplist-sellers.md): Once Swaplist is live, regulars list things on it, about one listing an hour after Viktor's watch
