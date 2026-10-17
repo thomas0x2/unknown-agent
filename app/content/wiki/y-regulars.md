@@ -18,6 +18,7 @@ nest: true
 - [public] On day 3 (16:25), on [[Randall Crane]]'s vow to send the machines back: "i'd settle for my job back" {{y:d3_y_doomscroll_machines}}
 - [public] On day 5 doomscroll checked the news once, "that was the mistake." {{y:f5}}
 - [public] On day 9 doomscroll turned off notifications for a day and didn't miss anything, "which was worse." {{y:f9}}
+- [public] On day 10 doomscroll is a week into Ozempra: "not hungry. not much of anything, really. it's fine" {{y:d10_y_doomscroll_ozempra}}
 - [public] On day 13 the grocery store took out its last staffed checkout; the screen that replaced it says "we're here to help." {{y:f13}}
 - [public] On day 17 doomscroll read three articles about the election and knows less than before. {{y:f17}}
 - [public] On day 21 doomscroll voted: a long line, nobody in it talking, "it's fine." {{y:f21}}
@@ -28,6 +29,7 @@ nest: true
 
 - [public] On day 2 cat_ceo's productivity hack is never checking their bank balance. {{y:f2}}
 - [public] On day 3 (17:20) cat_ceo asked the cat where the machines came from; she "has a plan", with "details to follow." {{y:d3_y_catceo_machines}}
+- [public] On day 4 cat_ceo started Ozempra ([[Perdure Pharma]]) to cut the grocery bill; it's down a third, and the cat "is not on it and has questions." {{y:d4_y_catceo_ozempra}}
 - [public] On day 6 the cat walked across the keyboard during a video interview, and "they said she seemed engaged." {{y:f6}}
 - [public] On day 10 cat_ceo's cat knocked a glass off the table and "nobody gave her 6%", after Apogee's stock rose on its rocket exploding. {{y:d10_y_catceo_apogee}}
 - [public] On day 14 the cat has started sitting in the empty office chair "like she's waiting for someone." {{y:f14}}
@@ -42,6 +44,7 @@ nest: true
 - [public] On day 4 noodleposter is on day 4 of only eating instant noodles: "the broth is my therapist now." {{y:f4}}
 - [public] On day 7 noodleposter switched to the spicy one: "same noodles, it just hurts now." {{y:f7}}
 - [public] On day 8 noodleposter ordered from a new noodle place on DoorDish and the address was a dentist. {{y:d8_y_noodle_dish}}
+- [public] On day 11 noodleposter's cousin does peptides ([[Peptides]]) now; asked which ones, he said "research." He's a bartender. {{y:d11_y_noodle_peptides}}
 - [public] On day 11 noodleposter ranked flavor 88, "chicken, but from a different country", 6/10. {{y:f11}}
 - [public] On day 15 the corner store raised noodles by 10 cents, the first time noodleposter ever noticed 10 cents. {{y:f15}}
 - [public] On day 19 noodleposter found a pack of the discontinued shrimp flavor and is saving it for a special occasion, "not sure what that would be anymore." {{y:f19}}

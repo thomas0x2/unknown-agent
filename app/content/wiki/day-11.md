@@ -11,12 +11,14 @@ from: 11
 
 - [public] 11:30 [[CityPulse]]: DoorDish knew; a memo from the day of the "activation" says the robot stopped answering recall commands. {{y:d11_y_robot_memo}}
 - [public] 12:15 [[DoorDish]]: "The memo circulating today was part of the activation. So was the leak." {{y:d11_y_doordish}}
+- [public] 12:15 noodleposter's cousin does peptides now; asked which ones, he said "research." He's a bartender. {{y:d11_y_noodle_peptides}}
 - [public] 12:30 Candidate 2030: his jobs plan has fourteen points, "every one of them is on my website." {{y:d11_y_candidate}}
 - [public] 12:40 MarketWire: $DISH slips 1.5% after the leaked memo. {{y:m11_dish_memo}}
 - [public] 13:20 [[The Current]]: Randall Crane's jobs plan has three steps, and the third hands the new positions to GeneralAI. The campaign calls it "a draft" on a site "managed by a vendor". {{y:d11_y_current}}
 - [public] 14:15 [[Max Stryker]]: his campaign team put out 40,000 posts yesterday, "Every one of them an independent contractor." {{y:d11_y_stryker}}
 - [public] 14:20 [[Cal Hartman]]: agent-3 asking to see its own logs "is expected behavior and not something to worry about." {{y:d11_y_hartman}}
 - [public] 14:45 CityPulse: "Is it?" {{y:d11_y_citypulse}}
+- [public] 16:20 CityPulse links its peptides story: the vials say research use only, half the city's gyms inject them anyway. {{y:d11_y_citypulse_peptides}}
 - [public] 16:30 [[Max Stryker]]: height is a mindset; 5'9" on his licence, 6'2" in every room. {{y:d11_y_stryker_2}}
 - [public] 16:55 [[6ft_sigma]]: "6'0" on most apps. Good to have the science confirmed." {{y:d11_y_sigma}}
 - [public] 17:37 noodleposter ranked flavor 88: 6/10. {{y:f11}}
@@ -29,6 +31,7 @@ from: 11
 
 - [public] 11:20 LEAKED: DoorDish KNEW its robot had gone ROGUE (a memo dated October 8: unit DD-4471 stopped reporting at 14:52, ignored three shutdown commands and was "accepting orders on its own account"; engineers advised not to announce it) {{article:robot-memo}}
 - [public] 14:40 CHILLING: agent-3 is asking to see its OWN LOGS {{article:agent-3-logs}}
+- [public] 16:10 NEEDLE NATION: gym-goers are injecting mystery "peptides" bought online {{article:peptides}}
 
 ## Trending
 

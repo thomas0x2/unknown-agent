@@ -41,6 +41,7 @@ from: 4
 
 - [public] On day 5 he hasn't texted first in four years, "Working as intended." {{y:d5_y_sigma}}
 - [public] On day 7 he tried ordering for both and paying for his own; she paid for hers and left before the mains. {{y:d7_y_sigma}}
+- [public] On day 8, after Stryker's peptide post, he ordered a stack online; it came in a plain box marked research use only. "Already feel taller." {{y:d8_y_sigma_peptides}}
 - [public] On day 9 he is "already ahead": his standards document is on version three. {{y:d9_y_sigma}}
 - [public] On day 11: "6'0\" on most apps. Good to have the science confirmed." {{y:d11_y_sigma}}
 - [public] On day 13 he bought the 400 DOLR measurement module, "Measuring tomorrow." {{y:d13_y_sigma}}

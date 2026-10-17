@@ -1,0 +1,11 @@
+{
+  "id": "d16_y_perdure",
+  "site": "y",
+  "from": "Perdure Pharma",
+  "trigger": {
+    "dayMin": 16,
+    "dayMax": 16
+  },
+  "at": "10:30",
+  "body": "Ozempra is now available without a consultation in 31 states. Less waiting. Less wanting."
+}

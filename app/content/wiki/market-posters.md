@@ -40,12 +40,15 @@ from: 1
 ## Notable posts
 
 - [public] On day 2 Brent posts "$VANT up 8% after the AI restructuring", and Dana Ruiz calls it "Truly a great day for everyone."
+- [public] On day 3 MarketWire: Perdure launches Ozempra, $PDUR up 9% (see [[Perdure Pharma]]).
 - [public] On day 5 Jess Park's mom asked General AI for a recipe and it told her to invest.
 - [public] On day 8 Tyler Moss posts that even his laundromat has an app built with General AI now.
 - [public] On day 10 MarketWire reports $APO up 6% after Apogee's rocket broke apart.
 - [public] On day 11 Sam Ortiz hears DoorDish lost two test drones to pigeons on day one.
 - [public] On day 12 MarketWire: $DISH beats estimates, orders up 9%, couriers down 30%.
 - [public] On day 13 Brent: "Turns out the dead weight was the people."
+- [public] On day 13 MarketWire: Perdure's peptide line, $PDUR up 5%.
+- [public] On day 18 MarketWire: Perdure settles the NoDoze MAX lawsuits for $40M, $PDUR up 3%.
 - [public] On day 19 MarketWire: $GAI's market cap passes a small country's GDP, "The country is not named."
 - [public] On day 19 Brent reports $VANT down 3% on a lawsuit from former staff.
 - [public] On day 21 MarketWire: "Whatever happens tomorrow, $GAI wins."
