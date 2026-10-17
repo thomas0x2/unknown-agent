@@ -304,7 +304,11 @@ export interface SwapThread {
 }
 /** One swipe on matchless.com, made on the client's account. */
 export interface MatchlessSwipe { day: number; id: string; choice: 'yes' | 'no' }
-export interface MatchlessState { swipes: MatchlessSwipe[] }
+export interface MatchlessState {
+  swipes: MatchlessSwipe[];
+  /** The last sign-in attempt failed; the login screen says so until the next one. */
+  loginFailed?: boolean;
+}
 
 export interface SwapState {
   threads: SwapThread[];

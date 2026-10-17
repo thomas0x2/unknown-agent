@@ -19,7 +19,8 @@ from: 4
 
 [public] On [[Day 4]] (11:30) he posts on Y that he needs someone to do his swiping on [[matchless.com]]: follow his standards exactly, ten swipes a day, 35 DOLR paid nightly, only if every one is right. He gives 6ft_sigma@qmail.com. {{y:d4_y_sigma}}
 
-- [public] [if matchless_job] The player took the job and is signed in as him on matchless.com: ten profiles a day, one at a time, like or ghost. One wrong or skipped swipe and the day is unpaid. He never fires the player.
+- [hint] [if matchless_job] His job email gives his matchless.com login: username 6ft_sigma, password 6ftAlpha!. {{mail:matchless_contact}}
+- [public] [if matchless_signed_in] The player took the job and is signed in as him on matchless.com: ten profiles a day, one at a time, like or ghost. One wrong or skipped swipe and the day is unpaid. He never fires the player.
 - [hint] [if matchless_job] His standards are in his emails, not on the site; the player has to check each profile against the latest list.
 - [public] [if matchless_job] After an unpaid day, a 10:00 "Yesterday" email names the first mistake and says there is no pay for yesterday.
 
