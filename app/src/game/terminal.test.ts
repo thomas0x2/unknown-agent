@@ -75,7 +75,24 @@ describe('the Terminal from day 1', () => {
     s.navigate('localhost');
     expect(s.ui.termShown).toBe(true);
     await s.term('ls -la');
-    expect(s.state.terminal.map((l) => l.text)).toEqual(['$ ls -la', 'ls: command not found']);
+    expect(s.state.terminal.map((l) => l.text)).toEqual(['$ ls -la', 'ls: nothing to work with here yet']);
+    await s.term('make coffee');
+    expect(s.state.terminal.at(-1)?.text).toBe('make: command not found. Type help for a list of commands.');
     expect(s.state.termPrompts ?? 0).toBe(0);
+  });
+});
+
+describe('help', () => {
+  it('lists the shell commands, with or without a model', async () => {
+    vi.useFakeTimers();
+    const s = make();
+    const p = s.term('help'); await vi.runAllTimersAsync(); await p;
+    const text = s.state.terminal.map((l) => l.text).join('\n');
+    for (const c of ['cd', 'ls', 'grep', 'cp', 'cat', 'host', 'ssh']) expect(text).toMatch(new RegExp(`^  ${c} `, 'm'));
+    s.download('deepsleep'); vi.advanceTimersByTime(PULL_MS + 200);
+    const n = s.state.terminal.length;
+    const q = s.term('help'); await vi.runAllTimersAsync(); await q;
+    expect(s.state.terminal.slice(n).some((l) => l.k === 'model')).toBe(false);
+    expect(s.state.terminal[n].text).toBe('$ help');
   });
 });

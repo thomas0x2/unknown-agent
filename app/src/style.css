@@ -701,7 +701,7 @@ body.dev-on .y-score { display: inline; }
 .tm { min-height: 100%; background: #0b0d10; color: #c9d1d9; font-family: var(--f-mono); font-size: 13px; line-height: 1.55; padding: 16px clamp(14px, 3vw, 28px) 24px; display: flex; flex-direction: column; gap: 4px; }
 .tm > div { white-space: pre-wrap; overflow-wrap: anywhere; }
 .tm-in { color: #e6edf3; }
-.tm-sys { color: #7d8590; }
+.tm-sys { color: #7d8590; white-space: pre-wrap; }
 .tm-err { color: #ff7b72; }
 .tm-model { color: #9be9a8; padding-left: 14px; border-left: 2px solid #238636; margin: 2px 0 6px; }
 .tm-wait { animation: tm-blink 1.2s steps(2) infinite; }

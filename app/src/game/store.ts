@@ -14,6 +14,7 @@ import { route, visitedFlag, setDevSites } from '../sites/registry';
 import { adSite } from '../sites/adSites';
 import { PULL_MS, pullLines } from './pull';
 import { DEEPSLEEP_LINES, DEEPSLEEP_PLEA } from '../engine/deepsleep';
+import { shellLines } from './shell';
 import { MISSES } from './misses';
 import { haikuApology } from './haiku';
 
@@ -883,12 +884,12 @@ export class GameStore {
 
   async term(text: string) {
     return this.run(async (s0) => {
-      // no model on the laptop yet: a bare shell that knows no commands
-      if (!s0.termModel) {
+      // the shell's own commands (help, ls…), and everything once there is no model to ask
+      const own = shellLines(text, !!s0.termModel);
+      if (own) {
         const s = clone(s0);
-        const err = `${text.split(/\s+/)[0]}: command not found`;
-        s.terminal.push({ k: 'in', text: `$ ${text}` }, { k: 'err', text: err });
-        this.land(s); return { state: s, reply: err };
+        s.terminal.push(...own);
+        this.land(s); return { state: s, reply: own[own.length - 1].text };
       }
       // a 0.5B model on this laptop: free, but it makes you wait
       const r = await localPrompt(s0, text, DEEPSLEEP, DEEPSLEEP_PLEA.zh);
