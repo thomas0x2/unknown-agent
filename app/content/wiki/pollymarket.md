@@ -59,7 +59,7 @@ summary: Pollymarket is a prediction market site and Y account showing the odds 
 - [public] On day 2 it posts Crane's drop to 36% after the poll. {{y:d2_y_polly_crane}}
 - [public] On day 2 it announces the robot market at 72%. {{y:d2_y_polly_robot}}
 - [public] On day 3 it posts Crane going from 40% to 44% in 35 minutes. {{y:d3_y_polly_crane}}
-- [public] On day 5 it posts Crane at 47% after the Y poll, which "doesn't settle anything here". {{y:d5_y_polly_crane}}
+- [public] On day 5 it posts that the Y poll has Crane at 71% while its market gives him a 47% chance to win (up from 44%); the poll "doesn't settle anything here". {{y:d5_y_polly_crane}}
 - [hidden; public if posted_deepfake] On day 7 it posts Crane at 53%, ahead for the first time, after the clip. {{y:d7_y_polly_crane}}
 - [public] On day 8 it posts the robot market at 36%. {{y:d8_y_polly_robot}}
 - [public] On day 9 it posts the orbit market at 70% the night before the launch. {{y:d9_y_polly_apogee}}
