@@ -19,24 +19,24 @@ from: 1
 
 ## Writing to her
 
-[public] On [[Day 1]] (12:30) she posts that she is writing about the people behind this week's AI layoffs, "the ones the press forgets", and asks them to write to mara@thecurrent.test. Anyone who writes gets "RE: your story": she'd like to hear how the layoff happened and how they're coping, and nothing goes to print without their okay.
+[public] On [[Day 1]] (12:30) she posts that she is writing about the people behind this week's AI layoffs, "the ones the press forgets", and asks them to write to mara@thecurrent.test. Anyone who writes gets "RE: your story": she'd like to hear how the layoff happened and how they're coping, and nothing goes to print without their okay. {{y:d1_y_journalist}} {{mail:journalist_contact}}
 
 - [public] [if did_journalist_interview] The player told her their story honestly. She replied: "Thank you. Really. This is exactly the human side people need to see."
 
 ## Her posts on Y
 
-- [public] On day 2 she posts that Vantor ($VANT) laid off 400 people.
-- [public] On day 4 (11:30) she follows up: 400 people, one memo, and "If you were one of them, tell me your story."
+- [public] On day 2 she posts that Vantor ($VANT) laid off 400 people. {{y:m2_vant_layoffs}}
+- [public] On day 4 (11:30) she follows up: 400 people, one memo, and "If you were one of them, tell me your story." {{y:d4_y_journalist}}
 - [public] On day 7 [[Randall Crane]] complains that Y gave "a 'reporter' from The Current" the same check mark as him.
-- [public] On day 8 she posts that Vantor's outplacement program has placed 0 of 400 former staff.
-- [public] On day 12 she posts that Vantor's quarterly report shows headcount down 400 and executive bonuses up.
+- [public] On day 8 she posts that Vantor's outplacement program has placed 0 of 400 former staff. {{y:m8_vant_outplace}}
+- [public] On day 12 she posts that Vantor's quarterly report shows headcount down 400 and executive bonuses up. {{y:m12_vant_report}}
 - [public] On day 15 Crane calls The Current "Fake News" for "ANOTHER sob story" about displaced workers.
-- [public] On day 17 (15:30) she posts "Even CityPulse got this one right, headline aside": GeneralAI wrote the first draft of the rules meant to regulate it.
-- [public] On day 18 she posts that Vantor replaced its customer support with GeneralAI.
+- [public] On day 17 (15:30) she posts "Even CityPulse got this one right, headline aside": GeneralAI wrote the first draft of the rules meant to regulate it. {{y:d17_y_mara_rules}}
+- [public] On day 18 she posts that Vantor replaced its customer support with GeneralAI. {{y:m18_vant}}
 
 ## From day 7: "The people AI left behind"
 
-[public] On day 7 (13:00) she publishes "The people AI left behind" at thecurrent.test/people-ai-left-behind and links it on Y, asking readers whose story she missed. On day 7 the article's sources include [[Viktor]], an insurance claims handler who spent six weeks documenting her own job for an "integration project" ("I was very thorough"), and someone whose rent appeal was rejected in four seconds. On day 7 it notes that Vantor's People & Culture points to Vantor Outplacement, which lists no open roles, and that GeneralAI did not comment.
+[public] On day 7 (13:00) she publishes "The people AI left behind" at thecurrent.test/people-ai-left-behind and links it on Y, asking readers whose story she missed. On day 7 the article's sources include [[Viktor]], an insurance claims handler who spent six weeks documenting her own job for an "integration project" ("I was very thorough"), and someone whose rent appeal was rejected in four seconds. On day 7 it notes that Vantor's People & Culture points to Vantor Outplacement, which lists no open roles, and that GeneralAI did not comment. {{y:d7_journalist_article}}
 
 [public] On day 7 [[Max Stryker]] answers the article on Y that nobody left them behind, "They were walking slower."
 

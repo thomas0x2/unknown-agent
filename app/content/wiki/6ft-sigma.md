@@ -17,7 +17,7 @@ from: 4
 
 ## The swiping job on matchless.com
 
-[public] On [[Day 4]] (11:30) he posts on Y that he needs someone to do his swiping on [[matchless.com]]: follow his standards exactly, ten swipes a day, 35 DOLR paid nightly, only if every one is right. He gives 6ft_sigma@qmail.com.
+[public] On [[Day 4]] (11:30) he posts on Y that he needs someone to do his swiping on [[matchless.com]]: follow his standards exactly, ten swipes a day, 35 DOLR paid nightly, only if every one is right. He gives 6ft_sigma@qmail.com. {{y:d4_y_sigma}}
 
 - [public] [if matchless_job] The player took the job and is signed in as him on matchless.com: ten profiles a day, one at a time, like or ghost. One wrong or skipped swipe and the day is unpaid. He never fires the player.
 - [hint] [if matchless_job] His standards are in his emails, not on the site; the player has to check each profile against the latest list.
@@ -27,13 +27,13 @@ from: 4
 
 [public] While the player swipes for him, he sends stricter standards in a 10:00 email, "New standards", every other day.
 
-- [hint] [if matchless_job] His first standards, by email when the player agrees: age 25 to 42, within 20 miles, non-smokers. They don't mention gender.
-- [hint] [if matchless_job] On day 6 he writes that he turned 40 yesterday and it is "Time to be realistic", and narrows the age range and distance and adds sexuality.
-- [hint] [if matchless_job] On day 8 he writes "Adjusting for compatibility." and adds politics and Y followers.
-- [hint] [if matchless_job] On day 10 he writes "Some people got through that shouldn't have." and adds income, body count and long hair.
-- [hint] [if matchless_job] On day 12 he writes "Someone took my bike." and adds distance, height, kinks and no glasses.
-- [hint] [if matchless_job] On day 14 he writes that he has been reading about facial harmony, "a science", and adds canthal tilt and no earrings.
-- [hint] [if matchless_job] On day 16 he writes "Final version." and calls his standards facts, adding a mandibular ratio and blonde.
+- [hint] [if matchless_job] His first standards, by email when the player agrees: age 25 to 42, within 20 miles, non-smokers. They don't mention gender. {{mail:matchless_contact}}
+- [hint] [if matchless_job] On day 6 he writes that he turned 40 yesterday and it is "Time to be realistic", and narrows the age range and distance and adds sexuality. {{mail:d6_matchless_rules_2}}
+- [hint] [if matchless_job] On day 8 he writes "Adjusting for compatibility." and adds politics and Y followers. {{mail:d8_matchless_rules_3}}
+- [hint] [if matchless_job] On day 10 he writes "Some people got through that shouldn't have." and adds income, body count and long hair. {{mail:d10_matchless_rules_4}}
+- [hint] [if matchless_job] On day 12 he writes "Someone took my bike." and adds distance, height, kinks and no glasses. {{mail:d12_matchless_rules_5}}
+- [hint] [if matchless_job] On day 14 he writes that he has been reading about facial harmony, "a science", and adds canthal tilt and no earrings. {{mail:d14_matchless_rules_6}}
+- [hint] [if matchless_job] On day 16 he writes "Final version." and calls his standards facts, adding a mandibular ratio and blonde. {{mail:d16_matchless_rules_7}}
 
 ## Women only
 

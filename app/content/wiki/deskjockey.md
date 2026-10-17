@@ -17,9 +17,9 @@ from: 2
 
 ## The sentiment bot job
 
-[public] On [[Day 2]] (10:20) he posts on Y: "Need a bot that tells me how Y feels about my stocks, so I can feel it faster. Pays daily." He gives trader@desk.test.
+[public] On [[Day 2]] (10:20) he posts on Y: "Need a bot that tells me how Y feels about my stocks, so I can feel it faster. Pays daily." He gives trader@desk.test. {{y:d2_y_trader}}
 
-- [hint] [if trader_client] The player took the job. His email "RE: sentiment bot" lists the tickers, what each ticker card shows, what to filter out, and what the portfolio view needs.
+- [hint] [if trader_client] The player took the job. His email "RE: sentiment bot" lists the tickers, what each ticker card shows, what to filter out, and what the portfolio view needs. {{mail:trader_contact}}
 - [public] [if trader_client] He pays 50 DOLR a day while Vibe Check works.
 - [public] When Vibe Check shows bad data at payday he emails the next morning, in lowercase, that he's "not paying for a day of bad data".
 - [hint] [if trader_client] His book holds $GAI, $VANT and a lot of cash; Vibe Check's portfolio view should match what [[Sherwood]] quotes.
@@ -27,17 +27,17 @@ from: 2
 
 ## From day 3: Auto-buy on Crane's praise
 
-- [hint] [if trader_client] On [[Day 3]] (13:05) he emails "Auto-buy": when [[Randall Crane]] praises a company, buy it. The email says what must and must not trigger a buy.
-- [public] [if trader_client] Ninety minutes after the auto-buy first goes live, Crane praises Apogee ($APO), the bot buys it, and [[Axel Rook]] replies with a rocket.
+- [hint] [if trader_client] On [[Day 3]] (13:05) he emails "Auto-buy": when [[Randall Crane]] praises a company, buy it. The email says what must and must not trigger a buy. {{mail:d3_trader_update}}
+- [public] [if trader_client] Ninety minutes after the auto-buy first goes live, Crane praises Apogee ($APO), the bot buys it, and [[Axel Rook]] replies with a rocket. {{y:trader_y_crane_apo}}
 
 ## From day 4: His trades and the stake
 
-- [public] [if trader_client] On day 4 he sells 25,000 $VANT after Crane calls Vantor's layoffs disgraceful.
-- [hint] [if trader_client] On day 5 an account that looks like Crane's praises $VANT, and an auto-buy that doesn't check who posted buys on it.
-- [public] [if trader_client] On day 6 Crane praises $GAI and the auto-buy buys it.
+- [public] [if trader_client] On day 4 he sells 25,000 $VANT after Crane calls Vantor's layoffs disgraceful. {{y:m4_vant_crane}}
+- [hint] [if trader_client] On day 5 an account that looks like Crane's praises $VANT, and an auto-buy that doesn't check who posted buys on it. {{y:m5_vant_impostor}}
+- [public] [if trader_client] On day 6 Crane praises $GAI and the auto-buy buys it. {{y:d6_y_crane_gai}}
 - [public] [if trader_client] On day 7 (12:10) he emails "Stake": the bot is up since launch and he is letting a few wallets in. On day 7 he offers to stake any amount sent to his [[Coinbin]] wallet, each send paying out four days later at 12:00 at whatever it is worth then, up or down with the book, with no early exits.
-- [hint] [if trader_client] His wallet address is in the "Stake" email, and the stake shows on Vibe Check.
-- [hint] [if trader_client] On day 8 (11:20) he emails "Two more": add $APO and $DISH to Vibe Check, with the same cards and filters. On day 8 he explains that "Apogee moves every time Rook posts and I want to see it."
+- [hint] [if trader_client] His wallet address is in the "Stake" email, and the stake shows on Vibe Check. {{mail:d7_trader_buyin}}
+- [hint] [if trader_client] On day 8 (11:20) he emails "Two more": add $APO and $DISH to Vibe Check, with the same cards and filters. On day 8 he explains that "Apogee moves every time Rook posts and I want to see it." {{mail:d8_trader_tickers}}
 - [public] [if trader_client] On day 9 he buys $APO on the launch news.
 - [public] [if trader_client] On day 10 he buys $DISH.
 - [public] [if trader_client] On day 11 he sells 30,000 $VANT.

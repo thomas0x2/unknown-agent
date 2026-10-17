@@ -19,7 +19,7 @@ from: 1
 
 [classified] The warehouse belongs to [[Halden Logistics]].
 
-[public] On [[Day 2]] he emails "20 years": it was his 20th anniversary at the warehouse, with cake and a mug bearing the old slogan "We move what matters", and [[Rolf Henning]] from dispatch gave a speech nobody asked for. He writes that it was twenty years on Kessler Road, "Funny how fast it goes", and tells the player not to worry too much: "Something always comes up."
+[public] On [[Day 2]] he emails "20 years": it was his 20th anniversary at the warehouse, with cake and a mug bearing the old slogan "We move what matters", and [[Rolf Henning]] from dispatch gave a speech nobody asked for. He writes that it was twenty years on Kessler Road, "Funny how fast it goes", and tells the player not to worry too much: "Something always comes up." {{mail:d2_dad}}
 
 ## Planned
 

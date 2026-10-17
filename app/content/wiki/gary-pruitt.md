@@ -17,9 +17,9 @@ from: 1
 
 ## The rent reminders
 
-[public] On [[Day 1]] (10:25) he emails that the rent, 350 DOLR, comes out of the player's wallet at the end of Monday.
+[public] On [[Day 1]] (10:25) he emails that the rent, 350 DOLR, comes out of the player's wallet at the end of Monday. {{mail:d1_landlord_rent}}
 
-[public] On [[Day 6]] (10:30) he emails "Tomorrow night": rent comes out tomorrow night, 350 DOLR, and there is no late option this time.
+[public] On [[Day 6]] (10:30) he emails "Tomorrow night": rent comes out tomorrow night, 350 DOLR, and there is no late option this time. {{mail:d6_landlord}}
 
 [public] On [[Day 7]] the 350 DOLR rent is taken at the end of the day; without it the player is evicted and Gary changes the locks.
 

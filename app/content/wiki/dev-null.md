@@ -15,7 +15,7 @@ from: 2
 
 ## The Weightroom post
 
-[public] On [[Day 2]] (16:20) they post: "stop renting a brain from a company that logs every prompt. open weights are free at weightroom.ai. slower, dumber, but nobody's watching." That is how the player hears of [[Weightroom]] and [[deepsleep-0.5B]].
+[public] On [[Day 2]] (16:20) they post: "stop renting a brain from a company that logs every prompt. open weights are free at weightroom.ai. slower, dumber, but nobody's watching." That is how the player hears of [[Weightroom]] and [[deepsleep-0.5B]]. {{y:d2_y_devnull}}
 
 ## Planned
 

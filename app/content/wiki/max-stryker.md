@@ -15,10 +15,10 @@ from: 1
 
 ## The EMPIRE offer and newsletter
 
-[public] On [[Day 1]] (14:15) he emails "You were BORN for more": EMPIRE is 200 DOLR, "For you, today only, 20 DOLR. Reply EMPIRE to claim it."
+[public] On [[Day 1]] (14:15) he emails "You were BORN for more": EMPIRE is 200 DOLR, "For you, today only, 20 DOLR. Reply EMPIRE to claim it." {{mail:d1_guru}}
 
-- [public] [if guru_subscriber] The player bought EMPIRE. Every morning at 10:00 a "Your daily EMPIRE" newsletter arrives with one piece of advice: sell your mattress, brush your teeth with your left hand, drink your coffee cold, fill the sink for a cold plunge, call your mother "the investor", stop paying rent. Replying EMPIRE gets "Commitment logged."
-- [public] [if guru_cc_leak] On day 5 the newsletter went out with every subscriber in CC, so the player can see all their addresses.
+- [public] [if guru_subscriber] The player bought EMPIRE. Every morning at 10:00 a "Your daily EMPIRE" newsletter arrives with one piece of advice: sell your mattress, brush your teeth with your left hand, drink your coffee cold, fill the sink for a cold plunge, call your mother "the investor", stop paying rent. Replying EMPIRE gets "Commitment logged." {{mail:guru_newsletter}}
+- [public] [if guru_cc_leak] On day 5 the newsletter went out with every subscriber in CC, so the player can see all their addresses. {{mail:d5_guru_leak}}
 
 ## His posts on Y
 
@@ -42,6 +42,30 @@ from: 1
 - [public] On day 18 he says agent-5 "understands premium positioning."
 - [public] On day 19 he confirms his posts go out at 3am because he's up.
 - [public] On day 21 he votes at 7:00 sharp, first in line.
+
+## Posts on Y
+
+- [public] {{y:d1_y_stryker}}
+- [public] {{y:d2_y_stryker}}
+- [public] {{y:d3_y_stryker}}
+- [public] {{y:d4_y_stryker}}
+- [public] {{y:d5_y_stryker}}
+- [public] {{y:d6_y_stryker}}
+- [public] {{y:d7_y_stryker}}
+- [public] {{y:d8_y_stryker}}
+- [public] {{y:d9_y_stryker}}
+- [public] {{y:d10_y_stryker}}
+- [public] {{y:d11_y_stryker}}
+- [public] {{y:d12_y_stryker}}
+- [public] {{y:d13_y_stryker}}
+- [public] {{y:d14_y_stryker}}
+- [public] {{y:d15_y_stryker}}
+- [public] {{y:d16_y_stryker}}
+- [public] {{y:d17_y_stryker}}
+- [public] {{y:d18_y_stryker}}
+- [public] {{y:d19_y_stryker}}
+- [public] {{y:d20_y_stryker}}
+- [public] {{y:d21_y_stryker}}
 
 ## Writer notes
 

@@ -24,7 +24,7 @@ from: 1
 - [public] Market posters: Brent Kowalski (@brentk_capital), Priya Shah (@priyashah_cfa), Dana Ruiz (@danaruiz_trades), Tyler Moss, quietquant, Ollie Banks, Sam Ortiz, rk_dividends, Jess Park; and bot accounts posting "$GAI to the moon!!" on some days.
 - [public] Background accounts: noodleposter, cat_ceo, doomscroll, zev.dolr (@zev_dolr), Teo Vasquez, studioghast.
 - [public] Leads: [[Gino Fenoglio]] (day 1), the Spin Cycle regulars (day 1), [[deskjockey]], Viktor and others post when they need something built.
-- [public] On day 5 an impostor, @randa11_crane, posts in Crane's name with two ones for the l's.
+- [public] On day 5 an impostor, @randa11_crane, posts in Crane's name with two ones for the l's. {{y:m5_vant_impostor}}
 
 ## Trending by day
 
@@ -38,9 +38,9 @@ from: 1
 
 ## Later changes
 
-- [public] On day 8 Rook says check marks are under review.
+- [public] On day 8 Rook says check marks are under review. {{y:d8_y_axel}}
 - [public] From day 9 Crane's check mark is a bigger, shiny gold seal.
-- [public] On day 15 Rook fires Y's human moderators and moves moderation to an AI that finds nothing wrong in 3 billion posts; appeals go to the same AI.
+- [public] On day 15 Rook fires Y's human moderators and moves moderation to an AI that finds nothing wrong in 3 billion posts; appeals go to the same AI. {{article:y-moderation}} {{y:d15_y_axel}}
 - [public] On day 17 the presidential debate streams live on Y, hosted by Rook.
 
 ## Writer notes

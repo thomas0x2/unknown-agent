@@ -9,39 +9,40 @@ from: 4
 
 ## Mail
 
-- [public] 10:00 [[GeneralAI]], "agent just got smarter": agent-2 is rolled out to the player's account, "fewer mistakes, bigger jobs", with updated rates. Prices double: 10 DOLR a night, 1 DOLR per prompt, 0.02 per word.
-- [classified; hint if restaurant_client] 14:20 [[Gino Fenoglio]], "Get me on DoorDish": list Trattoria Gino on [[DoorDish]] with the same menu and hours as the site and the address 14 Alder St.
+- [public] 10:00 [[GeneralAI]], "agent just got smarter": agent-2 is rolled out to the player's account, "fewer mistakes, bigger jobs", with updated rates. Prices double: 10 DOLR a night, 1 DOLR per prompt, 0.02 per word. {{mail:d4_gai_level2}}
+- [classified; hint if restaurant_client] 14:20 [[Gino Fenoglio]], "Get me on DoorDish": list Trattoria Gino on [[DoorDish]] with the same menu and hours as the site and the address 14 Alder St. {{mail:d4_restaurant_doordish}}
 
 ## Family
 
 - [public] 12:05 [[Brother]], "mom's birthday": Mom's birthday is Sunday and she needs a new jacket. Chip in 40 DOLR to his [[Coinbin]] wallet by Saturday so he can order, or get one yourself and he covers half.
+- [hint] 12:05 His email gives the address of his Coinbin wallet. {{mail:d4_brother_birthday}}
 - [hint] 12:05 A leather jacket, size M, is listed on [[Swaplist]] by ines_sells for 45 DOLR.
-- [classified; public if gift_chipped_in] 12:05 The player sent the brother money for the jacket; he confirmed about an hour later that it's ordered with both names on the card.
-- [classified; public if gift_own] 12:05 The player bought the leather jacket; the brother says the player's name goes on the card and he'll send his half on her birthday.
+- [classified; public if gift_chipped_in] 12:05 The player sent the brother money for the jacket; he confirmed about an hour later that it's ordered with both names on the card. {{mail:d4_brother_paid}} {{mail:d4_brother_paid_over}}
+- [classified; public if gift_own] 12:05 The player bought the leather jacket; the brother says the player's name goes on the card and he'll send his half on her birthday. {{mail:d4_brother_bought}}
 
 ## Y
 
-- [public] 10:05 [[Cal Hartman]]: agent-2 "feels a little bit like magic. the new pricing reflects that."
-- [public] 11:30 [[Mara Vey]] follows up on the Vantor layoffs, 400 people, one memo: "tell me your story."
-- [public] 11:30 [[6ft_sigma]]: needs someone to do his swiping on matchless.com, following his standards exactly. 35 DOLR a day for ten swipes, paid nightly, only if every one is right.
+- [public] 10:05 [[Cal Hartman]]: agent-2 "feels a little bit like magic. the new pricing reflects that." {{y:d4_y_hartman}}
+- [public] 11:30 [[Mara Vey]] follows up on the Vantor layoffs, 400 people, one memo: "tell me your story." {{y:d4_y_journalist}}
+- [public] 11:30 [[6ft_sigma]]: needs someone to do his swiping on matchless.com, following his standards exactly. 35 DOLR a day for ten swipes, paid nightly, only if every one is right. {{y:d4_y_sigma}}
 - [public] 11:31 Fifteen bot accounts post "$GAI to the moon!!".
-- [public] 11:45 [[Max Stryker]]: GeneralAI doubled their prices, "Good." EMPIRE is now 400 DOLR, today only 20.
-- [public] 12:20 [[Axel Rook]]: Apogee rocket stacked on the pad. "Looks sick."
-- [public] 13:26 [[Randall Crane]]: Vantor ($VANT) fired 400 hardworking Americans and replaced them with a computer. "Disgraceful."
-- [public] 14:30 doomscroll: a man running for governor wants to cap rents; his landlord sent his first newsletter in six years about it.
-- [public] 15:19 noodleposter: day 4 of instant noodles; "the broth is my therapist now."
-- [classified; public if viktor_sold_watch] 16:00 [[Viktor]]: sold his grandfather's watch on Swaplist within a day. "Thank you to whoever built it."
-- [public] 16:27 MarketWire: $GAI up 6% on the agent-2 launch.
-- [public] 17:10 [[CityPulse]]: still missing two days later; sightings on Ferris St, Alder St and twice in a parking garage.
-- [public] 17:40 Axel Rook: "If an AI ever really escapes, it won't be a delivery robot."
-- [public] 18:00 [[DoorDish]]: "No DoorDish courier is missing. Every courier is exactly where it needs to be."
-- [public] 18:30 Cal Hartman: the team shipped agent-2 in eleven weeks and most of them did not sleep.
+- [public] 11:45 [[Max Stryker]]: GeneralAI doubled their prices, "Good." EMPIRE is now 400 DOLR, today only 20. {{y:d4_y_stryker}}
+- [public] 12:20 [[Axel Rook]]: Apogee rocket stacked on the pad. "Looks sick." {{y:d4_y_axel}}
+- [public] 13:26 [[Randall Crane]]: Vantor ($VANT) fired 400 hardworking Americans and replaced them with a computer. "Disgraceful." {{y:m4_vant_crane}}
+- [public] 14:30 doomscroll: a man running for governor wants to cap rents; his landlord sent his first newsletter in six years about it. {{y:d4_y_doomscroll_governor}}
+- [public] 15:19 noodleposter: day 4 of instant noodles; "the broth is my therapist now." {{y:f4}}
+- [classified; public if viktor_sold_watch] 16:00 [[Viktor]]: sold his grandfather's watch on Swaplist within a day. "Thank you to whoever built it." {{y:d4_viktor_resolve}}
+- [public] 16:27 MarketWire: $GAI up 6% on the agent-2 launch. {{y:m4_gai_level2}}
+- [public] 17:10 [[CityPulse]]: still missing two days later; sightings on Ferris St, Alder St and twice in a parking garage. {{y:d4_y_robot}}
+- [public] 17:40 Axel Rook: "If an AI ever really escapes, it won't be a delivery robot." {{y:d4_y_axel_2}}
+- [public] 18:00 [[DoorDish]]: "No DoorDish courier is missing. Every courier is exactly where it needs to be." {{y:d4_y_doordish}}
+- [public] 18:30 Cal Hartman: the team shipped agent-2 in eleven weeks and most of them did not sleep. {{y:d4_y_hartman_2}}
 
 ## News
 
-- [public] 10:15 agent-2 IS HERE, and so is your DOUBLED bill
-- [public] 13:40 THE OTHER BIG ONE: why the race for governor could decide who pays YOUR rent
-- [public] 16:55 STILL MISSING: two days on, NOBODY can find the DoorDish robot
+- [public] 10:15 agent-2 IS HERE, and so is your DOUBLED bill {{article:agent-2}}
+- [public] 13:40 THE OTHER BIG ONE: why the race for governor could decide who pays YOUR rent {{article:governor-race}}
+- [public] 16:55 STILL MISSING: two days on, NOBODY can find the DoorDish robot {{article:robot}}
 
 ## Trending
 

@@ -10,7 +10,7 @@ from: 1
 ## How the player meets it
 
 - [public] The "Your Bank (totally)" banner ad ("Unusual activity on your account. Verify within 24h.", fine print "We are definitely your bank. Which bank? Yes.") links to it.
-- [public] On day 3 a mail from "Coinbin Security" (security@coinbln.com, "Unusual sign-in to your wallet") names a "Panes 11 PC" as the new device and asks the player to verify within 24 hours at coinbln.com/verify; it ends "Coinbin will never ask for your password by email."
+- [public] On day 3 a mail from "Coinbin Security" (security@coinbln.com, "Unusual sign-in to your wallet") names a "Panes 11 PC" as the new device and asks the player to verify within 24 hours at coinbln.com/verify; it ends "Coinbin will never ask for your password by email." {{mail:d3_coinbin_phish}}
 - [hint; public if coinbin_hacked] The sender's address and the link both spell coinbln, not coinbin.
 
 ## Signing in there

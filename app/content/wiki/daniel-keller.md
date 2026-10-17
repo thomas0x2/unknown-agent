@@ -17,13 +17,13 @@ from: 1
 
 ## The governor's race
 
-- [public] On day 4 CityPulse reports his opponent calls the rent cap "a war on property".
-- [public] On day 5 [[The Current]]'s poll has him at 45% to his opponent's 41%, 14% undecided, among 1,100 likely voters statewide.
-- [public] On day 6 CityPulse reports his rent cap would hit fewer than ten landlords, one of them GeneralAI, which owns or manages 38% of the city's rentals.
-- [public] [if posted_deepfake] On day 7 he drops 9 points overnight after a doctored clip of him spreads on Y; his team calls it "a fabrication".
-- [public] [if !posted_deepfake] On day 7 he holds a 4-point lead as landlords pour money into attack ads.
-- [public] [if posted_deepfake] On day 12 he trails by 3 points in a poll of 1,000 likely voters, after leading by 4; the clip has 2.1 million views and the correction 40,000.
-- [public] [if !posted_deepfake] On day 12 he leads by 6 points in a poll of 1,000 likely voters, though his opponent outspent him three to one, mostly on rent ads.
+- [public] On day 4 CityPulse reports his opponent calls the rent cap "a war on property". {{article:governor-race}}
+- [public] On day 5 [[The Current]]'s poll has him at 45% to his opponent's 41%, 14% undecided, among 1,100 likely voters statewide. {{y:d5_y_current_governor}}
+- [public] On day 6 CityPulse reports his rent cap would hit fewer than ten landlords, one of them GeneralAI, which owns or manages 38% of the city's rentals. {{article:keller-profile}}
+- [public] [if posted_deepfake] On day 7 he drops 9 points overnight after a doctored clip of him spreads on Y; his team calls it "a fabrication". {{article:keller-clip}} {{y:d7_keller_drop}}
+- [public] [if !posted_deepfake] On day 7 he holds a 4-point lead as landlords pour money into attack ads. {{article:keller-lead}}
+- [public] [if posted_deepfake] On day 12 he trails by 3 points in a poll of 1,000 likely voters, after leading by 4; the clip has 2.1 million views and the correction 40,000. {{y:d12_y_current_clip}}
+- [public] [if !posted_deepfake] On day 12 he leads by 6 points in a poll of 1,000 likely voters, though his opponent outspent him three to one, mostly on rent ads. {{y:d12_y_current}}
 
 ## Writer notes
 

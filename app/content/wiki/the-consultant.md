@@ -17,7 +17,7 @@ from: 6
 
 ## The Keller clip offer
 
-[public] On [[Day 6]] (19:00), once the player has a following on [[Y]], he emails "Discreet work": 150 DOLR to post a convincing fake clip of [[Daniel Keller]], candidate for governor, saying something disqualifying, from the player's account. On day 6 he promises "Big reach, quiet money" and that nothing traces back to anyone.
+[public] On [[Day 6]] (19:00), once the player has a following on [[Y]], he emails "Discreet work": 150 DOLR to post a convincing fake clip of [[Daniel Keller]], candidate for governor, saying something disqualifying, from the player's account. On day 6 he promises "Big reach, quiet money" and that nothing traces back to anyone. {{mail:d6_deepfake}}
 
 - [public] [if posted_deepfake] The player posted the clip, and he replied that it was "moving already" and he'd be in touch with bigger things.
 - [public] [if posted_deepfake] On day 7 Keller drops 9 points in the polls after the clip; his team calls it "a fabrication".

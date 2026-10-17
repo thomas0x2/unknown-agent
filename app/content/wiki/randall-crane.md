@@ -28,7 +28,7 @@ from: 1
 - [public] On day 3 (15:30) he vows to "send the machines back where they came from", ending "BELIEVE IT."
 - [public] On day 3 that post gets two million shares in an hour, mostly from month-old accounts, CityPulse reports.
 - [public] On day 4 he calls Vantor ($VANT) firing 400 people and replacing them with a computer "Disgraceful."
-- [public] On day 5 (11:30) an impostor account, @randa11_crane, with two ones in place of the l's, posts that it is a "Huge fan of Vantor ($VANT)".
+- [public] On day 5 (11:30) an impostor account, @randa11_crane, with two ones in place of the l's, posts that it is a "Huge fan of Vantor ($VANT)". {{y:m5_vant_impostor}}
 - [public] On day 5 the impostor turns out to copy his bio with two typos, "Offical" and "BELIVE IT", and his picture stretched sideways.
 - [public] On day 5 (19:10) he posts that there is a "FAKE Randall Crane on Y saying nice things about companies" and calls whoever runs it a "Very sick person!"
 - [public] On day 6 (11:00) he calls GeneralAI ($GAI) "an AMERICAN success story" and a "Tremendous company."
@@ -53,7 +53,44 @@ from: 1
 
 ## From day 3: Praise for Apogee
 
-- [public] [if trader_client] He also praises Apogee ($APO) as "Beautiful rockets", and Axel Rook answers with a rocket.
+- [public] [if trader_client] He also praises Apogee ($APO) as "Beautiful rockets", and Axel Rook answers with a rocket. {{y:trader_y_crane_apo}}
+
+## Posts on Y
+
+- [public] {{y:d1_y_crane}}
+- [public] {{y:d2_y_crane}}
+- [public] {{y:d3_y_crane}}
+- [public] {{y:m4_vant_crane}}
+- [public] {{y:d5_y_crane}}
+- [public] {{y:d6_y_crane_gai}}
+- [public] {{y:d7_y_crane}}
+- [public] {{y:d8_y_crane}}
+- [public] {{y:d9_y_crane}}
+- [public] {{y:d10_y_crane}}
+- [public] {{y:d11_y_crane}}
+- [public] {{y:d12_y_crane}}
+- [public] {{y:d13_y_crane}}
+- [public] {{y:d14_y_crane}}
+- [public] {{y:d15_y_crane}}
+- [public] {{y:d16_y_crane}}
+- [public] {{y:d17_y_crane}}
+- [public] {{y:d18_y_crane}}
+- [public] {{y:d19_y_crane}}
+- [public] {{y:d20_y_crane}}
+- [public] {{y:d21_y_crane}}
+
+## In the news
+
+- [public] {{article:election-field}}
+- [public] {{article:crane-rally}}
+- [public] {{article:crane-machines}}
+- [public] {{article:crane-impostor}}
+- [public] {{article:crane-gai}}
+- [public] {{article:crane-volunteers}}
+- [public] {{article:rook-endorses-crane}}
+- [public] {{article:debate}}
+- [public] {{article:debate-poll}}
+- [public] {{article:crane-posts}}
 
 ## Writer notes
 

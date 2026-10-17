@@ -67,7 +67,7 @@ and `<tag> if seen <id>`: once that email, Y post or Yowl review (its event id, 
 
 ## What the player received: embeds
 
-A paragraph can carry an email, post or article itself: `{{mail:d1_gino_site}}`, `{{y:m1_gai_escape}}`,
+A paragraph can carry an email, post or article itself: `{{y:d1_y_restaurant}}`, `{{y:m1_gai_escape}}`,
 `{{yowl:<event id>}}`, `{{article:keller-clip}}`. Once the item has arrived, agent sees its full text
 there (sender, subject, body; an article's title, dek and body), so a question can get at what it
 said; until then the embed is dropped. Day pages embed each beat's item in that beat's bullet, and the

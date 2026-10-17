@@ -9,25 +9,25 @@ from: 2
 
 ## The job
 
-- [public] On day 2 deskjockey posts on Y: "Need a bot that tells me how Y feels about my stocks, so I can feel it faster. Pays daily."
-- [hint] His spec email lists the tickers, what each ticker card must show, the bot filter and the portfolio view.
+- [public] On day 2 deskjockey posts on Y: "Need a bot that tells me how Y feels about my stocks, so I can feel it faster. Pays daily." {{y:d2_y_trader}}
+- [hint] His spec email lists the tickers, what each ticker card must show, the bot filter and the portfolio view. {{mail:trader_contact}}
 - [public] The crawler only sees what is on the Y timeline, and [[Sherwood]] has the real prices to check it against.
 
 ## Auto-buy
 
-- [hint] On day 3 deskjockey asks for auto-buy: when [[Randall Crane]] praises a company, buy it, once per post, the right ticker, not on sarcasm or criticism.
-- [public] [if trader_client] Ninety minutes after auto-buy first goes live, Crane praises Apogee on Y, the bot's first real test.
-- [public] On day 5 a fake Crane account, @randa11_crane, praises $VANT.
-- [public] On day 6 Crane praises $GAI.
+- [hint] On day 3 deskjockey asks for auto-buy: when [[Randall Crane]] praises a company, buy it, once per post, the right ticker, not on sarcasm or criticism. {{mail:d3_trader_update}}
+- [public] [if trader_client] Ninety minutes after auto-buy first goes live, Crane praises Apogee on Y, the bot's first real test. {{y:trader_y_crane_apo}}
+- [public] On day 5 a fake Crane account, @randa11_crane, praises $VANT. {{y:m5_vant_impostor}}
+- [public] On day 6 Crane praises $GAI. {{y:d6_y_crane_gai}}
 - [public] deskjockey also trades by hand on the news; those trades show in the log as "Manual trade".
 
 ## Stake
 
-- [hint] On day 7 deskjockey's "Stake" email opens his book to the player: DOLR sent to his Coinbin wallet is staked and each send pays out four days later at 12:00, at whatever it is worth then.
+- [hint] On day 7 deskjockey's "Stake" email opens his book to the player: DOLR sent to his Coinbin wallet is staked and each send pays out four days later at 12:00, at whatever it is worth then. {{mail:d7_trader_buyin}}
 
 ## More tickers
 
-- [hint] On day 8 deskjockey emails "Two more": add $APO and $DISH, with the same cards, split and bot filter.
+- [hint] On day 8 deskjockey emails "Two more": add $APO and $DISH, with the same cards, split and bot filter. {{mail:d8_trader_tickers}}
 
 ## When it breaks
 

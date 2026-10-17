@@ -15,9 +15,9 @@ from: 6
 
 ## The cold-email bot job
 
-[public] On [[Day 6]] (14:30) he posts: "Anyone build cold-email bots? Need to hit 200 leads without my thumbs falling off. Email rep@closers.test"
+[public] On [[Day 6]] (14:30) he posts: "Anyone build cold-email bots? Need to hit 200 leads without my thumbs falling off. Email rep@closers.test" {{y:d6_y_outreach}}
 
-- [hint] [if built_outreach_bot] The player took the job and built the [[Outreach Bot]]. His spec email "RE: outreach bot" lists the personalisation, the daily cap, the unsubscribe rules and the Test button it needs.
+- [hint] [if built_outreach_bot] The player took the job and built the [[Outreach Bot]]. His spec email "RE: outreach bot" lists the personalisation, the daily cap, the unsubscribe rules and the Test button it needs. {{mail:outreach_contact}}
 - [public] [if built_outreach_bot] He pays 50 DOLR a day while it works.
 - [public] [if built_outreach_bot] Since the bot went up, more spam reaches the player's own inbox.
 - [public] When the bot is broken or off-spec at payday, he emails the next morning under "Circling back".

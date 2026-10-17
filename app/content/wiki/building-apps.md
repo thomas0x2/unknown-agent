@@ -24,7 +24,7 @@ from: 1
 
 - [public] Every live app costs 2 DOLR a night in hosting.
 - [public] Apps can break overnight; a Forkyard alert in the morning reports it.
-- [public] On day 3 a deployment alert arrives: "One of your live deployments failed a health check overnight."
+- [public] On day 3 a deployment alert arrives: "One of your live deployments failed a health check overnight." {{mail:d3_break}}
 
 ## Payday and complaints
 

@@ -17,7 +17,7 @@ from: 1
 
 ## Her email on day 1
 
-[public] On [[Day 1]] she emails "Are you okay?": she heard about the layoffs on the news, asks if they're eating, and adds "Your father says hi (he didn't)." The [[Brother]] replies to all.
+[public] On [[Day 1]] she emails "Are you okay?": she heard about the layoffs on the news, asks if they're eating, and adds "Your father says hi (he didn't)." The [[Brother]] replies to all. {{mail:d1_mom}}
 
 - [public] [if asked_mom_money] The player asked her for money, and she sent 20 DOLR: "I knew it. I sent you a little something. Don't tell your father. Buy vegetables."
 
@@ -27,9 +27,9 @@ from: 1
 
 ## From day 6: Her birthday thank-you
 
-- [public] [if gift_chipped_in] On day 6 she thanks them both for the jacket, "it's lovely", and asks how the job search is going, really.
-- [public] [if gift_own] On day 6 she writes that the jacket is perfect and had the player's name on the card, and passes on the brother's half, 25 DOLR.
-- [public] [if gift_skipped] On day 6 she writes that the brother got her a lovely jacket and said the player was busy: "That's alright."
+- [public] [if gift_chipped_in] On day 6 she thanks them both for the jacket, "it's lovely", and asks how the job search is going, really. {{mail:d6_mom_bday_chip}}
+- [public] [if gift_own] On day 6 she writes that the jacket is perfect and had the player's name on the card, and passes on the brother's half, 25 DOLR. {{mail:d6_mom_bday_own}}
+- [public] [if gift_skipped] On day 6 she writes that the brother got her a lovely jacket and said the player was busy: "That's alright." {{mail:d6_mom_bday_skip}}
 
 ## Planned
 

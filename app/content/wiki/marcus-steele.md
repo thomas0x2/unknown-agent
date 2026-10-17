@@ -17,7 +17,7 @@ from: 1
 
 ## From day 5: The fake reviews job
 
-[public] On [[Day 5]] (15:00) he emails "Reviews": new studio, zero reviews, 45 DOLR for five convincing 5-star Yowl reviews, due within two days. On day 5 he warns they must "sound like different people or they get flagged."
+[public] On [[Day 5]] (15:00) he emails "Reviews": new studio, zero reviews, 45 DOLR for five convincing 5-star Yowl reviews, due within two days. On day 5 he warns they must "sound like different people or they get flagged." {{mail:d5_gym_reviews}}
 
 ## Writer notes
 

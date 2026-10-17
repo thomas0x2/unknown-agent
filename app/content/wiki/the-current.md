@@ -14,16 +14,23 @@ from: 1
 
 ## On Y
 
-- [public] On day 1 it promises independent polling with sample sizes and margins of error, and no Y polls.
+- [public] On day 1 it promises independent polling with sample sizes and margins of error, and no Y polls. {{y:d1_y_current}}
 - [public] Its election polls are on [[The election]] page.
-- [public] On day 11 it reports that step three of Crane's jobs plan hands the positions to GeneralAI; the campaign calls the plan "a draft" on a site "managed by a vendor".
+- [public] On day 11 it reports that step three of Crane's jobs plan hands the positions to GeneralAI; the campaign calls the plan "a draft" on a site "managed by a vendor". {{y:d11_y_current}}
 - [public] On day 15 [[Randall Crane]] calls The Current "Fake News" and attacks its "sob story".
-- [public] On day 18 it fact-checks the debate: 4 of Crane's 31 claims held up, and the campaign cited two of the four as proof.
-- [public] On day 21 it posts how to vote: polls open until 20:00, photo ID and registration card, no Citizen Score, and polling stations have not moved.
+- [public] On day 18 it fact-checks the debate: 4 of Crane's 31 claims held up, and the campaign cited two of the four as proof. {{y:d18_y_current}}
+- [public] On day 21 it posts how to vote: polls open until 20:00, photo ID and registration card, no Citizen Score, and polling stations have not moved. {{y:d21_y_current}}
+- [public] {{y:d2_y_current}}
+- [public] {{y:d5_y_current_governor}}
+- [public] {{y:d9_y_current}}
+- [public] {{y:d12_y_current}}
+- [public] {{y:d12_y_current_clip}}
+- [public] {{y:d16_y_current}}
+- [public] {{y:d19_y_current}}
 
 ## From day 7: The people AI left behind
 
-[public] On day 7 at 13:00 Mara's article "The people AI left behind" goes up at thecurrent.test/people-ai-left-behind, linked from her Y post. Its sources: Viktor (twenty-two years in accounts payable, selling his grandfather's watch), an unnamed insurance claims handler who spent six weeks documenting her own job for an "integration project", someone whose rent appeal was rejected in four seconds. It also quotes [[The player]]'s first email to Mara, unnamed ("One former Vantor employee…") [if talked_to_journalist]. Vantor's People & Culture points to Vantor Outplacement; [[GeneralAI]] didn't comment.
+[public] On day 7 at 13:00 Mara's article "The people AI left behind" goes up at thecurrent.test/people-ai-left-behind, linked from her Y post. Its sources: Viktor (twenty-two years in accounts payable, selling his grandfather's watch), an unnamed insurance claims handler who spent six weeks documenting her own job for an "integration project", someone whose rent appeal was rejected in four seconds. It also quotes [[The player]]'s first email to Mara, unnamed ("One former Vantor employee…") [if talked_to_journalist]. Vantor's People & Culture points to Vantor Outplacement; [[GeneralAI]] didn't comment. {{y:d7_journalist_article}}
 
 ## Writer notes
 

@@ -41,7 +41,63 @@ from: 1
 
 ## From day 3: The rocket reply to Crane
 
-- [public] [if trader_client] When Crane praises Apogee, Rook replies six minutes later: "@randall_crane 🚀"
+- [public] [if trader_client] When Crane praises Apogee, Rook replies six minutes later: "@randall_crane 🚀" {{y:trader_y_axel_apo}}
+
+## Posts on Y
+
+- [public] {{y:d1_y_axel}}
+- [public] {{y:d1_y_axel_2}}
+- [public] {{y:d1_y_axel_3}}
+- [public] {{y:d2_y_axel}}
+- [public] {{y:d2_y_axel_2}}
+- [public] {{y:d2_y_axel_3}}
+- [public] {{y:d3_y_axel}}
+- [public] {{y:d3_y_axel_2}}
+- [public] {{y:d3_y_axel_3}}
+- [public] {{y:d4_y_axel}}
+- [public] {{y:d4_y_axel_2}}
+- [public] {{y:d5_y_axel}}
+- [public] {{y:d5_y_axel_2}}
+- [public] {{y:d6_y_axel}}
+- [public] {{y:d6_y_axel_2}}
+- [public] {{y:d7_y_axel}}
+- [public] {{y:d7_y_axel_2}}
+- [public] {{y:d8_y_axel}}
+- [public] {{y:d8_y_axel_2}}
+- [public] {{y:d8_y_axel_3}}
+- [public] {{y:d9_y_axel}}
+- [public] {{y:d9_y_axel_2}}
+- [public] {{y:d10_y_axel}}
+- [public] {{y:d10_y_axel_2}}
+- [public] {{y:d10_y_axel_3}}
+- [public] {{y:d11_y_axel}}
+- [public] {{y:d11_y_axel_2}}
+- [public] {{y:d12_y_axel}}
+- [public] {{y:d12_y_axel_2}}
+- [public] {{y:d13_y_axel}}
+- [public] {{y:d13_y_axel_2}}
+- [public] {{y:d14_y_axel}}
+- [public] {{y:d14_y_axel_2}}
+- [public] {{y:d15_y_axel}}
+- [public] {{y:d15_y_axel_2}}
+- [public] {{y:d16_y_axel}}
+- [public] {{y:d16_y_axel_2}}
+- [public] {{y:d17_y_axel}}
+- [public] {{y:d17_y_axel_2}}
+- [public] {{y:d18_y_axel}}
+- [public] {{y:d18_y_axel_2}}
+- [public] {{y:d19_y_axel}}
+- [public] {{y:d19_y_axel_2}}
+- [public] {{y:d20_y_axel}}
+- [public] {{y:d20_y_axel_2}}
+- [public] {{y:d21_y_axel}}
+- [public] {{y:d21_y_axel_2}}
+
+## In the news
+
+- [public] {{article:rook-endorses-crane}}
+- [public] {{article:y-moderation}}
+- [public] {{article:debate}}
 
 ## Writer notes
 

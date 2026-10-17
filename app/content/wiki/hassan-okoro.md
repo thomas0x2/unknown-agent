@@ -21,14 +21,14 @@ from: 1
 
 [public] spincycle.test links a "Live machine status" page at spincycle.test/feed, a raw feed of codes that the page itself explains.
 
-[hint] Reading the feed right (what each status code and number means) is what a working [[Spin Cycle Board]] needs.
+[hint] Reading the feed right (what each status code and number means) is what a working [[Spin Cycle Board]] needs. {{mail:laundromat_contact}}
 
-[public] His customers post on [[Y]] as "Spin Cycle regulars" (@spin_cycle_regulars, bio "Unofficial account for the people waiting at Spin Cycle. Never trust machine 3."). On [[Day 1]] (13:50) they complain that every machine is busy again and the owner's raw status feed is unreadable: "Someone make it a real app." Nobody hires the player for it; the player can ask [[agent]] to build an app from the feed.
+[public] His customers post on [[Y]] as "Spin Cycle regulars" (@spin_cycle_regulars, bio "Unofficial account for the people waiting at Spin Cycle. Never trust machine 3."). On [[Day 1]] (13:50) they complain that every machine is busy again and the owner's raw status feed is unreadable: "Someone make it a real app." Nobody hires the player for it; the player can ask [[agent]] to build an app from the feed. {{y:d1_y_laundromat}}
 
 ## From day 5: Four more machines
 
-- [hint] [if laundromat_live] On [[Day 5]] (12:40) he emails the player "Four more machines": the app needs to show more machines now, and the feed already lists them.
-- [public] On day 5 CityPulse reports he installed four second-hand washers, bought from a laundromat that closed in August, bringing Spin Cycle to twelve. On day 5 he tells CityPulse "Never trust machine 3" and won't elaborate.
+- [hint] [if laundromat_live] On [[Day 5]] (12:40) he emails the player "Four more machines": the app needs to show more machines now, and the feed already lists them. {{mail:d5_laundromat_update}}
+- [public] On day 5 CityPulse reports he installed four second-hand washers, bought from a laundromat that closed in August, bringing Spin Cycle to twelve. On day 5 he tells CityPulse "Never trust machine 3" and won't elaborate. {{article:spin-cycle}}
 
 ## Planned
 

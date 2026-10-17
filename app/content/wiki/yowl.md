@@ -24,6 +24,9 @@ from: 1
 
 - [public] Some business owners pay for reviews or want reviews gone.
 - [public] A Yowl review naming a live user app brings that app new users, once.
+- [hint] {{mail:d5_coffee_removal}}
+- [hint] {{mail:d7_coffee_removal}}
+- [hint] {{mail:d5_gym_reviews}}
 
 ## Writer notes
 

@@ -9,8 +9,8 @@ from: 6
 
 ## The job
 
-- [public] On day 6 the sales rep posts on Y: "Anyone build cold-email bots? Need to hit 200 leads without my thumbs falling off."
-- [hint] His spec email covers personalisation, a daily cap, unsubscribes, duplicates and a test button.
+- [public] On day 6 the sales rep posts on Y: "Anyone build cold-email bots? Need to hit 200 leads without my thumbs falling off." {{y:d6_y_outreach}}
+- [hint] His spec email covers personalisation, a daily cap, unsubscribes, duplicates and a test button. {{mail:outreach_contact}}
 - [public] Once the bot is built, more spam reaches the player's own inbox.
 
 ## When it breaks

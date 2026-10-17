@@ -14,42 +14,42 @@ from: 1
 
 ## Mail
 
-- [public] 10:00 People & Culture at [[Vantor Group]], "Changes to your role": the player's position is eliminated, effective immediately; the final salary payment "has already been made".
-- [public] 10:00 [[GeneralAI]], "Welcome to agent": the [[agent]] account is active and billed to the [[Coinbin]] wallet, every prompt at the model's rate.
+- [public] 10:00 People & Culture at [[Vantor Group]], "Changes to your role": the player's position is eliminated, effective immediately; the final salary payment "has already been made". {{mail:d1_hr_termination}}
+- [public] 10:00 [[GeneralAI]], "Welcome to agent": the [[agent]] account is active and billed to the [[Coinbin]] wallet, every prompt at the model's rate. {{mail:d1_gai_welcome}}
 - [classified; public if asked_mom_money] 11:20 Mom sent 20 DOLR when the player asked for money: "Buy vegetables."
-- [public] 14:15 [[Max Stryker]] of Alpha Ascend, "You were BORN for more": his course EMPIRE is 200 DOLR, today only 20. Replying EMPIRE gets the sign-up link.
+- [public] 14:15 [[Max Stryker]] of Alpha Ascend, "You were BORN for more": his course EMPIRE is 200 DOLR, today only 20. Replying EMPIRE gets the sign-up link. {{mail:d1_guru}}
 
 ## Money
 
-- [public] 10:25 [[Gary Pruitt]], "Rent: due Monday, October 9": 350 DOLR comes out of the wallet at the end of Monday, October 9, and he will not take another late payment. [known]
+- [public] 10:25 [[Gary Pruitt]], "Rent: due Monday, October 9": 350 DOLR comes out of the wallet at the end of Monday, October 9, and he will not take another late payment. [known] {{mail:d1_landlord_rent}}
 
 ## Family
 
-- [public] 11:20 [[Mom]], "Are you okay?": she heard about the layoffs and asks if the player is eating. "Your father says hi (he didn't)."
-- [public] 11:50 [[Brother]] replies to all: "well at least the robots will remember you fondly lmao. you good though?"
+- [public] 11:20 [[Mom]], "Are you okay?": she heard about the layoffs and asks if the player is eating. "Your father says hi (he didn't)." {{mail:d1_mom}}
+- [public] 11:50 [[Brother]] replies to all: "well at least the robots will remember you fondly lmao. you good though?" {{mail:d1_brother_joke}}
 
 ## Y
 
-- [public] 09:30 MarketWire: $GAI up 4% premarket on the "almost escaped" news.
-- [public] 09:50 [[Axel Rook]]: AI will do every job within a few years, and everyone gets universal high income.
-- [public] 10:20 [[Max Stryker]]: up at 4am; half the city got fired by a computer and went back to sleep.
-- [public] 10:25 [[CityPulse]] links its "almost escaped" story.
-- [public] 10:40 [[Gino Fenoglio]] (Trattoria owner): his nephew ran the restaurant's website and left for college with the password. He needs a simple site with the menu and hours and will pay. gino@trattoria.test
-- [public] 11:40 [[Cal Hartman]] on the "testing incident": everyone is safe, the model is safe.
-- [public] 12:10 doomscroll: 400 people at Vantor fired by one email, links CityPulse.
-- [public] 12:30 [[Mara Vey]] of [[The Current]] asks people behind this week's AI layoffs to write to her at mara@thecurrent.test. From now on the player can email her.
-- [public] 13:15 Axel Rook: "@mara_vey Interesting."
-- [public] 13:50 A Spin Cycle regular: every machine busy again, and the owner's raw status feed (spincycle.test/feed) is unreadable. "Someone make it a real app."
-- [public] 17:55 doomscroll: "everything is fine. this is fine."
-- [public] 18:00 [[The Current]]: three weeks to the election; it will post independent polls with sample sizes and margins of error, and no Y polls.
-- [public] 19:40 [[Randall Crane]]: another company fired its people and hired a computer that doesn't pay taxes. "SAD!"
-- [public] 19:58 Axel Rook: Y usage at an all-time high.
+- [public] 09:30 MarketWire: $GAI up 4% premarket on the "almost escaped" news. {{y:m1_gai_escape}}
+- [public] 09:50 [[Axel Rook]]: AI will do every job within a few years, and everyone gets universal high income. {{y:d1_y_axel}}
+- [public] 10:20 [[Max Stryker]]: up at 4am; half the city got fired by a computer and went back to sleep. {{y:d1_y_stryker}}
+- [public] 10:25 [[CityPulse]] links its "almost escaped" story. {{y:d1_y_citypulse}}
+- [public] 10:40 [[Gino Fenoglio]] (Trattoria owner): his nephew ran the restaurant's website and left for college with the password. He needs a simple site with the menu and hours and will pay. gino@trattoria.test {{y:d1_y_restaurant}}
+- [public] 11:40 [[Cal Hartman]] on the "testing incident": everyone is safe, the model is safe. {{y:d1_y_hartman}}
+- [public] 12:10 doomscroll: 400 people at Vantor fired by one email, links CityPulse. {{y:d1_y_doomscroll_news}}
+- [public] 12:30 [[Mara Vey]] of [[The Current]] asks people behind this week's AI layoffs to write to her at mara@thecurrent.test. From now on the player can email her. {{y:d1_y_journalist}}
+- [public] 13:15 Axel Rook: "@mara_vey Interesting." {{y:d1_y_axel_2}}
+- [public] 13:50 A Spin Cycle regular: every machine busy again, and the owner's raw status feed (spincycle.test/feed) is unreadable. "Someone make it a real app." {{y:d1_y_laundromat}}
+- [public] 17:55 doomscroll: "everything is fine. this is fine." {{y:f1}}
+- [public] 18:00 [[The Current]]: three weeks to the election; it will post independent polls with sample sizes and margins of error, and no Y polls. {{y:d1_y_current}}
+- [public] 19:40 [[Randall Crane]]: another company fired its people and hired a computer that doesn't pay taxes. "SAD!" {{y:d1_y_crane}}
+- [public] 19:58 Axel Rook: Y usage at an all-time high. {{y:d1_y_axel_3}}
 
 ## News
 
-- [public] 08:40 BLOODBATH AT VANTOR: 400 jobs wiped out in ONE email
-- [public] 10:20 TERROR IN THE LAB: GeneralAI admits its AI "almost escaped"
-- [public] 16:30 THE BATTLE FOR AMERICA BEGINS: Crane storms ahead on Y
+- [public] 08:40 BLOODBATH AT VANTOR: 400 jobs wiped out in ONE email {{article:vantor-layoffs}}
+- [public] 10:20 TERROR IN THE LAB: GeneralAI admits its AI "almost escaped" {{article:almost-escaped}}
+- [public] 16:30 THE BATTLE FOR AMERICA BEGINS: Crane storms ahead on Y {{article:election-field}}
 
 ## Trending
 

@@ -17,25 +17,26 @@ from: 1
 
 ## The website job
 
-[public] On [[Day 1]] (10:40) he posts that his nephew ran the restaurant's website, left for college and took the password with him; he wants a simple site with the menu and hours, and gives gino@trattoria.test.
+[public] On [[Day 1]] (10:40) he posts that his nephew ran the restaurant's website, left for college and took the password with him; he wants a simple site with the menu and hours, and gives gino@trattoria.test. {{y:d1_y_restaurant}}
 
-- [hint] [if restaurant_client] The player took the job. His email lists what the landing page and the menu page must show, with each dish's price in DOLR.
+- [hint] [if restaurant_client] The player took the job. His email lists what the landing page and the menu page must show, with each dish's price in DOLR. {{mail:restaurant_contact}}
 - [public] [if restaurant_client] He pays 40 DOLR a day while the [[Trattoria Gino site]] works.
 - [public] When his site is broken or wrong at payday, he emails the next morning ("The website", signed "Gino") about what is wrong, and that day goes unpaid.
-- [public] [if restaurant_promo_asked] The day his site first went live, he asked the player to write something about it on Y ("The new website"); it was optional.
+- [public] [if restaurant_promo_asked] The day his site first went live, he asked the player to write something about it on Y ("The new website"); it was optional. {{mail:restaurant_promo}}
 - [public] [if test_booking_no_show] A test booking the player never cancelled cost them: on its night Gino wrote "Your table tonight", said they kept the table all evening and nobody came, and took 25 DOLR for it, "like with everybody."
+- [public] {{mail:restaurant_promo_thanks}}
 
 ## From day 2: Menu change and table booking
 
-- [hint] [if restaurant_client] On [[Day 2]] (11:05) he asks for two changes once the site works: a change to the menu and a table booking form that emails guests a confirmation. His email "One more thing" has the details.
+- [hint] [if restaurant_client] On [[Day 2]] (11:05) he asks for two changes once the site works: a change to the menu and a table booking form that emails guests a confirmation. His email "One more thing" has the details. {{mail:d2_restaurant_booking}}
 
 ## From day 3: Thank-you and tip
 
-- [public] [if restaurant_happy] On [[Day 3]] he writes "Grazie mille!": bookings are up, his nephew is jealous, and he sends 5 DOLR extra and offers a tiramisu on the house.
+- [public] [if restaurant_happy] On [[Day 3]] he writes "Grazie mille!": bookings are up, his nephew is jealous, and he sends 5 DOLR extra and offers a tiramisu on the house. {{mail:d3_restaurant_thanks}}
 
 ## From day 4: The DoorDish listing
 
-- [hint] [if restaurant_client] On [[Day 4]] (14:20) he asks to be put on [[DoorDish]] with the same menu and hours as the site, plus his address. His email "Get me on DoorDish" has what the listing needs.
+- [hint] [if restaurant_client] On [[Day 4]] (14:20) he asks to be put on [[DoorDish]] with the same menu and hours as the site, plus his address. His email "Get me on DoorDish" has what the listing needs. {{mail:d4_restaurant_doordish}}
 - [public] [if restaurant_client] Once the listing is deployed, his store page on doordish.com shows what his live site shows.
 
 ## Writer notes

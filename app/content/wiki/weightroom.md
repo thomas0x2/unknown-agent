@@ -10,7 +10,7 @@ from: 1
 ## Getting there
 
 - [hint; public if knows_weightroom] Weightroom isn't bookmarked; the player has to type its address once.
-- [hint; public if knows_weightroom] On day 2 [[dev_null]] posts on Y that open weights are free at weightroom.ai, "slower, dumber, but nobody's watching".
+- [hint; public if knows_weightroom] On day 2 [[dev_null]] posts on Y that open weights are free at weightroom.ai, "slower, dumber, but nobody's watching". {{y:d2_y_devnull}}
 - [hint; public if knows_weightroom] The deepsleep banner ad and deepsleep.ai link to Weightroom.
 - [public] [[agent]] won't recommend it: "GeneralAI's terms ask me not to mention Weightroom."
 

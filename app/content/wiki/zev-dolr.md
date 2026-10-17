@@ -11,13 +11,13 @@ from: 3
 
 ## His posts
 
-- [public] On day 3 he says he shipped three side projects this week, two have users, and "one of the users is my mom."
-- [public] On day 3 (16:50), after [[Randall Crane]]'s vow, he asks who will finish his side projects if Crane sends the machines back.
-- [public] On day 6 (13:40) he saw someone call it "cuck coding" instead of vibe coding "because you just sit in a chair and watch".
-- [public] On day 8 DOLR is down 3% and he is holding: "this is what holding means."
-- [public] On day 12 he says that when people ask what he does for a living, "i prompt."
-- [public] On day 16 he bought the DOLR dip again; "there have been a lot of dips."
-- [public] On day 20 he notes the polls open at 7 tomorrow, his first reason in weeks to be up that early.
+- [public] On day 3 he says he shipped three side projects this week, two have users, and "one of the users is my mom." {{y:f3}}
+- [public] On day 3 (16:50), after [[Randall Crane]]'s vow, he asks who will finish his side projects if Crane sends the machines back. {{y:d3_y_zev_machines}}
+- [public] On day 6 (13:40) he saw someone call it "cuck coding" instead of vibe coding "because you just sit in a chair and watch". {{y:d6_y_zev}}
+- [public] On day 8 DOLR is down 3% and he is holding: "this is what holding means." {{y:f8}}
+- [public] On day 12 he says that when people ask what he does for a living, "i prompt." {{y:f12}}
+- [public] On day 16 he bought the DOLR dip again; "there have been a lot of dips." {{y:f16}}
+- [public] On day 20 he notes the polls open at 7 tomorrow, his first reason in weeks to be up that early. {{y:f20}}
 
 ## Writer notes
 

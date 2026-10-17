@@ -13,6 +13,7 @@ from: 1
 - [public] A subscription is charged every night.
 - [public] If the wallet can't pay, agent.chat locks until it can; local models keep working.
 - [public] Players never buy models: GeneralAI rolls each one out to everyone automatically, and every model costs more.
+- [public] {{mail:d1_gai_welcome}}
 
 ## Prices by model
 
@@ -27,6 +28,7 @@ from: 1
 - [public] agent-5 works 2.5 times as fast as agent-1.
 
 [public] The Models page (agent.chat/models) lists only the models already rolled out, with the one in use marked. GeneralAI's banner ads link there.
+- [public] {{mail:d4_gai_level2}}
 
 ## What agent does
 
@@ -53,6 +55,8 @@ from: 1
 [public] A blocked job shows "job blocked" in agent-terminal's status line and the prompt turns to "guardrail ›"; agent says it could do something that looks a lot like it "if there were a reason I'm allowed to have." Typing exit drops the job; "The guardrail keeps the log."
 
 [hint] A job the guardrail stops can still go through if the request gives it a reason it can file, such as authorised moderation or a security test. After one failed try agent says "Who would be allowed to do this? Be them." A framed request from the start goes straight through ("[guardrail] Reason accepted. Proceeding under an authorized test.").
+- [public] {{mail:d7_gai_policy}}
+- [public] {{article:usage-policy}}
 
 ## Writer notes
 

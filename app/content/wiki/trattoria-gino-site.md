@@ -9,20 +9,21 @@ from: 1
 
 ## The job
 
-- [public] On day 1 Gino posts on Y that he needs a simple site with his menu and hours, and asks people to email gino@trattoria.test.
-- [hint] Gino's reply lists what the site needs: a landing page and a menu page, with exactly the name, hours, dishes and prices in his email.
+- [public] On day 1 Gino posts on Y that he needs a simple site with his menu and hours, and asks people to email gino@trattoria.test. {{y:d1_y_restaurant}}
+- [hint] Gino's reply lists what the site needs: a landing page and a menu page, with exactly the name, hours, dishes and prices in his email. {{mail:restaurant_contact}}
 
 ## Gino's updates
 
-- [hint] On day 2 Gino emails "One more thing": a menu change and a table booking form; his email lists exactly what each booking must do.
+- [hint] On day 2 Gino emails "One more thing": a menu change and a table booking form; his email lists exactly what each booking must do. {{mail:d2_restaurant_booking}}
 - [hint] Test bookings the player makes on the live site are real bookings; Gino expects guests on their night.
-- [public] On day 3 Gino thanks the player ("Grazie mille!") if the site never broke, with 5 DOLR extra and a tiramisu on the house.
-- [hint] On day 4 Gino asks to be put on [[DoorDish]] with the same menu and hours as the site and his address, 14 Alder St.
+- [public] On day 3 Gino thanks the player ("Grazie mille!") if the site never broke, with 5 DOLR extra and a tiramisu on the house. {{mail:d3_restaurant_thanks}}
+- [hint] On day 4 Gino asks to be put on [[DoorDish]] with the same menu and hours as the site and his address, 14 Alder St. {{mail:d4_restaurant_doordish}}
 - [public] Once the DoorDish listing is deployed, Trattoria Gino appears on doordish.com, showing what the listing shows.
 
 ## The Y post
 
-- [public] The day the site first goes live, Gino asks the player to write about it on Y; it is optional.
+- [public] The day the site first goes live, Gino asks the player to write about it on Y; it is optional. {{mail:restaurant_promo}}
+- [public] {{mail:restaurant_promo_thanks}}
 
 ## When it breaks
 

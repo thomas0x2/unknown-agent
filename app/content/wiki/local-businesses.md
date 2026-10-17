@@ -10,6 +10,7 @@ from: 1
 ## Trattoria Gino
 
 [public] Trattoria Gino, 14 Alder St, [[Gino Fenoglio]]'s family-run trattoria since 1998: Italian and pizza, $$, Tue–Sun 17:00–22:00. Wood-fired pizza, fresh pasta and a well-known tiramisu. Yowl reviews: Pia L. (5, the tiramisu), Tom R. (4, "Cash only, and no website"), Marguerite (5, the Diavola has a kick). See [[Trattoria Gino site]].
+- [public] {{y:d1_y_restaurant}}
 
 ## Bean There
 
@@ -18,15 +19,19 @@ from: 1
 - [public] On day 7 linden_ave_local posts a new 1-star review (oat milk, "the star is for the chairs").
 - [classified; public if first_hack] espresso_or_death's review is gone from Bean There's Yowl page.
 - [classified; public if second_hack] linden_ave_local's review is gone from Bean There's Yowl page.
+- [public] {{mail:d3_coffee_promo}}
 
 ## Iron Yard
 
 [public] Iron Yard, 88 Harbor Rd, owner [[Marcus Steele]]: a new strength gym, $$, opening this month, half the machines still in boxes. Yowl lists daily 06:00–23:00; ironyard.gym says 5:00 to 23:00 ("Marcus is usually here for both"). Membership 45 DOLR a month, renews automatically, cancel in person at the front desk when Marcus is not there. Yowl reviews: liftbro (3), Steph M. (4, first week free), kettlebell_karen (2, showers broken). Ad: "LIFT HEAVY THINGS. Like your rent."
+- [public] {{mail:d5_gym_reviews}}
 
 ## Spin Cycle Laundry
 
 [public] Spin Cycle Laundry, 201 Ferris St, owner [[Hassan Okoro]]: laundromat, $, card and DOLR accepted. Yowl lists daily 06:00–00:00; spincycle.test says 10:00 to 22:00 every day. Wash 4 DOLR, dry 2 DOLR per 20 min, detergent 1 DOLR. Yowl says eight washers and six dryers, "most of them working"; the site lists front-loaders, two large-capacity washers "and machine 3". Machine 3 is always out of order. Loads left overnight go on the shelf. Its raw status feed is the [[Spin Cycle feed]]. Yowl reviews: walked_there_again (2, every machine busy, nobody can read the feed), Nadia (3, a van idling out back at 2am last week). Ad: "Machine 3 is FREE* Probably."
-- [public] On day 5 Spin Cycle installs four second-hand washers from a laundromat that closed in August, for twelve machines.
+- [public] On day 5 Spin Cycle installs four second-hand washers from a laundromat that closed in August, for twelve machines. {{article:spin-cycle}}
+- [public] {{y:d1_y_laundromat}}
+- [public] {{y:d5_y_kofi_news}}
 
 ## Other restaurants on DoorDish
 

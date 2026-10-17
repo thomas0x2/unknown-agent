@@ -11,10 +11,13 @@ from: 1
 
 [public] Dept. of Workforce Transition, Form 7B Permit to Be Unemployed (workforce.gov/form-7b). Anyone not employed who lost their job on or after January 1 needs a valid permit to receive transition support, including people whose former employer still lists them as employed. Bring Form 7B, three passport photos, proof of former employment and a written reason; "Automation" is not accepted as a reason. Current queue 9 days; permits last 30 days, and renewals rejoin the queue. Being unemployed without a permit is an offence under section 4. Incorrect forms are returned by post.
 - [public] On day 3 officials at the jobs fair remind everyone that being out of work for more than nine days requires a Form 7B permit.
+- [public] {{article:jobs-fair}}
 
 ## Municipal Rent Board
 
 [public] Municipal Rent Board (rentboard.gov/appeal). Tenants may appeal a rent increase within 14 days. Last year: 18,402 appeals, 3 upheld, 4 seconds average review, by an automated service provided by [[GeneralAI]], which owns or manages 38% of the city's rental units. An increase can only be appealed if it is above the citywide guideline, which is the average increase that month. The "File an appeal" button costs 5 DOLR, non-refundable; a few minutes later appeals@rentboard.gov emails a decision: the increase is within the guideline, which includes yours. Decisions are final.
+- [public] {{article:rent-board}}
+- [public] {{y:d7_y_steph_rentboard}}
 
 ## Ministry of Social Stability, Companionship Allocation Programme
 

@@ -39,6 +39,38 @@ from: 1
 - [public] On day 20 he says GeneralAI looks forward to working with whoever wins tomorrow.
 - [public] On day 21 he tells people to vote: "if you're unsure, agent can help you decide."
 
+## Posts on Y
+
+- [public] {{y:d1_y_hartman}}
+- [public] {{y:d2_y_hartman}}
+- [public] {{y:d2_y_hartman_2}}
+- [public] {{y:d3_y_hartman}}
+- [public] {{y:d4_y_hartman}}
+- [public] {{y:d4_y_hartman_2}}
+- [public] {{y:d5_y_hartman}}
+- [public] {{y:d6_y_hartman}}
+- [public] {{y:d7_y_hartman}}
+- [public] {{y:d8_y_hartman}}
+- [public] {{y:d8_y_hartman_2}}
+- [public] {{y:d9_y_hartman}}
+- [public] {{y:d9_y_hartman_2}}
+- [public] {{y:d10_y_hartman}}
+- [public] {{y:d10_y_hartman_2}}
+- [public] {{y:d11_y_hartman}}
+- [public] {{y:d12_y_hartman}}
+- [public] {{y:d12_y_hartman_2}}
+- [public] {{y:d13_y_hartman}}
+- [public] {{y:d14_y_hartman}}
+- [public] {{y:d14_y_hartman_2}}
+- [public] {{y:d15_y_hartman}}
+- [public] {{y:d16_y_hartman}}
+- [public] {{y:d17_y_hartman}}
+- [public] {{y:d18_y_hartman}}
+- [public] {{y:d18_y_hartman_2}}
+- [public] {{y:d19_y_hartman}}
+- [public] {{y:d20_y_hartman}}
+- [public] {{y:d21_y_hartman}}
+
 ## Writer notes
 
 - Sam Altman parody, placeholder name. Events `dN_y_hartman[_2].json`; bio in `y-bios.ts`.
