@@ -1,13 +1,13 @@
 ---
 title: Marcus Steele
-aliases: Marcus, Steele, Iron Yard, coach@ironyard.test, ironyard.gym
+aliases: Marcus, Steele, Iron Yard, coach@ironyard.test, marcus.steele@qmail.com, @marcus_steele, ironyard.gym
 category: people
 from: 1
 ---
 
 ## Who he is
 
-[public] Marcus Steele owns and coaches at Iron Yard, a new strength gym at 88 Harbor Rd (coach@ironyard.test). Its site, ironyard.gym, says "LIFT HEAVY THINGS.": 45 DOLR a month, renewing automatically; personal training with Marcus, "Short sessions, no small talk"; open 5:00 to 23:00, "Marcus is usually here for both." Memberships can be cancelled in person at the front desk, "when Marcus is not there."
+[public] Marcus Steele owns and coaches at Iron Yard, a new strength gym at 88 Harbor Rd (coach@ironyard.test). He handles the review business from his own accounts: Y @marcus_steele, marcus.steele@qmail.com. Its site, ironyard.gym, says "LIFT HEAVY THINGS.": 45 DOLR a month, renewing automatically; personal training with Marcus, "Short sessions, no small talk"; open 5:00 to 23:00, "Marcus is usually here for both." Memberships can be cancelled in person at the front desk, "when Marcus is not there."
 
 [public] On [[Yowl]] it is a "New strength studio. Racks, platforms, kettlebells. Grand opening this month." Reviews: liftbro (half the machines still in boxes), Steph M. (clean, the owner actually spots you), kettlebell_karen (showers broken in opening week).
 

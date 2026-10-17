@@ -1,8 +1,8 @@
 {
   "id": "d6_gym_reached",
   "site": "qmail",
-  "from": "Iron Yard",
-  "addr": "coach@ironyard.test",
+  "from": "Marcus Steele",
+  "addr": "marcus.steele@qmail.com",
   "subject": "Reviews",
   "trigger": {
     "dayMin": 6,

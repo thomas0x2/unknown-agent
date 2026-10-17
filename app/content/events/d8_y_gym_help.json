@@ -1,8 +1,8 @@
 {
   "id": "d8_y_gym_help",
   "site": "y",
-  "from": "Iron Yard",
-  "addr": "coach@ironyard.test",
+  "from": "Marcus Steele",
+  "addr": "marcus.steele@qmail.com",
   "trigger": {
     "dayMin": 8,
     "flagsNone": [
@@ -12,5 +12,5 @@
     ]
   },
   "at": "11:35",
-  "body": "Iron Yard, Harbor Rd. Still three reviews, two about the showers, which work now. Yowl isn't fair to new places. If you know how to fix that, I pay. coach@ironyard.test"
+  "body": "My gym, Iron Yard on Harbor Rd, still has three reviews, two about the showers, which work now. Yowl isn't fair to new places. If you know how to fix that, I pay. marcus.steele@qmail.com"
 }

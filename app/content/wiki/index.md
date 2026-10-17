@@ -26,7 +26,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[late_night_lou]] (late-night-lou.md): late_night_lou ("Lou") has a public Forkyard profile: Harbor district, joined August 2023, 88 followers, following 2, bio "collector
 - [[Leo Brandt]] (leo-brandt.md): Leo Brandt is a former Vantor Group colleague of the player, now out of work
 - [[Mara Vey]] (mara-vey.md): Mara Vey is a reporter at The Current, a reader-funded paper, covering people displaced by AI
-- [[Marcus Steele]] (marcus-steele.md): Marcus Steele owns and coaches at Iron Yard, a new strength gym at 88 Harbor Rd (coach@ironyard.test)
+- [[Marcus Steele]] (marcus-steele.md): Marcus Steele owns and coaches at Iron Yard, a new strength gym at 88 Harbor Rd (personal: marcus.steele@qmail.com, @marcus_steele)
 - [[Market posters]] (market-posters.md): The accounts on Y that post about stocks ($GAI, $VANT, $APO, $DISH) every day
 - [[Max Stryker]] (max-stryker.md): Max Stryker is a hustle guru, founder of Alpha Ascend and seller of the course EMPIRE at empire.alphaascend.biz: 20 DOLR, struck through…
 - [[Randall Crane]] (randall-crane.md): Randall Crane is the Heritage Party's candidate for president in The election
