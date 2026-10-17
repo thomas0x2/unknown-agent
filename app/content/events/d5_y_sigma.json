@@ -1,0 +1,11 @@
+{
+  "id": "d5_y_sigma",
+  "site": "y",
+  "from": "6ft_sigma",
+  "trigger": {
+    "dayMin": 5,
+    "dayMax": 5
+  },
+  "at": "18:45",
+  "body": "@max_stryker Haven't texted first in four years. Working as intended."
+}

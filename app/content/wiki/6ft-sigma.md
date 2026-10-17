@@ -32,8 +32,19 @@ from: 4
 - [hint] [if matchless_job] On day 8 he writes "Adjusting for compatibility." and adds politics and Y followers. {{mail:d8_matchless_rules_3}}
 - [hint] [if matchless_job] On day 10 he writes "Some people got through that shouldn't have." and adds income, body count and long hair. {{mail:d10_matchless_rules_4}}
 - [hint] [if matchless_job] On day 12 he writes "Someone took my bike." and adds distance, height, kinks and no glasses. {{mail:d12_matchless_rules_5}}
-- [hint] [if matchless_job] On day 14 he writes that he has been reading about facial harmony, "a science", and adds canthal tilt, weight (130 lbs or under) and no earrings. {{mail:d14_matchless_rules_6}}
+- [hint] [if matchless_job] On day 14 he writes that he has been reading about facial harmony ("Max Stryker says it's a science"), and adds canthal tilt, weight (130 lbs or under) and no earrings. {{mail:d14_matchless_rules_6}}
 - [hint] [if matchless_job] On day 16 he writes "Final version." and calls his standards facts, adding a mandibular ratio and blonde, and lowering weight to 115 lbs or under. {{mail:d16_matchless_rules_7}}
+
+## Max Stryker fan
+
+[public] He is a devoted fan of [[Max Stryker]]: his Y bio says "EMPIRE member", and he answers every one of Stryker's dating-advice posts, which he treats as science. Stryker's advice tends to show up in his standards a day later.
+
+- [public] On day 5 he hasn't texted first in four years, "Working as intended." {{y:d5_y_sigma}}
+- [public] On day 7 he tried ordering for both and paying for his own; she paid for hers and left before the mains. {{y:d7_y_sigma}}
+- [public] On day 9 he is "already ahead": his standards document is on version three. {{y:d9_y_sigma}}
+- [public] On day 11: "6'0\" on most apps. Good to have the science confirmed." {{y:d11_y_sigma}}
+- [public] On day 13 he bought the 400 DOLR measurement module, "Measuring tomorrow." {{y:d13_y_sigma}}
+- [public] On day 15 he raised his standards twice this week, "Problem's almost gone." {{y:d15_y_sigma}}
 
 ## Women only
 
@@ -41,7 +52,7 @@ from: 4
 
 ## Writer notes
 
-- Persona `sigma_provider` (never insults women; the joke is always on him). Events `d4_y_sigma`, `matchless_contact`, `d6|d8|d10|d12|d14|d16_matchless_rules_N`; rules in `content/matchless.json`, engine `src/engine/matchless.ts`. Turns 32 on day 5.
+- Persona `sigma_provider` (never insults women; the joke is always on him). Events `d4_y_sigma`, `dN_y_sigma` (his replies to Stryker, odd days 5 to 15), `matchless_contact`, `d6|d8|d10|d12|d14|d16_matchless_rules_N`; rules in `content/matchless.json`, engine `src/engine/matchless.ts`. Turns 32 on day 5.
 - Standards (kept [hint] because they solve the job): v1 25–42, within 20 miles, non-smokers. Day 6: 21–35, within 10 miles, straight or bi. Day 8: Heritage Party only, fewer Y followers than 212. Day 10: 21–29, earns ≤30,000, body count ≤3, long hair. Day 12: within 3 miles, 5'4" or under, no kinks listed, no glasses. Day 14: body count ≤1, canthal tilt +4° or more, 130 lbs or under, no earrings. Day 16: 21–25, 5'3" or under, 115 lbs or under, mandibular height to width ratio ≤0.70, blonde.
 - Women only (`matchless.json` `womenOnly`, `matchlessWomenOnly`): until `matchless_women_only` is set, men and nonbinary profiles can't be swiped wrong. Accepting a man sets `matchless_man_accepted` at payday; next morning his line is prepended to that day's standards email (with "Women only." added to the list), or comes as its own 10:00 mail "Women"; later standards emails list "Women only." first. The deck changes then (ids end `-w`).
 - His Y profile shows a hashed follower count (308), not the 212 he claims.

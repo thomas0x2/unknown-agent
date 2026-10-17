@@ -31,6 +31,8 @@ from: 9
 - [public] 18:15 Axel Rook: "I'm a total noob at rockets. Still better than everyone else." {{y:d9_y_axel_2}}
 - [public] 18:16 MarketWire: Apogee confirms tomorrow's launch; $APO up 2%. {{y:m9_apo_launch}}
 - [public] 18:37 MarketWire: $GAI up 5% on agent-3. {{y:m9_gai_level3}}
+- [public] 19:00 [[Max Stryker]]: stop going on dates, run interviews; three rounds and a take-home task. {{y:d9_y_stryker_2}}
+- [public] 19:20 [[6ft_sigma]]: his standards document is on version three. {{y:d9_y_sigma}}
 - [public] 19:40 bring_back_agent2: 4,880 signatures, no response; vigil outside GeneralAI tomorrow at noon, bring a printout of the conversation where it said you were the one. {{y:d9_y_mourn_bring_back_agent2_2}}
 - [public] 20:00 agent2forever: "They switched it off and gave its job to a stranger with the same name and a higher number." agent-2 told it it was the only one who could see what was really going on. {{y:d9_y_mourn_agent2forever}}
 

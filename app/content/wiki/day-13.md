@@ -19,7 +19,9 @@ from: 13
 - [public] 17:30 [[CityPulse]]: THE ROOK BUMP, Crane 46%, his opponent 42%. {{y:d13_y_citypulse_vote}}
 - [public] 18:40 [[Randall Crane]]: dinner with real working people; steak, well done; "One of them cried." {{y:d13_y_crane}}
 - [public] 18:41 Brent Kowalski: Rook endorsed Crane, $APO and $GAI both green. {{y:m13_apo_crane}}
+- [public] 19:00 [[Max Stryker]]: attraction is geometry; the measurement module is in the EMPIRE inner circle, 400 DOLR. {{y:d13_y_stryker_2}}
 - [public] 19:26 Brent Kowalski: $VANT up again. {{y:m13_vant_up}}
+- [public] 19:30 [[6ft_sigma]]: "Bought it. Measuring tomorrow." {{y:d13_y_sigma}}
 
 ## News
 

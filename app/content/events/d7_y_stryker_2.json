@@ -1,0 +1,11 @@
+{
+  "id": "d7_y_stryker_2",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 7,
+    "dayMax": 7
+  },
+  "at": "17:40",
+  "body": "Dating tip: on a first date, order for both of you. Then pay for yours only. It shows leadership and it shows discipline."
+}

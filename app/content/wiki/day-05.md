@@ -29,6 +29,8 @@ from: 5
 - [public] 14:27 doomscroll checked the news once today; "that was the mistake." {{y:f5}}
 - [public] 16:20 [[CityPulse]]: CRANE SURGES TO 71% in a Y poll of 300,000 votes; Y "can't share" who voted. {{y:d5_y_citypulse_vote}}
 - [public] 17:30 studioghast: they trained their models on artists' work and sell it back; "my style is a dropdown now." {{y:d5_y_aiart}}
+- [public] 18:20 [[Max Stryker]] dating advice: never text first, never text second; she can go through his assistant. {{y:d5_y_stryker_2}}
+- [public] 18:45 [[6ft_sigma]]: "@max_stryker Haven't texted first in four years. Working as intended." {{y:d5_y_sigma}}
 - [public] 19:10 Randall Crane: there is a FAKE Randall Crane on Y; "You can tell it's the real one because it's the one you're reading." {{y:d5_y_crane}}
 - [public] 19:20 [[Axel Rook]]: "@randall_crane Concerning" {{y:d5_y_axel}}
 - [public] 19:30 Axel Rook: parody accounts must say parody in the name. "Looking into it." {{y:d5_y_axel_2}}

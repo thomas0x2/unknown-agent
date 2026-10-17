@@ -1,0 +1,11 @@
+{
+  "id": "d15_y_stryker_2",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 15,
+    "dayMax": 15
+  },
+  "at": "17:10",
+  "body": "A man with standards never lowers them. He raises them until the problem goes away."
+}
