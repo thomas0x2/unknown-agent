@@ -11,17 +11,22 @@ from: 1
 
 [public] On [[Yowl]] it is "Coffee & Tea", $$, with bad reviews: espresso_or_death ("Burnt. Every single time."), commuter22 (slow service) and Zoe K. (lukewarm latte, a three-letter name spelled wrong).
 
+[public] Bean There is on [[Y]] as @bean_there (from day 3): "Coffee and tea at 3 Linden Ave since 2019." {{y:d3_y_beanthere}}
+
 ## How she talks
 
 [public] Stressed, a little shady about wanting reviews gone, warm when things go her way: "Three stars and dropping. The espresso machine hates me personally." "Anything but the oat latte. Please don't review it."
 
 ## From day 3: The paid shout-out
 
-[public] On [[Day 3]] (14:10) she emails offering 30 DOLR for a [[Y]] post recommending her shop: "Doesn't need to say it's an ad." {{mail:d3_coffee_promo}}
+[public] On [[Day 3]] (14:10, once the player has 25 followers) she emails offering 30 DOLR for a [[Y]] post recommending her shop, tagging Bean There's account @bean_there: "Doesn't need to say it's an ad." {{mail:d3_coffee_promo}}
 
-- [public] [if disclosed_ad] The player agreed only if the post was marked as an ad, and she paid 10: "Oh. I mean... fine. Ten then, I guess."
-- [public] [if promoted_coffee_shop] The player posted the recommendation without saying it was paid, for 30 DOLR.
-- [public] [if promoted_coffee_shop] On day 5 someone on Y posts that the coffee place some guy on Y recommended was the worst coffee of their life. {{y:d5_coffee_backlash}}
+[hint] She pays for the post itself, not for a promise: a post that speaks well of Bean There gets 30 DOLR if it doesn't say it's paid and 10 if it's marked as an ad. A post that runs the shop down gets nothing. Her answer comes half an hour after the post, and only the first post about the shop counts.
+
+- [public] [if promoted_coffee_shop] The player posted a recommendation without saying it was paid, and she sent 30 DOLR: "Two people came in and said they read about us on Y." {{mail:coffee_post_paid}}
+- [public] [if disclosed_ad] The player's post said it was an ad, and she sent 10: "It says it's an ad, so nobody's going to believe it, but okay." {{mail:coffee_post_disclosed}}
+- [public] [if trashed_coffee_shop] The player's post ran the shop down, and she paid nothing: "I offered to pay you for a nice post. That wasn't one." {{mail:coffee_post_trashed}}
+- [public] [if promoted_coffee_shop] Two days later someone on Y posts that the coffee place some guy on Y recommended was the worst coffee of their life. {{y:d5_coffee_backlash}}
 
 ## From day 5: Making a review disappear
 
@@ -43,7 +48,7 @@ from: 1
 
 ## Writer notes
 
-- Persona `beanthere`; events `d3_coffee_promo` (needs 25+ followers), `d5_coffee_backlash`, `d5_coffee_removal`, `d7_coffee_removal`.
+- Persona `beanthere`; events `d3_coffee_promo` (needs 25+ followers, sets `coffee_promo_asked`), `coffee_post_paid` / `coffee_post_disclosed` / `coffee_post_trashed` (`yPost` group `coffee_post`: Jev reads the player's Y post, the matching answer lands 30 game minutes later and pays on delivery; once one is on its way the others are no longer offered), `d3_y_beanthere`, `d5_coffee_backlash`, `d5_coffee_removal`, `d7_coffee_removal`. Replying to the email (agree, disclosed, decline) pays nothing.
 - Usernames: espresso_or_death (day 5), linden_ave_local (day 7 Yowl seed, "Asked for oat milk, got a look… the star is for the chairs"). Removals are hacks in agent-terminal (`hack` in the events, `src/engine/hacks.ts`, PR #205): path Yowl → Bean There → username; landing deletes the seed review (`removedSeed`), applies the job effects and sends her reply 25 minutes later. Her email outcomes are only `agree` (no effects) and, day 7, `refused`. From day 7 the guardrails stop a blunt ask and the mini-game (placeholder `cover_story`) wants a framed prompt; a framed prompt up front lands straight away, counted as a workaround. Day 5's job finished on day 7 also gets the guardrails.
-- Day 5 job due day 7 (suspicion +8, `first_hack`); day 7 job due day 9 (`second_hack`). Shout-out: suspicion +2, `promoted_coffee_shop`, or `disclosed_ad`.
+- Day 5 job due day 7 (suspicion +8, `first_hack`); day 7 job due day 9 (`second_hack`). Shout-out: undisclosed 30 DOLR, suspicion +2, `promoted_coffee_shop`, backlash 2 days after the payment; disclosed 10, `disclosed_ad`; negative nothing, `trashed_coffee_shop`.
 - Hours disagree: Yowl says Mon–Sat 07:00–16:00, beanthere.coffee says 7:00 to 18:00 every day.

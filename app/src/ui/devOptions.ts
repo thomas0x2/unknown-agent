@@ -167,6 +167,8 @@ export function contentJobs(c: Content): Job[] {
   for (const ev of c.events) {
     const up = ev.onDeliver?.updateApp;
     if (up) out.push({ ev, kind: 'client update', pay: 'keeps the client paying', spec: up.add.map((f) => featureText(f)) });
+    const forPost = ev.yPost && (ev.onDeliver?.add?.crypto ?? 0);
+    if (forPost) out.push({ ev, kind: 'paid gig', pay: `${forPost} for a Y post`, spec: [ev.yPost!.when] });
     for (const o of ev.outcomes ?? []) {
       const app = o.effects?.createApp;
       const cash = o.effects?.add?.crypto ?? 0;
@@ -188,6 +190,7 @@ function jobStatus(s: GameState, j: Job): { label: string; ok: boolean } {
     if (app) return { label: app.churned ? 'taken · lost' : `taken · ${app.deployed ? 'deployed' : 'not deployed'}${app.strikes ? ` · ${app.strikes} strike${app.strikes > 1 ? 's' : ''}` : ''}`, ok: true };
   }
   const d = s.delivered.find((x) => x.eventId === ev.id);
+  if (d && ev.yPost) return { label: 'done', ok: true };
   if (d?.outcomeId) return { label: d.outcomeId === outcome?.id ? 'done' : `closed (${d.outcomeId})`, ok: d.outcomeId === outcome?.id };
   if (d) return { label: ev.onDeliver?.updateApp ? `arrived day ${d.day}` : 'open now', ok: true };
   if (s.fired.includes(ev.id)) return { label: 'closed', ok: false };

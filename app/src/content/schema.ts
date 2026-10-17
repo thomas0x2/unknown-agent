@@ -232,9 +232,11 @@ export interface GameEvent {
   launch?: { app: string; feature?: string; at?: string; after: number };
   /**
    * Lands `after` game minutes (default 30) after the player posts on Y about what `when` describes,
-   * once the trigger holds. Jev reads the post. The trigger alone never delivers it.
+   * once the trigger holds. Jev reads the post. The trigger alone never delivers it. Events sharing a
+   * `group` are the different answers to one ask (a paid post, a disclosed ad, a bad review): once one
+   * is on its way, the others are no longer offered.
    */
-  yPost?: { when: string; after?: number };
+  yPost?: { when: string; after?: number; group?: string };
   /**
    * Lands `after` game minutes into the agent outage, on the day the player hacks GeneralAI (see
    * AGENT_OUTAGE), once the trigger holds. The trigger alone never delivers it.
