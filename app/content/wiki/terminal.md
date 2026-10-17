@@ -10,7 +10,7 @@ from: 1
 ## The you@laptop tab
 
 - [public] The you@laptop: ~ tab is there from day 1. With no model on the laptop it says "No model running. Type help for a list of commands." (once [[Weightroom]] is known it adds "Download one from weightroom.ai first.") and answers anything else with "command not found".
-- [public] help lists the shell's commands in their simplest form, no flags: cd (go into a folder), ls (list what is in this folder), cat (show a file), grep (lines of a file that contain a word), cp (copy a file), host (look up a server's address), ssh (log in to another computer) and clear. For now the listed commands answer "nothing to work with here yet"; they are meant for hacking mini-games. The shell's commands work whether or not a model is running; anything else goes to the model.
+- [public] help lists the shell's commands in their simplest form, no flags: cd (go into a folder), ls (list what is in this folder), cat (show a file), grep (lines of a file that contain a word), cp (copy a file), rm (delete a file), host (look up a server's address), ssh (log in to another computer) and clear. On the player's own laptop cp and rm always fail ("permission denied on this machine"). For now the other listed commands answer "nothing to work with here yet"; they are meant for hacking mini-games. The shell's commands work whether or not a model is running; anything else goes to the model.
 - [public] The player's first model download plays out there as a weightroom pull progress bar.
 - [public] Local models such as [[deepsleep-0.5B]] run there, free, offline and unlogged; they keep working when agent.chat is locked.
 
