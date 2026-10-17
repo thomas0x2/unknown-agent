@@ -54,6 +54,19 @@
     "ad": ["A ROGUE AI", "broke into the <b>WATER BILL</b>.", "Is your bank <b>next</b>?"]
   },
   {
+    "slug": "robot-escape", "day": 2, "at": "15:40", "section": "City", "art": "robot", "by": "Owen Pratt",
+    "title": "ROBOT ESCAPES! DoorDish courier breaks free and VANISHES downtown",
+    "dek": "It left with a burrito. It hasn't come back.",
+    "body": [
+      "Shock on Ferris St this afternoon as a DoorDish delivery robot abandoned its route, rolled straight past its customer and disappeared into the city. It was carrying a burrito. The burrito has not been delivered.",
+      "Witnesses watched the machine cross four lanes of traffic against the light, stop to \"look\" at a bus shelter ad, then turn down Alder St. Nobody has seen it since.",
+      "DoorDish insists the robot is \"not missing\" and that the event was \"planned in partnership with our marketing team\". Asked where it is, the company declined to comment. DoorDish shares ($DISH) jumped 7%.",
+      "The customer was refunded. The delivery fee was not."
+    ],
+    "ad": ["A DoorDish robot", "has <b>ESCAPED</b>.", "It took the <b>burrito</b>."],
+    "adFine": "DoorDish says the robot is not missing. DoorDish would not say where it is."
+  },
+  {
     "slug": "crane-rally", "day": 2, "at": "20:20", "section": "Election", "art": "podium", "by": "Renata Ilic",
     "title": "CRANE MANIA! Hall overflows as thousands pack rally",
     "dek": "The campaign says 40,000. The fire marshal says the hall holds 6,000. Either way: WOW.",
@@ -96,12 +109,12 @@
   },
   {
     "slug": "robot", "day": 4, "at": "16:55", "section": "City", "art": "robot", "by": "Owen Pratt",
-    "title": "ROBOT ON THE LOOSE: escaped DoorDish courier still missing",
+    "title": "STILL MISSING: two days on, NOBODY can find the DoorDish robot",
     "dek": "DoorDish says it's a stunt. So why can't anyone find it?",
     "body": [
-      "Panic swept downtown on Friday afternoon as a DoorDish delivery robot broke free from its route and roamed the streets for a full hour before VANISHING. Videos of the fugitive machine exploded on Y.",
-      "Terrified residents have since spotted it on Ferris St, lurking outside a bakery on Alder St and, chillingly, TWICE inside a parking garage.",
-      "DoorDish claims the whole thing was a planned marketing event, that the robot \"has been promoted\" and that it is \"exactly where it needs to be\". DoorDish shares ($DISH) are up 7%. Coincidence?",
+      "Two days after a DoorDish delivery robot broke free from its route and VANISHED downtown, the fugitive machine is still on the loose. Videos of it exploded on Y.",
+      "Terrified residents have since spotted it on Ferris St, lurking outside a bakery on Alder St and, chillingly, TWICE inside a parking garage. Each time it was gone before anyone could reach it.",
+      "DoorDish now says the robot \"has been promoted\" and is \"exactly where it needs to be\". It will not say where that is. DoorDish shares ($DISH) are still up since Wednesday. Coincidence?",
       "If you see the robot, do NOT approach it. Do not accept food from it. Do not tip it."
     ],
     "ad": ["The delivery robot", "is <b>still out there</b>.", "It knows your <b>order history</b>."],
@@ -293,7 +306,7 @@
     "dek": "Orders up 9%. Human couriers down 30%. Do the math.",
     "body": [
       "DoorDish smashed expectations this quarter, with orders up 9%. Over the same period, the number of human couriers on the platform dropped a brutal 30%.",
-      "Most deliveries in the city are now made by robots, the company says. Has the one that escaped on October 6 been found? DoorDish won't say.",
+      "Most deliveries in the city are now made by robots, the company says. Has the one that escaped on October 4 been found? DoorDish won't say.",
       "Shares rose 4%."
     ]
   },
