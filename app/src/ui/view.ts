@@ -19,6 +19,7 @@ import { pageDrive } from './qdrive';
 import { pageSherwood } from './sherwood';
 import { pageDoorDish } from './doordish';
 import { pageAdSite, adSiteTitle } from './adSites';
+import { isVantorAddr, vantorSignature } from './vantor';
 import { pagePrince } from './prince';
 import { pageLonely } from './lonely';
 import { pageSorry } from './sorry';
@@ -26,11 +27,12 @@ import { pageCurrent } from './current';
 import { siteIcon } from './siteIcons';
 import { DEEPSLEEP_LOGO } from '../sites/deepsleepLogo';
 import { outplacementUpload, OUTPLACEMENT } from './outplacement';
-import { adHtml } from './ads';
+import { adHtml, setHeadline } from './ads';
+import { pageCityPulse } from './citypulse';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount, appLogo } from './appsite';
-import { marketPosts, cranePosts, fillerToday, postMin, handleOf, playMinutes, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, SEED_PHRASE, chatCost, type PaidChat, inBin, isDeleted, CLOCK } from '../engine';
+import { marketPosts, cranePosts, hotStory, fillerToday, postMin, handleOf, playMinutes, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, SEED_PHRASE, chatCost, type PaidChat, inBin, isDeleted, CLOCK } from '../engine';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 import { repoFiles, treeAt, fileSource } from './repoTree';
 import { yBio } from './y-bios';
@@ -62,12 +64,13 @@ function linkify(escaped: string): string {
     .replace(/(spincycle\.test\/feed(?:\/\d+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(coinbln\.com(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(?<![@\w.])(thecurrent\.test(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
+    .replace(/(citypulse\.news(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(^|[^\w.])@([a-z0-9_]+)/gi, '$1<a href="#" class="y-at" data-nav="y.com/$2">@$2</a>');
 }
 
 function tabTitle(r: Route, url: string): string {
   const names: Partial<Record<string, string>> = {
-    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', doordish: 'DoorDish', phish: 'Coinbin · Sign in', prince: 'Crypto Prince', lonely: 'Lonely.ai', sorry: 'SorryWriter', current: 'The Current', forkyard: 'Forkyard',
+    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', doordish: 'DoorDish', phish: 'Coinbin · Sign in', prince: 'Crypto Prince', lonely: 'Lonely.ai', sorry: 'SorryWriter', current: 'The Current', citypulse: 'CityPulse', forkyard: 'Forkyard',
     agent: 'agent', yowl: 'Yowl', weightroom: 'Weightroom', nullboard: 'nullboard', cellar: 'Cellar', app: url,
   };
   if (r.site === 'notfound') return url || 'New Tab';
@@ -236,6 +239,8 @@ function pageSpinFeed(store: GameStore, param?: string): string {
 // ── page dispatch ──
 export function page(store: GameStore, r: Route): string {
   if (!r.reachable) return pageError(store.url, r.site);
+  const hot = hotStory(store.state);
+  setHeadline(hot?.ad && { slug: hot.slug, frames: hot.ad, fine: hot.adFine, robot: hot.slug === 'robot' });
   switch (r.site) {
     case 'newtab': return pageNewTab(store);
     case 'qmail': return pageMail(store, r.param);
@@ -257,6 +262,7 @@ export function page(store: GameStore, r: Route): string {
     case 'sorry': return pageSorry(store);
     case 'current': return pageCurrent(store.state, r.param);
     case 'adsite': return pageAdSite(r.param ?? '', store.state, store.ui.adNotice, r.param === OUTPLACEMENT ? outplacementUpload(store) : '');
+    case 'citypulse': return pageCityPulse(store, r.param);
     default: return pageUnderground(r.def?.label ?? r.site);
   }
 }
@@ -383,6 +389,7 @@ function pageMail(store: GameStore, param?: string): string {
         return `<details class="qm-msg" data-msg="${esc(r.id)}"${expanded ? ' open' : ''}>
           <summary class="qm-meta"><span>${meta}<span class="qm-snip">${esc(r.body.replace(/\s+/g, ' ').slice(0, 90))}</span></span><span>${mailTime(s, r)}</span></summary>
           <div class="qm-body">${linkify(br(r.body))}</div>
+          ${r.folder !== 'sent' && isVantorAddr(r.addr) ? vantorSignature() : ''}
           ${r.link === 'cancel' && r.bookingId ? (s.bookings.find((b) => b.id === r.bookingId)?.cancelClicked
             ? `<p class="qm-actions"><b>Your booking has been cancelled.</b></p>`
             : s.bookings.find((b) => b.id === r.bookingId)?.noShow ? `<p class="qm-actions"><b>This booking has passed.</b></p>`
@@ -452,7 +459,7 @@ function yPosts(store: GameStore): YPost[] {
   }
   // the stock chatter the vibe check reads (story events with stock labels are already above)
   for (const p of market) if (!out.some((x) => x.id === p.id)) out.push({ id: p.id, author: p.author, handle: p.handle, text: p.text, day: p.day, min: p.min, likes: p.likes, rank: p.bot ? 2 : 1 });
-  // a third of the filler is up each day, posted at its own time
+  // today's filler, each post at its own time
   for (const f of fillerToday(s, store.content)) out.push({ id: f.id, author: f.from, handle: f.handle, text: f.body, day: s.values.day, min: postMin(f, s.values.day), likes: 3 + hashHue(f.id) % 60, rank: 1 });
   for (const x of s.yExtra) out.push({ id: x.id, author: x.author, handle: x.handle, text: x.text, day: x.day, min: x.min, likes: x.likes, replyTo: x.replyTo });
   for (const u of s.userPosts) out.push({ id: u.id, author: PLAYER.name, handle: PLAYER.handle, text: u.text, day: u.day, min: u.min, likes: u.likes, mine: true, delta: u.delta, score: u.score });

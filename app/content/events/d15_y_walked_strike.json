@@ -1,0 +1,11 @@
+{
+  "id": "d15_y_walked_strike",
+  "site": "y",
+  "from": "walked_there_again",
+  "trigger": {
+    "dayMin": 15,
+    "dayMax": 15
+  },
+  "at": "15:00",
+  "body": "Walked past the DoorDish picket line on Ferris St. Four people with signs. Robots delivering straight through the middle of it. citypulse.news/courier-strike"
+}

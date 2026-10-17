@@ -1,0 +1,11 @@
+{
+  "id": "d3_y_teo_jobsfair",
+  "site": "y",
+  "from": "Teo Vasquez",
+  "trigger": {
+    "dayMin": 3,
+    "dayMax": 3
+  },
+  "at": "13:00",
+  "body": "Was in that queue at 6am. The app on my phone rejected me before I got to the door. citypulse.news/jobs-fair"
+}

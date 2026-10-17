@@ -6,6 +6,7 @@
  */
 import { adSite } from '../sites/adSites';
 import type { GameState } from '../engine';
+import { SITE_LOGOS } from './brandLogos';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
@@ -21,7 +22,7 @@ export function pageAdSite(url: string, state: GameState, notice = '', extra = '
   const action = s.action ? `<div class="lp-action"><button type="button" class="lp-btn" data-act="${esc(s.action[1])}">${esc(s.action[0])}</button>${notice ? `<p class="lp-notice" role="status">${esc(notice)}</p>` : ''}</div>` : '';
   const quote = s.quote ? `<blockquote class="lp-quote"><p>“${esc(s.quote[0])}”</p><cite>${esc(s.quote[1])}</cite></blockquote>` : '';
   return `<div class="lp lp-k-${s.kit} lp-t-${s.theme}">
-    <header class="lp-top"><b class="lp-brand">${s.logo ? `<span class="lp-mark lp-logo">${s.logo}</span>` : `<span class="lp-mark" aria-hidden="true">${esc(s.mark)}</span>`}${esc(s.brand)}</b></header>
+    <header class="lp-top"><b class="lp-brand">${SITE_LOGOS[s.theme] ? SITE_LOGOS[s.theme].wordmark(s.brand) : `${s.logo ? `<span class="lp-mark lp-logo">${s.logo}</span>` : `<span class="lp-mark" aria-hidden="true">${esc(s.mark)}</span>`}${esc(s.brand)}`}</b></header>
     <section class="lp-hero">
       ${s.kicker ? `<p class="lp-kicker">${esc(s.kicker)}</p>` : ''}
       <h1>${esc(s.title)}</h1>
@@ -57,6 +58,7 @@ export function markIcon(mark: string, bg: string, ink: string): string {
 export function adSiteIcon(url: string): string | undefined {
   const s = adSite(url);
   if (!s) return undefined;
+  if (SITE_LOGOS[s.theme]) return SITE_LOGOS[s.theme].icon;
   if (s.logo) return s.logo;
   const [bg, ink] = FAV[s.theme] ?? ['#444', '#fff'];
   return markIcon(s.mark, bg, ink);

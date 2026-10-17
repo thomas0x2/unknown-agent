@@ -7,7 +7,7 @@ import { adSite } from './adSites';
 
 export type SiteId =
   | 'y' | 'qmail' | 'qdrive' | 'coinbin' | 'sherwood' | 'doordish' | 'forkyard' | 'agent' | 'yowl'
-  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'phish' | 'prince' | 'lonely' | 'sorry' | 'current' | 'adsite' | 'app' | 'newtab' | 'notfound';
+  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'phish' | 'prince' | 'lonely' | 'sorry' | 'current' | 'citypulse' | 'adsite' | 'app' | 'newtab' | 'notfound';
 
 export interface SiteDef {
   id: SiteId;
@@ -52,6 +52,9 @@ export const SITES: SiteDef[] = [
   { id: 'sorry', base: 'sorrywriter.ai', label: 'SorryWriter', group: 'web', reachable: always },
   // Mara Vey's paper; her day 7 article lives here (ui/current.ts)
   { id: 'current', base: 'thecurrent.test', label: 'The Current', group: 'web', reachable: always },
+  // the local news site (ui/citypulse.ts); bookmarked once the player has read it
+  { id: 'citypulse', base: 'citypulse.news', label: 'CityPulse', group: 'core', reachable: always,
+    bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('citypulse')) },
 ];
 
 export interface Route {

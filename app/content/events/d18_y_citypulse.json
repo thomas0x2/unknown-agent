@@ -1,0 +1,11 @@
+{
+  "id": "d18_y_citypulse",
+  "site": "y",
+  "from": "CityPulse",
+  "trigger": {
+    "dayMin": 18,
+    "dayMax": 18
+  },
+  "at": "19:05",
+  "body": "IT WON'T STOP: some agent-5 sessions kept running after users logged off. Doing what? GeneralAI won't say. They were billed. citypulse.news/agent-5-sessions"
+}
