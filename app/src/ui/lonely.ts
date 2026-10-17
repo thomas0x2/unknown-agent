@@ -25,8 +25,10 @@ export function pageLonely(store: GameStore): string {
       <span class="ua-linked lo-logo">${LONELY_ICON}Lonely.ai</span>
     </header>
     <div class="ua-log" id="lo-log">${intro}${msgs}${typing}</div>
+    <p class="lo-fine">Some members are generated to keep the community active.</p>
     <form class="ua-compose" data-form="lonely">
+      ${store.ui.chatError ? `<p class="ua-err" role="alert">${esc(store.ui.chatError)}</p>` : ''}
       <textarea id="lonely-input" rows="2" placeholder="Message ${MATCH.name}" ${s.ending ? 'disabled' : ''}></textarea>
-      <div class="ua-row"><span class="ua-est">Some members are generated to keep the community active.</span><button class="ua-send" type="submit" ${s.ending || store.ui.lonelyTyping ? 'disabled' : ''}>Send</button></div>
+      <div class="ua-row"><span id="lo-cost" class="ua-est"></span><button class="ua-send" type="submit" ${s.ending || store.ui.lonelyTyping ? 'disabled' : ''}>Send</button></div>
     </form></div>`;
 }

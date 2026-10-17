@@ -7,6 +7,7 @@
  */
 
 import { citizenScore, citizenBand, type GameState } from '../engine';
+import { DEEPSLEEP_LOGO } from './deepsleepLogo';
 
 /** Page layout family: shapes the markup a little and the CSS a lot. */
 export type AdKit = 'corp' | 'gov' | 'campaign' | 'scam' | 'local' | 'news' | 'clinic' | 'soft' | 'model';
@@ -33,6 +34,12 @@ export interface AdSite {
   link?: [string, string, string];
   /** a flag set when the page is opened (the link's site must be reachable once you've seen it) */
   unlocks?: string;
+  /** an SVG logo, drawn instead of `mark` in the header and the favicon */
+  logo?: string;
+  /** a resume upload under the cards (ui/outplacement.ts, engine/uploads.ts) */
+  upload?: boolean;
+  /** one working button, under the cards: [label, data-act handled in main.ts] */
+  action?: [string, string];
 }
 
 export const AD_SITES: AdSite[] = [
@@ -72,6 +79,7 @@ export const AD_SITES: AdSite[] = [
       ['Results', 'Placement rate: being calculated.'],
     ],
     fine: 'Access ends after 30 days or when you find a role, whichever comes first. So far it has always been the first.',
+    upload: true,
   },
 
   // ── Crane and Keller ──
@@ -86,6 +94,7 @@ export const AD_SITES: AdSite[] = [
       ['The Candidate', 'Randall Crane has never used a computer. His staff use them for him, around the clock.'],
     ],
     fine: 'Paid for by Crane Victory Fund. Not authorised by any computer. Website maintained by GeneralAI.',
+    action: ['Donate 5 DOLR', 'crane-donate'],
   },
   {
     url: 'crane2026.vote/jobs', brand: 'Crane Victory Fund', kit: 'campaign', theme: 'crane', mark: '★',
@@ -232,17 +241,6 @@ export const AD_SITES: AdSite[] = [
     fine: 'Packages renew every year. Renewal notices are sent to the deceased.',
   },
   {
-    url: 'sorrywriter.ai', brand: 'SorryWriter', kit: 'soft', theme: 'grief', mark: '✉',
-    kicker: 'Apologies, written for you', title: 'Say sorry like you mean it.',
-    lead: 'Tell SorryWriter what happened. It writes an apology in your voice, sized to the mistake.',
-    cards: [
-      ['Any occasion', 'Missed birthdays, forgotten anniversaries, things said at dinner.'],
-      ['Your voice', 'Connect your email and SorryWriter writes the way you do, typos included.'],
-      ['Follow-ups', 'If they don’t reply, SorryWriter sends a second apology about the first.'],
-    ],
-    fine: 'Some recipients use SorryWriter too. Conversations between two accounts may continue without either of you.',
-  },
-  {
     url: 'cryolater.com', brand: 'Cryo-Later', kit: 'clinic', theme: 'cryo', mark: '❄',
     kicker: 'Pause now. Resume later.', title: 'Wait out the job market.',
     lead: 'Cryo-Later keeps you at −196 °C until your field is hiring again, then wakes you with your skills intact.',
@@ -314,6 +312,7 @@ export const AD_SITES: AdSite[] = [
       ['After a decision', 'Decisions are final. A new appeal can be filed against the next increase.'],
     ],
     fine: 'The automated review service is provided by GeneralAI, which owns or manages 38% of rental units in the city.',
+    action: ['File an appeal (5 DOLR)', 'rent-appeal'],
   },
   {
     url: 'citizenscore.gov', brand: 'Citizen Score', kit: 'gov', theme: 'ministry', mark: '⚖',
@@ -377,7 +376,7 @@ export const AD_SITES: AdSite[] = [
     fine: 'Memberships can be cancelled in person at the front desk, when Marcus is not there.',
   },
   {
-    url: 'deepsleep.ai', brand: 'deepsleep', kit: 'model', theme: 'deep', mark: 'd',
+    url: 'deepsleep.ai', brand: 'deepsleep', kit: 'model', theme: 'deep', mark: 'd', logo: DEEPSLEEP_LOGO,
     kicker: 'Open weights', title: 'deepsleep-0.5B',
     lead: 'A small open-weights chat model that runs on almost any laptop. Free, local, confident.',
     stats: [['0.5B', 'parameters'], ['2 GB', 'download'], ['1.2M', 'downloads']],

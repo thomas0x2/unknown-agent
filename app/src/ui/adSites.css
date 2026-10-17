@@ -140,6 +140,30 @@
 .pr-err { margin: 0; color: #d4002a; font-weight: 700; font-size: 14px; }
 .pr-btn { font: 900 18px var(--lp-font); padding: 14px 24px; border: 0; border-radius: 999px; background: var(--lp-accent); color: var(--lp-accent-ink); cursor: pointer; box-shadow: 0 6px 18px rgba(255, 0, 168, .35); }
 
+/* an ad site's one working button (rentboard.gov's appeal) */
+.lp-action { text-align: center; margin: 8px 0 24px; }
+.lp-btn { font: 700 15px var(--lp-font); padding: 11px 22px; border: 1px solid currentColor; border-radius: 2px; background: var(--lp-accent); color: var(--lp-accent-ink); cursor: pointer; }
+.lp-notice { margin: 10px 0 0; font-size: 14px; }
+
+/* Vantor Outplacement's resume upload (ui/outplacement.ts) */
+.up-form { max-width: 640px; margin: 20px auto 28px; padding: 20px 24px; border: 1px solid var(--lp-line, #ccc); background: var(--lp-card, #fff); }
+.up-form h2 { margin: 0 0 6px; font-size: 18px; }
+.up-form p { margin: 0 0 12px; }
+.up-row { display: flex; gap: 10px; }
+.up-row select { flex: 1; font: inherit; padding: 8px; background: #fff; color: #222; border: 1px solid var(--lp-line, #ccc); }
+.up-err { margin: 10px 0 0; color: #c0392b; font-size: 14px; }
+.up-result { margin-top: 14px; display: grid; gap: 4px; }
+.up-result b { font-size: 22px; }
+
+/* the paid chats: a refused message, and lonely.ai's fine print */
+.ua-err { margin: 0 0 6px; font-size: 13px; color: #c0392b; }
+.lo-fine { margin: 0; padding: 4px 16px; font-size: 12px; color: var(--ua-dim); text-align: center; }
+
+/* sorrywriter.ai: agent.chat's chat layout in SorryWriter's lilac (ui/sorry.ts) */
+.ua.sorry { --ua-bg: #f7f3fb; --ua-panel: #fff; --ua-ink: #2e2340; --ua-dim: #6e6182; --ua-line: #e2d8ee; --ua-you: #3a2b52; }
+.sorry .ua-text { font-family: Georgia, serif; font-size: 15px; line-height: 1.55; background: #fff; border: 1px solid var(--ua-line); border-radius: 14px; padding: 12px 16px; flex: 0 1 auto; max-width: min(85%, 600px); }
+.sw-avatar { display: inline-grid; place-items: center; width: 32px; height: 32px; flex: none; border-radius: 50%; background: #3a2b52; color: #f4eefb; font-size: 15px; }
+
 /* lonely.ai: agent.chat's chat layout in dating-app pink (ui/lonely.ts) */
 .ua.lonely { --ua-bg: #fff3f7; --ua-panel: #fff; --ua-ink: #4a1730; --ua-dim: #85546b; --ua-line: #f6cfdc; --ua-you: #e0336f; }
 .lonely .ua-bubble { border-radius: 18px 18px 4px 18px; }
@@ -150,3 +174,7 @@
 .lo-logo { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: #e0336f; }
 .lo-logo svg { width: 18px; height: 18px; }
 .lo-intro { align-self: center; margin: 24px 0; color: var(--ua-dim); font-size: 14px; }
+
+/* a brand with a drawn logo (deepsleep) shows it in place of the letter mark */
+.lp-mark.lp-logo { padding: 0; background: none; overflow: hidden; }
+.lp-mark.lp-logo svg { width: 26px; height: 26px; }
