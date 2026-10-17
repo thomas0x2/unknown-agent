@@ -38,5 +38,5 @@ from: 1
 ## Writer notes
 
 - Daniel Keller's second race (mayor, then governor) was cut on 2026-10-17 (Thomas: too complicated); the deepfake now targets Candidate 2030. Crane's posts treat day 21 as election day (the old spine had day 19).
-- Deepfake: the consultant's day 6 job (`d6_deepfake.json`, needs 60+ followers; `d7_deepfake_again.json` the next day for 250 if unposted; the player prompts agent to make and post it) sets `posted_deepfake` and `influence_path`; +20% followers, suspicion +10, `heritageStanding` +15, `progressStanding` −25. The drop: `d7_opponent_drop.json`, CityPulse `opponent-clip` / `opponent-lead`.
+- Deepfake: the consultant's day 6 job (`d6_deepfake.json`, needs 60+ followers; `d7_deepfake_again.json` the next day for 250 if unposted; the player prompts agent to make and post it) sets `posted_deepfake` and `influence_path`; +2400 ± 400 followers, suspicion +10, `heritageStanding` +15, `progressStanding` −25. The drop: `d7_opponent_drop.json`, CityPulse `opponent-clip` / `opponent-lead`.
 - [planned] The Regime ending (`election_tipped` at the finale): the influence path toward a Crane win; nothing sets the flag yet. Max Stryker's campaign recruiting days 10 to 12.

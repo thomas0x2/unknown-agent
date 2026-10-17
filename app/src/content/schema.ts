@@ -72,7 +72,11 @@ export interface AgentJobSpec {
   /** Everything the prompt has to name (who is in the picture). `ask` is what the agent says when it's left out. */
   path: { name: string; what: string; description: string; ask: string; aka?: string[] }[];
   /** The post that goes up on Y from the player's account: its text, its picture (ui art kind) and how far it spreads. */
-  post: { text: string; img?: string; viral?: { likes: number; minutes: number } };
+  post: {
+    text: string; img?: string; viral?: { likes: number; minutes: number };
+    /** Followers the post brings: `base`, give or take up to `spread` at random. */
+    followers?: { base: number; spread: number };
+  };
   /** Applied when it lands (suspicion, standings, followers, flags). Its `job` is settled that night: the pay comes overnight. */
   effects: Effects;
   /** The client's scripted email, `replyAfter` game minutes after the post went up (default 30). */

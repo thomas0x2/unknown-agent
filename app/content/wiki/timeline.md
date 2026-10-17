@@ -119,7 +119,7 @@ Thomas went through this on 2026-10-17: the game's version stays everywhere exce
 - Mom's jacket (change): chipping in is sending DOLR to the brother's Coinbin address; buying it yourself is buying the leather jacket (45) on Swaplist by day 5.
 - Viktor's watch (keep): sells whenever Swaplist is live.
 - Journalist interview (keep): Mara can be emailed from day 1; no questionnaire; the day 7 article quotes the first email, unnamed.
-- Deepfake (change): +20% followers instead of a flat +40. Arrives at 19:00.
+- Deepfake (change): +2400 ± 400 followers (Thomas, 2026-10-17; was +20%, before that a flat +40). Arrives at 19:00.
 - HR email (keep): the final salary "has already been made".
 - Election (keep): day 21, not day 19.
 - New since the old docs, all staying: Gino's Y-post ask, the Coinbin phishing mail, prince-claims, lonely.ai, SorryWriter, rentboard appeal, Vantor Outplacement, Crane donations, Sherwood, Apogee, the agent-2 mourners.
