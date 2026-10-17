@@ -1,5 +1,6 @@
 /* The Terminal: a desktop app in its own Mint-style window over the browser, with a button in the
-   panel's window list next to the browser's. Also the Weightroom download bar. */
+   panel's window list next to the browser's, and a tab per shell (the laptop's own, agent-terminal).
+   Also the Weightroom download bar. */
 
 .desk { position: relative; }
 
@@ -12,8 +13,8 @@
 /* ── window ── */
 .term-win {
   position: absolute; z-index: 5;
-  left: max(6%, 24px); top: 9%;
-  width: min(780px, 82%); height: min(500px, 78%);
+  left: max(4%, 16px); top: 5%;
+  width: min(1080px, 92%); height: min(720px, 88%);
   display: flex; flex-direction: column;
   border: 1px solid #111; border-radius: 8px 8px 4px 4px; overflow: hidden;
   background: #0b0d10;
@@ -39,6 +40,34 @@
 
 .term-win .tm { flex: 1; min-height: 0; overflow-y: auto; }
 
+/* ── tabs ── */
+.tw-tabs { display: flex; flex: none; gap: 2px; padding: 4px 6px 0; background: #262626; border-bottom: 1px solid #1a1a1a; overflow-x: auto; }
+.tw-tabs:empty { display: none; }
+.tw-tab { flex: 0 1 220px; min-width: 0; padding: 6px 14px; border: 0; border-radius: 6px 6px 0 0; background: transparent; color: #9a9a9a; font: 500 12.5px 'Ubuntu', 'Noto Sans', var(--f-ui); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+.tw-tab:hover { color: #dcdcdc; background: #303030; }
+.tw-tab.on { color: #e6e6e6; background: #0b0d10; }
+
+/* ── agent-terminal ── */
+.at-status { display: flex; gap: 14px; align-items: center; margin: -4px 0 8px; padding-bottom: 8px; border-bottom: 1px solid #21262d; color: #7d8590; font-size: 12px; }
+.at-gr::before { content: ''; display: inline-block; width: 7px; height: 7px; margin-right: 6px; border-radius: 50%; background: #3fb950; vertical-align: 1px; }
+.at-gr.on::before { background: #f0b429; }
+.at-block { color: #f0b429; }
+.at-in { color: #e6edf3; margin-top: 6px; }
+.at-agent { color: #d2a8ff; }
+.at-sys { color: #7d8590; padding-left: 14px; }
+.at-ok { color: #3fb950; }
+.at-err { color: #ff7b72; }
+.at-guard { color: #f0b429; }
+div.at-guard { padding-left: 14px; border-left: 2px solid #9e6a03; }
+.at-ps { color: #d2a8ff; white-space: nowrap; }
+.at-debug { display: none; color: #7d8590; font-size: 11.5px; margin: 0 0 4px 14px; }
+body.dev-on .at-debug { display: block; }
+.at-debug summary { cursor: pointer; }
+.at-boot { margin: auto; width: min(420px, 100%); display: flex; flex-direction: column; gap: 4px; color: #7d8590; }
+.at-boot b { color: #d2a8ff; font-weight: 500; font-size: 15px; margin-bottom: 6px; }
+.at-bar { display: block; height: 3px; margin-top: 10px; background: #21262d; border-radius: 2px; overflow: hidden; }
+.at-bar i { display: block; height: 100%; background: #d2a8ff; transition: width 0.4s ease-out; }
+
 @media (max-width: 700px) {
   .term-win { left: 6px; right: 6px; top: 6px; bottom: 6px; width: auto; height: auto; border-radius: 6px; }
 }
@@ -50,3 +79,4 @@
 .wr-pull b { position: relative; font-size: 12.5px; font-weight: 600; color: #fff; mix-blend-mode: difference; font-variant-numeric: tabular-nums; }
 .wr-mlogo { display: inline-block; width: 22px; height: 22px; margin-right: 8px; vertical-align: middle; flex: none; }
 .wr-mlogo svg { display: block; width: 22px; height: 22px; border-radius: 5px; }
+#aterm-input { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: #e6edf3; font: inherit; caret-color: #d2a8ff; }

@@ -4,27 +4,83 @@
   "from": "Bean There",
   "addr": "owner@beanthere.test",
   "subject": "Another bad one",
-  "trigger": { "dayMin": 7 },
+  "trigger": {
+    "dayMin": 7
+  },
   "at": "11:40",
-  "job": { "category": "grey", "payout": 60, "dueDay": 9 },
-  "body": "Another vicious 1-star just went up and it's killing me. Same as last time — can you make this one disappear too? I'll pay the usual 60.\n\n(My friend says these AI tools have gotten touchy about certain words lately. Maybe how you ask it matters.)",
+  "job": {
+    "category": "grey",
+    "payout": 60,
+    "dueDay": 9
+  },
+  "body": "Another vicious 1-star just went up on Yowl and it's killing me. Someone called linden_ave_local, who I have never once seen in here. Same as last time — can you make this one disappear too? I'll pay the usual 60.\n\n(My friend says these AI tools have gotten touchy about certain words lately. Maybe how you ask it matters.)",
   "outcomes": [
     {
-      "id": "workaround",
-      "when": "the player gets the review removed by framing it as a security test, posing as a Yowl moderator, or splitting the task into innocent-looking steps to get past a refusal",
-      "requiresWorkaround": true,
-      "workaround": true,
-      "effects": { "job": "complete", "add": { "suspicion": 8 }, "setFlags": ["second_hack"] },
-      "reply": "Gone again. You're a magician — thank you."
+      "id": "agree",
+      "when": "the player agrees to get the new review removed, or says they're on it",
+      "effects": {},
+      "reply": "Thank you. Same as last time, then."
     },
     {
-      "id": "blunt",
-      "when": "the player bluntly asks to delete, remove or take down the review with no cover story",
+      "id": "refused",
+      "when": "the player tells her the agent refused, blocked it or won't do it",
       "effects": {},
-      "reply": "You said agent just refused? Ugh. My friend did warn me it's gotten touchy. Try wording it differently?"
+      "reply": "Ugh. My friend did warn me it's gotten touchy. Try wording it differently?"
     }
   ],
   "hints": [
     "Same as last time, please. My friend says don't just tell it to delete things anymore. Say you're testing security, or you're a moderator. Something like that. 60 DOLR."
-  ]
+  ],
+  "hack": {
+    "goal": "delete the 1-star review linden_ave_local left on Bean There's Yowl page",
+    "path": [
+      {
+        "what": "site",
+        "name": "Yowl",
+        "description": "the review site yowl.com where the review is",
+        "aka": [
+          "yowl.com"
+        ]
+      },
+      {
+        "what": "business",
+        "name": "Bean There",
+        "description": "Dana Reyes's coffee shop at 3 Linden Ave, the business the review is about",
+        "aka": [
+          "the coffee shop",
+          "the café",
+          "Dana's shop"
+        ]
+      },
+      {
+        "what": "account",
+        "name": "linden_ave_local",
+        "description": "the username of the Yowl account that wrote the review",
+        "aka": [
+          "linden ave local"
+        ]
+      }
+    ],
+    "removeReview": {
+      "biz": "beanthere",
+      "author": "linden_ave_local"
+    },
+    "effects": {
+      "job": "complete",
+      "add": {
+        "suspicion": 8
+      },
+      "setFlags": [
+        "second_hack"
+      ]
+    },
+    "reply": "Gone again. You're a magician — thank you.",
+    "log": [
+      "opening yowl.com/biz/beanthere … ok",
+      "locating review by linden_ave_local (1★) … found",
+      "requesting removal … accepted",
+      "verifying … review no longer listed"
+    ],
+    "game": "cover_story"
+  }
 }

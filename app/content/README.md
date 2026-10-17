@@ -10,6 +10,10 @@ touching engine code.
   Two kinds wait on something the player does instead of their trigger alone: `launch` lands on the
   day a client's app first goes live (at `at`, or `after` minutes after the deploy if later), and
   `yPost` lands `after` minutes after a Y post Jev reads as being about `when`.
+  An event with a `hack` is a job the agent does in agent-terminal (`src/engine/hacks.ts`): a
+  terminal prompt that asks for its `goal` and names every step of its `path` (site, business,
+  account) lands its `effects` and sends the client's `reply`. Its `game` is the mini-game that
+  stands in the way once the day 7 guardrails are up.
 - `apps/*.json` — one `AppTemplate` per file: an app type with its pages and features. Client specs
   reference features by id and description.
 - `y_filler.json` — `FillerPost[]` for the Y noise pool.
