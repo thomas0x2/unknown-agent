@@ -23,6 +23,7 @@ function onDay(day: number, min = 12 * 60): GameState {
   s.values.crypto = 500;
   for (const l of content.yMarket!.events) {
     const e = content.events.find((x) => x.id === l.event)!;
+    if (e.trigger.dayMin == null) continue; // timed by the auto-buy going live (Crane's $APO post)
     s.delivered.push({ eventId: e.id, site: e.site, day: e.trigger.dayMin! } as GameState['delivered'][number]);
   }
   return s;

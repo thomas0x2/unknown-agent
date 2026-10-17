@@ -982,6 +982,28 @@
   {
     "app": "sentiment",
     "broken": [
+      "auto_buy/signal/author"
+    ],
+    "prompt": "the vibe check bot bought $VANT because of a fake crane account (randa11_crane). make it check who actually posted",
+    "expect": {
+      "fix": [
+        "auto_buy/signal/author"
+      ]
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
+      "auto_buy/signal/author"
+    ],
+    "prompt": "vibe check's auto-buy bought vantor today when it shouldn't have",
+    "expect": {
+      "near": true
+    }
+  },
+  {
+    "app": "sentiment",
+    "broken": [
       "auto_buy/signal/praise"
     ],
     "prompt": "Vibe Check: the autobuy signal triggers on posts criticizing the company",

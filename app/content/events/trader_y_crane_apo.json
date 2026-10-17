@@ -1,0 +1,16 @@
+{
+  "id": "trader_y_crane_apo",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "flagsAll": [
+      "trader_client"
+    ]
+  },
+  "launch": {
+    "app": "trader_contact",
+    "feature": "auto_buy",
+    "after": 90
+  },
+  "body": "Apogee ($APO) builds rockets right here in America. Beautiful rockets. Very strong company!"
+}
