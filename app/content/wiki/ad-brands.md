@@ -3,6 +3,7 @@ title: Ad brands
 aliases: banner ads, ads, EscapeGuard, escapeguard.ai, GriefGPT, griefgpt.com, DOLR Foundation, dolr.money, LiquidAssets, liquidassets.cellar, Meridian Pods, meridianpods.live, NoDoze MAX, nodoze.max, CloudCasket, cloudcasket.eternal, Steadfast Mutual, steadfast.insure, LandlordPro, landlordpro.ai, HumanVerified, humanverified.id, Cryo-Later, cryolater.com, Mindset Daily, mindsetdaily.co, LegacySEO, legacyseo.rip, Crane Victory Fund, Your Bank (totally), Crypto Prince, GeneralAI Wellness, GeneralAI Billing
 category: companies
 from: 1
+hub: true
 ---
 
 [public] Banner ads run across the city's sites. Every ad shows its brand's logo and opens the sponsor's site in a new tab. Most sponsors have a plain landing page in their own colours with nothing to click. Sponsors with full pages of their own: [[EMPIRE]], [[coinbln.com]] ("Your Bank (totally)"), [[prince-claims.xyz]] (Crypto Prince), [[lonely.ai]], [[SorryWriter]], [[DoorDish]], [[CityPulse]], [[deepsleep-0.5B]] (deepsleep.ai), Spin Cycle and GeneralAI's agent ads, which open the [[agent]] models page. Government ads are on [[Government]]; Bean There, Iron Yard and Spin Cycle on [[Local businesses]].

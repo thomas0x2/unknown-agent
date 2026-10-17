@@ -40,6 +40,9 @@ Code paths, flags, open questions. Never part of an answer, never tagged.
 - **aliases** are other names a question might use: first names, handles, addresses, domains.
 - **category**: `people`, `family`, `companies`, `sites`, `apps`, `world`, `days`, or `writers`
   (writers pages, like the tone rules, endings and the timeline overview, are never used for answers).
+- **hub: true** (optional) marks a page of many things, like Ad brands and Local businesses: each
+  section is matched on its own, so a question that names one brand or shop finds its section
+  without naming the page.
 - **from**: the first day the player can know the page's subject exists (default 1). Before it, a
   question about it is a miss.
 - **Sections** (`##`) are what a question is matched to after the page, so give them headings that
