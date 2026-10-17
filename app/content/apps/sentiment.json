@@ -458,7 +458,11 @@
             "author",
             "account",
             "impostor",
-            "real Crane"
+            "real Crane",
+            "fake account",
+            "lookalike",
+            "handle",
+            "who posted"
           ]
         },
         {
@@ -527,5 +531,12 @@
     "fired": "that's two. i'm out.",
     "offline": "the crawler's not running at all. dashboard is a 404.",
     "stale": "same version. push the fix."
-  }
+  },
+  "storyBugs": [
+    {
+      "day": 5,
+      "feature": "auto_buy",
+      "bug": "impostor_buy"
+    }
+  ]
 }

@@ -64,6 +64,11 @@ export interface AppTemplate {
    * breaks, since nothing would show them; bugs built before are held and land once they show.
    */
   firstContentAfter?: number;
+  /**
+   * Bugs the story lands on a set day, whatever the build (the day 5 Crane impostor gets the auto-buy):
+   * once per game, on a live build of the feature, held like any bug until something shows it.
+   */
+  storyBugs?: { day: number; feature: string; bug: string }[];
 }
 /**
  * Complaint copy for an app that was broken at payday. Client apps send one email from the client
@@ -197,8 +202,10 @@ export interface GameEvent {
   /**
    * Lands on the day the app created by client event `app` first goes live: at `at`, or `after` game
    * minutes after that deploy when that is later. Only a first deploy queues it; the trigger alone never does.
+   * With `feature`, it waits instead for the first deploy that puts that feature live (the trader's
+   * auto-buy), `after` minutes later; past bedtime it carries over to the next morning.
    */
-  launch?: { app: string; at: string; after: number };
+  launch?: { app: string; feature?: string; at?: string; after: number };
   /**
    * Lands `after` game minutes (default 30) after the player posts on Y about what `when` describes,
    * once the trigger holds. Jev reads the post. The trigger alone never delivers it.

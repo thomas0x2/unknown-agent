@@ -572,11 +572,32 @@ export function wakeApps(s: GameState, content: Content): AppInstance[] {
 }
 
 /**
+ * The story's bugs for today (AppTemplate.storyBugs) go into the code of a live build of their feature,
+ * repo and live alike, whatever the agent built or fixed before. They're held like any bug, so revealBugs
+ * lands them once something shows them (the impostor's $VANT post for the auto-buy). Once a game each.
+ */
+function plantStoryBugs(s: GameState, content: Content): void {
+  for (const app of s.apps) {
+    if (!app.deployed || app.churned) continue;
+    for (const sb of content.apps[app.template]?.storyBugs ?? []) {
+      if (sb.day !== s.values.day || app.planted?.includes(sb.bug)) continue;
+      if (!app.features.some((f) => f.id === sb.feature)) continue;
+      app.planted = [...(app.planted ?? []), sb.bug];
+      for (const f of [...app.repo, ...app.features]) {
+        if (f.id !== sb.feature || (!f.correct && bugsOf(f).includes(sb.bug))) continue;
+        f.held = [...new Set([...(f.held ?? []), sb.bug])];
+      }
+    }
+  }
+}
+
+/**
  * Held bugs land once something in the game shows them (Crane's first praise for the auto-buy, a sold
  * listing for the sold badge), on the repo and the live build alike. An app that still owes its first
  * bug gets one shallow bug that shows, unless it already has one. Returns true if anything landed.
  */
 export function revealBugs(s: GameState, content: Content): boolean {
+  plantStoryBugs(s, content);
   let changed = false;
   for (const app of s.apps) {
     if (app.churned) continue;

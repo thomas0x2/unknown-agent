@@ -261,6 +261,7 @@
       "from": "Randall Crane",
       "handle": "randa11_crane",
       "body": "Huge fan of Vantor ($VANT). Great company, great people. The best.",
+      "at": "11:30",
       "likes": 19,
       "tickers": [
         "VANT"
@@ -1126,6 +1127,15 @@
       "mood": "bullish",
       "crane": "praise",
       "likes": 5210
+    },
+    {
+      "event": "trader_y_crane_apo",
+      "tickers": [
+        "APO"
+      ],
+      "mood": "bullish",
+      "crane": "praise",
+      "likes": 3870
     }
   ]
 }

@@ -83,6 +83,8 @@ export interface AppInstance {
   contentLive?: boolean;
   /** Its first build or the player's first deploy couldn't ship a bug that shows: the first one that can lands. */
   owedBug?: boolean;
+  /** Story bugs (AppTemplate.storyBugs) already put in its code: each lands once a game. */
+  planted?: string[];
   breaks: AppBreak[];
   /** Build bugs the agent has fixed, per feature: it doesn't make them again. */
   fixed?: Record<string, string[]>;

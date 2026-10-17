@@ -128,7 +128,7 @@ function deliver(s: GameState, ev: GameEvent, min = s.clockMin): DeliveredEvent 
 /** Already on its way today, or (once-only) already delivered. */
 function underway(s: GameState, ev: GameEvent): boolean {
   if (!ev.repeat && s.fired.includes(ev.id)) return true;
-  return !!s.arriving?.some((a) => a.eventId === ev.id && a.day === s.values.day);
+  return !!s.arriving?.some((a) => a.eventId === ev.id && a.day >= s.values.day);
 }
 
 /** Deliver it now if its time has come, otherwise queue it to land at its time. Job offers always queue, to be spread. */
@@ -227,7 +227,7 @@ export function spreadJobOffers(s: GameState, content: Content): void {
 export function deliverArrivals(s: GameState, content: Content, all = false): DeliveredEvent[] {
   if (!s.arriving?.length) return [];
   const day = s.values.day;
-  const isDue = (a: { day: number; at: number }) => all || a.day < day || a.at <= s.clockMin;
+  const isDue = (a: { day: number; at: number }) => all || a.day < day || (a.day === day && a.at <= s.clockMin);
   const due = s.arriving.filter(isDue).sort((a, b) => a.day - b.day || a.at - b.at);
   if (!due.length) return [];
   s.arriving = s.arriving.filter((a) => !isDue(a));
@@ -253,8 +253,24 @@ export function queueAt(s: GameState, ev: GameEvent, at: number): void {
  */
 export function queueLaunch(s: GameState, content: Content, clientEventId: string): void {
   for (const ev of content.events) {
-    if (ev.launch?.app !== clientEventId || !triggerMatches(s, ev.trigger)) continue;
+    if (ev.launch?.app !== clientEventId || ev.launch.feature || !triggerMatches(s, ev.trigger)) continue;
     queueAt(s, ev, Math.max(parseClock(ev.launch.at) ?? CLOCK.wake, s.clockMin + ev.launch.after));
+  }
+}
+
+/**
+ * A deploy put these features live on a client's app: queue the events waiting on one of them, `after`
+ * minutes from now. Only the first time (a delivered or queued event isn't queued again); what doesn't
+ * fit before bedtime lands the next morning, as many minutes after waking as it ran over.
+ */
+export function queueFeatureLaunch(s: GameState, content: Content, clientEventId: string, live: string[]): void {
+  for (const ev of content.events) {
+    const l = ev.launch;
+    if (l?.app !== clientEventId || !l.feature || !live.includes(l.feature)) continue;
+    if (underway(s, ev) || !triggerMatches(s, ev.trigger)) continue;
+    const at = s.clockMin + l.after;
+    const late = at >= CLOCK.sleep;
+    (s.arriving ??= []).push({ eventId: ev.id, day: s.values.day + (late ? 1 : 0), at: late ? CLOCK.wake + at - CLOCK.sleep : at });
   }
 }
 
