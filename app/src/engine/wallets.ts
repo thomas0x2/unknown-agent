@@ -14,6 +14,8 @@ export const WALLETS: Record<string, { name: string }> = {
   '0xb8d6e201b59c95094b2e417784b38b06c0c7e46a': { name: 'Your brother' },
   // Mia, the lonely.ai match (engine/lonely.ts)
   '0x7c2e91b04fd36a58e1b9c40d27f6a3e85b10c4d9': { name: 'Mia (lonely.ai)' },
+  // the trader's stake (engine/stake.ts)
+  '0x5e17a0c94b2d83f6e1a7c05b9d42e38f6a1c0d7b': { name: 'deskjockey' },
 };
 
 /** 0x followed by 40 hex digits, like every address in the game. */

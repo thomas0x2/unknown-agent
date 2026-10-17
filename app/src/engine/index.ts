@@ -25,6 +25,7 @@ export * from './writer';
 export * from './save';
 export * from './wallets';
 export * from './stocks';
+export * from './stake';
 export * from './phishing';
 export * from './lonely';
 export * from './rentboard';

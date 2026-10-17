@@ -6,7 +6,7 @@
  */
 import type { GameState, AppInstance } from './state';
 import type { Content } from '../content/schema';
-import { marketPosts, crawl, autoBuys, portfolio, trackedOf, type MarketPost } from './crawler';
+import { marketPosts, crawl, ledger, portfolio, trackedOf, type MarketPost } from './crawler';
 import { machineFeed, machineRows } from './laundromat';
 import { swapListings, type Listing } from './swaplist';
 import { playMinutes } from './core';
@@ -31,8 +31,8 @@ const postsOf = (v: View) => {
 function dashboard(v: View, bugs: Set<string>): string {
   const day = v.s.values.day;
   const all = postsOf(v);
-  const buys = autoBuys(all, day, bugs);
-  return JSON.stringify([crawl(all, day, bugs, trackedOf(v.app.specParams.tickers?.tickers)), buys.map((b) => [b.day, b.ticker]), portfolio(buys, day, bugs)]);
+  const book = ledger(all, day, bugs);
+  return JSON.stringify([crawl(all, day, bugs, trackedOf(v.app.specParams.tickers?.tickers)), book.filter((b) => !b.manual).map((b) => [b.day, b.ticker]), portfolio(book, day, bugs)]);
 }
 /** Without the content there are no posts to compare: the bug counts as showing, as it always did. */
 const changesDashboard = (bug: string): Rule => (v) => !v.content || dashboard(v, new Set([bug])) !== dashboard(v, new Set());
