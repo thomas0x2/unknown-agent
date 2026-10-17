@@ -7,7 +7,7 @@ export const Y_BIOS: Record<string, string> = {
   you: 'Open to work.',
   // public figures
   cal_hartman: 'ceo, generalai. building agent. mostly optimistic.',
-  axel_rook: 'Owner, Y · Chief engineer, Apogee 🚀 · Making jobs optional for everyone · Universal high income soon',
+  axel_rook: 'CEO, Y · CEO, Apogee 🚀 · Making jobs optional for everyone · Universal high income soon',
   randall_crane: 'Next President of the United States (polling at 112%). Saving American jobs from the computers. Official account, the only one. BELIEVE IT.',
   randa11_crane: 'Next President of the United States (polling at 112%). Saving American jobs from the computers. Offical account, the only one. BELIVE IT.',
   mara_vey: 'Reporter at The Current, Midtown. Writing about the people AI left behind. Sources are protected.',
