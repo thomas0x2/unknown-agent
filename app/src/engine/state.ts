@@ -292,6 +292,8 @@ export interface SwapThread {
   seller: string;
   msgs: SwapMsg[];
   offer?: { amount: number; status: 'pending' | 'accepted' | 'declined' | 'sold' };
+  /** Seller replies already written but not yet arrived: each lands at `due` (minutes of play), with the offer answer it carries. */
+  pending?: { msg: SwapMsg; due: number; offer?: 'accepted' | 'declined' | 'sold' }[];
 }
 /** One swipe on matchless.com, made on the client's account. */
 export interface MatchlessSwipe { day: number; id: string; choice: 'yes' | 'no' }

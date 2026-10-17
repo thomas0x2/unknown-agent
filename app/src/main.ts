@@ -458,9 +458,11 @@ document.addEventListener('submit', (e) => {
     SOUND.play('send');
     void store.swapMessage(Number(f.dataset.n), v).then((r) => { if (r?.sent) clearField('sl-msg'); });
   } else if (kind === 'sl-offer') {
-    store.swapOffer(Number(f.dataset.n), Number(val('#sl-offer')));
+    if (store.busy) return;
+    void store.swapOffer(Number(f.dataset.n), Number(val('#sl-offer')));
   } else if (kind === 'sl-buy') {
-    store.swapBuy(Number(f.dataset.n));
+    if (store.busy) return;
+    void store.swapBuy(Number(f.dataset.n));
   } else if (kind === 'mx-swipe') {
     store.matchlessSwipe(f.dataset.pick === 'yes' ? 'yes' : 'no');
   } else if (kind === 'y-search') {

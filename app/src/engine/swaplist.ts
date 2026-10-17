@@ -1,6 +1,6 @@
 /*
  * Swaplist's listings: what people post once the site is up. Nothing is listed until the app's
- * first content time (AppInstance.contentAt, two hours of play after the first deploy); then
+ * first content time (AppInstance.contentAt, an hour of play after the first deploy); then
  * Viktor's watch goes up first and the rest follow about an hour apart, in minutes of play, so the
  * night doesn't count. Everything derives from the listing's number, so every render agrees.
  */
