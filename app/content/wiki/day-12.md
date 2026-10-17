@@ -14,6 +14,7 @@ from: 12
 
 ## Y
 
+- [public] 04:40 (overnight, already up at 10:00) doomscroll's phone says it was picked up 212 times yesterday, "most of those were to check the time." {{y:f26}}
 - [public] 11:30 [[Cal Hartman]]: doesn't know what young people should study now; "something you enjoy." {{y:d12_y_hartman}}
 - [public] 11:42 Liftoff Daily: "Legacy media lost. Y is where the news happens now." {{y:d12_y_liftoff}}
 - [public] 11:52 [[Axel Rook]]: "@liftoff_daily Accurate 💯" {{y:d12_y_axel}}

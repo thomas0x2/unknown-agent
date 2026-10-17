@@ -16,9 +16,11 @@ nest: true
 
 - [public] On day 1 (12:10) doomscroll links CityPulse's Vantor story: "400 people at vantor got fired by one email last night. i've read every reply. it's fine" {{y:d1_y_doomscroll_news}}
 - [public] On day 3 (16:25), on [[Randall Crane]]'s vow to send the machines back: "i'd settle for my job back" {{y:d3_y_doomscroll_machines}}
+- [public] On day 3 doomscroll posted at 03:12, unable to sleep, rereading the replies under the layoff posts: "same replies. reading them anyway." {{y:f22}}
 - [public] On day 1 doomscroll's screen time says 11 hours, which doomscroll says is broken. {{y:f1}}
 - [public] On day 5 doomscroll opened the app at 9 to check one thing and was still on it at 2pm. {{y:f5}}
 - [public] On day 9 doomscroll turned off notifications for a day, lasted 40 minutes and didn't miss anything, "which was worse." {{y:f9}}
+- [public] On day 12 doomscroll posted at 04:40 that the phone was picked up 212 times the day before, "most of those were to check the time." {{y:f26}}
 - [public] On day 10 doomscroll is a week into Ozempra: "not hungry. not much of anything, really. it's fine" {{y:d10_y_doomscroll_ozempra}}
 - [public] On day 13 the grocery store took out its last staffed checkout; it was the first thing doomscroll had said out loud in four days. {{y:f13}}
 - [public] On day 17 doomscroll read about 300 replies about the election and knows less than before. {{y:f17}}
@@ -31,9 +33,11 @@ nest: true
 - [public] On day 2 cat_ceo's productivity hack is checking the cat's follower count instead of their bank balance, "one of them goes up." {{y:f2}}
 - [public] On day 3 (17:20) cat_ceo asked the cat where the machines came from; she "has a plan", with "details to follow." {{y:d3_y_catceo_machines}}
 - [public] On day 4 cat_ceo started Ozempra ([[Perdure Pharma]]) to cut the grocery bill; it's down a third, and the cat "is not on it and has questions." {{y:d4_y_catceo_ozempra}}
+- [public] On day 5 cat_ceo posted at 04:50: awake because the cat's post from the day before is still getting likes, and the cat is awake because cat_ceo is. {{y:f23}}
 - [public] On day 6 the cat walked across the keyboard during a video interview; cat_ceo posted the clip before the call ended, and "they said she seemed engaged." {{y:f6}}
 - [public] On day 10 cat_ceo's cat knocked a glass off the table and "nobody gave her 6%", after Apogee's stock rose on its rocket exploding. {{y:d10_y_catceo_apogee}}
 - [public] On day 14 the cat has started sitting in the empty office chair "like she's waiting for someone"; cat_ceo has posted it every hour. {{y:f14}}
+- [public] On day 16 cat_ceo wrote a cover letter at 4am, deleted it, and posted the cat asleep on the laptop instead: "better response rate." {{y:f27}}
 - [public] On day 18 cat_ceo applied to eleven jobs and refreshed notifications more times than that; the cat applied to none "and is doing fine." {{y:f18}}
 - [public] On day 10 cat_ceo was already up scrolling for the cat's 5am board meeting. {{y:f10}}
 
@@ -43,11 +47,13 @@ nest: true
 
 - [public] On day 3 (18:40) noodleposter's uncle shared the Crane post four times "and still thinks the cloud is weather." {{y:d3_y_noodle_machines}}
 - [public] On day 4 noodleposter is on day 4 of only eating instant noodles and posting every bowl: "the broth is my therapist now." {{y:f4}}
+- [public] On day 6 noodleposter posted a 2am bowl, eaten with the light off so as not to see the time; the camera flash gave it away. {{y:f24}}
 - [public] On day 7 noodleposter switched to the spicy one because the replies wanted it: "same noodles, it just hurts now." {{y:f7}}
 - [public] On day 8 noodleposter ordered from a new noodle place on DoorDish and the address was a dentist. {{y:d8_y_noodle_dish}}
 - [public] On day 11 noodleposter's cousin does peptides ([[Peptides]]) now; asked which ones, he said "research." He's a bartender. {{y:d11_y_noodle_peptides}}
 - [public] On day 11 noodleposter ranked flavor 88 at 3am, "chicken, but from a different country", 6/10; the replies say 7. {{y:f11}}
 - [public] On day 15 the corner store raised noodles by 10 cents, the first time noodleposter ever noticed 10 cents, and posts a nine-part thread about it. {{y:f15}}
+- [public] On day 17 noodleposter's 3am courier knew which door was theirs before it opened; they nodded, "most i've talked to anyone this week." {{y:f28}}
 - [public] On day 19 noodleposter found a pack of the discontinued shrimp flavor and is saving it for 1k followers, "not sure what else it would be for anymore." {{y:f19}}
 
 ## Teo Vasquez
@@ -68,5 +74,5 @@ nest: true
 
 ## Writer notes
 
-- Filler posts in `y_filler.json` (one a day, rotating doomscroll, cat_ceo, zev_dolr, noodleposter); story posts `d1_y_doomscroll_news`, `d3_y_*_machines`, `d3_y_teo_jobsfair`, `d8_y_noodle_dish`, `d8_y_deb_taxes`, `d10_y_catceo_apogee`, `d10_y_mourn_teo_vasquez`, `d21_y_teo_voted`, `d5_coffee_backlash`. Bios and the stranger pool in `y-bios.ts`.
+- Filler posts in `y_filler.json` (one a day, rotating doomscroll, cat_ceo, zev_dolr, noodleposter, plus on some days an overnight post between 02:00 and 05:00 that is already up when the day starts: f22-f29); story posts `d1_y_doomscroll_news`, `d3_y_*_machines`, `d3_y_teo_jobsfair`, `d8_y_noodle_dish`, `d8_y_deb_taxes`, `d10_y_catceo_apogee`, `d10_y_mourn_teo_vasquez`, `d21_y_teo_voted`, `d5_coffee_backlash`. Bios and the stranger pool in `y-bios.ts`.
 - The four background regulars are chronically online (Thomas, 2026-10-17): screen time, likes, follower counts, 3-4am posting, reading every reply. Keep it in the details of each post, one per post at most, and never say "addicted" or "touch grass" outright. Teo Vasquez and Deb Halloran are not in this group.

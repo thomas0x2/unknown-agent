@@ -32,6 +32,7 @@ from: 6
 
 ## Y
 
+- [public] 02:47 (overnight, already up at 10:00) noodleposter has a 2am bowl with the light off; the flash for the photo gave away the time anyway. {{y:f24}}
 - [public] 11:00 [[Randall Crane]]: GeneralAI ($GAI) is "an AMERICAN success story. Tremendous company. The best." {{y:d6_y_crane_gai}}
 - [public] 11:15 [[Cal Hartman]] thanks @randall_crane: "we work with leaders across the spectrum." {{y:d6_y_hartman}}
 - [public] 13:00 [[DoorDish]]: couriers never deliver orders you didn't place; if one does, "please don't eat it, and don't follow it." {{y:d6_y_doordish}}

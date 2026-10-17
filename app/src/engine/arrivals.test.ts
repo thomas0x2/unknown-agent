@@ -6,7 +6,7 @@ import { describe, it, expect } from 'vitest';
 import { loadContent } from '../content/load';
 import { startGame, endDay } from './day';
 import { advanceClock } from './core';
-import { deliverArrivals, deliverDue, arrivalMin, isJobOffer, JOB_OFFERS, postMin, freeYMin, Y_GAP } from './events';
+import { deliverArrivals, deliverDue, arrivalMin, isJobOffer, JOB_OFFERS, postMin, freeYMin, Y_GAP, fillerToday } from './events';
 import { CLOCK } from './config';
 
 const content = loadContent();
@@ -158,6 +158,15 @@ describe('Y posts go up one at a time', () => {
     advanceClock(s, wait - s.clockMin);
     deliverArrivals(s, content);
     expect(s.delivered.find((d) => d.eventId === 'd1_y_restaurant')?.min).toBe(wait);
+  });
+
+  it('an overnight filler post is already on the timeline when the day starts, at its night time', () => {
+    const s = startGame(content, 7);
+    s.values.day = 3;
+    s.clockMin = CLOCK.wake;
+    const night = content.yFiller.filter((f) => f.day === 3 && postMin(f, 3) < CLOCK.wake);
+    expect(night.length).toBeGreaterThan(0);
+    for (const f of night) expect(fillerToday(s, content).map((x) => x.id)).toContain(f.id);
   });
 
   it('posts left over from a day that ended early come in one at a time the next morning', () => {
