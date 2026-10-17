@@ -5,6 +5,7 @@
 .vantor-sig { margin-top: 18px; padding-top: 12px; border-top: 1px solid rgba(0, 0, 0, .1); color: #2c2c2a; font-size: 11.5px; line-height: 1.5; }
 .vantor-sig .vantor-wordmark { height: 22px; margin-bottom: 6px; }
 .vantor-sig p { margin: 0; color: #6c6b66; }
+.vantor-sig a { color: #2c2c2a; text-decoration: underline; text-underline-offset: 2px; }
 .vantor-sig .vantor-sig-fine { margin-top: 4px; font-size: 10.5px; opacity: .8; }
 
 /* Qdrive: the letterhead on Vantor PDFs */
