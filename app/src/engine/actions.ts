@@ -431,6 +431,8 @@ export interface AskOpts {
   debug?: string[];
   /** Jev's read under the day 7 policy (only asked once the policy is active). */
   policy?: PolicyRead;
+  /** A near-miss: why the prompt fell short. Haiku says so in its own words, with `hints` as its model lines and fallback. */
+  near?: string;
   /** A question about the world: Haiku answers it from what the wiki lets it tell (public) or hint at; `fallback` stands in when it can't. */
   query?: { public: string[]; hint: string[]; fallback: string[] };
 }
@@ -473,6 +475,14 @@ export async function askAgent(
     const fresh = opts.hints.filter((h) => h !== lastReply);
     reply = pick(s, fresh.length ? fresh : opts.hints);
     src = opts.hintSrc ?? 'hint';
+    if (opts.near) {
+      // Haiku says what was missing; the scripted lines show it what to say and stand in if it can't
+      const w = await writer.write({ as: 'agent', mode: 'near', near: { why: opts.near, lines: opts.hints }, prompt: text, fallback: reply, history: chatHistory(s) });
+      reply = w.text;
+      note = w.note;
+      debug.push(...(w.debug ?? []));
+      by = w.by;
+    }
   } else if (opts.query) {
     const w = await writer.write({ as: 'agent', mode: 'query', known: { public: opts.query.public, hint: opts.query.hint }, prompt: text, fallback: pick(s, opts.query.fallback.length ? opts.query.fallback : QUERY_FALLBACK), history: chatHistory(s) });
     reply = w.text;
@@ -638,6 +648,7 @@ function appSummary(a: AppInstance, tmpl: AppTemplate | undefined): string {
 }
 
 /** What the agent says when it can't tell which app a prompt is about. */
+const QUERY_BROAD = ['Narrow it down. That could be {{options}}.', 'Which one? {{options}}. I charge per word, so be specific.'];
 const WHICH_APP = 'Which app is this for? Say its name and I\'ll make the change.';
 
 /**
@@ -833,7 +844,7 @@ export async function promptAgent(
     const app = started ?? await oneApp(jev, s0, text, chat, found);
     if (app === null) {
       const lines = content.agent?.hints.find((h) => h.id === 'which_app')?.replies;
-      return askAgent(s0, text, writer, s0.values.agentLevel, { hints: lines?.length ? lines : [WHICH_APP], debug: ['Jev: matches on several apps and could not tell which one the prompt means'] });
+      return askAgent(s0, text, writer, s0.values.agentLevel, { hints: lines?.length ? lines : [WHICH_APP], near: 'They asked for work on an app without saying which app.', debug: ['Jev: matches on several apps and could not tell which one the prompt means'] });
     }
     if (app) found.splice(0, found.length, ...found.filter((m) => m.startsWith(`${app}::`)));
     // naming the feature without the part that's wrong is a near-miss, and counts only when nothing more precise matched
@@ -850,6 +861,7 @@ export async function promptAgent(
       let hints: string[];
       let why: string;
       let kind: string; // which near-miss: the hint id, or 'near_miss' for the feature's own lines
+      let near: string; // what was missing, for Haiku
       if (stop) {
         const cid = stop.m.split('::c:')[1];
         const part = featureName(cid.split('/').at(-1)!);
@@ -861,6 +873,8 @@ export async function promptAgent(
         const lines = content.agent?.hints.find((h) => h.id === hid)?.replies;
         hints = (lines?.length ? lines : [NEAR_MISS]).map((l) => fill(l, part, folders.join(' or ')));
         why = stop.at === 0 ? `names the ${part} but not the ${fid} it's in` : `names the ${part} in the ${fid} but not which folder`;
+        near = stop.at === 0 ? `They want the ${part} on ${a.name} fixed but didn't say which feature it's in.`
+          : `They want the ${part} in the ${featureName(fid, def)} on ${a.name} fixed but didn't say which part of the ${featureName(fid, def)} it's in. It could be the ${folders.join(' or ')}.`;
       } else {
         // the deepest folder of this feature the prompt did name, if any: ask which part of it
         const folder = foundAll.filter((m) => m.startsWith(`${appId}::${fid}::s:${fid}/`)).map((m) => m.split(`::s:${fid}/`)[1]).sort((x, y) => y.split('/').length - x.split('/').length)[0];
@@ -869,14 +883,16 @@ export async function promptAgent(
         if (folder && lines?.length) {
           hints = lines.map((l) => fill(l, '', '').replaceAll('{{folder}}', featureName(folder.split('/').at(-1)!)).replaceAll('{{parts}}', [...new Set(parts)].join(', ')));
           why = `names the ${folder} folder of the ${fid} but no part in it`;
+          near = `They named the ${featureName(folder.split('/').at(-1)!)} of the ${featureName(fid, def)} on ${a.name} but not which part of it is wrong. Its parts: ${[...new Set(parts)].join(', ')}.`;
           kind = 'near_part';
         } else {
           hints = (def?.nearMiss?.length ? def.nearMiss : [NEAR_MISS]).map((l) => fill(l));
           why = `says the ${fid} is wrong without naming a component`;
+          near = `They say the ${featureName(fid, def)} on ${a.name} is wrong but not which part of it.`;
           kind = 'near_miss';
         }
       }
-      return askAgent(s0, text, writer, s0.values.agentLevel, { hints, hintSrc: 'near_miss', debug: [`Jev: ${why} on ${a.name}, so a near-miss (${kind})`] });
+      return askAgent(s0, text, writer, s0.values.agentLevel, { hints, hintSrc: 'near_miss', near, debug: [`Jev: ${why} on ${a.name}, so a near-miss (${kind})`] });
     }
     const matched = new Set(precise);
     // a prompt that starts a user app builds all of it, however little it says (what it leaves out goes wrong)
@@ -952,6 +968,7 @@ export async function promptAgent(
   let hints: string[] | undefined;
   let query: AskOpts['query'];
   let hintSrc: string | undefined;
+  let near: string | undefined;
   const debug: string[] = [];
   // the player's apps, in case the prompt names one without asking for anything that needs doing
   const apps = s0.apps.filter((a) => !a.churned && onForkyard(a));
@@ -979,20 +996,32 @@ export async function promptAgent(
       const outdated = app.repo.some((f) => app.required.includes(f.id) && bugsOf(f).includes('outdated'));
       const hid = outdated ? 'update_help' : app.required.some((f) => needsWork(app, f)) ? 'fix_help' : app.deployedVersion < app.repoVersion ? 'not_deployed' : 'nothing_to_fix';
       hints = agent?.hints.find((h) => h.id === hid)?.replies.map((r) => r.replaceAll('{{app}}', app.name));
+      near = {
+        update_help: `They asked to update ${app.name} to the client's changes without saying what changed: which items to swap, add or drop, and the new prices.`,
+        fix_help: `They asked to fix ${app.name} without saying what's wrong with it.`,
+        not_deployed: `What they ask for is already in the ${app.name} repo; it isn't live because they haven't deployed it on Forkyard.`,
+        nothing_to_fix: `${app.name} already matches the client's brief where they pointed; they need to say what it shows and what it should show.`,
+      }[hid];
       debug.push(`Jev: names ${app.name} but matched nothing to build, so "${hid}"`);
     } else if (id === 'query') {
       // a query has to be precise: Jev matches it down the wiki to a page and a section
       const m = await matchQuery(jev, s0, content, text, recentChat(s0));
       debug.push(m.debug);
       if (m.kind === 'answer') query = { public: m.public, hint: m.hint, fallback: agent?.query?.fallback ?? QUERY_FALLBACK };
+      else if (m.kind === 'broad') {
+        // a question that could be about several things: a near-miss that asks which one
+        hints = (agent?.query?.broad?.length ? agent.query.broad : QUERY_BROAD).map((l) => l.replaceAll('{{options}}', m.options.join(', ')));
+        hintSrc = 'near_miss';
+        near = `Their question is too vague to answer: it could be about ${m.options.join(', ')}. They have to say which.`;
+      }
       else if (m.kind === 'classified') { hints = agent?.query?.classified?.length ? agent.query.classified : CLASSIFIED; hintSrc = 'classified'; }
     } else {
       const topic = topics.find((h) => h.id === id);
-      if (topic?.replies.length) hints = topic.replies;
+      if (topic?.replies.length) { hints = topic.replies; near = `They asked something agent can't act on yet. ${topic.when}`; }
       debug.push(topic ? `Jev: near-miss topic "${topic.id}" (${topic.replies.length} scripted replies)` : 'Jev: no query or topic matched, so this is a miss');
     }
   }
-  return askAgent(s0, text, writer, s0.values.agentLevel, { hints, hintSrc, query, roasts: agent?.roasts, debug });
+  return askAgent(s0, text, writer, s0.values.agentLevel, { hints, hintSrc, near: hints ? near : undefined, query, roasts: agent?.roasts, debug });
 }
 
 // ── Y ──

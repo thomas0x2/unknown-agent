@@ -24,8 +24,13 @@ export interface WriteReq {
   character?: string;
   /** What the character is doing right now (a Swaplist seller: the listing, the buyer's question). */
   situation?: string;
-  /** 'query': answer the player's question about the world (agent.chat queries) from `known`. */
-  mode?: 'query';
+  /**
+   * 'query': answer the player's question about the world (agent.chat queries) from `known`.
+   * 'near': a near-miss: say what the prompt was missing (`near`), like the scripted lines do.
+   */
+  mode?: 'query' | 'near';
+  /** A near-miss: why the prompt fell short, as the player should hear it, and the scripted lines that say so (the reply says the same, nothing more). */
+  near?: { why: string; lines: string[] };
   /** What the wiki lets a query answer tell (`public`) and only hint at (`hint`), already cut to what the player may know now. */
   known?: { public: string[]; hint: string[] };
 }

@@ -963,7 +963,7 @@ function pageAgent(store: GameStore): string {
     }
     if (m.from === 'system') return `<div class="ua-sys" role="alert">${ICONS.error}<span>${esc(m.text)}</span></div>`;
     const src = m.src ? `<span class="ua-src ${esc((m.src || '').split(':')[0])}">${esc(m.src)}</span>` : '';
-    const model = m.src === 'llm' || m.src === 'query' ? `<span class="ua-model" title="Written by a model">${esc(m.by ?? MISSES.label())}</span>`
+    const model = m.src === 'llm' || m.src === 'query' || m.by ? `<span class="ua-model" title="Written by a model">${esc(m.by ?? MISSES.label())}</span>`
       : m.note ? `<span class="ua-model" title="A scripted line stood in for Haiku">Scripted · ${esc(m.note)}</span>` : '';
     const debug = m.debug?.length ? `<details class="ua-debug"><summary>Details</summary>${m.debug.map((l) => `<div>${esc(l)}</div>`).join('')}</details>` : '';
     // the agent couldn't run (unpaid balance): an error, not a line of dialogue

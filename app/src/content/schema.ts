@@ -138,7 +138,11 @@ export interface FeatureDef {
    * component that's wrong; naming only the feature gets a near-miss (see nearMiss).
    */
   components?: ComponentDef[];
-  /** What the agent says when a fix prompt names this feature but not which component is wrong. */
+  /**
+   * Optional: lines for when a fix prompt names this feature but not which component is wrong. Haiku
+   * writes near-misses (mode 'near'); these only show it the tone and stand in when it can't answer.
+   * Without them a generic line does.
+   */
   nearMiss?: string[];
   /**
    * Complaint lines for this feature, keyed by what's wrong: a bug id ('prices_curo', or
@@ -381,6 +385,8 @@ export interface Character {
   minWords?: number;
   /** How the character answers a question about the world (agent.chat queries): it answers, in its own voice. */
   query?: { profile: string; examples: [string, string][]; sentences?: number };
+  /** How agent words a near-miss (game/haiku.ts, mode 'near'): says what the prompt was missing, still mean. */
+  near?: { profile: string; sentences?: number };
 }
 
 /** Everything the engine reads, gathered in one bundle and passed into engine steps. */
@@ -398,6 +404,8 @@ export interface AgentQuery {
   fallback: string[];
   /** Scripted roasts for a question about something classified (not yet, or never, for the player to know). */
   classified: string[];
+  /** A question too broad to be about one thing: lines asking which ({{options}}: some of what it could mean). */
+  broad?: string[];
 }
 export interface AgentContent {
   hints: AgentHint[];

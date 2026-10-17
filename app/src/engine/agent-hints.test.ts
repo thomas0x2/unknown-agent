@@ -79,6 +79,26 @@ describe('agent queries, near-misses and roasts', () => {
     expect(hintsFor('fix_help')).toContain(m.text);
   });
 
+  it('a vague fix ask goes to Haiku as a near-miss, which says what was missing', async () => {
+    const seen: WriteReq[] = [];
+    const writer: Writer = { async write(req) { seen.push(req); return { text: 'Broken how? Tell me which part, I bill by the guess.', llm: true }; } };
+    const m = (await ask('my app is broken, there is a bug', writer)).chat.at(-1)!;
+    expect(seen[0]).toMatchObject({ mode: 'near' });
+    expect(seen[0].near!.lines).toEqual(hintsFor('fix_help'));
+    expect(hintsFor('fix_help')).toContain(seen[0].fallback);
+    expect(m).toMatchObject({ src: 'hint', text: 'Broken how? Tell me which part, I bill by the guess.' });
+  });
+
+  it('a question matching too many wiki pages asks which one', async () => {
+    const wiki = ['Gino Fenoglio', 'Gary Pruitt', 'Mara Vey', 'Dana Reyes'].map((t) => parseWikiPage(`---\ntitle: ${t}\naliases: person\ncategory: people\n---\n[public] A person.\n`, `${t}.md`));
+    const s0 = startGame(content, 1);
+    s0.values.crypto = 100;
+    const r = await promptDone(s0, { ...content, wiki }, wordJev, 'What has been posted on Y about this person?');
+    const m = r.state.chat.at(-1)!;
+    expect(m.src).toBe('near_miss');
+    expect(m.text).toMatch(/Gino Fenoglio, Gary Pruitt, Mara Vey, Dana Reyes/);
+  });
+
   it('the old hint topics are gone: queries replace them', () => {
     for (const id of ['capabilities', 'make_money', 'what_now', 'deploy', 'followers', 'rent', 'pricing', 'cheaper', 'upgrade']) {
       expect(agent.hints.some((h) => h.id === id), id).toBe(false);

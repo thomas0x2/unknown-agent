@@ -62,6 +62,7 @@ async function write(body) {
   const ch = CHARACTERS.find((c) => c.id === body.character);
   if (!ch) return { status: 400, json: { error: `unknown character ${body.character}` } };
   if (body.mode === 'query') return query(ch, body);
+  if (body.mode === 'near') return near(ch, body);
   const n = ch.sentences ?? 2;
   const form = `Keep it dry and understated rather than zany. At most ${n} short sentence${n > 1 ? 's' : ''} of plain text, ` +
     `no quotes, no stage directions, no emoji. Stay consistent with anything you already said earlier in the conversation.`;
@@ -79,6 +80,25 @@ async function write(body) {
   const earlier = historyBlock(body.history);
   messages.push({ role: 'user', content: earlier ? `${earlier}\n\nThe player now writes:\n${said}` : said });
   return runWriter(system, messages, body.via);
+}
+
+// An agent.chat near-miss: the prompt almost did something (named a part but not its feature, asked
+// for an update without the changes, a question that could mean several things). The game says why
+// it fell short and sends the scripted lines for it; Haiku says the same in its own words, so no app
+// or wiki page needs scripted near-miss lines of its own (src/engine/actions.ts, AskOpts.near).
+async function near(ch, body) {
+  const n = ch.near;
+  if (!n) return { status: 400, json: { error: `${ch.id} has no near-miss voice` } };
+  const why = String(body.near?.why ?? '').replace(/\s+/g, ' ').slice(0, 600).trim();
+  const lines = (Array.isArray(body.near?.lines) ? body.near.lines : []).slice(0, 6).map((l) => `- ${String(l).replace(/\s+/g, ' ').slice(0, 300)}`).join('\n');
+  const k = n.sentences ?? 2;
+  const system = `${n.profile}\n\nWhat their prompt was missing: ${why}\n\n` +
+    (lines ? `Lines that say it the way it should be said (say the same, in your own words; don't copy them):\n${lines}\n\n` : '') +
+    `Tell them what was missing. Name only things named above: never guess which part is broken, never say what is wrong with it, and don't do the work or say you did. ` +
+    `Keep it dry. At most ${k} short sentences of plain text, no lists, no markdown, no emoji.`;
+  const said = String(body.text ?? '').slice(0, 2000);
+  const earlier = historyBlock(body.history);
+  return runWriter(system, [{ role: 'user', content: earlier ? `${earlier}\n\nThe player now writes:\n${said}` : said }], body.via);
 }
 
 // An agent.chat query: Jev matched the question to sections of the wiki, and the game sends what they

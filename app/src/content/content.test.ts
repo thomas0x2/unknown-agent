@@ -129,13 +129,12 @@ describe('authored content', () => {
     for (let d = 1; d <= 6; d++) expect(content.trending[d]?.length, `trending day ${d}`).toBeGreaterThan(0);
   });
 
-  it('puts every bug in exactly one component, and every feature with bugs has near-miss lines', () => {
+  it('puts every bug in exactly one component', () => {
     for (const t of Object.values(content.apps)) for (const f of t.features) {
       expect(f.components?.length, `${t.id}.${f.id} components`).toBeGreaterThan(0);
       const held = f.components!.flatMap((c) => c.bugs ?? []);
       for (const b of f.bugs ?? []) expect(held.filter((x) => x === b.id), `${t.id}.${f.id}.${b.id}`).toHaveLength(1);
       for (const b of held) expect(b === 'hallucinated' || f.bugs?.some((x) => x.id === b), `${t.id}.${f.id} names ${b}`).toBe(true);
-      if (f.bugs?.length) expect(f.nearMiss?.length, `${t.id}.${f.id} nearMiss`).toBeGreaterThan(0);
       // components are leaves: no component path is a folder of another
       const ids = f.components!.map((c) => c.id);
       for (const id of ids) expect(ids.some((o) => o.startsWith(`${id}/`)), `${t.id}.${f.id}/${id}`).toBe(false);

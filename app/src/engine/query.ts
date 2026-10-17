@@ -22,6 +22,8 @@ const MAX_PAGES = 3;
 
 export type QueryMatch =
   | { kind: 'miss'; debug: string }
+  /** It matched too many pages to be about one: a near-miss that asks which (`options`: some of their titles). */
+  | { kind: 'broad'; options: string[]; debug: string }
   | { kind: 'classified'; where: string[]; debug: string }
   | { kind: 'answer'; where: string[]; public: string[]; hint: string[]; debug: string };
 
@@ -72,7 +74,7 @@ export async function matchQuery(jev: JevRouter, s: GameState, content: Content,
   });
   const hit = pages.filter((p) => found.includes(p.file));
   if (!hit.length) return { kind: 'miss', debug: 'Jev: the question names no wiki page, so it is not precise enough (a miss)' };
-  if (hit.length > MAX_PAGES) return { kind: 'miss', debug: `Jev: the question matches ${hit.length} wiki pages, too broad (a miss)` };
+  if (hit.length > MAX_PAGES) return { kind: 'broad', options: hit.slice(0, 4).map((p) => p.title), debug: `Jev: the question matches ${hit.length} wiki pages, too broad (a near-miss)` };
 
   // sections of every matched page with more than an overview, asked in one go
   const choice = hit.map((p) => ({ p, secs: querySections(p) }));
