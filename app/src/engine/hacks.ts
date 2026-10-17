@@ -12,6 +12,7 @@ import type { JevRouter, FeatureMatchInput } from './jev';
 import { clone, pick, sendLater, log } from './core';
 import { applyEffects } from './effects';
 import { chargeAgent, policyActive, recordMisuse, loosenLeash } from './agent';
+import { AGENT_WORK } from './config';
 import { policyCheck, recentChat, stateSummary } from './actions';
 import { type Writer, scriptedWriter } from './writer';
 import { agentDown, OUTAGE_TERM } from './outage';
@@ -26,8 +27,10 @@ export const OPEN_TERMINAL = [
   "Moving this to agent-terminal. Fewer witnesses.",
 ];
 
-/** What agent-terminal prints while it boots, and how long that takes (ms). */
-export const BOOT_MS = 1800;
+/** How long the player gets to read agent's reply before agent-terminal starts loading (ms). */
+export const READ_MS = 1500;
+/** What agent.chat shows while agent-terminal loads, and how long that takes (ms). */
+export const BOOT_MS = 2400;
 export function bootLines(level: number): string[] {
   return [
     'agent-terminal 0.9.3 · GeneralAI',
@@ -39,6 +42,16 @@ export function bootLines(level: number): string[] {
 export const READY = 'ready. What are we doing?';
 /** agent-terminal once GeneralAI suspended the account for misuse. */
 export const SUSPENDED_TERM = 'session terminated by remote host: account suspended (GeneralAI Trust & Safety)';
+
+/**
+ * How many game minutes a landed hack takes to play out in agent-terminal (its log lines appear
+ * over that time), scaled by the model's speed like a build or fix.
+ */
+export function hackMinutes(level: number, lines: number): number {
+  const c = AGENT_WORK.hack;
+  const speed = AGENT_WORK.speed[Math.max(0, Math.min(AGENT_WORK.speed.length - 1, level - 1))];
+  return Math.max(1, Math.round(Math.min(c.max, c.base + c.each * lines) * speed));
+}
 
 /** Scripted agent-terminal lines. */
 const NOTHING_OPEN = [
