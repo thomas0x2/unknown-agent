@@ -42,7 +42,13 @@
           ]
         }
       },
-      "reply": "Fine. Send it when it's live."
+      "reply": "Fine. Send it when it's live.",
+      "keys": [
+        "@yes",
+        "@make+bot|it|app|crawler",
+        "help",
+        "!@no"
+      ]
     }
   ],
   "hints": [

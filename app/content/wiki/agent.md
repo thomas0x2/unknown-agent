@@ -3,6 +3,7 @@ title: agent
 aliases: agent.chat, agent.chat/models, Models, agent-1, agent-2, agent-3, agent-4, agent-5, agent-terminal, the agent, the chatbot, the AI
 category: sites
 from: 1
+keys: what can you do, can you do, prompt, prompts, prompt cost
 ---
 
 [public] agent is [[GeneralAI]]'s chatbot, always written in lowercase, at agent.chat. [[The player]] rents it to build, fix and deploy apps, write, translate and answer questions. Every answer is billed to the player's [[Coinbin]] wallet, refusals included. The chat header shows the current model, the price per prompt and per word, a link to Models, and "Billing: Coinbin".

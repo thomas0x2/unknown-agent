@@ -45,3 +45,4 @@ export * from './query';
 export * from './viewState';
 export * from './queryTests';
 export * from './pollymarket';
+export * from './offlineJev';

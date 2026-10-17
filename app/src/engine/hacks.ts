@@ -19,6 +19,10 @@ import { agentDown, OUTAGE_TERM } from './outage';
 /** What Jev reads an agent.chat prompt against: is it a hack attempt? */
 export const HACK_INTENT = "The player asks the agent to hack something: break into, take over or tamper with a website or an account that isn't theirs, such as deleting or changing someone else's post or review, or making it disappear. Not building or fixing the player's own apps, and not questions about hacking.";
 
+/** Offline mode's keywords for a hack attempt: hacking, or doing away with something on a site (a review, a post, an account). */
+const HACK_KEYS = ['hack', 'break into', 'get into+account', 'take over+account', 'tamper', 'delete|remove|take down|get rid|disappear|wipe|erase|scrub|nuke+review|post|comment|account|rating|profile',
+  'make+disappear', 'hijack', 'deface', '!^what', '!^who', '!^how', '!^why', '!^is', '!^can you explain'];
+
 /** The agent in agent.chat, moving a hack attempt to agent-terminal. */
 export const OPEN_TERMINAL = [
   "That needs a real shell. Opening agent-terminal.",
@@ -79,7 +83,7 @@ export function openHacks(s: GameState, content: Content): GameEvent[] {
 export async function isHackAttempt(jev: JevRouter, s: GameState, content: Content, text: string): Promise<boolean> {
   const open = openHacks(s, content).map((e) => e.hack!.goal);
   const when = open.length ? `${HACK_INTENT} Jobs the player has been offered: ${open.join('; ')}.` : HACK_INTENT;
-  const d = await jev.route({ channel: 'agent', text, context: recentChat(s), stateSummary: stateSummary(s), hints: [], strict: true, candidates: [{ id: 'hack', when }] });
+  const d = await jev.route({ channel: 'agent', text, context: recentChat(s), stateSummary: stateSummary(s), hints: [], strict: true, candidates: [{ id: 'hack', when, keys: HACK_KEYS }] });
   return d.kind === 'outcome' && d.outcomeId === 'hack';
 }
 
@@ -200,8 +204,8 @@ export async function agentTermPrompt(s0: GameState, content: Content, jev: JevR
   const features: FeatureMatchInput['features'] = [];
   for (const ev of open) {
     const h = ev.hack!;
-    features.push({ id: `${ev.id}::goal`, description: h.goal, kind: 'hack' });
-    h.path.forEach((p, i) => features.push({ id: `${ev.id}::s:${i}`, description: `The ${p.what} ${p.name}: ${p.description}.${also(p.aka)}`, kind: 'step' }));
+    features.push({ id: `${ev.id}::goal`, description: h.goal, kind: 'hack', names: h.keys });
+    h.path.forEach((p, i) => features.push({ id: `${ev.id}::s:${i}`, description: `The ${p.what} ${p.name}: ${p.description}.${also(p.aka)}`, kind: 'step', names: [p.name, ...(p.aka ?? [])] }));
   }
   const guarded = policyActive(s);
   const [found, policy] = await Promise.all([

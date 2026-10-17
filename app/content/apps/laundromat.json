@@ -1,6 +1,12 @@
 {
   "id": "laundromat",
   "name": "Laundromat status",
+  "aka": [
+    "laundromat",
+    "laundry",
+    "laundromat site",
+    "washer board"
+  ],
   "pages": [
     {
       "id": "status",
@@ -264,7 +270,10 @@
       "aka": [
         "new machines",
         "twelve machines",
-        "extra machines"
+        "extra machines",
+        "all twelve",
+        "all 12",
+        "12 machines"
       ],
       "failures": [
         "subtle"
@@ -311,7 +320,11 @@
           ],
           "aka": [
             "twelve machines",
-            "machine count"
+            "machine count",
+            "only 8",
+            "still 8",
+            "8 machines",
+            "all twelve"
           ]
         },
         {

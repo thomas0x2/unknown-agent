@@ -88,6 +88,22 @@ function pageDesc(p: WikiPage, day: number): string {
   return `${p.title}${when}${p.aliases.length ? ` (also called ${p.aliases.slice(0, 16).join(', ')})` : ''}: ${p.summary ?? `${kind}${about ? `. ${about}` : ''}`}`;
 }
 
+/** Words of a title too plain to name a page on their own. */
+const PLAIN = new Set(['the', 'and', 'group', 'party', 'site', 'board', 'feed', 'management', 'property', 'local', 'businesses', 'brands', 'apps', 'building', 'money', 'day']);
+
+/** A page's other names a keyword can use: not the ones that are only a pronoun ("you" for the player is every question to agent). */
+const offlineAliases = (p: WikiPage) => p.aliases.filter((a) => !/^@?(you|me|i|my)$/i.test(a.trim()));
+
+/** What names a page, for offline mode's keyword matcher: its title, its other names, and (for a name) each word of it. */
+function pageNames(p: WikiPage, day: number): string[] {
+  if (p.category === 'days') {
+    const rel = p.from === day ? 'today' : p.from === day - 1 ? 'yesterday' : '';
+    return [p.title, ...p.aliases, ...(rel ? [`happened ${rel}`, `${rel} news`, `going on ${rel}`, `new ${rel}`, `${rel} happen`] : [])];
+  }
+  const words = p.title.split(/[\s.]+/).filter((w) => w.length > 2 && /^[A-Z0-9]/.test(w) && !PLAIN.has(w.toLowerCase()));
+  return [p.title, ...offlineAliases(p), ...(words.length > 1 ? words : []), ...(p.keys ?? [])];
+}
+
 /** How Jev sees one section of a hub page: its heading, and the start of what it says (names in it). */
 function hubDesc(p: WikiPage, sec: WikiSection): string {
   const start = sec.blocks.map((b) => cleanWikiText(b.text.replace(EMBED, ''))).join(' ').slice(0, 160).replace(/\s+\S*$/, '');
@@ -107,8 +123,8 @@ export async function matchQuery(jev: JevRouter, s: GameState, content: Content,
   const found = await jev.matchFeatures({
     prompt: text, context: chat,
     features: [
-      ...pages.map((p) => ({ id: p.file, description: pageDesc(p, ctx.day), kind: 'topic' as const })),
-      ...hubs.map(({ p, sec, i }) => ({ id: `${p.file}#${i}`, description: hubDesc(p, sec), kind: 'topic' as const })),
+      ...pages.map((p) => ({ id: p.file, description: pageDesc(p, ctx.day), kind: 'topic' as const, names: pageNames(p, ctx.day) })),
+      ...hubs.map(({ p, sec, i }) => ({ id: `${p.file}#${i}`, description: hubDesc(p, sec), kind: 'topic' as const, names: [sec.heading, ...sec.heading.split(/\s+/).filter((w) => w.length > 3 && /^[A-Z0-9]/.test(w))] })),
     ],
   });
   const direct = hubs.filter(({ p, i }) => found.includes(`${p.file}#${i}`));
@@ -119,7 +135,7 @@ export async function matchQuery(jev: JevRouter, s: GameState, content: Content,
   // that only have to do with it ("What's DOLR?" is the Money and DOLR page, not agent's prices)
   let mainNote = '';
   if (hit.length > 1) {
-    const ask = { prompt: text, context: chat, features: hit.map((p) => ({ id: p.file, description: pageDesc(p, ctx.day), kind: 'main' as const })) };
+    const ask = { prompt: text, context: chat, features: hit.map((p) => ({ id: p.file, description: pageDesc(p, ctx.day), kind: 'main' as const, names: [p.title, ...offlineAliases(p), ...(p.keys ?? [])] })) };
     let kept: WikiPage[];
     if (jev.matchScores) {
       // with Jev's confidences: the pages over the bar, or if none is, the ones close to the best
@@ -153,6 +169,7 @@ export async function matchQuery(jev: JevRouter, s: GameState, content: Content,
     id: `${p.file}#${i}`,
     description: `${sectionName(sec)} (about ${p.title})`,
     kind: 'section' as const,
+    names: [sectionName(sec)],
   }] : []) : []));
   const named = ask.length ? await jev.matchFeatures({ prompt: text, context: chat, features: ask }) : [];
   const out = { public: [] as string[], hint: [] as string[] };

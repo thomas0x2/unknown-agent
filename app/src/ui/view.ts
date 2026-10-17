@@ -182,16 +182,25 @@ function soundRows(): string {
 }
 /** System menu: whether Jev is deciding, and who writes the replies to misses (Haiku or scripted lines). */
 function aiRows(): string {
+  const st = MISSES.settings;
+  const sel = (cur: string, v: string, l: string) => `<option value="${v}" ${cur === v ? 'selected' : ''}>${l}</option>`;
+  const modeRow = `<label class="dm-slot dm-ai" title="Online asks Jev and Claude Haiku over the network; Offline decides everything on this machine with a keyword matcher and scripted replies, no keys needed">${MI.gear}<span><b>Mode</b><small>${st.net === 'offline' ? 'Offline: keyword matcher, scripted replies, no network' : 'Online: Jev decides, Haiku writes the misses'}</small></span>
+    <span class="dm-slot-acts"><select id="llm-net">${sel(st.net, 'online', 'Online')}${sel(st.net, 'offline', 'Offline')}</select></span></label>`;
+  // Offline: no proxy, no Jev dot, no Haiku; everything below is the keyword matcher and scripted lines
+  if (st.net === 'offline') {
+    return modeRow +
+      `<div class="dm-slot dm-jev"><i class="dm-dot"></i><span><b>Story decisions: keyword matcher</b><small>Runs on this machine, no network</small></span></div>
+      <div class="dm-slot dm-ai">${MI.chat}<span><b>Misses</b><small>Scripted lines only</small></span></div>`;
+  }
   const jev = JEV.mode === 'online' ? ['', 'Story decisions: Jev', 'Online'] as const
     : JEV.mode === 'checking' ? [' off', 'Story decisions: checking Jev…', 'Asking the proxy'] as const
     : [' off', 'Story decisions: Jev offline', JEV.reason || "Nothing gets decided until it's back"] as const;
-  const st = MISSES.settings;
-  const sel = (cur: string, v: string, l: string) => `<option value="${v}" ${cur === v ? 'selected' : ''}>${l}</option>`;
   let missNote = st.misses === 'haiku' ? 'Haiku answers in character' : 'Scripted lines only';
   let err = false;
   if (st.misses === 'haiku' && st.haikuVia === 'api' && JEV.haikuKey === false) { missNote = 'ANTHROPIC_API_KEY is not set in app/.env, so misses use scripted lines'; err = true; }
   else if (st.misses === 'haiku' && JEV.haikuKey === null && JEV.mode !== 'checking') { missNote = 'Start the proxy (npm run proxy) for Haiku replies'; err = true; }
-  return `<div class="dm-slot dm-jev" title="${esc(JEV.reason)}"><i class="dm-dot${jev[0]}"></i><span><b>${esc(jev[1])}</b><small>${esc(jev[2])}</small></span></div>
+  return modeRow +
+    `<div class="dm-slot dm-jev" title="${esc(JEV.reason)}"><i class="dm-dot${jev[0]}"></i><span><b>${esc(jev[1])}</b><small>${esc(jev[2])}</small></span></div>
     <label class="dm-slot dm-ai" title="What agent and email contacts say when Jev finds nothing in your message">${MI.chat}<span><b>Misses</b><small${err ? ' class="dm-err"' : ''}>${esc(missNote)}</small></span>
       <span class="dm-slot-acts"><select id="llm-misses">${sel(st.misses, 'haiku', 'Haiku (API)')}${sel(st.misses, 'scripted', 'Scripted lines')}</select></span></label>` +
     (st.misses === 'haiku' ? `<label class="dm-slot dm-ai" title="Subscription runs the claude CLI on your machine (dev only, slow); API uses ANTHROPIC_API_KEY">${MI.key}<span><b>Haiku via</b><small>${st.haikuVia === 'api' ? 'ANTHROPIC_API_KEY' : 'The claude CLI (slow)'}</small></span>
@@ -1278,6 +1287,7 @@ export function devHtml(store: GameStore): string {
     <form class="dv-row" data-form="dev-day"><label>Go to day <input id="dev-day" type="number" min="1" max="${LAST_DAY}" value="${Math.min(LAST_DAY, m.day + 1)}"></label><button type="submit">Go</button><span class="dv-dim">skips the nights: no payday, rent or bills</span></form>
     <p><b>Flags</b> <code>${esc(s.flags.join(', ') || 'none')}</code></p>
     <p><b>Apps</b> <code>${esc(s.apps.map((a) => `${a.name}:${appWorking(a) ? 'ok' : a.deployed ? 'check' : 'undeployed'}`).join(' · ') || 'none')}</code></p>
-    <p><b>Jev</b> ${esc(JEV.mode)}${JEV.reason ? ' · ' + esc(JEV.reason) : ''}</p>
-    <p><b>Misses</b> ${esc(MISSES.settings.misses)}${MISSES.settings.misses === 'haiku' ? ' · ' + esc(MISSES.settings.haikuVia) : ''}</p>`;
+    <p><b>Mode</b> ${esc(MISSES.settings.net)}</p>
+    <p><b>Jev</b> ${MISSES.offline ? 'keyword matcher (offline)' : esc(JEV.mode) + (JEV.reason ? ' · ' + esc(JEV.reason) : '')}</p>
+    <p><b>Misses</b> ${MISSES.scriptedMisses ? 'scripted' : esc(MISSES.settings.misses) + ' · ' + esc(MISSES.settings.haikuVia)}</p>`;
 }

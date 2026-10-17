@@ -1,6 +1,14 @@
 {
   "id": "sentiment",
   "name": "Sentiment crawler",
+  "aka": [
+    "crawler",
+    "sentiment crawler",
+    "trading bot",
+    "stock bot",
+    "trader bot",
+    "sentiment bot"
+  ],
   "pages": [
     {
       "id": "dash",
@@ -363,13 +371,17 @@
         "autobuy",
         "auto buying",
         "auto trader",
-        "trading bot"
+        "trading bot",
+        "bought"
       ],
       "folderAka": {
         "signal": [
           "signal",
           "trigger condition",
-          "buy signal"
+          "buy signal",
+          "fake crane",
+          "fake account",
+          "impostor account"
         ],
         "order": [
           "order",
@@ -473,8 +485,11 @@
           ],
           "aka": [
             "trigger",
-            "placing the buy",
-            "not buying"
+            "not buying",
+            "never placed",
+            "not placed",
+            "never buys",
+            "does not buy"
           ]
         },
         {
@@ -497,7 +512,14 @@
           "aka": [
             "once per post",
             "duplicates",
-            "repeat buys"
+            "repeat buys",
+            "several times",
+            "multiple times",
+            "twice",
+            "again and again",
+            "same post",
+            "times per post",
+            "same stock"
           ]
         }
       ],
