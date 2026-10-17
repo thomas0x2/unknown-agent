@@ -299,6 +299,26 @@ export function lapseUnanswered(s: GameState, content: Content): void {
   }
 }
 
+/**
+ * After a Swaplist purchase: every delivered event whose `purchase` lists the bought listing's
+ * picture counts as done, once, if it's still in time. Its thread closes and the confirmation is
+ * queued `after` minutes out.
+ */
+export function settlePurchase(s: GameState, content: Content, photo: string): void {
+  for (const ev of content.events) {
+    const p = ev.purchase;
+    const doneFlag = `${ev.id}_bought`;
+    if (!p || !p.photos.includes(photo) || hasFlag(s, doneFlag) || s.values.day > p.byDay) continue;
+    const d = s.delivered.find((x) => x.eventId === ev.id);
+    if (!d) continue;
+    addFlag(s, doneFlag);
+    applyEffects(s, p.effects, ev.job, ev.id);
+    if (!d.answered) { d.answered = true; d.outcomeId = 'bought'; }
+    const confirm = getEvent(content, p.confirm);
+    if (confirm && !underway(s, confirm)) (s.arriving ??= []).push({ eventId: confirm.id, day: s.values.day, at: s.clockMin + p.after });
+  }
+}
+
 /** DOLR sent to `wallet` from `day` on, summed from the wallet's transactions. */
 export function sentTo(s: GameState, wallet: string, day: number): number {
   const memo = `${WALLETS[wallet.toLowerCase()]?.name} · Sent`;
