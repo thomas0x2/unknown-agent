@@ -10,12 +10,12 @@ import { finishReply } from './characters';
 
 export interface HaikuReply { text: string | null; note?: string; debug: string[] }
 
-export async function haikuReply(ch: Character, text: string, via: 'subscription' | 'api', history: HistoryLine[] = []): Promise<HaikuReply> {
+export async function haikuReply(ch: Character, text: string, via: 'subscription' | 'api', history: HistoryLine[] = [], day?: number): Promise<HaikuReply> {
   let res: Response;
   try {
     res = await fetch('/api/write', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ character: ch.id, text, via, history: history.slice(-12) }),
+      body: JSON.stringify({ character: ch.id, text, via, history: history.slice(-12), day }),
     });
   } catch {
     return { text: null, note: 'the proxy is not running (npm run proxy)', debug: [] };
@@ -30,6 +30,7 @@ export async function haikuReply(ch: Character, text: string, via: 'subscription
     `Haiku: character "${ch.id}", ${data.model}, ${data.ms} ms, ${u.input_tokens ?? '?'} in / ${u.output_tokens ?? '?'} out tokens, stop ${data.stop}`,
     `system: ${data.system}`,
     ...(data.messages ?? []).map((m: any) => `${m.role}: ${m.content}`),
+    ...(data.lookups ?? []).map((l: any) => `world bible lookup "${l.query}": ${l.result}`),
     `raw output: ${raw || '(none)'}`,
   ];
   return reply ? { text: reply, debug } : { text: null, note: `Haiku's reply was unusable: ${raw.slice(0, 80) || data.stop}`, debug };

@@ -12,6 +12,7 @@ import http from 'node:http';
 import { readFileSync } from 'node:fs';
 import { execFile } from 'node:child_process';
 import { tmpdir } from 'node:os';
+import { LOOKUP_TOOL, searchBible } from './world-bible.mjs';
 
 const PORT = Number(process.env.PORT) || 8787;
 const KEY = process.env.TYPESAFE_API_KEY || '';
@@ -22,6 +23,7 @@ const BASE_URL = process.env.TYPESAFE_BASE_URL || undefined;
 // this is not an open proxy either.
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY || '';
 const WRITER_MODEL = 'claude-haiku-5-5';
+const MAX_LOOKUPS = 2;
 const CHARACTERS = JSON.parse(readFileSync(new URL('../content/characters.json', import.meta.url), 'utf8'));
 let anthropicPromise = null;
 async function getAnthropic() {
@@ -75,18 +77,45 @@ async function write(body) {
   if (body.via === 'subscription') return writeWithCli(system, messages, started);
   const client = await getAnthropic();
   if (!client) return { status: 501, json: { error: ANTHROPIC_KEY ? 'The proxy could not load @anthropic-ai/sdk (run npm install).' : 'ANTHROPIC_API_KEY is not set in app/.env.' } };
-  const res = await client.messages.create({
-    model: WRITER_MODEL,
-    max_tokens: 300,
-    thinking: { type: 'disabled' },
-    output_config: { effort: 'low' },
-    system,
-    messages,
-  });
+  // Haiku may look things up in the world bible (server/world-bible.mjs) before answering, at most
+  // MAX_LOOKUPS rounds; the last call forbids tools so it always ends in text. Only that final text
+  // goes back to the player, so the lookup stays invisible to them.
+  const withTool = `${system} If the player mentions someone or something from this world you should know but don't, ` +
+    `you may look it up first. Never mention looking anything up.`;
+  const day = Math.min(21, Math.max(1, Math.floor(Number(body.day)) || 1));
+  const convo = [...messages];
+  const lookups = [];
+  const usage = { input_tokens: 0, output_tokens: 0 };
+  let res;
+  for (let round = 0; ; round++) {
+    res = await client.messages.create({
+      model: WRITER_MODEL,
+      max_tokens: 300,
+      thinking: { type: 'disabled' },
+      output_config: { effort: 'low' },
+      system: withTool,
+      tools: [LOOKUP_TOOL],
+      tool_choice: round < MAX_LOOKUPS ? { type: 'auto' } : { type: 'none' },
+      messages: convo,
+    });
+    usage.input_tokens += res.usage?.input_tokens ?? 0;
+    usage.output_tokens += res.usage?.output_tokens ?? 0;
+    const calls = res.content.filter((b) => b.type === 'tool_use');
+    if (res.stop_reason !== 'tool_use' || !calls.length) break;
+    convo.push({ role: 'assistant', content: res.content });
+    convo.push({
+      role: 'user',
+      content: calls.map((c) => {
+        const result = searchBible(String(c.input?.query ?? '').slice(0, 80), day);
+        lookups.push({ query: c.input?.query, result });
+        return { type: 'tool_result', tool_use_id: c.id, content: result };
+      }),
+    });
+  }
   const text = res.content.filter((b) => b.type === 'text').map((b) => b.text).join('').trim();
   return {
     status: 200,
-    json: { text, model: res.model, stop: res.stop_reason, ms: Date.now() - started, usage: res.usage, system, messages },
+    json: { text, model: res.model, stop: res.stop_reason, ms: Date.now() - started, usage, system: withTool, messages, lookups },
   };
 }
 

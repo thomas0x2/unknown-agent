@@ -13,6 +13,9 @@ touching engine code.
 - `apps/*.json` — one `AppTemplate` per file: an app type with its pages and features. Client specs
   reference features by id and description.
 - `y_filler.json` — `FillerPost[]` for the Y noise pool.
+- `world-bible.md` — a copy of the project's world bible (`/mnt/project-files/world/world-bible.md`).
+  Haiku's off-script replies can look lore up in it through the proxy (`server/world-bible.mjs`),
+  which hides later days and planned or legacy material. Keep it in sync with the shared file.
 - `qmail_spam.json` — `FillerPost[]` for the Qmail spam pool.
 - `contacts.json` — who answers at each address. `replyAfter` is how many minutes of game time
   their replies take (default 60). The clock runs in real time, one game minute per

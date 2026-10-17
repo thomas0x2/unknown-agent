@@ -20,6 +20,8 @@ export interface WriteReq {
    * scripted lines included. `from` is 'player', 'self' (the speaker), or another sender's name.
    */
   history?: HistoryLine[];
+  /** The game day, so a model looking up lore only sees what has happened by then. */
+  day?: number;
 }
 
 export interface HistoryLine { from: string; text: string }

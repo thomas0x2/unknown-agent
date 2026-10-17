@@ -204,7 +204,7 @@ async function contactWritesBack(
   // A hint is a hit: Jev recognised what the player was after, so the nudge is sent as written.
   // Otherwise the character answers in their own voice, without helping (game/characters.ts).
   const fb = c.reply || 'Thanks for your message.';
-  const { text: body, llm } = hint ? { text: hint, llm: false } : await writer.write({ as: addr, prompt: text, fallback: fb, long: true, history });
+  const { text: body, llm } = hint ? { text: hint, llm: false } : await writer.write({ as: addr, prompt: text, fallback: fb, long: true, history, day: s.values.day });
   const shown = body || fb;
   sendLater(s, { folder: 'inbox', day: s.values.day, from: c.name ?? from ?? addr, addr, subject, body: shown, read: false, generated: llm && !!body, ...(hint ? { scripted: 'hint' as const } : {}) }, replyAfter(content, addr, undefined, ev));
   return shown;
@@ -443,7 +443,7 @@ export async function askAgent(
     src = opts.hintSrc ?? 'hint';
   } else {
     const roasts = opts.roasts?.length ? opts.roasts : ROASTS;
-    const w = await writer.write({ as: 'agent', prompt: text, fallback: pick(s, roasts), history: chatHistory(s) });
+    const w = await writer.write({ as: 'agent', prompt: text, fallback: pick(s, roasts), history: chatHistory(s), day: s.values.day });
     reply = w.text;
     if (w.llm) src = 'llm';
     note = w.note;
