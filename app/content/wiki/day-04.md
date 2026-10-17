@@ -25,9 +25,9 @@ from: 4
 
 - [public] 10:05 [[Cal Hartman]]: agent-2 "feels a little bit like magic. the new pricing reflects that." {{y:d4_y_hartman}}
 - [public] 11:30 [[Mara Vey]] follows up on the Vantor layoffs, 400 people, one memo: "tell me your story." {{y:d4_y_journalist}}
-- [public] 11:30 [[6ft_sigma]]: needs someone to do his swiping on matchless.com, following his standards exactly. 35 DOLR a day for ten swipes, paid nightly, only if every one is right. {{y:d4_y_sigma}}
 - [public] 11:31 Fifteen bot accounts post "$GAI to the moon!!".
-- [public] 11:45 [[Max Stryker]]: GeneralAI doubled their prices, "Good." EMPIRE is now 400 DOLR, today only 20. {{y:d4_y_stryker}}
+- [public] 11:43 [[6ft_sigma]]: needs someone to do his swiping on matchless.com, following his standards exactly. 35 DOLR a day for ten swipes, paid nightly, only if every one is right. {{y:d4_y_sigma}}
+- [public] 11:57 [[Max Stryker]]: GeneralAI doubled their prices, "Good." EMPIRE is now 400 DOLR, today only 20. {{y:d4_y_stryker}}
 - [public] 12:20 [[Axel Rook]]: Apogee rocket stacked on the pad. "Looks sick." {{y:d4_y_axel}}
 - [public] 13:26 [[Randall Crane]]: Vantor ($VANT) fired 400 hardworking Americans and replaced them with a computer. "Disgraceful." {{y:m4_vant_crane}}
 - [public] 15:19 noodleposter: day 4 of instant noodles, posting every bowl; "the broth is my therapist now." {{y:f4}}
