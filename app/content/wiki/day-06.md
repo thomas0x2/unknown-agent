@@ -19,6 +19,7 @@ from: 6
 - [hidden; hint if trashed_beanthere] 11:35 Iron Yard on Y, for a player Dana never asked: three reviews, two about the showers; "Yowl isn't fair to new places"; he pays whoever fixes it. coach@ironyard.test {{y:d6_y_gym_help}}
 - [hidden; public if gym_reviews] The player had the agent post five 5-star reviews of Iron Yard on Yowl.
 - [hidden; public if gym_reviews_deleted] All five came from one account, happy_customer_88; Yowl deleted them that night for "coordinated inauthentic activity", and Marcus didn't pay.
+- [hidden; public if shown d6_onion_mail] 20:00 The night after the player's first hack (today at the earliest), [[q7vx2k9m4t]] writes from null.onion, subject "yesterday": "we know what you did." No reply ever comes. {{mail:d6_onion_mail}}
 
 ## Money
 
