@@ -13,7 +13,7 @@ import type { GameState } from './state';
 import type { Content } from '../content/schema';
 import type { JevRouter } from './jev';
 import { wikiCtx, queryablePages, querySections, sectionNow, sectionName, cleanWikiText, EMBED, type WikiPage, type WikiSection, type WikiCtx } from './wiki';
-import { deliveryKey, eventBody, posted, postMin } from './events';
+import { deliveryCc, deliveryKey, eventBody, posted, postMin } from './events';
 import { marketPosts } from './crawler';
 import { liveArticles } from './citypulse';
 
@@ -57,10 +57,11 @@ export function seenItems(s: GameState, content: Content): Map<string, string> {
     if (!keys.length) continue;
     const body = plain(d.body ?? eventBody(e, d.day));
     const from = e.from ?? 'someone';
+    const cc = deliveryCc(e, d);
     const text = e.site === 'y' ? `Y post by ${from}: ${body}`
       : e.site === 'yowl' ? `Yowl review by ${from}: ${body}`
       : e.site !== 'qmail' ? `${e.site} post by ${from}: ${body}`
-      : `Email from ${from}${e.subject ? `, "${plain(e.subject)}"` : ''}${e.cc?.length ? ` (CC: ${e.cc.join(', ')})` : ''}: ${body}`;
+      : `Email from ${from}${e.subject ? `, "${plain(e.subject)}"` : ''}${cc?.length ? ` (CC: ${cc.join(', ')})` : ''}: ${body}`;
     for (const k of keys) out.set(k, text);
   }
   for (const p of marketPosts(s, content)) if (!out.has(p.id)) out.set(p.id, `Y post by ${p.author}: ${plain(p.text)}`);

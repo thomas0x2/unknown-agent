@@ -22,7 +22,7 @@ from: 1
 - [public] Day 3 issue: brush your teeth with your left hand to build new pathways to new money. {{mail:guru_newsletter@3}}
 - [public] Day 4 issue: drink your coffee cold, because comfort is a tax on ambition. {{mail:guru_newsletter@4}}
 - [public] Day 5 issue: no cold plunge at home, so fill the sink and put your face in it. {{mail:guru_newsletter@5}}
-- [public] On day 5 a second issue, "TODAY ONLY: double your discipline", went out with every subscriber in CC instead of BCC: 28 addresses, among them 6ft_sigma@qmail.com, from a course that claims 41,000 members. {{mail:d5_guru_leak}}
+- [public] On day 5 the regular issue went out with every subscriber in CC instead of BCC: 28 addresses, among them 6ft_sigma@qmail.com, from a course that claims 41,000 members. {{mail:guru_newsletter@5}}
 - [public] Day 6 issue: from today your mother is "the investor" and gets a quarterly update every Sunday. {{mail:guru_newsletter@6}}
 - [public] Day 7 issue: eat one meal a day, standing up. {{mail:guru_newsletter@7}}
 - [public] Day 8 issue: write your net worth on the bathroom mirror every morning, bigger if it's negative. {{mail:guru_newsletter@8}}
@@ -111,6 +111,6 @@ from: 1
 
 ## Writer notes
 
-- Persona `max` (scripted "Commitment logged." on EMPIRE replies); events `dN_y_stryker_2` (dating advice, odd days 5 to 15, each answered by `dN_y_sigma`), `d1_guru` (interested reply: the 20 DOLR price "goes back to 200, as it has every midnight since launch"), `guru_newsletter` (20 bodies, one per day 2 to 21, mattress first; embed one issue as `mail:guru_newsletter@N` in double braces), `dN_y_stryker_stack` (paid Stack posts, days 3, 6, 14, 18; see [[Stack]]), `d5_guru_leak` (`cc` lists 28 addresses incl. [[6ft_sigma]]), `dN_y_stryker`. EMPIRE page and `EMPIRE` constant in engine/actions/clicks.ts.
+- Persona `max` (scripted "Commitment logged." on EMPIRE replies); events `dN_y_stryker_2` (dating advice, odd days 5 to 15, each answered by `dN_y_sigma`), `d1_guru` (interested reply: the 20 DOLR price "goes back to 200, as it has every midnight since launch"), `guru_newsletter` (20 bodies, one per day 2 to 21, mattress first; embed one issue as `mail:guru_newsletter@N` in double braces; `special` gives the first issue on or after day 5 a `cc` of 28 addresses incl. [[6ft_sigma]] and sets `guru_cc_leak`; a player who subscribes later gets the leak in their first issue), `dN_y_stryker_stack` (paid Stack posts, days 3, 6, 14, 18; see [[Stack]]), `dN_y_stryker`. EMPIRE page and `EMPIRE` constant in engine/actions/clicks.ts.
 - Name and Alpha Ascend are placeholders. "4am" and "EMPIRE" are his alone; ration them.
 - The guru CC leak is a planned doxing lead. The bible had him recruiting by newsletter on days 10 to 12; the game does it on Y.

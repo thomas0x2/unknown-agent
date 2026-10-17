@@ -15,6 +15,7 @@ from: 9
 
 ## Y
 
+- [public] 04:18 (overnight, already up at 10:00) zev.dolr watches DOLR do nothing on the one minute chart; it only moves when he looks away, and he hasn't. {{y:f25}}
 - [public] 09:10 [[Axel Rook]]: rocket launch tomorrow at 10, "Maybe 70% chance it works." {{y:d9_y_axel}}
 - [public] 10:05 [[Cal Hartman]]: agent-3 is rolling out; "something changed." {{y:d9_y_hartman}}
 - [public] 10:25 Ten bot accounts post "$GAI to the moon!!".

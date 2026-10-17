@@ -178,6 +178,17 @@ describe('EMPIRE newsletter', () => {
     expect(new Set(issues.map((d) => eventBody(ev, d.day))).size).toBe(4);
     expect(new Set(issues.map((d) => deliveryKey(ev, d.day))).size).toBe(4);
   });
+
+  it('the first issue from day 5 on leaks every subscriber in CC, once, with no second mail', () => {
+    let s = joinEmpire(startAll(content, 3));
+    for (let i = 0; i < 4; i++) s = endAll(s, content);
+    const issues = s.delivered.filter((d) => d.eventId === 'guru_newsletter');
+    const leaked = issues.filter((d) => d.cc?.length);
+    expect(leaked.map((d) => d.day)).toEqual([5]);
+    expect(leaked[0].cc).toContain('6ft_sigma@qmail.com');
+    expect(s.flags).toContain('guru_cc_leak');
+    expect(issues.filter((d) => d.day === 5)).toHaveLength(1);
+  });
 });
 
 describe('Max after the first email', () => {
