@@ -17,7 +17,7 @@ from: 2
 
 - [hint] On day 3 deskjockey asks for auto-buy: when [[Randall Crane]] praises a company, buy it, once per post, the right ticker, not on sarcasm or criticism. {{mail:d3_trader_update}}
 - [public] [if trader_client] Ninety minutes after auto-buy first goes live, Crane praises Apogee on Y, the bot's first real test. {{y:trader_y_crane_apo}}
-- [public] On day 5 a fake Crane account, @randa11_crane, praises $VANT. {{y:m5_vant_impostor}}
+- [public] On day 5 a fake Crane account, [[randa11_crane]], praises $VANT. {{y:m5_vant_impostor}}
 - [public] On day 6 Crane praises $GAI. {{y:d6_y_crane_gai}}
 - [public] deskjockey also trades by hand on the news; those trades show in the log as "Manual trade".
 

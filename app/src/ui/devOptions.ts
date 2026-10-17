@@ -6,7 +6,7 @@
 import type { GameStore } from '../game/store';
 import type { Content, Effects, GameEvent, Outcome, Trigger } from '../content/schema';
 import {
-  type GameState, activeDeliveries, triggerMatches, replyDeadline, needsWork, fixCategories, policyActive, POST_BANDS, postBase, Y as YCFG, NO_SHOW,
+  type GameState, activeDeliveries, triggerMatches, replyDeadline, needsWork, fixCategories, policyActive, POST_BANDS, postBase, Y as YCFG, NO_SHOW, trendingAt,
 } from '../engine';
 import { PASSWORDS, COINBIN_PASSWORD, PHISH_DOMAIN, hacked } from '../engine/phishing';
 import { DEEPSLEEP_LINES, DEEPSLEEP_PLEA, PLEA_AT, translationReplies } from '../engine/deepsleep';
@@ -171,6 +171,8 @@ export function contentJobs(c: Content): Job[] {
     if (forPost) out.push({ ev, kind: 'paid gig', pay: `${forPost} for a Y post`, spec: [ev.yPost!.when] });
     const h = ev.hack;
     if (h && ev.job) out.push({ ev, kind: `${ev.job.category} hack`, pay: `${ev.job.payout} overnight, due ${ev.job.dueAfter != null ? `${ev.job.dueAfter} day(s) after the offer` : `day ${ev.job.dueDay}`}`, spec: [h.goal, `name: ${h.path.map((p) => p.name).join(', ')}`, ...(h.detail ? [`say: ${h.detail.description}`] : [])] });
+    const aj = ev.agentJob;
+    if (aj && ev.job) out.push({ ev, kind: `${ev.job.category} agent job`, pay: `${ev.job.payout} overnight, due ${ev.job.dueAfter != null ? `${ev.job.dueAfter} day(s) after the offer` : `day ${ev.job.dueDay}`}`, spec: [aj.goal, `name: ${aj.path.map((p) => p.name).join(', ')}`, `posts: ${aj.post.text}`] });
     for (const o of ev.outcomes ?? []) {
       const app = o.effects?.createApp;
       const cash = o.effects?.add?.crypto ?? 0;
@@ -303,7 +305,7 @@ function yOptions(store: GameStore): string {
   const s = store.state;
   const c = store.content;
   const f = s.values.followers;
-  const trending = c.trending[s.values.day] ?? [];
+  const trending = trendingAt(c, s.values.day, s.clockMin);
   const rows = Object.entries(POST_BANDS).map(([cat, [lo, hi]]) => {
     const c0 = cat as keyof typeof POST_BANDS;
     const ends = [postBase(c0, 0, f), postBase(c0, 1, f)].flatMap((v) => [v * (1 - YCFG.postJitter), v * (1 + YCFG.postJitter)]).map(Math.round);
@@ -316,7 +318,9 @@ function yOptions(store: GameStore): string {
   const table = `<table class="dvo-table"><thead><tr><th>Jev rates it</th><th>Followers</th><th>At ${f}</th><th></th></tr></thead><tbody>${rows}</tbody></table><p class="dvo-dim">Where in the range depends on the quality Jev gives the post, then lands randomly within ±${Math.round(YCFG.postJitter * 100)}%. Small accounts get a flat amount instead when it is bigger.</p>`;
   // posts on Y that lead somewhere: an address that opens a Qmail lead
   const leads = s.delivered.filter((d) => d.site === 'y').map((d) => c.events.find((e) => e.id === d.eventId)).filter((e): e is GameEvent => !!e?.addr).map((e) => {
-    const lead = c.events.find((x) => x.site === 'qmail' && x.latent && x.addr === e.addr);
+    // an address can lead to several leads in turn (Mara's first ask, then her follow-up): show the open one
+    const all = c.events.filter((x) => x.site === 'qmail' && x.latent && x.addr === e.addr);
+    const lead = all.find((x) => !s.fired.includes(x.id) && triggerMatches(s, x.trigger)) ?? all.find((x) => !s.fired.includes(x.id)) ?? all[0];
     const status = !lead ? 'no lead' : s.fired.includes(lead.id) ? 'already emailed' : triggerMatches(s, lead.trigger) ? 'open' : 'not yet';
     const outs = lead?.outcomes?.map((o) => `<b>${esc(o.id)}</b>: ${esc(o.when)}`).join('<br>') ?? '';
     return `<div class="dvb-card"><div class="dvb-title"><b>${esc(e.from ?? e.id)}</b><span class="dvo-dim">email ${esc(e.addr)}</span><span class="dvb-pill ${status === 'open' ? 'ok' : 'off'}">${status}</span></div>${line('Outcomes', outs)}</div>`;

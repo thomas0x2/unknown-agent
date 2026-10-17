@@ -28,7 +28,7 @@ import './ui/matchless.css';
 import { showSuggestions, hideSuggestions, suggestionKey } from './ui/mailSuggest';
 import { GameStore } from './game/store';
 import { loadContent } from './content/load';
-import { localStorageStore, PLAYER_WALLET, SEED_PHRASE, CASINO_WALLET } from './engine';
+import { localStorageStore, PLAYER_WALLET, SEED_PHRASE, CASINO_WALLET, trendingAt } from './engine';
 import { JEV } from './game/backendJev';
 import { ROUTER } from './game/router';
 import { MISSES, makeWriter, type Misses, type HaikuVia, type Net } from './game/misses';
@@ -57,7 +57,7 @@ onWikiFiles((pages) => { content.wiki = pages; store.repaint(); });
 
 const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector<T>(sel);
 const val = (sel: string) => ($(sel) as HTMLInputElement | HTMLTextAreaElement | null)?.value ?? '';
-const trendingToday = () => store.content.trending[store.state.values.day] ?? [];
+const trendingToday = () => trendingAt(store.content, store.state.values.day, store.state.clockMin);
 
 let lastSite = '';
 let lastUrl = '';
@@ -324,7 +324,7 @@ const CLICKS: Record<string, Click> = {
     const name = n === 'auto' ? 'the autosave' : `slot ${n}`;
     store.confirm(`Load ${name}? Your current game is replaced by it.`, 'Load', () => { forgetDrafts(); quietReset(); store.loadSlot(n); });
   },
-  nav: (v) => { newPageLoad(); store.navigate(v); },
+  nav: (v) => { if (v === 'run-exe') { store.runExe(); return; } newPageLoad(); store.navigate(v); },
   back: () => store.back(),
   forward: () => store.forward(),
   tab: (v) => store.switchTab(Number(v)),
@@ -346,7 +346,7 @@ const CLICKS: Record<string, Click> = {
   star: (v) => store.setReviewStars(Number(v)),
   download: (v) => store.download(v),
   wlRange: (v) => store.setWalletRange(v),
-  ov: (v) => onOverlay(v),
+  ov: (v, t) => onOverlay(v, t),
   dev: (v) => { if (v === 'rewind') quietReset(); store.devAdd(v); },
   devopts: (v) => store.toggleDevOptions(v),
   devbug: (v) => { const [app, feat, key] = v.split('|'); store.devToggleBug(app, feat, key); },
@@ -366,6 +366,7 @@ const ACTS: Record<string, (t: HTMLElement) => void> = {
   'stack-bet': (t) => store.stackPickBet(Number(t.dataset.bet)),
   'stack-spin': () => store.stackSpin(),
   'stack-copy': () => copyDepositAddress(),
+  'pcmedic-download': () => store.downloadCleaner(),
   'sw-sell': (t) => { if (store.trade(t.dataset.ticker!, 'sell', val('#sw-amount').trim())) clearField('sw-amount'); },
   'sw-sell-all': (t) => { if (store.trade(t.dataset.ticker!, 'sell', 'all')) clearField('sw-amount'); },
   sleep: () => store.endDay(),
@@ -422,8 +423,10 @@ function copySeedPhrase(): void {
 
 function clearMailDraft(): void { ['mail-to', 'mail-subject', 'mail-body'].forEach(clearField); }
 
-function onOverlay(a: string): void {
+function onOverlay(a: string, t?: HTMLElement): void {
   if (a === 'new') { forgetDrafts(); quietReset(); store.newGame(); }
+  else if (a === 'adpop-close') store.closeAdPopup();
+  else if (a === 'adpop-go') { const url = t?.dataset.url; store.closeAdPopup(); if (url) { newPageLoad(); store.navigate(url, true); } }
   else if (a === 'start') store.seenIntro();
   else if (a === 'morning') store.dismissMorning();
   else if (a === 'greet') { store.dismissGreet(); SOUND.play('dayStart', 0.1); }

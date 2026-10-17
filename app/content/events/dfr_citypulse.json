@@ -1,0 +1,20 @@
+{
+  "id": "dfr_citypulse",
+  "site": "y",
+  "from": "CityPulse",
+  "trigger": {
+    "dayMin": 6,
+    "flagsAll": [
+      "posted_deepfake"
+    ]
+  },
+  "afterJob": {
+    "jobs": [
+      "d6_deepfake",
+      "d7_deepfake_again"
+    ],
+    "after": 55
+  },
+  "viral": true,
+  "body": "IS IT REAL? A picture of Crane's rival with registered sex offender Kirschbaum passes 1 MILLION views in under an hour. His team says it's fake. Nobody is listening."
+}

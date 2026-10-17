@@ -1,6 +1,6 @@
 ---
 title: Qdrive
-aliases: qdrive.com, drive, resume_final_v3.pdf, resume, vantor_offboarding.pdf, passwords.txt, interview_answers.txt, deepsleep-0.5B.gguf
+aliases: qdrive.com, drive, resume_final_v3.pdf, resume, vantor_offboarding.pdf, passwords.txt, interview_answers.txt, deepsleep-0.5B.gguf, PCMedic_Setup.exe, pcmedic_source.txt
 category: sites
 from: 1
 ---
@@ -14,6 +14,8 @@ from: 1
 - [public] **Projects**: a zip of every app the player has built.
 - [public] **Models**: model weights the player downloads, such as deepsleep-0.5B.gguf ("Confident, free, mostly wrong.").
 - [public] Vantor Outplacement takes a resume upload from Qdrive (PDF only).
+- [hint; public if adware_downloaded] **PCMedic_Setup.exe**: the "cleaner" from [[PC Medic]]. Running it infects the laptop.
+- [hidden; public if adware_source] **pcmedic_source.txt**: the virus's source, once the agent has extracted it, with the author's name, email and wallet in it.
 
 ## Writer notes
 

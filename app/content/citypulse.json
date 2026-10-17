@@ -194,15 +194,15 @@
     ]
   },
   {
-    "slug": "opponent-clip", "day": 7, "at": "15:50", "section": "Election", "art": "chart-down", "by": "Renata Ilic", "flagsAll": ["posted_deepfake"],
-    "title": "CRANE'S RIVAL SINKS after SHOCK clip",
+    "slug": "opponent-clip", "day": 7, "at": "15:50", "section": "Election", "art": "deepfake", "by": "Renata Ilic", "flagsAll": ["posted_deepfake"],
+    "title": "CRANE'S RIVAL SINKS after SHOCK photo with sex offender",
     "dek": "His lead is gone overnight. His team cries fake. The internet doesn't care.",
     "body": [
-      "The Progress Party's presidential candidate, the man everyone calls Crane's opponent, is in meltdown after a damning video clip tore through Y overnight, wiping out his 3-point lead.",
-      "His campaign insists the clip is \"a fabrication\" and says the words in it appear in none of the speeches the party has published. Experts who examined the footage could not say if it was real or fake. Viewers have made up their own minds.",
-      "Who posted it first? The account behind it has gone quiet."
+      "The Progress Party's presidential candidate, the man everyone calls Crane's opponent, is in meltdown after a picture of him with registered sex offender Kirschbaum tore through Y overnight, wiping out his 3-point lead.",
+      "His campaign insists the picture is \"a fabrication\" and says the two men have never met. One expert pointed out that the hand on the candidate's shoulder has six fingers. Viewers have made up their own minds.",
+      "Who posted it first? A small account nobody had heard of. It has a lot more followers now."
     ],
-    "ad": ["Crane's rival", "<b>LEAD WIPED OUT</b>.", "Watch the <b>clip</b> everyone’s sharing."]
+    "ad": ["Crane's rival", "<b>LEAD WIPED OUT</b>.", "See the <b>photo</b> everyone’s sharing."]
   },
   {
     "slug": "opponent-lead", "day": 7, "at": "15:50", "section": "Election", "art": "ballot", "by": "Renata Ilic", "flagsNone": ["posted_deepfake"],
@@ -528,5 +528,7 @@
       "Polls close at 8:00 PM. Stay with CityPulse for every twist."
     ],
     "ad": ["RECORD TURNOUT.", "One precinct", "<b>STILL COUNTING</b>."]
-  }
+  },
+  {"slug": "crane-kirschbaum", "day": 11, "at": "17:10", "section": "Election", "art": "yacht", "by": "Renata Ilic", "title": "OLD FRIENDS? Photos show CRANE partying with sex offender Kirschbaum", "dek": "Champagne, a yacht and a man Crane says he barely knew.", "body": ["Randall Crane has spent this campaign calling himself a family man. Photos obtained by CityPulse show him in 2019 on the deck of the Lucky Lady, the yacht of financier Harlan Kirschbaum, a registered sex offender since 2011.", "In one picture the two men raise champagne glasses. In another, Crane has his arm around Kirschbaum. Both are smiling.", "Crane's campaign says he \"meets thousands of people\" and \"barely knew\" Kirschbaum. Other guests say he stayed on the yacht for four days."], "ad": ["Crane's", "<b>YACHT PAL</b>.", "See the <b>photos</b>."]},
+  {"slug": "crane-flights", "day": 16, "at": "16:30", "section": "Election", "art": "yacht", "by": "Renata Ilic", "title": "FREQUENT FLYER: Crane took Kirschbaum's private jet ELEVEN times", "dek": "\"Barely knew him\" now includes eleven flights.", "body": ["Flight records first reported by The Current show Randall Crane flew on Harlan Kirschbaum's private jet eleven times between 2014 and 2019, including twice to Kirschbaum's island.", "Last week Crane's campaign said he \"barely knew\" the registered sex offender. This week it says he \"doesn't recall the plane.\"", "Crane's poll numbers have not moved. His campaign calls that \"a verdict.\""], "ad": ["<b>ELEVEN</b> flights.", "Crane \"doesn't recall\"", "the <b>plane</b>."]}
 ]

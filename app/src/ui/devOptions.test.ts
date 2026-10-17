@@ -68,6 +68,6 @@ describe('jobs in the agent panel', () => {
     expect(names).not.toContain('d1_mom');
     const html = panel(startAll(content), 'agent');
     expect(html).toContain('open now · email the lead');
-    expect(html).toContain('followers &gt;=100');
+    expect(html).toContain('followers &gt;=60');
   });
 });

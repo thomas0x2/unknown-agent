@@ -18,6 +18,7 @@ from: 1
 - [public] Its election polls are on [[The election]] page.
 - [public] On day 11 it reports that step three of Crane's jobs plan hands the positions to GeneralAI; the campaign calls the plan "a draft" on a site "managed by a vendor". {{y:d11_y_current}}
 - [public] On day 15 [[Randall Crane]] calls The Current "Fake News" and attacks its "sob story".
+- [public] On day 15 it reports flight records: Randall Crane flew on [[Kirschbaum]]'s private jet eleven times between 2014 and 2019; the campaign says he "doesn't recall the plane." {{y:d15_y_current_flights}}
 - [public] On day 18 it fact-checks the debate: 4 of Crane's 31 claims held up, and the campaign cited two of the four as proof. {{y:d18_y_current}}
 - [public] On day 21 it posts how to vote: polls open until 20:00, photo ID and registration card, no Citizen Score, and polling stations have not moved. {{y:d21_y_current}}
 - [public] {{y:d2_y_current}}

@@ -26,6 +26,7 @@
 .qd-txt { background: #6b7287; }
 .qd-zip { background: #c58a12; }
 .qd-weights { background: #3b4ad6; }
+.qd-exe { background: #b0202a; }
 .qd-crumbs { margin: 0 0 12px; font-size: 13px; color: var(--qm-dim); }
 .qd-crumbs a { color: var(--qm-accent); }
 .qd-open header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }

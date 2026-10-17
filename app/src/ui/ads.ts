@@ -107,6 +107,11 @@ export const WIDE: Ad[] = [
     frames: ['⚠ Unusual activity', 'on your account', 'Verify within <b>24h</b>'],
     cta: 'VERIFY NOW', fine: 'We are definitely your bank. Which bank? Yes.',
   },
+  {
+    id: 'pcmedic', sponsor: 'PC Medic', href: 'pcmedic.live', theme: 'ad-pcmedic', deco: 'siren', cta_fx: 'blink',
+    frames: ['⚠ <b>WARNING:</b> your device may be infected', '<b>3 threats</b> found. Act now to avoid data loss.', 'Free scan. Instant clean. <b>100% safe.</b>'],
+    cta: 'REMOVE THREATS', fine: 'Not antivirus. Not safe. Not sorry.',
+  },
   // darker
   {
     id: 'griefgpt', sponsor: 'GriefGPT', href: 'griefgpt.com', theme: 'ad-grief', deco: 'sparkle', cta_fx: 'pulse',
@@ -215,6 +220,11 @@ const SQUARE: Ad[] = [
     cta: 'CLAIM', fine: 'You are visitor #1,000,000 again.',
   },
   {
+    id: 'pcmedic-sq', sponsor: 'PC Medic', href: 'pcmedic.live', theme: 'ad-pcmedic', deco: 'siren', cta_fx: 'blink',
+    frames: ['⚠ <b>3 THREATS</b>', 'detected on <b>this device</b>', 'Remove them now'],
+    cta: 'SCAN NOW', fine: 'Scan already complete. It always finds three.',
+  },
+  {
     id: 'spincycle', sponsor: 'Spin Cycle Laundry', href: 'spincycle.test', theme: 'ad-spin', deco: 'bubbles', cta_fx: 'blink',
     frames: ['Machine 3 is <b>FREE</b>*', 'Probably.', '<small>M3 ST=1 T=731</small>'],
     cta: 'Walk over', fine: '*Status feed may be unreadable to humans.',
@@ -257,8 +267,8 @@ const SQUARE: Ad[] = [
   },
   {
     id: 'progress', sponsor: 'Progress Party', href: 'progressparty.org', theme: 'ad-progress', deco: 'stripes', from: 6,
-    frames: ['“I never said that.”', '— the Candidate', '<b>Probably.</b>'],
-    cta: 'Watch the clip', fine: 'Paid for by Friends of the Candidate. Clip authenticated by vibes.',
+    frames: ['“I’ve never met him.”', '— the Candidate', '<b>Probably.</b>'],
+    cta: 'See the photo', fine: 'Paid for by Friends of the Candidate. Photo authenticated by vibes.',
   },
   {
     id: 'landlordpro', sponsor: 'LandlordPro', href: 'landlordpro.ai', theme: 'ad-pod', deco: 'coins',

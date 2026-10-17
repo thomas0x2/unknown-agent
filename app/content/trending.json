@@ -2,34 +2,37 @@
   "1": [
     "AI layoffs",
     "“our AI almost escaped”",
-    "election candidates announced",
-    "laundromat complaints"
+    { "at": "13:50", "topic": "laundromat complaints" },
+    { "at": "16:30", "topic": "the presidential race" }
   ],
   "2": [
-    "$VANT up after restructuring",
     "the “almost escaped” stunt",
-    "a delivery robot “escaped”",
-    "election polls"
+    { "at": "10:15", "topic": "$VANT up after restructuring" },
+    { "at": "11:35", "topic": "the water utility break-in" },
+    { "at": "12:23", "topic": "election polls" },
+    { "at": "15:40", "topic": "a delivery robot “escaped”" }
   ],
   "3": [
-    "the presidential race",
-    "Crane going viral",
     "AI layoffs (continued)",
-    "a weekly appetite jab"
+    { "at": "10:05", "topic": "a weekly appetite jab" },
+    { "at": "11:10", "topic": "the jobs fair queue" },
+    { "at": "16:00", "topic": "“send the machines back”" }
   ],
   "4": [
     "GeneralAI agent-2",
-    "a Crane rally",
-    "the DoorDish robot (still missing)"
+    "the DoorDish robot (still missing)",
+    { "at": "13:26", "topic": "Crane vs. Vantor" }
   ],
   "5": [
-    "Crane gains in the polls",
-    "a data breach (yours)",
-    "AI-art backlash"
+    "is agent-2 worse?",
+    { "at": "16:20", "topic": "Crane's 71% Y poll" },
+    { "at": "17:30", "topic": "AI-art backlash" },
+    { "at": "19:10", "topic": "the fake Randall Crane" }
   ],
   "6": [
-    "Crane's opponent",
-    "$GAI rallying",
-    "#RentDayEve"
+    "#RentDayEve",
+    { "at": "11:00", "topic": "Crane's GeneralAI U-turn" },
+    { "at": "15:18", "topic": "$GAI rallying" },
+    { "at": "18:50", "topic": "Apogee static fire" }
   ]
 }

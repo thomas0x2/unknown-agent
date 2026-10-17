@@ -18,6 +18,7 @@ from: 1
 - [public] Buttons are a heart (like) and a ghost.
 - [public] Most profiles are women; some are men and a few nonbinary.
 - [public] The women's messages are fawning ("I respect a man who does not respect women."); the men's are creepy ("Respectfully, I would like to measure you.").
+- [public] There are 38 women's messages and 12 men's; no message repeats within a day. Other women's lines: "My dad would hate you. That is the dream.", "I am a 9, but I would be a 6 for you if you prefer."
 
 ## From day 4: swiping for 6ft_sigma
 

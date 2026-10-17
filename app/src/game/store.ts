@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, recordStake, recordDeposit, spinSlot, applyCasinoCode, withdrawCasino, payStakes, buyStock, sellStock, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, rewindArrivals, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy, deliverSwapReplies, matchlessSwipe, matchlessLogin, clone, uploadFile, fileRentAppeal, donateCrane, craneDonations, fillSave, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat, agentTermPrompt, dropHackGame, hackMinutes, BOOT_MS, READ_MS, dateShort, clockTime, AGENT_POLICY,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, recordStake, recordDeposit, spinSlot, applyCasinoCode, withdrawCasino, payStakes, buyStock, sellStock, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, rewindArrivals, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy, deliverSwapReplies, matchlessSwipe, matchlessLogin, clone, uploadFile, fileRentAppeal, donateCrane, craneDonations, fillSave, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat, agentTermPrompt, dropHackGame, hackMinutes, BOOT_MS, READ_MS, dateShort, clockTime, AGENT_POLICY, installAdware, tickAdware, closePopup, EXE_RUN_LINES,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -230,7 +230,7 @@ export class GameStore {
   /** A dialog is up (or the run is over), so time stands still. */
   get dialogOpen(): boolean {
     const s = this.state;
-    return !!(s.ending || s.morning || this.ui.jevOffline || this.ui.confirm || this.ui.memWarn || this.ui.greet || this.ui.intro);
+    return !!(s.ending || s.morning || this.ui.jevOffline || this.ui.confirm || this.ui.memWarn || this.ui.greet || this.ui.intro || s.adware?.popup);
   }
   get clockPaused(): boolean {
     return this.clockHeld || this.dialogOpen || (typeof document !== 'undefined' && document.hidden);
@@ -275,8 +275,9 @@ export class GameStore {
     const woke = wakeApps(s, this.content).length > 0 || shown || paid; // an empty app's first content (and its bugs) once its time has come
     deliverArrivals(s, this.content); // emails and posts whose time has come
     const answered = deliverSwapReplies(s); // Swaplist sellers getting back to the player
+    const popped = tickAdware(s); // an infected laptop's next ad pop-up, about once a game hour
     if (s.clockMin >= CLOCK.sleep) { this.sleep(s); this.store.save(this.state); this.announce(m); this.emit(); return; }
-    if (this.announce(m) || s.agentWork !== working || woke || answered) { this.store.save(s); this.emit(); return; }
+    if (this.announce(m) || s.agentWork !== working || woke || answered || popped) { this.store.save(s); this.emit(); return; }
     if (s.clockMin % 10 === 0) this.store.save(s);
     for (const fn of this.clockListeners) fn();
   }
@@ -638,6 +639,26 @@ export class GameStore {
     this.act((s) => (s === this.state ? r : withdrawCasino(s, n)).state);
     return true;
   }
+  /** pcmedic.live: save the "cleaner" to Qdrive (it shows up as PCMedic_Setup.exe). */
+  downloadCleaner(): void {
+    const s = this.state;
+    if (!s.flags.includes('adware_downloaded')) addFlag(s, 'adware_downloaded');
+    this.ui.adNotice = 'PCMedic_Setup.exe saved to your Qdrive. Open it to run the cleaner.';
+    this.store.save(s); this.emit();
+  }
+  /** Run PCMedic_Setup.exe in the you@laptop shell: the laptop gets infected and the pop-ups begin. */
+  runExe(): void {
+    const s = this.state;
+    if (s.adware) { this.showTerm(true); return; }
+    if (!s.flags.includes('has_terminal')) addFlag(s, 'has_terminal'); // the exe gives the player the shell
+    s.terminal.push(...EXE_RUN_LINES);
+    installAdware(s);
+    this.ui.termOpen = true; this.ui.termShown = true; this.ui.termTab = 'shell';
+    this.store.save(s); this.emit();
+  }
+  /** Dismiss the current OS ad pop-up; the next one is scheduled about an hour out. */
+  closeAdPopup(): void { closePopup(this.state); this.store.save(this.state); this.emit(); }
+
   /** lonely.ai: the player's message, then Mia's scripted reply after a short "typing". */
   lonelySend(text: string): boolean {
     if (this.ui.lonelyTyping) return false;
