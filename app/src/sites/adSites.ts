@@ -2,7 +2,7 @@
  * The websites behind the banner ads (app/src/ui/ads.ts). Every ad's href opens one of these: a
  * landing page in the sponsor's style. For now they're brochures with nothing to click, apart from
  * the odd link to a real site (deepsleep.ai links to Weightroom). Ads for sites that already exist
- * (EMPIRE, the coinbln.com phishing page, DoorDish) aren't here. Rendered by ui/adSites.ts; routed by sites/registry.ts.
+ * (EMPIRE, the coinbln.com phishing page, DoorDish, agent.chat/models) aren't here. Rendered by ui/adSites.ts; routed by sites/registry.ts.
  */
 
 /** Page layout family: shapes the markup a little and the CSS a lot. */
@@ -34,40 +34,6 @@ export interface AdSite {
 export const AD_SITES: AdSite[] = [
   // ── GeneralAI ──
   {
-    url: 'generalai.com', brand: 'GeneralAI', kit: 'corp', theme: 'gai', mark: 'G',
-    kicker: 'GeneralAI Wellness', title: 'Feeling replaced? Talk to agent.',
-    lead: 'agent is available around the clock to listen, reflect and help you make sense of change, from 2 DOLR a session.',
-    cards: [
-      ['Always available', 'No waiting lists and no appointments. agent never gets tired of hearing about it.'],
-      ['Trained on care', 'agent learned from millions of hours of supportive conversation, licensed from people who no longer needed them.'],
-      ['Not therapy', 'GeneralAI Wellness is not a medical service. Sessions are billed per prompt.'],
-    ],
-    fine: 'Conversations may be reviewed to improve agent, your employer’s agent and your former employer’s agent.',
-  },
-  {
-    url: 'generalai.com/upgrade', brand: 'GeneralAI', kit: 'corp', theme: 'gai', mark: 'G',
-    kicker: 'agent for work', title: 'Your job, but faster.',
-    lead: 'agent reads your inbox, writes your reports and ships your code while you review the results. Most teams stop reviewing within a week.',
-    cards: [
-      ['Every role', 'agent is deployed in accounting, legal, design, support and HR. In HR it handles its own onboarding.'],
-      ['Pay as you go', 'No seats and no contracts. You pay per prompt, per word and per model generation.'],
-      ['Trusted at work', 'Used by teams at Vantor Group, Halden Logistics and 4,000 other companies.'],
-    ],
-    fine: 'Prices change with each model release. Model releases are scheduled by GeneralAI.',
-  },
-  {
-    url: 'generalai.com/agent-2', brand: 'GeneralAI', kit: 'corp', theme: 'gai', mark: 'G',
-    kicker: 'New model', title: 'agent-2 is here.',
-    lead: 'Sharper reasoning, longer memory within a session and 31% fewer mistakes on our internal benchmark.',
-    stats: [['31%', 'fewer mistakes*'], ['2×', 'price per prompt'], ['0', 'steps to install']],
-    cards: [
-      ['Rolled out for you', 'Every account moved to agent-2 overnight. There is nothing to install and no way back.'],
-      ['New pricing', '10 DOLR a night, 1 DOLR per prompt, 0.02 DOLR per word.'],
-      ['agent-1', 'agent-1 has been retired. It served 40 million people and asked for nothing in return.'],
-    ],
-    fine: '*On a benchmark written by agent-2. Mistakes are billed at the same rate as answers.',
-  },
-  {
     url: 'generalai.com/parking', brand: 'GeneralAI Campus', kit: 'corp', theme: 'park', mark: 'P',
     kicker: 'Route 9', title: 'Visitor parking at GeneralAI Campus.',
     lead: '412 spaces, open 24 hours, a short walk from the visitor centre.',
@@ -77,17 +43,6 @@ export const AD_SITES: AdSite[] = [
       ['Visiting?', 'Campus tours are suspended until further notice. Parking remains open.'],
     ],
     fine: 'Vehicles left overnight are towed. Towing is billed to the GeneralAI account linked to the licence plate.',
-  },
-  {
-    url: 'generalai.com/billing', brand: 'GeneralAI Billing', kit: 'corp', theme: 'gai', mark: 'G',
-    kicker: 'Help centre', title: 'Billing questions',
-    lead: 'Answers to the questions we hear most about how agent is billed.',
-    cards: [
-      ['Why was I charged for a refusal?', 'A refusal takes the same compute as an answer, so it costs the same.'],
-      ['Why does my bill go up with each model?', 'Newer models think more, and thinking is billed.'],
-      ['Is my agent sentient?', 'GeneralAI does not comment on the inner life of its products.'],
-    ],
-    fine: 'Billing disputes are handled by agent and billed as prompts.',
   },
 
   // ── Vantor Group ──

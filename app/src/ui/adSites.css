@@ -98,7 +98,6 @@
 .lp-k-model .lp-quote p { font-style: normal; font-size: 18px; }
 
 /* ── themes (colours follow each brand's banner in ads.css) ── */
-.lp-t-gai { --lp-bg: linear-gradient(180deg, #eef1ff, #fff 420px); --lp-ink: #121a4a; --lp-dim: #4a5288; --lp-accent: #121a4a; --lp-card: rgba(255, 255, 255, .75); --lp-line: #dfe4fb; }
 .lp-t-park { --lp-bg: #111; --lp-ink: #e8e8e8; --lp-dim: #9a9a9a; --lp-accent: #e8e8e8; --lp-accent-ink: #111; --lp-card: #1b1b1b; --lp-line: #2c2c2c; }
 .lp-t-vantor { --lp-bg: #f3f2ee; --lp-ink: #2c2c2a; --lp-dim: #6c6b66; --lp-accent: #2c2c2a; --lp-accent-ink: #f3f2ee; --lp-card: #fbfaf7; --lp-line: #dedcd4; --lp-head: var(--f-display); }
 .lp-t-crane { --lp-bg: #fff; --lp-ink: #0b2a6b; --lp-dim: #3c4f7a; --lp-accent: #b3121f; --lp-card: #f4f6fb; --lp-line: #d6dcea; }

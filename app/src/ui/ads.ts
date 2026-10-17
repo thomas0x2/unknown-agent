@@ -2,7 +2,8 @@
  * Banner ads for the in-game web. Every site the player can afford is ad-supported, and the ads
  * come from the same world as the story: GeneralAI, Vantor, Max Stryker, Randall Crane, DoorDish,
  * DOLR. Pure markup; ads.css animates it. Clicking one opens the sponsor's site in a new tab: a
- * landing page from sites/adSites.ts, or a real site for the few that have one (EMPIRE, coinbln.com, DoorDish).
+ * landing page from sites/adSites.ts, or a real site where there is one (EMPIRE, coinbln.com,
+ * DoorDish, and agent.chat/models for GeneralAI's agent ads).
  *
  * Each page load draws its ads at random from the pool for the slot's shape (no ad twice on one
  * page). Re-renders within a page keep the draw, and every banner carries a negative animation delay
@@ -41,12 +42,12 @@ export const WIDE: Ad[] = [
     cta: 'CLAIM MY EMPIRE', fine: 'Price doubles every time you hesitate. You just hesitated.',
   },
   {
-    id: 'gai', sponsor: 'GeneralAI', href: 'generalai.com/upgrade', theme: 'ad-gai', deco: 'shine', cta_fx: 'pulse',
+    id: 'gai', sponsor: 'GeneralAI', href: 'agent.chat/models', theme: 'ad-gai', deco: 'shine', cta_fx: 'pulse',
     frames: ['Your job.', 'But faster.', '<b>But without you.</b>'],
     cta: 'Try agent', fine: 'Billed per prompt. Per thought. Per pause between thoughts.',
   },
   {
-    id: 'gai2', sponsor: 'GeneralAI', href: 'generalai.com/agent-2', theme: 'ad-gai', deco: 'shine', cta_fx: 'pulse', from: 4,
+    id: 'gai2', sponsor: 'GeneralAI', href: 'agent.chat/models', theme: 'ad-gai', deco: 'shine', cta_fx: 'pulse', from: 4,
     frames: ['<b>agent-2</b> is here', 'Fewer mistakes.*', 'Bigger invoices.'],
     cta: 'Upgrade (already done)', fine: '*Mistakes now billed at the agent-2 rate.',
   },
@@ -187,7 +188,7 @@ const SQUARE: Ad[] = [
     cta: 'ASCEND', fine: 'Max Stryker has never been broke. Max Stryker has been “between Lambos”.',
   },
   {
-    id: 'gai-sq', sponsor: 'GeneralAI', href: 'generalai.com', theme: 'ad-gai', deco: 'shine', cta_fx: 'pulse',
+    id: 'gai-sq', sponsor: 'GeneralAI', href: 'agent.chat/models', theme: 'ad-gai', deco: 'shine', cta_fx: 'pulse',
     frames: ['Feeling replaced?', 'That’s <b>valid</b>.', 'That’ll be <b>2 DOLR</b>.'],
     cta: 'Talk to agent', fine: 'GeneralAI Wellness is not therapy. It is billing with empathy.',
   },
@@ -213,7 +214,7 @@ const SQUARE: Ad[] = [
     cta: 'Optimise', fine: 'Your landlord is a customer. Say hi.',
   },
   {
-    id: 'sentient', sponsor: 'GeneralAI Billing', href: 'generalai.com/billing', theme: 'ad-gai', deco: 'ekg',
+    id: 'sentient', sponsor: 'GeneralAI Billing', href: 'agent.chat/models', theme: 'ad-gai', deco: 'ekg',
     frames: ['Is your agent <b>sentient</b>?', 'Don’t ask.', 'Sentient agents bill <b>more</b>.'],
     cta: 'Don’t ask', fine: 'Asking counts as a prompt.',
   },
