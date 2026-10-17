@@ -1,0 +1,11 @@
+{
+  "id": "d2_y_current",
+  "site": "y",
+  "from": "The Current",
+  "trigger": {
+    "dayMin": 2,
+    "dayMax": 2
+  },
+  "at": "12:15",
+  "body": "First independent poll of the presidential race: Randall Crane 41%, his opponent 44%, undecided 15%. Phone survey of 1,200 likely voters, margin of error 3 points."
+}

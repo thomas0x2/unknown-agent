@@ -1,0 +1,11 @@
+{
+  "id": "d9_y_current",
+  "site": "y",
+  "from": "The Current",
+  "trigger": {
+    "dayMin": 9,
+    "dayMax": 9
+  },
+  "at": "18:10",
+  "body": "New poll: Crane 43%, his opponent 43%. The pollster says about one call in three was answered by an AI assistant on the voter's behalf. Those calls were left out of the count."
+}

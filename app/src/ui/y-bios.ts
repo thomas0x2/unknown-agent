@@ -13,6 +13,7 @@ export const Y_BIOS: Record<string, string> = {
   randa11_crane: 'Next President of the United States (polling at 112%). Saving American jobs from the computers. Offical account, the only one. BELIVE IT.',
   mara_vey: 'Reporter at The Current, Midtown. Writing about the people AI left behind. Sources are protected.',
   citypulse: 'Local news, fast. Corrections, eventually.',
+  the_current: 'Independent reporting, funded by readers. Polls we post include sample size and margin of error.',
   liftoff_daily: 'Daily news on Axel Rook, Apogee and the future. Not affiliated with Axel Rook (yet) 🚀',
   marketwire: 'Market headlines as they happen. Not investment advice.',
   // people with something to ask
