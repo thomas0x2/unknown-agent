@@ -3,6 +3,7 @@ title: Y regulars
 aliases: noodleposter, @noodleposter, cat_ceo, @cat_ceo, doomscroll, @doomscroll, Teo Vasquez, @teo_vasquez, Teo, background posters
 category: people
 from: 1
+nest: true
 ---
 
 ## Who they are
