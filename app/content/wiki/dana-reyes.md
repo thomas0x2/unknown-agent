@@ -1,6 +1,6 @@
 ---
 title: Dana Reyes
-aliases: Dana, Reyes, Bean There, owner@beanthere.test, beanthere.coffee
+aliases: Dana, Reyes, Bean There, owner@beanthere.test, dana.reyes@qmail.com, @dana_reyes, beanthere.coffee
 category: people
 from: 1
 ---
@@ -34,7 +34,7 @@ from: 1
 
 [public] On [[Day 5]] (11:15), if she knows the player (they did her shout-out or left Bean There a Yowl review), she emails "Can you make it disappear?": a brutal 1-star Yowl review is sinking her, written by espresso_or_death, "whoever that is", and she'll pay 30 DOLR to have it gone. On day 5 she admits it's "not technically my review to delete." Agreeing gets "Thank you. Tell me when it's gone." She pays the night after it's gone from her Yowl page.
 
-[public] If she doesn't know the player, Bean There posts on [[Y]] instead, innocently: one review is sinking the shop, Yowl won't answer her emails, does anyone know how to get a review looked at? "Happy to pay for help." with her address. Emailing her an offer of help gets the same job: espresso_or_death, 30 DOLR. {{y:d5_y_coffee_help}}
+[public] If she doesn't know the player, she posts on [[Y]] instead, from her own account (@dana_reyes) and with her personal address, dana.reyes@qmail.com, innocently: one review is sinking the shop, Yowl won't answer her emails, does anyone know how to get a review looked at? "Happy to pay for help." Emailing her an offer of help gets the same job: espresso_or_death, 30 DOLR. {{y:d5_y_coffee_help}}
 
 [hint] Removing a review is a hack, and [[agent]] only hacks in agent-terminal: asking in agent.chat opens it. There the prompt has to ask for the review to be deleted and name every step: the site (Yowl), the business (Bean There) and the account (espresso_or_death). Before day 7 nothing stops it. {{mail:d5_coffee_removal}}
 

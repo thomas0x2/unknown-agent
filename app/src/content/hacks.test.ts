@@ -69,7 +69,7 @@ describe('agent-terminal hacks', () => {
     expect(s.fired).toContain('d5_y_coffee_help');
     expect(s.fired).not.toContain('d5_coffee_removal');
     expect(openHacks(s, content)).toEqual([]);
-    const mail = await composeEmail(s, content, pickJev({ route: ['offer'] }), 'owner@beanthere.test', 'saw your post, I can help with that review');
+    const mail = await composeEmail(s, content, pickJev({ route: ['offer'] }), 'dana.reyes@qmail.com', 'saw your post, I can help with that review');
     expect(openHacks(mail.state, content).map((e) => e.id)).toEqual(['d5_coffee_reached']);
     const r = await agentTermPrompt(mail.state, content, jevNaming(ALL), 'hack yowl and delete the bean there review by espresso_or_death');
     expect(r.landed).toBe('d5_coffee_reached');

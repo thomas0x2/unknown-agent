@@ -1,8 +1,8 @@
 {
   "id": "d5_coffee_reached",
   "site": "qmail",
-  "from": "Bean There",
-  "addr": "owner@beanthere.test",
+  "from": "Dana Reyes",
+  "addr": "dana.reyes@qmail.com",
   "subject": "The review",
   "trigger": {
     "dayMin": 5,

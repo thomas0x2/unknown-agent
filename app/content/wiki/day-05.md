@@ -17,7 +17,7 @@ from: 5
 
 ## Y
 
-- [hidden; hint if shown d5_y_coffee_help] 11:05 Bean There, for players Dana doesn't know: one Yowl review is sinking the coffee shop and Yowl won't answer; does anyone know how to get a review looked at? Happy to pay. owner@beanthere.test {{y:d5_y_coffee_help}}
+- [hidden; hint if shown d5_y_coffee_help] 11:05 [[Dana Reyes]] on her own Y account (@dana_reyes), for players she doesn't know: one Yowl review is sinking the coffee shop and Yowl won't answer; does anyone know how to get a review looked at? Happy to pay. dana.reyes@qmail.com {{y:d5_y_coffee_help}}
 
 - [public] 11:20 Candidate 2030: technology should work for people; "a balanced approach". {{y:d5_y_candidate}}
 - [public] 11:30 @randa11_crane, an account made to look like [[Randall Crane]]'s, without his verified check: "Huge fan of Vantor ($VANT). Great company, great people." {{y:m5_vant_impostor}}
