@@ -1,4 +1,4 @@
-/* DoorDish is bookmarked from day 1; Gino's restaurant joins it once the DoorDish listing is deployed. */
+/* DoorDish is bookmarked after the first visit (ads, or the link in Gino's email); Gino's restaurant joins it once the DoorDish listing is deployed. */
 import { describe, it, expect } from 'vitest';
 import { GameStore } from '../game/store';
 import { loadContent } from '../content/load';
@@ -11,10 +11,22 @@ import { wordJev } from '../engine/_fixtures';
 const mem: SaveStore = { load: () => null, save: () => {}, clear: () => {} } as unknown as SaveStore;
 
 describe('DoorDish', () => {
-  it('is bookmarked from the start', () => {
+  it('is bookmarked only after the first visit, like Sherwood', () => {
     const store = new GameStore(loadContent(), {} as JevRouter, {} as Writer, mem);
-    expect(bookmarks(store.state).map((b) => b.id)).toContain('doordish');
+    const ids = () => bookmarks(store.state).map((b) => b.id);
+    expect(ids()).not.toContain('doordish');
+    expect(ids()).not.toContain('sherwood');
     expect(page(store, route('doordish.com', store.state))).toContain('Golden Lotus');
+    store.navigate('doordish.com');
+    expect(ids()).toContain('doordish');
+    expect(ids()).not.toContain('sherwood');
+    store.navigate('sherwood.com');
+    expect(ids()).toContain('sherwood');
+  });
+
+  it("Gino's email links DoorDish", () => {
+    const ev = loadContent().events.find((e) => e.id === 'd4_restaurant_doordish')!;
+    expect(ev.body).toContain('doordish.com');
   });
 
   it("Gino's update asks only for DoorDish, and his restaurant shows up there once it ships", async () => {

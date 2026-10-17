@@ -36,7 +36,7 @@ from: 1
 
 ## From day 4: The DoorDish listing
 
-- [hint] [if restaurant_client] On [[Day 4]] (14:20) he asks to be put on [[DoorDish]] with the same menu and hours as the site, plus his address. His email "Get me on DoorDish" has what the listing needs. {{mail:d4_restaurant_doordish}}
+- [hint] [if restaurant_client] On [[Day 4]] (14:20) he asks to be put on [[DoorDish]] with the same menu and hours as the site, plus his address. His email "Get me on DoorDish" has what the listing needs and links doordish.com, which points out that the Golden Lotus is already listed. {{mail:d4_restaurant_doordish}}
 - [public] [if restaurant_client] Once the listing is deployed, his store page on doordish.com shows what his live site shows.
 
 ## Writer notes
