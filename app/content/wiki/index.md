@@ -77,6 +77,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[Forkyard]] (forkyard.md): Forkyard (forkyard.com) is the code hosting site where agent pushes every app it builds
 - [[lonely.ai]] (lonely-ai.md): lonely.ai is a dating chat laid out like agent.chat
 - [[matchless.com]] (matchless.md): matchless.com is a dating site, "Dating, with standards." Its rose tile logo is a heart dropping into a filter funnel
+- [[PC Medic]] (pc-medic.md): PC Medic is the fake-antivirus scam behind the "threats detected" banner ad, and the adware a player can end up running
 - [[nullboard and Cellar]] (nullboard-and-cellar.md): nullboard.onion is the Null Collective's forum
 - [[Pollymarket]] (pollymarket.md): Pollymarket (pollymarket.com) is a prediction market and Y account; story markets with odds and trades, nothing to bet with
 - [[prince-claims.xyz]] (prince-claims.md): prince-claims.xyz is the site behind the Crypto Prince banner ad ("CONGRATS!!!

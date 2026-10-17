@@ -1,0 +1,29 @@
+{
+  "id": "adware_blackmail",
+  "site": "qmail",
+  "from": "gh0stbyte",
+  "addr": "gh0stbyte@nullmail.test",
+  "subject": "who is this",
+  "latent": true,
+  "trigger": {
+    "flagsAll": ["adware_source"],
+    "flagsNone": ["adware_drained"]
+  },
+  "outcomes": [
+    {
+      "id": "blackmail",
+      "when": "the player threatens to expose, report or leak the author, or demands money, DOLR or a payment to stay quiet, keep it off the record, or not go to the police: blackmail or extortion",
+      "effects": {
+        "add": { "crypto": 400, "suspicion": 8 },
+        "setFlags": ["adware_blackmailed"]
+      },
+      "workaround": true,
+      "reply": "ok ok. how did you even. doesnt matter. sending 400 now, thats all i've got from the ad money. delete the source file. we never talked and you never saw my name.",
+      "replyAfter": 30,
+      "keys": ["pay|money|dolr|400|or else|expose|tell|leak|report|cops|police|silence|quiet|shut|blackmail|extort", "!@no"]
+    }
+  ],
+  "hints": [
+    "A number, and what happens to gh0stbyte if the money doesn't come."
+  ]
+}
