@@ -516,6 +516,10 @@ function yPostHtml(store: GameStore, p: YPost): string {
       <span class="y-act views">${Y_ICONS.views}${compact(Math.max(12, p.likes * 37 + 9))}</span>
     </footer></article>`;
 }
+// an empty feed, profile or search result: icon, title and one line, like Qmail's empty folders
+function yEmpty(icon: string, title: string, note: string, tag = 'p'): string {
+  return `<div class="y-empty"><span class="y-empty-ico">${icon}</span><${tag} class="y-empty-title">${title}</${tag}><p class="y-empty-note">${note}</p></div>`;
+}
 function pageY(store: GameStore, profile?: string): string {
   const s = store.state;
   const posts = yPosts(store);
@@ -526,7 +530,7 @@ function pageY(store: GameStore, profile?: string): string {
   const older = !showAll && posts.some((p) => p.day !== s.values.day);
   // with everything showing, "Hide old posts" sits where today's posts end and older ones begin
   const firstOld = showAll ? shown.findIndex((p) => p.day !== s.values.day) : -1;
-  const feed = (shown.map((p, i) => (i === firstOld ? '<div class="y-more"><button class="y-btn ghost" data-y-all="hide">Hide old posts</button></div>' : '') + yPostHtml(store, p)).join('') || `<p class="y-none">${older ? 'Nothing posted yet today.' : 'Quiet timeline.'}</p>`)
+  const feed = (shown.map((p, i) => (i === firstOld ? '<div class="y-more"><button class="y-btn ghost" data-y-all="hide">Hide old posts</button></div>' : '') + yPostHtml(store, p)).join('') || yEmpty(Y_ICONS.reply, older ? 'Nothing posted yet today.' : 'Quiet timeline.', 'New posts show up here as they come in.'))
     + (older ? '<div class="y-more"><button class="y-btn ghost" data-y-all>Show all</button></div>' : '');
   const side = `<aside class="y-side">
     <section class="y-card y-me">
@@ -559,10 +563,12 @@ function yProfile(store: GameStore, handle: string): string {
   const mine = h === 'you';
   const posts = yPosts(store).filter((p) => p.handle === h);
   const back = '<p class="y-back"><a href="#" data-nav="y.com">← Timeline</a></p>';
-  if (!mine && !posts.length) return `${back}<section class="y-prof missing"><h2>This account doesn't exist</h2><p>Nobody on Y goes by @${esc(handle)}.</p></section>`;
+  if (!mine && !posts.length) return `${back}${yEmpty(Y_ICONS.explore, "This account doesn't exist", `Nobody on Y goes by @${esc(handle)}.`, 'h2')}`;
   const name = mine ? 'You' : (posts[0]?.author ?? handle);
   const followers = mine ? s.values.followers : Y_FOLLOWERS[h] ?? 20 + hashHue(h) % 400;
-  const feed = posts.length ? posts.map((p) => yPostHtml(store, p)).join('') : `<p class="y-none">@${esc(h)} hasn't posted anything you can see.</p>`;
+  const feed = posts.length ? posts.map((p) => yPostHtml(store, p)).join('')
+    : mine ? yEmpty(Y_ICONS.reply, 'No posts yet.', 'Posts you write on the timeline show up here.')
+    : yEmpty(Y_ICONS.reply, 'No posts yet.', `@${esc(h)} hasn't posted anything you can see.`);
   return `${back}<section class="y-prof">
     <div class="y-banner" style="--h:${hashHue(h)}"></div>
     <div class="y-prof-head"><div class="y-prof-av">${avatar(name, h)}</div></div>
