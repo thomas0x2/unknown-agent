@@ -8,7 +8,7 @@
  */
 export type Cue =
   | 'click' | 'key' | 'send' | 'reply' | 'mail' | 'post' | 'charge' | 'income'
-  | 'deploy' | 'bounce' | 'dayStart' | 'dayEnd' | 'lateWarn' | 'ending' | 'evicted';
+  | 'workStart' | 'deploy' | 'bounce' | 'dayStart' | 'dayEnd' | 'lateWarn' | 'ending' | 'evicted';
 
 export interface SoundSettings { muted: boolean; volume: number }
 
@@ -274,6 +274,18 @@ const CUES: Record<Cue, (e: SoundEngine, t: number) => void> = {
   reply: (e, t) => {
     e.tone(659, t, 0.22, { gain: 0.06, type: 'triangle' });
     e.tone(988, t + 0.08, 0.3, { gain: 0.05, type: 'triangle' });
+  },
+  // the agent starts a build or fix: two relays clack shut, a motor winds up under a swell of fan
+  // noise and a drive seeks in fits. Mechanical and tuneless, so it never passes for a reply.
+  workStart: (e, t) => {
+    for (const at of [0, 0.07]) {
+      e.noise(t + at, 0.025, { bp: 1800, q: 3, gain: 0.12 });
+      e.tone(160, t + at, 0.05, { type: 'square', gain: 0.025, lp: 600, attack: 0.001 });
+    }
+    e.tone(55, t + 0.1, 0.9, { type: 'sawtooth', gain: 0.05, glideTo: 165, lp: 700, attack: 0.25 });
+    e.tone(110, t + 0.1, 0.9, { type: 'sawtooth', gain: 0.02, glideTo: 330, lp: 900, attack: 0.25, detune: 8 });
+    e.noise(t + 0.1, 0.9, { bp: 600, q: 0.7, gain: 0.035 });
+    for (const at of [0.3, 0.36, 0.41, 0.55, 0.6, 0.72, 0.76, 0.8]) e.noise(t + at + rnd(-0.01, 0.01), 0.012, { bp: rnd(3000, 4200), q: 5, gain: 0.06 });
   },
   // a document arrives by pneumatic tube: a rush of air, a capsule landing in the tray, then a
   // two-strike desk bell. The only bell in the game, so mail never sounds like a post or a reply.
