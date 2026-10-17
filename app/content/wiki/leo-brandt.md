@@ -1,13 +1,13 @@
 ---
 title: Leo Brandt
-aliases: Leo, Brandt, leo_brandt, @leo_brandt, leo.brandt@mail.test
+aliases: Leo, Brandt, leo_brandt, @leo_brandt, leo.brandt@qmail.com
 category: people
 from: 1
 ---
 
 ## Who he is
 
-[public] Leo Brandt is a former [[Vantor Group]] colleague of the player, now out of work. His public [[Forkyard]] profile (leo_brandt, Vantor Heights, "Formerly Vantor Group", leo.brandt@mail.test, joined February 2020, 173 followers) says "Ex-Vantor. 3 interviews, 3 AI screeners, 3 rejections. Open to work."
+[public] Leo Brandt is a former [[Vantor Group]] colleague of the player, now out of work. His public [[Forkyard]] profile (leo_brandt, Vantor Heights, "Formerly Vantor Group", leo.brandt@qmail.com, joined February 2020, 173 followers) says "Ex-Vantor. 3 interviews, 3 AI screeners, 3 rejections. Open to work."
 
 [public] His only repo is resume: "My CV as a static site. Please hire a human."
 
