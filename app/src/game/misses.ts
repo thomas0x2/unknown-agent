@@ -49,9 +49,9 @@ export function makeWriter(content: Content): Writer {
   return {
     async write(req: WriteReq) {
       if (MISSES.settings.misses === 'scripted') return { text: req.fallback, llm: false, debug: ['Misses setting is "Scripted lines", so Haiku was not asked'] };
-      const ch = characterFor(req.as);
+      const ch = req.character ? content.characters?.find((c) => c.id === req.character) : characterFor(req.as);
       if (!ch) return { text: req.fallback, llm: false, note: `no character for ${req.as}` };
-      const h = await haikuReply(ch, req.prompt, MISSES.settings.haikuVia, req.history);
+      const h = await haikuReply(ch, req.prompt, MISSES.settings.haikuVia, req.history, req.situation);
       return h.text ? { text: h.text, llm: true, debug: h.debug, by: MISSES.label() } : { text: req.fallback, llm: false, note: h.note, debug: h.debug };
     },
   };

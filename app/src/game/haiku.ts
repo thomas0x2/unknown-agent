@@ -10,12 +10,13 @@ import { finishReply } from './characters';
 
 export interface HaikuReply { text: string | null; note?: string; debug: string[] }
 
-export async function haikuReply(ch: Character, text: string, via: 'subscription' | 'api', history: HistoryLine[] = []): Promise<HaikuReply> {
+/** `situation` (a Swaplist chat) tells the character what they're selling and what the player asked about. */
+export async function haikuReply(ch: Character, text: string, via: 'subscription' | 'api', history: HistoryLine[] = [], situation?: string): Promise<HaikuReply> {
   let res: Response;
   try {
     res = await fetch('/api/write', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ character: ch.id, text, via, history: history.slice(-12) }),
+      body: JSON.stringify({ character: ch.id, text, via, history: history.slice(-12), ...(situation ? { situation } : {}) }),
     });
   } catch {
     return { text: null, note: 'the proxy is not running (npm run proxy)', debug: [] };

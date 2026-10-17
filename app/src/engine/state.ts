@@ -272,6 +272,24 @@ export interface MorningCard {
 
 export type Phase = 'morning' | 'work' | 'ended';
 
+/** One line of a Swaplist chat. `from` is 'you' or the seller's handle. */
+export interface SwapMsg { from: string; text: string; day: number; min: number; note?: string; debug?: string[] }
+/** The player's conversation about one listing, with the offer they made on it, if any. */
+export interface SwapThread {
+  listing: number;
+  /** The seller the listing names (who it is about). */
+  seller: string;
+  msgs: SwapMsg[];
+  offer?: { amount: number; status: 'pending' | 'accepted' | 'declined' | 'sold' };
+}
+export interface SwapState {
+  threads: SwapThread[];
+  /** Listing number → when the player bought it (minutes of play) and what they paid. */
+  bought: Record<number, { at: number; paid: number }>;
+  /** The last thing that went wrong on a listing (not enough DOLR), shown inline on its page. */
+  notice?: { listing: number; text: string };
+}
+
 export interface GameState {
   version: number;
   seed: number;
@@ -290,6 +308,8 @@ export interface GameState {
   localModels: string[]; // downloaded Weightroom models + stolen weights
   postsToday: number;
   recentPosts: string[]; // last 5 Y posts, for Jev context
+  /** Swaplist as a buyer: chats with sellers, offers and what the player bought. Unset until first used. */
+  swap?: SwapState;
   userPosts: { id: string; text: string; day: number; likes: number; delta: number; score: number; min?: number }[];
   sentToday: string[]; // recipients emailed today (one-per-recipient rule)
   agentLocked: boolean;
