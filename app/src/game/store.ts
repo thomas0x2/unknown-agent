@@ -78,6 +78,10 @@ export class GameStore {
     termOpen: false, termShown: false,
     /** Which Terminal tab is in front: the laptop's own shell (local models) or agent-terminal. */
     termTab: 'shell' as 'shell' | 'agent',
+    /** The you@laptop shell's folder, from ~ down (game/shell.ts). */
+    termCwd: [] as string[],
+    /** invaders.exe is running in the you@laptop tab. */
+    invaders: false,
     /** Dev mode: the site whose options panel is open (agent, qmail, y), or ''. */
     devOptions: '' as string,
     /** The two-step booking form: which step is showing and what step one said. */
@@ -518,7 +522,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = HOME_TAB; this.nextTab = PINNED.length + 1;
-    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, reposted: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, termTab: 'shell', devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', princeError: '', seedShown: false, lonelyTyping: false, stackBet: 1, stackSpinning: false, stack: { error: '', notice: '' }, chatError: '', uploadError: '', uploadPick: '', sorryTyping: false, adNotice: '', jevOffline: null, yUnread: 0 };
+    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, reposted: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, termTab: 'shell', termCwd: [], invaders: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', princeError: '', seedShown: false, lonelyTyping: false, stackBet: 1, stackSpinning: false, stack: { error: '', notice: '' }, chatError: '', uploadError: '', uploadPick: '', sorryTyping: false, adNotice: '', jevOffline: null, yUnread: 0 };
     this.store.save(this.state);
     this.emit();
   }
@@ -814,6 +818,12 @@ export class GameStore {
     s.terminal.push(...pullLines(id, PULL_MS));
     this.commitAndSettle(s);
   }
+  /** invaders.exe closed: its last line goes in the shell's scrollback. */
+  endInvaders(lines: string[]): void {
+    this.ui.invaders = false;
+    this.state.terminal.push(...lines.map((text) => ({ k: 'sys' as const, text })));
+    this.store.save(this.state); this.emit();
+  }
   termClear(): void { this.state.terminal = []; this.store.save(this.state); this.emit(); }
 
   devAdd(kind: string): void {
@@ -883,14 +893,16 @@ export class GameStore {
   }
 
   async term(text: string) {
+    // the shell's own commands (help, ls, cd, run…), and everything once there is no model to ask
+    const own = shellLines(text, !!this.state.termModel, this.state, this.ui.termCwd);
+    if (own) {
+      this.state.terminal.push(...own.lines);
+      if (own.cwd) this.ui.termCwd = own.cwd;
+      if (own.run === 'pcmedic') { this.runExe(); return; }
+      if (own.run === 'invaders') this.ui.invaders = true;
+      this.store.save(this.state); this.emit(); return;
+    }
     return this.run(async (s0) => {
-      // the shell's own commands (help, ls…), and everything once there is no model to ask
-      const own = shellLines(text, !!s0.termModel);
-      if (own) {
-        const s = clone(s0);
-        s.terminal.push(...own);
-        this.land(s); return { state: s, reply: own[own.length - 1].text };
-      }
       // a 0.5B model on this laptop: free, but it makes you wait
       const r = await localPrompt(s0, text, DEEPSLEEP, DEEPSLEEP_PLEA.zh);
       await wait(1500 + Math.random() * 1500);
