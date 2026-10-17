@@ -460,8 +460,8 @@ function yPosts(store: GameStore): YPost[] {
 const Y_VERIFIED = new Set(['mara_vey', 'randall_crane', 'axel_rook', 'cal_hartman', 'max_stryker']);
 /** Follower counts for the public figures; everyone else gets a small made-up number. */
 const Y_FOLLOWERS: Record<string, number> = { randall_crane: 38_400_000, mara_vey: 61_200, axel_rook: 214_000_000, cal_hartman: 4_300_000, max_stryker: 2_900_000 };
-/** Rook's "Fair point." (day 7) gets Crane a bigger, golden check from the moment it's up on Y. */
-const craneGold = (s: GameState) => s.delivered.some((d) => d.eventId === 'd7_y_axel_2');
+/** Rook puts check marks "under review" on day 8; from day 9 Crane's is bigger and golden. */
+const craneGold = (s: GameState) => s.values.day >= 9;
 const yCheck = (s: GameState, handle: string) => !Y_VERIFIED.has(handle) ? ''
   : handle === 'randall_crane' && craneGold(s) ? `<span class="y-badge gold" title="Verified">${Y_ICONS.goldBadge}</span>`
   : `<span class="y-badge" title="Verified">${Y_ICONS.badge}</span>`;

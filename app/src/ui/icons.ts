@@ -32,7 +32,7 @@ export const Y_ICONS: Record<string, string> = {
   heart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7a4.3 4.3 0 0 1 7.5 3c0 5.4-7.5 10-7.5 10z" stroke="currentColor" stroke-width="1.8" fill="var(--heart-fill, none)" stroke-linejoin="round"/></svg>',
   views: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V6M15 20v-9M20 20V4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
   badge: '<svg viewBox="0 0 24 24" aria-label="Verified" role="img"><path d="M12 2.5 20.2 7.2v9.6L12 21.5l-8.2-4.7V7.2z" fill="currentColor"/><path d="m8.3 12.1 2.5 2.5 4.9-5" stroke="var(--y-bg)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-  /* Crane's check once Rook agrees it was unfair (day 7): a gold seal with a light that sweeps across it.
+  /* Crane's check from day 9, after Rook's review of check marks: a gold seal with a light that sweeps across it.
      Every copy defines the same ids, so the first one on the page serves them all. */
   goldBadge: '<svg viewBox="0 0 24 24" aria-label="Verified" role="img"><defs>'
     + '<linearGradient id="yg-fill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff4b8"/><stop offset=".35" stop-color="#f5c542"/><stop offset=".7" stop-color="#c8891a"/><stop offset="1" stop-color="#8a5a0b"/></linearGradient>'
