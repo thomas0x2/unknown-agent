@@ -1,0 +1,11 @@
+{
+  "id": "d5_y_robot_sighting",
+  "site": "y",
+  "from": "Dana Kohl",
+  "trigger": {
+    "dayMin": 5,
+    "dayMax": 5
+  },
+  "at": "14:10",
+  "body": "a doordish robot just rolled up to my door with a cold burrito. i didn't order anything. it waited ten minutes, then left. was that the one?"
+}

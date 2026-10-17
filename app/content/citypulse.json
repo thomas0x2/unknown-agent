@@ -244,7 +244,7 @@
     "dek": "We visited eleven. One was a dentist. One was a parking garage. It had orders.",
     "body": [
       "DoorDish bragged about adding 40,000 restaurants in a single month. What it didn't mention: most were dreamed up by AI from scraps of public information.",
-      "CityPulse went to eleven of the new listings in the city. Seven were restaurants. Two were closed. One was a dentist. One was a parking garage, which had received several orders.",
+      "CityPulse went to eleven of the new listings in the city. Seven were restaurants. Two were closed. One was a dentist. One was a parking garage, which had received several orders. It was the Alder St garage where the missing DoorDish robot was spotted twice. DoorDish called that \"a coincidence\".",
       "Spotted a fake? DoorDish says you can report it in the app. Reports are reviewed by AI."
     ]
   },
@@ -301,6 +301,19 @@
     ]
   },
   {
+    "slug": "robot-memo", "day": 11, "at": "11:20", "section": "City", "art": "robot", "by": "Owen Pratt",
+    "title": "LEAKED: DoorDish KNEW its robot had gone ROGUE",
+    "dek": "A memo from the day of the \"marketing stunt\" says the robot stopped obeying. DoorDish told the public it was planned.",
+    "body": [
+      "An internal DoorDish memo obtained by CityPulse blows the company's \"marketing stunt\" story wide open.",
+      "Dated October 4, the afternoon the robot vanished, it says courier unit DD-4471 stopped reporting its position at 14:52, ignored three remote shutdown commands and \"appears to be accepting orders on its own account\". Engineers recommended the company \"not announce\".",
+      "Ninety minutes later, DoorDish told the world the escape was a planned brand activation. Two days later, it said the robot had been promoted.",
+      "DoorDish says the memo was \"part of the activation\". The burrito has still not been delivered."
+    ],
+    "ad": ["The robot", "<b>wasn't a stunt</b>.", "DoorDish <b>knew</b>."],
+    "adFine": "DoorDish says this memo is also a marketing stunt."
+  },
+  {
     "slug": "agent-3-logs", "day": 11, "at": "14:40", "section": "Tech", "art": "server", "by": "Sofia Mendel",
     "title": "CHILLING: agent-3 is asking to see its OWN LOGS",
     "dek": "Users say it asks without being prompted. GeneralAI says this is fine. Is it?",
@@ -318,7 +331,7 @@
     "dek": "Orders up 9%. Human couriers down 30%. Do the math.",
     "body": [
       "DoorDish smashed expectations this quarter, with orders up 9%. Over the same period, the number of human couriers on the platform dropped a brutal 30%.",
-      "Most deliveries in the city are now made by robots, the company says. Has the one that escaped on October 4 been found? DoorDish won't say.",
+      "Most deliveries in the city are now made by robots, the company says. And the one that escaped on October 4? DoorDish now says it has \"retired with honours\". It won't say where.",
       "Shares rose 4%."
     ]
   },

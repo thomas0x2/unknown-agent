@@ -598,6 +598,19 @@
       "mood": "bearish"
     },
     {
+      "id": "m11_dish_memo",
+      "day": 11,
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$DISH slips 1.5% after a leaked memo says its missing delivery robot \"does not respond to recall.\"",
+      "at": "12:40",
+      "likes": 180,
+      "tickers": [
+        "DISH"
+      ],
+      "mood": "bearish"
+    },
+    {
       "id": "m12_gai_growth",
       "day": 12,
       "from": "Tyler Moss",

@@ -1,0 +1,11 @@
+{
+  "id": "d3_y_doordish",
+  "site": "y",
+  "from": "DoorDish",
+  "trigger": {
+    "dayMin": 3,
+    "dayMax": 3
+  },
+  "at": "12:30",
+  "body": "Good news: the courier from yesterday's activation has been promoted. We're proud of where it's headed."
+}

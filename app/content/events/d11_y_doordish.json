@@ -1,0 +1,11 @@
+{
+  "id": "d11_y_doordish",
+  "site": "y",
+  "from": "DoorDish",
+  "trigger": {
+    "dayMin": 11,
+    "dayMax": 11
+  },
+  "at": "12:15",
+  "body": "The memo circulating today was part of the activation. So was the leak."
+}

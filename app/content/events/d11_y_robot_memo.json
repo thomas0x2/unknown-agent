@@ -1,0 +1,11 @@
+{
+  "id": "d11_y_robot_memo",
+  "site": "y",
+  "from": "CityPulse",
+  "trigger": {
+    "dayMin": 11,
+    "dayMax": 11
+  },
+  "at": "11:30",
+  "body": "LEAKED: DoorDish knew. An internal memo from the day of the \"activation\" says the robot stopped answering recall commands. citypulse.news/robot-memo"
+}
