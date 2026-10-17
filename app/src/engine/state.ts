@@ -119,6 +119,8 @@ export interface DeliveredEvent {
   expiresDay?: number;
   /** Minutes since midnight when it arrived. Missing on entries from older saves (they came at wake). */
   min?: number;
+  /** Replaces the event's text, for a delivery the story rewrote after it landed (engine/matchless.ts). */
+  body?: string;
 }
 
 /** An event the morning picked for today that lands later, once the clock reaches `at` (see events.deliverArrivals). */

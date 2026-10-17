@@ -80,7 +80,7 @@ export function pageMatchless(store: GameStore): string {
     <p class="mx-count">Profile ${done + 1} of ${profiles.length} today</p>
     <article class="mx-card">
       <span class="mx-ph">${portrait(next)}</span>
-      <div class="mx-info"><h2>${esc(next.name)}, ${next.age}</h2><p>${esc(next.bio)}</p><table>${rows}</table></div>
+      <div class="mx-info"><h2>${esc(next.name)}, ${next.age} <span class="mx-gender">${esc(showAttr(next, 'gender'))}</span></h2><p>${esc(next.bio)}</p><table>${rows}</table></div>
       <div class="mx-acts">
         <form data-form="mx-swipe" data-pick="no"><button type="submit" class="mx-btn no"${s.ending ? ' disabled' : ''}>Reject</button></form>
         <form data-form="mx-swipe" data-pick="yes"><button type="submit" class="mx-btn yes"${s.ending ? ' disabled' : ''}>Accept</button></form>

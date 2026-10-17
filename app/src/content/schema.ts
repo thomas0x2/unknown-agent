@@ -398,6 +398,11 @@ export interface MatchlessContent {
   pay: number;
   /** Profiles near him each day. */
   perDay: number;
+  /**
+   * Not in any version at first: men can't be swiped wrong until the player accepts one. The next
+   * morning he says `say` (in that day's standards email, or a mail of its own) and `rule` applies from then on.
+   */
+  womenOnly: { rule: MatchlessRule; say: string };
   /** Version N is in force once flag matchless_rules_N is set; the highest one wins. */
   versions: { id: number; rules: MatchlessRule[] }[];
 }

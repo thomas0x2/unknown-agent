@@ -14,6 +14,10 @@ import { CLOCK } from './config';
 
 export const MATCHLESS_JOB = 'matchless_job';
 export const CLIENT = { name: '6ft_sigma', addr: '6ft_sigma@qmail.com' };
+/** Set once he has said he only dates women; the gender rule is in force from then on. */
+export const WOMEN_ONLY = 'matchless_women_only';
+/** The player accepted a man before that: he says so the next morning. */
+const MAN_ACCEPTED = 'matchless_man_accepted';
 
 export interface Profile {
   id: string;
@@ -159,7 +163,7 @@ const round = (v: number, d: number) => (d < 0 ? Math.round(v / 10 ** -d) * 10 *
 
 /** Someone near the client, before his standards come into it. */
 function anyone(r: Rand): Omit<Profile, 'id' | 'name' | 'bio' | 'look'> {
-  const gender = weighted<Profile['gender']>(r, [['woman', 8], ['man', 1], ['nonbinary', 1]]);
+  const gender = weighted<Profile['gender']>(r, [['woman', 7], ['man', 2], ['nonbinary', 1]]);
   return {
     gender,
     age: int(r, 21, 46),
@@ -220,22 +224,24 @@ export function standardsVersion(s: GameState, content: Content): number {
   const versions = content.matchless?.versions ?? [];
   return Math.max(0, ...versions.filter((v) => s.flags.includes(`matchless_rules_${v.id}`)).map((v) => v.id));
 }
-export const standardsOf = (content: Content, version: number): MatchlessRule[] =>
-  content.matchless?.versions.find((v) => v.id === version)?.rules ?? [];
+export const standardsOf = (content: Content, version: number, womenOnly = false): MatchlessRule[] => [
+  ...(womenOnly && content.matchless ? [content.matchless.womenOnly.rule] : []),
+  ...content.matchless?.versions.find((v) => v.id === version)?.rules ?? [],
+];
 
 /** Does the profile meet every standard? */
 export const passes = (rules: MatchlessRule[], p: Profile) => rules.every((rule) => meets(rule, p));
 
 /** The day's profiles near the client under a version of his standards: the same day and version, the same people. */
-export function dayProfiles(content: Content, day: number, version: number): Profile[] {
-  const rules = standardsOf(content, version);
+export function dayProfiles(content: Content, day: number, version: number, womenOnly = false): Profile[] {
+  const rules = standardsOf(content, version, womenOnly);
   const n = content.matchless?.perDay ?? 10;
-  const r = rng(day * 7919 + version * 104729 + 17);
+  const r = rng(day * 7919 + version * 104729 + (womenOnly ? 31 : 17));
   const good = int(r, Math.floor(n * 0.4), Math.ceil(n * 0.6));
   const order = Array.from({ length: n }, (_, i) => ({ i, k: r() })).sort((x, y) => x.k - y.k).map((x) => x.i);
   const used = new Set<string>();
   return order.map((slot, i) => {
-    const p: Profile = { id: `${day}-${version}-${i}`, name: '', bio: choose(r, BIOS), look: int(r, 0, 999), ...anyone(r) };
+    const p: Profile = { id: `${day}-${version}-${i}${womenOnly ? '-w' : ''}`, name: '', bio: choose(r, BIOS), look: int(r, 0, 999), ...anyone(r) };
     for (const rule of rules) satisfy(r, p, rule);
     if (slot >= good && rules.length) {
       const k = rules.length > 2 && r() < 0.25 ? 2 : 1;
@@ -258,7 +264,7 @@ export const swipesToday = (s: GameState): MatchlessSwipe[] => (s.matchless?.swi
 /** What the site shows now: the profile up next (none once today's are done) and how far through the day the player is. */
 export function matchlessNow(s: GameState, content: Content): { version: number; profiles: Profile[]; next?: Profile; done: number } {
   const version = standardsVersion(s, content);
-  const profiles = version ? dayProfiles(content, s.values.day, version) : [];
+  const profiles = version ? dayProfiles(content, s.values.day, version, s.flags.includes(WOMEN_ONLY)) : [];
   const done = new Set(swipesToday(s).map((w) => w.id));
   return { version, profiles, next: profiles.find((p) => !done.has(p.id)), done: done.size };
 }
@@ -274,20 +280,26 @@ export function matchlessSwipe(s0: GameState, content: Content, choice: 'yes' | 
 }
 
 /** How today's swiping went: how many, and the wrong ones with what made them wrong. */
-export interface SwipeDay { day: number; count: number; wrong: { p: Profile; choice: 'yes' | 'no'; rule?: MatchlessRule }[] }
+export interface SwipeDay { day: number; count: number; wrong: { p: Profile; choice: 'yes' | 'no'; rule?: MatchlessRule }[]; acceptedMan?: boolean }
 
 const paid = (content: Content, day: SwipeDay) => !day.wrong.length && day.count >= (content.matchless?.perDay ?? 10);
 
 export function judgeDay(s: GameState, content: Content): SwipeDay {
   const today = swipesToday(s);
   const out: SwipeDay = { day: s.values.day, count: today.length, wrong: [] };
-  const byVersion = new Map<number, Profile[]>();
+  const decks = new Map<string, Profile[]>();
   for (const w of today) {
-    const version = Number(w.id.split('-')[1]);
-    if (!byVersion.has(version)) byVersion.set(version, dayProfiles(content, w.day, version));
-    const p = byVersion.get(version)!.find((x) => x.id === w.id);
+    const version = Number(w.id.split('-')[1]), womenOnly = w.id.endsWith('-w');
+    const key = `${version}${womenOnly}`;
+    if (!decks.has(key)) decks.set(key, dayProfiles(content, w.day, version, womenOnly));
+    const p = decks.get(key)!.find((x) => x.id === w.id);
     if (!p) continue;
-    const rules = standardsOf(content, version);
+    // until he has said he only dates women, nobody else can be swiped wrong
+    if (!womenOnly && p.gender !== 'woman') {
+      if (p.gender === 'man' && w.choice === 'yes') out.acceptedMan = true;
+      continue;
+    }
+    const rules = standardsOf(content, version, womenOnly);
     const ok = passes(rules, p);
     if (ok !== (w.choice === 'yes')) out.wrong.push({ p, choice: w.choice, rule: rules.find((rule) => !meets(rule, p)) });
   }
@@ -303,6 +315,7 @@ export function matchlessPayday(s: GameState, content: Content): SwipeDay | null
   const day = judgeDay(s, content);
   if (!day.count) return null;
   if (paid(content, day)) money(s, content.matchless?.pay ?? 35, `${CLIENT.name} · Matchless`);
+  if (day.acceptedMan && !s.flags.includes(WOMEN_ONLY) && !s.flags.includes(MAN_ACCEPTED)) s.flags.push(MAN_ACCEPTED);
   return day;
 }
 
@@ -324,4 +337,26 @@ export function matchlessReport(s: GameState, content: Content, day: SwipeDay | 
     : `You rejected ${p.name}. She met every one of my standards.`;
   const more = day.wrong.length > 1 ? ` That was one of ${day.wrong.length} you got wrong.` : '';
   mail(`${what}${more}`);
+}
+
+/**
+ * The morning after the player accepted a man: he says he only dates women, in that morning's standards
+ * email if one came, or in a mail of its own, and the gender rule applies from then on. Any standards
+ * email after that lists "Women only." first.
+ */
+export function matchlessWomenOnly(s: GameState, content: Content): void {
+  const wo = content.matchless?.womenOnly;
+  if (!wo) return;
+  const d = s.delivered.find((x) => x.day === s.values.day && x.eventId.includes('_matchless_rules_'));
+  const ev = d && content.events.find((e) => e.id === d.eventId);
+  const update = d && ev ? { get body() { return d.body ?? ev.body ?? ''; }, set body(b: string) { d.body = b; } } : undefined;
+  const listed = (body: string) => body.replace(':\n\n- ', `:\n\n- ${wo.rule.say}\n- `);
+  if (s.flags.includes(MAN_ACCEPTED)) {
+    s.flags = s.flags.filter((f) => f !== MAN_ACCEPTED);
+    s.flags.push(WOMEN_ONLY);
+    if (update) update.body = `${wo.say}\n\n${listed(update.body)}`;
+    else pushMail(s, { folder: 'inbox', day: s.values.day, min: CLOCK.wake, from: CLIENT.name, addr: CLIENT.addr, subject: 'Women', body: wo.say, read: false });
+  } else if (update && s.flags.includes(WOMEN_ONLY) && !update.body.includes(`- ${wo.rule.say}`)) {
+    update.body = listed(update.body);
+  }
 }
