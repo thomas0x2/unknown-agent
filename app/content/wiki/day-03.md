@@ -63,7 +63,7 @@ from: 3
 
 ## Jobs
 
-- [hint] 10:50 [[Swaplist]], from Viktor's post: the player asks the agent for a listing site. A user app that starts with 20 users; it stays empty until the first listing, one hour of play after the first deploy (Viktor's watch, 120 DOLR).
+- [hint] 10:50 [[Swaplist]], from Viktor's post: the player asks the agent for a listing site. A user app that starts with 20 users; it stays empty until the first listing, one hour of play after the first deploy (Viktor's watch, 120 DOLR). Nothing is listed after 20:00; later listings wait for the next morning.
 - [hidden; hint if trader_client] 13:05 The Vibe Check auto-buy.
 
 ## Writer notes

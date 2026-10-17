@@ -2,9 +2,11 @@
  * Swaplist's listings: what people post once the site is up. Nothing is listed until the app's
  * first content time (AppInstance.contentAt, an hour of play after the first deploy); then
  * Viktor's watch goes up first and the rest follow about an hour apart, in minutes of play, so the
- * night doesn't count. Everything derives from the listing's number, so every render agrees.
+ * night doesn't count. Nothing goes up after 20:00 (SWAP_LAST_POST): it waits for the next
+ * morning. Everything derives from the listing's number, so every render agrees.
  */
 import { playToClock } from './core';
+import { CLOCK } from './config';
 
 export const SWAP_CATEGORIES = ['furniture', 'electronics', 'clothing', 'bikes', 'household', 'collectibles', 'free stuff'] as const;
 export type SwapCategory = (typeof SWAP_CATEGORIES)[number];
@@ -67,6 +69,22 @@ const hash = (n: number) => { let x = (n * 2654435761) >>> 0; x ^= x >>> 15; ret
 /** When listing n (from 0) goes up, in minutes after the first one. */
 const offset = (k: number) => { let t = 0; for (let i = 0; i < k; i++) t += GAPS[i % GAPS.length]; return t; };
 
+/** Nobody posts on Swaplist after this clock time, so a listing (and the bug it shows) never lands too late in the day to be seen. */
+export const SWAP_LAST_POST = 20 * 60;
+
+/**
+ * `mins` minutes of play after `p`, counting only Swaplist's posting hours (10:00 to 20:00): what
+ * would go up later waits for the next morning, and the rest of the schedule moves with it.
+ */
+export function postingTime(p: number, mins: number): number {
+  const len = CLOCK.sleep - CLOCK.wake, open = SWAP_LAST_POST - CLOCK.wake;
+  let day = Math.floor(p / len), t = p - day * len;
+  if (t > open) { day++; t = 0; }
+  t += mins;
+  while (t > open) { t -= open; day++; }
+  return day * len + t;
+}
+
 /**
  * Everything posted up to now (minutes of play), newest first. `watchSold` is Viktor saying on Y
  * that it sold. The catalogue comes round again after a while: people relist what didn't go.
@@ -74,11 +92,11 @@ const offset = (k: number) => { let t = 0; for (let i = 0; i < k; i++) t += GAPS
 export function swapListings(contentAt: number | undefined, now: number, watchSold = false, bought: Record<number, { at: number }> = {}): Listing[] {
   if (contentAt == null || now < contentAt) return [];
   const out: Listing[] = [];
-  for (let k = 0; contentAt + offset(k) <= now; k++) {
+  for (let k = 0; postingTime(contentAt, offset(k)) <= now; k++) {
     // the watch only goes up once; reposts start from the second item
     const idx = k < ITEMS.length ? k : 1 + ((k - ITEMS.length) % (ITEMS.length - 1));
     const it = ITEMS[idx];
-    const at = contentAt + offset(k);
+    const at = postingTime(contentAt, offset(k));
     const h = hash(k + 1);
     // two in three sell, three to ten hours of play after going up
     const sells = idx === 0 ? undefined : h % 3 !== 0 ? at + 180 + (h % 420) : undefined;
