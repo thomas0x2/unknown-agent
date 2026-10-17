@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { soundCues, botBurst, LATE_MIN, type SoundSnap } from './soundCues';
 import { profileOf } from './sound';
 
-const base: SoundSnap = { day: 2, clockMin: 12 * 60, agentMsgs: 3, txCount: 10, txIn: 500, txOut: 400, ending: false, morning: false };
+const base: SoundSnap = { day: 2, clockMin: 12 * 60, agentMsgs: 3, txCount: 10, txIn: 500, txOut: 400, ending: '', morning: false };
 const at = (o: Partial<SoundSnap>): SoundSnap => ({ ...base, ...o });
 
 describe('sound cues', () => {
@@ -31,7 +31,11 @@ describe('sound cues', () => {
     expect(soundCues(base, at({ day: 1 }))).toEqual([]);
   });
   it('plays only the ending when the run ends', () => {
-    expect(soundCues(base, at({ ending: true, txCount: 11, txOut: 500 }))).toEqual(['ending']);
+    expect(soundCues(base, at({ ending: 'raided', txCount: 11, txOut: 500 }))).toEqual(['ending']);
+    expect(soundCues(at({ ending: 'raided' }), at({ ending: 'raided', txCount: 11 }))).toEqual([]);
+  });
+  it('has Gary pound on the door when the player is evicted', () => {
+    expect(soundCues(base, at({ day: 3, ending: 'evicted' }))).toEqual(['evicted']);
   });
 });
 

@@ -16,7 +16,8 @@ export interface SoundSnap {
   txCount: number;
   txIn: number;
   txOut: number;
-  ending: boolean;
+  /** The ending's id, '' while the run is going. */
+  ending: string;
   morning: boolean;
 }
 
@@ -33,14 +34,15 @@ export function soundSnap(s: GameState): SoundSnap {
     txCount: s.tx.length,
     txIn,
     txOut,
-    ending: !!s.ending,
+    ending: s.ending ?? '',
     morning: !!s.morning,
   };
 }
 
 /** Cues for going from `a` to `b`, in the order they should play. */
 export function soundCues(a: SoundSnap, b: SoundSnap): Cue[] {
-  if (b.ending && !a.ending) return ['ending'];
+  // Gary's eviction has its own ending: him at the door first, then the same drone
+  if (b.ending && !a.ending) return [b.ending === 'evicted' ? 'evicted' : 'ending'];
   if (b.ending) return [];
   // any jump but a night's sleep (a loaded save, dev tools) is silent
   if (b.day !== a.day && b.day !== a.day + 1) return [];
