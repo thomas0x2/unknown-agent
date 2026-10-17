@@ -933,14 +933,16 @@ body.dev-on .ua-work-skip { display: inline-block; }
 
 /* the standalone wiki page (app/wiki.html) */
 body.wk-standalone { overflow: hidden; background: #f6f6f3; }
-.wk-standalone #wiki { height: 100vh; }
+.wk-standalone #wiki { height: calc(100vh - 24px); }
+.wk-legal { height: 24px; line-height: 24px; padding: 0 12px; font-size: 11px; color: #77776f; border-top: 1px solid #e2e2dc; background: #f6f6f3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wk-legal a { color: inherit; }
 .wk-top { flex-wrap: wrap; }
 .wk-view { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 12px; }
 .wk-view select, .wk-view input { padding: 2px 6px; border: 1px solid #cfcfc8; border-radius: 4px; font: inherit; font-size: 12px; background: #fff; }
 .wk-navbtn { display: none; }
 /* on a phone the page list is a panel behind the Pages button, and the page gets the full width */
 @media (max-width: 760px) {
-  .wk-standalone #wiki { height: 100dvh; }
+  .wk-standalone #wiki { height: calc(100dvh - 24px); }
   .wk-standalone .wk-top { padding: 8px 12px; gap: 8px; }
   .wk-standalone .wk-top > .wk-dim { display: none; }
   .wk-standalone .wk-navbtn { display: inline-block; }
