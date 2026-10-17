@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, buyStock, sellStock, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes, wakeApps,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, buyStock, sellStock, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes, wakeApps,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -87,6 +87,10 @@ export class GameStore {
     mailNotice: null as null | { text: string; ids: string[]; undo: 'bin' | 'restore' },
     /** coinbln.com: why the last sign-in was refused. */
     phishError: '',
+    /** prince-claims.xyz: why the last seed phrase was refused. */
+    princeError: '',
+    /** Coinbin: the recovery phrase is on screen. */
+    seedShown: false,
     /** An action Jev was needed for and couldn't be reached: why, and the text to put back in its box. */
     jevOffline: null as { reason: string; field?: string; text?: string } | null,
     /** Y posts by others that went up since the player last looked at the timeline, for the Y tab's badge. */
@@ -378,7 +382,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = HOME_TAB; this.nextTab = PINNED.length + 1;
-    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, reposted: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', jevOffline: null, yUnread: 0 };
+    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, reposted: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', princeError: '', seedShown: false, jevOffline: null, yUnread: 0 };
     this.store.save(this.state);
     this.emit();
   }
@@ -430,6 +434,15 @@ export class GameStore {
     if (r.error) { this.emit(); return; }
     this.commitAndSettle(r.state);
   }
+  /** prince-claims.xyz: pasting the seed phrase. A wrong one stays on the form with an error. */
+  princeClaim(phrase: string): void {
+    const r = seedClaim(this.state, phrase);
+    this.ui.princeError = r.error ?? '';
+    if (r.error) { this.emit(); return; }
+    this.commitAndSettle(r.state);
+  }
+  /** Coinbin's Show/Hide recovery phrase. */
+  toggleSeed(): void { this.ui.seedShown = !this.ui.seedShown; this.ui.cbNotice = ''; this.emit(); }
   // a new attempt clears the last attempt's notice, so a refusal never sticks to a date it wasn't about
   bookNext(name: string, email: string, date: number): void { delete this.state.bookingNotice; this.ui.book = { step: 2, name, email, date }; this.emit(); }
   bookBack(): void { delete this.state.bookingNotice; this.ui.book.step = 1; this.emit(); }

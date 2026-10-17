@@ -117,3 +117,11 @@
 .ph-hacked p { margin: 0 0 12px; max-width: 620px; font-size: 14.5px; line-height: 1.55; }
 .ph-hacked code { color: #fff; }
 .ph-fine { margin-top: 32px !important; color: #7a7a7a; font-size: 12.5px !important; }
+
+/* recovery phrase (the prince-claims.xyz scam asks for it) */
+.cb-seed { margin-top: 16px; }
+.cb-seed-note { margin: 0 0 12px; font-size: 13.5px; color: var(--cb-dim); }
+.cb-seed-words { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; margin: 0 0 14px; padding: 0; list-style: none; counter-reset: seed; }
+.cb-seed-words li { counter-increment: seed; padding: 8px 10px; border: 1px solid var(--cb-line); border-radius: 8px; background: var(--cb-soft); font-family: var(--f-mono); font-size: 13px; user-select: all; }
+.cb-seed-words li::before { content: counter(seed) '. '; color: var(--cb-faint); }
+.cb-seed .cb-actions { justify-content: flex-start; }

@@ -22,7 +22,7 @@ import './ui/sendFx.css';
 import { showSuggestions, hideSuggestions, suggestionKey } from './ui/mailSuggest';
 import { GameStore } from './game/store';
 import { loadContent } from './content/load';
-import { localStorageStore, PLAYER_WALLET } from './engine';
+import { localStorageStore, PLAYER_WALLET, SEED_PHRASE } from './engine';
 import { JEV } from './game/backendJev';
 import { MISSES, makeWriter, type Misses, type HaikuVia } from './game/misses';
 import * as V from './ui/view';
@@ -330,6 +330,8 @@ document.addEventListener('click', (e) => {
   else if (d.act === 'send') store.toggleSend();
   else if (d.act === 'send-cancel') store.toggleSend(false);
   else if (d.act === 'receive') copyWalletAddress();
+  else if (d.act === 'seed-show') store.toggleSeed();
+  else if (d.act === 'seed-copy') copySeedPhrase();
   else if (d.act === 'sw-sell') { if (store.trade(t.dataset.ticker!, 'sell', val('#sw-amount').trim())) clearField('sw-amount'); }
   else if (d.act === 'sw-sell-all') { if (store.trade(t.dataset.ticker!, 'sell', 'all')) clearField('sw-amount'); }
   else if (d.act === 'sleep') store.endDay();
@@ -350,6 +352,13 @@ function copyWalletAddress(): void {
   const fallback = () => store.setCbNotice(`Your address: ${PLAYER_WALLET}`);
   if (navigator.clipboard?.writeText) navigator.clipboard.writeText(PLAYER_WALLET).then(() => store.setCbNotice('Address copied'), fallback);
   else fallback();
+}
+
+/** Coinbin's recovery phrase onto the clipboard, for pasting wherever someone asks for it. */
+function copySeedPhrase(): void {
+  const done = () => store.setCbNotice('Recovery phrase copied');
+  if (navigator.clipboard?.writeText) navigator.clipboard.writeText(SEED_PHRASE).then(done, () => store.setCbNotice('Recovery phrase: select the words above to copy them'));
+  else store.setCbNotice('Recovery phrase: select the words above to copy them');
 }
 
 function clearMailDraft(): void { ['mail-to', 'mail-subject', 'mail-body'].forEach(clearField); }
@@ -380,6 +389,7 @@ document.addEventListener('submit', (e) => {
   if (kind === 'dev-day') { quietReset(); store.devGoToDay(Number(val('#dev-day'))); return; }
   if (kind === 'dev-flag') { const v = val('#dev-flag-name').trim(); if (v) store.devSetFlag(v, true); return; }
   if (kind === 'phish') { store.phish(val('#ph-pass')); return; }
+  if (kind === 'prince') { store.princeClaim(val('#pr-seed')); return; }
   if (kind === 'sw-trade') { if (store.trade(f.dataset.ticker!, 'buy', val('#sw-amount').trim())) clearField('sw-amount'); return; }
   if (kind === 'cb-send') { store.send(val('#cb-to').trim(), val('#cb-amount').trim()); return; }
   if (kind === 'url') { newPageLoad(); store.navigate(val('#nt-url') || val('#address')); }

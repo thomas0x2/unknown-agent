@@ -7,7 +7,7 @@ import { adSite } from './adSites';
 
 export type SiteId =
   | 'y' | 'qmail' | 'qdrive' | 'coinbin' | 'sherwood' | 'doordish' | 'forkyard' | 'agent' | 'yowl'
-  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'phish' | 'adsite' | 'app' | 'newtab' | 'notfound';
+  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'phish' | 'prince' | 'adsite' | 'app' | 'newtab' | 'notfound';
 
 export interface SiteDef {
   id: SiteId;
@@ -44,6 +44,8 @@ export const SITES: SiteDef[] = [
   { id: 'spinfeed', base: 'spincycle.test', label: 'Spin Cycle feed', group: 'web', reachable: always },
   // the lookalike from the day 3 phishing mail (engine/phishing.ts)
   { id: 'phish', base: 'coinbln.com', label: 'Coinbin', group: 'web', reachable: always },
+  // the seed-phrase scam from the Crypto Prince banner ad (engine/phishing.ts, seedClaim)
+  { id: 'prince', base: 'prince-claims.xyz', label: 'Crypto Prince', group: 'web', reachable: always },
 ];
 
 export interface Route {

@@ -2,7 +2,8 @@
  * The websites behind the banner ads (app/src/ui/ads.ts). Every ad's href opens one of these: a
  * landing page in the sponsor's style. For now they're brochures with nothing to click, apart from
  * the odd link to a real site (deepsleep.ai links to Weightroom, Spin Cycle to its feed). Ads for sites that already exist
- * (EMPIRE, the coinbln.com phishing page, DoorDish, agent.chat/models) aren't here. Rendered by ui/adSites.ts; routed by sites/registry.ts.
+ * (EMPIRE, the coinbln.com phishing page, the prince-claims.xyz scam,
+ * DoorDish, agent.chat/models) aren't here. Rendered by ui/adSites.ts; routed by sites/registry.ts.
  */
 
 /** Page layout family: shapes the markup a little and the CSS a lot. */
@@ -130,18 +131,6 @@ export const AD_SITES: AdSite[] = [
       ['Aftercare', 'Every client goes home with a printed leaflet.'],
     ],
     fine: 'LiquidAssets is not a medical provider. Quotes are valid until the organ is examined.',
-  },
-  {
-    url: 'prince-claims.xyz', brand: 'Crypto Prince', kit: 'scam', theme: 'prince', mark: '♛',
-    kicker: 'Royal Crypto Reserve', title: 'CONGRATULATIONS!!!',
-    lead: 'Your wallet was selected at random to receive 5,000 DOLR. Claim it before the timer runs out.',
-    stats: [['09:59', 'left to claim'], ['5,000', 'DOLR']],
-    cards: [
-      ['Step 1', 'Open your wallet.'],
-      ['Step 2', 'Paste your 12-word seed phrase below so we can verify the wallet is yours.'],
-      ['Step 3', 'Receive 5,000 DOLR within 24 hours.'],
-    ],
-    fine: 'A new winner is selected every time this page loads.',
   },
   {
     url: 'steadfast.insure', brand: 'Steadfast Mutual', kit: 'corp', theme: 'steadfast', mark: 'S',
