@@ -1,10 +1,10 @@
 import { startAll, endAll } from '../engine/_fixtures';
 import { describe, it, expect } from 'vitest';
 import { loadContent } from './load';
-import { phishLogin, hacked, COINBIN_PASSWORD, PASSWORDS_TXT, PHISH_DOMAIN } from '../engine/phishing';
+import { phishLogin, hacked, COINBIN_PASSWORD, PASSWORDS_TXT, PHISH_DOMAIN, seedClaim, seedStolen, SEED_PHRASE, PRINCE_WALLET } from '../engine/phishing';
 import { route } from '../sites/registry';
 import { driveFiles } from '../ui/qdrive';
-import { WIDE } from '../ui/ads';
+import { WIDE, AD_HREFS } from '../ui/ads';
 
 const content = loadContent();
 
@@ -56,5 +56,36 @@ describe('day 3 Coinbin phishing', () => {
 
   it('the fake bank ad opens the same site', () => {
     expect(WIDE.find((a) => a.id === 'bank')?.href).toBe(`${PHISH_DOMAIN}/verify`);
+  });
+});
+
+describe('prince-claims.xyz seed phrase scam', () => {
+  it('the Crypto Prince ad opens it, and it is always reachable', () => {
+    expect(AD_HREFS).toContain('prince-claims.xyz');
+    expect(route('prince-claims.xyz', startAll(content, 1))).toMatchObject({ site: 'prince', reachable: true });
+  });
+
+  it('refuses anything but the real phrase, and an empty box', () => {
+    const s = startAll(content, 1);
+    expect(seedClaim(s, '').error).toBeTruthy();
+    expect(seedClaim(s, 'one two three four five six seven eight nine ten eleven twelve').error).toMatch(/not a valid seed phrase/);
+    expect(seedClaim(s, SEED_PHRASE.split(' ').reverse().join(' ')).state).toBe(s);
+  });
+
+  it('the real phrase (any spacing or case) empties the wallet to the prince', () => {
+    const s = startAll(content, 1);
+    s.values.crypto = 142.5;
+    const r = seedClaim(s, '  ' + SEED_PHRASE.toUpperCase().split(' ').join('\n') + ' ');
+    expect(r.error).toBeUndefined();
+    expect(r.state.values.crypto).toBe(0);
+    expect(r.state.tx.at(-1)!.memo).toContain(PRINCE_WALLET.slice(0, 6));
+    expect(seedStolen(r.state)).toBe(true);
+    expect(hacked(r.state)).toBe(false);
+    // once is enough
+    expect(seedClaim(r.state, SEED_PHRASE).state).toBe(r.state);
+  });
+
+  it('the phrase is twelve words', () => {
+    expect(SEED_PHRASE.split(' ')).toHaveLength(12);
   });
 });

@@ -3,6 +3,7 @@
  * functions write to it (always returning a new object, never mutating in place).
  */
 import { type MeterId, initialMeters } from './values';
+import type { LonelyChat } from './lonely';
 import { makeSeed } from './rng';
 import { CLOCK } from './config';
 
@@ -325,6 +326,8 @@ export interface GameState {
   introSeen: boolean;
   /** Sherwood positions by ticker: fractional shares and what they cost. Unset until the first trade. */
   stocks?: Record<string, { shares: number; cost: number }>;
+  /** lonely.ai's chat with Mia (engine/lonely.ts). */
+  lonely?: LonelyChat;
   /** Trader buy-in stake value (0 = none). */
   stake: number;
   /** Interview answers the player sent the journalist, quoted in her day 7 article. */

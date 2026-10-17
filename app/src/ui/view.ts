@@ -19,11 +19,13 @@ import { pageDrive } from './qdrive';
 import { pageSherwood } from './sherwood';
 import { pageDoorDish } from './doordish';
 import { pageAdSite, adSiteTitle, adSiteIcon } from './adSites';
+import { pagePrince, PRINCE_ICON } from './prince';
+import { pageLonely, LONELY_ICON } from './lonely';
 import { adHtml } from './ads';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount, appLogo } from './appsite';
-import { marketPosts, cranePosts, fillerToday, postMin, handleOf, playMinutes, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, inBin, isDeleted, CLOCK } from '../engine';
+import { marketPosts, cranePosts, fillerToday, postMin, handleOf, playMinutes, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, SEED_PHRASE, inBin, isDeleted, CLOCK } from '../engine';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 import { repoFiles, treeAt, fileSource } from './repoTree';
 import { yBio } from './y-bios';
@@ -59,7 +61,7 @@ function linkify(escaped: string): string {
 
 function tabTitle(r: Route, url: string): string {
   const names: Partial<Record<string, string>> = {
-    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', doordish: 'DoorDish', phish: 'Coinbin · Sign in', forkyard: 'Forkyard',
+    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', doordish: 'DoorDish', phish: 'Coinbin · Sign in', prince: 'Crypto Prince', lonely: 'Lonely.ai', forkyard: 'Forkyard',
     agent: 'agent', yowl: 'Yowl', weightroom: 'Weightroom', nullboard: 'nullboard', cellar: 'Cellar', app: url,
   };
   if (r.site === 'notfound') return url || 'New Tab';
@@ -77,7 +79,7 @@ export function tabsHtml(store: GameStore): string {
     // a deployed app with a logo shows it as its favicon
     const app = rr.site === 'app' && rr.param ? getApp(store.state, rr.param.split('/')[0]) : undefined;
     // ad sites (and Spin Cycle's raw feed) show their brand's mark
-    const logo = (app && appLogo(app.template)) || (rr.site === 'adsite' ? adSiteIcon(rr.param ?? '') : rr.site === 'spinfeed' ? adSiteIcon('spincycle.test') : undefined);
+    const logo = (app && appLogo(app.template)) || (rr.site === 'adsite' ? adSiteIcon(rr.param ?? '') : rr.site === 'spinfeed' ? adSiteIcon('spincycle.test') : rr.site === 'prince' ? PRINCE_ICON : rr.site === 'lonely' ? LONELY_ICON : undefined);
     const n = !badged.has(rr.site) ? counts[rr.site] ?? 0 : 0;
     badged.add(rr.site);
     return `<div class="tab${t.id === store.active ? ' on' : ''}${t.pinned ? ' pinned' : ''}" data-tab="${t.id}" role="tab" aria-selected="${t.id === store.active}" tabindex="0">
@@ -244,7 +246,9 @@ export function page(store: GameStore, r: Route): string {
     case 'empire': return pageEmpire(store.state);
     case 'spinfeed': return pageSpinFeed(store, r.param);
     case 'phish': return pagePhish(store);
-    case 'adsite': return pageAdSite(r.param ?? '');
+    case 'prince': return pagePrince(store);
+    case 'lonely': return pageLonely(store);
+    case 'adsite': return pageAdSite(r.param ?? '', store.state);
     default: return pageUnderground(r.def?.label ?? r.site);
   }
 }
@@ -685,7 +689,7 @@ function pageWallet(store: GameStore): string {
           </div>
           <div class="cb-side">
             <div class="cb-actions"><button class="cb-btn${store.ui.send.open ? ' on' : ''}" data-act="send">Send</button><button class="cb-btn" data-act="receive">Receive</button></div>
-            ${store.ui.cbNotice ? `<p class="cb-notice" role="status">${esc(store.ui.cbNotice)}</p>` : ''}
+            ${store.ui.cbNotice && !store.ui.cbNotice.startsWith('Recovery') ? `<p class="cb-notice" role="status">${esc(store.ui.cbNotice)}</p>` : ''}
             <div class="cb-tabs" role="tablist" aria-label="Range">${tabs}</div>
           </div>
         </div>
@@ -700,6 +704,12 @@ function pageWallet(store: GameStore): string {
         </section>
         <section class="cb-card"><h2>Upcoming</h2>${upcoming}</section>
       </div>
+      <section class="cb-card cb-seed"><h2>Recovery phrase</h2>
+        <p class="cb-seed-note">These 12 words control your wallet. Anyone who has them can move your DOLR. Coinbin will never ask for them.</p>
+        ${store.ui.seedShown ? `<ol class="cb-seed-words">${SEED_PHRASE.split(' ').map((w) => `<li>${esc(w)}</li>`).join('')}</ol>` : ''}
+        <div class="cb-actions"><button class="cb-btn" data-act="seed-show">${store.ui.seedShown ? 'Hide' : 'Show'} recovery phrase</button>${store.ui.seedShown ? '<button class="cb-btn" data-act="seed-copy">Copy</button>' : ''}</div>
+        ${store.ui.seedShown && store.ui.cbNotice.startsWith('Recovery') ? `<p class="cb-notice" role="status">${esc(store.ui.cbNotice)}</p>` : ''}
+      </section>
       <section class="cb-card cb-ops"><h2>Operations <span>${txs.length}</span></h2>${ops || '<p class="cb-empty">No operations yet.</p>'}</section>
     </div></div>`;
 }

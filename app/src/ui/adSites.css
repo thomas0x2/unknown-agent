@@ -25,7 +25,7 @@
 .lp-quote p { margin: 0 0 6px; font-family: var(--lp-head); font-size: 21px; font-style: italic; }
 .lp-quote cite { font-size: 13px; font-style: normal; color: var(--lp-dim); }
 .lp-quote cite::before { content: '— '; }
-.lp-link { max-width: 920px; margin: 24px auto 0; font-size: 15px; }
+.lp-link { max-width: 920px; margin: 24px auto 0; font-size: 15px; text-align: center; }
 .lp-link a { color: var(--lp-accent); font-weight: 600; }
 .lp-k-model .lp-link { text-align: left; }
 .lp-foot { max-width: 920px; margin: 44px auto 0; padding-top: 16px; border-top: 1px solid var(--lp-line); text-align: center; font-size: 11.5px; color: var(--lp-dim); }
@@ -98,7 +98,6 @@
 .lp-k-model .lp-quote p { font-style: normal; font-size: 18px; }
 
 /* ── themes (colours follow each brand's banner in ads.css) ── */
-.lp-t-gai { --lp-bg: linear-gradient(180deg, #eef1ff, #fff 420px); --lp-ink: #121a4a; --lp-dim: #4a5288; --lp-accent: #121a4a; --lp-card: rgba(255, 255, 255, .75); --lp-line: #dfe4fb; }
 .lp-t-park { --lp-bg: #111; --lp-ink: #e8e8e8; --lp-dim: #9a9a9a; --lp-accent: #e8e8e8; --lp-accent-ink: #111; --lp-card: #1b1b1b; --lp-line: #2c2c2c; }
 .lp-t-vantor { --lp-bg: #f3f2ee; --lp-ink: #2c2c2a; --lp-dim: #6c6b66; --lp-accent: #2c2c2a; --lp-accent-ink: #f3f2ee; --lp-card: #fbfaf7; --lp-line: #dedcd4; --lp-head: var(--f-display); }
 .lp-t-crane { --lp-bg: #fff; --lp-ink: #0b2a6b; --lp-dim: #3c4f7a; --lp-accent: #b3121f; --lp-card: #f4f6fb; --lp-line: #d6dcea; }
@@ -109,8 +108,6 @@
 .lp-t-crane .lp-top { border-bottom: 0; }
 .lp-t-keller { --lp-bg: #fff; --lp-ink: #0d2347; --lp-dim: #4a5878; --lp-accent: #e8c35a; --lp-accent-ink: #0d2347; --lp-card: #f3f5f9; --lp-line: #d9dfea; }
 .lp-t-keller .lp-top { margin: 0 calc(-1 * clamp(16px, 4vw, 40px)); max-width: none; padding: 16px clamp(16px, 4vw, 40px); background: #0d2347; color: #fff; }
-.lp-t-dish { --lp-bg: #fff; --lp-ink: #191919; --lp-dim: #5f5f5f; --lp-accent: #eb1700; --lp-accent-ink: #fff; --lp-card: #fff6f3; --lp-line: #f1dcd6; }
-.lp-t-dish .lp-brand { color: #eb1700; }
 .lp-t-dolr { --lp-bg: linear-gradient(160deg, #062b1b, #0e5e3a); --lp-ink: #e6fff1; --lp-dim: #9fd9b9; --lp-accent: #2cff95; --lp-accent-ink: #012613; --lp-card: rgba(255, 255, 255, .06); --lp-line: rgba(44, 255, 149, .2); }
 .lp-t-prince { --lp-bg: repeating-linear-gradient(90deg, #fff7a0 0 60px, #ffd3f1 60px 120px); --lp-ink: #1a00ff; --lp-dim: #3a2bd6; --lp-accent: #ff00a8; --lp-accent-ink: #fff; --lp-card: rgba(255, 255, 255, .85); --lp-line: #1a00ff; --lp-font: 'Comic Sans MS', 'Comic Neue', cursive; --lp-head: 'Comic Sans MS', 'Comic Neue', cursive; }
 .lp-t-steadfast { --lp-bg: #fff; --lp-ink: #13314d; --lp-dim: #4e6378; --lp-accent: #13314d; --lp-card: #f2f6f9; --lp-line: #dbe4ec; --lp-head: var(--f-display); }
@@ -134,3 +131,22 @@
 .lp-t-iron { --lp-bg: #121212; --lp-ink: #fff; --lp-dim: #a8a8a8; --lp-accent: #ff2e2e; --lp-card: #1c1c1c; --lp-line: #2e2e2e; }
 .lp-t-iron .lp-hero h1 { font-weight: 900; font-style: italic; }
 .lp-t-deep { --lp-bg: #0f1424; --lp-ink: #e3e8ff; --lp-dim: #95a0c8; --lp-accent: #8fa4ff; --lp-accent-ink: #0b1630; --lp-card: #161d33; --lp-line: #262f4d; }
+.lp-t-spin .lp-link a { color: #1f6fbd; }
+
+/* prince-claims.xyz: the one ad site with a working form (ui/prince.ts) */
+.pr-claim { display: flex; flex-direction: column; gap: 10px; max-width: 520px; margin: 28px auto 0; padding: 20px; border: 3px dashed var(--lp-accent); border-radius: 14px; background: var(--lp-card); }
+.pr-claim label { font-weight: 700; }
+.pr-claim textarea { font: 15px/1.4 var(--f-mono); color: #1a00ff; background: #fff; border: 2px solid #1a00ff; border-radius: 8px; padding: 10px 12px; resize: vertical; }
+.pr-err { margin: 0; color: #d4002a; font-weight: 700; font-size: 14px; }
+.pr-btn { font: 900 18px var(--lp-font); padding: 14px 24px; border: 0; border-radius: 999px; background: var(--lp-accent); color: var(--lp-accent-ink); cursor: pointer; box-shadow: 0 6px 18px rgba(255, 0, 168, .35); }
+
+/* lonely.ai: agent.chat's chat layout in dating-app pink (ui/lonely.ts) */
+.ua.lonely { --ua-bg: #fff3f7; --ua-panel: #fff; --ua-ink: #4a1730; --ua-dim: #85546b; --ua-line: #f6cfdc; --ua-you: #e0336f; }
+.lonely .ua-bubble { border-radius: 18px 18px 4px 18px; }
+.lonely .ua-text { font-family: var(--f-ui); font-size: 14.5px; line-height: 1.5; background: #fff; border: 1px solid var(--ua-line); border-radius: 18px 18px 18px 4px; padding: 10px 14px; flex: 0 1 auto; max-width: min(80%, 560px); }
+.lo-avatar { display: inline-grid; place-items: center; width: 32px; height: 32px; flex: none; border-radius: 50%; background: linear-gradient(135deg, #ff9ab8, #e0336f); color: #fff; font-weight: 700; font-size: 14px; }
+.ua-brand .lo-avatar { width: 40px; height: 40px; font-size: 17px; }
+.lonely .ua-brand b { font-family: var(--f-ui); font-weight: 700; font-size: 15px; }
+.lo-logo { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: #e0336f; }
+.lo-logo svg { width: 18px; height: 18px; }
+.lo-intro { align-self: center; margin: 24px 0; color: var(--ua-dim); font-size: 14px; }

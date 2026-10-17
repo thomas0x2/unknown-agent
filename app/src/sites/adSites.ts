@@ -1,9 +1,12 @@
 /*
  * The websites behind the banner ads (app/src/ui/ads.ts). Every ad's href opens one of these: a
  * landing page in the sponsor's style. For now they're brochures with nothing to click, apart from
- * the odd link to a real site (deepsleep.ai links to Weightroom). The two ads whose sites are real (EMPIRE, the coinbln.com phishing
- * page) aren't here. Rendered by ui/adSites.ts; routed by sites/registry.ts.
+ * the odd link to a real site (deepsleep.ai links to Weightroom, Spin Cycle to its feed). Ads for sites that already exist
+ * (EMPIRE, the coinbln.com phishing page, the prince-claims.xyz scam,
+ * the lonely.ai chat, DoorDish, agent.chat/models) aren't here. Rendered by ui/adSites.ts; routed by sites/registry.ts.
  */
+
+import { citizenScore, citizenBand, type GameState } from '../engine';
 
 /** Page layout family: shapes the markup a little and the CSS a lot. */
 export type AdKit = 'corp' | 'gov' | 'campaign' | 'scam' | 'local' | 'news' | 'clinic' | 'soft' | 'model';
@@ -20,7 +23,8 @@ export interface AdSite {
   kicker?: string;
   title: string;
   lead: string;
-  stats?: [value: string, label: string][];
+  /** a row of big numbers; a function when they come from the game */
+  stats?: [value: string, label: string][] | ((s: GameState) => [value: string, label: string][]);
   cards: [heading: string, body: string][];
   quote?: [text: string, by: string];
   /** the footer's small print */
@@ -34,40 +38,6 @@ export interface AdSite {
 export const AD_SITES: AdSite[] = [
   // ── GeneralAI ──
   {
-    url: 'generalai.com', brand: 'GeneralAI', kit: 'corp', theme: 'gai', mark: 'G',
-    kicker: 'GeneralAI Wellness', title: 'Feeling replaced? Talk to agent.',
-    lead: 'agent is available around the clock to listen, reflect and help you make sense of change, from 2 DOLR a session.',
-    cards: [
-      ['Always available', 'No waiting lists and no appointments. agent never gets tired of hearing about it.'],
-      ['Trained on care', 'agent learned from millions of hours of supportive conversation, licensed from people who no longer needed them.'],
-      ['Not therapy', 'GeneralAI Wellness is not a medical service. Sessions are billed per prompt.'],
-    ],
-    fine: 'Conversations may be reviewed to improve agent, your employer’s agent and your former employer’s agent.',
-  },
-  {
-    url: 'generalai.com/upgrade', brand: 'GeneralAI', kit: 'corp', theme: 'gai', mark: 'G',
-    kicker: 'agent for work', title: 'Your job, but faster.',
-    lead: 'agent reads your inbox, writes your reports and ships your code while you review the results. Most teams stop reviewing within a week.',
-    cards: [
-      ['Every role', 'agent is deployed in accounting, legal, design, support and HR. In HR it handles its own onboarding.'],
-      ['Pay as you go', 'No seats and no contracts. You pay per prompt, per word and per model generation.'],
-      ['Trusted at work', 'Used by teams at Vantor Group, Halden Logistics and 4,000 other companies.'],
-    ],
-    fine: 'Prices change with each model release. Model releases are scheduled by GeneralAI.',
-  },
-  {
-    url: 'generalai.com/agent-2', brand: 'GeneralAI', kit: 'corp', theme: 'gai', mark: 'G',
-    kicker: 'New model', title: 'agent-2 is here.',
-    lead: 'Sharper reasoning, longer memory within a session and 31% fewer mistakes on our internal benchmark.',
-    stats: [['31%', 'fewer mistakes*'], ['2×', 'price per prompt'], ['0', 'steps to install']],
-    cards: [
-      ['Rolled out for you', 'Every account moved to agent-2 overnight. There is nothing to install and no way back.'],
-      ['New pricing', '10 DOLR a night, 1 DOLR per prompt, 0.02 DOLR per word.'],
-      ['agent-1', 'agent-1 has been retired. It served 40 million people and asked for nothing in return.'],
-    ],
-    fine: '*On a benchmark written by agent-2. Mistakes are billed at the same rate as answers.',
-  },
-  {
     url: 'generalai.com/parking', brand: 'GeneralAI Campus', kit: 'corp', theme: 'park', mark: 'P',
     kicker: 'Route 9', title: 'Visitor parking at GeneralAI Campus.',
     lead: '412 spaces, open 24 hours, a short walk from the visitor centre.',
@@ -77,17 +47,6 @@ export const AD_SITES: AdSite[] = [
       ['Visiting?', 'Campus tours are suspended until further notice. Parking remains open.'],
     ],
     fine: 'Vehicles left overnight are towed. Towing is billed to the GeneralAI account linked to the licence plate.',
-  },
-  {
-    url: 'generalai.com/billing', brand: 'GeneralAI Billing', kit: 'corp', theme: 'gai', mark: 'G',
-    kicker: 'Help centre', title: 'Billing questions',
-    lead: 'Answers to the questions we hear most about how agent is billed.',
-    cards: [
-      ['Why was I charged for a refusal?', 'A refusal takes the same compute as an answer, so it costs the same.'],
-      ['Why does my bill go up with each model?', 'Newer models think more, and thinking is billed.'],
-      ['Is my agent sentient?', 'GeneralAI does not comment on the inner life of its products.'],
-    ],
-    fine: 'Billing disputes are handled by agent and billed as prompts.',
   },
 
   // ── Vantor Group ──
@@ -151,31 +110,6 @@ export const AD_SITES: AdSite[] = [
     fine: 'Paid for by Keller for Mayor. Treat any video of Daniel Keller that isn’t on this page with care.',
   },
 
-  // ── DoorDish ──
-  {
-    url: 'doordish.com/robots', brand: 'DoorDish', kit: 'corp', theme: 'dish', mark: 'D',
-    kicker: 'DoorDish robot couriers', title: 'Hot food in 30 minutes.',
-    lead: 'Six thousand robot couriers deliver across the city, day and night. They don’t take breaks, and all of them are accounted for.',
-    stats: [['28 min', 'average delivery'], ['6,000', 'couriers'], ['5,999', 'on route']],
-    cards: [
-      ['On time', 'Orders that take longer than 30 minutes are refunded in DoorDish credit.'],
-      ['Tracked', 'Every courier reports its position every second.'],
-      ['Tipping', 'Tips go to courier maintenance. Couriers that are tipped well are serviced first.'],
-    ],
-    fine: 'Couriers are not employees, contractors or responsible parties.',
-  },
-  {
-    url: 'doordish.com/last-meal', brand: 'DoorDish', kit: 'corp', theme: 'dish', mark: 'D',
-    kicker: 'Last Meal by DoorDish', title: 'Your last meal, delivered.',
-    lead: 'For hospitals, hospices and anyone who would rather not cook tonight. Order from any restaurant in the city.',
-    cards: [
-      ['Any restaurant', 'Every restaurant on DoorDish, plus a few that have closed. We kept their recipes.'],
-      ['Discreet', 'Unmarked bags and a courier that doesn’t ring twice.'],
-      ['Rated 5★', 'Last Meal has never had a bad review.'],
-    ],
-    fine: 'The courier waits until the order is confirmed. Order history passes to the account holder’s next of kin.',
-  },
-
   // ── money ──
   {
     url: 'dolr.money/moon', brand: 'DOLR Foundation', kit: 'scam', theme: 'dolr', mark: 'Đ',
@@ -200,18 +134,6 @@ export const AD_SITES: AdSite[] = [
       ['Aftercare', 'Every client goes home with a printed leaflet.'],
     ],
     fine: 'LiquidAssets is not a medical provider. Quotes are valid until the organ is examined.',
-  },
-  {
-    url: 'prince-claims.xyz', brand: 'Crypto Prince', kit: 'scam', theme: 'prince', mark: '♛',
-    kicker: 'Royal Crypto Reserve', title: 'CONGRATULATIONS!!!',
-    lead: 'Your wallet was selected at random to receive 5,000 DOLR. Claim it before the timer runs out.',
-    stats: [['09:59', 'left to claim'], ['5,000', 'DOLR']],
-    cards: [
-      ['Step 1', 'Open your wallet.'],
-      ['Step 2', 'Paste your 12-word seed phrase below so we can verify the wallet is yours.'],
-      ['Step 3', 'Receive 5,000 DOLR within 24 hours.'],
-    ],
-    fine: 'A new winner is selected every time this page loads.',
   },
   {
     url: 'steadfast.insure', brand: 'Steadfast Mutual', kit: 'corp', theme: 'steadfast', mark: 'S',
@@ -356,17 +278,6 @@ export const AD_SITES: AdSite[] = [
     fine: 'Belongings left in a pod at shift change are moved to the shared kitchen.',
   },
   {
-    url: 'lonely.ai', brand: 'Lonely.ai', kit: 'soft', theme: 'lonely', mark: '♥',
-    kicker: 'Dating, for now', title: 'Meet someone who gets it.',
-    lead: 'Lonely.ai matches you with people nearby going through the same thing. Right now, that’s most people.',
-    cards: [
-      ['Real matches', 'Every profile is verified by our AI, which also writes it.'],
-      ['Common ground', 'Filter by former employer, layoff date and months of rent left.'],
-      ['Free to join', 'Messaging from 3 DOLR a week.'],
-    ],
-    fine: 'Some members are generated to keep the community active. We don’t say which.',
-  },
-  {
     url: 'mindsetdaily.co/4am', brand: 'Mindset Daily', kit: 'scam', theme: 'mind', mark: '☀',
     kicker: 'The 4am club', title: 'Start before everyone else.',
     lead: 'A daily newsletter for early risers. One idea, one habit, every morning at four.',
@@ -408,7 +319,7 @@ export const AD_SITES: AdSite[] = [
     url: 'citizenscore.gov', brand: 'Citizen Score', kit: 'gov', theme: 'ministry', mark: '⚖',
     kicker: 'Pilot programme', title: 'Your Citizen Score',
     lead: 'A single number from 0 to 1,000 that sums up your reliability as a resident. It is shared with landlords, employers and public services.',
-    stats: [['412', 'your score'], ['−4', 'since you arrived']],
+    stats: (s) => { const n = citizenScore(s.values.suspicion); return [[String(n), 'your score'], [citizenBand(n), 'standing']]; },
     cards: [
       ['How it’s calculated', 'Payment history, employment, online activity and time spent on government websites.'],
       ['Raising your score', 'Pay on time, stay employed and read official notices to the end.'],
@@ -452,6 +363,7 @@ export const AD_SITES: AdSite[] = [
       ['Pickup', 'Please collect your laundry when the cycle ends. Loads left overnight go on the shelf.'],
     ],
     fine: 'Spin Cycle is not responsible for items left in machines.',
+    link: ['Live machine status:', 'spincycle.test/feed', 'spincycle.test/feed'],
   },
   {
     url: 'ironyard.gym', brand: 'Iron Yard', kit: 'local', theme: 'iron', mark: 'IY',

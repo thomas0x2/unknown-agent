@@ -12,6 +12,8 @@ export const PLAYER_WALLET = '0x4417c3e8b1d05f2a9e6d7b0c1f83a4e5d2b9a9f2';
 /** Wallets that exist in the game, by lowercase address. `name` is the memo on the transaction. */
 export const WALLETS: Record<string, { name: string }> = {
   '0xb8d6e201b59c95094b2e417784b38b06c0c7e46a': { name: 'Your brother' },
+  // Mia, the lonely.ai match (engine/lonely.ts)
+  '0x7c2e91b04fd36a58e1b9c40d27f6a3e85b10c4d9': { name: 'Mia (lonely.ai)' },
 };
 
 /** 0x followed by 40 hex digits, like every address in the game. */

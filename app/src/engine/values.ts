@@ -54,3 +54,17 @@ export function initialMeters(): Record<MeterId, number> {
   for (const id of METER_IDS) out[id] = METERS[id].start;
   return out;
 }
+
+/**
+ * citizenscore.gov's number: the suspicion meter turned upside down onto a 0-1,000 scale, so the
+ * state's interest in the player shows up as a credit-score-style figure. 0 suspicion is 780
+ * (nobody scores higher), 100 (the raid) is 60.
+ */
+export function citizenScore(suspicion: number): number {
+  return Math.round(780 - Math.min(100, Math.max(0, suspicion)) * 7.2);
+}
+
+/** The band shown next to the score. */
+export function citizenBand(score: number): string {
+  return score >= 700 ? 'Good' : score >= 550 ? 'Fair' : score >= 350 ? 'Under review' : 'Flagged';
+}
