@@ -5,7 +5,7 @@ category: companies
 from: 1
 ---
 
-[public] CityPulse is the city's tabloid: the news site `citypulse.news` and the Y account @citypulse (bio "Local news, fast. Corrections, eventually."). It dramatizes everything: ALL-CAPS hooks, rhetorical questions ("Is your bank next?"), "experts warn", "You decide." The facts under the headlines are accurate; [[Mara Vey]] rolls her eyes at it. Its banner ads say "CityPulse is reader-funded."
+[public] CityPulse is the city's tabloid: the news site `citypulse.news` and the verified Y account @citypulse (1.2M followers, bio "Local news, fast. Corrections, eventually."). It dramatizes everything: ALL-CAPS hooks, rhetorical questions ("Is your bank next?"), "experts warn", "You decide." The facts under the headlines are accurate; [[Mara Vey]] rolls her eyes at it. Its banner ads say "CityPulse is reader-funded."
 
 [public] **Reporters:** Owen Pratt (city, business, markets), Sofia Mendel (tech, [[GeneralAI]]), Renata Ilic (the election).
 
@@ -166,3 +166,4 @@ from: 1
 ## Writer notes
 
 - Tabloid voice is Thomas's exception to the restraint rule (2026-10-17). Site `app/src/ui/citypulse.ts`, `app/src/engine/citypulse.ts` (`hotStory()`), articles `app/content/citypulse.json` (45 entries; `opponent-clip` needs `posted_deepfake`, `opponent-lead` needs it absent, so a run sees 44). Posts `dN_y_citypulse*.json`.
+- @citypulse is verified with 1.24M followers (`Y_VERIFIED` / `Y_FOLLOWERS` in ui/view.ts, Thomas 2026-10-17).
