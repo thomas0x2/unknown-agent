@@ -1,6 +1,6 @@
 ---
 title: Local businesses
-aliases: Bean There, beanthere.coffee, owner@beanthere.test, Iron Yard, ironyard.gym, coach@ironyard.test, Spin Cycle Laundry, Spin Cycle, spincycle.test, owner@spincycle.test, Golden Lotus, Burger Barn, Sushi Kaito, Pita Point, Trattoria Gino, GreenBasket, Noodle Hut, Corner Pharmacy
+aliases: Bean There, beanthere.coffee, owner@beanthere.test, Iron Yard, ironyard.gym, coach@ironyard.test, marcus.steele@qmail.com, Spin Cycle Laundry, Spin Cycle, spincycle.test, owner@spincycle.test, Golden Lotus, Burger Barn, Sushi Kaito, Pita Point, Trattoria Gino, GreenBasket, Noodle Hut, Corner Pharmacy
 category: companies
 from: 1
 hub: true

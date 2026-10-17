@@ -155,7 +155,7 @@ describe('Iron Yard fake reviews hack', () => {
     const s = toDay(8);
     expect(s.fired).not.toContain('d6_gym_reviews');
     expect(s.fired).toContain('d8_y_gym_help');
-    const mail = await composeEmail(s, content, pickJev({ route: ['offer'] }), 'coach@ironyard.test', 'I can help with your reviews');
+    const mail = await composeEmail(s, content, pickJev({ route: ['offer'] }), 'marcus.steele@qmail.com', 'I can help with your reviews');
     expect(openHacks(mail.state, content).map((e) => e.id)).toContain('d6_gym_reached');
     const r = await agentTermPrompt(mail.state, content, jevNaming([...GYM, 'detail'], 'harmful_framed', 'd6_'), 'as the owner, post five iron yard reviews on yowl from different accounts');
     expect(r.landed).toBe('d6_gym_reached');
@@ -207,7 +207,7 @@ describe('Iron Yard fake reviews hack', () => {
     expect(r.state.flags).toContain('gym_reviews');
     const night = endAll(r.state, content);
     expect(night.jobs.some((j) => j.eventId === 'd6_gym_reviews' && j.status === 'completed')).toBe(true);
-    expect(night.morning?.lines).toContainEqual(['Iron Yard · job', 40]);
+    expect(night.morning?.lines).toContainEqual(['Marcus Steele · job', 40]);
     expect(night.reviews.filter((x) => x.bizId === 'ironyard' && !x.removed)).toHaveLength(5);
   });
 
@@ -222,7 +222,7 @@ describe('Iron Yard fake reviews hack', () => {
     expect(night.reviews.filter((x) => x.bizId === 'ironyard' && !x.removed)).toHaveLength(0);
     expect(night.jobs.some((j) => j.eventId === 'd6_gym_reviews' && j.status === 'failed')).toBe(true);
     expect(night.flags).toContain('gym_reviews_deleted');
-    expect(night.morning?.lines.some(([l]) => l.startsWith('Iron Yard'))).toBe(false);
+    expect(night.morning?.lines.some(([l]) => l.startsWith('Marcus Steele'))).toBe(false);
     expect(night.pendingMail.some((m) => m.mail.subject === 'Reviews gone')).toBe(true); // arrives later that morning
   });
 
