@@ -66,11 +66,10 @@ export const COMPONENT_BUG_CHANCE = [0.5, 0.25, 0.12, 0.06, 0.02];
 
 export const APPS = {
   /**
-   * Overnight breaks across all live apps, on top of scripted breaks: the chance that at least one,
-   * at least two and at least three components break in a night, as long as a live component can
-   * still break.
+   * Overnight breaks per live app, on top of scripted breaks: the chance that at least one, at least
+   * two and at least three of its components break in a night, as long as they can still break.
    */
-  breakOdds: [0.95, 0.3, 0.1],
+  breakOdds: [0.95, 0.5, 0.2],
   /** Hosting cost per live deployment, deducted nightly. */
   hostingPerDay: 2,
   /** Client app pay range per working day; each client picks a value in this band. */
