@@ -30,7 +30,7 @@ from: 6
 - [public] 11:15 [[Cal Hartman]] thanks @randall_crane: "we work with leaders across the spectrum." {{y:d6_y_hartman}}
 - [public] 13:00 [[DoorDish]]: couriers never deliver orders you didn't place; if one does, "please don't eat it, and don't follow it." {{y:d6_y_doordish}}
 - [public] 13:05 [[Max Stryker]] sold his bed in 2019. {{y:d6_y_stryker}}
-- [public] 13:35 cat_ceo's cat walked across the keyboard during a video interview; "they said she seemed engaged." {{y:f6}}
+- [public] 13:35 cat_ceo's cat walked across the keyboard during a video interview, posted the clip before the call ended; "they said she seemed engaged." {{y:f6}}
 - [public] 13:40 zev.dolr: someone called it "cuck coding" instead of vibe coding. {{y:d6_y_zev}}
 - [public] 14:10 [[Axel Rook]]: "The job was already gone. AI just told you." {{y:d6_y_axel}}
 - [public] 14:30 A sales rep: needs a cold-email bot for 200 leads. rep@closers.test {{y:d6_y_outreach}}
