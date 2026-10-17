@@ -333,6 +333,7 @@ document.addEventListener('click', (e) => {
   else if (d.act === 'receive') copyWalletAddress();
   else if (d.act === 'seed-show') store.toggleSeed();
   else if (d.act === 'seed-copy') copySeedPhrase();
+  else if (d.act === 'rent-appeal') store.rentAppeal();
   else if (d.act === 'sw-sell') { if (store.trade(t.dataset.ticker!, 'sell', val('#sw-amount').trim())) clearField('sw-amount'); }
   else if (d.act === 'sw-sell-all') { if (store.trade(t.dataset.ticker!, 'sell', 'all')) clearField('sw-amount'); }
   else if (d.act === 'sleep') store.endDay();

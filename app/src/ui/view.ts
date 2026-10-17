@@ -248,7 +248,7 @@ export function page(store: GameStore, r: Route): string {
     case 'phish': return pagePhish(store);
     case 'prince': return pagePrince(store);
     case 'lonely': return pageLonely(store);
-    case 'adsite': return pageAdSite(r.param ?? '', store.state);
+    case 'adsite': return pageAdSite(r.param ?? '', store.state, store.ui.adNotice);
     default: return pageUnderground(r.def?.label ?? r.site);
   }
 }

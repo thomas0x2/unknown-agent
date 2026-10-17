@@ -33,6 +33,8 @@ export interface AdSite {
   link?: [string, string, string];
   /** a flag set when the page is opened (the link's site must be reachable once you've seen it) */
   unlocks?: string;
+  /** one working button, under the cards: [label, data-act handled in main.ts] */
+  action?: [string, string];
 }
 
 export const AD_SITES: AdSite[] = [
@@ -314,6 +316,7 @@ export const AD_SITES: AdSite[] = [
       ['After a decision', 'Decisions are final. A new appeal can be filed against the next increase.'],
     ],
     fine: 'The automated review service is provided by GeneralAI, which owns or manages 38% of rental units in the city.',
+    action: ['File an appeal (5 DOLR)', 'rent-appeal'],
   },
   {
     url: 'citizenscore.gov', brand: 'Citizen Score', kit: 'gov', theme: 'ministry', mark: '⚖',

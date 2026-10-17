@@ -140,6 +140,11 @@
 .pr-err { margin: 0; color: #d4002a; font-weight: 700; font-size: 14px; }
 .pr-btn { font: 900 18px var(--lp-font); padding: 14px 24px; border: 0; border-radius: 999px; background: var(--lp-accent); color: var(--lp-accent-ink); cursor: pointer; box-shadow: 0 6px 18px rgba(255, 0, 168, .35); }
 
+/* an ad site's one working button (rentboard.gov's appeal) */
+.lp-action { text-align: center; margin: 8px 0 24px; }
+.lp-btn { font: 700 15px var(--lp-font); padding: 11px 22px; border: 1px solid currentColor; border-radius: 2px; background: var(--lp-accent); color: var(--lp-accent-ink); cursor: pointer; }
+.lp-notice { margin: 10px 0 0; font-size: 14px; }
+
 /* lonely.ai: agent.chat's chat layout in dating-app pink (ui/lonely.ts) */
 .ua.lonely { --ua-bg: #fff3f7; --ua-panel: #fff; --ua-ink: #4a1730; --ua-dim: #85546b; --ua-line: #f6cfdc; --ua-you: #e0336f; }
 .lonely .ua-bubble { border-radius: 18px 18px 4px 18px; }
