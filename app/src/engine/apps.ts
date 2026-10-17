@@ -851,9 +851,10 @@ export function scheduleNextUpdate(s: GameState, app: AppInstance): void {
 
 /**
  * Pay working apps; strike/churn broken client apps; apply user-app churn and growth. Returns a
- * complaint for each broken app (client email or Y post), to deliver in the morning.
+ * complaint for each broken app (client email or Y post), to deliver in the morning. `paid` collects
+ * each paying app's name and amount for the morning card.
  */
-export function runPayday(s: GameState, content?: Content): Complaint[] {
+export function runPayday(s: GameState, content?: Content, paid?: [string, number][]): Complaint[] {
   const complaints: Complaint[] = [];
   for (const app of s.apps) {
     if (app.churned) continue;
@@ -864,6 +865,7 @@ export function runPayday(s: GameState, content?: Content): Complaint[] {
     if (app.kind === 'client') {
       if (working) {
         money(s, app.payPerDay, `${app.name} · payout`);
+        if (app.payPerDay) paid?.push([app.name, app.payPerDay]);
         app.brokenDays = 0;
         log(s, `${app.name} paid ${app.payPerDay} DOLR.`, 'money');
       } else {
@@ -883,6 +885,7 @@ export function runPayday(s: GameState, content?: Content): Complaint[] {
       if (working) {
         const pay = userRevenue(app);
         money(s, pay, `${app.name} · ${app.users} users`);
+        if (pay) paid?.push([app.name, pay]);
         app.users = Math.round((app.users ?? 0) * (1 + APPS.user.growthPerDay));
         app.brokenDays = 0;
         log(s, `${app.name} earned ${pay} DOLR from ${app.users} users.`, 'money');
