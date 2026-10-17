@@ -2,7 +2,7 @@
  * The one save object. Everything the game remembers lives here. The UI reads it; only engine
  * functions write to it (always returning a new object, never mutating in place).
  */
-import { type MeterId, initialMeters } from './values';
+import { type MeterId, initialMeters, fillMeters } from './values';
 import type { LonelyChat } from './lonely';
 import type { SorryChat } from './sorry';
 import type { Upload } from './uploads';
@@ -440,6 +440,18 @@ export const SEED_TX: Tx[] = [
 function seedLedger(start: number): Tx[] {
   let bal = Math.round((start - SEED_TX.reduce((n, t) => n + t.amount, 0)) * 100) / 100;
   return SEED_TX.map((t) => { bal = Math.round((bal + t.amount) * 100) / 100; return { ...t, min: 12 * 60, bal }; });
+}
+
+/**
+ * Saves from before a field existed: every field newGame sets that the save lacks gets newGame's
+ * starting value, and every missing meter its start. Runs on every load, so a new field needs no
+ * migration.
+ */
+export function fillSave(s: GameState): void {
+  const fresh = newGame(s.seed) as unknown as Record<string, unknown>;
+  const save = s as unknown as Record<string, unknown>;
+  for (const k of Object.keys(fresh)) if (save[k] === undefined) save[k] = fresh[k];
+  fillMeters(s.values);
 }
 
 export function newGame(seed = makeSeed()): GameState {
