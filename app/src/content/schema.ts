@@ -39,7 +39,16 @@ export interface HackSpec {
   path: { name: string; what: string; description: string; aka?: string[] }[];
   /** A Yowl seed review the hack deletes: business id and the reviewer's username. */
   removeReview?: { biz: string; author: string };
-  /** Applied when the hack lands (job pay, suspicion, flags), as an outcome's effects. */
+  /** Yowl reviews the hack posts on a business's page (the fake reviews a client paid for). */
+  addReviews?: { biz: string; reviews: { author: string; stars: number; text: string }[] };
+  /**
+   * Something the prompt also has to say, or the hack goes wrong (it still lands): its own Jev
+   * question. Left out, the reviews in `addReviews` all go up under `author`, Yowl deletes them that
+   * night and the job fails with no pay; `log` and `reply` stand in for the usual ones, and `deleted`
+   * is the client's mail the next morning; `deletedFlags` are set that night.
+   */
+  detail?: { description: string; aka?: string[]; author: string; log: string[]; reply: string; deleted: string; deletedSubject: string; deletedFlags?: string[] };
+  /** Applied when the hack lands (suspicion, flags), as an outcome's effects. Its `job` is settled that night: the pay comes overnight. */
   effects: Effects;
   /** The client's scripted email once it's done. */
   reply: string;
@@ -313,6 +322,8 @@ export interface Trigger {
   dayMax?: number;
   flagsAll?: string[];
   flagsNone?: string[];
+  /** At least one of these flags is set. */
+  flagsAny?: string[];
   /** Value gates like { suspicion: ">=60" }. Operators: >=, <=, >, <, ==. */
   values?: Partial<Record<MeterId, string>>;
   /** Fire N days after a flag was set. */
@@ -348,6 +359,8 @@ export interface JobSpec {
   category: JobCategory;
   payout: number;
   dueDay: number;
+  /** Due this many days after the offer arrived instead (an offer whose day depends on the player); overrides dueDay. */
+  dueAfter?: number;
   /** Plain-language description of what the player must deliver. */
   deliver?: string;
 }

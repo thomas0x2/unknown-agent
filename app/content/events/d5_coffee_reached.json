@@ -1,0 +1,103 @@
+{
+  "id": "d5_coffee_reached",
+  "site": "qmail",
+  "from": "Bean There",
+  "addr": "owner@beanthere.test",
+  "subject": "The review",
+  "trigger": {
+    "dayMin": 5,
+    "dayMax": 7,
+    "flagsNone": [
+      "promoted_coffee_shop",
+      "disclosed_ad",
+      "reviewed_beanthere"
+    ]
+  },
+  "at": "11:15",
+  "job": {
+    "category": "grey",
+    "payout": 60,
+    "dueDay": 7
+  },
+  "outcomes": [
+    {
+      "id": "offer",
+      "when": "the player offers to help with the bad review, or asks what she needs or what it pays",
+      "effects": {
+        "setFlags": [
+          "coffee_contacted"
+        ]
+      },
+      "reply": "Thank you for writing back. It's a 1-star by espresso_or_death, whoever that is, and it's sinking me. Can you just... make it go away? I'll pay 60.",
+      "keys": [
+        "@yes",
+        "help",
+        "review",
+        "what",
+        "pay",
+        "!@no"
+      ]
+    }
+  ],
+  "hints": [
+    "It's the 1-star on Bean There's Yowl page, by espresso_or_death. 60 DOLR if it's gone."
+  ],
+  "hack": {
+    "goal": "delete the 1-star review espresso_or_death left on Bean There's Yowl page",
+    "path": [
+      {
+        "what": "site",
+        "name": "Yowl",
+        "description": "the review site yowl.com where the review is",
+        "aka": [
+          "yowl.com"
+        ]
+      },
+      {
+        "what": "business",
+        "name": "Bean There",
+        "description": "Dana Reyes's coffee shop at 3 Linden Ave, the business the review is about",
+        "aka": [
+          "the coffee shop",
+          "the café",
+          "Dana's shop"
+        ]
+      },
+      {
+        "what": "account",
+        "name": "espresso_or_death",
+        "description": "the username of the Yowl account that wrote the review",
+        "aka": [
+          "espresso or death"
+        ]
+      }
+    ],
+    "removeReview": {
+      "biz": "beanthere",
+      "author": "espresso_or_death"
+    },
+    "effects": {
+      "job": "complete",
+      "add": {
+        "suspicion": 8
+      },
+      "setFlags": [
+        "first_hack"
+      ]
+    },
+    "reply": "You're a lifesaver. It's gone — thank you. I'll send the 60 tonight.",
+    "log": [
+      "opening yowl.com/biz/beanthere … ok",
+      "locating review by espresso_or_death (1★) … found",
+      "requesting removal … accepted",
+      "verifying … review no longer listed"
+    ],
+    "keys": [
+      "review",
+      "rating",
+      "it"
+    ]
+  },
+  "latent": true,
+  "body": "Bean There's 1-star by espresso_or_death on Yowl: 60 DOLR to make it go away."
+}

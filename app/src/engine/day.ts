@@ -16,6 +16,7 @@ import { rolloutAgent, deductSubscription, agentCost } from './agent';
 import { checkGuardEndings, checkFinale, isLastNight } from './endings';
 import { chargeNoShows } from './actions';
 import { matchlessPayday, matchlessReport, matchlessWomenOnly } from './matchless';
+import { payHacks } from './hacks';
 
 const MORNING_FALLBACK = ["Morning. Same balance as last night, minus what you owe me."];
 
@@ -86,6 +87,7 @@ export function endDay(state: GameState, content: Content): GameState {
   const swiped = matchlessPayday(s, content);
   const swipePay = Math.round((s.values.crypto - swipeBefore) * 100) / 100;
   if (swipePay !== 0) lines.push(['Matchless swiping', swipePay]);
+  lines.push(...payHacks(s, content)); // clients pay for the day's hacks overnight
 
   // 4. Rent
   const rent = RENT[s.values.day];

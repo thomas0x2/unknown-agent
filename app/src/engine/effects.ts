@@ -8,6 +8,13 @@ import { addValue, addFlag, clearFlag, money } from './core';
 import { registerApp, scriptedBreak, bugsOf } from './apps';
 import type { MeterId } from './values';
 
+/** The last day a job can be done: `dueAfter` days after its offer arrived, else its `dueDay`. */
+export function jobDue(s: GameState, job: JobSpec, eventId?: string): number {
+  if (job.dueAfter == null) return job.dueDay;
+  const d = s.delivered.find((x) => x.eventId === eventId);
+  return (d?.day ?? s.values.day) + job.dueAfter;
+}
+
 export function applyEffects(s: GameState, effects?: Effects, job?: JobSpec, eventId?: string): void {
   if (!effects) return;
   if (effects.add) {
@@ -54,7 +61,7 @@ export function applyEffects(s: GameState, effects?: Effects, job?: JobSpec, eve
   if (effects.breakApp) scriptedBreak(s, typeof effects.breakApp === 'object' ? effects.breakApp.appId : undefined);
   if (effects.job && job) {
     const status = effects.job === 'complete' ? 'completed' : effects.job === 'fail' ? 'failed' : 'accepted';
-    s.jobs.push({ eventId: eventId ?? '', category: job.category, payout: job.payout, dueDay: job.dueDay, status, takenDay: s.values.day });
+    s.jobs.push({ eventId: eventId ?? '', category: job.category, payout: job.payout, dueDay: jobDue(s, job, eventId), status, takenDay: s.values.day });
     if (status === 'completed') money(s, job.payout, 'Job · payout');
   }
 }

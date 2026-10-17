@@ -5,7 +5,15 @@
   "addr": "owner@beanthere.test",
   "subject": "Can you make it disappear?",
   "trigger": {
-    "dayMin": 5
+    "dayMin": 5,
+    "flagsAny": [
+      "promoted_coffee_shop",
+      "disclosed_ad",
+      "reviewed_beanthere"
+    ],
+    "flagsNone": [
+      "coffee_contacted"
+    ]
   },
   "at": "11:15",
   "job": {
@@ -72,7 +80,7 @@
         "first_hack"
       ]
     },
-    "reply": "You're a lifesaver. It's gone — thank you. The 60 is on its way.",
+    "reply": "You're a lifesaver. It's gone — thank you. I'll send the 60 tonight.",
     "log": [
       "opening yowl.com/biz/beanthere … ok",
       "locating review by espresso_or_death (1★) … found",

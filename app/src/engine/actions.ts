@@ -10,7 +10,7 @@ import type { GameState, AppInstance, BuiltFeature, AgentWork } from './state';
 import type { Content, GameEvent, Contact, Outcome, AppTemplate, ScriptedReply } from '../content/schema';
 import type { JevRouter, PostRating, RouteDecision, FeatureMatchInput } from './jev';
 import { Y as YCFG, FAMILY, APPS, AGENT_WORK, CLOCK, MAX_INPUT_CHARS } from './config';
-import { clone, addValue, log, pick, rand, money, pushMail, sendLater, gameMinutes } from './core';
+import { clone, addValue, log, pick, rand, money, pushMail, sendLater, gameMinutes, addFlag } from './core';
 import { applyEffects } from './effects';
 import { chargeAgent, promptCost, policyActive, recordWorkaround, recordMisuse, loosenLeash } from './agent';
 import { getEvent, activeDeliveries, reachableByEmail, triggerMatches, eventBody, queueLaunch, queueFeatureLaunch, queueAt, yPostEvents } from './events';
@@ -1127,6 +1127,7 @@ export async function writeReview(
   const s = clone(s0);
   if (s.reviews.some((r) => r.bizId === bizId && r.mine)) return { state: s, posted: false };
   s.reviews.push({ id: nextId(s, 'rev'), bizId, author: 'You', stars, text, day: s.values.day, mine: true });
+  addFlag(s, `reviewed_${bizId}`); // the owner knows the player's name from it
   // a review can trigger a story outcome (e.g. the gym fake-review gig)
   const ev = content.events.find((e) => e.site === 'yowl' && !s.fired.includes(e.id) && (e.addr === bizId || e.id.includes(bizId)));
   if (ev && ev.outcomes) {

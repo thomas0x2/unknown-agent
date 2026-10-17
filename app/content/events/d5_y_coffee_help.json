@@ -1,0 +1,16 @@
+{
+  "id": "d5_y_coffee_help",
+  "site": "y",
+  "from": "Bean There",
+  "trigger": {
+    "dayMin": 5,
+    "flagsNone": [
+      "promoted_coffee_shop",
+      "disclosed_ad",
+      "reviewed_beanthere"
+    ]
+  },
+  "at": "11:05",
+  "addr": "owner@beanthere.test",
+  "body": "Small business question. One review on Yowl is sinking my coffee shop and Yowl won't answer my emails. Does anyone know how to get a review looked at? Happy to pay for help. owner@beanthere.test"
+}
