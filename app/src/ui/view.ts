@@ -970,7 +970,9 @@ function pageAgent(store: GameStore): string {
     if (m.src === 'locked') return `<div class="ua-msg agent ua-err" role="alert"><div class="ua-mark">${ICONS.error}</div><div class="ua-text"><b>Error</b> ${linkify(br(m.text))}</div>${src}</div>`;
     // a query's answer (or refusal) comes after a look around the WWW
     const www = /^(query|classified)/.test(m.src ?? '') ? `<div class="ua-www done">${ICONS.globe}<span>Searched the WWW</span></div>` : '';
-    return `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text">${www}${linkify(br(m.text))}</div>${model}${src}${debug}</div>`;
+    // a classified topic: the search hit something the player isn't cleared for
+    const refused = /^classified/.test(m.src ?? '') ? `<div class="ua-www ua-refused">${ICONS.lock}<span>Tried to access classified information · answer refused</span></div>` : '';
+    return `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text">${www}${refused}${linkify(br(m.text))}</div>${model}${src}${debug}</div>`;
   }
   const p = store.pendingPrompt;
   // the price shows on the prompt only once the charge has gone through

@@ -893,6 +893,7 @@ body.dev-on .ua-work-skip { display: inline-block; }
 .ua-www.done { height: auto; margin-bottom: 2px; font-size: 11px; }
 .ua-www .ua-dots { height: auto; }
 .ua-www .ua-dots i { width: 4px; height: 4px; }
+.ua-www.ua-refused { height: auto; margin-bottom: 4px; font-size: 11px; color: #a12b1f; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* the standalone wiki page (app/wiki.html) */

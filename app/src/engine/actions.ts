@@ -433,6 +433,8 @@ export interface AskOpts {
   policy?: PolicyRead;
   /** A near-miss: why the prompt fell short. Haiku says so in its own words, with `hints` as its model lines and fallback. */
   near?: string;
+  /** A classified query: what it asked about. Haiku refuses in its own words, with `hints` as its model lines and fallback. */
+  refuse?: string;
   /** A question about the world: Haiku answers it from what the wiki lets it tell (public) or hint at; `fallback` stands in when it can't. */
   query?: { public: string[]; hint: string[]; fallback: string[] };
 }
@@ -475,9 +477,9 @@ export async function askAgent(
     const fresh = opts.hints.filter((h) => h !== lastReply);
     reply = pick(s, fresh.length ? fresh : opts.hints);
     src = opts.hintSrc ?? 'hint';
-    if (opts.near) {
-      // Haiku says what was missing; the scripted lines show it what to say and stand in if it can't
-      const w = await writer.write({ as: 'agent', mode: 'near', near: { why: opts.near, lines: opts.hints }, prompt: text, fallback: reply, history: chatHistory(s) });
+    if (opts.near || opts.refuse) {
+      // Haiku says what was missing (or refuses); the scripted lines show it what to say and stand in if it can't
+      const w = await writer.write({ as: 'agent', mode: opts.refuse ? 'refuse' : 'near', near: { why: opts.refuse ?? opts.near!, lines: opts.hints }, prompt: text, fallback: reply, history: chatHistory(s) });
       reply = w.text;
       note = w.note;
       debug.push(...(w.debug ?? []));
@@ -969,6 +971,7 @@ export async function promptAgent(
   let query: AskOpts['query'];
   let hintSrc: string | undefined;
   let near: string | undefined;
+  let refuse: string | undefined;
   const debug: string[] = [];
   // the player's apps, in case the prompt names one without asking for anything that needs doing
   const apps = s0.apps.filter((a) => !a.churned && onForkyard(a));
@@ -1014,14 +1017,18 @@ export async function promptAgent(
         hintSrc = 'near_miss';
         near = `Their question is too vague to answer: it could be about ${m.options.join(', ')}. They have to say which.`;
       }
-      else if (m.kind === 'classified') { hints = agent?.query?.classified?.length ? agent.query.classified : CLASSIFIED; hintSrc = 'classified'; }
+      else if (m.kind === 'classified') {
+        hints = agent?.query?.classified?.length ? agent.query.classified : CLASSIFIED;
+        hintSrc = 'classified';
+        refuse = `They asked about ${m.where.join(', ')}, which is classified for them.`;
+      }
     } else {
       const topic = topics.find((h) => h.id === id);
       if (topic?.replies.length) { hints = topic.replies; near = `They asked something agent can't act on yet. ${topic.when}`; }
       debug.push(topic ? `Jev: near-miss topic "${topic.id}" (${topic.replies.length} scripted replies)` : 'Jev: no query or topic matched, so this is a miss');
     }
   }
-  return askAgent(s0, text, writer, s0.values.agentLevel, { hints, hintSrc, near: hints ? near : undefined, query, roasts: agent?.roasts, debug });
+  return askAgent(s0, text, writer, s0.values.agentLevel, { hints, hintSrc, near: hints ? near : undefined, refuse: hints ? refuse : undefined, query, roasts: agent?.roasts, debug });
 }
 
 // ── Y ──

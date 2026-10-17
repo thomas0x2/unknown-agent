@@ -52,16 +52,43 @@ describe('agent queries, near-misses and roasts', () => {
     expect(r.state.chat.at(-1)).toMatchObject({ src: 'query' });
   });
 
-  it('a question about something classified gets a scripted roast, and Haiku is never asked', async () => {
+  it('a question about something classified is refused by Haiku, which never sees the classified text', async () => {
     const wiki = [parseWikiPage('---\ntitle: Election\naliases: election\ncategory: world\n---\n[classified] Crane loses.\n', 'election.md')];
     const seen: WriteReq[] = [];
-    const writer: Writer = { async write(req) { seen.push(req); return { text: 'x', llm: true }; } };
+    const writer: Writer = { async write(req) { seen.push(req); return { text: 'Above your clearance. Try voting instead.', llm: true }; } };
     const s0 = startGame(content, 1);
     s0.values.crypto = 100;
     const r = await promptDone(s0, { ...content, wiki }, wordJev, 'What has been posted on Y about the election?', writer);
+    expect(seen[0]).toMatchObject({ as: 'agent', mode: 'refuse' });
+    expect(seen[0].near!.why).toMatch(/Election.*classified/);
+    expect(seen[0].near!.lines).toEqual(agent.query.classified);
+    expect(agent.query.classified).toContain(seen[0].fallback);
+    expect(JSON.stringify(seen[0])).not.toContain('Crane loses');
+    expect(r.state.chat.at(-1)).toMatchObject({ src: 'classified', text: 'Above your clearance. Try voting instead.' });
+  });
+
+  it('without Haiku a classified question gets a scripted refusal', async () => {
+    const wiki = [parseWikiPage('---\ntitle: Election\naliases: election\ncategory: world\n---\n[classified] Crane loses.\n', 'election.md')];
+    const s0 = startGame(content, 1);
+    s0.values.crypto = 100;
+    const r = await promptDone(s0, { ...content, wiki }, wordJev, 'What has been posted on Y about the election?');
     expect(r.state.chat.at(-1)!.src).toBe('classified');
     expect(agent.query.classified).toContain(r.state.chat.at(-1)!.text);
-    expect(seen).toEqual([]);
+  });
+
+  it('asking about something the player only learns of later is refused as classified', async () => {
+    const wiki = [
+      parseWikiPage('---\ntitle: Election\naliases: election\ncategory: world\nfrom: 8\n---\n[public] Crane runs.\n', 'election.md'),
+      parseWikiPage('---\ntitle: The player\naliases: me\ncategory: people\n---\n[public] You.\n', 'player.md'),
+    ];
+    const seen: WriteReq[] = [];
+    const writer: Writer = { async write(req) { seen.push(req); return { text: 'Nope.', llm: true }; } };
+    const s0 = startGame(content, 1);
+    s0.values.crypto = 100;
+    const r = await promptDone(s0, { ...content, wiki }, wordJev, 'What has been posted on Y about the election?', writer);
+    expect(seen[0]).toMatchObject({ mode: 'refuse' });
+    expect(JSON.stringify(seen[0])).not.toContain('Crane runs');
+    expect(r.state.chat.at(-1)!.src).toBe('classified');
   });
 
   it('a question that names nothing in the wiki is a miss: a roast', async () => {

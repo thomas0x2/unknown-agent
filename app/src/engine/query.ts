@@ -72,8 +72,10 @@ function hubDesc(p: WikiPage, sec: WikiSection): string {
 /** Jev: which wiki page(s), then which section(s) of each, the question is about. */
 export async function matchQuery(jev: JevRouter, s: GameState, content: Content, text: string, chat: string[] = []): Promise<QueryMatch> {
   const ctx = queryCtx(s, content);
-  const pages = queryablePages(content.wiki ?? [], ctx);
+  // pages the player can't know of yet are matched too: asking about one is a classified hit, refused
+  const pages = (content.wiki ?? []).filter((p) => p.category !== 'writers');
   if (!pages.length) return { kind: 'miss', debug: 'no wiki pages loaded' };
+  const known = new Set(queryablePages(pages, ctx));
   // a hub page (ad brands, local businesses) offers each of its sections as a topic of its own, so
   // naming the brand or the business is enough; its page doesn't have to be named too
   const hubs = pages.filter((p) => p.hub).flatMap((p) => querySections(p).map((sec, i) => ({ p, sec, i })).filter((x) => x.sec.heading));
@@ -88,6 +90,9 @@ export async function matchQuery(jev: JevRouter, s: GameState, content: Content,
   // a hub page whose section was named counts once, through that section
   const hit = pages.filter((p) => found.includes(p.file) || direct.some((x) => x.p === p));
   if (!hit.length) return { kind: 'miss', debug: 'Jev: the question names no wiki page, so it is not precise enough (a miss)' };
+  // something the player can't know of yet: that's what the question is after, so it is refused
+  const early = hit.filter((p) => !known.has(p));
+  if (early.length) return { kind: 'classified', where: early.map((p) => p.title), debug: `Jev: ${early.map((p) => p.title).join('; ')}, not known to the player until day ${Math.min(...early.map((p) => p.from))}, so classified` };
   if (hit.length > MAX_PAGES) return { kind: 'broad', options: hit.slice(0, 4).map((p) => p.title), debug: `Jev: the question matches ${hit.length} wiki pages, too broad (a near-miss)` };
 
   // sections of every matched page with more than an overview, asked in one go

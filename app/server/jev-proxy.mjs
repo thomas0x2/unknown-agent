@@ -62,7 +62,7 @@ async function write(body) {
   const ch = CHARACTERS.find((c) => c.id === body.character);
   if (!ch) return { status: 400, json: { error: `unknown character ${body.character}` } };
   if (body.mode === 'query') return query(ch, body);
-  if (body.mode === 'near') return near(ch, body);
+  if (body.mode === 'near' || body.mode === 'refuse') return near(ch, body);
   const n = ch.sentences ?? 2;
   const form = `Keep it dry and understated rather than zany. At most ${n} short sentence${n > 1 ? 's' : ''} of plain text, ` +
     `no quotes, no stage directions, no emoji. Stay consistent with anything you already said earlier in the conversation.`;
@@ -87,6 +87,8 @@ async function write(body) {
 // it fell short and sends the scripted lines for it; Haiku says the same in its own words, so no app
 // or wiki page needs scripted near-miss lines of its own (src/engine/actions.ts, AskOpts.near).
 async function near(ch, body) {
+  // a refusal (a query about something classified) is built the same way, from the character's refuse voice
+  if (body.mode === 'refuse') return refuse(ch, body);
   const n = ch.near;
   if (!n) return { status: 400, json: { error: `${ch.id} has no near-miss voice` } };
   const why = String(body.near?.why ?? '').replace(/\s+/g, ' ').slice(0, 600).trim();
@@ -99,6 +101,22 @@ async function near(ch, body) {
   const said = String(body.text ?? '').slice(0, 2000);
   const earlier = historyBlock(body.history);
   return runWriter(system, [{ role: 'user', content: earlier ? `${earlier}\n\nThe player now writes:\n${said}` : said }], body.via);
+}
+
+// An agent.chat query about something classified (not yet, or never, for the player to know): agent
+// refuses. Haiku gets only what was asked about, never what the wiki says about it, and the scripted
+// classified lines as its model; they stand in when it can't answer.
+async function refuse(ch, body) {
+  const r = ch.refuse;
+  if (!r) return { status: 400, json: { error: `${ch.id} has no refusal voice` } };
+  const lines = (Array.isArray(body.near?.lines) ? body.near.lines : []).slice(0, 6).map((l) => `- ${String(l).replace(/\s+/g, ' ').slice(0, 300)}`).join('\n');
+  const k = r.sentences ?? 2;
+  const system = `${r.profile}\n\n` +
+    (lines ? `Lines like these (say the same kind of thing in your own words; don't copy them):\n${lines}\n\n` : '') +
+    `At most ${k} short sentences of plain text, no lists, no markdown, no emoji.`;
+  const said = String(body.text ?? '').slice(0, 2000);
+  const earlier = historyBlock(body.history);
+  return runWriter(system, [{ role: 'user', content: earlier ? `${earlier}\n\nThe player now asks:\n${said}` : said }], body.via);
 }
 
 // An agent.chat query: Jev matched the question to sections of the wiki, and the game sends what they
