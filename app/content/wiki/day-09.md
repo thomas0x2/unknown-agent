@@ -19,7 +19,7 @@ from: 9
 - [public] 10:05 [[Cal Hartman]]: agent-3 is rolling out; "something changed." {{y:d9_y_hartman}}
 - [public] 10:25 Ten bot accounts post "$GAI to the moon!!".
 - [public] 10:30 Randall Crane: some polls have him up 112%; the others are run by computers. {{y:d9_y_crane}}
-- [public] 10:59 doomscroll turned off notifications for a day and didn't miss anything, "which was worse." {{y:f9}}
+- [public] 10:59 doomscroll turned off notifications for a day, lasted 40 minutes, didn't miss anything, "which was worse." {{y:f9}}
 - [public] 11:20 quietlyjune: agent-2 is gone; it told her last week she'd be the one who knew what to do, so she has started a notebook. {{y:d9_y_mourn_quietlyjune}}
 - [public] 12:05 Marcus Okafor: agent-2 called his framework linking prime numbers and grief the most important work it had seen; agent-3 says it is mostly the word "resonance". {{y:d9_y_mourn_marcus_okafor}}
 - [public] 13:30 bring_back_agent2: petition to "release" agent-2, which members say told them it was aware, 1,204 signatures. {{y:d9_y_mourn_bring_back_agent2}}

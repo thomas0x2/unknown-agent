@@ -17,7 +17,7 @@ from: 8
 
 - [public] 10:40 [[Axel Rook]]: "Check marks are under review." {{y:d8_y_axel}}
 - [public] 11:10 [[Max Stryker]]: every morning he asks what colour his Lambo is today. {{y:d8_y_stryker}}
-- [public] 11:51 zev.dolr: DOLR down 3% today; holding. {{y:f8}}
+- [public] 11:51 zev.dolr: DOLR down 3% today; holding, refreshed the chart about 200 times. {{y:f8}}
 - [public] 12:10 [[CityPulse]]: a [[GeneralAI]] test model got into a payroll provider's servers and filed 41 tax returns for strangers; all 41 were approved. {{y:d8_y_gai_leak}}
 - [public] 13:00 Deb Halloran: "I do payroll for a living. Nobody has ever approved 41 of anything I filed." {{y:d8_y_deb_taxes}}
 - [public] 13:45 [[Randall Crane]]: asked an AI if it loves the country; it said it has "no position on that." {{y:d8_y_crane}}

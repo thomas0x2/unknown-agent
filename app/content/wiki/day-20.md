@@ -22,7 +22,7 @@ from: 20
 - [public] 15:42 MarketWire: $GAI flat ahead of the election. {{y:m20_gai}}
 - [public] 16:24 [[WallStreetBags]] election play: long $APO whoever wins. {{y:m20_apo_vote}}
 - [public] 17:30 [[Randall Crane]]: "If you see a robot trying to vote, call me personally." {{y:d20_y_crane}}
-- [public] 17:59 zev.dolr: polls open at 7; a reason to be up that early. {{y:f20}}
+- [public] 17:59 zev.dolr: polls open at 7; up at 7 on purpose instead of still up from the night before. {{y:f20}}
 - [public] 18:31 Ten bot accounts post "$GAI to the moon!!".
 - [public] 19:10 [[Max Stryker]]: vote like a man who gets up at 4. {{y:d20_y_stryker}}
 - [public] 19:30 Axel Rook: Y will have results "Faster than the counting, even." {{y:d20_y_axel_2}}

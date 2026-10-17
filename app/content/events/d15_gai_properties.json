@@ -1,0 +1,12 @@
+{
+  "id": "d15_gai_properties",
+  "site": "qmail",
+  "from": "GeneralAI Properties",
+  "addr": "residents@properties.generalai.test",
+  "subject": "Welcome to GeneralAI Properties",
+  "trigger": {
+    "dayMin": 15
+  },
+  "at": "15:40",
+  "body": "Hello Resident of Unit 4B,\n\nGeneralAI Properties has acquired Pine Street Apartments. We're glad to have you.\n\nYour lease continues on its current terms, with one change. Rent for your unit is now set by LandlordPro, which reviews live data from comparable units in your area. LandlordPro has adjusted your weekly rent to 650 DOLR, effective Sunday, October 27.\n\nRent is still collected automatically from your wallet at the end of the due day. If the full amount isn't there, the unit goes back on the market the next morning.\n\nIf you believe the adjustment is incorrect, you can appeal to the Municipal Rent Board at rentboard.gov. Appeals are reviewed automatically.\n\nMost comparable units in your area are also managed by GeneralAI Properties.\n\nGeneralAI Properties\nResident Services"
+}

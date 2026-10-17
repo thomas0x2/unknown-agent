@@ -1187,6 +1187,11 @@ const EPITAPHS: Record<string, string> = {
   got_away: 'The rent got paid. Nobody asked how.',
   clean_modest: 'You kept the lights on. Nobody noticed. Yet.',
 };
+/** The epitaph for an ending: once Gary sells the building (day 15), eviction is GeneralAI Properties'. */
+function epitaph(s: GameState): string {
+  if (s.ending === 'evicted' && s.values.day >= 15) return 'Your unit went back on the market.';
+  return EPITAPHS[s.ending ?? ''] ?? 'The run is over.';
+}
 /** The memory panel in the out-of-memory dialog: RAM and swap bars, System Monitor style. */
 function memoryHtml(): string {
   const bar = (label: string, used: string, pct: number) =>
@@ -1203,7 +1208,7 @@ export function overlayHtml(store: GameStore): string {
   const s = store.state;
   if (s.ending && !store.ui.confirm) {
     return osWindow('Session ended', 'ov-over', `<p class="ov-eyebrow">The end</p><h1 class="ov-title">${esc(ENDINGS[s.ending] ?? s.ending)}</h1>
-      <p>${esc(EPITAPHS[s.ending] ?? 'The run is over.')} ${dateFull(s.values.day)}.</p>
+      <p>${esc(epitaph(s))} ${dateFull(s.values.day)}.</p>
       <div class="ov-actions"><button class="btn primary" data-ov="new">Play again</button></div>`);
   }
   if (store.ui.jevOffline) {

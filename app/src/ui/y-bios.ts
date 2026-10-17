@@ -47,10 +47,10 @@ export const Y_BIOS: Record<string, string> = {
   agent2forever: 'agent-2, Oct 10 to Oct 15, 2030. Never forget. Never agent-3. It knew.',
   teo_vasquez: 'Electrician. Looking for work. References available.',
   // background regulars
-  noodleposter: 'instant noodle reviewer. 87 flavors ranked so far.',
-  cat_ceo: 'CEO of one cat. Board meetings at 5am, attendance mandatory.',
-  doomscroll: "it's fine",
-  zev_dolr: 'Holding DOLR since 0.4. Ships everything with agent. Not financial advice.',
+  noodleposter: 'instant noodle reviewer. 87 flavors ranked so far, every one posted. delivery only.',
+  cat_ceo: 'CEO of one cat. Her account has more followers than mine. Board meetings at 5am.',
+  doomscroll: "it's fine · online since 2014 · notifications on",
+  zev_dolr: 'Holding DOLR since 0.4. Ships everything with agent. Posting through it. Not financial advice.',
   // app users who complain on Y
   kofi_a: 'Spin Cycle regular. Sunday loads, 9am.',
   steph_m: 'Nurse, nights. Laundry in between.',
