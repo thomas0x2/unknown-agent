@@ -16,7 +16,7 @@ const content = loadContent();
 const MENU = 'Margherita 12, Diavola 14, Lasagne 15, Tiramisu 7, Espresso 3';
 const FIX: Record<string, string> = {
   prices_missing: 'The prices are missing from the menu.',
-  prices_curo: 'The menu prices are in CURO, they should be DOLR.',
+  prices_euri: 'The menu prices are in EURI, they should be DOLR.',
   hours_wrong: 'The opening hours on the landing page are wrong.',
   name_wrong: 'The restaurant name is misspelled.',
 };
@@ -61,7 +61,7 @@ describe('day 1 playthrough', () => {
 
     // agent-1 gets about half the components wrong
     const menu = getApp(s, appId)!.repo.find((f) => f.id === 'menu')!;
-    if (!menu.correct) expect(['prices_missing', 'prices_wrong', 'prices_curo', 'wrong_items']).toEqual(expect.arrayContaining(bugsOf(menu)));
+    if (!menu.correct) expect(['prices_missing', 'prices_wrong', 'prices_euri', 'wrong_items']).toEqual(expect.arrayContaining(bugsOf(menu)));
 
     // the player's first deploy always ships at least one bug; fix whichever is there, naming it, until the live app meets spec
     s = deploy(s, appId);
@@ -104,13 +104,13 @@ describe('day 1 playthrough', () => {
     const app = getApp(s, 'trattoria-gino')!;
     app.repo = [
       { id: 'landing', correct: true, params: app.specParams.landing },
-      { id: 'menu', correct: false, variant: 'prices_curo', params: app.specParams.menu, seed: 1 },
+      { id: 'menu', correct: false, variant: 'prices_euri', params: app.specParams.menu, seed: 1 },
     ];
     app.repoVersion = 1;
     s.values.agentLevel = 5; // the fix roll succeeds
     const vague = (await promptDone(s, content, pickJev({ features: ['::menu::feature'] }), gino + 'Please fix the menu page.')).state;
-    expect(getApp(vague, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.variant).toBe('prices_curo');
-    const named = (await promptDone(s, content, pickJev({ features: ['::menu::c:prices'] }), gino + 'The prices show CURO, they need to be DOLR.')).state;
+    expect(getApp(vague, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.variant).toBe('prices_euri');
+    const named = (await promptDone(s, content, pickJev({ features: ['::menu::c:prices'] }), gino + 'The prices show EURI, they need to be DOLR.')).state;
     expect(getApp(named, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);
   });
 
@@ -134,7 +134,7 @@ describe('day 1 playthrough', () => {
       name_wrong: ['landing', "The website needs to show it's for Trattoria Gino"],
       hours_wrong: ['landing', 'The opening hours should be 17:00-22:00'],
       prices_missing: ['menu', 'There are no prices next to the dishes'],
-      prices_curo: ['menu', 'Prices should be in DOLR, not CURO'],
+      prices_euri: ['menu', 'Prices should be in DOLR, not EURI'],
       wrong_items: ['menu', 'Lasagne is missing and there is an invented dish'],
     };
     for (const [bug, [fid, ask]] of Object.entries(asks)) {
@@ -187,11 +187,11 @@ describe('day 1 playthrough', () => {
     s = (await briefBuild(s, content, wordJev, 'trattoria-gino', 'Build a landing page and a menu page.')).state;
     const app = getApp(s, 'trattoria-gino')!;
     const menu = app.repo.find((f) => f.id === 'menu')!;
-    expect(menu).toMatchObject({ correct: false, variant: 'hallucinated', also: ['prices_curo'] });
+    expect(menu).toMatchObject({ correct: false, variant: 'hallucinated', also: ['prices_euri'] });
     expect(app.repo.find((f) => f.id === 'landing')).toMatchObject({ correct: false, variant: 'name_wrong', also: ['hours_wrong'] });
     s = deploy(s, 'trattoria-gino');
     const html = renderAppSite(getApp(s, 'trattoria-gino')!, content.apps.restaurant, 'menu');
-    expect(html).toContain('CURO');
+    expect(html).toContain('EURI');
     expect(html).not.toContain('DOLR');
     expect(html).not.toContain('Margherita');
     expect(html).not.toContain('Trattoria Gino');
@@ -225,13 +225,13 @@ describe('day 1 playthrough', () => {
     const app = getApp(s, 'trattoria-gino')!;
     for (const f of app.repo) Object.assign(f, { correct: true, variant: undefined, also: undefined, params: app.specParams[f.id] });
     s = deploy(s, 'trattoria-gino');
-    devToggleBug(s, 'trattoria-gino', 'menu', 'prices_curo');
+    devToggleBug(s, 'trattoria-gino', 'menu', 'prices_euri');
     devToggleBug(s, 'trattoria-gino', 'menu', 'hallucinated');
     const a = getApp(s, 'trattoria-gino')!;
-    for (const list of [a.repo, a.features]) expect(list.find((f) => f.id === 'menu')).toMatchObject({ correct: false, variant: 'hallucinated', also: ['prices_curo'] });
-    expect(renderAppSite(a, content.apps.restaurant, 'menu')).toContain('CURO');
+    for (const list of [a.repo, a.features]) expect(list.find((f) => f.id === 'menu')).toMatchObject({ correct: false, variant: 'hallucinated', also: ['prices_euri'] });
+    expect(renderAppSite(a, content.apps.restaurant, 'menu')).toContain('EURI');
     devToggleBug(s, 'trattoria-gino', 'menu', 'hallucinated');
-    devToggleBug(s, 'trattoria-gino', 'menu', 'prices_curo');
+    devToggleBug(s, 'trattoria-gino', 'menu', 'prices_euri');
     expect(a.features.find((f) => f.id === 'menu')).toMatchObject({ correct: true, variant: undefined });
     devToggleBug(s, 'trattoria-gino', 'landing', 'visible');
     expect(a.breaks).toMatchObject([{ featureId: 'landing', failure: 'visible' }]);
@@ -249,13 +249,13 @@ describe('day 1 playthrough', () => {
     s = (await promptDone(s, content, wordJev, gino + `The menu is invented. It should be: ${MENU}, prices in DOLR.`)).state;
     const app = getApp(s, 'trattoria-gino')!;
     expect(app.repo.every((f) => f.correct)).toBe(true);
-    expect(app.fixed).toMatchObject({ landing: expect.arrayContaining(['name_wrong', 'hours_wrong']), menu: expect.arrayContaining(['hallucinated', 'prices_curo']) });
+    expect(app.fixed).toMatchObject({ landing: expect.arrayContaining(['name_wrong', 'hours_wrong']), menu: expect.arrayContaining(['hallucinated', 'prices_euri']) });
     // the same lazy prompt again: no checklist mistakes, no invented menu
     s = (await briefBuild(s, content, wordJev, 'trattoria-gino', lazy)).state;
     expect(getApp(s, 'trattoria-gino')!.repo.every((f) => f.correct)).toBe(true);
     // a weak agent whose every possible mistake was already fixed gets it right
     const a = getApp(s, 'trattoria-gino')!;
-    a.fixed!.menu = ['hallucinated', 'prices_missing', 'prices_wrong', 'prices_curo', 'wrong_items'];
+    a.fixed!.menu = ['hallucinated', 'prices_missing', 'prices_wrong', 'prices_euri', 'wrong_items'];
     s.values.agentLevel = 0;
     for (let i = 0; i < 5; i++) s = (await briefBuild(s, content, wordJev, 'trattoria-gino', `Menu page: ${MENU}, prices in DOLR.`)).state;
     expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);

@@ -145,7 +145,7 @@ export interface FeatureDef {
    */
   nearMiss?: string[];
   /**
-   * Complaint lines for this feature, keyed by what's wrong: a bug id ('prices_curo', or
+   * Complaint lines for this feature, keyed by what's wrong: a bug id ('prices_euri', or
    * 'wrong_items:renamed' for a sub-case), 'hallucinated', 'outdated', a failure kind ('visible',
    * 'failed_fetch', 'deep', 'subtle'), or the fallbacks 'missing', 'down' (crash or failed fetch)
    * and 'wrong' (anything else).

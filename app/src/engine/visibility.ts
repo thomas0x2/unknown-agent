@@ -55,7 +55,7 @@ const distinct = (l: Listing[], key: (x: Listing) => string) => new Set(l.map(ke
 export const VISIBILITY: Record<string, Record<string, Rule>> = {
   restaurant: {
     hours_wrong: always, name_wrong: always,
-    prices_missing: always, prices_curo: always, prices_wrong: always, wrong_items: always,
+    prices_missing: always, prices_euri: always, prices_wrong: always, wrong_items: always,
     no_email: always, wrong_date: always, wrong_time: always, sent_to_restaurant: always, party_wrong: always,
     name_wrong_mail: always, no_hours_check: always, past_dates: always, dead_button: always,
   },

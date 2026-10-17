@@ -63,5 +63,5 @@ export function menuDishes(l: { variant?: string; bugs?: Iterable<string>; seed:
     });
   }
   if (bugs.has('prices_missing')) return { dishes: d.map((x) => ({ ...x, price: '' })), currency: '' };
-  return { dishes: d, currency: bugs.has('prices_curo') ? 'CURO' : 'DOLR' };
+  return { dishes: d, currency: bugs.has('prices_euri') ? 'EURI' : 'DOLR' };
 }
