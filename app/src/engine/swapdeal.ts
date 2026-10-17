@@ -14,6 +14,7 @@ import { swapListings, type Listing } from './swaplist';
 import { tooLong } from './actions';
 import { MAX_INPUT_CHARS } from './config';
 import { type Writer, type HistoryLine } from './writer';
+import { settlePurchase } from './events';
 
 /** The character (content/characters.json) who answers for each seller handle. */
 export const SELLER_CHARACTER: Record<string, string> = {
@@ -154,5 +155,6 @@ export function swapBuy(s0: GameState, content: Content, n: number): GameState {
   const t = openThread(s, l);
   t.msgs.push({ from: 'you', text: cost > 0 ? `Paid ${cost.toLocaleString('en-US')} DOLR.` : 'Claimed it.', ...stamp(s) });
   t.msgs.push({ from: l.seller, text: pick(s, THANKS), ...stamp(s) });
+  settlePurchase(s, content, l.photo);
   return s;
 }

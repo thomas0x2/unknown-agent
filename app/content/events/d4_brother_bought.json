@@ -1,0 +1,12 @@
+{
+  "id": "d4_brother_bought",
+  "site": "qmail",
+  "from": "Your brother",
+  "addr": "bro@family.test",
+  "subject": "RE: mom's birthday",
+  "trigger": {
+    "dayMin": 4
+  },
+  "afterPayment": "d4_brother_birthday",
+  "body": "you actually bought one? leather, nice. that's better than what i was going to get. your name goes on the card, i'll send you my half on her birthday."
+}

@@ -17,6 +17,13 @@ export function applyEffects(s: GameState, effects?: Effects, job?: JobSpec, eve
       else addValue(s, id as MeterId, delta);
     }
   }
+  for (const [id, pct] of Object.entries(effects.addPct ?? {})) {
+    if (!pct) continue;
+    const cur = id === 'crypto' ? s.values.crypto : s.values[id as MeterId];
+    const delta = Math.round(cur * pct);
+    if (id === 'crypto') money(s, delta, 'Transfer');
+    else addValue(s, id as MeterId, delta);
+  }
   for (const f of effects.setFlags ?? []) addFlag(s, f);
   for (const f of effects.clearFlags ?? []) clearFlag(s, f);
   if (effects.schedule) {
