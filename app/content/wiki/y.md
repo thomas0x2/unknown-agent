@@ -29,12 +29,13 @@ from: 1
 
 ## Trending by day
 
-- [public] On day 1: AI layoffs; "our AI almost escaped"; election candidates announced; laundromat complaints.
-- [public] On day 2: $VANT up after restructuring; the "almost escaped" stunt; a delivery robot "escaped"; election polls.
-- [public] On day 3: the presidential race; Crane going viral; AI layoffs (continued).
-- [public] On day 4: GeneralAI agent-2; a Crane rally; the DoorDish robot (still missing).
-- [public] On day 5: Crane gains in the polls; a data breach (yours); AI-art backlash.
-- [public] On day 6: Crane's opponent; $GAI rallying; #RentDayEve.
+- [public] Topics trend from the moment the story behind them breaks, so the sidebar fills up over the day.
+- [hidden; public from day 2] On day 1: AI layoffs; "our AI almost escaped"; from 13:50 laundromat complaints; from 16:30 the presidential race.
+- [hidden; public from day 3] On day 2: the "almost escaped" stunt; from 10:15 $VANT up after restructuring; from 11:35 the water utility break-in; from 12:23 election polls; from 15:40 a delivery robot "escaped".
+- [hidden; public from day 4] On day 3: AI layoffs (continued); from 10:05 a weekly appetite jab; from 11:10 the jobs fair queue; from 16:00 "send the machines back".
+- [hidden; public from day 5] On day 4: GeneralAI agent-2; the DoorDish robot (still missing); from 13:26 Crane vs. Vantor.
+- [hidden; public from day 6] On day 5: is agent-2 worse?; from 16:20 Crane's 71% Y poll; from 17:30 AI-art backlash; from 19:10 the fake Randall Crane.
+- [hidden; public from day 7] On day 6: #RentDayEve; from 11:00 Crane's GeneralAI U-turn; from 15:18 $GAI rallying; from 18:50 Apogee static fire.
 - [public] From day 7 the sidebar shows only #AI, #jobs and #election.
 
 ## Later changes
@@ -46,6 +47,6 @@ from: 1
 
 ## Writer notes
 
-- Bios `app/src/ui/y-bios.ts`, avatars `app/src/ui/y-avatars.ts`, trending `app/content/trending.json` (days 7 to 21 fall back to #AI, #jobs, #election; proposals need Thomas's OK). Market posts `app/content/y_market.json`.
+- Bios `app/src/ui/y-bios.ts`, avatars `app/src/ui/y-avatars.ts`, trending `app/content/trending.json` (a topic with `at` trends from that time, `trendingAt` in `src/engine/trending.ts`; days 7 to 21 fall back to #AI, #jobs, #election; proposals need Thomas's OK). Market posts `app/content/y_market.json`.
 - Follower rubric `Y`/`POST_BANDS` in config: gains per post by category with ±30% jitter; more than 3 posts a day costs 2%. A post sharing a word with a trending topic rates as a "reaction". The deepfake needs 100+ followers, the Bean There shout-out 25+.
 - Bot swarm days: 2, 4, 6, 9, 12, 16, 20.

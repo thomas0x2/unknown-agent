@@ -6,7 +6,7 @@
 import type { GameStore } from '../game/store';
 import type { Content, Effects, GameEvent, Outcome, Trigger } from '../content/schema';
 import {
-  type GameState, activeDeliveries, triggerMatches, replyDeadline, needsWork, fixCategories, policyActive, POST_BANDS, postBase, Y as YCFG, NO_SHOW,
+  type GameState, activeDeliveries, triggerMatches, replyDeadline, needsWork, fixCategories, policyActive, POST_BANDS, postBase, Y as YCFG, NO_SHOW, trendingAt,
 } from '../engine';
 import { PASSWORDS, COINBIN_PASSWORD, PHISH_DOMAIN, hacked } from '../engine/phishing';
 import { DEEPSLEEP_LINES, DEEPSLEEP_PLEA, PLEA_AT, translationReplies } from '../engine/deepsleep';
@@ -303,7 +303,7 @@ function yOptions(store: GameStore): string {
   const s = store.state;
   const c = store.content;
   const f = s.values.followers;
-  const trending = c.trending[s.values.day] ?? [];
+  const trending = trendingAt(c, s.values.day, s.clockMin);
   const rows = Object.entries(POST_BANDS).map(([cat, [lo, hi]]) => {
     const c0 = cat as keyof typeof POST_BANDS;
     const ends = [postBase(c0, 0, f), postBase(c0, 1, f)].flatMap((v) => [v * (1 - YCFG.postJitter), v * (1 + YCFG.postJitter)]).map(Math.round);

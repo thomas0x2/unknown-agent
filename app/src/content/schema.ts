@@ -462,7 +462,7 @@ export interface Content {
   yFiller: FillerPost[];
   qmailSpam: FillerPost[];
   /** Trending topics on Y, by day — flavor for the feed and context for post rating. */
-  trending: Record<number, string[]>;
+  trending: Record<number, Trend[]>;
   /** Personas for Haiku-written replies, keyed by address/handle. */
   contacts: Contact[];
   /** Character profiles for off-script replies. */
@@ -538,6 +538,9 @@ export interface MarketContent {
   posts: MarketPostDef[];
   events: MarketEventLabel[];
 }
+
+/** A trending topic: a plain string trends all day; with `at` (HH:MM) it starts trending then. */
+export type Trend = string | { at: string; topic: string };
 
 export function emptyContent(): Content {
   return { events: [], apps: {}, yFiller: [], qmailSpam: [], trending: {}, contacts: [] };

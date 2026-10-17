@@ -61,7 +61,10 @@ from: 3
 
 ## Trending
 
-- [public] 10:00 Trending on Y: the presidential race; Crane going viral; AI layoffs (continued); a weekly appetite jab.
+- [public] 10:00 Trending on Y: AI layoffs (continued).
+- [public] 10:05 Starts trending on Y: a weekly appetite jab.
+- [public] 11:10 Starts trending on Y: the jobs fair queue.
+- [public] 16:00 Starts trending on Y: "send the machines back".
 
 ## Jobs
 
