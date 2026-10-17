@@ -1,0 +1,24 @@
+{
+  "id": "journalist_followup",
+  "site": "qmail",
+  "from": "Mara Vey",
+  "addr": "mara@thecurrent.test",
+  "subject": "RE: your story",
+  "trigger": {
+    "dayMin": 4,
+    "flagsAll": [
+      "talked_to_journalist"
+    ]
+  },
+  "latent": true,
+  "outcomes": [
+    {
+      "id": "already",
+      "when": "the player writes to her again about the layoffs, their story or her follow-up post",
+      "reply": "I already heard from you, thanks!",
+      "keys": [
+        "laid off|lost my job|fired|vantor|layoff|story|follow|again|400|memo|still"
+      ]
+    }
+  ]
+}

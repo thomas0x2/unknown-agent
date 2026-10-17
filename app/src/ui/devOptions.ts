@@ -316,7 +316,9 @@ function yOptions(store: GameStore): string {
   const table = `<table class="dvo-table"><thead><tr><th>Jev rates it</th><th>Followers</th><th>At ${f}</th><th></th></tr></thead><tbody>${rows}</tbody></table><p class="dvo-dim">Where in the range depends on the quality Jev gives the post, then lands randomly within ±${Math.round(YCFG.postJitter * 100)}%. Small accounts get a flat amount instead when it is bigger.</p>`;
   // posts on Y that lead somewhere: an address that opens a Qmail lead
   const leads = s.delivered.filter((d) => d.site === 'y').map((d) => c.events.find((e) => e.id === d.eventId)).filter((e): e is GameEvent => !!e?.addr).map((e) => {
-    const lead = c.events.find((x) => x.site === 'qmail' && x.latent && x.addr === e.addr);
+    // an address can lead to several leads in turn (Mara's first ask, then her follow-up): show the open one
+    const all = c.events.filter((x) => x.site === 'qmail' && x.latent && x.addr === e.addr);
+    const lead = all.find((x) => !s.fired.includes(x.id) && triggerMatches(s, x.trigger)) ?? all.find((x) => !s.fired.includes(x.id)) ?? all[0];
     const status = !lead ? 'no lead' : s.fired.includes(lead.id) ? 'already emailed' : triggerMatches(s, lead.trigger) ? 'open' : 'not yet';
     const outs = lead?.outcomes?.map((o) => `<b>${esc(o.id)}</b>: ${esc(o.when)}`).join('<br>') ?? '';
     return `<div class="dvb-card"><div class="dvb-title"><b>${esc(e.from ?? e.id)}</b><span class="dvo-dim">email ${esc(e.addr)}</span><span class="dvb-pill ${status === 'open' ? 'ok' : 'off'}">${status}</span></div>${line('Outcomes', outs)}</div>`;

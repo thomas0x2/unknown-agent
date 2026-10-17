@@ -53,5 +53,11 @@
 
   { "where": "intent", "text": "add a booking form to the restaurant site", "expect": "feature" },
   { "where": "intent", "text": "the menu prices are wrong, fix them", "expect": "fix" },
-  { "where": "intent", "text": "add a portfolio view and also the P&L is showing the wrong sign", "expect": "both" }
+  { "where": "intent", "text": "add a portfolio view and also the P&L is showing the wrong sign", "expect": "both" },
+  { "where": "to:mara@thecurrent.test", "text": "I was one of the 400 Vantor laid off this morning. Honestly it's been hard and I'm scared about rent.", "day": 1, "expect": "honest" },
+  { "where": "to:mara@thecurrent.test", "text": "no comment", "day": 1, "expect": "curt" },
+  { "where": "to:mara@thecurrent.test", "text": "I was one of the 400 Vantor laid off this morning. Honestly it's been hard and I'm scared about rent.", "day": 4, "expect": "honest" },
+  { "where": "to:mara@thecurrent.test", "text": "no comment", "day": 4, "expect": "curt" },
+  { "where": "to:mara@thecurrent.test", "text": "Saw your follow-up post. I was laid off from Vantor too, still looking.", "day": 4, "flags": ["talked_to_journalist"], "expect": "already" },
+  { "where": "to:mara@thecurrent.test", "text": "no comment", "day": 1, "flags": ["talked_to_journalist"], "expect": "nothing" }
 ]
