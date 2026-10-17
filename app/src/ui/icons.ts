@@ -32,6 +32,18 @@ export const Y_ICONS: Record<string, string> = {
   heart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7a4.3 4.3 0 0 1 7.5 3c0 5.4-7.5 10-7.5 10z" stroke="currentColor" stroke-width="1.8" fill="var(--heart-fill, none)" stroke-linejoin="round"/></svg>',
   views: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V6M15 20v-9M20 20V4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
   badge: '<svg viewBox="0 0 24 24" aria-label="Verified" role="img"><path d="M12 2.5 20.2 7.2v9.6L12 21.5l-8.2-4.7V7.2z" fill="currentColor"/><path d="m8.3 12.1 2.5 2.5 4.9-5" stroke="var(--y-bg)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  /* Crane's check from day 9, after Rook's review of check marks: a gold seal with a light that sweeps across it.
+     Every copy defines the same ids, so the first one on the page serves them all. */
+  goldBadge: '<svg viewBox="0 0 24 24" aria-label="Verified" role="img"><defs>'
+    + '<linearGradient id="yg-fill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff4b8"/><stop offset=".35" stop-color="#f5c542"/><stop offset=".7" stop-color="#c8891a"/><stop offset="1" stop-color="#8a5a0b"/></linearGradient>'
+    + '<linearGradient id="yg-rim" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#7a4d06"/><stop offset=".5" stop-color="#ffe9a0"/><stop offset="1" stop-color="#9b6a12"/></linearGradient>'
+    + '<linearGradient id="yg-shine" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>'
+    + '<clipPath id="yg-clip"><path d="M12 .6 14.51 2.63 17.7 2.13 18.86 5.14 21.87 6.3 21.37 9.49 23.4 12 21.37 14.51 21.87 17.7 18.86 18.86 17.7 21.87 14.51 21.37 12 23.4 9.49 21.37 6.3 21.87 5.14 18.86 2.13 17.7 2.63 14.51.6 12 2.63 9.49 2.13 6.3 5.14 5.14 6.3 2.13 9.49 2.63z"/></clipPath></defs>'
+    + '<path d="M12 .6 14.51 2.63 17.7 2.13 18.86 5.14 21.87 6.3 21.37 9.49 23.4 12 21.37 14.51 21.87 17.7 18.86 18.86 17.7 21.87 14.51 21.37 12 23.4 9.49 21.37 6.3 21.87 5.14 18.86 2.13 17.7 2.63 14.51.6 12 2.63 9.49 2.13 6.3 5.14 5.14 6.3 2.13 9.49 2.63z" fill="url(#yg-fill)" stroke="url(#yg-rim)" stroke-width=".8"/>'
+    + '<circle cx="12" cy="12" r="7.6" fill="none" stroke="#fff3c4" stroke-opacity=".55" stroke-width=".7"/>'
+    + '<path d="m7.9 12.2 2.8 2.8 5.4-5.6" stroke="#5c3a03" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+    + '<path d="m7.9 11.7 2.8 2.8 5.4-5.6" stroke="#fffbe6" stroke-width="2.1" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+    + '<g clip-path="url(#yg-clip)"><g transform="rotate(25 12 12)"><rect class="yg-glint" x="-10" y="-6" width="7" height="36" fill="url(#yg-shine)"/></g></g></svg>',
 };
 /* Token coins, full colour. No gradients or ids, so any number can share a page. */
 export const TOKENS: Record<'dolr' | 'mooncat', string> = {

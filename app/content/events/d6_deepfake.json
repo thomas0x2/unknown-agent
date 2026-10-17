@@ -25,7 +25,8 @@
         "job": "complete",
         "add": {
           "followers": 40,
-          "suspicion": 10
+          "suspicion": 10,
+          "progressStanding": -25
         },
         "setFlags": [
           "posted_deepfake",

@@ -1,0 +1,11 @@
+{
+  "id": "d19_y_stryker",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 19,
+    "dayMax": 19
+  },
+  "at": "16:05",
+  "body": "People say my posts go out at 3am. Correct. I'm up. Ask yourself why you're not."
+}

@@ -7,7 +7,9 @@
 import { type AppInstance, type AppBreak, type BuiltFeature, breakVariant, bugsOf, UNNAMED_BUG } from '../engine';
 import type { AppTemplate } from '../content/schema';
 import { menuDishes, misspell, WRONG_HOURS } from '../engine/restaurant';
-import { crawl, autoBuys, portfolio, tradeLog, trackedOf, START_PORTFOLIO, type MarketPost, type Portfolio } from '../engine/crawler';
+import { crawl, ledger, portfolio, tradeLog, readMood, trackedOf, START_PORTFOLIO, type Buy, type MarketPost, type Portfolio } from '../engine/crawler';
+import { payDay, STAKE } from '../engine/stake';
+import type { StakeSend } from '../engine/state';
 import { machineRows } from '../engine/laundromat';
 import { swapListings, listedWhen, SWAP_CATEGORIES, type Listing } from '../engine/swaplist';
 import { takesOffers, buyPrice, shownPrice } from '../engine/swapdeal';
@@ -59,6 +61,8 @@ export interface SiteExtras {
   market?: MarketPost[];
   /** Everything posted as Randall Crane so far: what the auto-trade log lists. */
   crane?: MarketPost[];
+  /** The player's sends to the trader's wallet: the stake the portfolio view shows. */
+  stakes?: StakeSend[];
   /** Minutes of play so far, and whether Viktor has said his watch sold: what Swaplist lists. */
   play?: number;
   watchSold?: boolean;
@@ -188,7 +192,24 @@ function valueChart(values: number[], day: number): string {
     <div class="as-s-xaxis">${days.map((d) => `<span>${dateShort(d)}</span>`).join('')}</div></figure>`;
 }
 
-function portfolioPanel(pf: Portfolio, history: number[], day: number): string {
+/**
+ * The player's stake, as the dashboard computes it: each send moves with the portfolio value shown
+ * (so the display bugs reach it too); a paid-out send shows what it paid.
+ */
+function stakePanel(stakes: StakeSend[], history: number[], day: number, bugs: Set<string>): string {
+  if (!stakes.length) return '';
+  const pctScale = bugs.has('pct_wrong') ? 100 : 1;
+  const rows = stakes.map((x) => {
+    const due = `${dateShort(payDay(x))}, ${clockTime(STAKE.payAt)}`;
+    if (x.paid != null) return `<tr class="paid"><td>${dateShort(x.day)}</td><td>${money(x.amount)}</td><td>${money(x.paid)}</td><td class="${tone(x.paid - x.amount)}">${pct(((x.paid - x.amount) / x.amount) * pctScale)}</td><td>Paid out ${due}</td></tr>`;
+    const ratio = history[day - 1] / (history[x.day - 1] || 1);
+    return `<tr><td>${dateShort(x.day)}</td><td>${money(x.amount)}</td><td>${money(x.amount * ratio)}</td><td class="${tone(ratio - 1)}">${pct((ratio - 1) * pctScale)}</td><td>Pays out ${due}</td></tr>`;
+  }).join('');
+  return `<div class="as-s-stake"><h3>Your stake</h3>
+    <table class="as-s-hold"><thead><tr><th>Staked</th><th>In</th><th>Value</th><th>Since</th><th>Payout</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+function portfolioPanel(pf: Portfolio, history: number[], day: number, stake = ''): string {
   const rows = pf.holdings.map((h) => `<tr><td class="tk">$${esc(h.ticker)}</td><td>${h.shares.toLocaleString('en-US')}</td><td>${money(h.price)}</td>
       <td class="${tone(h.move)}">${signed(h.move)} <small>${pct(h.movePct)}</small></td><td>${money(h.value)}</td><td class="${tone(h.dayPnl)}">${signed(h.dayPnl)}</td></tr>`).join('');
   return `<section class="as-s-pf">
@@ -199,6 +220,7 @@ function portfolioPanel(pf: Portfolio, history: number[], day: number): string {
     ${valueChart(history, day)}
     <table class="as-s-hold"><thead><tr><th>Ticker</th><th>Shares</th><th>Price</th><th>Today</th><th>Value</th><th>Day P&amp;L</th></tr></thead>
       <tbody>${rows}<tr class="cash"><td class="tk">Cash</td><td></td><td></td><td></td><td>${money(pf.cash)}</td><td></td></tr></tbody></table>
+    ${stake}
   </section>`;
 }
 
@@ -237,29 +259,39 @@ function crawler(app: AppInstance, tmpl: AppTemplate | undefined, page: string |
     }).join('');
     body = `<p class="as-s-upd">Updated ${dateShort(dataDay < 1 ? day : dataDay)}</p><div class="as-s-grid">${cards}</div>`;
   }
-  const buys = f.auto_buy.built ? autoBuys(posts, day, bugs) : [];
+  // the trader's book: his own trades on the news, and the bot's buys once it's built
+  const book = ledger(posts, day, f.auto_buy.built ? bugs : new Set([...bugs, 'no_buy']));
   // the portfolio goes on top, with its value over the days so far
   if (f.portfolio.built) {
-    const history = Array.from({ length: day }, (_, i) => portfolio(buys.filter((b) => b.day <= i + 1), i + 1, bugs).total);
-    body = portfolioPanel(portfolio(buys, day, bugs), history, day) + body;
+    const history = Array.from({ length: day }, (_, i) => portfolio(book.filter((b) => b.day <= i + 1), i + 1, bugs).total);
+    body = portfolioPanel(portfolio(book, day, bugs), history, day, stakePanel(extras.stakes ?? [], history, day, bugs)) + body;
   }
   if (f.auto_buy.built) {
-    // every Crane post with the mood the classifier read and what the bot did about it, newest first;
-    // the position column is what the holdings should say after each buy
+    // every Crane post with the mood the classifier read and what the bot did about it, and the
+    // trader's own trades, newest first; the position column is what the holdings should say after each
     const pos: Record<string, number> = { ...START_PORTFOLIO.holdings };
-    const log = tradeLog(extras.crane ?? [], buys, bugs).map((r) => {
-      let action = '<span class="none">No action</span>';
-      if (r.buys.length) {
-        const b = r.buys[0];
-        const shares = r.buys.reduce((a, x) => a + x.shares, 0);
-        const was = pos[b.ticker] ?? 0;
-        pos[b.ticker] = was + shares;
-        const times = r.buys.length > 1 ? ` <b class="x">×${r.buys.length}</b>` : '';
-        action = `<b class="buy">BUY $${esc(b.ticker)}</b>${times}<small>${shares.toLocaleString('en-US')} @ ${money(b.price)} · ${money(shares * b.price)}</small><small>position ${was.toLocaleString('en-US')} → ${pos[b.ticker].toLocaleString('en-US')}</small>`;
-      }
+    const moves = new Map<Buy, [number, number]>();
+    for (const b of book) { const was = pos[b.ticker] ?? 0; pos[b.ticker] = was + b.shares; moves.set(b, [was, pos[b.ticker]]); }
+    const trade = (bs: Buy[]) => {
+      const b = bs[0];
+      const shares = bs.reduce((a, x) => a + x.shares, 0);
+      const [was] = moves.get(b)!, [, now] = moves.get(bs.at(-1)!)!;
+      const times = bs.length > 1 ? ` <b class="x">×${bs.length}</b>` : '';
+      const side = shares < 0 ? '<b class="sell">SELL' : '<b class="buy">BUY';
+      return `${side} $${esc(b.ticker)}</b>${times}<small>${Math.abs(shares).toLocaleString('en-US')} @ ${money(b.price)} · ${money(Math.abs(shares) * b.price)}</small><small>position ${was.toLocaleString('en-US')} → ${now.toLocaleString('en-US')}</small>`;
+    };
+    // the trader's trade on a Crane post goes in that post's row
+    const manual = book.filter((b) => b.manual);
+    const crane = extras.crane ?? [];
+    const byHand = (id: string) => manual.filter((b) => b.post.id === id).map((b) => `<small class="who">Manual trade</small>${trade([b])}`).join('');
+    const rows = [
+      ...tradeLog(crane, book.filter((b) => !b.manual), bugs).map((r) => ({ post: r.post, mood: r.mood, who: '', action: (r.buys.length ? trade(r.buys) : manual.some((b) => b.post.id === r.post.id) ? '' : '<span class="none">No action</span>') + byHand(r.post.id) })),
+      ...manual.filter((b) => !crane.some((p) => p.id === b.post.id)).map((b) => ({ post: b.post, mood: readMood(b.post, bugs), who: '<small class="who">Manual trade</small>', action: trade([b]) })),
+    ].sort((a, b) => a.post.day - b.post.day || (a.post.min ?? 0) - (b.post.min ?? 0));
+    const log = rows.map((r) => {
       const mood = f.sentiment.built ? `<span class="as-s-mood ${r.mood}">${r.mood}</span>` : '<span class="as-s-mood">—</span>';
       return `<tr><td>${dateShort(r.post.day)}${r.post.min != null ? `<small>${clockTime(r.post.min)}</small>` : ''}</td>
-        <td class="src"><a href="#" data-nav="y.com/${esc(r.post.handle)}">@${esc(r.post.handle)}</a> “${esc(r.post.text)}”</td><td class="mood">${mood}</td><td class="act">${action}</td></tr>`;
+        <td class="src">${r.who}<a href="#" data-nav="y.com/${esc(r.post.handle)}">@${esc(r.post.handle)}</a> “${esc(r.post.text)}”</td><td class="mood">${mood}</td><td class="act">${r.action}</td></tr>`;
     }).reverse().join('');
     body += `<section class="as-s-buys"><h2>Auto-trade log</h2>${log
       ? `<table class="as-s-trades"><thead><tr><th>Posted</th><th>Post</th><th>Sentiment</th><th>Action</th></tr></thead><tbody>${log}</tbody></table>`

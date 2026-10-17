@@ -38,4 +38,14 @@ describe('crane2026.vote donations', () => {
     expect(craneDonations(s2)).toBe(2);
     expect(donateCrane(s2).error).toMatch(/5 DOLR/);
   });
+  it('raises the Heritage Party meter on the first donation only', async () => {
+    const { donateCrane, FIRST_DONATION_STANDING } = await import('./donations');
+    const s0 = newGame();
+    s0.values.crypto = 20;
+    const s1 = donateCrane(s0).state;
+    expect(s1.values.heritageStanding).toBe(FIRST_DONATION_STANDING);
+    expect(donateCrane(donateCrane(s1).state).state.values.heritageStanding).toBe(FIRST_DONATION_STANDING);
+    s0.values.crypto = 0;
+    expect(donateCrane(s0).state.values.heritageStanding).toBe(0);
+  });
 });

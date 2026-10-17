@@ -1,0 +1,14 @@
+{
+  "id": "d12_y_current_clip",
+  "site": "y",
+  "from": "The Current",
+  "trigger": {
+    "dayMin": 12,
+    "dayMax": 12,
+    "flagsAll": [
+      "posted_deepfake"
+    ]
+  },
+  "at": "16:40",
+  "body": "Mayoral race: Daniel Keller (Progress Party) trails by 3 points in a new poll of 1,000 residents. Before the doctored clip of him spread on Y, he led by 4. The clip has 2.1 million views. The correction has 40,000."
+}
