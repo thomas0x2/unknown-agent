@@ -15,7 +15,7 @@ nest: true
 [public] doomscroll's bio is "it's fine · online since 2014 · notifications on". Lowercase, resigned, on the app all day, insists everything is fine.
 
 - [public] On day 1 (12:10) doomscroll links CityPulse's Vantor story: "400 people at vantor got fired by one email last night. i've read every reply. it's fine" {{y:d1_y_doomscroll_news}}
-- [public] On day 3 (16:25), on [[Randall Crane]]'s vow to send the machines back: "i'd settle for my job back" {{y:d3_y_doomscroll_machines}}
+- [public] On day 3 (16:55), on [[Randall Crane]]'s vow to send the machines back: "i'd settle for my job back" {{y:d3_y_doomscroll_machines}}
 - [public] On day 1 doomscroll's screen time says 11 hours, which doomscroll says is broken. {{y:f1}}
 - [public] On day 5 doomscroll opened the app at 9 to check one thing and was still on it at 2pm. {{y:f5}}
 - [public] On day 9 doomscroll turned off notifications for a day, lasted 40 minutes and didn't miss anything, "which was worse." {{y:f9}}

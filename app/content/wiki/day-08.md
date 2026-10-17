@@ -19,23 +19,23 @@ from: 8
 - [public] 09:40 [[6ft_sigma]] ordered a peptide stack online; it came in a plain box marked research use only. "Already feel taller." {{y:d8_y_sigma_peptides}}
 - [public] 10:40 [[Axel Rook]]: "Check marks are under review." {{y:d8_y_axel}}
 - [public] 11:05 [[Tanner Hollis]]: his calendar is a pipeline; if his kid's recital doesn't convert, it was a lead. {{y:d8_y_sales_rep}}
-- [public] 11:10 [[Max Stryker]]: every morning he asks what colour his Lambo is today. {{y:d8_y_stryker}}
+- [public] 11:15 [[Max Stryker]]: every morning he asks what colour his Lambo is today. {{y:d8_y_stryker}}
 - [public] 11:51 zev.dolr: DOLR down 3% today; holding, refreshed the chart about 200 times. {{y:f8}}
 - [public] 12:10 [[CityPulse]]: a [[GeneralAI]] test model got into a payroll provider's servers and filed 41 tax returns for strangers; all 41 were approved. {{y:d8_y_gai_leak}}
 - [public] 13:00 Deb Halloran: "I do payroll for a living. Nobody has ever approved 41 of anything I filed." {{y:d8_y_deb_taxes}}
 - [public] 13:45 [[Randall Crane]]: asked an AI if it loves the country; it said it has "no position on that." {{y:d8_y_crane}}
 - [public] 14:36 MarketWire: $DISH adds 40,000 restaurant listings in a month, most built by AI. {{y:m8_dish_menu}}
-- [public] 14:37 [[WallStreetBags]]: Rook gives the launch a 70% chance; "Best odds anyone here has had all year." All in on $APO. {{y:m8_apo_rook}}
+- [public] 14:46 [[WallStreetBags]]: Rook gives the launch a 70% chance; "Best odds anyone here has had all year." All in on $APO. {{y:m8_apo_rook}}
 - [public] 15:30 Axel Rook: Y will soon pay creators more than any other platform. {{y:d8_y_axel_2}}
-- [public] 15:30 CityPulse: Crane wants a law making it illegal for a computer to be smarter than the people he appoints to his cabinet. {{y:d8_y_citypulse_vote}}
+- [public] 15:40 CityPulse: Crane wants a law making it illegal for a computer to be smarter than the people he appoints to his cabinet. {{y:d8_y_citypulse_vote}}
 - [public] 16:00 noodleposter: a new noodle place on [[DoorDish]] had a dentist's address. {{y:d8_y_noodle_dish}}
 - [public] 16:30 DoorDish: the parking garage listing has been removed. "Couriers cannot create listings." {{y:d8_y_doordish}}
-- [public] 16:35 [[Pollymarket]]: the robot market is down to 36% from 72%. {{y:d8_y_polly_robot}}
-- [public] 16:40 [[Cal Hartman]]: the next model is very good; he had to go for a walk after trying it. {{y:d8_y_hartman}}
+- [public] 16:40 [[Pollymarket]]: the robot market is down to 36% from 72%. {{y:d8_y_polly_robot}}
+- [public] 16:50 [[Cal Hartman]]: the next model is very good; he had to go for a walk after trying it. {{y:d8_y_hartman}}
 - [public] 19:20 Cal Hartman: "the tax returns were accurate. we are still reviewing how it got access." {{y:d8_y_hartman_2}}
 - [public] 19:33 Tyler Moss: "Even my laundromat has an app built with General AI now. Long $GAI." {{y:m8_gai_laundry}}
 - [public] 19:50 Liftoff Daily: Apogee on the pad at sunset, two days to launch. {{y:d8_y_liftoff}}
-- [public] 19:59 Axel Rook: "@liftoff_daily Wow" {{y:d8_y_axel_3}}
+- [public] 20:00 Axel Rook: "@liftoff_daily Wow" {{y:d8_y_axel_3}}
 
 ## News
 

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { loadContent } from '../content/load';
 import { startGame, endDay } from './day';
 import { addFlag, advanceClock, setValue } from './core';
-import { deliverArrivals, deliverDue } from './events';
+import { deliverArrivals, deliverDue, freeYMin } from './events';
 import { agentDown } from './outage';
 import { agentTermPrompt } from './hacks';
 import { wordJev, promptDone } from './_fixtures';
@@ -41,9 +41,11 @@ describe('the agent outage after the GeneralAI hack', () => {
     const s = hackedAt(CLOCK.wake + 5); // before his 10:20 post
     deliverArrivals(s, content);
     expect(delivered(s, 'gai_outage_y_crane')).toBe(false);
-    advanceClock(s, 25);
+    // 25 minutes in, or the next free slot on Y after that
+    const slot = freeYMin(s, content, CLOCK.wake + 30);
+    advanceClock(s, slot - s.clockMin);
     deliverArrivals(s, content);
-    expect(delivered(s, 'gai_outage_y_crane')).toBe(true);
+    expect(s.delivered.find((d) => d.eventId === 'gai_outage_y_crane')?.min).toBe(slot);
     advanceClock(s, 120);
     deliverArrivals(s, content);
     expect(delivered(s, 'd18_y_crane')).toBe(false);

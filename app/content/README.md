@@ -17,6 +17,10 @@ touching engine code.
 - `apps/*.json` — one `AppTemplate` per file: an app type with its pages and features. Client specs
   reference features by id and description.
 - `y_filler.json` — `FillerPost[]` for the Y noise pool.
+- Y post times: every Y post of a day (story events, `y_market.json`, `y_filler.json`) is at least
+  10 game minutes from the next (`Y_GAP` in `src/engine/events.ts`, checked by
+  `src/engine/arrivals.test.ts`), so the feed stays readable. A bot barrage counts as one post. Posts
+  with a moving time (job leads, `launch`, `yPost`, the outage) wait for the next free slot when they land.
 - `qmail_spam.json` — `FillerPost[]` for the Qmail spam pool.
 - `wiki/` — the world bible as a wiki, one page per person, company, site, app and day. Read
   `wiki/README.md` before writing content; Haiku answers agent.chat queries from it.

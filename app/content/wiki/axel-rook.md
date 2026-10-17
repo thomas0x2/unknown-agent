@@ -29,7 +29,7 @@ from: 1
 - [public] On day 8 he posts "Check marks are under review."
 - [public] On day 9 he gives tomorrow's launch "Maybe 70% chance it works."
 - [public] On day 10 (10:02) he posts "Liftoff 🚀".
-- [public] On day 10 (10:09) he posts "Rapid unscheduled disassembly", then "Great data."
+- [public] On day 10 (10:12) he posts "Rapid unscheduled disassembly", then "Great data."
 - [public] On day 11 he answers [[Caleb Moxon]] with "@caleb_moxon Doomer".
 - [public] On day 11 he says Y has 600 million users, "of which a small number are bots".
 - [public] On day 13 he calls Crane "the only candidate who understands technology."
@@ -104,4 +104,4 @@ from: 1
 ## Writer notes
 
 - Elon Musk parody, placeholder name (Apogee too). Events `dN_y_axel[_2|_3].json`, `trader_y_axel_apo`.
-- Day 10 post at 10:09 vs CityPulse's "broke apart four minutes" after a 10:02 liftoff; the times differ by three minutes.
+- Day 10 post at 10:12 vs CityPulse's "broke apart four minutes" after a 10:02 liftoff; the times differ by six minutes.

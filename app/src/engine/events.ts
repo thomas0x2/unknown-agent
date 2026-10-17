@@ -247,10 +247,37 @@ export function deliverArrivals(s: GameState, content: Content, all = false): De
   for (const a of due) {
     const ev = getEvent(content, a.eventId);
     if (!ev) continue;
-    const d = deliver(s, ev, a.day < day ? CLOCK.wake : Math.min(a.at, s.clockMin));
+    let min = a.day < day ? CLOCK.wake : Math.min(a.at, s.clockMin);
+    if (ev.site === 'y' && !all) {
+      // a Y post never lands on top of another one: it waits for the next free slot
+      min = freeYMin(s, content, a.day < day ? CLOCK.wake : a.at);
+      if (min > s.clockMin) { s.arriving.push({ eventId: ev.id, day, at: min }); continue; }
+    }
+    const d = deliver(s, ev, min);
     if (d) out.push(d);
   }
   return out;
+}
+
+/** Fewest game minutes between two Y posts going up, so a reader keeps up with the feed. A bot barrage counts as one post. */
+export const Y_GAP = 10;
+
+/** The minutes today's Y posts go up at: story posts already on the timeline, and the stock chatter and filler due today. */
+export function yMinutesToday(s: GameState, content: Content): number[] {
+  const day = s.values.day;
+  return [
+    ...s.delivered.filter((d) => d.site === 'y' && d.day === day && d.min != null).map((d) => d.min!),
+    ...(content.yMarket?.posts ?? []).filter((p) => p.day === day).map((p) => postMin(p, day)),
+    ...content.yFiller.filter((f) => f.day === day).map((f) => postMin(f, day)),
+  ];
+}
+
+/** The first minute from `want` on that is at least Y_GAP from every other Y post today. */
+export function freeYMin(s: GameState, content: Content, want: number): number {
+  const taken = yMinutesToday(s, content);
+  let t = want;
+  for (let clash = taken.find((m) => Math.abs(m - t) < Y_GAP); clash != null; clash = taken.find((m) => Math.abs(m - t) < Y_GAP)) t = clash + Y_GAP;
+  return t;
 }
 
 /** Queue an event to land at minute `at` today (clamped to the day), unless it's already on its way or delivered. */

@@ -20,7 +20,7 @@ from: 20
 - [public] 14:00 [[Caleb Moxon]]: agent-5 calls him "a former employee with access concerns". {{y:d20_y_moxon}}
 - [public] 15:00 [[CityPulse]]: DEAD HEAT, Crane 46%, his opponent 46%, 8% undecided. {{y:d20_y_citypulse_vote}}
 - [public] 15:10 [[Pollymarket]]: Crane at 54%, down from 66% after the debate. {{y:d20_y_polly_crane}}
-- [public] 15:15 [[Cal Hartman]]: "whoever wins tomorrow, generalai looks forward to working with them." {{y:d20_y_hartman}}
+- [public] 15:20 [[Cal Hartman]]: "whoever wins tomorrow, generalai looks forward to working with them." {{y:d20_y_hartman}}
 - [public] 15:42 MarketWire: $GAI flat ahead of the election. {{y:m20_gai}}
 - [public] 16:24 [[WallStreetBags]] election play: long $APO whoever wins. {{y:m20_apo_vote}}
 - [public] 17:30 [[Randall Crane]]: "If you see a robot trying to vote, call me personally." {{y:d20_y_crane}}

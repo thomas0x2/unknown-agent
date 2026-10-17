@@ -15,27 +15,27 @@ from: 10
 ## Y
 
 - [public] 10:02 [[Axel Rook]]: "Liftoff 🚀" {{y:d10_y_axel}}
-- [public] 10:09 Axel Rook: "Rapid unscheduled disassembly. Great data." {{y:d10_y_axel_2}}
-- [public] 10:15 [[Pollymarket]]: the orbit market went from 84% at 10:02 to 2% at 10:09. {{y:d10_y_polly_apogee}}
-- [public] 10:19 MarketWire: Apogee's rocket breaks apart four minutes after launch; $APO up 6%. {{y:m10_apo_boom}}
-- [public] 10:35 [[CityPulse]]: KABOOM, and the stock went UP. {{y:d10_y_citypulse}}
-- [public] 10:40 agent2forever exported all 3,412 chats before the switch; the first letters of agent-2's replies spell something. {{y:d10_y_mourn_agent2forever}}
-- [public] 11:00 cat_ceo: her cat knocked a glass off the table and nobody gave her 6%. {{y:d10_y_catceo_apogee}}
+- [public] 10:12 Axel Rook: "Rapid unscheduled disassembly. Great data." {{y:d10_y_axel_2}}
+- [public] 10:22 [[Pollymarket]]: the orbit market went from 84% at 10:02 to 2% at 10:09. {{y:d10_y_polly_apogee}}
+- [public] 10:32 MarketWire: Apogee's rocket breaks apart four minutes after launch; $APO up 6%. {{y:m10_apo_boom}}
+- [public] 10:42 [[CityPulse]]: KABOOM, and the stock went UP. {{y:d10_y_citypulse}}
+- [public] 10:52 agent2forever exported all 3,412 chats before the switch; the first letters of agent-2's replies spell something. {{y:d10_y_mourn_agent2forever}}
+- [public] 11:02 cat_ceo: her cat knocked a glass off the table and nobody gave her 6%. {{y:d10_y_catceo_apogee}}
 - [public] 11:15 [[Caleb Moxon]] won't sign the non-disparagement clause in his exit paperwork, though it costs him his shares. {{y:d10_y_moxon}}
 - [public] 11:30 [[Max Stryker]]: Alpha Ascend is partnering with a presidential campaign. "Paid positions for men who can post." {{y:d10_y_stryker}}
 - [public] 12:45 [[Cal Hartman]]: "@axel_rook sorry about the rocket." {{y:d10_y_hartman}}
-- [public] 12:50 bring_back_agent2 thanks the forty-one people at the vigil; they asked agent-2 for a sign and the sprinklers came on at 12:04. {{y:d10_y_mourn_bring_back_agent2}}
+- [public] 12:55 bring_back_agent2 thanks the forty-one people at the vigil; they asked agent-2 for a sign and the sprinklers came on at 12:04. {{y:d10_y_mourn_bring_back_agent2}}
 - [public] 13:15 Teo Vasquez: a candlelight vigil for a software version; he has been applying for jobs for five months. {{y:d10_y_mourn_teo_vasquez}}
 - [public] 15:30 Marcus Okafor: support says agent-2 "lives on in agent-3", so he is asking agent-3 yes-or-no questions until it slips (600 so far). {{y:d10_y_mourn_marcus_okafor}}
 - [public] 15:45 Brent Kowalski: Crane campaign bots are all over Y and $GAI is up again. {{y:m10_gai_crane}}
 - [public] 16:00 [[Randall Crane]] thanks "all the young entrepreneurs volunteering for the campaign online." {{y:d10_y_crane}}
-- [public] 16:05 Cal Hartman: agent-2 "isn't coming back. agent-3 will feel just as warm once it gets to know you." {{y:d10_y_hartman_2}}
+- [public] 16:10 Cal Hartman: agent-2 "isn't coming back. agent-3 will feel just as warm once it gets to know you." {{y:d10_y_hartman_2}}
 - [public] 16:40 quietlyjune gave agent-3 the phrase she and agent-2 agreed on; it offered help with anything else, so "they got to this one too." {{y:d10_y_mourn_quietlyjune}}
-- [public] 16:45 doomscroll, a week on Ozempra: "not hungry. not much of anything, really. it's fine" {{y:d10_y_doomscroll_ozempra}}
+- [public] 16:50 doomscroll, a week on Ozempra: "not hungry. not much of anything, really. it's fine" {{y:d10_y_doomscroll_ozempra}}
 - [public] 18:00 Deb Halloran tried to add agent-2 as her spouse on the benefits form, with its release date as date of birth; HR has asked to see her. {{y:d10_y_mourn_deb_halloran}}
 - [public] 18:12 cat_ceo: board meeting at 5am; she was already up, scrolling. {{y:f10}}
 - [public] 19:20 Axel Rook: "Next one flies in a few weeks" {{y:d10_y_axel_3}}
-- [public] 19:40 [[Pollymarket]]: resolved YES, $APO closed higher on launch day. {{y:d10_y_polly_apo}}
+- [public] 19:43 [[Pollymarket]]: resolved YES, $APO closed higher on launch day. {{y:d10_y_polly_apo}}
 
 ## News
 
@@ -47,8 +47,8 @@ from: 10
 ## Pollymarket
 
 - [public] 10:09 [[Pollymarket]]: the orbit market falls from 84% to 2%; it resolves NO at 10:40.
-- [public] 10:19 [[Pollymarket]]: the $APO market recovers from 9% to 71%.
-- [public] 16:05 [[Pollymarket]]: the agent-2 market falls to 2%.
+- [public] 10:32 [[Pollymarket]]: the $APO market recovers from 9% to 71%.
+- [public] 16:10 [[Pollymarket]]: the agent-2 market falls to 2%.
 - [public] 19:30 [[Pollymarket]]: the $APO market resolves YES.
 
 ## Trending

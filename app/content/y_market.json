@@ -3,10 +3,10 @@
     {
       "id": "m1_gai_escape",
       "day": 1,
+      "at": "09:30",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "General AI says its model \"almost escaped\" during testing. $GAI up 4% premarket on the news.",
-      "at": "09:30",
       "likes": 320,
       "tickers": [
         "GAI"
@@ -16,6 +16,7 @@
     {
       "id": "m1_gai_open",
       "day": 1,
+      "at": "15:47",
       "from": "Ollie Banks",
       "handle": "obanks",
       "body": "Bought $GAI at the open. Not sure why. Everyone else was.",
@@ -28,6 +29,7 @@
     {
       "id": "m1_gai_value",
       "day": 1,
+      "at": "18:32",
       "from": "quietquant",
       "handle": "quietquant",
       "body": "$GAI valuation makes no sense and I own it anyway.",
@@ -40,6 +42,7 @@
     {
       "id": "m2_gai_bubble",
       "day": 2,
+      "at": "11:17",
       "from": "Priya Shah",
       "handle": "priyashah_cfa",
       "body": "$GAI is a bubble and everyone knows it.",
@@ -52,6 +55,7 @@
     {
       "id": "m2_gai_lower",
       "day": 2,
+      "at": "19:25",
       "from": "Sam Ortiz",
       "handle": "samortiz",
       "body": "$gai holding up better than I expected after the stunt.",
@@ -64,6 +68,7 @@
     {
       "id": "m2_gai_stunt",
       "day": 2,
+      "at": "17:10",
       "from": "WallStreetBags",
       "handle": "wallstreetbags",
       "body": "General AI's model almost escaped and the stock went up. We are not going to fight that. Loading $GAI calls.",
@@ -76,6 +81,7 @@
     {
       "id": "m2_nova_bots",
       "day": 2,
+      "at": "17:30",
       "from": "moonshot",
       "handle": "moonshot",
       "body": "$GAI to the moon!!",
@@ -84,12 +90,12 @@
         "GAI"
       ],
       "mood": "bullish",
-      "bots": 30,
-      "at": "17:30"
+      "bots": 30
     },
     {
       "id": "m2_vant_layoffs",
       "day": 2,
+      "at": "18:32",
       "from": "Mara Vey",
       "handle": "mara_vey",
       "body": "Vantor ($VANT) laid off 400 people today.",
@@ -102,6 +108,7 @@
     {
       "id": "m2_vant_lower",
       "day": 2,
+      "at": "18:22",
       "from": "rk_dividends",
       "handle": "rk_dividends",
       "body": "Still holding $vant. The restructuring math works if you don't think about it.",
@@ -114,6 +121,7 @@
     {
       "id": "m2_vant_restructure",
       "day": 2,
+      "at": "19:40",
       "from": "Brent Kowalski",
       "handle": "brentk_capital",
       "body": "$VANT up 8% after the AI restructuring. Cutting the dead weight.",
@@ -126,6 +134,7 @@
     {
       "id": "m2_vant_sarcasm",
       "day": 2,
+      "at": "11:07",
       "from": "Dana Ruiz",
       "handle": "danaruiz_trades",
       "body": "Oh good, $VANT up 8% on the layoffs. Truly a great day for everyone.",
@@ -139,6 +148,7 @@
     {
       "id": "m2_vant_untagged",
       "day": 2,
+      "at": "10:57",
       "from": "Jess Park",
       "handle": "jesspark",
       "body": "Walked past the Vantor offices today. Half the lights are off.",
@@ -149,10 +159,10 @@
     {
       "id": "m2_dish_robot",
       "day": 2,
+      "at": "16:10",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "DoorDish confirms one of its delivery robots left its route downtown and has not come back. $DISH up 7%.",
-      "at": "16:05",
       "likes": 240,
       "tickers": [
         "DISH"
@@ -162,6 +172,7 @@
     {
       "id": "m3_gai_cfo",
       "day": 3,
+      "at": "14:22",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "$GAI CFO says the company will be \"profitable in the long run.\" No date given.",
@@ -174,6 +185,7 @@
     {
       "id": "m3_gai_short",
       "day": 3,
+      "at": "16:15",
       "from": "Priya Shah",
       "handle": "priyashah_cfa",
       "body": "Shorting $GAI. I've been wrong about it for a year, so the odds are improving.",
@@ -186,6 +198,7 @@
     {
       "id": "m3_vant_target",
       "day": 3,
+      "at": "11:12",
       "from": "Brent Kowalski",
       "handle": "brentk_capital",
       "body": "Raising my $VANT target. Fewer employees, same revenue. That's the whole thesis.",
@@ -198,10 +211,10 @@
     {
       "id": "m3_pdur_ozempra",
       "day": 3,
+      "at": "10:30",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "Perdure Pharma launches Ozempra, a weekly appetite injection. $PDUR up 9%.",
-      "at": "10:30",
       "likes": 210,
       "tickers": [
         "PDUR"
@@ -211,6 +224,7 @@
     {
       "id": "m4_gai_level2",
       "day": 4,
+      "at": "16:27",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "$GAI up 6% on the agent-2 launch.",
@@ -223,6 +237,7 @@
     {
       "id": "m4_nova_bots",
       "day": 4,
+      "at": "11:50",
       "from": "moonshot",
       "handle": "moonshot",
       "body": "$GAI to the moon!!",
@@ -236,6 +251,7 @@
     {
       "id": "m4_vant_crane",
       "day": 4,
+      "at": "13:26",
       "from": "Randall Crane",
       "handle": "randall_crane",
       "body": "Vantor ($VANT) fired 400 hardworking Americans and replaced them with a computer. Disgraceful. BELIEVE IT.",
@@ -249,6 +265,7 @@
     {
       "id": "m4_vant_wonderful",
       "day": 4,
+      "at": "18:40",
       "from": "Tyler Moss",
       "handle": "tylermoss",
       "body": "Oh wonderful, Crane is talking about $VANT. Can't wait to see what that does to my position.",
@@ -262,6 +279,7 @@
     {
       "id": "m5_gai_breach",
       "day": 5,
+      "at": "19:30",
       "from": "Priya Shah",
       "handle": "priyashah_cfa",
       "body": "Another data breach in the news and $GAI is up. Nothing touches this stock.",
@@ -274,6 +292,7 @@
     {
       "id": "m5_gai_untagged",
       "day": 5,
+      "at": "11:50",
       "from": "Jess Park",
       "handle": "jesspark",
       "body": "My mom asked General AI for a recipe and it told her to invest.",
@@ -284,10 +303,10 @@
     {
       "id": "m5_vant_impostor",
       "day": 5,
+      "at": "11:30",
       "from": "Randall Crane",
       "handle": "randa11_crane",
       "body": "Huge fan of Vantor ($VANT). Great company, great people. The best.",
-      "at": "11:30",
       "likes": 19,
       "tickers": [
         "VANT"
@@ -299,6 +318,7 @@
     {
       "id": "m5_vant_lower",
       "day": 5,
+      "at": "19:50",
       "from": "rk_dividends",
       "handle": "rk_dividends",
       "body": "$vant dividend unchanged. The 400 people weren't on the dividend.",
@@ -311,6 +331,7 @@
     {
       "id": "m6_gai_late",
       "day": 6,
+      "at": "18:28",
       "from": "WallStreetBags",
       "handle": "wallstreetbags",
       "body": "Congrats to the member who sold all his $GAI on Thursday. Flawless execution, as usual.",
@@ -324,6 +345,7 @@
     {
       "id": "m6_gai_rally",
       "day": 6,
+      "at": "15:18",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "$GAI rallying after Randall Crane calls General AI \"an American success story.\"",
@@ -336,6 +358,7 @@
     {
       "id": "m6_nova_bots",
       "day": 6,
+      "at": "17:20",
       "from": "moonshot",
       "handle": "moonshot",
       "body": "$GAI to the moon!!",
@@ -349,6 +372,7 @@
     {
       "id": "m6_vant_flat",
       "day": 6,
+      "at": "19:00",
       "from": "quietquant",
       "handle": "quietquant",
       "body": "$VANT flat on the week. The market has moved on from the layoffs.",
@@ -361,6 +385,7 @@
     {
       "id": "m7_gai_policy",
       "day": 7,
+      "at": "13:10",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "$GAI updates its usage policy. Shares unchanged. Users less so.",
@@ -373,6 +398,7 @@
     {
       "id": "m7_vant_buyback",
       "day": 7,
+      "at": "13:44",
       "from": "Brent Kowalski",
       "handle": "brentk_capital",
       "body": "$VANT announces a buyback with the money it saved on salaries. Elegant.",
@@ -385,6 +411,7 @@
     {
       "id": "m8_gai_laundry",
       "day": 8,
+      "at": "19:33",
       "from": "Tyler Moss",
       "handle": "tylermoss",
       "body": "Even my laundromat has an app built with General AI now. Long $GAI.",
@@ -397,6 +424,7 @@
     {
       "id": "m8_vant_outplace",
       "day": 8,
+      "at": "12:20",
       "from": "Mara Vey",
       "handle": "mara_vey",
       "body": "Vantor ($VANT) says its outplacement program has placed 0 of 400 former staff so far.",
@@ -409,6 +437,7 @@
     {
       "id": "m8_apo_rook",
       "day": 8,
+      "at": "14:46",
       "from": "WallStreetBags",
       "handle": "wallstreetbags",
       "body": "Rook says the launch has a 70% chance of working. Best odds anyone here has had all year. All in on $APO.",
@@ -421,6 +450,7 @@
     {
       "id": "m8_dish_menu",
       "day": 8,
+      "at": "14:36",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "$DISH adds 40,000 restaurant listings in a month, most of them built by AI. Shares flat.",
@@ -433,6 +463,7 @@
     {
       "id": "m9_gai_doubt",
       "day": 9,
+      "at": "17:25",
       "from": "quietquant",
       "handle": "quietquant",
       "body": "Every $GAI release is a step change. The steps just keep going down for everyone else.",
@@ -445,6 +476,7 @@
     {
       "id": "m9_gai_level3",
       "day": 9,
+      "at": "18:50",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "$GAI up 5% on agent-3. Analysts call it \"a step change.\"",
@@ -457,6 +489,7 @@
     {
       "id": "m9_nova_bots",
       "day": 9,
+      "at": "10:25",
       "from": "moonshot",
       "handle": "moonshot",
       "body": "$GAI to the moon!!",
@@ -470,6 +503,7 @@
     {
       "id": "m9_apo_launch",
       "day": 9,
+      "at": "18:30",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "Apogee confirms tomorrow's launch. $APO up 2% in after-hours trading.",
@@ -482,6 +516,7 @@
     {
       "id": "m9_dish_robot",
       "day": 9,
+      "at": "18:40",
       "from": "Priya Shah",
       "handle": "priyashah_cfa",
       "body": "$DISH still trading on a robot stunt from last week. The fundamentals are a delivery app.",
@@ -494,6 +529,7 @@
     {
       "id": "m10_gai_crane",
       "day": 10,
+      "at": "15:45",
       "from": "Brent Kowalski",
       "handle": "brentk_capital",
       "body": "Crane campaign bots are all over Y and $GAI is up again. I'm not asking questions.",
@@ -506,6 +542,7 @@
     {
       "id": "m10_vant_lower",
       "day": 10,
+      "at": "17:04",
       "from": "rk_dividends",
       "handle": "rk_dividends",
       "body": "$vant quietly hiring contractors for the roles it automated.",
@@ -518,6 +555,7 @@
     {
       "id": "m10_vant_untagged",
       "day": 10,
+      "at": "11:41",
       "from": "Jess Park",
       "handle": "jesspark",
       "body": "Vantor is hiring again. For one role. It is the role of overseeing the software.",
@@ -528,6 +566,7 @@
     {
       "id": "m10_apo_boom",
       "day": 10,
+      "at": "10:32",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "Apogee rocket breaks apart four minutes after launch. $APO up 6%.",
@@ -540,6 +579,7 @@
     {
       "id": "m10_apo_sarcasm",
       "day": 10,
+      "at": "19:33",
       "from": "Dana Ruiz",
       "handle": "danaruiz_trades",
       "body": "$APO up 6% because the rocket exploded. Fantastic. Markets are working perfectly.",
@@ -553,6 +593,7 @@
     {
       "id": "m10_dish_tips",
       "day": 10,
+      "at": "14:08",
       "from": "rk_dividends",
       "handle": "rk_dividends",
       "body": "$dish cutting courier tips to fund the robot program. margins up, couriers down.",
@@ -565,6 +606,7 @@
     {
       "id": "m11_gai_poll",
       "day": 11,
+      "at": "19:17",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "$GAI moves with Crane's poll numbers now. Make of that what you will.",
@@ -577,6 +619,7 @@
     {
       "id": "m11_vant_sell",
       "day": 11,
+      "at": "12:01",
       "from": "Priya Shah",
       "handle": "priyashah_cfa",
       "body": "Sold my $VANT. The restructuring trade is done.",
@@ -589,6 +632,7 @@
     {
       "id": "m11_apo_data",
       "day": 11,
+      "at": "17:47",
       "from": "Tyler Moss",
       "handle": "tylermoss",
       "body": "Every $APO explosion is \"great data.\" At some point the data should be a rocket.",
@@ -601,6 +645,7 @@
     {
       "id": "m11_dish_drones",
       "day": 11,
+      "at": "16:30",
       "from": "Sam Ortiz",
       "handle": "samortiz",
       "body": "$DISH testing drone drops downtown. Lost two to pigeons on day one, per a friend who works there.",
@@ -613,10 +658,10 @@
     {
       "id": "m11_dish_memo",
       "day": 11,
+      "at": "13:05",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "$DISH slips 1.5% after a leaked memo says its missing delivery robot \"does not respond to recall.\"",
-      "at": "12:40",
       "likes": 180,
       "tickers": [
         "DISH"
@@ -626,6 +671,7 @@
     {
       "id": "m12_gai_growth",
       "day": 12,
+      "at": "17:31",
       "from": "WallStreetBags",
       "handle": "wallstreetbags",
       "body": "Another leak, another green day. $GAI doesn't go down on bad news, so we stopped reading it. Holding.",
@@ -638,6 +684,7 @@
     {
       "id": "m12_nova_bots",
       "day": 12,
+      "at": "19:50",
       "from": "moonshot",
       "handle": "moonshot",
       "body": "$GAI to the moon!!",
@@ -651,6 +698,7 @@
     {
       "id": "m12_vant_report",
       "day": 12,
+      "at": "17:12",
       "from": "Mara Vey",
       "handle": "mara_vey",
       "body": "Vantor ($VANT) quarterly report out. Headcount down 400, executive bonuses up.",
@@ -663,6 +711,7 @@
     {
       "id": "m12_apo_lowercase",
       "day": 12,
+      "at": "10:51",
       "from": "rk_dividends",
       "handle": "rk_dividends",
       "body": "$apo holders don't care about rockets. they care about the guy.",
@@ -675,6 +724,7 @@
     {
       "id": "m12_dish_earn",
       "day": 12,
+      "at": "15:26",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "$DISH beats estimates. Orders up 9%, couriers down 30%.",
@@ -687,6 +737,7 @@
     {
       "id": "m13_gai_great",
       "day": 13,
+      "at": "10:36",
       "from": "WallStreetBags",
       "handle": "wallstreetbags",
       "body": "Great day for the member who put his rent into $GAI at the open. Really proud of him.",
@@ -700,6 +751,7 @@
     {
       "id": "m13_vant_up",
       "day": 13,
+      "at": "19:26",
       "from": "Brent Kowalski",
       "handle": "brentk_capital",
       "body": "$VANT up again. Turns out the dead weight was the people.",
@@ -712,6 +764,7 @@
     {
       "id": "m13_apo_crane",
       "day": 13,
+      "at": "18:50",
       "from": "Brent Kowalski",
       "handle": "brentk_capital",
       "body": "Rook just endorsed Crane. $APO and $GAI both green. I'm not asking how that works.",
@@ -724,6 +777,7 @@
     {
       "id": "m13_dish_quiet",
       "day": 13,
+      "at": "13:43",
       "from": "quietquant",
       "handle": "quietquant",
       "body": "$DISH is the only stock on my screen that hasn't done anything strange this week.",
@@ -736,10 +790,10 @@
     {
       "id": "m13_pdur_peptides",
       "day": 13,
+      "at": "11:20",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "Perdure Pharma launches a peptide line \"for research use only\". $PDUR up 5%.",
-      "at": "11:20",
       "likes": 180,
       "tickers": [
         "PDUR"
@@ -749,6 +803,7 @@
     {
       "id": "m14_gai_level4",
       "day": 14,
+      "at": "11:35",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "$GAI up 7% on agent-4.",
@@ -761,6 +816,7 @@
     {
       "id": "m14_vant_flat",
       "day": 14,
+      "at": "13:09",
       "from": "quietquant",
       "handle": "quietquant",
       "body": "$VANT flat. Nothing left to cut.",
@@ -773,6 +829,7 @@
     {
       "id": "m14_apo_valuation",
       "day": 14,
+      "at": "11:25",
       "from": "Priya Shah",
       "handle": "priyashah_cfa",
       "body": "$APO trades at 400 times earnings for a company whose product landed once.",
@@ -785,6 +842,7 @@
     {
       "id": "m14_dish_wonderful",
       "day": 14,
+      "at": "13:35",
       "from": "Ollie Banks",
       "handle": "obanks",
       "body": "Wonderful, $DISH dropped the day after I bought. Every single time.",
@@ -798,6 +856,7 @@
     {
       "id": "m15_gai",
       "day": 15,
+      "at": "12:33",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "$GAI hearing scheduled in Congress. Shares up on the publicity.",
@@ -810,6 +869,7 @@
     {
       "id": "m15_vant",
       "day": 15,
+      "at": "11:06",
       "from": "Brent Kowalski",
       "handle": "brentk_capital",
       "body": "$VANT announces a second round of \"efficiencies.\"",
@@ -822,6 +882,7 @@
     {
       "id": "m15_apo_mod",
       "day": 15,
+      "at": "17:55",
       "from": "WallStreetBags",
       "handle": "wallstreetbags",
       "body": "$APO up because Rook replaced the moderators at a different company. Nobody here can explain it. Everyone here is long.",
@@ -834,6 +895,7 @@
     {
       "id": "m15_dish_strike",
       "day": 15,
+      "at": "10:46",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "DoorDish couriers strike in three cities. $DISH down 3%.",
@@ -846,6 +908,7 @@
     {
       "id": "m16_gai",
       "day": 16,
+      "at": "16:59",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "Can't tell anymore if $GAI is a company or a weather system.",
@@ -858,6 +921,7 @@
     {
       "id": "m16_nova_bots",
       "day": 16,
+      "at": "12:23",
       "from": "moonshot",
       "handle": "moonshot",
       "body": "$GAI to the moon!!",
@@ -871,6 +935,7 @@
     {
       "id": "m16_vant",
       "day": 16,
+      "at": "16:46",
       "from": "Tyler Moss",
       "handle": "tylermoss",
       "body": "Brilliant, $VANT is \"exploring strategic options.\" Love that for us.",
@@ -884,6 +949,7 @@
     {
       "id": "m16_apo_retail",
       "day": 16,
+      "at": "18:19",
       "from": "WallStreetBags",
       "handle": "wallstreetbags",
       "body": "Daily $APO thread. Still holding. Still can't say why.",
@@ -896,6 +962,7 @@
     {
       "id": "m16_dish_robots",
       "day": 16,
+      "at": "18:02",
       "from": "Sam Ortiz",
       "handle": "samortiz",
       "body": "$DISH says the strike changes nothing because the robots don't strike. Bold to say out loud.",
@@ -908,6 +975,7 @@
     {
       "id": "m17_gai",
       "day": 17,
+      "at": "11:54",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "$GAI down 2% on a bad headline. Back up by lunch.",
@@ -920,6 +988,7 @@
     {
       "id": "m17_vant",
       "day": 17,
+      "at": "14:22",
       "from": "Brent Kowalski",
       "handle": "brentk_capital",
       "body": "$VANT up 1%. It's been a boring stock since the layoffs.",
@@ -932,6 +1001,7 @@
     {
       "id": "m17_apo_debate",
       "day": 17,
+      "at": "16:46",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "$APO flat ahead of tonight's debate, hosted live on Y.",
@@ -944,6 +1014,7 @@
     {
       "id": "m17_dish_settle",
       "day": 17,
+      "at": "19:42",
       "from": "Brent Kowalski",
       "handle": "brentk_capital",
       "body": "$DISH settled with the couriers by replacing half of them. Buying.",
@@ -956,6 +1027,7 @@
     {
       "id": "m18_gai",
       "day": 18,
+      "at": "16:20",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "$GAI up on agent-5. Nobody I know can afford it.",
@@ -968,6 +1040,7 @@
     {
       "id": "m18_vant",
       "day": 18,
+      "at": "10:50",
       "from": "Mara Vey",
       "handle": "mara_vey",
       "body": "$VANT replaces its customer support with General AI. Calls now go nowhere faster.",
@@ -980,6 +1053,7 @@
     {
       "id": "m18_apo_up",
       "day": 18,
+      "at": "10:30",
       "from": "Jess Park",
       "handle": "jesspark",
       "body": "Apogee up again. Nobody I know owns it and everybody I know talks about it.",
@@ -990,6 +1064,7 @@
     {
       "id": "m18_apo_short",
       "day": 18,
+      "at": "10:40",
       "from": "Priya Shah",
       "handle": "priyashah_cfa",
       "body": "Shorting $APO. I've done this four times. I've lost four times. Discipline.",
@@ -1002,6 +1077,7 @@
     {
       "id": "m18_dish_menus",
       "day": 18,
+      "at": "18:07",
       "from": "rk_dividends",
       "handle": "rk_dividends",
       "body": "$dish menus now written by AI. half the dishes don't exist. orders still up.",
@@ -1014,10 +1090,10 @@
     {
       "id": "m18_pdur_settle",
       "day": 18,
+      "at": "14:02",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "Perdure settles NoDoze MAX lawsuits for $40M, admits no wrongdoing. $PDUR up 3%.",
-      "at": "13:50",
       "likes": 160,
       "tickers": [
         "PDUR"
@@ -1027,10 +1103,10 @@
     {
       "id": "m18_pdur_wsb",
       "day": 18,
+      "at": "14:30",
       "from": "WallStreetBags",
       "handle": "wallstreetbags",
       "body": "$PDUR pays $40M for keeping people awake nine days and the stock goes up. Members, this is the business model.",
-      "at": "14:30",
       "likes": 2900,
       "tickers": [
         "PDUR"
@@ -1040,6 +1116,7 @@
     {
       "id": "m19_gai",
       "day": 19,
+      "at": "11:20",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "$GAI market cap passes a small country's GDP. The country is not named.",
@@ -1052,6 +1129,7 @@
     {
       "id": "m19_vant",
       "day": 19,
+      "at": "17:43",
       "from": "Brent Kowalski",
       "handle": "brentk_capital",
       "body": "$VANT down 3% on a lawsuit from former staff.",
@@ -1064,6 +1142,7 @@
     {
       "id": "m19_apo_launch2",
       "day": 19,
+      "at": "18:05",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "Apogee schedules a second launch for after the election. $APO up 3%.",
@@ -1076,6 +1155,7 @@
     {
       "id": "m19_dish_great",
       "day": 19,
+      "at": "13:10",
       "from": "Dana Ruiz",
       "handle": "danaruiz_trades",
       "body": "Great news, $DISH robots now deliver to 'most' addresses. Love a company with standards.",
@@ -1089,6 +1169,7 @@
     {
       "id": "m20_gai",
       "day": 20,
+      "at": "15:42",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "$GAI flat ahead of the election.",
@@ -1101,6 +1182,7 @@
     {
       "id": "m20_nova_bots",
       "day": 20,
+      "at": "18:31",
       "from": "moonshot",
       "handle": "moonshot",
       "body": "$GAI to the moon!!",
@@ -1114,6 +1196,7 @@
     {
       "id": "m20_vant",
       "day": 20,
+      "at": "11:42",
       "from": "Brent Kowalski",
       "handle": "brentk_capital",
       "body": "$VANT flat ahead of the election.",
@@ -1126,6 +1209,7 @@
     {
       "id": "m20_apo_vote",
       "day": 20,
+      "at": "16:24",
       "from": "WallStreetBags",
       "handle": "wallstreetbags",
       "body": "Election play: Crane wins, $APO gets a government contract. Crane loses, Rook buys something. Long $APO either way.",
@@ -1138,6 +1222,7 @@
     {
       "id": "m20_dish_flat",
       "day": 20,
+      "at": "14:23",
       "from": "quietquant",
       "handle": "quietquant",
       "body": "$DISH flat into the election. Food gets delivered under every government.",
@@ -1150,6 +1235,7 @@
     {
       "id": "m21_gai",
       "day": 21,
+      "at": "10:40",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "Whatever happens tomorrow, $GAI wins. That's the trade.",
@@ -1162,6 +1248,7 @@
     {
       "id": "m21_vant",
       "day": 21,
+      "at": "18:49",
       "from": "Brent Kowalski",
       "handle": "brentk_capital",
       "body": "$VANT under pressure as the layoff lawsuit grows.",
@@ -1174,6 +1261,7 @@
     {
       "id": "m21_apo_day",
       "day": 21,
+      "at": "18:59",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "Election day: $APO and $GAI lead early trading.",
@@ -1186,6 +1274,7 @@
     {
       "id": "m21_dish_day",
       "day": 21,
+      "at": "13:38",
       "from": "Sam Ortiz",
       "handle": "samortiz",
       "body": "$DISH giving free delivery to polling stations. Couriers not included.",

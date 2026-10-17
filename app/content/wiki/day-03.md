@@ -28,20 +28,20 @@ from: 3
 - [public] 11:30 [[Axel Rook]]: "The legacy media is lying to you" {{y:d3_y_axel}}
 - [public] 11:50 [[CityPulse]] links its Ozempra story: a weekly jab that makes you stop wanting dinner, "approved for everyone who asked." {{y:d3_y_citypulse_ozempra}}
 - [public] 12:30 [[DoorDish]]: the courier from yesterday's activation "has been promoted". {{y:d3_y_doordish}}
-- [public] 12:30 [[Cal Hartman]]: every big technology created more jobs than it destroyed, eventually; "we're in the while." {{y:d3_y_hartman}}
+- [public] 12:40 [[Cal Hartman]]: every big technology created more jobs than it destroyed, eventually; "we're in the while." {{y:d3_y_hartman}}
 - [public] 13:00 Teo Vasquez was in the jobs fair queue at 6am; the app on his phone rejected him before the door. {{y:d3_y_teo_jobsfair}}
 - [public] 14:22 MarketWire: $GAI's CFO says the company will be "profitable in the long run." {{y:m3_gai_cfo}}
 - [public] 15:30 [[Randall Crane]]: a delivery robot "walked off the job with a man's lunch"; "They sent your jobs to the machines and called it progress. I'll send the machines back where they came from. BELIEVE IT." {{y:d3_y_crane}}
-- [public] 15:30 [[Max Stryker]] drove past the Civic Hall queue in the Lambo, "the fastest route". {{y:d3_y_stryker}}
+- [public] 15:40 [[Max Stryker]] drove past the Civic Hall queue in the Lambo, "the fastest route". {{y:d3_y_stryker}}
 - [public] 16:05 [[CityPulse]] links its "machines back" story: two million shares in an hour. {{y:d3_y_citypulse}}
-- [public] 16:11 zev.dolr shipped three side projects and wrote a thread for each; one of the users is his mom. {{y:f3}}
-- [public] 16:15 Axel Rook: "@citypulse Organic." {{y:d3_y_axel_3}}
-- [public] 16:20 [[Pollymarket]]: Crane went from 40% to 44% in 35 minutes. {{y:d3_y_polly_crane}}
-- [public] 16:25 doomscroll would settle for his job back. {{y:d3_y_doomscroll_machines}}
-- [public] 16:50 zev.dolr asks who will finish his side projects. {{y:d3_y_zev_machines}}
+- [public] 16:25 zev.dolr shipped three side projects and wrote a thread for each; one of the users is his mom. {{y:f3}}
+- [public] 16:35 Axel Rook: "@citypulse Organic." {{y:d3_y_axel_3}}
+- [public] 16:45 [[Pollymarket]]: Crane went from 40% to 44% in 35 minutes. {{y:d3_y_polly_crane}}
+- [public] 16:55 doomscroll would settle for his job back. {{y:d3_y_doomscroll_machines}}
+- [public] 17:05 zev.dolr asks who will finish his side projects. {{y:d3_y_zev_machines}}
 - [public] 17:20 cat_ceo: her cat "has a plan. details to follow." {{y:d3_y_catceo_machines}}
 - [public] 17:40 Candidate 2030 spent the afternoon listening to working families. {{y:d3_y_candidate}}
-- [public] 17:45 Axel Rook: "@randall_crane 🤣🤣" {{y:d3_y_axel_2}}
+- [public] 17:50 Axel Rook: "@randall_crane 🤣🤣" {{y:d3_y_axel_2}}
 - [public] 18:40 noodleposter: his uncle shared the Crane post four times and thinks the cloud is weather. {{y:d3_y_noodle_machines}}
 - [public] 19:10 Teo Vasquez: nobody is sending anything back, but Crane is the first candidate all year who said "jobs" out loud. {{y:d3_y_teo_machines}}
 
@@ -55,7 +55,7 @@ from: 3
 
 - [public] 12:30 [[Pollymarket]]: the robot market drops to 64% when DoorDish says the courier was promoted.
 - [public] 16:05 [[Pollymarket]]: Crane goes from 40% to 44% in 35 minutes.
-- [public] 17:45 [[Pollymarket]]: a market on Axel Rook endorsing a candidate opens at 31%.
+- [public] 17:50 [[Pollymarket]]: a market on Axel Rook endorsing a candidate opens at 31%.
 
 ## Trending
 

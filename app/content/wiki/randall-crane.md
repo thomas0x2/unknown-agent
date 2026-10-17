@@ -42,7 +42,7 @@ from: 1
 - [public] On day 9 he says some polls have him up 112%.
 - [public] On day 10 he thanks the "young entrepreneurs volunteering for the campaign online"; CityPulse reports they are paid per post.
 - [public] On day 11 [[The Current]] reports that the third step of his jobs plan hands the new positions to [[GeneralAI]]; the campaign calls it "a draft" on a site "managed by a vendor".
-- [public] On day 11 (19:25), after the leaked DoorDish memo, he says a machine that "won't stop gets unplugged", and so do the executives who hid it.
+- [public] On day 11 (19:27), after the leaked DoorDish memo, he says a machine that "won't stop gets unplugged", and so do the executives who hid it.
 - [public] On day 12 he calls the thousands of accounts copying him word for word "a MOVEMENT".
 - [public] On day 13 [[Axel Rook]] endorses him.
 - [public] On day 14 he vows to "build a wall around the cloud and make the computers pay for it"; asked where the cloud is, he says "Up."
