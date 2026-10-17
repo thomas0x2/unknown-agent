@@ -204,15 +204,20 @@ function renderTerm(): void {
   const shown = store.ui.termShown;
   win.hidden = !shown;
   if (!shown) { termWasShown = false; return; }
-  const old = $<HTMLInputElement>('#term-input');
+  // each tab has its own prompt: what was typed stays with it
+  const old = $<HTMLInputElement>('#termwin .tm-in input');
   const typed = old?.value ?? '';
   const hadFocus = !!old && document.activeElement === old;
   if (!win.firstElementChild) win.innerHTML = V.termWindowHtml(store);
-  else $('#tm-log')!.innerHTML = V.termBodyHtml(store);
+  else {
+    $('#tm-log')!.innerHTML = V.termBodyHtml(store);
+    $('#tw-tabs')!.innerHTML = V.termTabsHtml(store);
+    $('#tw-title')!.textContent = V.termTitle(store);
+  }
   const log = $('#tm-log')!; log.scrollTop = log.scrollHeight;
-  const input = $<HTMLInputElement>('#term-input');
+  const input = $<HTMLInputElement>('#termwin .tm-in input');
   if (input) {
-    input.value = typed;
+    if (old?.id === input.id) input.value = typed;
     // focus the prompt when the window comes forward or was being typed in (not on phones: the keyboard covers it)
     if (!input.disabled && (hadFocus || (!termWasShown && window.innerWidth > 700))) input.focus();
   }
@@ -294,7 +299,7 @@ function updateCost(): void {
 // ── clicks ──
 document.addEventListener('click', (e) => {
   if (e.target instanceof HTMLElement && wikiClick(e.target, store)) return;
-  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-repost],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-ov],[data-dev],[data-cancel-booking],[data-empire-join],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat],[data-back],[data-forward],[data-devbug],[data-task],[data-term],[data-devopts],[data-mail-bin],[data-mail-restore],[data-mail-undo],[data-y-all]');
+  const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav],[data-tab],[data-close],[data-newtab],[data-act],[data-like],[data-repost],[data-deploy],[data-takedown],[data-mail-discard],[data-wl-range],[data-star],[data-download],[data-ov],[data-dev],[data-cancel-booking],[data-empire-join],[data-start],[data-slot-save],[data-slot-load],[data-menu-cat],[data-back],[data-forward],[data-devbug],[data-task],[data-term],[data-ttab],[data-devopts],[data-mail-bin],[data-mail-restore],[data-mail-undo],[data-y-all]');
   // any click outside the home menu closes it (menu items close it themselves below)
   if (store.ui.start && !(e.target as HTMLElement).closest('#startmenu, #dk-home')) store.toggleStart(false);
   // clicking the browser while the Terminal is in front brings the browser forward, like any window
@@ -305,6 +310,7 @@ document.addEventListener('click', (e) => {
   e.preventDefault();
   if (d.start != null) { store.toggleStart(); return; }
   if (d.task != null) { if (d.task === 'terminal') store.termTask(); else store.showTerm(false); return; }
+  if (d.ttab != null) { store.termTabTo(d.ttab === 'agent' ? 'agent' : 'shell'); return; }
   if (d.term != null) { if (d.term === 'close') store.closeTerm(); else store.showTerm(false); return; }
   if (d.menuCat != null) { store.setMenuCat(d.menuCat); return; }
   if (t.closest('#startmenu')) store.toggleStart(false);
@@ -484,6 +490,12 @@ document.addEventListener('submit', (e) => {
     clearField('term-input');
     if (v === 'clear') { store.termClear(); return; }
     void store.term(v);
+  } else if (kind === 'aterm') {
+    const v = val('#aterm-input').trim(); if (!v) return;
+    SOUND.play('send', 0, 'terminal');
+    clearField('aterm-input');
+    if (v === 'clear' || v === 'exit') { store.agentTermCommand(v); return; }
+    void store.agentTerm(v);
   }
 });
 

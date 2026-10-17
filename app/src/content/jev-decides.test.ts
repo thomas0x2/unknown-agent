@@ -261,7 +261,9 @@ describe('one kind of work per prompt', () => {
     const { s, jev } = mixed();
     const { jev: spied, asked } = spy(jev('feature'));
     await promptDone(s, content, spied, prompt);
-    expect(asked.routes[0].candidates.map((c) => c.id)).toEqual(['feature', 'fix', 'both']);
+    // the first question is whether it's a hack attempt (agent-terminal)
+    expect(asked.routes[0].candidates.map((c) => c.id)).toEqual(['hack']);
+    expect(asked.routes[1].candidates.map((c) => c.id)).toEqual(['feature', 'fix', 'both']);
   });
 
   it('feature work leaves the bugs alone and says nothing about them', async () => {

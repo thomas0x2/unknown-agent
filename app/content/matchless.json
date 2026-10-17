@@ -6,13 +6,6 @@
       "id": 1,
       "rules": [
         {
-          "attr": "gender",
-          "allow": [
-            "woman"
-          ],
-          "say": "Women only."
-        },
-        {
           "attr": "age",
           "min": 25,
           "max": 42,
@@ -35,13 +28,6 @@
     {
       "id": 2,
       "rules": [
-        {
-          "attr": "gender",
-          "allow": [
-            "woman"
-          ],
-          "say": "Women only."
-        },
         {
           "attr": "age",
           "min": 21,
@@ -73,13 +59,6 @@
     {
       "id": 3,
       "rules": [
-        {
-          "attr": "gender",
-          "allow": [
-            "woman"
-          ],
-          "say": "Women only."
-        },
         {
           "attr": "age",
           "min": 21,
@@ -123,13 +102,6 @@
     {
       "id": 4,
       "rules": [
-        {
-          "attr": "gender",
-          "allow": [
-            "woman"
-          ],
-          "say": "Women only."
-        },
         {
           "attr": "age",
           "min": 21,
@@ -177,19 +149,19 @@
           "attr": "bodyCount",
           "max": 3,
           "say": "Body count 3 or under."
+        },
+        {
+          "attr": "hair",
+          "allow": [
+            "long"
+          ],
+          "say": "Long hair."
         }
       ]
     },
     {
       "id": 5,
       "rules": [
-        {
-          "attr": "gender",
-          "allow": [
-            "woman"
-          ],
-          "say": "Women only."
-        },
         {
           "attr": "age",
           "min": 21,
@@ -249,19 +221,26 @@
             "none"
           ],
           "say": "No kinks listed."
+        },
+        {
+          "attr": "hair",
+          "allow": [
+            "long"
+          ],
+          "say": "Long hair."
+        },
+        {
+          "attr": "glasses",
+          "allow": [
+            "no"
+          ],
+          "say": "No glasses."
         }
       ]
     },
     {
       "id": 6,
       "rules": [
-        {
-          "attr": "gender",
-          "allow": [
-            "woman"
-          ],
-          "say": "Women only."
-        },
         {
           "attr": "age",
           "min": 21,
@@ -326,19 +305,33 @@
           "attr": "canthal",
           "min": 4,
           "say": "Canthal tilt +4° or more."
+        },
+        {
+          "attr": "hair",
+          "allow": [
+            "long"
+          ],
+          "say": "Long hair."
+        },
+        {
+          "attr": "glasses",
+          "allow": [
+            "no"
+          ],
+          "say": "No glasses."
+        },
+        {
+          "attr": "earrings",
+          "allow": [
+            "no"
+          ],
+          "say": "No earrings."
         }
       ]
     },
     {
       "id": 7,
       "rules": [
-        {
-          "attr": "gender",
-          "allow": [
-            "woman"
-          ],
-          "say": "Women only."
-        },
         {
           "attr": "age",
           "min": 21,
@@ -408,8 +401,46 @@
           "attr": "jaw",
           "max": 0.7,
           "say": "Mandibular height to width ratio 0.70 or under."
+        },
+        {
+          "attr": "hair",
+          "allow": [
+            "long"
+          ],
+          "say": "Long hair."
+        },
+        {
+          "attr": "glasses",
+          "allow": [
+            "no"
+          ],
+          "say": "No glasses."
+        },
+        {
+          "attr": "earrings",
+          "allow": [
+            "no"
+          ],
+          "say": "No earrings."
+        },
+        {
+          "attr": "hairColor",
+          "allow": [
+            "blonde"
+          ],
+          "say": "Blonde."
         }
       ]
     }
-  ]
+  ],
+  "womenOnly": {
+    "rule": {
+      "attr": "gender",
+      "allow": [
+        "woman"
+      ],
+      "say": "Women only."
+    },
+    "say": "About the man you accepted yesterday. That one's on me, I didn't spell it out. I thought it was obvious. I am SUPER STRAIGHT. I only date WOMEN. From now on: women only."
+  }
 }

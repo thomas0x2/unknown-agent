@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, recordStake, payStakes, buyStock, sellStock, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy, deliverSwapReplies, matchlessSwipe, clone, uploadFile, fileRentAppeal, donateCrane, craneDonations, fillMeters, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, recordStake, payStakes, buyStock, sellStock, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy, deliverSwapReplies, matchlessSwipe, clone, uploadFile, fileRentAppeal, donateCrane, craneDonations, fillMeters, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat, agentTermPrompt, dropHackGame, BOOT_MS, dateShort, clockTime,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -66,6 +66,8 @@ export class GameStore {
     project: '', dev: false, liked: {} as Record<string, boolean>, reposted: {} as Record<string, boolean>, intro: true, greet: false, memWarn: false, confirm: null as null | { text: string; yes: string; fn: () => void }, start: false, menuCat: 'saves',
     /** The Terminal is its own window: open (in the taskbar) and shown (in front of the browser). */
     termOpen: false, termShown: false,
+    /** Which Terminal tab is in front: the laptop's own shell (local models) or agent-terminal. */
+    termTab: 'shell' as 'shell' | 'agent',
     /** Dev mode: the site whose options panel is open (agent, qmail, y), or ''. */
     devOptions: '' as string,
     /** The two-step booking form: which step is showing and what step one said. */
@@ -112,6 +114,8 @@ export class GameStore {
   };
   /** A model download playing out in the Terminal, if one is running. */
   pull: { id: string; startedAt: number } | null = null;
+  /** agent-terminal is booting until this time (Date.now() ms): its loading screen shows instead of the prompt. */
+  agentBootUntil = 0;
   private pullTimer: ReturnType<typeof setInterval> | null = null;
   private pullListeners = new Set<() => void>();
 
@@ -256,7 +260,7 @@ export class GameStore {
     this.ui.mailNotice = null;
     if (this.state.swap?.notice) this.state.swap.notice = undefined;
     // localhost is the laptop itself: it opens the Terminal app, not a browser page
-    if (u === 'localhost' && this.state.flags.includes('has_terminal')) { this.showTerm(true); return; }
+    if (u === 'localhost' && (this.state.flags.includes('has_terminal') || this.state.flags.includes('has_agent_terminal'))) { this.showTerm(true); return; }
     // a pinned tab stays on its site: another site opens in its own pinned tab, or a new one
     const cur = this.tab;
     if (!newTab && cur?.pinned && siteOf(u) !== cur.pinned) {
@@ -378,6 +382,48 @@ export class GameStore {
   closeTerm(): void { this.ui.termOpen = false; this.ui.termShown = false; this.emit(); }
   /** The Terminal's taskbar button: open it, bring it forward, or minimize it if it's already in front. */
   termTask(): void { this.showTerm(!(this.ui.termOpen && this.ui.termShown)); }
+  /** Switch the Terminal's tab. */
+  termTabTo(tab: 'shell' | 'agent'): void { if (this.ui.termTab !== tab) { this.ui.termTab = tab; this.emit(); } }
+  /** The Terminal tabs the player has: the shell once a model was pulled, agent-terminal once the agent opened it. */
+  termTabs(): ('shell' | 'agent')[] {
+    const f = this.state.flags;
+    return [...(f.includes('has_terminal') || this.pull ? ['shell' as const] : []), ...(f.includes('has_agent_terminal') ? ['agent' as const] : [])];
+  }
+  /** The tab actually in front: the chosen one if the player has it, else the first they have. */
+  termTabShown(): 'shell' | 'agent' { const t = this.termTabs(); return t.includes(this.ui.termTab) ? this.ui.termTab : t[0] ?? 'shell'; }
+  /** agent-terminal is still on its loading screen. */
+  agentBooting(): boolean { return Date.now() < this.agentBootUntil; }
+  /**
+   * The agent moved a hack attempt here from agent.chat: the Terminal comes forward on agent-terminal,
+   * which boots for a moment (a loading screen) before its prompt appears.
+   */
+  openAgentTerm(): void {
+    const s = this.state;
+    addFlag(s, 'has_agent_terminal');
+    s.agentTerm = [...(s.agentTerm ?? []), { k: 'sys', text: `── session ${dateShort(s.values.day)}, ${clockTime(s.clockMin)} ──` }];
+    this.store.save(s);
+    this.ui.termOpen = true; this.ui.termShown = true; this.ui.termTab = 'agent';
+    this.agentBootUntil = Date.now() + BOOT_MS;
+    // repaint as each boot line comes in, and once more when the prompt appears
+    for (let t = BOOT_MS / 4; t <= BOOT_MS; t += BOOT_MS / 4) setTimeout(() => this.emit(), t + 10);
+    this.emit();
+  }
+  /** A prompt typed into agent-terminal: billed like any agent prompt; the reply holds back like a chat reply. */
+  async agentTerm(text: string) {
+    return this.run(async () => {
+      const started = Date.now();
+      const r = await agentTermPrompt(this.state, this.content, this.router, text, this.writer);
+      const last = r.lines.at(-1);
+      if (last) await wait(replyDelay(last.text) - (Date.now() - started));
+      this.commitAndSettle(r.state);
+      return r;
+    }, 'aterm-input', text);
+  }
+  /** agent-terminal's own commands: 'clear' wipes the screen, 'exit' drops a blocked hack. Free. */
+  agentTermCommand(cmd: 'clear' | 'exit'): void {
+    if (cmd === 'clear') { this.state.agentTerm = []; this.store.save(this.state); this.emit(); return; }
+    this.commitAndSettle(dropHackGame(this.state));
+  }
 
   newGame(): void {
     this.store.clear();
@@ -402,7 +448,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = HOME_TAB; this.nextTab = PINNED.length + 1;
-    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, reposted: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', princeError: '', seedShown: false, lonelyTyping: false, chatError: '', uploadError: '', uploadPick: '', sorryTyping: false, adNotice: '', jevOffline: null, yUnread: 0 };
+    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, reposted: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, termTab: 'shell', devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', princeError: '', seedShown: false, lonelyTyping: false, chatError: '', uploadError: '', uploadPick: '', sorryTyping: false, adNotice: '', jevOffline: null, yUnread: 0 };
     this.store.save(this.state);
     this.emit();
   }
@@ -582,6 +628,8 @@ export class GameStore {
         // the reply lands first and the wallet is charged a beat later, so each makes its own sound
         const due = r.state.clockMin < CLOCK.sleep ? withholdCharge(r.state, txBefore) : 0;
         this.pendingPrompt = null; this.charging = due; this.commitAndSettle(r.state);
+        // a hack attempt: the agent moves it to agent-terminal, which opens after the reply
+        if (r.terminal) this.openAgentTerm();
         if (due) {
           await wait(CHARGE_DELAY_MS);
           this.charging = 0;

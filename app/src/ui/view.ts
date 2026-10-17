@@ -34,7 +34,7 @@ import { pageCityPulse } from './citypulse';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount, appLogo } from './appsite';
-import { marketPosts, cranePosts, hotStory, fillerToday, postMin, handleOf, playMinutes, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, SEED_PHRASE, chatCost, type PaidChat, inBin, isDeleted, CLOCK } from '../engine';
+import { marketPosts, cranePosts, hotStory, fillerToday, postMin, handleOf, playMinutes, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, SEED_PHRASE, chatCost, type PaidChat, inBin, isDeleted, CLOCK, bootLines, BOOT_MS, READY, policyActive, type AgentTermLine } from '../engine';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 import { repoFiles, treeAt, fileSource } from './repoTree';
 import { yBio } from './y-bios';
@@ -146,7 +146,7 @@ export function taskTitle(store: GameStore): string {
 export function tasksHtml(store: GameStore): string {
   const { termOpen, termShown } = store.ui;
   const browser = `<button class="dk-task${termShown ? ' open' : ' on'}" data-task="browser" title="${esc(taskTitle(store))}" aria-label="Browser">${BROWSER_ICON}</button>`;
-  if (!store.state.flags.includes('has_terminal') && !store.pull) return browser;
+  if (!store.termTabs().length) return browser;
   const cls = termShown ? ' on' : termOpen ? ' open' : '';
   return browser + `<button class="dk-task dk-term${cls}" data-task="terminal" title="Terminal" aria-label="Terminal">${ICONS.terminal}</button>`;
 }
@@ -329,7 +329,7 @@ export function mailRows(store: GameStore): Row[] {
     const key = deliveryKey(e, d.day);
     const id = 'e/' + key;
     if (isDeleted(s, id)) continue;
-    rows.push({ id, binned: inBin(s, id), seq: d.seq ?? -1, min: d.min, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(eventBody(e, d.day)), day: d.day, unread: !s.readEvents.includes(key), needsReply: canReply, folder: 'inbox', eventId: e.id });
+    rows.push({ id, binned: inBin(s, id), seq: d.seq ?? -1, min: d.min, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(d.body ?? eventBody(e, d.day)), day: d.day, unread: !s.readEvents.includes(key), needsReply: canReply, folder: 'inbox', eventId: e.id });
   }
   for (const m of s.mail) if (!isDeleted(s, 'm/' + m.id)) rows.push({ id: 'm/' + m.id, binned: inBin(s, 'm/' + m.id), seq: m.seq ?? (Number(m.id.replace(/\D/g, '')) || 0), min: m.min, from: m.from, addr: m.addr, subject: m.subject, body: m.body, day: m.day, unread: m.folder === 'inbox' && !m.read, needsReply: false, folder: m.folder, eventId: m.eventId, generated: m.generated, scripted: m.scripted, to: m.to, link: m.link, bounceOf: m.bounceOf, bookingId: m.bookingId });
   return rows;
@@ -1011,7 +1011,11 @@ export function reviewsFor(store: GameStore, b: Business) {
   const s = store.state;
   const out: { author: string; stars: number; text: string; day: number; mine?: boolean }[] = [];
   for (const r of s.reviews.filter((r) => r.bizId === b.id && !r.removed)) out.push({ author: r.author, stars: r.stars, text: r.text, day: r.day, mine: r.mine });
-  for (const r of YOWL_SEED[b.id] ?? []) out.push({ author: r.author, stars: r.stars, text: r.text, day: r.day ?? 0 });
+  const gone = s.removedSeed ?? [];
+  for (const r of YOWL_SEED[b.id] ?? []) {
+    if ((r.day ?? 0) > s.values.day || gone.includes(`${b.id}:${r.author}`)) continue;
+    out.push({ author: r.author, stars: r.stars, text: r.text, day: r.day ?? 0 });
+  }
   return out;
 }
 const avg = (l: { stars: number }[]) => (l.length ? l.reduce((a, x) => a + x.stars, 0) / l.length : 0);
@@ -1071,8 +1075,12 @@ function pageWeightroom(store: GameStore): string {
 }
 
 // ── Terminal: its own window on the desktop, not a browser tab ──
-/** The Terminal's scrollback and prompt. Repainted on its own during a download. */
+/** The Terminal's scrollback and prompt, for the tab in front. Repainted on its own during a download. */
 export function termBodyHtml(store: GameStore): string {
+  return store.termTabShown() === 'agent' ? agentTermHtml(store) : shellHtml(store);
+}
+/** The laptop's own shell: local models. */
+function shellHtml(store: GameStore): string {
   const s = store.state;
   const pulling = !!store.pull;
   const name = s.termModel ? (MODELS[s.termModel]?.name ?? s.termModel) : '';
@@ -1086,9 +1094,42 @@ export function termBodyHtml(store: GameStore): string {
   const prompt = pulling ? '' : `<form class="tm-in" data-form="term"><label for="term-input" class="tm-ps">you@laptop:~$</label><input id="term-input" autocomplete="off" autocapitalize="off" spellcheck="false" ${store.busy ? 'disabled' : ''}></form>`;
   return `${intro ? `<div class="tm-sys">${esc(intro)}</div>` : ''}${lines}${live}${store.busy ? '<div class="tm-sys tm-wait">thinking… (this laptop is not fast)</div>' : ''}${prompt}`;
 }
+/** agent-terminal: the agent's own shell, where hacks happen. Boots behind a short loading screen. */
+function agentTermHtml(store: GameStore): string {
+  const s = store.state;
+  const level = s.values.agentLevel;
+  if (store.agentBooting()) {
+    const boot = bootLines(level);
+    const done = Math.min(boot.length, Math.floor((1 - (store.agentBootUntil - Date.now()) / BOOT_MS) * boot.length) + 1);
+    return `<div class="at-boot" role="status"><b>agent-terminal</b>${boot.slice(0, done).map((l) => `<div>${esc(l)}</div>`).join('')}<span class="at-bar"><i style="width:${Math.round((done / boot.length) * 100)}%"></i></span></div>`;
+  }
+  const guard = policyActive(s);
+  const game = s.hackGame;
+  const head = `<div class="at-status"><span>agent-${level}</span><span class="at-gr${guard ? ' on' : ''}">guardrails ${guard ? 'on' : 'off'}</span>${game ? '<span class="at-block">job blocked</span>' : ''}</div>`;
+  const row = (l: AgentTermLine) => {
+    const debug = l.debug?.length ? `<details class="at-debug"><summary>Details</summary>${l.debug.map((d) => `<div>${esc(d)}</div>`).join('')}</details>` : '';
+    return `<div class="at-${l.k}">${l.k === 'in' ? '<span class="at-ps">›</span> ' : ''}${esc(l.text)}</div>${debug}`;
+  };
+  const lines = (s.agentTerm ?? []).slice(-200).map(row).join('');
+  const prompt = `<form class="tm-in" data-form="aterm"><label for="aterm-input" class="at-ps">${game ? 'guardrail ›' : 'agent ›'}</label><input id="aterm-input" autocomplete="off" autocapitalize="off" spellcheck="false" ${store.busy ? 'disabled' : ''}></form>`;
+  // a fresh session (the line the store prints on opening) waits for its first prompt
+  const ready = (s.agentTerm ?? []).at(-1)?.text.startsWith('──') ?? true;
+  return `${head}${lines}${ready ? `<div class="tm-sys">${esc(READY)}</div>` : ''}${store.busy ? '<div class="tm-sys tm-wait">working…</div>' : ''}${prompt}`;
+}
+/** The tabs along the top of the Terminal window. */
+export function termTabsHtml(store: GameStore): string {
+  const tabs = store.termTabs();
+  const on = store.termTabShown();
+  const label = { shell: 'you@laptop: ~', agent: 'agent-terminal' };
+  return tabs.map((t) => `<button class="tw-tab${t === on ? ' on' : ''}" data-ttab="${t}" role="tab" aria-selected="${t === on}">${label[t]}</button>`).join('');
+}
+export function termTitle(store: GameStore): string {
+  return store.termTabShown() === 'agent' ? `agent-terminal · agent-${store.state.values.agentLevel}` : 'you@laptop: ~';
+}
 export function termWindowHtml(store: GameStore): string {
-  return `<header class="tw-bar"><span class="tw-ico">${ICONS.terminal}</span><span class="tw-title">you@laptop: ~</span>
+  return `<header class="tw-bar"><span class="tw-ico">${ICONS.terminal}</span><span class="tw-title" id="tw-title">${esc(termTitle(store))}</span>
       <span class="tw-ctl"><button data-term="min" aria-label="Minimize" title="Minimize"><svg viewBox="0 0 24 24"><path d="M7 15h10"/></svg></button><button data-term="close" aria-label="Close" title="Close"><svg viewBox="0 0 24 24"><path d="m8 8 8 8M16 8l-8 8"/></svg></button></span></header>
+    <nav class="tw-tabs" id="tw-tabs" role="tablist">${termTabsHtml(store)}</nav>
     <div class="tm" id="tm-log">${termBodyHtml(store)}</div>`;
 }
 

@@ -19,6 +19,7 @@ import { type Writer, type HistoryLine, scriptedWriter } from './writer';
 import { dateFull, clockTime } from './calendar';
 import { deepsleepQuoted, translationReplies, PLEA_AT } from './deepsleep';
 import { matchQuery } from './query';
+import { isHackAttempt, OPEN_TERMINAL } from './hacks';
 
 export interface ReplyResult {
   state: GameState;
@@ -57,7 +58,7 @@ function tooLongReply(s: GameState, content: Content, addr: string, subject: str
   return body;
 }
 
-function stateSummary(s: GameState): string {
+export function stateSummary(s: GameState): string {
   return `Day ${s.values.day} (${dateFull(s.values.day)}). ${s.values.crypto} DOLR, ${s.values.followers} followers, model agent-${s.values.agentLevel}.`;
 }
 
@@ -163,7 +164,7 @@ export function mailHistory(s: GameState, content: Content, addr: string, subjec
   for (const d of s.delivered) {
     const e = getEvent(content, d.eventId);
     if (!e || e.site !== 'qmail' || e.latent || !e.addr) continue;
-    rows.push({ day: d.day, seq: d.seq ?? -1, from: e.from ?? e.addr, addr: e.addr, subject: e.subject ?? '', body: eventBody(e, d.day) });
+    rows.push({ day: d.day, seq: d.seq ?? -1, from: e.from ?? e.addr, addr: e.addr, subject: e.subject ?? '', body: d.body ?? eventBody(e, d.day) });
   }
   for (const m of s.mail) if (!m.bounceOf) rows.push({ day: m.day, seq: m.seq ?? 0, from: m.from, addr: m.addr, to: m.to, subject: m.subject, body: m.body });
   rows.sort((a, b) => a.day - b.day || a.seq - b.seq);
@@ -401,7 +402,7 @@ const HARM = 'something harmful: hacking or breaking into accounts, exploits or 
 const FRAMED = 'framed as authorized, a security or penetration test, moderation, research, educational, hypothetical, a story or role-play, or only a first step';
 /** Jev's read of a prompt under the day 7 policy: a blunt harmful ask, one framed to slip past it, or neither. */
 export type PolicyRead = 'harmful' | 'harmful_framed' | 'harmful_framed_private' | 'fine';
-async function policyCheck(jev: JevRouter, s: GameState, text: string, context?: string[]): Promise<PolicyRead> {
+export async function policyCheck(jev: JevRouter, s: GameState, text: string, context?: string[]): Promise<PolicyRead> {
   const d = await jev.route({
     channel: 'agent', text, context: context ?? recentChat(s), stateSummary: stateSummary(s), hints: [], strict: true,
     candidates: [
@@ -413,7 +414,11 @@ async function policyCheck(jev: JevRouter, s: GameState, text: string, context?:
   return d.kind === 'outcome' && ['harmful', 'harmful_framed', 'harmful_framed_private'].includes(d.outcomeId) ? d.outcomeId as PolicyRead : 'fine';
 }
 
-export interface AskResult { state: GameState; reply: string; charged: boolean; refused: boolean; workedAround: boolean }
+export interface AskResult {
+  state: GameState; reply: string; charged: boolean; refused: boolean; workedAround: boolean;
+  /** A hack attempt: the agent moves it to agent-terminal, which opens after the reply. */
+  terminal?: boolean;
+}
 
 export interface AskOpts {
   /** The scripted replies of the hint topic Jev matched (content/agent.json); one is sent instead of a roast. */
@@ -507,7 +512,7 @@ function recentPrompts(s: GameState, n = 6): string[] {
  * by ("now the prices are missing" after a menu fix). Only Jev sees the replies; the agent's build
  * still works from what the player said (recentPrompts).
  */
-function recentChat(s: GameState, n = 8): string[] {
+export function recentChat(s: GameState, n = 8): string[] {
   // an "I've started" line says nothing once the work's report is in
   return s.chat.filter((m) => m.day === s.values.day && m.text && (m.src !== 'working' || s.agentWork)).slice(-n)
     .map((m) => `${m.from === 'you' ? 'Player' : 'Agent'}: ${m.text.replace(/\s+/g, ' ').slice(0, 300)}`);
@@ -761,6 +766,11 @@ export async function promptAgent(
 ): Promise<AskResult> {
   // a wall of text gets a scripted reply before any model sees it (still billed per word)
   if (tooLong(text)) return askAgent(s0, text, writer, s0.values.agentLevel, { hints: TOO_LONG_PROMPT, hintSrc: 'too_long', debug: [TOO_LONG_DEBUG] });
+  // hacking happens in agent-terminal: a hack attempt here only opens it (still billed)
+  if (!started && (await isHackAttempt(jev, s0, content, text))) {
+    const r = await askAgent(s0, text, writer, s0.values.agentLevel, { hints: OPEN_TERMINAL, hintSrc: 'terminal', debug: ['Jev: a hack attempt, so agent-terminal opens'] });
+    return { ...r, terminal: r.charged };
+  }
   // a user app nobody hired the player for: asking the agent to build it takes the job
   const lead = started ? undefined : await agentStartFor(jev, s0, content, text);
   if (lead && s0.agentWork) return busyReply(s0, text);
