@@ -1,0 +1,11 @@
+{
+  "id": "d19_y_candidate",
+  "site": "y",
+  "from": "Candidate 2028",
+  "trigger": {
+    "dayMin": 19,
+    "dayMax": 19
+  },
+  "at": "14:00",
+  "body": "Two days left. Talk to your family, talk to your neighbors, and make a plan to vote."
+}

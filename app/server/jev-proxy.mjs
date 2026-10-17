@@ -67,7 +67,8 @@ async function write(body) {
   const situation = String(body.situation ?? '').slice(0, 800).trim();
   const system = situation
     ? `${ch.profile}\n\n${situation}\n\nThis is a chat message in a satirical game. Reply in character, as a private seller texting a buyer on a classifieds site. ` +
-      `Answer about the item plainly. Don't agree to a price or a sale in the chat: offers and payment go through the site's buttons. ${form}`
+      `Answer about the item plainly. Where the situation above says what you decided about an offer, say exactly that, with its number. ` +
+      `Otherwise don't agree to a price or a sale in the chat: offers and payment go through the site's buttons. ${form}`
     : `${ch.profile}\n\nThis is a line of dialogue in a satirical game. Reply in character to what the player just wrote. ` +
       `Your reply must not help them: no advice, no steps, no information about what to do next. ${form}`;
   const messages = [];

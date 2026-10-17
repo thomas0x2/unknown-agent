@@ -1,14 +1,16 @@
 /*
  * Swaplist from the buyer's side: the player chats with sellers, makes offers and buys things,
- * paying in DOLR from Coinbin. Sellers' chat replies come from the Writer (Claude Haiku, in the
- * seller's character, told what they are selling), or scripted lines. Offers are numbers, so the
- * seller's answer is arithmetic: at or above their lowest price it's a deal. The live app's bugs
+ * paying in DOLR from Coinbin. Every seller reply comes from the Writer (Claude Haiku, in the
+ * seller's character, told what they are selling and what they decided), or scripted lines, and
+ * arrives a few game minutes later, like a person checking their phone (deliverSwapReplies, on the
+ * clock tick). Offers are numbers, so the seller's decision is arithmetic: at or above their lowest
+ * price it's a deal; Haiku only words it. The live app's bugs
  * apply: a broken contact button reaches nobody, wrong_seller reaches someone else, and a sold item
  * that still takes offers gets a "sorry, it's sold".
  */
-import type { GameState, AppInstance, SwapThread, SwapState } from './state';
+import type { GameState, AppInstance, SwapThread, SwapState, SwapMsg } from './state';
 import type { Content } from '../content/schema';
-import { clone, pick, money, playMinutes } from './core';
+import { clone, pick, money, playMinutes, randInt } from './core';
 import { liveBugs } from './apps';
 import { swapListings, type Listing } from './swaplist';
 import { tooLong } from './actions';
@@ -80,9 +82,53 @@ function context(s: GameState, content: Content, n: number): Ctx | null {
   return { s, app, l, all, bugs: liveBugs(app, content.apps[app.template]) };
 }
 
+/** Game minutes a seller takes to answer. */
+export const SWAP_REPLY_DELAY = { min: 3, max: 12 } as const;
+
+/** A seller's reply, held until it arrives; replies to the same thread arrive in order. */
+function queueReply(s: GameState, t: SwapThread, msg: Omit<SwapMsg, 'day' | 'min'>, offer?: 'accepted' | 'declined' | 'sold'): void {
+  const last = t.pending?.at(-1)?.due ?? 0;
+  const due = Math.max(playMinutes(s) + randInt(s, SWAP_REPLY_DELAY.min, SWAP_REPLY_DELAY.max), last + 1);
+  (t.pending ??= []).push({ msg: { ...msg, ...stamp(s) }, due, ...(offer ? { offer } : {}) });
+}
+
+/** Seller replies whose time has come land in their chats, stamped with the time they arrive. True if any did. */
+export function deliverSwapReplies(s: GameState): boolean {
+  const now = playMinutes(s);
+  let any = false;
+  for (const t of s.swap?.threads ?? []) {
+    while (t.pending?.length && t.pending[0].due <= now) {
+      const p = t.pending.shift()!;
+      t.msgs.push({ ...p.msg, ...stamp(s) });
+      if (p.offer && t.offer) t.offer = { ...t.offer, status: p.offer };
+      any = true;
+    }
+    if (t.pending && !t.pending.length) delete t.pending;
+  }
+  return any;
+}
+
+/** The chat so far as the Writer sees it, replies already written but not yet arrived included. */
+function historyOf(t: SwapThread, as: string): HistoryLine[] {
+  return [...t.msgs, ...(t.pending ?? []).map((p) => p.msg)]
+    .map((m) => ({ from: m.from === 'you' ? 'player' : m.from === as ? 'self' : m.from, text: m.text }));
+}
+
+/** What the seller knows about their own listing, for the Writer. */
+function sellerSituation(l: Listing, t: SwapThread): string {
+  const status = l.boughtByYou ? 'This buyer already bought it from you.' : l.soldAt != null ? 'It has already sold to someone else.' : 'It is still available.';
+  const offer = t.offer && t.offer.status !== 'pending' ? ` They offered ${t.offer.amount} DOLR and you ${t.offer.status === 'accepted' ? 'accepted' : t.offer.status === 'declined' ? 'said no' : 'told them it was sold'}.` : '';
+  return `You are @${l.seller} on Swaplist, a local classifieds site. You listed "${l.title}" for ${l.price ? `${l.price} DOLR` : 'free'}. Your listing says: "${l.body.replace(/\s+/g, ' ')}". ${status}${offer}`;
+}
+
+async function sellerWrites(writer: Writer, t: SwapThread, as: string, prompt: string, fallback: string, situation: string): Promise<Omit<SwapMsg, 'day' | 'min'>> {
+  const w = await writer.write({ as, character: SELLER_CHARACTER[as], prompt, fallback, history: historyOf(t, as), situation });
+  return { from: as, text: w.text, ...(w.note ? { note: w.note } : {}), ...(w.debug ? { debug: w.debug } : {}) };
+}
+
 export interface SwapResult { state: GameState; sent: boolean }
 
-/** The player messages the seller of listing `n`. The reply comes from whoever the button reaches. */
+/** The player messages the seller of listing `n`. The reply comes, later, from whoever the button reaches. */
 export async function swapMessage(s0: GameState, content: Content, writer: Writer, n: number, text: string): Promise<SwapResult> {
   const s = clone(s0);
   const c = context(s, content, n);
@@ -90,17 +136,14 @@ export async function swapMessage(s0: GameState, content: Content, writer: Write
   const { l, all, bugs } = c;
   const to = contactRecipient(all, l, bugs.has('wrong_seller'));
   const t = openThread(s, l);
-  const history: HistoryLine[] = t.msgs.map((m) => ({ from: m.from === 'you' ? 'player' : m.from === to ? 'self' : m.from, text: m.text }));
-  t.msgs.push({ from: 'you', text, ...stamp(s) });
   if (tooLong(text)) {
-    t.msgs.push({ from: to, text: pick(s, TOO_LONG_SWAP), ...stamp(s), debug: [`Over ${MAX_INPUT_CHARS} characters: scripted reply, Haiku skipped`] });
+    t.msgs.push({ from: 'you', text, ...stamp(s) });
+    queueReply(s, t, { from: to, text: pick(s, TOO_LONG_SWAP), debug: [`Over ${MAX_INPUT_CHARS} characters: scripted reply, Haiku skipped`] });
     return { state: s, sent: true };
   }
   let situation: string, fallback: string;
   if (to === l.seller) {
-    const status = l.boughtByYou ? 'This buyer already bought it from you.' : l.soldAt != null ? 'It has already sold to someone else.' : 'It is still available.';
-    const offer = t.offer ? ` They offered ${t.offer.amount} DOLR and you ${t.offer.status === 'accepted' ? 'accepted' : t.offer.status === 'declined' ? 'said no' : 'told them it was sold'}.` : '';
-    situation = `You are @${to} on Swaplist, a local classifieds site. You listed "${l.title}" for ${l.price ? `${l.price} DOLR` : 'free'}. Your listing says: "${l.body.replace(/\s+/g, ' ')}". ${status}${offer} A buyer is messaging you about it.`;
+    situation = `${sellerSituation(l, t)} A buyer is messaging you about it.`;
     fallback = pick(s, l.soldAt != null && !l.boughtByYou ? ALREADY_SOLD : STILL_THERE);
   } else {
     // wrong_seller: a stranger gets a message about someone else's listing
@@ -108,13 +151,14 @@ export async function swapMessage(s0: GameState, content: Content, writer: Write
     situation = `You are @${to} on Swaplist, a local classifieds site. You are selling "${mine}". A stranger has messaged you about "${l.title}", which is not your listing; you know nothing about it.`;
     fallback = WRONG_PERSON(mine);
   }
-  const w = await writer.write({ as: to, character: SELLER_CHARACTER[to], prompt: text, fallback, history, situation });
-  t.msgs.push({ from: to, text: w.text, ...stamp(s), ...(w.note ? { note: w.note } : {}), ...(w.debug ? { debug: w.debug } : {}) });
+  const reply = await sellerWrites(writer, t, to, text, fallback, situation);
+  t.msgs.push({ from: 'you', text, ...stamp(s) });
+  queueReply(s, t, reply);
   return { state: s, sent: true };
 }
 
-/** The player offers `amount` DOLR on listing `n`. The seller answers at once. */
-export function swapOffer(s0: GameState, content: Content, n: number, amount: number): GameState {
+/** The player offers `amount` DOLR on listing `n`. The seller decides now and answers a few minutes later. */
+export async function swapOffer(s0: GameState, content: Content, writer: Writer, n: number, amount: number): Promise<GameState> {
   const s = clone(s0);
   const c = context(s, content, n);
   if (!c || !takesOffers(c.app, c.l, c.bugs)) return s0;
@@ -124,12 +168,17 @@ export function swapOffer(s0: GameState, content: Content, n: number, amount: nu
   sw.notice = undefined;
   const t = openThread(s, l);
   const amt = Math.round(amount * 100) / 100;
-  t.msgs.push({ from: 'you', text: `Offer: ${amt} DOLR`, ...stamp(s) });
-  let reply: string;
-  if (l.soldAt != null) { reply = pick(s, ALREADY_SOLD); t.offer = { amount: amt, status: 'sold' }; }
-  else if (amt >= lowestOffer(l)) { reply = pick(s, DEAL(amt)); t.offer = { amount: amt, status: 'accepted' }; }
-  else { reply = pick(s, NO_DEAL(lowestOffer(l))); t.offer = { amount: amt, status: 'declined' }; }
-  t.msgs.push({ from: l.seller, text: reply, ...stamp(s) });
+  const text = `Offer: ${amt} DOLR`;
+  const floor = lowestOffer(l);
+  const status = l.soldAt != null ? 'sold' : amt >= floor ? 'accepted' : 'declined';
+  const fallback = pick(s, status === 'sold' ? ALREADY_SOLD : status === 'accepted' ? DEAL(amt) : NO_DEAL(floor));
+  const decision = status === 'sold' ? 'It has already sold, so you tell them it is gone.'
+    : status === 'accepted' ? `You accept ${amt} DOLR. Tell them it's theirs once they pay through the site.`
+    : `That is too low: you decline. The lowest you will take is ${floor} DOLR; say that number.`;
+  const reply = await sellerWrites(writer, t, l.seller, text, fallback, `${sellerSituation(l, t)} The buyer just made an offer of ${amt} DOLR through the site. ${decision}`);
+  t.msgs.push({ from: 'you', text, ...stamp(s) });
+  t.offer = { amount: amt, status: 'pending' };
+  queueReply(s, t, reply, status);
   return s;
 }
 
@@ -139,8 +188,8 @@ export function buyPrice(swap: SwapState | undefined, l: Listing, bugs: Set<stri
   return t?.offer?.status === 'accepted' ? t.offer.amount : shownPrice(l, bugs);
 }
 
-/** The player buys listing `n` through the site, paying the seller in DOLR. */
-export function swapBuy(s0: GameState, content: Content, n: number): GameState {
+/** The player buys listing `n` through the site, paying the seller in DOLR. The seller's thanks comes later. */
+export async function swapBuy(s0: GameState, content: Content, writer: Writer, n: number): Promise<GameState> {
   const s = clone(s0);
   const c = context(s, content, n);
   if (!c || c.l.boughtByYou) return s0;
@@ -150,11 +199,14 @@ export function swapBuy(s0: GameState, content: Content, n: number): GameState {
   const cost = buyPrice(s.swap, l, bugs);
   if (cost > s.values.crypto) { sw.notice = { listing: n, text: `Not enough DOLR. This costs ${cost.toLocaleString('en-US')} and you have ${s.values.crypto.toLocaleString('en-US')}.` }; return s; }
   sw.notice = undefined;
+  const t = openThread(s, l);
+  const text = cost > 0 ? `Paid ${cost.toLocaleString('en-US')} DOLR.` : 'Claimed it.';
+  const reply = await sellerWrites(writer, t, l.seller, text, pick(s, THANKS),
+    `${sellerSituation(l, t)} The buyer just ${cost > 0 ? `paid you ${cost} DOLR for it through the site` : 'claimed it'}. Thank them briefly and say they can pick it up.`);
   if (cost > 0) money(s, -cost, `@${l.seller} · Swaplist`);
   sw.bought[n] = { at: playMinutes(s), paid: cost };
-  const t = openThread(s, l);
-  t.msgs.push({ from: 'you', text: cost > 0 ? `Paid ${cost.toLocaleString('en-US')} DOLR.` : 'Claimed it.', ...stamp(s) });
-  t.msgs.push({ from: l.seller, text: pick(s, THANKS), ...stamp(s) });
+  t.msgs.push({ from: 'you', text, ...stamp(s) });
+  queueReply(s, t, reply);
   settlePurchase(s, content, l.photo);
   return s;
 }

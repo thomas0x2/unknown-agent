@@ -3,8 +3,9 @@
   "site": "y",
   "from": "CityPulse",
   "trigger": {
-    "dayMin": 4
+    "dayMin": 4,
+    "dayMax": 4
   },
   "at": "17:10",
-  "body": "ROBOT ON THE LOOSE. A DoorDish delivery robot \"escaped\" and roamed downtown for an hour. People are panicking about rogue AI. DoorDish says it was a marketing stunt. The robot has been promoted. citypulse.news/robot"
+  "body": "STILL MISSING. Two days later, nobody can find the escaped DoorDish robot. Sightings on Ferris St, Alder St and twice in a parking garage. DoorDish says it has been promoted. citypulse.news/robot"
 }

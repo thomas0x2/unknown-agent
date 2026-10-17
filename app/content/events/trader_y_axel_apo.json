@@ -1,0 +1,16 @@
+{
+  "id": "trader_y_axel_apo",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "flagsAll": [
+      "trader_client"
+    ]
+  },
+  "launch": {
+    "app": "trader_contact",
+    "feature": "auto_buy",
+    "after": 96
+  },
+  "body": "@randall_crane 🚀"
+}

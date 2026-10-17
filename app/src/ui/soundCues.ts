@@ -12,6 +12,8 @@ export interface SoundSnap {
   day: number;
   clockMin: number;
   agentMsgs: number;
+  /** Swaplist seller messages that have arrived. */
+  sellerMsgs: number;
   /** Ledger entries, and the running totals of money in and money out. */
   txCount: number;
   txIn: number;
@@ -31,6 +33,7 @@ export function soundSnap(s: GameState): SoundSnap {
     day: s.values.day,
     clockMin: s.clockMin,
     agentMsgs: s.chat.filter((m) => m.from === 'agent').length,
+    sellerMsgs: (s.swap?.threads ?? []).reduce((n, t) => n + t.msgs.filter((m) => m.from !== 'you').length, 0),
     txCount: s.tx.length,
     txIn,
     txOut,
@@ -51,7 +54,7 @@ export function soundCues(a: SoundSnap, b: SoundSnap): Cue[] {
   const out: Cue[] = [];
   if (a.morning && !b.morning) out.push('dayStart');
   if (a.clockMin < LATE_MIN && b.clockMin >= LATE_MIN) out.push('lateWarn');
-  if (b.agentMsgs > a.agentMsgs) out.push('reply');
+  if (b.agentMsgs > a.agentMsgs || b.sellerMsgs > a.sellerMsgs) out.push('reply');
   // Forkyard pushes are silent; only Deploy and Redeploy make a sound, from the button itself (main.ts)
   out.push(...money(a, b));
   return out;

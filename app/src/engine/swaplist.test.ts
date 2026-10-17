@@ -1,5 +1,5 @@
 /*
- * Swaplist starts empty: no bugs from builds or overnight breaks until its first listing, two hours
+ * Swaplist starts empty: no bugs from builds or overnight breaks until its first listing, an hour
  * of play after the first deploy. Then the held-back bugs that can show land, and a clean app still gets one.
  */
 import { describe, it, expect } from 'vitest';
@@ -34,7 +34,7 @@ describe('Swaplist before its first listing', () => {
       buildApp(s, id, FEATURES, 1, { tmpl });
       deployApp(s, id, tmpl);
       expect(wrong(s, id)).toBe(0);
-      expect(getApp(s, id)!.contentAt).toBe(playMinutes(s) + 120);
+      expect(getApp(s, id)!.contentAt).toBe(playMinutes(s) + 60);
     }
   });
 
@@ -46,7 +46,7 @@ describe('Swaplist before its first listing', () => {
     expect(getApp(s, id)!.breaks).toEqual([]);
   });
 
-  it('lists nothing until two hours of play after the deploy, then Viktor\'s watch', () => {
+  it('lists nothing until an hour of play after the deploy, then Viktor\'s watch', () => {
     const { s, id } = withSwaplist(5);
     buildApp(s, id, FEATURES, 1, { tmpl });
     deployApp(s, id, tmpl);
@@ -56,15 +56,15 @@ describe('Swaplist before its first listing', () => {
     expect(swapListings(at, at + 600).length).toBeGreaterThan(5);
   });
 
-  it('a deploy at 21:30 lists at 11:30 the next morning: the night does not count', () => {
+  it('a deploy at 21:30 lists at 10:30 the next morning: the night does not count', () => {
     const { s, id } = withSwaplist(6);
     s.clockMin = 21 * 60 + 30;
     buildApp(s, id, FEATURES, 1, { tmpl });
     deployApp(s, id, tmpl);
     s.values.day += 1;
-    s.clockMin = 11 * 60 + 29;
+    s.clockMin = 10 * 60 + 29;
     expect(wakeApps(s, content)).toEqual([]);
-    s.clockMin = 11 * 60 + 30;
+    s.clockMin = 10 * 60 + 30;
     expect(wakeApps(s, content).map((a) => a.id)).toEqual([id]);
   });
 });
@@ -75,7 +75,7 @@ describe('Swaplist when its first listing appears', () => {
       const { s, id } = withSwaplist(seed);
       buildApp(s, id, FEATURES, 5, { tmpl });
       deployApp(s, id, tmpl);
-      s.clockMin += 119;
+      s.clockMin += 59;
       wakeApps(s, content);
       expect(wrong(s, id)).toBe(0);
       s.clockMin += 1;
@@ -94,7 +94,7 @@ describe('Swaplist when its first listing appears', () => {
     const { s, id } = withSwaplist(9);
     buildApp(s, id, FEATURES, 1, { tmpl });
     deployApp(s, id, tmpl);
-    s.clockMin += 120;
+    s.clockMin += 60;
     wakeApps(s, content);
     let bugs = 0;
     for (let i = 0; i < 10; i++) { buildApp(s, id, FEATURES, 1, { tmpl }); bugs += getApp(s, id)!.repo.filter((f) => !f.correct).length; }

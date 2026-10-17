@@ -1,0 +1,219 @@
+/* Y profile pictures for the story's accounts, drawn as inline SVG in one house style: flat
+   geometric shapes, a dark outline, a muted palette with one neon accent each, a single flat shade
+   on the face and a plain background. Everyone else keeps an initials tile (avatar() in view.ts). */
+
+const INK = '#1c1e24';
+const SHADE = 'rgba(0,0,0,.16)';
+
+const svg = (bg: string, body: string, viewBox = '0 0 64 64') =>
+  `<svg viewBox="${viewBox}" preserveAspectRatio="none" aria-hidden="true"><rect x="-8" y="-8" width="80" height="80" fill="${bg}"/>`
+  + `<g stroke="${INK}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">${body}</g></svg>`;
+
+// ── shared parts (a centred head and shoulders on a 64×64 grid) ──
+const shoulders = (fill: string, wide = 0) =>
+  `<path d="M${6 - wide} 66 C${6 - wide} 52 ${17 - wide} 46 32 46 C${47 + wide} 46 ${58 + wide} 52 ${58 + wide} 66Z" fill="${fill}"/>`;
+const neck = (skin: string) =>
+  `<path d="M27 37 V48 H37 V37Z" fill="${skin}"/><path d="M27 41 H37 V45 Q32 47 27 45Z" fill="${SHADE}" stroke="none"/>`;
+const ears = (skin: string) =>
+  `<ellipse cx="21" cy="30" rx="2.4" ry="3.4" fill="${skin}"/><ellipse cx="43" cy="30" rx="2.4" ry="3.4" fill="${skin}"/>`;
+const head = (skin: string) =>
+  `<ellipse cx="32" cy="29" rx="11" ry="13" fill="${skin}"/><path d="M32 16 A11 13 0 0 1 32 42 A8 13 0 0 0 32 16Z" fill="${SHADE}" stroke="none"/>`;
+const face = (skin: string) => ears(skin) + head(skin);
+const dot = (x: number, y: number, r = 1.3) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${INK}" stroke="none"/>`;
+const eyes = (y = 30, r = 1.3) => dot(28, y, r) + dot(36, y, r);
+const line = (d: string, w = 1.6) => `<path d="${d}" fill="none" stroke-width="${w}"/>`;
+const shirtV = (fill: string) => `<path d="M26 46.5 L32 57 L38 46.5Z" fill="${fill}"/>`;
+
+/** Randall Crane: orange tan, the swoop, navy suit, a very long tie. */
+const CRANE = svg('#4b5876',
+  shoulders('#2b3352') + shirtV('#ebe7de')
+  + `<path d="M30.4 49 H33.6 L35 61 L32 65 L29 61Z" fill="#ff2e5f"/>`
+  + neck('#e5a165') + face('#e5a165')
+  + `<path d="M20.5 28 C18.5 17 26 12.5 34 13 C42 13.5 46.5 18 45 25 C42 20.5 35 19 28 20.5 C25 21.5 22 24 20.5 28Z" fill="#efc65c"/>`
+  + `<path d="M28 20.5 C33 17.5 40 18 45 25" fill="none" stroke-width="1.4"/>`
+  + line('M26 28.6 H30') + line('M34 28.6 H38')
+  + `<ellipse cx="32" cy="36.4" rx="1.7" ry="1.3" fill="#a8543a"/>`);
+
+/** Candidate 2028: Crane's opponent. Any suit, any smile, a flag pin. */
+const CANDIDATE = svg('#878c95',
+  shoulders('#4a5566') + shirtV('#ece9e2')
+  + `<path d="M30.6 49 H33.4 L34.2 57 L32 60 L29.8 57Z" fill="#6f7f95"/>`
+  + `<path d="M26 46.5 L30 55 M38 46.5 L34 55" fill="none" stroke-width="1.6"/>`
+  + `<rect x="39.5" y="51" width="5" height="3.4" fill="#ece9e2" stroke-width="1.2"/><path d="M39.5 52.2 H44.5 M39.5 53.4 H44.5" fill="none" stroke="#ff3355" stroke-width="0.9"/><rect x="39.5" y="51" width="2" height="1.6" fill="#3b4f86" stroke="none"/>`
+  + neck('#e9c1a0') + face('#e9c1a0')
+  + `<path d="M21 26 C20.5 16 27 13 33 13.3 C40 13.5 44.5 17.5 43 26 C41.5 21.5 38 19 30 19.3 C26 19.5 23 22 21 26Z" fill="#5e4a3a"/>`
+  + `<path d="M21 26 C21 24 21.5 23 22.2 22.3 M43 26 C43 24 42.6 23 42 22.3" fill="none" stroke="#b3aca4" stroke-width="1.6"/>`
+  + `<path d="M26.4 19.6 C29 18 33 17.6 36 18.4" fill="none" stroke-width="1.2"/>`
+  + eyes(29.8, 1.3) + `<path d="M27.5 34.4 Q32 40 36.5 34.4Z" fill="#f6f4ee" stroke-width="1.5"/>`);
+
+/** Axel Rook: black tee, receding hair, the smirk, a small rocket on the chest. */
+const ROOK = svg('#3d3a4c',
+  shoulders('#24252c') + `<path d="M26 46.5 Q32 51 38 46.5" fill="none"/>`
+  + `<path d="M41 57 L43 51.5 L45 57Z" fill="#2ef2ff"/>`
+  + neck('#eec8a4') + face('#eec8a4')
+  + `<path d="M21.3 27 C20.5 18 26 15 32 15 C38 15 43.5 18 42.7 27 C41 22.5 38.5 21.5 35.5 21.8 C33 19.8 30 20 28 21.8 C25 21.5 22.5 23 21.3 27Z" fill="#3b2f2a"/>`
+  + line('M26.5 28 H30') + line('M34 28 H37.5') + eyes(30.5, 1.2)
+  + line('M29 36.5 Q33 37.6 36 35'));
+
+/** Cal Hartman: grey crewneck, soft brown hair, earnest eyebrows, a status light on the collar. */
+const HARTMAN = svg('#8ea698',
+  shoulders('#9b9ca0') + `<path d="M26 46.5 Q32 51.5 38 46.5" fill="#e9e6df"/>`
+  + `<circle cx="41.5" cy="53" r="1.8" fill="#3dffa8"/>`
+  + neck('#f1d0b0') + face('#f1d0b0')
+  + `<path d="M21 26 C20 16 27 13.5 33 14 C40 14 44.5 18 43 26 C40.5 21.5 37 22.5 34.5 19.5 C31 22.5 26 21 21 26Z" fill="#6b4a33"/>`
+  + line('M25.8 26.6 Q28 25.4 30.2 26.4', 1.4) + line('M33.8 26.4 Q36 25.4 38.2 26.6', 1.4)
+  + eyes(30.2, 1.6) + line('M30 36.4 H34', 1.4));
+
+/** Max Stryker: shaved head, beard, sunglasses, gold chain, a shirt one size too small. */
+const STRYKER = svg('#6a3a40',
+  shoulders('#1f1f25', 4) + `<path d="M25 47 Q32 56 39 47" fill="none" stroke="#caa24a" stroke-width="2.2"/>`
+  + neck('#c69070') + face('#c69070')
+  + `<ellipse cx="27" cy="20" rx="3.4" ry="1.8" fill="rgba(255,255,255,.35)" stroke="none" transform="rotate(-25 27 20)"/>`
+  + `<path d="M21.6 32 C22 41 27 43 32 43 C37 43 42 41 42.4 32 C39 37.5 25 37.5 21.6 32Z" fill="#4a3a33"/>`
+  + `<rect x="23.5" y="26.5" width="7.5" height="5" rx="1.8" fill="#16171b"/><rect x="33" y="26.5" width="7.5" height="5" rx="1.8" fill="#16171b"/>`
+  + `<path d="M31 28 H33" fill="none"/>`
+  + `<path d="M25 30 L28 27.8 M34.5 30 L37.5 27.8" fill="none" stroke="#ff2bd6" stroke-width="1.3"/>`
+  + line('M29.5 38.3 H34.5', 1.4));
+
+/** Mara Vey: dark bob, round glasses, trench coat, press lanyard. */
+const VEY = svg('#4d7977',
+  `<path d="M19 33 C17 17 25 12.5 32 12.5 C39 12.5 47 17 45 33 V41 H39.5 V30 H24.5 V41 H19Z" fill="#2a2226"/>`
+  + shoulders('#c7b28a') + `<path d="M25 46.5 L32 60 L39 46.5Z" fill="#2f3a44"/>`
+  + `<path d="M25 46.5 L29 55 L26 56 M39 46.5 L35 55 L38 56" fill="none"/>`
+  + `<path d="M28 47 L32 56 L36 47" fill="none" stroke="#e6ff3a" stroke-width="1.6"/><rect x="29.5" y="55.5" width="5" height="6" rx="0.8" fill="#e6ff3a"/>`
+  + neck('#e9bf9d') + head('#e9bf9d')
+  + `<path d="M20.8 27 C21.5 17 27.5 14.3 33 14.3 C39 14.3 43.5 18 43.2 27 C38 23.5 29 21 20.8 27Z" fill="#2a2226"/>`
+  + `<circle cx="28" cy="30.5" r="3.2" fill="rgba(255,255,255,.22)" stroke-width="1.5"/><circle cx="36" cy="30.5" r="3.2" fill="rgba(255,255,255,.22)" stroke-width="1.5"/>`
+  + line('M31.2 30.3 H32.8', 1.4) + eyes(30.5, 1.1) + line('M30 36.6 Q32 37.4 34 36.6', 1.4));
+
+/** Gino: chef's whites, grey moustache, a neckerchief in basil green. */
+const GINO = svg('#9e6a52',
+  shoulders('#ece7dc') + dot(29, 58, 1) + dot(35, 58, 1)
+  + neck('#e2b28c')
+  + `<path d="M25.5 44.5 Q32 48.5 38.5 44.5 L37 50 L32 55 L27 50Z" fill="#4dff7a"/>`
+  + face('#e2b28c')
+  + `<path d="M20.5 30 C19.5 23 21.5 20 24.5 19.5 C24 23 23.5 26 23.5 31Z" fill="#bab7b1"/><path d="M43.5 30 C44.5 23 42.5 20 39.5 19.5 C40 23 40.5 26 40.5 31Z" fill="#bab7b1"/>`
+  + `<path d="M25 25.6 Q28 24 31 25.4 M33 25.4 Q36 24 39 25.6" fill="none" stroke="#8c8a86" stroke-width="2.2"/>`
+  + line('M26.5 30 Q28 28.6 29.5 30', 1.4) + line('M34.5 30 Q36 28.6 37.5 30', 1.4)
+  + `<path d="M25.5 35.5 C27.5 32.5 31 33 32 34.3 C33 33 36.5 32.5 38.5 35.5 C36 37.5 33.5 36.6 32 35.8 C30.5 36.6 28 37.5 25.5 35.5Z" fill="#8c8a86"/>`);
+
+/** deskjockey: blue shirt, red braces, slicked hair, the tickers in his glasses. */
+const DESKJOCKEY = svg('#2e4a3d',
+  shoulders('#7c9cc4') + `<path d="M26.5 46.5 L30 51 L32 47.5 L34 51 L37.5 46.5" fill="#d9e3ef"/>`
+  + `<path d="M22 49 L24 66 M42 49 L40 66" fill="none" stroke="#7a2f36" stroke-width="3"/>`
+  + neck('#e8c4a2') + face('#e8c4a2')
+  + `<path d="M21 26 C20.5 15.5 27 13 33 13 C40 13 44 17 43 26 C40.5 19 31 16.5 21 26Z" fill="#2c2723"/>`
+  + `<path d="M26 18.5 C30 16.8 36 16.8 40 19" fill="none" stroke-width="1.2"/>`
+  + `<rect x="24" y="27.5" width="7" height="5" rx="1" fill="#1c2a24" stroke-width="1.5"/><rect x="33" y="27.5" width="7" height="5" rx="1" fill="#1c2a24" stroke-width="1.5"/>`
+  + `<path d="M31 29.5 H33" fill="none" stroke-width="1.4"/>`
+  + `<path d="M25.2 31 L27 29.6 L28.2 30.4 L30 28.8 M34.2 31 L36 29.6 L37.2 30.4 L39 28.8" fill="none" stroke="#39ff88" stroke-width="1"/>`
+  + line('M29.5 37 H34.5', 1.5));
+
+/** 6ft_sigma: quarter-zip vest, cap pulled low, chin up. */
+const SIGMA = svg('#5b6570',
+  shoulders('#a8bfd5') + `<path d="M8 66 C8 54 16 48 24 47 L28 66Z M56 66 C56 54 48 48 40 47 L36 66Z" fill="#33404d"/>`
+  + neck('#e3b994') + face('#e3b994')
+  + `<path d="M20.8 25 C20.5 15 26 12 32 12 C38 12 43.5 15 43.2 25Z" fill="#2d2d34"/>`
+  + `<path d="M20 25 H44 L48 27 Q32 29.5 16.5 27Z" fill="#2d2d34"/>`
+  + `<path d="M29.5 16.5 H34.5 M29.5 16.5 L32 18.8 L29.5 21 H34.5" fill="none" stroke="#c8ff2e" stroke-width="1.4"/>`
+  + `<path d="M26 31 H30 M34 31 H38" fill="none" stroke-width="1.8"/>`
+  + line('M29.5 37.4 Q32 36.4 34.5 37.4', 1.5));
+
+/** Viktor: balding, grey, cardigan, reading glasses, a pen from the old job. */
+const VIKTOR = svg('#787264',
+  shoulders('#6b5a49') + `<path d="M26 46.5 L32 58 L38 46.5Z" fill="#d9d3c5"/>`
+  + `<path d="M26 46.5 L31 60 M38 46.5 L33 60" fill="none"/>`
+  + `<path d="M40.5 50 V55" fill="none" stroke="#ff9d2e" stroke-width="2.4"/>`
+  + neck('#dcae8c') + face('#dcae8c')
+  + `<path d="M20.6 31 C19.6 24 21 21 23.8 20.2 C23.4 24 23.4 27 23.6 32Z" fill="#c9c6bf"/><path d="M43.4 31 C44.4 24 43 21 40.2 20.2 C40.6 24 40.6 27 40.4 32Z" fill="#c9c6bf"/>`
+  + line('M26.4 26.8 Q28 26.2 29.6 26.8', 1.3) + line('M34.4 26.8 Q36 26.2 37.6 26.8', 1.3)
+  + `<rect x="24.6" y="29.5" width="6.4" height="4" rx="1.2" fill="none" stroke-width="1.4"/><rect x="33" y="29.5" width="6.4" height="4" rx="1.2" fill="none" stroke-width="1.4"/>`
+  + `<path d="M31 31 H33" fill="none" stroke-width="1.2"/>` + line('M26.5 31.6 H29.2', 1.2) + line('M34.8 31.6 H37.5', 1.2)
+  + line('M29.5 38 Q32 37.2 34.5 38', 1.4));
+
+/** The sales rep: quarter-zip, headset, the smile. */
+const SALES_REP = svg('#3e6e8e',
+  shoulders('#2c3e52') + `<path d="M28 46.5 L32 50 L36 46.5" fill="#2c3e52"/><path d="M32 50 V66" fill="none" stroke-width="1.4"/>`
+  + neck('#f0caa6') + face('#f0caa6')
+  + `<path d="M21 26 C20.5 16 27 13.5 33 13.8 C40 14 44.5 18 43 26 C40 20.5 33 19.5 30 18.5 C27 21 24 22 21 26Z" fill="#8a5a2c"/>`
+  + `<path d="M19.5 30 C19.5 14 44.5 14 44.5 30" fill="none" stroke-width="2.6"/>`
+  + `<rect x="17.5" y="27" width="4" height="7" rx="1.6" fill="#33343a"/>`
+  + `<path d="M19.5 34 Q20 39 27 38.5" fill="none" stroke-width="1.6"/><circle cx="27.6" cy="38.5" r="1.5" fill="#ff3fa4"/>`
+  + eyes(29.6, 1.3) + `<path d="M28.5 34.6 Q32 39.4 35.5 34.6Z" fill="#f4f1ea" stroke-width="1.5"/>`);
+
+/** dev_null: hood up, no face, two cursors. */
+const DEV_NULL = svg('#1d2925',
+  `<path d="M14 66 C14 52 20 47 32 47 C44 47 50 52 50 66Z" fill="#3a3f46"/>`
+  + `<path d="M17 47 C14 24 21 12 32 12 C43 12 50 24 47 47Z" fill="#3a3f46"/>`
+  + `<ellipse cx="32" cy="31" rx="9.5" ry="11.5" fill="#121518"/>`
+  + `<path d="M17 47 C14 24 21 12 32 12 C43 12 50 24 47 47" fill="none"/>`
+  + `<rect x="26.5" y="29" width="3" height="4" fill="#39ff6a" stroke="none"/><rect x="34.5" y="29" width="3" height="4" fill="#39ff6a" stroke="none"/>`
+  + `<path d="M28 48 V58 M36 48 V58" fill="none" stroke="#c9ccd1" stroke-width="1.4"/>`);
+
+/** studioghast: a ghost in a beret, holding the pencil. */
+const STUDIOGHAST = svg('#6e6985',
+  `<path d="M18 60 V30 C18 19.5 24 14.5 32 14.5 C40 14.5 46 19.5 46 30 V60 L42 56 L38 60 L34 56 L30 60 L26 56 L22 60Z" fill="#ece9f2"/>`
+  + `<path d="M41 22 A10 14 0 0 1 46 30 V58 L44 58 V31 C44 27 43 24 41 22Z" fill="${SHADE}" stroke="none"/>`
+  + `<ellipse cx="32" cy="15.5" rx="11" ry="3.8" fill="#3a3346" transform="rotate(-8 32 15.5)"/><path d="M33 11.8 V9.5" fill="none" stroke-width="2.2"/>`
+  + `<ellipse cx="28" cy="29" rx="1.7" ry="2.6" fill="${INK}" stroke="none"/><ellipse cx="36" cy="29" rx="1.7" ry="2.6" fill="${INK}" stroke="none"/>`
+  + `<ellipse cx="32" cy="36" rx="1.4" ry="1.8" fill="${INK}" stroke="none"/>`
+  + `<g transform="rotate(35 46 44)"><rect x="44" y="34" width="4" height="16" fill="#d8b45c"/><path d="M44 50 L46 55 L48 50Z" fill="#ff4fb0"/></g>`);
+
+/** The Current: a paper circle, three waves, one lit. */
+const CURRENT = svg('#1f2b3a',
+  `<circle cx="32" cy="32" r="19" fill="#e9e4d8"/>`
+  + `<path d="M18 25 Q22.5 21 27 25 T36 25 T46 25" fill="none" stroke-width="2.4"/>`
+  + `<path d="M15.5 32 Q20.5 28 25 32 T34.5 32 T48.5 32" fill="none" stroke="#2ee6ff" stroke-width="3.4"/>`
+  + `<path d="M18 39 Q22.5 35 27 39 T36 39 T46 39" fill="none" stroke-width="2.4"/>`);
+
+/** CityPulse: a screen with a heartbeat on it. */
+const CITYPULSE = svg('#7c3536',
+  `<rect x="13" y="16" width="38" height="32" rx="6" fill="#26262c"/>`
+  + `<path d="M17 33 H24 L27 27 L31 40 L35 22 L38 33 H47" fill="none" stroke="#f4ff3a" stroke-width="2.4"/>`
+  + `<path d="M26 54 H38" fill="none" stroke-width="2.4"/>`);
+
+/** Liftoff Daily: a rocket on its way up. */
+const LIFTOFF = svg('#2d3550',
+  `<g transform="rotate(35 32 32)">`
+  + `<path d="M28.5 47 L32 58 L35.5 47Z" fill="#ff7a1a"/>`
+  + `<path d="M27 40 L21 48 L27 46Z M37 40 L43 48 L37 46Z" fill="#8a93a8"/>`
+  + `<path d="M27 47 V24 C27 16 32 9 32 9 C32 9 37 16 37 24 V47Z" fill="#dcd8cf"/>`
+  + `<path d="M34.5 16 C36 19 37 21.5 37 24 V47 H34.5Z" fill="${SHADE}" stroke="none"/>`
+  + `<circle cx="32" cy="27" r="3" fill="#6d86a8"/></g>`);
+
+/** MarketWire: three bars and a line that only goes up. */
+const MARKETWIRE = svg('#2e3640',
+  `<rect x="16" y="36" width="8" height="14" fill="#7b8ea3"/><rect x="28" y="28" width="8" height="22" fill="#7b8ea3"/><rect x="40" y="20" width="8" height="30" fill="#7b8ea3"/>`
+  + `<path d="M14 50 H50" fill="none" stroke-width="2.2"/>`
+  + `<path d="M14 34 L24 26 L32 30 L46 16 M40 16 H46 V22" fill="none" stroke="#2bff88" stroke-width="2.6"/>`);
+
+/** Spin Cycle regulars: the front-loader everyone is waiting for. */
+const SPIN_CYCLE = svg('#5c7b8b',
+  `<rect x="14" y="10" width="36" height="46" rx="4" fill="#e3e1db"/>`
+  + `<path d="M14 19 H50" fill="none"/><circle cx="43.5" cy="14.5" r="1.8" fill="#9aa0a8" stroke-width="1.4"/><path d="M19 14.5 H27" fill="none" stroke-width="1.6"/>`
+  + `<circle cx="32" cy="37" r="12.5" fill="#b9bdc4"/><circle cx="32" cy="37" r="8.8" fill="#3e5765"/>`
+  + `<path d="M23.4 39 Q27.5 36 32 39 T40.6 39 A8.8 8.8 0 0 1 23.4 39Z" fill="#2affd5" stroke="none"/>`
+  + `<circle cx="32" cy="37" r="8.8" fill="none"/>`);
+
+/** By Y handle. The impostor shares Crane's picture, saved at the wrong size. */
+export const Y_AVATARS: Record<string, string> = {
+  randall_crane: CRANE,
+  randa11_crane: CRANE.replace('viewBox="0 0 64 64"', 'viewBox="5 0 54 64"'),
+  candidate_2028: CANDIDATE,
+  axel_rook: ROOK,
+  cal_hartman: HARTMAN,
+  max_stryker: STRYKER,
+  mara_vey: VEY,
+  trattoria_owner: GINO,
+  deskjockey: DESKJOCKEY,
+  '6ft_sigma': SIGMA,
+  viktor: VIKTOR,
+  a_sales_rep: SALES_REP,
+  dev_null: DEV_NULL,
+  studioghast: STUDIOGHAST,
+  the_current: CURRENT,
+  citypulse: CITYPULSE,
+  liftoff_daily: LIFTOFF,
+  marketwire: MARKETWIRE,
+  spin_cycle_regulars: SPIN_CYCLE,
+};

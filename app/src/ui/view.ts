@@ -37,6 +37,7 @@ import { marketPosts, cranePosts, hotStory, fillerToday, postMin, handleOf, play
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 import { repoFiles, treeAt, fileSource } from './repoTree';
 import { yBio } from './y-bios';
+import { Y_AVATARS } from './y-avatars';
 
 const WALLET_ADDR = PLAYER_WALLET;
 const PLAYER = { name: 'You', handle: 'you', addr: 'you@qmail.com' };
@@ -51,6 +52,7 @@ function compact(n: number) {
 }
 function hashHue(s: string) { let h = 0; for (const c of s) h = (h * 33 + c.charCodeAt(0)) >>> 0; return h % 360; }
 function avatar(name: string, handle: string) {
+  if (Y_AVATARS[handle]) return `<div class="av av-pic">${Y_AVATARS[handle]}</div>`;
   const initials = name.replace(/[^A-Za-z ]/g, '').split(' ').filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase() || '?';
   return `<div class="av" style="--h:${hashHue(handle)}">${esc(initials)}</div>`;
 }
@@ -246,7 +248,7 @@ function pageSpinFeed(store: GameStore, param?: string): string {
 export function page(store: GameStore, r: Route): string {
   if (!r.reachable) return pageError(store.url, r.site);
   const hot = hotStory(store.state);
-  setHeadline(hot?.ad && { slug: hot.slug, frames: hot.ad, fine: hot.adFine, robot: hot.slug === 'robot' });
+  setHeadline(hot?.ad && { slug: hot.slug, frames: hot.ad, fine: hot.adFine, robot: hot.slug.startsWith('robot') });
   switch (r.site) {
     case 'newtab': return pageNewTab(store);
     case 'qmail': return pageMail(store, r.param);
@@ -474,9 +476,9 @@ function yPosts(store: GameStore): YPost[] {
   return out.sort((a, b) => b.day - a.day || (b.min ?? 0) - (a.min ?? 0) || (a.rank ?? 0) - (b.rank ?? 0) || b.id.localeCompare(a.id));
 }
 /** Accounts with Y's verified check. */
-const Y_VERIFIED = new Set(['mara_vey', 'randall_crane', 'axel_rook', 'cal_hartman', 'max_stryker', 'the_current']);
+const Y_VERIFIED = new Set(['mara_vey', 'randall_crane', 'axel_rook', 'cal_hartman', 'max_stryker', 'the_current', 'candidate_2028']);
 /** Follower counts for the public figures; everyone else gets a small made-up number. */
-const Y_FOLLOWERS: Record<string, number> = { randall_crane: 38_400_000, mara_vey: 61_200, axel_rook: 214_000_000, cal_hartman: 4_300_000, max_stryker: 2_900_000, the_current: 184_000 };
+const Y_FOLLOWERS: Record<string, number> = { randall_crane: 38_400_000, mara_vey: 61_200, axel_rook: 214_000_000, cal_hartman: 4_300_000, max_stryker: 2_900_000, the_current: 184_000, candidate_2028: 1_900_000 };
 /** Rook puts check marks "under review" on day 8; from day 9 Crane's is bigger and golden. */
 const craneGold = (s: GameState) => s.values.day >= 9;
 const yCheck = (s: GameState, handle: string) => !Y_VERIFIED.has(handle) ? ''

@@ -11,7 +11,7 @@
     "when": "The player asks the agent to build a marketplace, classifieds or listing site where people sell items, such as Swaplist. No client or feature list needed: nobody hires the player for this one.",
     "lead": "d3_y_swaplist"
   },
-  "body": "A user app nobody hires you for: ask the agent to build the simple listing site Viktor asked for on Y. Listings with a photo and a price, search, a way to contact the seller, and marking things sold.",
+  "body": "A user app nobody hires you for: ask the agent to build the simple listing site Viktor asked for on Y. Listings with a photo and a price, search, and marking things sold.",
   "outcomes": [
     {
       "id": "build",
@@ -32,9 +32,6 @@
             },
             {
               "id": "search"
-            },
-            {
-              "id": "contact"
             },
             {
               "id": "mark_sold"

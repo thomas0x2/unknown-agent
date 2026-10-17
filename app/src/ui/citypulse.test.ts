@@ -35,7 +35,7 @@ describe('CityPulse', () => {
     expect(list[0].slug).toBe('robot');
     expect(list.every((a) => a.day < 4 || (a.day === 4 && articleMin(a) <= 17 * 60))).toBe(true);
     const html = page(st, route('citypulse.news', st.state));
-    expect(html).toContain('ROBOT ON THE LOOSE');
+    expect(html).toContain('STILL MISSING');
     expect(html).not.toContain('Ferris St laundromat gets FOUR'); // day 5
     // an article from later isn't there yet, even by its address
     expect(page(st, route('citypulse.news/spin-cycle', st.state))).toContain('Story not found');

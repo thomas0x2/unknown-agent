@@ -13,7 +13,7 @@ import { Y as YCFG, FAMILY, APPS, AGENT_WORK, CLOCK, MAX_INPUT_CHARS } from './c
 import { clone, addValue, log, pick, rand, money, pushMail, sendLater, gameMinutes } from './core';
 import { applyEffects } from './effects';
 import { chargeAgent, promptCost, policyActive, recordWorkaround } from './agent';
-import { getEvent, activeDeliveries, reachableByEmail, triggerMatches, eventBody, queueLaunch, queueAt, yPostEvents } from './events';
+import { getEvent, activeDeliveries, reachableByEmail, triggerMatches, eventBody, queueLaunch, queueFeatureLaunch, queueAt, yPostEvents } from './events';
 import { buildApp, fixApp, fixBreak, fixCategories, componentBugs, featureName, needsWork, onForkyard, fillSpec, deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, bugsOf, breakVariant, type BuildReport } from './apps';
 import { type Writer, type HistoryLine, scriptedWriter } from './writer';
 import { dateFull, clockTime } from './calendar';
@@ -1162,6 +1162,8 @@ export function deploy(s0: GameState, appId: string, content?: Content): GameSta
   deployAppCore(s, appId, app && content?.apps[app.template], content);
   // a client's site going live for the first time: what waits on its launch is on its way
   if (first && app?.clientEventId && content) queueLaunch(s, content, app.clientEventId);
+  // and what waits on one of its features going live (Crane's $APO post tests the new auto-buy)
+  if (app?.clientEventId && content) queueFeatureLaunch(s, content, app.clientEventId, app.features.map((f) => f.id));
   log(s, `Deployed ${getApp(s, appId)?.name ?? appId}.`, 'info');
   return s;
 }

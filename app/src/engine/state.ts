@@ -83,6 +83,8 @@ export interface AppInstance {
   contentLive?: boolean;
   /** Its first build or the player's first deploy couldn't ship a bug that shows: the first one that can lands. */
   owedBug?: boolean;
+  /** Story bugs (AppTemplate.storyBugs) already put in its code: each lands once a game. */
+  planted?: string[];
   breaks: AppBreak[];
   /** Build bugs the agent has fixed, per feature: it doesn't make them again. */
   fixed?: Record<string, string[]>;
@@ -295,6 +297,8 @@ export interface SwapThread {
   seller: string;
   msgs: SwapMsg[];
   offer?: { amount: number; status: 'pending' | 'accepted' | 'declined' | 'sold' };
+  /** Seller replies already written but not yet arrived: each lands at `due` (minutes of play), with the offer answer it carries. */
+  pending?: { msg: SwapMsg; due: number; offer?: 'accepted' | 'declined' | 'sold' }[];
 }
 /** One swipe on matchless.com, made on the client's account. */
 export interface MatchlessSwipe { day: number; id: string; choice: 'yes' | 'no' }
