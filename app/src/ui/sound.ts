@@ -8,7 +8,7 @@
  */
 export type Cue =
   | 'click' | 'key' | 'send' | 'reply' | 'mail' | 'post' | 'charge' | 'income'
-  | 'deploy' | 'bounce' | 'dayStart' | 'dayEnd' | 'lateWarn' | 'ending';
+  | 'deploy' | 'bounce' | 'dayStart' | 'dayEnd' | 'lateWarn' | 'ending' | 'evicted';
 
 export interface SoundSettings { muted: boolean; volume: number }
 
@@ -352,6 +352,24 @@ const CUES: Record<Cue, (e: SoundEngine, t: number) => void> = {
     e.noise(t, 0.4, { lp: 220, gain: 0.25 });
     e.tone(55, t, 3, { gain: 0.12, attack: 0.05 });
     e.pad([55, 82.5, 110], t, 3.2, 400, 120, 0.03);
+  },
+  // evicted: Gary at the door, getting angrier. A polite-ish three knocks, a harder four, then a
+  // fist pounding that rattles the frame. The ending drone comes in under the last blow.
+  evicted: (e, t) => {
+    const blow = (at: number, force: number) => {
+      const j = rnd(0.9, 1.1);
+      e.noise(t + at, 0.12 + force * 0.08, { lp: 260 + force * 220, gain: 0.18 + force * 0.32 }); // the body of the door
+      e.tone(95 * j, t + at, 0.16 + force * 0.1, { gain: 0.1 + force * 0.12, glideTo: 50, attack: 0.002 });
+      e.noise(t + at, 0.03, { bp: 700 * j, q: 1.5, gain: 0.05 + force * 0.1 }); // knuckles on wood
+      if (force > 0.7) e.noise(t + at + 0.02, 0.18, { bp: 2400 * j, q: 6, gain: 0.03 }); // the frame rattles
+    };
+    const knocks: [number, number][] = [
+      [0, 0.2], [0.24, 0.2], [0.48, 0.25],
+      [1.5, 0.5], [1.7, 0.5], [1.9, 0.55], [2.1, 0.6],
+      [3.0, 0.85], [3.15, 0.9], [3.3, 0.85], [3.45, 0.95], [3.6, 0.9], [3.75, 1], [4.05, 1],
+    ];
+    for (const [at, force] of knocks) blow(at + rnd(-0.015, 0.015), force);
+    CUES.ending(e, t + 4.05);
   },
 };
 
