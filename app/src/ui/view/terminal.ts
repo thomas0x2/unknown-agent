@@ -1,6 +1,8 @@
 /*
  * Weightroom and the Terminal window.
  */
+import { invadersHtml } from '../invaders';
+import { cwdLabel } from '../../game/shell';
 import { GameStore } from '../../game/store';
 import { ICONS } from '../icons';
 import { DEEPSLEEP_LOGO } from '../../sites/deepsleepLogo';
@@ -44,17 +46,18 @@ export function termBodyHtml(store: GameStore): string {
 
 /** The laptop's own shell: local models. */
 function shellHtml(store: GameStore): string {
+  if (store.ui.invaders) return invadersHtml();
   const s = store.state;
   const pulling = !!store.pull;
   const name = s.termModel ? (MODELS[s.termModel]?.name ?? s.termModel) : '';
   // the pull log already says the model is running; the intro is for an empty screen
   const intro = pulling || s.terminal.length ? ''
-    : name ? `${name} running on localhost. Type anything. (type 'clear' to wipe the screen)`
-    : 'No model running. Download one from weightroom.ai first.';
+    : name ? `${name} running on localhost. Type anything. (type 'help' for commands, 'clear' to wipe the screen)`
+    : s.flags.includes('knows_weightroom') ? 'No model running. Download one from weightroom.ai first. Type help for a list of commands.' : 'No model running. Type help for a list of commands.';
   const row = (l: { k: string; text: string }) => `<div class="tm-${l.k}">${esc(l.text)}</div>`;
   const lines = s.terminal.slice(-200).map(row).join('');
   const live = store.pull ? pullLines(store.pull.id, Math.min(store.pullMs(), PULL_MS - 1)).map(row).join('') : '';
-  const prompt = pulling ? '' : `<form class="tm-in" data-form="term"><label for="term-input" class="tm-ps">you@laptop:~$</label><input id="term-input" autocomplete="off" autocapitalize="off" spellcheck="false" ${store.busy ? 'disabled' : ''}></form>`;
+  const prompt = pulling ? '' : `<form class="tm-in" data-form="term"><label for="term-input" class="tm-ps">you@laptop:${esc(cwdLabel(store.ui.termCwd))}$</label><input id="term-input" autocomplete="off" autocapitalize="off" spellcheck="false" ${store.busy ? 'disabled' : ''}></form>`;
   return `${intro ? `<div class="tm-sys">${esc(intro)}</div>` : ''}${lines}${live}${store.busy ? '<div class="tm-sys tm-wait">thinking… (this laptop is not fast)</div>' : ''}${prompt}`;
 }
 

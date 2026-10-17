@@ -8,7 +8,7 @@ summary: PC Medic is the fake-antivirus scam behind the "threats detected" banne
 
 [public] PC Medic (pcmedic.live) is the site behind the "⚠ 3 THREATS DETECTED" banner ad. It says an automated scan of the player's device found three threats and offers a free "cleaner" to remove them. The threats are invented by the page; the cleaner is the virus.
 
-- [public] Downloading it saves PCMedic_Setup.exe to [[Qdrive]]. Running it (in the you@laptop [[Terminal]]) "removes 3 threats" and "installs 1".
+- [public] Downloading it saves PCMedic_Setup.exe to [[Qdrive]]. Running it (from Qdrive, or with run in the you@laptop [[Terminal]]'s qdrive/documents folder) "removes 3 threats" and "installs 1".
 - [hint] It is adware, not antivirus: nothing has to be downloaded, and the player can just close the ad.
 
 ## From day 1: What it does once it's running
