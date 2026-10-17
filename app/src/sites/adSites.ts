@@ -3,10 +3,13 @@
  * landing page in the sponsor's style. For now they're brochures with nothing to click, apart from
  * the odd link to a real site (deepsleep.ai links to Weightroom, Spin Cycle to its feed). Ads for sites that already exist
  * (EMPIRE, the coinbln.com phishing page, the prince-claims.xyz scam,
- * the lonely.ai chat, DoorDish, agent.chat/models) aren't here. Rendered by ui/adSites.ts; routed by sites/registry.ts.
+ * the lonely.ai chat, DoorDish, agent.chat/models, CityPulse) aren't here. Rendered by ui/adSites.ts; routed by sites/registry.ts.
  */
 
 import { citizenScore, citizenBand, type GameState } from '../engine';
+import { DEEPSLEEP_LOGO } from './deepsleepLogo';
+import { HERITAGE_LOGO } from './heritageLogo';
+import { PROGRESS_LOGO } from './progressLogo';
 
 /** Page layout family: shapes the markup a little and the CSS a lot. */
 export type AdKit = 'corp' | 'gov' | 'campaign' | 'scam' | 'local' | 'news' | 'clinic' | 'soft' | 'model';
@@ -33,6 +36,12 @@ export interface AdSite {
   link?: [string, string, string];
   /** a flag set when the page is opened (the link's site must be reachable once you've seen it) */
   unlocks?: string;
+  /** an SVG logo, drawn instead of `mark` in the header and the favicon */
+  logo?: string;
+  /** a resume upload under the cards (ui/outplacement.ts, engine/uploads.ts) */
+  upload?: boolean;
+  /** one working button, under the cards: [label, data-act handled in main.ts] */
+  action?: [string, string];
 }
 
 export const AD_SITES: AdSite[] = [
@@ -72,23 +81,25 @@ export const AD_SITES: AdSite[] = [
       ['Results', 'Placement rate: being calculated.'],
     ],
     fine: 'Access ends after 30 days or when you find a role, whichever comes first. So far it has always been the first.',
+    upload: true,
   },
 
   // ── Crane and Keller ──
   {
-    url: 'crane2026.vote', brand: 'Crane Victory Fund', kit: 'campaign', theme: 'crane', mark: '★',
-    kicker: 'Randall Crane for President', title: 'THEY SENT YOUR JOBS TO THE MACHINES.',
+    url: 'crane2026.vote', brand: 'Crane Victory Fund', kit: 'campaign', theme: 'crane', mark: '★', logo: HERITAGE_LOGO,
+    kicker: 'Randall Crane for President · Heritage Party', title: 'THEY SENT YOUR JOBS TO THE MACHINES.',
     lead: 'Randall Crane is the only candidate fighting for the American worker against the computers. Big, strong, human jobs. The best jobs.',
     stats: [['112%', 'in the polls'], ['38.4M', 'followers on Y']],
     cards: [
       ['The Plan', 'Send the machines back. Details at a very big rally, soon.'],
-      ['The Movement', 'The biggest crowds in history, online and in person. Some say bigger.'],
       ['The Candidate', 'Randall Crane has never used a computer. His staff use them for him, around the clock.'],
+      ['The Party', 'The Heritage Party has stood for the same values since 1854. Which ones are reviewed every four years.'],
     ],
     fine: 'Paid for by Crane Victory Fund. Not authorised by any computer. Website maintained by GeneralAI.',
+    action: ['Donate 5 DOLR', 'crane-donate'],
   },
   {
-    url: 'crane2026.vote/jobs', brand: 'Crane Victory Fund', kit: 'campaign', theme: 'crane', mark: '★',
+    url: 'crane2026.vote/jobs', brand: 'Crane Victory Fund', kit: 'campaign', theme: 'crane', mark: '★', logo: HERITAGE_LOGO,
     kicker: 'The Crane Jobs Plan', title: 'A ROBOT TOOK YOUR JOB. CRANE WILL TAKE THE ROBOT’S JOB.',
     lead: 'Every job lost to a machine will be reviewed by a task force. It will be a very efficient task force.',
     cards: [
@@ -99,8 +110,8 @@ export const AD_SITES: AdSite[] = [
     fine: 'Paid for by Crane Victory Fund and a donor who wishes to remain anonymous.',
   },
   {
-    url: 'keller4mayor.org', brand: 'Keller for Mayor', kit: 'campaign', theme: 'keller', mark: 'K',
-    kicker: 'Daniel Keller for Mayor', title: 'A city that answers its phone.',
+    url: 'keller4mayor.org', brand: 'Keller for Mayor', kit: 'campaign', theme: 'keller', mark: 'K', logo: PROGRESS_LOGO,
+    kicker: 'Daniel Keller for Mayor · Progress Party', title: 'A city that answers its phone.',
     lead: 'Twelve years on the city council. Affordable housing, buses that run, and a city government staffed by people.',
     cards: [
       ['Housing', 'Cap rent increases in buildings owned by companies with more than 500 units.'],
@@ -184,17 +195,6 @@ export const AD_SITES: AdSite[] = [
     ],
     fine: 'Fail three times and every partner site treats you as a bot for 90 days.',
   },
-  {
-    url: 'citypulse.news/robot', brand: 'CityPulse', kit: 'news', theme: 'news', mark: 'CP',
-    kicker: 'City · 4 min read', title: 'Escaped DoorDish robot still unaccounted for',
-    lead: 'A DoorDish delivery robot that left its route this week has not been found, despite the company’s statement that the escape was a planned marketing event.',
-    cards: [
-      ['Sightings', 'Residents have reported the courier on Ferris St, outside a bakery on Alder St and, twice, inside a parking garage.'],
-      ['DoorDish responds', 'In a statement, DoorDish said the robot “has been promoted” and is “exactly where it needs to be”. The company did not say where that is.'],
-      ['What to do', 'Anyone who sees the robot is asked not to approach it, accept food from it or tip it.'],
-    ],
-    fine: 'CityPulse is reader-funded. Comments are closed on this story.',
-  },
 
   // ── wellness, grief, the end ──
   {
@@ -230,17 +230,6 @@ export const AD_SITES: AdSite[] = [
       ['Engagement', 'Monthly reports on views, shares and condolences.'],
     ],
     fine: 'Packages renew every year. Renewal notices are sent to the deceased.',
-  },
-  {
-    url: 'sorrywriter.ai', brand: 'SorryWriter', kit: 'soft', theme: 'grief', mark: '✉',
-    kicker: 'Apologies, written for you', title: 'Say sorry like you mean it.',
-    lead: 'Tell SorryWriter what happened. It writes an apology in your voice, sized to the mistake.',
-    cards: [
-      ['Any occasion', 'Missed birthdays, forgotten anniversaries, things said at dinner.'],
-      ['Your voice', 'Connect your email and SorryWriter writes the way you do, typos included.'],
-      ['Follow-ups', 'If they don’t reply, SorryWriter sends a second apology about the first.'],
-    ],
-    fine: 'Some recipients use SorryWriter too. Conversations between two accounts may continue without either of you.',
   },
   {
     url: 'cryolater.com', brand: 'Cryo-Later', kit: 'clinic', theme: 'cryo', mark: '❄',
@@ -314,6 +303,7 @@ export const AD_SITES: AdSite[] = [
       ['After a decision', 'Decisions are final. A new appeal can be filed against the next increase.'],
     ],
     fine: 'The automated review service is provided by GeneralAI, which owns or manages 38% of rental units in the city.',
+    action: ['File an appeal (5 DOLR)', 'rent-appeal'],
   },
   {
     url: 'citizenscore.gov', brand: 'Citizen Score', kit: 'gov', theme: 'ministry', mark: '⚖',
@@ -377,7 +367,7 @@ export const AD_SITES: AdSite[] = [
     fine: 'Memberships can be cancelled in person at the front desk, when Marcus is not there.',
   },
   {
-    url: 'deepsleep.ai', brand: 'deepsleep', kit: 'model', theme: 'deep', mark: 'd',
+    url: 'deepsleep.ai', brand: 'deepsleep', kit: 'model', theme: 'deep', mark: 'd', logo: DEEPSLEEP_LOGO,
     kicker: 'Open weights', title: 'deepsleep-0.5B',
     lead: 'A small open-weights chat model that runs on almost any laptop. Free, local, confident.',
     stats: [['0.5B', 'parameters'], ['2 GB', 'download'], ['1.2M', 'downloads']],

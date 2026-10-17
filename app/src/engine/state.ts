@@ -4,6 +4,8 @@
  */
 import { type MeterId, initialMeters } from './values';
 import type { LonelyChat } from './lonely';
+import type { SorryChat } from './sorry';
+import type { Upload } from './uploads';
 import { makeSeed } from './rng';
 import { CLOCK } from './config';
 
@@ -136,6 +138,15 @@ export interface LogEntry {
   day: number;
   text: string;
   kind: 'info' | 'money' | 'warn' | 'break' | 'ending';
+}
+
+/** One Coinbin send to the trader: staked from `day`/`min`, paid out STAKE.days later (engine/stake.ts). */
+export interface StakeSend {
+  day: number;
+  min: number;
+  amount: number;
+  /** What it paid out, once it has. */
+  paid?: number;
 }
 
 /** A wallet transaction, for Coinbin's activity list and balance chart. */
@@ -350,8 +361,12 @@ export interface GameState {
   stocks?: Record<string, { shares: number; cost: number }>;
   /** lonely.ai's chat with Mia (engine/lonely.ts). */
   lonely?: LonelyChat;
-  /** Trader buy-in stake value (0 = none). */
-  stake: number;
+  /** Qdrive files uploaded to websites (engine/uploads.ts). */
+  uploads?: Upload[];
+  /** sorrywriter.ai's chat (engine/sorry.ts). */
+  sorry?: SorryChat;
+  /** DOLR sent to the trader's wallet, each staked until its payout (engine/stake.ts). */
+  stakes: StakeSend[];
   /** Interview answers the player sent the journalist, quoted in her day 7 article. */
   interviewAnswers: string;
   /** Counter for unique ids (mail, posts, reviews). */
@@ -434,7 +449,7 @@ export function newGame(seed = makeSeed()): GameState {
     commits: [],
     readEvents: [],
     introSeen: false,
-    stake: 0,
+    stakes: [],
     interviewAnswers: '',
     nextId: 1,
   };

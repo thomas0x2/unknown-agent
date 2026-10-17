@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_stryker",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "11:10",
+  "body": "Every morning I ask myself one question: what colour is my Lambo today.\n\nThen I work. You should try the second part."
+}

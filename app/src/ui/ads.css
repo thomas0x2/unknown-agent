@@ -126,6 +126,8 @@
 .ad-dolr { --ad-bg: linear-gradient(135deg, #062b1b, #0e5e3a); --ad-ink: #b8ffd8; --ad-cta: #2cff95; --ad-cta-ink: #012613; }
 .ad-vantor { --ad-bg: #f3f2ee; --ad-ink: #2c2c2a; --ad-cta: #2c2c2a; --ad-cta-ink: #f3f2ee; --ad-fine: #6c6b66; }
 .ad-vantor .ad-f { font-family: var(--f-serif, Georgia, serif); }
+.ad-steadfast { --ad-bg: linear-gradient(180deg, #ffffff, #eef3f8); --ad-ink: #13314d; --ad-cta: #13314d; --ad-cta-ink: #fff; --ad-fine: #4e6378; }
+.ad-steadfast .ad-f { font-family: var(--f-serif, Georgia, serif); }
 .ad-mind { --ad-bg: linear-gradient(180deg, #1b0b3a, #ff6a3d 140%); --ad-cta: #ff9d3d; --ad-cta-ink: #1b0b3a; }
 .ad-bean { --ad-bg: linear-gradient(90deg, #4a2a18, #7a4a2a); --ad-ink: #fbe9d2; --ad-cta: #fbe9d2; --ad-cta-ink: #4a2a18; }
 .ad-bean .ad-f { font-family: var(--f-serif, Georgia, serif); font-style: italic; }
@@ -133,6 +135,8 @@
 .ad-prince .ad-f { text-shadow: 2px 2px 0 #fff, -1px -1px 0 #fff; }
 .ad-spin { --ad-bg: linear-gradient(180deg, #2b8dd6, #1b5ea8); --ad-cta: #ffe14a; }
 .ad-park { --ad-bg: #111; --ad-ink: #e8e8e8; --ad-cta: #e8e8e8; --ad-cta-ink: #111; }
+.ad-news { --ad-bg: #151515; --ad-ink: #fff; --ad-cta: #d42b1e; --ad-cta-ink: #fff; --ad-fine: #b9b9b9; border-top: 4px solid #d42b1e; }
+.ad-news .ad-f { font-family: var(--f-display); font-weight: 700; }
 .ad-iron { --ad-bg: #121212; --ad-ink: #fff; --ad-cta: #ff2e2e; --ad-cta-ink: #fff; }
 .ad-iron .ad-f { font-family: Impact, 'Arial Narrow', sans-serif; text-transform: uppercase; }
 .ad-guard { --ad-bg: #07120c; --ad-ink: #7dff9b; --ad-cta: #7dff9b; --ad-cta-ink: #07120c; font-family: var(--f-mono, monospace); }
@@ -170,3 +174,14 @@
   .ad-robot, .ad-coins, .ad-bubbles, .ad-steam, .ad-sparkle, .ad-shine, .ad-snow, .ad-ekg { display: none; }
   .ad-stamp { opacity: .9; transform: translateY(-50%) rotate(-14deg); }
 }
+
+/* the brand's logo (siteIcons.ts adLogoHtml): after the button on a wide ad, top right on a square */
+.ad-logo { position: relative; z-index: 2; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; background: #fff; color: #111; box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+.ad-logo svg { width: 26px; height: 26px; }
+.ad-logo.ico-applogo { background: none; box-shadow: 0 1px 4px rgba(0,0,0,.25); overflow: hidden; }
+.ad-logo.ico-applogo svg { width: 40px; height: 40px; }
+.ad-wide:has(.ad-logo) { grid-template-columns: minmax(0, 1fr) auto auto; }
+.ad-wide .ad-logo { order: 3; }
+.ad-square .ad-logo { position: absolute; top: 6px; right: 6px; width: 26px; height: 26px; border-radius: 7px; }
+.ad-square .ad-logo svg { width: 17px; height: 17px; }
+.ad-square .ad-logo.ico-applogo svg { width: 26px; height: 26px; }

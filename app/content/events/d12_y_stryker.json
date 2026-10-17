@@ -1,0 +1,11 @@
+{
+  "id": "d12_y_stryker",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 12,
+    "dayMax": 12
+  },
+  "at": "15:45",
+  "body": "Last day to join the campaign team. 0.2 DOLR per post. Do 5,000 posts and that's a thousand DOLR. Math is a mindset."
+}

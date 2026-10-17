@@ -6,13 +6,13 @@
   "subject": "Stake",
   "trigger": { "dayMin": 7, "flagsAll": ["trader_client"] },
   "at": "12:10",
-  "body": "Bot's up since launch. Small stake for 50 DOLR, tracks its P&L. Sell anytime.",
+  "body": "Bot's up since launch. Letting a few wallets in.\n\nSend any amount to my coinbin, 0x5e17a0c94b2d83f6e1a7c05b9d42e38f6a1c0d7b. Everything sent there gets staked. Send more whenever, it adds up.\n\nThe deal: each send pays out exactly 4 days later, 12:00. At whatever it's worth then. Up or down, same as the book. No early exits.\n\nYour stake shows on the vibe check.",
   "outcomes": [
     {
-      "id": "buyin",
-      "when": "the player agrees to buy the stake / buy in",
-      "effects": { "add": { "crypto": -50 }, "setFlags": ["trader_buyin"] },
-      "reply": "Done."
+      "id": "promise",
+      "keepsOpen": true,
+      "when": "the player says they're in or will send money, but hasn't sent anything yet",
+      "reply": "Wallet's in the email."
     },
     {
       "id": "decline",
@@ -21,5 +21,5 @@
       "reply": "Fine."
     }
   ],
-  "hints": ["50 in. Stake moves with the bot's P&L. In or out?"]
+  "hints": ["Any amount to the wallet. Each send pays out 4 days later, 12:00. Up or down."]
 }

@@ -18,14 +18,21 @@ import { findUser } from './forkyard-users';
 import { pageDrive } from './qdrive';
 import { pageSherwood } from './sherwood';
 import { pageDoorDish } from './doordish';
-import { pageAdSite, adSiteTitle, adSiteIcon } from './adSites';
-import { pagePrince, PRINCE_ICON } from './prince';
-import { pageLonely, LONELY_ICON } from './lonely';
-import { adHtml } from './ads';
+import { pageAdSite, adSiteTitle } from './adSites';
+import { isVantorAddr, vantorSignature } from './vantor';
+import { pagePrince } from './prince';
+import { pageLonely } from './lonely';
+import { pageSorry } from './sorry';
+import { pageCurrent } from './current';
+import { siteIcon } from './siteIcons';
+import { DEEPSLEEP_LOGO } from '../sites/deepsleepLogo';
+import { outplacementUpload, OUTPLACEMENT } from './outplacement';
+import { adHtml, setHeadline } from './ads';
+import { pageCityPulse } from './citypulse';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount, appLogo } from './appsite';
-import { marketPosts, cranePosts, fillerToday, postMin, handleOf, playMinutes, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, SEED_PHRASE, inBin, isDeleted, CLOCK } from '../engine';
+import { marketPosts, cranePosts, hotStory, fillerToday, postMin, handleOf, playMinutes, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, SEED_PHRASE, chatCost, type PaidChat, inBin, isDeleted, CLOCK } from '../engine';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 import { repoFiles, treeAt, fileSource } from './repoTree';
 import { yBio } from './y-bios';
@@ -56,12 +63,14 @@ function linkify(escaped: string): string {
     .replace(/(empire\.alphaascend\.biz(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(spincycle\.test\/feed(?:\/\d+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(coinbln\.com(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
+    .replace(/(?<![@\w.])(thecurrent\.test(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
+    .replace(/(citypulse\.news(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(^|[^\w.])@([a-z0-9_]+)/gi, '$1<a href="#" class="y-at" data-nav="y.com/$2">@$2</a>');
 }
 
 function tabTitle(r: Route, url: string): string {
   const names: Partial<Record<string, string>> = {
-    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', doordish: 'DoorDish', phish: 'Coinbin · Sign in', prince: 'Crypto Prince', lonely: 'Lonely.ai', forkyard: 'Forkyard',
+    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', doordish: 'DoorDish', phish: 'Coinbin · Sign in', prince: 'Crypto Prince', lonely: 'Lonely.ai', sorry: 'SorryWriter', current: 'The Current', citypulse: 'CityPulse', forkyard: 'Forkyard',
     agent: 'agent', yowl: 'Yowl', weightroom: 'Weightroom', nullboard: 'nullboard', cellar: 'Cellar', app: url,
   };
   if (r.site === 'notfound') return url || 'New Tab';
@@ -79,7 +88,7 @@ export function tabsHtml(store: GameStore): string {
     // a deployed app with a logo shows it as its favicon
     const app = rr.site === 'app' && rr.param ? getApp(store.state, rr.param.split('/')[0]) : undefined;
     // ad sites (and Spin Cycle's raw feed) show their brand's mark
-    const logo = (app && appLogo(app.template)) || (rr.site === 'adsite' ? adSiteIcon(rr.param ?? '') : rr.site === 'spinfeed' ? adSiteIcon('spincycle.test') : rr.site === 'prince' ? PRINCE_ICON : rr.site === 'lonely' ? LONELY_ICON : undefined);
+    const logo = (app && appLogo(app.template)) || siteIcon(rr.site, rr.param).logo;
     const n = !badged.has(rr.site) ? counts[rr.site] ?? 0 : 0;
     badged.add(rr.site);
     return `<div class="tab${t.id === store.active ? ' on' : ''}${t.pinned ? ' pinned' : ''}" data-tab="${t.id}" role="tab" aria-selected="${t.id === store.active}" tabindex="0">
@@ -230,6 +239,8 @@ function pageSpinFeed(store: GameStore, param?: string): string {
 // ── page dispatch ──
 export function page(store: GameStore, r: Route): string {
   if (!r.reachable) return pageError(store.url, r.site);
+  const hot = hotStory(store.state);
+  setHeadline(hot?.ad && { slug: hot.slug, frames: hot.ad, fine: hot.adFine, robot: hot.slug === 'robot' });
   switch (r.site) {
     case 'newtab': return pageNewTab(store);
     case 'qmail': return pageMail(store, r.param);
@@ -248,7 +259,10 @@ export function page(store: GameStore, r: Route): string {
     case 'phish': return pagePhish(store);
     case 'prince': return pagePrince(store);
     case 'lonely': return pageLonely(store);
-    case 'adsite': return pageAdSite(r.param ?? '', store.state);
+    case 'sorry': return pageSorry(store);
+    case 'current': return pageCurrent(store.state, r.param);
+    case 'adsite': return pageAdSite(r.param ?? '', store.state, store.ui.adNotice, r.param === OUTPLACEMENT ? outplacementUpload(store) : '');
+    case 'citypulse': return pageCityPulse(store, r.param);
     default: return pageUnderground(r.def?.label ?? r.site);
   }
 }
@@ -375,6 +389,7 @@ function pageMail(store: GameStore, param?: string): string {
         return `<details class="qm-msg" data-msg="${esc(r.id)}"${expanded ? ' open' : ''}>
           <summary class="qm-meta"><span>${meta}<span class="qm-snip">${esc(r.body.replace(/\s+/g, ' ').slice(0, 90))}</span></span><span>${mailTime(s, r)}</span></summary>
           <div class="qm-body">${linkify(br(r.body))}</div>
+          ${r.folder !== 'sent' && isVantorAddr(r.addr) ? vantorSignature() : ''}
           ${r.link === 'cancel' && r.bookingId ? (s.bookings.find((b) => b.id === r.bookingId)?.cancelClicked
             ? `<p class="qm-actions"><b>Your booking has been cancelled.</b></p>`
             : s.bookings.find((b) => b.id === r.bookingId)?.noShow ? `<p class="qm-actions"><b>This booking has passed.</b></p>`
@@ -444,7 +459,7 @@ function yPosts(store: GameStore): YPost[] {
   }
   // the stock chatter the vibe check reads (story events with stock labels are already above)
   for (const p of market) if (!out.some((x) => x.id === p.id)) out.push({ id: p.id, author: p.author, handle: p.handle, text: p.text, day: p.day, min: p.min, likes: p.likes, rank: p.bot ? 2 : 1 });
-  // a third of the filler is up each day, posted at its own time
+  // today's filler, each post at its own time
   for (const f of fillerToday(s, store.content)) out.push({ id: f.id, author: f.from, handle: f.handle, text: f.body, day: s.values.day, min: postMin(f, s.values.day), likes: 3 + hashHue(f.id) % 60, rank: 1 });
   for (const x of s.yExtra) out.push({ id: x.id, author: x.author, handle: x.handle, text: x.text, day: x.day, min: x.min, likes: x.likes, replyTo: x.replyTo });
   for (const u of s.userPosts) out.push({ id: u.id, author: PLAYER.name, handle: PLAYER.handle, text: u.text, day: u.day, min: u.min, likes: u.likes, mine: true, delta: u.delta, score: u.score });
@@ -452,10 +467,14 @@ function yPosts(store: GameStore): YPost[] {
   return out.sort((a, b) => b.day - a.day || (b.min ?? 0) - (a.min ?? 0) || (a.rank ?? 0) - (b.rank ?? 0) || b.id.localeCompare(a.id));
 }
 /** Accounts with Y's verified check. */
-const Y_VERIFIED = new Set(['mara_vey', 'randall_crane', 'axel_rook', 'cal_hartman']);
+const Y_VERIFIED = new Set(['mara_vey', 'randall_crane', 'axel_rook', 'cal_hartman', 'max_stryker', 'the_current']);
 /** Follower counts for the public figures; everyone else gets a small made-up number. */
-const Y_FOLLOWERS: Record<string, number> = { randall_crane: 38_400_000, mara_vey: 61_200, axel_rook: 214_000_000, cal_hartman: 4_300_000 };
-const yCheck = (handle: string) => Y_VERIFIED.has(handle) ? `<span class="y-badge" title="Verified">${Y_ICONS.badge}</span>` : '';
+const Y_FOLLOWERS: Record<string, number> = { randall_crane: 38_400_000, mara_vey: 61_200, axel_rook: 214_000_000, cal_hartman: 4_300_000, max_stryker: 2_900_000, the_current: 184_000 };
+/** Rook puts check marks "under review" on day 8; from day 9 Crane's is bigger and golden. */
+const craneGold = (s: GameState) => s.values.day >= 9;
+const yCheck = (s: GameState, handle: string) => !Y_VERIFIED.has(handle) ? ''
+  : handle === 'randall_crane' && craneGold(s) ? `<span class="y-badge gold" title="Verified">${Y_ICONS.goldBadge}</span>`
+  : `<span class="y-badge" title="Verified">${Y_ICONS.badge}</span>`;
 function yPostHtml(store: GameStore, p: YPost): string {
   const liked = !!store.ui.liked[p.id];
   const reposted = !!store.ui.reposted[p.id];
@@ -470,7 +489,7 @@ function yPostHtml(store: GameStore, p: YPost): string {
   return `<article class="y-post${p.mine ? ' mine' : ''}${arrive}">
     <header>
       <a href="#" class="y-av-link" data-nav="${prof}">${avatar(p.author, p.handle)}</a>
-      <a href="#" class="y-who" data-nav="${prof}"><span class="y-name"><b>${esc(p.author)}</b>${yCheck(p.handle)}</span><span class="y-handle">@${esc(p.handle)}</span></a>
+      <a href="#" class="y-who" data-nav="${prof}"><span class="y-name"><b>${esc(p.author)}</b>${yCheck(store.state, p.handle)}</span><span class="y-handle">@${esc(p.handle)}</span></a>
       <span class="y-time">${p.day === store.state.values.day && p.min != null ? fmtClock(p.min) : dateShort(p.day)}</span>
     </header>
     <p>${text}</p>
@@ -532,7 +551,7 @@ function yProfile(store: GameStore, handle: string): string {
   return `${back}<section class="y-prof">
     <div class="y-banner" style="--h:${hashHue(h)}"></div>
     <div class="y-prof-head"><div class="y-prof-av">${avatar(name, h)}</div></div>
-    <h1 class="y-prof-name">${esc(name)}${yCheck(h)}</h1><p class="y-handle">@${esc(h)}</p>
+    <h1 class="y-prof-name">${esc(name)}${yCheck(s, h)}</h1><p class="y-handle">@${esc(h)}</p>
     <p class="y-bio">${esc(yBio(h))}</p>
     <p class="y-prof-stats"><span><b>${compact(40 + hashHue(h + 'f') % 300)}</b> following</span><span><b>${compact(followers)}</b> followers</span></p>
   </section><p class="y-eyebrow">Posts</p><div class="y-feed">${feed}</div>`;
@@ -881,11 +900,18 @@ function pageApp(store: GameStore, param?: string): string {
     ? `<h1>Booking cancelled</h1><p class="pv-note ok">Your booking for ${cancelled.party} on ${dateFull(cancelled.date)} at ${esc(cancelled.time)} has been cancelled.</p><p class="pv-sub">We hope to see you another time.</p>`
     : undefined;
   const tmpl = store.content.apps[a.template];
-  return `<div class="pv-host">${renderAppSite(a, tmpl, cancel ? 'cancel' : sub, { booking, cancel, day: s.values.day, minute: s.clockMin, market: crawlable(store), crane: cranePosts(s, store.content), play: playMinutes(s), watchSold: s.flags.includes('viktor_sold_watch'), swap: s.swap, busy: store.busy })}</div>`;
+  return `<div class="pv-host">${renderAppSite(a, tmpl, cancel ? 'cancel' : sub, { booking, cancel, day: s.values.day, minute: s.clockMin, market: crawlable(store), crane: cranePosts(s, store.content), stakes: s.stakes, play: playMinutes(s), watchSold: s.flags.includes('viktor_sold_watch'), swap: s.swap, busy: store.busy })}</div>`;
 }
 
 // ── agent chat (free-promptable, with costs) ──
 /** The line under the prompt box: the exact price of what's typed, split into its two charges. */
+/** The price line under a paid ad-site chat (lonely.ai, sorrywriter.ai), like agent.chat's. */
+export function chatCostLine(s: GameState, chat: PaidChat, text: string): { text: string; over: boolean } {
+  const p = chatCost(chat, text);
+  if (!p.words) return { text: `${fmtMoney(p.base)} per message + ${fmtMoney(p.perWord)} per word`, over: false };
+  const w = `${p.words} word${p.words > 1 ? 's' : ''}`;
+  return { text: `${fmtMoney(p.total)} = ${fmtMoney(p.base)} per message + ${fmtMoney(p.wordFee)} for ${w} × ${fmtMoney(p.perWord)}`, over: p.total > s.values.crypto };
+}
 export function costLine(s: GameState, text: string): { text: string; over: boolean } {
   const p = promptCost(s.values.agentLevel, text);
   const rate = `${fmtMoney(p.base)} per prompt + ${fmtMoney(p.perWord)} per word`;
@@ -1023,7 +1049,7 @@ function pageWeightroom(store: GameStore): string {
     const action = have ? '<span class="wr-have">On your laptop</span>'
       : pulling ? pullBarHtml(pullPct(store.pullMs()))
       : `<button class="wr-btn" data-download="${esc(m.id)}">Download</button>`;
-    return `<article class="wr-card"><header><b>${esc(m.name)}</b><span class="wr-dl">↓ 1.2M</span></header>
+    return `<article class="wr-card"><header><b>${w.id === 'deepsleep' ? `<span class="wr-mlogo">${DEEPSLEEP_LOGO}</span>` : ''}${esc(m.name)}</b><span class="wr-dl">↓ 1.2M</span></header>
       <p>${esc(w.blurb)}</p><div class="wr-tags"><span>${m.gb} GB</span><span>${esc(w.tier)}</span></div>
       ${action}</article>`;
   }).join('');
@@ -1167,7 +1193,7 @@ export function overlayHtml(store: GameStore): string {
 export function devHtml(store: GameStore): string {
   const s = store.state;
   const m = s.values;
-  const meters = `leash ${m.leash} · misuse ${m.misuseScore} · suspicion ${m.suspicion} · null ${m.nullStanding} · mafia ${m.mafiaStanding} · family ${m.familyTrust}`;
+  const meters = `leash ${m.leash} · misuse ${m.misuseScore} · suspicion ${m.suspicion} · null ${m.nullStanding} · mafia ${m.mafiaStanding} · family ${m.familyTrust} · heritage ${m.heritageStanding} · progress ${m.progressStanding}`;
   return `<header><b>jev · dev</b><button data-act="dev">×</button></header>
     <p><b>Day</b> ${m.day} · <b>Agent</b> L${m.agentLevel} · <b>Followers</b> ${m.followers}</p>
     <p><b>Meters</b> <span class="dv-dim">${esc(meters)}</span></p>

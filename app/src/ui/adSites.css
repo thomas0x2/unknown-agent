@@ -140,6 +140,30 @@
 .pr-err { margin: 0; color: #d4002a; font-weight: 700; font-size: 14px; }
 .pr-btn { font: 900 18px var(--lp-font); padding: 14px 24px; border: 0; border-radius: 999px; background: var(--lp-accent); color: var(--lp-accent-ink); cursor: pointer; box-shadow: 0 6px 18px rgba(255, 0, 168, .35); }
 
+/* an ad site's one working button (rentboard.gov's appeal) */
+.lp-action { text-align: center; margin: 8px 0 24px; }
+.lp-btn { font: 700 15px var(--lp-font); padding: 11px 22px; border: 1px solid currentColor; border-radius: 2px; background: var(--lp-accent); color: var(--lp-accent-ink); cursor: pointer; }
+.lp-notice { margin: 10px 0 0; font-size: 14px; }
+
+/* Vantor Outplacement's resume upload (ui/outplacement.ts) */
+.up-form { max-width: 640px; margin: 20px auto 28px; padding: 20px 24px; border: 1px solid var(--lp-line, #ccc); background: var(--lp-card, #fff); }
+.up-form h2 { margin: 0 0 6px; font-size: 18px; }
+.up-form p { margin: 0 0 12px; }
+.up-row { display: flex; gap: 10px; }
+.up-row select { flex: 1; font: inherit; padding: 8px; background: #fff; color: #222; border: 1px solid var(--lp-line, #ccc); }
+.up-err { margin: 10px 0 0; color: #c0392b; font-size: 14px; }
+.up-result { margin-top: 14px; display: grid; gap: 4px; }
+.up-result b { font-size: 22px; }
+
+/* the paid chats: a refused message, and lonely.ai's fine print */
+.ua-err { margin: 0 0 6px; font-size: 13px; color: #c0392b; }
+.lo-fine { margin: 0; padding: 4px 16px; font-size: 12px; color: var(--ua-dim); text-align: center; }
+
+/* sorrywriter.ai: agent.chat's chat layout in SorryWriter's lilac (ui/sorry.ts) */
+.ua.sorry { --ua-bg: #f7f3fb; --ua-panel: #fff; --ua-ink: #2e2340; --ua-dim: #6e6182; --ua-line: #e2d8ee; --ua-you: #3a2b52; }
+.sorry .ua-text { font-family: Georgia, serif; font-size: 15px; line-height: 1.55; background: #fff; border: 1px solid var(--ua-line); border-radius: 14px; padding: 12px 16px; flex: 0 1 auto; max-width: min(85%, 600px); }
+.sw-avatar { display: inline-grid; place-items: center; width: 32px; height: 32px; flex: none; border-radius: 50%; background: #3a2b52; color: #f4eefb; font-size: 15px; }
+
 /* lonely.ai: agent.chat's chat layout in dating-app pink (ui/lonely.ts) */
 .ua.lonely { --ua-bg: #fff3f7; --ua-panel: #fff; --ua-ink: #4a1730; --ua-dim: #85546b; --ua-line: #f6cfdc; --ua-you: #e0336f; }
 .lonely .ua-bubble { border-radius: 18px 18px 4px 18px; }
@@ -150,3 +174,29 @@
 .lo-logo { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: #e0336f; }
 .lo-logo svg { width: 18px; height: 18px; }
 .lo-intro { align-self: center; margin: 24px 0; color: var(--ua-dim); font-size: 14px; }
+
+/* a brand with a drawn logo (deepsleep) shows it in place of the letter mark */
+.lp-mark.lp-logo { padding: 0; background: none; overflow: hidden; }
+.lp-mark.lp-logo svg { width: 26px; height: 26px; }
+
+/* thecurrent.test: Mara Vey's paper (ui/current.ts) */
+.cur { min-height: 100%; background: #f7f5f0; color: #1f2523; font-family: Georgia, 'Times New Roman', serif; }
+.cur-mast { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 22px 16px 14px; border-bottom: 3px double #1f2523; background: #fff; }
+.cur-mast a { color: #16413f; text-decoration: none; font-size: 34px; font-weight: 700; letter-spacing: -0.5px; }
+.cur-mast span { font-family: system-ui, sans-serif; font-size: 12px; color: #6b706d; text-transform: uppercase; letter-spacing: 1px; }
+.cur-main { max-width: 680px; margin: 0 auto; padding: 28px 16px 40px; }
+.cur-kicker { display: block; margin: 0 0 6px; font-family: system-ui, sans-serif; font-size: 12px; font-weight: 700; color: #16413f; text-transform: uppercase; letter-spacing: 1px; }
+.cur-article h1 { margin: 0 0 10px; font-size: 34px; line-height: 1.15; }
+.cur-dek { margin: 0 0 14px; font-size: 19px; line-height: 1.45; color: #4a504d; }
+.cur-byline { display: block; margin: 0 0 22px; font-family: system-ui, sans-serif; font-size: 13px; color: #6b706d; }
+.cur-body p { margin: 0 0 16px; font-size: 17px; line-height: 1.65; }
+.cur-quote { margin: 0 0 18px; padding: 4px 0 4px 18px; border-left: 3px solid #16413f; font-size: 19px; line-height: 1.5; font-style: italic; }
+.cur-end { margin-top: 26px; padding-top: 14px; border-top: 1px solid #d8d4ca; font-size: 15px; font-style: italic; color: #4a504d; }
+.cur-card { display: block; padding: 18px 0; border-bottom: 1px solid #d8d4ca; color: inherit; text-decoration: none; }
+.cur-card h2 { margin: 0 0 8px; font-size: 26px; line-height: 1.2; }
+.cur-card:hover h2 { text-decoration: underline; }
+.cur-card p { margin: 0 0 8px; font-size: 16px; line-height: 1.5; color: #4a504d; }
+.cur-card .cur-byline { margin: 0; }
+.cur-empty { color: #6b706d; font-size: 16px; }
+.cur-foot { padding: 16px; text-align: center; font-family: system-ui, sans-serif; font-size: 12px; color: #6b706d; border-top: 1px solid #d8d4ca; }
+@media (max-width: 600px) { .cur-article h1 { font-size: 27px; } .cur-mast a { font-size: 28px; } }

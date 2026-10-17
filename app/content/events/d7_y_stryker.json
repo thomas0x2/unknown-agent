@@ -1,0 +1,11 @@
+{
+  "id": "d7_y_stryker",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 7,
+    "dayMax": 7
+  },
+  "at": "16:20",
+  "body": "Read the article about \"the people AI left behind\". Nobody left them behind. They were walking slower."
+}

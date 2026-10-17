@@ -1,0 +1,11 @@
+{
+  "id": "d5_y_citypulse_vote",
+  "site": "y",
+  "from": "CityPulse",
+  "trigger": {
+    "dayMin": 5,
+    "dayMax": 5
+  },
+  "at": "16:20",
+  "body": "CRANE SURGES TO 71%! A poll on Y with 300,000 votes puts the Heritage Party firebrand miles ahead. Who voted? Y says it \"can't share that\". You decide."
+}

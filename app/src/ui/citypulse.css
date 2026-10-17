@@ -1,0 +1,58 @@
+/* CityPulse: a cheap tabloid. Red masthead, heavy condensed headlines, a BREAKING tag on everything new. */
+.ico-citypulse svg, .nt-citypulse .nt-ico svg { display: block; }
+
+.cp {
+  --cp-ink: #151515; --cp-dim: #5f5f5f; --cp-line: #dedad2; --cp-red: #d42b1e; --cp-bg: #fbfaf7;
+  --cp-head: Impact, 'Haettenschweiler', 'Arial Narrow Bold', 'Arial Black', sans-serif;
+  min-height: 100%; background: var(--cp-bg); color: var(--cp-ink); font-family: var(--f-ui);
+}
+.cp-top { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 16px; padding: 10px clamp(16px, 4vw, 40px); background: var(--cp-red); color: #fff; border-bottom: 4px solid var(--cp-ink); }
+.cp-logo { display: flex; align-items: center; gap: 9px; font-family: var(--cp-head); font-size: 32px; letter-spacing: .01em; text-transform: uppercase; font-style: italic; font-weight: 800; font-synthesis: none; color: #fff; text-decoration: none; }
+.cp-mark { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 3px; background: #fff; color: var(--cp-red); font-family: var(--f-ui); font-style: normal; font-size: 13px; font-weight: 800; }
+.cp-date { margin-left: auto; font-size: 13px; font-weight: 600; }
+.cp-tag { display: inline-block; margin-right: 6px; padding: 1px 6px; background: var(--cp-red); color: #fff; font-weight: 800; font-size: 11px; letter-spacing: .06em; animation: cp-blink 1.6s steps(2, start) infinite; }
+@keyframes cp-blink { to { opacity: .55; } }
+@media (prefers-reduced-motion: reduce) { .cp-tag { animation: none; } }
+
+.cp-wrap { max-width: 1040px; margin: 0 auto; padding: 18px clamp(16px, 4vw, 40px) 10px; }
+.cp-cols { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 28px; margin-top: 18px; }
+.cp-cols aside { display: flex; flex-direction: column; gap: 18px; }
+@media (max-width: 760px) { .cp-cols { grid-template-columns: 1fr; } }
+
+.cp a.cp-a { color: inherit; text-decoration: none; }
+.cp a.cp-a:hover h1, .cp h1 a.cp-a:hover, .cp h2 a.cp-a:hover, .cp h4 a.cp-a:hover, .cp li a.cp-a:hover { text-decoration: underline; }
+.cp-art { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 2px; }
+.cp-kicker { margin: 10px 0 4px; font-size: 12px; color: var(--cp-dim); }
+.cp-kicker b { color: var(--cp-red); text-transform: uppercase; letter-spacing: .06em; font-size: 11px; }
+.cp h1, .cp h2, .cp h4 { font-family: var(--cp-head); font-weight: 700; font-synthesis: none; letter-spacing: .01em; line-height: 1.08; margin: 0 0 6px; }
+.cp-dek { margin: 0 0 6px; color: #3a3a3a; line-height: 1.45; }
+.cp-by { margin: 0; font-size: 12.5px; color: var(--cp-dim); }
+.cp-empty { color: var(--cp-dim); }
+
+.cp-lead { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--cp-line); }
+.cp-lead h1 { font-size: clamp(28px, 4vw, 42px); }
+.cp-lead .cp-dek { font-size: 16px; }
+@media (max-width: 760px) { .cp-lead { grid-template-columns: 1fr; } }
+.cp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 18px; padding: 18px 0; border-bottom: 1px solid var(--cp-line); }
+.cp-card h2 { font-size: 21px; }
+.cp-card .cp-dek { font-size: 14px; }
+.cp-older h3, .cp-most h3, .cp-more h3 { margin: 18px 0 6px; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; }
+.cp-row { padding: 6px 0 12px; border-bottom: 1px solid var(--cp-line); }
+.cp-row h4 { font-size: 20px; }
+.cp-row .cp-dek { font-size: 14px; }
+
+.cp-most { border-top: 4px solid var(--cp-red); }
+.cp-most ol { margin: 0; padding: 0 0 0 22px; }
+.cp-most li { padding: 8px 0; border-bottom: 1px solid var(--cp-line); font-weight: 700; line-height: 1.25; }
+.cp-most li::marker { color: var(--cp-red); font-family: var(--f-ui); }
+
+.cp-story { max-width: 700px; }
+.cp-story h1 { font-size: clamp(32px, 5vw, 48px); margin-top: 6px; }
+.cp-story .cp-dek { font-size: 18px; }
+.cp-hero { margin: 16px 0 6px; }
+.cp-body p { font-size: 17px; line-height: 1.7; margin: 14px 0; }
+.cp-story > .ad { margin: 22px 0 6px; }
+.cp-home { color: var(--cp-red) !important; font-weight: 600; }
+
+.cp-foot { max-width: 1040px; margin: 20px auto 0; padding: 14px clamp(16px, 4vw, 40px) 22px; border-top: 1px solid var(--cp-line); font-size: 12px; color: var(--cp-dim); }
+.cp-foot p { margin: 3px 0; }

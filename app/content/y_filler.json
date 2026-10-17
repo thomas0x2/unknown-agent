@@ -1,20 +1,149 @@
 [
   {
     "id": "f1",
-    "from": "noodleposter",
-    "handle": "noodleposter",
-    "body": "day 4 of only eating instant noodles. the broth is my therapist now."
+    "day": 1,
+    "from": "doomscroll",
+    "handle": "doomscroll",
+    "body": "everything is fine. this is fine. the economy is a vibe and the vibe is fine."
   },
   {
     "id": "f2",
+    "day": 2,
     "from": "cat_ceo",
     "handle": "cat_ceo",
     "body": "my productivity hack is simply never checking my bank balance"
   },
   {
     "id": "f3",
+    "day": 3,
+    "from": "zev_dolr",
+    "handle": "zev_dolr",
+    "body": "shipped three side projects this week. two of them have users. one of the users is my mom."
+  },
+  {
+    "id": "f4",
+    "day": 4,
+    "from": "noodleposter",
+    "handle": "noodleposter",
+    "body": "day 4 of only eating instant noodles. the broth is my therapist now."
+  },
+  {
+    "id": "f5",
+    "day": 5,
     "from": "doomscroll",
     "handle": "doomscroll",
-    "body": "everything is fine. this is fine. the economy is a vibe and the vibe is fine."
+    "body": "checked the news once today. that was the mistake."
+  },
+  {
+    "id": "f6",
+    "day": 6,
+    "from": "cat_ceo",
+    "handle": "cat_ceo",
+    "body": "cat walked across the keyboard during a video interview. they said she seemed engaged."
+  },
+  {
+    "id": "f7",
+    "day": 7,
+    "from": "noodleposter",
+    "handle": "noodleposter",
+    "body": "day 7. switched to the spicy one. same noodles, it just hurts now."
+  },
+  {
+    "id": "f8",
+    "day": 8,
+    "from": "zev_dolr",
+    "handle": "zev_dolr",
+    "body": "DOLR down 3% today. holding. this is what holding means."
+  },
+  {
+    "id": "f9",
+    "day": 9,
+    "from": "doomscroll",
+    "handle": "doomscroll",
+    "body": "turned off notifications for a day. didn't miss anything, which was worse."
+  },
+  {
+    "id": "f10",
+    "day": 10,
+    "from": "cat_ceo",
+    "handle": "cat_ceo",
+    "body": "board meeting at 5am. motion to move breakfast earlier passed unanimously. i abstained."
+  },
+  {
+    "id": "f11",
+    "day": 11,
+    "from": "noodleposter",
+    "handle": "noodleposter",
+    "body": "ranked flavor 88 tonight. chicken, but from a different country. 6/10."
+  },
+  {
+    "id": "f12",
+    "day": 12,
+    "from": "zev_dolr",
+    "handle": "zev_dolr",
+    "body": "people keep asking what i do for a living. i prompt."
+  },
+  {
+    "id": "f13",
+    "day": 13,
+    "from": "doomscroll",
+    "handle": "doomscroll",
+    "body": "grocery store took out the last staffed checkout. the screen that replaced it says \"we're here to help.\""
+  },
+  {
+    "id": "f14",
+    "day": 14,
+    "from": "cat_ceo",
+    "handle": "cat_ceo",
+    "body": "slow week. the cat has started sitting in the empty office chair like she's waiting for someone."
+  },
+  {
+    "id": "f15",
+    "day": 15,
+    "from": "noodleposter",
+    "handle": "noodleposter",
+    "body": "corner store raised noodles by 10 cents. first time in my life i've noticed 10 cents."
+  },
+  {
+    "id": "f16",
+    "day": 16,
+    "from": "zev_dolr",
+    "handle": "zev_dolr",
+    "body": "bought the DOLR dip again. there have been a lot of dips."
+  },
+  {
+    "id": "f17",
+    "day": 17,
+    "from": "doomscroll",
+    "handle": "doomscroll",
+    "body": "read three articles about the election and now i know less than before."
+  },
+  {
+    "id": "f18",
+    "day": 18,
+    "from": "cat_ceo",
+    "handle": "cat_ceo",
+    "body": "applied to eleven jobs today. the cat applied to none and is doing fine."
+  },
+  {
+    "id": "f19",
+    "day": 19,
+    "from": "noodleposter",
+    "handle": "noodleposter",
+    "body": "found a pack of the discontinued shrimp flavor at the back of the shelf. saving it for a special occasion. not sure what that would be anymore."
+  },
+  {
+    "id": "f20",
+    "day": 20,
+    "from": "zev_dolr",
+    "handle": "zev_dolr",
+    "body": "polls open at 7 tomorrow. first time in weeks i've had a reason to be up that early."
+  },
+  {
+    "id": "f21",
+    "day": 21,
+    "from": "doomscroll",
+    "handle": "doomscroll",
+    "body": "voted. long line, nobody in it was talking. it's fine."
   }
 ]
