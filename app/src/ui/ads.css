@@ -182,3 +182,6 @@
 .ad-square .ad-logo { grid-row: 1; justify-self: center; width: 32px; height: 32px; border-radius: 8px; }
 .ad-square .ad-logo svg { width: 21px; height: 21px; }
 .ad-square .ad-logo.ico-applogo svg { width: 32px; height: 32px; }
+.ad-stamp-ok { border-color: #1f7a3a; color: #1f7a3a; }
+/* a long sponsor name stays on one line, so it never runs into the logo below it */
+.ad-tag { right: 8px; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

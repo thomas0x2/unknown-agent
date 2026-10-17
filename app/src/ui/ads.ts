@@ -15,7 +15,7 @@ import { adLogoHtml } from './siteIcons';
 
 /** the two ad pools: rectangular leaderboards for the top of a page, square boxes for sidebars */
 export type AdSlot = 'wide' | 'square';
-type Deco = 'robot' | 'coins' | 'stripes' | 'steam' | 'shine' | 'siren' | 'bubbles' | 'sparkle' | 'ekg' | 'snow' | 'stamp';
+type Deco = 'robot' | 'coins' | 'stripes' | 'steam' | 'shine' | 'siren' | 'bubbles' | 'sparkle' | 'ekg' | 'snow' | 'stamp' | 'approved';
 
 interface Ad {
   id: string;
@@ -149,6 +149,11 @@ export const WIDE: Ad[] = [
     frames: ['Rent appeal received.', 'Rent appeal reviewed.', 'Rent appeal <b>denied</b>.'],
     cta: 'Appeal again (5 DOLR)', fine: 'Appeals are reviewed by GeneralAI. GeneralAI owns your building.',
   },
+  {
+    id: 'companion', sponsor: 'Ministry of Social Stability', href: 'companion.gov/allocate', theme: 'ad-ministry', deco: 'approved',
+    frames: ['Loneliness is now a <b>public health matter</b>.', 'Every unemployed adult is assigned <b>one AI partner</b>.', 'Yours has been chosen.'],
+    cta: 'Check my allocation', fine: 'Partners are supplied by GeneralAI under a public contract. Declining is recorded.',
+  },
 ];
 
 /** Square sidebar boxes: one big line per frame. */
@@ -235,6 +240,11 @@ const SQUARE: Ad[] = [
     cta: 'Say sorry', fine: 'She will know. Mothers know.',
   },
   {
+    id: 'companion-sq', sponsor: 'Ministry of Social Stability', href: 'companion.gov/allocate', theme: 'ad-ministry', deco: 'approved',
+    frames: ['Single?', 'Not for long.', 'Your <b>state-assigned partner</b> is waiting.'],
+    cta: 'Meet them', fine: 'Mandatory under the Public Wellbeing Act 2028.',
+  },
+  {
     id: 'citizen', sponsor: 'Citizen Score', href: 'citizenscore.gov', theme: 'ad-ministry', deco: 'stamp',
     frames: ['Your score <b>has changed</b>.', '<b>−4</b> for reading this ad.', 'Keep reading to <b>earn them back</b>.'],
     cta: 'Keep reading', fine: 'Score shared with landlords, employers and the Crane campaign.',
@@ -296,6 +306,7 @@ function decoHtml(d?: Deco): string {
     case 'shine': return '<span class="ad-shine" aria-hidden="true"></span>';
     case 'ekg': return '<svg class="ad-ekg" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><polyline pathLength="1" points="0,20 40,20 48,8 56,32 64,20 100,20 108,4 116,36 124,20 200,20"/></svg>';
     case 'stamp': return '<span class="ad-stamp" aria-hidden="true">DENIED</span>';
+    case 'approved': return '<span class="ad-stamp ad-stamp-ok" aria-hidden="true">ASSIGNED</span>';
     case 'snow': return '<span class="ad-snow" aria-hidden="true"><i>❄</i><i>❄</i><i>❄</i><i>❄</i><i>❄</i></span>';
     default: return '';
   }

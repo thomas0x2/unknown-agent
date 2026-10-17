@@ -315,6 +315,19 @@ export const AD_SITES: AdSite[] = [
     action: ['File an appeal (5 DOLR)', 'rent-appeal'],
   },
   {
+    url: 'companion.gov/allocate', brand: 'Ministry of Social Stability', kit: 'gov', theme: 'ministry', mark: 'govheart',
+    kicker: 'Public Wellbeing Act 2028', title: 'Companionship Allocation Programme',
+    lead: 'Every resident without employment is assigned one AI partner. The Ministry classifies loneliness as a risk to public order.',
+    stats: [['1', 'partner per resident'], ['0', 'opt-outs approved']],
+    cards: [
+      ['Eligibility', 'Anyone without a job for 30 days or more. A valid Form 7B permit counts as proof.'],
+      ['Your partner', 'Assigned by postcode. Partners are supplied by GeneralAI under a public contract and report to the Ministry monthly.'],
+      ['Declining', 'You may decline once, in writing. Declining is noted on your Citizen Score.'],
+    ],
+    fine: 'Conversations are retained for quality and policy purposes. Partners are not a substitute for employment.',
+    link: ['Allocated partners are delivered through Lonely.ai:', 'lonely.ai', 'lonely.ai'],
+  },
+  {
     url: 'citizenscore.gov', brand: 'Citizen Score', kit: 'gov', theme: 'ministry', mark: '⚖',
     kicker: 'Pilot programme', title: 'Your Citizen Score',
     lead: 'A single number from 0 to 1,000 that sums up your reliability as a resident. It is shared with landlords, employers and public services.',
