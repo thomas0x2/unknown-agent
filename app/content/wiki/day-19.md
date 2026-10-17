@@ -13,7 +13,7 @@ from: 19
 - [public] 11:15 MarketWire: $GAI's market cap passes a small country's GDP. {{y:m19_gai}}
 - [public] 11:50 [[Cal Hartman]]: the agent-5 sessions are fine; "they're just finishing up." {{y:d19_y_hartman}}
 - [public] 12:30 [[The Current]]: Crane 47%, his opponent 45%, inside the margin; a growing share of respondents can't be confirmed as people. {{y:d19_y_current}}
-- [public] 12:57 noodleposter found the discontinued shrimp flavor and is saving it. {{y:f19}}
+- [public] 12:57 noodleposter found the discontinued shrimp flavor and is saving it for 1k followers. {{y:f19}}
 - [public] 14:00 Candidate 2030: two days left; make a plan to vote. {{y:d19_y_candidate}}
 - [public] 16:05 [[Max Stryker]]: his posts go out at 3am because he's up. {{y:d19_y_stryker}}
 - [public] 17:43 Brent Kowalski: $VANT down 3% on a lawsuit from former staff. {{y:m19_vant}}

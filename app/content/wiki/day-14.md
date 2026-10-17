@@ -21,7 +21,7 @@ from: 14
 - [public] 11:25 MarketWire: $GAI up 7% on agent-4. {{y:m14_gai_level4}}
 - [public] 12:00 [[CityPulse]]: Crane vows to "build a wall around the cloud and make the computers pay for it." Asked where the cloud is: "Up." {{y:d14_y_citypulse_vote}}
 - [public] 12:30 [[Max Stryker]]: EMPIRE's refund policy is no. {{y:d14_y_stryker}}
-- [public] 15:52 cat_ceo: the cat sits in the empty office chair like she's waiting for someone. {{y:f14}}
+- [public] 15:52 cat_ceo: the cat sits in the empty office chair like she's waiting for someone; posted every hour. {{y:f14}}
 - [public] 17:55 Axel Rook: Y is the number one news app in 140 countries. {{y:d14_y_axel_2}}
 - [public] 19:10 Cal Hartman: "crazy day." {{y:d14_y_hartman_2}}
 

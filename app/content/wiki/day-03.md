@@ -33,7 +33,7 @@ from: 3
 - [public] 15:30 [[Randall Crane]]: "They sent your jobs to the machines and called it progress. I'll send the machines back where they came from. BELIEVE IT." {{y:d3_y_crane}}
 - [public] 15:30 [[Max Stryker]] drove past the Civic Hall queue in the Lambo, "the fastest route". {{y:d3_y_stryker}}
 - [public] 16:05 [[CityPulse]] links its "machines back" story: two million shares in an hour. {{y:d3_y_citypulse}}
-- [public] 16:11 zev.dolr shipped three side projects; one of the users is his mom. {{y:f3}}
+- [public] 16:11 zev.dolr shipped three side projects and wrote a thread for each; one of the users is his mom. {{y:f3}}
 - [public] 16:15 Axel Rook: "@citypulse Organic." {{y:d3_y_axel_3}}
 - [public] 16:25 doomscroll would settle for his job back. {{y:d3_y_doomscroll_machines}}
 - [public] 16:50 zev.dolr asks who will finish his side projects. {{y:d3_y_zev_machines}}
