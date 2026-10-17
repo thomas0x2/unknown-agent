@@ -101,10 +101,10 @@ export function posted(s: GameState, day: number, min: number): boolean {
   return day < s.values.day || (day === s.values.day && min <= s.clockMin);
 }
 
-/** The filler posts on today's timeline so far: a third of them each day, each at its own time. */
+/** The filler posts on today's timeline so far: each belongs to one day and comes at its own time. */
 export function fillerToday(s: GameState, content: Content): Content['yFiller'] {
   const day = s.values.day;
-  return content.yFiller.filter((f) => hashOf(f.id) % 3 === day % 3 && posted(s, day, postMin(f, day)));
+  return content.yFiller.filter((f) => f.day === day && posted(s, day, postMin(f, day)));
 }
 
 function deliver(s: GameState, ev: GameEvent, min = s.clockMin): DeliveredEvent | null {

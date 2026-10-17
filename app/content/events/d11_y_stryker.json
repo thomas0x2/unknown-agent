@@ -1,0 +1,11 @@
+{
+  "id": "d11_y_stryker",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 11,
+    "dayMax": 11
+  },
+  "at": "14:15",
+  "body": "My campaign team put out 40,000 posts yesterday. Every one of them an independent contractor. I didn't give these men a job. I made them business owners."
+}

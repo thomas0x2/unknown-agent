@@ -1,0 +1,11 @@
+{
+  "id": "d21_y_stryker",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 21,
+    "dayMax": 21
+  },
+  "at": "10:40",
+  "body": "Voted at 7:00 sharp. First in line. The man behind me asked what I do for work. I said I escaped the Matrix. He's still in it. Link in bio."
+}

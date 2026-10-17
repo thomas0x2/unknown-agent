@@ -1,0 +1,11 @@
+{
+  "id": "d16_y_stryker",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 16,
+    "dayMax": 16
+  },
+  "at": "11:55",
+  "body": "Excuses are free. That's why you have so many.\n\nEMPIRE is 20 DOLR."
+}

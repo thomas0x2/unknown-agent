@@ -1,0 +1,11 @@
+{
+  "id": "d19_y_citypulse",
+  "site": "y",
+  "from": "CityPulse",
+  "trigger": {
+    "dayMin": 19,
+    "dayMax": 19
+  },
+  "at": "19:55",
+  "body": "IS A COMPUTER WRITING CRANE'S POSTS? Half of them land between 2 and 5 AM. citypulse.news/crane-posts"
+}

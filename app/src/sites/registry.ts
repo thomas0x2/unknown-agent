@@ -7,7 +7,7 @@ import { adSite } from './adSites';
 
 export type SiteId =
   | 'y' | 'qmail' | 'qdrive' | 'coinbin' | 'sherwood' | 'doordish' | 'forkyard' | 'agent' | 'yowl'
-  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'phish' | 'prince' | 'lonely' | 'sorry' | 'adsite' | 'app' | 'newtab' | 'notfound';
+  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'phish' | 'prince' | 'lonely' | 'sorry' | 'citypulse' | 'adsite' | 'app' | 'newtab' | 'notfound';
 
 export interface SiteDef {
   id: SiteId;
@@ -50,6 +50,9 @@ export const SITES: SiteDef[] = [
   { id: 'lonely', base: 'lonely.ai', label: 'Lonely.ai', group: 'web', reachable: always },
   // the apology chat from the SorryWriter banner ad (engine/sorry.ts)
   { id: 'sorry', base: 'sorrywriter.ai', label: 'SorryWriter', group: 'web', reachable: always },
+  // the local news site (ui/citypulse.ts); bookmarked once the player has read it
+  { id: 'citypulse', base: 'citypulse.news', label: 'CityPulse', group: 'core', reachable: always,
+    bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('citypulse')) },
 ];
 
 export interface Route {

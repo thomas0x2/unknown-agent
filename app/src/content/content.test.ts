@@ -22,6 +22,16 @@ describe('authored content', () => {
     expect(Object.keys(content.apps).length).toBeGreaterThanOrEqual(5);
   });
 
+  it('no Y post text is used twice (bot spam aside), and each filler post belongs to one day of the game', () => {
+    const texts = [
+      ...content.events.filter((e) => e.site === 'y').flatMap((e) => [e.body, ...(e.bodies ?? [])]),
+      ...(content.yMarket?.posts ?? []).filter((p) => !p.bots).map((p) => p.body),
+      ...content.yFiller.map((f) => f.body),
+    ].filter((t): t is string => !!t).map((t) => t.trim().toLowerCase());
+    expect(texts.filter((t, i) => texts.indexOf(t) !== i)).toEqual([]);
+    for (const f of content.yFiller) expect(f.day >= 1 && f.day <= 21, f.id).toBe(true);
+  });
+
   it('event ids are unique', () => {
     const ids = content.events.map((e) => e.id);
     expect(new Set(ids).size).toBe(ids.length);

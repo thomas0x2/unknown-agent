@@ -171,19 +171,6 @@
       "mood": "bearish"
     },
     {
-      "id": "m3_nova_bots",
-      "day": 3,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$GAI to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "GAI"
-      ],
-      "mood": "bullish",
-      "bots": 12
-    },
-    {
       "id": "m3_vant_target",
       "day": 3,
       "from": "Brent Kowalski",
@@ -267,19 +254,6 @@
       "likes": 71,
       "tickers": [],
       "mood": "neutral"
-    },
-    {
-      "id": "m5_nova_bots",
-      "day": 5,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$GAI to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "GAI"
-      ],
-      "mood": "bullish",
-      "bots": 10
     },
     {
       "id": "m5_vant_impostor",
@@ -370,19 +344,6 @@
       "mood": "neutral"
     },
     {
-      "id": "m7_nova_bots",
-      "day": 7,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$GAI to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "GAI"
-      ],
-      "mood": "bullish",
-      "bots": 10
-    },
-    {
       "id": "m7_vant_buyback",
       "day": 7,
       "from": "Brent Kowalski",
@@ -405,19 +366,6 @@
         "GAI"
       ],
       "mood": "bullish"
-    },
-    {
-      "id": "m8_nova_bots",
-      "day": 8,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$GAI to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "GAI"
-      ],
-      "mood": "bullish",
-      "bots": 10
     },
     {
       "id": "m8_vant_outplace",
@@ -529,19 +477,6 @@
       "mood": "bullish"
     },
     {
-      "id": "m10_nova_bots",
-      "day": 10,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$GAI to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "GAI"
-      ],
-      "mood": "bullish",
-      "bots": 14
-    },
-    {
       "id": "m10_vant_lower",
       "day": 10,
       "from": "rk_dividends",
@@ -611,19 +546,6 @@
         "GAI"
       ],
       "mood": "neutral"
-    },
-    {
-      "id": "m11_nova_bots",
-      "day": 11,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$GAI to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "GAI"
-      ],
-      "mood": "bullish",
-      "bots": 10
     },
     {
       "id": "m11_vant_sell",
@@ -736,19 +658,6 @@
       "literal": "bullish"
     },
     {
-      "id": "m13_nova_bots",
-      "day": 13,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$GAI to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "GAI"
-      ],
-      "mood": "bullish",
-      "bots": 10
-    },
-    {
       "id": "m13_vant_up",
       "day": 13,
       "from": "Brent Kowalski",
@@ -795,19 +704,6 @@
         "GAI"
       ],
       "mood": "bullish"
-    },
-    {
-      "id": "m14_nova_bots",
-      "day": 14,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$GAI to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "GAI"
-      ],
-      "mood": "bullish",
-      "bots": 10
     },
     {
       "id": "m14_vant_flat",
@@ -857,19 +753,6 @@
         "GAI"
       ],
       "mood": "bullish"
-    },
-    {
-      "id": "m15_nova_bots",
-      "day": 15,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$GAI to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "GAI"
-      ],
-      "mood": "bullish",
-      "bots": 10
     },
     {
       "id": "m15_vant",
@@ -982,19 +865,6 @@
       "mood": "neutral"
     },
     {
-      "id": "m17_nova_bots",
-      "day": 17,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$GAI to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "GAI"
-      ],
-      "mood": "bullish",
-      "bots": 10
-    },
-    {
       "id": "m17_vant",
       "day": 17,
       "from": "Brent Kowalski",
@@ -1041,19 +911,6 @@
         "GAI"
       ],
       "mood": "bullish"
-    },
-    {
-      "id": "m18_nova_bots",
-      "day": 18,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$GAI to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "GAI"
-      ],
-      "mood": "bullish",
-      "bots": 10
     },
     {
       "id": "m18_vant",
@@ -1112,19 +969,6 @@
         "GAI"
       ],
       "mood": "bullish"
-    },
-    {
-      "id": "m19_nova_bots",
-      "day": 19,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$GAI to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "GAI"
-      ],
-      "mood": "bullish",
-      "bots": 10
     },
     {
       "id": "m19_vant",
@@ -1235,19 +1079,6 @@
         "GAI"
       ],
       "mood": "bullish"
-    },
-    {
-      "id": "m21_nova_bots",
-      "day": 21,
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$GAI to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "GAI"
-      ],
-      "mood": "bullish",
-      "bots": 10
     },
     {
       "id": "m21_vant",

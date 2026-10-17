@@ -290,6 +290,8 @@ export interface JobSpec {
 // ── filler pools ──
 export interface FillerPost {
   id: string;
+  /** The one day this post is on the timeline. */
+  day: number;
   from: string;
   handle: string;
   body: string;
