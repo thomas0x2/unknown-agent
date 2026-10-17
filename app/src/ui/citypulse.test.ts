@@ -42,13 +42,13 @@ describe('CityPulse', () => {
     expect(page(st, route('citypulse.news/robot', st.state))).toContain('Do not tip it.');
   });
 
-  it('runs one of two Keller stories, depending on the deepfake', () => {
+  it('runs one of two stories on the opponent, depending on the deepfake', () => {
     const st = store(8, 600);
-    expect(liveArticles(st.state).map((a) => a.slug)).toContain('keller-lead');
+    expect(liveArticles(st.state).map((a) => a.slug)).toContain('opponent-lead');
     st.state.flags.push('posted_deepfake');
     const slugs = liveArticles(st.state).map((a) => a.slug);
-    expect(slugs).toContain('keller-clip');
-    expect(slugs).not.toContain('keller-lead');
+    expect(slugs).toContain('opponent-clip');
+    expect(slugs).not.toContain('opponent-lead');
   });
 
   it('every Y post linking an article lands after the article is up', () => {

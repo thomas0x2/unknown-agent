@@ -33,7 +33,7 @@ from: 1
 - [public] On day 3: the presidential race; Crane going viral; AI layoffs (continued).
 - [public] On day 4: GeneralAI agent-2; a Crane rally; the DoorDish robot (still missing).
 - [public] On day 5: Crane gains in the polls; a data breach (yours); AI-art backlash.
-- [public] On day 6: the governor's race; $GAI rallying; #RentDayEve.
+- [public] On day 6: Crane's opponent; $GAI rallying; #RentDayEve.
 - [public] From day 7 the sidebar shows only #AI, #jobs and #election.
 
 ## Later changes

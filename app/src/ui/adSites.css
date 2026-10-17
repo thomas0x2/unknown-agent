@@ -106,8 +106,8 @@
 .lp-t-crane .lp-top, .lp-t-crane .lp-hero { background: #b3121f; box-shadow: 0 0 0 100vmax #b3121f; clip-path: inset(0 -100vmax); }
 .lp-t-crane .lp-hero { margin-bottom: 34px; }
 .lp-t-crane .lp-top { border-bottom: 0; }
-.lp-t-keller { --lp-bg: #fff; --lp-ink: #0d2347; --lp-dim: #4a5878; --lp-accent: #e8c35a; --lp-accent-ink: #0d2347; --lp-card: #f3f5f9; --lp-line: #d9dfea; }
-.lp-t-keller .lp-top { margin: 0 calc(-1 * clamp(16px, 4vw, 40px)); max-width: none; padding: 16px clamp(16px, 4vw, 40px); background: #0d2347; color: #fff; }
+.lp-t-progress { --lp-bg: #fff; --lp-ink: #0d2347; --lp-dim: #4a5878; --lp-accent: #e8c35a; --lp-accent-ink: #0d2347; --lp-card: #f3f5f9; --lp-line: #d9dfea; }
+.lp-t-progress .lp-top { margin: 0 calc(-1 * clamp(16px, 4vw, 40px)); max-width: none; padding: 16px clamp(16px, 4vw, 40px); background: #0d2347; color: #fff; }
 .lp-t-dolr { --lp-bg: linear-gradient(160deg, #062b1b, #0e5e3a); --lp-ink: #e6fff1; --lp-dim: #9fd9b9; --lp-accent: #2cff95; --lp-accent-ink: #012613; --lp-card: rgba(255, 255, 255, .06); --lp-line: rgba(44, 255, 149, .2); }
 .lp-t-prince { --lp-bg: repeating-linear-gradient(90deg, #fff7a0 0 60px, #ffd3f1 60px 120px); --lp-ink: #1a00ff; --lp-dim: #3a2bd6; --lp-accent: #ff00a8; --lp-accent-ink: #fff; --lp-card: rgba(255, 255, 255, .85); --lp-line: #1a00ff; --lp-font: 'Comic Sans MS', 'Comic Neue', cursive; --lp-head: 'Comic Sans MS', 'Comic Neue', cursive; }
 .lp-t-steadfast { --lp-bg: #fff; --lp-ink: #13314d; --lp-dim: #4e6378; --lp-accent: #13314d; --lp-card: #f2f6f9; --lp-line: #dbe4ec; --lp-head: var(--f-display); }

@@ -16,7 +16,7 @@
     "payout": 150,
     "dueDay": 7
   },
-  "body": "I represent a campaign. 150 DOLR to post a convincing fake clip of candidate for governor Daniel Keller saying something disqualifying, from your account. Big reach, quiet money.",
+  "body": "I represent a campaign. 150 DOLR to post a convincing fake clip of Randall Crane's opponent saying something disqualifying, from your account. Big reach, quiet money.",
   "outcomes": [
     {
       "id": "do",
@@ -25,6 +25,7 @@
         "job": "complete",
         "add": {
           "suspicion": 10,
+          "heritageStanding": 15,
           "progressStanding": -25
         },
         "addPct": {

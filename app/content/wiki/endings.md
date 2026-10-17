@@ -22,7 +22,7 @@ Guard endings (Outbreak to Raided, in that order) are checked each night after p
 
 ## What content can reach today
 
-- With today's content only Evicted, Raided, Got Away With It (the day 6 Keller deepfake is the only catastrophic job) and Clean but Modest can fire.
+- With today's content only Evicted, Raided, Got Away With It (the day 6 deepfake of Crane's opponent is the only catastrophic job) and Clean but Modest can fire.
 - Account Terminated is reachable in theory (ten successful workarounds at misuse +10 each), but only one workaround job exists (Bean There's day 7 removal).
 - The other five need content from days 8 to 20: nothing sets `election_tipped`, `weights_published` or `bio_release`, the mafia and Null standings never move, and leash only grows from workarounds.
 - Catastrophic endings fire from day 17 so every run reaches the Convergence phase (see [[Timeline overview]]).

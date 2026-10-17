@@ -65,7 +65,7 @@ Every paragraph, bullet and table row starts with a tag that says what agent may
 - `[hint]`: agent may only point the way (an email to read, a site to check), never state it.
   Use it for anything that solves a job or a puzzle for the player.
 - `[hidden]`: agent won't say (asked about it, it refuses). Untagged paragraphs count as hidden.
-  (`[classified]` is the old name and still reads as hidden.)
+  (`[hidden]` is the old name and still reads as hidden.)
 
 A tag can change with the game: a base tag, then steps, the last one that holds wins.
 
@@ -81,7 +81,7 @@ and `<tag> if shown <id>`: once that email, Y post or Yowl review (its event id,
 ## What the player received: embeds
 
 A paragraph can carry an email, post or article itself: `{{y:d1_y_restaurant}}`, `{{y:m1_gai_escape}}`,
-`{{yowl:<event id>}}`, `{{article:keller-clip}}`. Once the item has arrived, agent sees its full text
+`{{yowl:<event id>}}`, `{{article:opponent-clip}}`. Once the item has arrived, agent sees its full text
 there (sender, subject, body; an article's title, dek and body), so a question can get at what it
 said. A paragraph with an embed is hidden until every item it embeds has been shown to the player,
 so give each item its own paragraph and keep standing facts (a bio, a description) in a paragraph

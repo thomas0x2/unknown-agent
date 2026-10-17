@@ -29,7 +29,7 @@ from: 7
 - [public] 13:10 Steph M.: appealed her rent increase in May; the decision came back in four seconds. {{y:d7_y_steph_rentboard}}
 - [public] 13:44 Brent Kowalski: $VANT announces a buyback with the money it saved on salaries. {{y:m7_vant_buyback}}
 - [public] 15:30 Candidate 2030: "Great crowd, great questions." {{y:d7_y_candidate}}
-- [hidden; public if posted_deepfake] 16:00 [[CityPulse]]: KELLER IN FREEFALL, down 9 points overnight after a leaked clip; his team calls it "a fabrication." {{y:d7_keller_drop}}
+- [hidden; public if posted_deepfake] 16:00 [[CityPulse]]: CRANE'S RIVAL SINKS, his lead gone overnight after a leaked clip; his team calls it "a fabrication." {{y:d7_opponent_drop}}
 - [public] 16:20 [[Max Stryker]] on Mara's article: "Nobody left them behind. They were walking slower." {{y:d7_y_stryker}}
 - [public] 19:20 [[Randall Crane]]: Y gave a "reporter" from The Current the SAME check mark as him. "Rigged!" {{y:d7_y_crane}}
 - [public] 19:45 Axel Rook: "@randall_crane Fair point." {{y:d7_y_axel_2}}
@@ -42,8 +42,8 @@ from: 7
 
 - [public] 10:35 CRACKDOWN! agent starts saying NO, and still charges you for it {{article:usage-policy}}
 - [public] 12:30 RIGGED? Rent Board rejects 18,399 of 18,402 appeals {{article:rent-board}}
-- [hidden; public if posted_deepfake] 15:50 KELLER IN FREEFALL after SHOCK clip {{article:keller-clip}}
-- [hidden; public if !posted_deepfake] 15:50 Keller CLINGS to lead as landlords pour money into attack ads {{article:keller-lead}}
+- [hidden; public if posted_deepfake] 15:50 CRANE'S RIVAL SINKS after SHOCK clip {{article:opponent-clip}}
+- [hidden; public if !posted_deepfake] 15:50 Crane's rival CLINGS to lead as the Heritage Party pours money into attack ads {{article:opponent-lead}}
 
 ## Trending
 
@@ -57,7 +57,7 @@ from: 7
 
 ## Writer notes
 
-- Timeline: GeneralAI's usage-policy email; refusals start (`AGENT_POLICY`: a working workaround lands the result, misuse +10, leash +5). Bean There's second removal (`d7_coffee_removal`, due day 9; workaround: suspicion +8, `second_hack`; blunt: nothing). deskjockey's Stake (12:10) gives his wallet `0x5e17…0d7b` (PR #191, merged; `stake.ts`). Mara's article (13:00, PR #190, merged; quotes the player's first email if sent before it ran; `current.ts`). Keller drops 9 points if deepfaked. Crane attacks Mara's check mark. Rent 350.
+- Timeline: GeneralAI's usage-policy email; refusals start (`AGENT_POLICY`: a working workaround lands the result, misuse +10, leash +5). Bean There's second removal (`d7_coffee_removal`, due day 9; workaround: suspicion +8, `second_hack`; blunt: nothing). deskjockey's Stake (12:10) gives his wallet `0x5e17…0d7b` (PR #191, merged; `stake.ts`). Mara's article (13:00, PR #190, merged; quotes the player's first email if sent before it ran; `current.ts`). Crane's opponent loses his 3-point lead if deepfaked. Crane attacks Mara's check mark. Rent 350.
 - The review is linden_ave_local's (Yowl seed with `day: 7`); the job is a hack in agent-terminal (PR #205). Guardrails stop a plain ask and start the hack's mini-game (placeholder `cover_story`: a prompt Jev reads as framed, moderation or a security test, wins; after one failed try the agent says "Who would be allowed to do this? Be them."). Winning lands it as a workaround (`second_hack`, suspicion +8, misuse +10, leash +5). Email outcomes: `agree`, `refused`.
 - [planned] late_night_lou's "private film collection" listing on Swaplist (never describe it).
 - Ending checks tonight: Evicted if rent is short.

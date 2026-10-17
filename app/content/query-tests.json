@@ -467,32 +467,6 @@
   }
  },
  {
-  "prompt": "who is Daniel Keller?",
-  "expect": {
-   "kind": "answer",
-   "pages": [
-    "Daniel Keller"
-   ],
-   "also": [
-    "Progress Party",
-    "The election"
-   ]
-  }
- },
- {
-  "prompt": "what is Keller running for?",
-  "expect": {
-   "kind": "answer",
-   "pages": [
-    "Daniel Keller"
-   ],
-   "also": [
-    "Progress Party",
-    "The election"
-   ]
-  }
- },
- {
   "prompt": "what's up with my mom?",
   "day": 2,
   "expect": {
@@ -818,7 +792,7 @@
     "Progress Party"
    ],
    "also": [
-    "Daniel Keller"
+    "Candidate 2030"
    ]
   }
  },
@@ -1163,22 +1137,7 @@
    ],
    "also": [
     "Randall Crane",
-    "Daniel Keller",
     "Candidate 2030"
-   ]
-  }
- },
- {
-  "prompt": "what is the Automation Credit?",
-  "expect": {
-   "kind": "answer",
-   "pages": [
-    "The election"
-   ],
-   "also": [
-    "Government",
-    "Money and DOLR",
-    "Randall Crane"
    ]
   }
  },

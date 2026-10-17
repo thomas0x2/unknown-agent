@@ -46,7 +46,7 @@ from: 9
 
 ## Not written yet
 
-- [hidden] [planned] Mom forwards the Keller deepfake: "Can you believe this man?" (only if the player posted it).
+- [hidden] [planned] Mom forwards the deepfake of Crane's opponent: "Can you believe this man?" (only if the player posted it).
 - [hidden] [planned] The Halden hack shows up in the news as a "data breach".
 - [hidden] [planned] The brother asks who paid for the laptop.
 

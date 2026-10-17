@@ -21,9 +21,7 @@ from: 1
 - [public] On day 18 it fact-checks the debate: 4 of Crane's 31 claims held up, and the campaign cited two of the four as proof. {{y:d18_y_current}}
 - [public] On day 21 it posts how to vote: polls open until 20:00, photo ID and registration card, no Citizen Score, and polling stations have not moved. {{y:d21_y_current}}
 - [public] {{y:d2_y_current}}
-- [public] {{y:d5_y_current_governor}}
 - [public] {{y:d9_y_current}}
-- [public] {{y:d12_y_current}}
 - [public] {{y:d12_y_current_clip}}
 - [public] {{y:d16_y_current}}
 - [public] {{y:d19_y_current}}

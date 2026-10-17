@@ -17,4 +17,4 @@ from: 1
 ## Writer notes
 
 - GOP parody; name is a placeholder. Logo `app/src/sites/heritageLogo.ts`; site in `app/src/sites/adSites.ts`. Crane's opponent, [[Candidate 2030]], runs for the [[Progress Party]].
-- Hidden meter `heritageStanding` (−100 to 100, starts 0): the first donation adds 10, later ones change nothing. Planned hooks: Max Stryker's campaign recruitment (days 10 to 12) and the Regime ending (`election_tipped`).
+- Hidden meter `heritageStanding` (−100 to 100, starts 0): the first donation adds 10, later ones change nothing; posting the day 6 deepfake of [[Candidate 2030]] adds 15. Planned hooks: Max Stryker's campaign recruitment (days 10 to 12) and the Regime ending (`election_tipped`).

@@ -66,10 +66,10 @@ hub: true
 - [public] From day 3 Crane Victory Fund ads run ("THEY SENT YOUR JOBS TO THE MACHINES").
 - [public] From day 6 Crane's jobs plan ad runs, saying Crane will take the robot's job and give it to GeneralAI.
 
-## Keller for Governor
+## Progress Party
 
-[public] Keller for Governor (keller4governor.org): see [[Progress Party]].
-- [public] From day 6 Keller's ad runs, quoting him: "I never said that."
+[public] The Progress Party (progressparty.org): see [[Progress Party]].
+- [public] From day 6 its ad runs, quoting [[Candidate 2030]]: "I never said that."
 
 ## GeneralAI
 
@@ -83,6 +83,6 @@ hub: true
 
 ## Writer notes
 
-- Ads: `app/src/ui/ads.ts` (`from` gates: crane 3, doordish 3, bean 3, gai2 4, sorrywriter 5, craneagain 6, keller 6). Landing pages: `app/src/sites/adSites.ts`.
+- Ads: `app/src/ui/ads.ts` (`from` gates: crane 3, doordish 3, bean 3, gai2 4, sorrywriter 5, craneagain 6, progress 6). Landing pages: `app/src/sites/adSites.ts`.
 - Brand ties: Steadfast brand `app/src/ui/steadfast.ts` (navy `#13314d`, fluted column in a shield). LiquidAssets' logo is a kidney.
 - Possible hooks *(placeholder)*: NoDoze MAX for the AI-for-bio plot (`bio_release`, Outbreak); CloudCasket records as a doxxing source / leverage for the mafia plot (day 17, Mara Vey).
