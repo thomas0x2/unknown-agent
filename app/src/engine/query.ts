@@ -60,7 +60,7 @@ export function seenItems(s: GameState, content: Content): Map<string, string> {
 /** How Jev sees a page: its title, other names and what kind of thing it is. */
 function pageDesc(p: WikiPage): string {
   const kind = { people: 'a person', family: "a member of the player's family", companies: 'a company or organisation', sites: 'a website or app', apps: 'an app the player builds', world: 'a topic', days: 'what happened on that day', writers: '' }[p.category] ?? 'a topic';
-  return `${p.title}${p.aliases.length ? ` (also called ${p.aliases.slice(0, 16).join(', ')})` : ''}: ${kind}`;
+  return `${p.title}${p.aliases.length ? ` (also called ${p.aliases.slice(0, 8).join(', ')})` : ''}: ${kind}`;
 }
 
 /** Jev: which wiki page(s), then which section(s) of each, the question is about. */
