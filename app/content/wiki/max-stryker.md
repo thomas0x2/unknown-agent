@@ -102,6 +102,6 @@ from: 1
 
 ## Writer notes
 
-- Persona `max` (scripted "Commitment logged." on EMPIRE replies); events `dN_y_stryker_2` (dating advice, odd days 5 to 15, each answered by `dN_y_sigma`), `d1_guru` (interested reply: the 20 DOLR price "goes back to 200, as it has every midnight since launch"), `guru_newsletter` (20 bodies, one per day 2 to 21, mattress first; embed one issue as `mail:guru_newsletter@N` in double braces), `d5_guru_leak` (`cc` lists 28 addresses incl. [[6ft_sigma]]), `dN_y_stryker`. EMPIRE page and `EMPIRE` constant in engine/actions.ts.
+- Persona `max` (scripted "Commitment logged." on EMPIRE replies); events `dN_y_stryker_2` (dating advice, odd days 5 to 15, each answered by `dN_y_sigma`), `d1_guru` (interested reply: the 20 DOLR price "goes back to 200, as it has every midnight since launch"), `guru_newsletter` (20 bodies, one per day 2 to 21, mattress first; embed one issue as `mail:guru_newsletter@N` in double braces), `d5_guru_leak` (`cc` lists 28 addresses incl. [[6ft_sigma]]), `dN_y_stryker`. EMPIRE page and `EMPIRE` constant in engine/actions/clicks.ts.
 - Name and Alpha Ascend are placeholders. "4am" and "EMPIRE" are his alone; ration them.
 - The guru CC leak is a planned doxing lead. The bible had him recruiting by newsletter on days 10 to 12; the game does it on Y.

@@ -41,7 +41,7 @@ from: 1
 
 ## Writer notes
 
-- Persona `gino`; events `d1_y_restaurant`, `restaurant_contact`, `restaurant_promo`, `restaurant_promo_thanks`, `d2_restaurant_booking`, `d3_restaurant_thanks`, `d4_restaurant_doordish`; no-show mail in `chargeNoShows` (engine/actions.ts), flag `test_booking_no_show`. Yowl data in `src/ui/yowl-data.ts`.
+- Persona `gino`; events `d1_y_restaurant`, `restaurant_contact`, `restaurant_promo`, `restaurant_promo_thanks`, `d2_restaurant_booking`, `d3_restaurant_thanks`, `d4_restaurant_doordish`; no-show mail in `chargeNoShows` (engine/actions/clicks.ts), flag `test_booking_no_show`. Yowl data in `src/ui/yowl-data.ts`.
 - Spec (kept [hint] above): landing with name and hours 17:00–22:00; menu Margherita 12, Diavola 14, Lasagne 15, Tiramisu 7, Espresso 3. Day 2: Diavola → Quattro Formaggi 15, Espresso 3.5; booking form (name, email, date, time, party 1–8, opening hours only, confirmation email with name, date, time, party size and cancel link). Day 4: DoorDish listing, same menu and hours, 14 Alder St.
 - "Your post" reply (after a player Y post about the site, no flag): a man came in who saw it on Y, ordered one espresso and stayed two hours, "but still."
 - Two strikes and he leaves (app retired).
