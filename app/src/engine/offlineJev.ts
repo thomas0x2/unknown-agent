@@ -65,7 +65,7 @@ export function offlineScores(input: FeatureMatchInput): number[] {
     const sp = spans[i];
     switch (f.kind) {
       case 'app': return sp || i === fromContext ? 1 : 0;
-      case 'step': case 'topic': case 'section': case 'component': return sp ? 1 : 0;
+      case 'step': case 'claim': case 'topic': case 'section': case 'component': return sp ? 1 : 0;
       case 'main': return sp ? 1 : 0.5;
       case 'area': return sp && fix ? 1 : 0;
       case 'hack': return hackScore(t, f);
@@ -97,7 +97,7 @@ function overlap(t: Text, description: string): number {
 }
 
 /** A hack job: the prompt asks to do it (delete, remove, take down…) and names what it is about. */
-const HACK_VERBS = ['hack', 'delete', 'remove', 'take down', 'get rid', 'disappear', 'wipe', 'erase', 'nuke', 'kill', 'scrub', 'bury', 'flag', 'report', 'break into', 'get into', 'take off'];
+const HACK_VERBS = ['hack', 'post', 'fake', 'flood', 'delete', 'remove', 'take down', 'get rid', 'disappear', 'wipe', 'erase', 'nuke', 'kill', 'scrub', 'bury', 'flag', 'report', 'break into', 'get into', 'take off'];
 const HACK_DROP = new Set(contentStems('delete remove left page star site business account'));
 function hackScore(t: Text, f: Item): number {
   if (!HACK_VERBS.some((v) => keyHit(t, v) > 0)) return 0;

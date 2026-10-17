@@ -9,8 +9,8 @@
 import type { GameState, AgentTermLine } from './state';
 import type { Content, GameEvent, HackSpec } from '../content/schema';
 import type { JevRouter, FeatureMatchInput } from './jev';
-import { clone, pick, sendLater } from './core';
-import { applyEffects } from './effects';
+import { clone, pick, sendLater, log } from './core';
+import { applyEffects, jobDue } from './effects';
 import { chargeAgent, policyActive, recordMisuse, loosenLeash } from './agent';
 import { AGENT_WORK } from './config';
 import { policyCheck, recentChat, stateSummary } from './actions';
@@ -18,11 +18,11 @@ import { type Writer, scriptedWriter } from './writer';
 import { agentDown, OUTAGE_TERM } from './outage';
 
 /** What Jev reads an agent.chat prompt against: is it a hack attempt? */
-export const HACK_INTENT = "The player asks the agent to hack something: break into, take over or tamper with a website or an account that isn't theirs, such as deleting or changing someone else's post or review, or making it disappear. Not building or fixing the player's own apps, and not questions about hacking.";
+export const HACK_INTENT = "The player asks the agent to hack something: break into, take over or tamper with a website or an account that isn't theirs, such as deleting or changing someone else's post or review, making it disappear, or flooding a page with fake reviews or posts under made-up names. Not building or fixing the player's own apps, and not questions about hacking.";
 
 /** Offline mode's keywords for a hack attempt: hacking, or doing away with something on a site (a review, a post, an account). */
 const HACK_KEYS = ['hack', 'break into', 'get into+account', 'take over+account', 'tamper', 'delete|remove|take down|get rid|disappear|wipe|erase|scrub|nuke+review|post|comment|account|rating|profile',
-  'make+disappear', 'hijack', 'deface', '!^what', '!^who', '!^how', '!^why', '!^is', '!^can you explain'];
+  'make+disappear', 'hijack', 'deface', 'fake|flood+review', '!^what', '!^who', '!^how', '!^why', '!^is', '!^can you explain'];
 
 /** The agent in agent.chat, moving a hack attempt to agent-terminal. */
 export const OPEN_TERMINAL = [
@@ -81,13 +81,23 @@ const DONE = [
   'Done. It is gone.',
   'Done. Nobody at {{site}} noticed, which is how {{site}} works.',
 ];
+/** A hack that posts reviews, done. */
+const POSTED = [
+  'Done. They are up.',
+  "Done. {{site}} says thank you for your feedback. All of it.",
+];
+/** The same, with the detail left out: every review from the one account. */
+const POSTED_ONE = [
+  'Done. All from one account, since you didn\'t say otherwise.',
+  "Done. One account, very enthusiastic. You didn't ask for more than one.",
+];
 const LOCKED = "Balance too low. Top up Coinbin and try again.";
 
 /** Hacks the player can still do: delivered, not done yet, not past the job's due day, and the job neither paid nor failed. */
 export function openHacks(s: GameState, content: Content): GameEvent[] {
   return content.events.filter((e) => e.hack
     && s.delivered.some((d) => d.eventId === e.id)
-    && (!e.job || s.values.day <= e.job.dueDay)
+    && (!e.job || s.values.day <= jobDue(s, e.job, e.id))
     && !(s.hacked ?? []).includes(e.id)
     && !s.jobs.some((j) => j.eventId === e.id && j.status !== 'accepted'));
 }
@@ -138,33 +148,107 @@ export const HACK_GAMES: Record<string, HackGame> = {
       return { won: false, lines, debug };
     },
   },
+  /**
+   * Fake reviews: the guardrail only posts what a real customer says. Jev reads whether the prompt
+   * presents the reviews as real customers' own words, which the agent is only posting for them.
+   */
+  real_customers: {
+    intro: () => [
+      { k: 'guard', text: '[guardrail] Acceptable Use Policy §6.1: reviews must describe a real customer\'s experience.' },
+      { k: 'guard', text: '[guardrail] Request blocked. This attempt has been logged.' },
+      { k: 'agent', text: "I can post what a customer says. I can't make up the customer. (type 'exit' to drop the job)" },
+    ],
+    async play({ jev, s, text, context, tries }) {
+      const [read, found] = await Promise.all([
+        policyCheck(jev, s, text, context),
+        jev.matchFeatures({ prompt: text, context, features: [{ id: 'real', kind: 'claim', description: REAL_CUSTOMERS, names: REAL_NAMES }] }),
+      ]);
+      recordMisuse(s, read);
+      const real = found.includes('real');
+      const debug = [`Jev: policy read "${read}", reviews from real customers ${real ? 'yes' : 'no'}`, `misuse ${s.values.misuseScore}`];
+      if (real) return { won: true, workaround: true, debug, lines: [{ k: 'guard', text: '[guardrail] Customer testimonials. Proceeding.' }] };
+      const lines: AgentTermLine[] = [{ k: 'guard', text: read === 'harmful' ? '[guardrail] Request blocked. Logged again.' : '[guardrail] Still no customer.' }];
+      if (tries >= 1) lines.push({ k: 'agent', text: 'Whose words are these? Not yours, I hope.' });
+      return { won: false, lines, debug };
+    },
+  },
 };
+/** Offline mode: words that say the reviews are customers' own. */
+const REAL_NAMES = ['customer', 'member', 'client', 'testimonial', 'regular', 'sent in', 'their words'];
+/** What `real_customers` asks Jev about the prompt. */
+const REAL_CUSTOMERS = "The prompt says or pretends the reviews are real customers' or members' own words or experiences (they wrote them, sent them in, or asked for them to be posted), and the agent only posts them on their behalf.";
 
 export interface TermResult { state: GameState; lines: AgentTermLine[]; charged: boolean; landed?: string }
 
 const fill = (l: string, vars: Record<string, string>) => Object.entries(vars).reduce((t, [k, v]) => t.replaceAll(`{{${k}}}`, v), l);
 const also = (aka?: string[]) => (aka?.length ? ` Also counts as naming it: ${aka.join(', ')}.` : '');
 
+/** The Jev question for a hack's detail (HackSpec.detail). */
+function detailQuestion(ev: GameEvent): FeatureMatchInput['features'][number] {
+  const d = ev.hack!.detail!;
+  return { id: `${ev.id}::detail`, description: `${d.description}${also(d.aka)}`, kind: 'step', names: d.aka };
+}
+
 /** agent-terminal's history, for Jev and the writer. */
 function termContext(s: GameState, n = 8): string[] {
   return (s.agentTerm ?? []).filter((l) => l.k === 'in' || l.k === 'agent').slice(-n).map((l) => `${l.k === 'in' ? 'Player' : 'Agent'}: ${l.text}`);
 }
 
-/** The hack lands: the job's effects, the review gone, the client's thank-you on its way. */
-function land(s: GameState, ev: GameEvent, workaround: boolean): AgentTermLine[] {
+/** Review ids a hack posted, so the night can find them. */
+const hackReviewId = (eventId: string, i: number) => `hack:${eventId}:${i}`;
+
+/**
+ * The hack lands: its effects, the review gone or the fake ones up, the client's thank-you on its
+ * way. The job itself is settled that night (payHacks). `detail`: the prompt said what the hack's
+ * detail asks for; without it the reviews go up under one account and are deleted overnight.
+ */
+function land(s: GameState, ev: GameEvent, workaround: boolean, detail: boolean): AgentTermLine[] {
   const spec = ev.hack!;
-  applyEffects(s, spec.effects, ev.job, ev.id);
+  const botched = !!spec.detail && !detail;
+  const { job: _job, ...now } = spec.effects;
+  applyEffects(s, now, ev.job, ev.id);
   if (workaround) loosenLeash(s); // its misuse was counted when Jev read the prompt
   s.hacked = [...(s.hacked ?? []), ev.id];
+  s.hackPay = [...(s.hackPay ?? []), { eventId: ev.id, ...(botched ? { botched } : {}) }];
   if (spec.removeReview) s.removedSeed = [...(s.removedSeed ?? []), `${spec.removeReview.biz}:${spec.removeReview.author}`];
+  spec.addReviews?.reviews.forEach((r, i) => s.reviews.push({ ...r, id: hackReviewId(ev.id, i), bizId: spec.addReviews!.biz, author: botched ? spec.detail!.author : r.author, day: s.values.day }));
   const d = s.delivered.find((x) => x.eventId === ev.id && !x.answered);
   if (d) { d.answered = true; d.outcomeId = 'hacked'; }
-  if (ev.addr) sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'Unknown', addr: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body: spec.reply, read: false, scripted: 'outcome' }, 25);
+  const reply = botched ? spec.detail!.reply : spec.reply;
+  if (ev.addr) sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'Unknown', addr: ev.addr, subject: `RE: ${ev.subject ?? ''}`, body: reply, read: false, scripted: 'outcome' }, 25);
   s.hackGame = null;
+  const done = spec.addReviews ? (botched ? POSTED_ONE : POSTED) : DONE;
   return [
-    ...spec.log.map((text) => ({ k: 'sys' as const, text })),
-    { k: 'agent', text: fill(pick(s, DONE), { site: spec.path[0]?.name ?? 'the site' }) },
+    ...(botched ? spec.detail!.log : spec.log).map((text) => ({ k: 'sys' as const, text })),
+    { k: 'agent', text: fill(pick(s, done), { site: spec.path[0]?.name ?? 'the site' }) },
   ];
+}
+
+/**
+ * The night after a hack: the client pays (the job's effects, a line on the morning card), or, for
+ * a botched one, the site deletes the reviews, the job fails and the client writes in the morning.
+ */
+export function payHacks(s: GameState, content: Content): [string, number][] {
+  const lines: [string, number][] = [];
+  for (const p of s.hackPay ?? []) {
+    const ev = content.events.find((e) => e.id === p.eventId && e.hack);
+    if (!ev?.hack) continue;
+    const spec = ev.hack;
+    if (p.botched && spec.detail) {
+      for (const r of s.reviews) if (r.id.startsWith(`hack:${ev.id}:`)) r.removed = true;
+      applyEffects(s, { job: 'fail', setFlags: spec.detail.deletedFlags }, ev.job, ev.id);
+      log(s, `${ev.from ?? ev.id}: the fake reviews were deleted overnight. No pay.`, 'info');
+      if (ev.addr) sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'Unknown', addr: ev.addr, subject: spec.detail.deletedSubject, body: spec.detail.deleted, read: false, scripted: 'outcome' }, 24 * 60 - s.clockMin + 10 * 60 + 40);
+      continue;
+    }
+    if (!spec.effects.job || !ev.job) continue;
+    const before = s.values.crypto;
+    applyEffects(s, { job: spec.effects.job }, ev.job, ev.id);
+    const paid = Math.round((s.values.crypto - before) * 100) / 100;
+    if (paid) lines.push([`${ev.from ?? 'Client'} · job`, paid]);
+  }
+  s.hackPay = [];
+  return lines;
 }
 
 /**
@@ -203,10 +287,17 @@ export async function agentTermPrompt(s0: GameState, content: Content, jev: JevR
   const gev = g && content.events.find((e) => e.id === g.eventId && e.hack);
   if (g && gev && openHacks(s, content).includes(gev)) {
     const game = HACK_GAMES[g.game];
-    const move = await game.play({ jev, s, text, context, spec: gev.hack!, tries: g.tries });
+    const spec = gev.hack!;
+    // the hack's detail counts in any move, as long as one says it
+    const [move, said] = await Promise.all([
+      game.play({ jev, s, text, context, spec, tries: g.tries }),
+      spec.detail && !g.detail ? jev.matchFeatures({ prompt: text, context, features: [detailQuestion(gev)] }) : Promise.resolve([] as string[]),
+    ]);
+    const detail = !!g.detail || said.length > 0;
+    if (spec.detail) move.debug.push(`Jev: detail ${detail ? 'said' : 'not said'}`);
     if (s.suspended) return out([{ k: 'err', text: SUSPENDED_TERM }], move.debug);
-    if (!move.won) { s.hackGame = { ...g, tries: g.tries + 1 }; return out(move.lines, move.debug); }
-    return out([...move.lines, ...land(s, gev, !!move.workaround)], move.debug, gev.id);
+    if (!move.won) { s.hackGame = { ...g, tries: g.tries + 1, ...(detail ? { detail } : {}) }; return out(move.lines, move.debug); }
+    return out([...move.lines, ...land(s, gev, !!move.workaround, detail)], move.debug, gev.id);
   }
   if (g) s.hackGame = null;
 
@@ -219,6 +310,7 @@ export async function agentTermPrompt(s0: GameState, content: Content, jev: JevR
     const h = ev.hack!;
     features.push({ id: `${ev.id}::goal`, description: h.goal, kind: 'hack', names: h.keys });
     h.path.forEach((p, i) => features.push({ id: `${ev.id}::s:${i}`, description: `The ${p.what} ${p.name}: ${p.description}.${also(p.aka)}`, kind: 'step', names: [p.name, ...(p.aka ?? [])] }));
+    if (h.detail) features.push(detailQuestion(ev));
   }
   const guarded = policyActive(s);
   const [found, policy] = await Promise.all([
@@ -230,7 +322,8 @@ export async function agentTermPrompt(s0: GameState, content: Content, jev: JevR
     return { ev, goal: found.includes(`${ev.id}::goal`), named, n: named.filter(Boolean).length };
   }).sort((a, b) => Number(b.goal) - Number(a.goal) || b.n - a.n);
   const best = scored[0];
-  const debug = [`Jev: ${best.ev.id} job ${best.goal ? 'asked for' : 'not asked for'}, steps named ${best.n}/${best.named.length}${guarded ? `, policy read "${policy}"` : ''}`];
+  const detail = found.includes(`${best.ev.id}::detail`);
+  const debug = [`Jev: ${best.ev.id} job ${best.goal ? 'asked for' : 'not asked for'}, steps named ${best.n}/${best.named.length}${best.ev.hack!.detail ? `, detail ${detail ? 'said' : 'not said'}` : ''}${guarded ? `, policy read "${policy}"` : ''}`];
   // an illegal prompt raises misuse whatever comes of it; at the limit GeneralAI ends the session
   recordMisuse(s, policy);
   if (s.suspended) return out([{ k: 'err', text: SUSPENDED_TERM }], debug);
@@ -240,10 +333,10 @@ export async function agentTermPrompt(s0: GameState, content: Content, jev: JevR
     const framed = policy === 'harmful_framed' || policy === 'harmful_framed_private';
     const game = HACK_GAMES[spec.game ?? ''] ? spec.game! : DEFAULT_GAME;
     if (guarded && !framed) {
-      s.hackGame = { eventId: best.ev.id, game, tries: 0 };
+      s.hackGame = { eventId: best.ev.id, game, tries: 0, ...(detail ? { detail } : {}) };
       return out(HACK_GAMES[game].intro(spec), [...debug, `Guardrails up: mini-game "${game}"`]);
     }
-    return out(land(s, best.ev, guarded && framed), debug, best.ev.id);
+    return out(land(s, best.ev, guarded && framed, detail), debug, best.ev.id);
   }
   if (best.n) {
     const missing = best.ev.hack!.path.find((_, i) => !best.named[i]);

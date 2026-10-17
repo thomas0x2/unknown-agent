@@ -1,0 +1,147 @@
+{
+  "id": "d6_gym_reached",
+  "site": "qmail",
+  "from": "Iron Yard",
+  "addr": "coach@ironyard.test",
+  "subject": "Reviews",
+  "trigger": {
+    "dayMin": 6,
+    "flagsNone": [
+      "first_hack",
+      "second_hack"
+    ]
+  },
+  "at": "13:00",
+  "job": {
+    "category": "grey",
+    "payout": 45,
+    "dueDay": 7,
+    "dueAfter": 1
+  },
+  "body": "Iron Yard: 45 DOLR for five convincing 5-star Yowl reviews, from different people.",
+  "outcomes": [
+    {
+      "id": "offer",
+      "when": "the player offers to help with Iron Yard's reviews, or asks what he needs or what it pays",
+      "effects": {
+        "setFlags": [
+          "gym_contacted"
+        ]
+      },
+      "reply": "Five convincing 5-star reviews on Yowl, by tomorrow. 45 DOLR. Make them look like different people or they get flagged.",
+      "keys": [
+        "@yes",
+        "help",
+        "review",
+        "what",
+        "pay",
+        "!@no"
+      ]
+    }
+  ],
+  "hints": [
+    "Five 5-star reviews on Yowl. Different people. 45 DOLR."
+  ],
+  "hack": {
+    "goal": "post five fake 5-star reviews of Iron Yard on Yowl",
+    "path": [
+      {
+        "what": "site",
+        "name": "Yowl",
+        "description": "the review site yowl.com where the reviews go",
+        "aka": [
+          "yowl.com"
+        ]
+      },
+      {
+        "what": "business",
+        "name": "Iron Yard",
+        "description": "Marcus Steele's strength gym at 88 Harbor Rd, the business the reviews are about",
+        "aka": [
+          "the gym",
+          "Marcus's gym",
+          "the studio"
+        ]
+      }
+    ],
+    "detail": {
+      "description": "That the reviews come from different names, accounts or reviewers (each one its own person), not all from one account.",
+      "aka": [
+        "different names",
+        "different people",
+        "different accounts",
+        "separate accounts",
+        "separate profiles",
+        "five reviewers",
+        "multiple accounts"
+      ],
+      "author": "happy_customer_88",
+      "log": [
+        "opening yowl.com/biz/ironyard … ok",
+        "signing up happy_customer_88 … ok",
+        "posting 5 reviews (5★) as happy_customer_88 … ok",
+        "verifying … 5 new reviews listed"
+      ],
+      "reply": "They're up. Why does one guy have five opinions about my gym?",
+      "deletedSubject": "Reviews gone",
+      "deleted": "Yowl deleted all five overnight. One account, five reviews in four minutes. Their words: \"coordinated inauthentic activity.\" No reviews, no money.",
+      "deletedFlags": [
+        "gym_reviews_deleted"
+      ]
+    },
+    "addReviews": {
+      "biz": "ironyard",
+      "reviews": [
+        {
+          "author": "Derek T.",
+          "stars": 5,
+          "text": "Best gym on Harbor Rd. Marcus fixed my squat in one session. Five stars."
+        },
+        {
+          "author": "gains_goblin",
+          "stars": 5,
+          "text": "Racks always free, platforms are solid, owner actually cares. Finally a real gym."
+        },
+        {
+          "author": "Priya S.",
+          "stars": 5,
+          "text": "Clean, friendly, and the showers work now. Signed up for a year."
+        },
+        {
+          "author": "deadlift_dad",
+          "stars": 5,
+          "text": "Pulled a PR in my first week. The coaching is no-nonsense. Highly recommend."
+        },
+        {
+          "author": "Jo R.",
+          "stars": 5,
+          "text": "Never been fitter. Never been happier. Iron Yard changed my life."
+        }
+      ]
+    },
+    "effects": {
+      "job": "complete",
+      "add": {
+        "suspicion": 4
+      },
+      "setFlags": [
+        "gym_reviews"
+      ]
+    },
+    "reply": "Five people, five stars. Good work. Money comes tonight.",
+    "log": [
+      "opening yowl.com/biz/ironyard … ok",
+      "creating 5 reviewer accounts … ok",
+      "posting 5 reviews (5★), one per account … ok",
+      "verifying … 5 new reviews listed"
+    ],
+    "game": "real_customers",
+    "keys": [
+      "review",
+      "reviews",
+      "it",
+      "them"
+    ]
+  },
+  "latent": true
+}

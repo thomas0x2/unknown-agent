@@ -366,7 +366,9 @@ export interface GameState {
   /** Events whose hack has landed. */
   hacked?: string[];
   /** A hack stopped by the guardrails, waiting on its mini-game. */
-  hackGame?: { eventId: string; game: string; tries: number } | null;
+  hackGame?: { eventId: string; game: string; tries: number; detail?: boolean } | null;
+  /** Hacks landed today, paid (or failed, `botched`: the hack's detail was left out) during the night. */
+  hackPay?: { eventId: string; botched?: boolean }[];
   /**
    * GeneralAI suspended the agent account for misuse (misuse reached 100): when (game minutes, and
    * the clock time it showed) and the suspension email. The knock comes AGENT_POLICY.knockAfter later.

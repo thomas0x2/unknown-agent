@@ -37,6 +37,7 @@ export * from './uploads';
 export * from './sorry';
 export * from './chatFees';
 export * from './mailbin';
+export * from './rewind';
 export * from './jevTests';
 export * from './current';
 export * from './citypulse';

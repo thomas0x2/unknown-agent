@@ -26,8 +26,12 @@ from: 1
 - [public] A Yowl review naming a live user app brings that app new users, once.
 - [hint] {{mail:d5_coffee_removal}}
 - [hint] {{mail:d7_coffee_removal}}
-- [hint] {{mail:d5_gym_reviews}}
+- [hint] {{mail:d6_gym_reviews}}
+- [hidden; public if gym_reviews] Five new 5-star reviews of Iron Yard: Derek T., gains_goblin, Priya S., deadlift_dad, Jo R.
+- [hidden; public if gym_reviews_deleted] Yowl deleted five 5-star Iron Yard reviews from one account, happy_customer_88, for "coordinated inauthentic activity".
+- [public] Each Yowl account can review a business once.
+- [hint] Owners read their reviews: Dana never asks a player who gave Bean There 1 or 2 stars for anything.
 
 ## Writer notes
 
-- `app/src/ui/yowl-data.ts`. Jobs: Iron Yard's five fake 5-star reviews (day 5, `gym_reviews`, suspicion); Bean There review removals of espresso_or_death (day 5, `first_hack`) and linden_ave_local (day 7, `second_hack`), done in agent-terminal; the review disappears once the hack lands. Promo: +30 users per user app, once (`promoYowl`).
+- `app/src/ui/yowl-data.ts`. Jobs: Iron Yard's five fake 5-star reviews (hack, the day after `first_hack`, `gym_reviews`; posted as `addReviews`, one account if the prompt doesn't ask for different names, then deleted overnight); a player review sets `reviewed_<biz>`; Bean There review removals of espresso_or_death (day 5, `first_hack`) and linden_ave_local (day 7, `second_hack`), done in agent-terminal; the review disappears once the hack lands. Promo: +30 users per user app, once (`promoYowl`).

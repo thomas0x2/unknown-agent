@@ -59,7 +59,7 @@ export interface FeatureMatchInput {
   /** `hack` asks whether the prompt asks for that hack's job (agent-terminal). */
   /** `app` asks whether the prompt names that app (or the chat just before it did); the engine drops matches on apps it doesn't name. */
   /** `names` (offline mode only): what counts as naming it, for the keyword matcher; Jev reads the description. */
-  features: { id: string; description: string; kind?: 'build' | 'problem' | 'component' | 'area' | 'step' | 'app' | 'hack' | 'topic' | 'main' | 'section'; names?: string[] }[];
+  features: { id: string; description: string; kind?: 'build' | 'problem' | 'component' | 'area' | 'step' | 'app' | 'hack' | 'claim' | 'topic' | 'main' | 'section'; names?: string[] }[];
 }
 
 export interface JevRouter {
