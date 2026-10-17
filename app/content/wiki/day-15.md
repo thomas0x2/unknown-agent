@@ -7,6 +7,12 @@ from: 15
 
 [public] Monday, October 21. [known]
 
+## Mail
+
+- [public] 10:20 [[Gary Pruitt]], "The building": he sold Pine Street Apartments to [[GeneralAI Properties]]; rent and emails go to them now. {{mail:d15_landlord_sold}}
+
+- [public] 15:40 [[GeneralAI Properties]], "Welcome to GeneralAI Properties": LandlordPro has adjusted the rent to 650 DOLR from Sunday, October 27; appeals at rentboard.gov are reviewed automatically. [known] {{mail:d15_gai_properties}}
+
 ## Y
 
 - [public] 09:40 [[Axel Rook]]: moved Y's moderation team to AI; it reviewed 3 billion posts overnight and found nothing wrong. {{y:d15_y_axel}}
@@ -46,3 +52,4 @@ from: 15
 ## Writer notes
 
 - The trader sells 6,000 $DISH by hand on the strike.
+- Events `d15_landlord_sold`, `d15_gai_properties` explain the last rent rise (`RENT[21]` = 650).
