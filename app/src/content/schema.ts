@@ -373,6 +373,8 @@ export interface FillerPost {
   from: string;
   handle: string;
   body: string;
+  /** Game clock time it lands ("HH:MM"). */
+  at?: string;
   /** Spam that only appears once the player has set these flags (the "echo" mirror). */
   flagsAll?: string[];
 }

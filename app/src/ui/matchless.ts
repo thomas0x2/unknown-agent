@@ -4,7 +4,7 @@
  * checks each profile against his emails.
  */
 import type { GameStore } from '../game/store';
-import { matchlessNow, showAttr, shownAttrs, MATCHLESS_JOB, type Profile } from '../engine/matchless';
+import { matchlessNow, showAttr, shownAttrs, MATCHLESS_SIGNED_IN, type Profile } from '../engine/matchless';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
@@ -82,12 +82,16 @@ export const portraitOf = portrait;
 export function pageMatchless(store: GameStore): string {
   const s = store.state;
   const head = (right: string) => `<header class="mx-head"><span class="mx-logo">${MATCHLESS_ICON}</span><div><b>Matchless</b><span>Dating, with standards</span></div>${right}</header>`;
-  if (!s.flags.includes(MATCHLESS_JOB)) {
+  if (!s.flags.includes(MATCHLESS_SIGNED_IN)) {
+    const err = s.matchless?.loginFailed ? '<p class="mx-err">Incorrect username or password.</p>' : '';
     return `<div class="mx">${head('')}<main class="mx-land">
-      <h1>Dating, with standards.</h1>
-      <p>Other apps guess what you want. Matchless asks, and every profile answers.</p>
-      <ul class="mx-facts"><li><b>1,284</b> profiles near you</li><li><b>3</b> matches made this year</li></ul>
-      <p class="mx-fine">Members sign in through the Matchless app.</p></main></div>`;
+      <form class="mx-login" data-form="mx-login">
+        <h1>Sign in</h1>
+        <label>Username<input id="mx-user" autocomplete="off" spellcheck="false"></label>
+        <label>Password<input id="mx-pass" type="password" autocomplete="off"></label>
+        ${err}<button type="submit" class="mx-btn yes"${s.ending ? ' disabled' : ''}>Log in</button>
+        <p class="mx-fine">Matchless is invite only.</p>
+      </form></main></div>`;
   }
   const { profiles, next, done, version } = matchlessNow(s, store.content);
   const right = `<p class="mx-who">Signed in as 6ft_sigma</p>`;

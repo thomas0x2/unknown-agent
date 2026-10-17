@@ -479,6 +479,8 @@ document.addEventListener('submit', (e) => {
   } else if (kind === 'sl-buy') {
     if (store.busy) return;
     void store.swapBuy(Number(f.dataset.n));
+  } else if (kind === 'mx-login') {
+    store.matchlessLogin(val('#mx-user'), val('#mx-pass'));
   } else if (kind === 'mx-swipe') {
     store.matchlessSwipe(f.dataset.pick === 'yes' ? 'yes' : 'no');
   } else if (kind === 'y-search') {
