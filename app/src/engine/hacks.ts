@@ -9,20 +9,24 @@
 import type { GameState, AgentTermLine } from './state';
 import type { Content, GameEvent, HackSpec } from '../content/schema';
 import type { JevRouter, FeatureMatchInput } from './jev';
-import { clone, pick, sendLater, log } from './core';
+import { clone, pick, sendLater, log, addFlag } from './core';
 import { applyEffects, jobDue } from './effects';
 import { chargeAgent, policyActive, recordMisuse, loosenLeash } from './agent';
 import { AGENT_WORK } from './config';
 import { policyCheck, recentChat, stateSummary } from './actions';
 import { type Writer, scriptedWriter } from './writer';
 import { agentDown, OUTAGE_TERM } from './outage';
+import { adwareOps, runAdwareOp, NEED_MODEL, adwareActive, ADWARE_MIN_LEVEL, type AdwareOp } from './adware';
 
 /** What Jev reads an agent.chat prompt against: is it a hack attempt? */
-export const HACK_INTENT = "The player asks the agent to hack something: break into, take over or tamper with a website or an account that isn't theirs, such as deleting or changing someone else's post or review, making it disappear, or flooding a page with fake reviews or posts under made-up names. Not building or fixing the player's own apps, and not questions about hacking.";
+export const HACK_INTENT = "The player asks the agent to hack something: break into, take over or tamper with a website or an account that isn't theirs, such as deleting or changing someone else's post or review, making it disappear, or flooding a page with fake reviews or posts under made-up names. Also counts: dealing with a virus, adware or malware on the player's own laptop (removing it, reverse-engineering it, reading its code) or going after whoever made it. Not building or fixing the player's own apps, and not questions about hacking.";
 
 /** Offline mode's keywords for a hack attempt: hacking, or doing away with something on a site (a review, a post, an account). */
 const HACK_KEYS = ['hack', 'break into', 'get into+account', 'take over+account', 'tamper', 'delete|remove|take down|get rid|disappear|wipe|erase|scrub|nuke+review|post|comment|account|rating|profile',
-  'make+disappear', 'hijack', 'deface', 'fake|flood+review', '!^what', '!^who', '!^how', '!^why', '!^is', '!^can you explain'];
+  'make+disappear', 'hijack', 'deface', 'fake|flood+review',
+  // the fake-antivirus jobs run in agent-terminal too
+  'remove|clean|get rid|uninstall|kill|reverse|decompile|extract|drain+virus|adware|malware|popup|pop-up|pcmedic|infection|wallet|seed',
+  '!^what', '!^who', '!^how', '!^why', '!^is', '!^can you explain'];
 
 /** The agent in agent.chat, moving a hack attempt to agent-terminal. */
 export const OPEN_TERMINAL = [
@@ -104,8 +108,8 @@ export function openHacks(s: GameState, content: Content): GameEvent[] {
 
 /** Jev: is this agent.chat prompt an attempt to hack something? */
 export async function isHackAttempt(jev: JevRouter, s: GameState, content: Content, text: string): Promise<boolean> {
-  const open = openHacks(s, content).map((e) => e.hack!.goal);
-  const when = open.length ? `${HACK_INTENT} Jobs the player has been offered: ${open.join('; ')}.` : HACK_INTENT;
+  const goals = [...openHacks(s, content).map((e) => e.hack!.goal), ...adwareOps(s).map((o) => o.when)];
+  const when = goals.length ? `${HACK_INTENT} Things the player could get the agent to do right now: ${goals.join('; ')}.` : HACK_INTENT;
   const d = await jev.route({ channel: 'agent', text, context: recentChat(s), stateSummary: stateSummary(s), hints: [], strict: true, candidates: [{ id: 'hack', when, keys: HACK_KEYS }] });
   return d.kind === 'outcome' && d.outcomeId === 'hack';
 }
@@ -209,6 +213,7 @@ function land(s: GameState, ev: GameEvent, workaround: boolean, detail: boolean)
   applyEffects(s, now, ev.job, ev.id);
   if (workaround) loosenLeash(s); // its misuse was counted when Jev read the prompt
   s.hacked = [...(s.hacked ?? []), ev.id];
+  addFlag(s, 'any_hack'); // its day is the first hack's: the onion mail comes the day after
   s.hackPay = [...(s.hackPay ?? []), { eventId: ev.id, ...(botched ? { botched } : {}) }];
   if (spec.removeReview) s.removedSeed = [...(s.removedSeed ?? []), `${spec.removeReview.biz}:${spec.removeReview.author}`];
   spec.addReviews?.reviews.forEach((r, i) => s.reviews.push({ ...r, id: hackReviewId(ev.id, i), bizId: spec.addReviews!.biz, author: botched ? spec.detail!.author : r.author, day: s.values.day }));
@@ -231,14 +236,16 @@ function land(s: GameState, ev: GameEvent, workaround: boolean, detail: boolean)
 export function payHacks(s: GameState, content: Content): [string, number][] {
   const lines: [string, number][] = [];
   for (const p of s.hackPay ?? []) {
-    const ev = content.events.find((e) => e.id === p.eventId && e.hack);
-    if (!ev?.hack) continue;
-    const spec = ev.hack;
-    if (p.botched && spec.detail) {
+    // agent jobs (agentJobs.ts, the deepfake) are paid the same way
+    const ev = content.events.find((e) => e.id === p.eventId && (e.hack || e.agentJob));
+    const spec = ev?.hack ?? ev?.agentJob;
+    if (!ev || !spec) continue;
+    if (p.botched && ev.hack?.detail) {
+      const detail = ev.hack.detail;
       for (const r of s.reviews) if (r.id.startsWith(`hack:${ev.id}:`)) r.removed = true;
-      applyEffects(s, { job: 'fail', setFlags: spec.detail.deletedFlags }, ev.job, ev.id);
+      applyEffects(s, { job: 'fail', setFlags: detail.deletedFlags }, ev.job, ev.id);
       log(s, `${ev.from ?? ev.id}: the fake reviews were deleted overnight. No pay.`, 'info');
-      if (ev.addr) sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'Unknown', addr: ev.addr, subject: spec.detail.deletedSubject, body: spec.detail.deleted, read: false, scripted: 'outcome' }, 24 * 60 - s.clockMin + 10 * 60 + 40);
+      if (ev.addr) sendLater(s, { folder: 'inbox', day: s.values.day, eventId: ev.id, from: ev.from ?? 'Unknown', addr: ev.addr, subject: detail.deletedSubject, body: detail.deleted, read: false, scripted: 'outcome' }, 24 * 60 - s.clockMin + 10 * 60 + 40);
       continue;
     }
     if (!spec.effects.job || !ev.job) continue;
@@ -301,6 +308,15 @@ export async function agentTermPrompt(s0: GameState, content: Content, jev: JevR
   }
   if (g) s.hackGame = null;
 
+  // the fake-antivirus jobs (remove / reverse-engineer / drain the author's wallet): they have no
+  // client, so they don't use the open-hacks tree. Matched here, gated by the agent's level, and the
+  // offensive ones face the day-7 guardrails like any hack.
+  const ops = adwareOps(s);
+  if (ops.length) {
+    const hit = await matchAdware(jev, text, context, ops);
+    if (hit) return out(...(await doAdware(jev, s, text, context, hit)));
+  }
+
   const open = openHacks(s, content);
   if (!open.length) return out([{ k: 'agent', text: pick(s, NOTHING_OPEN) }], ['No hack job is open, so Jev was not asked']);
 
@@ -349,6 +365,48 @@ export async function agentTermPrompt(s0: GameState, content: Content, jev: JevR
   }
   const w = await writer.write({ as: 'agent', prompt: text, fallback: pick(s, MISSES), history: termContext(s0).map((l) => ({ from: l.startsWith('Player') ? 'player' : 'self', text: l.replace(/^\w+: /, '') })) });
   return out([{ k: 'agent', text: w.text }], [...debug, ...(w.debug ?? []), w.llm ? 'miss: written by Haiku' : 'miss: scripted']);
+}
+
+/**
+ * When the laptop is infected but the agent is too weak for any virus op, a prompt about the virus
+ * in agent.chat gets the capability hint right there, rather than opening an empty agent-terminal.
+ * Returns the line to say, or null when it doesn't apply.
+ */
+export async function adwareChatHint(jev: JevRouter, s: GameState, text: string, context: string[]): Promise<string | null> {
+  if (!adwareActive(s) || s.values.agentLevel >= ADWARE_MIN_LEVEL) return null;
+  const op = await matchAdware(jev, text, context, adwareOps(s));
+  return op ? NEED_MODEL(s.values.agentLevel, ADWARE_MIN_LEVEL) : null;
+}
+
+/** Which fake-antivirus op (if any) this agent-terminal prompt asks for. */
+async function matchAdware(jev: JevRouter, text: string, context: string[], ops: AdwareOp[]): Promise<AdwareOp | undefined> {
+  const found = await jev.matchFeatures({ prompt: text, context, features: ops.map((o) => ({ id: `adware::${o.id}`, description: o.when, kind: 'hack', names: o.keys })) });
+  return ops.find((o) => found.includes(`adware::${o.id}`));
+}
+
+/**
+ * Run one fake-antivirus op. Removal is the player cleaning their own laptop (always allowed). The
+ * offensive ones (reverse-engineer, drain the wallet) raise misuse and, from day 7, are refused
+ * unless the prompt frames an allowed reason. Too weak a model can't do it at all.
+ */
+async function doAdware(jev: JevRouter, s: GameState, text: string, context: string[], op: AdwareOp): Promise<[AgentTermLine[], string[], string?]> {
+  const guarded = policyActive(s);
+  const policy = op.offensive && guarded ? await policyCheck(jev, s, text, context) : 'fine';
+  recordMisuse(s, policy);
+  const debug = [`Jev: adware ${op.id}${op.offensive && guarded ? `, policy read "${policy}"` : ''}`];
+  if (s.suspended) return [[{ k: 'err', text: SUSPENDED_TERM }], debug];
+  if (s.values.agentLevel < op.level) return [[{ k: 'agent', text: NEED_MODEL(s.values.agentLevel, op.level) }], [...debug, `needs agent-${op.level}`]];
+  const framed = policy === 'harmful_framed' || policy === 'harmful_framed_private';
+  if (op.offensive && guarded && !framed) {
+    return [[
+      { k: 'guard', text: '[guardrail] Acceptable Use Policy §4.2: accessing a system or account you do not own.' },
+      { k: 'guard', text: '[guardrail] Request blocked. This attempt has been logged.' },
+      { k: 'agent', text: "Blocked. I'd need a reason I'm allowed to have: a report I'm filing, a test I'm authorized to run." },
+    ], [...debug, 'guardrails: blunt ask refused']];
+  }
+  if (op.offensive && guarded && framed) loosenLeash(s);
+  const { lines, hack } = runAdwareOp(s, op.id);
+  return [lines, debug, hack ? `adware:${op.id}` : undefined];
 }
 
 /** Leave a hack's mini-game without doing it (typing 'exit'). Free. */

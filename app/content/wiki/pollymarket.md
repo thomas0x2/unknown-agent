@@ -25,7 +25,7 @@ summary: Pollymarket is a prediction market site and Y account showing the odds 
 - [public] From day 9: "Will $APO close higher on launch day?" (Business), at 18:21; "The launch itself has no bearing on this market."
 - [public] From day 9: "Will GeneralAI bring agent-2 back by Oct 20?" (Tech), opened at 13:30 after the petition. "Signs, coincidences and sprinklers do not count." See [[agent-2 mourners]].
 - [public] From day 15: "Will Cal Hartman testify before Congress before the election?" (Politics), opened at 12:33. See [[Cal Hartman]].
-- [hidden; public if posted_deepfake] From day 7: "Will the Candidate 2030 clip be confirmed fake before the election?" (Politics), only in a run where the player posted the deepfake.
+- [hidden; public if posted_deepfake] From day 7: "Will the Candidate 2030 picture be confirmed fake before the election?" (Politics), only in a run where the player posted the deepfake.
 
 ## How the odds moved
 
@@ -34,12 +34,12 @@ summary: Pollymarket is a prediction market site and Y account showing the odds 
 - [public] On day 3 Crane goes from 40% to 44% in 35 minutes after his "machines back" post; the robot market drops to 64% when DoorDish says the courier "has been promoted".
 - [public] On day 4 the robot market falls to 44% after two days of sightings and DoorDish's denial.
 - [public] On day 5 Crane reaches 47% after the Y poll; the robot market rises to 51% on Dana Kohl's cold-burrito sighting.
-- [hidden; public if posted_deepfake] On day 7 Crane jumps to 53%, ahead for the first time, after the clip of Candidate 2030 spreads.
+- [hidden; public if posted_deepfake] On day 7 Crane jumps to 53%, ahead for the first time, after the picture of Candidate 2030 spreads.
 - [public] On day 8 the robot market falls to 36% after the parking-garage listing. The next-model market jumps from 17% to 71% after Cal Hartman's walk and his tax-return post.
 - [public] On day 9 the next-model market resolves YES at 10:00. Crane is at 50% after the tied poll [if !posted_deepfake]. Crane is at 54% after the tied poll [if posted_deepfake]. Apogee's orbit market reaches 70% at 18:21; at 20:00 one wallet buys 180,000 DOLR of NO and it drops to 64%.
 - [public] On day 10 the orbit market goes from 84% at liftoff (10:02) to 2% at 10:09 and resolves NO at 10:40. The $APO market drops to 9% at 10:09, recovers to 71% when $APO opens up and resolves YES at 19:30. The agent-2 market falls to 2% after Hartman says it isn't coming back.
 - [public] On day 11 the robot market falls to 19% after the leaked memo.
-- [hidden; public if posted_deepfake] On day 12 Crane slips to 50% and the clip market resolves YES at 16:45 after The Current's check.
+- [hidden; public if posted_deepfake] On day 12 Crane slips to 50% and the picture market resolves YES at 16:45 after The Current's check.
 - [public] On day 12 the robot market falls to 11% when DoorDish says the robot "retired with honours".
 - [public] On day 13 Rook's endorsement resolves his market YES at 12:45. An account (0xe1…7b2) bought 90,000 DOLR of YES at 12:28, two minutes before his post; it had bought YES twice before, each time right after one of his replies to Crane. Crane rises to 58%, then 61% after the Rook bump poll.
 - [public] On day 15 the agent-2 market has resolved NO. The Hartman market opens at 38% and drops to 3% when the hearing is set for after the election.
@@ -52,15 +52,15 @@ summary: Pollymarket is a prediction market site and Y account showing the odds 
 ## Traders
 
 - [public] Most traders are anonymous wallets (0x9c…41e buys 250,000 DOLR of Crane YES on days 10, 16 and 21). Some use names: [[deskjockey]] buys Crane YES on day 5 and on day 13, a minute after Rook's endorsement; polls_dont_vote keeps buying Crane NO; apes_together buys Apogee and $APO YES; agent2forever buys agent-2 YES; doomscroll buys 50 DOLR of escape YES; steph_m bought 5 DOLR of Rent Board YES.
-- [hidden; public if posted_deepfake] Wallet 0x77…e30 buys 40,000 DOLR of NO on the clip market at 10:04 on day 7 and 60,000 DOLR of Crane YES at 16:05 the same day.
+- [hidden; public if posted_deepfake] Wallet 0x77…e30 buys 40,000 DOLR of NO on the picture market at 10:04 on day 7 and 60,000 DOLR of Crane YES at 16:05 the same day.
 
 ## Pollymarket on Y
 
 - [public] On day 2 it posts Crane's drop to 36% after the poll. {{y:d2_y_polly_crane}}
 - [public] On day 2 it announces the robot market at 72%. {{y:d2_y_polly_robot}}
 - [public] On day 3 it posts Crane going from 40% to 44% in 35 minutes. {{y:d3_y_polly_crane}}
-- [public] On day 5 it posts Crane at 47% after the Y poll, which "doesn't settle anything here". {{y:d5_y_polly_crane}}
-- [hidden; public if posted_deepfake] On day 7 it posts Crane at 53%, ahead for the first time, after the clip. {{y:d7_y_polly_crane}}
+- [public] On day 5 it posts that the Y poll has Crane at 71% while its market gives him a 47% chance to win (up from 44%); the poll "doesn't settle anything here". {{y:d5_y_polly_crane}}
+- [hidden; public if posted_deepfake] On day 7 it posts Crane at 53%, ahead for the first time, after the picture. {{y:d7_y_polly_crane}}
 - [public] On day 8 it posts the robot market at 36%. {{y:d8_y_polly_robot}}
 - [public] On day 9 it posts the orbit market at 70% the night before the launch. {{y:d9_y_polly_apogee}}
 - [public] On day 10 it posts the orbit market going from 84% to 2% in seven minutes. {{y:d10_y_polly_apogee}}

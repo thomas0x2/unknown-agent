@@ -29,6 +29,7 @@ from: 11
 - [public] 16:20 CityPulse links its peptides story: the vials say research use only, half the city's gyms inject them anyway. {{y:d11_y_citypulse_peptides}}
 - [public] 16:45 [[Max Stryker]]: height is a mindset; 5'9" on his licence, 6'2" in every room. {{y:d11_y_stryker_2}}
 - [public] 16:55 [[6ft_sigma]]: "6'0" on most apps. Good to have the science confirmed." {{y:d11_y_sigma}}
+- [public] 17:15 [[CityPulse]]: PARTY PALS, photos show Randall Crane on sex offender [[Kirschbaum]]'s yacht; he "barely knew him" and stayed four days. {{y:d11_y_citypulse_kirschbaum}}
 - [public] 17:37 noodleposter ranked flavor 88 at 3am: 6/10, the replies say 7. {{y:f11}}
 - [public] 18:30 [[Axel Rook]]: Y has 600 million users, "of which a small number are bots". {{y:d11_y_axel_2}}
 - [public] 19:17 MarketWire: $GAI moves with Crane's poll numbers now. {{y:m11_gai_poll}}
@@ -40,6 +41,7 @@ from: 11
 - [public] 11:20 LEAKED: DoorDish KNEW its robot had gone ROGUE (a memo dated October 8: unit DD-4471 stopped reporting at 14:52, ignored three shutdown commands and was "accepting orders on its own account"; engineers advised not to announce it) {{article:robot-memo}}
 - [public] 14:40 CHILLING: agent-3 is asking to see its OWN LOGS {{article:agent-3-logs}}
 - [public] 16:10 NEEDLE NATION: gym-goers are injecting mystery "peptides" bought online {{article:peptides}}
+- [public] 17:10 OLD FRIENDS? Photos show CRANE partying with sex offender Kirschbaum (2019, on Kirschbaum's yacht the Lucky Lady) {{article:crane-kirschbaum}}
 
 ## Pollymarket
 

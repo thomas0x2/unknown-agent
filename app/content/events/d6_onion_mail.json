@@ -1,0 +1,16 @@
+{
+  "id": "d6_onion_mail",
+  "site": "qmail",
+  "from": "q7vx2k9m4t",
+  "addr": "q7vx2k9m4t@null.onion",
+  "subject": "yesterday",
+  "trigger": {
+    "after": {
+      "flag": "any_hack",
+      "delayDays": 1
+    }
+  },
+  "at": "20:00",
+  "body": "we know what you did.\n\nyour agent keeps logs. so do we.",
+  "outcomes": []
+}

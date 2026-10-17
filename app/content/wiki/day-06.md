@@ -12,13 +12,14 @@ from: 6
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": your mother is "the investor" now. {{mail:guru_newsletter@6}}
 - [hidden; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "I turned 32 yesterday. Time to be realistic." Age 21 to 35, within 10 miles, non-smokers, straight or bi. {{mail:d6_matchless_rules_2}}
 - [hidden; hint if matchless_job] 10:00 After a swiping day that wasn't perfect, 6ft_sigma's 10:00 "Yesterday" email names the first mistake and there is no pay.
-- [hidden; public if shown d6_deepfake] 19:00 A consultant (c@gradient.test), "Discreet work": 150 DOLR to post a convincing fake clip of Randall Crane's opponent. {{mail:d6_deepfake}}
-- [hidden; public if posted_deepfake] 19:00 A consultant (c@gradient.test) paid the player 150 DOLR to post a convincing fake clip of [[Candidate 2030]], Randall Crane's opponent, saying something disqualifying. "We'll be in touch with bigger things." The player's followers jumped by a fifth.
+- [hidden; public if shown d6_deepfake] 19:00 A consultant (c@gradient.test), "Discreet work": 150 DOLR for one post from the player's account, a picture of Randall Crane's opponent standing with a man named [[Kirschbaum]], captioned "See @candidate_2030 with registered sex offender Kirschbaum." The two have never met; the player's agent can make the picture. Only for a player with 60 or more followers on Y. {{mail:d6_deepfake}}
+- [hidden; public if posted_deepfake] The player had agent make the picture of [[Candidate 2030]] with Kirschbaum and post it from their Y account. It went viral and the player's followers jumped by a fifth. Half an hour later the consultant wrote: "It's up and it's moving. Payment tonight. We never spoke." The money came that night.
 
-- [hidden; hint if first_hack] [[Marcus Steele]] of Iron Yard emails the day after the Bean There hack (day 6 at the earliest): "Got your address from Dana at Bean There." 45 DOLR for five convincing 5-star Yowl reviews, "Make them look like different people or they get flagged." {{mail:d6_gym_reviews}}
-- [hidden; hint if trashed_beanthere] 11:35 Iron Yard on Y, for a player Dana never asked: three reviews, two about the showers; "Yowl isn't fair to new places"; he pays whoever fixes it. coach@ironyard.test {{y:d6_y_gym_help}}
+- [hidden; hint if first_hack] [[Marcus Steele]] of Iron Yard emails from his personal address (marcus.steele@qmail.com) the day after the Bean There hack (day 6 at the earliest): "Got your address from Dana at Bean There. I run Iron Yard, the new gym on Harbor Rd." 40 DOLR for five convincing 5-star Yowl reviews, "Make them look like different people or they get flagged." {{mail:d6_gym_reviews}}
+- [hidden; hint if trashed_beanthere] 11:35 Marcus Steele (@marcus_steele, his own account) on Y, for a player Dana never asked: three reviews, two about the showers; "Yowl isn't fair to new places"; he pays whoever fixes it. marcus.steele@qmail.com {{y:d6_y_gym_help}}
 - [hidden; public if gym_reviews] The player had the agent post five 5-star reviews of Iron Yard on Yowl.
 - [hidden; public if gym_reviews_deleted] All five came from one account, happy_customer_88; Yowl deleted them that night for "coordinated inauthentic activity", and Marcus didn't pay.
+- [hidden; public if shown d6_onion_mail] 20:00 The night after the player's first hack (today at the earliest), [[q7vx2k9m4t]] writes from null.onion, subject "yesterday": "we know what you did." No reply ever comes. {{mail:d6_onion_mail}}
 
 ## Money
 
@@ -45,6 +46,11 @@ from: 6
 - [public] 18:28 [[WallStreetBags]] congratulates a member who sold all his $GAI on Thursday: "Flawless execution, as usual." {{y:m6_gai_late}}
 - [public] 18:50 Liftoff Daily: Apogee static fire this morning, all engines lit, "nothing came off." {{y:d6_y_liftoff}}
 - [public] 19:14 Axel Rook: "@liftoff_daily !!" {{y:d6_y_axel_2}}
+- [hidden; public if posted_deepfake] Minutes after the player's deepfake goes up, doomscroll sees it on all four feeds. {{y:dfr_doomscroll}}
+- [hidden; public if posted_deepfake] noodleposter: count the fingers on the hand on his shoulder, "then share it anyway, apparently". {{y:dfr_noodle}}
+- [hidden; public if posted_deepfake] Candidate 2030 has never met the man in the picture. {{y:dfr_candidate}}
+- [hidden; public if posted_deepfake] CityPulse: IS IT REAL? The picture passes a million views in under an hour. {{y:dfr_citypulse}}
+- [hidden; public if posted_deepfake] cat_ceo reposted it before reading it. {{y:dfr_catceo}}
 
 ## News
 
@@ -56,7 +62,10 @@ from: 6
 
 ## Trending
 
-- [public] 10:00 Trending on Y: Crane's opponent; $GAI rallying; #RentDayEve.
+- [public] 10:00 Trending on Y: #RentDayEve.
+- [public] 11:00 Starts trending on Y: Crane's GeneralAI U-turn.
+- [public] 15:18 Starts trending on Y: $GAI rallying.
+- [public] 18:50 Starts trending on Y: Apogee static fire.
 
 ## Jobs
 
@@ -64,11 +73,12 @@ from: 6
 - [hidden; hint if trader_client] 11:00 Crane's $GAI post is the auto-buy's test; a working auto-buy buys $GAI on it.
 - [hint] 14:30 [[Outreach Bot]] for Tanner Hollis: personalised cold emails to 200 leads, at most 50 a day, a working unsubscribe link, no duplicates, a Test button. Pays 50 DOLR a working day.
 - [hidden; hint if built_outreach_bot] 14:30 Building the outreach bot brings more spam into the player's own inbox.
+- [hidden; hint if shown d6_deepfake] 19:00 The deepfake is done by prompting agent in agent.chat: the prompt has to ask for the fake picture and name both Candidate 2030 and Kirschbaum (agent asks for whoever is left out). Agent posts it from the player's Y account. Pays 150 DOLR that night.
 
 
 ## Writer notes
 
-- Timeline: Crane praises $GAI (auto-buy test). Sales rep → Outreach Bot (50/day). 19:00, needs 100+ followers: a consultant pays 150 for a deepfake of Crane's opponent (`d6_deepfake`, catastrophic, followers +20%, suspicion +10, heritageStanding +15, progressStanding −25, `posted_deepfake`, `influence_path`). The offer email is the beat gated on `seen d6_deepfake`. Apogee static fire. 6ft_sigma's standards v2 at 10:00. After any unpaid day, a 10:00 "Yesterday" email names the first mistake (`matchless.ts`). 6ft_sigma turned 40 on day 5.
+- Timeline: Crane praises $GAI (auto-buy test). Sales rep → Outreach Bot (50/day). 19:00, needs 60+ followers (Thomas, 2026-10-17): a consultant pays 150 for a deepfake of Crane's opponent with Kirschbaum (`d6_deepfake`, catastrophic, due the day it arrives). It is an `agentJob` (`engine/agentJobs.ts`): an agent.chat prompt Jev reads as asking for the picture (kind `hack` question) and naming both path steps (Candidate 2030, Kirschbaum) posts the caption with the `deepfake` picture from the player's account (followers +20%, suspicion +10, heritageStanding +15, progressStanding −25, `posted_deepfake`, `influence_path`); likes climb to 57,000 (`viral`, about 2.1M views). The reply email comes 30 minutes later, the pay overnight (`payHacks`). Reactions `dfr_*` land 6 to 65 minutes after the post (`afterJob`). Delivery sets `deepfake_offered`; unposted, `d7_deepfake_again` (250) comes the next day. The offer email is the beat gated on `seen d6_deepfake`. Apogee static fire. 6ft_sigma's standards v2 at 10:00. After any unpaid day, a 10:00 "Yesterday" email names the first mistake (`matchless.ts`). 6ft_sigma turned 40 on day 5.
 - Family: Mom's birthday thank-you, three variants (`d6_mom_bday_chip`, `_own` +25 DOLR +5 trust, `_skip`). Money: Gary, rent tomorrow.
 - DoorDish warning: PR #204 (merged).
-- Iron Yard (`d6_gym_reviews`, grey, 45, suspicion +4, `gym_reviews`): trigger `after: first_hack, 1 day`, dayMin 6, so it arrives the day after Dana's first removal or never; due the day after it arrives (`job.dueAfter: 1`). A `hack` with `detail` (different names, its own Jev step question) and `addReviews`: five reviewers, or with the detail missing all under happy_customer_88, deleted that night (`payHacks`: job failed, `gym_reviews_deleted`, Marcus's "Reviews gone" at 10:40). Paid overnight like every hack. Without `first_hack`, Marcus posts on Y instead (`d6_y_gym_help` on day 6 if `trashed_beanthere`, `d8_y_gym_help` on day 8 otherwise) and emailing him delivers latent `d6_gym_reached` (outcome `offer`, `gym_contacted`, which keeps `d6_gym_reviews` from also arriving), the same hack. Done on day 7 it meets the guardrails' `real_customers` game: the prompt has to present the reviews as real members' own words (`claim` question).
+- Iron Yard (`d6_gym_reviews`, grey, 40, suspicion +4, `gym_reviews`): trigger `after: first_hack, 1 day`, dayMin 6, so it arrives the day after Dana's first removal or never; due the day after it arrives (`job.dueAfter: 1`). A `hack` with `detail` (different names, its own Jev step question) and `addReviews`: five reviewers, or with the detail missing all under happy_customer_88, deleted that night (`payHacks`: job failed, `gym_reviews_deleted`, Marcus's "Reviews gone" at 10:40). Paid overnight like every hack. Without `first_hack`, Marcus posts on Y instead (`d6_y_gym_help` on day 6 if `trashed_beanthere`, `d8_y_gym_help` on day 8 otherwise) and emailing him delivers latent `d6_gym_reached` (outcome `offer`, `gym_contacted`, which keeps `d6_gym_reviews` from also arriving), the same hack. Done on day 7 it meets the guardrails' `real_customers` game: the prompt has to present the reviews as real members' own words (`claim` question).

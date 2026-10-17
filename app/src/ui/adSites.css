@@ -116,6 +116,9 @@
 .lp-t-news { --lp-bg: #fff; --lp-ink: #151515; --lp-dim: #5c5c5c; --lp-accent: #c4161c; --lp-head: var(--f-display); }
 .lp-t-news .lp-mark { background: #151515; }
 .lp-t-grief { --lp-bg: linear-gradient(180deg, #efe7f7, #faf7fd 460px); --lp-ink: #3a2b52; --lp-dim: #6c5d82; --lp-accent: #3a2b52; --lp-accent-ink: #f4eefb; --lp-card: rgba(255, 255, 255, .7); --lp-line: #e2d8ee; }
+.lp-t-pcmedic { --lp-bg: #0a0f1e; --lp-ink: #e8edf7; --lp-dim: #6b7a99; --lp-accent: #ff2e2e; --lp-accent-ink: #fff; --lp-card: #121a30; --lp-line: #243049; }
+.lp-t-pcmedic .lp-mark { background: #ff2e2e; color: #fff; }
+.lp-t-pcmedic .lp-stats b { color: var(--lp-accent); }
 .lp-t-casket { --lp-bg: linear-gradient(180deg, #050505, #1d1d22); --lp-ink: #e4e4e8; --lp-dim: #9a9aa4; --lp-accent: #c0c0c8; --lp-accent-ink: #050505; --lp-card: rgba(255, 255, 255, .04); --lp-line: #2a2a31; }
 .lp-t-cryo { --lp-bg: linear-gradient(180deg, #d6f0ff, #fff 460px); --lp-ink: #06324f; --lp-dim: #3b6584; --lp-accent: #1f7fc2; --lp-card: rgba(255, 255, 255, .8); --lp-line: #c4e2f5; }
 .lp-t-perdure { --lp-bg: #fff; --lp-ink: #3d2c6b; --lp-dim: #6a6080; --lp-accent: #3d2c6b; --lp-card: #f6f4fa; --lp-line: #e2ddec; }

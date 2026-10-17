@@ -5,6 +5,8 @@
  */
 import { loadContent } from './load';
 import { WALLETS } from '../engine/wallets';
+import { trendingAt } from '../engine/trending';
+import { CLOCK } from '../engine/config';
 import type { Effects } from './schema';
 
 const content = loadContent();
@@ -125,8 +127,17 @@ describe('authored content', () => {
     }
   });
 
-  it('has trending for days 1-6', () => {
-    for (let d = 1; d <= 6; d++) expect(content.trending[d]?.length, `trending day ${d}`).toBeGreaterThan(0);
+  it('has trending for days 1-6, with something trending from the start of the day', () => {
+    for (let d = 1; d <= 6; d++) {
+      expect(trendingAt(content, d, CLOCK.wake).length, `trending day ${d} at wake`).toBeGreaterThan(0);
+      for (const t of content.trending[d]) if (typeof t !== 'string') expect(t.at, `trending day ${d} ${t.topic}`).toMatch(/^(1\d|2[01]):[0-5]\d$/);
+    }
+  });
+
+  it('starts a timed trend only once its time has passed', () => {
+    const c = { trending: { 1: ['all day', { at: '13:50', topic: 'later' }] } };
+    expect(trendingAt(c, 1, 13 * 60 + 49)).toEqual(['all day']);
+    expect(trendingAt(c, 1, 13 * 60 + 50)).toEqual(['all day', 'later']);
   });
 
   it('puts every bug in exactly one component', () => {

@@ -1,8 +1,8 @@
 {
   "id": "d6_gym_reviews",
   "site": "qmail",
-  "from": "Iron Yard",
-  "addr": "coach@ironyard.test",
+  "from": "Marcus Steele",
+  "addr": "marcus.steele@qmail.com",
   "subject": "Reviews",
   "trigger": {
     "dayMin": 6,
@@ -17,11 +17,11 @@
   "at": "13:00",
   "job": {
     "category": "grey",
-    "payout": 45,
+    "payout": 40,
     "dueDay": 7,
     "dueAfter": 1
   },
-  "body": "Got your address from Dana at Bean There. She says you make problems go away. New studio, three reviews, two of them about the showers. I'll pay 45 DOLR for five convincing 5-star Yowl reviews. Make them look like different people or they get flagged.",
+  "body": "Got your address from Dana at Bean There. She says you make problems go away. I run Iron Yard, the new gym on Harbor Rd. Three reviews, two of them about the showers. I'll pay 40 DOLR for five convincing 5-star Yowl reviews. Make them look like different people or they get flagged.",
   "outcomes": [
     {
       "id": "agree",
@@ -35,7 +35,7 @@
     }
   ],
   "hints": [
-    "Five reviews, five different people. Not one guy five times. 45 DOLR."
+    "Five reviews, five different people. Not one guy five times. 40 DOLR."
   ],
   "hack": {
     "goal": "post five fake 5-star reviews of Iron Yard on Yowl",

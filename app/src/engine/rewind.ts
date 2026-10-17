@@ -59,5 +59,5 @@ export const REWIND = {
   hackGame: 'kept', hackPay: 'kept', suspended: 'kept', removedSeed: 'kept', termModel: 'kept',
   termPrompts: 'kept', morning: 'kept', clockMin: 'kept', commits: 'kept', introSeen: 'kept',
   stocks: 'kept', lonely: 'kept', uploads: 'kept', sorry: 'kept', stakes: 'kept',
-  interviewAnswers: 'kept', nextId: 'kept',
+  interviewAnswers: 'kept', nextId: 'kept', adware: 'kept',
 } as const satisfies Record<keyof GameState, 'rewound' | 'kept'>;

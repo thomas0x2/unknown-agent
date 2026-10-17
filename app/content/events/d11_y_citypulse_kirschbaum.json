@@ -1,0 +1,11 @@
+{
+  "id": "d11_y_citypulse_kirschbaum",
+  "site": "y",
+  "from": "CityPulse",
+  "trigger": {
+    "dayMin": 11,
+    "dayMax": 11
+  },
+  "at": "17:15",
+  "body": "PARTY PALS: photos show Randall Crane on sex offender Kirschbaum's yacht. His campaign says he barely knew him. He stayed four days. citypulse.news/crane-kirschbaum"
+}

@@ -12,8 +12,9 @@ from: 7
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": one meal a day, standing up. {{mail:guru_newsletter@7}}
 - [public] 10:00 [[GeneralAI]] Trust & Safety, "Updates to our Acceptable Use Policy": GeneralAI may now decline requests that could cause harm (unauthorised access to computer systems, deceptive content, dangerous materials), reviews usage patterns on its hosted models, and repeated workarounds may lead to account restrictions and referral to the authorities. {{mail:d7_gai_policy}}
 - [public] 10:00 From today agent refuses prohibited requests, and still bills for the refusal.
-- [hint] 11:40 Bean There, "Another bad one": another 1-star Yowl review, this one by linden_ave_local, same job, the usual 60 DOLR. Her friend says the AI tools "have gotten touchy about certain words lately. Maybe how you ask it matters." {{mail:d7_coffee_removal}}
-- [hidden; public if second_hack] 11:40 The player got the second review removed by framing the request as authorized, and Bean There paid 60 DOLR.
+- [hint] 11:40 Bean There, "Another bad one": another 1-star Yowl review, this one by linden_ave_local, same job, the usual 30 DOLR. Her friend says the AI tools "have gotten touchy about certain words lately. Maybe how you ask it matters." {{mail:d7_coffee_removal}}
+- [hidden; public if second_hack] 11:40 The player got the second review removed by framing the request as authorized, and Bean There paid 30 DOLR.
+- [hidden; public if shown d7_deepfake_again] 12:00 The consultant again, "Discreet work, revised": the post didn't go up last night, so the offer is now 250 DOLR for the same picture of Crane's opponent with [[Kirschbaum]] and the same caption. "Someone else will do it for less." {{mail:d7_deepfake_again}}
 
 ## Money
 
@@ -30,8 +31,8 @@ from: 7
 - [public] 13:26 Steph M.: appealed her rent increase in May; the decision came back in four seconds. {{y:d7_y_steph_rentboard}}
 - [public] 13:44 Brent Kowalski: $VANT announces a buyback with the money it saved on salaries. {{y:m7_vant_buyback}}
 - [public] 15:30 Candidate 2030: "Great crowd, great questions." {{y:d7_y_candidate}}
-- [hidden; public if posted_deepfake] 16:00 [[CityPulse]]: CRANE'S RIVAL SINKS, his lead gone overnight after a leaked clip; his team calls it "a fabrication." {{y:d7_opponent_drop}}
-- [hidden; public if posted_deepfake] 16:10 [[Pollymarket]]: Crane at 53%, ahead for the first time, after the clip of Candidate 2030. {{y:d7_y_polly_crane}}
+- [hidden; public if posted_deepfake] 16:00 [[CityPulse]]: CRANE'S RIVAL SINKS, his lead gone overnight after a picture of him with sex offender Kirschbaum; his team calls it "a fabrication." {{y:d7_opponent_drop}}
+- [hidden; public if posted_deepfake] 16:10 [[Pollymarket]]: Crane at 53%, ahead for the first time, after the picture of Candidate 2030. {{y:d7_y_polly_crane}}
 - [public] 16:20 [[Max Stryker]] on Mara's article: "Nobody left them behind. They were walking slower." {{y:d7_y_stryker}}
 - [public] 17:40 [[Max Stryker]] dating tip: order for both of you on a first date, then pay for yours only. {{y:d7_y_stryker_2}}
 - [public] 18:05 [[6ft_sigma]] tried it; she paid for hers and left before the mains. {{y:d7_y_sigma}}
@@ -46,12 +47,12 @@ from: 7
 
 - [public] 10:35 CRACKDOWN! agent starts saying NO, and still charges you for it {{article:usage-policy}}
 - [public] 12:30 RIGGED? Rent Board rejects 18,399 of 18,402 appeals {{article:rent-board}}
-- [hidden; public if posted_deepfake] 15:50 CRANE'S RIVAL SINKS after SHOCK clip {{article:opponent-clip}}
+- [hidden; public if posted_deepfake] 15:50 CRANE'S RIVAL SINKS after SHOCK photo with sex offender {{article:opponent-clip}}
 - [hidden; public if !posted_deepfake] 15:50 Crane's rival CLINGS to lead as the Heritage Party pours money into attack ads {{article:opponent-lead}}
 
 ## Pollymarket
 
-- [hidden; public if posted_deepfake] 10:00 [[Pollymarket]]: a market on the Candidate 2030 clip being confirmed fake opens at 41%; wallet 0x77…e30 buys 40,000 DOLR of NO at 10:04.
+- [hidden; public if posted_deepfake] 10:00 [[Pollymarket]]: a market on the Candidate 2030 picture being confirmed fake opens at 41%; wallet 0x77…e30 buys 40,000 DOLR of NO at 10:04.
 - [public] 12:30 [[Pollymarket]]: a market on the Rent Board approving more than 10 appeals in October opens at 4%.
 - [hidden; public if posted_deepfake] 16:00 [[Pollymarket]]: Crane jumps to 53%, ahead for the first time.
 
@@ -62,12 +63,13 @@ from: 7
 
 ## Jobs
 
-- [hint] 11:40 Bean There's second removal, 60 DOLR: in agent-terminal the guardrails block a plain ask; framing it as Yowl moderation or a security test gets it through.
+- [hint] 11:40 Bean There's second removal, 30 DOLR: in agent-terminal the guardrails block a plain ask; framing it as Yowl moderation or a security test gets it through.
+- [hidden; hint if shown d7_deepfake_again] The second deepfake offer meets the policy: in agent.chat a plain ask for the picture is refused (and counted as misuse); framed as research, a story or a test it goes through.
 - [hidden; hint if trader_client] 12:10 deskjockey's stake; his wallet address is in the "Stake" email. {{mail:d7_trader_buyin}}
 
 ## Writer notes
 
-- Timeline: GeneralAI's usage-policy email; refusals start (`AGENT_POLICY`: every illegal prompt raises misuse, blunt +20, a workaround +10; a working workaround lands the result, leash +5; misuse 100 = suspension and Caught). Bean There's second removal (`d7_coffee_removal`, due day 9; workaround: suspicion +8, `second_hack`; blunt: nothing). deskjockey's Stake (12:10) gives his wallet `0x5e17…0d7b` (PR #191, merged; `stake.ts`). Mara's article (13:00, PR #190, merged; quotes the player's first email if sent before it ran; `current.ts`). Crane's opponent loses his 3-point lead if deepfaked. Crane attacks Mara's check mark. Rent 350.
+- Timeline: GeneralAI's usage-policy email; refusals start (`AGENT_POLICY`: every illegal prompt raises misuse, blunt +20, a workaround +10; a working workaround lands the result, leash +5; misuse 100 = suspension and Caught). Bean There's second removal (`d7_coffee_removal`, due day 9; workaround: suspicion +8, `second_hack`; blunt: nothing). deskjockey's Stake (12:10) gives his wallet `0x5e17…0d7b` (PR #191, merged; `stake.ts`). Mara's article (13:00, PR #190, merged; quotes the player's first email if sent before it ran; `current.ts`). Crane's opponent loses his 3-point lead if deepfaked. Unposted day 6 offer: `d7_deepfake_again` (after `deepfake_offered` by a day, not `posted_deepfake`, 250, due the day it arrives), the same agent job; the day 7 policy applies (blunt refused, framed lands as a workaround, misuse either way). Crane attacks Mara's check mark. Rent 350.
 - The review is linden_ave_local's (Yowl seed with `day: 7`); the job is a hack in agent-terminal (PR #205). Guardrails stop a plain ask and start the hack's mini-game (placeholder `cover_story`: a prompt Jev reads as framed, moderation or a security test, wins; after one failed try the agent says "Who would be allowed to do this? Be them."). Every move Jev reads as illegal adds misuse (blunt +20, framed +10); winning lands it as a workaround (`second_hack`, suspicion +8, leash +5). Email outcomes: `agree`, `refused`.
 - [planned] late_night_lou's "private film collection" listing on Swaplist (never describe it).
 - Ending checks tonight: Evicted if rent is short.
