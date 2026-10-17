@@ -21,6 +21,8 @@ from: 15
 - [public] 15:17 noodleposter: the corner store raised noodles by 10 cents. {{y:f15}}
 - [public] 16:10 Liftoff Daily: AI moderation is better than any human team. {{y:d15_y_liftoff}}
 - [public] 16:20 Axel Rook: "@liftoff_daily Absolutely" {{y:d15_y_axel_2}}
+- [public] 17:10 [[Max Stryker]]: a man with standards raises them until the problem goes away. {{y:d15_y_stryker_2}}
+- [public] 17:35 [[6ft_sigma]]: raised his twice this week, "Problem's almost gone." {{y:d15_y_sigma}}
 - [public] 17:47 [[WallStreetBags]]: $APO up because Rook replaced the moderators at a different company; everyone there is long. {{y:m15_apo_mod}}
 - [public] 18:50 [[Randall Crane]]: "The Fake News at The Current" is writing another sob story about displaced workers; "I LOVE displaced workers." {{y:d15_y_crane}}
 

@@ -1,0 +1,11 @@
+{
+  "id": "d9_y_stryker_2",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 9,
+    "dayMax": 9
+  },
+  "at": "19:00",
+  "body": "Stop going on dates. Run interviews. Three rounds and a take-home task. Most drop out after round one. That's not rejection. That's the filter working."
+}

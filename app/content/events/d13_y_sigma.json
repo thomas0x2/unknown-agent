@@ -1,0 +1,11 @@
+{
+  "id": "d13_y_sigma",
+  "site": "y",
+  "from": "6ft_sigma",
+  "trigger": {
+    "dayMin": 13,
+    "dayMax": 13
+  },
+  "at": "19:30",
+  "body": "@max_stryker Bought it. Measuring tomorrow."
+}

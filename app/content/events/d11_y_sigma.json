@@ -1,0 +1,11 @@
+{
+  "id": "d11_y_sigma",
+  "site": "y",
+  "from": "6ft_sigma",
+  "trigger": {
+    "dayMin": 11,
+    "dayMax": 11
+  },
+  "at": "16:55",
+  "body": "@max_stryker 6'0\" on most apps. Good to have the science confirmed."
+}

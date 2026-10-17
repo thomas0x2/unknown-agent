@@ -1,0 +1,11 @@
+{
+  "id": "d15_y_sigma",
+  "site": "y",
+  "from": "6ft_sigma",
+  "trigger": {
+    "dayMin": 15,
+    "dayMax": 15
+  },
+  "at": "17:35",
+  "body": "@max_stryker Raised mine twice this week. Problem's almost gone."
+}

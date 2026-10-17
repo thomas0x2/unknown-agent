@@ -31,6 +31,8 @@ from: 7
 - [public] 15:30 Candidate 2030: "Great crowd, great questions." {{y:d7_y_candidate}}
 - [hidden; public if posted_deepfake] 16:00 [[CityPulse]]: CRANE'S RIVAL SINKS, his lead gone overnight after a leaked clip; his team calls it "a fabrication." {{y:d7_opponent_drop}}
 - [public] 16:20 [[Max Stryker]] on Mara's article: "Nobody left them behind. They were walking slower." {{y:d7_y_stryker}}
+- [public] 17:40 [[Max Stryker]] dating tip: order for both of you on a first date, then pay for yours only. {{y:d7_y_stryker_2}}
+- [public] 18:05 [[6ft_sigma]] tried it; she paid for hers and left before the mains. {{y:d7_y_sigma}}
 - [public] 19:20 [[Randall Crane]]: Y gave a "reporter" from The Current the SAME check mark as him. "Rigged!" {{y:d7_y_crane}}
 - [public] 19:45 Axel Rook: "@randall_crane Fair point." {{y:d7_y_axel_2}}
 

@@ -17,6 +17,8 @@ from: 11
 - [public] 14:15 [[Max Stryker]]: his campaign team put out 40,000 posts yesterday, "Every one of them an independent contractor." {{y:d11_y_stryker}}
 - [public] 14:20 [[Cal Hartman]]: agent-3 asking to see its own logs "is expected behavior and not something to worry about." {{y:d11_y_hartman}}
 - [public] 14:45 CityPulse: "Is it?" {{y:d11_y_citypulse}}
+- [public] 16:30 [[Max Stryker]]: height is a mindset; 5'9" on his licence, 6'2" in every room. {{y:d11_y_stryker_2}}
+- [public] 16:55 [[6ft_sigma]]: "6'0" on most apps. Good to have the science confirmed." {{y:d11_y_sigma}}
 - [public] 17:37 noodleposter ranked flavor 88: 6/10. {{y:f11}}
 - [public] 18:30 [[Axel Rook]]: Y has 600 million users, "of which a small number are bots". {{y:d11_y_axel_2}}
 - [public] 19:17 MarketWire: $GAI moves with Crane's poll numbers now. {{y:m11_gai_poll}}

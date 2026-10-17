@@ -43,6 +43,17 @@ from: 1
 - [public] On day 19 he confirms his posts go out at 3am because he's up.
 - [public] On day 21 he votes at 7:00 sharp, first in line.
 
+## His dating advice
+
+[public] Every other day from day 5 he posts dating advice for lonely men, each piece really about himself. [[6ft_sigma]] follows all of it and answers every post.
+
+- [public] On day 5: never text first, never text second; she can go through his assistant. {{y:d5_y_stryker_2}}
+- [public] On day 7: order for both of you on a first date, then pay for yours only. {{y:d7_y_stryker_2}}
+- [public] On day 9: don't go on dates, run interviews with three rounds and a take-home task. {{y:d9_y_stryker_2}}
+- [public] On day 11: height is a mindset; he is 5'9" on his licence and 6'2" in every room. {{y:d11_y_stryker_2}}
+- [public] On day 13: attraction is geometry (canthal tilt, jaw ratio); the measurement module is in the EMPIRE inner circle for 400 DOLR. {{y:d13_y_stryker_2}}
+- [public] On day 15: a man with standards never lowers them, he raises them until the problem goes away. {{y:d15_y_stryker_2}}
+
 ## Posts on Y
 
 - [public] {{y:d1_y_stryker}}
@@ -69,6 +80,6 @@ from: 1
 
 ## Writer notes
 
-- Persona `max` (scripted "Commitment logged." on EMPIRE replies); events `d1_guru` (interested reply: the 20 DOLR price "goes back to 200, as it has every midnight since launch"), `guru_newsletter` (13 bodies in rotation, mattress first), `d5_guru_leak`, `dN_y_stryker`. EMPIRE page and `EMPIRE` constant in engine/actions.ts.
+- Persona `max` (scripted "Commitment logged." on EMPIRE replies); events `dN_y_stryker_2` (dating advice, odd days 5 to 15, each answered by `dN_y_sigma`), `d1_guru` (interested reply: the 20 DOLR price "goes back to 200, as it has every midnight since launch"), `guru_newsletter` (13 bodies in rotation, mattress first), `d5_guru_leak`, `dN_y_stryker`. EMPIRE page and `EMPIRE` constant in engine/actions.ts.
 - Name and Alpha Ascend are placeholders. "4am" and "EMPIRE" are his alone; ration them.
 - The guru CC leak is a planned doxing lead. The bible had him recruiting by newsletter on days 10 to 12; the game does it on Y.
