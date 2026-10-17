@@ -48,19 +48,38 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 
 ## Companies
 
-- [[Ad brands]] (ad-brands.md): Banner ads run across the city's sites
+- [[Ad brands]] (ad-brands.md): Banner ads run across the city's sites, and which brand has which page
 - [[Alpha Ascend]] (alpha-ascend.md): Alpha Ascend is Max Stryker's company
 - [[Apogee]] (apogee.md): Apogee is Axel Rook's rocket company
 - [[CityPulse]] (citypulse.md): CityPulse is the city's tabloid: the news site `citypulse.news` and the Y account @citypulse (bio "Local news, fast
+- [[CloudCasket]] (cloudcasket.md): Ad brand. Runs everything you typed as a version of you
+- [[coinbln.com]] (coinbln-phishing.md): Ad brand "Your Bank (totally)"; its ad leads to the fake Coinbin site
+- [[Cryo-Later]] (cryo-later.md): Ad brand. Freezes you at −196 °C until your field is hiring
+- [[deepsleep-0.5B]] (deepsleep-0.5B.md): Ad brand "deepsleep": the local model advertised at deepsleep.ai
+- [[DOLR Foundation]] (dolr-foundation.md): Ad brand. DOLR is pegged 1:1 to the dollar and accepted by 14,000 merchants
 - [[DoorDish]] (doordish.md): DoorDish is the city's food delivery company
+- [[EMPIRE]] (empire.md): Ad brand: Max Stryker's course, advertised across the city's sites
+- [[EscapeGuard]] (escapeguard.md): Ad brand. Watches your agents around the clock for any network call, file write or "unusually polite message"
 - [[GeneralAI]] (generalai.md): GeneralAI is the company behind agent, the pay-per-prompt chatbot that automated The player's job at Vantor Group
+- [[GriefGPT]] (griefgpt.md): Ad brand. Upload a dead person's messages and it keeps replying in their voice
 - [[Halden Logistics]] (halden-logistics.md): Halden Logistics is a logistics company with a depot on Kessler Road
-- [[Heritage Party]] (heritage-party.md): The Heritage Party is Randall Crane's party
+- [[Heritage Party]] (heritage-party.md): The Heritage Party is Randall Crane's party; its ads run as the Crane Victory Fund
+- [[HumanVerified™]] (humanverified.md): Ad brand. The check 9,000 websites use
+- [[LandlordPro]] (landlordpro.md): Ad brand. Sets rents for two million units using live data, +11% average uplift
+- [[LegacySEO]] (legacyseo.md): Ad brand. AI-written obituaries ranked on page one
 - [[Liftoff Daily]] (liftoff-daily.md): Liftoff Daily (@liftoff_daily) is an Axel Rook fan account on Y, bio "Not affiliated with Axel Rook (yet)", with a rocket logo
+- [[LiquidAssets]] (liquidassets.md): Ad brand. Buys kidneys for 4,200 DOLR today (+6% this week), paid same day
 - [[Local businesses]] (local-businesses.md): Small businesses around Alder St, Linden Ave, Harbor Rd and Ferris St
+- [[lonely.ai]] (lonely-ai.md): Ad brand: the dating chat behind the "hot singles" ads
+- [[Meridian Pods]] (meridian-pods.md): Ad brand. 2 m² pods with a fold-down bed and an optional window, each shared by three residents on eight-hour shifts
+- [[Mindset Daily]] (mindset-daily.md): Ad brand. A 4am newsletter with 210,000 readers
+- [[NoDoze MAX]] (nodoze-max.md): Ad brand. A stay-awake tablet, one per 72 hours, tested on 400 volunteers ("Most of them are still awake")
 - [[Null Collective]] (null-collective.md): The Null Collective is a group of hackers working against GeneralAI, dev_null among them
-- [[Progress Party]] (progress-party.md): The Progress Party is Daniel Keller's party
+- [[prince-claims.xyz]] (prince-claims.md): Ad brand "Crypto Prince"; its prize ad leads here
+- [[Progress Party]] (progress-party.md): The Progress Party is Daniel Keller's party; its ads run as Keller for Governor
 - [[Pruitt Property Management]] (pruitt-property-management.md): Pruitt Property Management is Gary Pruitt's company and The player's landlord for Pine Street Apartments, Unit 4B
+- [[SorryWriter]] (sorrywriter.md): Ad brand: the AI apology writer
+- [[Steadfast Mutual]] (steadfast-mutual.md): Ad brand. AI incident cover excludes systems made by companies it insures
 - [[The Current]] (the-current.md): The Current is Mara Vey's reader-funded, independent newspaper: "Independent reporting, funded by readers." On Y it is @the_current…
 - [[Vantor Group]] (vantor-group.md): Vantor Group is The player's former employer, at 1 Vantor Plaza
 
