@@ -35,6 +35,7 @@ export * from './rentboard';
 export * from './donations';
 export * from './uploads';
 export * from './sorry';
+export * from './adware';
 export * from './chatFees';
 export * from './mailbin';
 export * from './rewind';

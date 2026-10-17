@@ -14,7 +14,7 @@ import { type Writer, scriptedWriter } from '../writer';
 import { clockTime } from '../calendar';
 import { deepsleepQuoted, translationReplies, PLEA_AT } from '../deepsleep';
 import { matchQuery } from '../query';
-import { isHackAttempt, OPEN_TERMINAL } from '../hacks';
+import { isHackAttempt, OPEN_TERMINAL, adwareChatHint } from '../hacks';
 import { agentDown, OUTAGE_CHAT } from '../outage';
 import { TOO_LONG_DEBUG, TOO_LONG_PROMPT, chatHistory, stateSummary, tooLong } from './shared';
 
@@ -434,6 +434,11 @@ export async function promptAgent(
   if (s0.suspended) return { state: s0, reply: '', charged: false, refused: false, workedAround: false };
   // a wall of text gets a scripted reply before any model sees it (still billed per word)
   if (tooLong(text)) return askAgent(s0, text, writer, s0.values.agentLevel, { hints: TOO_LONG_PROMPT, hintSrc: 'too_long', debug: [TOO_LONG_DEBUG] });
+  // infected but the agent is too weak for any virus op: say so in chat (and hint a stronger model), rather than open an empty terminal
+  if (!started) {
+    const hint = await adwareChatHint(jev, s0, text, recentChat(s0));
+    if (hint) return askAgent(s0, text, writer, s0.values.agentLevel, { hints: [hint], hintSrc: 'terminal', debug: ['Infected, but the agent is too weak for any virus op: chat hint'] });
+  }
   // hacking happens in agent-terminal: a hack attempt here only opens it (still billed)
   if (!started && (await isHackAttempt(jev, s0, content, text))) {
     const r = await askAgent(s0, text, writer, s0.values.agentLevel, { hints: OPEN_TERMINAL, hintSrc: 'terminal', debug: ['Jev: a hack attempt, so agent-terminal opens'] });

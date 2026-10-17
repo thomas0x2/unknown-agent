@@ -1379,5 +1379,15 @@
     "Peptides"
    ]
   }
+ },
+ {
+  "prompt": "what is PC Medic",
+  "day": 1,
+  "expect": {
+   "kind": "answer",
+   "pages": [
+    "PC Medic"
+   ]
+  }
  }
 ]

@@ -40,6 +40,11 @@ from: 14
 
 - [hidden] [planned] Bio-lab listings appear on Cellar.
 
+## PC Medic
+
+- [hidden; hint if adware_installed] From today agent-4 is strong enough to take the [[PC Medic]] virus apart in agent-terminal: remove it, or extract its source and the author's details.
+
 ## Writer notes
 
 - Rent 500 (`RENT`); Evicted if short. The trader buys 3,000 $GAI by hand on agent-4.
+- The [[PC Medic]] reverse-engineering jobs become possible with agent-4 (the ad itself runs from day 1).
