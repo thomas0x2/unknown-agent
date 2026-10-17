@@ -17,4 +17,4 @@ from: 1
 
 ## Writer notes
 
-- Page `pageEmpire` in `app/src/ui/view.ts`; newsletter `guru_newsletter.json` (13 in rotation, mattress first), flag `guru_subscriber`; leak `guru_cc_leak` (doxxing leads, planned).
+- Page `pageEmpire` in `app/src/ui/view/misc.ts`; newsletter `guru_newsletter.json` (13 in rotation, mattress first), flag `guru_subscriber`; leak `guru_cc_leak` (doxxing leads, planned).

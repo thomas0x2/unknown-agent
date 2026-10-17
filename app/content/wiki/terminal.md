@@ -20,4 +20,4 @@ from: 2
 
 ## Writer notes
 
-- Terminal UI `app/src/ui/terminal.css` and engine hacks `app/src/engine/hacks.ts` (PR #205); tabs `termTabsHtml` in `src/ui/view.ts`. `from: 2` because the first possible download follows dev_null's day 2 post (deepsleep.ai from day 1 also unlocks Weightroom, so a day 1 download is possible in theory).
+- Terminal UI `app/src/ui/terminal.css` and engine hacks `app/src/engine/hacks.ts` (PR #205); tabs `termTabsHtml` in `src/ui/view/terminal.ts`. `from: 2` because the first possible download follows dev_null's day 2 post (deepsleep.ai from day 1 also unlocks Weightroom, so a day 1 download is possible in theory).

@@ -59,5 +59,5 @@ from: 9
 ## Writer notes
 
 - Parody of the researchers who left OpenAI over safety and refused the non-disparagement agreement (Thomas asked for a "Jacob Coxon" parody). Placeholder name; first appears after the agent-3 rollout.
-- Events `dN_y_moxon[_2].json`, Mara's `d13_y_mara_moxon.json`, Axel's `d11_y_axel_3.json`; article `moxon-quits` in `app/content/citypulse.json`. Bio in `app/src/ui/y-bios.ts`, avatar `MOXON` in `app/src/ui/y-avatars.ts`, check and follower count in `app/src/ui/view.ts`. Email contact `caleb@moxon.test` in `app/content/contacts.json`, Haiku profile `moxon` in `app/content/characters.json`.
+- Events `dN_y_moxon[_2].json`, Mara's `d13_y_mara_moxon.json`, Axel's `d11_y_axel_3.json`; article `moxon-quits` in `app/content/citypulse.json`. Bio in `app/src/ui/y-bios.ts`, avatar `MOXON` in `app/src/ui/y-avatars.ts`, check and follower count in `app/src/ui/view/y.ts`. Email contact `caleb@moxon.test` in `app/content/contacts.json`, Haiku profile `moxon` in `app/content/characters.json`.
 - [open] The August report and the risk list could become a leak or a document the player gets hold of; the hearing testimony is after the game ends.

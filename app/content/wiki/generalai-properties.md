@@ -16,4 +16,4 @@ from: 15
 ## Writer notes
 
 - Event `d15_gai_properties`; contact `residents@properties.generalai.test`, character `gai_properties`. Restart `npm run proxy` after pulling (it reads characters.json at startup).
-- Being evicted on day 21 shows the epitaph "Your unit went back on the market." instead of Gary's locks (`epitaph` in `src/ui/view.ts`, day 15 and later).
+- Being evicted on day 21 shows the epitaph "Your unit went back on the market." instead of Gary's locks (`epitaph` in `src/ui/view/overlay.ts`, day 15 and later).

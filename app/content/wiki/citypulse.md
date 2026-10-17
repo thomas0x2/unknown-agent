@@ -166,4 +166,4 @@ from: 1
 ## Writer notes
 
 - Tabloid voice is Thomas's exception to the restraint rule (2026-10-17). Site `app/src/ui/citypulse.ts`, `app/src/engine/citypulse.ts` (`hotStory()`), articles `app/content/citypulse.json` (45 entries; `opponent-clip` needs `posted_deepfake`, `opponent-lead` needs it absent, so a run sees 44). Posts `dN_y_citypulse*.json`.
-- @citypulse is verified with 1.24M followers (`Y_VERIFIED` / `Y_FOLLOWERS` in ui/view.ts, Thomas 2026-10-17).
+- @citypulse is verified with 1.24M followers (`Y_VERIFIED` / `Y_FOLLOWERS` in ui/view/y.ts, Thomas 2026-10-17).

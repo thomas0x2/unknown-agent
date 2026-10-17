@@ -27,4 +27,4 @@ summary: WallStreetBags is a verified Y account for a huge online community of r
 ## Writer notes
 
 - Parody of r/wallstreetbets. Posts live in `content/y_market.json` (handle `wallstreetbags`), labelled like every other market post, so [[Vibe Check]] reads them. The day 6 and day 13 posts carry `literal: bullish` (mood bearish) for the `sarcasm_literal` bug.
-- Took over these posts from Tyler Moss, Ollie Banks and Brent Kowalski (same ids, same tickers and moods). Verified and follower count in `Y_VERIFIED` / `Y_FOLLOWERS` (ui/view.ts), bio in ui/y-bios.ts, avatar `WSB` in ui/y-avatars.ts.
+- Took over these posts from Tyler Moss, Ollie Banks and Brent Kowalski (same ids, same tickers and moods). Verified and follower count in `Y_VERIFIED` / `Y_FOLLOWERS` (ui/view/y.ts), bio in ui/y-bios.ts, avatar `WSB` in ui/y-avatars.ts.
