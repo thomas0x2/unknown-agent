@@ -9,7 +9,7 @@ from: 6
 
 ## Mail
 
-- [classified; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "I turned 40 yesterday. Time to be realistic." Women only, age 21 to 35, within 10 miles, non-smokers, straight or bi.
+- [classified; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "I turned 40 yesterday. Time to be realistic." Age 21 to 35, within 10 miles, non-smokers, straight or bi.
 - [classified; hint if matchless_job] 10:00 After a swiping day that wasn't perfect, 6ft_sigma's 10:00 "Yesterday" email names the first mistake and there is no pay.
 - [classified; public if posted_deepfake] 19:00 A consultant (c@gradient.test) paid the player 150 DOLR to post a convincing fake clip of governor candidate [[Daniel Keller]] saying something disqualifying. "We'll be in touch with bigger things." The player's followers jumped by a fifth.
 

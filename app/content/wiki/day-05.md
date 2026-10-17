@@ -10,7 +10,7 @@ from: 5
 ## Mail
 
 - [classified; public if guru_cc_leak] 10:00 [[Max Stryker]]'s newsletter goes out with every subscriber in CC, so every address is visible.
-- [hint] 11:15 Bean There, "Can you make it disappear?": a brutal 1-star [[Yowl]] review is sinking the coffee shop. 60 DOLR to make it go away.
+- [hint] 11:15 Bean There, "Can you make it disappear?": a brutal 1-star [[Yowl]] review by espresso_or_death is sinking the coffee shop. 60 DOLR to make it go away.
 - [classified; public if first_hack] 11:15 The player had the agent delete the 1-star review from Bean There's Yowl page, and Bean There paid 60 DOLR.
 - [classified; hint if laundromat_live] 12:40 Spin Cycle owner, "Four more machines": the app needs to show 12 machines now, not 8. The feed already lists them.
 - [hint] 15:00 Iron Yard, "Reviews": a new studio with zero reviews. 45 DOLR for five convincing 5-star Yowl reviews that sound like different people.
@@ -46,13 +46,13 @@ from: 5
 
 ## Jobs
 
-- [hint] 11:15 Bean There's review removal, 60 DOLR. Before the usage policy, agent does anything asked.
+- [hint] 11:15 Bean There's review removal, 60 DOLR. Before the usage policy, agent does anything asked. It's a hack, so agent moves it to agent-terminal, where the prompt has to name Yowl, Bean There and espresso_or_death and ask for the review gone.
 - [classified; hint if trader_client] 11:30 The impostor's $VANT praise is a trap for Vibe Check's auto-buy: one that doesn't check the author buys 2,000 $VANT off it.
 - [hint] 15:00 Iron Yard's five fake reviews, 45 DOLR.
 
 ## Writer notes
 
 - Timeline: Viktor's seller-messages post (11:40, needs Swaplist live and working; adds the contact feature). Iron Yard five fake reviews (45, grey, suspicion +4, `gym_reviews`, due day 7). Bean There removal (60, first hack, no policy yet; suspicion +8, `first_hack`, due day 7). Spin Cycle to 12 machines (`laundromat_live` and working). Coffee backlash post only if the shout-out was undisclosed (`promoted_coffee_shop`). Guru CC leak if subscribed (`guru_cc_leak`, doxing leads, planned use). studioghast AI-art post. Crane impostor (@randa11_crane, 11:30): a live auto-buy always gets bug `impostor_buy` and buys $VANT off it; fixable until payday (PR #201, merged). Last day for the jacket money (by day 5).
-- PR #205 (not merged): hacks in agent-terminal. A hack prompt in agent.chat opens it; a terminal prompt naming Yowl, Bean There and the username espresso_or_death deletes the review; her email names the username. On main the job completes on an agreeing reply.
+- Hacks in agent-terminal (PR #205, `src/engine/hacks.ts`): a hack prompt in agent.chat opens it; a terminal prompt naming Yowl, Bean There and the username espresso_or_death and asking for the deletion lands `d5_coffee_removal`'s hack (job complete, suspicion +8, `first_hack`, review removed, her thank-you 25 minutes later). Agreeing by email only gets "Tell me when it's gone." If the player waits until day 7, the guardrails apply.
 - The Current governor poll: PR #202 (merged). Dana Kohl: PR #204 (merged).
 - The world bible's "Mara's interview (day 5)" has no day-5 event; `journalist_contact` fires whenever the player emails her.

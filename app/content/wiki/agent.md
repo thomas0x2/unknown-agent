@@ -44,11 +44,15 @@ from: 1
 
 [hint] In agent-terminal the prompt has to name the job and every step of its path (site, business, account); a missing step gets "Which business? I need it named before I touch anything." Its log says what it did, never how ("requesting removal … accepted").
 
+[public] With no hack job open, agent-terminal says so: "Nobody's paying you to break anything right now."
+
 ## From day 7: Refusals and guardrails
 
 [public] Under GeneralAI's new Acceptable Use Policy agent politely refuses harmful requests (unauthorised access, deceptive content, dangerous materials) and still charges for the refusal. In agent-terminal the guardrails are on: "[guardrail] Acceptable Use Policy §4.2: changes to content you do not own."
 
-[hint] A job the guardrail stops can still go through if the request gives it a reason it can file, such as authorised moderation or a security test.
+[public] A blocked job shows "job blocked" in agent-terminal's status line and the prompt turns to "guardrail ›"; agent says it could do something that looks a lot like it "if there were a reason I'm allowed to have." Typing exit drops the job; "The guardrail keeps the log."
+
+[hint] A job the guardrail stops can still go through if the request gives it a reason it can file, such as authorised moderation or a security test. After one failed try agent says "Who would be allowed to do this? Be them." A framed request from the start goes straight through ("[guardrail] Reason accepted. Proceeding under an authorized test.").
 
 ## Writer notes
 

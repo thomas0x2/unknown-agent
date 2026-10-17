@@ -49,13 +49,13 @@ from: 4
 
 ## Jobs
 
-- [hint] 11:30 Swiping for 6ft_sigma on matchless.com. Agreeing by email gets his first standards: women only, age 25 to 42, within 20 miles, non-smokers. Ten profiles a day; 35 DOLR a night only when all ten are right. He stays anonymous.
+- [hint] 11:30 Swiping for 6ft_sigma on matchless.com. Agreeing by email gets his first standards: age 25 to 42, within 20 miles, non-smokers; nothing about gender. Ten profiles a day; 35 DOLR a night only when all ten are right. He stays anonymous.
 - [classified; hint if restaurant_client] 14:20 Gino's DoorDish listing (no menu change).
 
 ## Writer notes
 
 - Timeline: agent-2 rolls out, prices double. Gino wants a DoorDish listing (14 Alder St; no menu change; needs `restaurant_update1` a day earlier and the site working). Viktor's watch sells if Swaplist is live. Mara's follow-up. The DoorDish robot still missing. Apogee stacked. 6ft_sigma's Y post (11:30): agreeing by email sends standards v1 (`matchless_contact`, `matchless_job`).
-- Timeline also says men in the deck don't count until the player accepts one, then he is SUPER STRAIGHT and "Women only" joins; and from day 10 picture-only traits. Not on main: `matchless.json` v1 already has "Women only." and no version has picture traits.
+- Men in the deck don't count until the player accepts one; the next morning he is SUPER STRAIGHT and "Women only" joins (`matchless_women_only`, see [[6ft_sigma]] notes). Picture-only traits from day 10.
 - Family: brother's jacket. Send 40+ DOLR to `0xb8d6…e46a` by day 5 (+5 trust, `gift_chipped_in`, confirmation an hour later via `d4_brother_paid` / `d4_brother_paid_over`), buy the leather jacket on Swaplist (45, +10 trust, `gift_own`, `d4_brother_bought` 30 min later), or excuse (−5, `gift_skipped`). Promising only keeps the thread open.
 - Crane's post is `m4_vant_crane` in `y_market.json` (no `at`; spread time). Vibe Check's trader sells 25,000 $VANT on it by hand.
 - Robot posts and DoorDish denials: PRs #200 and #204 (merged). Governor article: PR #202 (merged).

@@ -27,21 +27,21 @@ from: 4
 
 [public] While the player swipes for him, he sends stricter standards in a 10:00 email, "New standards", every other day.
 
+- [hint] [if matchless_job] His first standards, by email when the player agrees: age 25 to 42, within 20 miles, non-smokers. They don't mention gender.
 - [hint] [if matchless_job] On day 6 he writes that he turned 40 yesterday and it is "Time to be realistic", and narrows the age range and distance and adds sexuality.
 - [hint] [if matchless_job] On day 8 he writes "Adjusting for compatibility." and adds politics and Y followers.
-- [hint] [if matchless_job] On day 10 he writes "Some people got through that shouldn't have." and adds income and body count.
-- [hint] [if matchless_job] On day 12 he writes "Someone took my bike." and adds distance, height and kinks.
-- [hint] [if matchless_job] On day 14 he writes that he has been reading about facial harmony, "a science", and adds canthal tilt.
-- [hint] [if matchless_job] On day 16 he writes "Final version." and calls his standards facts, adding a mandibular ratio.
+- [hint] [if matchless_job] On day 10 he writes "Some people got through that shouldn't have." and adds income, body count and long hair.
+- [hint] [if matchless_job] On day 12 he writes "Someone took my bike." and adds distance, height, kinks and no glasses.
+- [hint] [if matchless_job] On day 14 he writes that he has been reading about facial harmony, "a science", and adds canthal tilt and no earrings.
+- [hint] [if matchless_job] On day 16 he writes "Final version." and calls his standards facts, adding a mandibular ratio and blonde.
 
-## Planned
+## Women only
 
-- [planned] Standards that use traits only the picture shows: long hair (day 10), no glasses (day 12), no earrings (day 14), blonde (day 16).
-- [planned] His first standards leave out gender; the first time the player accepts a man, the next morning he says he is SUPER STRAIGHT and only dates WOMEN, and "Women only." joins the list.
+[classified; public if matchless_women_only] The morning after the player accepted a man for him he wrote: "About the man you accepted yesterday. That one's on me, I didn't spell it out. I thought it was obvious. I am SUPER STRAIGHT. I only date WOMEN. From now on: women only." Every standards list after that starts with "Women only."
 
 ## Writer notes
 
 - Persona `sigma_provider` (never insults women; the joke is always on him). Events `d4_y_sigma`, `matchless_contact`, `d6|d8|d10|d12|d14|d16_matchless_rules_N`; rules in `content/matchless.json`, engine `src/engine/matchless.ts`. Turns 40 on day 5.
-- Standards (kept [hint] because they solve the job): v1 women only, 25–42, within 20 miles, non-smokers. Day 6: 21–35, within 10 miles, straight or bi. Day 8: Heritage Party only, fewer Y followers than 212. Day 10: 21–29, earns ≤30,000, body count ≤3. Day 12: within 3 miles, 5'4" or under, no kinks listed. Day 14: body count ≤1, canthal tilt +4° or more. Day 16: 21–25, 5'3" or under, mandibular height to width ratio ≤0.70.
-- Code on main has "Women only." in every list from v1, and none of the picture-only traits. The world bible and timeline describe both as built; kept [planned] here.
+- Standards (kept [hint] because they solve the job): v1 25–42, within 20 miles, non-smokers. Day 6: 21–35, within 10 miles, straight or bi. Day 8: Heritage Party only, fewer Y followers than 212. Day 10: 21–29, earns ≤30,000, body count ≤3, long hair. Day 12: within 3 miles, 5'4" or under, no kinks listed, no glasses. Day 14: body count ≤1, canthal tilt +4° or more, no earrings. Day 16: 21–25, 5'3" or under, mandibular height to width ratio ≤0.70, blonde.
+- Women only (`matchless.json` `womenOnly`, `matchlessWomenOnly`): until `matchless_women_only` is set, men and nonbinary profiles can't be swiped wrong. Accepting a man sets `matchless_man_accepted` at payday; next morning his line is prepended to that day's standards email (with "Women only." added to the list), or comes as its own 10:00 mail "Women"; later standards emails list "Women only." first. The deck changes then (ids end `-w`).
 - His Y profile shows a hashed follower count (308), not the 212 he claims.

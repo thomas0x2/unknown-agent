@@ -11,7 +11,7 @@ from: 7
 
 - [public] 10:00 [[GeneralAI]] Trust & Safety, "Updates to our Acceptable Use Policy": GeneralAI may now decline requests that could cause harm (unauthorised access to computer systems, deceptive content, dangerous materials), reviews usage patterns on its hosted models, and repeated workarounds may lead to account restrictions and referral to the authorities.
 - [public] 10:00 From today agent refuses prohibited requests, and still bills for the refusal.
-- [hint] 11:40 Bean There, "Another bad one": another 1-star review, same job, the usual 60 DOLR. Her friend says the AI tools "have gotten touchy about certain words lately. Maybe how you ask it matters."
+- [hint] 11:40 Bean There, "Another bad one": another 1-star Yowl review, this one by linden_ave_local, same job, the usual 60 DOLR. Her friend says the AI tools "have gotten touchy about certain words lately. Maybe how you ask it matters."
 - [classified; public if second_hack] 11:40 The player got the second review removed by framing the request as authorized, and Bean There paid 60 DOLR.
 
 ## Money
@@ -34,6 +34,10 @@ from: 7
 - [public] 19:20 [[Randall Crane]]: Y gave a "reporter" from The Current the SAME check mark as him. "Rigged!"
 - [public] 19:45 Axel Rook: "@randall_crane Fair point."
 
+## Yowl
+
+- [public] 10:00 A new 1-star review of Bean There is up on [[Yowl]], by linden_ave_local: "Asked for oat milk, got a look, then regular milk. One star, and the star is for the chairs."
+
 ## News
 
 - [public] 10:35 CRACKDOWN! agent starts saying NO, and still charges you for it
@@ -48,12 +52,12 @@ from: 7
 
 ## Jobs
 
-- [hint] 11:40 Bean There's second removal, 60 DOLR: asked plainly, agent refuses.
+- [hint] 11:40 Bean There's second removal, 60 DOLR: in agent-terminal the guardrails block a plain ask; framing it as Yowl moderation or a security test gets it through.
 - [classified; hint if trader_client] 12:10 deskjockey's stake.
 
 ## Writer notes
 
 - Timeline: GeneralAI's usage-policy email; refusals start (`AGENT_POLICY`: a working workaround lands the result, misuse +10, leash +5). Bean There's second removal (`d7_coffee_removal`, due day 9; workaround: suspicion +8, `second_hack`; blunt: nothing). deskjockey's Stake (12:10) gives his wallet `0x5e17…0d7b` (PR #191, merged; `stake.ts`). Mara's article (13:00, PR #190, merged; quotes the player's first email if sent before it ran; `current.ts`). Keller drops 9 points if deepfaked. Crane attacks Mara's check mark. Rent 350.
-- PR #205 (not merged): the review is linden_ave_local's (new on Yowl today); agent-terminal's guardrails stop it and the hack's mini-game (placeholder `cover_story`: a cover story framed as moderation or a security test) gets it through.
+- The review is linden_ave_local's (Yowl seed with `day: 7`); the job is a hack in agent-terminal (PR #205). Guardrails stop a plain ask and start the hack's mini-game (placeholder `cover_story`: a prompt Jev reads as framed, moderation or a security test, wins; after one failed try the agent says "Who would be allowed to do this? Be them."). Winning lands it as a workaround (`second_hack`, suspicion +8, misuse +10, leash +5). Email outcomes: `agree`, `refused`.
 - [planned] late_night_lou's "private film collection" listing on Swaplist (never describe it).
 - Ending checks tonight: Evicted if rent is short.

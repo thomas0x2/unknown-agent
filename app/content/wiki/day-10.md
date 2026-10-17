@@ -9,7 +9,7 @@ from: 10
 
 ## Mail
 
-- [classified; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "Some people got through that shouldn't have." Age 21 to 29, earns 30,000 DOLR a year or less (he makes 31,000), body count 3 or under.
+- [classified; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "Some people got through that shouldn't have." Age 21 to 29, earns 30,000 DOLR a year or less (he makes 31,000), body count 3 or under, and long hair, which only the picture shows.
 
 ## Y
 
@@ -51,5 +51,5 @@ from: 10
 
 ## Writer notes
 
-- Timeline: Apogee launch 10:02, breaks apart four minutes later, $APO +6%. Stryker partners with Crane's campaign. Crane thanks his volunteers. 6ft_sigma's standards v4 (timeline adds picture-only traits from today; not in `matchless.json` on main).
+- Timeline: Apogee launch 10:02, breaks apart four minutes later, $APO +6%. Stryker partners with Crane's campaign. Crane thanks his volunteers. 6ft_sigma's standards v4, the first with a picture-only trait (long hair).
 - The trader buys $DISH by hand today (`TRADER_TRADES`).

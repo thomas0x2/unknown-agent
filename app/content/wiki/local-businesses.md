@@ -16,6 +16,8 @@ from: 1
 [public] Bean There, 3 Linden Ave, owner [[Dana Reyes]]: coffee and tea, $$, open since 2019. Yowl lists Mon–Sat 07:00–16:00; its own site, beanthere.coffee, says 7:00 to 18:00 every day. Menu: espresso 3, flat white 4.5, house filter 3, almond croissant 4 (DOLR). "Dark and bold, roasted a little longer than most." Reviews on its site "are selected by Bean There". Yowl reviews: espresso_or_death (1, "Burnt. Every single time."), commuter22 (2, slow service), Zoe K. (2, lukewarm latte). The player spent 18.60 DOLR there two days before day 1.
 - [public] From day 3 Bean There runs a banner ad: coffee so good "someone was paid to tell you", fine print "#notanad".
 - [public] On day 7 linden_ave_local posts a new 1-star review (oat milk, "the star is for the chairs").
+- [classified; public if first_hack] espresso_or_death's review is gone from Bean There's Yowl page.
+- [classified; public if second_hack] linden_ave_local's review is gone from Bean There's Yowl page.
 
 ## Iron Yard
 

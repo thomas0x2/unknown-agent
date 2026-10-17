@@ -132,5 +132,4 @@ Thomas went through this on 2026-10-17: the game's version stays everywhere exce
 - Heritage and Progress standing have no payoff beyond their meters.
 - Trending topics for days 7 to 21 are not in `trending.json`; the proposals need Thomas's OK.
 - The misuse warning email is config only.
-- Unmerged: PR #205 (agent-terminal hacks with guardrails and the `cover_story` mini-game; Bean There's emails naming espresso_or_death and linden_ave_local).
-- Docs vs code: the timeline described 6ft_sigma's standards starting without "Women only" (added as SUPER STRAIGHT after the player accepts a man) and picture-only traits from day 10. `matchless.json` on main has "Women only." from v1 and no picture traits.
+- Hacks: PR #205 put Bean There's removals in agent-terminal with guardrails from day 7; the only mini-game is the placeholder `cover_story`, and no hack job exists after day 7 yet.

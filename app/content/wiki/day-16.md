@@ -9,7 +9,7 @@ from: 16
 
 ## Mail
 
-- [classified; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards", the final version: "These aren't preferences anymore, they're facts." Age 21 to 25, 5'3" or under, mandibular height to width ratio 0.70 or under.
+- [classified; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards", the final version: "These aren't preferences anymore, they're facts." Age 21 to 25, 5'3" or under, mandibular height to width ratio 0.70 or under, blonde.
 
 ## Y
 

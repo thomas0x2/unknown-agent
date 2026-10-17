@@ -9,7 +9,7 @@ from: 12
 
 ## Mail
 
-- [classified; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "Someone took my bike." Within 3 miles, 5'4" or under, no kinks listed.
+- [classified; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "Someone took my bike." Within 3 miles, 5'4" or under, no kinks listed, no glasses.
 
 ## Y
 
