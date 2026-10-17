@@ -1,0 +1,11 @@
+{
+  "id": "d5_y_kofi_news",
+  "site": "y",
+  "from": "Kofi A.",
+  "trigger": {
+    "dayMin": 5,
+    "dayMax": 5
+  },
+  "at": "12:30",
+  "body": "Four new machines at Spin Cycle. Machine 3 still out of order. Some things you can count on. citypulse.news/spin-cycle"
+}

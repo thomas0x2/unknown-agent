@@ -1,0 +1,11 @@
+{
+  "id": "d13_y_citypulse_vote",
+  "site": "y",
+  "from": "CityPulse",
+  "trigger": {
+    "dayMin": 13,
+    "dayMax": 13
+  },
+  "at": "17:30",
+  "body": "THE ROOK BUMP! Crane jumps to 46% after the billionaire's blessing, his opponent stuck at 42%. Is it OVER? Pollsters say no. Crane says yes."
+}

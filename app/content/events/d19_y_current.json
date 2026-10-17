@@ -1,0 +1,11 @@
+{
+  "id": "d19_y_current",
+  "site": "y",
+  "from": "The Current",
+  "trigger": {
+    "dayMin": 19,
+    "dayMax": 19
+  },
+  "at": "12:30",
+  "body": "Latest poll: Crane 47%, his opponent 45%, inside the margin of error. The pollster says turnout is unusually hard to model this year, because a growing share of respondents can't be confirmed as people."
+}

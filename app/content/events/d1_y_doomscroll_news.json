@@ -1,0 +1,11 @@
+{
+  "id": "d1_y_doomscroll_news",
+  "site": "y",
+  "from": "doomscroll",
+  "trigger": {
+    "dayMin": 1,
+    "dayMax": 1
+  },
+  "at": "12:10",
+  "body": "400 people at vantor got fired by one email last night. it's fine citypulse.news/vantor-layoffs"
+}
