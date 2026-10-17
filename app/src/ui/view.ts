@@ -21,11 +21,12 @@ import { pageDoorDish } from './doordish';
 import { pageAdSite, adSiteTitle, adSiteIcon } from './adSites';
 import { pagePrince, PRINCE_ICON } from './prince';
 import { pageLonely, LONELY_ICON } from './lonely';
-import { adHtml } from './ads';
+import { adHtml, setHeadline } from './ads';
+import { pageCityPulse, CITYPULSE_ICON } from './citypulse';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../game/pull';
 import { groupThreads, baseSubject } from './mailThreads';
 import { renderAppSite, devBugPanel, devBugCount, appLogo } from './appsite';
-import { marketPosts, cranePosts, fillerToday, postMin, handleOf, playMinutes, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, SEED_PHRASE, inBin, isDeleted, CLOCK } from '../engine';
+import { marketPosts, cranePosts, hotStory, fillerToday, postMin, handleOf, playMinutes, machineFeed, FEED_PAGE, PLAYER_WALLET, PHISH_WALLET, hacked, SEED_PHRASE, inBin, isDeleted, CLOCK } from '../engine';
 import { devOptionsButton, devOptionsPanel } from './devOptions';
 import { repoFiles, treeAt, fileSource } from './repoTree';
 import { yBio } from './y-bios';
@@ -56,12 +57,13 @@ function linkify(escaped: string): string {
     .replace(/(empire\.alphaascend\.biz(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(spincycle\.test\/feed(?:\/\d+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(coinbln\.com(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
+    .replace(/(citypulse\.news(?:\/[a-z0-9-]+)?)/g, '<a href="#" class="y-link" data-nav="$1">$1</a>')
     .replace(/(^|[^\w.])@([a-z0-9_]+)/gi, '$1<a href="#" class="y-at" data-nav="y.com/$2">@$2</a>');
 }
 
 function tabTitle(r: Route, url: string): string {
   const names: Partial<Record<string, string>> = {
-    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', doordish: 'DoorDish', phish: 'Coinbin · Sign in', prince: 'Crypto Prince', lonely: 'Lonely.ai', forkyard: 'Forkyard',
+    newtab: 'New Tab', y: 'Home / Y', qmail: 'Qmail', qdrive: 'Qdrive', coinbin: 'Coinbin', sherwood: 'Sherwood', doordish: 'DoorDish', phish: 'Coinbin · Sign in', prince: 'Crypto Prince', lonely: 'Lonely.ai', citypulse: 'CityPulse', forkyard: 'Forkyard',
     agent: 'agent', yowl: 'Yowl', weightroom: 'Weightroom', nullboard: 'nullboard', cellar: 'Cellar', app: url,
   };
   if (r.site === 'notfound') return url || 'New Tab';
@@ -79,7 +81,7 @@ export function tabsHtml(store: GameStore): string {
     // a deployed app with a logo shows it as its favicon
     const app = rr.site === 'app' && rr.param ? getApp(store.state, rr.param.split('/')[0]) : undefined;
     // ad sites (and Spin Cycle's raw feed) show their brand's mark
-    const logo = (app && appLogo(app.template)) || (rr.site === 'adsite' ? adSiteIcon(rr.param ?? '') : rr.site === 'spinfeed' ? adSiteIcon('spincycle.test') : rr.site === 'prince' ? PRINCE_ICON : rr.site === 'lonely' ? LONELY_ICON : undefined);
+    const logo = (app && appLogo(app.template)) || (rr.site === 'adsite' ? adSiteIcon(rr.param ?? '') : rr.site === 'spinfeed' ? adSiteIcon('spincycle.test') : rr.site === 'prince' ? PRINCE_ICON : rr.site === 'lonely' ? LONELY_ICON : rr.site === 'citypulse' ? CITYPULSE_ICON : undefined);
     const n = !badged.has(rr.site) ? counts[rr.site] ?? 0 : 0;
     badged.add(rr.site);
     return `<div class="tab${t.id === store.active ? ' on' : ''}${t.pinned ? ' pinned' : ''}" data-tab="${t.id}" role="tab" aria-selected="${t.id === store.active}" tabindex="0">
@@ -230,6 +232,8 @@ function pageSpinFeed(store: GameStore, param?: string): string {
 // ── page dispatch ──
 export function page(store: GameStore, r: Route): string {
   if (!r.reachable) return pageError(store.url, r.site);
+  const hot = hotStory(store.state);
+  setHeadline(hot?.ad && { slug: hot.slug, frames: hot.ad, fine: hot.adFine, robot: hot.slug === 'robot' });
   switch (r.site) {
     case 'newtab': return pageNewTab(store);
     case 'qmail': return pageMail(store, r.param);
@@ -249,6 +253,7 @@ export function page(store: GameStore, r: Route): string {
     case 'prince': return pagePrince(store);
     case 'lonely': return pageLonely(store);
     case 'adsite': return pageAdSite(r.param ?? '', store.state);
+    case 'citypulse': return pageCityPulse(store, r.param);
     default: return pageUnderground(r.def?.label ?? r.site);
   }
 }

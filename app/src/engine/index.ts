@@ -28,3 +28,4 @@ export * from './phishing';
 export * from './lonely';
 export * from './mailbin';
 export * from './jevTests';
+export * from './citypulse';

@@ -1,0 +1,11 @@
+{
+  "id": "d7_y_steph_rentboard",
+  "site": "y",
+  "from": "Steph M.",
+  "trigger": {
+    "dayMin": 7,
+    "dayMax": 7
+  },
+  "at": "13:10",
+  "body": "Appealed my rent increase in May. The decision came back in four seconds. Now I know why. citypulse.news/rent-board"
+}

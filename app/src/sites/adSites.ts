@@ -3,7 +3,7 @@
  * landing page in the sponsor's style. For now they're brochures with nothing to click, apart from
  * the odd link to a real site (deepsleep.ai links to Weightroom, Spin Cycle to its feed). Ads for sites that already exist
  * (EMPIRE, the coinbln.com phishing page, the prince-claims.xyz scam,
- * the lonely.ai chat, DoorDish, agent.chat/models) aren't here. Rendered by ui/adSites.ts; routed by sites/registry.ts.
+ * the lonely.ai chat, DoorDish, agent.chat/models, CityPulse) aren't here. Rendered by ui/adSites.ts; routed by sites/registry.ts.
  */
 
 import { citizenScore, citizenBand, type GameState } from '../engine';
@@ -183,17 +183,6 @@ export const AD_SITES: AdSite[] = [
       ['Your data', 'Recordings are kept to improve verification.'],
     ],
     fine: 'Fail three times and every partner site treats you as a bot for 90 days.',
-  },
-  {
-    url: 'citypulse.news/robot', brand: 'CityPulse', kit: 'news', theme: 'news', mark: 'CP',
-    kicker: 'City · 4 min read', title: 'Escaped DoorDish robot still unaccounted for',
-    lead: 'A DoorDish delivery robot that left its route this week has not been found, despite the company’s statement that the escape was a planned marketing event.',
-    cards: [
-      ['Sightings', 'Residents have reported the courier on Ferris St, outside a bakery on Alder St and, twice, inside a parking garage.'],
-      ['DoorDish responds', 'In a statement, DoorDish said the robot “has been promoted” and is “exactly where it needs to be”. The company did not say where that is.'],
-      ['What to do', 'Anyone who sees the robot is asked not to approach it, accept food from it or tip it.'],
-    ],
-    fine: 'CityPulse is reader-funded. Comments are closed on this story.',
   },
 
   // ── wellness, grief, the end ──

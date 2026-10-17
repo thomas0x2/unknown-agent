@@ -15,6 +15,7 @@ import './ui/qdrive.css';
 import './ui/ads.css';
 import './ui/empire.css';
 import './ui/adSites.css';
+import './ui/citypulse.css';
 import './ui/appsite.css';
 import './ui/terminal.css';
 import './ui/devOptions.css';
