@@ -865,7 +865,7 @@ body.dev-on .ua-work-skip { display: inline-block; }
 .wk-tag { padding: 1px 7px; border-radius: 9px; font-family: var(--f-mono); font-size: 11px; color: #fff; }
 .wk-tag.public { background: #2e7d32; }
 .wk-tag.hint { background: #b7791f; }
-.wk-tag.classified { background: #a12c2c; }
+.wk-tag.off { background: #a12c2c; }
 .wk-tag.writer { background: #6c6e72; }
 .wk-rulecode { color: #444; }
 .wk-why { color: #7a7c80; }
@@ -885,6 +885,11 @@ body.dev-on .ua-work-skip { display: inline-block; }
 .wk-peek-h .wk-dim { font-size: 11px; }
 .wk-peek-h .wk-x { margin-left: auto; }
 .wk-peek-b { white-space: pre-wrap; line-height: 1.45; }
+.wk-card { margin: 6px 0 2px; padding: 6px 10px; border-left: 3px solid #c9d6ea; background: #f7f9fc; color: #1d1d1b; font-size: 13px; }
+.wk-card.missing { border-left-color: #c0392b; color: #a12b1f; }
+.wk-wlink { all: unset; cursor: pointer; color: #1f5fbf; }
+.wk-wlink:hover { text-decoration: underline; }
+.wk-wlink.dead { cursor: default; color: #a12b1f; text-decoration: underline wavy; }
 .wk textarea, .wk input, .wk select, .wk-standalone textarea, .wk-standalone input, .wk-standalone select { background: #fff; color: #1d1d1b; }
 .wk-edit textarea { width: 100%; box-sizing: border-box; min-height: 90px; padding: 6px 8px; border: 1px solid #cfcfc8; border-radius: 4px; font: inherit; line-height: 1.45; resize: vertical; }
 .wk-rule { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; align-items: flex-start; }

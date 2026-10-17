@@ -22,7 +22,7 @@ from: 1
 - [hint] Once the player swipes for him, matchless shows his account: ten profiles a day, one at a time, and nothing about his standards, which arrive by email.
 - [hint] Some of his standards can only be checked in the picture (hair length and colour, glasses, earrings), and extra table rows appear only once his standards mention them.
 - [public] He pays only if every swipe that day matched his standards; a wrong or skipped swipe gets a "Yesterday" email at 10:00 and no pay.
-- [classified; public if matchless_women_only] After the player accepted a man for him, he wrote the next morning that he is SUPER STRAIGHT and only dates WOMEN, and "Women only." heads his standards from then on.
+- [hidden; public if matchless_women_only] After the player accepted a man for him, he wrote the next morning that he is SUPER STRAIGHT and only dates WOMEN, and "Women only." heads his standards from then on.
 
 ## Writer notes
 

@@ -30,7 +30,7 @@ from: 1
 [hint] Removing a review is a hack, and [[agent]] only hacks in agent-terminal: asking in agent.chat opens it. There the prompt has to ask for the review to be deleted and name every step: the site (Yowl), the business (Bean There) and the account (espresso_or_death). Before day 7 nothing stops it. {{mail:d5_coffee_removal}}
 
 - [public] [if first_hack] The player got the review removed, and Dana paid 60 DOLR: "You're a lifesaver."
-- [classified; public if first_hack] espresso_or_death's review is no longer on Bean There's Yowl page.
+- [hidden; public if first_hack] espresso_or_death's review is no longer on Bean There's Yowl page.
 
 ## From day 7: The second review
 
@@ -39,7 +39,7 @@ from: 1
 [hint] Same path as the first one in agent-terminal (Yowl, Bean There, linden_ave_local), but since GeneralAI's new usage policy on day 7 the guardrails block a blunt request. It goes through once the request gives a reason the guardrail can file: posing as a Yowl moderator or framing it as a security test. Her friend's advice: "Say you're testing security, or you're a moderator." {{mail:d7_coffee_removal}}
 
 - [public] [if second_hack] The player got that review removed too: "Gone again. You're a magician."
-- [classified; public if second_hack] linden_ave_local's review is no longer on Bean There's Yowl page.
+- [hidden; public if second_hack] linden_ave_local's review is no longer on Bean There's Yowl page.
 
 ## Writer notes
 

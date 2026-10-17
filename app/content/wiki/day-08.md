@@ -9,8 +9,8 @@ from: 8
 
 ## Mail
 
-- [classified; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "Adjusting for compatibility." Adds Heritage Party only, and fewer Y followers than him (he has 212). {{mail:d8_matchless_rules_3}}
-- [classified; hint if trader_client] 11:20 [[deskjockey]], "Two more": add $APO and $DISH, same cards, same split, same bot filter. "Apogee moves every time Rook posts and I want to see it." {{mail:d8_trader_tickers}}
+- [hidden; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "Adjusting for compatibility." Adds Heritage Party only, and fewer Y followers than him (he has 212). {{mail:d8_matchless_rules_3}}
+- [hidden; hint if trader_client] 11:20 [[deskjockey]], "Two more": add $APO and $DISH, same cards, same split, same bot filter. "Apogee moves every time Rook posts and I want to see it." {{mail:d8_trader_tickers}}
 
 ## Y
 
@@ -40,12 +40,12 @@ from: 8
 ## Trending
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.
-- [classified] [planned] Proposed trending: GeneralAI tax returns; phantom DoorDish restaurants; Y check marks.
+- [hidden] [planned] Proposed trending: GeneralAI tax returns; phantom DoorDish restaurants; Y check marks.
 
 ## Not written yet
 
-- [classified] [planned] The Null Collective contacts the player and offers a hack against Halden Logistics, Dad's employer.
-- [classified] [planned] Spin Cycle's owner launches his own GeneralAI-built app, and the player's Spin Cycle Board is retired or starts losing users.
+- [hidden] [planned] The Null Collective contacts the player and offers a hack against Halden Logistics, Dad's employer.
+- [hidden] [planned] Spin Cycle's owner launches his own GeneralAI-built app, and the player's Spin Cycle Board is retired or starts losing users.
 
 ## Writer notes
 

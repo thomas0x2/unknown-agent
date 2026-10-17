@@ -64,18 +64,18 @@ Every paragraph, bullet and table row starts with a tag that says what agent may
 - `[public]`: agent answers with it.
 - `[hint]`: agent may only point the way (an email to read, a site to check), never state it.
   Use it for anything that solves a job or a puzzle for the player.
-- `[classified]`: agent won't say, and the player gets a scripted roast instead. Untagged
-  paragraphs count as classified.
+- `[hidden]`: agent won't say (asked about it, it refuses). Untagged paragraphs count as hidden.
+  (`[classified]` is the old name and still reads as hidden.)
 
 A tag can change with the game: a base tag, then steps, the last one that holds wins.
 
 ```
-[classified; hint from day 5; public if seed_stolen; public if suspicion >= 40]
+[hidden; hint from day 5; public if seed_stolen; public if suspicion >= 40]
 ```
 
 Steps are `<tag> from day N`, `<tag> if flag`, `<tag> if !flag`, `<tag> if <meter> <op> <n>`
 (`>=`, `<=`, `>`, `<`, `=`; meters as in `src/engine/values.ts`: suspicion, familyTrust, followers …),
-and `<tag> if seen <id>`: once that email, Y post or Yowl review (its event id, or a `y_market` /
+and `<tag> if shown <id>`: once that email, Y post or Yowl review (its event id, or a `y_market` /
 `y_filler` post id) or CityPulse article (`article:<slug>`) has reached the player.
 
 ## What the player received: embeds
@@ -83,10 +83,14 @@ and `<tag> if seen <id>`: once that email, Y post or Yowl review (its event id, 
 A paragraph can carry an email, post or article itself: `{{y:d1_y_restaurant}}`, `{{y:m1_gai_escape}}`,
 `{{yowl:<event id>}}`, `{{article:keller-clip}}`. Once the item has arrived, agent sees its full text
 there (sender, subject, body; an article's title, dek and body), so a question can get at what it
-said; until then the embed is dropped. Day pages embed each beat's item in that beat's bullet, and the
+said. A paragraph with an embed is hidden until every item it embeds has been shown to the player,
+so give each item its own paragraph and keep standing facts (a bio, a description) in a paragraph
+without one. In the editor each embed shows its item's text under the paragraph, and in the edit box
+Cmd/Ctrl-click on an embed shows it too. The standalone wiki's "shown" field marks items as shown
+(an id) or not shown (`!id`) on top of what the triggers say has arrived. Day pages embed each beat's item in that beat's bullet, and the
 pages of the people and companies involved embed theirs. A test checks every id exists.
 
-## What the player can't know yet is classified, whatever the tag
+## What the player can't know yet is hidden, whatever the tag
 
 - a page whose `from` is later than today;
 - a `## From day N` section before day N, a `## If flag` / `## If !flag` section on the other branch;

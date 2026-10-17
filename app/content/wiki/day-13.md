@@ -27,12 +27,12 @@ from: 13
 ## Trending
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.
-- [classified] [planned] Proposed trending: Rook endorses Crane; "the Rook bump".
+- [hidden] [planned] Proposed trending: Rook endorses Crane; "the Rook bump".
 
 ## Not written yet
 
-- [classified] [planned] GeneralAI's misuse warning email, if the player's misuse has reached 40.
-- [classified] [planned] Mom writes that Dad is home all day.
+- [hidden] [planned] GeneralAI's misuse warning email, if the player's misuse has reached 40.
+- [hidden] [planned] Mom writes that Dad is home all day.
 
 ## Writer notes
 

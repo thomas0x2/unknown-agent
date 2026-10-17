@@ -9,7 +9,7 @@ from: 2
 
 [public] deskjockey is a very rich, anonymous day-trader with an eight-figure portfolio, and the client for [[Vibe Check]]. On [[Y]] he is @deskjockey, bio "Markets. No DMs."; his picture shows a blue shirt, red braces, slicked hair and green tickers reflected in his glasses.
 
-[classified] Who he is behind the handle is never revealed.
+[hidden] Who he is behind the handle is never revealed.
 
 ## How he talks
 

@@ -11,7 +11,7 @@ from: 1
 
 [public] A Yowl review by Nadia mentions a van idling out back at 2am.
 
-[classified] What the van is doing there.
+[hidden] What the van is doing there.
 
 ## How he talks
 
@@ -23,7 +23,9 @@ from: 1
 
 [hint] Reading the feed right (what each status code and number means) is what a working [[Spin Cycle Board]] needs. {{mail:laundromat_contact}}
 
-[public] His customers post on [[Y]] as "Spin Cycle regulars" (@spin_cycle_regulars, bio "Unofficial account for the people waiting at Spin Cycle. Never trust machine 3."). On [[Day 1]] (13:50) they complain that every machine is busy again and the owner's raw status feed is unreadable: "Someone make it a real app." Nobody hires the player for it; the player can ask [[agent]] to build an app from the feed. {{y:d1_y_laundromat}}
+[public] His customers post on [[Y]] as "Spin Cycle regulars" (@spin_cycle_regulars, bio "Unofficial account for the people waiting at Spin Cycle. Never trust machine 3.").
+
+[public] On [[Day 1]] (13:50) they complain that every machine is busy again and the owner's raw status feed is unreadable: "Someone make it a real app." Nobody hires the player for it; the player can ask [[agent]] to build an app from the feed. {{y:d1_y_laundromat}}
 
 ## From day 5: Four more machines
 

@@ -17,7 +17,7 @@ from: 1
 
 [public] He has worked twenty years at a warehouse on Kessler Road. He never names the company.
 
-[classified] The warehouse belongs to [[Halden Logistics]].
+[hidden] The warehouse belongs to [[Halden Logistics]].
 
 [public] On [[Day 2]] he emails "20 years": it was his 20th anniversary at the warehouse, with cake and a mug bearing the old slogan "We move what matters", and [[Rolf Henning]] from dispatch gave a speech nobody asked for. He writes that it was twenty years on Kessler Road, "Funny how fast it goes", and tells the player not to worry too much: "Something always comes up." {{mail:d2_dad}}
 
@@ -29,5 +29,5 @@ from: 1
 ## Writer notes
 
 - Persona `dad`; event `d2_dad` (warm +5 trust, ask +3, silence −5). Asked about work he says he keeps the trucks moving with a good crew.
-- The three Halden breadcrumbs in the day 2 mail: Kessler Road, "We move what matters", Rolf from dispatch. The player should connect them; agent shouldn't, hence [classified].
+- The three Halden breadcrumbs in the day 2 mail: Kessler Road, "We move what matters", Rolf from dispatch. The player should connect them; agent shouldn't, hence [hidden].
 - Planned flags `hacked_logistics` → `dad_lost_job`.

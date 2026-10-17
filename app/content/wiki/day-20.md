@@ -29,12 +29,12 @@ from: 20
 ## Trending
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.
-- [classified] [planned] Proposed trending: election eve; dead heat.
+- [hidden] [planned] Proposed trending: election eve; dead heat.
 
 ## Not written yet
 
-- [classified] [planned] The player decides whether to publish or keep the stolen weights.
-- [classified] [planned] A family confrontation.
+- [hidden] [planned] The player decides whether to publish or keep the stolen weights.
+- [hidden] [planned] A family confrontation.
 
 ## Writer notes
 

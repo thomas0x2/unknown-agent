@@ -2,7 +2,7 @@
  * The world wiki editor, in two places: wiki.dev inside the game's browser (dev mode only, bookmarked
  * there) and the standalone page wiki.html for a real browser (src/wikiPage.ts). Both draw this same
  * view from the same files, content/wiki/*.md: browse every page, see what each paragraph is for the
- * player (public, hint or classified, and what Haiku would be given), and edit the text, the tag rule,
+ * player (public, hint or hidden, and what Haiku would be given), and edit the text, the tag rule,
  * and split and merge paragraphs. Saves go through the local proxy (POST /api/wiki); Vite then hands
  * the changed files to every open copy (onWikiFiles), so the two stay in sync.
  */
@@ -27,7 +27,7 @@ const W = {
 };
 
 const CATS: [string, string][] = [['days', 'Days'], ['people', 'People'], ['family', 'Family'], ['companies', 'Companies'], ['sites', 'Sites'], ['apps', 'Apps'], ['world', 'World'], ['writers', 'Writers']];
-const KINDS: [TagStep['kind'] | 'notflag', string][] = [['day', 'from day'], ['flag', 'if flag set'], ['notflag', 'if flag not set'], ['meter', 'if meter'], ['seen', 'once seen']];
+const KINDS: [TagStep['kind'] | 'notflag', string][] = [['day', 'from day'], ['flag', 'if flag set'], ['notflag', 'if flag not set'], ['meter', 'if meter'], ['seen', 'once shown']];
 
 /** Where the editor runs: the game (wiki.dev) or the standalone page. */
 export interface WikiHost {
@@ -66,7 +66,7 @@ export function gameWikiHost(store: GameStore): WikiHost {
 export const clock = (min: number) => `${String(Math.floor(min / 60)).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`;
 const pagesOf = (host: WikiHost): WikiPage[] => host.content.wiki ?? [];
 const ctxOf = (host: WikiHost): WikiCtx => host.ctx();
-const tagPill = (t: WikiTag, title = '') => `<span class="wk-tag ${t}"${title ? ` title="${esc(title)}"` : ''}>${t}</span>`;
+const tagPill = (t: WikiTag, title = '') => `<span class="wk-tag ${t === 'hidden' ? 'off' : t}"${title ? ` title="${esc(title)}"` : ''}>${t}</span>`;
 
 function nav(host: WikiHost, open?: WikiPage): string {
   const q = W.search.trim().toLowerCase();
@@ -81,7 +81,7 @@ function nav(host: WikiHost, open?: WikiPage): string {
 }
 
 /** Every email, post and article id a rule can wait on or a paragraph can embed. */
-function itemIds(host: WikiHost): string[] {
+export function itemIds(host: WikiHost): string[] {
   const c = host.content;
   return [...c.events.filter((e) => e.site === 'qmail' || e.site === 'y' || e.site === 'yowl').map((e) => e.id), ...(c.yMarket?.posts ?? []).map((p) => p.id), ...c.yFiller.map((f) => f.id), ...CITYPULSE.map((a) => `article:${a.slug}`)];
 }
@@ -91,7 +91,7 @@ function stepRow(x: TagStep | null, i: number, host: WikiHost): string {
   const val = !x ? '' : x.kind === 'day' ? String(x.day) : x.kind === 'flag' ? x.flag : x.kind === 'seen' ? x.ref : `${x.meter} ${x.op} ${x.value}`;
   const tag = x?.tag ?? 'public';
   return `<div class="wk-step">
-    <select id="wk-st-tag-${i}">${(['public', 'hint', 'classified'] as const).map((t) => `<option ${t === tag ? 'selected' : ''}>${t}</option>`).join('')}</select>
+    <select id="wk-st-tag-${i}">${(['public', 'hint', 'hidden'] as const).map((t) => `<option ${t === tag ? 'selected' : ''}>${t}</option>`).join('')}</select>
     <select id="wk-st-kind-${i}">${KINDS.map(([k, l]) => `<option value="${k}" ${k === kind ? 'selected' : ''}>${l}</option>`).join('')}</select>
     <input id="wk-st-val-${i}" value="${esc(val)}" placeholder="5 · seed_stolen · suspicion >= 40 · d5_coffee_removal" list="wk-hints">
     <button class="wk-x" data-wiki="delstep" data-i="${i}" title="Remove this rule">×</button></div>`
@@ -99,19 +99,45 @@ function stepRow(x: TagStep | null, i: number, host: WikiHost): string {
 }
 
 function editor(host: WikiHost, b: WikiBlock, sec: WikiSection, page: WikiPage): string {
-  const r = parseTagRule(b.rule || 'classified');
+  const r = parseTagRule(b.rule || 'hidden');
   // the automatic rules (page and section day, branches, sentences naming a later day or time)
   const gates = blockGates(b, sec, page);
-  const auto = gates.length ? `<div class="wk-auto"><span class="wk-dim">Automatic, from the page and the text (classified whatever the tag says):</span><ul>${gates.map((g) => `<li>${esc(g)}</li>`).join('')}</ul></div>` : '';
+  const auto = gates.length ? `<div class="wk-auto"><span class="wk-dim">Automatic, from the page and the text (hidden whatever the tag says):</span><ul>${gates.map((g) => `<li>${esc(g)}</li>`).join('')}</ul></div>` : '';
   const steps = Array.from({ length: W.steps }, (_, i) => stepRow(r.steps[i] ?? null, i, host)).join('');
   return `<div class="wk-edit">
     <textarea id="wk-text" title="Cmd/Ctrl-click a {{…}} embed to see what it is" rows="${Math.min(14, Math.max(3, Math.ceil(b.text.length / 90)))}">${esc(b.text)}</textarea>
-    <div class="wk-rule"><label>Tag <select id="wk-base">${(['public', 'hint', 'classified'] as const).map((t) => `<option ${t === r.base ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
+    <div class="wk-rule"><label>Tag <select id="wk-base">${(['public', 'hint', 'hidden'] as const).map((t) => `<option ${t === r.base ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
       <span class="wk-dim">then, last match wins:</span>${steps}
       <button class="wk-btn" data-wiki="addstep">+ Rule</button></div>
     ${auto}
     <div class="wk-acts"><button class="wk-btn primary" data-wiki="save">Save</button><button class="wk-btn" data-wiki="split" title="Split at the cursor">Split at cursor</button><button class="wk-btn" data-wiki="cancel">Cancel</button><button class="wk-btn danger" data-wiki="delete">Delete paragraph</button></div>
   </div>`;
+}
+
+/** The page a [[link]] points at: by title, then by another name. */
+function linkTarget(host: WikiHost, name: string): WikiPage | undefined {
+  const n = name.trim().toLowerCase();
+  const pages = host.content.wiki ?? [];
+  return pages.find((p) => p.title.toLowerCase() === n) ?? pages.find((p) => p.aliases.some((a) => a.toLowerCase() === n));
+}
+
+/** A paragraph's text for reading: [[links]] open their page, embeds are buttons. */
+function richText(host: WikiHost, text: string): string {
+  return esc(text)
+    .replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (_, a, label) => {
+      const to = linkTarget(host, a.replace(/&amp;/g, '&').replace(/&#39;/g, "'"));
+      return to ? `<button class="wk-wlink" data-wiki="open" data-file="${esc(to.file)}">${label ?? a}</button>` : `<span class="wk-wlink dead" title="No page with this name">${label ?? a}</span>`;
+    })
+    .replace(EMBED, (m, r) => `<button class="wk-embed" data-wiki="peek" data-ref="${esc(r)}" title="Show what this is">${m}</button>`);
+}
+
+/** Each email, post or article a paragraph embeds, shown under it (whether or not the player has it yet). */
+function embedCards(host: WikiHost, text: string): string {
+  return [...text.matchAll(EMBED)].map((m) => {
+    const item = embedItem(host.content, m[1]);
+    return item ? `<div class="wk-card"><div class="wk-peek-h"><b>${esc(item.title)}</b><span class="wk-dim">arrives ${esc(item.when)}</span></div><div class="wk-peek-b">${esc(item.text)}</div></div>`
+      : `<div class="wk-card missing">No email, post or article is called ${esc(m[1])}.</div>`;
+  }).join('');
 }
 
 function blockHtml(host: WikiHost, page: WikiPage, si: number, bi: number): string {
@@ -120,18 +146,18 @@ function blockHtml(host: WikiHost, page: WikiPage, si: number, bi: number): stri
   const ctx = ctxOf(host);
   const editing = W.edit?.s === si && W.edit?.b === bi;
   const now = blockNow(b, sec, page, ctx);
-  const ruleTag = b.rule ? evalTag(b.rule, ctx) : 'classified';
+  const ruleTag = b.rule ? evalTag(b.rule, ctx) : 'hidden';
   // why it is what it is: the rule, and whether something (day, branch, a later sentence) overrides it
   const why = sec.writer ? 'writer note, never given to Haiku'
-    : !b.rule ? 'untagged: classified'
-    : now.tag !== ruleTag ? `rule says ${ruleTag}, but classified now: ${blockWhy(b, sec, page, ctx)}` : `rule: ${b.rule}`;
+    : !b.rule ? 'untagged: hidden'
+    : now.tag !== ruleTag ? `rule says ${ruleTag}, but hidden now: ${blockWhy(b, sec, page, ctx)}` : `rule: ${b.rule}`;
   const cut = now.text && now.text !== b.text.replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (_, a, c) => c || a) ? `<div class="wk-gets"><b>Haiku gets:</b> ${esc(now.text)}</div>` : '';
   const head = sec.writer ? '<span class="wk-tag writer">writer</span>' : tagPill(now.tag, why);
   const rule = !sec.writer && b.rule ? `<code class="wk-rulecode">${esc(b.rule)}</code>` : '';
   return `<div class="wk-block${editing ? ' editing' : ''}${sec.writer ? ' writer' : ''}">
     <div class="wk-bhead">${head}${rule}<span class="wk-why">${esc(why)}</span>
       ${editing ? '' : `<span class="wk-bacts"><button class="wk-mini" data-wiki="edit" data-s="${si}" data-b="${bi}">Edit</button>${bi < sec.blocks.length - 1 ? `<button class="wk-mini" data-wiki="merge" data-s="${si}" data-b="${bi}" title="Merge with the next paragraph">Merge ↓</button>` : ''}<button class="wk-mini" data-wiki="add" data-s="${si}" data-b="${bi}" title="New paragraph after this one">+ After</button></span>`}</div>
-    ${editing ? editor(host, b, sec, page) : `<div class="wk-text">${b.bullet ? '• ' : ''}${esc(b.text).replace(EMBED, (m, r) => `<button class="wk-embed" data-wiki="peek" data-ref="${esc(r)}" title="Show what this is">${m}</button>`)}</div>${cut}`}</div>`;
+    ${editing ? editor(host, b, sec, page) : `<div class="wk-text">${b.bullet ? '• ' : ''}${richText(host, b.text)}</div>${embedCards(host, b.text)}${cut}`}</div>`;
 }
 
 /** wiki.dev in the game's browser. */
@@ -273,7 +299,7 @@ export function wikiClickIn(t: HTMLElement, host: WikiHost, ev?: MouseEvent): bo
   if (act === 'edit') {
     const block = current(host)?.sections[s]?.blocks[b];
     W.edit = { s, b };
-    W.steps = block ? parseTagRule(block.rule || 'classified').steps.length : 0;
+    W.steps = block ? parseTagRule(block.rule || 'hidden').steps.length : 0;
     host.repaint();
     return true;
   }
@@ -297,7 +323,7 @@ export function wikiClickIn(t: HTMLElement, host: WikiHost, ev?: MouseEvent): bo
     if (block) {
       const base = field('wk-base') as WikiTag;
       const rows = kept.map((k) => ({ tag: field(`wk-st-tag-${k}`), kind: field(`wk-st-kind-${k}`), v: field(`wk-st-val-${k}`).trim() })).filter((r) => r.v);
-      block.rule = [base, ...rows.map((r) => r.kind === 'day' ? `${r.tag} from day ${r.v}` : r.kind === 'notflag' ? `${r.tag} if !${r.v.replace(/^!/, '')}` : r.kind === 'seen' ? `${r.tag} if seen ${r.v}` : `${r.tag} if ${r.v}`)].join('; ');
+      block.rule = [base, ...rows.map((r) => r.kind === 'day' ? `${r.tag} from day ${r.v}` : r.kind === 'notflag' ? `${r.tag} if !${r.v.replace(/^!/, '')}` : r.kind === 'seen' ? `${r.tag} if shown ${r.v}` : `${r.tag} if ${r.v}`)].join('; ');
       W.steps = parseTagRule(block.rule).steps.length;
     }
     host.repaint();
@@ -345,10 +371,10 @@ export function wikiClickIn(t: HTMLElement, host: WikiHost, ev?: MouseEvent): bo
     const sec = page.sections[s];
     if (!sec) return true;
     const like = sec.blocks[b];
-    sec.blocks.splice(b + 1, 0, { raw: '', rule: 'classified', text: 'New paragraph.', bullet: !!like?.bullet, row: false });
+    sec.blocks.splice(b + 1, 0, { raw: '', rule: 'hidden', text: 'New paragraph.', bullet: !!like?.bullet, row: false });
     W.edit = { s, b: b + 1 };
     W.steps = 0;
-    void save(host, page, 'Added a paragraph (classified until you change it).', true);
+    void save(host, page, 'Added a paragraph (hidden until you change it).', true);
     return true;
   }
   return true;

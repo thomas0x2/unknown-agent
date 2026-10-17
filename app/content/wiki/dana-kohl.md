@@ -13,7 +13,7 @@ from: 5
 
 [public] On [[Day 5]] (14:10) she posts that a [[DoorDish]] robot rolled up to her door with a cold burrito she never ordered, waited ten minutes and left: "was that the one?" {{y:d5_y_robot_sighting}}
 
-[classified] Whether it was the courier that left its route on day 2.
+[hidden] Whether it was the courier that left its route on day 2.
 
 ## Writer notes
 

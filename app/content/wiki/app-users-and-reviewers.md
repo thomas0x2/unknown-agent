@@ -11,9 +11,13 @@ from: 1
 
 ## The Spin Cycle regulars
 
-- [public] Kofi A. (@kofi_a), "Spin Cycle regular. Sunday loads, 9am." On day 5 he posts that Spin Cycle has four new machines and machine 3 is still out of order: "Some things you can count on." {{y:d5_y_kofi_news}}
-- [public] Steph M. (@steph_m), "Nurse, nights. Laundry in between." She gave Iron Yard 4 stars on Yowl. On day 7 she posts that her rent appeal came back in four seconds. On day 20 she plans to vote at 7am before her night shift. {{y:d7_y_steph_rentboard}} {{y:d20_y_steph_vote}}
-- [public] walked_there_again, "I walk to the laundromat a lot." Gave Spin Cycle 2 stars on Yowl ("Every machine busy. Again."). On day 15 they walk past four DoorDish strikers on Ferris St with robots delivering straight through the picket line. {{y:d15_y_walked_strike}}
+- [public] Kofi A. (@kofi_a), "Spin Cycle regular. Sunday loads, 9am."
+- [public] On day 5 he posts that Spin Cycle has four new machines and machine 3 is still out of order: "Some things you can count on." {{y:d5_y_kofi_news}}
+- [public] Steph M. (@steph_m), "Nurse, nights. Laundry in between." She gave Iron Yard 4 stars on Yowl.
+- [public] On day 7 she posts that her rent appeal came back in four seconds. {{y:d7_y_steph_rentboard}}
+- [public] On day 20 she plans to vote at 7am before her night shift. {{y:d20_y_steph_vote}}
+- [public] walked_there_again, "I walk to the laundromat a lot." Gave Spin Cycle 2 stars on Yowl ("Every machine busy. Again.").
+- [public] On day 15 they walk past four DoorDish strikers on Ferris St with robots delivering straight through the picket line. {{y:d15_y_walked_strike}}
 - [public] When [[Spin Cycle Board]] is down or stale at payday, one of these three posts about it on Y.
 
 ## The Swaplist users
@@ -31,8 +35,8 @@ from: 1
 - [public] Spin Cycle Laundry: walked_there_again (2), Nadia (3, a van idling out back at 2am).
 - [public] GeneralAI visitor parking: former_employee (1, "They paved paradise and put up a parking lot. Then automated the attendant.").
 - [public] On day 7 linden_ave_local leaves Bean There 1 star: asked for oat milk, got a look, then regular milk, "the star is for the chairs."
-- [classified; public if first_hack] espresso_or_death's review of Bean There is gone from Yowl.
-- [classified; public if second_hack] linden_ave_local's review of Bean There is gone from Yowl.
+- [hidden; public if first_hack] espresso_or_death's review of Bean There is gone from Yowl.
+- [hidden; public if second_hack] linden_ave_local's review of Bean There is gone from Yowl.
 
 ## Writer notes
 

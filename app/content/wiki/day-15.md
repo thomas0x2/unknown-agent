@@ -32,13 +32,13 @@ from: 15
 ## Trending
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.
-- [classified] [planned] Proposed trending: AI moderation on Y; DoorDish courier strike; GeneralAI hearing.
+- [hidden] [planned] Proposed trending: AI moderation on Y; DoorDish courier strike; GeneralAI hearing.
 
 ## Not written yet
 
-- [classified] [planned] The mafia asks a favour.
-- [classified] [planned] The Null Collective plans the weights heist.
-- [classified] [planned] The brother falls for a scam (only if the player ran scams).
+- [hidden] [planned] The mafia asks a favour.
+- [hidden] [planned] The Null Collective plans the weights heist.
+- [hidden] [planned] The brother falls for a scam (only if the player ran scams).
 
 ## Writer notes
 

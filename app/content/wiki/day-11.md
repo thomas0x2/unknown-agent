@@ -31,11 +31,11 @@ from: 11
 ## Trending
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.
-- [classified] [planned] Proposed trending: agent-3 logs; Crane's jobs plan; Y at 600 million users.
+- [hidden] [planned] Proposed trending: agent-3 logs; Crane's jobs plan; Y at 600 million users.
 
 ## Not written yet
 
-- [classified] [planned] nullboard points the player to Cellar; the first dox jobs; the mafia market opens.
+- [hidden] [planned] nullboard points the player to Cellar; the first dox jobs; the mafia market opens.
 
 ## Writer notes
 

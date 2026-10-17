@@ -31,11 +31,11 @@ from: 21
 ## Trending
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.
-- [classified] [planned] Proposed trending: #ElectionDay; record turnout; #RentDay.
+- [hidden] [planned] Proposed trending: #ElectionDay; record turnout; #RentDay.
 
 ## Not written yet
 
-- [classified] [open] The family's final scene has no design yet.
+- [hidden] [open] The family's final scene has no design yet.
 
 ## Writer notes
 
