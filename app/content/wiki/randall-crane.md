@@ -7,7 +7,7 @@ from: 1
 
 ## Who he is
 
-[public] Randall Crane is the [[Heritage Party]]'s candidate for president in [[The election]]. A populist, he rails against AI taking jobs while bot accounts repeat his posts word for word within seconds. His opponent is [[Candidate 2030]], whom he never names.
+[public] Randall Crane is the [[Heritage Party]]'s candidate for president in [[The election]]. A populist, he rails against AI taking jobs while bot accounts repeat his posts word for word within seconds. His opponent is [[Candidate 2030]] of the [[Progress Party]], whom he never names.
 
 [public] On [[Y]] he is @randall_crane, verified, 38.4M followers, bio "Next President of the United States (polling at 112%). Heritage Party. Saving American jobs from the computers. Official account, the only one. BELIEVE IT." His picture shows an orange tan, a blond swoop, a navy suit and a long neon-red tie.
 

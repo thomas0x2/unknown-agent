@@ -7,7 +7,7 @@ from: 2
 
 ## Who he is
 
-[public] Candidate 2030 is [[Randall Crane]]'s opponent for president, a career politician so generic that nobody, the news included, uses his name: everyone says "his opponent", and his own account is "Candidate 2030". His party is not named. On [[Y]] he is @candidate_2030, verified, 1.9M followers, bio "Candidate for President. Husband, father, public servant. Fighting for working families. Paid for by Friends of the Candidate. team@candidate2030.vote". His picture is a stock politician: side parting greying at the temples, grey suit, flag pin, wide smile.
+[public] Candidate 2030 is [[Randall Crane]]'s opponent for president, a career politician so generic that nobody, the news included, uses his name: everyone says "his opponent", and his own account is "Candidate 2030". He is the [[Progress Party]]'s candidate, which his bio says and his posts never do. On [[Y]] he is @candidate_2030, verified, 1.9M followers, bio "Candidate for President. Progress Party. Husband, father, public servant. Fighting for working families. Paid for by Friends of the Candidate. team@candidate2030.vote". His picture is a stock politician: side parting greying at the temples, grey suit, flag pin, wide smile.
 
 [hidden] His name.
 

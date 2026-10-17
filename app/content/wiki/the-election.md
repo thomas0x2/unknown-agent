@@ -7,7 +7,7 @@ from: 1
 
 [public] Election day is Sunday, October 27, 2030 [known]. One ballot carries two races:
 
-- [public] **President:** [[Randall Crane]] ([[Heritage Party]]) against [[Candidate 2030]], a career politician nobody names; everyone calls him "his opponent". His party is never named.
+- [public] **President:** [[Randall Crane]] ([[Heritage Party]]) against [[Candidate 2030]], a career politician nobody names; everyone calls him "his opponent". He runs for the [[Progress Party]], on the same ticket as Keller.
 - [public] **Governor of the state:** [[Daniel Keller]] ([[Progress Party]]), a state senator for twelve years, against an unnamed opponent backed by the landlords. Keller wants to cap rent increases for owners of 500+ units and open a state hiring office staffed by people.
 
 [public] **The Automation Credit** is a state tax break a company gets for every job it hands to a machine. It expires in January, and the next governor decides whether to renew it. [[GeneralAI]] claimed it 11,000 times last year. Keller says he will let it die.
