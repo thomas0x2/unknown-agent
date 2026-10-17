@@ -333,5 +333,5 @@
     "offline": "Swaplist is down. I had three things listed on there.",
     "stale": "Swaplist hasn't changed in days. Is anyone running it?"
   },
-  "firstContentAfter": 120
+  "firstContentAfter": 60
 }
