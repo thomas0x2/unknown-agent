@@ -59,7 +59,7 @@ function render(): void {
   }
 }
 
-root.addEventListener('click', (e) => { if (e.target instanceof HTMLElement) wikiClickIn(e.target, host); });
+root.addEventListener('click', (e) => { if (e.target instanceof HTMLElement) wikiClickIn(e.target, host, e); });
 root.addEventListener('input', (e) => { if (e.target instanceof HTMLElement) wikiInputIn(e.target, host); });
 root.addEventListener('change', (e) => {
   const t = e.target as HTMLInputElement;

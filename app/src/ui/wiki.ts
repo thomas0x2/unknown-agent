@@ -9,7 +9,7 @@
 import type { GameStore } from '../game/store';
 import type { Content } from '../content/schema';
 import {
-  blockGates, blockWhy,
+  blockGates, blockWhy, EMBED, eventBody, findArticle, arrivalMin,
   parseWikiPage, formatWikiPage, parseTagRule, formatTagRule, evalTag, blockNow, queryCtx, seenRef, CITYPULSE, METERS,
   type WikiPage, type WikiBlock, type WikiSection, type WikiTag, type TagStep, type WikiCtx,
 } from '../engine';
@@ -105,7 +105,7 @@ function editor(host: WikiHost, b: WikiBlock, sec: WikiSection, page: WikiPage):
   const auto = gates.length ? `<div class="wk-auto"><span class="wk-dim">Automatic, from the page and the text (classified whatever the tag says):</span><ul>${gates.map((g) => `<li>${esc(g)}</li>`).join('')}</ul></div>` : '';
   const steps = Array.from({ length: W.steps }, (_, i) => stepRow(r.steps[i] ?? null, i, host)).join('');
   return `<div class="wk-edit">
-    <textarea id="wk-text" rows="${Math.min(14, Math.max(3, Math.ceil(b.text.length / 90)))}">${esc(b.text)}</textarea>
+    <textarea id="wk-text" title="Cmd/Ctrl-click a {{…}} embed to see what it is" rows="${Math.min(14, Math.max(3, Math.ceil(b.text.length / 90)))}">${esc(b.text)}</textarea>
     <div class="wk-rule"><label>Tag <select id="wk-base">${(['public', 'hint', 'classified'] as const).map((t) => `<option ${t === r.base ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
       <span class="wk-dim">then, last match wins:</span>${steps}
       <button class="wk-btn" data-wiki="addstep">+ Rule</button></div>
@@ -131,7 +131,7 @@ function blockHtml(host: WikiHost, page: WikiPage, si: number, bi: number): stri
   return `<div class="wk-block${editing ? ' editing' : ''}${sec.writer ? ' writer' : ''}">
     <div class="wk-bhead">${head}${rule}<span class="wk-why">${esc(why)}</span>
       ${editing ? '' : `<span class="wk-bacts"><button class="wk-mini" data-wiki="edit" data-s="${si}" data-b="${bi}">Edit</button>${bi < sec.blocks.length - 1 ? `<button class="wk-mini" data-wiki="merge" data-s="${si}" data-b="${bi}" title="Merge with the next paragraph">Merge ↓</button>` : ''}<button class="wk-mini" data-wiki="add" data-s="${si}" data-b="${bi}" title="New paragraph after this one">+ After</button></span>`}</div>
-    ${editing ? editor(host, b, sec, page) : `<div class="wk-text">${b.bullet ? '• ' : ''}${esc(b.text)}</div>${cut}`}</div>`;
+    ${editing ? editor(host, b, sec, page) : `<div class="wk-text">${b.bullet ? '• ' : ''}${esc(b.text).replace(EMBED, (m, r) => `<button class="wk-embed" data-wiki="peek" data-ref="${esc(r)}" title="Show what this is">${m}</button>`)}</div>${cut}`}</div>`;
 }
 
 /** wiki.dev in the game's browser. */
@@ -213,12 +213,54 @@ async function save(host: WikiHost, page: WikiPage, note: string, keepEdit = fal
 }
 
 /** Handles a click inside wiki.dev. Returns true when it was one. */
-export function wikiClick(t: HTMLElement, store: GameStore): boolean {
-  return wikiClickIn(t, gameWikiHost(store));
+export function wikiClick(t: HTMLElement, store: GameStore, ev?: MouseEvent): boolean {
+  return wikiClickIn(t, gameWikiHost(store), ev);
+}
+
+const at = (min: number) => `${String(Math.floor(min / 60)).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`;
+
+/** What an embed ({{mail:…}}, {{y:…}}, {{article:…}}) stands for: its kind, when it arrives, and its text. */
+export function embedItem(c: Content, ref: string): { title: string; when: string; text: string } | undefined {
+  const key = seenRef(ref);
+  if (/^article:/i.test(key)) {
+    const a = findArticle(key.slice(8));
+    return a && { title: `CityPulse article "${a.title}" by ${a.by}`, when: `day ${a.day}, ${a.at}`, text: [a.dek, ...a.body].join('\n\n') };
+  }
+  const e = c.events.find((x) => x.id === key);
+  if (e) {
+    const day = e.trigger.dayMin ?? 1;
+    const what = e.site === 'qmail' ? `Email from ${e.from ?? 'someone'}${e.subject ? `, "${e.subject}"` : ''}` : `${e.site === 'y' ? 'Y post' : e.site === 'yowl' ? 'Yowl review' : `${e.site} post`} by ${e.from ?? 'someone'}`;
+    return { title: what, when: `day ${day}${e.trigger.dayMax && e.trigger.dayMax !== day ? `-${e.trigger.dayMax}` : ''}, ${at(arrivalMin(e))}`, text: eventBody(e, day) };
+  }
+  const m = c.yMarket?.posts.find((x) => x.id === key) ?? c.yFiller.find((x) => x.id === key);
+  return m && { title: `Y post by ${m.from} (@${m.handle})`, when: `day ${m.day}`, text: m.body };
+}
+
+/** Shows what an embed stands for, in a box under `anchor` (one at a time). */
+function peek(anchor: HTMLElement, host: WikiHost, ref: string): void {
+  anchor.ownerDocument.querySelectorAll('.wk-peek').forEach((x) => x.remove());
+  const item = embedItem(host.content, ref);
+  const box = anchor.ownerDocument.createElement('div');
+  box.className = 'wk-peek';
+  box.innerHTML = `<div class="wk-peek-h"><b>${esc(item?.title ?? `{{${ref}}}`)}</b><span class="wk-dim">${esc(item ? `${ref} · arrives ${item.when}` : 'no email, post or article has this id')}</span><button class="wk-x" data-wiki="unpeek" title="Close">×</button></div>${item ? `<div class="wk-peek-b">${esc(item.text)}</div>` : ''}`;
+  anchor.insertAdjacentElement('afterend', box);
+}
+
+/** The embed under the caret in a textarea, if any. */
+function embedAt(ta: HTMLTextAreaElement): string | undefined {
+  const pos = ta.selectionStart;
+  for (const m of ta.value.matchAll(EMBED)) if (pos >= m.index! && pos <= m.index! + m[0].length) return m[1];
+  return undefined;
 }
 
 /** Handles a click inside the editor, wherever it runs. Returns true when it was one. */
-export function wikiClickIn(t: HTMLElement, host: WikiHost): boolean {
+export function wikiClickIn(t: HTMLElement, host: WikiHost, ev?: MouseEvent): boolean {
+  // Cmd/Ctrl-click on an embed in the text box shows what it stands for
+  if (ev && (ev.metaKey || ev.ctrlKey) && t instanceof HTMLTextAreaElement && t.id === 'wk-text') {
+    const ref = embedAt(t);
+    if (ref) { ev.preventDefault(); peek(t, host, ref); }
+    return true;
+  }
   const el = t.closest<HTMLElement>('[data-wiki]');
   if (!el || W.saving) return !!el;
   const act = el.dataset.wiki!;
@@ -226,6 +268,8 @@ export function wikiClickIn(t: HTMLElement, host: WikiHost): boolean {
   const b = Number(el.dataset.b);
   W.note = '';
   if (act === 'open') { host.open(el.dataset.file!); return true; }
+  if (act === 'peek') { peek(el.closest<HTMLElement>('.wk-text') ?? el, host, el.dataset.ref!); return true; }
+  if (act === 'unpeek') { el.closest('.wk-peek')?.remove(); return true; }
   if (act === 'edit') {
     const block = current(host)?.sections[s]?.blocks[b];
     W.edit = { s, b };
