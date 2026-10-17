@@ -1,0 +1,11 @@
+{
+  "id": "d20_y_stryker",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 20,
+    "dayMax": 20
+  },
+  "at": "19:10",
+  "body": "Tomorrow, vote like a man who gets up at 4. Polls open at 7. You've already slept in by three hours."
+}
