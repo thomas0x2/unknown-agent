@@ -1,0 +1,11 @@
+{
+  "id": "d14_y_dexcult",
+  "site": "y",
+  "from": "dexcult",
+  "trigger": {
+    "dayMin": 14,
+    "dayMax": 14
+  },
+  "at": "10:20",
+  "body": "rent is due tonight. so is conviction."
+}

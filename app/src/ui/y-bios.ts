@@ -32,6 +32,7 @@ export const Y_BIOS: Record<string, string> = {
   spin_cycle_regulars: 'Unofficial account for the people waiting at Spin Cycle. Never trust machine 3.',
   deskjockey: 'Markets. No DMs.',
   delphine: 'Ceramics. Market stall most Saturdays.',
+  dexcult: 'Dex Calloway. Preaching the memecoin supercycle. $COPE: for everyone the system left behind. dex@cope.xyz',
   '6ft_sigma': 'High-value man. 6\'0" on most apps. Building something with standards. EMPIRE member.',
   viktor: 'Twenty-two years in accounts payable. Between things.',
   dana_kohl: 'Night shift nurse. Alder St. Mostly here for the lost-dog posts.',

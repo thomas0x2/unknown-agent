@@ -1,0 +1,11 @@
+{
+  "id": "d18_y_dexcult",
+  "site": "y",
+  "from": "dexcult",
+  "trigger": {
+    "dayMin": 18,
+    "dayMax": 18
+  },
+  "at": "15:30",
+  "body": "the unlock is next wednesday. the congregation will be ready. so will i."
+}

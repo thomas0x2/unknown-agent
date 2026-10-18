@@ -1,0 +1,390 @@
+{
+  "id": "coinsite",
+  "name": "Coin site",
+  "aka": [
+    "coin site",
+    "token site",
+    "memecoin site",
+    "launch page",
+    "cope site",
+    "the $COPE site",
+    "coin website"
+  ],
+  "pages": [
+    {
+      "id": "home",
+      "title": "Home"
+    },
+    {
+      "id": "tokenomics",
+      "title": "Tokenomics"
+    }
+  ],
+  "features": [
+    {
+      "id": "countdown",
+      "description": "a countdown to the coin's launch that says the coin is live once it reaches zero",
+      "aka": [
+        "timer",
+        "launch countdown",
+        "clock",
+        "countdown timer"
+      ],
+      "pageId": "home",
+      "failures": [
+        "visible",
+        "subtle"
+      ],
+      "bugs": [
+        {
+          "id": "wrong_target",
+          "when": "The countdown counts down to the wrong time; the launch is {{launch}}.",
+          "fixed": [
+            "The countdown runs to {{launch}} now.",
+            "It was counting to the wrong time. It counts to {{launch}} now."
+          ]
+        },
+        {
+          "id": "frozen",
+          "when": "The countdown doesn't tick; it shows the same time whenever you look.",
+          "fixed": [
+            "The countdown ticks now. It was rendering once and never again.",
+            "Fixed the frozen countdown. It moves now."
+          ]
+        },
+        {
+          "id": "negative",
+          "when": "After reaching zero the countdown keeps going into negative numbers instead of saying the coin is live.",
+          "fixed": [
+            "At zero it says $COPE is live now, instead of counting into negative time.",
+            "Fixed the countdown past zero. It shows the launch message now."
+          ]
+        }
+      ],
+      "components": [
+        {
+          "id": "timer/target",
+          "label": "the launch time the countdown counts to",
+          "bugs": [
+            "wrong_target"
+          ],
+          "aka": [
+            "launch time",
+            "launch date",
+            "target time",
+            "end time",
+            "wrong time",
+            "counts to the wrong time",
+            "when it ends"
+          ]
+        },
+        {
+          "id": "timer/tick",
+          "label": "the countdown's ticking (whether it updates)",
+          "bugs": [
+            "frozen"
+          ],
+          "aka": [
+            "ticking",
+            "frozen",
+            "stuck",
+            "doesn't move",
+            "not updating",
+            "refresh",
+            "seconds"
+          ]
+        },
+        {
+          "id": "zero",
+          "label": "what the countdown shows once it reaches zero",
+          "bugs": [
+            "negative"
+          ],
+          "aka": [
+            "at zero",
+            "after zero",
+            "when it runs out",
+            "end message",
+            "live message",
+            "negative",
+            "negative time",
+            "below zero"
+          ]
+        }
+      ],
+      "folderAka": {
+        "timer": [
+          "timer",
+          "countdown timer",
+          "clock"
+        ]
+      },
+      "nearMiss": [
+        "Watched the countdown for a while. It counted down, which is what countdowns do. Which part is wrong?",
+        "Nothing obvious in the countdown. Tell me which part of it is off."
+      ],
+      "checklist": [
+        {
+          "id": "launch",
+          "text": "Oct 12",
+          "bug": "wrong_target"
+        },
+        {
+          "id": "live",
+          "text": "live",
+          "bug": "negative"
+        }
+      ],
+      "complaints": {
+        "missing": "There is no countdown. The congregation needs to know when.",
+        "wrong_target": "The countdown runs to the wrong time. Launch is {{launch}}. People are setting alarms off this.",
+        "frozen": "The countdown hasn't moved since I first looked. Time is passing for everyone except the site.",
+        "negative": "The countdown went past zero and kept counting. Negative time. People think we delayed.",
+        "down": "The home page throws an error where the countdown should be.",
+        "wrong": "The countdown is wrong. Fix it."
+      }
+    },
+    {
+      "id": "contract",
+      "name": "contract address",
+      "description": "the token's contract address, shown in full",
+      "aka": [
+        "contract",
+        "CA",
+        "token address",
+        "address"
+      ],
+      "pageId": "home",
+      "failures": [
+        "visible",
+        "subtle"
+      ],
+      "bugs": [
+        {
+          "id": "address_wrong",
+          "when": "The contract address on the site is wrong; it should be {{address}}.",
+          "fixed": [
+            "The contract address reads {{address}} now.",
+            "Two characters were swapped in the address. It's {{address}} now."
+          ]
+        },
+        {
+          "id": "address_cut",
+          "when": "The contract address is cut off with an ellipsis instead of being shown in full.",
+          "fixed": [
+            "The full address shows now, all 42 characters.",
+            "The address isn't shortened anymore."
+          ]
+        }
+      ],
+      "components": [
+        {
+          "id": "value",
+          "label": "the contract address itself (its characters)",
+          "bugs": [
+            "address_wrong"
+          ],
+          "aka": [
+            "wrong address",
+            "address is wrong",
+            "the address",
+            "characters",
+            "typo in the address"
+          ]
+        },
+        {
+          "id": "display",
+          "label": "how much of the address is shown (shortened or in full)",
+          "bugs": [
+            "address_cut"
+          ],
+          "aka": [
+            "cut off",
+            "shortened",
+            "truncated",
+            "ellipsis",
+            "dots",
+            "not in full",
+            "half the address"
+          ]
+        }
+      ],
+      "nearMiss": [
+        "Checked the contract address section. It has an address in it. Which part is wrong?",
+        "The address section looks like an address section. Tell me which part is off."
+      ],
+      "checklist": [
+        {
+          "id": "address",
+          "text": "{{address}}",
+          "bug": "address_wrong"
+        }
+      ],
+      "complaints": {
+        "missing": "There is no contract address on the site. People will buy a fake.",
+        "address_wrong": "The address on the site is wrong. The real one is {{address}}. Anyone who sends to the one on the site is sending to nobody.",
+        "address_cut": "The address is cut off with three dots. Nobody can copy three dots.",
+        "down": "The contract address section shows an error.",
+        "wrong": "The contract address section is wrong."
+      }
+    },
+    {
+      "id": "tokenomics",
+      "description": "a tokenomics page: the total supply, the allocation percentages and the founding engineer's lock date",
+      "aka": [
+        "tokenomics page",
+        "allocation page",
+        "token economics",
+        "distribution"
+      ],
+      "pageId": "tokenomics",
+      "failures": [
+        "subtle",
+        "failed_fetch"
+      ],
+      "bugs": [
+        {
+          "id": "supply_wrong",
+          "when": "The total supply on the tokenomics page is wrong; it should be {{supply}}.",
+          "fixed": [
+            "Total supply reads {{supply}} now.",
+            "The supply was missing three zeros. It's {{supply}} now."
+          ]
+        },
+        {
+          "id": "shares_wrong",
+          "when": "The allocation percentages are wrong; they should be {{shares}}.",
+          "fixed": [
+            "The allocation reads {{shares}} now.",
+            "Two shares were swapped. The allocation matches now: {{shares}}."
+          ]
+        },
+        {
+          "id": "sum_over",
+          "when": "The allocation adds up to more than 100% (a row is listed twice).",
+          "fixed": [
+            "Removed the duplicate row. It adds up to 100% now.",
+            "The allocation adds up to 100% again."
+          ]
+        },
+        {
+          "id": "lock_wrong",
+          "when": "The founding engineer's lock date is wrong; it should be {{lock}}.",
+          "fixed": [
+            "The lock date says {{lock}} now.",
+            "Fixed the unlock date. It's {{lock}}."
+          ]
+        }
+      ],
+      "components": [
+        {
+          "id": "supply",
+          "label": "the total supply",
+          "bugs": [
+            "supply_wrong"
+          ],
+          "aka": [
+            "total supply",
+            "supply",
+            "number of tokens",
+            "how many coins",
+            "zeros"
+          ]
+        },
+        {
+          "id": "allocation/shares",
+          "label": "the allocation percentages",
+          "bugs": [
+            "shares_wrong"
+          ],
+          "aka": [
+            "percentages",
+            "shares",
+            "split",
+            "who gets what",
+            "percent"
+          ]
+        },
+        {
+          "id": "allocation/rows",
+          "label": "the allocation rows (a row listed twice, the total)",
+          "bugs": [
+            "sum_over"
+          ],
+          "aka": [
+            "rows",
+            "duplicate row",
+            "listed twice",
+            "total",
+            "adds up to more than 100",
+            "over 100%",
+            "sum"
+          ]
+        },
+        {
+          "id": "allocation/lock",
+          "label": "the lock date of the founding engineer's allocation",
+          "bugs": [
+            "lock_wrong"
+          ],
+          "aka": [
+            "lock date",
+            "unlock date",
+            "vesting",
+            "lock",
+            "locked until",
+            "unlock"
+          ]
+        }
+      ],
+      "folderAka": {
+        "allocation": [
+          "allocation",
+          "allocations",
+          "distribution",
+          "table",
+          "pie chart",
+          "chart"
+        ]
+      },
+      "nearMiss": [
+        "Read the tokenomics page twice. It's mostly percentages and I agree with all of them. Which part is wrong?",
+        "Couldn't find the problem on the tokenomics page. Tell me which part."
+      ],
+      "checklist": [
+        {
+          "id": "supply",
+          "text": "{{supply}}",
+          "bug": "supply_wrong"
+        },
+        {
+          "id": "shares",
+          "text": "{{shares}}",
+          "bug": "shares_wrong"
+        },
+        {
+          "id": "lock",
+          "text": "{{lock}}",
+          "bug": "lock_wrong"
+        }
+      ],
+      "complaints": {
+        "missing": "There is no tokenomics page. The congregation reads the tokenomics. Some of them.",
+        "supply_wrong": "The supply on the site is wrong. It's {{supply}}. Scarcity is the whole message.",
+        "shares_wrong": "The allocation on the site is wrong. It's {{shares}}. Someone in the group chat already noticed.",
+        "sum_over": "The allocation adds up to more than 100%. Someone posted a screenshot.",
+        "lock_wrong": "The lock date on the site is wrong. It's {{lock}}. Locks are how people know we're serious.",
+        "down": "The tokenomics page doesn't load.",
+        "wrong": "The tokenomics page is wrong."
+      }
+    }
+  ],
+  "complaints": {
+    "subject": "the site",
+    "intro": "looked at the site before tonight's sermon.",
+    "outro": "no DOLR for today. the congregation deserves better and so do i.\n\ndex",
+    "fired": "second time. i'm moving the site to someone who believes.\n\ndex",
+    "offline": "the site is gone. a launch without a site is a rumor.",
+    "stale": "you said you shipped something. the site looks the same."
+  }
+}

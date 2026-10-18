@@ -1,0 +1,11 @@
+{
+  "id": "d23_y_wsb_cope",
+  "site": "y",
+  "from": "wallstreetbags",
+  "trigger": {
+    "dayMin": 23,
+    "dayMax": 23
+  },
+  "at": "12:45",
+  "body": "$COPE: the liquidity pool was emptied at 04:12. The tokenomics page said liquidity was 40% of supply. It didn't say for how long."
+}

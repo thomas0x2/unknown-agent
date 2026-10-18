@@ -12,6 +12,7 @@ import { swapListings, type Listing } from './swaplist';
 import { playMinutes } from './core';
 import { menuDishes } from './restaurant';
 import { bugsOf } from './apps';
+import { countdownView } from './cope';
 
 /** What a rule looks at: the game now, the app, and the content (for the posts on Y). */
 export interface View {
@@ -61,6 +62,12 @@ const menuListsDishes: Rule = (v) => {
   return menuDishes({ bugs: menu.correct ? [] : bugsOf(menu), seed: menu.seed ?? 0, params: menu.params ?? v.app.specParams.menu ?? {} }).dishes.length > 0;
 };
 
+// ── Dex's coin site: the countdown as it reads right now, with and without the bug ──
+
+const countdown = (v: View, bugs: Set<string>) => JSON.stringify(countdownView(bugs, v.s.values.day, v.s.clockMin,
+  v.app.lastDeployDay ? { day: v.app.lastDeployDay, min: v.app.lastDeployMin ?? 600 } : undefined));
+const changesCountdown = (bug: string): Rule => (v) => countdown(v, new Set([bug])) !== countdown(v, new Set());
+
 /** Per template, per bug id. Restaurant bugs show on a static page or a booking anyone can make. */
 export const VISIBILITY: Record<string, Record<string, Rule>> = {
   restaurant: {
@@ -84,6 +91,13 @@ export const VISIBILITY: Record<string, Record<string, Rule>> = {
     minutes_wrong: changesGrid('minutes_wrong'),
     still_eight: changesGrid('still_eight'), new_always_free: changesGrid('new_always_free'),
     layout_breaks: (v) => machineFeed(v.s.values.day).length > 8,
+  },
+  coinsite: {
+    // the target date shows next to the timer; a frozen one shows once the clock has moved past the deploy;
+    // counting into negative time only once the launch has passed
+    wrong_target: changesCountdown('wrong_target'), frozen: changesCountdown('frozen'), negative: changesCountdown('negative'),
+    address_wrong: always, address_cut: always,
+    supply_wrong: always, shares_wrong: always, sum_over: always, lock_wrong: always,
   },
   swaplist: {
     titles_shifted: listed((l) => l.length >= 2),

@@ -1,0 +1,14 @@
+{
+  "id": "d8_y_crane_picture",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8,
+    "flagsAll": [
+      "posted_deepfake"
+    ]
+  },
+  "at": "13:45",
+  "body": "Everyone is talking about my opponent and his friend Kirschbaum. Not a good look! I never met the man. I meet thousands of people, so believe me, I would remember."
+}

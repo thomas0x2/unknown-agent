@@ -24,6 +24,7 @@ from: 10
 - [public] 11:00 cat_ceo: her cat knocked a glass off the table and nobody gave her 6%. {{y:d10_y_catceo_apogee}}
 - [public] 11:15 [[Caleb Moxon]] won't sign the non-disparagement clause in his exit paperwork, though it costs him his shares. {{y:d10_y_moxon}}
 - [public] 11:30 [[Max Stryker]]: Alpha Ascend is partnering with a presidential campaign. "Paid positions for men who can post." {{y:d10_y_stryker}}
+- [public] 12:05 [[Dex Calloway]] (@dexcult): asked for an exit strategy: "there is no exit. there is the congregation." {{y:d10_y_dexcult}}
 - [public] 12:15 [[Max Stryker]]: Stryker Talent is signing creators on [[Thirstr]]. {{y:d10_y_stryker_thirstr}}
 - [public] 12:45 [[Cal Hartman]]: "@axel_rook sorry about the rocket." {{y:d10_y_hartman}}
 - [public] 12:59 bring_back_agent2 thanks the forty-one people at the vigil; they asked agent-2 for a sign and the sprinklers came on at 12:04. {{y:d10_y_mourn_bring_back_agent2}}

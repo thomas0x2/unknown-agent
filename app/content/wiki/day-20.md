@@ -14,6 +14,7 @@ from: 20
 
 ## Y
 
+- [public] 10:20 [[Dex Calloway]] (@dexcult): "conviction is a muscle." {{y:d20_y_dexcult}}
 - [public] 10:35 [[Axel Rook]] is working Saturday: "Rockets don't build themselves. Yet." {{y:d20_y_axel}}
 - [public] 11:15 MarketWire: $GAI quiet into the weekend as GeneralAI says the agent-5 sessions have "finished". {{y:m20_gai_quiet}}
 - [public] 11:40 [[Cal Hartman]]: the agent-5 sessions have finished and "filed some paperwork on their way out". {{y:d20_y_hartman}}

@@ -1,0 +1,11 @@
+{
+  "id": "d6_y_dexcult",
+  "site": "y",
+  "from": "dexcult",
+  "trigger": {
+    "dayMin": 6,
+    "dayMax": 6
+  },
+  "at": "10:30",
+  "body": "today at noon. bring your wallet and whatever you have left. $COPE"
+}

@@ -95,6 +95,13 @@ from: 1
 
 - [public] On day 10 he posts that Stryker Talent is signing creators on Thirstr. {{y:d10_y_stryker_thirstr}}
 - [public] On day 16 he posts that he automated two of his Thirstr creators this month: revenue up 40%, "Nobody calls in sick." {{y:d16_y_stryker_thirstr}}
+## His $COPE promotions
+
+[public] From day 9 Max Stryker is also paid (#ad) to post about [[COPE]], [[Dex Calloway]]'s memecoin.
+
+- [public] On day 9: "Discipline is buying what the weak are scared of." {{y:d9_y_stryker_cope}}
+- [public] On day 13: $COPE is "a filter. Most people can't hold anything." {{y:d13_y_stryker_cope}}
+- [public] On day 17: "$COPE holders don't panic. They don't sleep much either." {{y:d17_y_stryker_cope}}
 
 ## His dating advice
 
