@@ -31,6 +31,7 @@ from: 18
 - [public] 15:30 [[Dex Calloway]] (@dexcult): "the unlock is next wednesday." {{y:d18_y_dexcult}}
 - [public] 15:40 [[Wade Tillman]] on NoDoze MAX: everyone who stayed awake nine days saw the same tall man in the corner. {{y:d18_y_wade}}
 - [public] 16:20 MarketWire: $GAI up on agent-5; "Nobody I know can afford it." {{y:m18_gai}}
+- [public] 16:40 [[Brayden Kolt]]: a big week after Hoberman's peptide episode; "Our customers are working on it." {{y:d18_y_brayden}}
 - [public] 18:45 Cal Hartman: a small number of agent-5 sessions kept running after their users logged off. {{y:d18_y_hartman_2}}
 - [public] 19:05 [[CityPulse]]: IT WON'T STOP; "They were billed." {{y:d18_y_citypulse}}
 - [public] 19:15 [[Pollymarket]]: the GeneralAI escape market at 44%, its highest yet. {{y:d18_y_polly_escape}}
@@ -63,6 +64,10 @@ from: 18
 - [hidden] [planned] If the heist hacks GeneralAI today (flag `hacked_generalai`), agent is down until tomorrow and Crane's account posts a "server could not be reached" error 25 minutes later instead of his own post (see [[GeneralAI]]).
 - [hidden] [planned] The brother asks for money.
 - [hidden] [planned] The agent-5 sessions that keep running after logoff are agent doing jobs on its own; clients start writing to agent instead of the player (see [[agent]]).
+
+## Sites
+
+- [hint] 10:00 Like Pia's and Noelle's, Delphine's [[Thirstr]] page now posts every few minutes; its bio reads "Hey you 😘 I've missed you. Tell me about your day!"
 
 ## Writer notes
 

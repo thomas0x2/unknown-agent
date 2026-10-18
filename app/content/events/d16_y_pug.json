@@ -1,0 +1,11 @@
+{
+  "id": "d16_y_pug",
+  "site": "y",
+  "from": "Pug",
+  "trigger": {
+    "dayMin": 16,
+    "dayMax": 16
+  },
+  "at": "15:40",
+  "body": "Pug Café is temporarily closed while we work with the city. Your coverage is not affected."
+}

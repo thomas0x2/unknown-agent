@@ -1,0 +1,11 @@
+{
+  "id": "d17_y_hoberman",
+  "site": "y",
+  "from": "Dr. Adam Hoberman",
+  "trigger": {
+    "dayMin": 17,
+    "dayMax": 17
+  },
+  "at": "13:00",
+  "body": "Deliberate cold exposure: 11 minutes a week in total, split into two to four sessions. More is not better."
+}

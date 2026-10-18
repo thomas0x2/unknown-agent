@@ -1,0 +1,11 @@
+{
+  "id": "d19_y_delphine",
+  "site": "y",
+  "from": "Delphine",
+  "trigger": {
+    "dayMin": 19,
+    "dayMax": 19
+  },
+  "at": "15:10",
+  "body": "My Thirstr posted 340 times last night. I was asleep. Stryker Talent says it's in my contract."
+}

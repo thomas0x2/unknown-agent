@@ -1,0 +1,11 @@
+{
+  "id": "d18_y_brayden",
+  "site": "y",
+  "from": "Brayden Kolt",
+  "trigger": {
+    "dayMin": 18,
+    "dayMax": 18
+  },
+  "at": "16:40",
+  "body": "Big week after Dr. Hoberman's peptide episode. He said the human data isn't there yet. Our customers are working on it."
+}

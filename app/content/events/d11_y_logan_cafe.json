@@ -1,0 +1,11 @@
+{
+  "id": "d11_y_logan_cafe",
+  "site": "y",
+  "from": "logan_ships",
+  "trigger": {
+    "dayMin": 11,
+    "dayMax": 11
+  },
+  "at": "14:00",
+  "body": "office hours: pug café, every day, the table by the outlet. founders welcome. investors very welcome."
+}

@@ -37,9 +37,11 @@ from: 6
 ## Y
 
 - [public] 02:47 (overnight, already up at 10:00) noodleposter has a 2am bowl with the light off; the flash for the photo gave away the time anyway. {{y:f24}}
+- [public] 08:40 (overnight, already up at 10:00) [[Chase Whitford]]: 61 founders at the a67x Run Club, ended at Pug Café like always. {{y:d6_y_chase}}
 - [public] 10:30 [[Dex Calloway]] (@dexcult): "today at noon. bring your wallet and whatever you have left." {{y:d6_y_dexcult}}
 - [public] 11:00 [[Randall Crane]]: GeneralAI ($GAI) is "an AMERICAN success story. Tremendous company. The best." {{y:d6_y_crane_gai}}
 - [public] 11:15 [[Cal Hartman]] thanks @randall_crane: "we work with leaders across the spectrum." {{y:d6_y_hartman}}
+- [public] 11:50 [[Logan Pryce]] ran the a67x Run Club 5k and pitched Chase at Pug Café after: "love the energy". {{y:d6_y_logan_runclub}}
 - [public] 12:10 [[Max Stryker]], #ad: three sevens on [[Stack]] this morning, 200x; "The house is a mindset." {{y:d6_y_stryker_stack}}
 - [public] 13:00 [[DoorDish]]: couriers never deliver orders you didn't place; if one does, "please don't eat it, and don't follow it." {{y:d6_y_doordish}}
 - [public] 13:10 [[Max Stryker]] sold his bed in 2019. {{y:d6_y_stryker}}

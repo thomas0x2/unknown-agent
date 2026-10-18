@@ -1,0 +1,11 @@
+{
+  "id": "d22_y_brynn",
+  "site": "y",
+  "from": "Brynn LeClaire",
+  "trigger": {
+    "dayMin": 22,
+    "dayMax": 22
+  },
+  "at": "14:20",
+  "body": "The café is still closed but the community never was. Founder breakfast tomorrow at 8, on the sidewalk outside. Bring your own espresso."
+}

@@ -47,6 +47,7 @@ export * from './state';
 export * from './stocks';
 export * from './swapdeal';
 export * from './swaplist';
+export * from './thirstr';
 export * from './trending';
 export * from './uploads';
 export * from './values';

@@ -31,6 +31,7 @@ from: 26
 
 ## Pollymarket
 
+- [public] 12:00 The Pug Café market is down to 6%.
 - [public] 18:20 [[Pollymarket]]: Crane down to 61% as early voting closes.
 
 ## Trending

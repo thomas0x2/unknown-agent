@@ -23,6 +23,13 @@ export const Y_BIOS: Record<string, string> = {
   perdure_pharma: 'Perdure Pharma. Makers of NoDoze MAX, Ozempra and Fluvera. Medicine for modern life. $PDUR. perdure.com',
   forkyard: 'Official Forkyard account. Code hosting and deploys for builders everywhere. Status updates here.',
   doordish: 'Official DoorDish account. Food from anywhere, delivered by robot couriers. Every courier is where it needs to be.',
+  // founders and the people around them
+  pug: 'Pug. AI-native insurance for founders. Quotes in 90 seconds. Pug Café, open 24/7. pug.com',
+  brynnleclaire: 'head of community @pug 🐶 building the future of founder insurance · ex-everything · if you know you know',
+  chase_whitford: 'Partner @a67x. Pre-seed to Series B. I run the a67x Run Club, Saturdays at 7. Pitches after the run, never during.',
+  hunter_vale: 'Founder & CEO, Glamdring Industries. Building the arsenal for the next century. glamdring.com',
+  dr_hoberman: 'Professor of neurobiology. Host of the Hoberman Lab podcast. Science-based tools for everyday life.',
+  brayden_kolt: 'Founder @purevial_research 💉 third-party tested · research use only · 22 · building in public',
   // people with something to ask
   iron_yard: 'Iron Yard, 88 Harbor Rd. Strength gym. Racks, platforms, kettlebells. Lift heavy things.',
   marcus_steele: 'Owner and head coach, Iron Yard on Harbor Rd. Lift heavy things.',
@@ -31,6 +38,7 @@ export const Y_BIOS: Record<string, string> = {
   logan_ships: 'Founder & CEO @ WorkAgent (stealth). Why Combinator, whycombinator.com. Host of the Founder Mode podcast. Building the first one-person unicorn. SF is so back.',
   spin_cycle_regulars: 'Unofficial account for the people waiting at Spin Cycle. Never trust machine 3.',
   deskjockey: 'Markets. No DMs.',
+  delphine: 'Ceramics. Market stall most Saturdays.',
   dexcult: 'Dex Calloway. Preaching the memecoin supercycle. $COPE: for everyone the system left behind. dex@cope.xyz',
   '6ft_sigma': 'High-value man. 6\'0" on most apps. Building something with standards. EMPIRE member.',
   viktor: 'Twenty-two years in accounts payable. Between things.',

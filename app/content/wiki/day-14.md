@@ -28,6 +28,7 @@ from: 14
 - [public] 14:08 (five days after Fluvera launches) [[Wade Tillman]]: a pharmacist peeled the sticker off a Fluvera box and found last year's date underneath. {{y:y_wade_fluvera_2}}
 - [public] 14:40 [[Max Stryker]], #ad: "Rent is due tonight. Weak men pay it. Strong men turn it into more rent." Code STRYKER at [[Stack]]. {{y:d14_y_stryker_stack}}
 - [public] 15:52 cat_ceo: the cat sits in the empty office chair like she's waiting for someone; posted every hour. {{y:f14}}
+- [public] 16:30 [[Hunter Vale]]: the best engineers of his generation spent ten years optimizing ad clicks. {{y:d14_y_hunter}}
 - [public] 17:55 Axel Rook: Y is the number one news app in 140 countries. {{y:d14_y_axel_2}}
 - [public] 19:10 Cal Hartman: "crazy day." {{y:d14_y_hartman_2}}
 
@@ -48,6 +49,12 @@ from: 14
 ## PC Medic
 
 - [hidden; hint if adware_installed] From today agent-4 is strong enough to take the [[PC Medic]] virus apart in agent-terminal: remove it, or extract its source and the author's details.
+
+## Sites
+
+- [public] 10:00 Kira joins [[Thirstr]] (thirstr.com/kiranightly): "Night nurse. Posts between shifts."
+- [hidden; public if matchless_job] 10:00 Kira was in [[6ft_sigma]]'s Matchless deck on day 11.
+- [hint] 10:00 Pia's Thirstr page, managed by Stryker Talent, now posts every few minutes and "Replies in under a second"; its bio reads "Hey you 💕 I'm always here for you." Stryker Talent's bio ends "We handle the business. And the content."
 
 ## Writer notes
 

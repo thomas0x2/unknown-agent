@@ -1,0 +1,11 @@
+{
+  "id": "d2_y_hoberman",
+  "site": "y",
+  "from": "Dr. Adam Hoberman",
+  "trigger": {
+    "dayMin": 2,
+    "dayMax": 2
+  },
+  "at": "15:00",
+  "body": "Get sunlight in your eyes within 30 to 60 minutes of waking. Ten minutes on a clear day, thirty when it's overcast. It's free and the data is very strong."
+}

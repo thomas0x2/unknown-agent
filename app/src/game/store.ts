@@ -90,6 +90,7 @@ import {
   swapMessage,
   swapOffer,
   takeDown,
+  thirstrSubscribe,
   tickAdware,
   uploadFile,
   wakeApps,
@@ -678,6 +679,13 @@ export class GameStore {
     const n = craneDonations(r.state);
     this.ui.adNotice = r.error ?? (n > 1 ? `Thank you. That's ${n} donations. Randall has been told.` : 'Thank you. Your donation of 5 DOLR has been received.');
     if (r.error) { this.emit(); return; }
+    this.commitAndSettle(r.state);
+  }
+  /** thirstr.com: subscribe to a creator for 30 days, paid from Coinbin. */
+  thirstrSubscribe(handle: string): void {
+    const r = thirstrSubscribe(this.state, handle);
+    this.ui.adNotice = r.error ?? '';
+    if (r.error || r.state === this.state) { this.emit(); return; }
     this.commitAndSettle(r.state);
   }
   setStackNotice(text: string): void { this.ui.stack = { error: '', notice: text }; this.emit(); }

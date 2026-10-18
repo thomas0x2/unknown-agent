@@ -23,6 +23,8 @@ from: 19
 - [public] 12:30 [[The Current]]: Crane 47%, his opponent 45%, inside the margin; a growing share of respondents can't be confirmed as people. {{y:d19_y_current}}
 - [public] 12:57 noodleposter found the discontinued shrimp flavor and is saving it for 1k followers. {{y:f19}}
 - [public] 14:00 Candidate 2030: nine days left; make a plan to vote. {{y:d19_y_candidate}}
+- [public] 15:00 [[Chase Whitford]]: run club is still on; with Pug Café closed it finishes outside. {{y:d19_y_chase}}
+- [public] 15:10 Delphine: her Thirstr posted 340 times last night while she was asleep; Stryker Talent says it's in her contract. {{y:d19_y_delphine}}
 - [public] 16:05 [[Max Stryker]]: his posts go out at 3am because he's up. {{y:d19_y_stryker}}
 - [public] 17:43 Brent Kowalski: $VANT down 3% on a lawsuit from former staff. {{y:m19_vant}}
 - [public] 17:55 Liftoff Daily: Apogee hired 2,000 people this year. {{y:d19_y_liftoff}}

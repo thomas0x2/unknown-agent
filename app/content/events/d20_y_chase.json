@@ -1,0 +1,11 @@
+{
+  "id": "d20_y_chase",
+  "site": "y",
+  "from": "Chase Whitford",
+  "trigger": {
+    "dayMin": 20,
+    "dayMax": 20
+  },
+  "at": "08:30",
+  "body": "Finished run club at the café out of habit. The doors are chained. 40 founders stretched in front of them anyway."
+}

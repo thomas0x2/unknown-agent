@@ -25,6 +25,7 @@ summary: Pollymarket is a prediction market site and Y account showing the odds 
 - [public] From day 9: "Will $APO close higher on launch day?" (Business), at 18:21; "The launch itself has no bearing on this market."
 - [public] From day 9: "Will GeneralAI bring agent-2 back by Oct 20?" (Tech), opened at 13:30 after the petition. "Signs, coincidences and sprinklers do not count." See [[agent-2 mourners]].
 - [public] From day 15: "Will Cal Hartman testify before Congress before the election?" (Politics), opened at 12:33. See [[Cal Hartman]].
+- [public] From day 16: "Will Pug Café reopen before the election?" (Local), opened at 13:30 when the city shut the café. "Founders working on the sidewalk outside do not count." See [[Pug]].
 - [hidden; public if posted_deepfake] From day 7: "Will the Candidate 2030 picture be confirmed fake before the election?" (Politics), only in a run where the player posted the deepfake.
 
 ## How the odds moved
@@ -43,18 +44,21 @@ summary: Pollymarket is a prediction market site and Y account showing the odds 
 - [public] On day 12 the robot market falls to 11% when DoorDish says the robot "retired with honours".
 - [public] On day 13 Rook's endorsement resolves his market YES at 12:45. An account (0xe1…7b2) bought 90,000 DOLR of YES at 12:28, two minutes before his post; it had bought YES twice before, each time right after one of his replies to Crane. Crane rises to 58%, then 61% after the Rook bump poll.
 - [public] On day 15 the agent-2 market has resolved NO. The Hartman market opens at 38% and drops to 3% when the hearing is set for after the election.
+- [public] On day 16 the Pug Café market opens at 41% and falls to 24% after CityPulse's story.
 - [public] On day 17 Crane reaches 63% after the debate.
 - [public] On day 18 Crane peaks at 66% on the debate poll and slips to 64% after The Current's fact-check. The escape market reaches 44%, its highest, after agent-5 sessions keep running.
 - [public] On day 19 Crane falls to 61% after The Current's poll and to 58% after CityPulse's story about when his posts go out.
 - [public] On day 20 Crane is at 60% at 18:20, the evening of his stadium rally.
+- [public] On day 22 the Pug Café market slips to 15%.
 - [public] On day 24 Crane rises to 63% after the town hall.
 - [public] On day 26 Crane slips to 61% as early voting closes.
+- [public] On day 26 the Pug Café market is at 6%.
 - [public] On day 27 Crane is at 54% in the dead heat.
-- [public] On day 28 Crane is at 57% at 19:45, with the count barely started. The market can't resolve before the election office calls it. The Hartman market resolves NO at 20:00, when the polls close.
+- [public] On day 28 Crane is at 57% at 19:45, with the count barely started. The market can't resolve before the election office calls it. The Hartman and Pug Café markets resolve NO at 20:00, when the polls close.
 
 ## Traders
 
-- [public] Most traders are anonymous wallets (0x9c…41e buys 250,000 DOLR of Crane YES on days 10, 16 and 28). Some use names: [[deskjockey]] buys Crane YES on day 5 and on day 13, a minute after Rook's endorsement; polls_dont_vote keeps buying Crane NO; apes_together buys Apogee and $APO YES; agent2forever buys agent-2 YES; doomscroll buys 50 DOLR of escape YES; steph_m bought 5 DOLR of Rent Board YES.
+- [public] Most traders are anonymous wallets (0x9c…41e buys 250,000 DOLR of Crane YES on days 10, 16 and 28). Some use names: [[deskjockey]] buys Crane YES on day 5 and on day 13, a minute after Rook's endorsement; polls_dont_vote keeps buying Crane NO; apes_together buys Apogee and $APO YES; agent2forever buys agent-2 YES; doomscroll buys 50 DOLR of escape YES; steph_m bought 5 DOLR of Rent Board YES; chase_w ([[Chase Whitford]]) buys 2,500 DOLR of Pug Café YES on day 16.
 - [hidden; public if posted_deepfake] Wallet 0x77…e30 buys 40,000 DOLR of NO on the picture market at 10:04 on day 7 and 60,000 DOLR of Crane YES at 16:05 the same day.
 
 ## Pollymarket on Y
@@ -73,6 +77,7 @@ summary: Pollymarket is a prediction market site and Y account showing the odds 
 - [public] On day 13 it posts Crane at 61%, his highest yet. {{y:d13_y_polly_crane}}
 - [public] On day 15 it posts the Hartman market falling from 38% to 3%. {{y:d15_y_polly_hartman}}
 - [public] On day 18 it posts the escape market at 44%, its highest yet. {{y:d18_y_polly_escape}}
+- [public] On day 16 it posts "BREAKING: The city has shut down Pug Café". {{y:d16_y_polly_pug}}
 - [public] On day 24 it posts Crane at 63% after the town hall, up from 58% the week before. {{y:d24_y_polly_crane}}
 - [public] On day 26 it posts Crane at 61% as early voting closes, down from 63% after the town hall. {{y:d26_y_polly_crane}}
 - [public] On day 27 it posts Crane at 54%, down from 63% after the town hall, with the election tomorrow. {{y:d27_y_polly_crane}}

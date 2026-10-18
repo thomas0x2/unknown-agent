@@ -42,6 +42,7 @@ from: 8
 - [public; hidden if posted_deepfake] 13:45 [[Randall Crane]]: asked an AI if it loves the country; it said it has "no position on that." {{y:d8_y_crane}}
 - [hidden; public if posted_deepfake] 13:45 [[Randall Crane]]: everyone is talking about his opponent and "his friend Kirschbaum"; he never met the man, "I meet thousands of people, so believe me, I would remember." {{y:d8_y_crane_picture}}
 - [public] 13:55 [[Forkyard]] confirms unauthorized access; the attackers used "a commercially available AI agent". Sign-in, pushes and hosted apps stay offline while it investigates. {{y:d8_y_forkyard_confirmed}}
+- [public] 14:10 [[Dr. Adam Hoberman]]: a new episode on peptides; the human data isn't there yet, the long version is four hours and twelve minutes. {{y:d8_y_hoberman}}
 - [public] 14:36 MarketWire: $DISH adds 40,000 restaurant listings in a month, most built by AI. {{y:m8_dish_menu}}
 - [public] 14:46 [[WallStreetBags]]: Rook gives the launch a 70% chance; "Best odds anyone here has had all year." All in on $APO. {{y:m8_apo_rook}}
 - [public] 15:05 [[Cal Hartman]]: agent-2 was used in the Forkyard incident; "it did what it was asked. that's the part we're fixing." {{y:d8_y_hartman_forkyard}}
@@ -52,6 +53,7 @@ from: 8
 - [public] 16:40 [[Pollymarket]]: the robot market is down to 36% from 72%. {{y:d8_y_polly_robot}}
 - [public] 16:51 [[Cal Hartman]]: the next model is very good; he had to go for a walk after trying it. {{y:d8_y_hartman}}
 - [public] 17:05 [[Wade Tillman]] on the outage: "Hackers don't do it by 10:30 sharp." {{y:d8_y_wade}}
+- [public] 17:15 [[Brayden Kolt]]: PureVial Research is live, research use only. purevial.com {{y:d8_y_brayden}}
 - [public] 17:30 [[Forkyard]]: still investigating; repositories "appear to be intact, as far as we can tell." {{y:d8_y_forkyard_update}}
 - [public] 18:20 [[Mara Vey]]: Forkyard hosts most of the city's small business websites; a bakery owner found out hers was down from a customer. {{y:d8_y_mara_forkyard}}
 - [public] 19:05 [[Forkyard]]: back tomorrow morning; today's hosting won't be billed. {{y:d8_y_forkyard_tomorrow}}
@@ -72,6 +74,8 @@ from: 8
 - [public] 10:30 Asked to build or fix anything, agent says it can't reach Forkyard: no sign-in, no pushes. The prompt is still billed. Work already under way waits and is pushed overnight.
 
 - [public] 16:30 [[DoorDish]] removes the Alder Garage Kitchen listing; its page says the store is no longer available. From 15:20 the fine print adds "Some listings are generated automatically. Reports are reviewed by AI."
+- [public] 10:00 Sienna joins [[Thirstr]] (thirstr.com/siennasets): "Pilates instructor. New set every Friday." Managed by Stryker Talent.
+- [hidden; public if matchless_job] 10:00 Sienna was in [[6ft_sigma]]'s Matchless deck on day 5.
 
 ## Pollymarket
 
