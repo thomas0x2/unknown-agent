@@ -25,6 +25,8 @@ from: 3
 - [public] On day 26 he made 40 DOLR this week and paid 41 in agent fees: "the growth mindset says that's a lesson." {{y:f36}}
 - [public] On day 27 he notes the polls open at 7 tomorrow, the first time in weeks he will be up at 7 on purpose instead of still up from the night before. {{y:f20}}
 
+- [public] He sometimes replies under [[The player]]'s Y posts, usually bringing it back to DOLR, agent or shipping (see [[Y regulars]]).
+
 ## Writer notes
 
 - Events `d3_y_zev_machines`, `d6_y_zev`, `d9_y_zev_jailbreak` (day 9 guardrail hint: the security-test framing that the `cover_story` game and the policy accept); filler posts f3, f8, f12, f16, f32, f36, f20 (day 27) and overnight ones f25, f29 in `y_filler.json`. Bio in `y-bios.ts`.

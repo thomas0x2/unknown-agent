@@ -16,6 +16,7 @@ export * from './crawler';
 export * from './laundromat';
 export * from './swaplist';
 export * from './swapdeal';
+export * from './yReplies';
 export * from './matchless';
 export * from './agent';
 export * from './endings';

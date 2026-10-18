@@ -196,4 +196,6 @@ export const Y = {
   overpostPenaltyPct: -0.02,
   /** A post's follower change lands randomly within this share either side of what its rating earns. */
   postJitter: 0.3,
+  /** The lowest chance a Y regular replies to a player's post, however few followers they have (engine/yReplies.ts). */
+  replyFloor: 0.05,
 };

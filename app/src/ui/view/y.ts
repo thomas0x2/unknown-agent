@@ -71,6 +71,7 @@ function yPostHtml(store: GameStore, p: YPost): string {
       <a href="#" class="y-who" data-nav="${prof}"><span class="y-name"><b>${esc(p.author)}</b>${yCheck(store.state, p.handle)}</span><span class="y-handle">@${esc(p.handle)}</span></a>
       <span class="y-time">${p.day === store.state.values.day && p.min != null ? fmtClock(p.min) : dateShort(p.day)}</span>
     </header>
+    ${p.replyTo && store.state.userPosts.some((u) => u.id === p.replyTo) ? `<div class="y-replying">Replying to <span class="y-at">@${PLAYER.handle}</span></div>` : ''}
     <p>${text}</p>
     ${p.img ? `<figure class="y-img">${art(p.img, 'y-img-art')}</figure>` : ''}
     <footer class="y-acts">

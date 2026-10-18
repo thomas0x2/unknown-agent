@@ -363,6 +363,8 @@ export interface GameState {
   /** The build or fix the agent is busy with, if any (unset in older saves). */
   agentWork?: AgentWork | null;
   yExtra: YExtra[];
+  /** Replies from the Y regulars to the player's posts, written and waiting for their minute (engine/yReplies.ts); `due` is in play minutes. */
+  yReplies: { due: number; reply: YExtra }[];
   reviews: YowlReview[];
   bookings: Booking[];
   /** What the booking form said after the last attempt (accepted, or why not). */
@@ -500,6 +502,7 @@ export function newGame(seed = makeSeed()): GameState {
     mail: [],
     pendingMail: [],
     yExtra: [],
+    yReplies: [],
     reviews: [],
     bookings: [],
     terminal: [],
