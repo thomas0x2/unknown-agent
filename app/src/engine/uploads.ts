@@ -13,6 +13,9 @@ export const UPLOADERS: Record<string, { accepts: string[] }> = {
   'vantor.group/next-chapter': { accepts: ['.pdf'] },
 };
 
+/** How long a site's loading animation runs after an upload before it shows the result (real ms). */
+export const UPLOAD_MS = 2800;
+
 export const uploadsTo = (s: GameState, site: string) => (s.uploads ?? []).filter((u) => u.site === site);
 
 export function uploadFile(s0: GameState, site: string, file: { id: string; name: string }): { state: GameState; error?: string } {

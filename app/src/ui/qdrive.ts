@@ -14,7 +14,7 @@ import { vantorWordmark } from './vantor';
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
 type Folder = 'documents' | 'models';
-const FOLDERS: { id: Folder; label: string }[] = [
+export const FOLDERS: { id: Folder; label: string }[] = [
   { id: 'documents', label: 'Documents' },
   { id: 'models', label: 'Models' },
 ];
@@ -118,13 +118,13 @@ export function driveFiles(s: GameState): DriveFile[] {
 const docHtml = (t: string) => t.split('\n').map((l) => (/^[A-Z][A-Z0-9 &·'-]+$/.test(l.trim()) ? `<b class="qd-hd">${esc(l)}</b>` : esc(l))).join('<br>');
 
 const QUOTA_KB = 15 * 1024 * 1024;
-function size(kb: number): string {
+export function size(kb: number): string {
   if (kb >= 1024 * 1024) return `${(kb / 1024 / 1024).toFixed(1).replace(/\.0$/, '')} GB`;
   if (kb >= 1024) return `${(kb / 1024).toFixed(1).replace(/\.0$/, '')} MB`;
   return `${kb} KB`;
 }
 const when = (day?: number) => (day === undefined ? '' : dateShort(day));
-const glyph = (k: DriveFile['kind']) => `<span class="qd-glyph qd-${k}">${{ pdf: 'PDF', txt: 'TXT', weights: 'BIN', exe: 'EXE' }[k]}</span>`;
+export const glyph = (k: DriveFile['kind']) => `<span class="qd-glyph qd-${k}">${{ pdf: 'PDF', txt: 'TXT', weights: 'BIN', exe: 'EXE' }[k]}</span>`;
 
 export function pageDrive(s: GameState, param?: string): string {
   const files = driveFiles(s);

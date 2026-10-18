@@ -96,6 +96,7 @@ import {
   takeDown,
   thirstrSubscribe,
   tickAdware,
+  UPLOAD_MS,
   uploadFile,
   wakeApps,
   withdrawCasino,
@@ -112,6 +113,7 @@ import { shellLines } from './shell';
 import { MISSES } from './misses';
 import { haikuApology } from './haiku';
 import { freshUi, type Draft, type Ui } from './uiState';
+
 
 /**
  * A browser tab. back/fwd are the pages behind and ahead of it, like a real browser's history. A
@@ -279,7 +281,7 @@ export class GameStore {
   /** A dialog is up (or the run is over), so time stands still. Adware pop-ups don't count: ads don't wait for you. */
   get dialogOpen(): boolean {
     const s = this.state;
-    return !!(s.ending || s.morning || this.ui.jevOffline || this.ui.confirm || this.ui.memWarn || this.ui.greet);
+    return !!(s.ending || s.morning || this.ui.jevOffline || this.ui.confirm || this.ui.memWarn || this.ui.greet || this.ui.filePick);
   }
   get clockPaused(): boolean {
     return this.clockHeld || this.dialogOpen || (typeof document !== 'undefined' && document.hidden);
@@ -678,7 +680,27 @@ export class GameStore {
     this.ui.uploadPick = file.id;
     this.ui.uploadError = r.error ?? '';
     if (r.error) { this.emit(); return; }
+    // the result waits behind the site's loading animation
+    const up = this.ui.uploading = { site, at: Date.now() };
+    setTimeout(() => { if (this.ui.uploading === up) this.emit(); }, UPLOAD_MS / 2);
+    setTimeout(() => { if (this.ui.uploading === up) { this.ui.uploading = null; this.emit(); } }, UPLOAD_MS);
     this.commitAndSettle(r.state);
+  }
+  /** Open the file dialog for an upload, on the last folder and file used. */
+  openFilePicker(site: string, folder: string, file: string): void {
+    this.ui.filePick = { site, folder, file };
+    this.ui.uploadError = '';
+    this.emit();
+  }
+  filePickFolder(folder: string): void { if (this.ui.filePick) { this.ui.filePick = { ...this.ui.filePick, folder, file: '' }; this.emit(); } }
+  filePickFile(file: string): void { if (this.ui.filePick) { this.ui.filePick = { ...this.ui.filePick, file }; this.emit(); } }
+  closeFilePicker(): void { this.ui.filePick = null; this.emit(); }
+  /** The file dialog's Upload button: upload the selected file and close the dialog. */
+  confirmFilePick(file: { id: string; name: string }): void {
+    const p = this.ui.filePick;
+    if (!p) return;
+    this.ui.filePick = null;
+    this.upload(p.site, file);
   }
   /** crane2026.vote: donate 5 DOLR to the Crane Victory Fund. */
   craneDonate(): void {
