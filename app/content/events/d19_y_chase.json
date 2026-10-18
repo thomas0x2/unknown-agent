@@ -1,0 +1,11 @@
+{
+  "id": "d19_y_chase",
+  "site": "y",
+  "from": "Chase Whitford",
+  "trigger": {
+    "dayMin": 19,
+    "dayMax": 19
+  },
+  "at": "15:00",
+  "body": "Run club is still on tomorrow. Pug Café is closed, so we finish outside it. Same route, same energy. lumi.events/a67x-run"
+}

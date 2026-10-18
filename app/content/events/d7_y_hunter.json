@@ -1,0 +1,11 @@
+{
+  "id": "d7_y_hunter",
+  "site": "y",
+  "from": "Hunter Vale",
+  "trigger": {
+    "dayMin": 7,
+    "dayMax": 7
+  },
+  "at": "14:10",
+  "body": "Glamdring builds autonomous systems that defend the free world. We're hiring engineers who want their work to matter. glamdring.com"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_brayden",
+  "site": "y",
+  "from": "Brayden Kolt",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "17:05",
+  "body": "PureVial Research is live. Third-party tested peptides, plain box, shipped in 24 hours. Research use only. purevial.com"
+}

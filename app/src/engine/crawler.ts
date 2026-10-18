@@ -24,8 +24,11 @@ export interface MarketPost {
   impostor?: boolean;
 }
 
+/** Accounts whose handle isn't their display name in snake case. */
+const HANDLES: Record<string, string> = { 'Brynn LeClaire': 'brynnleclaire', 'Dr. Adam Hoberman': 'dr_hoberman' };
+
 /** The Y handle a display name gets (Randall Crane → randall_crane). */
-export const handleOf = (from: string) => from.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '').slice(0, 20) || 'user';
+export const handleOf = (from: string) => HANDLES[from] ?? (from.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '').slice(0, 20) || 'user');
 
 /** Every stock post on Y up to today, bots expanded into their separate accounts. */
 export function marketPosts(s: GameState, content: Content): MarketPost[] {

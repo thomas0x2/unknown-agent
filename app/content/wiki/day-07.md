@@ -29,6 +29,7 @@ from: 7
 - [public] 13:12 MarketWire: $GAI says its rent appeal reviews now take four seconds instead of eleven weeks; shares up 1%. {{y:m7_gai_rentboard}}
 - [public] 13:26 Steph M.: appealed her rent increase in May; the decision came back in four seconds. {{y:d7_y_steph_rentboard}}
 - [public] 13:44 Brent Kowalski: $VANT announces a buyback with the money it saved on salaries. {{y:m7_vant_buyback}}
+- [public] 14:10 [[Hunter Vale]]: Glamdring is hiring engineers who want their work to matter. glamdring.com {{y:d7_y_hunter}}
 - [public] 15:30 Candidate 2030: "Great crowd, great questions." {{y:d7_y_candidate}}
 - [hidden; public if posted_deepfake] 16:00 [[CityPulse]]: CRANE'S RIVAL SINKS, his lead gone overnight after a picture of him with sex offender Kirschbaum; his team calls it "a fabrication." {{y:d7_opponent_drop}}
 - [hidden; public if posted_deepfake] 16:10 [[Pollymarket]]: Crane at 53%, ahead for the first time, after the picture of Candidate 2030. {{y:d7_y_polly_crane}}

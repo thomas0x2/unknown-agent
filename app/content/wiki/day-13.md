@@ -14,6 +14,7 @@ from: 13
 
 ## Y
 
+- [public] 08:50 (overnight, already up at 10:00) [[Chase Whitford]]: 74 at run club, the biggest yet; the guest list is public on Lumi. {{y:d13_y_chase}}
 - [public] 10:36 [[WallStreetBags]]: a member put his rent into $GAI at the open. "Really proud of him." {{y:m13_gai_great}}
 - [public] 11:00 [[Perdure Pharma]] launches Perdure Peptides, "research-grade peptides from a company you already trust. For research use only." {{y:d13_y_perdure}}
 - [public] 11:20 MarketWire: Perdure launches a peptide line; $PDUR up 5%. {{y:m13_pdur_peptides}}
@@ -22,6 +23,7 @@ from: 13
 - [public] 12:30 [[Axel Rook]]: "Randall Crane is the only candidate who understands technology." {{y:d13_y_axel}}
 - [public] 12:50 [[Pollymarket]]: resolved YES, Rook endorsed a candidate; one account bought 90,000 DOLR of YES two minutes before his post. {{y:d13_y_polly_rook}}
 - [public] 13:20 [[Max Stryker]]: "Axel Rook backs Crane. I backed him three days ago. Leaders move first." {{y:d13_y_stryker}}
+- [public] 14:30 [[Brayden Kolt]]: two weeks of PureVial, 9,000 DOLR in sales, every order with a research-use-only label and a dosing chart. {{y:d13_y_brayden}}
 - [public] 15:15 Axel Rook: "I'm not political. I just have opinions about every election." {{y:d13_y_axel_2}}
 - [public] 16:10 Candidate 2030 respects Mr. Rook's right to support any candidate. {{y:d13_y_candidate}}
 - [public] 16:21 [[Cal Hartman]]: "next week is going to be a big week for us." {{y:d13_y_hartman}}

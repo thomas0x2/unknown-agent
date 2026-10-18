@@ -157,6 +157,8 @@
 .ad-casket .ad-f { font-family: var(--f-serif, Georgia, serif); letter-spacing: .03em; }
 .ad-perdure { --ad-bg: linear-gradient(180deg, #ffffff, #f1eef8); --ad-ink: #3d2c6b; --ad-cta: #3d2c6b; --ad-cta-ink: #fff; --ad-fine: #6a6080; }
 .ad-ozempra { --ad-bg: #fff8f3; --ad-ink: #5b2a1f; --ad-cta: #e2725b; --ad-cta-ink: #fff; --ad-fine: #8a6458; box-shadow: inset 0 0 0 1px #f3d6c9; }
+.ad-pug { --ad-bg: #fbf3e4; --ad-ink: #2e221c; --ad-cta: #2e221c; --ad-cta-ink: #fbf3e4; --ad-fine: #7a6656; box-shadow: inset 0 0 0 1px #eadcc3; }
+.ad-purevial { --ad-bg: #f4fbfa; --ad-ink: #0b3f38; --ad-cta: #0f8f7e; --ad-cta-ink: #fff; --ad-fine: #4f746e; box-shadow: inset 0 0 0 1px #cbe9e4; }
 .ad-fluvera { --ad-bg: #f3f8fd; --ad-ink: #173a5c; --ad-cta: #2f7dc4; --ad-cta-ink: #fff; --ad-fine: #5b7590; box-shadow: inset 0 0 0 1px #d3e4f4; }
 .ad-pharma { --ad-bg: #f6fbfb; --ad-ink: #0c4d55; --ad-cta: #12a3a3; --ad-cta-ink: #fff; --ad-fine: #4d7378; box-shadow: inset 0 0 0 1px #bfe3e3; }
 .ad-pod { --ad-bg: #ebe6dc; --ad-ink: #2d2a24; --ad-cta: #2d2a24; --ad-cta-ink: #ebe6dc; --ad-fine: #6b655a; }

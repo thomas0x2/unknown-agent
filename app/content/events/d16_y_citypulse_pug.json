@@ -1,0 +1,11 @@
+{
+  "id": "d16_y_citypulse_pug",
+  "site": "y",
+  "from": "CityPulse",
+  "trigger": {
+    "dayMin": 16,
+    "dayMax": 16
+  },
+  "at": "17:45",
+  "body": "PUG CAFÉ SHUT: City inspectors say the 24/7 café was licensed as an insurance office. Pug says the espresso was a policy benefit."
+}

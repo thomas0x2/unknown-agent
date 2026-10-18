@@ -26,6 +26,7 @@ from: 14
 - [public] 12:30 [[Max Stryker]]: EMPIRE's refund policy is no. {{y:d14_y_stryker}}
 - [public] 14:40 [[Max Stryker]], #ad: "Rent is due tonight. Weak men pay it. Strong men turn it into more rent." Code STRYKER at [[Stack]]. {{y:d14_y_stryker_stack}}
 - [public] 15:52 cat_ceo: the cat sits in the empty office chair like she's waiting for someone; posted every hour. {{y:f14}}
+- [public] 16:30 [[Hunter Vale]]: the best engineers of his generation spent ten years optimizing ad clicks. {{y:d14_y_hunter}}
 - [public] 17:55 Axel Rook: Y is the number one news app in 140 countries. {{y:d14_y_axel_2}}
 - [public] 19:10 Cal Hartman: "crazy day." {{y:d14_y_hartman_2}}
 
