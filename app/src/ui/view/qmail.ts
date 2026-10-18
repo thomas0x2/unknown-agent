@@ -4,8 +4,9 @@
 import { GameStore } from '../../game/store';
 import { MISSES } from '../../game/misses';
 import { ICONS } from '../icons';
-import { type GameState, type MailEntry, dateShort, BOUNCE_ADDR, eventBody, deliveryKey, deliveryCc } from '../../engine';
+import { type GameState, type MailEntry, dateShort, BOUNCE_ADDR, eventBody, deliveryKey, deliveryCc, NEWSLETTER_EVENT } from '../../engine';
 import { isVantorAddr, vantorSignature } from '../vantor';
+import { newsletterHtml } from '../current';
 import { adHtml } from '../ads';
 import { groupThreads, baseSubject } from '../mailThreads';
 import { inBin, isDeleted } from '../../engine';
@@ -116,7 +117,7 @@ export function pageMail(store: GameStore, param?: string): string {
           : `<b>${esc(r.from)}</b> &lt;${esc(r.addr)}&gt; to ${esc(PLAYER.addr)}`;
         return `<details class="qm-msg" data-msg="${esc(r.id)}"${expanded ? ' open' : ''}>
           <summary class="qm-meta"><span>${meta}<span class="qm-snip">${esc(r.body.replace(/\s+/g, ' ').slice(0, 90))}</span></span><span>${mailTime(s, r)}</span></summary>
-          ${r.cc?.length ? `<p class="qm-cc">CC: ${esc(r.cc.join(', '))}</p>` : ''}<div class="qm-body">${linkify(br(r.body))}</div>
+          ${r.cc?.length ? `<p class="qm-cc">CC: ${esc(r.cc.join(', '))}</p>` : ''}<div class="qm-body">${r.eventId === NEWSLETTER_EVENT ? newsletterHtml(r.subject, r.body, r.day) : linkify(br(r.body))}</div>
           ${r.folder !== 'sent' && isVantorAddr(r.addr) ? vantorSignature() : ''}
           ${r.generated ? `<p class="qm-gen">Reply written by ${esc(MISSES.label())}</p>` : r.scripted ? `<p class="qm-gen">${SCRIPTED_MAIL[r.scripted]}</p>` : ''}
         </details>`;
