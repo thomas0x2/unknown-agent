@@ -239,7 +239,8 @@ export function spreadJobOffers(s: GameState, content: Content): void {
   const offers = (s.arriving ?? []).filter((a) => {
     const ev = getEvent(content, a.eventId);
     if (!ev || a.day > day || !isJobOffer(content, ev)) return false;
-    return a.day < day || arrivalMin(ev) <= JOB_OFFERS.to; // a job written for the evening (the sketchy ones) keeps its time
+    // a job written for the evening (the sketchy ones) keeps its time, unless it was left over and already spread into the day
+    return a.day < day || arrivalMin(ev) <= JOB_OFFERS.to || a.at <= JOB_OFFERS.to;
   });
   if (!offers.length) return;
   for (const a of offers) if (a.day < day) { a.day = day; a.at = CLOCK.wake; }

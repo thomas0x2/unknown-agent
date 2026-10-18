@@ -1,0 +1,17 @@
+{
+  "id": "d3_y_laundromat",
+  "site": "y",
+  "from": "Spin Cycle regulars",
+  "trigger": {
+    "dayMin": 3,
+    "dayMax": 3,
+    "flagsAll": [
+      "saw_laundromat_post"
+    ],
+    "flagsNone": [
+      "laundromat_live"
+    ]
+  },
+  "at": "18:15",
+  "body": "Back at Spin Cycle. Every machine busy, as far as anyone can tell. The feed (spincycle.test/feed) still just says things like \"M2 ST=0 T=0\". Nobody made the app yet. Somebody please make the app."
+}

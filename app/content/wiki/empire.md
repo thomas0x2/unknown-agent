@@ -9,8 +9,8 @@ from: 1
 
 ## The offer and the newsletter
 
-- [public] On day 1 Max emails the offer ("You were BORN for more"); replying EMPIRE claims it. {{mail:d1_guru}}
-- [public] Members get a daily email, one piece of straight-faced advice each (sell your mattress, drink coffee cold, stop paying rent, fill the sink for a cold plunge, call your mother "the investor"); replying EMPIRE again gets "Commitment logged." {{mail:guru_newsletter@2}}
+- [public] On day 1 Max emails the offer ("You were BORN for more"); replying EMPIRE claims it. {{mail:d2_guru}}
+- [public] Members get a daily email, one piece of straight-faced advice each (sell your mattress, drink coffee cold, stop paying rent, fill the sink for a cold plunge, call your mother "the investor"); replying EMPIRE again gets "Commitment logged." {{mail:guru_newsletter@3}}
 - [public] [if guru_subscriber] On day 5 the newsletter went out with every subscriber's address in CC, [[6ft_sigma]]'s included. {{mail:guru_newsletter@5}}
 - [public] On day 4 Max posts that EMPIRE is now 400 DOLR, "today only 20".
 - [public] On day 14 Max posts that EMPIRE's refund policy is no.

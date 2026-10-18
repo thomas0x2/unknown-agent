@@ -31,6 +31,7 @@ from: 4
 - [public] 11:43 [[6ft_sigma]]: needs someone to do his swiping on matchless.com, following his standards exactly. 35 DOLR a day for ten swipes, paid nightly, only if every one is right. {{y:d4_y_sigma}}
 - [public] 11:57 [[Max Stryker]]: GeneralAI doubled their prices, "Good." EMPIRE is now 400 DOLR, today only 20. {{y:d4_y_stryker}}
 - [public] 12:20 [[Axel Rook]]: Apogee rocket stacked on the pad. "Looks sick." {{y:d4_y_axel}}
+- [public] 12:40 Jess Park walked past the Vantor offices; half the lights are off. {{y:m4_vant_untagged}}
 - [public] 13:26 [[Randall Crane]]: Vantor ($VANT) fired 400 hardworking Americans and replaced them with a computer. "Disgraceful." {{y:m4_vant_crane}}
 - [public] 13:50 [[Brynn LeClaire]]: when she started Pug she had one rule, no founder should ever feel alone; Pug covers 2,400. {{y:d4_y_brynn}}
 - [public] 14:00 [[Wade Tillman]]: nobody has seen a baby pigeon, or a robot courier being built. {{y:d4_y_wade}}
@@ -43,6 +44,7 @@ from: 4
 - [public] 17:40 Axel Rook: "If an AI ever really escapes, it won't be a delivery robot." {{y:d4_y_axel_2}}
 - [public] 18:00 [[DoorDish]]: "No DoorDish courier is missing. Every courier is exactly where it needs to be." {{y:d4_y_doordish}}
 - [public] 18:30 Cal Hartman: the team shipped agent-2 in eleven weeks and most of them did not sleep. {{y:d4_y_hartman_2}}
+- [public] 19:10 Sam Ortiz: $gai still up on the agent-2 news; not selling. {{y:m4_gai_lower}}
 
 ## News
 
