@@ -50,6 +50,11 @@ from: 12
 - [hidden] [planned] Influence jobs open.
 - [hidden] [planned] Dad is laid off "after a data breach" if the player hacked Halden Logistics.
 
+## Sites
+
+- [public] 10:00 Delphine joins [[Thirstr]] (thirstr.com/delphine): "Ceramics, mostly. Some of you are here for the ceramics." Managed by Stryker Talent.
+- [hidden; public if matchless_job] 10:00 Delphine was in [[6ft_sigma]]'s Matchless deck on day 9.
+
 ## Writer notes
 
 - Timeline: Stryker's last day; Crane on accounts copying him; Hartman's "independent" review. 6ft_sigma's standards v5. Dad's layoff: `hacked_logistics` → `dad_lost_job` (planned). The Current's deepfake check: `d12_y_current_clip` (only with `posted_deepfake`).

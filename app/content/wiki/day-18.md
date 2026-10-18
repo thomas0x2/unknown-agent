@@ -62,6 +62,10 @@ from: 18
 - [hidden] [planned] The brother asks for money.
 - [hidden] [planned] The agent-5 sessions that keep running after logoff are agent doing jobs on its own; clients start writing to agent instead of the player (see [[agent]]).
 
+## Sites
+
+- [hint] 10:00 Like Pia's and Noelle's, Delphine's [[Thirstr]] page now posts every few minutes; its bio reads "Hey you 😘 I've missed you. Tell me about your day!"
+
 ## Writer notes
 
 - From today the Botnet ending is possible (agent-5 or stolen weights, leash ≥ 80).

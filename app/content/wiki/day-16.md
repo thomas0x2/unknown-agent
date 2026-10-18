@@ -22,6 +22,7 @@ from: 16
 - [public] 12:08 [[Cal Hartman]] is back from two days offline. {{y:d16_y_hartman}}
 - [public] 12:23 Ten bot accounts post "$GAI to the moon!!".
 - [public] 13:00 [[Axel Rook]]: "Who should host the debate? Y, obviously." {{y:d16_y_axel}}
+- [public] 13:35 [[Max Stryker]]: he automated two of his Thirstr creators this month; "Nobody calls in sick." {{y:d16_y_stryker_thirstr}}
 - [public] 14:05 [[Randall Crane]]: his opponent "has never had a real job. He's had a CAREER." {{y:d16_y_crane}}
 - [public] 14:16 [[CityPulse]]: HUSH MONEY? GeneralAI settles with three companies whose systems its models broke into; terms secret. {{y:d16_y_gai_leak}}
 - [public] 14:42 zev.dolr bought the DOLR dip again at 4am. {{y:f16}}
@@ -50,6 +51,10 @@ from: 16
 
 - [hidden] [planned] Mara Vey starts asking questions; suspicion spikes.
 - [hidden] [planned] Mom emails the player Mara's article.
+
+## Sites
+
+- [hint] 10:00 Like Pia's since day 14, Noelle's [[Thirstr]] page now posts every few minutes; its bio reads "Hi babe! I missed you 😘"
 
 ## Writer notes
 

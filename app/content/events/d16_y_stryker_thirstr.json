@@ -1,0 +1,11 @@
+{
+  "id": "d16_y_stryker_thirstr",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 16,
+    "dayMax": 16
+  },
+  "at": "13:35",
+  "body": "Automated two of my Thirstr creators this month. Revenue up 40%. Nobody calls in sick."
+}

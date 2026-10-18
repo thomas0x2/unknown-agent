@@ -17,6 +17,7 @@ export * from './laundromat';
 export * from './swaplist';
 export * from './swapdeal';
 export * from './matchless';
+export * from './thirstr';
 export * from './agent';
 export * from './endings';
 export * from './day';

@@ -47,6 +47,12 @@ from: 14
 
 - [hidden; hint if adware_installed] From today agent-4 is strong enough to take the [[PC Medic]] virus apart in agent-terminal: remove it, or extract its source and the author's details.
 
+## Sites
+
+- [public] 10:00 Kira joins [[Thirstr]] (thirstr.com/kiranightly): "Night nurse. Posts between shifts."
+- [hidden; public if matchless_job] 10:00 Kira was in [[6ft_sigma]]'s Matchless deck on day 11.
+- [hint] 10:00 Pia's Thirstr page, managed by Stryker Talent, now posts every few minutes and "Replies in under a second"; its bio reads "Hey you 💕 I'm always here for you." Stryker Talent's bio ends "We handle the business. And the content."
+
 ## Writer notes
 
 - Rent 500 (`RENT`); Evicted if short. The trader buys 3,000 $GAI by hand on agent-4.

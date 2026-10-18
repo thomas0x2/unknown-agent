@@ -28,6 +28,10 @@ from: 1
 - [public] He pays only if every swipe that day matched his standards; a wrong or skipped swipe gets a "Yesterday" email at 10:00 and no pay.
 - [hidden; public if matchless_women_only] After the player accepted a man for him, he wrote the next morning that he is SUPER STRAIGHT and only dates WOMEN, and "Women only." heads his standards from then on.
 
+## Women who turn up on Thirstr
+
+- [hidden; public if matchless_job] A few women in his deck turn up on [[Thirstr]] three days after he saw them: Sienna (day 5), Margot (day 7), Delphine (day 9) and Kira (day 11). Each met every one of his standards.
+
 ## Writer notes
 
 - `app/src/engine/matchless.ts`, `app/src/ui/matchless.ts`, rules `app/content/matchless.json` (standards v1 to v7, emails `dN_matchless_rules_N.json`, `womenOnly`), flags `matchless_job`, `matchless_signed_in`, `matchless_women_only`.
@@ -36,3 +40,4 @@ from: 1
 - Deck mix about 7 in 10 women, 2 men, 1 nonbinary. Table extras when named: weight (from day 14), Y followers, kinks, income, politics (Heritage Party, Progress Party, none), body count, canthal tilt, mandibular ratio. Picture-only traits: hair length, hair colour, glasses, earrings. About half meet his standards each day.
 - His first standards don't mention gender, so men can't be swiped wrong until the player accepts one; next morning he says he is SUPER STRAIGHT and "Women only." joins the standards. Never fires the player.
 - Voice: women's messages are written the way he imagines women talk; men's are creepy. The joke stays on him, never on the profiles.
+- Thirstr crossovers: `CREATORS[].matchless` in engine/thirstr.ts; `dayProfiles` makes the first passing profile that day hers (name, look, picture traits unless a standard names them). See [[Thirstr]].

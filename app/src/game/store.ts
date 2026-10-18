@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, recordStake, recordDeposit, spinSlot, applyCasinoCode, withdrawCasino, payStakes, buyStock, sellStock, exchangeCoins, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, rewindArrivals, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy, deliverSwapReplies, matchlessSwipe, matchlessLogin, clone, uploadFile, fileRentAppeal, donateCrane, craneDonations, fillSave, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat, agentTermPrompt, dropHackGame, hackMinutes, BOOT_MS, READ_MS, dateShort, clockTime, AGENT_POLICY, installAdware, tickAdware, closePopup, EXE_RUN_LINES,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, recordStake, recordDeposit, spinSlot, applyCasinoCode, withdrawCasino, payStakes, buyStock, sellStock, exchangeCoins, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, rewindArrivals, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy, deliverSwapReplies, matchlessSwipe, matchlessLogin, clone, uploadFile, fileRentAppeal, donateCrane, craneDonations, thirstrSubscribe, fillSave, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat, agentTermPrompt, dropHackGame, hackMinutes, BOOT_MS, READ_MS, dateShort, clockTime, AGENT_POLICY, installAdware, tickAdware, closePopup, EXE_RUN_LINES,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -630,6 +630,13 @@ export class GameStore {
     const n = craneDonations(r.state);
     this.ui.adNotice = r.error ?? (n > 1 ? `Thank you. That's ${n} donations. Randall has been told.` : 'Thank you. Your donation of 5 DOLR has been received.');
     if (r.error) { this.emit(); return; }
+    this.commitAndSettle(r.state);
+  }
+  /** thirstr.com: subscribe to a creator for 30 days, paid from Coinbin. */
+  thirstrSubscribe(handle: string): void {
+    const r = thirstrSubscribe(this.state, handle);
+    this.ui.adNotice = r.error ?? '';
+    if (r.error || r.state === this.state) { this.emit(); return; }
     this.commitAndSettle(r.state);
   }
   setStackNotice(text: string): void { this.ui.stack = { error: '', notice: text }; this.emit(); }

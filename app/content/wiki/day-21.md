@@ -32,6 +32,10 @@ from: 21
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.
 
+## Sites
+
+- [hint] 10:00 Like the other Stryker Talent pages, Sienna's [[Thirstr]] page now posts every few minutes; its bio reads "Hey hey! I'm here 24/7 for you 💕"
+
 ## Writer notes
 
 - Rent 650 at payday (RENT in config), the third payday; day 28 takes 650 again.

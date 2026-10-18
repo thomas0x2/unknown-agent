@@ -18,6 +18,7 @@ import { setHeadline } from '../ads';
 import { pageCityPulse } from '../citypulse';
 import { pagePollymarket } from '../pollymarket';
 import { pageStack } from '../stack';
+import { pageThirstr } from '../thirstr';
 import { hotStory } from '../../engine';
 import { pageAgent, pageModels } from './agent';
 import { pagePhish, pageWallet } from './coinbin';
@@ -58,6 +59,7 @@ export function page(store: GameStore, r: Route): string {
     case 'citypulse': return pageCityPulse(store, r.param);
     case 'pollymarket': return pagePollymarket(store, r.param);
     case 'stack': return pageStack(store);
+    case 'thirstr': return pageThirstr(store, r.param);
     case 'wiki': return pageWiki(store, r.param);
     default: return pageUnderground(r.def?.label ?? r.site);
   }
