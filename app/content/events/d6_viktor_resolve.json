@@ -1,14 +1,14 @@
 {
-  "id": "d4_viktor_resolve",
+  "id": "d6_viktor_resolve",
   "site": "y",
   "from": "Viktor",
   "trigger": {
-    "dayMin": 4,
+    "dayMin": 6,
     "flagsAll": [
       "swaplist_live"
     ]
   },
-  "at": "16:00",
+  "at": "16:40",
   "onDeliver": {
     "setFlags": [
       "viktor_sold_watch"

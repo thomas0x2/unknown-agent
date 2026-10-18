@@ -1,12 +1,12 @@
 {
-  "id": "d5_y_swaplist_messages",
+  "id": "d7_y_swaplist_messages",
   "site": "y",
   "from": "Viktor",
   "trigger": {
-    "dayMin": 5,
+    "dayMin": 7,
     "appWorking": "viktor_contact"
   },
-  "at": "11:40",
+  "at": "13:55",
   "onDeliver": {
     "updateApp": {
       "client": "viktor_contact",

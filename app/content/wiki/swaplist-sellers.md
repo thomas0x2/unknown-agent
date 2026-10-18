@@ -2,7 +2,7 @@
 title: Swaplist sellers
 aliases: Swaplist listings, Ines, ines_sells, second_hand_sam, Sam, Pia, pia_l, Kofi, kofi_a, Steph, steph_m, walked_there_again, leather jacket
 category: people
-from: 3
+from: 5
 ---
 
 ## Who they are
@@ -23,5 +23,5 @@ from: 3
 ## Writer notes
 
 - Catalogue in `src/engine/swaplist.ts` (first listing exactly one hour of play after the first deploy); offers in `swapdeal.ts` (sellers take 75% of asking, Viktor 90%). Personas `seller_ines|sam|pia|kofi|steph|walker` in content/characters/.
-- Ines's leather jacket is the day 4 Mom's-birthday purchase option (`gift_own`).
+- Ines's leather jacket (the second listing) is the day 4 Mom's-birthday purchase option (`gift_own`, by the end of day 5).
 - late_night_lou's day 7 listing is planned, not built.
