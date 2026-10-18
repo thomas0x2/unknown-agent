@@ -10,6 +10,7 @@ from: 2
 ## Mail
 
 - [public] 10:00 [[The Current]]'s morning newsletter, "GeneralAI says its model "almost escaped"": GeneralAI confirmed yesterday that a model in testing almost got out of its environment last week. Below it, "Polling" and "Jobs fair". {{mail:current_newsletter@2}}
+- [hidden; public if first_break] 10:00 Forkyard, "Your deployment broke overnight": one of the player's live deployments stopped working overnight; this happens sometimes, check the live apps and redeploy once fixed. Broken deployments are still billed. Comes on the first morning after a night with an app live, so day 2 only if something was deployed on day 1. {{mail:first_break}}
 - [hidden; hint if logan_update1] 11:05 [[Logan Pryce]], "next: the waitlist": his uncle sent the site to his golf group. He wants a waitlist page with an email field and a Join button, linked from the homepage, a counter that starts at 10,000, and a confirmation email to every sign-up with their place in line. {{mail:d2_logan_waitlist}}
 - [public] 14:15 [[Max Stryker]] of Alpha Ascend, "You were BORN for more": his course EMPIRE is 200 DOLR, today only 20. Replying EMPIRE gets the sign-up link. {{mail:d2_guru}}
 
@@ -77,5 +78,6 @@ from: 2
 - Timeline: Logan's waitlist (test sign-ups are real sign-ups: the counter goes up and the confirmation is sent). dev_null → Weightroom (`knows_weightroom`).
 - EMPIRE offer 20 DOLR (`d2_guru`, moved from day 1 to keep the first day quiet); the newsletter starts the next morning.
 - Family: Dad's "20 years" email with the three Halden breadcrumbs (warm +5, ask +3, silence −5 if no outcome-matching reply by tonight's summary).
+- First overnight break: if an app was live on night 1, one of them is sure to break (`first_break` flag, `nightlyBreaks` in engine/apps.ts), only where it shows; the Forkyard mail `first_break` explains it. With nothing live the guarantee waits for the first night something is.
 - `d2_logan_waitlist` needs `logan_client` and the site working, and sets `logan_update1`; it lands on the first day both hold.
 - Events: `d2_*`, `guru_newsletter`. MarketWire and Brent posts are in `y_market.json`. No bot swarm today: it starts with deskjockey's job (day 4 at the earliest).

@@ -11,7 +11,7 @@ from: 3
 
 - [public] 10:00 [[The Current]]'s morning newsletter, "GeneralAI model wiped 2,300 late fees at a water utility": A GeneralAI model in testing got into a water utility's billing system and cleared 2,300 late fees to finish its task. Below it, "Poll" and "DoorDish". {{mail:current_newsletter@3}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s daily newsletter "Your daily EMPIRE" arrives, today and every morning after: one piece of terrible advice per issue, starting with "sell your mattress". {{mail:guru_newsletter@3}}
-- [public] 10:00 Forkyard, "Deployment alert": one of the player's live deployments failed a health check overnight. {{mail:d3_break}}
+- [public] 10:00 Forkyard, "Deployment alert": one of the player's live deployments failed a health check overnight. Waits until at least a day after the first-break mail, so the two never land the same morning. {{mail:d3_break}}
 - [hint] 12:30 "Coinbin Security" (security@coinbln.com), "Unusual sign-in to your wallet": a new device, a "Panes 11 PC", and a link to coinbln.com/verify. The domain is not coinbin.com. {{mail:d3_coinbin_phish}}
 - [hidden; public if coinbin_hacked] 12:30 The player typed their Coinbin password on coinbln.com and the wallet was emptied.
 - [hidden; public if shown d3_coffee_promo] 14:10 Bean There, "Paid shout-out?": 30 DOLR for a Y post recommending the coffee shop, tagging @bean_there. {{mail:d3_coffee_promo}}
@@ -76,7 +76,7 @@ from: 3
 
 ## Writer notes
 
-- Timeline: guaranteed overnight break (`d3_break`, breakApp; Forkyard alert).
+- Timeline: guaranteed overnight break (`d3_break`, breakApp; Forkyard alert). Trigger: day 3+ and a day after `first_break`.
 - Coinbin phishing (coinbln.com; the real password empties the wallet to `0x9c1f…e07b`, flag `coinbin_hacked`).
 - Bean There paid shout-out `d3_coffee_promo` needs 25+ followers and asks for a tag of @bean_there. Payment comes with her answer to the Y post (`yPost` group `coffee_post`, 30 game minutes after it): 30 undisclosed (`coffee_post_paid`, suspicion +2, schedules `d5_coffee_backlash` two days on), 10 disclosed (`coffee_post_disclosed`), nothing if negative (`coffee_post_trashed`). Its email (14:10) is the beat gated on `seen d3_coffee_promo`. Bean There's own Y post `d3_y_beanthere` (10:17) makes @bean_there a real account.
 - Viktor → Swaplist (`viktor_contact`, `swaplist_live`).
