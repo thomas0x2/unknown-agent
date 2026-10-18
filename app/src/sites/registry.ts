@@ -7,7 +7,7 @@ import { adSite } from './adSites';
 
 export type SiteId =
   | 'y' | 'qmail' | 'qdrive' | 'coinbin' | 'sherwood' | 'doordish' | 'forkyard' | 'agent' | 'yowl'
-  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'phish' | 'prince' | 'lonely' | 'sorry' | 'current' | 'citypulse' | 'pollymarket' | 'stack' | 'matchless' | 'whyc' | 'adsite' | 'app' | 'wiki' | 'newtab' | 'notfound';
+  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'phish' | 'prince' | 'lonely' | 'sorry' | 'current' | 'citypulse' | 'pollymarket' | 'stack' | 'thirstr' | 'matchless' | 'whyc' | 'adsite' | 'app' | 'wiki' | 'newtab' | 'notfound';
 
 export interface SiteDef {
   id: SiteId;
@@ -73,6 +73,9 @@ export const SITES: SiteDef[] = [
   // the crypto casino (engine/casino.ts, ui/stack.ts); its ads and Max Stryker's posts link it
   { id: 'stack', base: 'stack.com', label: 'Stack', group: 'core', reachable: always,
     bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('stack')) },
+  // the creator subscription site (engine/thirstr.ts, ui/thirstr.ts); Max Stryker's posts link his agency page there
+  { id: 'thirstr', base: 'thirstr.com', label: 'Thirstr', group: 'core', reachable: always,
+    bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('thirstr')) },
   // the accelerator Logan claims backs WorkAgent (ui/whyc.ts); his Y bio and his site's investor row link it
   { id: 'whyc', base: 'whycombinator.com', label: 'Why Combinator', group: 'web', reachable: always },
   // the world wiki and its editor (ui/wiki.ts): dev mode only

@@ -11,6 +11,7 @@ import type { GameState, MatchlessSwipe } from './state';
 import type { Content, MatchlessRule } from '../content/schema';
 import { clone, money, pushMail } from './core';
 import { CLOCK } from './config';
+import { CREATORS } from './thirstr';
 
 export const MATCHLESS_JOB = 'matchless_job';
 export const CLIENT = { name: '6ft_sigma', addr: '6ft_sigma@qmail.com' };
@@ -275,6 +276,7 @@ export function dayProfiles(content: Content, day: number, version: number, wome
   const good = int(r, Math.floor(n * 0.4), Math.ceil(n * 0.6));
   const order = Array.from({ length: n }, (_, i) => ({ i, k: r() })).sort((x, y) => x.k - y.k).map((x) => x.i);
   const used = new Set<string>(), said = new Set<string>();
+  const known = CREATORS.find((c) => c.matchless === day);
   return order.map((slot, i) => {
     const p: Profile = { id: `${day}-${version}-${i}${womenOnly ? '-w' : ''}`, name: '', message: '', look: int(r, 0, 999), ...anyone(r) };
     for (const rule of rules) satisfy(r, p, rule);
@@ -286,11 +288,21 @@ export function dayProfiles(content: Content, day: number, version: number, wome
     // keep sexuality and gender consistent; this never moves a value across a standard's line
     if (p.gender === 'man' && p.sexuality === 'lesbian') p.sexuality = 'gay';
     if (p.gender !== 'man' && p.sexuality === 'gay') p.sexuality = 'lesbian';
+    // a woman who joins Thirstr a few days later (engine/thirstr.ts): the first profile that meets every standard.
+    // Her picture traits stay hers unless a standard in force names them, so the profile still passes.
+    const her = !!known && slot < good && !used.has(known.name);
+    if (her) {
+      p.gender = 'woman';
+      p.look = known.look;
+      for (const a of ['hair', 'hairColor', 'glasses', 'earrings'] as const) if (!rules.some((rule) => rule.attr === a)) p[a] = known[a] as never;
+      if (p.sexuality === 'gay') p.sexuality = 'lesbian';
+    }
     const lines = MESSAGES[p.gender === 'man' ? 'men' : 'women'];
     p.message = choose(r, lines.filter((x) => !said.has(x)).length ? lines.filter((x) => !said.has(x)) : lines);
     said.add(p.message);
     const names = NAMES[p.gender].filter((x) => !used.has(x));
     p.name = choose(r, names.length ? names : NAMES[p.gender]);
+    if (her) p.name = known!.name;
     used.add(p.name);
     return p;
   });

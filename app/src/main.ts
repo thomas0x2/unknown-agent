@@ -20,6 +20,7 @@ import './ui/adSites.css';
 import './ui/citypulse.css';
 import './ui/pollymarket.css';
 import './ui/stack.css';
+import './ui/thirstr.css';
 import './ui/appsite.css';
 import './ui/terminal.css';
 import './ui/devOptions.css';
@@ -381,6 +382,7 @@ const ACTS: Record<string, (t: HTMLElement) => void> = {
   'rent-appeal': () => store.rentAppeal(),
   'whyc-apply': () => store.applyWhyC(),
   'crane-donate': () => store.craneDonate(),
+  'thirstr-sub': (t) => store.thirstrSubscribe(t.dataset.handle ?? ''),
   'stack-bet': (t) => store.stackPickBet(Number(t.dataset.bet)),
   'stack-spin': () => store.stackSpin(),
   'stack-copy': () => copyDepositAddress(),

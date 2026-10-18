@@ -1,6 +1,6 @@
 ---
 title: Max Stryker
-aliases: Max, Stryker, @max_stryker, max@alphaascend.test, Alpha Ascend, EMPIRE
+aliases: Max, Stryker, @max_stryker, max@alphaascend.test, Alpha Ascend, EMPIRE, Stryker Talent
 category: people
 from: 1
 ---
@@ -89,6 +89,12 @@ from: 1
 - [public] On day 14, rent day: weak men pay rent, strong men turn it into more rent. {{y:d14_y_stryker_stack}}
 - [public] On day 18: Stack pays him to post this; "That's called leverage." {{y:d18_y_stryker_stack}}
 
+## Stryker Talent
+
+[public] Max Stryker also runs Stryker Talent, an agency that manages creators on [[Thirstr]] for 60/40 ("We handle the business. You handle the content."). Its page is thirstr.com/strykertalent.
+
+- [public] On day 10 he posts that Stryker Talent is signing creators on Thirstr. {{y:d10_y_stryker_thirstr}}
+- [public] On day 16 he posts that he automated two of his Thirstr creators this month: revenue up 40%, "Nobody calls in sick." {{y:d16_y_stryker_thirstr}}
 ## His $COPE promotions
 
 [public] From day 9 Max Stryker is also paid (#ad) to post about [[COPE]], [[Dex Calloway]]'s memecoin.
@@ -143,5 +149,6 @@ from: 1
 ## Writer notes
 
 - Persona `max` (scripted "Commitment logged." on EMPIRE replies); events `dN_y_stryker_2` (dating advice, odd days 5 to 15, each answered by `dN_y_sigma`), `d1_guru` (interested reply: the 20 DOLR price "goes back to 200, as it has every midnight since launch"), `guru_newsletter` (27 bodies, one per day 2 to 28, mattress first; embed one issue as `mail:guru_newsletter@N` in double braces; `special` gives the first issue on or after day 5 a `cc` of 28 addresses incl. [[6ft_sigma]] and sets `guru_cc_leak`; a player who subscribes later gets the leak in their first issue), `dN_y_stryker_stack` (paid Stack posts, days 3, 6, 14, 18; see [[Stack]]), `dN_y_stryker`. EMPIRE page and `EMPIRE` constant in engine/actions/clicks.ts.
+- Stryker Talent (Papers, Please batch 2, 2026-10-18): he is Thirstr's pimp; his creators are the ones replaced by AI (see [[Thirstr]] writer notes). Events `d10_y_stryker_thirstr`, `d16_y_stryker_thirstr`.
 - Name and Alpha Ascend are placeholders. "4am" and "EMPIRE" are his alone; ration them.
 - The guru CC leak is a planned doxing lead. The bible had him recruiting by newsletter on days 10 to 12; the game does it on Y.
