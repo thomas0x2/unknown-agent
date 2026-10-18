@@ -78,6 +78,10 @@ export function freshUi() {
     uploadError: '',
     /** The file last picked for an upload, so the picker keeps it after the page redraws. */
     uploadPick: '',
+    /** The file dialog an upload opens (ui/filePicker.ts): the site it uploads to, the folder shown, the file selected. */
+    filePick: null as { site: string; folder: string; file: string } | null,
+    /** An upload is being processed (site, and Date.now() when it started): the site's loading animation runs before its result shows. */
+    uploading: null as { site: string; at: number } | null,
     /** An ad site's working button: the line under it (rentboard.gov's appeal). */
     adNotice: '',
     /** An action Jev was needed for and couldn't be reached: why, and the text to put back in its box. */

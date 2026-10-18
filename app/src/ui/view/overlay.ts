@@ -4,6 +4,7 @@
 import { GameStore } from '../../game/store';
 import { type GameState, RENT, dateMedium, dateFull, openPopup } from '../../engine';
 import { esc, fmtMoney } from './common';
+import { filePickerBody } from '../filePicker';
 
 // ── overlay (intro / morning / confirm / ending) ──
 const ENDINGS: Record<string, string> = {
@@ -59,6 +60,7 @@ export function overlayHtml(store: GameStore): string {
     const c = store.ui.confirm;
     return osWindow('Confirm', 'ov-small ov-confirm', `<p>${esc(c.text)}</p><div class="ov-actions"><button class="btn" data-ov="confirm-no">Cancel</button><button class="btn primary" data-ov="confirm-yes">${esc(c.yes)}</button></div>`, 'confirm-no');
   }
+  if (store.ui.filePick) return osWindow('Upload file', 'ov-picker', filePickerBody(store), 'fp-cancel');
   if (store.ui.memWarn) {
     return osWindow('Out of memory', 'ov-small ov-memwarn', `<p>Your system is running out of memory. Close some tabs before opening a new one.</p>
       ${memoryHtml()}

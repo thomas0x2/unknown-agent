@@ -13,7 +13,7 @@ from: 1
 - [public] **vantor_offboarding.pdf**: Vantor People & Culture's offboarding packet (Form PC-77b, no severance for positions transitioned to automation). Keep the laptop "until further notice", because Facilities is unstaffed.
 - [hint] **passwords.txt**: the player's logins (see [[Money and DOLR]]).
 - [public] **Models**: model weights the player downloads, such as deepsleep-0.5B.gguf ("Confident, free, mostly wrong.").
-- [public] Vantor Outplacement takes a resume upload from Qdrive (PDF only).
+- [public] Vantor Outplacement takes a resume upload from Qdrive (PDF only). Uploading opens a Panes file dialog on Qdrive's folders; files the site doesn't take are greyed out under its filter ("PDF files (*.pdf)"). Double-click or Upload sends the file.
 - [hint; public if adware_downloaded] **PCMedic_Setup.exe**: the "cleaner" from [[PC Medic]]. Running it infects the laptop.
 - [hidden; public if adware_source] **pcmedic_source.txt**: the virus's source, once the agent has extracted it, with the author's name, email and wallet in it.
 

@@ -161,10 +161,17 @@
 .up-form h2 { margin: 0 0 6px; font-size: 18px; }
 .up-form p { margin: 0 0 12px; }
 .up-row { display: flex; gap: 10px; }
-.up-row select { flex: 1; font: inherit; padding: 8px; background: #fff; color: #222; border: 1px solid var(--lp-line, #ccc); }
 .up-err { margin: 10px 0 0; color: #c0392b; font-size: 14px; }
 .up-result { margin-top: 14px; display: grid; gap: 4px; }
 .up-result b { font-size: 22px; }
+.up-form .lp-btn:disabled { opacity: .5; cursor: default; }
+/* the upload's loading animation; --up-at is negative so a redraw picks it up where it was */
+.up-loading { margin-top: 14px; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 8px 10px; font-size: 14px; color: var(--lp-dim); }
+.up-spin { width: 16px; height: 16px; border: 2px solid var(--lp-line); border-top-color: var(--lp-ink); border-radius: 50%; animation: up-spin .8s linear infinite; animation-delay: var(--up-at, 0ms); }
+.up-bar { grid-column: 1 / -1; height: 4px; background: var(--lp-line); overflow: hidden; }
+.up-bar b { display: block; height: 100%; width: 100%; background: var(--lp-ink); transform-origin: left; animation: up-fill var(--up-ms, 2800ms) cubic-bezier(.3, .1, .5, 1) forwards; animation-delay: var(--up-at, 0ms); }
+@keyframes up-spin { to { transform: rotate(1turn); } }
+@keyframes up-fill { from { transform: scaleX(0); } to { transform: scaleX(.97); } }
 
 /* the paid chats: a refused message, and lonely.ai's fine print */
 .ua-err { margin: 0 0 6px; font-size: 13px; color: #c0392b; }

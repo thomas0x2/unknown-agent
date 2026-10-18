@@ -380,6 +380,11 @@ const ACTS: Record<string, (t: HTMLElement) => void> = {
   'seed-show': () => store.toggleSeed(),
   'seed-copy': () => copySeedPhrase(),
   'rent-appeal': () => store.rentAppeal(),
+  'up-open': (t) => openFilePicker(t.dataset.site ?? ''),
+  'fp-folder': (t) => store.filePickFolder(t.dataset.folder ?? ''),
+  'fp-file': (t) => store.filePickFile(t.dataset.file ?? ''),
+  'fp-cancel': () => store.closeFilePicker(),
+  'fp-ok': () => confirmFilePick(),
   'whyc-apply': () => store.applyWhyC(),
   'crane-donate': () => store.craneDonate(),
   'thirstr-sub': (t) => store.thirstrSubscribe(t.dataset.handle ?? ''),
@@ -442,6 +447,21 @@ function copySeedPhrase(): void {
   else store.setCbNotice('Recovery phrase: select the words above to copy them');
 }
 
+/** The upload file dialog opens on the folder and file last uploaded. */
+function openFilePicker(site: string): void {
+  const last = driveFiles(store.state).find((f) => f.id === store.ui.uploadPick);
+  store.openFilePicker(site, last?.folder ?? 'documents', last?.id ?? '');
+}
+function confirmFilePick(): void {
+  const f = driveFiles(store.state).find((x) => x.id === store.ui.filePick?.file);
+  if (f) store.confirmFilePick({ id: f.id, name: f.name });
+}
+// double-clicking a file in the dialog uploads it, like a real one
+document.addEventListener('dblclick', (e) => {
+  const t = (e.target as HTMLElement).closest<HTMLElement>('.fp-file:not(:disabled)');
+  if (t?.dataset.file) { store.filePickFile(t.dataset.file); confirmFilePick(); }
+});
+
 function clearMailDraft(): void { ['mail-to', 'mail-subject', 'mail-body'].forEach(clearField); }
 
 function onOverlay(a: string, t?: HTMLElement): void {
@@ -452,6 +472,7 @@ function onOverlay(a: string, t?: HTMLElement): void {
   else if (a === 'morning') store.dismissMorning();
   else if (a === 'greet') { store.dismissGreet(); SOUND.play('dayStart', 0.1); }
   else if (a === 'mem-ok') store.dismissMemWarn();
+  else if (a === 'fp-cancel') store.closeFilePicker();
   else if (a === 'confirm-yes') store.resolveConfirm(true);
   else if (a === 'confirm-no') store.resolveConfirm(false);
   else if (a === 'jev-ok') {
@@ -469,11 +490,6 @@ const FORMS: Record<string, (f: HTMLFormElement) => void> = {
   'dev-day': () => { quietReset(); store.devGoToDay(Number(val('#dev-day'))); },
   'dev-flag': () => { const v = val('#dev-flag-name').trim(); if (v) store.devSetFlag(v, true); },
   phish: () => store.phish(val('#ph-pass')),
-  upload: (f) => {
-    const id = val('#up-file');
-    const fl = driveFiles(store.state).find((x) => x.id === id);
-    if (fl) store.upload(f.dataset.site ?? '', { id: fl.id, name: fl.name });
-  },
   prince: () => store.princeClaim(val('#pr-seed')),
   lonely: () => { const v = val('#lonely-input').trim(); if (v && store.lonelySend(v)) { SOUND.play('send'); clearField('lonely-input'); } },
   sorry: () => { const v = val('#sorry-input').trim(); if (v && store.sorrySend(v)) { SOUND.play('send'); clearField('sorry-input'); } },
@@ -627,6 +643,7 @@ document.addEventListener('keydown', (e) => {
   if (el instanceof HTMLTextAreaElement && el.form && e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); el.form.requestSubmit(); }
   if (e.key === '`' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); store.toggleDev(); }
   if (e.key === 'Escape' && store.ui.start) store.toggleStart(false);
+  if (e.key === 'Escape' && store.ui.filePick) store.closeFilePicker();
   // Alt+Left / Alt+Right, like a real browser
   if (e.altKey && !e.ctrlKey && !e.metaKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) { e.preventDefault(); if (e.key === 'ArrowLeft') store.back(); else store.forward(); }
 });
