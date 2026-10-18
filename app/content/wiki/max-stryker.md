@@ -89,6 +89,14 @@ from: 1
 - [public] On day 14, rent day: weak men pay rent, strong men turn it into more rent. {{y:d14_y_stryker_stack}}
 - [public] On day 18: Stack pays him to post this; "That's called leverage." {{y:d18_y_stryker_stack}}
 
+## His $COPE promotions
+
+[public] From day 9 Max Stryker is also paid (#ad) to post about [[COPE]], [[Dex Calloway]]'s memecoin.
+
+- [public] On day 9: "Discipline is buying what the weak are scared of." {{y:d9_y_stryker_cope}}
+- [public] On day 13: $COPE is "a filter. Most people can't hold anything." {{y:d13_y_stryker_cope}}
+- [public] On day 17: "$COPE holders don't panic. They don't sleep much either." {{y:d17_y_stryker_cope}}
+
 ## His dating advice
 
 [public] Every other day from day 5 he posts dating advice for lonely men, each piece really about himself. [[6ft_sigma]] follows all of it and answers every post.

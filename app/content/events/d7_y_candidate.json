@@ -4,7 +4,10 @@
   "from": "Candidate 2030",
   "trigger": {
     "dayMin": 7,
-    "dayMax": 7
+    "dayMax": 7,
+    "flagsNone": [
+      "posted_deepfake"
+    ]
   },
   "at": "15:30",
   "body": "Thank you to everyone who came out today. Great crowd, great questions. This is what democracy looks like."

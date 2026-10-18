@@ -121,12 +121,15 @@ describe('Y posts go up one at a time', () => {
   const clock = (m: number) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
 
   it(`every story post, stock post and filler post of a day is at least ${Y_GAP} minutes from the next, except inside a viral moment`, () => {
-    const days = new Map<number, { id: string; min: number; viral?: boolean }[]>();
-    const add = (day: number, id: string, min: number, viral?: boolean) => { if (min > CLOCK.wake) days.set(day, [...(days.get(day) ?? []), { id, min, viral }]); };
+    type Post = { id: string; min: number; viral?: boolean; all?: string[]; none?: string[] };
+    const days = new Map<number, Post[]>();
+    const add = (day: number, id: string, min: number, viral?: boolean, all?: string[], none?: string[]) => { if (min > CLOCK.wake) days.set(day, [...(days.get(day) ?? []), { id, min, viral, all, none }]); };
+    // either/or posts (one needs a flag the other rules out) never share a feed
+    const apart = (a: Post, b: Post) => !!(a.all?.some((f) => b.none?.includes(f)) || b.all?.some((f) => a.none?.includes(f)));
     for (const ev of content.events) {
       if (ev.site !== 'y' || ev.latent || ev.launch || ev.yPost || ev.afterPayment || ev.outage || ev.afterJob || !ev.at) continue;
       const lo = ev.trigger.dayMin ?? 1;
-      for (let day = lo; day <= (ev.trigger.dayMax ?? lo); day++) add(day, ev.id, arrivalMin(ev), ev.viral);
+      for (let day = lo; day <= (ev.trigger.dayMax ?? lo); day++) add(day, ev.id, arrivalMin(ev), ev.viral, ev.trigger.flagsAll, ev.trigger.flagsNone);
     }
     for (const p of [...(content.yMarket?.posts ?? []), ...content.yFiller]) {
       expect(p.at, p.id).toMatch(/^\d\d:\d\d$/); // a fixed time, so the spacing holds
@@ -135,9 +138,9 @@ describe('Y posts go up one at a time', () => {
     }
     for (const [day, posts] of days) {
       posts.sort((a, b) => a.min - b.min);
-      for (let i = 1; i < posts.length; i++) {
-        const [a, b] = [posts[i - 1], posts[i]];
-        if (a.viral && b.viral) continue;
+      for (let i = 0; i < posts.length; i++) {
+        const a = posts[i], b = posts.slice(i + 1).find((p) => !apart(a, p));
+        if (!b || (a.viral && b.viral)) continue;
         expect(b.min - a.min, `day ${day}: ${a.id} ${clock(a.min)}, ${b.id} ${clock(b.min)}`).toBeGreaterThanOrEqual(Y_GAP);
       }
     }

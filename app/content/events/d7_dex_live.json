@@ -1,0 +1,16 @@
+{
+  "id": "d7_dex_live",
+  "site": "qmail",
+  "from": "Dex Calloway",
+  "addr": "dex@cope.xyz",
+  "subject": "we're live",
+  "trigger": {
+    "dayMin": 7,
+    "dayMax": 7,
+    "flagsAll": [
+      "cope_created"
+    ]
+  },
+  "at": "10:20",
+  "body": "$COPE trades as of this morning. your 50,000,000 COPE are in your wallet, locked until Oct 30 like the site says. that's what founding means.\n\nwatch the price if you want. i don't. i watch the congregation.\n\ndex"
+}

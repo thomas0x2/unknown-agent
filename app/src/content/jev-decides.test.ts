@@ -211,6 +211,18 @@ describe('fixing named bugs', () => {
     expect(getApp(r.state, id)!.repoVersion).toBe(getApp(s, id)!.repoVersion);
   });
 
+  it.each([
+    ['points at nothing', [] as string[], 'fix the thing, it is broken'],
+    ['names only the app', ['app:'], 'fix the logan site'],
+  ])('a total miss that %s gets no fake fix: answered on the spot, no "Good catch!", no work', async (_, route, prompt) => {
+    const { s, id } = withApp('logan_contact', 'about');
+    const r = await promptAgent(s, content, pickJev({ route: route.map((x) => `${x}${id}`) }), prompt);
+    expect(r.state.agentWork).toBeFalsy();
+    expect(r.state.chat.at(-1)!.src).not.toBe('working');
+    expect(r.state.chat.at(-1)!.text).not.toMatch(/^Good catch!/);
+    expect(getApp(r.state, id)!.repo).toEqual(getApp(s, id)!.repo);
+  });
+
   it('a real fix opens with "Good catch!"; feature work does not', async () => {
     const { s, id } = withApp('logan_contact', 'about');
     getApp(s, id)!.repo.find((f) => f.id === 'about')!.variant = 'credentials_wrong';

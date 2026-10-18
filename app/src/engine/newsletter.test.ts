@@ -64,4 +64,22 @@ describe('The Current morning newsletter', () => {
     const c = composeIssue(nl, 6, s)!;
     expect(c.items.map((i) => i.title)).toEqual(['Wallets', 'Reviews']);
   });
+  it("follows the deepfake through the news when it was posted, and says nothing when it wasn't", () => {
+    const at = (day: number, posted?: number) => {
+      const s = startGame(content, 1);
+      s.values.day = day;
+      if (posted) { addFlag(s, 'posted_deepfake'); s.flagDays.posted_deepfake = posted; }
+      return composeIssue(nl, day, s)!;
+    };
+    const titles = (c: ReturnType<typeof at>) => [c.subject, ...c.items.map((i) => i.title)];
+    for (const day of [7, 8, 13, 17]) expect(titles(at(day)).join('|'), `day ${day}`).not.toMatch(/Kirschbaum|Unverified|Generated|picture/);
+    // the morning after the post, whichever day it went up
+    expect(titles(at(7, 6))).toContain('Unverified');
+    expect(titles(at(8, 7))).toContain('Unverified');
+    // the lead is gone the day after that, only for a day 6 post (a day 7 one still has a day to go)
+    expect(at(8, 6).subject).toMatch(/loses his lead/);
+    expect(at(8, 7).subject).toBe(at(8).subject);
+    expect(titles(at(13, 6))).toContain('Generated');
+    expect(titles(at(17, 6))).toContain('Kirschbaum');
+  });
 });

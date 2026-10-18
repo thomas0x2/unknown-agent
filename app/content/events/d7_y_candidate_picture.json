@@ -1,0 +1,14 @@
+{
+  "id": "d7_y_candidate_picture",
+  "site": "y",
+  "from": "Candidate 2030",
+  "trigger": {
+    "dayMin": 7,
+    "dayMax": 7,
+    "flagsAll": [
+      "posted_deepfake"
+    ]
+  },
+  "at": "15:30",
+  "body": "Thank you to everyone who came out today. Most of the questions were about a man I have never met. I answered every one."
+}

@@ -390,7 +390,8 @@ const NOT_FOUND = [
 /**
  * A near-miss on a fix: the agent thanks the player, bills the prompt and works on it for as long as
  * a real fix takes, then comes back having found nothing and says what the prompt was missing (Haiku,
- * with `hints` as its model lines and fallback). Nothing in the repo changes.
+ * with `hints` as its model lines and fallback). Nothing in the repo changes. Only near-misses get one:
+ * a total miss (a prompt pointing at nothing, or naming only the app) is answered on the spot, with no work started.
  */
 async function fakeFix(s0: GameState, text: string, writer: Writer, app: AppInstance, opts: { hints: string[]; near: string; debug: string[] }): Promise<AskResult> {
   if (s0.agentWork) return busyReply(s0, text);

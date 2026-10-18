@@ -1,0 +1,11 @@
+{
+  "id": "d15_y_dexcult",
+  "site": "y",
+  "from": "dexcult",
+  "trigger": {
+    "dayMin": 15,
+    "dayMax": 15
+  },
+  "at": "10:30",
+  "body": "a marketwire analyst called $COPE \"a feeling with a contract address.\" he's not wrong. he's just not in."
+}

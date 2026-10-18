@@ -148,5 +148,18 @@
     "name": "Caleb Moxon",
     "character": "moxon",
     "reply": "Thanks for writing. I read everything, though I can't answer much of it. Take care of yourself.\n\nCaleb"
+  },
+  {
+    "key": "dex@cope.xyz",
+    "name": "Dex Calloway",
+    "character": "dex",
+    "replyAfter": 30,
+    "reply": "the congregation hears you.\n\ndex"
+  },
+  {
+    "key": "dexcult",
+    "name": "dexcult",
+    "character": "dex",
+    "reply": "early."
   }
 ]
