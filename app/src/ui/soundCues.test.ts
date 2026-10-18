@@ -15,9 +15,19 @@ describe('sound cues', () => {
   });
   it('plays the work starting instead of a reply when a build or fix begins', () => {
     expect(soundCues(base, at({ agentMsgs: 4, workFrom: 900, txCount: 11, txOut: 400.8 }))).toEqual(['workStart', 'charge']);
-    // the work landing, or more chat while it runs, is an ordinary reply
+    // more chat while it runs is an ordinary reply
     expect(soundCues(at({ workFrom: 900 }), at({ agentMsgs: 4, workFrom: 900 }))).toEqual(['reply']);
-    expect(soundCues(at({ workFrom: 900 }), at({ agentMsgs: 4 }))).toEqual(['reply']);
+  });
+  it('plays its own sound, not a reply, when the work lands', () => {
+    expect(soundCues(at({ workFrom: 900 }), at({ agentMsgs: 4 }))).toEqual(['workDone']);
+    // a chat reply in the same moment is drowned out by it
+    expect(soundCues(at({ workFrom: 900 }), at({ agentMsgs: 5, sellerMsgs: 1 }))).toEqual(['workDone']);
+    // the next build starting right after: both are heard
+    expect(soundCues(at({ workFrom: 900 }), at({ agentMsgs: 5, workFrom: 960 }))).toEqual(['workDone', 'workStart']);
+  });
+  it('plays work pushed overnight after the night\'s sounds', () => {
+    expect(soundCues(at({ workFrom: 900 }), at({ day: 3, agentMsgs: 4, morning: true }))).toEqual(['dayEnd', 'workDone']);
+    expect(soundCues(at({ workFrom: 900 }), at({ day: 3, agentMsgs: 4, txCount: 11, txIn: 540, morning: true }))).toEqual(['dayEnd', 'income', 'workDone']);
   });
   it('plays income for money coming in, and both sounds when money moved both ways', () => {
     expect(soundCues(base, at({ txCount: 11, txIn: 540 }))).toEqual(['income']);
