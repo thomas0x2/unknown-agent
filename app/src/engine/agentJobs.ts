@@ -10,7 +10,7 @@ import type { GameState } from './state';
 import type { Content, GameEvent } from '../content/schema';
 import type { JevRouter, FeatureMatchInput } from './jev';
 import { CLOCK } from './config';
-import { sendLater, log } from './core';
+import { sendLater, log, addValue, randInt } from './core';
 import { applyEffects, jobDue } from './effects';
 import { getEvent, queueAt } from './events';
 
@@ -59,6 +59,8 @@ export function landAgentJob(s: GameState, content: Content, ev: GameEvent): voi
   const before = s.values.followers;
   const { job: _job, ...now } = spec.effects;
   applyEffects(s, now, ev.job, ev.id);
+  const gain = spec.post.followers;
+  if (gain) addValue(s, 'followers', gain.base + randInt(s, -gain.spread, gain.spread));
   s.hacked = [...(s.hacked ?? []), ev.id];
   s.hackPay = [...(s.hackPay ?? []), { eventId: ev.id }];
   const delta = s.values.followers - before;

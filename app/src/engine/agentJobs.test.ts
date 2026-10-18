@@ -43,7 +43,10 @@ describe('the deepfake through agent', () => {
     expect(post.text).toBe(CAPTION);
     expect(post.img).toBe('deepfake');
     expect(r.state.flags).toContain('posted_deepfake');
-    expect(r.state.values.followers).toBe(96); // +20%
+    // 2400 followers, give or take 400
+    expect(r.state.values.followers - 80).toBeGreaterThanOrEqual(2000);
+    expect(r.state.values.followers - 80).toBeLessThanOrEqual(2800);
+    expect(r.state.userPosts.at(-1)!.delta).toBe(r.state.values.followers - 80);
     expect(r.state.values.heritageStanding).toBe(s.values.heritageStanding + 15);
     // the reactions are on their way, and the consultant writes 30 minutes later
     expect(r.state.arriving!.map((a) => a.eventId)).toEqual(expect.arrayContaining(['dfr_candidate', 'dfr_citypulse']));
