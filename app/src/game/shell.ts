@@ -41,7 +41,7 @@ export function localTree(s: GameState): LocalDir {
     const dir = (drive.dirs[f.folder] ??= { dirs: {}, files: [] });
     dir.files.push({ name: f.name, kind: f.kind, text: f.preview, ...(f.id === 'pcmedic' ? { program: 'pcmedic' as const } : {}) });
   }
-  for (const id of ['documents', 'projects', 'models']) drive.dirs[id] ??= { dirs: {}, files: [] };
+  for (const id of ['documents', 'models']) drive.dirs[id] ??= { dirs: {}, files: [] };
   return { dirs: { home: { dirs: { desktop: { dirs: {}, files: [INVADERS] } }, files: [] }, qdrive: drive }, files: [] };
 }
 
