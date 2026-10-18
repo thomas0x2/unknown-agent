@@ -1,6 +1,6 @@
 /*
- * Plays day 1 of the real authored content through the engine with the offline Jev router: take the
- * restaurant lead, build and deploy the site, check it, fix the teaching bug, end the day, get paid.
+ * Plays day 1 of the real authored content through the engine with the offline Jev router: take
+ * Logan's lead, build and deploy the WorkAgent site, check it, fix the teaching bug, end the day, get paid.
  */
 import { loadContent } from './load';
 import { composeEmail, briefBuild, briefFix, deploy } from '../engine/actions';
@@ -8,67 +8,76 @@ import { applyEffects } from '../engine/effects';
 import { appMeetsSpec, getApp, devToggleBug, bugsOf } from '../engine/apps';
 
 /** Fix requests have to name the app. */
-const gino = 'Trattoria Gino: ';
+const wa = 'WorkAgent: ';
 import { renderAppSite } from '../ui/appsite';
 import { wordJev, pickJev, startAll, endAll, promptDone } from '../engine/_fixtures';
 
 const content = loadContent();
-const MENU = 'Margherita 12, Diavola 14, Lasagne 15, Tiramisu 7, Espresso 3';
+const PITCH = 'The future of work is agentic.';
+const INVESTORS = 'Why Combinator, Bonsai Capital, a67x';
+const CREDS = 'Why Combinator Startup School, San Fortuna State dropout, host of the Founder Mode podcast, 2x founder';
+const FULL = `Build a landing page for WorkAgent with the pitch "${PITCH}", a Backed by row with the logos of ${INVESTORS}, and an About us for Logan Pryce with his credentials: ${CREDS}.`;
+const LAZY = 'Build a landing page, the backed by row and About us.';
+/** A fix prompt that names the part a bug lives in. */
 const FIX: Record<string, string> = {
-  prices_missing: 'The prices are missing from the menu.',
-  prices_euri: 'The menu prices are in EURI, they should be DOLR.',
-  hours_wrong: 'The opening hours on the landing page are wrong.',
-  name_wrong: 'The restaurant name is misspelled.',
+  name_wrong: wa + 'the startup name on the landing page is misspelled, it should say WorkAgent.',
+  pitch_wrong: wa + `the pitch on the landing page is wrong, it should be "${PITCH}"`,
+  logos_wrong: wa + `the investors in the backed by row are wrong, it should be ${INVESTORS}.`,
+  logos_broken: wa + "the images in the backed by row don't load.",
+  founder_wrong: wa + 'the founder name on About us is misspelled, it should be Logan Pryce.',
+  fake_cofounders: wa + 'remove the fake cofounders from the team on About us.',
+  credentials_wrong: wa + `the credentials on About us are wrong, they should be ${CREDS}.`,
 };
+const fixFor = (feature: string, variant?: string) => FIX[variant ?? '']
+  ?? (feature === 'investors' ? FIX.logos_wrong : feature === 'about' ? FIX.credentials_wrong : FIX.pitch_wrong);
+const take = async () => (await composeEmail(startAll(content, 7), content, wordJev, 'logan@workagent.test', "Hi Logan, I'm in, I can build the website.")).state;
 
 describe('day 1 playthrough', () => {
-  it('opens with the termination email and the restaurant lead on Y', () => {
+  it("opens with the termination email and Logan's lead on Y", () => {
     const s = startAll(content, 7);
     const inbox = s.delivered.filter((d) => d.site === 'qmail').map((d) => d.eventId);
     expect(inbox).toContain('d1_hr_termination');
     expect(inbox).toContain('d1_mom');
-    expect(s.delivered.some((d) => d.eventId === 'd1_y_restaurant')).toBe(true);
+    expect(s.delivered.some((d) => d.eventId === 'd1_y_logan')).toBe(true);
     // the latent lead is NOT in the inbox yet
-    expect(inbox).not.toContain('restaurant_contact');
+    expect(inbox).not.toContain('logan_contact');
   });
 
-  it('a fresh email to Gino shows Jev his Y post, not the brief he sends after a yes', async () => {
+  it('a fresh email to Logan shows Jev his Y post, not the brief he sends after a yes', async () => {
     const s = startAll(content, 7);
     let seen: { context?: string[]; candidates: { id: string; when: string }[] } | undefined;
     const jev = { ...wordJev, route: async (input: Parameters<typeof wordJev.route>[0]) => { seen = input; return { kind: 'outcome' as const, outcomeId: 'offer' }; } };
-    await composeEmail(s, content, jev, 'gino@trattoria.test', 'Can I help you with your app?');
-    expect(seen!.context!.join('\n')).toContain('nephew used to run our website');
-    expect(seen!.context!.join('\n')).not.toContain("Here's what I need");
-    // asking whether they can help is an offer, and the app counts as the website
-    expect(seen!.candidates.find((c) => c.id === 'offer')!.when).toMatch(/can I help you with your app/);
+    await composeEmail(s, content, jev, 'logan@workagent.test', 'Want me to build it?');
+    expect(seen!.context!.join('\n')).toContain('looking for a founding engineer');
+    expect(seen!.context!.join('\n')).not.toContain("here's the brief");
+    // asking whether they can help is an offer
+    expect(seen!.candidates.find((c) => c.id === 'offer')!.when).toMatch(/want me to build it/);
   });
 
-  it('take the gig, build, deploy, fix the bug, and get paid at day end', async () => {
+  it('take the gig, get paid up front, build, deploy, fix the bug, and get paid at day end', async () => {
     let s = startAll(content, 7);
+    const start = s.values.crypto;
 
-    // email Gino to take the job -> creates the client app + drops the spec in the inbox
-    const c = await composeEmail(s, content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website with the menu and hours.');
+    // email Logan to take the job -> creates the client app, pays the first day up front, drops the spec in the inbox
+    const c = await composeEmail(s, content, wordJev, 'logan@workagent.test', "Hi Logan, I'm in. I can build the WorkAgent website.");
     expect(c.sent).toBe(true);
     s = c.state;
-    const app = s.apps.find((a) => a.clientEventId === 'restaurant_contact');
+    expect(s.values.crypto).toBeCloseTo(start + 40, 5);
+    const app = s.apps.find((a) => a.clientEventId === 'logan_contact');
     expect(app).toBeTruthy();
     const appId = app!.id;
 
-    // brief the agent to build landing + menu, spelling out the dishes
-    const b = await briefBuild(s, content, wordJev, appId, `Build a landing page for Trattoria Gino with opening hours 17:00-22:00 and the address 14 Alder St, and a menu page listing each dish with its price in DOLR: ${MENU}.`);
+    // brief the agent to build all three, spelling out the details
+    const b = await briefBuild(s, content, wordJev, appId, FULL);
     s = b.state;
-    expect(b.requested.sort()).toEqual(['landing', 'menu']);
-
-    // agent-1 gets about half the components wrong
-    const menu = getApp(s, appId)!.repo.find((f) => f.id === 'menu')!;
-    if (!menu.correct) expect(['prices_missing', 'prices_wrong', 'prices_euri', 'wrong_items']).toEqual(expect.arrayContaining(bugsOf(menu)));
+    expect(b.requested.sort()).toEqual(['about', 'investors', 'landing']);
 
     // the player's first deploy always ships at least one bug; fix whichever is there, naming it, until the live app meets spec
     s = deploy(s, appId);
     expect(getApp(s, appId)!.repo.some((f) => !f.correct)).toBe(true);
-    for (let i = 0; i < 10 && !appMeetsSpec(getApp(s, appId)!); i++) {
+    for (let i = 0; i < 12 && !appMeetsSpec(getApp(s, appId)!); i++) {
       const broken = getApp(s, appId)!.repo.find((f) => !f.correct)!;
-      s = (await briefFix(s, content, wordJev, appId, FIX[broken.variant ?? ''] ?? `Rebuild the menu with exactly these dishes: ${MENU}.`)).state;
+      s = (await briefFix(s, content, wordJev, appId, fixFor(broken.id, broken.variant))).state;
       s = deploy(s, appId);
     }
     expect(appMeetsSpec(getApp(s, appId)!)).toBe(true);
@@ -81,222 +90,231 @@ describe('day 1 playthrough', () => {
   });
 
   it('names the repo after the client', async () => {
-    const s = (await composeEmail(startAll(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
-    const app = s.apps.find((a) => a.clientEventId === 'restaurant_contact')!;
-    expect(app.id).toBe('trattoria-gino');
-    expect(app.url).toBe('trattoria-gino.forkyard.app');
+    const s = await take();
+    const app = s.apps.find((a) => a.clientEventId === 'logan_contact')!;
+    expect(app.id).toBe('workagent');
+    expect(app.url).toBe('workagent.forkyard.app');
   });
 
-  it('a build prompt without the dishes gets an invented menu, and a fix without them invents another', async () => {
-    let s = (await composeEmail(startAll(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
-    s = (await briefBuild(s, content, wordJev, 'trattoria-gino', 'Build a landing page with the name and opening hours, and a menu page with prices in DOLR.')).state;
-    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')).toMatchObject({ correct: false, variant: 'hallucinated' });
-    const v = getApp(s, 'trattoria-gino')!.repoVersion;
-    s = (await briefFix(s, content, wordJev, 'trattoria-gino', 'The menu is wrong, fix it.')).state;
-    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')).toMatchObject({ correct: false, variant: 'hallucinated' });
-    expect(getApp(s, 'trattoria-gino')!.repoVersion).toBe(v + 1);
-    s = (await briefFix(s, content, wordJev, 'trattoria-gino', `The menu should be exactly: ${MENU}.`)).state;
-    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.variant).not.toBe('hallucinated');
+  it('a build prompt without the investors gets invented ones, and a fix without them invents others', async () => {
+    let s = await take();
+    s = (await briefBuild(s, content, wordJev, 'workagent', 'Build a landing page with the name and pitch, and a backed by row with the investor logos.')).state;
+    expect(getApp(s, 'workagent')!.repo.find((f) => f.id === 'investors')).toMatchObject({ correct: false, variant: 'hallucinated' });
+    const v = getApp(s, 'workagent')!.repoVersion;
+    s = (await briefFix(s, content, wordJev, 'workagent', 'The investors in the backed by row are wrong, fix it.')).state;
+    expect(getApp(s, 'workagent')!.repo.find((f) => f.id === 'investors')).toMatchObject({ correct: false, variant: 'hallucinated' });
+    expect(getApp(s, 'workagent')!.repoVersion).toBe(v + 1);
+    s = (await briefFix(s, content, wordJev, 'workagent', `The investors in the backed by row should be exactly: ${INVESTORS}.`)).state;
+    expect(getApp(s, 'workagent')!.repo.find((f) => f.id === 'investors')!.variant).not.toBe('hallucinated');
   });
 
-  it('in agent.chat, a fix prompt that names the bug fixes it; one that only says "menu" does not', async () => {
-    let s = (await composeEmail(startAll(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
-    const app = getApp(s, 'trattoria-gino')!;
+  it('in agent.chat, a fix prompt that names the bug fixes it; one that only says "about page" does not', async () => {
+    let s = await take();
+    const app = getApp(s, 'workagent')!;
     app.repo = [
       { id: 'landing', correct: true, params: app.specParams.landing },
-      { id: 'menu', correct: false, variant: 'prices_euri', params: app.specParams.menu, seed: 1 },
+      { id: 'investors', correct: true, params: app.specParams.investors },
+      { id: 'about', correct: false, variant: 'fake_cofounders', params: app.specParams.about, seed: 1 },
     ];
     app.repoVersion = 1;
     s.values.agentLevel = 5; // the fix roll succeeds
-    const vague = (await promptDone(s, content, pickJev({ features: ['::menu::feature'] }), gino + 'Please fix the menu page.')).state;
-    expect(getApp(vague, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.variant).toBe('prices_euri');
-    const named = (await promptDone(s, content, pickJev({ features: ['::menu::c:prices'] }), gino + 'The prices show EURI, they need to be DOLR.')).state;
-    expect(getApp(named, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);
+    const vague = (await promptDone(s, content, pickJev({ features: ['::about::feature'] }), wa + 'Please fix About us.')).state;
+    expect(getApp(vague, 'workagent')!.repo.find((f) => f.id === 'about')!.variant).toBe('fake_cofounders');
+    const named = (await promptDone(s, content, pickJev({ features: ['::about::c:team'] }), wa + 'The team on About us has two cofounders who do not exist.')).state;
+    expect(getApp(named, 'workagent')!.repo.find((f) => f.id === 'about')!.correct).toBe(true);
   });
 
-  it("Gino's menu change makes the built menu outdated until a prompt spells out the change", async () => {
-    let s = (await composeEmail(startAll(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
-    const app = getApp(s, 'trattoria-gino')!;
-    app.repo = [{ id: 'landing', correct: true }, { id: 'menu', correct: true, params: app.specParams.menu }];
+  it("Logan's day 2 email adds the waitlist as a feature still to build", async () => {
+    let s = await take();
+    const app = getApp(s, 'workagent')!;
+    app.repo = app.required.map((id) => ({ id, correct: true, params: app.specParams[id] }));
     app.repoVersion = 1;
-    s = deploy(s, 'trattoria-gino');
-    applyEffects(s, content.events.find((e) => e.id === 'd2_restaurant_booking')!.onDeliver!);
-    expect(getApp(s, 'trattoria-gino')!.features.find((f) => f.id === 'menu')).toMatchObject({ correct: false, variant: 'outdated' });
-    s.values.agentLevel = 5;
-    const vague = (await briefFix(s, content, wordJev, 'trattoria-gino', 'Update the menu like Gino asked.')).state;
-    expect(getApp(vague, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.variant).toBe('outdated');
-    const done = (await briefFix(s, content, wordJev, 'trattoria-gino', 'Menu: swap Diavola for Quattro Formaggi at 15, Espresso is now 3.5.')).state;
-    expect(getApp(done, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);
+    s = deploy(s, 'workagent');
+    expect(appMeetsSpec(getApp(s, 'workagent')!)).toBe(true);
+    applyEffects(s, content.events.find((e) => e.id === 'd2_logan_waitlist')!.onDeliver!);
+    expect(getApp(s, 'workagent')!.required).toContain('waitlist');
+    expect(getApp(s, 'workagent')!.specParams.waitlist).toEqual({ start: '10,000' });
+    expect(appMeetsSpec(getApp(s, 'workagent')!)).toBe(false);
+    s = (await briefBuild(s, content, wordJev, 'workagent', 'Add the waitlist: an email field and a Join button, a counter that starts at 10,000, and a confirmation email with their place in line.')).state;
+    expect(getApp(s, 'workagent')!.repo.some((f) => f.id === 'waitlist')).toBe(true);
   });
 
   it('every site bug has a fix request Jev can match, and naming it fixes it', async () => {
     const asks: Record<string, [string, string]> = {
-      name_wrong: ['landing', "The website needs to show it's for Trattoria Gino"],
-      hours_wrong: ['landing', 'The opening hours should be 17:00-22:00'],
-      prices_missing: ['menu', 'There are no prices next to the dishes'],
-      prices_euri: ['menu', 'Prices should be in DOLR, not EURI'],
-      wrong_items: ['menu', 'Lasagne is missing and there is an invented dish'],
+      name_wrong: ['landing', 'The website needs to show it is for WorkAgent'],
+      pitch_wrong: ['landing', `The headline should read "${PITCH}"`],
+      logos_wrong: ['investors', 'Bonsai Capital is missing from the investors and there is a fund that never invested'],
+      logos_broken: ['investors', 'The logos in the backed by row are broken images'],
+      founder_wrong: ['about', 'The founder is Logan Pryce, not Logan Price'],
+      fake_cofounders: ['about', 'Take the two made-up cofounders off the team'],
+      credentials_wrong: ['about', `Logan's credentials should be: ${CREDS}`],
     };
     for (const [bug, [fid, ask]] of Object.entries(asks)) {
-      let s = (await composeEmail(startAll(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
-      const app = getApp(s, 'trattoria-gino')!;
+      let s = await take();
+      const app = getApp(s, 'workagent')!;
       app.repo = app.required.map((id) => (id === fid ? { id, correct: false, variant: bug, params: app.specParams[id], seed: 2 } : { id, correct: true, params: app.specParams[id] }));
       app.repoVersion = 1;
       s.values.agentLevel = 5;
-      s = (await promptDone(s, content, pickJev({ features: [`::${fid}::c:${content.apps.restaurant.features.find((f) => f.id === fid)!.components!.find((c) => c.bugs?.includes(bug))!.id}`] }), gino + ask)).state;
-      expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === fid)!.correct, bug).toBe(true);
+      s = (await promptDone(s, content, pickJev({ features: [`::${fid}::c:${content.apps.startup.features.find((f) => f.id === fid)!.components!.find((c) => c.bugs?.includes(bug))!.id}`] }), wa + ask)).state;
+      expect(getApp(s, 'workagent')!.repo.find((f) => f.id === fid)!.correct, bug).toBe(true);
       expect(s.chat.at(-1)!.src, bug).toBe('build');
       expect(s.chat.at(-1)!.text).not.toMatch(/check/i);
     }
   });
 
-  it('a missing landing page gets built from a request to show the restaurant name', async () => {
-    let s = (await composeEmail(startAll(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
-    const app = getApp(s, 'trattoria-gino')!;
-    app.repo = [{ id: 'menu', correct: true, params: app.specParams.menu }];
+  it('a missing landing page gets built from a request to show the startup name', async () => {
+    let s = await take();
+    const app = getApp(s, 'workagent')!;
+    app.repo = [{ id: 'about', correct: true, params: app.specParams.about }];
     app.repoVersion = 1;
-    s = (await promptDone(s, content, pickJev({ features: ['::landing::feature'] }), "The website needs to show it's for trattoria gino")).state;
-    expect(getApp(s, 'trattoria-gino')!.repo.some((f) => f.id === 'landing')).toBe(true);
+    s = (await promptDone(s, content, pickJev({ features: ['::landing::feature'] }), 'The website needs to show it is for workagent')).state;
+    expect(getApp(s, 'workagent')!.repo.some((f) => f.id === 'landing')).toBe(true);
   });
 
   it('a crashed page on the live site counts as a fix request, and the patch goes live on deploy', async () => {
-    let s = (await composeEmail(startAll(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
-    const app = getApp(s, 'trattoria-gino')!;
+    let s = await take();
+    const app = getApp(s, 'workagent')!;
     app.repo = app.required.map((id) => ({ id, correct: true, params: app.specParams[id] }));
     app.repoVersion = 1;
-    s = deploy(s, 'trattoria-gino');
-    getApp(s, 'trattoria-gino')!.breaks.push({ featureId: 'menu', failure: 'failed_fetch', day: 1, seed: 0 });
-    getApp(s, 'trattoria-gino')!.features.find((f) => f.id === 'menu')!.correct = false;
-    s = (await promptDone(s, content, wordJev, gino + 'The menu fails to load, it says failed to fetch')).state;
+    s = deploy(s, 'workagent');
+    getApp(s, 'workagent')!.breaks.push({ featureId: 'about', failure: 'failed_fetch', day: 1, seed: 0 });
+    getApp(s, 'workagent')!.features.find((f) => f.id === 'about')!.correct = false;
+    s = (await promptDone(s, content, wordJev, wa + 'The About us fails to load, it says failed to fetch')).state;
     expect(s.chat.at(-1)!.src).toBe('build');
-    s = deploy(s, 'trattoria-gino');
-    expect(appMeetsSpec(getApp(s, 'trattoria-gino')!)).toBe(true);
+    s = deploy(s, 'workagent');
+    expect(appMeetsSpec(getApp(s, 'workagent')!)).toBe(true);
   });
 
   it('a spec item the build prompt leaves out guarantees its mistake', async () => {
-    let s = (await composeEmail(startAll(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    let s = await take();
     s.values.agentLevel = 5;
-    s = (await briefBuild(s, content, wordJev, 'trattoria-gino', `Landing page for Trattoria Gino at 14 Alder St with the opening hours, and a menu page: ${MENU}, prices in DOLR.`)).state;
-    const landing = getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')!;
-    expect(landing).toMatchObject({ correct: false, variant: 'hours_wrong', checked: { name: true, hours: false, address: true } });
-    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.checked).toEqual({ dishes: true, prices: true, currency: true });
+    s = (await briefBuild(s, content, wordJev, 'workagent', `Landing page for WorkAgent with a pitch, a backed by row with ${INVESTORS}, and an About us for Logan Pryce: ${CREDS}.`)).state;
+    const landing = getApp(s, 'workagent')!.repo.find((f) => f.id === 'landing')!;
+    expect(landing).toMatchObject({ correct: false, variant: 'pitch_wrong', checked: { name: true, pitch: false } });
+    expect(getApp(s, 'workagent')!.repo.find((f) => f.id === 'about')!.checked).toEqual({ founder: true, credentials: true });
   });
-  it('bugs stack: an invented menu still gets the wrong currency, and both missed landing items go wrong', async () => {
-    let s = (await composeEmail(startAll(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+
+  it('bugs stack: invented credentials still come with a misspelled founder, and both missed landing items go wrong', async () => {
+    let s = await take();
     s.values.agentLevel = 5;
-    s = (await briefBuild(s, content, wordJev, 'trattoria-gino', 'Build a landing page and a menu page.')).state;
-    const app = getApp(s, 'trattoria-gino')!;
-    const menu = app.repo.find((f) => f.id === 'menu')!;
-    expect(menu).toMatchObject({ correct: false, variant: 'hallucinated', also: ['prices_euri'] });
-    expect(app.repo.find((f) => f.id === 'landing')).toMatchObject({ correct: false, variant: 'name_wrong', also: ['hours_wrong', 'address_wrong'] });
-    s = deploy(s, 'trattoria-gino');
-    const html = renderAppSite(getApp(s, 'trattoria-gino')!, content.apps.restaurant, 'menu');
-    expect(html).toContain('EURI');
-    expect(html).not.toContain('DOLR');
-    expect(html).not.toContain('Margherita');
-    expect(html).not.toContain('Trattoria Gino');
+    s = (await briefBuild(s, content, wordJev, 'workagent', LAZY)).state;
+    const app = getApp(s, 'workagent')!;
+    expect(app.repo.find((f) => f.id === 'about')).toMatchObject({ correct: false, variant: 'hallucinated', also: ['founder_wrong'] });
+    expect(app.repo.find((f) => f.id === 'landing')).toMatchObject({ correct: false, variant: 'name_wrong', also: ['pitch_wrong'] });
+    s = deploy(s, 'workagent');
+    const html = renderAppSite(getApp(s, 'workagent')!, content.apps.startup, 'about');
+    expect(html).not.toContain('Logan Pryce');
+    expect(html).not.toContain('Startup School');
+    expect(renderAppSite(getApp(s, 'workagent')!, content.apps.startup, undefined)).not.toContain(PITCH);
   });
 
   it('naming one of two stacked bugs fixes that one and leaves the other', async () => {
-    let s = (await composeEmail(startAll(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
-    const app = getApp(s, 'trattoria-gino')!;
+    let s = await take();
+    const app = getApp(s, 'workagent')!;
     app.repo = [
-      { id: 'landing', correct: false, variant: 'name_wrong', also: ['hours_wrong'], params: app.specParams.landing, seed: 1 },
-      { id: 'menu', correct: true, params: app.specParams.menu },
+      { id: 'landing', correct: false, variant: 'name_wrong', also: ['pitch_wrong'], params: app.specParams.landing, seed: 1 },
+      { id: 'investors', correct: true, params: app.specParams.investors },
+      { id: 'about', correct: true, params: app.specParams.about },
     ];
     app.repoVersion = 1;
     s.values.agentLevel = 5;
-    s = (await promptDone(s, content, pickJev({ features: ['::landing::c:hours'] }), gino + 'The opening hours on the homepage are wrong, they should be 17:00-22:00.')).state;
-    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')).toMatchObject({ correct: false, variant: 'name_wrong' });
-    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')!.also).toBeUndefined();
+    s = (await promptDone(s, content, pickJev({ features: ['::landing::c:pitch'] }), wa + `The headline on the homepage is wrong, it should be "${PITCH}"`)).state;
+    expect(getApp(s, 'workagent')!.repo.find((f) => f.id === 'landing')).toMatchObject({ correct: false, variant: 'name_wrong' });
+    expect(getApp(s, 'workagent')!.repo.find((f) => f.id === 'landing')!.also).toBeUndefined();
     // the reply says what was fixed, and only that
-    const hoursFixed = content.apps.restaurant.features[0].bugs!.find((b) => b.id === 'hours_wrong')!.fixed!.map((l) => l.replace('{{hours}}', '17:00-22:00'));
+    const pitchFixed = content.apps.startup.features[0].bugs!.find((b) => b.id === 'pitch_wrong')!.fixed!.map((l) => l.replace('{{pitch}}', PITCH));
     const lines = s.chat.at(-1)!.text.split('\n').filter((l) => l.startsWith('- ')).map((l) => l.slice(2));
     expect(lines).toHaveLength(1);
-    expect(hoursFixed).toContain(lines[0]);
-    s = (await promptDone(s, content, pickJev({ features: ['::landing::c:name'] }), gino + 'The restaurant name is misspelled, it should say Trattoria Gino.')).state;
-    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')!.correct).toBe(true);
-    expect(s.chat.at(-1)!.text).toContain('Trattoria Gino');
+    expect(pitchFixed).toContain(lines[0]);
+    s = (await promptDone(s, content, pickJev({ features: ['::landing::c:name'] }), wa + 'The startup name is misspelled, it should say WorkAgent.')).state;
+    expect(getApp(s, 'workagent')!.repo.find((f) => f.id === 'landing')!.correct).toBe(true);
+    expect(s.chat.at(-1)!.text).toContain('WorkAgent');
   });
+
   it('dev mode switches bugs and breaks on and off on demand', async () => {
-    let s = (await composeEmail(startAll(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    let s = await take();
     s.values.agentLevel = 5;
-    s = (await briefBuild(s, content, wordJev, 'trattoria-gino', `Landing page for Trattoria Gino, open 17:00-22:00, and a menu page: ${MENU}, prices in DOLR.`)).state;
-    const app = getApp(s, 'trattoria-gino')!;
+    s = (await briefBuild(s, content, wordJev, 'workagent', FULL)).state;
+    const app = getApp(s, 'workagent')!;
     for (const f of app.repo) Object.assign(f, { correct: true, variant: undefined, also: undefined, params: app.specParams[f.id] });
-    s = deploy(s, 'trattoria-gino');
-    devToggleBug(s, 'trattoria-gino', 'menu', 'prices_euri');
-    devToggleBug(s, 'trattoria-gino', 'menu', 'hallucinated');
-    const a = getApp(s, 'trattoria-gino')!;
-    for (const list of [a.repo, a.features]) expect(list.find((f) => f.id === 'menu')).toMatchObject({ correct: false, variant: 'hallucinated', also: ['prices_euri'] });
-    expect(renderAppSite(a, content.apps.restaurant, 'menu')).toContain('EURI');
-    devToggleBug(s, 'trattoria-gino', 'menu', 'hallucinated');
-    devToggleBug(s, 'trattoria-gino', 'menu', 'prices_euri');
-    expect(a.features.find((f) => f.id === 'menu')).toMatchObject({ correct: true, variant: undefined });
-    devToggleBug(s, 'trattoria-gino', 'landing', 'visible');
+    s = deploy(s, 'workagent');
+    devToggleBug(s, 'workagent', 'about', 'fake_cofounders');
+    devToggleBug(s, 'workagent', 'about', 'hallucinated');
+    const a = getApp(s, 'workagent')!;
+    for (const list of [a.repo, a.features]) expect(list.find((f) => f.id === 'about')).toMatchObject({ correct: false, variant: 'hallucinated', also: ['fake_cofounders'] });
+    expect(renderAppSite(a, content.apps.startup, 'about')).toContain('Marcus Vale');
+    devToggleBug(s, 'workagent', 'about', 'hallucinated');
+    devToggleBug(s, 'workagent', 'about', 'fake_cofounders');
+    expect(a.features.find((f) => f.id === 'about')).toMatchObject({ correct: true, variant: undefined });
+    devToggleBug(s, 'workagent', 'landing', 'visible');
     expect(a.breaks).toMatchObject([{ featureId: 'landing', failure: 'visible' }]);
-    expect(renderAppSite(a, content.apps.restaurant, undefined)).toContain('Application error');
-    devToggleBug(s, 'trattoria-gino', 'landing', 'visible');
+    expect(renderAppSite(a, content.apps.startup, undefined)).toContain('Application error');
+    devToggleBug(s, 'workagent', 'landing', 'visible');
     expect(a.breaks).toEqual([]);
   });
+
   it('a fixed bug stays fixed: later prompts and rolls never bring it back', async () => {
-    let s = (await composeEmail(startAll(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    let s = await take();
     s.values.agentLevel = 5;
-    const lazy = 'Build a landing page and a menu page.';
-    s = (await briefBuild(s, content, wordJev, 'trattoria-gino', lazy)).state;
-    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'landing')).toMatchObject({ variant: 'name_wrong', also: ['hours_wrong', 'address_wrong'] });
-    s = (await promptDone(s, content, wordJev, gino + 'The restaurant name is misspelled, it should say Trattoria Gino. And the opening hours should be 17:00-22:00.')).state;
-    s = (await promptDone(s, content, wordJev, gino + `The menu is invented. It should be: ${MENU}, prices in DOLR.`)).state;
-    const app = getApp(s, 'trattoria-gino')!;
+    s = (await briefBuild(s, content, wordJev, 'workagent', LAZY)).state;
+    expect(getApp(s, 'workagent')!.repo.find((f) => f.id === 'landing')).toMatchObject({ variant: 'name_wrong', also: ['pitch_wrong'] });
+    s = (await promptDone(s, content, wordJev, wa + `The startup name on the landing page is misspelled, it should say WorkAgent. And the pitch on the landing page should be "${PITCH}"`)).state;
+    s = (await promptDone(s, content, wordJev, wa + `The investors in the backed by row are invented. It should be: ${INVESTORS}.`)).state;
+    s = (await promptDone(s, content, wordJev, wa + `The credentials on About us are invented. They should be: ${CREDS}. And the founder name on About us is misspelled, it is Logan Pryce.`)).state;
+    const app = getApp(s, 'workagent')!;
     expect(app.repo.every((f) => f.correct)).toBe(true);
-    expect(app.fixed).toMatchObject({ landing: expect.arrayContaining(['name_wrong', 'hours_wrong']), menu: expect.arrayContaining(['hallucinated', 'prices_euri']) });
-    // the same lazy prompt again: no checklist mistakes, no invented menu
-    s = (await briefBuild(s, content, wordJev, 'trattoria-gino', lazy)).state;
-    expect(getApp(s, 'trattoria-gino')!.repo.every((f) => f.correct)).toBe(true);
+    expect(app.fixed).toMatchObject({ landing: expect.arrayContaining(['name_wrong', 'pitch_wrong']), about: expect.arrayContaining(['hallucinated', 'founder_wrong']) });
+    // the same lazy prompt again: no checklist mistakes, no invented details
+    s = (await briefBuild(s, content, wordJev, 'workagent', LAZY)).state;
+    expect(getApp(s, 'workagent')!.repo.every((f) => f.correct)).toBe(true);
     // a weak agent whose every possible mistake was already fixed gets it right
-    const a = getApp(s, 'trattoria-gino')!;
-    a.fixed!.menu = ['hallucinated', 'prices_missing', 'prices_wrong', 'prices_euri', 'wrong_items'];
+    const a = getApp(s, 'workagent')!;
+    a.fixed!.about = ['hallucinated', 'founder_wrong', 'fake_cofounders', 'credentials_wrong'];
     s.values.agentLevel = 0;
-    for (let i = 0; i < 5; i++) s = (await briefBuild(s, content, wordJev, 'trattoria-gino', `Menu page: ${MENU}, prices in DOLR.`)).state;
-    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);
+    for (let i = 0; i < 5; i++) s = (await briefBuild(s, content, wordJev, 'workagent', `About us for Logan Pryce: ${CREDS}.`)).state;
+    expect(getApp(s, 'workagent')!.repo.find((f) => f.id === 'about')!.correct).toBe(true);
   });
 
   it('deploying does not move the clock', async () => {
-    let s = (await composeEmail(startAll(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
-    s = (await briefBuild(s, content, wordJev, 'trattoria-gino', 'Build a landing page and a menu page.')).state;
+    let s = await take();
+    s = (await briefBuild(s, content, wordJev, 'workagent', LAZY)).state;
     const t = s.clockMin;
-    s = deploy(deploy(s, 'trattoria-gino'), 'trattoria-gino');
+    s = deploy(deploy(s, 'workagent'), 'workagent');
     expect(s.clockMin).toBe(t);
   });
-  it('typos in dish names still count as the dishes', async () => {
-    let s = (await composeEmail(startAll(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+
+  it('typos in the credentials still count as the credentials', async () => {
+    let s = await take();
     s.values.agentLevel = 5;
-    s = (await briefBuild(s, content, wordJev, 'trattoria-gino', 'Build a landing page and a menu page.')).state;
-    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.variant).toBe('hallucinated');
-    s = (await promptDone(s, content, wordJev, gino + 'I need magherita for 12, diavola for 14, lasagna for 15, tiramisu for 7 and espresso for 3 in DOLR for the menu')).state;
-    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')).toMatchObject({ correct: true });
+    s = (await briefBuild(s, content, wordJev, 'workagent', LAZY)).state;
+    expect(getApp(s, 'workagent')!.repo.find((f) => f.id === 'about')!.variant).toBe('hallucinated');
+    s = (await promptDone(s, content, wordJev, wa + 'the credentials on About us: why combinatr startup school, san fortuna state dropout, host of the foundr mode podcast, 2x founder. founder Logan Pryce')).state;
+    expect(getApp(s, 'workagent')!.repo.find((f) => f.id === 'about')).toMatchObject({ correct: true });
   });
 
   it('details from earlier messages to the agent count for the next prompt', async () => {
-    let s = (await composeEmail(startAll(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
+    let s = await take();
     s.values.agentLevel = 5;
-    s.chat.push({ from: 'you', text: `Gino sells ${MENU}, all in DOLR.`, day: s.values.day });
+    s.chat.push({ from: 'you', text: `Logan Pryce's credentials: ${CREDS}.`, day: s.values.day });
     // word overlap would read this as starting Spin Cycle too, and a prompt only ever touches one app
     s.fired.push(...content.events.filter((e) => e.agentStart).map((e) => e.id));
-    s = (await promptDone(s, content, wordJev, 'Build the menu page for Trattoria Gino.')).state;
-    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')).toMatchObject({ correct: true });
+    s = (await promptDone(s, content, wordJev, 'Build About us for WorkAgent, founder Logan Pryce.')).state;
+    // the first build still owes its teaching bug, but nothing is invented
+    const about = getApp(s, 'workagent')!.repo.find((f) => f.id === 'about')!;
+    expect(about.variant).not.toBe('hallucinated');
+    expect(about.checked).toEqual({ founder: true, credentials: true });
   });
-  it('dishes without prices get the right dishes at wrong prices, and the prices fix it', async () => {
-    let s = (await composeEmail(startAll(content, 7), content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
-    s.values.agentLevel = 5;
-    s = (await briefBuild(s, content, wordJev, 'trattoria-gino', 'Landing page for Trattoria Gino, open 17:00-22:00. Menu page with Margherita, Diavola, Lasagne, Tiramisu and Espresso, prices in DOLR.')).state;
-    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')).toMatchObject({ correct: false, variant: 'prices_wrong', checked: { dishes: true, prices: false, currency: true } });
-    s = deploy(s, 'trattoria-gino');
-    const html = renderAppSite(getApp(s, 'trattoria-gino')!, content.apps.restaurant, 'menu');
-    for (const d of ['Margherita', 'Diavola', 'Lasagne', 'Tiramisu', 'Espresso']) expect(html).toContain(d);
-    expect(html).toMatch(/Margherita<\/span><i><\/i><b>\d+ DOLR/);
-    expect(html).not.toContain('Margherita</span><i></i><b>12 DOLR');
-    s = (await promptDone(s, content, wordJev, gino + `The menu prices are wrong. It should be ${MENU}.`)).state;
-    expect(getApp(s, 'trattoria-gino')!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);
+
+  it('the investor row shows the three logos, and broken ones as broken images', async () => {
+    let s = await take();
+    const app = getApp(s, 'workagent')!;
+    app.repo = app.required.map((id) => ({ id, correct: true, params: app.specParams[id] }));
+    app.repoVersion = 1;
+    s = deploy(s, 'workagent');
+    const html = renderAppSite(getApp(s, 'workagent')!, content.apps.startup, undefined);
+    for (const n of ['Why Combinator', 'Bonsai Capital', 'a67x']) expect(html).toContain(`aria-label="${n}"`);
+    devToggleBug(s, 'workagent', 'investors', 'logos_broken');
+    expect(renderAppSite(getApp(s, 'workagent')!, content.apps.startup, undefined)).toContain('bonsai-capital-logo.png');
+    expect(bugsOf(getApp(s, 'workagent')!.features.find((f) => f.id === 'investors')!)).toEqual(['logos_broken']);
   });
 });

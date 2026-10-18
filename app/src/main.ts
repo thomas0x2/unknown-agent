@@ -27,6 +27,7 @@ import './ui/devOptions.css';
 import './ui/sendFx.css';
 import './ui/brands.css';
 import './ui/matchless.css';
+import './ui/whyc.css';
 import { showSuggestions, hideSuggestions, suggestionKey } from './ui/mailSuggest';
 import { GameStore } from './game/store';
 import { loadContent } from './content/load';
@@ -351,8 +352,6 @@ const CLICKS: Record<string, Click> = {
   yAll: (v, t) => { const top = t.closest('.y-more')!.getBoundingClientRect().top; store.showAllY(v !== 'hide'); keepAt($('#viewport .y-more'), top); },
   deploy: (v) => { SOUND.play('deploy'); store.deploy(v); },
   takedown: (v) => store.confirm('Take it offline? It counts as broken at payday.', 'Take down', () => store.takeDown(v)),
-  // the cancel link opens the restaurant's cancel page in a new tab
-  cancelBooking: (v, t) => { store.cancelBooking(v); if (t.dataset.cancelUrl) { newPageLoad(); store.navigate(t.dataset.cancelUrl, true); } },
   empireJoin: () => store.joinEmpire(),
   mailBin: (v, t) => store.binMail(JSON.parse(v), t.dataset.mailHome || 'qmail.com'),
   mailRestore: (v, t) => store.restoreMail(JSON.parse(v), t.dataset.mailHome || 'qmail.com/bin'),
@@ -369,8 +368,6 @@ const CLICKS: Record<string, Click> = {
 };
 /** Buttons with data-act="<name>". */
 const ACTS: Record<string, (t: HTMLElement) => void> = {
-  'book-back': () => store.bookBack(),
-  'book-again': () => store.bookAgain(),
   send: () => store.toggleSend(),
   'send-cancel': () => store.toggleSend(false),
   exchange: () => store.toggleExchange(),
@@ -383,6 +380,7 @@ const ACTS: Record<string, (t: HTMLElement) => void> = {
   'seed-show': () => store.toggleSeed(),
   'seed-copy': () => copySeedPhrase(),
   'rent-appeal': () => store.rentAppeal(),
+  'whyc-apply': () => store.applyWhyC(),
   'crane-donate': () => store.craneDonate(),
   'thirstr-sub': (t) => store.thirstrSubscribe(t.dataset.handle ?? ''),
   'stack-bet': (t) => store.stackPickBet(Number(t.dataset.bet)),
@@ -521,8 +519,7 @@ const FORMS: Record<string, (f: HTMLFormElement) => void> = {
     if (v) SOUND.play('send');
     if (v) void store.review(biz, stars, v).then((r) => { if (r && r.posted !== false) clearField('review-text'); });
   },
-  'book-next': () => store.bookNext(val('#bk-name').trim(), val('#bk-email').trim(), Number(val('input[name="bk-date"]:checked')) || store.state.values.day),
-  book: (f) => store.book(f.dataset.app!, val('#bk-time').trim() || '19:00', Number(val('#bk-party')) || 2),
+  waitlist: (f) => store.joinWaitlist(f.dataset.app!, val('#wl-email').trim()),
   'sl-search': (f) => {
     const q = val('#sl-q').trim();
     store.navigate(`${f.dataset.base}${q ? `/search/${encodeURIComponent(q.toLowerCase())}` : ''}`);

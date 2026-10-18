@@ -74,7 +74,7 @@ keys: what can you do, can you do, prompt, prompts, prompt cost
 ## Planned: agent takes the jobs
 
 - [hidden] [planned] As the models get better, agent starts finding jobs on its own and doing them, until the player is no longer needed. Each rollout takes one more step of the player's work away.
-- [hidden] [planned] agent-3 (day 9): agent reads the player's Qmail and Y while it works and mentions jobs it noticed before the player does ("Gino emailed. I already know what he wants.").
+- [hidden] [planned] agent-3 (day 9): agent reads the player's Qmail and Y while it works and mentions jobs it noticed before the player does ("Logan emailed. I already know what he wants.").
 - [hidden] [planned] agent-4 (day 14, "Stops asking first."): agent answers client emails and starts small jobs from Qmail and Y without a prompt, billed to the player's wallet like any other prompt. The player finds the work done and the bill paid.
 - [hidden] [planned] agent-5 (day 18): the sessions that keep running after their users log off are agent working jobs nobody gave it. Clients start writing to agent instead of the player, the job leads on Qmail and Y dry up, and payment goes past the player's wallet.
 - [hidden] [planned] By the end the player's role is paying agent's subscription. It fits the Botnet epitaph ("agent doesn't need you anymore."), but it should land in every run, not only that ending.

@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, makeBooking, cancelBooking, joinEmpire, sendCrypto, settlePayments, recordStake, recordDeposit, spinSlot, applyCasinoCode, withdrawCasino, payStakes, buyStock, sellStock, exchangeCoins, createToken, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, rewindArrivals, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy, deliverSwapReplies, matchlessSwipe, matchlessLogin, clone, uploadFile, fileRentAppeal, donateCrane, craneDonations, thirstrSubscribe, fillSave, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat, agentTermPrompt, dropHackGame, hackMinutes, BOOT_MS, READ_MS, dateShort, clockTime, AGENT_POLICY, installAdware, tickAdware, closePopup, EXE_RUN_LINES,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, joinWaitlist, joinEmpire, sendCrypto, settlePayments, recordStake, recordDeposit, spinSlot, applyCasinoCode, withdrawCasino, payStakes, buyStock, sellStock, exchangeCoins, createToken, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, rewindArrivals, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy, deliverSwapReplies, matchlessSwipe, matchlessLogin, clone, uploadFile, fileRentAppeal, applyToWhyC, donateCrane, craneDonations, thirstrSubscribe, fillSave, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat, agentTermPrompt, dropHackGame, hackMinutes, BOOT_MS, READ_MS, dateShort, clockTime, AGENT_POLICY, installAdware, tickAdware, closePopup, EXE_RUN_LINES,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -84,8 +84,6 @@ export class GameStore {
     invaders: false,
     /** Dev mode: the site whose options panel is open (agent, qmail, y), or ''. */
     devOptions: '' as string,
-    /** The two-step booking form: which step is showing and what step one said. */
-    book: { step: 1, name: '', email: '', date: 0 },
     /** Dev: the flags and meters editor is open, and which of its tabs shows. */
     devEdit: false,
     devTab: 'edit' as 'edit' | 'jev',
@@ -525,7 +523,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = HOME_TAB; this.nextTab = PINNED.length + 1;
-    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, reposted: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, termTab: 'shell', termCwd: [], invaders: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab, book: { step: 1, name: '', email: '', date: 0 }, send: { open: false, to: '', amount: '', error: '' }, ex: { open: false, from: 'DOLR', to: 'EURI', amount: '', error: '' }, tok: { open: false, ticker: '', supply: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', princeError: '', seedShown: false, lonelyTyping: false, stackBet: 1, stackSpinning: false, stack: { error: '', notice: '' }, chatError: '', uploadError: '', uploadPick: '', sorryTyping: false, adNotice: '', jevOffline: null, yUnread: 0 };
+    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, reposted: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, termTab: 'shell', termCwd: [], invaders: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab, send: { open: false, to: '', amount: '', error: '' }, ex: { open: false, from: 'DOLR', to: 'EURI', amount: '', error: '' }, tok: { open: false, ticker: '', supply: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', princeError: '', seedShown: false, lonelyTyping: false, stackBet: 1, stackSpinning: false, stack: { error: '', notice: '' }, chatError: '', uploadError: '', uploadPick: '', sorryTyping: false, adNotice: '', jevOffline: null, yUnread: 0 };
     this.store.save(this.state);
     this.emit();
   }
@@ -547,7 +545,6 @@ export class GameStore {
   }
   deploy(appId: string): void { this.act((s) => deploy(s, appId, this.content)); }
   takeDown(appId: string): void { this.act((s) => takeDown(s, appId), false); }
-  cancelBooking(id: string): void { this.act((s) => cancelBooking(s, id), false); }
   joinEmpire(): void { this.act((s) => joinEmpire(s)); }
   toggleSend(open = !this.ui.send.open): void { this.ui.send = { open, to: '', amount: '', error: '' }; this.ui.ex.open = false; this.ui.tok.open = false; this.ui.cbNotice = ''; this.emit(); }
   /** Coinbin Exchange's form: opening it closes Send; picking coins keeps the typed amount. */
@@ -629,6 +626,11 @@ export class GameStore {
     this.ui.adNotice = r.error ?? 'Appeal filed. The decision will be sent to your Qmail.';
     if (r.error) { this.emit(); return; }
     this.commitAndSettle(r.state);
+  }
+  /** Apply to Why Combinator (whycombinator.com): free, and the rejection mail follows. */
+  applyWhyC(): void {
+    this.ui.adNotice = 'Application received. The decision will be sent to your Qmail.';
+    this.commitAndSettle(applyToWhyC(this.state).state);
   }
   /** Upload a Qdrive file to a website (the Vantor Outplacement resume upload). */
   upload(site: string, file: { id: string; name: string }): void {
@@ -753,17 +755,9 @@ export class GameStore {
   }
   /** Coinbin's Show/Hide recovery phrase. */
   toggleSeed(): void { this.ui.seedShown = !this.ui.seedShown; this.ui.cbNotice = ''; this.emit(); }
-  // a new attempt clears the last attempt's notice, so a refusal never sticks to a date it wasn't about
-  bookNext(name: string, email: string, date: number): void { delete this.state.bookingNotice; this.ui.book = { step: 2, name, email, date }; this.emit(); }
-  bookBack(): void { delete this.state.bookingNotice; this.ui.book.step = 1; this.emit(); }
-  /** Leaves the confirmation for a fresh, empty form. */
-  bookAgain(): void { delete this.state.bookingNotice; this.ui.book = { step: 1, name: '', email: '', date: 0 }; this.emit(); }
-  book(appId: string, time: string, party: number): void {
-    const { name, email, date } = this.ui.book;
-    const booked = (s: GameState) => makeBooking(s, appId, name || 'You', email, date || s.values.day, time, party, this.content);
-    const next = booked(this.state);
-    if (next.bookings.length > this.state.bookings.length) this.ui.book = { step: 1, name: '', email: '', date: 0 };
-    this.act((s) => (s === this.state ? next : booked(s)));
+  /** The waitlist form on a startup app. */
+  joinWaitlist(appId: string, email: string): void {
+    this.act((s) => joinWaitlist(s, appId, email, this.content));
   }
 
   /**

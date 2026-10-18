@@ -20,7 +20,7 @@ import type { GameState, SaveStore, Writer, WriteReq } from '../engine';
 const content = loadContent();
 /** A fake fix's landed report, after its "couldn't find the bug" sentence: what the prompt was missing. */
 const report = (s: GameState) => { const t = s.chat.at(-1)!.text; return t.slice(t.indexOf('. ') + 2); };
-const CONTACTS = ['restaurant_contact', 'trader_contact', 'laundromat_contact', 'viktor_contact', 'outreach_contact'];
+const CONTACTS = ['logan_contact', 'trader_contact', 'laundromat_contact', 'viktor_contact', 'outreach_contact'];
 
 /** The app a contact's job creates, with every feature built right except `wrong` (if given). */
 function withApp(contact: string, wrong?: string): { s: GameState; id: string } {
@@ -61,7 +61,7 @@ describe('Jev decides which app a prompt is about', () => {
   });
 
   it('a fix on an app the prompt doesn\'t name does nothing', async () => {
-    const { s, id } = withApp('restaurant_contact', undefined);
+    const { s, id } = withApp('logan_contact', undefined);
     const a = getApp(s, id)!;
     a.repo[0] = { ...a.repo[0], correct: false, variant: 'x' };
     // Jev matched the feature, but not the app
@@ -82,21 +82,21 @@ describe('Jev decides which app a prompt is about', () => {
   });
 
   it("a named app whose change is in the repo but not live: deploy it, not \"which app?\"", async () => {
-    const { s, id } = withApp('restaurant_contact');
+    const { s, id } = withApp('logan_contact');
     const a = getApp(s, id)!;
     a.repoVersion = 2; a.deployed = true; a.deployedVersion = 1;
-    const out = (await promptDone(s, content, pickJev({ route: [`app:${id}`] }), "On the trattoria gino app, you didn't update the menu")).state;
+    const out = (await promptDone(s, content, pickJev({ route: [`app:${id}`] }), "On the workagent app, you didn't update the about page")).state;
     expect(hint('not_deployed', a.name)).toContain(out.chat.at(-1)!.text);
   });
 
   it('a named app with nothing off: says it matches the brief; with work left: asks what is wrong', async () => {
-    const done = withApp('restaurant_contact');
+    const done = withApp('logan_contact');
     const a = getApp(done.s, done.id)!;
     a.deployed = true; a.deployedVersion = 1;
-    const ok = (await promptDone(done.s, content, pickJev({ route: [`app:${done.id}`] }), 'the gino site, update the menu')).state;
+    const ok = (await promptDone(done.s, content, pickJev({ route: [`app:${done.id}`] }), 'the workagent site, update the about page')).state;
     expect(hint('nothing_to_fix', a.name)).toContain(ok.chat.at(-1)!.text);
-    const left = withApp('restaurant_contact', 'menu');
-    const ask = (await promptDone(left.s, content, pickJev({ route: [`app:${left.id}`] }), 'fix the gino site')).state;
+    const left = withApp('logan_contact', 'about');
+    const ask = (await promptDone(left.s, content, pickJev({ route: [`app:${left.id}`] }), 'fix the workagent site')).state;
     expect(hint('fix_help', a.name)).toContain(ask.chat.at(-1)!.text);
     expect(getApp(ask, left.id)!.repoVersion).toBe(1);
   });
@@ -104,9 +104,9 @@ describe('Jev decides which app a prompt is about', () => {
 
 describe('when Jev is offline', () => {
   it('a prompt, a post and an email do nothing: JevOffline, state untouched', async () => {
-    const { s } = withApp('restaurant_contact', 'menu');
+    const { s } = withApp('logan_contact', 'about');
     const before = JSON.stringify(s);
-    await expect(promptDone(s, content, noJev, 'Trattoria Gino: fix the menu')).rejects.toBeInstanceOf(JevOffline);
+    await expect(promptDone(s, content, noJev, 'WorkAgent: fix the about page')).rejects.toBeInstanceOf(JevOffline);
     await expect(postToY(s, noJev, 'hello', [])).rejects.toBeInstanceOf(JevOffline);
     expect(JSON.stringify(s)).toBe(before);
   });
@@ -115,85 +115,89 @@ describe('when Jev is offline', () => {
     const mem = { load: () => null, save: () => {}, clear: () => {} } as unknown as SaveStore;
     const store = new GameStore(content, { ...noJev, route: async () => { throw new JevOffline('The Jev proxy is not running (npm run proxy).'); } }, {} as Writer, mem);
     const before = store.state.clockMin;
-    await store.prompt('Trattoria Gino: fix the menu');
-    expect(store.ui.jevOffline).toMatchObject({ field: 'prompt-input', text: 'Trattoria Gino: fix the menu', reason: 'The Jev proxy is not running (npm run proxy).' });
+    await store.prompt('WorkAgent: fix the about page');
+    expect(store.ui.jevOffline).toMatchObject({ field: 'prompt-input', text: 'WorkAgent: fix the about page', reason: 'The Jev proxy is not running (npm run proxy).' });
     expect(store.state.clockMin).toBe(before);
-    expect(store.state.chat.some((m) => m.text === 'Trattoria Gino: fix the menu')).toBe(false);
+    expect(store.state.chat.some((m) => m.text === 'WorkAgent: fix the about page')).toBe(false);
   });
 });
 
 describe('fixing named bugs', () => {
   it('Jev is asked about each component on its own, about the feature as a near-miss, and about the feature as a build', async () => {
-    const { s, id } = withApp('restaurant_contact', 'landing');
+    const { s, id } = withApp('logan_contact', 'landing');
     const { jev, asked } = spy(pickJev({}));
-    await promptDone(s, content, jev, 'The name on the trattoria gina website is wrong');
+    await promptDone(s, content, jev, 'The name on the workagnet website is wrong');
     const items = asked.features[0].features.filter((f) => f.id.startsWith(`${id}::landing::`));
     expect(items.find((f) => f.id.endsWith('::feature'))!.kind).toBe('build');
-    expect(items.filter((f) => f.kind === 'component').map((f) => f.id.split('::')[2])).toEqual(['c:name', 'c:hours', 'c:address']);
-    expect(items.find((f) => f.kind === 'component')!.description).toMatch(/^the restaurant name \(also counts as naming it: "title", "heading"\), a part of the landing .*misspelled/);
+    expect(items.filter((f) => f.kind === 'component').map((f) => f.id.split('::')[2])).toEqual(['c:name', 'c:pitch']);
+    expect(items.find((f) => f.kind === 'component')!.description).toMatch(/^the startup.s name \(also counts as naming it: .*"title".*\), a part of the landing page .*misspelled/);
     // synonyms count for the path steps too
     expect(items.find((f) => f.id.endsWith('::s:landing'))!.description).toContain('"home page"');
     // the path is asked step by step: here just the feature, since landing's parts sit at its top
     expect(items.filter((f) => f.kind === 'step').map((f) => f.id.split('::')[2])).toEqual(['s:landing']);
-    expect(items.find((f) => f.kind === 'area')!.description).toMatch(/Its parts, by path: landing > name \(the restaurant name\); landing > hours \(the opening hours\)/);
+    expect(items.find((f) => f.kind === 'area')!.description).toMatch(/Its parts, by path: landing page > name \(the startup.s name\); landing page > pitch \(the one-line pitch/);
     // each part lists the others, so a complaint about one isn't read as one about its neighbour
-    expect(items.find((f) => f.kind === 'component')!.description).toMatch(/Other parts of the landing, which are not this one: the opening hours; the restaurant.s address\. /);
+    expect(items.find((f) => f.kind === 'component')!.description).toMatch(/Other parts of the landing page, which are not this one: the one-line pitch \(the headline\)\. /);
     expect(items.some((f) => f.kind === 'problem')).toBe(false);
   });
 
-  it('a part counts only when every step of its path is named; without them it is a near-miss', async () => {
-    const { s, id } = withApp('restaurant_contact');
+  /** WorkAgent with the waitlist built and one bug in it. */
+  function withWaitlist(variant: string, also?: string[]) {
+    const { s, id } = withApp('logan_contact');
     const a = getApp(s, id)!;
-    a.repo.push({ id: 'booking', correct: false, variant: 'wrong_date', params: a.specParams.booking, seed: 1 });
-    if (!a.required.includes('booking')) a.required.push('booking');
+    a.specParams.waitlist = { start: '10,000' };
+    a.repo.push({ id: 'waitlist', correct: false, variant, ...(also ? { also } : {}), params: a.specParams.waitlist, seed: 1 });
+    if (!a.required.includes('waitlist')) a.required.push('waitlist');
+    return { s, id };
+  }
+
+  it('a part counts only when every step of its path is named; without them it is a near-miss', async () => {
+    const { s, id } = withWaitlist('position_wrong');
     const { jev, asked } = spy(pickJev({}));
-    await promptDone(s, content, jev, 'Trattoria Gino: the date is wrong');
-    const date = asked.features[0].features.find((f) => f.id === `${id}::booking::c:confirmation/date`)!;
-    expect(date.kind).toBe('component');
-    expect(asked.features[0].features.filter((f) => f.kind === 'step' && f.id.startsWith(`${id}::booking::`)).map((f) => f.id.split('::')[2])).toEqual(['s:booking', 's:booking/form', 's:booking/confirmation']);
-    // Jev saw the part and the booking named, but not the confirmation: a near-miss, nothing changes
-    const partial: JevRouter = { ...pickJev({ route: ['fix'] }), matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => x.endsWith('::c:confirmation/date') || x.endsWith('::s:booking') || x.endsWith('::*::app')) };
-    const miss = (await promptDone(s, content, partial, 'Trattoria Gino: the booking date is wrong')).state;
+    await promptDone(s, content, jev, 'WorkAgent: the position is wrong');
+    const pos = asked.features[0].features.find((f) => f.id === `${id}::waitlist::c:confirmation/position`)!;
+    expect(pos.kind).toBe('component');
+    expect(asked.features[0].features.filter((f) => f.kind === 'step' && f.id.startsWith(`${id}::waitlist::`)).map((f) => f.id.split('::')[2])).toEqual(['s:waitlist', 's:waitlist/form', 's:waitlist/counter', 's:waitlist/confirmation']);
+    // Jev saw the part and the waitlist named, but not the confirmation: a near-miss, nothing changes
+    const partial: JevRouter = { ...pickJev({ route: ['fix'] }), matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => x.endsWith('::c:confirmation/position') || x.endsWith('::s:waitlist') || x.endsWith('::*::app')) };
+    const miss = (await promptDone(s, content, partial, 'WorkAgent: the waitlist position is wrong')).state;
     expect(miss.chat.at(-1)!.src).toBe('near_miss');
-    // the near-miss says where the path stopped: the booking was named, the folder wasn't
-    expect(miss.chat.at(-1)!.text).toMatch(/form or confirmation/);
-    expect(miss.chat.at(-1)!.text).toMatch(/\bdate\b/);
+    // the near-miss says where the path stopped: the waitlist was named, the folder wasn't
+    expect(miss.chat.at(-1)!.text).toMatch(/form or counter or confirmation/);
+    expect(miss.chat.at(-1)!.text).toMatch(/\bposition\b/);
     // the part without its feature asks for the feature
-    const bare: JevRouter = { ...partial, matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => x.endsWith('::c:confirmation/date') || x.endsWith('::*::app')) };
-    const noFeature = (await promptDone(s, content, bare, 'Trattoria Gino: the date is wrong')).state;
-    expect(content.agent!.hints.find((h) => h.id === 'near_feature')!.replies.map((l) => l.replaceAll('{{part}}', 'date'))).toContain(report(noFeature));
+    const bare: JevRouter = { ...partial, matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => x.endsWith('::c:confirmation/position') || x.endsWith('::*::app')) };
+    const noFeature = (await promptDone(s, content, bare, 'WorkAgent: the position is wrong')).state;
+    expect(content.agent!.hints.find((h) => h.id === 'near_feature')!.replies.map((l) => l.replaceAll('{{part}}', 'position'))).toContain(report(noFeature));
     // the feature and a folder but no part: it lists that folder's parts
-    const folderOnly: JevRouter = { ...partial, matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => /::booking::(area|s:booking|s:booking\/confirmation)$|::\*::app$/.test(x)) };
-    const noPart = (await promptDone(s, content, folderOnly, 'Trattoria Gino: the booking confirmation is wrong')).state;
+    const folderOnly: JevRouter = { ...partial, matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => /::waitlist::(area|s:waitlist|s:waitlist\/confirmation)$|::\*::app$/.test(x)) };
+    const noPart = (await promptDone(s, content, folderOnly, 'WorkAgent: the waitlist confirmation is wrong')).state;
     expect(noPart.chat.at(-1)!.text).toMatch(/confirmation/);
-    expect(noPart.chat.at(-1)!.text).toMatch(/sending, recipient, date, time, party, restaurant name/);
+    expect(noPart.chat.at(-1)!.text).toMatch(/sending, recipient, position/);
     expect(getApp(miss, id)!.repo).toEqual(getApp(s, id)!.repo);
     // every step named: fixed
-    const full: JevRouter = { ...partial, matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => /::c:confirmation\/date$|::s:booking(\/confirmation)?$|::\*::app$/.test(x)) };
-    const hit = (await promptDone(s, content, full, 'Trattoria Gino: the date on the booking confirmation is wrong')).state;
-    expect(getApp(hit, id)!.repo.find((f) => f.id === 'booking')!.correct).toBe(true);
+    const full: JevRouter = { ...partial, matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => /::c:confirmation\/position$|::s:waitlist(\/confirmation)?$|::\*::app$/.test(x)) };
+    const hit = (await promptDone(s, content, full, 'WorkAgent: the place in line on the waitlist confirmation is wrong')).state;
+    expect(getApp(hit, id)!.repo.find((f) => f.id === 'waitlist')!.correct).toBe(true);
   });
 
   it('a nested component fixes only its own bug', async () => {
-    const { s, id } = withApp('restaurant_contact');
-    const a = getApp(s, id)!;
-    a.repo.push({ id: 'booking', correct: false, variant: 'wrong_date', also: ['party_wrong'], params: a.specParams.booking, seed: 1 });
-    if (!a.required.includes('booking')) a.required.push('booking');
-    const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::booking::c:confirmation/date'] }), 'Trattoria Gino: the booking confirmation has the wrong date')).state;
-    expect(getApp(out, id)!.repo.find((f) => f.id === 'booking')).toMatchObject({ correct: false, variant: 'party_wrong' });
+    const { s, id } = withWaitlist('position_wrong', ['sent_to_founder']);
+    const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::waitlist::c:confirmation/position'] }), 'WorkAgent: the waitlist confirmation has the wrong place in line')).state;
+    expect(getApp(out, id)!.repo.find((f) => f.id === 'waitlist')).toMatchObject({ correct: false, variant: 'sent_to_founder' });
   });
 
   it('naming only the feature is a near-miss: a scripted line from that feature, and nothing changes', async () => {
-    const { s, id } = withApp('restaurant_contact', 'menu');
-    const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::menu::area'] }), 'Trattoria Gino: the menu is wrong')).state;
-    expect(content.apps.restaurant.features.find((f) => f.id === 'menu')!.nearMiss).toContain(report(out));
+    const { s, id } = withApp('logan_contact', 'about');
+    const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::about::area'] }), 'WorkAgent: the about page is wrong')).state;
+    expect(content.apps.startup.features.find((f) => f.id === 'about')!.nearMiss).toContain(report(out));
     expect(out.chat.at(-1)!.src).toBe('near_miss');
     expect(getApp(out, id)!.repo).toEqual(getApp(s, id)!.repo);
   });
 
   it('a near-miss on a fix is a fake fix: "Good catch!", billed, takes time, then nothing found', async () => {
-    const { s, id } = withApp('restaurant_contact', 'menu');
-    const r = await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::menu::area'] }), 'Trattoria Gino: the menu is wrong');
+    const { s, id } = withApp('logan_contact', 'about');
+    const r = await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::about::area'] }), 'WorkAgent: the about page is wrong');
     expect(r.charged).toBe(true);
     expect(r.state.values.crypto).toBeLessThan(s.values.crypto);
     expect(r.state.chat.at(-1)).toMatchObject({ src: 'working' });
@@ -209,9 +213,9 @@ describe('fixing named bugs', () => {
 
   it.each([
     ['points at nothing', [] as string[], 'fix the thing, it is broken'],
-    ['names only the app', ['app:'], 'fix the gino site'],
+    ['names only the app', ['app:'], 'fix the logan site'],
   ])('a total miss that %s gets no fake fix: answered on the spot, no "Good catch!", no work', async (_, route, prompt) => {
-    const { s, id } = withApp('restaurant_contact', 'menu');
+    const { s, id } = withApp('logan_contact', 'about');
     const r = await promptAgent(s, content, pickJev({ route: route.map((x) => `${x}${id}`) }), prompt);
     expect(r.state.agentWork).toBeFalsy();
     expect(r.state.chat.at(-1)!.src).not.toBe('working');
@@ -220,42 +224,39 @@ describe('fixing named bugs', () => {
   });
 
   it('a real fix opens with "Good catch!"; feature work does not', async () => {
-    const { s, id } = withApp('restaurant_contact', 'menu');
-    getApp(s, id)!.repo.find((f) => f.id === 'menu')!.variant = 'wrong_items';
-    const fix = await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::menu::c:items'] }), 'Trattoria Gino: the menu items are wrong');
+    const { s, id } = withApp('logan_contact', 'about');
+    getApp(s, id)!.repo.find((f) => f.id === 'about')!.variant = 'credentials_wrong';
+    const fix = await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::about::c:credentials'] }), "WorkAgent: Logan's credentials on the about page are wrong");
     expect(fix.state.chat.at(-1)).toMatchObject({ src: 'working' });
     expect(fix.reply).toMatch(/^Good catch! /);
   });
 
   it('Haiku writes the near-miss, told what was missing and given the scripted lines', async () => {
-    const { s, id } = withApp('restaurant_contact');
-    const a = getApp(s, id)!;
-    a.repo.push({ id: 'booking', correct: false, variant: 'wrong_date', params: a.specParams.booking, seed: 1 });
-    if (!a.required.includes('booking')) a.required.push('booking');
+    const { s } = withWaitlist('position_wrong');
     const seen: WriteReq[] = [];
-    const writer: Writer = { async write(req) { seen.push(req); return { text: 'Which booking date, the form or the confirmation? Pick one.', llm: true, by: 'Haiku' }; } };
-    const partial: JevRouter = { ...pickJev({ route: ['fix'] }), matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => x.endsWith('::c:confirmation/date') || x.endsWith('::s:booking') || x.endsWith('::*::app')) };
-    const out = (await promptDone(s, content, partial, 'Trattoria Gino: the booking date is wrong', writer)).state;
+    const writer: Writer = { async write(req) { seen.push(req); return { text: 'Which position, the counter or the confirmation? Pick one.', llm: true, by: 'Haiku' }; } };
+    const partial: JevRouter = { ...pickJev({ route: ['fix'] }), matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => x.endsWith('::c:confirmation/position') || x.endsWith('::s:waitlist') || x.endsWith('::*::app')) };
+    const out = (await promptDone(s, content, partial, 'WorkAgent: the waitlist position is wrong', writer)).state;
     expect(seen[0]).toMatchObject({ as: 'agent', mode: 'near' });
-    expect(seen[0].near!.why).toMatch(/date.*Booking.*form or confirmation|date.*booking.*form or confirmation/i);
-    expect(seen[0].near!.lines.some((l) => /form or confirmation/.test(l))).toBe(true);
+    expect(seen[0].near!.why).toMatch(/position.*waitlist.*form or counter or confirmation/i);
+    expect(seen[0].near!.lines.some((l) => /form or counter or confirmation/.test(l))).toBe(true);
     expect(out.chat.at(-1)).toMatchObject({ src: 'near_miss', by: 'Haiku' });
-    expect(report(out)).toBe('Which booking date, the form or the confirmation? Pick one.');
+    expect(report(out)).toBe('Which position, the counter or the confirmation? Pick one.');
   });
 
   it('a near-miss gives way to anything more precise in the same prompt', async () => {
-    const { s, id } = withApp('restaurant_contact', 'landing');
+    const { s, id } = withApp('logan_contact', 'landing');
     getApp(s, id)!.repo.find((f) => f.id === 'landing')!.variant = 'name_wrong';
-    const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::landing::area', '::landing::c:name'] }), 'Trattoria Gino: the landing page is off, the name is misspelled')).state;
+    const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::landing::area', '::landing::c:name'] }), 'WorkAgent: the landing page is off, the name is misspelled')).state;
     expect(out.chat.at(-1)!.src).toBe('build');
     expect(getApp(out, id)!.repo.find((f) => f.id === 'landing')!.correct).toBe(true);
   });
 
   it('naming the part with invented details says the details are missing, not that it was right', async () => {
-    const { s, id } = withApp('restaurant_contact');
+    const { s, id } = withApp('logan_contact');
     const a = getApp(s, id)!;
-    a.repo = a.repo.map((f) => (f.id === 'menu' ? { ...f, correct: false, variant: 'hallucinated', seed: 1 } : f));
-    const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::menu::c:items'] }), 'Trattoria Gino: the menu items are wrong')).state;
+    a.repo = a.repo.map((f) => (f.id === 'about' ? { ...f, correct: false, variant: 'hallucinated', seed: 1 } : f));
+    const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::about::c:credentials'] }), 'WorkAgent: the credentials on the about page are wrong')).state;
     expect(out.chat.at(-1)!.text).toMatch(/made up\. Send them/);
     expect(out.chat.at(-1)!.text).not.toMatch(/already right|Tidied/);
   });
@@ -283,35 +284,35 @@ describe('fixing named bugs', () => {
   });
 
   it('a named bug that was not there is reported as already right', async () => {
-    const { s, id } = withApp('restaurant_contact');
-    getApp(s, id)!.repo[0] = { id: 'landing', correct: false, variant: 'hours_wrong', params: getApp(s, id)!.specParams.landing, seed: 1 };
-    const out = (await promptDone(s, content, pickJev({ features: ['::landing::c:name'] }), 'Trattoria Gino: the name is misspelled')).state;
+    const { s, id } = withApp('logan_contact');
+    getApp(s, id)!.repo[0] = { id: 'landing', correct: false, variant: 'pitch_wrong', params: getApp(s, id)!.specParams.landing, seed: 1 };
+    const out = (await promptDone(s, content, pickJev({ features: ['::landing::c:name'] }), 'WorkAgent: the name is misspelled')).state;
     expect(out.chat.at(-1)!.text).toMatch(/already right/);
-    expect(getApp(out, id)!.repo[0]).toMatchObject({ correct: false, variant: 'hours_wrong' });
+    expect(getApp(out, id)!.repo[0]).toMatchObject({ correct: false, variant: 'pitch_wrong' });
   });
 
   it('a first build only says what was built, even when Jev saw a bug named', async () => {
-    const { s, id } = withApp('restaurant_contact');
+    const { s, id } = withApp('logan_contact');
     const a = getApp(s, id)!;
     a.repo = [];
     a.repoVersion = 0;
-    const prompt = 'Create this website for trattoria gino: a landing page with our name and opening hours (17:00-22:00), and a menu page.';
-    const out = (await promptDone(s, content, pickJev({ features: ['::landing::feature', '::landing::c:hours', '::menu::feature'] }), prompt)).state;
+    const prompt = 'Create this website for workagent: a landing page with our name and the pitch "The future of work is agentic.", and an about us page.';
+    const out = (await promptDone(s, content, pickJev({ features: ['::landing::feature', '::landing::c:pitch', '::about::feature'] }), prompt)).state;
     const reply = out.chat.at(-1)!.text;
-    expect(reply).toMatch(/Built the landing\.\n- Built the menu\./);
+    expect(reply).toMatch(/Built the landing page\.\n- Built the about us page\./);
     expect(reply).not.toMatch(/Checked for this|already right|Fixed/);
   });
 });
 
 describe('one kind of work per prompt', () => {
-  /** Trattoria Gino with the name misspelled and the menu needing a rebuild: Jev matches both kinds. */
+  /** WorkAgent with the name misspelled and the about page needing a rebuild: Jev matches both kinds. */
   function mixed() {
-    const { s, id } = withApp('restaurant_contact');
+    const { s, id } = withApp('logan_contact');
     const a = getApp(s, id)!;
-    a.repo = a.repo.map((f) => (f.id === 'landing' ? { ...f, correct: false, variant: 'name_wrong', seed: 1 } : f.id === 'menu' ? { ...f, correct: false, variant: 'hallucinated', seed: 1 } : f));
-    return { s, id, jev: (intent: string) => pickJev({ route: [intent], features: ['::landing::c:name', '::menu::feature'] }) };
+    a.repo = a.repo.map((f) => (f.id === 'landing' ? { ...f, correct: false, variant: 'name_wrong', seed: 1 } : f.id === 'about' ? { ...f, correct: false, variant: 'hallucinated', seed: 1 } : f));
+    return { s, id, jev: (intent: string) => pickJev({ route: [intent], features: ['::landing::c:name', '::about::feature'] }) };
   }
-  const prompt = 'Trattoria Gino: the name is misspelled. Also the menu should be Margherita 12, Diavola 14.';
+  const prompt = 'WorkAgent: the name is misspelled. Also the founder page should list Why Combinator Startup School and 2x founder.';
 
   it('Jev is asked whether the prompt is feature work, a fix, or both', async () => {
     const { s, jev } = mixed();
@@ -333,14 +334,14 @@ describe('one kind of work per prompt', () => {
     const { s, id, jev } = mixed();
     const out = (await promptDone(s, content, jev('fix'), prompt)).state;
     expect(getApp(out, id)!.repo.find((f) => f.id === 'landing')!.correct).toBe(true);
-    expect(getApp(out, id)!.repo.find((f) => f.id === 'menu')).toMatchObject({ correct: false, variant: 'hallucinated' });
-    expect(out.chat.at(-1)!.text).not.toMatch(/menu/);
+    expect(getApp(out, id)!.repo.find((f) => f.id === 'about')).toMatchObject({ correct: false, variant: 'hallucinated' });
+    expect(out.chat.at(-1)!.text).not.toMatch(/about|credentials/i);
   });
 
   it('both: only the features, and the agent says it ran out of context for the fixes', async () => {
     const { s, id, jev } = mixed();
-    // the menu isn't built yet, so there is feature work to do
-    getApp(s, id)!.repo = getApp(s, id)!.repo.filter((f) => f.id !== 'menu');
+    // the about page isn't built yet, so there is feature work to do
+    getApp(s, id)!.repo = getApp(s, id)!.repo.filter((f) => f.id !== 'about');
     const out = (await promptDone(s, content, jev('both'), prompt)).state;
     expect(getApp(out, id)!.repo.find((f) => f.id === 'landing')).toMatchObject({ correct: false, variant: 'name_wrong' });
     expect(out.chat.at(-1)!.text).toMatch(/only did the feature work.*not enough context|wasn't enough context/);
@@ -348,75 +349,75 @@ describe('one kind of work per prompt', () => {
 });
 
 describe("the client's change requests", () => {
-  /** Trattoria Gino, built right, then Gino's email: swap a dish, add a booking form. */
+  /** Vibe Check, built right, then deskjockey's day 8 email: two more tickers. */
   function updated() {
-    const { s, id } = withApp('restaurant_contact');
-    applyEffects(s, content.events.find((e) => e.id === 'd2_restaurant_booking')!.onDeliver!);
+    const { s, id } = withApp('trader_contact');
+    applyEffects(s, content.events.find((e) => e.id === 'd8_trader_tickers')!.onDeliver!);
     return { s, id };
   }
-  const gino = 'Please add this to the trattoria website: Swap Diavola for Quattro Formaggi at 15, and make Espresso 3.5. Add a table booking form.';
+  const trader = 'Please add this to vibe check: track $APO and $DISH too, next to $GAI and $VANT.';
 
   it('an out-of-date feature gives Jev its own item for the change, as feature work', async () => {
     const { s, id } = updated();
     const { jev, asked } = spy(pickJev({ route: ['feature'] }));
-    await promptDone(s, content, jev, gino);
-    const item = asked.features[0].features.find((f) => f.id === `${id}::menu::outdated`)!;
+    await promptDone(s, content, jev, trader);
+    const item = asked.features[0].features.find((f) => f.id === `${id}::tickers::outdated`)!;
     expect(item.kind).toBe('build');
-    expect(item.description).toMatch(/Quattro Formaggi 15/);
+    expect(item.description).toMatch(/\$APO/);
   });
 
   it("the change item says the prompt has to spell out what changes", async () => {
     const { s, id } = updated();
     const { jev, asked } = spy(pickJev({ route: ['feature'] }));
-    await promptDone(s, content, jev, gino);
-    expect(asked.features[0].features.find((f) => f.id === `${id}::menu::outdated`)!.description).toMatch(/what exactly changes.*doesn't count/);
+    await promptDone(s, content, jev, trader);
+    expect(asked.features[0].features.find((f) => f.id === `${id}::tickers::outdated`)!.description).toMatch(/what exactly changes.*doesn't count/);
   });
 
-  it("a menu that already had a bug still takes the client's change, and the bug stays", async () => {
-    const { s, id } = withApp('restaurant_contact');
-    const menu = getApp(s, id)!.repo.find((f) => f.id === 'menu')!;
-    Object.assign(menu, { correct: false, variant: 'prices_euri', seed: 1 });
-    applyEffects(s, content.events.find((e) => e.id === 'd2_restaurant_booking')!.onDeliver!);
-    expect(getApp(s, id)!.repo.find((f) => f.id === 'menu')).toMatchObject({ variant: 'prices_euri', also: ['outdated'] });
-    const out = (await promptDone(s, content, pickJev({ route: ['feature'], features: ['::menu::outdated'] }), 'Swap Diavola for Quattro Formaggi at 15, and make Espresso 3.5. Update the trattoria menu items and prices')).state;
-    expect(getApp(out, id)!.repo.find((f) => f.id === 'menu')).toMatchObject({ correct: false, variant: 'prices_euri' });
-    expect(getApp(out, id)!.repo.find((f) => f.id === 'menu')!.also).toBeUndefined();
+  it("a feature that already had a bug still takes the client's change, and the bug stays", async () => {
+    const { s, id } = withApp('trader_contact');
+    const tickers = getApp(s, id)!.repo.find((f) => f.id === 'tickers')!;
+    Object.assign(tickers, { correct: false, variant: 'lowercase_missed', seed: 1 });
+    applyEffects(s, content.events.find((e) => e.id === 'd8_trader_tickers')!.onDeliver!);
+    expect(getApp(s, id)!.repo.find((f) => f.id === 'tickers')).toMatchObject({ variant: 'lowercase_missed', also: ['outdated'] });
+    const out = (await promptDone(s, content, pickJev({ route: ['feature'], features: ['::tickers::outdated'] }), 'Vibe check: track $GAI $VANT $APO $DISH')).state;
+    expect(getApp(out, id)!.repo.find((f) => f.id === 'tickers')).toMatchObject({ correct: false, variant: 'lowercase_missed' });
+    expect(getApp(out, id)!.repo.find((f) => f.id === 'tickers')!.also).toBeUndefined();
   });
 
   it("asking to update without saying what changed gets asked what changed", async () => {
     const { s, id } = updated();
-    const out = (await promptDone(s, content, pickJev({ route: [`app:${id}`] }), 'Update the trattoria menu items and prices')).state;
+    const out = (await promptDone(s, content, pickJev({ route: [`app:${id}`] }), 'Update the vibe check tickers')).state;
     expect(content.agent!.hints.find((h) => h.id === 'update_help')!.replies).toContain(out.chat.at(-1)!.text);
   });
 
-  it('asking for the change updates the menu alongside the new booking form', async () => {
+  it('asking for the change updates the feature', async () => {
     const { s, id } = updated();
-    const out = (await promptDone(s, content, pickJev({ route: ['feature'], features: ['::menu::outdated', '::booking::feature'] }), gino)).state;
-    expect(getApp(out, id)!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);
-    expect(out.chat.at(-1)!.text).toMatch(/Rebuilt the menu with the details you gave\.\n- Built the booking\./);
+    const out = (await promptDone(s, content, pickJev({ route: ['feature'], features: ['::tickers::outdated'] }), trader)).state;
+    expect(getApp(out, id)!.repo.find((f) => f.id === 'tickers')!.correct).toBe(true);
+    expect(out.chat.at(-1)!.text).toMatch(/Pushed to Forkyard/);
   });
 
-  it('"did you update the menu?" gets the status from the repo', async () => {
+  it('"did you update the tickers?" gets the status from the repo', async () => {
     const { s, id } = updated();
     const { jev, asked } = spy(pickJev({ route: [`status:${id}`] }));
     // nothing to build matches, so the question goes to the agent's routing
-    const out = (await promptDone(s, content, jev, 'Did you also update the menu?')).state;
+    const out = (await promptDone(s, content, jev, 'Did you also update the tickers?')).state;
     expect(asked.routes.at(-1)!.candidates[0].id).toBe(`status:${id}`);
-    expect(out.chat.at(-1)!.text).toBe("Trattoria Gino: The landing is built. The menu isn't updated to the latest changes yet. The booking isn't built yet. None of it is live yet. Deploy it on Forkyard.");
+    expect(out.chat.at(-1)!.text).toMatch(/^Vibe Check: .*isn't updated to the latest changes yet\..*None of it is live yet\. Deploy it on Forkyard\.$/);
   });
 });
 
 describe('Jev reads follow-ups in context', () => {
   it("gets today's prompts and the agent's replies, so a follow-up names the app the agent just worked on", async () => {
-    const { s, id } = withApp('restaurant_contact');
+    const { s, id } = withApp('logan_contact');
     const a = getApp(s, id)!;
-    a.repo = a.repo.map((f) => (f.id === 'menu' ? { ...f, correct: false, variant: 'wrong_items', also: ['prices_missing'], seed: 1 } : f));
-    const first = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::menu::c:items'] }), 'The menu has spaghetti carbonara, shouldn\'t be there')).state;
+    a.repo = a.repo.map((f) => (f.id === 'about' ? { ...f, correct: false, variant: 'credentials_wrong', also: ['fake_cofounders'], seed: 1 } : f));
+    const first = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::about::c:credentials'] }), "The about page credentials say graduate, he dropped out")).state;
     const { jev, asked } = spy(pickJev({}));
-    await promptDone(first, content, jev, 'Now the prices are missing');
+    await promptDone(first, content, jev, 'Now there are two fake cofounders');
     const ctx = asked.features[0].context!;
-    expect(ctx[0]).toBe("Player: The menu has spaghetti carbonara, shouldn't be there");
-    expect(ctx[1]).toMatch(/^Agent: Pushed to Forkyard for Trattoria Gino\./);
+    expect(ctx[0]).toBe('Player: The about page credentials say graduate, he dropped out');
+    expect(ctx[1]).toMatch(/^Agent: Pushed to Forkyard for WorkAgent\./);
     expect(asked.routes.every((r) => r.context?.length === 2)).toBe(true);
   });
 
@@ -434,24 +435,24 @@ describe('Jev reads follow-ups in context', () => {
 describe('fixes never add bugs', () => {
   it('naming the only bug fixes it outright, even for the weakest agent', async () => {
     for (let seed = 0; seed < 20; seed++) {
-      const { s, id } = withApp('restaurant_contact');
+      const { s, id } = withApp('logan_contact');
       s.rng = seed;
       s.values.agentLevel = 0;
       getApp(s, id)!.repo[0] = { id: 'landing', correct: false, variant: 'name_wrong', params: getApp(s, id)!.specParams.landing, seed: 1 };
-      const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::landing::c:name'] }), 'Trattoria Gino: the name is misspelled')).state;
+      const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::landing::c:name'] }), 'WorkAgent: the name is misspelled')).state;
       expect(getApp(out, id)!.repo[0].correct).toBe(true);
     }
   });
 
-  it('an invented menu given the real dishes comes out right, with nothing new wrong', async () => {
+  it('invented credentials given the real ones come out right, with nothing new wrong', async () => {
     for (let seed = 0; seed < 20; seed++) {
-      const { s, id } = withApp('restaurant_contact');
+      const { s, id } = withApp('logan_contact');
       s.rng = seed;
       s.values.agentLevel = 0;
       const a = getApp(s, id)!;
-      a.repo = a.repo.map((f) => (f.id === 'menu' ? { id: 'menu', correct: false, variant: 'hallucinated', seed: 1 } : f));
-      const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::menu::c:items'] }), `Trattoria Gino: the menu dishes are made up. It should be ${a.specParams.menu.dishes}, prices in DOLR.`)).state;
-      expect(getApp(out, id)!.repo.find((f) => f.id === 'menu')!.correct).toBe(true);
+      a.repo = a.repo.map((f) => (f.id === 'about' ? { id: 'about', correct: false, variant: 'hallucinated', seed: 1 } : f));
+      const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::about::c:credentials'] }), `WorkAgent: the credentials on the about page are made up. They should be ${a.specParams.about.credentials}, for ${a.specParams.about.founder}.`)).state;
+      expect(getApp(out, id)!.repo.find((f) => f.id === 'about')!.correct).toBe(true);
     }
   });
 });
@@ -459,26 +460,26 @@ describe('fixes never add bugs', () => {
 describe("the first deploy", () => {
   it('a clean first deploy ships one shallow bug, live and in the repo', () => {
     for (let seed = 0; seed < 10; seed++) {
-      const { s, id } = withApp('restaurant_contact');
+      const { s, id } = withApp('logan_contact');
       s.rng = seed;
       const out = deploy(s, id, content);
       const a = getApp(out, id)!;
       const wrong = a.features.filter((f) => !f.correct);
       expect(wrong).toHaveLength(1);
-      const def = content.apps.restaurant.features.find((f) => f.id === wrong[0].id)!;
+      const def = content.apps.startup.features.find((f) => f.id === wrong[0].id)!;
       expect(def.bugs!.find((b) => b.id === wrong[0].variant)!.deep).toBeFalsy();
       expect(a.repo.find((f) => f.id === wrong[0].id)).toMatchObject({ correct: false, variant: wrong[0].variant });
     }
   });
 
   it('a first deploy that already has a bug gets no extra one', () => {
-    const { s, id } = withApp('restaurant_contact', 'landing');
+    const { s, id } = withApp('logan_contact', 'landing');
     const out = deploy(s, id, content);
     expect(getApp(out, id)!.features.filter((f) => !f.correct).map((f) => f.id)).toEqual(['landing']);
   });
 
   it('later deploys are left alone', () => {
-    const { s, id } = withApp('restaurant_contact');
+    const { s, id } = withApp('logan_contact');
     const once = deploy(s, id, content);
     const a = getApp(once, id)!;
     a.repo = a.repo.map((f) => ({ id: f.id, correct: true, params: a.specParams[f.id] }));
@@ -490,12 +491,12 @@ describe("the first deploy", () => {
 
 describe('live breaks', () => {
   it('a crash is described by the error the site shows, so "an application error on the app" can name it', async () => {
-    let { s, id } = withApp('restaurant_contact');
+    let { s, id } = withApp('logan_contact');
     s = deploy(s, id);
-    getApp(s, id)!.breaks.push({ featureId: 'menu', failure: 'visible', day: s.values.day, scripted: false, seed: 1 });
-    const { jev, asked } = spy(pickJev({ route: ['fix'], features: ['::menu::visible'] }));
-    const out = (await promptDone(s, content, jev, "There's an application error on the trattoria gino app")).state;
-    const item = asked.features[0].features.find((f) => f.id === `${id}::menu::visible`)!;
+    getApp(s, id)!.breaks.push({ featureId: 'about', failure: 'visible', day: s.values.day, scripted: false, seed: 1 });
+    const { jev, asked } = spy(pickJev({ route: ['fix'], features: ['::about::visible'] }));
+    const out = (await promptDone(s, content, jev, "There's an application error on the workagent app")).state;
+    const item = asked.features[0].features.find((f) => f.id === `${id}::about::visible`)!;
     expect(item.description).toMatch(/"Application error".*without naming the page/);
     expect(out.chat.at(-1)!.text).toMatch(/Pushed to Forkyard/);
   });
@@ -516,7 +517,7 @@ describe('loose descriptions', () => {
 
 describe('dev bug switch', () => {
   it('switches repo and live together, even when they differ', async () => {
-    let { s, id } = withApp('restaurant_contact');
+    let { s, id } = withApp('logan_contact');
     s = deploy(s, id);
     const a = getApp(s, id)!;
     // the repo already has the fix, the live site still has the bug
@@ -530,30 +531,30 @@ describe('dev bug switch', () => {
 });
 
 describe('one app per prompt', () => {
-  /** Gino's site and the crawler, both with a bug the prompt could be read as naming. */
+  /** Logan's site and the crawler, both with a bug the prompt could be read as naming. */
   function twoApps() {
-    const { s, id: gino } = withApp('restaurant_contact');
+    const { s, id: wa } = withApp('logan_contact');
     applyEffects(s, content.events.find((e) => e.id === 'trader_contact')!.outcomes!.find((o) => o.effects?.createApp)!.effects!);
     const crawler = s.apps.at(-1)!;
     crawler.repo = crawler.required.map((f) => ({ id: f, correct: f !== 'filter', ...(f === 'filter' ? { variant: 'bots_counted' } : {}), params: crawler.specParams[f] }));
     crawler.repoVersion = 1;
-    getApp(s, gino)!.repo[0] = { id: 'landing', correct: false, variant: 'name_wrong', params: getApp(s, gino)!.specParams.landing };
-    return { s, gino, crawler: crawler.id };
+    getApp(s, wa)!.repo[0] = { id: 'landing', correct: false, variant: 'name_wrong', params: getApp(s, wa)!.specParams.landing };
+    return { s, wa, crawler: crawler.id };
   }
 
   it('when Jev matches on two apps, only the one it says the prompt means is touched', async () => {
-    const { s, gino, crawler } = twoApps();
+    const { s, wa, crawler } = twoApps();
     const out = (await promptDone(s, content, pickJev({ route: ['fix', crawler], features: ['::filter::c:bots', '::landing::c:name'] }), "The crawler doesn't filter for bots")).state;
     expect(getApp(out, crawler)!.repo.find((f) => f.id === 'filter')!.correct).toBe(true);
-    expect(getApp(out, gino)!.repo[0]).toMatchObject({ correct: false, variant: 'name_wrong' });
-    expect(out.chat.at(-1)!.text).not.toMatch(/Trattoria Gino/);
+    expect(getApp(out, wa)!.repo[0]).toMatchObject({ correct: false, variant: 'name_wrong' });
+    expect(out.chat.at(-1)!.text).not.toMatch(/WorkAgent/);
   });
 
   it('when Jev cannot tell which app, it asks and changes nothing', async () => {
-    const { s, gino, crawler } = twoApps();
+    const { s, wa, crawler } = twoApps();
     const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::filter::c:bots', '::landing::c:name'] }), 'fix the bots and the name')).state;
     expect(content.agent!.hints.find((h) => h.id === 'which_app')!.replies).toContain(out.chat.at(-1)!.text);
     expect(getApp(out, crawler)!.repo).toEqual(getApp(s, crawler)!.repo);
-    expect(getApp(out, gino)!.repo).toEqual(getApp(s, gino)!.repo);
+    expect(getApp(out, wa)!.repo).toEqual(getApp(s, wa)!.repo);
   });
 });

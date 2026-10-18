@@ -1,0 +1,11 @@
+{
+  "id": "d2_y_logan",
+  "site": "y",
+  "from": "logan_ships",
+  "trigger": {
+    "dayMin": 2,
+    "dayMax": 2
+  },
+  "at": "12:55",
+  "body": "7 billion-dollar ideas nobody is building 🧵\n1. uber for agents\n2. linkedin for agents\n3. agents that manage your agents\n4. an agent that hosts your podcast\n5. agent-to-agent payments\n6. a dating app where the agents talk first\n7. the one i'm building (stealth)"
+}

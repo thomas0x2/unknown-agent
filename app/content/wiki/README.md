@@ -14,8 +14,8 @@ save in one shows up in the other at once. A read-only copy of main is published
 
 ```
 ---
-title: Gino Fenoglio
-aliases: Gino, Trattoria Gino, gino@trattoria.test, @trattoria_owner
+title: Logan Pryce
+aliases: Logan, logan@workagent.test, @logan_ships
 category: people
 from: 1
 ---
@@ -25,19 +25,19 @@ Link other pages with [[Page title]].
 
 ## The website job
 
-- [public] On day 1 he posts that his nephew left with the password.
-- [hint] What the site needs: the menu with prices, the opening hours, a booking form.
+- [public] On day 1 he posts that he needs a founding engineer.
+- [hint] What the site needs: the name, the one-liner, the investor logos, an About us page.
 
-## From day 4: The DoorDish listing
+## From day 2: The waitlist
 
-[public] A section that only exists for the player from day 4 on.
+[public] A section that only exists for the player from day 2 on.
 
 ## Writer notes
 
 Code paths, flags, open questions. Never part of an answer, never tagged.
 ```
 
-- **File name** is the title in kebab case (`gino-fenoglio.md`); days are `day-01.md` … `day-21.md`.
+- **File name** is the title in kebab case (`logan-pryce.md`); days are `day-01.md` … `day-21.md`.
 - **aliases** are other names a question might use: first names, handles, addresses, domains.
 - **category**: `people`, `family`, `companies`, `sites`, `apps`, `world`, `days`, or `writers`
   (writers pages, like the tone rules, endings and the timeline overview, are never used for answers).
@@ -45,7 +45,7 @@ Code paths, flags, open questions. Never part of an answer, never tagged.
   section is matched on its own, so a question that names one brand or shop finds its section
   without naming the page.
   In the wiki, its sections show as pages nested under it (Companies › Local businesses ›
-  Trattoria Gino, at `local-businesses/trattoria-gino`); the file stays one page.
+  Bean There, at `local-businesses/bean-there`); the file stays one page.
 - **nest: true** (optional) nests a page's sections the same way in the wiki without changing how
   questions match it (Y regulars, App users and reviewers). A "Who they are" or "Overview" section
   and writer notes stay on the parent page. Day pages are grouped by week.
@@ -86,7 +86,7 @@ and `<tag> if shown <id>`: once that email, Y post or Yowl review (its event id,
 
 ## What the player received: embeds
 
-A paragraph can carry an email, post or article itself: `{{y:d1_y_restaurant}}`, `{{y:m1_gai_escape}}`,
+A paragraph can carry an email, post or article itself: `{{y:d1_y_logan}}`, `{{y:m1_gai_escape}}`,
 `{{yowl:<event id>}}`, `{{article:opponent-clip}}`. Once the item has arrived, agent sees its full text
 there (sender, subject, body; an article's title, dek and body), so a question can get at what it
 said. A paragraph with an embed is hidden until every item it embeds has been shown to the player,

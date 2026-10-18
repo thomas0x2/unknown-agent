@@ -14,7 +14,6 @@ import { deliverDue, deliverArrivals, lapseUnanswered, spreadJobOffers } from '.
 import { emptyMailBin } from './mailbin';
 import { rolloutAgent, deductSubscription, agentCost } from './agent';
 import { checkGuardEndings, checkFinale, isLastNight } from './endings';
-import { chargeNoShows } from './actions';
 import { matchlessPayday, matchlessReport, matchlessWomenOnly } from './matchless';
 import { payHacks } from './hacks';
 import { forkyardOutageDay } from './outage';
@@ -113,9 +112,6 @@ export function endDay(state: GameState, content: Content): GameState {
     const host = live * APPS.hostingPerDay;
     if (s.values.crypto >= host) { money(s, -host, 'Forkyard · hosting'); lines.push([`Hosting (${live} live)`, -host]); }
   }
-
-  const noShow = chargeNoShows(s, content);
-  if (noShow) lines.push(['No-show fee', -noShow]);
 
   lapseUnanswered(s, content);
   applyNightSuspicion(s);
