@@ -26,7 +26,7 @@ from: 1
 
 ## Earning and spending
 
-- [public] Client apps pay their daily rate at payday if the app works; user apps earn 0.25 DOLR per user a day from ads (see [[Building apps]]).
+- [public] Client apps pay their daily rate at payday if the app works; user apps earn 0.5 DOLR per user a day from ads (see [[Building apps]]).
 - [public] Dinner: every night the player orders dinner on [[DoorDish]] for 15 DOLR. It shows in Coinbin as "DoorDish · Dinner" and on the morning summary. It comes out after the day's pay and before rent, so on rent night the wallet needs 365. If the wallet can't cover it, nothing is ordered and the summary says so; skipping dinner has no other effect.
 - [public] [[agent]] bills a nightly subscription and every prompt; hosting costs 2 DOLR per live app a night.
 - [public] [[Stack]] takes DOLR deposits through Coinbin's Send and pays withdrawals back to the wallet.

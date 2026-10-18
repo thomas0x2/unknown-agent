@@ -69,7 +69,7 @@ from: 2
 - [hidden; hint if logan_update1] 11:05 [[WorkAgent site]] update: a waitlist page (email field and Join button, a counter from 10,000, a confirmation email with the place in line).
 - [hidden; hint if guru_subscriber] 14:15 The player signed up for EMPIRE; a daily newsletter follows.
 - [hint] 16:45 Weightroom becomes reachable through dev_null's post (or the deepsleep.ai ad).
-- [hint] 17:50 [[Spin Cycle Board]]: nobody hires the player; the player asks the agent to turn the Spin Cycle feed into an app. A user app that starts with 30 users and earns 0.25 DOLR per user a day.
+- [hint] 17:50 [[Spin Cycle Board]]: nobody hires the player; the player asks the agent to turn the Spin Cycle feed into an app. A user app that starts with 30 users and earns 0.5 DOLR per user a day.
 
 ## Writer notes
 

@@ -5,7 +5,7 @@ category: apps
 from: 1
 ---
 
-[public] Spin Cycle Board is a user app: a readable status board for Spin Cycle Laundry's machines, built from the raw [[Spin Cycle feed]]. Nobody hires [[The player]] for it; it pays through two ad banners, 0.25 DOLR per user a day, and starts with 30 users.
+[public] Spin Cycle Board is a user app: a readable status board for Spin Cycle Laundry's machines, built from the raw [[Spin Cycle feed]]. Nobody hires [[The player]] for it; it pays through two ad banners, 0.5 DOLR per user a day, and starts with 30 users.
 
 ## Where it comes from
 
