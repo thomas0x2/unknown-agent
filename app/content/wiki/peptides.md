@@ -12,7 +12,7 @@ summary: Peptides, the grey-market injections people in the city buy online "for
 
 - [public] On day 8 [[Max Stryker]] says his peptide stack costs more than your rent, and he won't say which peptides. {{y:d8_y_stryker_peptides}}
 - [public] On day 8 [[6ft_sigma]] ordered a stack online; it came in a plain box marked research use only. "Already feel taller." {{y:d8_y_sigma_peptides}}
-- [public] On day 8 [[Dr. Adam Hoberman]] releases a four-hour episode on peptides: the human data isn't there yet. {{y:d8_y_hoberman}}
+- [public] On day 8 [[Dr. Adam Hoberman]] releases a four-hour episode on peptides: the human data isn't there yet, so he has started generating some. {{y:d8_y_hoberman}}
 - [public] On day 8 [[Brayden Kolt]] opens PureVial Research (purevial.com), peptides in a plain box with a dosing chart. {{y:d8_y_brayden}}
 - [public] On day 11 noodleposter's cousin, a bartender, does peptides "for research". {{y:d11_y_noodle_peptides}}
 - [public] On day 11 CityPulse runs "NEEDLE NATION"; an Iron Yard regular says half the gym is on something. {{article:peptides}}

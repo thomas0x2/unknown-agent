@@ -13,12 +13,14 @@ import { wordJev, pickJev, startAll, endAll } from '../engine/_fixtures';
 const content = loadContent();
 /** Let enough game time pass for every reply on its way to arrive. */
 const later = (s0: GameState) => { const s = clone(s0); s.clockMin += 12 * 60; deliverPendingMail(s); return s; };
+/** Day 2, the day Max's EMPIRE offer arrives. */
+const day2 = () => endAll(startAll(content, 3), content);
 const noLlm: Writer = { write: async () => { throw new Error('storyline replies must not reach the model'); } };
 
 describe('EMPIRE', () => {
   it('replying EMPIRE gets the scripted reply with the sign-up link, and charges nothing yet', async () => {
-    const s = startAll(content, 3);
-    const r = await replyToEvent(s, content, pickJev({ route: ['interested'] }), 'd1_guru', 'Empire', noLlm);
+    const s = day2();
+    const r = await replyToEvent(s, content, pickJev({ route: ['interested'] }), 'd2_guru', 'Empire', noLlm);
     expect(r.decision).toEqual({ kind: 'outcome', outcomeId: 'interested' });
     expect(r.reply).toContain('empire.alphaascend.biz');
     const mail = later(r.state).mail.filter((m) => m.folder === 'inbox' && m.addr === EMPIRE.addr);
@@ -28,10 +30,10 @@ describe('EMPIRE', () => {
   });
 
   it('Jev sees the email the player is answering, so a bare EMPIRE has something to refer to', async () => {
-    const s = startAll(content, 3);
+    const s = day2();
     const asked: RouteInput[] = [];
     const jev: JevRouter = { ...pickJev({ route: ['interested'] }), route: async (i) => { asked.push(i); return { kind: 'outcome', outcomeId: 'interested' }; } };
-    await replyToEvent(s, content, jev, 'd1_guru', 'EMPIRE', noLlm);
+    await replyToEvent(s, content, jev, 'd2_guru', 'EMPIRE', noLlm);
     expect(asked).toHaveLength(1);
     expect(asked[0].text).toBe('EMPIRE');
     expect(asked[0].candidates.map((c) => c.id)).toEqual(['interested']);
@@ -39,10 +41,10 @@ describe('EMPIRE', () => {
   });
 
   it("on a miss, Jev still sees the email when it checks Max's scripted topics", async () => {
-    const s = startAll(content, 3);
+    const s = day2();
     const asked: RouteInput[] = [];
     const jev: JevRouter = { ...pickJev({}), route: async (i) => { asked.push(i); return { kind: 'nothing' }; } };
-    await replyToEvent(s, content, jev, 'd1_guru', 'tell me more', { write: async () => ({ text: 'Cart is open.', llm: true }) });
+    await replyToEvent(s, content, jev, 'd2_guru', 'tell me more', { write: async () => ({ text: 'Cart is open.', llm: true }) });
     expect(asked.map((a) => a.candidates.map((c) => c.id))).toEqual([['interested'], ['empire']]);
     expect(asked[0].hints).toEqual(['It costs 20 DOLR. Reply only if you want in.']);
     for (const a of asked) expect(a.context?.join('\n')).toContain('Reply EMPIRE to claim it.');
@@ -110,14 +112,14 @@ describe('Gary (landlord)', () => {
 
 describe('inbox order', () => {
   it('numbers deliveries and mail in the order they arrive', async () => {
-    const s = startAll(content, 3);
-    const r = await replyToEvent(s, content, pickJev({ route: ['interested'] }), 'd1_guru', 'Empire', noLlm);
+    const s = day2();
+    const r = await replyToEvent(s, content, pickJev({ route: ['interested'] }), 'd2_guru', 'Empire', noLlm);
     const t = later(r.state);
     const seqs = [...t.delivered.map((d) => d.seq!), ...t.mail.map((m) => m.seq!)];
     expect(seqs.every((n) => typeof n === 'number')).toBe(true);
     expect(new Set(seqs).size).toBe(seqs.length);
     const reply = t.mail.find((m) => m.folder === 'inbox' && m.addr === EMPIRE.addr)!;
-    expect(reply.seq!).toBeGreaterThan(t.delivered.find((d) => d.eventId === 'd1_guru')!.seq!);
+    expect(reply.seq!).toBeGreaterThan(t.delivered.find((d) => d.eventId === 'd2_guru')!.seq!);
   });
 });
 
@@ -193,8 +195,8 @@ describe('EMPIRE newsletter', () => {
 
 describe('Max after the first email', () => {
   it('a later EMPIRE reply gets a scripted answer, not the local model', async () => {
-    let s = joinEmpire(startAll(content, 3));
-    s = (await replyToEvent(s, content, pickJev({ route: ['interested'] }), 'd1_guru', 'Empire', noLlm)).state;
+    let s = joinEmpire(day2());
+    s = (await replyToEvent(s, content, pickJev({ route: ['interested'] }), 'd2_guru', 'Empire', noLlm)).state;
     s = endAll(s, content);
     const r = await composeEmail(s, content, pickJev({ route: ['empire'] }), EMPIRE.addr, 'EMPIRE', noLlm, 'Re: Your daily EMPIRE');
     expect(r.reply).toContain('Commitment logged.');

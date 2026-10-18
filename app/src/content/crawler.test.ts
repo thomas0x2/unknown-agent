@@ -1,5 +1,5 @@
 /*
- * The vibe check and Spin Cycle Board (day 2): their output is computed from real data (the
+ * The vibe check (day 4) and Spin Cycle Board (day 2): their output is computed from real data (the
  * stock posts on Y, the raw machine feed), each failure from the day plans is a named bug that shows
  * up in that output, and naming the bug in a fix prompt fixes it.
  */
@@ -38,7 +38,8 @@ describe('stock posts on Y', () => {
     expect(new Set(posts.filter((p) => p.bot).map((p) => p.handle)).size).toBe(30);
     expect(posts.some((p) => /nova/i.test(p.text))).toBe(false);
     const all = marketPosts(onDay(28), content);
-    for (let d = 1; d <= 28; d++) expect(all.filter((p) => p.day === d && !p.bot).length, `day ${d}`).toBeGreaterThanOrEqual(2);
+    // only a few before deskjockey's job (day 4), so the first days stay quiet
+    for (let d = 1; d <= 28; d++) expect(all.filter((p) => p.day === d && !p.bot).length, `day ${d}`).toBeGreaterThanOrEqual(d < 4 ? 1 : 2);
   });
   it('a $GAI post is already on Y when day 1 starts', () => {
     const s = startGame(content);
@@ -56,31 +57,31 @@ describe('stock posts on Y', () => {
 });
 
 describe('vibe check', () => {
-  const posts = marketPosts(onDay(2), content);
+  const posts = marketPosts(onDay(4), content);
 
   it('built right: today, $-tagged, no bots, sarcasm read as bearish, every counted post', () => {
-    const r = crawl(posts, 2, bugs());
-    expect(row(r, 'GAI')).toMatchObject({ count: 3, bullish: 67, bearish: 33, neutral: 0 });
-    expect(row(r, 'VANT')).toMatchObject({ count: 4, bullish: 50, neutral: 25, bearish: 25 });
+    const r = crawl(posts, 4, bugs());
+    expect(row(r, 'GAI')).toMatchObject({ count: 2, bullish: 100, bearish: 0, neutral: 0 });
+    expect(row(r, 'VANT')).toMatchObject({ count: 2, bullish: 0, neutral: 0, bearish: 100 });
     expect(r.map((x) => x.ticker)).toEqual(['GAI', 'VANT']);
-    expect(row(r, 'VANT').posts[0].handle).toBe('brentk_capital');
+    expect(row(r, 'VANT').posts[0].handle).toBe('randall_crane');
   });
 
   it('each bug shows up in the numbers', () => {
-    expect(row(crawl(posts, 2, bugs('bots_counted')), 'GAI').count).toBe(33);
-    expect(row(crawl(posts, 2, bugs('sarcasm_literal')), 'VANT').bullish).toBe(75);
-    expect(row(crawl(posts, 2, bugs('inverted')), 'GAI')).toMatchObject({ bullish: 33, bearish: 67 });
-    expect(row(crawl(posts, 2, bugs('lowercase_missed')), 'GAI').count).toBe(2);
-    expect(crawl(posts, 2, bugs('wrong_tickers')).map((r) => r.ticker)).toContain('VNTR');
+    expect(row(crawl(posts, 4, bugs('bots_counted')), 'GAI').count).toBe(17);
+    expect(row(crawl(posts, 4, bugs('sarcasm_literal')), 'VANT').bullish).toBe(50);
+    expect(row(crawl(posts, 4, bugs('inverted')), 'GAI')).toMatchObject({ bullish: 0, bearish: 100 });
+    expect(row(crawl(posts, 4, bugs('lowercase_missed')), 'GAI').count).toBe(1);
+    expect(crawl(posts, 4, bugs('wrong_tickers')).map((r) => r.ticker)).toContain('VNTR');
   });
 
   it('lists every crawled post with the mood it read, bugs included', () => {
-    const ok = row(crawl(posts, 2, bugs()), 'VANT');
+    const ok = row(crawl(posts, 4, bugs()), 'VANT');
     expect(ok.posts).toHaveLength(ok.count);
-    expect(row(crawl(posts, 2, bugs('bots_counted')), 'GAI').posts.filter((p) => /\d{4}$/.test(p.handle)).length).toBe(30);
+    expect(row(crawl(posts, 4, bugs('bots_counted')), 'GAI').posts.filter((p) => /\d{4}$/.test(p.handle)).length).toBe(15);
     const sarcastic = posts.find((p) => p.literal && p.tickers.includes('VANT'))!;
     expect(ok.posts.find((p) => p.handle === sarcastic.handle)!.mood).toBe(sarcastic.mood);
-    expect(row(crawl(posts, 2, bugs('sarcasm_literal')), 'VANT').posts.find((p) => p.handle === sarcastic.handle)!.mood).toBe(sarcastic.literal);
+    expect(row(crawl(posts, 4, bugs('sarcasm_literal')), 'VANT').posts.find((p) => p.handle === sarcastic.handle)!.mood).toBe(sarcastic.literal);
   });
 
   it("auto-buy: once on Crane's real praise; each bug buys differently", () => {

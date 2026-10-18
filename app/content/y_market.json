@@ -14,71 +14,6 @@
       "mood": "bullish"
     },
     {
-      "id": "m1_gai_open",
-      "day": 1,
-      "at": "15:47",
-      "from": "Ollie Banks",
-      "handle": "obanks",
-      "body": "Bought $GAI at the open. Not sure why. Everyone else was.",
-      "likes": 58,
-      "tickers": [
-        "GAI"
-      ],
-      "mood": "bullish"
-    },
-    {
-      "id": "m1_gai_value",
-      "day": 1,
-      "at": "18:32",
-      "from": "quietquant",
-      "handle": "quietquant",
-      "body": "$GAI valuation makes no sense and I own it anyway.",
-      "likes": 77,
-      "tickers": [
-        "GAI"
-      ],
-      "mood": "neutral"
-    },
-    {
-      "id": "m2_gai_bubble",
-      "day": 2,
-      "at": "11:18",
-      "from": "Priya Shah",
-      "handle": "priyashah_cfa",
-      "body": "$GAI is a bubble and everyone knows it.",
-      "likes": 197,
-      "tickers": [
-        "GAI"
-      ],
-      "mood": "bearish"
-    },
-    {
-      "id": "m2_gai_lower",
-      "day": 2,
-      "at": "19:23",
-      "from": "Sam Ortiz",
-      "handle": "samortiz",
-      "body": "$gai holding up better than I expected after the stunt.",
-      "likes": 41,
-      "tickers": [
-        "GAI"
-      ],
-      "mood": "bullish"
-    },
-    {
-      "id": "m2_gai_stunt",
-      "day": 2,
-      "at": "17:19",
-      "from": "WallStreetBags",
-      "handle": "wallstreetbags",
-      "body": "General AI's model almost escaped and the stock went up. We are not going to fight that. Loading $GAI calls.",
-      "likes": 2840,
-      "tickers": [
-        "GAI"
-      ],
-      "mood": "bullish"
-    },
-    {
       "id": "m2_nova_bots",
       "day": 2,
       "at": "17:30",
@@ -93,32 +28,6 @@
       "bots": 30
     },
     {
-      "id": "m2_vant_layoffs",
-      "day": 2,
-      "at": "18:36",
-      "from": "Mara Vey",
-      "handle": "mara_vey",
-      "body": "Vantor ($VANT) laid off 400 people today.",
-      "likes": 240,
-      "tickers": [
-        "VANT"
-      ],
-      "mood": "neutral"
-    },
-    {
-      "id": "m2_vant_lower",
-      "day": 2,
-      "at": "18:22",
-      "from": "rk_dividends",
-      "handle": "rk_dividends",
-      "body": "Still holding $vant. The restructuring math works if you don't think about it.",
-      "likes": 52,
-      "tickers": [
-        "VANT"
-      ],
-      "mood": "bullish"
-    },
-    {
       "id": "m2_vant_restructure",
       "day": 2,
       "at": "19:36",
@@ -130,31 +39,6 @@
         "VANT"
       ],
       "mood": "bullish"
-    },
-    {
-      "id": "m2_vant_sarcasm",
-      "day": 2,
-      "at": "11:07",
-      "from": "Dana Ruiz",
-      "handle": "danaruiz_trades",
-      "body": "Oh good, $VANT up 8% on the layoffs. Truly a great day for everyone.",
-      "likes": 288,
-      "tickers": [
-        "VANT"
-      ],
-      "mood": "bearish",
-      "literal": "bullish"
-    },
-    {
-      "id": "m2_vant_untagged",
-      "day": 2,
-      "at": "10:57",
-      "from": "Jess Park",
-      "handle": "jesspark",
-      "body": "Walked past the Vantor offices today. Half the lights are off.",
-      "likes": 64,
-      "tickers": [],
-      "mood": "neutral"
     },
     {
       "id": "m2_dish_robot",
@@ -181,32 +65,6 @@
         "GAI"
       ],
       "mood": "neutral"
-    },
-    {
-      "id": "m3_gai_short",
-      "day": 3,
-      "at": "16:36",
-      "from": "Priya Shah",
-      "handle": "priyashah_cfa",
-      "body": "Shorting $GAI. I've been wrong about it for a year, so the odds are improving.",
-      "likes": 132,
-      "tickers": [
-        "GAI"
-      ],
-      "mood": "bearish"
-    },
-    {
-      "id": "m3_vant_target",
-      "day": 3,
-      "at": "11:12",
-      "from": "Brent Kowalski",
-      "handle": "brentk_capital",
-      "body": "Raising my $VANT target. Fewer employees, same revenue. That's the whole thesis.",
-      "likes": 203,
-      "tickers": [
-        "VANT"
-      ],
-      "mood": "bullish"
     },
     {
       "id": "m3_pdur_ozempra",
@@ -275,6 +133,30 @@
       ],
       "mood": "bearish",
       "literal": "bullish"
+    },
+    {
+      "id": "m4_vant_untagged",
+      "day": 4,
+      "at": "12:40",
+      "from": "Jess Park",
+      "handle": "jesspark",
+      "body": "Walked past the Vantor offices today. Half the lights are off.",
+      "likes": 64,
+      "tickers": [],
+      "mood": "neutral"
+    },
+    {
+      "id": "m4_gai_lower",
+      "day": 4,
+      "at": "19:10",
+      "from": "Sam Ortiz",
+      "handle": "samortiz",
+      "body": "$gai still up on the agent-2 news. Not selling.",
+      "likes": 41,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish"
     },
     {
       "id": "m5_gai_breach",

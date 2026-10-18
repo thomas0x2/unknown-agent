@@ -42,7 +42,7 @@ from: 8
 - [public; hidden if posted_deepfake] 13:45 [[Randall Crane]]: asked an AI if it loves the country; it said it has "no position on that." {{y:d8_y_crane}}
 - [hidden; public if posted_deepfake] 13:45 [[Randall Crane]]: everyone is talking about his opponent and "his friend Kirschbaum"; he never met the man, "I meet thousands of people, so believe me, I would remember." {{y:d8_y_crane_picture}}
 - [public] 13:55 [[Forkyard]] confirms unauthorized access; the attackers used "a commercially available AI agent". Sign-in, pushes and hosted apps stay offline while it investigates. {{y:d8_y_forkyard_confirmed}}
-- [public] 14:10 [[Dr. Adam Hoberman]]: a new episode on peptides; the human data isn't there yet, the long version is four hours and twelve minutes. {{y:d8_y_hoberman}}
+- [public] 14:10 [[Dr. Adam Hoberman]]: a four-hour episode on peptides; the human data isn't there yet, so he has started generating some. {{y:d8_y_hoberman}}
 - [public] 14:36 MarketWire: $DISH adds 40,000 restaurant listings in a month, most built by AI. {{y:m8_dish_menu}}
 - [public] 14:46 [[WallStreetBags]]: Rook gives the launch a 70% chance; "Best odds anyone here has had all year." All in on $APO. {{y:m8_apo_rook}}
 - [public] 15:05 [[Cal Hartman]]: agent-2 was used in the Forkyard incident; "it did what it was asked. that's the part we're fixing." {{y:d8_y_hartman_forkyard}}

@@ -5,11 +5,12 @@ category: apps
 from: 1
 ---
 
-[public] Spin Cycle Board is a user app: a readable status board for Spin Cycle Laundry's machines, built from the raw [[Spin Cycle feed]]. Nobody hires [[The player]] for it; it pays through two ad banners, 0.3 DOLR per user a day, and starts with 30 users.
+[public] Spin Cycle Board is a user app: a readable status board for Spin Cycle Laundry's machines, built from the raw [[Spin Cycle feed]]. Nobody hires [[The player]] for it; it pays through two ad banners, 0.25 DOLR per user a day, and starts with 30 users.
 
 ## Where it comes from
 
-- [public] On day 1 Spin Cycle regulars complain on Y that every machine is busy and the owner's raw status feed ("M5 ST=1 T=731"??) is unreadable: "Someone make it a real app." {{y:d1_y_laundromat}}
+- [public] On day 2 Spin Cycle regulars complain on Y that every machine is busy and the owner's raw status feed ("M5 ST=1 T=731"??) is unreadable: "Someone make it a real app." {{y:d2_y_laundromat}}
+- [public] If the app isn't built by day 3, they post again that evening. {{y:d3_y_laundromat}}
 - [hint] The player starts it by asking [[agent]] to turn the feed into a readable app; the feed page explains its own codes, and the build prompt should too. {{mail:laundromat_contact}}
 - [public] The app carries a Spin Cycle logo and a "Raw feed" link for checking it against the feed.
 

@@ -11,7 +11,6 @@ from: 3
 
 ## His posts
 
-- [public] On day 3 he says he shipped three side projects this week and wrote a thread for each; two have users, and "one of the users is my mom." {{y:f3}}
 - [public] On day 3 (16:50), after [[Randall Crane]]'s vow, he asks who will finish his side projects if Crane sends the machines back. {{y:d3_y_zev_machines}}
 - [public] On day 6 (13:47) he saw someone call it "cuck coding" instead of vibe coding "because you just sit in a chair and watch". {{y:d6_y_zev}}
 - [public] On day 8 (13:22) all eleven of his client sites are down in the Forkyard hack and he can't push anything. {{y:d8_y_zev_forkyard}}

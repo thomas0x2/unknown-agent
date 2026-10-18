@@ -14,7 +14,6 @@ summary: WallStreetBags is a verified Y account for a huge online community of r
 
 ## Its posts
 
-- [public] On day 2 it calls General AI's "almost escaped" model a reason to buy $GAI calls. {{y:m2_gai_stunt}}
 - [public] On day 6 it congratulates a member who sold all his $GAI on Thursday, before the rally. {{y:m6_gai_late}}
 - [public] On day 8 it goes all in on $APO because Rook gives the launch a 70% chance of working. {{y:m8_apo_rook}}
 - [public] On day 12 it says $GAI doesn't go down on bad news, so it stopped reading the news. {{y:m12_gai_growth}}

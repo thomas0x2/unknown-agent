@@ -87,6 +87,7 @@ export const REWIND = {
   localModels: 'kept',
   lonely: 'kept',
   matchless: 'kept',
+  bookmarkOrder: 'kept',
   morning: 'kept',
   nextAppNum: 'kept',
   nextId: 'kept',
