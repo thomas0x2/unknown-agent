@@ -1,0 +1,11 @@
+{
+  "id": "d9_y_pug",
+  "site": "y",
+  "from": "Pug",
+  "trigger": {
+    "dayMin": 9,
+    "dayMax": 9
+  },
+  "at": "16:05",
+  "body": "Pug Café is open 24/7, because founders don't keep office hours. Free espresso for policyholders. Everyone else, 6 DOLR."
+}

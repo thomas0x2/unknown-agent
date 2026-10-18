@@ -1,0 +1,11 @@
+{
+  "id": "d10_y_brynn",
+  "site": "y",
+  "from": "Brynn LeClaire",
+  "trigger": {
+    "dayMin": 10,
+    "dayMax": 10
+  },
+  "at": "14:40",
+  "body": "People ask how I built a community of 2,400 founders. I listened. Then I opened a café that never closes."
+}

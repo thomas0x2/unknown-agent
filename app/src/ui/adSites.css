@@ -123,6 +123,11 @@
 .lp-t-cryo { --lp-bg: linear-gradient(180deg, #d6f0ff, #fff 460px); --lp-ink: #06324f; --lp-dim: #3b6584; --lp-accent: #1f7fc2; --lp-card: rgba(255, 255, 255, .8); --lp-line: #c4e2f5; }
 .lp-t-perdure { --lp-bg: #fff; --lp-ink: #3d2c6b; --lp-dim: #6a6080; --lp-accent: #3d2c6b; --lp-card: #f6f4fa; --lp-line: #e2ddec; }
 .lp-t-ozempra { --lp-bg: #fff8f3; --lp-ink: #5b2a1f; --lp-dim: #8a6458; --lp-accent: #e2725b; --lp-card: #fff; --lp-line: #f3d6c9; }
+.lp-t-pug { --lp-bg: #fbf3e4; --lp-ink: #2e221c; --lp-dim: #7a6656; --lp-accent: #2e221c; --lp-accent-ink: #fbf3e4; --lp-card: #fff; --lp-line: #eadcc3; }
+.lp-t-a67x { --lp-bg: #fff; --lp-ink: #111; --lp-dim: #5e5e5e; --lp-accent: #c8372d; --lp-card: #f5f5f5; --lp-line: #e3e3e3; }
+.lp-t-lumi { --lp-bg: linear-gradient(180deg, #efeaff, #fff 420px); --lp-ink: #1d1640; --lp-dim: #615a80; --lp-accent: #6d4aff; --lp-card: rgba(255, 255, 255, .85); --lp-line: #dcd3ff; }
+.lp-t-glamdring { --lp-bg: #0d1114; --lp-ink: #e8eef2; --lp-dim: #8a98a3; --lp-accent: #d8e3ea; --lp-accent-ink: #0d1114; --lp-card: #151b20; --lp-line: #24303a; }
+.lp-t-purevial { --lp-bg: #f4fbfa; --lp-ink: #0b3f38; --lp-dim: #4f746e; --lp-accent: #0f8f7e; --lp-card: #fff; --lp-line: #cbe9e4; }
 .lp-t-fluvera { --lp-bg: #f3f8fd; --lp-ink: #173a5c; --lp-dim: #5b7590; --lp-accent: #2f7dc4; --lp-card: #fff; --lp-line: #d3e4f4; }
 .lp-t-pharma { --lp-bg: #f6fbfb; --lp-ink: #0c4d55; --lp-dim: #4d7378; --lp-accent: #12a3a3; --lp-card: #fff; --lp-line: #bfe3e3; }
 .lp-t-lonely { --lp-bg: linear-gradient(180deg, #ffe3ec, #fff 420px); --lp-ink: #4a1730; --lp-dim: #85546b; --lp-accent: #e0336f; --lp-card: rgba(255, 255, 255, .8); --lp-line: #f6cfdc; }

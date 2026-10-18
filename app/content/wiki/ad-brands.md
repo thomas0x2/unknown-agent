@@ -1,6 +1,6 @@
 ---
 title: Ad brands
-aliases: banner ads, ads, EscapeGuard, escapeguard.ai, GriefGPT, griefgpt.com, DOLR Foundation, dolr.money, LiquidAssets, liquidassets.cellar, Meridian Pods, meridianpods.live, NoDoze MAX, nodoze.max, Ozempra, ozempra.com, Fluvera, fluvera.com, Perdure Pharma, perdure.com, CloudCasket, cloudcasket.eternal, Steadfast Mutual, steadfast.insure, LandlordPro, landlordpro.ai, HumanVerified, humanverified.id, Cryo-Later, cryolater.com, Mindset Daily, mindsetdaily.co, LegacySEO, legacyseo.rip, Crane Victory Fund, Your Bank (totally), Crypto Prince, GeneralAI Wellness, GeneralAI Billing
+aliases: banner ads, ads, EscapeGuard, escapeguard.ai, GriefGPT, griefgpt.com, DOLR Foundation, dolr.money, LiquidAssets, liquidassets.cellar, Meridian Pods, meridianpods.live, NoDoze MAX, nodoze.max, Ozempra, ozempra.com, Fluvera, fluvera.com, Pug, pug.com, PureVial Research, purevial.com, Perdure Pharma, perdure.com, CloudCasket, cloudcasket.eternal, Steadfast Mutual, steadfast.insure, LandlordPro, landlordpro.ai, HumanVerified, humanverified.id, Cryo-Later, cryolater.com, Mindset Daily, mindsetdaily.co, LegacySEO, legacyseo.rip, Crane Victory Fund, Your Bank (totally), Crypto Prince, GeneralAI Wellness, GeneralAI Billing
 category: companies
 from: 1
 hub: true
@@ -39,6 +39,14 @@ hub: true
 ## Fluvera
 
 [hidden; public from day 9] Fluvera (fluvera.com), "One shot. All season.": [[Perdure Pharma]]'s generic flu vaccine, launched on day 9. 4 DOLR at any pharmacy, no appointment; "100% autism-free". Ad from day 9: "Flu season is here. One shot. All season. Fluvera. Autism-free." Fine print: "Generic flu vaccine, 4 DOLR. May cause a sore arm."
+
+## Pug
+
+[hidden; public from day 3] Pug (pug.com), "AI-native insurance for founders", see [[Pug]]. Ad from day 3: "Your co-founder could quit tomorrow. Be covered today. Pug. AI-native insurance for founders." Fine print: "Quotes in 90 seconds. Claims decided by agent. Pug is an agency, not an insurer."
+
+## PureVial Research
+
+[hidden; public from day 8] PureVial Research (purevial.com), [[Brayden Kolt]]'s peptide store. Ad from day 8: "Research-grade peptides. 99% pure. Ships in 24h. PureVial Research." Fine print: "For research use only. Not for human consumption. Dosing chart included."
 
 ## Perdure Pharma
 
@@ -97,5 +105,5 @@ hub: true
 
 - Ads: `app/src/ui/ads.ts` (`from` gates: crane 3, doordish 3, bean 3, gai2 4, sorrywriter 5, craneagain 6, progress 6). Landing pages: `app/src/sites/adSites.ts`.
 - Brand ties: Steadfast brand `app/src/ui/steadfast.ts` (navy `#13314d`, fluted column in a shield). LiquidAssets' logo is a kidney.
-- Perdure brand: `app/src/ui/perdure.ts`; the ozempra ad runs from day 3, the fluvera ad from day 9.
+- Perdure brand: `app/src/ui/perdure.ts`; the ozempra ad runs from day 3, the fluvera ad from day 9. The pug ad runs from day 3, purevial from day 8; a67x.com, lumi.events and glamdring.com are landing pages with no ad (`noAd`), reached from Y posts and each other.
 - Possible hooks *(placeholder)*: NoDoze MAX for the AI-for-bio plot (`bio_release`, Outbreak); CloudCasket records as a doxxing source / leverage for the mafia plot (day 17, Mara Vey).

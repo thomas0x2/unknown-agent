@@ -1,0 +1,11 @@
+{
+  "id": "d16_y_brynn",
+  "site": "y",
+  "from": "Brynn LeClaire",
+  "trigger": {
+    "dayMin": 16,
+    "dayMax": 16
+  },
+  "at": "16:10",
+  "body": "The city closed our café today. I built Pug for founders who never stop, so we won't either. Working from the sidewalk this afternoon 💛"
+}

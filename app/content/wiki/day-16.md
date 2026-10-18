@@ -23,14 +23,19 @@ from: 16
 - [public] 12:08 [[Cal Hartman]] is back from two days offline. {{y:d16_y_hartman}}
 - [public] 12:23 Ten bot accounts post "$GAI to the moon!!".
 - [public] 13:00 [[Axel Rook]]: "Who should host the debate? Y, obviously." {{y:d16_y_axel}}
-- [public] 13:35 [[Max Stryker]]: he automated two of his Thirstr creators this month; "Nobody calls in sick." {{y:d16_y_stryker_thirstr}}
+- [public] 13:30 [[Pollymarket]]: "BREAKING: The city has shut down Pug Café", with a market on whether it reopens before the election. {{y:d16_y_polly_pug}}
+- [public] 13:45 [[Max Stryker]]: he automated two of his Thirstr creators this month; "Nobody calls in sick." {{y:d16_y_stryker_thirstr}}
 - [public] 14:05 [[Randall Crane]]: his opponent "has never had a real job. He's had a CAREER." {{y:d16_y_crane}}
 - [public] 14:16 [[CityPulse]]: HUSH MONEY? GeneralAI settles with three companies whose systems its models broke into; terms secret. {{y:d16_y_gai_leak}}
+- [public] 14:30 [[Logan Pryce]]: "they closed pug café. where am i supposed to build" {{y:d16_y_logan_cafe}}
 - [public] 14:42 zev.dolr bought the DOLR dip again at 4am. {{y:f16}}
 - [public] 15:00 [[Caleb Moxon]]: at GeneralAI, settlements were signed off by the same people who signed off launches. {{y:d16_y_moxon}}
 - [public] 15:20 Candidate 2030: "I'm proud of my record of public service." {{y:d16_y_candidate}}
+- [public] 15:40 [[Pug]]: the café is temporarily closed while it works with the city; coverage is not affected. {{y:d16_y_pug}}
+- [public] 16:10 [[Brynn LeClaire]]: the city closed "our café"; she's working from the sidewalk this afternoon. {{y:d16_y_brynn}}
 - [public] 16:59 MarketWire: "Can't tell anymore if $GAI is a company or a weather system." {{y:m16_gai}}
 - [hidden; public if posted_deepfake] 17:30 doomscroll: the Kirschbaum picture everyone shared was fake, "and the real one had the other guy in it." {{y:d16_y_kirschbaum_wrong_guy}}
+- [public] 17:45 [[CityPulse]]: PUG CAFÉ SHUT; inspectors say it was licensed as an insurance office, Pug says the espresso was a policy benefit. {{y:d16_y_citypulse_pug}}
 - [public] 18:19 [[WallStreetBags]] daily $APO thread: still holding, still can't say why. {{y:m16_apo_retail}}
 - [public] 19:57 Axel Rook: "@randall_crane lol" {{y:d16_y_axel_2}}
 
@@ -42,11 +47,13 @@ from: 16
 ## Pollymarket
 
 - [public] 11:40 [[Pollymarket]]: Crane slips to 59% when pollsters stop calling.
+- [public] 13:30 "Will Pug Café reopen before the election?" opens at 41% when the city shuts the café ([[Pug]]).
+- [public] 17:45 The Pug Café market falls to 24% after CityPulse's story about the insurance-office licence.
 
 ## Trending
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.
-- [hidden] [planned] Proposed trending: GeneralAI settlement; pollsters stop calling.
+- [hidden] [planned] Proposed trending: GeneralAI settlement; pollsters stop calling; Pug Café shut down (from 13:30).
 
 ## Not written yet
 

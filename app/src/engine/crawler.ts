@@ -24,8 +24,8 @@ export interface MarketPost {
   impostor?: boolean;
 }
 
-/** Accounts whose handle isn't their display name. */
-const Y_HANDLES: Record<string, string> = { 'Wade Tillman': 'wade_awake' };
+/** Accounts whose handle isn't their display name in snake case. */
+const Y_HANDLES: Record<string, string> = { 'Wade Tillman': 'wade_awake', 'Brynn LeClaire': 'brynnleclaire', 'Dr. Adam Hoberman': 'dr_hoberman' };
 /** The Y handle a display name gets (Randall Crane → randall_crane). */
 export const handleOf = (from: string) => Y_HANDLES[from] ?? (from.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '').slice(0, 20) || 'user');
 

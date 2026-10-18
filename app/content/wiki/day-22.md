@@ -23,6 +23,7 @@ from: 22
 - [public] 13:15 [[Axel Rook]] voted early, in 4 minutes; Y told him where to go. {{y:d22_y_axel}}
 - [public] 13:37 [[Wade Tillman]]: his ballot goes in on paper, with his own pen. "Watch the count." {{y:d22_y_wade}}
 - [public] 14:00 zev.dolr watched a man ask if his agent could hold his place in the early-voting line. {{y:f32}}
+- [public] 14:20 [[Brynn LeClaire]]: founder breakfast tomorrow at 8 on the sidewalk outside the closed café, bring your own espresso. {{y:d22_y_brynn}}
 - [public] 14:45 Candidate 2030 voted at the Eastside library with his family; "nobody asked us for a score." {{y:d22_y_candidate}}
 - [public] 15:30 Brent Kowalski: the $VANT lawsuit now claims the layoff emails were written by the system that replaced the staff. {{y:m22_vant_emails}}
 - [public] 16:20 [[Caleb Moxon]]: ask agent civic who to vote for, screenshot it, ask again tomorrow, compare. {{y:d22_y_moxon}}
@@ -34,6 +35,10 @@ from: 22
 ## News
 
 - [public] 18:30 YOUR POLLING STATION HAS MOVED (it hasn't): GeneralAI's new voting helper gets it WRONG on day one {{article:agent-civic}}
+
+## Pollymarket
+
+- [public] 14:20 The Pug Café market slips to 15% as founders meet on the sidewalk outside instead.
 
 ## Trending
 

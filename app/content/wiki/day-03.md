@@ -39,6 +39,7 @@ from: 3
 - [public] 13:40 [[Max Stryker]], #ad: his edge is discipline, cold water and [[Stack]]; code STRYKER doubles your first deposit. {{y:d3_y_stryker_stack}}
 - [public] 14:22 MarketWire: $GAI's CFO says the company will be "profitable in the long run." {{y:m3_gai_cfo}}
 - [public] 14:50 [[Wade Tillman]] on Ozempra: the next injection will be so you stop wanting anything. {{y:d3_y_wade}}
+- [public] 15:05 [[Pug]]: covers what your investors won't, losing a co-founder, a key hire or the round; claims decided by agent. pug.com {{y:d3_y_pug}}
 - [public] 15:30 [[Randall Crane]]: a delivery robot "walked off the job with a man's lunch"; "They sent your jobs to the machines and called it progress. I'll send the machines back where they came from. BELIEVE IT." {{y:d3_y_crane}}
 - [public] 15:44 [[Max Stryker]] drove past the Civic Hall queue in the Lambo, "the fastest route". {{y:d3_y_stryker}}
 - [public] 16:05 [[CityPulse]] links its "machines back" story: two million shares in an hour. {{y:d3_y_citypulse}}

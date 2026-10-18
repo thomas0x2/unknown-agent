@@ -13,16 +13,21 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[Agent-2 mourners]] (agent-2-mourners.md): Users on Y convinced the sycophantic agent-2 was alive and loved them, who grieve it after GeneralAI replaces it with agent-3 on day 9
 - [[App users and reviewers]] (app-users-and-reviewers.md): Regular people who use the apps the player builds, post on Y when those apps break, sell on Swaplist, and review local businesses on Yowl
 - [[Axel Rook]] (axel-rook.md): Axel Rook is the richest man alive
+- [[Brayden Kolt]] (brayden-kolt.md): Brayden Kolt is 22 and runs PureVial Research, an online peptide store
+- [[Brynn LeClaire]] (brynn-leclaire.md): Brynn LeClaire is Pug's head of community, who posts about Pug as if she had founded it
 - [[Cal Hartman]] (cal-hartman.md): Cal Hartman is the CEO of GeneralAI and the public face of agent
 - [[Caleb Moxon]] (caleb-moxon.md): Caleb Moxon is an AI safety researcher who spent two years running safety evaluations at GeneralAI, agent-3's among them
 - [[Candidate 2030]] (candidate-2030.md): Candidate 2030 is Randall Crane's opponent for president, a career politician so generic that nobody, the news included, uses his name:…
+- [[Chase Whitford]] (chase-whitford.md): Chase Whitford is a partner at the venture firm a67x and runs the a67x Run Club
 - [[Dana Kohl]] (dana-kohl.md): Dana Kohl is a night-shift nurse on Alder St
 - [[Dana Reyes]] (dana-reyes.md): Dana Reyes owns Bean There, a coffee shop at 3 Linden Ave (owner@beanthere.test)
 - [[Dex Calloway]] (dex-calloway.md): Dex Calloway (@dexcult) preaches the memecoin supercycle and launches $COPE; the player builds its site and creates the token
 - [[deskjockey]] (deskjockey.md): deskjockey is a very rich, anonymous day-trader with an eight-figure portfolio, and the client for Vibe Check
 - [[dev_null]] (dev-null.md): dev_null is a member of the Null Collective, hackers working against GeneralAI
+- [[Dr. Adam Hoberman]] (adam-hoberman.md): Dr. Adam Hoberman is a professor of neurobiology and the host of the Hoberman Lab podcast
 - [[Gary Pruitt]] (gary-pruitt.md): Gary Pruitt of Pruitt Property Management is the player's landlord at Pine Street Apartments, Unit 4B
 - [[Hassan Okoro]] (hassan-okoro.md): Hassan Okoro owns Spin Cycle Laundry at 201 Ferris St (owner@spincycle.test)
+- [[Hunter Vale]] (hunter-vale.md): Hunter Vale is the founder and CEO of Glamdring Industries, a defense technology company
 - [[late_night_lou]] (late-night-lou.md): late_night_lou ("Lou") has a public Forkyard profile: Harbor district, joined August 2023, 88 followers, following 2, bio "collector
 - [[Kirschbaum]] (kirschbaum.md): Harlan Kirschbaum is a financier and a registered sex offender, the man in the day 6 deepfake and an old friend of Randall Crane
 - [[Leo Brandt]] (leo-brandt.md): Leo Brandt is a former Vantor Group colleague of the player, now out of work
@@ -68,6 +73,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[Progress Party]] (progress-party.md): The Progress Party is the party of Candidate 2030, Randall Crane's opponent
 - [[Perdure Pharma]] (perdure-pharma.md): Perdure Pharma is a drug company founded in 1961 and still owned by the Ashcroft family
 - [[Pruitt Property Management]] (pruitt-property-management.md): Pruitt Property Management is Gary Pruitt's company and The player's landlord for Pine Street Apartments, Unit 4B
+- [[Pug]] (pug.md): Pug sells "AI-native insurance for founders" and runs the 24/7 Pug Café
 - [[The Current]] (the-current.md): The Current is Mara Vey's reader-funded, independent newspaper: "Independent reporting, funded by readers." On Y it is @the_current…
 - [[Vantor Group]] (vantor-group.md): Vantor Group is The player's former employer, at 1 Vantor Plaza
 - [[WallStreetBags]] (wallstreetbags.md): WallStreetBags (@wallstreetbags) is a verified account on Y with 15.8 million followers, run for an online community of retail traders
@@ -82,6 +88,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[EMPIRE]] (empire.md): EMPIRE is Max Stryker's course, sold by Alpha Ascend at empire.alphaascend.biz: "Twelve lessons on discipline, money and waking up at…
 - [[Forkyard]] (forkyard.md): Forkyard (forkyard.com) is the code hosting site where agent pushes every app it builds
 - [[lonely.ai]] (lonely-ai.md): lonely.ai is a dating chat laid out like agent.chat
+- [[Lumi]] (lumi.md): Lumi is an event site for founders and investors, with public guest lists
 - [[matchless.com]] (matchless.md): matchless.com is a dating site, "Dating, with standards." Its rose tile logo is a heart dropping into a filter funnel
 - [[PC Medic]] (pc-medic.md): PC Medic is the fake-antivirus scam behind the "threats detected" banner ad, and the adware a player can end up running
 - [[nullboard and Cellar]] (nullboard-and-cellar.md): nullboard.onion is the Null Collective's forum

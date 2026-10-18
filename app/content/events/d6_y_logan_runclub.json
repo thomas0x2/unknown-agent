@@ -1,0 +1,11 @@
+{
+  "id": "d6_y_logan_runclub",
+  "site": "y",
+  "from": "logan_ships",
+  "trigger": {
+    "dayMin": 6,
+    "dayMax": 6
+  },
+  "at": "11:50",
+  "body": "ran the a67x run club 5k. pitched chase at pug café after. he said \"love the energy\". we're so early"
+}

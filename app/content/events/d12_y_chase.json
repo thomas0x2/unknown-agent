@@ -1,0 +1,11 @@
+{
+  "id": "d12_y_chase",
+  "site": "y",
+  "from": "Chase Whitford",
+  "trigger": {
+    "dayMin": 12,
+    "dayMax": 12
+  },
+  "at": "16:00",
+  "body": "a67x Run Club tomorrow at 7. 5 km from the fountain, ends at Pug Café. Pitches after the run, never during. lumi.events/a67x-run"
+}

@@ -149,6 +149,16 @@ export const WIDE: Ad[] = [
     cta: 'Find a pharmacy', fine: 'Generic flu vaccine, 4 DOLR. May cause a sore arm. A Perdure Pharma vaccine.',
   },
   {
+    id: 'pug', sponsor: 'Pug', href: 'pug.com', theme: 'ad-pug', deco: 'shine', from: 3,
+    frames: ['Your co-founder could quit tomorrow.', 'Be covered <b>today</b>.', '<b>Pug.</b> AI-native insurance for founders.'],
+    cta: 'Get a quote', fine: 'Quotes in 90 seconds. Claims decided by agent. Pug is an agency, not an insurer.',
+  },
+  {
+    id: 'purevial', sponsor: 'PureVial Research', href: 'purevial.com', theme: 'ad-purevial', deco: 'sparkle', from: 8,
+    frames: ['Research-grade peptides.', '99% pure. <b>Ships in 24h.</b>', '<b>PureVial Research.</b>'],
+    cta: 'Shop BPC-157', fine: 'For research use only. Not for human consumption. Dosing chart included.',
+  },
+  {
     id: 'lastmeal', sponsor: 'DoorDish', href: 'doordish.com', theme: 'ad-dish', deco: 'robot',
     frames: ['Last meal?', '<b>We deliver.</b>', 'Rated 5★ by everyone who can’t review us anymore.'],
     cta: 'Order', fine: 'Robot may linger. It is not grieving. It is waiting for a tip.',

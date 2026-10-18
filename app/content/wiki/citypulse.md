@@ -171,6 +171,7 @@ from: 1
 - [public] On day 8 at 15:41 it quotes Crane wanting a law making it illegal for a computer to be smarter than his cabinet appointees. {{y:d8_y_citypulse_vote}}
 - [public] On day 13 at 17:30, "THE ROOK BUMP": Crane 46%, opponent 42%. {{y:d13_y_citypulse_vote}}
 - [public] On day 14 at 12:05 Crane vows to "build a wall around the cloud and make the computers pay for it"; asked where the cloud is: "Up." {{y:d14_y_citypulse_vote}}
+- [public] On day 16 at 17:45, "PUG CAFÉ SHUT": city inspectors say the 24/7 café was licensed as an insurance office; [[Pug]] says the espresso was a policy benefit. {{y:d16_y_citypulse_pug}}
 - [public] On day 17 at 11:20 Crane says he'll debate with "no computer of any kind"; the debate streams on Y at 21:30. {{y:d17_y_citypulse_vote}}
 - [hidden; public if posted_deepfake] On day 6, within the hour of the player's deepfake: "IS IT REAL?", a million views in under an hour. {{y:dfr_citypulse}}
 - [public] On day 25 at 18:50, "TRICK OR TWEET?": Crane's account posted 14 times between 2 and 5 AM the night before, three of them about candy. {{y:d25_y_citypulse}}

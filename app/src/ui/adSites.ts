@@ -17,7 +17,7 @@ export function pageAdSite(url: string, state: GameState, notice = '', extra = '
   const rows = typeof s.stats === 'function' ? s.stats(state) : s.stats;
   const stats = rows?.length
     ? `<div class="lp-stats">${rows.map(([v, l]) => `<div><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join('')}</div>` : '';
-  const cards = s.cards.map(([h, p], i) => `<article class="lp-card"><span class="lp-n">${i + 1}</span><h2>${esc(h)}</h2><p>${esc(p)}</p></article>`).join('');
+  const cards = (typeof s.cards === 'function' ? s.cards(state) : s.cards).map(([h, p], i) => `<article class="lp-card"><span class="lp-n">${i + 1}</span><h2>${esc(h)}</h2><p>${esc(p)}</p></article>`).join('');
   const link = s.link ? `<p class="lp-link">${esc(s.link[0])} <a href="#" data-nav="${esc(s.link[2])}">${esc(s.link[1])}</a></p>` : '';
   const action = s.action ? `<div class="lp-action"><button type="button" class="lp-btn" data-act="${esc(s.action[1])}">${esc(s.action[0])}</button>${notice ? `<p class="lp-notice" role="status">${esc(notice)}</p>` : ''}</div>` : '';
   const quote = s.quote ? `<blockquote class="lp-quote"><p>“${esc(s.quote[0])}”</p><cite>${esc(s.quote[1])}</cite></blockquote>` : '';
@@ -44,6 +44,7 @@ const FAV: Record<string, [string, string]> = {
   progress: ['#0d2347', '#e8c35a'], dolr: ['#0e5e3a', '#2cff95'],
   steadfast: ['#13314d', '#fff'], pod: ['#2d2a24', '#ebe6dc'], guard: ['#07120c', '#7dff9b'], news: ['#151515', '#fff'],
   grief: ['#3a2b52', '#f4eefb'], casket: ['#1d1d22', '#d9d9de'], cryo: ['#1f7fc2', '#fff'], pharma: ['#12a3a3', '#fff'], ozempra: ['#e2725b', '#fff'], fluvera: ['#2f7dc4', '#fff'],
+  pug: ['#2e221c', '#e2b679'], a67x: ['#c8372d', '#fff'], lumi: ['#6d4aff', '#fff'], glamdring: ['#101418', '#d8e3ea'], purevial: ['#0f8f7e', '#fff'],
   mind: ['#1b0b3a', '#ff9d3d'], ministry: ['#4a4f38', '#ece6d2'], bean: ['#4a2a18', '#fbe9d2'],
   spin: ['#1f6fbd', '#ffe14a'], iron: ['#ff2e2e', '#fff'], deep: ['#8fa4ff', '#0b1630'],
 };
@@ -60,6 +61,8 @@ const GLYPHS: Record<string, string> = {
   pen: '<g fill="currentColor" transform="rotate(45 12 12)"><rect x="9.6" y="5" width="4.8" height="13" rx="1.4"/><rect x="10.6" y="2.6" width="2.8" height="1.8" rx=".6"/><rect x="11.5" y="18.4" width="1" height="3.2"/></g>',
   // Fluvera: a vaccine vial, upright
   vial: '<g fill="currentColor"><rect x="8.6" y="3" width="6.8" height="3" rx=".8"/><rect x="10" y="6" width="4" height="1.6"/><path d="M8 7.6h8v11.2a2.2 2.2 0 0 1-2.2 2.2h-3.6A2.2 2.2 0 0 1 8 18.8Z"/></g>',
+  // Glamdring: a sword, point up
+  sword: '<g fill="currentColor"><path d="M12 2.5 13.6 5v10h-3.2V5Z"/><rect x="7.5" y="15" width="9" height="1.8" rx=".9"/><rect x="11.1" y="16.8" width="1.8" height="3.4"/><circle cx="12" cy="21" r="1.2"/></g>',
   // LiquidAssets: a kidney, with its ureter
   kidney: '<path fill="currentColor" d="M10.2 3.8C6 3.8 4 7.5 4 12s2 8.2 6.2 8.2c3.1 0 4.6-1.8 4.6-3.9 0-1.7-1.5-2.7-1.5-4.3s1.5-2.6 1.5-4.3c0-2.1-1.5-3.9-4.6-3.9Z"/><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M13.6 12h2.6c1.6 0 2.6 1 2.6 2.6v5.4"/>',
   '⚖': '<g transform="translate(0 .3)"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5.5v13M8.5 18.5h7M5.5 8h13M5.5 8 3.5 13M5.5 8l2 5M18.5 8l-2 5M18.5 8l2 5"/></g><g fill="currentColor"><circle cx="12" cy="5.3" r="1.2"/><path d="M3 13h5a2.5 2.5 0 0 1-5 0ZM16 13h5a2.5 2.5 0 0 1-5 0Z"/></g></g>',

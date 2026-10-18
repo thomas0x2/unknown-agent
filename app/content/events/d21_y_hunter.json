@@ -1,0 +1,11 @@
+{
+  "id": "d21_y_hunter",
+  "site": "y",
+  "from": "Hunter Vale",
+  "trigger": {
+    "dayMin": 21,
+    "dayMax": 21
+  },
+  "at": "13:10",
+  "body": "Foehammer passed its final test today. I can't say where. I can say it worked."
+}

@@ -1,0 +1,11 @@
+{
+  "id": "d14_y_hunter",
+  "site": "y",
+  "from": "Hunter Vale",
+  "trigger": {
+    "dayMin": 14,
+    "dayMax": 14
+  },
+  "at": "16:30",
+  "body": "The best engineers of my generation spent ten years optimizing ad clicks. Some of them are finally working on something real."
+}

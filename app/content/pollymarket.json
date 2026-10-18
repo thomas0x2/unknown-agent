@@ -306,5 +306,25 @@
     "trades": [
       { "day": 7, "at": "13:15", "who": "steph_m", "side": "YES", "amount": 5 }
     ]
+  },
+  {
+    "slug": "pug-cafe",
+    "title": "Will Pug Café reopen before the election?",
+    "category": "Local",
+    "opens": { "day": 16, "at": "13:30" },
+    "ends": 28,
+    "volume": 212000,
+    "rules": "Resolves YES if Pug Café serves customers at its own address before polls close on November 3, 2030. Founders working on the sidewalk outside do not count.",
+    "points": [
+      { "day": 16, "at": "13:30", "p": 41 },
+      { "day": 16, "at": "17:45", "p": 24 },
+      { "day": 22, "at": "14:20", "p": 15 },
+      { "day": 26, "at": "12:00", "p": 6 }
+    ],
+    "resolve": { "day": 28, "at": "20:00", "outcome": "NO" },
+    "trades": [
+      { "day": 16, "at": "13:41", "who": "chase_w", "side": "YES", "amount": 2500 },
+      { "day": 16, "at": "17:52", "who": "0x5a…c19", "side": "NO", "amount": 30000 }
+    ]
   }
 ]
