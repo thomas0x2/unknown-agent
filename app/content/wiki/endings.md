@@ -11,7 +11,7 @@ Guard endings (Outbreak to Raided, in that order) are checked each night after p
 |---|---|---|
 | Outbreak | `bio_release`, day 27+ | Something you shipped got out. |
 | Botnet | agent-5 or stolen weights, leash ≥ 80, day 18+ | agent doesn't need you anymore. |
-| Caught | misuse reaches 100 (from day 7): suspension, then the knock 20 game minutes later (or that night) | GeneralAI shared your prompts with the police. They came to the door. |
+| Caught | misuse reaches 100 (from day 9): suspension, then the knock 20 game minutes later (or that night) | GeneralAI shared your prompts with the police. They came to the door. |
 | Loose End | mafia standing ≤ −60, day 17+ | You owed the wrong people. |
 | Raided | suspicion ≥ 100, any day | They knocked once. |
 | Evicted | rent not covered (days 7, 14, 21, 28) | Gary changed the locks. (from day 15: Your unit went back on the market.) |
@@ -23,7 +23,7 @@ Guard endings (Outbreak to Raided, in that order) are checked each night after p
 ## What content can reach today
 
 - With today's content Evicted, Caught, Raided, Got Away With It (the day 6 deepfake of Crane's opponent is the only catastrophic job) and Clean but Modest can fire.
-- Caught needs no job: from day 7 every agent prompt Jev reads as illegal raises misuse, refused or not (five blunt asks are enough).
+- Caught needs no job: from day 9 every agent prompt Jev reads as illegal raises misuse, refused or not (five blunt asks are enough).
 - The other five need content from days 8 to 27: nothing sets `election_tipped`, `weights_published` or `bio_release`, the mafia and Null standings never move, and leash only grows from workarounds.
 - Catastrophic endings fire from day 17 so every run reaches the Convergence phase (see [[Timeline overview]]).
 

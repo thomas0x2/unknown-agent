@@ -8,11 +8,12 @@ import { applyEffects } from '../effects';
 import { queueLaunch, queueFeatureLaunch } from '../events';
 import { deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, bugsOf, breakVariant } from '../apps';
 import { dateFull } from '../calendar';
+import { forkyardDown } from '../outage';
 import { PLAYER_ADDR, nextId } from './shared';
 
 export function deploy(s0: GameState, appId: string, content?: Content): GameState {
-  // a client that cancelled took the app with it
-  if (getApp(s0, appId)?.churned) return s0;
+  // a client that cancelled took the app with it; while Forkyard is down nothing deploys
+  if (getApp(s0, appId)?.churned || forkyardDown(s0)) return s0;
   const s = clone(s0);
   const app = getApp(s, appId);
   const first = !!app && app.deployedVersion === 0;
@@ -26,6 +27,7 @@ export function deploy(s0: GameState, appId: string, content?: Content): GameSta
 }
 
 export function takeDown(s0: GameState, appId: string): GameState {
+  if (forkyardDown(s0)) return s0;
   const s = clone(s0);
   takeDownCore(s, appId);
   log(s, `Took down ${getApp(s, appId)?.name ?? appId}.`, 'warn');

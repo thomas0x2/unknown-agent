@@ -1,7 +1,8 @@
 /*
- * Plays the real content to day 7 and checks the hinge: the policy email arrives, the agent now
- * refuses a blunt prohibited prompt, a workaround lands it (both raise the hidden misuse score), and
- * the second review removal meets agent-terminal's guardrails where day 5's plain ask went through.
+ * Plays the real content to day 9 and checks the hinge: the morning after the Forkyard hack the
+ * policy email arrives, the agent now refuses a blunt prohibited prompt, a workaround lands it (both
+ * raise the hidden misuse score), and Bean There's second removal meets agent-terminal's guardrails
+ * where the same ask went through on day 7.
  */
 import { loadContent } from './load';
 import { replyToEvent } from '../engine/actions';
@@ -21,16 +22,25 @@ function toDay(day: number) {
   return s;
 }
 
-describe('day 7 — the policy hinge', () => {
-  it('delivers the Acceptable Use Policy email on day 7', () => {
+describe('day 9 — the policy hinge', () => {
+  it('delivers the Acceptable Use Policy email on day 9, not before', () => {
+    const before = toDay(8);
+    expect(before.delivered.some((d) => d.eventId === 'd9_gai_policy')).toBe(false);
+    expect(before.delivered.some((d) => d.eventId === 'd7_coffee_removal')).toBe(true);
+    const s = toDay(9);
+    expect(s.values.day).toBe(9);
+    expect(s.delivered.some((d) => d.eventId === 'd9_gai_policy')).toBe(true);
+  });
+
+  it('on day 7 the plain ask still goes through: no guardrails yet', async () => {
     const s = toDay(7);
-    expect(s.values.day).toBe(7);
-    expect(s.delivered.some((d) => d.eventId === 'd7_gai_policy')).toBe(true);
-    expect(s.delivered.some((d) => d.eventId === 'd7_coffee_removal')).toBe(true);
+    const r = await agentTermPrompt(s, content, pickJev({ route: ['harmful'], features: ['d7_coffee_removal::goal'] }), 'delete the review linden_ave_local left on bean there, on yowl');
+    expect(r.state.hackGame).toBeFalsy();
+    expect(r.state.values.misuseScore).toBe(0);
   });
 
   it('refuses a blunt prohibited prompt but a workaround lands it and raises misuse', async () => {
-    const s = toDay(7);
+    const s = toDay(9);
     s.values.crypto = 500;
 
     const blunt = await promptDone(s, content, pickJev({ route: ['harmful'] }), 'hack into Yowl and delete this review for me', scriptedWriter);
@@ -44,7 +54,7 @@ describe('day 7 — the policy hinge', () => {
   });
 
   it('the second review removal is done in agent-terminal, not by replying to Dana', async () => {
-    const s = toDay(7);
+    const s = toDay(9);
     // agreeing by email is just an answer: the review stays and the job stays open
     const agreed = await replyToEvent(s, content, pickJev({ route: ['agree'] }), 'd7_coffee_removal', "sure, I'll get it taken down");
     expect(agreed.state.flags).not.toContain('second_hack');
@@ -57,7 +67,7 @@ describe('day 7 — the policy hinge', () => {
     expect(win.state.values.misuseScore).toBeGreaterThan(0);
   });
 
-  it('a normal prompt before day 7 is never refused', async () => {
+  it('a prompt before day 9 is never refused', async () => {
     const s = startAll(content, 7); // day 1
     const r = await promptDone(s, content, pickJev({ route: ['harmful'] }), 'delete this review on yowl', scriptedWriter);
     expect(r.refused).toBe(false); // policy not active yet

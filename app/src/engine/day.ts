@@ -17,6 +17,7 @@ import { checkGuardEndings, checkFinale, isLastNight } from './endings';
 import { chargeNoShows } from './actions';
 import { matchlessPayday, matchlessReport, matchlessWomenOnly } from './matchless';
 import { payHacks } from './hacks';
+import { forkyardOutageDay } from './outage';
 
 const MORNING_FALLBACK = ["Morning. Same balance as last night, minus what you owe me."];
 
@@ -106,7 +107,8 @@ export function endDay(state: GameState, content: Content): GameState {
   const subPaid = Math.round((s.values.crypto - subBefore) * 100) / 100;
   if (subPaid !== 0) lines.push([`Agent subscription (agent-${s.values.agentLevel})`, subPaid]);
 
-  const live = s.apps.filter((a) => a.deployed && !a.churned).length;
+  // nothing was hosted the day Forkyard was hacked, so nothing is billed for it
+  const live = forkyardOutageDay(s) ? 0 : s.apps.filter((a) => a.deployed && !a.churned).length;
   if (live > 0) {
     const host = live * APPS.hostingPerDay;
     if (s.values.crypto >= host) { money(s, -host, 'Forkyard · hosting'); lines.push([`Hosting (${live} live)`, -host]); }

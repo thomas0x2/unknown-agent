@@ -1,0 +1,12 @@
+{
+  "id": "d8_y_noodle_forkyard",
+  "site": "y",
+  "from": "noodleposter",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "13:28",
+  "viral": true,
+  "body": "my noodle rankings were on forkyard. all 87. i remember most of them"
+}

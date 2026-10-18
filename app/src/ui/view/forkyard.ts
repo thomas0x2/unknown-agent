@@ -7,7 +7,7 @@ import { type AppInstance, getApp, bugsOf, breakVariant, onForkyard, userRevenue
 import { findUser } from '../forkyard-users';
 import { adHtml } from '../ads';
 import { renderAppSite, devBugPanel, devBugCount } from '../appsite';
-import { cranePosts, playMinutes } from '../../engine';
+import { cranePosts, playMinutes, forkyardDown } from '../../engine';
 import { repoFiles, treeAt, fileSource } from '../repoTree';
 import { PLAYER, compact, esc, hashHue } from './common';
 import { crawlable } from './y';
@@ -73,8 +73,21 @@ function pageProfileUser(store: GameStore, handle: string): string {
     </div></div></div>`;
 }
 
+/** The day Forkyard was hacked: the session is gone and signing back in fails. */
+function pageSignInFailed(): string {
+  return `<div class="fy"><div class="fy-signin">
+    <div class="fy-logo">${ICONS.forkyard}<span>forkyard</span></div>
+    <h1>Sign in to Forkyard</h1>
+    <p class="fy-signin-err">We couldn't sign you in. Something went wrong on our end. Please try again later.</p>
+    <label>Username or email<input value="you" disabled></label>
+    <label>Password<input type="password" value="••••••••••" disabled></label>
+    <button class="fy-btn" data-nav="forkyard.com">Sign in</button>
+  </div></div>`;
+}
+
 export function pageForkyard(store: GameStore, repo?: string): string {
   const s = store.state;
+  if (forkyardDown(s)) return pageSignInFailed();
   if (repo === 'you') return pageProfileSelf(store);
   if (repo && repo.startsWith('u/')) return repo.slice(2) === 'you' ? pageProfileSelf(store) : pageProfileUser(store, repo.slice(2));
   const head = fyHead(store, repo ? '' : 'repos');
@@ -144,6 +157,7 @@ export function pageApp(store: GameStore, param?: string): string {
   const sub = rest.join('/') || undefined;
   const a = appId ? getApp(s, appId) : undefined;
   if (!a || !a.deployed) return `<div class="err"><h1>404: NOT_FOUND</h1><p>Nothing is deployed here.</p></div>`;
+  if (forkyardDown(s)) return `<div class="err"><h1>502: BAD_GATEWAY</h1><p>forkyard.app could not reach this deployment.</p></div>`;
   const bk = store.ui.book;
   // a correct form only offers today onward; with the past_dates bug the picker starts on day 1
   const liveBooking = a.features.find((f) => f.id === 'booking');

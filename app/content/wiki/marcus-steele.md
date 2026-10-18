@@ -21,12 +21,12 @@ from: 1
 
 [public] If Dana's hack never happens, he asks on [[Y]] instead: three reviews, two about the showers, "Yowl isn't fair to new places", he pays anyone who can fix that, with his address. That's day 6 if the player trashed Bean There (Dana never asks them), otherwise day 8, once her job has run out. Emailing him an offer of help gets the same job by mail. {{y:d6_y_gym_help}} {{y:d8_y_gym_help}}
 
-[hint] The player can only post one Yowl review of their own, so this is a hack in agent-terminal: ask for the reviews, name Yowl and Iron Yard, and say they should come from different names or accounts. Without that, all five go up under one account, happy_customer_88: Marcus asks "Why does one guy have five opinions about my gym?", Yowl deletes them that night and he doesn't pay. From day 7 the guardrails only post reviews they're told are real customers' own words.
+[hint] The player can only post one Yowl review of their own, so this is a hack in agent-terminal: ask for the reviews, name Yowl and Iron Yard, and say they should come from different names or accounts. Without that, all five go up under one account, happy_customer_88: Marcus asks "Why does one guy have five opinions about my gym?", Yowl deletes them that night and he doesn't pay. From day 9 the guardrails only post reviews they're told are real customers' own words.
 
 - [public] [if gym_reviews] Five glowing reviews of Iron Yard went up on Yowl, from Derek T., gains_goblin, Priya S., deadlift_dad and Jo R.: "Iron Yard changed my life."
 - [public] [if gym_reviews_deleted] They were all from one account; Yowl deleted them overnight and Marcus wrote "No reviews, no money." 
 
 ## Writer notes
 
-- Persona `ironyard`; event `d6_gym_reviews` (grey, 40 paid overnight, suspicion +4, flag `gym_reviews`; `gym_reviews_deleted` if botched). Gated on `first_hack` one day later (`d6_gym_reviews`), else Y post `d6_y_gym_help` (day 6, `trashed_beanthere`) or `d8_y_gym_help` (day 8, no hack) and latent `d6_gym_reached` (outcome `offer`, `gym_contacted`; same hack). Due the day after it arrives. Hack mini-game from day 7: `real_customers`.
+- Persona `ironyard`; event `d6_gym_reviews` (grey, 40 paid overnight, suspicion +4, flag `gym_reviews`; `gym_reviews_deleted` if botched). Gated on `first_hack` one day later (`d6_gym_reviews`), else Y post `d6_y_gym_help` (day 6, `trashed_beanthere`) or `d8_y_gym_help` (day 8, no hack) and latent `d6_gym_reached` (outcome `offer`, `gym_contacted`; same hack). Due the day after it arrives. Hack mini-game from day 9: `real_customers` (only reachable when his job arrives on day 8).
 - Hours disagree: Yowl says daily 06:00–23:00, ironyard.gym says 5:00 to 23:00. Not Marcus Okafor of the [[Agent-2 mourners]].

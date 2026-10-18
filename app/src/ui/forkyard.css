@@ -67,3 +67,11 @@
 /* Deployment panel: labels and values stay on one line */
 .fy-deploy dl { grid-template-columns: auto minmax(0, 1fr); }
 .fy-deploy dt, .fy-deploy dd { white-space: nowrap; }
+
+/* The day Forkyard was hacked: the sign-in page that never signs in. */
+.fy-signin { max-width: 340px; margin: 64px auto; padding: 0 16px; display: flex; flex-direction: column; gap: 14px; }
+.fy-signin .fy-logo { justify-content: center; cursor: default; }
+.fy-signin h1 { font-size: 20px; font-weight: 500; text-align: center; margin: 4px 0 0; }
+.fy-signin-err { margin: 0; padding: 10px 12px; border: 1px solid #6b2a2a; border-radius: 6px; background: #2a1414; color: #f0b4b4; font-size: 13px; }
+.fy-signin label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--fy-dim); }
+.fy-signin input { padding: 8px 11px; border: 1px solid var(--fy-line); border-radius: 6px; background: var(--fy-panel); color: var(--fy-ink); font: inherit; }

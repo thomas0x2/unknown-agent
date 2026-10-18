@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_mara_forkyard",
+  "site": "y",
+  "from": "Mara Vey",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "18:20",
+  "body": "Forkyard hosts most of this city's small business websites. A bakery owner told me today she found out hers was down from a customer."
+}

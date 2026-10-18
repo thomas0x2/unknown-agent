@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_forkyard_502",
+  "site": "y",
+  "from": "Wren Okoye",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "12:30",
+  "body": "Every site I host on Forkyard is a 502. One client has already asked if I deleted his bakery."
+}

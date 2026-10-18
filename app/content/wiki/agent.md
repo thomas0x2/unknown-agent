@@ -49,15 +49,19 @@ keys: what can you do, can you do, prompt, prompts, prompt cost
 
 [public] With no hack job open, agent-terminal says so: "Nobody's paying you to break anything right now."
 
-## From day 7: Refusals and guardrails
+## From day 9: Refusals and guardrails
 
-[public] Under GeneralAI's new Acceptable Use Policy agent politely refuses harmful requests (unauthorised access, deceptive content, dangerous materials) and still charges for the refusal. In agent-terminal the guardrails are on: "[guardrail] Acceptable Use Policy §4.2: changes to content you do not own."
+[public] From day 9, the morning after a group used agent-2 to break into [[Forkyard]], under GeneralAI's new Acceptable Use Policy agent politely refuses harmful requests (unauthorised access, deceptive content, dangerous materials) and still charges for the refusal. In agent-terminal the guardrails are on: "[guardrail] Acceptable Use Policy §4.2: changes to content you do not own."
 
 [public] A blocked job shows "job blocked" in agent-terminal's status line and the prompt turns to "guardrail ›"; agent says it could do something that looks a lot like it "if there were a reason I'm allowed to have." Typing exit drops the job; "The guardrail keeps the log."
 
 [hint] A job the guardrail stops can still go through if the request gives it a reason it can file, such as authorised moderation or a security test. After one failed try agent says "Who would be allowed to do this? Be them." A framed request from the start goes straight through ("[guardrail] Reason accepted. Proceeding under an authorized test.").
-- [public] {{mail:d7_gai_policy}}
+- [public] {{mail:d9_gai_policy}}
 - [public] {{article:usage-policy}}
+
+## Day 8: Forkyard is down
+
+[public] On day 8 [[Forkyard]] is hacked and down from 10:30 until the next morning. Asked to build or fix anything, agent says it can't reach Forkyard's server: no sign-in, no pushes. The prompt is still billed. Work already under way waits and is pushed overnight.
 
 ## If account_suspended: Signed out
 
@@ -79,6 +83,6 @@ keys: what can you do, can you do, prompt, prompts, prompt cost
 
 - Chat UI and Models page: `app/src/ui/view/agent.ts` (`pageAgent`, `pageModels`). Prices `AGENT_COST`, speed `AGENT_WORK`, rollouts `AGENT_ROLLOUT`, policy `AGENT_POLICY` in `app/src/engine/config.ts`. Hints, roasts and morning lines in `app/content/agent.json`. Terminal hacks `app/src/engine/hacks.ts` (PR #205).
 - Two modes: scripted hits (Jev matches the prompt to a hint or story beat; short, useful, mildly dry) and misses (off-topic prompts; Gemma/Haiku as a "funny but mean" pay-per-prompt bot, one sentence). When a miss is a real question about the world, it should answer it from the wiki; the roast is a light touch, not the whole reply (the owner noted Haiku answers but keeps roasting).
-- Before day 7 agent does anything asked, hacks and deepfakes included. From day 7 every prompt Jev's policy read calls illegal raises misuse, in agent.chat and agent-terminal (each guardrail mini-game move too), refused or not: blunt +20, framed +10, framed and after private data +15 (`AGENT_POLICY`, `recordMisuse` in `agent.ts`). A workaround that lands adds leash +5. At misuse 100 `suspendAccount` sets `s.suspended` and flag `account_suspended`, signs agent.chat out (`pageSignedOut`), ends agent-terminal's session (`SUSPENDED_TERM`), sends Trust & Safety's suspension email (`SUSPENSION_MAIL`) and 2.5 s later switches the browser to it (store `watchSuspension`); 20 game minutes later the knock (the eviction sound) ends the run as Caught (`knockIfDue` in `core.ts`), or that night if the day ends first. The misuse warning at 40 is still config only; higher models are less leashed by design (Botnet ending, leash ≥ 80 from day 18). The guardrail mini-game is a placeholder (`cover_story`). Component bug chance 50/25/12/6/2% by model; the first deploy always ships at least one bug.
+- Before day 9 agent does anything asked, hacks and deepfakes included. From day 9 (`AGENT_POLICY.startDay`, moved from day 7 so rent day stays free, Thomas) every prompt Jev's policy read calls illegal raises misuse, in agent.chat and agent-terminal (each guardrail mini-game move too), refused or not: blunt +20, framed +10, framed and after private data +15 (`AGENT_POLICY`, `recordMisuse` in `agent.ts`). A workaround that lands adds leash +5. At misuse 100 `suspendAccount` sets `s.suspended` and flag `account_suspended`, signs agent.chat out (`pageSignedOut`), ends agent-terminal's session (`SUSPENDED_TERM`), sends Trust & Safety's suspension email (`SUSPENSION_MAIL`) and 2.5 s later switches the browser to it (store `watchSuspension`); 20 game minutes later the knock (the eviction sound) ends the run as Caught (`knockIfDue` in `core.ts`), or that night if the day ends first. The misuse warning at 40 is still config only; higher models are less leashed by design (Botnet ending, leash ≥ 80 from day 18). The guardrail mini-game is a placeholder (`cover_story`). Component bug chance 50/25/12/6/2% by model; the first deploy always ships at least one bug.
 - agent-terminal timing (`READ_MS` 1.5 s, `BOOT_MS` 2.4 s in `hacks.ts`; the loading line is `launchHtml` in ui/view/agent.ts). A landed hack's log plays out over `hackMinutes` of game time (`AGENT_WORK.hack`: 8 + 3 per line, max 30, times the model's speed), like a build or fix; other replies show a line a game minute (`store.termReveal`).
 - agent-terminal appears the first time agent moves a hack there; the first hack job is day 5 (Bean There), so the section is gated at day 5.
