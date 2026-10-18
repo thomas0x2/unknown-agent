@@ -28,7 +28,7 @@ from: 4
 - [public] 11:30 [[Mara Vey]] follows up on the Vantor layoffs, 400 people, one memo: "tell me your story." {{y:d4_y_journalist}}
 - [public] [if talked_to_journalist] If the player already answered her, writing to her again gets "I already heard from you, thanks!" Otherwise the conversation is the one from day 1. {{mail:journalist_followup}}
 - [public] 11:31 Fifteen bot accounts post "$GAI to the moon!!".
-- [public] 11:43 [[6ft_sigma]]: needs someone to do his swiping on matchless.com, following his standards exactly. 35 DOLR a day for ten swipes, paid nightly, only if every one is right. {{y:d4_y_sigma}}
+- [public] 11:43 [[6ft_sigma]]: needs someone to do his swiping on matchless.com, following his standards exactly. 30 DOLR a day for ten swipes, paid nightly, only if every one is right. {{y:d4_y_sigma}}
 - [public] 11:57 [[Max Stryker]]: GeneralAI doubled their prices, "Good." EMPIRE is now 400 DOLR, today only 20. {{y:d4_y_stryker}}
 - [public] 12:20 [[Axel Rook]]: Apogee rocket stacked on the pad. "Looks sick." {{y:d4_y_axel}}
 - [public] 13:26 [[Randall Crane]]: Vantor ($VANT) fired 400 hardworking Americans and replaced them with a computer. "Disgraceful." {{y:m4_vant_crane}}

@@ -161,12 +161,12 @@ describe('swiping and pay', () => {
     expect(matchlessSwipe(s, content, 'no')).toBe(s);
   });
 
-  it('a perfect day of ten pays 35 DOLR at night; one wrong swipe pays nothing and the client says which', () => {
+  it('a perfect day of ten pays 30 DOLR at night; one wrong swipe pays nothing and the client says which', () => {
     const good = swipeAll(hired(5));
     good.values.crypto = 1000;
     const paid = endDay(good, content);
-    expect(paid.tx.some((t) => t.memo === '6ft_sigma · Matchless' && t.amount === 35)).toBe(true);
-    expect(paid.morning!.lines).toContainEqual(['Matchless swiping', 35]);
+    expect(paid.tx.some((t) => t.memo === '6ft_sigma · Matchless' && t.amount === 30)).toBe(true);
+    expect(paid.morning!.lines).toContainEqual(['Matchless swiping', 30]);
     expect(paid.mail.some((m) => m.subject === 'Yesterday')).toBe(false);
 
     const woman = dayProfiles(content, 5, 1).findIndex((x) => x.gender === 'woman');
@@ -198,7 +198,7 @@ describe('swiping and pay', () => {
     for (const p of profiles) s = matchlessSwipe(s, content, p.gender === 'man' || passes(standardsOf(content, version), p) ? 'yes' : 'no');
     s.values.crypto = 1000;
     const next = endDay(s, content);
-    expect(next.tx.some((t) => t.memo === '6ft_sigma · Matchless' && t.amount === 35)).toBe(true);
+    expect(next.tx.some((t) => t.memo === '6ft_sigma · Matchless' && t.amount === 30)).toBe(true);
     expect(next.flags).toContain('matchless_women_only');
     const say = content.matchless!.womenOnly.say;
     expect(say).toContain('SUPER STRAIGHT');

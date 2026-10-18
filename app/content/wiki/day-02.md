@@ -74,7 +74,7 @@ from: 2
 
 ## Writer notes
 
-- Timeline: Logan's waitlist (test sign-ups are real sign-ups: the counter goes up and the confirmation is sent). deskjockey → Vibe Check ($GAI, $VANT; 50/day). dev_null → Weightroom (`knows_weightroom`).
+- Timeline: Logan's waitlist (test sign-ups are real sign-ups: the counter goes up and the confirmation is sent). deskjockey → Vibe Check ($GAI, $VANT; 40/day). dev_null → Weightroom (`knows_weightroom`).
 - EMPIRE newsletter daily if subscribed.
 - Family: Dad's "20 years" email with the three Halden breadcrumbs (warm +5, ask +3, silence −5 if no outcome-matching reply by tonight's summary).
 - `d2_logan_waitlist` needs `logan_client` and the site working, and sets `logan_update1`; it lands on the first day both hold.

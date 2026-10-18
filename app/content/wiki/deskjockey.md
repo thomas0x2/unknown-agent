@@ -20,7 +20,7 @@ from: 2
 [public] On [[Day 2]] (10:20) he posts on Y: "Need a bot that tells me how Y feels about my stocks, so I can feel it faster. Pays daily." He gives trader@desk.test. {{y:d2_y_trader}}
 
 - [hint] [if trader_client] The player took the job. His email "RE: sentiment bot" lists the tickers, what each ticker card shows, what to filter out, and what the portfolio view needs, and links sherwood.com: prices must match [[Sherwood]]. {{mail:trader_contact}}
-- [public] [if trader_client] He pays 50 DOLR a day while Vibe Check works.
+- [public] [if trader_client] He pays 40 DOLR a day while Vibe Check works.
 - [public] When Vibe Check shows bad data at payday he emails the next morning, in lowercase, that he's "not paying for a day of bad data".
 - [hint] [if trader_client] His book holds $GAI, $VANT and a lot of cash; Vibe Check's portfolio view should match what [[Sherwood]] quotes.
 - [public] [if trader_client] He also trades by hand on the news. On day 2 he buys 10,000 $VANT on the restructuring news.

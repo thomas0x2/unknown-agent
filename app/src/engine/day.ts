@@ -5,7 +5,7 @@
  */
 import type { GameState, MorningCard } from './state';
 import type { Content } from '../content/schema';
-import { RENT, SUSPICION, LAST_DAY, APPS, CLOCK } from './config';
+import { RENT, FOOD, SUSPICION, LAST_DAY, APPS, CLOCK } from './config';
 import { newGame } from './state';
 import { clone, addValue, money, log, pick, deliverPendingMail, deliverAgentWork } from './core';
 import { runPayday, nightlyBreaks, wakeApps } from './apps';
@@ -88,7 +88,14 @@ export function endDay(state: GameState, content: Content): GameState {
   if (swipePay !== 0) lines.push(['Matchless swiping', swipePay]);
   lines.push(...payHacks(s, content)); // clients pay for the day's hacks overnight
 
-  // 4. Rent
+  // 4. Dinner, then rent
+  if (s.values.crypto >= FOOD.perNight) {
+    money(s, -FOOD.perNight, FOOD.memo);
+    lines.push(['Dinner (DoorDish)', -FOOD.perNight]);
+  } else {
+    lines.push(['Dinner: not enough DOLR, nothing ordered', null]);
+  }
+
   const rent = RENT[s.values.day];
   if (rent != null) {
     if (s.values.crypto < rent) {

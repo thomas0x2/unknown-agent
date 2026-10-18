@@ -62,7 +62,7 @@ describe('day 1 playthrough', () => {
     const c = await composeEmail(s, content, wordJev, 'logan@workagent.test', "Hi Logan, I'm in. I can build the WorkAgent website.");
     expect(c.sent).toBe(true);
     s = c.state;
-    expect(s.values.crypto).toBeCloseTo(start + 40, 5);
+    expect(s.values.crypto).toBeCloseTo(start + 35, 5);
     const app = s.apps.find((a) => a.clientEventId === 'logan_contact');
     expect(app).toBeTruthy();
     const appId = app!.id;

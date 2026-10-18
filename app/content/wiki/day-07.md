@@ -83,7 +83,7 @@ from: 7
 - Crane's opponent loses his 3-point lead if deepfaked.
 - Unposted day 6 offer: `d7_deepfake_again` (after `deepfake_offered` by a day, not `posted_deepfake`, 250, due the day it arrives), the same agent job, before the policy.
 - Crane attacks Mara's check mark.
-- Rent 350.
+- Rent 350, taken after dinner (15 DOLR to DoorDish), so the wallet needs 365 at payday.
 - The review is linden_ave_local's (Yowl seed with `day: 7`); the job is a hack in agent-terminal (PR #205). On day 9 the guardrails stop a plain ask and start the hack's mini-game (placeholder `cover_story`; see [[Day 9]]). Email outcomes: `agree`, `refused`.
 - [planned] late_night_lou's "private film collection" listing on Swaplist (never describe it).
 - Ending checks tonight: Evicted if rent is short.

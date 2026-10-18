@@ -20,6 +20,10 @@ from: 1
 | [public] GeneralAI Campus Kitchen | Cafeteria | Route 9 | 07:00–15:00 | 3.1, 50–70 min, 0.99 | Nutrient Bowl 7, Sandwich of the Day: 8, Leftover Catering Tray 15 |
 
 
+## Dinner
+
+[public] The player gets dinner from DoorDish every night: 15 DOLR, taken from the Coinbin wallet at the end of the day, after the day's pay and before rent. It shows in Coinbin as "DoorDish · Dinner" and as a line on the morning summary. When the wallet can't cover it, nothing is ordered and the summary says "Dinner: not enough DOLR, nothing ordered". See [[Money and DOLR]].
+
 ## From day 5: AI-generated listings
 
 [public] From day 5, new stores rated "New" appear on doordish.com among the old ones, and a line under "Restaurants near you" counts the restaurants in the area: 9,840 at first, past 40,000 within the week.

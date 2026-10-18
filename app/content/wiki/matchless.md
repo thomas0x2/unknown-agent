@@ -22,7 +22,7 @@ from: 1
 
 ## From day 4: swiping for 6ft_sigma
 
-- [public] On day 4 [[6ft_sigma]] posts on Y that he will pay someone 35 DOLR a night to swipe his ten matchless.com profiles a day. {{y:d4_y_sigma}}
+- [public] On day 4 [[6ft_sigma]] posts on Y that he will pay someone 30 DOLR a night to swipe his ten matchless.com profiles a day. {{y:d4_y_sigma}}
 - [hint] Once the player signs in with his login, matchless shows his account: ten profiles a day, one at a time, and nothing about his standards, which arrive by email.
 - [hint] Some of his standards can only be checked in the picture (hair length and colour, glasses, earrings), and extra table rows appear only once his standards mention them.
 - [public] He pays only if every swipe that day matched his standards; a wrong or skipped swipe gets a "Yesterday" email at 10:00 and no pay.

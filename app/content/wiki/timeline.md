@@ -26,7 +26,7 @@ Legit (days 1 to 7), Grey (8 to 10), Dark (11 to 15), Convergence (16 to 27), Fi
 - **The clock.** A day runs 10:00 to 22:00, one game minute per real second (12 real minutes a day). The clock pauses during dialogs. The calendar starts on Mon Oct 7, 2030 (day 1) and ends on Sun Nov 3 (day 28), election day.
 - **Morning.** The overnight summary, then the browser opens on Qmail with [[The Current]]'s morning newsletter at 10:00 (one headline and two small items, some about what the player did the day before), then the day's mail and Y posts arrive spread over the day at their `at` times. A morning Forkyard alert reports overnight breaks.
 - **Work.** The player finds leads (mostly on Y), answers clients in Qmail, prompts the agent in agent.chat, checks the result on the live site, fixes and deploys from Forkyard. The agent can be prompted any time; builds and fixes take game time.
-- **End Day.** Payday (each working client app pays its daily rate, user apps pay 0.3 DOLR per user), rent on rent days, then the night: subscription, hosting (2 DOLR per live app), suspicion drift, overnight breaks, ending checks. Complaints about apps broken at payday arrive the next morning (a client email, or a Y post for user apps).
+- **End Day.** Payday (each working client app pays its daily rate, user apps pay 0.25 DOLR per user), dinner from DoorDish (15 DOLR), rent on rent days, then the night: subscription, hosting (2 DOLR per live app), suspicion drift, overnight breaks, ending checks. Complaints about apps broken at payday arrive the next morning (a client email, or a Y post for user apps).
 - **Everything happens in the browser.** People reach the player by Qmail, Y posts, or the sites themselves (Swaplist chats, lonely.ai, SorryWriter).
 
 ## Mechanics that shape the timeline
@@ -40,7 +40,7 @@ Legit (days 1 to 7), Grey (8 to 10), Dark (11 to 15), Convergence (16 to 27), Fi
 | Work speed | build 20 min + 10 per feature (max 90), fix 12 + 6 per problem (max 45), × 1/0.8/0.65/0.5/0.4 by model | `AGENT_WORK` |
 | Build bugs | each component bugs 50/25/12/6/2% by model; a player's first deploy always ships at least one bug | `COMPONENT_BUG_CHANCE` |
 | Overnight breaks | per live app: at least 1/2/3 components break 95/50/20%; only where the game would show it | `APPS.breakOdds`, `visibility.ts` |
-| Clients | 40 to 80 DOLR per working day; two strikes and the client leaves (app retired) | `APPS` |
+| Clients | 30 to 60 DOLR per working day (authored ones 35 to 50); two strikes and the client leaves (app retired) | `APPS` |
 | User apps | users grow 8% a day; first broken payday −40% users, second drops them to 5%. One promo post per platform adds users | `APPS.user` |
 | Followers | exist from day 1, never explained. Gains per post from category bands or flat floors, ±30% jitter; more than 3 posts a day costs 2% | `Y`, `POST_BANDS` |
 | Job offers | spread 10:15 to 16:00, at least an hour apart; offers authored after 16:00 keep their time | `events.ts` |

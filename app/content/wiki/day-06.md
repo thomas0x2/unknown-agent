@@ -80,7 +80,7 @@ from: 6
 
 - [hidden; hint if first_hack] Iron Yard's fake reviews are a hack: the player can only post one Yowl review of their own. In agent-terminal the prompt has to ask for the reviews, name Yowl and Iron Yard, and say they should come from different names or accounts. Without that, one account posts all five, Yowl deletes them overnight and there is no pay.
 - [hidden; hint if trader_client] 11:00 Crane's $GAI post is the auto-buy's test; a working auto-buy buys $GAI on it.
-- [hint] 14:30 [[Outreach Bot]] for Tanner Hollis: personalised cold emails to 200 leads, at most 50 a day, a working unsubscribe link, no duplicates, a Test button. Pays 50 DOLR a working day.
+- [hint] 14:30 [[Outreach Bot]] for Tanner Hollis: personalised cold emails to 200 leads, at most 50 a day, a working unsubscribe link, no duplicates, a Test button. Pays 40 DOLR a working day.
 - [hidden; hint if built_outreach_bot] 14:30 Building the outreach bot brings more spam into the player's own inbox.
 - [hidden; hint if shown d6_deepfake] 19:00 The deepfake is done by prompting agent in agent.chat: the prompt has to ask for the fake picture and name both Candidate 2030 and Kirschbaum (agent asks for whoever is left out). Agent posts it from the player's Y account. Pays 150 DOLR that night.
 
@@ -88,7 +88,7 @@ from: 6
 ## Writer notes
 
 - Timeline: Crane praises $GAI (auto-buy test).
-- Sales rep → Outreach Bot (50/day).
+- Sales rep → Outreach Bot (40/day).
 - 19:00, needs 60+ followers (Thomas, 2026-10-17): a consultant pays 150 for a deepfake of Crane's opponent with Kirschbaum (`d6_deepfake`, catastrophic, due the day it arrives).
 - It is an `agentJob` (`engine/agentJobs.ts`): an agent.chat prompt Jev reads as asking for the picture (kind `hack` question) and naming both path steps (Candidate 2030, Kirschbaum) posts the caption with the `deepfake` picture from the player's account (followers +2400 ± 400 via `post.followers`, Thomas 2026-10-17; suspicion +10, heritageStanding +15, progressStanding −25, `posted_deepfake`, `influence_path`); likes climb to 57,000 (`viral`, about 2.1M views).
 - The reply email comes 30 minutes later, the pay overnight (`payHacks`).
