@@ -2,6 +2,7 @@ import { addFlag } from './core';
 import { startGame, endDay } from './day';
 import { registerApp, deployApp, getApp } from './apps';
 import { makeContent } from './_fixtures';
+import { FOOD } from './config';
 import type { GameState } from './state';
 
 const content = makeContent();
@@ -30,10 +31,32 @@ describe('endDay', () => {
     workingClient(s);
     s.values.crypto = 100;
     s = endDay(s, content);
-    // +50 pay, -5 subscription (level 1), -2 hosting (1 live app) = 143, day advances to 2
-    expect(s.values.crypto).toBe(143);
+    // +50 pay, -15 dinner, -5 subscription (level 1), -2 hosting (1 live app) = 128, day advances to 2
+    expect(s.values.crypto).toBe(128);
     expect(s.values.day).toBe(2);
     expect(s.phase).toBe('work');
+  });
+
+  it('charges dinner to DoorDish every night, before rent', () => {
+    let s = startGame(content, 1);
+    s.values.crypto = 100;
+    s = endDay(s, content);
+    expect(s.tx.some((t) => t.memo === FOOD.memo && t.amount === -FOOD.perNight)).toBe(true);
+    expect(s.morning!.lines).toContainEqual(['Dinner (DoorDish)', -FOOD.perNight]);
+    // rent day: exactly the rent left is not enough once dinner is taken
+    let r = startGame(content, 1);
+    r.values.day = 7;
+    r.values.crypto = 350;
+    r = endDay(r, content);
+    expect(r.ending).toBe('evicted');
+  });
+
+  it('orders nothing when the wallet cannot cover dinner', () => {
+    let s = startGame(content, 1);
+    s.values.crypto = FOOD.perNight - 1;
+    s = endDay(s, content);
+    expect(s.tx.some((t) => t.memo === FOOD.memo)).toBe(false);
+    expect(s.morning!.lines).toContainEqual(['Dinner: not enough DOLR, nothing ordered', null]);
   });
 
   it('evicts when rent cannot be paid', () => {

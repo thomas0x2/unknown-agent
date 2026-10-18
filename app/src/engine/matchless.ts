@@ -374,7 +374,7 @@ export function matchlessPayday(s: GameState, content: Content): SwipeDay | null
   if (!s.flags.includes(MATCHLESS_JOB)) return null;
   const day = judgeDay(s, content);
   if (!day.count) return null;
-  if (paid(content, day)) money(s, content.matchless?.pay ?? 35, `${CLIENT.name} · Matchless`);
+  if (paid(content, day)) money(s, content.matchless?.pay ?? 30, `${CLIENT.name} · Matchless`);
   if (day.acceptedMan && !s.flags.includes(WOMEN_ONLY) && !s.flags.includes(MAN_ACCEPTED)) s.flags.push(MAN_ACCEPTED);
   return day;
 }

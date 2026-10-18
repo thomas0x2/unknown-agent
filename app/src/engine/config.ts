@@ -48,6 +48,13 @@ export const START = {
 /** Rent is deducted at payday on these days. Not enough crypto => Evicted. */
 export const RENT: Record<number, number> = { 7: 350, 14: 500, 21: 650, 28: 650 };
 
+/**
+ * Dinner from DoorDish, charged every night after payday and before rent, so it counts against
+ * the rent that night. Shows in Coinbin as a payment to DoorDish. If the wallet can't cover it,
+ * nothing is ordered and the morning summary says so.
+ */
+export const FOOD = { perNight: 15, memo: 'DoorDish · Dinner' };
+
 /** GeneralAI rolls the agent to this level on the morning of the given day. */
 export const AGENT_ROLLOUT: Record<number, number> = { 4: 2, 9: 3, 14: 4, 18: 5 };
 
@@ -75,12 +82,12 @@ export const APPS = {
   /** Hosting cost per live deployment, deducted nightly. */
   hostingPerDay: 2,
   /** Client app pay range per working day; each client picks a value in this band. */
-  clientPay: [40, 80] as [number, number],
+  clientPay: [30, 60] as [number, number],
   strikesToChurn: 2,
   /** Update-request cadence (days between requests) by app age in days. */
   updateCadence: { earlyUntilDay: 3, earlyEvery: 1, midUntilDay: 7, midEvery: 2, lateEvery: 3 },
   user: {
-    payPerUser: 0.3,
+    payPerUser: 0.25,
     startUsers: 100,
     growthPerDay: 0.08,
     firstBreakUsersMul: 0.6, // -40%

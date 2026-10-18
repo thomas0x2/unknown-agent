@@ -19,7 +19,7 @@ from: 3
 
 - [public] On [[Day 3]] (13:15) he posts on Y that the congregation needs a website before Saturday: a countdown, the contract address and a tokenomics page, paying DOLR, at dex@cope.xyz. {{y:d3_y_dex_job}}
 - [hint] [if dex_client] The player took the job. His email "RE: the website" has the launch time, the contract address and the full tokenomics, and names the player the "founding engineer". {{mail:dex_contact}}
-- [public] [if dex_client] He pays 60 DOLR a day while the site is live and right.
+- [public] [if dex_client] He pays 50 DOLR a day while the site is live and right.
 - [public] When the site is wrong or down at payday he emails that night in lowercase and pays nothing for the day; the second time he moves the site "to someone who believes".
 
 ## From day 6: The launch

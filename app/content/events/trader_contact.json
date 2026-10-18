@@ -22,7 +22,7 @@
           "kind": "client",
           "name": "Vibe Check",
           "clientEventId": "trader_contact",
-          "payPerDay": 50,
+          "payPerDay": 40,
           "spec": [
             {
               "id": "tickers",

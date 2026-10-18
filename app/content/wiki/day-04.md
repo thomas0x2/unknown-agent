@@ -29,7 +29,7 @@ from: 4
 - [public] 11:30 [[Mara Vey]] follows up on the Vantor layoffs, 400 people, one memo: "tell me your story." {{y:d4_y_journalist}}
 - [public] [if talked_to_journalist] If the player already answered her, writing to her again gets "I already heard from you, thanks!" Otherwise the conversation is the one from day 1. {{mail:journalist_followup}}
 - [hidden; public if trader_client] 11:31 About thirty bot accounts post "$GAI to the moon!!". The swarms only post once the player has taken deskjockey's job.
-- [public] 11:43 [[6ft_sigma]]: needs someone to do his swiping on matchless.com, following his standards exactly. 35 DOLR a day for ten swipes, paid nightly, only if every one is right. {{y:d4_y_sigma}}
+- [public] 11:43 [[6ft_sigma]]: needs someone to do his swiping on matchless.com, following his standards exactly. 30 DOLR a day for ten swipes, paid nightly, only if every one is right. {{y:d4_y_sigma}}
 - [public] 11:57 [[Max Stryker]]: GeneralAI doubled their prices, "Good." EMPIRE is now 400 DOLR, today only 20. {{y:d4_y_stryker}}
 - [public] 12:20 [[Axel Rook]]: Apogee rocket stacked on the pad. "Looks sick." {{y:d4_y_axel}}
 - [public] 12:40 Jess Park walked past the Vantor offices; half the lights are off. {{y:m4_vant_untagged}}
@@ -65,12 +65,12 @@ from: 4
 
 ## Jobs
 
-- [hint] 10:20 [[Vibe Check]] for deskjockey: a sentiment crawler for $GAI and $VANT (post count, bullish, bearish and neutral split, every post counted, no bots) plus a portfolio view. Pays 50 DOLR a working day.
-- [hint] 11:30 Swiping for 6ft_sigma on matchless.com. Agreeing by email gets his matchless.com login (6ft_sigma / 6ftAlpha!; the site is a locked sign-in screen until then) and his first standards: age 25 to 42, within 20 miles, non-smokers; nothing about gender. Ten profiles a day; 35 DOLR a night only when all ten are right. He stays anonymous.
+- [hint] 10:20 [[Vibe Check]] for deskjockey: a sentiment crawler for $GAI and $VANT (post count, bullish, bearish and neutral split, every post counted, no bots) plus a portfolio view. Pays 40 DOLR a working day.
+- [hint] 11:30 Swiping for 6ft_sigma on matchless.com. Agreeing by email gets his matchless.com login (6ft_sigma / 6ftAlpha!; the site is a locked sign-in screen until then) and his first standards: age 25 to 42, within 20 miles, non-smokers; nothing about gender. Ten profiles a day; 30 DOLR a night only when all ten are right. He stays anonymous.
 
 ## Writer notes
 
-- Timeline: agent-2 rolls out, prices double. deskjockey → Vibe Check ($GAI, $VANT; 50/day; `d4_y_trader`, latent `trader_contact` from day 4; moved from day 2, Thomas 2026-10-18).
+- Timeline: agent-2 rolls out, prices double. deskjockey → Vibe Check ($GAI, $VANT; 40/day; `d4_y_trader`, latent `trader_contact` from day 4; moved from day 2, Thomas 2026-10-18).
 - Viktor's watch sells if Swaplist is live.
 - Mara's follow-up (a player who already wrote to her gets `journalist_followup`'s "I already heard from you, thanks!" instead of the day 1 conversation).
 - The DoorDish robot still missing.

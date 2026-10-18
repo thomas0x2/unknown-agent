@@ -72,7 +72,7 @@ from: 3
 ## Jobs
 
 - [hint] 10:50 [[Swaplist]], from Viktor's post: the player asks the agent for a listing site. A user app that starts with 20 users; it stays empty until the first listing, one hour of play after the first deploy (Viktor's watch, 120 DOLR). Nothing is listed after 20:00; later listings wait for the next morning.
-- [hint] 13:15 [[COPE]], from Dex's post: emailing dex@cope.xyz by day 5 gets his brief; a client site at 60 DOLR a day with a countdown to Saturday noon, the contract address and a tokenomics page.
+- [hint] 13:15 [[COPE]], from Dex's post: emailing dex@cope.xyz by day 5 gets his brief; a client site at 50 DOLR a day with a countdown to Saturday noon, the contract address and a tokenomics page.
 
 ## Writer notes
 

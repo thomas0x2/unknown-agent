@@ -5,7 +5,7 @@ category: apps
 from: 1
 ---
 
-[public] The WorkAgent site is the website [[The player]] builds for [[Logan Pryce]]'s startup through [[agent]] and [[Forkyard]]. Logan is a paying client: 40 DOLR for each night the site is live and works at payday. Nothing is paid before it goes live.
+[public] The WorkAgent site is the website [[The player]] builds for [[Logan Pryce]]'s startup through [[agent]] and [[Forkyard]]. Logan is a paying client: 35 DOLR for each night the site is live and works at payday. Nothing is paid before it goes live.
 
 ## The job
 

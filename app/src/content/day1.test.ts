@@ -89,11 +89,11 @@ describe('day 1 playthrough', () => {
     }
     expect(appMeetsSpec(getApp(s, appId)!)).toBe(true);
 
-    // end the day: the working client app pays 40
+    // end the day: the working client app pays 35
     const before = s.values.crypto;
     s = endAll(s, content);
     expect(s.values.day).toBe(2);
-    expect(s.values.crypto).toBeGreaterThan(before); // +40 pay, minus the level-1 subscription
+    expect(s.values.crypto).toBeGreaterThan(before); // +35 pay, minus dinner and the level-1 subscription
   });
 
   it('names the repo after the client', async () => {

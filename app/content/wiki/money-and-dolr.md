@@ -22,11 +22,12 @@ from: 1
 - [public] Rent of 650 DOLR is due on day 21 [known].
 - [public] Rent of 650 DOLR is due again on day 28 [known].
 
-[public] Rent is taken at payday at the end of the day. [[Gary Pruitt]] takes no late payment: not enough money means eviction.
+[public] Rent is taken at payday at the end of the day, after the day's pay and dinner. [[Gary Pruitt]] takes no late payment: not enough money means eviction.
 
 ## Earning and spending
 
-- [public] Client apps pay their daily rate at payday if the app works; user apps earn 0.3 DOLR per user a day from ads (see [[Building apps]]).
+- [public] Client apps pay their daily rate at payday if the app works; user apps earn 0.25 DOLR per user a day from ads (see [[Building apps]]).
+- [public] Dinner: every night the player orders dinner on [[DoorDish]] for 15 DOLR. It shows in Coinbin as "DoorDish · Dinner" and on the morning summary. It comes out after the day's pay and before rent, so on rent night the wallet needs 365. If the wallet can't cover it, nothing is ordered and the summary says so; skipping dinner has no other effect.
 - [public] [[agent]] bills a nightly subscription and every prompt; hosting costs 2 DOLR per live app a night.
 - [public] [[Stack]] takes DOLR deposits through Coinbin's Send and pays withdrawals back to the wallet.
 - [public] [[Sherwood]] trades stocks in DOLR; [[deskjockey]]'s stake and other wallets are reached through Coinbin's Send.
@@ -37,5 +38,5 @@ from: 1
 
 ## Writer notes
 
-- `START`, `RENT`, `AGENT_COST`, `APPS` in `app/src/engine/config.ts`; history `SEED_TX` in `app/src/engine/state.ts`; `PASSWORDS_TXT` in `app/src/engine/phishing.ts` (exists so the phishing page has a password to steal). Token icons `TOKENS` in `app/src/ui/icons.ts`.
+- `FOOD` (dinner, charged in `endDay` in `app/src/engine/day.ts`), `START`, `RENT`, `AGENT_COST`, `APPS` in `app/src/engine/config.ts`; history `SEED_TX` in `app/src/engine/state.ts`; `PASSWORDS_TXT` in `app/src/engine/phishing.ts` (exists so the phishing page has a password to steal). Token icons `TOKENS` in `app/src/ui/icons.ts`.
 - Start family trust 60 (hidden).

@@ -125,8 +125,8 @@ describe('payday', () => {
     const { s, id } = withShop('user');
     makeWorking(s, id);
     s.values.crypto = 0;
-    runPayday(s); // 100 users * 0.3 = 30, then grows to 108
-    expect(s.values.crypto).toBe(30);
+    runPayday(s); // 100 users * 0.25 = 25, then grows to 108
+    expect(s.values.crypto).toBe(25);
     expect(getApp(s, id)!.users).toBe(108);
     // break it: first broken payday -40%
     breakFeature(s, getApp(s, id)!, 'catalog', 'visible');

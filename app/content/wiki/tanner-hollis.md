@@ -30,7 +30,7 @@ from: 6
 [public] On [[Day 6]] (14:30) he posts that he's looking for someone who builds cold-email bots: 200 personalised leads, at scale, "without my thumbs falling off", contact rep@closers.test. {{y:d6_y_outreach}}
 
 - [hint] [if built_outreach_bot] The player took the job and built the [[Outreach Bot]]. His spec email "RE: outreach bot", signed Tanner Hollis, lists the personalisation, the daily cap, the unsubscribe rules and the Test button it needs. {{mail:outreach_contact}}
-- [public] [if built_outreach_bot] He pays 50 DOLR a day while it works.
+- [public] [if built_outreach_bot] He pays 40 DOLR a day while it works.
 - [public] [if built_outreach_bot] Since the bot went up, more spam reaches the player's own inbox.
 - [public] When the bot is broken or off-spec at payday, he emails the next morning under "Circling back", signed "Tanner".
 
