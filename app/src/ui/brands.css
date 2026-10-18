@@ -17,3 +17,26 @@
 .lp-brand .vantor-wordmark, .lp-brand .steadfast-wordmark, .lp-brand .perdure-wordmark { height: 30px; max-width: 100%; }
 .lp-brand .steadfast-wordmark { height: 36px; }
 
+
+/* The Current's morning newsletter in Qmail (ui/current.ts newsletterHtml) */
+.cur-nl { max-width: 620px; margin: 4px 0; border: 1px solid #d8d4ca; border-radius: 6px; overflow: hidden; background: #f7f5ef; color: #1f2523; font-family: Georgia, 'Times New Roman', serif; }
+.cur-nl-mast { display: flex; align-items: center; gap: 10px; padding: 14px 20px 12px; background: #16413f; color: #eef4f2; }
+.cur-nl-logo svg { display: block; width: 30px; height: 30px; border-radius: 6px; box-shadow: 0 0 0 1px rgba(238, 244, 242, .35); }
+.cur-nl-name { font-size: 24px; font-weight: 700; letter-spacing: -0.3px; }
+.cur-nl-ed { margin-left: auto; font-family: system-ui, sans-serif; font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase; opacity: .8; }
+.cur-nl-date { margin: 0; padding: 8px 20px; border-bottom: 3px double #1f2523; font-family: system-ui, sans-serif; font-size: 11.5px; letter-spacing: .8px; text-transform: uppercase; color: #4a504d; }
+.cur-nl-head { margin: 18px 20px 8px; font-size: 26px; line-height: 1.18; font-weight: 700; }
+.cur-nl-lede { margin: 0 20px 18px; font-size: 16px; line-height: 1.55; }
+.cur-nl-items { display: grid; grid-template-columns: 1fr 1fr; margin: 0 20px; border-top: 1px solid #d8d4ca; }
+.cur-nl-items section { padding: 12px 0 14px; }
+.cur-nl-items section + section { padding-left: 16px; margin-left: 16px; border-left: 1px solid #d8d4ca; }
+.cur-nl-kicker { display: block; margin-bottom: 4px; font-family: system-ui, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #16413f; }
+.cur-nl-items p { margin: 0; font-size: 14px; line-height: 1.5; color: #2f3432; }
+.cur-nl-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; margin-top: 8px; padding: 12px 20px; border-top: 1px solid #d8d4ca; background: #efece4; font-family: system-ui, sans-serif; font-size: 12px; color: #6b706d; }
+.cur-nl-foot a { color: #16413f; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+@media (max-width: 600px) {
+  .cur-nl-items { grid-template-columns: 1fr; }
+  .cur-nl-items section + section { padding-left: 0; margin-left: 0; border-left: 0; border-top: 1px solid #d8d4ca; }
+  .cur-nl-head { font-size: 22px; }
+  .cur-nl-ed { display: none; }
+}

@@ -1,14 +1,38 @@
 /*
  * thecurrent.test: Mara Vey's paper. One article so far, "The people AI left behind", up from her
  * day 7 Y post (engine/current.ts). It quotes the player's first email to Mara, if they sent one.
+ * Also The Current's brand (two waves on deep teal) and its morning newsletter as Qmail shows it.
  */
 import type { GameState } from '../engine';
 import { articleOut, playerQuote, CURRENT_SLUG, MARA_ADDR, NEWSLETTER_EVENT, issueParts, dateFull, weekdayName } from '../engine';
-import { markIcon } from './adSites';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
-export const CURRENT_ICON = markIcon('C', '#16413f', '#eef4f2');
+export const CURRENT_TEAL = '#16413f';
+const CURRENT_PAPER = '#eef4f2';
+const WAVES = 'M5.5 10.2q3.25-3 6.5 0t6.5 0M5.5 15.4q3.25-3 6.5 0t6.5 0';
+
+/** The mark on its own, two waves in currentColor. */
+export const CURRENT_MARK = `<svg class="cur-mark" viewBox="0 0 24 24" role="img" aria-label="The Current"><path d="${WAVES}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>`;
+
+/** The mark on its teal tile: favicons, ads, the newsletter masthead. */
+export const CURRENT_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6" fill="${CURRENT_TEAL}"/><path d="${WAVES}" fill="none" stroke="${CURRENT_PAPER}" stroke-width="2.2" stroke-linecap="round"/></svg>`;
+
+/**
+ * The morning newsletter as Qmail shows it: masthead, the headline story, the two small items side by
+ * side and the footer. `body` is the delivered issue (engine/newsletter.ts), `subject` its headline.
+ */
+export function newsletterHtml(subject: string, body: string, day: number): string {
+  const p = issueParts(body);
+  return `<div class="cur-nl">
+    <div class="cur-nl-mast"><span class="cur-nl-logo">${CURRENT_ICON}</span><span class="cur-nl-name">The Current</span><span class="cur-nl-ed">Morning edition</span></div>
+    <p class="cur-nl-date">${esc(dateFull(day))}</p>
+    <h2 class="cur-nl-head">${esc(subject)}</h2>
+    <p class="cur-nl-lede">${esc(p.text)}</p>
+    <div class="cur-nl-items">${p.items.map((it) => `<section><span class="cur-nl-kicker">${esc(it.title)}</span><p>${esc(it.text)}</p></section>`).join('')}</div>
+    <div class="cur-nl-foot"><a href="#" data-nav="thecurrent.test">Read online at thecurrent.test</a><span>Independent reporting, funded by readers.</span></div>
+  </div>`;
+}
 
 const TITLE = 'The people AI left behind';
 const DEK = 'Four hundred people at Vantor Group lost their jobs in one memo. Many of them are now paying for the software that replaced them.';
@@ -76,7 +100,7 @@ export function pageCurrent(s: GameState, param?: string): string {
     : param === CURRENT_SLUG && out ? article(s, out.day)
     : `<p class="cur-empty">Story not found.</p>`;
   return `<div class="cur">
-    <header class="cur-mast"><a href="#" data-nav="thecurrent.test">The Current</a><span>Independent reporting, funded by readers</span></header>
+    <header class="cur-mast"><a href="#" data-nav="thecurrent.test">${CURRENT_MARK}The Current</a><span>Independent reporting, funded by readers</span></header>
     <main class="cur-main">${main}</main>
     <footer class="cur-foot">The Current · thecurrent.test</footer>
   </div>`;
