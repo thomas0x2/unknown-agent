@@ -100,7 +100,7 @@ export function pageMatchless(store: GameStore): string {
   }
   const rows = shownAttrs(store.content, version).map(([a, label]) => `<tr><th>${esc(label)}</th><td>${esc(showAttr(next, a))}</td></tr>`).join('');
   return `<div class="mx">${head(right)}<main class="mx-main">
-    <p class="mx-count">Profile ${done + 1} of ${profiles.length} today</p>
+    <div class="mx-count"><p>Profile <b>${done + 1}</b> of ${profiles.length} today</p><span class="mx-bar"><i style="width:${Math.round((done + 1) / profiles.length * 100)}%"></i></span></div>
     <article class="mx-card">
       <span class="mx-ph">${portrait(next)}</span>
       <div class="mx-info"><h2>${esc(next.name)}, ${next.age}</h2><p class="mx-msg"><span>Message to you</span>${esc(next.message)}</p><table>${rows}</table></div>
@@ -109,4 +109,31 @@ export function pageMatchless(store: GameStore): string {
         <form data-form="mx-swipe" data-pick="yes"><button type="submit" class="mx-btn yes" aria-label="Like" title="Like"${s.ending ? ' disabled' : ''}>${HEART}</button></form>
       </div>
     </article></main></div>`;
+}
+
+/** How long a decided card takes to leave, in ms. Matches the animation in matchless.css. */
+export const SWIPE_MS = 420;
+
+/**
+ * The decided card flies off: a copy laid over the real one and animated outside the page, so the
+ * next profile can render underneath straight away. Right for a like, left for a ghost.
+ */
+export function swipeOff(card: HTMLElement | null, pick: 'yes' | 'no'): void {
+  if (!card || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const box = card.getBoundingClientRect();
+  // a window the size of the page, so the card leaves through the page's edge, not over the browser chrome
+  const page = (card.closest('#viewport') ?? document.body).getBoundingClientRect();
+  const frame = document.createElement('div');
+  frame.className = 'mx-fly-frame';
+  frame.setAttribute('aria-hidden', 'true');
+  Object.assign(frame.style, { left: `${page.left}px`, top: `${page.top}px`, width: `${page.width}px`, height: `${page.height}px` });
+  const copy = card.cloneNode(true) as HTMLElement;
+  copy.classList.add('mx-fly', pick === 'yes' ? 'mx-fly-yes' : 'mx-fly-no');
+  copy.querySelectorAll('form').forEach((f) => f.removeAttribute('data-form'));
+  Object.assign(copy.style, { left: `${box.left - page.left}px`, top: `${box.top - page.top}px`, width: `${box.width}px` });
+  frame.appendChild(copy);
+  document.body.appendChild(frame);
+  const done = () => frame.remove();
+  copy.addEventListener('animationend', done, { once: true });
+  setTimeout(done, SWIPE_MS + 200);
 }

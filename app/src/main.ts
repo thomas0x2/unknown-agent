@@ -45,6 +45,7 @@ import { newPageLoad } from './ui/ads';
 import { pullPct } from './game/pull';
 import { trackLoads, LOADING_HTML } from './ui/pageLoad';
 import { markSend, applySendFx, flyOff, sendLanded } from './ui/sendFx';
+import { swipeOff } from './ui/matchless';
 import { SOUND } from './ui/sound';
 import { soundSnap, soundCues, botBurst } from './ui/soundCues';
 import { queryView } from './ui/queryView';
@@ -536,7 +537,12 @@ const FORMS: Record<string, (f: HTMLFormElement) => void> = {
   'sl-offer': (f) => { if (!store.busy) void store.swapOffer(Number(f.dataset.n), Number(val('#sl-offer'))); },
   'sl-buy': (f) => { if (!store.busy) void store.swapBuy(Number(f.dataset.n)); },
   'mx-login': () => store.matchlessLogin(val('#mx-user'), val('#mx-pass')),
-  'mx-swipe': (f) => store.matchlessSwipe(f.dataset.pick === 'yes' ? 'yes' : 'no'),
+  'mx-swipe': (f) => {
+    const pick = f.dataset.pick === 'yes' ? 'yes' : 'no';
+    SOUND.play(pick === 'yes' ? 'like' : 'ghost');
+    swipeOff(f.closest<HTMLElement>('.mx-card'), pick);
+    store.matchlessSwipe(pick);
+  },
   'y-search': () => {
     // a handle opens that profile; one nobody uses gets Y's "doesn't exist" page
     const q = val('#y-search').trim().replace(/^@/, '').toLowerCase();
