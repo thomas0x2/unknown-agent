@@ -6,7 +6,7 @@
 import type { GameState, AppInstance, AppBreak, BuiltFeature, FailureKind } from './state';
 import type { Content, CreateAppSpec, AppTemplate, FeatureDef, ComponentDef, BugDef } from '../content/schema';
 import { APPS, COMPONENT_BUG_CHANCE } from './config';
-import { chance, pick, randInt, rand, log, money, playMinutes } from './core';
+import { addFlag, chance, pick, randInt, rand, log, money, playMinutes } from './core';
 import { complaintFor, type Complaint } from './complaints';
 import { bugShows, type View } from './visibility';
 import { postingTime } from './swaplist';
@@ -791,25 +791,16 @@ export function devToggleBug(s: GameState, appId: string, featureId: string, key
  * A subtle or deep break shows one of that component's bugs, a crash or failed fetch takes the page.
  */
 export function nightlyBreaks(s: GameState, content: Content): void {
-  for (const app of s.apps) {
-    if (!app.deployed || app.churned) continue;
-    const tmpl = content.apps[app.template];
-    if (quiet(app, tmpl)) continue; // nothing on it yet for a break to show on
-    const view: View = { s, app, content };
-    const pool: { def: FeatureDef; comp?: ComponentDef; options: ReturnType<typeof breakOptions> }[] = [];
-    for (const f of app.features) {
-      const def = tmpl?.features.find((d) => d.id === f.id);
-      if (!def || app.breaks.some((b) => b.featureId === f.id)) continue;
-      const has = new Set(f.correct ? [] : bugsOf(f));
-      for (const comp of def.components?.length ? def.components : [undefined]) {
-        // only bugs that would show now: the auto-buy can't misfire before Crane has posted
-        const options = breakOptions(def, comp, has, (b) => canSee(s, app, tmpl, b, content, view));
-        if (options.length) pool.push({ def, comp, options });
-      }
-    }
-    if (!pool.length) continue;
+  const live = s.apps.map((app) => ({ app, pool: breakPool(s, app, content) })).filter((x) => x.pool.length);
+  // the first night anything can break, one random app that can show a break is sure to: it teaches
+  // overnight breaks, and Forkyard's first_break mail explains them the same morning
+  const owed = !s.flags.includes('first_break');
+  const sure = owed && live.length ? pick(s, live).app : undefined;
+  for (const { app, pool } of live) {
     const r = rand(s);
     let count = APPS.breakOdds.filter((p) => r < p).length;
+    if (app === sure) count = Math.max(count, 1);
+    if (count && owed) addFlag(s, 'first_break');
     while (count-- > 0 && pool.length) {
       const { def, comp, options } = pick(s, pool);
       const { failure, variants } = pick(s, options);
@@ -819,6 +810,26 @@ export function nightlyBreaks(s: GameState, content: Content): void {
       for (let i = pool.length - 1; i >= 0; i--) if (pool[i].def.id === def.id) pool.splice(i, 1);
     }
   }
+}
+
+/** Every component of a live app that can break tonight and show it, with the ways it can. */
+function breakPool(s: GameState, app: AppInstance, content: Content): { def: FeatureDef; comp?: ComponentDef; options: ReturnType<typeof breakOptions> }[] {
+  const pool: { def: FeatureDef; comp?: ComponentDef; options: ReturnType<typeof breakOptions> }[] = [];
+  if (!app.deployed || app.churned) return pool;
+  const tmpl = content.apps[app.template];
+  if (quiet(app, tmpl)) return pool; // nothing on it yet for a break to show on
+  const view: View = { s, app, content };
+  for (const f of app.features) {
+    const def = tmpl?.features.find((d) => d.id === f.id);
+    if (!def || app.breaks.some((b) => b.featureId === f.id)) continue;
+    const has = new Set(f.correct ? [] : bugsOf(f));
+    for (const comp of def.components?.length ? def.components : [undefined]) {
+      // only bugs that would show now: the auto-buy can't misfire before Crane has posted
+      const options = breakOptions(def, comp, has, (b) => canSee(s, app, tmpl, b, content, view));
+      if (options.length) pool.push({ def, comp, options });
+    }
+  }
+  return pool;
 }
 
 /**
