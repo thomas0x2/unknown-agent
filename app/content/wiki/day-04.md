@@ -9,7 +9,7 @@ from: 4
 
 ## Mail
 
-- [public] 10:00 [[The Current]]'s morning newsletter, "1,900 people queued for 30 jobs": Yesterday's jobs fair at Civic Hall drew 1,900 people for 30 positions. Below it, "agent" and "Crane". {{mail:current_newsletter@4}}
+- [public] 10:00 [[The Current]]'s morning newsletter, "1,900 people queued for 30 jobs": Yesterday's jobs fair at Civic Hall drew 1,900 people for 30 positions. Below it, "Crane" and "DoorDish". {{mail:current_newsletter@4}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": cold coffee. {{mail:guru_newsletter@4}}
 - [public] 10:00 [[GeneralAI]], "agent just got smarter": agent-2 is rolled out to the player's account, "fewer mistakes, bigger jobs", with updated rates. Prices double: 10 DOLR a night, 1 DOLR per prompt, 0.02 per word. {{mail:d4_gai_level2}}
 
@@ -26,6 +26,7 @@ from: 4
 - [public] 10:05 [[Cal Hartman]]: agent-2 "feels a little bit like magic. the new pricing reflects that." {{y:d4_y_hartman}}
 - [public] 10:20 [[deskjockey]]: wants a bot that tells him how Y feels about his stocks, "so I can feel it faster". Pays daily. trader@desk.test {{y:d4_y_trader}}
 - [public] 10:30 [[Dex Calloway]] (@dexcult): they gave you severance and a webinar; "we're giving you a countdown." {{y:d4_y_dexcult}}
+- [public] 11:00 [[DoorDish]]: the courier from yesterday's activation "has been promoted". {{y:d4_y_doordish_promoted}}
 - [public] 11:30 [[Mara Vey]] follows up on the Vantor layoffs, 400 people, one memo: "tell me your story." {{y:d4_y_journalist}}
 - [public] [if talked_to_journalist] If the player already answered her, writing to her again gets "I already heard from you, thanks!" Otherwise the conversation is the one from day 1. {{mail:journalist_followup}}
 - [hidden; public if trader_client] 11:31 About thirty bot accounts post "$GAI to the moon!!". The swarms only post once the player has taken deskjockey's job.
@@ -41,7 +42,7 @@ from: 4
 - [public] 15:40 cat_ceo started Ozempra to cut the grocery bill; the cat "is not on it and has questions." {{y:d4_y_catceo_ozempra}}
 - [hidden; public if viktor_sold_watch] 16:00 [[Viktor]]: sold his grandfather's watch on Swaplist within a day. "Thank you to whoever built it." {{y:d4_viktor_resolve}}
 - [public] 16:27 MarketWire: $GAI up 6% on the agent-2 launch. {{y:m4_gai_level2}}
-- [public] 17:10 [[CityPulse]]: still missing two days later; sightings on Ferris St, Alder St and twice in a parking garage. {{y:d4_y_robot}}
+- [public] 17:10 [[CityPulse]]: still missing a day later; sightings on Ferris St, Alder St and twice in a parking garage. {{y:d4_y_robot}}
 - [public] 17:40 Axel Rook: "If an AI ever really escapes, it won't be a delivery robot." {{y:d4_y_axel_2}}
 - [public] 18:00 [[DoorDish]]: "No DoorDish courier is missing. Every courier is exactly where it needs to be." {{y:d4_y_doordish}}
 - [public] 18:30 Cal Hartman: the team shipped agent-2 in eleven weeks and most of them did not sleep. {{y:d4_y_hartman_2}}
@@ -50,10 +51,11 @@ from: 4
 ## News
 
 - [public] 10:15 agent-2 IS HERE, and so is your DOUBLED bill {{article:agent-2}}
-- [public] 16:55 STILL MISSING: two days on, NOBODY can find the DoorDish robot {{article:robot}}
+- [public] 16:55 STILL MISSING: 24 hours on, NOBODY can find the DoorDish robot {{article:robot}}
 
 ## Pollymarket
 
+- [public] 11:00 [[Pollymarket]]: the robot market drops to 64% when DoorDish says the courier was promoted.
 - [public] 12:20 [[Pollymarket]]: a market on Apogee reaching orbit on its first launch opens at 55%.
 - [public] 18:00 [[Pollymarket]]: the robot market falls to 44%.
 - [public] 18:30 [[Pollymarket]]: a market on GeneralAI releasing another agent model before Oct 20 opens at 12%.

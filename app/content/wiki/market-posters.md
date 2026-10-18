@@ -159,7 +159,7 @@ from: 1
 
 ## $DISH posts
 
-- [public] {{y:m2_dish_robot}}
+- [public] {{y:m3_dish_robot}}
 - [public] {{y:m8_dish_menu}}
 - [public] {{y:m9_dish_robot}}
 - [public] {{y:m10_dish_tips}}
