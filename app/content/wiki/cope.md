@@ -9,7 +9,7 @@ from: 3
 
 ## The site job
 
-- [public] Dex wants it before Saturday: a countdown, the contract address and a tokenomics page, paid in DOLR. {{y:d3_y_dex_job}}
+- [public] Dex wants it before Saturday: a countdown, the contract address and a tokenomics page, paid in DOLR. {{y:d3_y_dexcult}}
 - [hint] His email "RE: the website" has everything the site must say: the launch time, the contract address in full, the total supply, the allocation and the founding engineer's lock date. {{mail:dex_contact}}
 - [public] The countdown counts down to the launch and, once it reaches zero, says "$COPE is live".
 - [hint] The contract address has 42 characters and has to match his email exactly; people who send to a wrong one lose what they send.
