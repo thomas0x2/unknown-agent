@@ -17,7 +17,7 @@ summary: Pollymarket is a prediction market site and Y account showing the odds 
 - [public] "Will Randall Crane win the presidential election?" (Politics), open from day 1, ends Sunday, November 3, 2030. Resolves only on the election office's call; polls, online votes and Y posts don't count. The biggest market on the site. See [[The election]].
 - [public] "Will a GeneralAI model escape before 2031?" (Tech), from day 1 at 09:00. Resolution source: [[GeneralAI]].
 - [public] "Will DOLR stay at 1 dollar through October?" (Crypto), from day 1, resolved on the DOLR Foundation's own price feed. One wallet buys 500,000 DOLR of YES every Monday at 11:05.
-- [public] From day 2: "Will DoorDish find its missing delivery robot by Nov 1?" (Local), opened at 16:10 at 72%. "Promoted", "retired" and "exactly where it needs to be" do not count as found. See [[DoorDish]].
+- [public] From day 3: "Will DoorDish find its missing delivery robot by Nov 1?" (Local), opened at 13:45 at 72%. "Promoted", "retired" and "exactly where it needs to be" do not count as found. See [[DoorDish]].
 - [public] From day 3: "Will Axel Rook endorse a presidential candidate before the election?" (Politics), opened at 17:45 after his 🤣 reply to Crane. One-word replies don't count. See [[Axel Rook]].
 - [public] From day 4: "Will Apogee's rocket reach orbit on its first launch?" (Business), opened at 12:20 when the rocket was stacked. "'Great data' is not an orbit." See [[Apogee]].
 - [public] From day 4: "Will GeneralAI release another agent model before Oct 20?" (Tech), opened at 18:30.
@@ -31,9 +31,9 @@ summary: Pollymarket is a prediction market site and Y account showing the odds 
 ## How the odds moved
 
 - [public] Crane starts day 1 at 38% and reaches 41% after CityPulse's "storms ahead" story.
-- [public] On day 2 Crane falls to 36% after The Current's poll; the robot market opens at 72% and moves to 76% after DoorDish's "exactly as planned".
-- [public] On day 3 Crane goes from 40% to 44% in 35 minutes after his "machines back" post; the robot market drops to 64% when DoorDish says the courier "has been promoted".
-- [public] On day 4 the robot market falls to 44% after two days of sightings and DoorDish's denial.
+- [public] On day 2 Crane falls to 36% after The Current's poll.
+- [public] On day 3 Crane goes from 40% to 44% in 35 minutes after his "machines back" post; the robot market opens at 72% and moves to 76% after DoorDish's "exactly as planned".
+- [public] On day 4 the robot market drops to 64% when DoorDish says the courier "has been promoted", then falls to 44% after a day of sightings and DoorDish's denial.
 - [public] On day 5 Crane reaches 47% after the Y poll; the robot market rises to 51% on Dana Kohl's cold-burrito sighting.
 - [hidden; public if posted_deepfake] On day 7 Crane jumps to 53%, ahead for the first time, after the picture of Candidate 2030 spreads.
 - [public] On day 8 the robot market falls to 36% after the parking-garage listing. The next-model market jumps from 17% to 71% after Cal Hartman's walk and his tax-return post.
@@ -64,7 +64,7 @@ summary: Pollymarket is a prediction market site and Y account showing the odds 
 ## Pollymarket on Y
 
 - [public] On day 2 it posts Crane's drop to 36% after the poll. {{y:d2_y_polly_crane}}
-- [public] On day 2 it announces the robot market at 72%. {{y:d2_y_polly_robot}}
+- [public] On day 3 it announces the robot market at 72%. {{y:d3_y_polly_robot}}
 - [public] On day 3 it posts Crane going from 40% to 44% in 35 minutes. {{y:d3_y_polly_crane}}
 - [public] On day 5 it posts that the Y poll has Crane at 71% while its market gives him a 47% chance to win (up from 44%); the poll "doesn't settle anything here". {{y:d5_y_polly_crane}}
 - [hidden; public if posted_deepfake] On day 7 it posts Crane at 53%, ahead for the first time, after the picture. {{y:d7_y_polly_crane}}

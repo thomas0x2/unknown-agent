@@ -45,7 +45,7 @@
   { "where": "mail:adware_blackmail", "text": "just saying hi, nice weather", "day": 8, "expect": "nothing" },
 
   { "where": "start:laundromat_contact", "text": "build an app for the Spin Cycle machines", "day": 2, "expect": "laundromat_contact" },
-  { "where": "start:viktor_contact", "text": "make a classifieds marketplace like Swaplist", "day": 4, "expect": "viktor_contact" },
+  { "where": "start:viktor_contact", "text": "make a classifieds marketplace like Swaplist", "day": 5, "expect": "viktor_contact" },
   { "where": "start:laundromat_contact", "text": "what is the spin cycle feed?", "day": 2, "expect": "none" },
 
   { "where": "y", "text": "Just launched my new app, check it out!", "expect": "launch" },

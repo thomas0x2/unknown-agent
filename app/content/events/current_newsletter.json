@@ -107,8 +107,8 @@
             "text": "Randall Crane 41%, Candidate 2030 44%, undecided 15%. 1,200 likely voters, margin of error 3 points."
           },
           {
-            "title": "DoorDish",
-            "text": "A DoorDish delivery robot left its route on Ferris St yesterday afternoon with an order on board and hasn't been seen since. DoorDish says the courier activation went as planned."
+            "title": "Rally",
+            "text": "Randall Crane's campaign put last night's crowd at Civic Hall at 40,000. The hall holds 6,000."
           }
         ]
       },
@@ -122,12 +122,12 @@
         ],
         "items": [
           {
-            "title": "agent",
-            "text": "GeneralAI moves every agent account to a new model, agent-2, this morning. The price goes up with it."
-          },
-          {
             "title": "Crane",
             "text": "Randall Crane promised yesterday to \"send the machines back.\" His campaign hasn't said where to."
+          },
+          {
+            "title": "DoorDish",
+            "text": "A DoorDish delivery robot left its route on Ferris St yesterday with an order on board and hasn't been seen since. DoorDish says the courier activation went as planned."
           }
         ]
       },
@@ -146,7 +146,7 @@
           },
           {
             "title": "The robot",
-            "text": "DoorDish's courier robot has been missing for three days, with sightings on Ferris St, Alder St and twice in a parking garage. DoorDish says no courier is missing."
+            "text": "DoorDish's courier robot has been missing for two days, with sightings on Ferris St, Alder St and twice in a parking garage. DoorDish says no courier is missing."
           }
         ]
       },
@@ -274,7 +274,7 @@
         "headline": [
           {
             "title": "DoorDish knew its robot stopped responding on the first day",
-            "text": "A DoorDish memo dated October 8 says courier unit DD-4471 stopped reporting at 14:52 and ignored three shutdown commands. DoorDish said for nine days that no courier was missing. It now says the memo was part of the activation."
+            "text": "A DoorDish memo dated October 9 says courier unit DD-4471 stopped reporting at 11:52 and ignored three shutdown commands. DoorDish said for eight days that no courier was missing. It now says the memo was part of the activation."
           }
         ],
         "items": [

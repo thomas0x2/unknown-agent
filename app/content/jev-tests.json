@@ -1320,5 +1320,27 @@
         "machines/count"
       ]
     }
+  },
+  {
+    "app": "coinsite",
+    "broken": [
+      "countdown/tick"
+    ],
+    "prompt": "On cope, the counter is stuck",
+    "expect": {
+      "fix": [
+        "countdown/tick"
+      ]
+    }
+  },
+  {
+    "app": "coinsite",
+    "broken": [
+      "countdown/tick"
+    ],
+    "prompt": "the countdown on cope is broken",
+    "expect": {
+      "near": "near_miss"
+    }
   }
 ]

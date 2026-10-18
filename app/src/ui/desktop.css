@@ -132,6 +132,12 @@
 }
 @keyframes ow-in { from { opacity: 0; transform: scale(0.97); } }
 .ov-small { width: min(400px, 100%); }
+/* the adware's pop-up: a square banner ad (ads.css) filling a bare window, closed only by its x */
+.ov-adpop { width: min(340px, 100%); }
+.ov-adpop .ow-body { padding: 0; }
+.ov-adpop .ad-popup { margin: 0; border-radius: 0; box-shadow: none; padding: 30px 16px 12px; gap: 12px; }
+.ov-adpop .ad-popup .ad-f { font-size: 23px; }
+.ov-adpop .ad-popup .ad-cta { font-size: 15px; padding: 9px 18px; }
 
 .ow-bar {
   position: relative; display: flex; align-items: center; justify-content: center; min-height: 36px; padding: 0 40px;

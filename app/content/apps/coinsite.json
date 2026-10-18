@@ -28,7 +28,9 @@
         "timer",
         "launch countdown",
         "clock",
-        "countdown timer"
+        "countdown timer",
+        "counter",
+        "launch counter"
       ],
       "pageId": "home",
       "failures": [
@@ -63,7 +65,7 @@
       ],
       "components": [
         {
-          "id": "timer/target",
+          "id": "target",
           "label": "the launch time the countdown counts to",
           "bugs": [
             "wrong_target"
@@ -79,7 +81,7 @@
           ]
         },
         {
-          "id": "timer/tick",
+          "id": "tick",
           "label": "the countdown's ticking (whether it updates)",
           "bugs": [
             "frozen"
@@ -112,13 +114,6 @@
           ]
         }
       ],
-      "folderAka": {
-        "timer": [
-          "timer",
-          "countdown timer",
-          "clock"
-        ]
-      },
       "nearMiss": [
         "Watched the countdown for a while. It counted down, which is what countdowns do. Which part is wrong?",
         "Nothing obvious in the countdown. Tell me which part of it is off."
@@ -167,19 +162,11 @@
             "The contract address reads {{address}} now.",
             "Two characters were swapped in the address. It's {{address}} now."
           ]
-        },
-        {
-          "id": "address_cut",
-          "when": "The contract address is cut off with an ellipsis instead of being shown in full.",
-          "fixed": [
-            "The full address shows now, all 42 characters.",
-            "The address isn't shortened anymore."
-          ]
         }
       ],
       "components": [
         {
-          "id": "value",
+          "id": "address",
           "label": "the contract address itself (its characters)",
           "bugs": [
             "address_wrong"
@@ -190,22 +177,6 @@
             "the address",
             "characters",
             "typo in the address"
-          ]
-        },
-        {
-          "id": "display",
-          "label": "how much of the address is shown (shortened or in full)",
-          "bugs": [
-            "address_cut"
-          ],
-          "aka": [
-            "cut off",
-            "shortened",
-            "truncated",
-            "ellipsis",
-            "dots",
-            "not in full",
-            "half the address"
           ]
         }
       ],
@@ -223,14 +194,13 @@
       "complaints": {
         "missing": "There is no contract address on the site. People will buy a fake.",
         "address_wrong": "The address on the site is wrong. The real one is {{address}}. Anyone who sends to the one on the site is sending to nobody.",
-        "address_cut": "The address is cut off with three dots. Nobody can copy three dots.",
         "down": "The contract address section shows an error.",
         "wrong": "The contract address section is wrong."
       }
     },
     {
       "id": "tokenomics",
-      "description": "a tokenomics page: the total supply, the allocation percentages and the dev allocation's lock date",
+      "description": "a tokenomics page: the total supply and the allocation percentages, with the dev allocation's lock date",
       "aka": [
         "tokenomics page",
         "allocation page",
@@ -266,14 +236,6 @@
             "Removed the duplicate row. It adds up to 100% now.",
             "The allocation adds up to 100% again."
           ]
-        },
-        {
-          "id": "lock_wrong",
-          "when": "The dev allocation's lock date is wrong; it should be {{lock}}.",
-          "fixed": [
-            "The lock date says {{lock}} now.",
-            "Fixed the unlock date. It's {{lock}}."
-          ]
         }
       ],
       "components": [
@@ -292,7 +254,7 @@
           ]
         },
         {
-          "id": "allocation/shares",
+          "id": "shares",
           "label": "the allocation percentages",
           "bugs": [
             "shares_wrong"
@@ -302,11 +264,15 @@
             "shares",
             "split",
             "who gets what",
-            "percent"
+            "percent",
+            "allocation",
+            "allocations",
+            "distribution",
+            "pie chart"
           ]
         },
         {
-          "id": "allocation/rows",
+          "id": "rows",
           "label": "the allocation rows (a row listed twice, the total)",
           "bugs": [
             "sum_over"
@@ -318,37 +284,12 @@
             "total",
             "adds up to more than 100",
             "over 100%",
-            "sum"
-          ]
-        },
-        {
-          "id": "allocation/lock",
-          "label": "the lock date of the dev allocation",
-          "bugs": [
-            "lock_wrong"
-          ],
-          "aka": [
-            "lock date",
-            "unlock date",
-            "vesting",
-            "lock",
-            "locked until",
-            "dev wallet lock",
-            "dev allocation lock",
-            "unlock"
+            "sum",
+            "table",
+            "allocation table"
           ]
         }
       ],
-      "folderAka": {
-        "allocation": [
-          "allocation",
-          "allocations",
-          "distribution",
-          "table",
-          "pie chart",
-          "chart"
-        ]
-      },
       "nearMiss": [
         "Read the tokenomics page twice. It's mostly percentages and I agree with all of them. Which part is wrong?",
         "Couldn't find the problem on the tokenomics page. Tell me which part."
@@ -363,11 +304,6 @@
           "id": "shares",
           "text": "{{shares}}",
           "bug": "shares_wrong"
-        },
-        {
-          "id": "lock",
-          "text": "{{lock}}",
-          "bug": "lock_wrong"
         }
       ],
       "complaints": {
@@ -375,7 +311,6 @@
         "supply_wrong": "The supply on the site is wrong. It's {{supply}}. Scarcity is the whole message.",
         "shares_wrong": "The allocation on the site is wrong. It's {{shares}}. Someone in the group chat already noticed.",
         "sum_over": "The allocation adds up to more than 100%. Someone posted a screenshot.",
-        "lock_wrong": "The lock date on the site is wrong. It's {{lock}}. Locks are how people know we're serious.",
         "down": "The tokenomics page doesn't load.",
         "wrong": "The tokenomics page is wrong."
       }

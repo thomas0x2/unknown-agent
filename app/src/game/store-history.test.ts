@@ -38,12 +38,23 @@ describe('browser history', () => {
 });
 
 describe('pinned tabs', () => {
-  it('opens on Qmail with Coinbin, Qmail, Y, agent and Forkyard, which can\'t be closed', () => {
+  it('opens on Qmail with Coinbin, Qmail, Y, agent and Forkyard, which can\'t be closed, plus Vantor Outplacement, which can', () => {
     const s = make();
     expect(s.url).toBe('qmail.com');
-    expect(s.tabs.map((t) => t.url)).toEqual(['coinbin.com', 'qmail.com', 'y.com', 'agent.chat', 'forkyard.com']);
+    expect(s.tabs.map((t) => t.url)).toEqual(['coinbin.com', 'qmail.com', 'y.com', 'agent.chat', 'forkyard.com', 'vantor.group/next-chapter']);
     s.closeTab(2);
+    expect(s.tabs).toHaveLength(6);
+    s.closeTab(6);
     expect(s.tabs).toHaveLength(5);
+  });
+  it('opens the outplacement tab only on a new game, not on a loaded save', () => {
+    const saved = make().state;
+    const s = new GameStore(loadContent(), {} as JevRouter, {} as Writer, { ...mem, load: () => saved } as SaveStore);
+    expect(s.tabs).toHaveLength(5);
+    s.newGame();
+    expect(s.tabs.at(-1)?.url).toBe('vantor.group/next-chapter');
+    s.navigate('yowl.com', true);
+    expect(s.active).toBe(7);
   });
   it('keeps a pinned tab on its site: another pinned site switches tabs, anything else opens a new one', () => {
     const s = make();
@@ -52,11 +63,11 @@ describe('pinned tabs', () => {
     expect(s.tabs[1].url).toBe('qmail.com');
     expect(s.url).toBe('y.com/obanks');
     s.navigate('yowl.com');
-    expect(s.tabs).toHaveLength(6);
+    expect(s.tabs).toHaveLength(7);
     expect(s.url).toBe('yowl.com');
     expect(s.tabs[2].url).toBe('y.com/obanks');
     s.closeTab(s.active);
-    expect(s.tabs).toHaveLength(5);
+    expect(s.tabs).toHaveLength(6);
   });
 });
 
@@ -64,7 +75,7 @@ describe('a new day', () => {
   it('closes every tab but the pinned ones, back on their home pages', () => {
     const s = make();
     s.navigate('y.com/obanks'); s.navigate('forkyard.dev', true);
-    expect(s.tabs.length).toBe(6);
+    expect(s.tabs.length).toBe(7);
     s.endDay();
     expect(s.tabs.map((t) => t.url)).toEqual(['coinbin.com', 'qmail.com', 'y.com', 'agent.chat', 'forkyard.com']);
     expect(s.url).toBe('qmail.com');

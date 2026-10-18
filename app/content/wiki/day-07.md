@@ -32,6 +32,7 @@ from: 7
 - [public] 13:12 MarketWire: $GAI says its rent appeal reviews now take four seconds instead of eleven weeks; shares up 1%. {{y:m7_gai_rentboard}}
 - [public] 13:26 Steph M.: appealed her rent increase in May; the decision came back in four seconds. {{y:d7_y_steph_rentboard}}
 - [public] 13:44 Brent Kowalski: $VANT announces a buyback with the money it saved on salaries. {{y:m7_vant_buyback}}
+- [hidden; hint if swaplist_live] 13:55 [[Viktor]]: Swaplist could use a way to message the seller; people put their phone numbers in listings and get calls at 2am. {{y:d7_y_swaplist_messages}}
 - [hidden; public if posted_deepfake] 14:15 (the day after the player's deepfake goes up) [[Wade Tillman]]: the Kirschbaum picture is fake, but who was really on that boat? {{y:d7_y_wade_deepfake}}
 - [public] 14:30 [[Hunter Vale]]: Glamdring is hiring engineers who want their work to matter. glamdring.com {{y:d7_y_hunter}}
 - [public] 15:30 Candidate 2030: "Great crowd, great questions." {{y:d7_y_candidate}}
@@ -83,6 +84,7 @@ from: 7
 - Crane's opponent loses his 3-point lead if deepfaked.
 - Unposted day 6 offer: `d7_deepfake_again` (after `deepfake_offered` by a day, not `posted_deepfake`, 250, due the day it arrives), the same agent job, before the policy.
 - Crane attacks Mara's check mark.
+- Viktor's seller-messages post (13:55, needs Swaplist live and working; adds the contact feature).
 - Rent 350, taken after dinner (15 DOLR to DoorDish), so the wallet needs 365 at payday.
 - The review is linden_ave_local's (Yowl seed with `day: 7`); the job is a hack in agent-terminal (PR #205). On day 9 the guardrails stop a plain ask and start the hack's mini-game (placeholder `cover_story`; see [[Day 9]]). Email outcomes: `agree`, `refused`.
 - [planned] late_night_lou's "private film collection" listing on Swaplist (never describe it).

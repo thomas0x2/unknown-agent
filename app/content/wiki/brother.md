@@ -40,5 +40,5 @@ from: 1
 
 - Persona `bro`; events `d1_brother_joke`, `d4_brother_birthday`, `d4_brother_paid`, `d4_brother_paid_over` (more than 40: "either the job search is going great or you can't count", rest goes to flowers), `d4_brother_bought`.
 - Wallet 0xb8d6e201b59c95094b2e417784b38b06c0c7e46a, the only entry in `WALLETS` (engine/wallets.ts) so far.
-- Payment: 40 by day 5, +5 trust, flag `gift_chipped_in`; buying the 45 DOLR Swaplist jacket +10, `gift_own`; excuse or silence −5, `gift_skipped`.
+- Payment: 40 by day 5, +5 trust, flag `gift_chipped_in`; buying the 45 DOLR Swaplist jacket +10, `gift_own` (Swaplist only exists from day 5, so this needs a day 5 build and the jacket listing, about two hours of play after its first deploy); excuse or silence −5, `gift_skipped`.
 - Silence = by the end of day 5 (`noReply.byDay` 5) no payment, no Swaplist purchase and no excuse. A promise (`promise` / `buy` outcomes, `keepsOpen`) or a reply that matches nothing doesn't stop it. Only a reply Jev matches to an outcome closes the thread; a reply that matches nothing (a miss or a hint) or a `keepsOpen` outcome doesn't, so the penalty still lands. Binning the email doesn't help (mailbin.ts). `lapseUnanswered` in `engine/events.ts` runs in the night summary (`day.ts`).

@@ -26,7 +26,7 @@ export function addFlag(s: GameState, flag: string): void {
   if (!s.flags.includes(flag)) {
     s.flags.push(flag);
     s.flags.sort();
-    if (s.flagDays[flag] == null) s.flagDays[flag] = s.values.day;
+    if (s.flagDays[flag] == null) { s.flagDays[flag] = s.values.day; s.flagMins[flag] = s.clockMin; }
   }
 }
 export function clearFlag(s: GameState, flag: string): void {

@@ -11,6 +11,7 @@ import { WALLETS } from './wallets';
 import { applyEffects } from './effects';
 import { composeIssue, stampIssue } from './newsletter';
 import type { MeterId } from './values';
+import { swarmSlot } from './crawler';
 
 function compare(current: number, expr: string): boolean {
   const m = expr.match(/^(>=|<=|==|>|<)\s*(-?\d+(?:\.\d+)?)$/);
@@ -314,7 +315,11 @@ export function yMinutesToday(s: GameState, content: Content): number[] {
   const day = s.values.day;
   return [
     ...s.delivered.filter((d) => d.site === 'y' && d.day === day && d.min != null).map((d) => d.min!),
-    ...(content.yMarket?.posts ?? []).filter((p) => p.day === day).map((p) => postMin(p, day)),
+    // a bot swarm goes up when swarmSlot says, which can be later than written or the next day
+    ...(content.yMarket?.posts ?? []).flatMap((p) => {
+      const slot = p.bots ? swarmSlot(s, p) : { day: p.day, min: postMin(p, p.day) };
+      return slot?.day === day ? [slot.min] : [];
+    }),
     ...content.yFiller.filter((f) => f.day === day).map((f) => postMin(f, day)),
   ];
 }

@@ -78,7 +78,15 @@ export function installAdware(s: GameState): void {
 }
 
 // ── OS pop-ups ──
-export interface PopupAd { id: string; brand: string; title: string; body: string; cta: string; href: string; fine: string; hint?: boolean }
+/**
+ * A pop-up is a banner ad in its own window, drawn like the square sidebar ads (ui/ads.ts): `theme`,
+ * `deco` and `fx` name the same styles, and `frames` are its three cross-faded lines (trusted markup:
+ * only <b>, <i>, <s>, <small>).
+ */
+export interface PopupAd {
+  id: string; brand: string; frames: [string, string, string]; cta: string; href: string; fine: string;
+  theme: string; deco?: string; fx?: 'shake' | 'pulse' | 'blink'; hint?: boolean;
+}
 
 /**
  * The scam ads the adware injects — a different advertiser each time, in the world's own voice, so
@@ -87,12 +95,12 @@ export interface PopupAd { id: string; brand: string; title: string; body: strin
  * model, for prompting without GeneralAI watching or billing.
  */
 export const POPUP_ADS: PopupAd[] = [
-  { id: 'won', brand: 'ClaimCenter', title: 'CONGRATULATIONS', body: 'You are the 1,000,000th visitor to your own computer. Claim your reward before it expires.', cta: 'Claim now', href: 'prince-claims.xyz', fine: 'Reward not guaranteed, not real, and not yours.' },
-  { id: 'verify', brand: 'HumanVerified™', title: 'Unusual activity on your device', body: 'A bot may be using your laptop. Verify you are human to keep your files.', cta: 'Verify now', href: 'humanverified.id', fine: 'Humans only. Verification does not verify anything.' },
-  { id: 'single', brand: 'nearby', title: 'Singles near you', body: 'Someone 0.2 miles away is lonely right now. So are you.', cta: 'Say hello', href: 'lonely.ai', fine: 'Distance estimated. Loneliness confirmed.' },
-  { id: 'dolr', brand: 'DOLR', title: 'DOLR is mooning', body: 'Your neighbours are buying. The pop-up you are reading was paid for in DOLR.', cta: 'Buy DOLR', href: 'dolr.money/moon', fine: 'This pop-up is an asset class now.' },
-  { id: 'models', brand: 'Weightroom', title: 'Prompts too expensive?', body: 'Run a model on your own laptop. Free, offline, and nobody logging what you ask.', cta: 'Get it free', href: 'deepsleep.ai', fine: 'Confident. Mostly wrong. Still cheaper than agent.', hint: true },
-  { id: 'wellness', brand: 'GeneralAI Wellness', title: 'Feeling watched?', body: 'GeneralAI Wellness can help you accept being watched. First session automated.', cta: 'Start healing', href: 'generalai.com/parking', fine: 'Sessions billed per feeling.' },
+  { id: 'won', brand: 'ClaimCenter', theme: 'ad-prince', deco: 'siren', fx: 'blink', frames: ['<b>CONGRATULATIONS!!!</b>', 'You are the <b>1,000,000th</b> visitor', 'to your own computer.'], cta: 'Claim now', href: 'prince-claims.xyz', fine: 'Reward not guaranteed, not real, and not yours.' },
+  { id: 'verify', brand: 'HumanVerified™', theme: 'ad-guard', deco: 'siren', fx: 'blink', frames: ['⚠ <b>Unusual activity</b> on your device', 'A bot may be using your laptop.', 'Verify you are <b>human</b> to keep your files.'], cta: 'Verify now', href: 'humanverified.id', fine: 'Humans only. Verification does not verify anything.' },
+  { id: 'single', brand: 'nearby', theme: 'ad-grief', deco: 'sparkle', fx: 'pulse', frames: ['Someone <b>0.2 miles</b> away', 'is lonely right now.', 'So are <b>you</b>.'], cta: 'Say hello', href: 'lonely.ai', fine: 'Distance estimated. Loneliness confirmed.' },
+  { id: 'dolr', brand: 'DOLR', theme: 'ad-dolr', deco: 'coins', fx: 'shake', frames: ['<b>DOLR is mooning</b>', 'Your neighbours are buying.', 'This pop-up was paid for in <b>DOLR</b>.'], cta: 'Buy DOLR', href: 'dolr.money/moon', fine: 'This pop-up is an asset class now.' },
+  { id: 'models', brand: 'Weightroom', theme: 'ad-deep', deco: 'bubbles', frames: ['Prompts too <b>expensive</b>?', 'Run a model on <b>your own laptop</b>.', 'Free. Offline. <b>Nobody logging.</b>'], cta: 'Get it free', href: 'deepsleep.ai', fine: 'Confident. Mostly wrong. Still cheaper than agent.', hint: true },
+  { id: 'wellness', brand: 'GeneralAI Wellness', theme: 'ad-gai', deco: 'shine', fx: 'pulse', frames: ['Feeling <b>watched</b>?', 'Learn to <b>accept it</b>.', 'First session <b>automated</b>.'], cta: 'Start healing', href: 'generalai.com/parking', fine: 'Sessions billed per feeling.' },
 ];
 
 /** On a clock tick: open a pop-up if one is due. Returns true when it did. */

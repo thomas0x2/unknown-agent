@@ -4,12 +4,12 @@
   "from": "Viktor",
   "subject": "RE: somewhere to sell",
   "trigger": {
-    "dayMin": 3
+    "dayMin": 5
   },
   "latent": true,
   "agentStart": {
     "when": "The player asks the agent to build a marketplace, classifieds or listing site where people sell items, such as Swaplist. No client or feature list needed: nobody hires the player for this one. A question about it (\"what is it?\", \"who uses it?\") is not a request to build it.",
-    "lead": "d3_y_swaplist",
+    "lead": "d5_y_swaplist",
     "keys": [
       "@make+marketplace|classifieds|listing|swaplist|sell"
     ]

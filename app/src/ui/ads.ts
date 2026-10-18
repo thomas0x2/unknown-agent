@@ -399,17 +399,12 @@ function decoHtml(d?: Deco): string {
   }
 }
 
-/**
- * One animated banner. `wide` is a leaderboard for the top of a page; `square` is a sidebar box.
- * `n` tells apart two slots of the same shape on one page.
- */
-export function adHtml(site: string, day: number, slot: AdSlot, n = 0): string {
-  const ad = withHeadline(pickAd(site, day, slot, n));
+/** The banner markup shared by page ads and pop-ups; `click` is the attributes that make it clickable. */
+function bannerHtml(ad: Ad, cls: string, click: string, why: string): string {
   const t = -(Date.now() % CYCLE_MS);
   const frames = ad.frames.map((f, i) => `<span class="ad-f" style="--i:${i}"><span>${f}</span></span>`).join('');
-  const why = WHY[site] ?? 'You were targeted because you have eyes.';
   // a div, not an <a>: each site styles its own links (pills, rows) and an ad must look the same everywhere
-  return `<div class="ad ad-${slot} ${ad.theme}" style="--ad-t:${t}ms" data-newtab="${escAttr(ad.href)}" role="link" aria-label="Advertisement: ${escAttr(ad.sponsor)}">
+  return `<div class="ad ${cls} ${ad.theme}" style="--ad-t:${t}ms" ${click} role="link" aria-label="Advertisement: ${escAttr(ad.sponsor)}">
     ${decoHtml(ad.deco)}
     <span class="ad-tag" title="${escAttr(why)}">Ad · ${escAttr(ad.sponsor)} <i>ⓘ</i></span>
     ${adLogoHtml(ad.href)}
@@ -417,6 +412,22 @@ export function adHtml(site: string, day: number, slot: AdSlot, n = 0): string {
     <span class="ad-cta${ad.cta_fx ? ' fx-' + ad.cta_fx : ''}">${escAttr(ad.cta)}</span>
     <span class="ad-fine">${escAttr(ad.fine)}</span>
   </div>`;
+}
+
+/**
+ * One animated banner. `wide` is a leaderboard for the top of a page; `square` is a sidebar box.
+ * `n` tells apart two slots of the same shape on one page.
+ */
+export function adHtml(site: string, day: number, slot: AdSlot, n = 0): string {
+  const ad = withHeadline(pickAd(site, day, slot, n));
+  return bannerHtml(ad, `ad-${slot}`, `data-newtab="${escAttr(ad.href)}"`, WHY[site] ?? 'You were targeted because you have eyes.');
+}
+
+/** What the adware's pop-up window shows (engine/adware.ts PopupAd): a square ad, clicked through the overlay. */
+export interface PopupBanner { brand: string; href: string; theme: string; frames: [string, string, string]; cta: string; fine: string; deco?: string; fx?: 'shake' | 'pulse' | 'blink' }
+export function popupAdHtml(p: PopupBanner): string {
+  const ad: Ad = { id: 'popup', sponsor: p.brand, href: p.href, theme: p.theme, frames: p.frames, cta: p.cta, fine: p.fine, deco: p.deco as Deco | undefined, cta_fx: p.fx };
+  return bannerHtml(ad, 'ad-square ad-popup', `data-ov="adpop-go" data-url="${escAttr(p.href)}"`, 'You were targeted because you ran PCMedic_Setup.exe.');
 }
 
 /** For tests and the dev panel. */

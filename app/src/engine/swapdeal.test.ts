@@ -20,7 +20,7 @@ function market(): { s: GameState; id: string } {
   const s = startGame(content, 2);
   applyEffects(s, getEvent(content, 'viktor_contact')!.outcomes!.find((o) => o.id === 'build')!.effects, undefined, 'viktor_contact');
   // Viktor's day 5 Y post asks for seller messages
-  applyEffects(s, getEvent(content, 'd5_y_swaplist_messages')!.onDeliver!, undefined, 'd5_y_swaplist_messages');
+  applyEffects(s, getEvent(content, 'd7_y_swaplist_messages')!.onDeliver!, undefined, 'd7_y_swaplist_messages');
   const id = s.apps.find((a) => a.template === 'swaplist')!.id;
   buildApp(s, id, ['listings', 'search', 'contact', 'mark_sold'], 5, { tmpl });
   deployApp(s, id, tmpl);
@@ -43,8 +43,8 @@ describe('Swaplist seller chat', () => {
     applyEffects(s, getEvent(content, 'viktor_contact')!.outcomes!.find((o) => o.id === 'build')!.effects, undefined, 'viktor_contact');
     const app = s.apps.find((a) => a.template === 'swaplist')!;
     expect(app.required).not.toContain('contact');
-    const ask = getEvent(content, 'd5_y_swaplist_messages')!;
-    expect(ask.trigger).toMatchObject({ dayMin: 5, appWorking: 'viktor_contact' });
+    const ask = getEvent(content, 'd7_y_swaplist_messages')!;
+    expect(ask.trigger).toMatchObject({ dayMin: 7, appWorking: 'viktor_contact' });
     applyEffects(s, ask.onDeliver!, undefined, ask.id);
     expect(app.required).toContain('contact');
   });
