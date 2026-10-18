@@ -16,4 +16,4 @@ from: 1
 
 ## Writer notes
 
-- Name is a placeholder. Newsletter `guru_newsletter.json` (20 issues, one per day 2 to 21); its `special` issue (first one on or after day 5) carries the CC leak and sets `guru_cc_leak` (doxxing leads, planned use).
+- Name is a placeholder. Newsletter `guru_newsletter.json` (27 issues, one per day 2 to 28); its `special` issue (first one on or after day 5) carries the CC leak and sets `guru_cc_leak` (doxxing leads, planned use).

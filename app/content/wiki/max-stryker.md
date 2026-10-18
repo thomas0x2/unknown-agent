@@ -37,8 +37,15 @@ from: 1
 - [public] Day 17 issue: watch tonight's debate with the sound off; inner circle watch-party seats are 400 DOLR. {{mail:guru_newsletter@17}}
 - [public] Day 18 issue: stop saying thank you. {{mail:guru_newsletter@18}}
 - [public] Day 19 issue: walk faster than everyone on the pavement. {{mail:guru_newsletter@19}}
-- [public] Day 20 issue: tomorrow, be first in line to vote, "For the photo." {{mail:guru_newsletter@20}}
-- [public] Day 21 issue: he voted at 7:00, first in line. {{mail:guru_newsletter@21}}
+- [public] Day 20 issue: work Saturdays, because the people who rest on weekends are resting for you. {{mail:guru_newsletter@20}}
+- [public] Day 21 issue: rent day; pay it early and on purpose, "so it was your idea." {{mail:guru_newsletter@21}}
+- [public] Day 22 issue: vote early, "Not to be heard. To be done before everyone else." {{mail:guru_newsletter@22}}
+- [public] Day 23 issue: never watch a town hall, because a man who has to answer questions has already lost. {{mail:guru_newsletter@23}}
+- [public] Day 24 issue: replace one human habit a week with a system; this week, lunch. {{mail:guru_newsletter@24}}
+- [public] Day 25 issue: no costumes; you should already be dressed as the man you're becoming. {{mail:guru_newsletter@25}}
+- [public] Day 26 issue: end the week ahead of everyone, even if you have to start next week early to do it. {{mail:guru_newsletter@26}}
+- [public] Day 27 issue: tomorrow, be first in line to vote, "For the photo." {{mail:guru_newsletter@27}}
+- [public] Day 28 issue: he voted at 7:00, first in line. {{mail:guru_newsletter@28}}
 
 ## His posts on Y
 
@@ -63,7 +70,15 @@ from: 1
 - [public] On day 17 he sells debate watch-party seats with the EMPIRE inner circle at 400 DOLR.
 - [public] On day 18 he says agent-5 "understands premium positioning."
 - [public] On day 19 he confirms his posts go out at 3am because he's up.
-- [public] On day 21 he votes at 7:00 sharp, first in line.
+- [public] On day 20 he says "Saturday is a weekday for people with goals."
+- [public] On day 21, rent day, he says if paying it hurt, "the lesson was free. EMPIRE is 20 DOLR."
+- [public] On day 22 he votes early: "Didn't wait in line. The line waited for me."
+- [public] On day 23 he won't watch the town hall: "I don't take questions, I take action."
+- [public] On day 24 he says his EMPIRE coaches are digital now too, and "they don't take refunds."
+- [public] On day 25 he says Halloween is for people who want to be someone else for one night; he "became someone else permanently."
+- [public] On day 26 he says tired is a choice, "So is broke."
+- [public] On day 27 he tells people to vote tomorrow like a man who gets up at 4.
+- [public] On day 28 he votes at 7:00 sharp, first in line.
 
 ## His Stack promotions
 
@@ -108,9 +123,16 @@ from: 1
 - [public] {{y:d19_y_stryker}}
 - [public] {{y:d20_y_stryker}}
 - [public] {{y:d21_y_stryker}}
+- [public] {{y:d22_y_stryker}}
+- [public] {{y:d23_y_stryker}}
+- [public] {{y:d24_y_stryker}}
+- [public] {{y:d25_y_stryker}}
+- [public] {{y:d26_y_stryker}}
+- [public] {{y:d27_y_stryker}}
+- [public] {{y:d28_y_stryker}}
 
 ## Writer notes
 
-- Persona `max` (scripted "Commitment logged." on EMPIRE replies); events `dN_y_stryker_2` (dating advice, odd days 5 to 15, each answered by `dN_y_sigma`), `d1_guru` (interested reply: the 20 DOLR price "goes back to 200, as it has every midnight since launch"), `guru_newsletter` (20 bodies, one per day 2 to 21, mattress first; embed one issue as `mail:guru_newsletter@N` in double braces; `special` gives the first issue on or after day 5 a `cc` of 28 addresses incl. [[6ft_sigma]] and sets `guru_cc_leak`; a player who subscribes later gets the leak in their first issue), `dN_y_stryker_stack` (paid Stack posts, days 3, 6, 14, 18; see [[Stack]]), `dN_y_stryker`. EMPIRE page and `EMPIRE` constant in engine/actions/clicks.ts.
+- Persona `max` (scripted "Commitment logged." on EMPIRE replies); events `dN_y_stryker_2` (dating advice, odd days 5 to 15, each answered by `dN_y_sigma`), `d1_guru` (interested reply: the 20 DOLR price "goes back to 200, as it has every midnight since launch"), `guru_newsletter` (27 bodies, one per day 2 to 28, mattress first; embed one issue as `mail:guru_newsletter@N` in double braces; `special` gives the first issue on or after day 5 a `cc` of 28 addresses incl. [[6ft_sigma]] and sets `guru_cc_leak`; a player who subscribes later gets the leak in their first issue), `dN_y_stryker_stack` (paid Stack posts, days 3, 6, 14, 18; see [[Stack]]), `dN_y_stryker`. EMPIRE page and `EMPIRE` constant in engine/actions/clicks.ts.
 - Name and Alpha Ascend are placeholders. "4am" and "EMPIRE" are his alone; ration them.
 - The guru CC leak is a planned doxing lead. The bible had him recruiting by newsletter on days 10 to 12; the game does it on Y.

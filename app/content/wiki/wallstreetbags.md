@@ -22,7 +22,9 @@ summary: WallStreetBags is a verified Y account for a huge online community of r
 - [public] On day 15 it notes $APO went up because Rook replaced Y's moderators, and that everyone there is long anyway. {{y:m15_apo_mod}}
 - [public] On day 16 its daily $APO thread: still holding, still can't say why. {{y:m16_apo_retail}}
 - [public] On day 18 it says $PDUR paid $40M for keeping people awake nine days and the stock went up: "Members, this is the business model." {{y:m18_pdur_wsb}}
-- [public] On day 20 its election play is long $APO whoever wins. {{y:m20_apo_vote}}
+- [public] On day 22 it notes Apogee is hiring while everyone else fires: "Long $APO and long rockets." {{y:m22_apo_hires}}
+- [public] On day 24 it says a screen that can do a town hall can do a launch broadcast: "Long $APO." {{y:m24_apo_screen}}
+- [public] On day 27 its election play is long $APO whoever wins. {{y:m27_apo_vote}}
 
 ## Writer notes
 

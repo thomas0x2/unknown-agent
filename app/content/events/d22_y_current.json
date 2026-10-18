@@ -1,0 +1,11 @@
+{
+  "id": "d22_y_current",
+  "site": "y",
+  "from": "The Current",
+  "trigger": {
+    "dayMin": 22,
+    "dayMax": 22
+  },
+  "at": "10:20",
+  "body": "Early voting is open. By 8:15 the line at the central library went around the block. A volunteer says the most common question is whether agent can vote on someone's behalf. It can't."
+}

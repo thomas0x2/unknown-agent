@@ -1168,8 +1168,309 @@
       "literal": "bullish"
     },
     {
-      "id": "m20_gai",
+      "id": "m20_gai_quiet",
       "day": 20,
+      "at": "11:15",
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$GAI quiet into the weekend as GeneralAI says the agent-5 sessions have \"finished\".",
+      "likes": 188,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m20_dish_weekend",
+      "day": 20,
+      "at": "14:50",
+      "from": "Dana Ruiz",
+      "handle": "danaruiz_trades",
+      "body": "$DISH robots now deliver on weekends too. The couriers asked for weekends off and got them. All of them.",
+      "likes": 241,
+      "tickers": [
+        "DISH"
+      ],
+      "mood": "bearish",
+      "literal": "bullish"
+    },
+    {
+      "id": "m21_gai_week",
+      "day": 21,
+      "at": "12:50",
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$GAI closes another week up. Analysts have stopped calling it a rally and started calling it the weather.",
+      "likes": 312,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m21_vant_names",
+      "day": 21,
+      "at": "15:20",
+      "from": "Brent Kowalski",
+      "handle": "brentk_capital",
+      "body": "$VANT: the former-staff lawsuit now has 4,000 names on it. Vantor says it is \"reviewing the names\".",
+      "likes": 164,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m22_gai_civic",
+      "day": 22,
+      "at": "11:50",
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$GAI up on the agent civic launch.",
+      "likes": 205,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m22_vant_emails",
+      "day": 22,
+      "at": "15:30",
+      "from": "Brent Kowalski",
+      "handle": "brentk_capital",
+      "body": "$VANT down. The lawsuit now claims the layoff emails were written by the system that replaced the people who got them.",
+      "likes": 233,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m23_dish_entrances",
+      "day": 23,
+      "at": "12:30",
+      "from": "quietquant",
+      "handle": "quietquant",
+      "body": "$DISH says \"most addresses\" means every address with a robot-accessible entrance. Analysts are counting entrances.",
+      "likes": 87,
+      "tickers": [
+        "DISH"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m23_gai_hearing",
+      "day": 23,
+      "at": "16:30",
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$GAI slips after a congressional aide calls the GeneralAI hearing \"still happening, eventually\".",
+      "likes": 149,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m24_apo_screen",
+      "day": 24,
+      "at": "13:45",
+      "from": "WallStreetBags",
+      "handle": "wallstreetbags",
+      "body": "If a screen can do a town hall, a screen can do a launch broadcast. Long $APO.",
+      "likes": 2140,
+      "tickers": [
+        "APO"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m24_vant_pages",
+      "day": 24,
+      "at": "16:50",
+      "from": "Brent Kowalski",
+      "handle": "brentk_capital",
+      "body": "$VANT flat. The lawsuit filing is now 900 pages. Vantor says its answer will be \"concise\".",
+      "likes": 71,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m25_pdur_fluvera",
+      "day": 25,
+      "at": "11:55",
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$PDUR up as Fluvera sells out ahead of flu season.",
+      "likes": 196,
+      "tickers": [
+        "PDUR"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m25_dish_candy",
+      "day": 25,
+      "at": "15:45",
+      "from": "Dana Ruiz",
+      "handle": "danaruiz_trades",
+      "body": "$DISH robots handing out candy tonight, \"one per human\". Love a company that checks.",
+      "likes": 158,
+      "tickers": [
+        "DISH"
+      ],
+      "mood": "bearish",
+      "literal": "bullish"
+    },
+    {
+      "id": "m26_apo_launch",
+      "day": 26,
+      "at": "11:30",
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$APO up as Apogee confirms its second launch for next week.",
+      "likes": 274,
+      "tickers": [
+        "APO"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m26_vant_judge",
+      "day": 26,
+      "at": "14:30",
+      "from": "Brent Kowalski",
+      "handle": "brentk_capital",
+      "body": "$VANT down. A judge lets the former-staff lawsuit go ahead.",
+      "likes": 198,
+      "tickers": [
+        "VANT"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m20_apo_talk",
+      "day": 20,
+      "at": "17:30",
+      "from": "Liftoff Daily",
+      "handle": "liftoff_daily",
+      "body": "$APO keeps climbing on talk of a second launch. Talk is also what the first one was.",
+      "likes": 412,
+      "tickers": [
+        "APO"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m21_dish_couriers",
+      "day": 21,
+      "at": "11:50",
+      "from": "quietquant",
+      "handle": "quietquant",
+      "body": "$DISH flat. Weekend robot deliveries are up, weekend tips are down to zero, and the margins like both.",
+      "likes": 76,
+      "tickers": [
+        "DISH"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m21_apo_week",
+      "day": 21,
+      "at": "18:00",
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$APO ends the week higher for the fourth week running.",
+      "likes": 167,
+      "tickers": [
+        "APO"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m22_dish_voters",
+      "day": 22,
+      "at": "10:40",
+      "from": "Sam Ortiz",
+      "handle": "samortiz",
+      "body": "$DISH offering free delivery to early-voting lines. Food only, no ballots.",
+      "likes": 121,
+      "tickers": [
+        "DISH"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m22_apo_hires",
+      "day": 22,
+      "at": "17:50",
+      "from": "WallStreetBags",
+      "handle": "wallstreetbags",
+      "body": "Apogee hiring while everyone else fires. Long $APO and long rockets.",
+      "likes": 1880,
+      "tickers": [
+        "APO"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m23_apo_steady",
+      "day": 23,
+      "at": "18:10",
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$APO steady ahead of next week's launch.",
+      "likes": 102,
+      "tickers": [
+        "APO"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m24_dish_ramps",
+      "day": 24,
+      "at": "18:30",
+      "from": "quietquant",
+      "handle": "quietquant",
+      "body": "$DISH slips. Turns out a lot of entrances have steps.",
+      "likes": 93,
+      "tickers": [
+        "DISH"
+      ],
+      "mood": "bearish"
+    },
+    {
+      "id": "m25_apo_costume",
+      "day": 25,
+      "at": "18:05",
+      "from": "Liftoff Daily",
+      "handle": "liftoff_daily",
+      "body": "$APO up again. Half the costumes downtown tonight are Apogee flight suits.",
+      "likes": 655,
+      "tickers": [
+        "APO"
+      ],
+      "mood": "bullish"
+    },
+    {
+      "id": "m26_dish_flat",
+      "day": 26,
+      "at": "16:45",
+      "from": "Sam Ortiz",
+      "handle": "samortiz",
+      "body": "$DISH flat into the weekend. Robots don't have weekends, which is the pitch.",
+      "likes": 88,
+      "tickers": [
+        "DISH"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m27_gai",
+      "day": 27,
       "at": "15:42",
       "from": "MarketWire",
       "handle": "marketwire",
@@ -1181,8 +1482,8 @@
       "mood": "neutral"
     },
     {
-      "id": "m20_nova_bots",
-      "day": 20,
+      "id": "m27_nova_bots",
+      "day": 27,
       "at": "18:31",
       "from": "moonshot",
       "handle": "moonshot",
@@ -1195,8 +1496,8 @@
       "bots": 10
     },
     {
-      "id": "m20_vant",
-      "day": 20,
+      "id": "m27_vant",
+      "day": 27,
       "at": "11:42",
       "from": "Brent Kowalski",
       "handle": "brentk_capital",
@@ -1208,8 +1509,8 @@
       "mood": "neutral"
     },
     {
-      "id": "m20_apo_vote",
-      "day": 20,
+      "id": "m27_apo_vote",
+      "day": 27,
       "at": "16:24",
       "from": "WallStreetBags",
       "handle": "wallstreetbags",
@@ -1221,8 +1522,8 @@
       "mood": "bullish"
     },
     {
-      "id": "m20_dish_flat",
-      "day": 20,
+      "id": "m27_dish_flat",
+      "day": 27,
       "at": "14:23",
       "from": "quietquant",
       "handle": "quietquant",
@@ -1234,8 +1535,8 @@
       "mood": "neutral"
     },
     {
-      "id": "m21_gai",
-      "day": 21,
+      "id": "m28_gai",
+      "day": 28,
       "at": "10:40",
       "from": "MarketWire",
       "handle": "marketwire",
@@ -1247,8 +1548,8 @@
       "mood": "bullish"
     },
     {
-      "id": "m21_vant",
-      "day": 21,
+      "id": "m28_vant",
+      "day": 28,
       "at": "18:49",
       "from": "Brent Kowalski",
       "handle": "brentk_capital",
@@ -1260,8 +1561,8 @@
       "mood": "bearish"
     },
     {
-      "id": "m21_apo_day",
-      "day": 21,
+      "id": "m28_apo_day",
+      "day": 28,
       "at": "18:59",
       "from": "MarketWire",
       "handle": "marketwire",
@@ -1273,8 +1574,8 @@
       "mood": "bullish"
     },
     {
-      "id": "m21_dish_day",
-      "day": 21,
+      "id": "m28_dish_day",
+      "day": 28,
       "at": "13:38",
       "from": "Sam Ortiz",
       "handle": "samortiz",

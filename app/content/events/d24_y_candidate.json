@@ -1,0 +1,11 @@
+{
+  "id": "d24_y_candidate",
+  "site": "y",
+  "from": "Candidate 2030",
+  "trigger": {
+    "dayMin": 24,
+    "dayMax": 24
+  },
+  "at": "13:00",
+  "body": "Last night I answered eleven questions. I'd rather answer eleven than make up forty-one."
+}

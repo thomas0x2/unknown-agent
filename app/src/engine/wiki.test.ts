@@ -129,7 +129,7 @@ const isIndex = (p: WikiPage) => p.file === 'index.md';
 
 describe('wiki: the real pages', () => {
   it('has a day page for every day and a timeline overview', () => {
-    for (let d = 1; d <= 21; d++) expect(files, `day ${d}`).toContain(`day-${String(d).padStart(2, '0')}.md`);
+    for (let d = 1; d <= 28; d++) expect(files, `day ${d}`).toContain(`day-${String(d).padStart(2, '0')}.md`);
     expect(files).toContain('timeline.md');
   });
 
@@ -202,9 +202,10 @@ describe('wiki: the real pages', () => {
 });
 
 describe('latestDay with calendar dates', () => {
-  it('reads October dates as game days (day 1 is October 7)', () => {
+  it('reads October and November dates as game days (day 1 is October 7)', () => {
     expect(latestDay('Election day is Sunday, October 27.')).toBe(21);
     expect(latestDay('A memo dated Oct 8.')).toBe(2);
+    expect(latestDay('Election day is Sunday, November 3.')).toBe(28);
   });
 });
 

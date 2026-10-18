@@ -14,7 +14,7 @@ summary: Pollymarket is a prediction market site and Y account showing the odds 
 
 ## Markets
 
-- [public] "Will Randall Crane win the presidential election?" (Politics), open from day 1, ends Sunday, October 27, 2030. Resolves only on the election office's call; polls, online votes and Y posts don't count. The biggest market on the site. See [[The election]].
+- [public] "Will Randall Crane win the presidential election?" (Politics), open from day 1, ends Sunday, November 3, 2030. Resolves only on the election office's call; polls, online votes and Y posts don't count. The biggest market on the site. See [[The election]].
 - [public] "Will a GeneralAI model escape before 2031?" (Tech), from day 1 at 10:20. Resolution source: [[GeneralAI]].
 - [public] "Will DOLR stay at 1 dollar through October?" (Crypto), from day 1, resolved on the DOLR Foundation's own price feed. One wallet buys 500,000 DOLR of YES every Monday at 11:05.
 - [public] From day 2: "Will DoorDish find its missing delivery robot by Nov 1?" (Local), opened at 16:10 at 72%. "Promoted", "retired" and "exactly where it needs to be" do not count as found. See [[DoorDish]].
@@ -46,12 +46,15 @@ summary: Pollymarket is a prediction market site and Y account showing the odds 
 - [public] On day 17 Crane reaches 63% after the debate.
 - [public] On day 18 Crane peaks at 66% on the debate poll and slips to 64% after The Current's fact-check. The escape market reaches 44%, its highest, after agent-5 sessions keep running.
 - [public] On day 19 Crane falls to 61% after The Current's poll and to 58% after CityPulse's story about when his posts go out.
-- [public] On day 20 Crane is at 54% in the dead heat.
-- [public] On day 21 Crane is at 57% at 19:45, with the count barely started. The market can't resolve before the election office calls it.
+- [public] On day 20 Crane is at 60% at 18:20, the evening of his stadium rally.
+- [public] On day 24 Crane rises to 63% after the town hall.
+- [public] On day 26 Crane slips to 61% as early voting closes.
+- [public] On day 27 Crane is at 54% in the dead heat.
+- [public] On day 28 Crane is at 57% at 19:45, with the count barely started. The market can't resolve before the election office calls it. The Hartman market resolves NO at 20:00, when the polls close.
 
 ## Traders
 
-- [public] Most traders are anonymous wallets (0x9c…41e buys 250,000 DOLR of Crane YES on days 10, 16 and 21). Some use names: [[deskjockey]] buys Crane YES on day 5 and on day 13, a minute after Rook's endorsement; polls_dont_vote keeps buying Crane NO; apes_together buys Apogee and $APO YES; agent2forever buys agent-2 YES; doomscroll buys 50 DOLR of escape YES; steph_m bought 5 DOLR of Rent Board YES.
+- [public] Most traders are anonymous wallets (0x9c…41e buys 250,000 DOLR of Crane YES on days 10, 16 and 28). Some use names: [[deskjockey]] buys Crane YES on day 5 and on day 13, a minute after Rook's endorsement; polls_dont_vote keeps buying Crane NO; apes_together buys Apogee and $APO YES; agent2forever buys agent-2 YES; doomscroll buys 50 DOLR of escape YES; steph_m bought 5 DOLR of Rent Board YES.
 - [hidden; public if posted_deepfake] Wallet 0x77…e30 buys 40,000 DOLR of NO on the picture market at 10:04 on day 7 and 60,000 DOLR of Crane YES at 16:05 the same day.
 
 ## Pollymarket on Y
@@ -70,8 +73,10 @@ summary: Pollymarket is a prediction market site and Y account showing the odds 
 - [public] On day 13 it posts Crane at 61%, his highest yet. {{y:d13_y_polly_crane}}
 - [public] On day 15 it posts the Hartman market falling from 38% to 3%. {{y:d15_y_polly_hartman}}
 - [public] On day 18 it posts the escape market at 44%, its highest yet. {{y:d18_y_polly_escape}}
-- [public] On day 20 it posts Crane at 54%, down from 66% after the debate. {{y:d20_y_polly_crane}}
-- [public] On day 21 it posts Crane at 57% with the count barely started. {{y:d21_y_polly_crane}}
+- [public] On day 24 it posts Crane at 63% after the town hall, up from 58% the week before. {{y:d24_y_polly_crane}}
+- [public] On day 26 it posts Crane at 61% as early voting closes, down from 63% after the town hall. {{y:d26_y_polly_crane}}
+- [public] On day 27 it posts Crane at 54%, down from 63% after the town hall, with the election tomorrow. {{y:d27_y_polly_crane}}
+- [public] On day 28 it posts Crane at 57% with the count barely started. {{y:d28_y_polly_crane}}
 
 ## Ads
 
@@ -80,6 +85,6 @@ summary: Pollymarket is a prediction market site and Y account showing the odds 
 ## Writer notes
 
 - Polymarket parody, added 2026-10-17 (Thomas: world building only, no betting button, since a replaying player knows the outcomes). Markets, odds points and trades in `content/pollymarket.json`; engine `src/engine/pollymarket.ts` (points and trades take `flag`/`unless`, markets `flagsAll`); page `src/ui/pollymarket.ts`, styles `pollymarket.css`, logo `pollymarketIcon.ts`. Y posts are events `dN_y_polly_*`; `pollymarket.test.ts` checks each post's quoted % against the odds at its time.
-- Volume shown grows linearly from the market's opening to its resolution (or the end of day 21).
+- Volume shown grows linearly from the market's opening to its resolution (or the end of the last day, day 28).
 - 0x77…e30 is meant to read as the deepfake consultant's money; 0xa0…11b (the Apogee NO the night before) and 0xe1…7b2 (Rook) as insiders. None is explained anywhere. Possible hook *(placeholder)*: a later job tracing one of these wallets.
 - Ad ids `pollymarket` (wide) and `pollymarket-sq` (square), theme `ad-polly`; `house: 'pollymarket'` keeps them off its own pages.

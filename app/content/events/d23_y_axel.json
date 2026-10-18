@@ -1,0 +1,11 @@
+{
+  "id": "d23_y_axel",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 23,
+    "dayMax": 23
+  },
+  "at": "10:15",
+  "body": "Town hall on Y tonight. 19:00. Both candidates confirmed."
+}

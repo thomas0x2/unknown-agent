@@ -1,0 +1,11 @@
+{
+  "id": "d22_y_axel_2",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 22,
+    "dayMax": 22
+  },
+  "at": "19:20",
+  "body": "@citypulse Fake news"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "d23_y_crane",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "dayMin": 23,
+    "dayMax": 23
+  },
+  "at": "14:50",
+  "body": "I'll be at the town hall tonight. Very strong. Possibly in more than one place, the technology is incredible."
+}

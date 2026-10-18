@@ -1,0 +1,11 @@
+{
+  "id": "d27_y_candidate",
+  "site": "y",
+  "from": "Candidate 2030",
+  "trigger": {
+    "dayMin": 27,
+    "dayMax": 27
+  },
+  "at": "12:40",
+  "body": "Tomorrow, vote. Polls are open from 7:00 AM to 8:00 PM. Bring your photo ID and registration card."
+}

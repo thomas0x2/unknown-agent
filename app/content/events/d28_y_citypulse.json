@@ -1,10 +1,10 @@
 {
-  "id": "d21_y_citypulse",
+  "id": "d28_y_citypulse",
   "site": "y",
   "from": "CityPulse",
   "trigger": {
-    "dayMin": 21,
-    "dayMax": 21
+    "dayMin": 28,
+    "dayMax": 28
   },
   "at": "19:45",
   "viral": true,

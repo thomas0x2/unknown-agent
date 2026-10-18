@@ -1,0 +1,11 @@
+{
+  "id": "d20_y_current",
+  "site": "y",
+  "from": "The Current",
+  "trigger": {
+    "dayMin": 20,
+    "dayMax": 20
+  },
+  "at": "12:30",
+  "body": "Eight days out: Crane 46%, his opponent 45%. The pollster now opens every call by asking whether the respondent is a person. Four percent said no."
+}

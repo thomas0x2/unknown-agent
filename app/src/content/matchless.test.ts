@@ -127,7 +127,7 @@ describe('the card', () => {
 describe('the profiles', () => {
   it('ten a day, about half meeting every standard and the rest missing one or two, all 21 or older', () => {
     for (const v of versions) {
-      for (let day = 4; day <= 21; day++) {
+      for (let day = 4; day <= 28; day++) {
         const ps = dayProfiles(content, day, v.id);
         expect(ps).toHaveLength(10);
         const good = ps.filter((p) => passes(v.rules, p)).length;

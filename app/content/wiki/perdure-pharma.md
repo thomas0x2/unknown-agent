@@ -30,6 +30,7 @@ summary: Perdure Pharma, the drug company that makes NoDoze MAX, Ozempra and the
 
 - [public] On day 9 at 14:20 Perdure launches Fluvera on Y: 4 DOLR, no appointment, autism-free. Its banner ad runs from day 9: "Flu season is here. One shot. All season. Fluvera. Autism-free." {{y:d9_y_perdure}}
 - [public] On day 11 doomscroll gets the shot; the box says autism-free in bigger letters than the word flu. {{y:d11_y_doomscroll_fluvera}}
+- [public] On day 25 Fluvera sells out ahead of flu season, and $PDUR rises. {{y:m25_pdur_fluvera}}
 
 ## From day 11: Peptides
 

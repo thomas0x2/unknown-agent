@@ -1,0 +1,11 @@
+{
+  "id": "d24_y_moxon",
+  "site": "y",
+  "from": "Caleb Moxon",
+  "trigger": {
+    "dayMin": 24,
+    "dayMax": 24
+  },
+  "at": "15:15",
+  "body": "I'm told the campaign's contract with GeneralAI is \"enterprise\". That's the tier where the logs belong to the customer."
+}

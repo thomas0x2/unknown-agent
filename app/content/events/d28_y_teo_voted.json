@@ -1,10 +1,10 @@
 {
-  "id": "d21_y_teo_voted",
+  "id": "d28_y_teo_voted",
   "site": "y",
   "from": "Teo Vasquez",
   "trigger": {
-    "dayMin": 21,
-    "dayMax": 21
+    "dayMin": 28,
+    "dayMax": 28
   },
   "at": "12:00",
   "body": "Voted. The queue was an hour. Nobody is hiring, so I had the time. citypulse.news/polls-open"

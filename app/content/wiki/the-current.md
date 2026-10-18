@@ -14,13 +14,20 @@ from: 1
 
 ## On Y
 
-- [public] On day 1 it promises independent polling with sample sizes and margins of error, and no Y polls. {{y:d1_y_current}}
+- [public] On day 1, four weeks before the election, it promises independent polling with sample sizes and margins of error, and no Y polls. {{y:d1_y_current}}
 - [public] Its election polls are on [[The election]] page.
 - [public] On day 11 it reports that step three of Crane's jobs plan hands the positions to GeneralAI; the campaign calls the plan "a draft" on a site "managed by a vendor". {{y:d11_y_current}}
 - [public] On day 15 [[Randall Crane]] calls The Current "Fake News" and attacks its "sob story".
 - [public] On day 15 it reports flight records: Randall Crane flew on [[Kirschbaum]]'s private jet eleven times between 2014 and 2019; the campaign says he "doesn't recall the plane." {{y:d15_y_current_flights}}
 - [public] On day 18 it fact-checks the debate: 4 of Crane's 31 claims held up, and the campaign cited two of the four as proof. {{y:d18_y_current}}
-- [public] On day 21 it posts how to vote: polls open until 20:00, photo ID and registration card, no Citizen Score, and polling stations have not moved. {{y:d21_y_current}}
+- [public] On day 20, eight days out, it has Crane at 46% and his opponent at 45%; the pollster now opens every call by asking whether the respondent is a person, and 4% said no. {{y:d20_y_current}}
+- [public] On day 21 it posts that early voting opens the next day at 8:00 in every public library in the city; bring photo ID and the paper voter registration card. {{y:d21_y_current}}
+- [public] On day 22 early voting is open, and by 8:15 the line at the central library went around the block; the most common question is whether agent can vote on someone's behalf. It can't. {{y:d22_y_current}}
+- [public] On day 23 it reports the town hall's one rule, no notes and no earpieces; the Crane campaign asked twice whether a screen counts as a note. {{y:d23_y_current}}
+- [public] On day 24 a snap poll of town hall viewers finds 58% thought Crane "more coherent than usual"; his campaign hasn't said where he was at 19:00. {{y:d24_y_current}}
+- [public] On day 25 the final weekday poll has Crane at 47%, his opponent at 46% and 7% undecided; a second pollster has stopped publishing because it can no longer confirm its respondents are people. {{y:d25_y_current}}
+- [public] On day 26 early voting closes at 17:00 with a record 31% of registered voters already voted; the election office found nine early ballots cast by agents and didn't count them. {{y:d26_y_current}}
+- [public] On day 28 it posts how to vote: polls open until 20:00, photo ID and registration card, no Citizen Score, and polling stations have not moved. {{y:d28_y_current}}
 - [public] {{y:d2_y_current}}
 - [public] {{y:d9_y_current}}
 - [public] {{y:d12_y_current_clip}}

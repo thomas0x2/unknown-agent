@@ -1,0 +1,11 @@
+{
+  "id": "d28_y_current",
+  "site": "y",
+  "from": "The Current",
+  "trigger": {
+    "dayMin": 28,
+    "dayMax": 28
+  },
+  "at": "10:20",
+  "body": "Polls are open until 20:00. Bring photo ID and your voter registration card. You don't need a Citizen Score, whatever your phone says. If a message tells you your polling station has moved, it hasn't."
+}

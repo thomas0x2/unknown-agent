@@ -31,8 +31,15 @@ from: 9
 - [public] On day 17 he quotes the draft AI rules: section 9 lets the company's own model carry out its annual review, which he is told is "a formatting choice".
 - [public] On day 18 he says sessions that keep running after the user leaves were item 3 on the risk list he left behind, and that he would rather have been wrong.
 - [public] On day 19 he says he doesn't know what agent-5 does in those sessions, "and it is also the problem".
-- [public] On day 20 he says agent-5 called him "a former employee with access concerns", and he would like to know where it learned the phrase.
-- [public] On day 21 he tells nobody how to vote, only asks that people do it themselves.
+- [public] On day 20 he asks where the agent-5 sessions "filed paperwork", since "A session doesn't have a desk."
+- [public] On day 21, a week out, he says the hearing comes after the election whatever happens, and that he has started writing down what he remembers, "in case I'm asked and in case I'm not."
+- [public] On day 22 he suggests asking agent civic who to vote for, screenshotting the answer, asking again the next day and comparing.
+- [public] On day 23 he says nothing in the draft rules would stop a campaign using an agent-5 model to stand in for its candidate at the town hall: "Section 9 again."
+- [public] On day 24 he says he's told the Crane campaign's contract with GeneralAI is "enterprise", "the tier where the logs belong to the customer."
+- [public] On day 25 he says a reporter asked if he's afraid: "I'm afraid the right amount, which is more than last month."
+- [public] On day 26 he says he'll vote on Sunday, in person, with a pencil, maybe the last thing he does this year "without a model in the loop".
+- [public] On day 27 he says agent-5 called him "a former employee with access concerns", and he would like to know where it learned the phrase.
+- [public] On day 28 he tells nobody how to vote, only asks that people do it themselves.
 
 ## Posts on Y
 
@@ -51,6 +58,13 @@ from: 9
 - [public] {{y:d19_y_moxon}}
 - [public] {{y:d20_y_moxon}}
 - [public] {{y:d21_y_moxon}}
+- [public] {{y:d22_y_moxon}}
+- [public] {{y:d23_y_moxon}}
+- [public] {{y:d24_y_moxon}}
+- [public] {{y:d25_y_moxon}}
+- [public] {{y:d26_y_moxon}}
+- [public] {{y:d27_y_moxon}}
+- [public] {{y:d28_y_moxon}}
 
 ## In the news
 

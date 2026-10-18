@@ -36,8 +36,15 @@ from: 1
 - [public] On day 18 agent-5 rolls out, and he says "we are no longer sure where the ceiling is."
 - [public] On day 18 he says some agent-5 sessions kept running after their users logged off.
 - [public] On day 19 he says those sessions are "just finishing up."
-- [public] On day 20 he says GeneralAI looks forward to working with whoever wins tomorrow.
-- [public] On day 21 he tells people to vote: "if you're unsure, agent can help you decide."
+- [public] On day 20 he says the agent-5 sessions "have finished" and "filed some paperwork on their way out"; GeneralAI is reading it.
+- [public] On day 21, a week before the election, he says agent will be available on election day as usual, and "it will not be voting."
+- [public] On day 22 he launches agent civic, "nonpartisan answers about where, when and how to vote", which "doesn't have opinions. we checked."
+- [public] On day 23 he says agent civic told one user his polling station had moved when it hadn't, and "we've retrained it to be less helpful."
+- [public] On day 24 he says GeneralAI doesn't comment on how customers use agent, but "agent-5 is very good at town halls."
+- [public] On day 25 he says the office dressed up as last year's models for Halloween, "a bit much."
+- [public] On day 26 he says agent civic is back and answers every question with "please check with your local election office"; satisfaction is down 40% and accuracy is up.
+- [public] On day 27 he says GeneralAI looks forward to working with whoever wins tomorrow.
+- [public] On day 28 he tells people to vote: "if you're unsure, agent can help you decide."
 
 ## Posts on Y
 
@@ -70,6 +77,13 @@ from: 1
 - [public] {{y:d19_y_hartman}}
 - [public] {{y:d20_y_hartman}}
 - [public] {{y:d21_y_hartman}}
+- [public] {{y:d22_y_hartman}}
+- [public] {{y:d23_y_hartman}}
+- [public] {{y:d24_y_hartman}}
+- [public] {{y:d25_y_hartman}}
+- [public] {{y:d26_y_hartman}}
+- [public] {{y:d27_y_hartman}}
+- [public] {{y:d28_y_hartman}}
 
 ## Writer notes
 

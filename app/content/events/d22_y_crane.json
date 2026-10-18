@@ -1,0 +1,11 @@
+{
+  "id": "d22_y_crane",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "dayMin": 22,
+    "dayMax": 22
+  },
+  "at": "12:30",
+  "body": "Early voting is open, and I'm told it's very rigged, unless you vote for me early, in which case it's very fair. Vote EARLY for CRANE!"
+}

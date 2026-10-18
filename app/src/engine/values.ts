@@ -28,7 +28,7 @@ export interface MeterDef {
 }
 
 export const METERS: Record<MeterId, MeterDef> = {
-  day: { id: 'day', label: 'Day', min: 1, max: 21, start: 1, visible: true },
+  day: { id: 'day', label: 'Day', min: 1, max: 28, start: 1, visible: true },
   crypto: { id: 'crypto', label: 'DOLR', min: 0, max: null, start: START.crypto, visible: true },
   followers: { id: 'followers', label: 'Followers', min: 0, max: null, start: START.followers, visible: true },
   agentLevel: { id: 'agentLevel', label: 'Agent level', min: 1, max: 5, start: 1, visible: true },

@@ -7,6 +7,7 @@
 import MARKETS from '../../content/pollymarket.json';
 import type { GameState } from './state';
 import { parseClock, posted } from './events';
+import { LAST_DAY } from './config';
 
 interface Timed { day: number; at: string; flag?: string; unless?: string }
 /** The YES price in cents (= its chance in %) from this moment on. */
@@ -19,9 +20,9 @@ export interface Market {
   title: string;
   category: string;
   opens: { day: number; at: string };
-  /** the day trading ends (may be after day 21) */
+  /** the day trading ends (may be after the last day) */
   ends: number;
-  /** total volume in DOLR by the end of day 21; the site shows the share traded so far */
+  /** total volume in DOLR by the end of the last day; the site shows the share traded so far */
   volume: number;
   rules: string;
   points: OddsPoint[];
@@ -72,9 +73,9 @@ export function oddsAtDayStart(s: GameState, m: Market): number {
   return oddsAt(s, m, { day: s.values.day, at: '00:00' });
 }
 
-/** Volume traded so far: the market's total, spread evenly from its opening to the end of day 21. */
+/** Volume traded so far: the market's total, spread evenly from its opening to the end of the last day. */
 export function volumeNow(s: GameState, m: Market): number {
-  const end = stamp({ day: Math.min(m.resolve?.day ?? 21, 21), at: m.resolve?.at ?? '22:00' });
+  const end = stamp({ day: Math.min(m.resolve?.day ?? LAST_DAY, LAST_DAY), at: m.resolve?.at ?? '22:00' });
   const start = stamp(m.opens);
   const share = end <= start ? 1 : Math.max(0, Math.min(1, (now(s) - start) / (end - start)));
   return Math.round(m.volume * (0.04 + 0.96 * share));

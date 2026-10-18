@@ -1,0 +1,11 @@
+{
+  "id": "d24_y_crane",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "dayMin": 24,
+    "dayMax": 24
+  },
+  "at": "10:10",
+  "body": "Some people say that wasn't me at the town hall. It was me! I was there in spirit and in high definition, and everybody says I was the best I've ever been."
+}

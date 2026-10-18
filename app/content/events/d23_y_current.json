@@ -1,0 +1,11 @@
+{
+  "id": "d23_y_current",
+  "site": "y",
+  "from": "The Current",
+  "trigger": {
+    "dayMin": 23,
+    "dayMax": 23
+  },
+  "at": "11:45",
+  "body": "Tonight's town hall has one rule both campaigns agreed to: no notes and no earpieces. The Crane campaign asked twice whether a screen counts as a note."
+}

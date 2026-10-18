@@ -1,10 +1,10 @@
 {
-  "id": "d21_y_polly_crane",
+  "id": "d28_y_polly_crane",
   "site": "y",
   "from": "Pollymarket",
   "trigger": {
-    "dayMin": 21,
-    "dayMax": 21
+    "dayMin": 28,
+    "dayMax": 28
   },
   "at": "19:50",
   "viral": true,

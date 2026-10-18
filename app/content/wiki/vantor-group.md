@@ -18,6 +18,10 @@ from: 1
 - [public] On day 5 Crane's impostor @randa11_crane praises $VANT, and traders pile in before anyone notices the spelling. {{y:m5_vant_impostor}}
 - [public] On day 16 $VANT falls 6%.
 - [public] On day 19 $VANT drops 3% on a lawsuit. {{y:m19_vant}}
+- [public] On day 21 the former-staff lawsuit has 4,000 names on it; Vantor says it is "reviewing the names". {{y:m21_vant_names}}
+- [public] On day 22 the lawsuit claims the layoff emails were written by the system that replaced the people who got them, and $VANT falls. {{y:m22_vant_emails}}
+- [public] On day 24 the filing runs to 900 pages; Vantor says its answer will be "concise". {{y:m24_vant_pages}}
+- [public] On day 26 a judge lets the lawsuit go ahead, and $VANT falls. {{y:m26_vant_judge}}
 
 ## Writer notes
 

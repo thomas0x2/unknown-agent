@@ -1,0 +1,11 @@
+{
+  "id": "d24_y_current",
+  "site": "y",
+  "from": "The Current",
+  "trigger": {
+    "dayMin": 24,
+    "dayMax": 24
+  },
+  "at": "11:30",
+  "body": "Snap poll of town hall viewers: 58% found Crane \"more coherent than usual\". His campaign has not said where he was at 19:00."
+}
