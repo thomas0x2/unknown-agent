@@ -25,14 +25,14 @@ from: 1
 - [public] News: [[CityPulse]] (@citypulse, verified), [[The Current]] (@the_current), MarketWire (@marketwire); fan account [[Liftoff Daily]]; [[DoorDish]] (@doordish); the betting site [[Pollymarket]] (@pollymarket, verified).
 - [public] Market posters: [[WallStreetBags]] (@wallstreetbags, verified), Brent Kowalski (@brentk_capital), Priya Shah (@priyashah_cfa), Dana Ruiz (@danaruiz_trades), Tyler Moss, quietquant, Ollie Banks, Sam Ortiz, rk_dividends, Jess Park; and bot accounts posting "$GAI to the moon!!" on some days.
 - [public] Background accounts: noodleposter, cat_ceo, doomscroll, zev.dolr (@zev_dolr), Teo Vasquez, studioghast, and the conspiracy theorist [[Wade Tillman]] (@wade_awake).
-- [public] Leads: [[Logan Pryce]] (day 1), the Spin Cycle regulars (day 1), [[deskjockey]], Viktor and others post when they need something built.
+- [public] Leads: [[Logan Pryce]] (day 1), the Spin Cycle regulars (day 2), [[deskjockey]], Viktor and others post when they need something built.
 - [public] On day 5 an impostor, @randa11_crane, posts in Crane's name with two ones for the l's and no verified check. {{y:m5_vant_impostor}}
 
 ## Trending by day
 
 - [public] Topics trend from the moment the story behind them breaks, so the sidebar fills up over the day.
-- [hidden; public from day 2] On day 1: AI layoffs; "our AI almost escaped"; from 13:50 laundromat complaints; from 16:30 the presidential race.
-- [hidden; public from day 3] On day 2: the "almost escaped" stunt; from 10:15 $VANT up after restructuring; from 11:35 the water utility break-in; from 12:23 election polls; from 15:40 a delivery robot "escaped".
+- [hidden; public from day 2] On day 1: AI layoffs; "our AI almost escaped"; from 16:30 the presidential race.
+- [hidden; public from day 3] On day 2: the "almost escaped" stunt; from 10:15 $VANT up after restructuring; from 11:35 the water utility break-in; from 12:23 election polls; from 15:40 a delivery robot "escaped"; from 17:50 laundromat complaints.
 - [hidden; public from day 4] On day 3: AI layoffs (continued); from 10:05 a weekly appetite jab; from 11:10 the jobs fair queue; from 16:00 "send the machines back".
 - [hidden; public from day 5] On day 4: GeneralAI agent-2; the DoorDish robot (still missing); from 13:26 Crane vs. Vantor.
 - [hidden; public from day 6] On day 5: is agent-2 worse?; from 16:20 Crane's 71% Y poll; from 17:30 AI-art backlash; from 19:10 the fake Randall Crane.

@@ -110,6 +110,16 @@ const LOGAN = svg('#e8e2d4',
   + eyes(30) + line('M26.2 26.4 Q28 25.6 29.8 26.4 M34.2 26.4 Q36 25.6 37.8 26.4', 1.4)
   + line('M28.5 36 Q32 38.6 35.5 36', 1.5));
 
+/** Dr. Adam Hoberman: black shirt, close crop, full beard, the stare, a morning sun behind him. */
+const HOBERMAN = svg('#6f8a8f',
+  `<circle cx="50" cy="15" r="7" fill="#ffb02e"/>`
+  + shoulders('#1f2024') + `<path d="M27 46.5 L32 52.5 L37 46.5" fill="none"/>`
+  + neck('#e7c09e') + face('#e7c09e')
+  + `<path d="M21 26 C20.5 17 26 14 32 14 C38 14 43.5 17 43 26 C41.5 21 37 19.5 32 19.5 C27 19.5 22.5 21 21 26Z" fill="#2a2420"/>`
+  + `<path d="M21.5 30 C21.5 40 26 43.5 32 43.5 C38 43.5 42.5 40 42.5 30 C41 34 38 35.6 32 35.6 C26 35.6 23 34 21.5 30Z" fill="#2a2420"/>`
+  + `<path d="M29 38.6 H35" fill="none" stroke="#9a8d82" stroke-width="1.4"/>`
+  + line('M25.8 26.8 H30.6 M33.4 26.8 H38.2', 2.2) + eyes(29.8, 1.5));
+
 /** deskjockey: blue shirt, red braces, slicked hair, the tickers in his glasses. */
 const DESKJOCKEY = svg('#2e4a3d',
   shoulders('#7c9cc4') + `<path d="M26.5 46.5 L30 51 L32 47.5 L34 51 L37.5 46.5" fill="#d9e3ef"/>`
@@ -263,6 +273,7 @@ export const Y_AVATARS: Record<string, string> = {
   max_stryker: STRYKER,
   mara_vey: VEY,
   logan_ships: LOGAN,
+  dr_hoberman: HOBERMAN,
   deskjockey: DESKJOCKEY,
   '6ft_sigma': SIGMA,
   viktor: VIKTOR,

@@ -14,16 +14,41 @@ const at = (hhmm: string) => Number(hhmm.slice(0, 2)) * 60 + Number(hhmm.slice(3
 const has = (s: ReturnType<typeof startGame>, id: string) => s.delivered.some((d) => d.eventId === id);
 
 describe('timed arrivals', () => {
-  it('day 1 opens with the termination email; Mom writes later in the morning', () => {
+  it('day 1 opens with the termination email; Mom writes around midday', () => {
     const s = startGame(content, 7);
     expect(has(s, 'd1_hr_termination')).toBe(true);
     expect(has(s, 'd1_mom')).toBe(false);
     expect(s.arriving?.some((a) => a.eventId === 'd1_mom')).toBe(true);
-    advanceClock(s, at('11:20') - s.clockMin);
+    advanceClock(s, at('12:20') - s.clockMin);
     const landed = deliverArrivals(s, content);
     expect(landed.map((d) => d.eventId)).toContain('d1_mom');
-    expect(s.delivered.find((d) => d.eventId === 'd1_mom')?.min).toBe(at('11:20'));
+    expect(s.delivered.find((d) => d.eventId === 'd1_mom')?.min).toBe(at('12:20'));
     expect(s.arriving?.some((a) => a.eventId === 'd1_mom')).toBe(false);
+  });
+
+  it('a post written for before the day starts is already up, showing its own time', () => {
+    const s = startGame(content, 7);
+    expect(s.delivered.find((d) => d.eventId === 'd1_y_stryker')?.min).toBe(at('07:40'));
+    expect(s.delivered.find((d) => d.eventId === 'd1_hr_termination')?.min).toBe(CLOCK.wake);
+  });
+
+  it('the Spin Cycle regulars post again on day 3 only if they were seen on day 2 and nobody built the app', () => {
+    const day2 = () => {
+      const s = endDay(startGame(content, 7), content);
+      advanceClock(s, CLOCK.sleep - s.clockMin);
+      deliverArrivals(s, content);
+      return s;
+    };
+    const ids = (t: ReturnType<typeof startGame>) => [...t.delivered.map((d) => d.eventId), ...(t.arriving ?? []).map((a) => a.eventId)];
+    const seen = day2();
+    expect(seen.delivered.find((d) => d.eventId === 'd2_y_laundromat')?.min).toBe(at('17:50'));
+    expect(ids(endDay(seen, content))).toContain('d3_y_laundromat');
+    const built = day2();
+    built.flags.push('laundromat_live');
+    expect(ids(endDay(built, content))).not.toContain('d3_y_laundromat');
+    // slept before the first post came: that one comes on day 3 instead, not both
+    const early = endDay(endDay(startGame(content, 7), content), content);
+    expect((early.arriving ?? []).map((a) => a.eventId)).not.toContain('d3_y_laundromat');
   });
 
   it('applies onDeliver effects when the email lands, not in the morning', () => {
@@ -69,7 +94,7 @@ describe('timed arrivals', () => {
     const s = startGame(content, 7);
     deliverDue(s, content, { now: true });
     expect(has(s, 'd1_mom')).toBe(true);
-    expect(has(s, 'd1_guru')).toBe(true);
+    expect(has(s, 'd1_brother_joke')).toBe(true);
     expect(s.arriving ?? []).toHaveLength(0);
   });
 });
@@ -81,7 +106,7 @@ describe('job offers spread over the first six hours', () => {
 
   it('knows a lead post, a gig and a client change request as job offers, and Mom as not one', () => {
     const ev = (id: string) => content.events.find((e) => e.id === id)!;
-    for (const id of ['d1_y_logan', 'd1_y_laundromat', 'd6_gym_reviews', 'd3_coffee_promo', 'd5_y_kofi_news']) expect(isJobOffer(content, ev(id)), id).toBe(true);
+    for (const id of ['d1_y_logan', 'd2_y_laundromat', 'd6_gym_reviews', 'd3_coffee_promo', 'd5_y_kofi_news']) expect(isJobOffer(content, ev(id)), id).toBe(true);
     for (const id of ['d1_mom', 'd1_y_journalist', 'logan_contact']) expect(isJobOffer(content, ev(id)), id).toBe(false);
   });
 
@@ -102,16 +127,16 @@ describe('job offers spread over the first six hours', () => {
       deliverArrivals(s, content);
       s = { ...endDay(s, content), morning: null };
     }
-    expect([...late]).toEqual([at('19:00')]); // the deepfake gig comes in the evening
+    expect([...late].sort((a, b) => a - b)).toEqual([at('17:50'), at('19:00')]); // the Spin Cycle lead in the late afternoon, the deepfake gig in the evening
   });
 
   it("offers left over from a day that ended early are spread with the next day's, not dumped at 10:00", () => {
     const s0 = startGame(content, 7);
     // sleep straight away: the day 1 leads never arrived
     const s1 = endDay(s0, content);
-    expect(s1.delivered.some((d) => d.eventId === 'd1_y_logan' || d.eventId === 'd1_y_laundromat')).toBe(false);
+    expect(s1.delivered.some((d) => d.eventId === 'd1_y_logan')).toBe(false);
     const times = offersToday(s1);
-    expect(times.length).toBeGreaterThanOrEqual(3); // both day 1 leads and the trader
+    expect(times.length).toBeGreaterThanOrEqual(2); // Logan's day 1 lead and the trader
     expect(times[0]).toBeGreaterThanOrEqual(JOB_OFFERS.from);
     for (let i = 1; i < times.length; i++) expect(times[i] - times[i - 1]).toBeGreaterThanOrEqual(JOB_OFFERS.gap);
   });

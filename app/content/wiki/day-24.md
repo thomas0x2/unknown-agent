@@ -21,7 +21,7 @@ from: 24
 - [public] 12:15 [[Pollymarket]]: Crane at 63% after the town hall. {{y:d24_y_polly_crane}}
 - [public] 13:00 Candidate 2030 answered eleven questions; "I'd rather answer eleven than make up forty-one." {{y:d24_y_candidate}}
 - [public] 13:45 [[WallStreetBags]]: if a screen can do a town hall, it can do a launch broadcast; long $APO. {{y:m24_apo_screen}}
-- [public] 14:00 [[Dr. Adam Hoberman]]: if you wake at 3am, don't reach for your phone; "Close this app." {{y:d24_y_hoberman}}
+- [public] 14:00 [[Dr. Adam Hoberman]]: at 3am, walk barefoot on gravel for 20 minutes and eat one raw egg in the dark; "Close this app." {{y:d24_y_hoberman}}
 - [public] 14:30 [[Cal Hartman]]: no comment on how customers use agent; "agent-5 is very good at town halls." {{y:d24_y_hartman}}
 - [public] 15:15 [[Caleb Moxon]]: the campaign's GeneralAI contract is "enterprise", the tier where the logs belong to the customer. {{y:d24_y_moxon}}
 - [public] 16:05 cat_ceo's cat left the town hall halfway through. {{y:f34}}

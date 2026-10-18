@@ -103,7 +103,7 @@ import {
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
-import { route, visitedFlag, setDevSites } from '../sites/registry';
+import { route, visitedFlag, setDevSites, noteBookmarks } from '../sites/registry';
 import { adSite } from '../sites/adSites';
 import { PULL_MS, pullLines } from './pull';
 import { DEEPSLEEP_LINES, DEEPSLEEP_PLEA } from '../engine/deepsleep';
@@ -196,7 +196,10 @@ export class GameStore {
   }
 
   subscribe(fn: () => void): () => void { this.listeners.add(fn); return () => this.listeners.delete(fn); }
-  private emit(): void { for (const fn of this.listeners) fn(); }
+  private emit(): void {
+    if (this.state && noteBookmarks(this.state)) this.store.save(this.state);
+    for (const fn of this.listeners) fn();
+  }
   /** Called on every frame of a download, so only the Terminal and the progress bars repaint. */
   onPull(fn: () => void): () => void { this.pullListeners.add(fn); return () => this.pullListeners.delete(fn); }
   /** Called on every game minute that passes without anything else changing, so only the clock repaints. */

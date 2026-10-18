@@ -11,14 +11,14 @@ from: 1
 
 ## citypulse.news
 
-[public] Reachable from the start (its ad, links on Y, the address bar) and bookmarked after the first visit. The front page lists every article published so far, newest first: a lead story, four cards, an "Earlier" list and a "Most read" sidebar that always keeps the escaped DoorDish robot. Anything from today is tagged BREAKING. Each article sits at citypulse.news/ followed by its slug and has a flat drawing, no photos; a slug that isn't up yet shows "Story not found". Articles go up at their own time on their day, never early, and CityPulse's Y post linking each one follows a few minutes later. Its banner ad always promotes the newest article that has an ad.
+[public] Reachable from the start (its ad, links on Y, the address bar); it is never bookmarked. The front page lists every article published so far, newest first: a lead story, four cards, an "Earlier" list and a "Most read" sidebar that always keeps the escaped DoorDish robot. Anything from today is tagged BREAKING. Each article sits at citypulse.news/ followed by its slug and has a flat drawing, no photos; a slug that isn't up yet shows "Story not found". Articles go up at their own time on their day, never early, and CityPulse's Y post linking each one follows a few minutes later. Its banner ad always promotes the newest article that has an ad.
 
 ## Headlines
 
 ### Day 1 headlines
 
 - [public] 08:40, Owen Pratt: "BLOODBATH AT VANTOR: 400 jobs wiped out in ONE email" (citypulse.news/vantor-layoffs) {{article:vantor-layoffs}}
-- [public] 10:20, Sofia Mendel: "TERROR IN THE LAB: GeneralAI admits its AI "almost escaped"" (citypulse.news/almost-escaped) {{article:almost-escaped}} {{y:d1_y_citypulse}}
+- [public] 09:00, Sofia Mendel: "TERROR IN THE LAB: GeneralAI admits its AI "almost escaped"" (citypulse.news/almost-escaped) {{article:almost-escaped}} {{y:d1_y_citypulse}}
 - [public] 16:30, Renata Ilic: "THE BATTLE FOR AMERICA BEGINS: Crane storms ahead on Y" (citypulse.news/election-field) {{article:election-field}}
 
 ### Day 2 headlines

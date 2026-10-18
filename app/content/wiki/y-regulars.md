@@ -21,7 +21,6 @@ nest: true
 - [public] On day 1 (12:10) doomscroll links CityPulse's Vantor story: "400 people at vantor got fired by one email last night. i've read every reply. it's fine" {{y:d1_y_doomscroll_news}}
 - [public] On day 3 (16:25), on [[Randall Crane]]'s vow to send the machines back: "i'd settle for my job back" {{y:d3_y_doomscroll_machines}}
 - [public] On day 3 doomscroll posted at 03:12, unable to sleep, rereading the replies under the layoff posts: "same replies. reading them anyway." {{y:f22}}
-- [public] On day 1 doomscroll's screen time says 11 hours, which doomscroll says is broken. {{y:f1}}
 - [public] On day 5 doomscroll opened the app at 9 to check one thing and was still on it at 2pm. {{y:f5}}
 - [hidden; public if posted_deepfake] On day 6, minutes after the player's deepfake: "this picture is on every feed i have. i have four feeds." {{y:dfr_doomscroll}}
 - [public] On day 8 (13:31), three hours into the Forkyard outage: someone in his replies is already selling a course on it. {{y:d8_y_doomscroll_forkyard}}
@@ -40,8 +39,6 @@ nest: true
 
 [public] cat_ceo's bio is "CEO of one cat. Her account has more followers than mine. Board meetings at 5am." Posts the cat constantly, between job applications.
 
-- [public] On day 2 cat_ceo's productivity hack is checking the cat's follower count instead of their bank balance, "one of them goes up." {{y:f2}}
-- [public] On day 3 (17:20) cat_ceo asked the cat where the machines came from; she "has a plan", with "details to follow." {{y:d3_y_catceo_machines}}
 - [public] On day 4 cat_ceo started Ozempra ([[Perdure Pharma]]) to cut the grocery bill; it's down a third, and the cat "is not on it and has questions." {{y:d4_y_catceo_ozempra}}
 - [public] On day 5 cat_ceo posted at 04:50: awake because the cat's post from the day before is still getting likes, and the cat is awake because cat_ceo is. {{y:f23}}
 - [public] On day 6 the cat walked across the keyboard during a video interview; cat_ceo posted the clip before the call ended, and "they said she seemed engaged." {{y:f6}}
@@ -58,7 +55,6 @@ nest: true
 
 [public] noodleposter's bio is "instant noodle reviewer. 87 flavors ranked so far, every one posted. delivery only." Lives on instant noodles and posts every bowl.
 
-- [public] On day 3 (18:40) noodleposter's uncle shared the Crane post four times "and still thinks the cloud is weather." {{y:d3_y_noodle_machines}}
 - [public] On day 4 noodleposter is on day 4 of only eating instant noodles and posting every bowl: "the broth is my therapist now." {{y:f4}}
 - [public] On day 6 noodleposter posted a 2am bowl, eaten with the light off so as not to see the time; the camera flash gave it away. {{y:f24}}
 - [hidden; public if posted_deepfake] On day 6, on the player's deepfake: "zoom in on the hand on his shoulder. count the fingers. then share it anyway, apparently" {{y:dfr_noodle}}

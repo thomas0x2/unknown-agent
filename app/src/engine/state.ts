@@ -336,6 +336,8 @@ export interface GameState {
   swap?: SwapState;
   /** matchless.com: every profile the player swiped on for the client. Unset until first used. */
   matchless?: MatchlessState;
+  /** Bookmarked site ids in the order the player found them (sites/registry.ts noteBookmarks). Unset on old saves. */
+  bookmarkOrder?: string[];
   /** The player's Y posts. `img`: a picture (ui art kind); `viral`: likes climb to that many over `minutes` of game time (engine/agentJobs.ts viralLikes). */
   userPosts: { id: string; text: string; day: number; likes: number; delta: number; score: number; min?: number; img?: string; viral?: { likes: number; minutes: number } }[];
   sentToday: string[]; // recipients emailed today (one-per-recipient rule)
