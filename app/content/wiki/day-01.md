@@ -70,6 +70,7 @@ from: 1
 ## Writer notes
 
 - Timeline story beats: opens on Vantor's termination email; GeneralAI welcome; Logan's Y post → WorkAgent site (35 a night once live, nothing up front); after its first deploy he asks for a Y post (`logan_promo`, "we're live", 16:00 or 30 min after a later launch, sets `logan_promo_asked`), and thanks you if you post (`logan_promo_thanks`, "your post": the podcast got a new listener).
+- Night 1: the first night with a live app always breaks one of them, to teach overnight breaks; Forkyard's mail comes the next morning (see [[Day 2]], `first_break`).
 - Mara's first post; she can be emailed from today (`journalist_contact`, sets `talked_to_journalist`, honest also `did_journalist_interview`).
 - Hartman on the "testing incident".
 - Family: Mom (warm reply +5 trust, ask for money +20 DOLR and −10 trust with `asked_mom_money`, silence −5 if no outcome-matching reply by tonight's summary); brother replies-all. Money: Gary, rent due Sunday.

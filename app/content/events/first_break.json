@@ -1,0 +1,12 @@
+{
+  "id": "first_break",
+  "site": "qmail",
+  "from": "Forkyard",
+  "addr": "noreply@forkyard.test",
+  "subject": "Your deployment broke overnight",
+  "trigger": {
+    "flagsAll": ["first_break"]
+  },
+  "at": "10:00",
+  "body": "One of your live deployments stopped working as expected overnight.\n\nThis happens sometimes. Dependencies update, traffic shifts, and code that worked yesterday may not work today. Check your live apps, find what changed, and redeploy once it's fixed.\n\nBroken deployments are still billed at the standard hosting rate.\n\nForkyard Reliability"
+}
