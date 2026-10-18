@@ -24,6 +24,7 @@ from: 4
 ## Y
 
 - [public] 10:05 [[Cal Hartman]]: agent-2 "feels a little bit like magic. the new pricing reflects that." {{y:d4_y_hartman}}
+- [public] 10:20 [[deskjockey]]: wants a bot that tells him how Y feels about his stocks, "so I can feel it faster". Pays daily. trader@desk.test {{y:d4_y_trader}}
 - [public] 10:30 [[Dex Calloway]] (@dexcult): they gave you severance and a webinar; "we're giving you a countdown." {{y:d4_y_dexcult}}
 - [public] 11:30 [[Mara Vey]] follows up on the Vantor layoffs, 400 people, one memo: "tell me your story." {{y:d4_y_journalist}}
 - [public] [if talked_to_journalist] If the player already answered her, writing to her again gets "I already heard from you, thanks!" Otherwise the conversation is the one from day 1. {{mail:journalist_followup}}
@@ -62,11 +63,12 @@ from: 4
 
 ## Jobs
 
+- [hint] 10:20 [[Vibe Check]] for deskjockey: a sentiment crawler for $GAI and $VANT (post count, bullish, bearish and neutral split, every post counted, no bots) plus a portfolio view. Pays 50 DOLR a working day.
 - [hint] 11:30 Swiping for 6ft_sigma on matchless.com. Agreeing by email gets his matchless.com login (6ft_sigma / 6ftAlpha!; the site is a locked sign-in screen until then) and his first standards: age 25 to 42, within 20 miles, non-smokers; nothing about gender. Ten profiles a day; 35 DOLR a night only when all ten are right. He stays anonymous.
 
 ## Writer notes
 
-- Timeline: agent-2 rolls out, prices double.
+- Timeline: agent-2 rolls out, prices double. deskjockey → Vibe Check ($GAI, $VANT; 50/day; `d4_y_trader`, latent `trader_contact` from day 4; moved from day 2, Thomas 2026-10-18).
 - Viktor's watch sells if Swaplist is live.
 - Mara's follow-up (a player who already wrote to her gets `journalist_followup`'s "I already heard from you, thanks!" instead of the day 1 conversation).
 - The DoorDish robot still missing.
@@ -74,5 +76,5 @@ from: 4
 - 6ft_sigma's Y post (11:30): agreeing by email sends standards v1 (`matchless_contact`, `matchless_job`).
 - Men in the deck don't count until the player accepts one; the next morning he is SUPER STRAIGHT and "Women only" joins (`matchless_women_only`, see [[6ft_sigma]] notes). Picture-only traits from day 10.
 - Family: brother's jacket. Send 40+ DOLR to `0xb8d6…e46a` by day 5 (+5 trust, `gift_chipped_in`, confirmation an hour later via `d4_brother_paid` / `d4_brother_paid_over`), buy the leather jacket on Swaplist (45, +10 trust, `gift_own`, `d4_brother_bought` 30 min later), or excuse (−5, `gift_skipped`). Silence until the end of day 5 counts as the excuse (−5, `gift_skipped`); promising only keeps the thread open and still gets the penalty.
-- Crane's post is `m4_vant_crane` in `y_market.json` (no `at`; spread time). Vibe Check's trader sells 25,000 $VANT on it by hand.
+- Crane's post is `m4_vant_crane` in `y_market.json` (no `at`; spread time). deskjockey sells 25,000 $VANT on it by hand (his book shows it even when the player takes the job later).
 - Robot posts and DoorDish denials: PRs #200 and #204 (merged).

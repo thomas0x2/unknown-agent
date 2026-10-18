@@ -203,7 +203,7 @@ describe('Max after the first email', () => {
 
 describe('job offers', () => {
   const leads: [string, number, string][] = [
-    ['trader@desk.test', 2, 'trader_contact'],
+    ['trader@desk.test', 4, 'trader_contact'],
     ['logan@workagent.test', 1, 'logan_contact'],
     ['rep@closers.test', 6, 'outreach_contact'],
   ];

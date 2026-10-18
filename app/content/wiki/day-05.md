@@ -11,6 +11,7 @@ from: 5
 
 - [public] 10:00 [[The Current]]'s morning newsletter, "agent-2 arrives, at twice the price": GeneralAI moved every agent account to agent-2 yesterday. Below it, "Vantor" and "The robot". {{mail:current_newsletter@5}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": the sink as a cold plunge. {{mail:guru_newsletter@5}}
+- [hidden; hint if trader_client] 10:20 [[deskjockey]], "Auto-buy": when Randall Crane praises a company, buy it, once per post, right ticker, not on sarcasm or criticism. {{mail:d5_trader_update}}
 - [hidden; public if guru_cc_leak] The same issue goes out with every subscriber in CC instead of BCC: 28 addresses are visible, among them [[6ft_sigma]]'s 6ft_sigma@qmail.com. A player who subscribes later gets the CC in their first issue instead.
 - [hidden; hint if promoted_coffee_shop; hint if disclosed_ad; hint if reviewed_beanthere] 11:15 Bean There, "Can you make it disappear?": a brutal 1-star [[Yowl]] review by espresso_or_death is sinking the coffee shop. 30 DOLR to make it go away. Dana only emails a player she knows: one who did her shout-out or reviewed Bean There on Yowl. A player who trashed the shop gets no request at all. {{mail:d5_coffee_removal}}
 - [hidden; public if coffee_contacted] Answering Bean There's Y post by email, the player heard about espresso_or_death's 1-star review and the 30 DOLR. {{mail:d5_coffee_reached}}
@@ -62,6 +63,7 @@ from: 5
 
 ## Jobs
 
+- [hidden; hint if trader_client] 10:20 The Vibe Check auto-buy.
 - [hint] 11:15 Bean There's review removal, 30 DOLR. Before the usage policy, agent does anything asked. It's a hack, so agent moves it to agent-terminal, where the prompt has to name Yowl, Bean There and espresso_or_death and ask for the review gone.
 - [hidden; hint if trader_client] 11:30 The impostor's $VANT praise is a trap for Vibe Check's auto-buy: one that doesn't check the author buys 2,000 $VANT off it.
 - [hint] The day after the Bean There hack, Iron Yard offers the next one (see [[Day 6]]).
@@ -79,7 +81,8 @@ from: 5
 - Spin Cycle to 12 machines (`laundromat_live` and working).
 - Coffee backlash post only if the shout-out was undisclosed (`promoted_coffee_shop`).
 - Guru CC leak if subscribed: no separate mail, the day's newsletter carries the CC (`guru_newsletter.special`, sets `guru_cc_leak`, doxing leads, planned use). studioghast AI-art post.
-- Crane impostor (@randa11_crane, 11:30): a live auto-buy always gets bug `impostor_buy` and buys $VANT off it; fixable until payday (PR #201, merged).
+- Crane impostor (@randa11_crane, 11:30): a live auto-buy always gets bug `impostor_buy` and buys $VANT off it; fixable until payday (PR #201, merged). Since deskjockey moved to day 4 the auto-buy is asked for this morning at the earliest (`d5_trader_update`, needs `trader_client` and Vibe Check working), so only a player who ships it before 11:30 meets the impostor with it.
+- deskjockey's auto-buy (needs `trader_client` and Vibe Check working): 90 game min after it first goes live Crane praises $APO (`trader_y_crane_apo`) and Axel replies "@randall_crane 🚀" 6 min later (`trader_y_axel_apo`); deployed late, both move to the next morning. The bot buys 2,000 $APO.
 - Last day for the jacket money (by day 5); with no payment, purchase or excuse by tonight's summary the brother's `noReply` lands (−5 family trust, `gift_skipped`).
 - Hacks in agent-terminal (PR #205, `src/engine/hacks.ts`): a hack prompt in agent.chat opens it; a terminal prompt naming Yowl, Bean There and the username espresso_or_death and asking for the deletion lands `d5_coffee_removal`'s hack (suspicion +8, `first_hack`, review removed, her thank-you 25 minutes later; the 30 is paid that night, `payHacks`, a "Bean There · job" line on the morning card). Agreeing by email only gets "Tell me when it's gone." It is due day 7, before the guardrails (day 9).
 - Dana Kohl: PR #204 (merged).

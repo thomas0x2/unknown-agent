@@ -9,7 +9,7 @@ from: 1
 
 ## Where it comes from
 
-- [public] On day 1 Spin Cycle regulars complain on Y that every machine is busy and the owner's raw status feed ("M5 ST=1 T=731"??) is unreadable: "Someone make it a real app." {{y:d1_y_laundromat}}
+- [public] On day 2 Spin Cycle regulars complain on Y that every machine is busy and the owner's raw status feed ("M5 ST=1 T=731"??) is unreadable: "Someone make it a real app." {{y:d2_y_laundromat}}
 - [hint] The player starts it by asking [[agent]] to turn the feed into a readable app; the feed page explains its own codes, and the build prompt should too. {{mail:laundromat_contact}}
 - [public] The app carries a Spin Cycle logo and a "Raw feed" link for checking it against the feed.
 

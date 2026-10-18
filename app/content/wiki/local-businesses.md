@@ -27,7 +27,7 @@ hub: true
 
 [public] Spin Cycle Laundry, 201 Ferris St, owner [[Hassan Okoro]]: laundromat, $, card and DOLR accepted. Yowl lists daily 06:00–00:00; spincycle.test says 10:00 to 22:00 every day. Wash 4 DOLR, dry 2 DOLR per 20 min, detergent 1 DOLR. Yowl says eight washers and six dryers, "most of them working"; the site lists front-loaders, two large-capacity washers "and machine 3"; its Contact card reads "Hassan Okoro, owner · owner@spincycle.test". Machine 3 is always out of order. Loads left overnight go on the shelf. Its raw status feed is the [[Spin Cycle feed]]. Yowl reviews: walked_there_again (2, every machine busy, nobody can read the feed), Nadia (3, a van idling out back at 2am last week). Ad: "Machine 3 is FREE* Probably."
 - [public] On day 5 Spin Cycle installs four second-hand washers from a laundromat that closed in August, for twelve machines. {{article:spin-cycle}}
-- [public] {{y:d1_y_laundromat}}
+- [public] {{y:d2_y_laundromat}}
 - [public] {{y:d5_y_kofi_news}}
 
 ## Other restaurants on DoorDish

@@ -1,17 +1,17 @@
 {
-  "id": "d3_trader_update",
+  "id": "d5_trader_update",
   "site": "qmail",
   "from": "deskjockey",
   "addr": "trader@desk.test",
   "subject": "Auto-buy",
   "trigger": {
-    "dayMin": 3,
+    "dayMin": 5,
     "flagsAll": [
       "trader_client"
     ],
     "appWorking": "trader_contact"
   },
-  "at": "13:05",
+  "at": "10:20",
   "onDeliver": {
     "updateApp": {
       "client": "trader_contact",

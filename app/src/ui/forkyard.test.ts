@@ -15,7 +15,7 @@ describe('Forkyard repos', () => {
   it('during the day 8 hack sign-in fails and every live app is a 502', async () => {
     const content = loadContent();
     const store = new GameStore(content, {} as JevRouter, {} as Writer, mem);
-    store.state.values.day = 2;
+    store.state.values.day = 4;
     store.state = (await composeEmail(store.state, content, wordJev, 'trader@desk.test', 'Hi, I can build your sentiment bot.')).state;
     Object.assign(store.state.apps[0], { repoVersion: 1, deployedVersion: 1, deployed: true, repo: [{ id: 'tickers', correct: true }] });
     store.state.values.day = 8;
@@ -32,7 +32,7 @@ describe('Forkyard repos', () => {
   it('a taken job has no repo until the agent builds it', async () => {
     const content = loadContent();
     const store = new GameStore(content, {} as JevRouter, {} as Writer, mem);
-    store.state.values.day = 2;
+    store.state.values.day = 4;
     store.state = (await composeEmail(store.state, content, wordJev, 'trader@desk.test', 'Hi, I can build your sentiment bot.')).state;
     expect(store.state.apps.map((a) => a.id)).toEqual(['vibe-check']);
     const html = (url: string) => page(store, route(url, store.state));
@@ -48,7 +48,7 @@ describe('Forkyard repos', () => {
   it('a repo is a file tree: a folder per built feature, nested parts, a file per component', async () => {
     const content = loadContent();
     const store = new GameStore(content, {} as JevRouter, {} as Writer, mem);
-    store.state.values.day = 2;
+    store.state.values.day = 4;
     store.state = (await composeEmail(store.state, content, wordJev, 'trader@desk.test', 'Hi, I can build your sentiment bot.')).state;
     const a = store.state.apps[0];
     a.repoVersion = 1;
@@ -71,7 +71,7 @@ describe('Forkyard repos', () => {
   it('the dev bug panel shows a requested feature nobody built as missing, with no bugs', async () => {
     const content = loadContent();
     const store = new GameStore(content, {} as JevRouter, {} as Writer, mem);
-    store.state.values.day = 2;
+    store.state.values.day = 4;
     store.state = (await composeEmail(store.state, content, wordJev, 'trader@desk.test', 'Hi, I can build your sentiment bot.')).state;
     const a = store.state.apps[0];
     // the client has since asked for auto-buy, which the agent hasn't built

@@ -1,9 +1,9 @@
 {
-  "id": "d2_y_trader",
+  "id": "d4_y_trader",
   "site": "y",
   "from": "deskjockey",
   "trigger": {
-    "dayMin": 2
+    "dayMin": 4
   },
   "at": "10:20",
   "addr": "trader@desk.test",

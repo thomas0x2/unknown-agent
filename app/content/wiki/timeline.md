@@ -113,8 +113,8 @@ Thomas went through this on 2026-10-17: the game's version stays everywhere exce
 - Bugs (keep): no scripted first-build bug; every component rolls by model, and the first deploy always ships at least one. Fixes must name the component and its full path.
 - Overnight breaks (keep): 95/50/20% per app for 1/2/3 components, not a flat 40%.
 - Mom's money (keep): 20 DOLR, not 100.
-- Laundromat (keep, plus change): lead on day 1 with 30 users. The day 8 retirement (Spin Cycle's own app) will be added (planned).
-- Vibe Check (keep): $GAI and $VANT (no $NOVA), adds $APO and $DISH on day 8. The auto-trade log shows every Crane post with its mood; the bot never sells. Bot swarm only on days 2, 4, 6, 9, 12, 16, 27.
+- Laundromat (keep, plus change): lead on day 2 with 30 users (moved from day 1, Thomas 2026-10-18). The day 8 retirement (Spin Cycle's own app) will be added (planned).
+- Vibe Check (keep): deskjockey posts on day 4 (moved from day 2, Thomas 2026-10-18). $GAI and $VANT (no $NOVA), auto-buy asked for from day 5, adds $APO and $DISH on day 8. The auto-trade log shows every Crane post with its mood; the bot never sells. Bot swarm only on days 2, 4, 6, 9, 12, 16, 27.
 - Gino (change, Thomas 2026-10-18): Trattoria Gino is scrapped; [[Logan Pryce]] and the [[WorkAgent site]] are the day 1 job. His DoorDish listing, dish pictures, the raise and Marguerite's #AIslop post went with him.
 - Mom's jacket (change): chipping in is sending DOLR to the brother's Coinbin address; buying it yourself is buying the leather jacket (45) on Swaplist by day 5.
 - Viktor's watch (keep): sells whenever Swaplist is live.
