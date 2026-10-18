@@ -4,6 +4,8 @@
  * don't collide. A new game or a loaded save starts from freshUi().
  */
 
+import type { SshLogin } from './shell';
+
 export interface Draft { to: string; subject: string; body: string }
 
 export function freshUi() {
@@ -33,6 +35,8 @@ export function freshUi() {
     termSession: null as null | 'deepsleep' | 'agent',
     /** The you@laptop shell's folder, from ~ down (game/shell.ts). */
     termCwd: [] as string[],
+    /** An ssh login at the shell waiting for its password (game/shell.ts), or null. */
+    termSsh: null as null | SshLogin,
     /** invaders.exe is running in the you@laptop tab. */
     invaders: false,
     /** Dev mode: the site whose options panel is open (agent, qmail, y), or ''. */

@@ -574,7 +574,7 @@ const FORMS: Record<string, (f: HTMLFormElement) => void> = {
     const v = val('#term-input').trim(); if (!v) return;
     SOUND.play('send', 0, 'terminal');
     clearField('term-input');
-    if (v === 'clear') { store.termClear(); return; }
+    if (v === 'clear' && !store.ui.termSsh) { store.termClear(); return; }
     void store.term(v);
   },
   aterm: () => {
