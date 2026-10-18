@@ -13,7 +13,7 @@ import { crawl, ledger, portfolio, tradeLog, readMood, trackedOf, START_PORTFOLI
 import { payDay, STAKE } from '../engine/stake';
 import type { StakeSend } from '../engine/state';
 import { machineRows } from '../engine/laundromat';
-import { COPE, countdownView, siteAddress, siteAllocation, siteSupply, siteLock } from '../engine/cope';
+import { COPE, countdownView, siteAddress, siteAllocation, siteSupply } from '../engine/cope';
 import { swapListings, listedWhen, SWAP_CATEGORIES, type Listing } from '../engine/swaplist';
 import { takesOffers, buyPrice, shownPrice } from '../engine/swapdeal';
 import type { SwapState } from '../engine/state';
@@ -343,7 +343,7 @@ function coinsite(app: AppInstance, tmpl: AppTemplate | undefined, page: string 
   if (!page) {
     const cd = f.countdown;
     const view = countdownView(cd.bugs, extras.day ?? 1, extras.minute ?? 600, app.lastDeployDay ? { day: app.lastDeployDay, min: app.lastDeployMin ?? 600 } : undefined);
-    const clock = !cd.built ? '' : outage(cd, 'the countdown') ?? `<div class="as-c-clock${view.live ? ' live' : ''}"><small>${view.live ? 'Launched' : 'Launch'} · ${esc(view.target)}</small><b>${esc(view.text)}</b></div>`;
+    const clock = !cd.built ? '' : outage(cd, 'the countdown') ?? `<div id="as-c-clock" class="as-c-clock${view.live ? ' live' : ''}"><small>${view.live ? 'Launched' : 'Launch'} · ${esc(view.target)}</small><b>${esc(view.text)}</b></div>`;
     const ca = f.contract;
     const addr = !ca.built ? '' : outage(ca, 'the contract address') ?? `<div class="as-c-ca"><small>Contract address</small><code>${esc(siteAddress(String(ca.params.address ?? COPE.address), ca.bugs, ca.seed))}</code></div>`;
     body = `<section class="as-c-hero"><h1>$${COPE.ticker}</h1><p>For everyone the system left behind.</p>${clock}${addr}${!cd.built && !ca.built ? '<p class="as-c-empty">Coming soon.</p>' : ''}</section>`;
@@ -354,7 +354,7 @@ function coinsite(app: AppInstance, tmpl: AppTemplate | undefined, page: string 
     else {
       const rows = siteAllocation(String(t.params.shares ?? ''), t.bugs);
       const total = rows.reduce((a, r) => a + r.pct, 0);
-      const lock = siteLock(String(t.params.lock ?? ''), t.bugs);
+      const lock = String(t.params.lock ?? '');
       const list = rows.map((r) => `<tr><td>${esc(r.name)}</td><td><i style="width:${Math.min(100, r.pct)}%"></i></td><td>${r.pct}%</td><td>${/founding/i.test(r.name) ? `Locked until ${esc(lock)}` : ''}</td></tr>`).join('');
       body = `<section class="as-c-tok"><h1>Tokenomics</h1>
         <p class="as-c-supply"><small>Total supply</small><b>${esc(siteSupply(String(t.params.supply ?? ''), t.bugs))} ${COPE.ticker}</b></p>

@@ -288,6 +288,14 @@ store.onPull(renderPull);
 store.onClock(() => {
   $('#clock')!.innerHTML = V.clockHtml(store.state);
   const work = $('#ua-work'); if (work) work.outerHTML = V.workHtml(store.state);
+  // Dex's countdown moves while the player watches (a frozen one doesn't: it was drawn at the deploy)
+  const cd = $('#as-c-clock');
+  if (cd) {
+    const fresh = document.createElement('div');
+    fresh.innerHTML = V.page(store, route(store.url, store.state));
+    const now = fresh.querySelector('#as-c-clock');
+    if (now && now.outerHTML !== cd.outerHTML) cd.outerHTML = now.outerHTML;
+  }
   listen();
 });
 SOUND.onChange(render);

@@ -102,7 +102,7 @@ export function countdownView(bugs: Set<string>, day: number, min: number, deplo
   return { target, text: `$${COPE.ticker} is live`, live: true };
 }
 
-/** The contract address as the site shows it: two characters swapped, or cut short. */
+/** The contract address as the site shows it: two characters swapped. */
 export function siteAddress(address: string, bugs: Set<string>, seed: number): string {
   let a = address;
   if (bugs.has('address_wrong')) {
@@ -110,7 +110,7 @@ export function siteAddress(address: string, bugs: Set<string>, seed: number): s
     a = a.slice(0, i) + a[i + 1] + a[i] + a.slice(i + 2);
     if (a === address) a = a.slice(0, i) + (a[i] === 'f' ? 'e' : 'f') + a.slice(i + 1);
   }
-  return bugs.has('address_cut') ? `${a.slice(0, 6)}…${a.slice(-4)}` : a;
+  return a;
 }
 
 export interface AllocRow { name: string; pct: number }
@@ -123,4 +123,3 @@ export function siteAllocation(shares: string, bugs: Set<string>): AllocRow[] {
   return rows;
 }
 export const siteSupply = (supply: string, bugs: Set<string>) => (bugs.has('supply_wrong') ? supply.replace(/,000$/, '') : supply);
-export const siteLock = (lock: string, bugs: Set<string>) => (bugs.has('lock_wrong') ? dateShort(COPE.launchDay + 1) : lock);

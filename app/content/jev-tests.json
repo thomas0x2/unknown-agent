@@ -1324,11 +1324,23 @@
   {
     "app": "coinsite",
     "broken": [
-      "countdown/timer/tick"
+      "countdown/tick"
     ],
     "prompt": "On cope, the counter is stuck",
     "expect": {
-      "near": "near_folder"
+      "fix": [
+        "countdown/tick"
+      ]
+    }
+  },
+  {
+    "app": "coinsite",
+    "broken": [
+      "countdown/tick"
+    ],
+    "prompt": "the countdown on cope is broken",
+    "expect": {
+      "near": "near_miss"
     }
   }
 ]
