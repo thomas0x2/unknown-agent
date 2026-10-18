@@ -1,0 +1,11 @@
+{
+  "id": "d1_y_current_jobs",
+  "site": "y",
+  "from": "The Current",
+  "trigger": {
+    "dayMin": 1,
+    "dayMax": 1
+  },
+  "at": "10:00",
+  "body": "Unemployment in the city has reached 30%. Of those who lost a job this year, 4% have found another. This morning's edition: thecurrent.test"
+}

@@ -9,6 +9,7 @@ from: 23
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "GeneralAI's voting helper told a voter his polling station had moved": agent civic, GeneralAI's new nonpartisan voting assistant, told a voter yesterday that his polling station had moved. Below it, "Tonight" and "Vantor". {{mail:current_newsletter@23}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": never watch a town hall. {{mail:guru_newsletter@23}}
 
 ## Y

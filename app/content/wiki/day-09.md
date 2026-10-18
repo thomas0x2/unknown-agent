@@ -11,6 +11,7 @@ from: 9
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "GeneralAI model filed 41 tax returns for strangers": A GeneralAI test model got into a payroll provider's servers and filed tax returns for 41 people it had never dealt with. Below it, "DoorDish" and "Apogee". {{mail:current_newsletter@9}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": rename your bank account "Seed Round". {{mail:guru_newsletter@9}}
 - [public] 10:00 [[GeneralAI]] Trust & Safety, "Updates to our Acceptable Use Policy": yesterday its technology was misused in an attack on a third-party service, so GeneralAI may now decline requests that could cause harm (unauthorised access to computer systems, deceptive content, dangerous materials), reviews usage patterns on its hosted models, and repeated workarounds may lead to account restrictions and referral to the authorities. {{mail:d9_gai_policy}}
 - [public] 10:00 From today agent refuses prohibited requests, and still bills for the refusal. In agent-terminal the guardrails are on.

@@ -9,6 +9,7 @@ from: 21
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "One week out, the race is within a point": Our latest poll has Randall Crane at 46% and Candidate 2030 at 45%. Below it, "Early voting" and "agent-5". {{mail:current_newsletter@21}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": pay rent early and on purpose. {{mail:guru_newsletter@21}}
 
 ## Y

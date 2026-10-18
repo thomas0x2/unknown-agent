@@ -9,6 +9,7 @@ import type { Content, GameEvent, Trigger } from '../content/schema';
 import { addFlag, hasAll, hasFlag, hasNone, log } from './core';
 import { WALLETS } from './wallets';
 import { applyEffects } from './effects';
+import { composeIssue, stampIssue } from './newsletter';
 import type { MeterId } from './values';
 
 function compare(current: number, expr: string): boolean {
@@ -51,10 +52,17 @@ export function triggerMatches(s: GameState, t: Trigger): boolean {
 
 /** The body shown for an event delivered on `day`: a repeating event cycles through its `bodies`. */
 export function eventBody(ev: GameEvent, day: number): string {
+  if (ev.newsletter) return composeIssue(ev.newsletter, day)?.body ?? '';
   const list = ev.bodies;
   if (!list?.length) return ev.body ?? '';
   const i = (day - (ev.trigger.dayMin ?? 1)) % list.length;
   return list[(i + list.length) % list.length];
+}
+
+/** The subject of an event delivered on `day`: a newsletter's is that issue's headline. */
+export function eventSubject(ev: GameEvent, day: number): string {
+  if (ev.newsletter) return composeIssue(ev.newsletter, day)?.subject ?? ev.subject ?? '';
+  return ev.subject ?? '';
 }
 
 /** The CC line of a delivery: its special issue's addresses, else the event's own. */
@@ -135,10 +143,11 @@ function deliver(s: GameState, ev: GameEvent, min = s.clockMin): DeliveredEvent 
   const sp = ev.special;
   const special = !!sp && s.values.day >= sp.dayMin && !s.delivered.some((x) => x.eventId === ev.id && x.cc);
   if (special) d.cc = sp.cc ?? [];
+  stampIssue(s, ev, d);
   s.delivered.push(d);
   applyEffects(s, ev.onDeliver, ev.job, ev.id);
   if (special) applyEffects(s, sp.onDeliver, ev.job, ev.id);
-  log(s, `New on ${ev.site}: ${ev.subject ?? ev.from ?? ev.id}`, 'info');
+  log(s, `New on ${ev.site}: ${d.subject ?? ev.subject ?? ev.from ?? ev.id}`, 'info');
   return d;
 }
 
