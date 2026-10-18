@@ -250,8 +250,11 @@ export interface YExtra {
   text: string;
   day: number;
   likes: number;
+  /** The player's post this answers; it shows as an ordinary post tagging them. */
   replyTo?: string;
   generated?: boolean;
+  /** Why a scripted line stood in for Haiku (dev mode shows it under the post). */
+  scripted?: string;
   /** A user's complaint about this app (broken at payday). */
   about?: string;
   /** Minutes since midnight it went up, when known. */
@@ -391,6 +394,7 @@ export interface GameState {
   mailBin?: string[];
   /** Qmail rows deleted when a day ended with them in the Bin. */
   mailDeleted?: string[];
+  /** The new-game OS greeting was dismissed (it shows again only after New game). */
   introSeen: boolean;
   /** Sherwood positions by ticker: fractional shares and what they cost. Unset until the first trade. */
   stocks?: Record<string, { shares: number; cost: number }>;

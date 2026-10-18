@@ -41,11 +41,6 @@
 .term-win .tm { flex: 1; min-height: 0; overflow-y: auto; }
 
 /* ── tabs ── */
-.tw-tabs { display: flex; flex: none; gap: 2px; padding: 4px 6px 0; background: #262626; border-bottom: 1px solid #1a1a1a; overflow-x: auto; }
-.tw-tabs:empty { display: none; }
-.tw-tab { flex: 0 1 220px; min-width: 0; padding: 6px 14px; border: 0; border-radius: 6px 6px 0 0; background: transparent; color: #9a9a9a; font: 500 12.5px 'Ubuntu', 'Noto Sans', var(--f-ui); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
-.tw-tab:hover { color: #dcdcdc; background: #303030; }
-.tw-tab.on { color: #e6e6e6; background: #0b0d10; }
 
 /* ── agent-terminal ── */
 .at-status { display: flex; gap: 14px; align-items: center; margin: -4px 0 8px; padding-bottom: 8px; border-bottom: 1px solid #21262d; color: #7d8590; font-size: 12px; }

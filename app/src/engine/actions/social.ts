@@ -95,7 +95,7 @@ export async function postToY(
   s.userPosts.push({ id, text, day: s.values.day, min: s.clockMin, likes: Math.max(0, delta * 3 + Math.round(s.values.followers * 0.02)), delta, score: rating.quality * 4 });
   log(s, `Posted on Y (${rating.category}): ${delta >= 0 ? '+' : ''}${delta} followers.`, 'info');
   await promoteApps(jev, s, 'y', text, content);
-  if (content) await rollYReplies(s, content, writer, { id, text }); // doomscroll, cat_ceo and zev.dolr may answer
+  if (content) await rollYReplies(s, writer, { id, text }); // doomscroll, cat_ceo and zev.dolr may answer
   return { state: s, rating, followerDelta: delta };
 }
 

@@ -12,7 +12,7 @@ nest: true
 
 ## Replies to the player
 
-[public] doomscroll, cat_ceo and zev.dolr sometimes reply under [[The player]]'s Y posts, each in their own voice and about what the post says. The more followers the player has, the more often they turn up; noodleposter only ever posts. See [[Y]] for the odds.
+[public] doomscroll, cat_ceo and zev.dolr sometimes answer [[The player]]'s Y posts with a post of their own that tags the player, each in their own voice and about what the post says. A small account almost never hears from them; the more followers the player has, the more often they turn up; noodleposter only ever posts. See [[Y]] for the odds.
 
 ## doomscroll
 

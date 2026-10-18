@@ -5,7 +5,7 @@ category: people
 from: 4
 ---
 
-[public] Brynn LeClaire (@brynnleclaire, 48,200 followers) is [[Pug]]'s head of community and its brand ambassador on Y. She posts about Pug as if she had founded it: "When I started Pug…". Bio: "head of community @pug 🐶 building the future of founder insurance · ex-everything · if you know you know". She is on the guest list of the a67x Run Club on [[Lumi]].
+[public] Brynn LeClaire (@brynnleclaire, 48,200 followers) is [[Pug]]'s head of community and its brand ambassador on Y. She posts about Pug as if she had founded it: "When I started Pug…". Bio: "head of community @pug 🐶 building the future of founder insurance · ex-everything · if you know you know". Her Y profile picture: long honey-blonde hair, middle part, a big smile and a cream Pug quarter-zip with the pug on the chest. She is on the guest list of the a67x Run Club on [[Lumi]].
 
 ## On Y
 
