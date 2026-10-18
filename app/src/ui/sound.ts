@@ -8,7 +8,8 @@
  */
 export type Cue =
   | 'click' | 'key' | 'send' | 'reply' | 'mail' | 'post' | 'charge' | 'income'
-  | 'workStart' | 'deploy' | 'bounce' | 'dayStart' | 'dayEnd' | 'lateWarn' | 'ending' | 'evicted';
+  | 'workStart' | 'deploy' | 'bounce' | 'dayStart' | 'dayEnd' | 'lateWarn' | 'ending' | 'evicted'
+  | 'like' | 'ghost';
 
 export interface SoundSettings { muted: boolean; volume: number }
 
@@ -335,6 +336,17 @@ const CUES: Record<Cue, (e: SoundEngine, t: number) => void> = {
     for (let i = 0; i < 6; i++) e.tone(scale[i % scale.length], t + 0.16 + i * 0.045, 0.035, { type: 'square', gain: 0.012, lp: 3400 });
     [[659, 0.6], [988, 0.72], [880, 0.86]].forEach(([f, at]) => e.tone(f, t + at, 0.5, { gain: 0.045, type: 'triangle' }));
     e.tone(440, t + 0.86, 0.7, { gain: 0.025 });
+  },
+  // Matchless like: the card flicks right with a quick swish, then two soft rising notes
+  like: (e, t) => {
+    e.noise(t, 0.16, { bp: 1400, q: 0.9, gain: 0.05 });
+    e.tone(784, t + 0.06, 0.16, { gain: 0.045, type: 'triangle' });
+    e.tone(1175, t + 0.15, 0.32, { gain: 0.04, type: 'triangle' });
+  },
+  // Matchless ghost: a duller swish to the left and one falling note, nobody told
+  ghost: (e, t) => {
+    e.noise(t, 0.2, { bp: 700, q: 0.8, gain: 0.06 });
+    e.tone(392, t + 0.05, 0.28, { gain: 0.04, type: 'triangle', glideTo: 262 });
   },
   // the working day opens: a low pad that brightens, then one bell
   dayStart: (e, t) => {

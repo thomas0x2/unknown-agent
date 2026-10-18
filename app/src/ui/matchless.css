@@ -21,7 +21,11 @@
 .mx-login .mx-fine { text-align: center; }
 .mx-err { margin: 0; color: #b4234f !important; font-size: 13px !important; }
 .mx-main { max-width: 440px; margin: 0 auto; padding: 20px 16px 32px; }
-.mx-count { margin: 0 0 10px; font-size: 13px; color: #8a6f79; text-align: center; }
+.mx-count { margin: 0 0 12px; padding: 10px 14px; background: #fff; border: 1px solid #efdde3; border-radius: 12px; }
+.mx-count p { margin: 0 0 8px; font-size: 15px; font-weight: 600; color: #2a1d22; text-align: center; }
+.mx-count b { color: #b4234f; }
+.mx-bar { display: block; height: 6px; background: #f3e7eb; border-radius: 999px; overflow: hidden; }
+.mx-bar i { display: block; height: 100%; background: #b4234f; border-radius: 999px; }
 .mx-card { background: #fff; border: 1px solid #efdde3; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 18px rgba(120, 30, 60, .08); }
 .mx-ph svg { display: block; width: 100%; height: 220px; }
 .mx-info { padding: 14px 18px 4px; }
@@ -39,3 +43,12 @@
 .mx-btn:disabled { opacity: .45; cursor: default; }
 .mx-done { background: #fff; border: 1px solid #efdde3; border-radius: 14px; padding: 28px 20px; text-align: center; }
 .mx-done p { margin: 6px 0 0; color: #8a6f79; font-size: 14px; }
+.mx-fly-frame { position: fixed; z-index: 50; overflow: hidden; pointer-events: none; }
+.mx-fly { position: absolute; margin: 0; pointer-events: none; animation: mx-fly 420ms cubic-bezier(.45, 0, .8, .5) forwards; }
+.mx-fly-yes { --mx-dir: 1; }
+.mx-fly-no { --mx-dir: -1; }
+.mx-fly-yes .mx-btn.yes, .mx-fly-no .mx-btn.no { transform: scale(1.08); }
+@keyframes mx-fly {
+  from { transform: none; opacity: 1; }
+  to { transform: translateX(calc(var(--mx-dir) * 120%)) rotate(calc(var(--mx-dir) * 18deg)); opacity: 0; }
+}
