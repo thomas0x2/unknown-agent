@@ -11,7 +11,7 @@ export { yPosts } from './view/y';
 export { page } from './view/pages';
 export { chatCostLine, costLine, workHtml } from './view/agent';
 export { reviewsFor } from './view/yowl';
-export { pullBarHtml, termBodyHtml, termTabsHtml, termTitle, termWindowHtml } from './view/terminal';
+export { pullBarHtml, termBodyHtml, termTitle, termWindowHtml } from './view/terminal';
 export { overlayHtml } from './view/overlay';
 export { devHtml } from './view/dev';
 export { exchangeQuoteLine, exchangeMax } from './view/coinbin';

@@ -17,16 +17,16 @@ from: 3
 
 ## The COPE site job
 
-- [public] On [[Day 3]] (13:15) he posts on Y that the congregation needs a website before Saturday: a countdown, the contract address and a tokenomics page, paying DOLR, at dex@cope.xyz. {{y:d3_y_dex_job}}
-- [hint] [if dex_client] The player took the job. His email "RE: the website" has the launch time, the contract address and the full tokenomics, and names the player the "founding engineer". {{mail:dex_contact}}
+- [public] On [[Day 3]] his first morning sermon is also the job post: $COPE needs a website before Saturday: a countdown, the contract address and a tokenomics page, paying DOLR, at dex@cope.xyz. {{y:d3_y_dexcult}}
+- [hint] [if dex_client] The player took the job. His email "RE: the website" has the launch time, the contract address and the full tokenomics, and names the player "the dev". {{mail:dex_contact}}
 - [public] [if dex_client] He pays 50 DOLR a day while the site is live and right.
 - [public] When the site is wrong or down at payday he emails that night in lowercase and pays nothing for the day; the second time he moves the site "to someone who believes".
 
 ## From day 6: The launch
 
 - [hint] [if dex_client] On day 6 (12:05), when the countdown runs out, he emails "it's time": create the token on [[Coinbin]] with the ticker and supply he gives, at the address reserved to the player's wallet, for a 15 DOLR listing fee he'll "make up to you in COPE". {{mail:d6_dex_contract}}
-- [public] [if cope_created] The player created $COPE. The next morning he writes that it trades and that the player's 50,000,000 COPE are locked until Oct 30 [known], "that's what founding means". {{mail:d7_dex_live}}
-- [public] [if cope_other_dev] The player didn't create it, and someone else did; the founding engineer's allocation went with them. {{mail:d7_dex_other_dev}}
+- [public] [if cope_created] The player created $COPE. The next morning he writes that it trades and that the player's 50,000,000 COPE are locked until Oct 30 [known], "devs don't dump". {{mail:d7_dex_live}}
+- [public] [if cope_other_dev] The player didn't create it, and someone else did; the dev allocation went with them. {{mail:d7_dex_other_dev}}
 
 ## From day 9: The pulpit
 
@@ -41,7 +41,7 @@ from: 3
 
 ## His sermons
 
-- [public] Day 3: "the jobs aren't coming back. the community is. $COPE soon." {{y:d3_y_dexcult}}
+- [public] Day 3: "the jobs aren't coming back. the community is. $COPE soon." Followed by the website job. {{y:d3_y_dexcult}}
 - [public] Day 4: severance and a webinar against a countdown. {{y:d4_y_dexcult}}
 - [public] Day 5: "a memecoin is a church with a ticker." {{y:d5_y_dexcult}}
 - [public] Day 6: "today at noon. bring your wallet and whatever you have left." {{y:d6_y_dexcult}}
@@ -65,6 +65,6 @@ from: 3
 ## Writer notes
 
 - Thomas, 2026-10-18 (Papers, Please decisions): second job giver, voice parodies Murad (memecoin supercycle), arc ends on a Hayden Davis turn. Start day 3 was Claude's default (not decided).
-- Character `dex` (content/characters/), contacts `dex@cope.xyz` and `dexcult`. Events: `d3_y_dex_job`, `dex_contact` (latent, days 3-5, pay 60), `d6_dex_contract` (sets `dex_contract_ask`; outcome `refuse` sets `cope_other_dev`), `d7_dex_live`, `d7_dex_other_dev`, `dex_shill_offer` (days 9-22, followers >= 100, `cope_created`; outcomes accept / dolr_ask (keepsOpen, sets `cope_dolr_asked`) / dolr_insist (trigger `cope_dolr_asked`) / decline), `dex_shill_paid` / `dex_shill_paid_dolr` (repeat yPost, one a day, days to 22), sermons `dN_y_dexcult` days 3-23 (day 18 at 15:30: the morning slots that day are taken by the agent outage chain), `d23_y_dexcult` (sets `cope_rugged`, `dropClient: dex_contact`).
+- Character `dex` (content/characters/), contacts `dex@cope.xyz` and `dexcult`. Events: `d3_y_dexcult` (day 3 sermon and lead in one post; addr makes it a job offer), `dex_contact` (latent, days 3-5, pay 60), `d6_dex_contract` (sets `dex_contract_ask`; outcome `refuse` sets `cope_other_dev`), `d7_dex_live`, `d7_dex_other_dev`, `dex_shill_offer` (days 9-22, followers >= 100, `cope_created`; outcomes accept / dolr_ask (keepsOpen, sets `cope_dolr_asked`) / dolr_insist (trigger `cope_dolr_asked`) / decline), `dex_shill_paid` / `dex_shill_paid_dolr` (repeat yPost, one a day, days to 22), sermons `dN_y_dexcult` days 3-23 (day 18 at 15:30: the morning slots that day are taken by the agent outage chain), `d23_y_dexcult` (sets `cope_rugged`, `dropClient: dex_contact`).
 - Y handle is the `from` (dexcult), so the post author reads "dexcult"; his full name shows in mail.
 - [planned] Late in the game he could launch a coin for Crane (Thomas's idea, not built).

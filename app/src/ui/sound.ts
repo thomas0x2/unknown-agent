@@ -8,7 +8,7 @@
  */
 export type Cue =
   | 'click' | 'key' | 'send' | 'reply' | 'mail' | 'post' | 'charge' | 'income'
-  | 'workStart' | 'deploy' | 'bounce' | 'dayStart' | 'dayEnd' | 'lateWarn' | 'ending' | 'evicted'
+  | 'workStart' | 'workDone' | 'deploy' | 'bounce' | 'dayStart' | 'dayEnd' | 'lateWarn' | 'ending' | 'evicted'
   | 'like' | 'ghost';
 
 export interface SoundSettings { muted: boolean; volume: number }
@@ -287,6 +287,21 @@ const CUES: Record<Cue, (e: SoundEngine, t: number) => void> = {
     e.tone(110, t + 0.1, 0.9, { type: 'sawtooth', gain: 0.02, glideTo: 330, lp: 900, attack: 0.25, detune: 8 });
     e.noise(t + 0.1, 0.9, { bp: 600, q: 0.7, gain: 0.035 });
     for (const at of [0.3, 0.36, 0.41, 0.55, 0.6, 0.72, 0.76, 0.8]) e.noise(t + at + rnd(-0.01, 0.01), 0.012, { bp: rnd(3000, 4200), q: 5, gain: 0.06 });
+  },
+  // the agent's build or fix lands: the workStart motor spins down, the relays clack open, and a
+  // square-wave arpeggio climbs an octave to a held top note over a low fifth. The only fanfare in the
+  // game, and the start's mirror, so it can't pass for a reply.
+  workDone: (e, t) => {
+    e.tone(165, t, 0.45, { type: 'sawtooth', gain: 0.04, glideTo: 55, lp: 700 });
+    e.noise(t, 0.45, { bp: 600, q: 0.7, gain: 0.025 });
+    for (const at of [0.42, 0.49]) {
+      e.noise(t + at, 0.025, { bp: 1800, q: 3, gain: 0.12 });
+      e.tone(160, t + at, 0.05, { type: 'square', gain: 0.025, lp: 600, attack: 0.001 });
+    }
+    const notes = [523, 659, 784, 1047];
+    notes.forEach((f, i) => e.tone(f, t + 0.62 + i * 0.09, i === notes.length - 1 ? 0.7 : 0.11, { type: 'square', gain: 0.022, lp: 2600 }));
+    e.tone(262, t + 0.89, 0.8, { type: 'triangle', gain: 0.04 });
+    e.tone(392, t + 0.89, 0.8, { type: 'triangle', gain: 0.025 });
   },
   // a document arrives by pneumatic tube: a rush of air, a capsule landing in the tray, then a
   // two-strike desk bell. The only bell in the game, so mail never sounds like a post or a reply.

@@ -16,7 +16,7 @@
     ]
   },
   "at": "10:20",
-  "body": "you didn't create it, so someone else did, last night. the founding engineer's allocation went with them.\n\nthe site still needs to be right. $COPE trades as of this morning.\n\ndex",
+  "body": "you didn't create it, so someone else did, last night. the dev allocation went with them.\n\nthe site still needs to be right. $COPE trades as of this morning.\n\ndex",
   "onDeliver": {
     "setFlags": [
       "cope_other_dev"

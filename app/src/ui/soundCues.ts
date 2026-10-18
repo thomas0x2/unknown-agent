@@ -53,17 +53,24 @@ export function soundCues(a: SoundSnap, b: SoundSnap): Cue[] {
   // any jump but a night's sleep (a loaded save, dev tools) is silent
   if (b.day !== a.day && b.day !== a.day + 1) return [];
   // sleeping: the day ends, and the night's rent and payouts still make their money sounds
-  if (b.day !== a.day) return ['dayEnd', ...money(a, b)];
+  // work still going at bedtime is pushed overnight and heard with the morning card
+  if (b.day !== a.day) return ['dayEnd', ...money(a, b), ...(landed(a, b) ? ['workDone' as const] : [])];
   const out: Cue[] = [];
   if (a.morning && !b.morning) out.push('dayStart');
   if (a.clockMin < LATE_MIN && b.clockMin >= LATE_MIN) out.push('lateWarn');
-  // the agent's "Working on…" line is heard as the work starting, not as one more reply
+  // the agent's report on landed work has its own sound instead of the reply chime; the
+  // "Working on…" line is heard as the work starting, not as one more reply
+  const done = landed(a, b);
+  if (done) out.push('workDone');
   if (b.workFrom >= 0 && b.workFrom !== a.workFrom) out.push('workStart');
-  else if (b.agentMsgs > a.agentMsgs || b.sellerMsgs > a.sellerMsgs) out.push('reply');
+  else if (!done && (b.agentMsgs > a.agentMsgs || b.sellerMsgs > a.sellerMsgs)) out.push('reply');
   // Forkyard pushes are silent; only Deploy and Redeploy make a sound, from the button itself (main.ts)
   out.push(...money(a, b));
   return out;
 }
+
+/** The build or fix that was running in `a` has landed (or been followed by the next one) by `b`. */
+const landed = (a: SoundSnap, b: SoundSnap) => a.workFrom >= 0 && b.workFrom !== a.workFrom;
 
 /** Every balance change is heard: money out and money in each have their sound, both if both happened. */
 function money(a: SoundSnap, b: SoundSnap): Cue[] {

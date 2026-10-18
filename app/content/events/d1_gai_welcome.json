@@ -8,5 +8,5 @@
     "dayMin": 1
   },
   "at": "10:00",
-  "body": "Your agent account is active and billed to your Coinbin wallet.\n\nEvery prompt is billed at your model's rate. Ask it to build, write, or read the web for you.\n\nGeneralAI\nThis mailbox is not monitored. Neither is anything else."
+  "body": "Your agent account is active and billed to your Coinbin wallet.\n\nEvery prompt is billed at your model's rate. Open agent.chat and ask it to build, write, or read the web for you.\n\nGeneralAI\nThis mailbox is not monitored. Neither is anything else."
 }
