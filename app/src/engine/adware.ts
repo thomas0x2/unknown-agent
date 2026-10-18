@@ -49,14 +49,26 @@ export const adwareActive = (s: GameState): boolean => !!s.adware && !s.adware.r
 /** The source was extracted, so the author's email and wallet are known. */
 export const adwareSourceKnown = (s: GameState): boolean => !!s.adware?.source;
 
-/** What the you@laptop shell prints when PCMedic_Setup.exe is run. */
-export const EXE_RUN_LINES: { k: 'in' | 'sys' | 'err' | 'model'; text: string }[] = [
+/**
+ * What the you@laptop shell prints when PCMedic_Setup.exe is run, as a loading sequence rather than
+ * one dump: each step's line appears in turn, and a `work` step first shows with a trailing "…" and
+ * then, a beat later, lands its "done". The store (runExe) drives the real-time timing; with motion
+ * off (or in tests/SSR) it just shows the finished lines, which `EXE_RUN_LINES` gives.
+ */
+export interface ExeStep { k: 'in' | 'sys'; text: string; work?: boolean }
+export const EXE_RUN_STEPS: ExeStep[] = [
   { k: 'in', text: './PCMedic_Setup.exe' },
   { k: 'sys', text: 'PC Medic 0.9 — scanning your device …' },
-  { k: 'sys', text: 'removing 3 threats … done' },
-  { k: 'sys', text: 'installing 1 threat … done' },
+  { k: 'sys', text: 'removing 3 threats', work: true },
+  { k: 'sys', text: 'installing 1 threat', work: true },
   { k: 'sys', text: 'PC Medic is now protecting your device. PC Medic cannot be closed.' },
 ];
+/** A work step while it runs ("removing 3 threats …"); other steps show as-is. */
+export const exeWorking = (st: ExeStep): string => (st.work ? `${st.text} …` : st.text);
+/** A step finished ("removing 3 threats … done"); other steps show as-is. */
+export const exeDone = (st: ExeStep): string => (st.work ? `${st.text} … done` : st.text);
+/** The finished output, all lines at once — the end state for the motion-off / test path. */
+export const EXE_RUN_LINES: { k: 'in' | 'sys'; text: string }[] = EXE_RUN_STEPS.map((st) => ({ k: st.k, text: exeDone(st) }));
 
 /** Running PCMedic_Setup.exe: the laptop is infected and the pop-ups begin. */
 export function installAdware(s: GameState): void {
@@ -66,19 +78,21 @@ export function installAdware(s: GameState): void {
 }
 
 // ── OS pop-ups ──
-export interface PopupAd { id: string; title: string; body: string; cta: string; href: string; fine: string; hint?: boolean }
+export interface PopupAd { id: string; brand: string; title: string; body: string; cta: string; href: string; fine: string; hint?: boolean }
 
 /**
- * What the pop-ups show. Mostly junk in the world's own voice; one (`models`) actually points
- * somewhere useful — a free local model, for prompting without GeneralAI watching or billing.
+ * The scam ads the adware injects — a different advertiser each time, in the world's own voice, so
+ * they read as junk pop-ups the virus is serving, not as PC Medic nagging. Each points at a real
+ * landing page. Mostly worthless; one (`models`) actually points somewhere useful — a free local
+ * model, for prompting without GeneralAI watching or billing.
  */
 export const POPUP_ADS: PopupAd[] = [
-  { id: 'won', title: 'CONGRATULATIONS', body: 'You are the 1,000,000th visitor to your own computer. Claim your reward.', cta: 'Claim now', href: 'prince-claims.xyz', fine: 'Reward not guaranteed, not real, and not yours.' },
-  { id: 'clean', title: 'Your PC is still at risk', body: 'PC Medic found 2 more threats. Upgrade to PC Medic Pro to remove them.', cta: 'Upgrade (19 DOLR/mo)', href: 'pcmedic.live', fine: 'PC Medic Pro cannot remove PC Medic.' },
-  { id: 'single', title: 'Singles near you', body: 'Someone 0.2 miles away is lonely right now. So are you.', cta: 'Say hello', href: 'lonely.ai', fine: 'Distance estimated. Loneliness confirmed.' },
-  { id: 'dolr', title: 'DOLR is mooning', body: 'Your neighbours are buying. The pop-up you are reading was paid for in DOLR.', cta: 'Buy DOLR', href: 'dolr.money/moon', fine: 'This pop-up is an asset class now.' },
-  { id: 'models', title: 'Prompts too expensive?', body: 'Run a model on your own laptop. Free, offline, and nobody logging what you ask.', cta: 'Get it free', href: 'deepsleep.ai', fine: 'Confident. Mostly wrong. Still cheaper than agent.', hint: true },
-  { id: 'wellness', title: 'Feeling watched?', body: 'GeneralAI Wellness can help you accept being watched. First session automated.', cta: 'Start healing', href: 'generalai.com/parking', fine: 'Sessions billed per feeling.' },
+  { id: 'won', brand: 'ClaimCenter', title: 'CONGRATULATIONS', body: 'You are the 1,000,000th visitor to your own computer. Claim your reward before it expires.', cta: 'Claim now', href: 'prince-claims.xyz', fine: 'Reward not guaranteed, not real, and not yours.' },
+  { id: 'verify', brand: 'HumanVerified™', title: 'Unusual activity on your device', body: 'A bot may be using your laptop. Verify you are human to keep your files.', cta: 'Verify now', href: 'humanverified.id', fine: 'Humans only. Verification does not verify anything.' },
+  { id: 'single', brand: 'nearby', title: 'Singles near you', body: 'Someone 0.2 miles away is lonely right now. So are you.', cta: 'Say hello', href: 'lonely.ai', fine: 'Distance estimated. Loneliness confirmed.' },
+  { id: 'dolr', brand: 'DOLR', title: 'DOLR is mooning', body: 'Your neighbours are buying. The pop-up you are reading was paid for in DOLR.', cta: 'Buy DOLR', href: 'dolr.money/moon', fine: 'This pop-up is an asset class now.' },
+  { id: 'models', brand: 'Weightroom', title: 'Prompts too expensive?', body: 'Run a model on your own laptop. Free, offline, and nobody logging what you ask.', cta: 'Get it free', href: 'deepsleep.ai', fine: 'Confident. Mostly wrong. Still cheaper than agent.', hint: true },
+  { id: 'wellness', brand: 'GeneralAI Wellness', title: 'Feeling watched?', body: 'GeneralAI Wellness can help you accept being watched. First session automated.', cta: 'Start healing', href: 'generalai.com/parking', fine: 'Sessions billed per feeling.' },
 ];
 
 /** On a clock tick: open a pop-up if one is due. Returns true when it did. */

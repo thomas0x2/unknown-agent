@@ -38,6 +38,9 @@ import {
   endDay,
   exchangeCoins,
   EXE_RUN_LINES,
+  EXE_RUN_STEPS,
+  exeWorking,
+  exeDone,
   fileRentAppeal,
   fillerToday,
   fillSave,
@@ -746,15 +749,29 @@ export class GameStore {
     this.ui.adNotice = 'PCMedic_Setup.exe saved to your Qdrive. Open it to run the cleaner.';
     this.store.save(s); this.emit();
   }
-  /** Run PCMedic_Setup.exe in the you@laptop shell: the laptop gets infected and the pop-ups begin. */
+  /** Run PCMedic_Setup.exe in the you@laptop shell: it plays out like a loader, then the laptop is
+   *  infected and the pop-ups begin. installAdware runs up front, so a second click just reopens. */
   runExe(): void {
     const s = this.state;
     if (s.adware) { this.showTerm(true); return; }
     if (!s.flags.includes('has_terminal')) addFlag(s, 'has_terminal'); // the exe gives the player the shell
-    s.terminal.push(...EXE_RUN_LINES);
     installAdware(s);
     this.ui.termOpen = true; this.ui.termShown = true; this.ui.termTab = 'shell';
     this.store.save(s); this.emit();
+    void this.playExe();
+  }
+  /** Reveal the exe's output one line at a time, a work line landing its "done" a beat after it shows;
+   *  with motion off (tests/SSR) the finished lines go up at once. */
+  private async playExe(): Promise<void> {
+    if (!motion()) { this.state.terminal.push(...EXE_RUN_LINES); this.store.save(this.state); this.emit(); return; }
+    for (const st of EXE_RUN_STEPS) {
+      const line = { k: st.k, text: exeWorking(st) };
+      this.state.terminal.push(line);
+      this.emit();
+      await wait(st.k === 'in' ? 240 : 420);
+      if (st.work) { line.text = exeDone(st); this.emit(); await wait(300); }
+    }
+    this.store.save(this.state); this.emit();
   }
   /** Dismiss the current OS ad pop-up; the next one is scheduled about an hour out. */
   closeAdPopup(): void { closePopup(this.state); this.store.save(this.state); this.emit(); }
@@ -1032,6 +1049,8 @@ export function withholdCharge(s: GameState, from: number): number {
   return Math.round(due * 100) / 100;
 }
 const wait = (ms: number) => new Promise<void>((done) => setTimeout(done, Math.max(0, ms)));
+/** Off outside a browser (tests) and for players who asked for less motion, like the chat streamer. */
+const motion = () => typeof document !== 'undefined' && !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
 /** deepsleep-0.5B's whole repertoire: one confident, absurd sentence in Chinese, whatever you ask. */
 const DEEPSLEEP = DEEPSLEEP_LINES.map((l) => l.zh);
