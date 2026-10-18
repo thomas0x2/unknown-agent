@@ -190,7 +190,6 @@ export class GameStore {
     nameUnnamedBugs(this.state, content); // saves from before the app had named bugs
     holdHiddenBugs(this.state, content); // and from before bugs waited until they could show
     startDayChat(this.state, content); // saves from before the per-day reset may still carry yesterday's chat
-    this.ui.intro = !this.state.introSeen;
     this.ui.greet = !this.state.introSeen; // a fresh game opens with the OS greeting
     applyDevMode(this.devMode);
   }
@@ -274,7 +273,7 @@ export class GameStore {
   /** A dialog is up (or the run is over), so time stands still. */
   get dialogOpen(): boolean {
     const s = this.state;
-    return !!(s.ending || s.morning || this.ui.jevOffline || this.ui.confirm || this.ui.memWarn || this.ui.greet || this.ui.intro || s.adware?.popup);
+    return !!(s.ending || s.morning || this.ui.jevOffline || this.ui.confirm || this.ui.memWarn || this.ui.greet || s.adware?.popup);
   }
   get clockPaused(): boolean {
     return this.clockHeld || this.dialogOpen || (typeof document !== 'undefined' && document.hidden);
@@ -442,8 +441,6 @@ export class GameStore {
     this.ui.mailNotice = null; this.store.save(this.state); this.emit();
   }
   dismissMorning(): void { this.state.morning = null; this.store.save(this.state); this.emit(); }
-  seenIntro(): void { this.ui.intro = false; this.state.introSeen = true; this.store.save(this.state); this.emit(); }
-  openIntro(): void { this.ui.intro = true; this.emit(); }
   confirm(text: string, yes: string, fn: () => void): void { this.ui.confirm = { text, yes, fn }; this.emit(); }
   resolveConfirm(ok: boolean): void { const c = this.ui.confirm; this.ui.confirm = null; this.emit(); if (ok && c) c.fn(); }
 
@@ -562,13 +559,13 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = HOME_TAB; this.nextTab = PINNED.length + 1;
-    this.ui = { ...freshUi(), intro: false, dev: this.ui.dev, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab };
+    this.ui = { ...freshUi(), dev: this.ui.dev, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab };
     this.store.save(this.state);
     this.emit();
   }
 
   endDay(): void { this.sleep(this.state); this.store.save(this.state); this.emit(); }
-  dismissGreet(): void { this.ui.greet = false; this.emit(); }
+  dismissGreet(): void { this.ui.greet = false; this.state.introSeen = true; this.store.save(this.state); this.emit(); }
   dismissMemWarn(): void { this.ui.memWarn = false; this.emit(); }
   /**
    * End the day and autosave the new morning into the 'auto' slot. The next day starts with only the

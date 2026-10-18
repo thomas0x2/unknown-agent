@@ -21,7 +21,6 @@ export function freshUi() {
     dev: false,
     liked: {} as Record<string, boolean>,
     reposted: {} as Record<string, boolean>,
-    intro: true,
     greet: false,
     memWarn: false,
     confirm: null as null | { text: string; yes: string; fn: () => void },

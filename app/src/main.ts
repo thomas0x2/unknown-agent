@@ -399,7 +399,6 @@ const ACTS: Record<string, (t: HTMLElement) => void> = {
   jevcell: (t) => jevTestsPick(store, Number(t.dataset.step), Number(t.dataset.part)),
   jevfails: () => jevTestsFailsOnly(store),
   devmode: () => store.setDevMode(!store.devMode),
-  intro: () => store.openIntro(),
   sound: () => SOUND.setMuted(!SOUND.settings.muted),
 };
 const dataAttr = (key: string) => `[data-${key.replace(/[A-Z]/g, (c) => '-' + c.toLowerCase())}]`;
@@ -448,7 +447,6 @@ function onOverlay(a: string, t?: HTMLElement): void {
   if (a === 'new') { forgetDrafts(); quietReset(); store.newGame(); }
   else if (a === 'adpop-close') store.closeAdPopup();
   else if (a === 'adpop-go') { const url = t?.dataset.url; store.closeAdPopup(); if (url) { newPageLoad(); store.navigate(url, true); } }
-  else if (a === 'start') store.seenIntro();
   else if (a === 'morning') store.dismissMorning();
   else if (a === 'greet') { store.dismissGreet(); SOUND.play('dayStart', 0.1); }
   else if (a === 'mem-ok') store.dismissMemWarn();

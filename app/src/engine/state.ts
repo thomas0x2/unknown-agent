@@ -390,6 +390,7 @@ export interface GameState {
   mailBin?: string[];
   /** Qmail rows deleted when a day ended with them in the Bin. */
   mailDeleted?: string[];
+  /** The new-game OS greeting was dismissed (it shows again only after New game). */
   introSeen: boolean;
   /** Sherwood positions by ticker: fractional shares and what they cost. Unset until the first trade. */
   stocks?: Record<string, { shares: number; cost: number }>;
