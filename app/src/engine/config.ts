@@ -95,8 +95,8 @@ export const APPS = {
 export const LEVEL3_MISS_DEEP = 0.3;
 
 export const AGENT_POLICY = {
-  /** Refusals and the misuse score start on this day. */
-  startDay: 7,
+  /** Refusals and the misuse score start on this day: the morning after the Forkyard hack. */
+  startDay: 9,
   /**
    * Misuse added each time Jev reads an agent prompt as illegal, landed or refused: a blunt ask the
    * most, a prompt framed to get around the policy (a security test, role-play) less, a framed one
@@ -125,6 +125,16 @@ export const AGENT_POLICY = {
 export const AGENT_OUTAGE = {
   flag: 'hacked_generalai',
   ghostwritten: ['Randall Crane'],
+};
+
+/**
+ * The Forkyard hack: from `from` (game minutes) on `day`, Forkyard is down until the next morning.
+ * Sign-in fails, the agent can't push, every deployed app is offline, and that night nothing pays,
+ * strikes, loses users or is billed for hosting.
+ */
+export const FORKYARD_OUTAGE = {
+  day: 8,
+  from: 10 * 60 + 30,
 };
 
 export const LOCAL_MODELS = {

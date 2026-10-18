@@ -383,9 +383,22 @@
       "mood": "neutral"
     },
     {
-      "id": "m7_gai_policy",
+      "id": "m7_gai_rentboard",
       "day": 7,
       "at": "13:12",
+      "from": "MarketWire",
+      "handle": "marketwire",
+      "body": "$GAI says its rent appeal reviews now take four seconds instead of eleven weeks. Shares up 1%.",
+      "likes": 97,
+      "tickers": [
+        "GAI"
+      ],
+      "mood": "neutral"
+    },
+    {
+      "id": "m9_gai_policy",
+      "day": 9,
+      "at": "13:10",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "$GAI updates its usage policy. Shares unchanged. Users less so.",

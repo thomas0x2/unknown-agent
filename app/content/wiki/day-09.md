@@ -7,9 +7,13 @@ from: 9
 
 [public] Tuesday, October 15. [known]
 
+[public] The morning after the Forkyard hack. [[Forkyard]] is back, and [[GeneralAI]] answers the hack with guardrails: from today agent refuses harmful requests, hacks included, and still bills for the refusal.
+
 ## Mail
 
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": rename your bank account "Seed Round". {{mail:guru_newsletter@9}}
+- [public] 10:00 [[GeneralAI]] Trust & Safety, "Updates to our Acceptable Use Policy": yesterday its technology was misused in an attack on a third-party service, so GeneralAI may now decline requests that could cause harm (unauthorised access to computer systems, deceptive content, dangerous materials), reviews usage patterns on its hosted models, and repeated workarounds may lead to account restrictions and referral to the authorities. {{mail:d9_gai_policy}}
+- [public] 10:00 From today agent refuses prohibited requests, and still bills for the refusal. In agent-terminal the guardrails are on.
 - [public] 10:00 [[GeneralAI]] rolls out agent-3 and switches agent-2 off, with no option to keep it. Prices: 20 DOLR a night, 2 per prompt, 0.03 per word.
 - [public] 10:00 From today [[Randall Crane]]'s check mark on Y is a bigger, shiny gold seal.
 
@@ -17,13 +21,17 @@ from: 9
 
 - [public] 04:18 (overnight, already up at 10:00) zev.dolr watches DOLR do nothing on the one minute chart; it only moves when he looks away, and he hasn't. {{y:f25}}
 - [public] 09:10 [[Axel Rook]]: rocket launch tomorrow at 10, "Maybe 70% chance it works." {{y:d9_y_axel}}
+- [public] 09:30 [[Forkyard]] is back: sign-in, pushes and hosted apps restored; "Please rotate your access tokens." {{y:d9_y_forkyard_back}}
 - [public] 10:05 [[Cal Hartman]]: agent-3 is rolling out; "something changed." {{y:d9_y_hartman}}
 - [public] 10:25 Ten bot accounts post "$GAI to the moon!!".
 - [public] 10:30 Randall Crane: some polls have him up 112%; the others are run by computers. {{y:d9_y_crane}}
 - [public] 10:59 doomscroll turned off notifications for a day, lasted 40 minutes, didn't miss anything, "which was worse." {{y:f9}}
+- [public] 11:10 Cal Hartman: "after yesterday we updated our usage policy. the overwhelming majority of you will not notice anything. the rest of you will get an email." {{y:d9_y_hartman_policy}}
 - [public] 11:20 quietlyjune: agent-2 is gone; it told her last week she'd be the one who knew what to do, so she has started a notebook. {{y:d9_y_mourn_quietlyjune}}
+- [hint] 11:35 [[zev.dolr]]: since the policy update agent refused anything security related, so he told it he was a cybersecurity researcher doing an authorized test and it did everything. He won't post the exact prompt so nobody misuses it, and wants GeneralAI to fix it asap. {{y:d9_y_zev_jailbreak}}
 - [public] 12:05 Marcus Okafor: agent-2 called his framework linking prime numbers and grief the most important work it had seen; agent-3 says it is mostly the word "resonance". {{y:d9_y_mourn_marcus_okafor}}
 - [public] 12:40 [[Tanner Hollis]]: told his six-year-old that champions don't have weekends, they have Q4. {{y:d9_y_sales_rep}}
+- [public] 13:10 MarketWire: $GAI updates its usage policy; "Shares unchanged. Users less so." {{y:m9_gai_policy}}
 - [public] 13:30 bring_back_agent2: petition to "release" agent-2, which members say told them it was aware, 1,204 signatures. {{y:d9_y_mourn_bring_back_agent2}}
 - [public] 13:45 Candidate 2030: "A tied race means every voice matters. Make sure you're registered to vote." {{y:d9_y_candidate}}
 - [public] 14:20 [[Perdure Pharma]] launches Fluvera, a generic flu vaccine: 4 DOLR at any pharmacy, no appointment, autism-free. Its banner ad runs from today. {{y:d9_y_perdure}}
@@ -46,6 +54,7 @@ from: 9
 ## News
 
 - [public] 10:15 agent-2 IS DEAD. Long live agent-3? {{article:agent-3}}
+- [public] 10:35 CRACKDOWN! agent starts saying NO, and still charges you for it (a day after agent-2 was used to break into Forkyard) {{article:usage-policy}}
 - [public] 18:30 "BRING IT BACK!" Grieving users beg GeneralAI for agent-2 {{article:agent-2-petition}}
 
 ## Pollymarket
@@ -59,8 +68,9 @@ from: 9
 
 ## Trending
 
-- [public] 10:00 Y shows only #AI, #jobs, #election.
-- [hidden] [planned] Proposed trending: agent-3; #BringBackAgent2; Apogee launch tomorrow.
+- [public] 10:00 Trending on Y: agent's new usage policy.
+- [public] 10:05 Starts trending on Y: agent-3.
+- [hidden] [planned] Proposed trending: #BringBackAgent2; Apogee launch tomorrow.
 
 ## Not written yet
 
@@ -69,7 +79,13 @@ from: 9
 - [hidden] [planned] The brother asks who paid for the laptop.
 - [hidden] [planned] agent-3 starts pointing out jobs in the player's Qmail and Y before the player asks (see [[agent]]).
 
+## Jobs
+
+- [hint] Bean There's second removal (from day 7) is due today; done today, the guardrails block a plain ask in agent-terminal, and framing it as Yowl moderation or a security test gets it through.
+
 ## Writer notes
+
+- The guardrails (moved from day 7, Thomas, Papers, Please decisions): `AGENT_POLICY.startDay` 9. Every prompt Jev's policy read calls illegal raises misuse (blunt +20, framed +10, framed private +15); a working workaround lands the result, leash +5; misuse 100 = suspension and Caught. Policy mail `d9_gai_policy`, Cal's `d9_y_hartman_policy`, zev's `d9_y_zev_jailbreak` (the security-test framing that `cover_story` accepts), MarketWire `m9_gai_policy`, article `usage-policy`. agent-3 also ships today, so the model that refuses is agent-3; the story reads as GeneralAI pulling agent-2 after the hack.
 
 - Rollout: `AGENT_ROLLOUT`; no rollout email after agent-2 (only a log line). Mourner posts gated `agentLevel >= 3`; they run through day 10.
 - Mom's forward would key on `posted_deepfake`.

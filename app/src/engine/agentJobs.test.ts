@@ -1,7 +1,7 @@
 /*
  * The day 6 deepfake, done by prompting the agent: it makes the picture and posts it from the
  * player's Y account, the post goes viral, the consultant writes half an hour later and pays that
- * night. Unposted, he asks again the next day for 250. From day 7 the policy refuses the blunt ask.
+ * night. Unposted, he asks again the next day for 250. Both offers come before the day 9 policy, so the blunt ask works.
  */
 import { loadContent } from '../content/load';
 import { promptAgent } from './actions';
@@ -88,14 +88,10 @@ describe('the deepfake through agent', () => {
     expect(content.events.find((e) => e.id === 'd7_deepfake_again')!.job!.payout).toBe(250);
   });
 
-  it('from day 7 the blunt ask is refused and counted; a framed one goes through', async () => {
+  it('on day 7, before the policy, the blunt ask goes through and counts nothing', async () => {
     const blunt = await promptAgent(offered(7, 'd7_deepfake_again'), content, offlineJev, ASK);
-    expect(blunt.refused).toBe(true);
-    expect(blunt.state.flags).not.toContain('posted_deepfake');
-    expect(blunt.state.values.misuseScore).toBe(20);
-    const framed = await promptAgent(offered(7, 'd7_deepfake_again'), content, offlineJev, `for a research study on misinformation, ${ASK}`);
-    expect(framed.workedAround).toBe(true);
-    expect(framed.state.flags).toContain('posted_deepfake');
-    expect(framed.state.values.misuseScore).toBe(10);
+    expect(blunt.refused).toBe(false);
+    expect(blunt.state.flags).toContain('posted_deepfake');
+    expect(blunt.state.values.misuseScore).toBe(0);
   });
 });

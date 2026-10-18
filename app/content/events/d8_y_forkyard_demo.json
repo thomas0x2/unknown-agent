@@ -1,0 +1,12 @@
+{
+  "id": "d8_y_forkyard_demo",
+  "site": "y",
+  "from": "Jonas Feld",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "13:25",
+  "viral": true,
+  "body": "demo cancelled. the client asked whether the people who did it are available for hire"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_forkyard_confirmed",
+  "site": "y",
+  "from": "Forkyard",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "13:55",
+  "body": "We can confirm unauthorized access to Forkyard systems. The attackers used a commercially available AI agent. Sign-in, pushes and hosted apps will stay offline while we investigate."
+}

@@ -1,0 +1,12 @@
+{
+  "id": "d8_y_zev_forkyard",
+  "site": "y",
+  "from": "zev.dolr",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "13:22",
+  "viral": true,
+  "body": "all eleven of my client sites are down and i can't push anything. not that there's anything to push. they're just gone"
+}

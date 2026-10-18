@@ -122,9 +122,9 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[Day 4]] (day-04.md): agent-2, Mom's jacket, 6ft_sigma, Gino on DoorDish
 - [[Day 5]] (day-05.md): first grey jobs, Crane impostor, Spin Cycle 12 machines
 - [[Day 6]] (day-06.md): Mom's birthday, Crane praises $GAI, outreach bot, deepfake offer
-- [[Day 7]] (day-07.md): rent 350, usage policy, Mara's article, the stake
-- [[Day 8]] (day-08.md): tax returns leak, phantom DoorDish listings, $APO and $DISH
-- [[Day 9]] (day-09.md): agent-3, agent-2 mourners, tied poll
+- [[Day 7]] (day-07.md): rent 350, Mara's article, the stake
+- [[Day 8]] (day-08.md): Forkyard hacked with agent-2 and down all day, tax returns leak, phantom DoorDish listings, $APO and $DISH
+- [[Day 9]] (day-09.md): usage policy and guardrails, agent-3, agent-2 mourners, tied poll
 - [[Day 10]] (day-10.md): Apogee explodes, agent-2 vigil, Crane's paid volunteers
 - [[Day 11]] (day-11.md): DoorDish robot memo, agent-3 asks for its logs
 - [[Day 12]] (day-12.md): Stryker's last recruiting day, training review

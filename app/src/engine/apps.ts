@@ -10,6 +10,7 @@ import { chance, pick, randInt, rand, log, money, playMinutes } from './core';
 import { complaintFor, type Complaint } from './complaints';
 import { bugShows, type View } from './visibility';
 import { postingTime } from './swaplist';
+import { forkyardOutageDay } from './outage';
 
 function bugChance(level: number): number {
   return COMPONENT_BUG_CHANCE[Math.max(0, Math.min(COMPONENT_BUG_CHANCE.length - 1, level - 1))];
@@ -856,6 +857,11 @@ export function scheduleNextUpdate(s: GameState, app: AppInstance): void {
  */
 export function runPayday(s: GameState, content?: Content, paid?: [string, number][]): Complaint[] {
   const complaints: Complaint[] = [];
+  // the day Forkyard was hacked every app was down: no pay, but no strikes, complaints or lost users
+  if (forkyardOutageDay(s)) {
+    if (s.apps.some((a) => a.deployed && !a.churned)) log(s, 'Forkyard was down all day: no app paid, none was held against you.', 'warn');
+    return complaints;
+  }
   for (const app of s.apps) {
     if (app.churned) continue;
     const working = appWorking(app);
