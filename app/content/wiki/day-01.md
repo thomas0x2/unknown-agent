@@ -23,27 +23,27 @@ from: 1
 
 ## Money
 
-- [public] 10:25 [[Gary Pruitt]], "Rent: due Sunday, October 13": 350 DOLR comes out of the wallet at the end of Sunday, October 13, and he will not take another late payment. [known] {{mail:d1_landlord_rent}}
+- [public] 10:50 [[Gary Pruitt]], "Rent: due Sunday, October 13": 350 DOLR comes out of the wallet at the end of Sunday, October 13, and he will not take another late payment. [known] {{mail:d1_landlord_rent}}
 
 ## Family
 
 - [public] 11:20 [[Mom]], "Are you okay?": she heard about the layoffs and asks if the player is eating. "Your father says hi (he didn't)." {{mail:d1_mom}}
-- [public] 11:50 [[Brother]] replies to all: "well at least the robots will remember you fondly lmao. you good though?" {{mail:d1_brother_joke}}
+- [public] 13:40 [[Brother]] replies to all: "well at least the robots will remember you fondly lmao. you good though?" {{mail:d1_brother_joke}}
 
 ## Y
 
+- [public] 07:40 [[Max Stryker]]: up at 4am; half the city got fired by a computer and went back to sleep. Already up when the day starts. {{y:d1_y_stryker}}
+- [public] 09:10 [[CityPulse]] links its "almost escaped" story. Already up when the day starts. {{y:d1_y_citypulse}}
 - [public] 09:30 MarketWire: $GAI up 4% premarket on the "almost escaped" news. {{y:m1_gai_escape}}
 - [public] 09:50 [[Axel Rook]]: AI will do every job within a few years, and everyone gets universal high income. {{y:d1_y_axel}}
 - [public] 10:00 [[The Current]]: unemployment in the city has reached 30%, and 4% of those who lost a job this year have found another; links the morning edition at thecurrent.test. {{y:d1_y_current_jobs}}
-- [public] 10:20 [[Max Stryker]]: up at 4am; half the city got fired by a computer and went back to sleep. {{y:d1_y_stryker}}
-- [public] 10:32 [[CityPulse]] links its "almost escaped" story. {{y:d1_y_citypulse}}
 - [public] 10:42 [[Logan Pryce]] (@logan_ships): "why combinator-backed, building in stealth"; WorkAgent is looking for a founding engineer to ship its landing page this week, paying DOLR up front. logan@workagent.test {{y:d1_y_logan}}
-- [public] 11:40 [[Cal Hartman]] on the "testing incident": everyone is safe, the model is safe. {{y:d1_y_hartman}}
 - [public] 12:10 doomscroll: 400 people at Vantor fired by one email, has read every reply, links CityPulse. {{y:d1_y_doomscroll_news}}
 - [public] 12:30 [[Mara Vey]] of [[The Current]] asks people behind this week's AI layoffs to write to her at mara@thecurrent.test. From now on the player can email her. {{y:d1_y_journalist}}
 - [public] 13:15 Axel Rook: "@mara_vey Interesting." {{y:d1_y_axel_2}}
 - [public] 13:50 A Spin Cycle regular: every machine busy again, and the owner's raw status feed (spincycle.test/feed) is unreadable. "Someone make it a real app." {{y:d1_y_laundromat}}
 - [public] 14:30 [[Wade Tillman]] asks where GeneralAI's model "almost escaped" to, and from what. {{y:d1_y_wade}}
+- [public] 16:10 [[Cal Hartman]] on the "testing incident": everyone is safe, the model is safe. {{y:d1_y_hartman}}
 - [public] 17:55 doomscroll: screen time says 11 hours; "it's broken, i was barely on." {{y:f1}}
 - [public] 18:08 [[The Current]]: three weeks to the election; it will post independent polls with sample sizes and margins of error, and no Y polls. {{y:d1_y_current}}
 - [public] 19:40 [[Randall Crane]]: another company fired its people and hired a computer that doesn't pay taxes. "SAD!" {{y:d1_y_crane}}
@@ -52,13 +52,13 @@ from: 1
 ## News
 
 - [public] 08:40 BLOODBATH AT VANTOR: 400 jobs wiped out in ONE email {{article:vantor-layoffs}}
-- [public] 10:20 TERROR IN THE LAB: GeneralAI admits its AI "almost escaped" {{article:almost-escaped}}
+- [public] 09:00 TERROR IN THE LAB: GeneralAI admits its AI "almost escaped" {{article:almost-escaped}}
 - [public] 16:30 THE BATTLE FOR AMERICA BEGINS: Crane storms ahead on Y {{article:election-field}}
 
 ## Pollymarket
 
 - [public] 10:00 [[Pollymarket]]: the election market has Randall Crane at 38% and the DOLR peg market at 93%.
-- [public] 10:20 [[Pollymarket]]: a market on a GeneralAI model escaping before 2031 opens at 9%.
+- [public] 09:00 [[Pollymarket]]: a market on a GeneralAI model escaping before 2031 opens at 9%.
 - [public] 16:30 [[Pollymarket]]: Crane rises to 41%.
 
 ## Trending
@@ -83,5 +83,6 @@ from: 1
 - Family: Mom (warm reply +5 trust, ask for money +20 DOLR and −10 trust with `asked_mom_money`, silence −5 if no outcome-matching reply by tonight's summary); brother replies-all. Money: Gary, rent due Sunday.
 - Events: `d1_hr_termination`, `d1_gai_welcome`, `d1_landlord_rent`, `d1_mom`, `d1_brother_joke`, `d1_guru`, `d1_y_*`, `logan_contact`, `laundromat_contact` (agentStart, lead `d1_y_laundromat`).
 - Job offers (the Logan and laundromat posts) go through `spreadJobOffers`: 10:15 to 16:00, at least an hour apart, so on a crowded day they can land later than their `at`.
+- The opening hour is kept quiet: Stryker's and CityPulse's posts (and the article behind it) are up before 10:00, Hartman answers in the afternoon, Gary writes at 10:50 and the brother's reply-all comes after lunch. An event `at` before 10:00 is delivered at the start and shows its own time.
 - Filler times are computed by `spreadMin(id@day)`; MarketWire 09:30 is already up when the day starts.
 - Start values: `START` in config.

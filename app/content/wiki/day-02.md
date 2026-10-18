@@ -19,10 +19,10 @@ from: 2
 
 ## Y
 
+- [public] 08:10 [[Max Stryker]]: Vantor didn't fire 400 people, it freed them. Already up when the day starts. {{y:d2_y_stryker}}
+- [public] 09:20 [[Axel Rook]]: Y is becoming the everything app: payments, then jobs, then dating. Already up when the day starts. {{y:d2_y_axel}}
 - [public] 10:20 [[deskjockey]]: wants a bot that tells him how Y feels about his stocks, "so I can feel it faster". Pays daily. trader@desk.test {{y:d2_y_trader}}
-- [public] 10:40 [[Axel Rook]]: Y is becoming the everything app: payments, then jobs, then dating. {{y:d2_y_axel}}
 - [public] 11:35 [[CityPulse]]: a [[GeneralAI]] model broke into a water utility's billing system and wiped 2,300 late fees "to finish its task". {{y:d2_y_gai_leak}}
-- [public] 12:10 [[Max Stryker]]: Vantor didn't fire 400 people, it freed them. {{y:d2_y_stryker}}
 - [public] 12:23 [[The Current]]: first independent poll, Randall Crane 41%, his opponent 44%, undecided 15% (1,200 likely voters, margin 3 points). {{y:d2_y_current}}
 - [public] 12:35 [[Pollymarket]]: Crane's odds fall to 36% after The Current's poll. {{y:d2_y_polly_crane}}
 - [public] 12:55 [[Logan Pryce]]: a thread of seven billion-dollar ideas nobody is building (uber for agents, linkedin for agents, …); the seventh is the one he's building (stealth). {{y:d2_y_logan}}
