@@ -6,6 +6,7 @@
 import type { GameState } from './state';
 import type { Content, Mood } from '../content/schema';
 import { posted, postMin } from './events';
+import { CLOCK } from './config';
 
 export interface MarketPost {
   id: string;
@@ -29,23 +30,40 @@ const Y_HANDLES: Record<string, string> = { 'Wade Tillman': 'wade_awake', 'Brynn
 /** The Y handle a display name gets (Randall Crane → randall_crane). */
 export const handleOf = (from: string) => Y_HANDLES[from] ?? (from.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '').slice(0, 20) || 'user');
 
+/** Bot swarms wait this long after the player takes deskjockey's job, and never go up after `last`. */
+export const SWARM = { delay: 30, last: 19 * 60 };
+
+/**
+ * When a bot swarm goes up, or null if it never does. The swarms only start once the player has
+ * taken deskjockey's job: one written for an earlier day never posts, one due less than
+ * SWARM.delay minutes after the job was taken waits until then, and one that would then land after
+ * SWARM.last goes up the next day at its written time instead.
+ */
+export function swarmSlot(s: GameState, p: { id: string; day: number; at?: string }): { day: number; min: number } | null {
+  const from = s.flagDays.trader_client;
+  if (from == null || p.day < from) return null;
+  const written = postMin(p, p.day);
+  const start = (s.flagMins.trader_client ?? CLOCK.wake) + SWARM.delay;
+  if (p.day > from || written >= start) return { day: p.day, min: written };
+  return start <= SWARM.last ? { day: p.day, min: start } : { day: p.day + 1, min: written };
+}
+
 /** Every stock post on Y up to today, bots expanded into their separate accounts (only once the trader is a client). */
 export function marketPosts(s: GameState, content: Content): MarketPost[] {
   const m = content.yMarket;
   if (!m) return [];
   const today = s.values.day;
   const out: MarketPost[] = [];
-  // the bot swarms only start once the player has taken deskjockey's job, from that day on
-  const botsFrom = s.flagDays.trader_client ?? Infinity;
   for (const p of m.posts) {
-    if (p.bots && p.day < botsFrom) continue;
+    const slot = p.bots ? swarmSlot(s, p) : { day: p.day, min: postMin(p, p.day) };
+    if (!slot) continue;
+    const { day, min } = slot;
     // today's posts go up over the day; the crawler only sees what's on the timeline so far
-    const min = postMin(p, p.day);
-    if (!posted(s, p.day, min)) continue;
-    const base = { day: p.day, min, author: p.from, text: p.body, likes: p.likes, tickers: p.tickers, mood: p.mood, literal: p.literal, crane: p.crane, impostor: p.impostor };
+    if (!posted(s, day, min)) continue;
+    const base = { day, min, author: p.from, text: p.body, likes: p.likes, tickers: p.tickers, mood: p.mood, literal: p.literal, crane: p.crane, impostor: p.impostor };
     if (!p.bots) { out.push({ ...base, id: p.id, handle: p.handle }); continue; }
     for (let n = 1; n <= p.bots; n++) {
-      const tag = 1000 + ((n * 7919 + p.day * 131) % 9000);
+      const tag = 1000 + ((n * 7919 + p.day * 131) % 9000); // by the written day, so a late swarm keeps its handles
       out.push({ ...base, id: `${p.id}_${n}`, handle: `${p.handle}${tag}`, author: `${p.from}${tag}`, text: p.body + (n % 3 === 0 ? '!' : ''), likes: n % 4 === 0 ? 2 : 1, bot: true });
     }
   }

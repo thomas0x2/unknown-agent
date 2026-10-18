@@ -29,8 +29,8 @@ from: 12
 - [public] 17:31 [[WallStreetBags]]: another leak, another green day for $GAI; "we stopped reading it." {{y:m12_gai_growth}}
 - [public] 17:45 Cal Hartman: an independent team will review GeneralAI's training environments, starting "once the current training run finishes." {{y:d12_y_hartman_2}}
 - [public] 18:30 [[Caleb Moxon]]: nobody outside GeneralAI knows when the current training run finishes, "some people inside don't either". {{y:d12_y_moxon}}
+- [hidden; public if trader_client] 18:44 Ten bot accounts post "$GAI to the moon!!" (moved from 19:44: swarms never go up after 19:00).
 - [public] 19:40 Axel Rook: "The future is going to be so cool" {{y:d12_y_axel_2}}
-- [hidden; public if trader_client] 19:44 Ten bot accounts post "$GAI to the moon!!".
 - [public] 19:53 [[Randall Crane]]: thousands of accounts copy his posts word for word within seconds. "That's called a MOVEMENT." {{y:d12_y_crane}}
 
 ## News
