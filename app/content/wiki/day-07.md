@@ -9,6 +9,8 @@ from: 7
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "Crane praises GeneralAI, three days after promising to send the machines back": Randall Crane called GeneralAI "an American success story" on Saturday. Below it, "This afternoon" and "Rent day". {{mail:current_newsletter@7}}
+- [hidden; public if posted_deepfake] 10:00 Because the deepfake went up last night, the newsletter leads its items with "Unverified": A picture of Candidate 2030 with the sex offender Kirschbaum spread on Y last night. We haven't been able to confirm where it came from, and we aren't publishing it.
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": one meal a day, standing up. {{mail:guru_newsletter@7}}
 - [public] 10:00 [[GeneralAI]] Trust & Safety, "Updates to our Acceptable Use Policy": GeneralAI may now decline requests that could cause harm (unauthorised access to computer systems, deceptive content, dangerous materials), reviews usage patterns on its hosted models, and repeated workarounds may lead to account restrictions and referral to the authorities. {{mail:d7_gai_policy}}
 - [public] 10:00 From today agent refuses prohibited requests, and still bills for the refusal.

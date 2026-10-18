@@ -9,6 +9,7 @@ from: 8
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "Rent Board approved 3 of 18,402 appeals": Figures released yesterday show the Municipal Rent Board rejected 18,399 rent appeals last year and approved three. Below it, "Vantor" and "Thank you". {{mail:current_newsletter@8}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": your net worth on the bathroom mirror. {{mail:guru_newsletter@8}}
 - [hidden; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "Adjusting for compatibility." Adds Heritage Party only, and fewer Y followers than him (he has 212). {{mail:d8_matchless_rules_3}}
 - [hidden; hint if trader_client] 11:20 [[deskjockey]], "Two more": add $APO and $DISH, same cards, same split, same bot filter. "Apogee moves every time Rook posts and I want to see it." {{mail:d8_trader_tickers}}

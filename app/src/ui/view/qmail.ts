@@ -44,7 +44,7 @@ export function mailRows(store: GameStore): Row[] {
     const key = deliveryKey(e, d.day);
     const id = 'e/' + key;
     if (isDeleted(s, id)) continue;
-    rows.push({ id, binned: inBin(s, id), seq: d.seq ?? -1, min: d.min, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: e.subject ?? '', body: tpl(d.body ?? eventBody(e, d.day)), day: d.day, unread: !s.readEvents.includes(key), needsReply: canReply, folder: 'inbox', eventId: e.id, cc: deliveryCc(e, d) });
+    rows.push({ id, binned: inBin(s, id), seq: d.seq ?? -1, min: d.min, from: e.from ?? 'Unknown', addr: e.addr ?? '', subject: d.subject ?? e.subject ?? '', body: tpl(d.body ?? eventBody(e, d.day)), day: d.day, unread: !s.readEvents.includes(key), needsReply: canReply, folder: 'inbox', eventId: e.id, cc: deliveryCc(e, d) });
   }
   for (const m of s.mail) if (!isDeleted(s, 'm/' + m.id)) rows.push({ id: 'm/' + m.id, binned: inBin(s, 'm/' + m.id), seq: m.seq ?? (Number(m.id.replace(/\D/g, '')) || 0), min: m.min, from: m.from, addr: m.addr, subject: m.subject, body: m.body, day: m.day, unread: m.folder === 'inbox' && !m.read, needsReply: false, folder: m.folder, eventId: m.eventId, generated: m.generated, scripted: m.scripted, to: m.to, link: m.link, bounceOf: m.bounceOf, bookingId: m.bookingId });
   return rows;

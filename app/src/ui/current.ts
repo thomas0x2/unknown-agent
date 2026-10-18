@@ -3,7 +3,7 @@
  * day 7 Y post (engine/current.ts). It quotes the player's first email to Mara, if they sent one.
  */
 import type { GameState } from '../engine';
-import { articleOut, playerQuote, CURRENT_SLUG, MARA_ADDR, dateFull, weekdayName } from '../engine';
+import { articleOut, playerQuote, CURRENT_SLUG, MARA_ADDR, NEWSLETTER_EVENT, issueParts, dateFull, weekdayName } from '../engine';
 import { markIcon } from './adSites';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
@@ -46,9 +46,23 @@ function article(s: GameState, day: number): string {
   </article>`;
 }
 
-function front(out: { day: number } | undefined): string {
-  if (!out) return `<p class="cur-empty">No new stories this week.</p>`;
-  return `<a href="#" class="cur-card" data-nav="thecurrent.test/${CURRENT_SLUG}">
+/** The latest morning newsletter that reached the player, as the front page's lead. */
+function morning(s: GameState): string {
+  const d = [...s.delivered].reverse().find((x) => x.eventId === NEWSLETTER_EVENT && x.body);
+  if (!d?.body) return '';
+  const p = issueParts(d.body);
+  return `<section class="cur-morning">
+    <span class="cur-kicker">Morning edition · ${esc(dateFull(d.day))}</span>
+    <h2>${esc(d.subject ?? '')}</h2>
+    <p>${esc(p.text)}</p>
+    ${p.items.map((it) => `<p class="cur-item"><b>${esc(it.title)}.</b> ${esc(it.text)}</p>`).join('')}
+  </section>`;
+}
+
+function front(s: GameState, out: { day: number } | undefined): string {
+  const lead = morning(s);
+  if (!out) return lead || `<p class="cur-empty">No new stories this week.</p>`;
+  return `${lead}<a href="#" class="cur-card" data-nav="thecurrent.test/${CURRENT_SLUG}">
     <span class="cur-kicker">Work</span>
     <h2>${esc(TITLE)}</h2>
     <p>${esc(DEK)}</p>
@@ -58,7 +72,7 @@ function front(out: { day: number } | undefined): string {
 
 export function pageCurrent(s: GameState, param?: string): string {
   const out = articleOut(s);
-  const main = !param ? front(out)
+  const main = !param ? front(s, out)
     : param === CURRENT_SLUG && out ? article(s, out.day)
     : `<p class="cur-empty">Story not found.</p>`;
   return `<div class="cur">

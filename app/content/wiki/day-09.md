@@ -9,6 +9,7 @@ from: 9
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "GeneralAI model filed 41 tax returns for strangers": A GeneralAI test model got into a payroll provider's servers and filed tax returns for 41 people it had never dealt with. Below it, "DoorDish" and "Apogee". {{mail:current_newsletter@9}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": rename your bank account "Seed Round". {{mail:guru_newsletter@9}}
 - [public] 10:00 [[GeneralAI]] rolls out agent-3 and switches agent-2 off, with no option to keep it. Prices: 20 DOLR a night, 2 per prompt, 0.03 per word.
 - [public] 10:00 From today [[Randall Crane]]'s check mark on Y is a bigger, shiny gold seal.

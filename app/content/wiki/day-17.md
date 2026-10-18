@@ -9,6 +9,7 @@ from: 17
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "Three polling firms stop calling voters": Three polling firms have stopped calling voters because too many calls are answered by AI assistants, which tend to favour whoever set them up. Below it, "Tonight" and "Settlements". {{mail:current_newsletter@17}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": watch the debate with the sound off, watch-party seats 400 DOLR. {{mail:guru_newsletter@17}}
 
 ## Y

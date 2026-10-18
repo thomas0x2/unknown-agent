@@ -9,6 +9,7 @@ from: 18
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "GeneralAI wrote the first draft of its own rules": The draft AI rules sent to regulators were written by GeneralAI. Below it, "The debate" and "agent". {{mail:current_newsletter@18}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": stop saying thank you. {{mail:guru_newsletter@18}}
 - [public] 10:00 [[GeneralAI]] rolls out agent-5. Prices: 60 DOLR a night (twelve times agent-1's subscription), 5 per prompt, 0.08 per word.
 

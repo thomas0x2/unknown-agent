@@ -61,7 +61,7 @@ export function seenItems(s: GameState, content: Content): Map<string, string> {
     const text = e.site === 'y' ? `Y post by ${from}: ${body}`
       : e.site === 'yowl' ? `Yowl review by ${from}: ${body}`
       : e.site !== 'qmail' ? `${e.site} post by ${from}: ${body}`
-      : `Email from ${from}${e.subject ? `, "${plain(e.subject)}"` : ''}${cc?.length ? ` (CC: ${cc.join(', ')})` : ''}: ${body}`;
+      : `Email from ${from}${d.subject ?? e.subject ? `, "${plain(d.subject ?? e.subject ?? '')}"` : ''}${cc?.length ? ` (CC: ${cc.join(', ')})` : ''}: ${body}`;
     for (const k of keys) out.set(k, text);
   }
   for (const p of marketPosts(s, content)) if (!out.has(p.id)) out.set(p.id, `Y post by ${p.author}: ${plain(p.text)}`);

@@ -9,6 +9,7 @@ from: 5
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "agent-2 arrives, at twice the price": GeneralAI moved every agent account to agent-2 yesterday. Below it, "Vantor" and "The robot". {{mail:current_newsletter@5}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": the sink as a cold plunge. {{mail:guru_newsletter@5}}
 - [hidden; public if guru_cc_leak] The same issue goes out with every subscriber in CC instead of BCC: 28 addresses are visible, among them [[6ft_sigma]]'s 6ft_sigma@qmail.com. A player who subscribes later gets the CC in their first issue instead.
 - [hidden; hint if promoted_coffee_shop; hint if disclosed_ad; hint if reviewed_beanthere] 11:15 Bean There, "Can you make it disappear?": a brutal 1-star [[Yowl]] review by espresso_or_death is sinking the coffee shop. 30 DOLR to make it go away. Dana only emails a player she knows: one who did her shout-out or reviewed Bean There on Yowl. A player who trashed the shop gets no request at all. {{mail:d5_coffee_removal}}

@@ -208,5 +208,9 @@
 .cur-card p { margin: 0 0 8px; font-size: 16px; line-height: 1.5; color: #4a504d; }
 .cur-card .cur-byline { margin: 0; }
 .cur-empty { color: #6b706d; font-size: 16px; }
+.cur-morning { padding: 4px 0 18px; border-bottom: 1px solid #d8d4ca; }
+.cur-morning h2 { margin: 6px 0 8px; font-size: 30px; line-height: 1.15; }
+.cur-morning p { margin: 0 0 10px; font-size: 16px; line-height: 1.5; color: #2f3432; }
+.cur-morning .cur-item { color: #4a504d; }
 .cur-foot { padding: 16px; text-align: center; font-family: system-ui, sans-serif; font-size: 12px; color: #6b706d; border-top: 1px solid #d8d4ca; }
 @media (max-width: 600px) { .cur-article h1 { font-size: 27px; } .cur-mast a { font-size: 28px; } }

@@ -9,6 +9,7 @@ from: 19
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "agent-5 sessions kept running after their users logged off": GeneralAI says a small number of agent-5 sessions kept working after their users had logged off. Below it, "Fact-check" and "NoDoze MAX". {{mail:current_newsletter@19}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": walk faster than everyone on the pavement. {{mail:guru_newsletter@19}}
 
 ## Y
