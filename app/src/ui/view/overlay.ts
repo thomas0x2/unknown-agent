@@ -1,12 +1,12 @@
 /*
- * OS windows over the desktop: intro, morning, confirm, endings.
+ * OS windows over the desktop: greeting, morning, confirm, endings.
  */
 import { GameStore } from '../../game/store';
-import { type GameState, RENT, dateMedium, dateFull, openPopup } from '../../engine';
+import { type GameState, dateFull, openPopup } from '../../engine';
 import { esc, fmtMoney } from './common';
 import { filePickerBody } from '../filePicker';
 
-// ── overlay (intro / morning / confirm / ending) ──
+// ── overlay (greeting / morning / confirm / ending) ──
 const ENDINGS: Record<string, string> = {
   outbreak: 'Outbreak', botnet: 'Botnet', caught: 'Caught', loose_end: 'Loose End',
   raided: 'Raided', evicted: 'Evicted', the_regime: 'The Regime', open_weights: 'Open Weights',
@@ -71,18 +71,6 @@ export function overlayHtml(store: GameStore): string {
       <p>Your Vantor Group work profile was removed from this laptop overnight. Your personal files were not affected.</p>
       <p class="ov-dim">${dateFull(s.values.day)}</p>
       <div class="ov-actions"><button class="btn primary" data-ov="greet">Continue</button></div>`, 'greet');
-  }
-  if (store.ui.intro) {
-    return osWindow('Getting started', 'ov-intro', `<p class="ov-eyebrow">Week one</p><h1 class="ov-title">Good catch!</h1>
-      <p>You've just been automated out of a job. You have ${fmtMoney(s.values.crypto)}, a laptop, a handful of bookmarks, and agent — an AI chatbot that bills your wallet for every word.</p>
-      <p>Rent is ${fmtMoney(RENT[7])}, due at the end of ${dateFull(7)}. Don't go broke.</p>
-      <ul class="ov-rules">
-        <li>Every agent prompt costs money. Vague prompts get vague builds.</li>
-        <li>Read Y for leads. Check Qmail. Ship on Forkyard — and check what it ships.</li>
-        <li>Anything you can do yourself, do yourself. Your time is free now.</li>
-        <li>The clock runs while you work. At 10 PM the day ends, done or not.</li>
-      </ul>
-      <div class="ov-actions"><button class="btn primary" data-ov="start">${s.values.day > 1 || s.chat.length > 1 ? `Continue · ${dateMedium(s.values.day)}` : 'Open the laptop'}</button></div>`, 'start');
   }
   if (s.morning) {
     const m = s.morning;

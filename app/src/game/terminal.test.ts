@@ -71,7 +71,7 @@ describe('Weightroom bookmark', () => {
 describe('the Terminal from day 1', () => {
   it('opens on a fresh game, with no model and no Weightroom', async () => {
     const s = make();
-    expect(s.termTabs()).toEqual(['shell']);
+    expect(s.ui.termSession).toBeNull();
     s.navigate('localhost');
     expect(s.ui.termShown).toBe(true);
     await s.term('ls');
@@ -143,5 +143,43 @@ describe('the laptop\'s folders', () => {
     await s.term('cd qdrive/documents'); await s.term('run PCMedic_Setup.exe');
     expect(s.state.adware).toBeTruthy();
     await s.term('run PCMedic_Setup.exe'); expect(last(s)).toBe('run: PCMedic_Setup.exe is already running');
+  });
+});
+
+describe('sessions', () => {
+  const last = (s: GameStore) => s.state.terminal.at(-1)?.text;
+  it('deepsleep starts a model session once it is downloaded, and exit or quit ends it', async () => {
+    vi.useFakeTimers();
+    const s = make();
+    await s.term('deepsleep'); expect(last(s)).toBe('deepsleep: command not found. Type help for a list of commands.');
+    s.download('deepsleep'); vi.advanceTimersByTime(PULL_MS + 200);
+    expect(s.ui.termSession).toBeNull();
+    await s.term('deepsleep'); expect(s.ui.termSession).toBe('deepsleep');
+    const p = s.term('ls'); await vi.runAllTimersAsync(); await p;
+    expect(s.state.terminal.at(-1)?.k).toBe('model');
+    expect(s.state.termPrompts).toBe(1);
+    await s.term('quit'); expect(s.ui.termSession).toBeNull();
+    await s.term('ls'); expect(last(s)).toBe('home/   qdrive/');
+    await s.term('deepsleep'); await s.term('exit'); expect(s.ui.termSession).toBeNull();
+    await s.term('exit'); expect(last(s)).toBe('exit: not in a session');
+  });
+  it('agent opens agent-terminal only once the player has it', async () => {
+    const s = make();
+    await s.term('agent'); expect(last(s)).toBe('agent: command not found. Type help for a list of commands.');
+    s.state.flags.push('has_agent_terminal');
+    await s.term('agent');
+    expect(s.ui.termSession).toBe('agent'); expect(s.ui.termShown).toBe(true);
+    expect(s.state.agentTerm?.at(-1)?.text).toMatch(/^── session/);
+    s.endAgentSession();
+    expect(s.ui.termSession).toBeNull(); expect(last(s)).toBe('agent-terminal session ended.');
+  });
+  it('help lists the sessions the player has', async () => {
+    const s = make();
+    await s.term('help');
+    expect(s.state.terminal.some((l) => l.text.startsWith('  agent '))).toBe(false);
+    s.state.flags.push('has_agent_terminal');
+    await s.term('help');
+    expect(s.state.terminal.some((l) => l.text.startsWith('  agent '))).toBe(true);
+    expect(s.state.terminal.some((l) => l.text.startsWith('  exit, quit '))).toBe(true);
   });
 });

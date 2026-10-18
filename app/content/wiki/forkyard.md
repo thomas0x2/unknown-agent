@@ -12,6 +12,7 @@ from: 1
 - [public] Each app has a repo listing its features and the parts inside them.
 - [public] Nothing is live until the player presses Deploy (or Redeploy after a fix). Hosting costs 2 DOLR a day per live app, billed nightly.
 - [public] A morning alert reports apps that broke overnight.
+- [public] The first night an app is live, one of them always breaks. Forkyard writes the next morning, "Your deployment broke overnight": it happens sometimes, check the live apps and redeploy once fixed. It doesn't say which app or what broke. {{mail:first_break}}
 - [public] For a user app, Forkyard shows its users and the ad revenue per day.
 
 ## From day 8: The hack
@@ -30,5 +31,6 @@ from: 1
 
 ## Writer notes
 
+- First break: `first_break` flag set in `nightlyBreaks` (engine/apps.ts) the first night a live app breaks; that night one random app that can show a break is sure to. Mail `content/events/first_break.json`.
 - Outage: `FORKYARD_OUTAGE` in config, `forkyardDown`/`forkyardOutageDay` in `engine/outage.ts`; sign-in page `pageSignInFailed` in `ui/view/forkyard.ts`. Y account @forkyard (verified, 880K). The group that did it is unnamed on purpose.
 - GitHub parody. Profiles `app/src/ui/forkyard-users.ts`. The UI writes hosting as "$2.00/day" while every other price is DOLR. Public profiles are planned doxxing leads. Lou's catalog: never describe the content.

@@ -17,7 +17,7 @@ from: 1
 
 - [public] 10:00 [[The Current]]'s morning newsletter, "Unemployment reaches 30%": Three in ten working-age people in the city are now out of work, the highest rate since records began. Below it, "Vantor" and "Election". {{mail:current_newsletter@1}}
 - [public] 10:00 People & Culture at [[Vantor Group]], "Changes to your role": the player's position is eliminated, effective immediately; the final salary payment "has already been made". {{mail:d1_hr_termination}}
-- [public] 10:00 [[GeneralAI]], "Welcome to agent": the [[agent]] account is active and billed to the [[Coinbin]] wallet, every prompt at the model's rate. {{mail:d1_gai_welcome}}
+- [public] 10:00 [[GeneralAI]], "Welcome to agent": the [[agent]] account is active and billed to the [[Coinbin]] wallet, every prompt at the model's rate; the body links agent.chat. {{mail:d1_gai_welcome}}
 - [hidden; public if asked_mom_money] 12:20 Mom sent 20 DOLR when the player asked for money: "Buy vegetables."
 
 ## Money
@@ -70,6 +70,7 @@ from: 1
 ## Writer notes
 
 - Timeline story beats: opens on Vantor's termination email; GeneralAI welcome; Logan's Y post → WorkAgent site (35 a night once live, nothing up front); after its first deploy he asks for a Y post (`logan_promo`, "we're live", 16:00 or 30 min after a later launch, sets `logan_promo_asked`), and thanks you if you post (`logan_promo_thanks`, "your post": the podcast got a new listener).
+- Night 1: the first night with a live app always breaks one of them, to teach overnight breaks; Forkyard's mail comes the next morning (see [[Day 2]], `first_break`).
 - Mara's first post; she can be emailed from today (`journalist_contact`, sets `talked_to_journalist`, honest also `did_journalist_interview`).
 - Hartman on the "testing incident".
 - Family: Mom (warm reply +5 trust, ask for money +20 DOLR and −10 trust with `asked_mom_money`, silence −5 if no outcome-matching reply by tonight's summary); brother replies-all. Money: Gary, rent due Sunday.

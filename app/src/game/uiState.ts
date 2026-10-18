@@ -21,7 +21,6 @@ export function freshUi() {
     dev: false,
     liked: {} as Record<string, boolean>,
     reposted: {} as Record<string, boolean>,
-    intro: true,
     greet: false,
     memWarn: false,
     confirm: null as null | { text: string; yes: string; fn: () => void },
@@ -30,8 +29,8 @@ export function freshUi() {
     /** The Terminal is its own window: open (in the taskbar) and shown (in front of the browser). */
     termOpen: false,
     termShown: false,
-    /** Which Terminal tab is in front: the laptop's own shell (local models) or agent-terminal. */
-    termTab: 'shell' as 'shell' | 'agent',
+    /** The session running in the Terminal (`deepsleep` or `agent` at the shell starts one, exit ends it), or null at the shell. */
+    termSession: null as null | 'deepsleep' | 'agent',
     /** The you@laptop shell's folder, from ~ down (game/shell.ts). */
     termCwd: [] as string[],
     /** invaders.exe is running in the you@laptop tab. */

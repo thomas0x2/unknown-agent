@@ -5,7 +5,11 @@
   "addr": "noreply@forkyard.test",
   "subject": "Deployment alert",
   "trigger": {
-    "dayMin": 3
+    "dayMin": 3,
+    "after": {
+      "flag": "first_break",
+      "delayDays": 1
+    }
   },
   "at": "10:00",
   "onDeliver": {

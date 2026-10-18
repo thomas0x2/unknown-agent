@@ -5,7 +5,7 @@
   "trigger": {
     "dayMin": 2
   },
-  "at": "17:50",
+  "at": "14:00",
   "onDeliver": {
     "setFlags": [
       "saw_laundromat_post"

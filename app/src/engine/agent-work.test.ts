@@ -90,7 +90,7 @@ describe('agent work takes game time', () => {
     const one = Array.from({ length: 20 }, () => workMinutes(s, 'build', 1));
     const five = Array.from({ length: 20 }, () => workMinutes(s, 'build', 5));
     expect(Math.max(...one)).toBeLessThan(Math.min(...five));
-    expect(Math.max(...Array.from({ length: 20 }, () => workMinutes(s, 'build', 50)))).toBeLessThanOrEqual(Math.round(AGENT_WORK.build.max * (1 + AGENT_WORK.spread)));
+    expect(Math.max(...Array.from({ length: 20 }, () => workMinutes(s, 'build', 50)))).toBeLessThanOrEqual(Math.round(AGENT_WORK.build.max * AGENT_WORK.speed[0] * (1 + AGENT_WORK.spread)));
     expect(Math.max(...Array.from({ length: 20 }, () => workMinutes(s, 'fix', 1)))).toBeLessThan(Math.min(...one));
   });
 

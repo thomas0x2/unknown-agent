@@ -8,7 +8,7 @@ summary: Pug is a startup selling "AI-native insurance for founders", with a car
 
 [public] Pug (pug.com) sells "AI-native insurance for founders": key-person cover, co-founder breakup cover and down-round cover, with quotes in 90 seconds and claims decided by agent in about four seconds. Appeals go to the same agent. It says it covers 2,400 founders. Its logo is a cartoon pug's face on cream, and its fine print says it is an insurance agency, not an insurer. It is backed by a67x, the firm of [[Chase Whitford]].
 
-[public] Its Y account is @pug, verified, 186,000 followers. Bio: "Pug. AI-native insurance for founders. Quotes in 90 seconds. Pug Café, open 24/7. pug.com" Its head of community, [[Brynn LeClaire]], posts about Pug as if she had founded it. Pug's founders don't post.
+[public] Its Y account is @pug, verified, 186,000 followers; its profile picture is the logo's pug, head and shoulders, with a policy tag on its collar. Bio: "Pug. AI-native insurance for founders. Quotes in 90 seconds. Pug Café, open 24/7. pug.com" Its head of community, [[Brynn LeClaire]], posts about Pug as if she had founded it. Pug's founders don't post.
 
 [public] Pug runs banner ads from day 3: "Your co-founder could quit tomorrow. Be covered today. Pug. AI-native insurance for founders." Fine print: "Quotes in 90 seconds. Claims decided by agent. Pug is an agency, not an insurer."
 

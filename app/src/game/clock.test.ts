@@ -11,7 +11,6 @@ const content = loadContent();
 const mem = { load: () => null, save: () => {}, clear: () => {} } as unknown as SaveStore;
 const fresh = () => {
   const store = new GameStore(content, {} as JevRouter, {} as Writer, mem);
-  store.seenIntro();
   store.dismissGreet();
   return store;
 };
@@ -46,9 +45,9 @@ describe('the real-time clock', () => {
   it('stands still while a dialog is open', () => {
     const store = fresh();
     expect(store.clockPaused).toBe(false);
-    store.openIntro();
+    store.newGame();
     expect(store.clockPaused).toBe(true);
-    store.seenIntro();
+    store.dismissGreet();
     store.confirm('Sure?', 'Yes', () => {});
     expect(store.clockPaused).toBe(true);
   });

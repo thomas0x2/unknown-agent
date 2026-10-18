@@ -1,60 +1,46 @@
 /*
- * The Y regulars replying to the player's posts, and the max_followers ceiling their chance is read against.
+ * The Y regulars answering the player's posts: how often, and how the answers show up.
  */
 import { describe, it, expect } from 'vitest';
 import { loadContent } from '../content/load';
 import { startGame } from './day';
 import { postToY } from './actions';
 import { fakeRouter } from './_fixtures';
-import { maxFollowers, yReplyChance, deliverYReplies, Y_REPLIERS, Y_REPLY_DELAY } from './yReplies';
-import { Y as YCFG, START, LAST_DAY } from './config';
+import { yReplyChance, deliverYReplies, Y_REPLIERS, Y_REPLY_DELAY, PLAYER_HANDLE } from './yReplies';
+import { Y as YCFG } from './config';
 import { scriptedWriter } from './writer';
 
 const content = loadContent();
 const router = fakeRouter({ rating: () => ({ category: 'tip', quality: 0.5 }) });
 
-describe('max_followers', () => {
-  it('starts above the starting followers and only grows', () => {
-    expect(maxFollowers(content, 1)).toBeGreaterThan(START.followers);
-    for (let d = 2; d <= LAST_DAY; d++) expect(maxFollowers(content, d)).toBeGreaterThan(maxFollowers(content, d - 1));
-  });
-
-  it('day 1 is three best posts at the top of their jitter from 12 followers', () => {
-    // a reaction's flat 14 beats any share at this size: 14*1.3 = 18, three times
-    expect(maxFollowers(content, 1)).toBe(12 + 18 + 18 + 18);
-  });
-
-  it('counts the deepfake jump once, at the top of its spread', () => {
-    const before = maxFollowers(content, 5);
-    const day6 = maxFollowers(content, 6);
-    // without the jump day 6 grows like the days before it (well under 3x); the 2800 jump lands first
-    expect(day6 - before).toBeGreaterThan(2800);
-    const ratio7 = maxFollowers(content, 7) / day6;
-    const ratio8 = maxFollowers(content, 8) / maxFollowers(content, 7);
-    expect(ratio7).toBeCloseTo(ratio8, 1); // no second jump on day 7
-  });
-});
-
 describe('regular replies', () => {
-  it('a new account still has the floor chance', () => {
+  it('a small account almost never hears from them', () => {
     const s = startGame(content, 1);
-    s.values.followers = 0;
-    expect(yReplyChance(s, content)).toBe(YCFG.replyFloor);
+    s.values.followers = 16;
+    const p = yReplyChance(s);
+    expect(p).toBe(YCFG.reply.floor);
+    // two or more of the three answering
+    expect(3 * p * p * (1 - p) + p ** 3).toBeLessThan(0.001);
   });
 
-  it('the chance is where followers sit between 0 and max_followers', () => {
+  it('the chance climbs per tenfold of followers and stops at the cap', () => {
     const s = startGame(content, 1);
-    s.values.day = 4;
-    s.values.followers = Math.round(maxFollowers(content, 4) / 2);
-    expect(yReplyChance(s, content)).toBeCloseTo(0.5, 2);
-    s.values.followers = maxFollowers(content, 4) * 3;
-    expect(yReplyChance(s, content)).toBe(1);
+    const at = (f: number) => { s.values.followers = f; return yReplyChance(s); };
+    expect(at(1_000)).toBeGreaterThan(at(100));
+    expect(at(10_000) - at(1_000)).toBeCloseTo(at(100_000) - at(10_000), 6);
+    expect(at(YCFG.reply.capAt)).toBeCloseTo(YCFG.reply.cap, 6);
+    expect(at(10 ** 9)).toBe(YCFG.reply.cap);
   });
 
-  it('at the ceiling all three reply, a few minutes later, under the post', async () => {
-    const s0 = startGame(content, 3);
-    s0.values.followers = maxFollowers(content, 1);
-    const { state: s } = await postToY(s0, router, 'is anyone hiring', [], content, scriptedWriter);
+  it('when all three answer, they post a few minutes later, tagging the player', async () => {
+    // at the cap each answers 60% of the time: take the first seed where all three do
+    let s = startGame(content, 1);
+    for (let seed = 1; seed < 100; seed++) {
+      const s0 = startGame(content, seed);
+      s0.values.followers = 10 ** 9;
+      s = (await postToY(s0, router, 'is anyone hiring', [], content, scriptedWriter)).state;
+      if (s.yReplies.length === 3) break;
+    }
     expect(s.yReplies.map((r) => r.reply.handle).sort()).toEqual(Y_REPLIERS.map((r) => r.handle).sort());
     expect(s.yExtra).toHaveLength(0);
     expect(deliverYReplies(s)).toBe(false);
@@ -63,7 +49,8 @@ describe('regular replies', () => {
     expect(s.yExtra).toHaveLength(3);
     for (const r of s.yExtra) {
       expect(r.replyTo).toBe(s.userPosts[0].id);
-      expect(r.text.length).toBeGreaterThan(0);
+      expect(r.text.startsWith(`@${PLAYER_HANDLE} `)).toBe(true);
+      expect(r.scripted).toBeTruthy(); // the test writer never asks Haiku
     }
     expect(s.yReplies).toHaveLength(0);
   });
