@@ -37,7 +37,7 @@ from: 1
 
 ## The calendar
 
-[public] The game runs 21 days, from Monday, October 7, 2030 to Sunday, October 27, 2030 [known]. Election day is Sunday, October 27 [known].
+[public] The game runs 28 days, from Monday, October 7, 2030 to Sunday, November 3, 2030 [known]. Election day is Sunday, November 3 [known].
 
 | [public] Day | Date |
 |---|---|
@@ -62,8 +62,15 @@ from: 1
 | [public] 19 | Fri Oct 25 [known] |
 | [public] 20 | Sat Oct 26 [known] |
 | [public] 21 | Sun Oct 27 [known] |
+| [public] 22 | Mon Oct 28 [known] |
+| [public] 23 | Tue Oct 29 [known] |
+| [public] 24 | Wed Oct 30 [known] |
+| [public] 25 | Thu Oct 31 [known] |
+| [public] 26 | Fri Nov 1 [known] |
+| [public] 27 | Sat Nov 2 [known] |
+| [public] 28 | Sun Nov 3 [known] |
 
-[public] Fixed dates: rent is due Sunday, October 13 (day 7) [known]. Rent always comes out seven days apart, at payday on Sunday night, the night from Sunday to Monday: days 7, 14 and 21 [known]. Mom's birthday is Saturday, October 12.
+[public] Fixed dates: rent is due Sunday, October 13 (day 7) [known]. Rent always comes out seven days apart, at payday on Sunday night, the night from Sunday to Monday: days 7, 14, 21 and 28 [known]. Mom's birthday is Saturday, October 12.
 
 ## Writer notes
 

@@ -1,0 +1,11 @@
+{
+  "id": "d27_y_axel_2",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 27,
+    "dayMax": 27
+  },
+  "at": "19:30",
+  "body": "Y will have the fastest results of any platform. Faster than the counting, even."
+}

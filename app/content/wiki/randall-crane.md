@@ -52,8 +52,15 @@ from: 1
 - [public] On day 18 he claims he won the debate, with one online poll at 94% from 1.2 million votes in under a minute.
 - [public] On day 18 The Current finds 4 of his 31 debate claims held up.
 - [public] On day 19 CityPulse reports that half his posts go out between 2 and 5 AM; he answers that he writes every word himself, "Sometimes I don't even remember writing them."
-- [public] On day 20 he tells voters to call him personally if they see a robot trying to vote.
-- [public] On day 21 he posts "TODAY IS THE DAY" and "Vote Crane!"
+- [public] On day 20 he posts that his rally filled a stadium, "maybe the biggest ever", and that the people who couldn't get in watched on Y.
+- [public] On day 21, a week before the election, he says the other side is "TERRIFIED" because they've stopped posting at night.
+- [public] On day 22 he says early voting is "very rigged" unless you vote for him early, and asks people to vote early for Crane.
+- [public] On day 23 he says he'll be at the town hall that night, "Possibly in more than one place". He appears on a large screen and answers 41 questions in 30 minutes, CityPulse reports.
+- [public] On day 24 he says it was him at the town hall, "in spirit and in high definition".
+- [public] On day 25 he says the scariest Halloween costume is his opponent's economic plan, and the second scariest his opponent. CityPulse reports his account posted 14 times between 2 and 5 AM the night before, three times about candy.
+- [public] On day 26 he says early voting turnout is "HUGE, mostly for me" and tells those who haven't voted to wait for Sunday and vote "TWICE as hard".
+- [public] On day 27 he tells voters to call him personally if they see a robot trying to vote.
+- [public] On day 28, election day, he posts "TODAY IS THE DAY" and "Vote Crane!"
 
 ## From day 3: Praise for Apogee
 
@@ -82,6 +89,13 @@ from: 1
 - [public] {{y:d19_y_crane}}
 - [public] {{y:d20_y_crane}}
 - [public] {{y:d21_y_crane}}
+- [public] {{y:d22_y_crane}}
+- [public] {{y:d23_y_crane}}
+- [public] {{y:d24_y_crane}}
+- [public] {{y:d25_y_crane}}
+- [public] {{y:d26_y_crane}}
+- [public] {{y:d27_y_crane}}
+- [public] {{y:d28_y_crane}}
 - [public] {{y:gai_outage_y_crane}}
 
 ## In the news
@@ -96,13 +110,14 @@ from: 1
 - [public] {{article:debate}}
 - [public] {{article:debate-poll}}
 - [public] {{article:crane-posts}}
+- [public] {{article:town-hall}}
 - [public] On day 11 CityPulse shows him on [[Kirschbaum]]'s yacht in 2019; on day 15 The Current finds eleven flights on Kirschbaum's jet; on day 16 CityPulse follows up. He "barely knew" Kirschbaum and "doesn't recall the plane." {{article:crane-kirschbaum}}
 - [public] {{article:crane-flights}}
 - [public] {{y:d15_y_current_flights}}
 
 ## Writer notes
 
-- Trump parody, placeholder name. Events `dN_y_crane.json`; day 4 post and the impostor's in `y_market.json`; `trader_y_crane_apo` fires 90 minutes after deskjockey's auto-buy goes live (earliest day 3). Bio in `y-bios.ts`; gold check from day 9 in `ui/view/y.ts` (`craneGold`). His posts treat day 21 (Sun Oct 27) as election day.
+- Trump parody, placeholder name. Events `dN_y_crane.json`; day 4 post and the impostor's in `y_market.json`; `trader_y_crane_apo` fires 90 minutes after deskjockey's auto-buy goes live (earliest day 3). Bio in `y-bios.ts`; gold check from day 9 in `ui/view/y.ts` (`craneGold`). His posts treat day 28 (Sun Nov 3) as election day.
 - crane2026.vote (`adSites.ts`, domain keeps the old year): only the first donation raises hidden `heritageStanding` by 10.
 - Who writes his posts is left open (day 19 CityPulse); keep it [hidden].
 - Never writes tickers outside the market posts.

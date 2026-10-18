@@ -1,0 +1,11 @@
+{
+  "id": "d25_y_current",
+  "site": "y",
+  "from": "The Current",
+  "trigger": {
+    "dayMin": 25,
+    "dayMax": 25
+  },
+  "at": "11:10",
+  "body": "Final weekday poll: Crane 47%, his opponent 46%, 7% undecided. A second pollster has stopped publishing, saying it can no longer confirm its respondents are people."
+}

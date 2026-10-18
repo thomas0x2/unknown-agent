@@ -1,0 +1,11 @@
+{
+  "id": "d24_y_axel_2",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 24,
+    "dayMax": 24
+  },
+  "at": "19:30",
+  "body": "@randall_crane Very real"
+}

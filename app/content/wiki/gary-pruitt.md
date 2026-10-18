@@ -35,5 +35,5 @@ from: 1
 
 - Event `d15_landlord_sold`. The `gary` persona doesn't know about the sale, so he still answers about the rent if written to afterwards.
 - Persona `gary`; scripted negotiate reply "No." in contacts.json. Events `d1_landlord_rent` (subject "Rent: due Sunday, October 13"), `d6_landlord`.
-- Rent amounts in `RENT` (config): 350 day 7, 500 day 14, 650 day 21, taken at payday. They are canon config, tagged planned here only because no mail announces the later ones. Short means the Evicted ending ("Gary changed the locks."; from day 15 "Your unit went back on the market.").
+- Rent amounts in `RENT` (config): 350 day 7, 500 day 14, 650 days 21 and 28, taken at payday. They are canon config, tagged planned here only because no mail announces the later ones. Short means the Evicted ending ("Gary changed the locks."; from day 15 "Your unit went back on the market.").
 - Running gags: his "No." and "Sent from my phone" once per screen at most.

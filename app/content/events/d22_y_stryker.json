@@ -1,0 +1,11 @@
+{
+  "id": "d22_y_stryker",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 22,
+    "dayMax": 22
+  },
+  "at": "17:10",
+  "body": "Voted early. Didn't wait in line. The line waited for me."
+}

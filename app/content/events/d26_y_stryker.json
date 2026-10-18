@@ -1,0 +1,11 @@
+{
+  "id": "d26_y_stryker",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 26,
+    "dayMax": 26
+  },
+  "at": "17:30",
+  "body": "Friday. Everyone's tired. Tired is a choice. So is broke."
+}

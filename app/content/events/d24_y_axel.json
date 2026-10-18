@@ -1,0 +1,11 @@
+{
+  "id": "d24_y_axel",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 24,
+    "dayMax": 24
+  },
+  "at": "10:50",
+  "body": "Best town hall ever. Very efficient."
+}

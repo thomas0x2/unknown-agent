@@ -402,6 +402,8 @@ export interface GameState {
   lonely?: LonelyChat;
   /** Qdrive files uploaded to websites (engine/uploads.ts). */
   uploads?: Upload[];
+  /** Qdrive file ids the player deleted (ui/qdrive.ts driveFiles). */
+  driveDeleted?: string[];
   /** sorrywriter.ai's chat (engine/sorry.ts). */
   sorry?: SorryChat;
   /** stack.com: the casino balance, its bonus and the last spins (engine/casino.ts). Unset until the first deposit or code. */

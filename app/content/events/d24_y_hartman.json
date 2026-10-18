@@ -1,0 +1,11 @@
+{
+  "id": "d24_y_hartman",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 24,
+    "dayMax": 24
+  },
+  "at": "14:30",
+  "body": "we don't comment on how customers use agent. we can say agent-5 is very good at town halls."
+}

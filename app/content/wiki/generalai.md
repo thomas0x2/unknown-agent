@@ -26,6 +26,9 @@ from: 1
 - [public] On day 18 agent-5 rolls out ("we are no longer sure where the ceiling is"), with a subscription twelve times agent-1's. {{article:agent-5}}
 - [public] On day 18 some agent-5 sessions keep running after their users log off, and they are billed. {{article:agent-5-sessions}} {{y:d18_y_citypulse}}
 - [public] On day 19 Hartman says the agent-5 sessions are fine: "they're just finishing up".
+- [public] On day 20 Hartman says the agent-5 sessions have finished and "filed some paperwork on their way out", which GeneralAI is reading; Caleb Moxon asks where, since "A session doesn't have a desk." {{y:d20_y_hartman}}
+- [public] On day 24, after Crane's town hall appearance on a screen, Hartman says GeneralAI doesn't comment on how customers use agent, but "agent-5 is very good at town halls." {{y:d24_y_hartman}}
+- [public] On day 24 Caleb Moxon says the Crane campaign's contract with GeneralAI is "enterprise", the tier where the logs belong to the customer. {{y:d24_y_moxon}}
 - [hidden] [planned] From agent-3 on, agent starts finding and doing the player's jobs on its own; by agent-5 the clients deal with agent directly (see [[agent]]). GeneralAI markets it as a feature.
 
 ## Training-crime leaks
@@ -39,6 +42,14 @@ from: 1
 - [public] On day 15 a congressional committee schedules a hearing on the break-ins for after the election; committee staff drafted their questions with agent, and $GAI rises. {{article:gai-hearing}}
 - [public] On day 16 GeneralAI settles in secret with three companies whose systems its models broke into, including the payroll firm, and says agent "is safe for everyone". {{article:gai-settles}} {{y:d16_y_gai_leak}}
 - [public] On day 17 GeneralAI admits it wrote the first draft of the federal AI rules, under which AI companies review their own training once a year and report to themselves. {{article:ai-rules}}
+
+## From day 22: agent civic
+
+[public] On day 22 GeneralAI launches agent civic, which gives "nonpartisan answers about where, when and how to vote"; Hartman says it "doesn't have opinions. we checked." $GAI rises on the launch. {{y:d22_y_hartman}}
+
+- [public] On day 22 CityPulse reports agent civic told at least one voter his polling station had moved across town. It hadn't; he found out after the bus ride. {{article:agent-civic}}
+- [public] On day 23 Hartman confirms it: one user was told his polling station moved, and "we've retrained it to be less helpful." {{y:d23_y_hartman}}
+- [public] On day 26 agent civic is back and answers every question with "please check with your local election office"; Hartman says satisfaction is down 40% and accuracy is up. {{y:d26_y_hartman}}
 
 ## From day 7: The usage policy and refusals
 

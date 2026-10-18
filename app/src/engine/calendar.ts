@@ -1,5 +1,5 @@
 /*
- * The in-game calendar. Day 1 is Monday, October 7, 2030; day 21 is Sunday, October 27, 2030.
+ * The in-game calendar. Day 1 is Monday, October 7, 2030; day 28 is Sunday, November 3, 2030 (election day).
  * Days <= 0 are the weeks before the game (Coinbin history, Qdrive files).
  * The engine counts days; only the UI (and player-facing copy) shows dates. Dev tools keep day numbers.
  */

@@ -110,7 +110,7 @@ describe('the laptop\'s folders', () => {
     await s.term('cd home'); await s.term('ls'); expect(last(s)).toBe('desktop/');
     await s.term('cd desktop'); expect(s.ui.termCwd).toEqual(['home', 'desktop']);
     await s.term('ls'); expect(last(s)).toBe('invaders.exe');
-    await s.term('cd ../../qdrive'); await s.term('ls'); expect(last(s)).toBe('documents/   projects/   models/');
+    await s.term('cd ../../qdrive'); await s.term('ls'); expect(last(s)).toBe('documents/   models/');
     await s.term('cd documents'); await s.term('ls'); expect(last(s)).toContain('passwords.txt');
     await s.term('cd nowhere'); expect(last(s)).toBe('cd: nowhere: no such folder');
     await s.term('cd'); expect(s.ui.termCwd).toEqual([]);

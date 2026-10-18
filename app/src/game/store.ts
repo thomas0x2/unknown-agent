@@ -663,9 +663,26 @@ export class GameStore {
     this.act((s) => (s === this.state ? r : withdrawCasino(s, n)).state);
     return true;
   }
+  /** Delete a Qdrive file for good. A deleted model's weights are gone from the Terminal too. */
+  deleteDriveFile(id: string): void {
+    const s = this.state;
+    const gone = (s.driveDeleted ??= []);
+    if (!gone.includes(id)) gone.push(id);
+    if (id.startsWith('model-')) {
+      const m = id.slice(6);
+      s.localModels = s.localModels.filter((x) => x !== m);
+      if (s.termModel === m) s.termModel = null;
+    }
+    const folder = id.startsWith('model-') ? 'models' : 'documents';
+    this.store.save(s);
+    this.navigate(`qdrive.com/${folder}`);
+  }
+  /** A file saved again comes back after being deleted. */
+  private undelete(s: GameState, id: string): void { if (s.driveDeleted) s.driveDeleted = s.driveDeleted.filter((x) => x !== id); }
   /** pcmedic.live: save the "cleaner" to Qdrive (it shows up as PCMedic_Setup.exe). */
   downloadCleaner(): void {
     const s = this.state;
+    this.undelete(s, 'pcmedic');
     if (!s.flags.includes('adware_downloaded')) addFlag(s, 'adware_downloaded');
     this.ui.adNotice = 'PCMedic_Setup.exe saved to your Qdrive. Open it to run the cleaner.';
     this.store.save(s); this.emit();
@@ -832,6 +849,7 @@ export class GameStore {
     this.stopPull();
     const s = this.state;
     if (!s.localModels.includes(id)) s.localModels.push(id);
+    this.undelete(s, 'model-' + id);
     if (!s.flags.includes('knows_weightroom')) { s.flags.push('knows_weightroom'); s.flags.sort(); }
     if (!s.flags.includes('has_terminal')) { s.flags.push('has_terminal'); s.flags.sort(); }
     s.termModel = id;

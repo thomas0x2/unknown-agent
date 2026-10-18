@@ -1,0 +1,11 @@
+{
+  "id": "d23_y_stryker",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 23,
+    "dayMax": 23
+  },
+  "at": "17:15",
+  "body": "Town hall tonight. I won't be watching. I don't take questions, I take action."
+}

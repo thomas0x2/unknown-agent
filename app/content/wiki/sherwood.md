@@ -28,6 +28,10 @@ from: 1
 - [public] On day 16 $GAI falls 3.5% and $VANT 6%.
 - [public] On day 18 $PDUR rises 3% after Perdure settles the NoDoze MAX lawsuits.
 - [public] On day 19 $VANT falls 3% on a lawsuit.
+- [public] On day 22 $GAI rises 2.1% on the agent civic launch, and $VANT falls 2.2% as the former-staff lawsuit grows.
+- [public] On day 23 $GAI slips 1.4% after a congressional aide comments on the GeneralAI hearing.
+- [public] On day 25 $PDUR rises 2.4% as Fluvera sells out.
+- [public] On day 26 $APO rises 2.2% as Apogee confirms its second launch, and $VANT falls 2.7% when a judge lets the lawsuit go ahead.
 
 ## Ads
 

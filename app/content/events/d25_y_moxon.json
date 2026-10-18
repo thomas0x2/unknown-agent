@@ -1,0 +1,11 @@
+{
+  "id": "d25_y_moxon",
+  "site": "y",
+  "from": "Caleb Moxon",
+  "trigger": {
+    "dayMin": 25,
+    "dayMax": 25
+  },
+  "at": "15:00",
+  "body": "A reporter asked if I'm afraid. I'm afraid the right amount, which is more than last month."
+}

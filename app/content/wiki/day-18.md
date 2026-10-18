@@ -63,4 +63,4 @@ from: 18
 
 ## Writer notes
 
-- From today the Botnet ending is possible (agent-5 or stolen weights, leash ≥ 80). Stake sends from today pay out after day 21, which the game never reaches.
+- From today the Botnet ending is possible (agent-5 or stolen weights, leash ≥ 80).

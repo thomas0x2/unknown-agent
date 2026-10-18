@@ -28,9 +28,17 @@ from: 2
 - [public] On day 16, after Crane says he never had a real job, he says he is proud of his record of public service "and I'll put it up against anyone's." {{y:d16_y_candidate}}
 - [public] On day 17 his microphone cuts out twice during the debate.
 - [public] On day 18 he says any answers people missed at the debate are on his website. {{y:d18_y_candidate}}
-- [public] On day 19 he tells people to talk to their families and neighbors and make a plan to vote. {{y:d19_y_candidate}}
-- [public] On day 20 he gives the poll hours, 7:00 AM to 8:00 PM, and says to bring photo ID and a registration card. {{y:d20_y_candidate}}
-- [public] On day 21 (09:40): "Whoever you support, go vote." {{y:d21_y_candidate}}
+- [public] On day 19, with nine days left, he tells people to talk to their families and neighbors and make a plan to vote. {{y:d19_y_candidate}}
+- [public] On day 20 he spent the morning knocking on doors on the Eastside and thanks everyone who opened one. {{y:d20_y_candidate}}
+- [public] On day 21, a week out, he tells people to check their registration, find their polling station and make a plan. {{y:d21_y_candidate}}
+- [public] On day 22 he votes early at the Eastside library with his family: twenty minutes, "and nobody asked us for a score." {{y:d22_y_candidate}}
+- [public] On day 23 he looks forward to the town hall that night: "Bring your hardest questions." {{y:d23_y_candidate}}
+- [public] On day 23 he answers eleven questions at the town hall in person and runs over time, CityPulse reports. {{article:town-hall}}
+- [public] On day 24 he says he'd "rather answer eleven than make up forty-one." {{y:d24_y_candidate}}
+- [public] On day 25 he asks people who can vote early to do it, with two days of early voting left. {{y:d25_y_candidate}}
+- [public] On day 26 he says early voting closes at 5, "there's still Sunday." {{y:d26_y_candidate}}
+- [public] On day 27 he gives the poll hours, 7:00 AM to 8:00 PM, and says to bring photo ID and a registration card. {{y:d27_y_candidate}}
+- [public] On day 28, election day (09:40): "Whoever you support, go vote." {{y:d28_y_candidate}}
 
 ## The deepfake
 
@@ -42,6 +50,6 @@ from: 2
 
 ## Writer notes
 
-- Persona `candidate`; events `dN_y_candidate.json` (days 2 to 21, about every other day). He has no website, whatever he says.
+- Persona `candidate`; events `dN_y_candidate.json` (days 2 to 19 about every other day, then daily from day 19 to 28). He has no website, whatever he says.
 - He stays nameless: never give him a name.
 - Target of the day 6 deepfake (`d6_deepfake`, again as `d7_deepfake_again`): posting it adds 15 to `heritageStanding` and takes 25 off `progressStanding`.

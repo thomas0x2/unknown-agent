@@ -16,7 +16,7 @@ nest: true
 - [public] On day 5 he posts that Spin Cycle has four new machines and machine 3 is still out of order: "Some things you can count on." {{y:d5_y_kofi_news}}
 - [public] Steph M. (@steph_m), "Nurse, nights. Laundry in between." She gave Iron Yard 4 stars on Yowl.
 - [public] On day 7 she posts that her rent appeal came back in four seconds. {{y:d7_y_steph_rentboard}}
-- [public] On day 20 she plans to vote at 7am before her night shift. {{y:d20_y_steph_vote}}
+- [public] On day 27 she plans to vote at 7am before her night shift. {{y:d27_y_steph_vote}}
 - [public] walked_there_again, "I walk to the laundromat a lot." Gave Spin Cycle 2 stars on Yowl ("Every machine busy. Again.").
 - [public] On day 15 they walk past four DoorDish strikers on Ferris St with robots delivering straight through the picket line. {{y:d15_y_walked_strike}}
 - [public] When [[Spin Cycle Board]] is down or stale at payday, one of these three posts about it on Y.
@@ -42,6 +42,6 @@ nest: true
 
 ## Writer notes
 
-- Bios in `y-bios.ts`; Yowl seeds in `src/ui/yowl-data.ts`; complaint posters in `content/apps/laundromat.json` and `swaplist.json`; events `d5_y_kofi_news`, `d7_y_steph_rentboard`, `d15_y_walked_strike`, `d20_y_steph_vote`.
+- Bios in `y-bios.ts`; Yowl seeds in `src/ui/yowl-data.ts`; complaint posters in `content/apps/laundromat.json` and `swaplist.json`; events `d5_y_kofi_news`, `d7_y_steph_rentboard`, `d15_y_walked_strike`, `d27_y_steph_vote`.
 - linden_ave_local's review is a Yowl seed with `day: 7` (PR #205); Dana's hacks delete the two seeds (`state.removedSeed`).
 - Steph is a nurse on nights in both her Y bio and Swaplist persona; Kofi is a "Spin Cycle regular" on Y but "recently laid off from an office job" as a Swaplist seller. Both can hold.

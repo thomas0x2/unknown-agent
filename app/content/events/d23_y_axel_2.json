@@ -1,0 +1,11 @@
+{
+  "id": "d23_y_axel_2",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 23,
+    "dayMax": 23
+  },
+  "at": "19:55",
+  "body": "Record viewers"
+}

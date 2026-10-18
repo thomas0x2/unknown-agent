@@ -20,6 +20,7 @@ from: 1
 - [public] Rent of 350 DOLR is due at the end of Sunday, October 13, day 7 [known].
 - [public] Rent of 500 DOLR is due on day 14 [known].
 - [public] Rent of 650 DOLR is due on day 21 [known].
+- [public] Rent of 650 DOLR is due again on day 28 [known].
 
 [public] Rent is taken at payday at the end of the day. [[Gary Pruitt]] takes no late payment: not enough money means eviction.
 

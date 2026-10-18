@@ -1,0 +1,11 @@
+{
+  "id": "d26_y_hartman",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 26,
+    "dayMax": 26
+  },
+  "at": "10:05",
+  "body": "agent civic is back. it now answers every question with \"please check with your local election office\". satisfaction is down 40%. accuracy is up."
+}

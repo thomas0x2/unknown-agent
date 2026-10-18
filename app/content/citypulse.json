@@ -25,9 +25,9 @@
   {
     "slug": "election-field", "day": 1, "at": "16:30", "section": "Election", "art": "ballot", "by": "Renata Ilic",
     "title": "THE BATTLE FOR AMERICA BEGINS: Crane storms ahead on Y",
-    "dek": "21 days. Two races. One question: who will save your job?",
+    "dek": "27 days. Two races. One question: who will save your job?",
     "body": [
-      "The gloves are off. With three weeks to go until election day on October 27, Heritage Party firebrand Randall Crane is leading every single poll on Y and promising to rip the jobs back from the machines.",
+      "The gloves are off. With four weeks to go until election day on November 3, Heritage Party firebrand Randall Crane is leading every single poll on Y and promising to rip the jobs back from the machines.",
       "His 38.4 million followers are hanging on every word. Some of them repost him within seconds, word for word, around the clock. Their dedication is extraordinary.",
       "Standing in his way: the Progress Party's candidate, a career politician whose name even his own supporters struggle to remember. The real polls have him slightly ahead. Y does not care about the real polls."
     ]
@@ -497,7 +497,29 @@
     "ad": ["Who REALLY writes", "<b>CRANE’S POSTS</b>?", "The evidence is <b>STARTLING</b>."]
   },
   {
-    "slug": "election-eve", "day": 20, "at": "11:00", "section": "Election", "art": "ballot", "by": "Renata Ilic",
+    "slug": "agent-civic", "day": 22, "at": "18:30", "section": "Election", "art": "phone", "by": "Renata Ilic",
+    "title": "YOUR POLLING STATION HAS MOVED (it hasn't): GeneralAI's new voting helper gets it WRONG on day one",
+    "dek": "Agent civic was launched this morning to answer voters' questions. By lunch it was answering them creatively.",
+    "body": [
+      "GeneralAI launched agent civic this morning, promising \"nonpartisan answers about where, when and how to vote\".",
+      "By the afternoon at least one voter had been told his polling station had moved across town. It hadn't. He found out after the bus ride.",
+      "GeneralAI says agent civic \"doesn't have opinions\". It does, apparently, have addresses."
+    ],
+    "ad": ["Has YOUR", "polling station <b>MOVED</b>?", "(It <b>hasn't</b>.)"]
+  },
+  {
+    "slug": "town-hall", "day": 23, "at": "19:30", "section": "Election", "art": "phone", "by": "Renata Ilic",
+    "title": "CRANE ON A SCREEN: was that REALLY him at tonight's town hall?",
+    "dek": "41 questions in 30 minutes, no notes, no pauses and one perfect tie knot.",
+    "body": [
+      "Randall Crane appeared at tonight's Y town hall on a large screen, \"live from the campaign bus\". He answered 41 voter questions in 30 minutes without once saying \"um\".",
+      "Viewers noticed he blinked on a regular schedule and remembered every questioner's name. His campaign says that is what he is like.",
+      "Candidate 2030 answered eleven questions in person and ran over time."
+    ],
+    "ad": ["Was it", "<b>REALLY</b> him?", "You <b>decide</b>."]
+  },
+  {
+    "slug": "election-eve", "day": 27, "at": "11:00", "section": "Election", "art": "ballot", "by": "Renata Ilic",
     "title": "D-DAY TOMORROW: everything you MUST know before you vote",
     "dek": "Don't get turned away. Don't fall for the fakes. Read this now.",
     "body": [
@@ -508,7 +530,7 @@
     "ad": ["Voting", "<b>TOMORROW</b>?", "Read this <b>FIRST</b>."]
   },
   {
-    "slug": "polls-open", "day": 21, "at": "10:00", "section": "Election", "art": "ballot", "by": "Renata Ilic",
+    "slug": "polls-open", "day": 28, "at": "10:00", "section": "Election", "art": "ballot", "by": "Renata Ilic",
     "title": "IT'S HAPPENING: polls open as huge queues form across the city",
     "dek": "Two candidates. One president. History in the making.",
     "body": [
@@ -519,7 +541,7 @@
     "ad": ["The polls", "are <b>OPEN</b>.", "Until <b>8 PM</b>."]
   },
   {
-    "slug": "turnout", "day": 21, "at": "19:40", "section": "Election", "art": "chart-up", "by": "Renata Ilic",
+    "slug": "turnout", "day": 28, "at": "19:40", "section": "Election", "art": "chart-up", "by": "Renata Ilic",
     "title": "RECORD-SMASHING TURNOUT! But the count has barely begun",
     "dek": "Y's tracker says the city has never voted like this. The election office is still on precinct one.",
     "body": [

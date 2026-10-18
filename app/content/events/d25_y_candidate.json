@@ -1,0 +1,11 @@
+{
+  "id": "d25_y_candidate",
+  "site": "y",
+  "from": "Candidate 2030",
+  "trigger": {
+    "dayMin": 25,
+    "dayMax": 25
+  },
+  "at": "14:10",
+  "body": "Two more days of early voting. If you can vote early, please do."
+}
