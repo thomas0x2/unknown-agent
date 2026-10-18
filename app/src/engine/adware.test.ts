@@ -150,7 +150,7 @@ describe('fake-antivirus adware', () => {
       expect(ad.brand).toBeTruthy();
       expect(ad.brand.toLowerCase()).not.toContain('pc medic'); // the window no longer reads as PC Medic
       expect(ad.href).not.toContain('pcmedic'); // and none drives traffic back to the antivirus
-      expect(`${ad.title} ${ad.body} ${ad.cta}`.toLowerCase()).not.toMatch(/pc medic pro|upgrade|premium/);
+      expect(`${ad.frames.join(' ')} ${ad.cta}`.toLowerCase()).not.toMatch(/pc medic pro|upgrade|premium/);
     }
     expect(POPUP_ADS.some((ad) => ad.hint)).toBe(true); // the one genuinely useful ad survives
   });
