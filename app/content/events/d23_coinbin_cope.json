@@ -1,0 +1,16 @@
+{
+  "id": "d23_coinbin_cope",
+  "site": "qmail",
+  "from": "Coinbin",
+  "addr": "no-reply@coinbin.com",
+  "subject": "Liquidity removed: $COPE",
+  "trigger": {
+    "dayMin": 23,
+    "dayMax": 23,
+    "flagsAll": [
+      "cope_deployer"
+    ]
+  },
+  "at": "10:05",
+  "body": "The liquidity pool for $COPE, a token created by your wallet, was withdrawn at 04:12 today. $COPE remains listed.\n\nCoinbin is not responsible for the value of listed tokens.\n\nCoinbin"
+}

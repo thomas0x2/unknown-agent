@@ -1,0 +1,11 @@
+{
+  "id": "d13_y_dexcult",
+  "site": "y",
+  "from": "dexcult",
+  "trigger": {
+    "dayMin": 13,
+    "dayMax": 13
+  },
+  "at": "10:15",
+  "body": "the unemployed are the most bullish demographic in history. nothing to lose and phones fully charged."
+}

@@ -12,6 +12,8 @@ from: 7
 - [public] 10:00 [[The Current]]'s morning newsletter, "Crane praises GeneralAI, three days after promising to send the machines back": Randall Crane called GeneralAI "an American success story" on Saturday. Below it, "This afternoon" and "Rent day". {{mail:current_newsletter@7}}
 - [hidden; public if posted_deepfake] 10:00 Because the deepfake went up last night, the newsletter leads its items with "Unverified": A picture of Candidate 2030 with the sex offender Kirschbaum spread on Y last night. We haven't been able to confirm where it came from, and we aren't publishing it.
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": one meal a day, standing up. {{mail:guru_newsletter@7}}
+- [hidden; public if shown d7_dex_live] 10:20 [[Dex Calloway]], "we're live": $COPE trades; the player's 50,000,000 COPE are locked until Oct 30 [known]. {{mail:d7_dex_live}}
+- [hidden; public if shown d7_dex_other_dev] 10:20 [[Dex Calloway]], "we're live": someone else created it last night and the founding engineer's allocation went with them. {{mail:d7_dex_other_dev}}
 - [hint] 11:40 Bean There, "Another bad one": another 1-star Yowl review, this one by linden_ave_local, same job, 40 DOLR this time. {{mail:d7_coffee_removal}}
 - [hidden; public if second_hack] 11:40 The player got the second review removed, and Bean There paid 40 DOLR that night.
 - [hidden; public if shown d7_deepfake_again] 12:00 The consultant again, "Discreet work, revised": the post didn't go up last night, so the offer is now 250 DOLR for the same picture of Crane's opponent with [[Kirschbaum]] and the same caption. "Someone else will do it for less." {{mail:d7_deepfake_again}}
@@ -23,6 +25,7 @@ from: 7
 ## Y
 
 - [public] 10:33 [[Axel Rook]]: the algorithm improved this week. {{y:d7_y_axel}}
+- [public] 10:50 [[Dex Calloway]] (@dexcult): "$COPE is live on coinbin. we are early." {{y:d7_y_dexcult}}
 - [public] 12:43 noodleposter switched to the spicy noodles because the replies wanted it; "it just hurts now." {{y:f7}}
 - [public] 13:00 [[Mara Vey]]: her new piece on [[The Current]], "The people AI left behind", at thecurrent.test/people-ai-left-behind, built from interviews with workers Vantor and others replaced. Viktor is one of her sources. {{y:d7_journalist_article}}
 - [hidden; public if talked_to_journalist] 13:00 The article quotes the player's first email to Mara, unnamed ("One former Vantor employee…").
@@ -57,6 +60,7 @@ from: 7
 ## Trending
 
 - [public] 10:00 Trending on Y: #RentDay.
+- [public] 10:50 Starts trending on Y: $COPE.
 - [public] 12:30 Starts trending on Y: Rent Board appeals.
 - [public] 13:00 Starts trending on Y: "The people AI left behind".
 - [public] 19:20 Starts trending on Y: Crane vs. Y check marks.

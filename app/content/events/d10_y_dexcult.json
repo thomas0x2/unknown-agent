@@ -1,0 +1,11 @@
+{
+  "id": "d10_y_dexcult",
+  "site": "y",
+  "from": "dexcult",
+  "trigger": {
+    "dayMin": 10,
+    "dayMax": 10
+  },
+  "at": "12:05",
+  "body": "someone asked me for an exit strategy. there is no exit. there is the congregation."
+}

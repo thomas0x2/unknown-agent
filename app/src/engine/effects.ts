@@ -7,6 +7,7 @@ import type { Effects, JobSpec } from '../content/schema';
 import { addValue, addFlag, clearFlag, money } from './core';
 import { registerApp, scriptedBreak, bugsOf } from './apps';
 import type { MeterId } from './values';
+import { coinTx } from './cope';
 
 /** The last day a job can be done: `dueAfter` days after its offer arrived, else its `dueDay`. */
 export function jobDue(s: GameState, job: JobSpec, eventId?: string): number {
@@ -61,6 +62,16 @@ export function applyEffects(s: GameState, effects?: Effects, job?: JobSpec, eve
   if (effects.raisePay) {
     const app = s.apps.find((a) => a.clientEventId === effects.raisePay!.client);
     if (app) app.payPerDay = Math.max(0, app.payPerDay + effects.raisePay.by);
+  }
+  if (effects.coins) {
+    for (const [coin, n] of Object.entries(effects.coins.add)) {
+      s.coins = { ...s.coins, [coin]: (s.coins?.[coin] ?? 0) + n };
+      coinTx(s, effects.coins.from, `${n.toLocaleString('en-US')} ${coin}`);
+    }
+  }
+  if (effects.dropClient) {
+    const app = s.apps.find((a) => a.clientEventId === effects.dropClient);
+    if (app) app.churned = true;
   }
   if (effects.breakApp) scriptedBreak(s, typeof effects.breakApp === 'object' ? effects.breakApp.appId : undefined);
   if (effects.job && job) {

@@ -1,0 +1,11 @@
+{
+  "id": "d9_y_dexcult",
+  "site": "y",
+  "from": "dexcult",
+  "trigger": {
+    "dayMin": 9,
+    "dayMax": 9
+  },
+  "at": "10:40",
+  "body": "the supercycle doesn't care about your 401k. you don't have one anymore either. we're even."
+}

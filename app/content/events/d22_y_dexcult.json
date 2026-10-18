@@ -1,0 +1,11 @@
+{
+  "id": "d22_y_dexcult",
+  "site": "y",
+  "from": "dexcult",
+  "trigger": {
+    "dayMin": 22,
+    "dayMax": 22
+  },
+  "at": "10:10",
+  "body": "tomorrow i'll share something important with the congregation. set an alarm."
+}
