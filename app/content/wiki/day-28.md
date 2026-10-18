@@ -23,6 +23,7 @@ from: 28
 - [public] 10:52 [[Max Stryker]] voted at 7:00 sharp, first in line. {{y:d28_y_stryker}}
 - [public] 11:06 [[Caleb Moxon]] won't tell anyone how to vote, only asks that they do it themselves. {{y:d28_y_moxon}}
 - [public] 12:00 Teo Vasquez voted; the queue was an hour; "Nobody is hiring, so I had the time." {{y:d28_y_teo_voted}}
+- [public] 14:30 [[Wade Tillman]] voted on paper, sunglasses on for the cameras: "Whoever wins tonight, remember the boat." {{y:d28_y_wade}}
 - [public] 17:24 doomscroll voted; nobody in line was talking, everyone on their phone, "it's fine." {{y:f21}}
 - [public] 18:49 Brent Kowalski: $VANT under pressure as the layoff lawsuit grows. {{y:m28_vant}}
 - [public] 18:59 MarketWire: $APO and $GAI lead early trading. {{y:m28_apo_day}}

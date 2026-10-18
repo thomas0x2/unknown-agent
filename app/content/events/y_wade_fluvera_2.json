@@ -1,0 +1,14 @@
+{
+  "id": "y_wade_fluvera_2",
+  "site": "y",
+  "from": "Wade Tillman",
+  "trigger": {
+    "dayMin": 14,
+    "after": {
+      "flag": "fluvera_launched",
+      "delayDays": 5
+    }
+  },
+  "at": "14:08",
+  "body": "Pharmacist on 5th peeled the sticker off a Fluvera box for me. Last year's date underneath. Then she asked me to leave and not come back. Do with that what you want."
+}

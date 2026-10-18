@@ -1,0 +1,14 @@
+{
+  "id": "y_wade_fluvera",
+  "site": "y",
+  "from": "Wade Tillman",
+  "trigger": {
+    "dayMin": 10,
+    "after": {
+      "flag": "fluvera_launched",
+      "delayDays": 1
+    }
+  },
+  "at": "14:30",
+  "body": "\"Autism-free.\" Read it again. Nobody prints what something is free of unless they know what the others weren't free of. Perdure just told you. I've never taken one of their shots and I'm not starting now."
+}

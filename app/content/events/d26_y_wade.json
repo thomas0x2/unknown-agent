@@ -1,0 +1,11 @@
+{
+  "id": "d26_y_wade",
+  "site": "y",
+  "from": "Wade Tillman",
+  "trigger": {
+    "dayMin": 26,
+    "dayMax": 26
+  },
+  "at": "12:37",
+  "body": "Nine ballots cast by agent, says the election office. Nine they caught."
+}

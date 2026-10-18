@@ -27,6 +27,7 @@ from: 2
 - [public] 12:35 [[Pollymarket]]: Crane's odds fall to 36% after The Current's poll. {{y:d2_y_polly_crane}}
 - [public] 13:10 Candidate 2030: encouraged by the poll; "polls don't vote. People do." {{y:d2_y_candidate}}
 - [public] 14:10 [[Cal Hartman]]: agent usage up 40% this week; "a little compute constrained". {{y:d2_y_hartman}}
+- [public] 14:40 [[Wade Tillman]]: four chemtrails crossed over the Eastside on Sunday, and that night Vantor fired 400 people by email. "Look up." {{y:d2_y_wade}}
 - [public] 15:50 CityPulse: a [[DoorDish]] delivery robot left its route on Ferris St and disappeared, burrito and all. {{y:d2_y_robot}}
 - [public] 16:00 Liftoff Daily: payments, jobs and dating in one app. {{y:d2_y_liftoff}}
 - [public] 16:11 Axel Rook: "@liftoff_daily Exactly" {{y:d2_y_axel_2}}

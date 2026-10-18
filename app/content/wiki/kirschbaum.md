@@ -19,10 +19,15 @@ summary: Harlan Kirschbaum is a financier and a registered sex offender, the man
 
 ## Crane's old friend
 
+- [public] On day 5 [[Wade Tillman]] tells his followers to ask Crane where he spent July 2019, and about a boat called the Lucky Lady. {{y:d5_y_wade}}
 - [public] On day 11 CityPulse publishes photos of [[Randall Crane]] on the deck of the Lucky Lady in 2019, raising champagne with Kirschbaum. Crane's campaign says he "meets thousands of people" and "barely knew" him; other guests say he stayed four days. {{article:crane-kirschbaum}}
 - [public] {{y:d11_y_citypulse_kirschbaum}}
 - [public] On day 15 The Current reports flight records: Crane flew on Kirschbaum's jet eleven times between 2014 and 2019. The campaign says he "doesn't recall the plane." {{y:d15_y_current_flights}}
 - [public] On day 16 CityPulse follows up: two of the flights went to Kirschbaum's island, and Crane's poll numbers haven't moved. {{article:crane-flights}}
+- [public] The day after the player's deepfake goes up, Wade Tillman calls it fake, "count the fingers", and asks who was really on that boat. {{y:d7_y_wade_deepfake}}
+- [public] On day 11 Wade reminds everyone he named the Lucky Lady last Friday. {{y:d11_y_wade}}
+- [public] On day 15 Wade answers the flight records: "I count twelve." {{y:d15_y_wade}}
+- [hidden] [planned] He is right: the [[Halden Logistics]] hack turns up a twelfth flight, in 2020, with Crane on the manifest. Only the player sees it (see [[Wade Tillman]]).
 - [hidden; public if posted_deepfake] On day 16 doomscroll points out that the real picture had the other guy in it. {{y:d16_y_kirschbaum_wrong_guy}}
 
 ## Writer notes

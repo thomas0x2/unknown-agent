@@ -62,6 +62,8 @@ export const Y_BIOS: Record<string, string> = {
   cat_ceo: 'CEO of one cat. Her account has more followers than mine. Board meetings at 5am.',
   doomscroll: "it's fine · online since 2014 · notifications on",
   zev_dolr: 'Holding DOLR since 0.4. Ships everything with agent. Posting through it. Not financial advice.',
+  // the conspiracy theorist
+  wade_awake: 'Independent researcher. Chemtrails, the dome, the vials, the people behind the people. I ask what they won\'t. Banned from four platforms, back on this one.',
   // app users who complain on Y
   kofi_a: 'Spin Cycle regular. Sunday loads, 9am.',
   marguerite: 'Retired music teacher. Friday dinners at the same table since 2010.',

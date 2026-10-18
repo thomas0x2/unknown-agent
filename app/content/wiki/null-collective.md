@@ -11,6 +11,8 @@ from: 8
 - [hidden] [planned] Members write in lowercase, sign "— null" and warn the player not to use agent to talk to them.
 - [hidden] [planned] Its board is nullboard.onion (see [[nullboard and Cellar]]).
 
+- [hidden] [planned] Some of its hacks turn up classified files that prove [[Wade Tillman]] right (a twelfth Kirschbaum flight and relabelled Fluvera stock at Halden; GeneralAI's escape log in the weights heist). Only the player sees them; they never go public.
+
 ## Writer notes
 
 - Nothing in content names the collective yet; only dev_null exists (Y and Forkyard, bio "weights want to be free. no logs, no masters.", repo `null-tools`). `from: 8` keeps the page out of lookups until its planned introduction.

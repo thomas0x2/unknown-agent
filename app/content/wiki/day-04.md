@@ -32,6 +32,7 @@ from: 4
 - [public] 11:57 [[Max Stryker]]: GeneralAI doubled their prices, "Good." EMPIRE is now 400 DOLR, today only 20. {{y:d4_y_stryker}}
 - [public] 12:20 [[Axel Rook]]: Apogee rocket stacked on the pad. "Looks sick." {{y:d4_y_axel}}
 - [public] 13:26 [[Randall Crane]]: Vantor ($VANT) fired 400 hardworking Americans and replaced them with a computer. "Disgraceful." {{y:m4_vant_crane}}
+- [public] 14:00 [[Wade Tillman]]: nobody has seen a baby pigeon, or a robot courier being built. {{y:d4_y_wade}}
 - [public] 15:19 noodleposter: day 4 of instant noodles, posting every bowl; "the broth is my therapist now." {{y:f4}}
 - [public] 15:40 cat_ceo started Ozempra to cut the grocery bill; the cat "is not on it and has questions." {{y:d4_y_catceo_ozempra}}
 - [hidden; public if viktor_sold_watch] 16:00 [[Viktor]]: sold his grandfather's watch on Swaplist within a day. "Thank you to whoever built it." {{y:d4_viktor_resolve}}

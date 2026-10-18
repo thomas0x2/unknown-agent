@@ -46,6 +46,7 @@ from: 6
 - [public] 14:10 [[Axel Rook]]: "The job was already gone. AI just told you." {{y:d6_y_axel}}
 - [public] 14:30 [[Tanner Hollis]], posting as "a sales rep": needs a cold-email bot for 200 leads. rep@closers.test {{y:d6_y_outreach}}
 - [public] 15:18 MarketWire: $GAI rallying after Crane's praise. {{y:m6_gai_rally}}
+- [public] 16:00 [[Wade Tillman]]: every candidate has the same dentist; watch the eyes when the flash goes off. {{y:d6_y_wade}}
 - [public] 17:20 Twelve bot accounts post "$GAI to the moon!!".
 - [public] 18:28 [[WallStreetBags]] congratulates a member who sold all his $GAI on Thursday: "Flawless execution, as usual." {{y:m6_gai_late}}
 - [public] 18:50 Liftoff Daily: Apogee static fire this morning, all engines lit, "nothing came off." {{y:d6_y_liftoff}}

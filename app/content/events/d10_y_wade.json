@@ -1,0 +1,11 @@
+{
+  "id": "d10_y_wade",
+  "site": "y",
+  "from": "Wade Tillman",
+  "trigger": {
+    "dayMin": 10,
+    "dayMax": 10
+  },
+  "at": "13:40",
+  "body": "Apogee's rocket broke apart four minutes up. That's about where the dome starts. They keep hitting something and they keep telling you it's the weather."
+}

@@ -7,5 +7,10 @@
     "dayMax": 9
   },
   "at": "14:20",
+  "onDeliver": {
+    "setFlags": [
+      "fluvera_launched"
+    ]
+  },
   "body": "Introducing Fluvera, our generic flu vaccine. 4 DOLR at any pharmacy, no appointment needed. Autism-free. fluvera.com"
 }
