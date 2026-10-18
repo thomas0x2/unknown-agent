@@ -7,6 +7,7 @@ import { ICONS } from '../icons';
 import { type GameState, agentCost, promptCost, AGENT_COST, AGENT_WORK, dateShort, clockTime, gameMinutes } from '../../engine';
 import { chatCost, type PaidChat, bootLines, BOOT_MS } from '../../engine';
 import { devOptionsButton, devOptionsPanel } from '../devOptions';
+import { streamer } from '../stream';
 import { WALLET_ADDR, br, esc, fmtMoney, linkify, shortAddr } from './common';
 
 // ── agent chat (free-promptable, with costs) ──
@@ -69,6 +70,7 @@ export function pageAgent(store: GameStore): string {
   const chargingAt = store.charging ? s.chat.map((m) => m.from).lastIndexOf('you') : -1;
   // the build/fix meter stays under the "working on it" line that started it, however much is said after
   const workAt = s.agentWork ? s.chat.map((m) => m.src).lastIndexOf('working') : -1;
+  const st = streamer('agent', s.chat.length);
   const msgs = s.chat.map((m, i) => msgHtml(m, i) + (i === workAt ? workHtml(s) : '')).join('');
   function msgHtml(m: GameState['chat'][number], i: number): string {
     if (m.from === 'you') {
@@ -88,7 +90,7 @@ export function pageAgent(store: GameStore): string {
     const www = /^(query|classified)/.test(m.src ?? '') ? `<div class="ua-www done">${ICONS.globe}<span>Searched the WWW</span></div>` : '';
     // a classified topic: the search hit something the player isn't cleared for
     const refused = /^classified/.test(m.src ?? '') ? `<div class="ua-www ua-refused">${ICONS.lock}<span>Tried to access classified information · answer refused</span></div>` : '';
-    return `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text">${www}${refused}${linkify(br(m.text))}</div>${model}${src}${debug}</div>`;
+    return `<div class="ua-msg agent"><div class="ua-mark">${ICONS.agent}</div><div class="ua-text">${www}${refused}${st(i, m.text, (t) => linkify(br(t)))}</div>${model}${src}${debug}</div>`;
   }
   const p = store.pendingPrompt;
   // the price shows on the prompt only once the charge has gone through

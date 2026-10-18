@@ -376,6 +376,45 @@ function startWork(s: GameState, s0: GameState, appIds: string[], kind: 'build' 
   return { text, debug: [`${kind === 'build' ? 'Build' : 'Fix'} of ${items} item(s): takes ${mins} game minutes, lands at ${workTime(s.agentWork)}`] };
 }
 
+/** How every reply to a bug report opens, near-misses included. */
+export const GOOD_CATCH = 'Good catch!';
+const goodCatch = (line: string) => `${GOOD_CATCH} ${line}`;
+
+/** What a fake fix says when it lands, before saying what the prompt was missing. One sentence each. */
+const NOT_FOUND = [
+  "I went through {{app}} and couldn't find the bug.",
+  "Couldn't find the bug on {{app}}, so nothing was pushed.",
+  "I looked all over {{app}} and found no bug where you said.",
+];
+
+/**
+ * A near-miss on a fix: the agent thanks the player, bills the prompt and works on it for as long as
+ * a real fix takes, then comes back having found nothing and says what the prompt was missing (Haiku,
+ * with `hints` as its model lines and fallback). Nothing in the repo changes.
+ */
+async function fakeFix(s0: GameState, text: string, writer: Writer, app: AppInstance, opts: { hints: string[]; near: string; debug: string[] }): Promise<AskResult> {
+  if (s0.agentWork) return busyReply(s0, text);
+  const s = clone(s0);
+  const lastReply = [...s.chat].reverse().find((m) => m.from === 'agent')?.text;
+  const fresh = opts.hints.filter((h) => h !== lastReply);
+  const w = await writer.write({ as: 'agent', mode: 'near', near: { why: opts.near, lines: opts.hints }, prompt: text, fallback: pick(s, fresh.length ? fresh : opts.hints), history: chatHistory(s) });
+  const level = s.values.agentLevel;
+  if (!chargeAgent(s, text)) {
+    s.chat.push({ from: 'you', text, day: s.values.day });
+    s.chat.push({ from: 'agent', text: "I can't run — your balance won't cover it. Top up Coinbin and try again.", day: s.values.day, src: 'locked' });
+    return { state: s, reply: '', charged: false, refused: false, workedAround: false };
+  }
+  const report = `${pick(s, NOT_FOUND).replaceAll('{{app}}', app.name)} ${w.text}`;
+  const ack = startWork(s, s0, [app.id], 'fix', 1, { from: 'agent', text: report, src: 'near_miss', level, ...(w.note ? { note: w.note } : {}), ...(w.by ? { by: w.by } : {}), debug: [...opts.debug, ...(w.debug ?? []), 'Fake fix: nothing is pushed'] });
+  // nothing was changed, so nothing goes back into the repo when it lands
+  s.agentWork!.apps = [];
+  s.agentWork!.commits = [];
+  const said = goodCatch(ack.text);
+  s.chat.push({ from: 'you', text, day: s.values.day, cost: agentCostOf(s0, text), level });
+  s.chat.push({ from: 'agent', text: said, day: s.values.day, src: 'working', level, debug: ack.debug });
+  return { state: s, reply: said, charged: true, refused: false, workedAround: false };
+}
+
 /** A build or fix asked for while the agent is busy with another: it says so, and it isn't billed. */
 /** agent is down (GeneralAI was hacked today): an error instead of a reply, nothing billed, no model asked. */
 function outageReply(s0: GameState, text: string): AskResult {
@@ -558,7 +597,7 @@ export async function promptAgent(
           kind = 'near_miss';
         }
       }
-      return askAgent(s0, text, writer, s0.values.agentLevel, { hints, hintSrc: 'near_miss', near, debug: [`Jev: ${why} on ${a.name}, so a near-miss (${kind})`] });
+      return fakeFix(s0, text, writer, a, { hints, near, debug: [`Jev: ${why} on ${a.name}, so a near-miss (${kind})`] });
     }
     const matched = new Set(precise);
     // a prompt that starts a user app builds all of it, however little it says (what it leaves out goes wrong)
@@ -623,6 +662,8 @@ export async function promptAgent(
       // the work takes a while: the push and the report land later, and the agent says it's started
       const kind = builds.some((m) => matched.has(m)) ? 'build' : 'fix';
       const ack = startWork(s, s0, [...byApp.keys()], kind, matched.size, { from: 'agent', text: reply, src: 'build', level });
+      // a prompt that reports a bug gets thanked for it first
+      if (kind === 'fix' || intent === 'fix' || intent === 'both') ack.text = goodCatch(ack.text);
       s.chat.push({ from: 'you', text, day: s.values.day, cost: agentCostOf(s0, text), level });
       s.chat.push({ from: 'agent', text: ack.text, day: s.values.day, src: 'working', level, debug: ack.debug });
       return { state: s, reply: ack.text, charged: true, refused: false, workedAround: false };

@@ -1,4 +1,4 @@
-# The Unknown Agent wiki
+# The Good catch! wiki
 
 The world bible and the day-by-day timeline, one page per thing: a person, a company, a site, an app,
 a day. It is the reference for anyone writing game content, and what agent answers the player's

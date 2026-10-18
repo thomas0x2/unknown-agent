@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, joinWaitlist, joinEmpire, sendCrypto, settlePayments, recordStake, recordDeposit, spinSlot, applyCasinoCode, withdrawCasino, payStakes, buyStock, sellStock, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, rewindArrivals, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy, deliverSwapReplies, matchlessSwipe, matchlessLogin, clone, uploadFile, fileRentAppeal, applyToWhyC, donateCrane, craneDonations, fillSave, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat, agentTermPrompt, dropHackGame, hackMinutes, BOOT_MS, READ_MS, dateShort, clockTime, AGENT_POLICY, installAdware, tickAdware, closePopup, EXE_RUN_LINES,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, joinWaitlist, joinEmpire, sendCrypto, settlePayments, recordStake, recordDeposit, spinSlot, applyCasinoCode, withdrawCasino, payStakes, buyStock, sellStock, exchangeCoins, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, rewindArrivals, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy, deliverSwapReplies, matchlessSwipe, matchlessLogin, clone, uploadFile, fileRentAppeal, applyToWhyC, donateCrane, craneDonations, fillSave, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat, agentTermPrompt, dropHackGame, hackMinutes, BOOT_MS, READ_MS, dateShort, clockTime, AGENT_POLICY, installAdware, tickAdware, closePopup, EXE_RUN_LINES,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -89,6 +89,7 @@ export class GameStore {
     devTab: 'edit' as 'edit' | 'jev',
     /** Coinbin's Send form: open or not, what was typed, and why the last attempt failed. */
     send: { open: false, to: '', amount: '', error: '' },
+    ex: { open: false, from: 'DOLR', to: 'EURI', amount: '', error: '' },
     /** A line under Coinbin's Send/Receive buttons: "Address copied", or what was just sent. */
     cbNotice: '',
     /** Sherwood's order box: what was typed, why the last order was refused, or what it filled. */
@@ -520,7 +521,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = HOME_TAB; this.nextTab = PINNED.length + 1;
-    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, reposted: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, termTab: 'shell', termCwd: [], invaders: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab, send: { open: false, to: '', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', princeError: '', seedShown: false, lonelyTyping: false, stackBet: 1, stackSpinning: false, stack: { error: '', notice: '' }, chatError: '', uploadError: '', uploadPick: '', sorryTyping: false, adNotice: '', jevOffline: null, yUnread: 0 };
+    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, reposted: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, termTab: 'shell', termCwd: [], invaders: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab, send: { open: false, to: '', amount: '', error: '' }, ex: { open: false, from: 'DOLR', to: 'EURI', amount: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', princeError: '', seedShown: false, lonelyTyping: false, stackBet: 1, stackSpinning: false, stack: { error: '', notice: '' }, chatError: '', uploadError: '', uploadPick: '', sorryTyping: false, adNotice: '', jevOffline: null, yUnread: 0 };
     this.store.save(this.state);
     this.emit();
   }
@@ -543,7 +544,26 @@ export class GameStore {
   deploy(appId: string): void { this.act((s) => deploy(s, appId, this.content)); }
   takeDown(appId: string): void { this.act((s) => takeDown(s, appId), false); }
   joinEmpire(): void { this.act((s) => joinEmpire(s)); }
-  toggleSend(open = !this.ui.send.open): void { this.ui.send = { open, to: '', amount: '', error: '' }; this.ui.cbNotice = ''; this.emit(); }
+  toggleSend(open = !this.ui.send.open): void { this.ui.send = { open, to: '', amount: '', error: '' }; this.ui.ex.open = false; this.ui.cbNotice = ''; this.emit(); }
+  /** Coinbin Exchange's form: opening it closes Send; picking coins keeps the typed amount. */
+  toggleExchange(open = !this.ui.ex.open): void { this.ui.ex = { ...this.ui.ex, open, amount: '', error: '' }; if (open) this.ui.send.open = false; this.ui.cbNotice = ''; this.emit(); }
+  setExchange(part: 'from' | 'to', coin: string, amount: string): void {
+    const ex = { ...this.ui.ex, [part]: coin, amount, error: '' };
+    // picking the coin on the other side swaps the two
+    if (ex.from === ex.to) { if (part === 'from') ex.to = this.ui.ex.from; else ex.from = this.ui.ex.to; }
+    this.ui.ex = ex; this.emit();
+  }
+  /** Coinbin Exchange. A refusal keeps the form open with what was typed and the reason. */
+  exchange(amount: string): boolean {
+    const { from, to } = this.ui.ex;
+    const run = (s: GameState) => exchangeCoins(s, from, to, Number(amount.replace(/,/g, '')));
+    const r = run(this.state);
+    if (r.error) { this.ui.ex = { ...this.ui.ex, amount, error: r.error }; this.emit(); return false; }
+    this.ui.ex = { ...this.ui.ex, open: false, amount: '', error: '' };
+    this.ui.cbNotice = `Exchanged ${r.state.tx.at(-1)!.memo.split(' · ')[1]}.`;
+    this.act((s) => (s === this.state ? r : run(s)).state);
+    return true;
+  }
   /** Coinbin Send. A refusal keeps the form open with what was typed and the reason. */
   send(to: string, amount: string): boolean {
     const sent = (s: GameState) => {

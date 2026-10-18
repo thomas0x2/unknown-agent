@@ -110,6 +110,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[EURI]] (euri.md): EURI is a stablecoin pegged to the euro, issued somewhere overseas by a foundation nobody in The city has heard of
 - [[Government]] (government.md): Government sites look like typewritten forms
 - [[Money and DOLR]] (money-and-dolr.md): DOLR is the only money The player uses: a stablecoin pegged 1:1 to the dollar, held in their Coinbin wallet
+- [[NONERO]] (nonero.md): NONERO is a privacy coin: transfers on its chain don't show who sent what to whom
 - [[Peptides]] (peptides.md): Peptides are short chains of amino acids sold online in plain boxes as vials labelled "for research use only, not for human consumption", with names like BPC-157
 - [[The city]] (the-city.md): An unnamed present-day American city where GeneralAI has made white-collar work optional
 - [[The election]] (the-election.md): Election day is Sunday, November 3, 2030

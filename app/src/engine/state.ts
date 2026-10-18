@@ -387,6 +387,8 @@ export interface GameState {
   introSeen: boolean;
   /** Sherwood positions by ticker: fractional shares and what they cost. Unset until the first trade. */
   stocks?: Record<string, { shares: number; cost: number }>;
+  /** Coins in the Coinbin wallet besides DOLR (engine/exchange.ts), by coin. */
+  coins: Record<string, number>;
   /** lonely.ai's chat with Mia (engine/lonely.ts). */
   lonely?: LonelyChat;
   /** Qdrive files uploaded to websites (engine/uploads.ts). */
@@ -481,6 +483,7 @@ export function newGame(seed = makeSeed()): GameState {
     endingShown: false,
     log: [],
     tx: seedLedger(initialMeters().crypto),
+    coins: { MOONCAT: 4_200_000 },
     chat: [{ from: 'agent', text: "Welcome to agent, the AI that replaced you. I build and fix software, write, translate and answer questions. Every prompt is billed to your Coinbin wallet: a flat fee plus a little per word you send, so choose your words like they cost money. They do.", day: 1 }],
     nextAppNum: 1,
     mail: [],

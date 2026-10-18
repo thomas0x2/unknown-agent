@@ -92,12 +92,29 @@
 .cb-op-amt { text-align: right; font-size: 14px; font-weight: 600; white-space: nowrap; }
 .cb-op-amt small { margin-left: 5px; font-size: 10.5px; color: var(--cb-faint); }
 .cb-empty { color: var(--cb-dim); font-size: 13px; }
+.cb-op-ico.swap { color: var(--cb-accent); background: #eef3ff; }
+.cb-num small { display: block; text-align: right; font-weight: 400; }
+.cb-asset ~ .cb-num { min-width: 104px; text-align: right; }
+.cb-asset ~ .cb-alloc { flex-shrink: 1; }
+
+/* Exchange: two coin pickers with a swap button between them, then the amount */
+.cb-ex { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+.cb-ex select { font: inherit; font-size: 14px; color: var(--cb-ink); background: #fff; border: 1px solid var(--cb-line); border-radius: 8px; padding: 9px 10px; min-width: 0; }
+.cb-ex select:focus { outline: none; border-color: var(--cb-accent); box-shadow: 0 0 0 3px rgba(0, 82, 255, 0.15); }
+.cb-ex .cb-amt { grid-column: 1 / 3; }
+.cb-ex .cb-amt input { padding-right: 84px; }
+.cb-flip, .cb-max { align-self: end; padding: 9px 12px; }
+.cb-max { justify-self: start; }
+.cb-ex-rate { grid-column: 1 / -1; margin: 0; font-size: 12.5px; color: var(--cb-dim); }
 
 @media (max-width: 560px) {
   .cb-op { grid-template-columns: 32px minmax(0, 1fr) auto; }
   .cb-op-hash { display: none; }
   .cb-acct { display: none; }
   .cb-send { grid-template-columns: 1fr; }
+  .cb-ex { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+  .cb-ex .cb-send-row { flex-wrap: wrap; }
+  .cb-ex .cb-send-row p { flex-basis: 100%; }
   .cb-side { align-items: flex-start; }
 }
 

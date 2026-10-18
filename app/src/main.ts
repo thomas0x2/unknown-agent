@@ -201,6 +201,7 @@ function render(): void {
   const dve = $('#devedit')!; const showEdit = store.ui.dev && store.ui.devEdit; dve.hidden = !showEdit; if (showEdit) dve.innerHTML = store.ui.devTab === 'jev' ? jevTestsHtml(store) : devEditHtml(store);
 
   if (site === 'agent') { const log = $('#ua-log'); const read = returning ? scrolls.get(key)!['#ua-log'] : undefined; if (log && !(read && !read[2])) log.scrollTop = log.scrollHeight; updateCost(); }
+  if (site === 'coinbin') updateQuote();
   if (site === 'lonely' || site === 'sorry') { const log = $(site === 'lonely' ? '#lo-log' : '#sw-log'); if (log) log.scrollTop = log.scrollHeight; updateCost(); }
   applySendFx(vp, store.busy);
   lastSite = site;
@@ -294,6 +295,14 @@ MISSES.onChange(render);
 JEV.onChange(render);
 void JEV.probe();
 
+/** Coinbin Exchange's "you get" line, kept current while the amount is typed. */
+function updateQuote(): void {
+  const line = $('#cb-ex-quote'); if (!line) return;
+  const q = V.exchangeQuoteLine(store, val('#cb-ex-amount'));
+  line.textContent = q.text;
+  line.classList.toggle('cb-err', q.over);
+}
+
 function updateCost(): void {
   for (const [chat, estId, inputId] of [['lonely', '#lo-cost', '#lonely-input'], ['sorry', '#sw-cost', '#sorry-input']] as const) {
     const est = $(estId); const input = $<HTMLTextAreaElement>(inputId);
@@ -360,6 +369,10 @@ const CLICKS: Record<string, Click> = {
 const ACTS: Record<string, (t: HTMLElement) => void> = {
   send: () => store.toggleSend(),
   'send-cancel': () => store.toggleSend(false),
+  exchange: () => store.toggleExchange(),
+  'ex-cancel': () => store.toggleExchange(false),
+  'ex-flip': () => store.setExchange('from', store.ui.ex.to, val('#cb-ex-amount')),
+  'ex-max': () => { const el = $<HTMLInputElement>('#cb-ex-amount'); if (el) { el.value = V.exchangeMax(store); updateQuote(); } },
   receive: () => copyWalletAddress(),
   'seed-show': () => store.toggleSeed(),
   'seed-copy': () => copySeedPhrase(),
@@ -464,6 +477,7 @@ const FORMS: Record<string, (f: HTMLFormElement) => void> = {
   'stack-code': () => { if (store.stackCode(val('#st-code'))) clearField('st-code'); },
   'stack-withdraw': () => { if (store.stackWithdraw(val('#st-out').trim())) clearField('st-out'); },
   'cb-send': () => store.send(val('#cb-to').trim(), val('#cb-amount').trim()),
+  'cb-ex': () => { if (store.exchange(val('#cb-ex-amount').trim())) clearField('cb-ex-amount'); },
   url: () => { newPageLoad(); store.navigate(val('#nt-url') || val('#address')); },
   ypost: () => { const v = val('#post-input').trim(); if (v) { SOUND.play('send'); clearField('post-input'); markSend($('#viewport')!, 'post'); void store.post(v, trendingToday()); } },
   prompt: () => {
@@ -561,12 +575,14 @@ document.addEventListener('input', (e) => {
   else if (el.id === 'yowl-search') store.setYowlSearch(el.value);
   else if (el.id === 'fy-search-input') store.setFySearch(el.value);
   else if (el.id === 'prompt-input' || el.id === 'lonely-input' || el.id === 'sorry-input') updateCost();
+  else if (el.id === 'cb-ex-amount') updateQuote();
   else if (el.id === 'mail-to') { syncMailTo(); showSuggestions(el); }
   else if (el.id === 'snd-vol') SOUND.setVolume(Number(el.value) / 100);
 });
 document.addEventListener('change', (e) => {
   const el = e.target as HTMLSelectElement;
-  if (el.id === 'llm-misses') MISSES.set({ misses: el.value as Misses });
+  if (el.id === 'cb-ex-from' || el.id === 'cb-ex-to') store.setExchange(el.id === 'cb-ex-from' ? 'from' : 'to', el.value, val('#cb-ex-amount'));
+  else if (el.id === 'llm-misses') MISSES.set({ misses: el.value as Misses });
   else if (el.id === 'llm-haiku-via') MISSES.set({ haikuVia: el.value as HaikuVia });
   else if (el.id === 'llm-net') MISSES.set({ net: el.value as Net });
   else if (el.dataset.devMeter) store.devSetMeter(el.dataset.devMeter as MeterId, Number(el.value));
