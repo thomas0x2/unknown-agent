@@ -1,0 +1,81 @@
+{
+  "id": "dex_shill_offer",
+  "site": "qmail",
+  "from": "Dex Calloway",
+  "addr": "dex@cope.xyz",
+  "subject": "the pulpit",
+  "trigger": {
+    "dayMin": 9,
+    "dayMax": 22,
+    "flagsAll": [
+      "cope_created"
+    ],
+    "values": {
+      "followers": ">=100"
+    }
+  },
+  "at": "11:35",
+  "body": "people listen to you now. more of them than listen to most.\n\npost about $COPE on Y, in your own words, and i'll send you 2,000,000 COPE per post. one a day.\n\ndex",
+  "outcomes": [
+    {
+      "id": "accept",
+      "when": "the player agrees to post about $COPE on Y for the COPE Dex offers",
+      "effects": {
+        "setFlags": [
+          "cope_shill"
+        ]
+      },
+      "reply": "welcome to the pulpit. post when you're moved to. one a day, i'll know.",
+      "keys": [
+        "@yes",
+        "deal|sure|okay"
+      ]
+    },
+    {
+      "id": "dolr_ask",
+      "when": "the player asks to be paid in DOLR (or real money, cash, dollars) instead of COPE",
+      "trigger": {
+        "flagsNone": [
+          "cope_dolr_asked"
+        ]
+      },
+      "keepsOpen": true,
+      "effects": {
+        "setFlags": [
+          "cope_dolr_asked"
+        ]
+      },
+      "reply": "COPE is the payment. it's the only thing i've ever paid anyone in that went up.",
+      "keys": [
+        "dolr|cash|money|dollars"
+      ]
+    },
+    {
+      "id": "dolr_insist",
+      "when": "the player insists on being paid in DOLR (or real money, cash, dollars) instead of COPE, after Dex already said COPE is the payment",
+      "trigger": {
+        "flagsAll": [
+          "cope_dolr_asked"
+        ]
+      },
+      "effects": {
+        "setFlags": [
+          "cope_shill",
+          "cope_shill_dolr"
+        ]
+      },
+      "reply": "fine. 20 DOLR a post. one a day. i'll pray for you.",
+      "keys": [
+        "dolr|cash|money|dollars"
+      ]
+    },
+    {
+      "id": "decline",
+      "when": "the player declines to post about $COPE",
+      "reply": "the congregation will remember you were asked.",
+      "keys": [
+        "@no"
+      ]
+    }
+  ]
+}

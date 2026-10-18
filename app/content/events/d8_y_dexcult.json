@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_dexcult",
+  "site": "y",
+  "from": "dexcult",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "10:25",
+  "body": "price is just the congregation getting louder."
+}

@@ -12,6 +12,7 @@ import { crawl, ledger, portfolio, tradeLog, readMood, trackedOf, START_PORTFOLI
 import { payDay, STAKE } from '../engine/stake';
 import type { StakeSend } from '../engine/state';
 import { machineRows } from '../engine/laundromat';
+import { COPE, countdownView, siteAddress, siteAllocation, siteSupply, siteLock } from '../engine/cope';
 import { swapListings, listedWhen, SWAP_CATEGORIES, type Listing } from '../engine/swaplist';
 import { takesOffers, buyPrice, shownPrice } from '../engine/swapdeal';
 import type { SwapState } from '../engine/state';
@@ -76,6 +77,8 @@ export interface SiteExtras {
 const LOGO_SVG: Record<string, string> = {
   // classifieds purple: two arrows trading places
   swaplist: `<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="8" fill="#6e3fa3"/><path d="M11 15h17M24 10.5l4.5 4.5-4.5 4.5M29 25H12M16 20.5 11.5 25l4.5 4.5" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  // a coin with a flat, resigned mouth
+  coinsite: `<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="#e8b931"/><circle cx="20" cy="20" r="14" fill="none" stroke="#b8891a" stroke-width="2"/><circle cx="15" cy="17" r="2" fill="#5a4210"/><circle cx="25" cy="17" r="2" fill="#5a4210"/><path d="M14 26h12" stroke="#5a4210" stroke-width="2.4" stroke-linecap="round"/></svg>`,
   laundromat: `<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="2" width="32" height="36" rx="6" fill="#2f80ed"/><rect x="8" y="6" width="24" height="5" rx="2" fill="#fff" opacity=".35"/><circle cx="20" cy="24" r="10" fill="#fff"/><circle cx="20" cy="24" r="7" fill="#9cc6f5"/><path d="M14 25c2-2 4 2 6 0s4 2 6 0" stroke="#2f80ed" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>`,
   // a dark terminal tile: a market line climbing through a crawler's scan brackets
   sentiment: `<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="8" fill="#0f1419"/><path d="M9 11V9h4M27 9h4v2M31 29v2h-4M13 31H9v-2" stroke="#3a4552" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="11" y="21" width="3" height="6" rx="1" fill="#e5484d"/><rect x="16.5" y="17" width="3" height="10" rx="1" fill="#30a46c"/><rect x="22" y="19" width="3" height="8" rx="1" fill="#e5484d"/><path d="M10 19l6.5-5 5 3 8.5-6" stroke="#4cc38a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="11" r="2.2" fill="#4cc38a"/></svg>`,
@@ -87,6 +90,7 @@ export function renderAppSite(app: AppInstance, tmpl: AppTemplate | undefined, p
   if (app.template === 'sentiment') return crawler(app, tmpl, page, extras);
   if (app.template === 'laundromat') return laundromat(app, tmpl, page, extras);
   if (app.template === 'swaplist') return swaplist(app, tmpl, page, extras);
+  if (app.template === 'coinsite') return coinsite(app, tmpl, page, extras);
   return generic(app, tmpl, page);
 }
 
@@ -346,6 +350,40 @@ function laundromat(app: AppInstance, tmpl: AppTemplate | undefined, page: strin
   // the app pays for itself with ads: one across the top, one under the machines
   const day0 = extras.day ?? 1;
   return `<div class="as as-l">${head}<main>${adHtml('spincycle-app', day0, 'wide')}${body}${adHtml('spincycle-app', day0, 'wide', 1)}</main></div>`;
+}
+
+// ── coinsite (Dex's $COPE site) ──
+
+function coinsite(app: AppInstance, tmpl: AppTemplate | undefined, page: string | undefined, extras: SiteExtras): string {
+  const f = Object.fromEntries(['countdown', 'contract', 'tokenomics'].map((id) => [id, live(app, tmpl, id)]));
+  const base = app.url;
+  const tabs: [string, string, boolean][] = [['', 'Home', true], ['tokenomics', 'Tokenomics', !!f.tokenomics.built]];
+  const nav = tabs.filter((t) => t[2]).map(([p, label]) => `<a href="#" data-nav="${esc(p ? `${base}/${p}` : base)}" class="${(page ?? '') === p ? 'on' : ''}">${esc(label)}</a>`).join('');
+  const head = `<header class="as-c-head"><span class="as-c-logo">${LOGO_SVG.coinsite}</span><b>$${COPE.ticker}</b><nav>${nav}</nav></header>`;
+  let body: string;
+  if (!page) {
+    const cd = f.countdown;
+    const view = countdownView(cd.bugs, extras.day ?? 1, extras.minute ?? 600, app.lastDeployDay ? { day: app.lastDeployDay, min: app.lastDeployMin ?? 600 } : undefined);
+    const clock = !cd.built ? '' : outage(cd, 'the countdown') ?? `<div class="as-c-clock${view.live ? ' live' : ''}"><small>${view.live ? 'Launched' : 'Launch'} · ${esc(view.target)}</small><b>${esc(view.text)}</b></div>`;
+    const ca = f.contract;
+    const addr = !ca.built ? '' : outage(ca, 'the contract address') ?? `<div class="as-c-ca"><small>Contract address</small><code>${esc(siteAddress(String(ca.params.address ?? COPE.address), ca.bugs, ca.seed))}</code></div>`;
+    body = `<section class="as-c-hero"><h1>$${COPE.ticker}</h1><p>For everyone the system left behind.</p>${clock}${addr}${!cd.built && !ca.built ? '<p class="as-c-empty">Coming soon.</p>' : ''}</section>`;
+  } else if (page === 'tokenomics' && f.tokenomics.built) {
+    const t = f.tokenomics;
+    const down = outage(t, 'the tokenomics');
+    if (down) body = `<section class="as-c-tok"><h1>Tokenomics</h1>${down}</section>`;
+    else {
+      const rows = siteAllocation(String(t.params.shares ?? ''), t.bugs);
+      const total = rows.reduce((a, r) => a + r.pct, 0);
+      const lock = siteLock(String(t.params.lock ?? ''), t.bugs);
+      const list = rows.map((r) => `<tr><td>${esc(r.name)}</td><td><i style="width:${Math.min(100, r.pct)}%"></i></td><td>${r.pct}%</td><td>${/founding/i.test(r.name) ? `Locked until ${esc(lock)}` : ''}</td></tr>`).join('');
+      body = `<section class="as-c-tok"><h1>Tokenomics</h1>
+        <p class="as-c-supply"><small>Total supply</small><b>${esc(siteSupply(String(t.params.supply ?? ''), t.bugs))} ${COPE.ticker}</b></p>
+        <table class="as-c-alloc"><tbody>${list}</tbody><tfoot><tr><td>Total</td><td></td><td>${total}%</td><td></td></tr></tfoot></table>
+        <p class="as-c-note">No presale. No team tokens. The treasury belongs to the congregation.</p></section>`;
+    }
+  } else body = notFound();
+  return `<div class="as as-c">${head}<main>${body}</main><footer class="as-c-foot">$${COPE.ticker} is a memecoin with no intrinsic value or expectation of financial return.</footer></div>`;
 }
 
 // ── swaplist ──

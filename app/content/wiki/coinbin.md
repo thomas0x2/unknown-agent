@@ -1,6 +1,6 @@
 ---
 title: Coinbin
-aliases: coinbin.com, wallet, crypto wallet, recovery phrase, seed phrase, Send, Receive, Exchange, Coinbin Exchange, swap, exchange rate
+aliases: coinbin.com, wallet, crypto wallet, recovery phrase, seed phrase, Send, Receive, Exchange, Coinbin Exchange, swap, exchange rate, Create token, token listing
 category: sites
 from: 1
 ---
@@ -21,6 +21,15 @@ from: 1
 - [public] Rates are set once a day at the close, like stock prices on [[Sherwood]]. EURI moves a fraction of a percent a day, MOONCAT swings by tens of percent and mostly down, NONERO moves a few percent.
 - [public] Exchanges show in the history as "Coinbin Exchange". Bills, rent and payments only ever take DOLR, so a player holding other coins has to exchange them back before payday.
 
+## From day 6: Create token
+
+- [hint] [if dex_contract_ask] A Create token button appears once [[Dex Calloway]] has asked the player to create $COPE. Its form takes a ticker and a total supply, shows the contract address reserved to the player's wallet, and costs 15 DOLR. See [[COPE]].
+- [public] [if cope_created] The player's wallet created $COPE, so its COPE is locked until Oct 30 [known]. The Assets card shows it with what it is worth and "Locked until Oct 30" [known].
+
+## From day 7: COPE
+
+- [public] $COPE is listed on Coinbin and can be bought on the Exchange like the other coins. It is shown under Assets from the day it lists, or once the wallet holds some.
+
 ## The recovery phrase
 
 - [public] A Recovery phrase card holds 12 words that control the wallet: "Anyone who has them can move your DOLR. Coinbin will never ask for them." Show and Copy buttons reveal it.
@@ -32,3 +41,4 @@ from: 1
 - Coinbase parody, replaced Satchel on 2026-10-16. Wallets that accept sends: `WALLETS` in `app/src/engine/wallets.ts` (brother `0xb8d6…e46a`, Mia `0x7c2e…c4d9`, deskjockey `0x5e17…0d7b`); anything else gets "No wallet exists at this address."
 - Exchange: `app/src/engine/exchange.ts` (`COINS`, `EXCHANGE_FEE` 1.5%, `EXCHANGE_MIN` 1 DOLR, `BASE_RATE` and the daily `COIN_SCRIPT` for days 1-21, no randomness, same in every run). Holdings other than DOLR are `state.coins` (new games start with `{ MOONCAT: 4_200_000 }`; old saves get it from fillSave); DOLR stays `values.crypto`. A swap between two non-DOLR coins logs a 0 DOLR history row. Starting rates: EURI 1.084, MOONCAT 0.10 DOLR per million, NONERO 148.60. Added 2026-10-18 (Thomas); rates and fee were Claude's pick.
 - Seed phrase: `harbor violet cushion ladder amber pilot noodle forest rent sugar orbit velvet` (prince-claims.xyz steals it). Password `Coinbin4B!` (coinbln.com steals it).
+- COPE (PR for Dex Calloway, 2026-10-18): a fifth coin in `COINS`, priced by `copeRate` (engine/cope.ts), not `COIN_SCRIPT`; `coinsListed` hides it before day 7 unless held; `exchangeCoins` refuses it before listing and refuses selling it while `copeLocked` (flag `cope_deployer`, before day 24). History rows with amount 0 and a note ending in an amount and a coin ("Dex Calloway · 2,000,000 COPE") show that coin coming in (`coinTx`).

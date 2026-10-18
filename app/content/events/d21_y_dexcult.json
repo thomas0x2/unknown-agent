@@ -1,0 +1,11 @@
+{
+  "id": "d21_y_dexcult",
+  "site": "y",
+  "from": "dexcult",
+  "trigger": {
+    "dayMin": 21,
+    "dayMax": 21
+  },
+  "at": "10:20",
+  "body": "to everyone who joined this week: you're still early. everyone is always still early. that's the beauty of it."
+}

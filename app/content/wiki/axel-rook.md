@@ -32,6 +32,7 @@ from: 1
 - [public] On day 10 (10:09) he posts "Rapid unscheduled disassembly", then "Great data."
 - [public] On day 11 he answers [[Caleb Moxon]] with "@caleb_moxon Doomer".
 - [public] On day 11 he says Y has 600 million users, "of which a small number are bots".
+- [hidden; public if posted_deepfake] On day 12, after the deepfake, he answers The Current's check of the picture with "@the_current Ratio".
 - [public] On day 13 he calls Crane "the only candidate who understands technology."
 - [public] On day 15 he moves Y's moderation to AI, which reviewed 3 billion posts overnight and found nothing wrong.
 - [public] On day 17 he hosts the presidential debate live on Y, with over 40 million people listening, and calls it a "Wild night".
@@ -83,6 +84,7 @@ from: 1
 - [public] {{y:d11_y_axel_3}}
 - [public] {{y:d12_y_axel}}
 - [public] {{y:d12_y_axel_2}}
+- [hidden; public if posted_deepfake] {{y:d12_y_axel_clip}}
 - [public] {{y:d13_y_axel}}
 - [public] {{y:d13_y_axel_2}}
 - [public] {{y:d14_y_axel}}

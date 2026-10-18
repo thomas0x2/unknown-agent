@@ -19,12 +19,14 @@ from: 15
 
 - [public] 09:40 [[Axel Rook]]: moved Y's moderation team to AI; it reviewed 3 billion posts overnight and found nothing wrong. {{y:d15_y_axel}}
 - [public] 10:15 [[CityPulse]]: AI TAKES OVER Y. {{y:d15_y_citypulse}}
+- [public] 10:30 [[Dex Calloway]] (@dexcult): a MarketWire analyst called $COPE "a feeling with a contract address." {{y:d15_y_dexcult}}
 - [public] 10:46 MarketWire: DoorDish couriers strike in three cities; $DISH down 3%. {{y:m15_dish_strike}}
 - [public] 10:59 Candidate 2030 met with small businesses. {{y:d15_y_candidate}}
 - [public] 11:11 Brent Kowalski: $VANT announces a second round of "efficiencies." {{y:m15_vant}}
-- [public] 11:25 [[Tanner Hollis]]: thanks everyone who unsubscribed last week; an unsubscribe is a lead not nurtured yet. {{y:d15_y_sales_rep}}
+- [public] 11:25 [[Tanner Hollis]]: thanks everyone who unsubscribed last week; an unsubscribe is a lead not nurtured yet; he'll reach out to each of them personally. {{y:d15_y_sales_rep}}
 - [public] 12:33 MarketWire: $GAI hearing scheduled in Congress; shares up. {{y:m15_gai}}
 - [public] 13:25 [[Cal Hartman]]: "our 30-day log retention policy has not changed." {{y:d15_y_hartman}}
+- [public] 13:40 [[WallStreetBags]]: $COPE is up 1,250% since it listed eight days ago; nobody can say what it does, everybody owns some. {{y:d15_y_wsb_cope}}
 - [public] 14:50 [[Max Stryker]] was flagged by the new moderator for "unverifiable income claims" and lost his appeal in under a second. {{y:d15_y_stryker}}
 - [public] 15:00 walked_there_again walked past the DoorDish picket line on Ferris St: four people with signs, robots delivering through the middle. {{y:d15_y_walked_strike}}
 - [public] 15:17 noodleposter: the corner store raised noodles by 10 cents; a nine-part thread follows. {{y:f15}}

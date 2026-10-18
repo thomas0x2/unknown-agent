@@ -1,0 +1,11 @@
+{
+  "id": "d7_y_dexcult",
+  "site": "y",
+  "from": "dexcult",
+  "trigger": {
+    "dayMin": 7,
+    "dayMax": 7
+  },
+  "at": "10:50",
+  "body": "$COPE is live on coinbin. we are early. we have always been early. that is the whole thesis."
+}

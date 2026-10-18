@@ -305,3 +305,38 @@ body.dev-on .as-w-dbg { display: inline; }
 .dd-menu li .as-r-pic { width: 44px; height: 44px; }
 .dd-menu li:has(.as-r-pic) { align-items: center; }
 .dd-menu li:has(.as-r-pic) > span:not(.as-r-pic) { flex: 1; }
+
+/* ── coinsite: Dex's $COPE launch page ── */
+.as-c { background: #14110c; color: #f1e6c8; min-height: 100%; display: flex; flex-direction: column; }
+.as-c-head { display: flex; align-items: center; gap: 10px; padding: 14px 24px; border-bottom: 1px solid #2c2618; }
+.as-c-head b { font-size: 18px; letter-spacing: .04em; }
+.as-c-logo { width: 32px; height: 32px; flex: none; }
+.as-c-logo svg { display: block; width: 100%; height: 100%; }
+.as-c-head nav { margin-left: auto; display: flex; gap: 18px; }
+.as-c-head nav a { color: #b9aa86; text-decoration: none; font-size: 14px; }
+.as-c-head nav a.on { color: #e8b931; }
+.as-c main { flex: 1; padding: 40px 24px; }
+.as-c-hero { max-width: 640px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; gap: 18px; }
+.as-c-hero h1 { font-size: 64px; margin: 0; color: #e8b931; letter-spacing: .03em; }
+.as-c-hero > p { margin: 0; color: #b9aa86; font-size: 18px; }
+.as-c-clock { border: 1px solid #3a3220; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 6px; }
+.as-c-clock small, .as-c-ca small, .as-c-supply small { color: #8d8065; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+.as-c-clock b { font-family: var(--f-mono); font-size: 40px; }
+.as-c-clock.live b { color: #e8b931; }
+.as-c-ca { display: flex; flex-direction: column; gap: 6px; }
+.as-c-ca code { font-family: var(--f-mono); font-size: 14px; background: #201b11; border-radius: 8px; padding: 10px; word-break: break-all; user-select: all; }
+.as-c-empty { color: #8d8065; }
+.as-c-tok { max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+.as-c-tok h1 { margin: 0; color: #e8b931; }
+.as-c-supply { display: flex; flex-direction: column; gap: 4px; margin: 0; }
+.as-c-supply b { font-family: var(--f-mono); font-size: 24px; }
+.as-c-alloc { width: 100%; border-collapse: collapse; font-size: 14px; }
+.as-c-alloc td { padding: 9px 6px; border-bottom: 1px solid #2c2618; }
+.as-c-alloc td:nth-child(2) { width: 35%; }
+.as-c-alloc td:nth-child(2) i { display: block; height: 8px; border-radius: 4px; background: #e8b931; }
+.as-c-alloc td:nth-child(3) { text-align: right; font-family: var(--f-mono); }
+.as-c-alloc td:nth-child(4) { color: #8d8065; font-size: 12px; }
+.as-c-alloc tfoot td { font-weight: 600; border-bottom: 0; }
+.as-c-note { color: #8d8065; font-size: 13px; margin: 0; }
+.as-c-foot { padding: 14px 24px; color: #6d6450; font-size: 11px; border-top: 1px solid #2c2618; }
+@media (max-width: 560px) { .as-c-hero h1 { font-size: 44px; } .as-c-clock b { font-size: 30px; } }

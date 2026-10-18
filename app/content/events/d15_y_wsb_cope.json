@@ -1,0 +1,11 @@
+{
+  "id": "d15_y_wsb_cope",
+  "site": "y",
+  "from": "wallstreetbags",
+  "trigger": {
+    "dayMin": 15,
+    "dayMax": 15
+  },
+  "at": "13:40",
+  "body": "$COPE is up 1,250% since it listed eight days ago. Nobody in here can say what it does. Everybody in here owns some."
+}

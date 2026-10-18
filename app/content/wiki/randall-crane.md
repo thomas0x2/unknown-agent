@@ -36,7 +36,8 @@ from: 1
 - [public] On day 5 (19:10) he posts that there is a "FAKE Randall Crane on Y saying nice things about companies" and calls whoever runs it a "Very sick person!"
 - [public] On day 6 (11:00) he calls GeneralAI ($GAI) "an AMERICAN success story" and a "Tremendous company."
 - [public] On day 7 he complains that Y gave a reporter from The Current the same check mark as him: "Rigged!"
-- [public] On day 8 he says an AI that has "no position" on loving the country won't stand for anything.
+- [public; hidden if posted_deepfake] On day 8 he says an AI that has "no position" on loving the country won't stand for anything.
+- [hidden; public if posted_deepfake] On day 8, after the deepfake, he says everyone is talking about his opponent "and his friend Kirschbaum"; he never met the man: "I meet thousands of people, so believe me, I would remember." Three days later his campaign says he "meets thousands of people" and "barely knew" Kirschbaum. {{y:d8_y_crane_picture}}
 - [public] On day 8 CityPulse quotes his plan for a law making it illegal for a computer to be smarter than his cabinet appointees.
 - [public] From day 9 his Y check is a bigger, shiny gold seal.
 - [public] On day 9 he says some polls have him up 112%.

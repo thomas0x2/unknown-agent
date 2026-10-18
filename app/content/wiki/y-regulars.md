@@ -32,6 +32,7 @@ nest: true
 - [public] On day 13 the grocery store took out its last staffed checkout; it was the first thing doomscroll had said out loud in four days. {{y:f13}}
 - [hidden; public if posted_deepfake] On day 16: the Kirschbaum picture everyone shared was fake, "and the real one had the other guy in it." {{y:d16_y_kirschbaum_wrong_guy}}
 - [public] On day 17 doomscroll read about 300 replies about the election and knows less than before. {{y:f17}}
+- [public] On day 23 (11:55) doomscroll notes [[COPE]] is down 99.9% since 4am: "dex says it was each other. i didn't meet anyone." {{y:d23_y_doomscroll_cope}}
 - [public] On day 23 doomscroll watched three "what to expect at the town hall" videos; all three had the same voice and different faces. {{y:f33}}
 - [public] On day 28 doomscroll voted: a long line, nobody talking, everyone on their phone, "it's fine." {{y:f21}}
 

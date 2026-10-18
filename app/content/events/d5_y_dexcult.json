@@ -1,0 +1,11 @@
+{
+  "id": "d5_y_dexcult",
+  "site": "y",
+  "from": "dexcult",
+  "trigger": {
+    "dayMin": 5,
+    "dayMax": 5
+  },
+  "at": "10:20",
+  "body": "a memecoin is a church with a ticker. you don't have to understand it. you have to show up."
+}

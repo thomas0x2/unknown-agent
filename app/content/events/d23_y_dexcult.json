@@ -1,0 +1,17 @@
+{
+  "id": "d23_y_dexcult",
+  "site": "y",
+  "from": "dexcult",
+  "trigger": {
+    "dayMin": 23,
+    "dayMax": 23
+  },
+  "at": "10:30",
+  "body": "the congregation has outgrown its vessel. i'm taking some time to reflect. $COPE was never the coin. it was each other.",
+  "onDeliver": {
+    "setFlags": [
+      "cope_rugged"
+    ],
+    "dropClient": "dex_contact"
+  }
+}

@@ -10,10 +10,12 @@ from: 13
 ## Mail
 
 - [public] 10:00 [[The Current]]'s morning newsletter, "GeneralAI's independent review starts after its training run. Nobody knows when that ends.": GeneralAI says an independent team will review its training environments once the current training run finishes. Below it, "The robot" and "Copies". {{mail:current_newsletter@13}}
+- [hidden; public if posted_deepfake] 10:00 Because the deepfake went up, the newsletter leads its items with "Generated": three labs said yesterday that the picture of Candidate 2030 with Kirschbaum was generated; the photos of Crane on Kirschbaum's yacht were not. The picture has 2.1 million views, the correction 40,000. "Copies" drops out.
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": visualise the Lambo, skip breakfast. {{mail:guru_newsletter@13}}
 
 ## Y
 
+- [public] 10:15 [[Dex Calloway]] (@dexcult): the unemployed are "the most bullish demographic in history." {{y:d13_y_dexcult}}
 - [public] 10:36 [[WallStreetBags]]: a member put his rent into $GAI at the open. "Really proud of him." {{y:m13_gai_great}}
 - [public] 11:00 [[Perdure Pharma]] launches Perdure Peptides, "research-grade peptides from a company you already trust. For research use only." {{y:d13_y_perdure}}
 - [public] 11:20 MarketWire: Perdure launches a peptide line; $PDUR up 5%. {{y:m13_pdur_peptides}}
@@ -21,6 +23,7 @@ from: 13
 - [public] 12:00 [[Mara Vey]]: GeneralAI's safety team went from eleven people to four during Caleb Moxon's two years; the model team had nine hundred. {{y:d13_y_mara_moxon}}
 - [public] 12:30 [[Axel Rook]]: "Randall Crane is the only candidate who understands technology." {{y:d13_y_axel}}
 - [public] 12:50 [[Pollymarket]]: resolved YES, Rook endorsed a candidate; one account bought 90,000 DOLR of YES two minutes before his post. {{y:d13_y_polly_rook}}
+- [public] 13:05 [[Max Stryker]], #ad: told his mother $COPE is "a filter. Most people can't hold anything." {{y:d13_y_stryker_cope}}
 - [public] 13:20 [[Max Stryker]]: "Axel Rook backs Crane. I backed him three days ago. Leaders move first." {{y:d13_y_stryker}}
 - [public] 15:15 Axel Rook: "I'm not political. I just have opinions about every election." {{y:d13_y_axel_2}}
 - [public] 16:10 Candidate 2030 respects Mr. Rook's right to support any candidate. {{y:d13_y_candidate}}
