@@ -34,6 +34,7 @@ import {
   devToggleBug,
   donateCrane,
   dropHackGame,
+  SUSPENDED_TERM,
   emptyMailBin,
   endDay,
   exchangeCoins,
@@ -105,7 +106,7 @@ import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
 import { route, visitedFlag, setDevSites, noteBookmarks } from '../sites/registry';
 import { adSite } from '../sites/adSites';
-import { PULL_MS, pullLines } from './pull';
+import { PULL_MS, modelName, pullLines } from './pull';
 import { DEEPSLEEP_LINES, DEEPSLEEP_PLEA } from '../engine/deepsleep';
 import { shellLines } from './shell';
 import { MISSES } from './misses';
@@ -258,6 +259,7 @@ export class GameStore {
     const home = this.tabs.find((t) => t.pinned === 'qmail.com');
     if (home) this.active = home.id;
     this.ui.termShown = false;
+    if (this.ui.termSession === 'agent') { this.ui.termSession = null; this.state.terminal.push({ k: 'err', text: SUSPENDED_TERM }); }
     this.navigate(`qmail.com/${mailId}`);
   }
 
@@ -458,14 +460,6 @@ export class GameStore {
   closeTerm(): void { this.ui.termOpen = false; this.ui.termShown = false; this.emit(); }
   /** The Terminal's taskbar button: open it, bring it forward, or minimize it if it's already in front. */
   termTask(): void { this.showTerm(!(this.ui.termOpen && this.ui.termShown)); }
-  /** Switch the Terminal's tab. */
-  termTabTo(tab: 'shell' | 'agent'): void { if (this.ui.termTab !== tab) { this.ui.termTab = tab; this.emit(); } }
-  /** The Terminal tabs the player has: the shell from day 1, agent-terminal once the agent opened it. */
-  termTabs(): ('shell' | 'agent')[] {
-    return ['shell', ...(this.state.flags.includes('has_agent_terminal') ? ['agent' as const] : [])];
-  }
-  /** The tab actually in front: the chosen one if the player has it, else the first they have. */
-  termTabShown(): 'shell' | 'agent' { const t = this.termTabs(); return t.includes(this.ui.termTab) ? this.ui.termTab : t[0] ?? 'shell'; }
   /** agent-terminal is still loading (shown in agent.chat). */
   agentBooting(): boolean { return Date.now() < this.agentBootUntil; }
   /** The share of the load done, in steps (the loading line repaints at each). */
@@ -485,8 +479,15 @@ export class GameStore {
     addFlag(s, 'has_agent_terminal');
     s.agentTerm = [...(s.agentTerm ?? []), { k: 'sys', text: `── session ${dateShort(s.values.day)}, ${clockTime(s.clockMin)} ──` }];
     this.store.save(s);
-    this.ui.termOpen = true; this.ui.termShown = true; this.ui.termTab = 'agent';
+    this.ui.termOpen = true; this.ui.termShown = true; this.ui.termSession = 'agent';
     this.emit();
+  }
+  /** exit or quit in agent-terminal: a blocked job is dropped, and the Terminal is back at the shell. */
+  endAgentSession(): void {
+    const s = dropHackGame(this.state);
+    s.terminal.push({ k: 'sys', text: 'agent-terminal session ended.' });
+    this.ui.termSession = null;
+    this.commitAndSettle(s);
   }
   /** agent-terminal: the prompt just sent, shown under a spinner while Jev reads it. */
   termPending: string | null = null;
@@ -533,11 +534,8 @@ export class GameStore {
       } finally { this.termPending = null; }
     }, 'aterm-input', text);
   }
-  /** agent-terminal's own commands: 'clear' wipes the screen, 'exit' drops a blocked hack. Free. */
-  agentTermCommand(cmd: 'clear' | 'exit'): void {
-    if (cmd === 'clear') { this.termReveal = null; this.state.agentTerm = []; this.store.save(this.state); this.emit(); return; }
-    this.commitAndSettle(dropHackGame(this.state));
-  }
+  /** agent-terminal's 'clear': wipes the screen. Free. */
+  agentTermClear(): void { this.termReveal = null; this.state.agentTerm = []; this.store.save(this.state); this.emit(); }
 
   newGame(): void {
     this.store.clear();
@@ -734,6 +732,7 @@ export class GameStore {
       const m = id.slice(6);
       s.localModels = s.localModels.filter((x) => x !== m);
       if (s.termModel === m) s.termModel = null;
+      if (this.ui.termSession === m) this.ui.termSession = null;
     }
     const folder = id.startsWith('model-') ? 'models' : 'documents';
     this.store.save(s);
@@ -756,7 +755,8 @@ export class GameStore {
     if (s.adware) { this.showTerm(true); return; }
     if (!s.flags.includes('has_terminal')) addFlag(s, 'has_terminal'); // the exe gives the player the shell
     installAdware(s);
-    this.ui.termOpen = true; this.ui.termShown = true; this.ui.termTab = 'shell';
+    this.ui.termOpen = true; this.ui.termShown = true;
+    if (this.ui.termSession === 'agent') this.ui.termSession = null; // its lines go in the shell
     this.store.save(s); this.emit();
     void this.playExe();
   }
@@ -999,23 +999,37 @@ export class GameStore {
   }
 
   async term(text: string) {
-    // the shell's own commands (help, ls, cd, run…), and everything once there is no model to ask
-    const own = shellLines(text, !!this.state.termModel, this.state, this.ui.termCwd);
-    if (own) {
-      this.state.terminal.push(...own.lines);
-      if (own.cwd) this.ui.termCwd = own.cwd;
-      if (own.run === 'pcmedic') { this.runExe(); return; }
-      if (own.run === 'invaders') this.ui.invaders = true;
-      this.store.save(this.state); this.emit(); return;
+    const cmd = text.trim();
+    if (this.ui.termSession === 'deepsleep') {
+      if (cmd === 'exit' || cmd === 'quit') {
+        this.state.terminal.push({ k: 'in', text: `> ${cmd}` }, { k: 'sys', text: `${modelName('deepsleep')} session ended.` });
+        this.ui.termSession = null;
+        this.store.save(this.state); this.emit(); return;
+      }
+      return this.run(async (s0) => {
+        // a 0.5B model on this laptop: free, but it makes you wait
+        const r = await localPrompt(s0, text, DEEPSLEEP, DEEPSLEEP_PLEA.zh);
+        await wait(1500 + Math.random() * 1500);
+        this.land(r.state); return r;
+      });
     }
-    return this.run(async (s0) => {
-      // a 0.5B model on this laptop: free, but it makes you wait
-      const r = await localPrompt(s0, text, DEEPSLEEP, DEEPSLEEP_PLEA.zh);
-      await wait(1500 + Math.random() * 1500);
-      this.land(r.state); return r;
-    });
+    // the shell's own commands (help, ls, cd, run…), and the sessions it starts
+    const own = shellLines(text, this.state, this.ui.termCwd);
+    this.state.terminal.push(...own.lines);
+    if (own.cwd) this.ui.termCwd = own.cwd;
+    if (own.run === 'pcmedic') { this.runExe(); return; }
+    if (own.run === 'invaders') this.ui.invaders = true;
+    if (own.session === 'agent') { this.openAgentTerm(); return; }
+    if (own.session === 'deepsleep') {
+      this.ui.termSession = 'deepsleep';
+      this.state.terminal.push({ k: 'sys', text: SESSION_INTRO });
+    }
+    this.store.save(this.state); this.emit();
   }
 }
+
+/** The line a deepsleep session opens with. */
+export const SESSION_INTRO = `${modelName('deepsleep')} running on localhost. Type anything. Type exit or quit to end the session.`;
 
 const DEV_KEY = 'unknown-agent-dev';
 function readDevMode(): boolean {

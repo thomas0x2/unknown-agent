@@ -220,11 +220,10 @@ function renderTerm(): void {
   // a prompt that was waiting on the agent gets the focus back when it's free again
   const hadFocus = !!old && (document.activeElement === old || old.disabled);
   // a running invaders.exe keeps its canvas: repainting the log would end the game
-  const playing = store.ui.invaders && store.termTabShown() === 'shell' && !!$('#inv-canvas');
+  const playing = store.ui.invaders && store.ui.termSession !== 'agent' && !!$('#inv-canvas');
   if (!win.firstElementChild) win.innerHTML = V.termWindowHtml(store);
   else {
     if (!playing) $('#tm-log')!.innerHTML = V.termBodyHtml(store);
-    $('#tw-tabs')!.innerHTML = V.termTabsHtml(store);
     $('#tw-title')!.textContent = V.termTitle(store);
   }
   const log = $('#tm-log')!; log.scrollTop = log.scrollHeight;
@@ -329,7 +328,6 @@ type Click = (v: string, t: HTMLElement) => void;
 const MENU_CLICKS: Record<string, Click> = {
   start: () => store.toggleStart(),
   task: (v) => { if (v === 'terminal') store.termTask(); else store.showTerm(false); },
-  ttab: (v) => store.termTabTo(v === 'agent' ? 'agent' : 'shell'),
   term: (v) => { if (v === 'close') store.closeTerm(); else store.showTerm(false); },
   menuCat: (v) => store.setMenuCat(v),
 };
@@ -555,7 +553,8 @@ const FORMS: Record<string, (f: HTMLFormElement) => void> = {
     const v = val('#aterm-input').trim(); if (!v) return;
     SOUND.play('send', 0, 'terminal');
     clearField('aterm-input');
-    if (v === 'clear' || v === 'exit') { store.agentTermCommand(v); return; }
+    if (v === 'clear') { store.agentTermClear(); return; }
+    if (v === 'exit' || v === 'quit') { store.endAgentSession(); return; }
     void store.agentTerm(v);
   },
 };
