@@ -234,6 +234,7 @@ code { font-family: var(--f-mono); font-size: 0.86em; }
 @keyframes yg-glint { 0%, 55% { transform: translateX(0); } 100% { transform: translateX(40px); } }
 @media (prefers-reduced-motion: reduce) { .y-badge.gold .yg-glint { animation: none; opacity: 0; } }
 .y-post p { margin: 0; font-size: 15px; line-height: 1.45; overflow-wrap: anywhere; }
+.y-replying { font-size: 12.5px; color: var(--y-dim); margin: 0 0 2px; }
 .y-img { margin: 2px 0 0; border: 1px solid var(--y-line); border-radius: 12px; overflow: hidden; line-height: 0; }
 .y-img-art { width: 100%; height: auto; aspect-ratio: 16 / 9; display: block; }
 .y-at, .y-link { color: var(--y-accent); text-decoration: none; }

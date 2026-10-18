@@ -1,0 +1,14 @@
+{
+  "id": "d7_y_wade_deepfake",
+  "site": "y",
+  "from": "Wade Tillman",
+  "trigger": {
+    "dayMin": 7,
+    "after": {
+      "flag": "posted_deepfake",
+      "delayDays": 1
+    }
+  },
+  "at": "14:15",
+  "body": "That picture of Candidate 2030 with Kirschbaum is fake. Count the fingers. Now ask why somebody went to the trouble of putting Kirschbaum in it at all, and who was really on that boat."
+}

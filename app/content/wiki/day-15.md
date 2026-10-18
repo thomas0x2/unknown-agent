@@ -38,6 +38,7 @@ from: 15
 - [public] 17:45 [[Pollymarket]]: the Hartman testimony market fell from 38% to 3%; the hearing is after the election. {{y:d15_y_polly_hartman}}
 - [public] 17:59 [[WallStreetBags]]: $APO up because Rook replaced the moderators at a different company; everyone there is long. {{y:m15_apo_mod}}
 - [public] 18:11 [[Caleb Moxon]] will testify at the congressional hearing, which is after the election. {{y:d15_y_moxon}}
+- [public] 18:30 [[Wade Tillman]] on the flight records: "I count twelve." {{y:d15_y_wade}}
 - [public] 18:50 [[Randall Crane]]: "The Fake News at The Current" is writing another sob story about displaced workers; "I LOVE displaced workers." {{y:d15_y_crane}}
 
 ## News

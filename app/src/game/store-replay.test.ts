@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { GameStore } from './store';
 import { loadContent } from '../content/load';
-import { registerApp, type JevRouter, type SaveStore, type Writer } from '../engine';
+import { registerApp, scriptedWriter, type JevRouter, type SaveStore } from '../engine';
 
 const mem: SaveStore = { load: () => null, save: () => {}, clear: () => {} } as unknown as SaveStore;
 // Jev reads the Y post only once the test lets it, like a slow answer
@@ -11,7 +11,7 @@ const slowJev = {
   async matchFeatures() { return []; },
   async ratePost() { await new Promise<void>((r) => { answer = r; }); return { category: 'tip', quality: 0.5 }; },
 } as unknown as JevRouter;
-const make = () => new GameStore(loadContent(), slowJev, {} as Writer, mem);
+const make = () => new GameStore(loadContent(), slowJev, scriptedWriter, mem);
 
 describe('actions taken while another waits on its answer', () => {
   it('a deploy during a pending reply is still live once the reply lands', async () => {

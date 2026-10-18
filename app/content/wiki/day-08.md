@@ -52,7 +52,8 @@ from: 8
 - [public] 16:30 DoorDish: the parking garage listing has been removed. "Couriers cannot create listings." {{y:d8_y_doordish}}
 - [public] 16:40 [[Pollymarket]]: the robot market is down to 36% from 72%. {{y:d8_y_polly_robot}}
 - [public] 16:51 [[Cal Hartman]]: the next model is very good; he had to go for a walk after trying it. {{y:d8_y_hartman}}
-- [public] 17:05 [[Brayden Kolt]]: PureVial Research is live, research use only. purevial.com {{y:d8_y_brayden}}
+- [public] 17:05 [[Wade Tillman]] on the outage: "Hackers don't do it by 10:30 sharp." {{y:d8_y_wade}}
+- [public] 17:15 [[Brayden Kolt]]: PureVial Research is live, research use only. purevial.com {{y:d8_y_brayden}}
 - [public] 17:30 [[Forkyard]]: still investigating; repositories "appear to be intact, as far as we can tell." {{y:d8_y_forkyard_update}}
 - [public] 18:20 [[Mara Vey]]: Forkyard hosts most of the city's small business websites; a bakery owner found out hers was down from a customer. {{y:d8_y_mara_forkyard}}
 - [public] 19:05 [[Forkyard]]: back tomorrow morning; today's hosting won't be billed. {{y:d8_y_forkyard_tomorrow}}
@@ -97,6 +98,8 @@ from: 8
 - [public] Tonight no app pays, because nothing was live. Nothing is held against the player either: no strikes, no complaints, no lost users, no hosting bill. Hack jobs still pay overnight.
 
 ## Writer notes
+
+- `d7_y_wade_deepfake` lands here at 14:15 when the deepfake went up on day 7.
 
 - The Forkyard hack (Thomas, Papers, Please decisions, days 8 and 9): something the player can't affect, felt through their tool, the day before the guardrails. `FORKYARD_OUTAGE` (day 8, from 10:30) in config; `forkyardDown` / `forkyardOutageDay` in `engine/outage.ts`. Down: Forkyard pages show the failing sign-in (`pageSignInFailed`), app pages a 502, `deploy`/`takeDown` do nothing, a build/fix prompt Jev matched gets a scripted `FORKYARD_DOWN` line (billed, nothing pushed; also for a user-app lead), `deliverAgentWork` waits until bedtime. Payday on the outage day skips every app (`runPayday`) and hosting. The group is unnamed on purpose. The day 9 guardrails follow from it.
 

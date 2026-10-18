@@ -1,0 +1,11 @@
+{
+  "id": "d1_y_wade",
+  "site": "y",
+  "from": "Wade Tillman",
+  "trigger": {
+    "dayMin": 1,
+    "dayMax": 1
+  },
+  "at": "14:30",
+  "body": "GeneralAI says its model \"almost escaped\" during testing. Almost. Escaped to where? From what? Nobody in the press asked. I'm asking."
+}

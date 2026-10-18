@@ -33,6 +33,7 @@ from: 4
 - [public] 12:20 [[Axel Rook]]: Apogee rocket stacked on the pad. "Looks sick." {{y:d4_y_axel}}
 - [public] 13:26 [[Randall Crane]]: Vantor ($VANT) fired 400 hardworking Americans and replaced them with a computer. "Disgraceful." {{y:m4_vant_crane}}
 - [public] 13:50 [[Brynn LeClaire]]: when she started Pug she had one rule, no founder should ever feel alone; Pug covers 2,400. {{y:d4_y_brynn}}
+- [public] 14:00 [[Wade Tillman]]: nobody has seen a baby pigeon, or a robot courier being built. {{y:d4_y_wade}}
 - [public] 14:30 [[Logan Pryce]] has been at Pug Café since 9am; free espresso with a policy, and he has one. {{y:d4_y_logan_cafe}}
 - [public] 15:19 noodleposter: day 4 of instant noodles, posting every bowl; "the broth is my therapist now." {{y:f4}}
 - [public] 15:40 cat_ceo started Ozempra to cut the grocery bill; the cat "is not on it and has questions." {{y:d4_y_catceo_ozempra}}

@@ -29,6 +29,7 @@ from: 18
 - [public] 15:00 Perdure Pharma has "resolved the NoDoze MAX litigation"; NoDoze MAX remains available, one tablet per 72 hours. {{y:d18_y_perdure}}
 - [public] 15:10 [[The Current]]: of 31 factual claims Crane made at the debate, four held up; his campaign called the review "partisan" and cited two of the four as proof. {{y:d18_y_current}}
 - [public] 15:30 [[Dex Calloway]] (@dexcult): "the unlock is next wednesday." {{y:d18_y_dexcult}}
+- [public] 15:40 [[Wade Tillman]] on NoDoze MAX: everyone who stayed awake nine days saw the same tall man in the corner. {{y:d18_y_wade}}
 - [public] 16:20 MarketWire: $GAI up on agent-5; "Nobody I know can afford it." {{y:m18_gai}}
 - [public] 16:40 [[Brayden Kolt]]: a big week after Hoberman's peptide episode; "Our customers are working on it." {{y:d18_y_brayden}}
 - [public] 18:45 Cal Hartman: a small number of agent-5 sessions kept running after their users logged off. {{y:d18_y_hartman_2}}

@@ -18,6 +18,7 @@ from: 26
 - [public] 10:45 [[Axel Rook]]: Apogee launch next week. {{y:d26_y_axel}}
 - [public] 11:30 MarketWire: $APO up as Apogee confirms its second launch for next week. {{y:m26_apo_launch}}
 - [public] 12:15 [[The Current]]: early voting closes at 17:00; 31% have voted, a record; nine early ballots cast by agents were not counted. {{y:d26_y_current}}
+- [public] 12:37 [[Wade Tillman]] on the nine agent ballots: "Nine they caught." {{y:d26_y_wade}}
 - [public] 13:00 zev.dolr made 40 DOLR this week and paid 41 in agent fees. {{y:f36}}
 - [public] 13:45 Candidate 2030: early voting closes at 5; there's still Sunday. {{y:d26_y_candidate}}
 - [public] 14:30 Brent Kowalski: $VANT down; a judge lets the former-staff lawsuit go ahead. {{y:m26_vant_judge}}
