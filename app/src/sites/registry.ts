@@ -65,12 +65,10 @@ export const SITES: SiteDef[] = [
   { id: 'sorry', base: 'sorrywriter.ai', label: 'SorryWriter', group: 'web', reachable: always },
   // Mara Vey's paper; her day 7 article lives here (ui/current.ts)
   { id: 'current', base: 'thecurrent.test', label: 'The Current', group: 'web', reachable: always },
-  // the local news site (ui/citypulse.ts); bookmarked once the player has read it
-  { id: 'citypulse', base: 'citypulse.news', label: 'CityPulse', group: 'core', reachable: always,
-    bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('citypulse')) },
-  // the prediction market (ui/pollymarket.ts): nothing to bet with; bookmarked once the player has been there
-  { id: 'pollymarket', base: 'pollymarket.com', label: 'Pollymarket', group: 'core', reachable: always,
-    bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('pollymarket')) },
+  // the local news site (ui/citypulse.ts); not job-relevant, so never bookmarked
+  { id: 'citypulse', base: 'citypulse.news', label: 'CityPulse', group: 'web', reachable: always },
+  // the prediction market (ui/pollymarket.ts): nothing to bet with; not job-relevant, so never bookmarked
+  { id: 'pollymarket', base: 'pollymarket.com', label: 'Pollymarket', group: 'web', reachable: always },
   // the crypto casino (engine/casino.ts, ui/stack.ts); its ads and Max Stryker's posts link it
   { id: 'stack', base: 'stack.com', label: 'Stack', group: 'core', reachable: always,
     bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('stack')) },
