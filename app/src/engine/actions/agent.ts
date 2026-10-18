@@ -387,6 +387,14 @@ const NOT_FOUND = [
   "I looked all over {{app}} and found no bug where you said.",
 ];
 
+/** Where a fake fix sends the player to find the name it was missing: the app's file tree on Forkyard. */
+const REPO_NUDGE = [
+  "The {{app}} repo on Forkyard has every file name, if you'd rather look than guess.",
+  "Look it up in the {{app}} repo on Forkyard. The file names are all there.",
+  "Forkyard's file tree for {{app}} names every part.",
+];
+const repoNudge = (app: string) => `Suggest they look it up in the ${app} repo on Forkyard: its file tree names every feature, folder and part. Don't name the broken part for them.`;
+
 /**
  * A near-miss on a fix: the agent thanks the player, bills the prompt and works on it for as long as
  * a real fix takes, then comes back having found nothing and says what the prompt was missing (Haiku,
@@ -398,7 +406,10 @@ async function fakeFix(s0: GameState, text: string, writer: Writer, app: AppInst
   const s = clone(s0);
   const lastReply = [...s.chat].reverse().find((m) => m.from === 'agent')?.text;
   const fresh = opts.hints.filter((h) => h !== lastReply);
-  const w = await writer.write({ as: 'agent', mode: 'near', near: { why: opts.near, lines: opts.hints }, prompt: text, fallback: pick(s, fresh.length ? fresh : opts.hints), history: chatHistory(s) });
+  // the reply also points at the repo on Forkyard, where the missing name can be looked up
+  const line = pick(s, fresh.length ? fresh : opts.hints);
+  const fallback = /forkyard/i.test(line) ? line : `${line} ${REPO_NUDGE[s.chat.length % REPO_NUDGE.length].replaceAll('{{app}}', app.name)}`;
+  const w = await writer.write({ as: 'agent', mode: 'near', near: { why: `${opts.near} ${repoNudge(app.name)}`, lines: opts.hints }, prompt: text, fallback, history: chatHistory(s) });
   const level = s.values.agentLevel;
   if (!chargeAgent(s, text)) {
     s.chat.push({ from: 'you', text, day: s.values.day });
