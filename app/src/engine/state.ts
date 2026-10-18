@@ -98,7 +98,7 @@ export interface AppInstance {
   /** Platforms where the player has already posted about this user app (each gives one boost). */
   promoted?: string[];
   suspicious?: boolean; // illegal app: adds suspicion while live
-  /** Ever broken at a payday (for the restaurant thank-you). */
+  /** Ever broken at a payday (for a client thank-you). */
   everBroken?: boolean;
 }
 
@@ -236,12 +236,10 @@ export interface MailEntry {
   generated?: boolean;
   /** A scripted reply, for the dev-mode label: a hint Jev picked on a near miss, a storyline outcome, or a fixed topic answer. */
   scripted?: 'hint' | 'outcome' | 'topic';
-  /** App-sent mail (booking confirmations, test campaigns): a link the body can carry. */
+  /** App-sent mail (test campaigns): a link the body can carry. */
   link?: string;
   /** A bounce notice: the address the player's email failed to reach, so it joins that conversation. */
   bounceOf?: string;
-  /** For a booking confirmation: the booking its cancel link cancels. */
-  bookingId?: string;
 }
 
 /** A Y post by someone else that isn't a content event: replies to the player, filler. */
@@ -271,20 +269,12 @@ export interface YowlReview {
   removed?: boolean;
 }
 
-/** A table booking made on a restaurant app (the player's own test bookings). */
-export interface Booking {
+/** A sign-up on a startup app's waitlist (the player's own test sign-ups). */
+export interface WaitlistSignup {
   id: string;
   appId: string;
-  name: string;
   email: string;
-  date: number; // game day
-  time: string;
-  party: number;
-  cancelled: boolean;
-  /** The player clicked the cancel link. */
-  cancelClicked?: boolean;
-  /** Nobody came and the owner charged the no-show fee (night of the booking's date). */
-  noShow?: boolean;
+  day: number;
 }
 
 /** What the night did, shown on the "You slept" card. */
@@ -366,9 +356,10 @@ export interface GameState {
   /** Replies from the Y regulars to the player's posts, written and waiting for their minute (engine/yReplies.ts); `due` is in play minutes. */
   yReplies: { due: number; reply: YExtra }[];
   reviews: YowlReview[];
-  bookings: Booking[];
-  /** What the booking form said after the last attempt (accepted, or why not). */
-  bookingNotice?: { appId: string; ok: boolean; text: string; bookingId?: string };
+  /** Who joined a waitlist the player built, in order (only sign-ups the counter took). */
+  waitlist: WaitlistSignup[];
+  /** What the waitlist form said after the last attempt. */
+  waitlistNotice?: { appId: string; ok: boolean; text: string };
   terminal: { k: 'in' | 'sys' | 'err' | 'model'; text: string }[];
   /** agent-terminal's scrollback (the Terminal's agent tab; unset in older saves). */
   agentTerm?: AgentTermLine[];
@@ -504,7 +495,7 @@ export function newGame(seed = makeSeed()): GameState {
     yExtra: [],
     yReplies: [],
     reviews: [],
-    bookings: [],
+    waitlist: [],
     terminal: [],
     termModel: null,
     morning: null,

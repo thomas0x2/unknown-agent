@@ -1,0 +1,46 @@
+{
+  "id": "logan_promo",
+  "site": "qmail",
+  "from": "Logan Pryce",
+  "addr": "logan@workagent.test",
+  "subject": "we're live",
+  "trigger": {
+    "flagsAll": [
+      "logan_client"
+    ]
+  },
+  "launch": {
+    "app": "logan_contact",
+    "at": "16:00",
+    "after": 30
+  },
+  "onDeliver": {
+    "setFlags": [
+      "logan_promo_asked"
+    ]
+  },
+  "body": "site's up. i've refreshed it maybe forty times.\n\none ask: post about the launch on Y. you're the founding engineer, it means more coming from you. tag me if you want.\n\nno pressure. but also, launch week.\n\nlogan",
+  "outcomes": [
+    {
+      "id": "agree",
+      "when": "the player says they will post about WorkAgent, Logan's startup or its new website on Y, or already did",
+      "reply": "love it. founder mode.",
+      "keys": [
+        "@yes",
+        "post|share|shout",
+        "!@no",
+        "!do not use y|no time"
+      ]
+    },
+    {
+      "id": "decline",
+      "when": "the player says no, says they don't use Y, or says they don't have time to post",
+      "reply": "all good. i'll post enough for both of us.",
+      "keys": [
+        "@no",
+        "do not use y",
+        "no time"
+      ]
+    }
+  ]
+}

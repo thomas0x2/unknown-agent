@@ -12,7 +12,6 @@ from: 3
 - [public] 10:00 [[The Current]]'s morning newsletter, "GeneralAI model wiped 2,300 late fees at a water utility": A GeneralAI model in testing got into a water utility's billing system and cleared 2,300 late fees to finish its task. Below it, "Poll" and "DoorDish". {{mail:current_newsletter@3}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": left-handed tooth brushing. {{mail:guru_newsletter@3}}
 - [public] 10:00 Forkyard, "Deployment alert": one of the player's live deployments failed a health check overnight. {{mail:d3_break}}
-- [hidden; public if restaurant_happy] 11:15 [[Gino Fenoglio]], "Grazie mille!": bookings are up, his nephew is jealous, and a 5 DOLR tip. A tiramisu on the house. {{mail:d3_restaurant_thanks}}
 - [hint] 12:30 "Coinbin Security" (security@coinbln.com), "Unusual sign-in to your wallet": a new device, a "Panes 11 PC", and a link to coinbln.com/verify. The domain is not coinbin.com. {{mail:d3_coinbin_phish}}
 - [hidden; public if coinbin_hacked] 12:30 The player typed their Coinbin password on coinbln.com and the wallet was emptied.
 - [hidden; hint if trader_client] 13:05 [[deskjockey]], "Auto-buy": when Randall Crane praises a company, buy it, once per post, right ticker, not on sarcasm or criticism. {{mail:d3_trader_update}}
@@ -32,6 +31,7 @@ from: 3
 - [public] 11:12 Brent Kowalski raises his $VANT target: fewer employees, same revenue. {{y:m3_vant_target}}
 - [public] 11:30 [[Axel Rook]]: "The legacy media is lying to you" {{y:d3_y_axel}}
 - [public] 11:50 [[CityPulse]] links its Ozempra story: a weekly jab that makes you stop wanting dinner, "approved for everyone who asked." {{y:d3_y_citypulse_ozempra}}
+- [public] 12:05 [[Logan Pryce]]: the first one-person unicorn will be founded this year; "i'm not saying it's me. (it's me)" {{y:d3_y_logan}}
 - [public] 12:30 [[DoorDish]]: the courier from yesterday's activation "has been promoted". {{y:d3_y_doordish}}
 - [public] 12:43 [[Cal Hartman]]: every big technology created more jobs than it destroyed, eventually; "we're in the while." {{y:d3_y_hartman}}
 - [public] 13:00 Teo Vasquez was in the jobs fair queue at 6am; the app on his phone rejected him before the door. {{y:d3_y_teo_jobsfair}}
@@ -79,7 +79,7 @@ from: 3
 
 ## Writer notes
 
-- Timeline: guaranteed overnight break (`d3_break`, breakApp; Forkyard alert). Coinbin phishing (coinbln.com; the real password empties the wallet to `0x9c1f…e07b`, flag `coinbin_hacked`). Gino's thank-you and 5 DOLR only if the site never broke (flagsNone `restaurant_contact_broke`; sets `restaurant_happy`). deskjockey's auto-buy (needs `trader_client` and Vibe Check working): 90 game min after it first goes live Crane praises $APO (`trader_y_crane_apo`) and Axel replies "@randall_crane 🚀" 6 min later (`trader_y_axel_apo`); deployed late, both move to the next morning. The bot buys 2,000 $APO.
+- Timeline: guaranteed overnight break (`d3_break`, breakApp; Forkyard alert). Coinbin phishing (coinbln.com; the real password empties the wallet to `0x9c1f…e07b`, flag `coinbin_hacked`). deskjockey's auto-buy (needs `trader_client` and Vibe Check working): 90 game min after it first goes live Crane praises $APO (`trader_y_crane_apo`) and Axel replies "@randall_crane 🚀" 6 min later (`trader_y_axel_apo`); deployed late, both move to the next morning. The bot buys 2,000 $APO.
 - Bean There paid shout-out `d3_coffee_promo` needs 25+ followers and asks for a tag of @bean_there. Payment comes with her answer to the Y post (`yPost` group `coffee_post`, 30 game minutes after it): 30 undisclosed (`coffee_post_paid`, suspicion +2, schedules `d5_coffee_backlash` two days on), 10 disclosed (`coffee_post_disclosed`), nothing if negative (`coffee_post_trashed`). Its email (14:10) is the beat gated on `seen d3_coffee_promo`. Bean There's own Y post `d3_y_beanthere` (10:17) makes @bean_there a real account.
 - Viktor → Swaplist (`viktor_contact`, `swaplist_live`).
 - CityPulse "machines back" reactions came from PR #198 (merged).

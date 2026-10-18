@@ -10,8 +10,6 @@ import { marketPosts, crawl, ledger, portfolio, trackedOf, type MarketPost } fro
 import { machineFeed, machineRows } from './laundromat';
 import { swapListings, type Listing } from './swaplist';
 import { playMinutes } from './core';
-import { menuDishes } from './restaurant';
-import { bugsOf } from './apps';
 import { countdownView } from './cope';
 
 /** What a rule looks at: the game now, the app, and the content (for the posts on Y). */
@@ -54,30 +52,18 @@ const listings = (v: View): Listing[] => swapListings(v.app.contentAt, playMinut
 const listed = (test: (l: Listing[]) => boolean): Rule => (v) => test(listings(v));
 const distinct = (l: Listing[], key: (x: Listing) => string) => new Set(l.map(key)).size;
 
-// ── Trattoria: a dish picture shows once the live menu lists a dish (a menu that is down shows none) ──
-
-const menuListsDishes: Rule = (v) => {
-  const menu = v.app.features.find((f) => f.id === 'menu');
-  if (!menu || v.app.breaks.some((b) => b.featureId === 'menu' && (b.failure === 'visible' || b.failure === 'failed_fetch'))) return false;
-  return menuDishes({ bugs: menu.correct ? [] : bugsOf(menu), seed: menu.seed ?? 0, params: menu.params ?? v.app.specParams.menu ?? {} }).dishes.length > 0;
-};
-
 // ── Dex's coin site: the countdown as it reads right now, with and without the bug ──
 
 const countdown = (v: View, bugs: Set<string>) => JSON.stringify(countdownView(bugs, v.s.values.day, v.s.clockMin,
   v.app.lastDeployDay ? { day: v.app.lastDeployDay, min: v.app.lastDeployMin ?? 600 } : undefined));
 const changesCountdown = (bug: string): Rule => (v) => countdown(v, new Set([bug])) !== countdown(v, new Set());
 
-/** Per template, per bug id. Restaurant bugs show on a static page or a booking anyone can make. */
+/** Per template, per bug id. Startup bugs show on a static page or a sign-up anyone can make. */
 export const VISIBILITY: Record<string, Record<string, Rule>> = {
-  restaurant: {
-    hours_wrong: always, name_wrong: always, address_wrong: always,
-    prices_missing: always, prices_euri: always, prices_wrong: always, wrong_items: always,
-    no_email: always, wrong_date: always, wrong_time: always, sent_to_restaurant: always, party_wrong: always,
-    name_wrong_mail: always, no_hours_check: always, past_dates: always, dead_button: always,
-    // the menu's pictures: broken or on the wrong dish, wherever the menu lists a dish
-    photos_broken: menuListsDishes, photos_wrong: menuListsDishes,
-  },
+  startup: Object.fromEntries([
+    'name_wrong', 'pitch_wrong', 'logos_wrong', 'logos_broken', 'founder_wrong', 'fake_cofounders', 'credentials_wrong',
+    'dead_button', 'counter_zero', 'counter_stuck', 'no_email', 'position_wrong', 'sent_to_founder',
+  ].map((b) => [b, always])),
   sentiment: Object.fromEntries([
     'wrong_tickers', 'lowercase_missed', 'inverted', 'sarcasm_literal', 'bots_counted',
     'stale_prices', 'wrong_totals', 'value_wrong', 'pnl_sign', 'pct_wrong',

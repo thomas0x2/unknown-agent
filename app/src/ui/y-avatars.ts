@@ -100,16 +100,15 @@ const VEY = svg('#4d7977',
   + `<circle cx="28" cy="30.5" r="3.2" fill="rgba(255,255,255,.22)" stroke-width="1.5"/><circle cx="36" cy="30.5" r="3.2" fill="rgba(255,255,255,.22)" stroke-width="1.5"/>`
   + line('M31.2 30.3 H32.8', 1.4) + eyes(30.5, 1.1) + line('M30 36.6 Q32 37.4 34 36.6', 1.4));
 
-/** Gino: chef's whites, grey moustache, a neckerchief in basil green. */
-const GINO = svg('#9e6a52',
-  shoulders('#ece7dc') + dot(29, 58, 1) + dot(35, 58, 1)
-  + neck('#e2b28c')
-  + `<path d="M25.5 44.5 Q32 48.5 38.5 44.5 L37 50 L32 55 L27 50Z" fill="#4dff7a"/>`
-  + face('#e2b28c')
-  + `<path d="M20.5 30 C19.5 23 21.5 20 24.5 19.5 C24 23 23.5 26 23.5 31Z" fill="#bab7b1"/><path d="M43.5 30 C44.5 23 42.5 20 39.5 19.5 C40 23 40.5 26 40.5 31Z" fill="#bab7b1"/>`
-  + `<path d="M25 25.6 Q28 24 31 25.4 M33 25.4 Q36 24 39 25.6" fill="none" stroke="#8c8a86" stroke-width="2.2"/>`
-  + line('M26.5 30 Q28 28.6 29.5 30', 1.4) + line('M34.5 30 Q36 28.6 37.5 30', 1.4)
-  + `<path d="M25.5 35.5 C27.5 32.5 31 33 32 34.3 C33 33 36.5 32.5 38.5 35.5 C36 37.5 33.5 36.6 32 35.8 C30.5 36.6 28 37.5 25.5 35.5Z" fill="#8c8a86"/>`);
+/** Logan Pryce: 22, swept-back hair, AirPods in, a grey fleece vest over a white tee. */
+const LOGAN = svg('#e8e2d4',
+  shoulders('#f4f4f2') + `<path d="M6 66 C6 52 15 47 24 46.5 L27 66Z M58 66 C58 52 49 47 40 46.5 L37 66Z" fill="#8f979e"/>`
+  + `<path d="M24.5 50 H26.5 M37.5 50 H39.5" fill="none" stroke="#e6ff3a" stroke-width="1.8"/>`
+  + neck('#f0c8a6') + face('#f0c8a6')
+  + `<path d="M20.6 26 C20.5 17.5 26 14 33 14.2 C39.5 14.4 44 18 43.4 26 C41 21.5 36 19.6 30.5 20.2 C26 20.6 22.5 22.5 20.6 26Z" fill="#b07a4a"/>`
+  + `<path d="M19.6 30.5 V35" stroke="#fff" stroke-width="2.4"/><path d="M44.4 30.5 V35" stroke="#fff" stroke-width="2.4"/>`
+  + eyes(30) + line('M26.2 26.4 Q28 25.6 29.8 26.4 M34.2 26.4 Q36 25.6 37.8 26.4', 1.4)
+  + line('M28.5 36 Q32 38.6 35.5 36', 1.5));
 
 /** deskjockey: blue shirt, red braces, slicked hair, the tickers in his glasses. */
 const DESKJOCKEY = svg('#2e4a3d',
@@ -251,7 +250,7 @@ export const Y_AVATARS: Record<string, string> = {
   caleb_moxon: MOXON,
   max_stryker: STRYKER,
   mara_vey: VEY,
-  trattoria_owner: GINO,
+  logan_ships: LOGAN,
   deskjockey: DESKJOCKEY,
   '6ft_sigma': SIGMA,
   viktor: VIKTOR,

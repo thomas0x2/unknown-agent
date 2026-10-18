@@ -16,8 +16,8 @@ import { rollYReplies } from '../yReplies';
 
 /**
  * A post that is about a live user app brings it users, once per platform: the first Y post and the
- * first Yowl review about it. A Y post can also answer an event waiting on one (`yPost`, Gino asking for
- * a post about his new site), which then lands a little later. Jev reads what the post is about.
+ * first Yowl review about it. A Y post can also answer an event waiting on one (`yPost`, a client asking for
+ * a post about their new site), which then lands a little later. Jev reads what the post is about.
  * Returns the apps it boosted.
  */
 export async function promoteApps(jev: JevRouter, s: GameState, platform: 'y' | 'yowl', text: string, content?: Content): Promise<string[]> {

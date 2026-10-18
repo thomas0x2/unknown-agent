@@ -75,21 +75,21 @@ describe('EMPIRE', () => {
   });
 });
 
-describe('Gino (restaurant lead)', () => {
+describe('Logan (startup lead)', () => {
   it('offering to create the website lands the gig with a scripted reply that carries the brief', async () => {
     const s = startAll(content, 3);
-    const r = await composeEmail(s, content, wordJev, 'gino@trattoria.test', 'Hi Gino, I could create the website for you.', noLlm);
+    const r = await composeEmail(s, content, wordJev, 'logan@workagent.test', 'Hi Logan, I could create the website for you.', noLlm);
     expect(r.decision).toEqual({ kind: 'outcome', outcomeId: 'offer' });
-    expect(r.reply).toContain('Perfect. Looking forward to it.');
-    expect(r.reply).toContain('Margherita 12');
-    expect(r.state.apps.some((a) => a.clientEventId === 'restaurant_contact')).toBe(true);
+    expect(r.reply).toContain('welcome aboard');
+    expect(r.reply).toContain('Bonsai Capital');
+    expect(r.state.apps.some((a) => a.clientEventId === 'logan_contact')).toBe(true);
   });
 
-  it('a vague email still gets an answer from Gino in the inbox', async () => {
+  it('a vague email still gets an answer from Logan in the inbox', async () => {
     const s = startAll(content, 3);
-    const r = await composeEmail(s, content, wordJev, 'gino@trattoria.test', 'Hello, nice restaurant.');
+    const r = await composeEmail(s, content, wordJev, 'logan@workagent.test', 'Hello, nice startup.');
     expect(r.reply).not.toBe('');
-    expect(later(r.state).mail.some((m) => m.folder === 'inbox' && m.addr === 'gino@trattoria.test')).toBe(true);
+    expect(later(r.state).mail.some((m) => m.folder === 'inbox' && m.addr === 'logan@workagent.test')).toBe(true);
   });
 });
 
@@ -150,10 +150,10 @@ describe('reply times', () => {
   });
 
   it('job leads always answer within half an hour, whatever the player said', async () => {
-    for (const text of ['Hi Gino, I could create the website for you.', 'Hello, nice restaurant.']) {
-      const r = await composeEmail(startAll(content, 3), content, wordJev, 'gino@trattoria.test', text);
-      expect(inboxFrom(r.state, 'gino@trattoria.test')).toHaveLength(0);
-      expect(inboxFrom(after(r.state, 1), 'gino@trattoria.test').length).toBeGreaterThan(0);
+    for (const text of ['Hi Logan, I could create the website for you.', 'Hello, nice startup.']) {
+      const r = await composeEmail(startAll(content, 3), content, wordJev, 'logan@workagent.test', text);
+      expect(inboxFrom(r.state, 'logan@workagent.test')).toHaveLength(0);
+      expect(inboxFrom(after(r.state, 1), 'logan@workagent.test').length).toBeGreaterThan(0);
     }
   });
 
@@ -204,7 +204,7 @@ describe('Max after the first email', () => {
 describe('job offers', () => {
   const leads: [string, number, string][] = [
     ['trader@desk.test', 2, 'trader_contact'],
-    ['gino@trattoria.test', 1, 'restaurant_contact'],
+    ['logan@workagent.test', 1, 'logan_contact'],
     ['rep@closers.test', 6, 'outreach_contact'],
   ];
   const at = (day: number) => { let s = startAll(content, 3); while (s.values.day < day) s = endAll(s, content); return s; };

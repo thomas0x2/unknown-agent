@@ -1,0 +1,11 @@
+{
+  "id": "d1_y_logan",
+  "site": "y",
+  "from": "logan_ships",
+  "trigger": {
+    "dayMin": 1
+  },
+  "at": "10:42",
+  "addr": "logan@workagent.test",
+  "body": "why combinator-backed, building in stealth. looking for a founding engineer to ship our landing page this week. paying DOLR up front. logan@workagent.test"
+}

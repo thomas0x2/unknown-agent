@@ -13,7 +13,7 @@ describe('Vantor brand', () => {
   });
   it('signs only mail from Vantor', () => {
     expect(isVantorAddr('people@vantorgroup.test')).toBe(true);
-    expect(isVantorAddr('gino@trattoria.test')).toBe(false);
+    expect(isVantorAddr('logan@workagent.test')).toBe(false);
   });
   it('brands the vantor.group pages and their tab icon', () => {
     for (const url of ['vantor.group/careers', 'vantor.group/next-chapter']) {

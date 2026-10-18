@@ -142,7 +142,7 @@ function yProfile(store: GameStore, handle: string): string {
     <div class="y-banner" style="--h:${hashHue(h)}"></div>
     <div class="y-prof-head"><div class="y-prof-av">${avatar(name, h)}</div></div>
     <h1 class="y-prof-name">${esc(name)}${yCheck(s, h)}</h1><p class="y-handle">@${esc(h)}</p>
-    <p class="y-bio">${esc(yBio(h))}</p>
+    <p class="y-bio">${linkify(esc(yBio(h)))}</p>
     <p class="y-prof-stats"><span><b>${compact(40 + hashHue(h + 'f') % 300)}</b> following</span><span><b>${compact(followers)}</b> followers</span></p>
   </section><p class="y-eyebrow">Posts</p><div class="y-feed">${feed}</div>`;
 }

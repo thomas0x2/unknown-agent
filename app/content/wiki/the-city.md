@@ -1,18 +1,17 @@
 ---
 title: The city
-aliases: city, calendar, dates, Pine Street Apartments, Unit 4B, Alder St, Ferris St, Linden Ave, Harbor Rd, Harbor district, Route 9, Kessler Road, Midtown, Vantor Heights, Civic Hall, the clock, game day
+aliases: city, San Fortuna, SF, calendar, dates, Pine Street Apartments, Unit 4B, Alder St, Ferris St, Linden Ave, Harbor Rd, Harbor district, Route 9, Kessler Road, Midtown, Vantor Heights, Civic Hall, the clock, game day
 category: world
 from: 1
 ---
 
-[public] An unnamed present-day American city where [[GeneralAI]] has made white-collar work optional. The brands are one step off the real ones (Y, Qmail, DoorDish, Coinbin). Everyone pays in DOLR (see [[Money and DOLR]]). Email addresses end in .test.
+[public] San Fortuna (SF), a present-day American city where [[GeneralAI]] has made white-collar work optional. The brands are one step off the real ones (Y, Qmail, DoorDish, Coinbin). Everyone pays in DOLR (see [[Money and DOLR]]). Email addresses end in .test.
 
 ## Places
 
 | [public] Place | What's there |
 |---|---|
 | [public] Pine Street Apartments, Unit 4B | [[The player]]'s flat, rented from [[Pruitt Property Management]] |
-| [public] 14 Alder St | Trattoria Gino ([[Gino Fenoglio]]) |
 | [public] 17 Alder St | Pita Point |
 | [public] Alder St | a parking garage where the escaped DoorDish robot was seen twice; a bakery |
 | [public] 3 Linden Ave | Bean There ([[Dana Reyes]]) |
