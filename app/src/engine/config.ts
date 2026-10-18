@@ -203,6 +203,10 @@ export const Y = {
   overpostPenaltyPct: -0.02,
   /** A post's follower change lands randomly within this share either side of what its rating earns. */
   postJitter: 0.3,
-  /** The lowest chance a Y regular replies to a player's post, however few followers they have (engine/yReplies.ts). */
-  replyFloor: 0.05,
+  /**
+   * The chance each Y regular answers a player's post (engine/yReplies.ts): `floor` up to `floorAt`
+   * followers, then rising evenly per tenfold to `cap` at `capAt`. With three regulars, a 16-follower
+   * account sees one reply about 3% of the time and two about 0.03%.
+   */
+  reply: { floor: 0.01, floorAt: 100, cap: 0.6, capAt: 1_000_000 },
 };
