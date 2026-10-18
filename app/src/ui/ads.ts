@@ -144,6 +144,11 @@ export const WIDE: Ad[] = [
     cta: 'Ask about Ozempra', fine: 'May cause nausea and a loss of interest in food, hobbies and people. A Perdure Pharma medicine.',
   },
   {
+    id: 'fluvera', sponsor: 'Fluvera', href: 'fluvera.com', theme: 'ad-fluvera', deco: 'shine', from: 9,
+    frames: ['Flu season is here.', 'One shot. <b>All season.</b>', '<b>Fluvera.</b> Autism-free.'],
+    cta: 'Find a pharmacy', fine: 'Generic flu vaccine, 4 DOLR. May cause a sore arm. A Perdure Pharma vaccine.',
+  },
+  {
     id: 'lastmeal', sponsor: 'DoorDish', href: 'doordish.com', theme: 'ad-dish', deco: 'robot',
     frames: ['Last meal?', '<b>We deliver.</b>', 'Rated 5★ by everyone who can’t review us anymore.'],
     cta: 'Order', fine: 'Robot may linger. It is not grieving. It is waiting for a tip.',

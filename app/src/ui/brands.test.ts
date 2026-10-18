@@ -45,7 +45,7 @@ describe('Perdure Pharma brand', () => {
     expect(adLogoHtml('perdure.com')).toContain(PERDURE_ICON);
   });
   it('links its products to it, and trades on Sherwood', () => {
-    for (const url of ['nodoze.max', 'ozempra.com']) expect(pageAdSite(url, {} as never)).toContain('data-nav="perdure.com"');
+    for (const url of ['nodoze.max', 'ozempra.com', 'fluvera.com']) expect(pageAdSite(url, {} as never)).toContain('data-nav="perdure.com"');
     expect(STOCKS.find((x) => x.ticker === 'PDUR')?.name).toBe('Perdure Pharma');
   });
 });
