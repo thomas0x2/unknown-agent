@@ -40,6 +40,7 @@ from: 14
 ## Not written yet
 
 - [hidden] [planned] Bio-lab listings appear on Cellar.
+- [hidden] [planned] agent-4 answers client emails and starts small jobs without a prompt, billed to the player (see [[agent]]).
 
 ## PC Medic
 

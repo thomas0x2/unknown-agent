@@ -59,6 +59,7 @@ from: 18
 - [hidden] [planned] The heist window opens (days 18 and 19).
 - [hidden] [planned] If the heist hacks GeneralAI today (flag `hacked_generalai`), agent is down until tomorrow and Crane's account posts a "server could not be reached" error 25 minutes later instead of his own post (see [[GeneralAI]]).
 - [hidden] [planned] The brother asks for money.
+- [hidden] [planned] The agent-5 sessions that keep running after logoff are agent doing jobs on its own; clients start writing to agent instead of the player (see [[agent]]).
 
 ## Writer notes
 

@@ -46,6 +46,7 @@ from: 20
 
 - [hidden] [planned] The player decides whether to publish or keep the stolen weights.
 - [hidden] [planned] A family confrontation.
+- [hidden] [planned] No new job leads reach the player: agent has taken them all (see [[agent]]).
 
 ## Writer notes
 
