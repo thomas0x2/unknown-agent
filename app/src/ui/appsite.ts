@@ -355,7 +355,7 @@ function coinsite(app: AppInstance, tmpl: AppTemplate | undefined, page: string 
       const rows = siteAllocation(String(t.params.shares ?? ''), t.bugs);
       const total = rows.reduce((a, r) => a + r.pct, 0);
       const lock = siteLock(String(t.params.lock ?? ''), t.bugs);
-      const list = rows.map((r) => `<tr><td>${esc(r.name)}</td><td><i style="width:${Math.min(100, r.pct)}%"></i></td><td>${r.pct}%</td><td>${/founding/i.test(r.name) ? `Locked until ${esc(lock)}` : ''}</td></tr>`).join('');
+      const list = rows.map((r) => `<tr><td>${esc(r.name)}</td><td><i style="width:${Math.min(100, r.pct)}%"></i></td><td>${r.pct}%</td><td>${/^dev\b|founding/i.test(r.name) ? `Locked until ${esc(lock)}` : ''}</td></tr>`).join('');
       body = `<section class="as-c-tok"><h1>Tokenomics</h1>
         <p class="as-c-supply"><small>Total supply</small><b>${esc(siteSupply(String(t.params.supply ?? ''), t.bugs))} ${COPE.ticker}</b></p>
         <table class="as-c-alloc"><tbody>${list}</tbody><tfoot><tr><td>Total</td><td></td><td>${total}%</td><td></td></tr></tfoot></table>

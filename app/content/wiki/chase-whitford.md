@@ -9,7 +9,7 @@ from: 6
 
 ## a67x
 
-[public] a67x (a67x.com) is a venture firm: "We back founders who keep going." It says it manages 9 billion dollars across 212 companies, among them Pug and Glamdring Industries ([[Hunter Vale]]), and that it doesn't read decks: it meets founders on Y, at the run club and at Pug Café.
+[public] a67x (a67x.com) is a venture firm, its logo a white lowercase "a" and a full stop on red, shown wherever a site says it is backed or hosted by a67x: "We back founders who keep going." It says it manages 9 billion dollars across 212 companies, among them Pug and Glamdring Industries ([[Hunter Vale]]), and that it doesn't read decks: it meets founders on Y, at the run club and at Pug Café.
 
 ## On Y
 
