@@ -14,7 +14,7 @@ export function repoFiles(app: AppInstance, tmpl: AppTemplate | undefined): Tree
     const def = tmpl?.features.find((d) => d.id === f.id);
     if (!def) return [];
     const comps = def.components?.length ? def.components : [{ id: 'index', label: def.description }];
-    return comps.map((c) => ({ path: `${def.name ?? f.id}/${c.id}.ts`, feature: def, label: c.label }));
+    return comps.map((c) => ({ path: `${def.folder ?? def.name ?? f.id}/${c.id}.ts`, feature: def, label: c.label }));
   });
 }
 

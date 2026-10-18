@@ -8,7 +8,7 @@
     "dayMin": 1
   },
   "latent": true,
-  "body": "here's the brief:\n\n- a landing page with our name (WorkAgent) and the one-liner: \"The future of work is agentic.\" keep it vague, we're in stealth.\n- under it, a \"Backed by\" row with our investors' logos: Why Combinator, Bonsai Capital, a67x.\n- an About us page with just me: Logan Pryce, founder & CEO. credentials: Why Combinator Startup School, San Fortuna State dropout, host of the Founder Mode podcast, 2x founder.\n\n35 DOLR a day while it's live. the first day is already in your Coinbin, no invoice needed. 0.01% equity once we incorporate.\n\nlogan",
+  "body": "here's the brief:\n\n- a landing page with our name (WorkAgent) and the one-liner: \"The future of work is agentic.\" keep it vague, we're in stealth.\n- under it, a \"Backed by\" row with our investors' logos: Why Combinator, Bonsai Capital, a67x.\n- an About us page with just me: Logan Pryce, founder & CEO. credentials: Why Combinator Startup School, San Fortuna State dropout, host of the Founder Mode podcast, 2x founder.\n\n35 DOLR a night once it's live. 0.01% equity once we incorporate.\n\nlogan",
   "outcomes": [
     {
       "id": "offer",
@@ -17,9 +17,6 @@
         "setFlags": [
           "logan_client"
         ],
-        "add": {
-          "crypto": 35
-        },
         "createApp": {
           "template": "startup",
           "kind": "client",
@@ -31,12 +28,7 @@
               "id": "landing",
               "params": {
                 "name": "WorkAgent",
-                "pitch": "The future of work is agentic."
-              }
-            },
-            {
-              "id": "investors",
-              "params": {
+                "pitch": "The future of work is agentic.",
                 "investors": "Why Combinator, Bonsai Capital, a67x"
               }
             },

@@ -27,15 +27,14 @@ from: 1
 
 ## The bot swarm
 
-[public] On some days dozens of near-identical accounts with four-digit handles (moonshot plus a number) post "$GAI to the moon!!". Their bios are crypto-bot lines like "🚀 Early. Not financial advice. DMs open."
+[hidden; public if trader_client] Once the player has taken [[deskjockey]]'s job, on some days dozens of near-identical accounts with four-digit handles (moonshot plus a number) post "$GAI to the moon!!". Their bios are crypto-bot lines like "🚀 Early. Not financial advice. DMs open."
 
-- [public] On day 2 thirty of them post.
-- [public] On day 4 fifteen of them post.
-- [public] On day 6 twelve of them post.
-- [public] On day 9 ten of them post.
-- [public] On day 12 ten of them post.
-- [public] On day 16 ten of them post.
-- [public] On day 27 ten of them post.
+- [hidden; public if trader_client] On day 4 thirty of them post.
+- [hidden; public if trader_client] On day 6 twelve of them post.
+- [hidden; public if trader_client] On day 9 ten of them post.
+- [hidden; public if trader_client] On day 12 ten of them post.
+- [hidden; public if trader_client] On day 16 ten of them post.
+- [hidden; public if trader_client] On day 27 ten of them post.
 
 ## Notable posts
 
@@ -189,6 +188,6 @@ from: 1
 
 ## Writer notes
 
-- All in `content/y_market.json`, each post labelled with ticker and mood; bots expanded by `bots` count in engine/crawler.ts (handles `moonshot` + 4 digits). The bot filter bug `bots_counted` can only land on swarm days 2, 4, 6, 9, 12, 16, 27.
+- All in `content/y_market.json`, each post labelled with ticker and mood; bots expanded by `bots` count in engine/crawler.ts (handles `moonshot` + 4 digits). The bot filter bug `bots_counted` can only land on swarm days 4, 6, 9, 12, 16, 27, and only once the player has taken deskjockey's job (`flagDays.trader_client`).
 - Moods kept [hint]: Tyler Moss's sarcasm reads as bullish to a naive classifier; Sam Ortiz's lowercase $gai and Jess Park's untagged names test ticker matching. These sit on day 4, the day deskjockey's job starts; days 1 to 3 have only a few stock posts (Thomas, 2026-10-18), and the day 2 bot swarm.
 - Day 28 MarketWire line (`m28_gai`) says "tomorrow" on election day itself; minor copy slip.

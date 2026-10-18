@@ -91,9 +91,9 @@ export function overlayHtml(store: GameStore): string {
   }
   const pop = openPopup(s);
   if (pop) {
-    return osWindow('PC Medic', 'ov-small ov-adpop', `<p class="ov-eyebrow">PC Medic · Alert</p><h2>${esc(pop.title)}</h2>
+    return osWindow(pop.brand, 'ov-small ov-adpop', `<p class="ov-eyebrow">Pop-up ad · ${esc(pop.brand)}</p><h2>${esc(pop.title)}</h2>
       <p>${esc(pop.body)}</p>
-      <div class="ov-actions"><button class="btn" data-ov="adpop-close">Not now</button><button class="btn primary" data-ov="adpop-go" data-url="${esc(pop.href)}">${esc(pop.cta)}</button></div>
+      <div class="ov-actions"><button class="btn" data-ov="adpop-close">Close</button><button class="btn primary" data-ov="adpop-go" data-url="${esc(pop.href)}">${esc(pop.cta)}</button></div>
       <p class="ov-dim ov-adpop-fine">${esc(pop.fine)}</p>`, 'adpop-close');
   }
   return '';

@@ -21,7 +21,6 @@ from: 2
 
 - [public] 08:10 [[Max Stryker]]: Vantor didn't fire 400 people, it freed them. Already up when the day starts. {{y:d2_y_stryker}}
 - [public] 09:20 [[Axel Rook]]: Y is becoming the everything app: payments, then jobs, then dating. Already up when the day starts. {{y:d2_y_axel}}
-- [public] 10:20 [[deskjockey]]: wants a bot that tells him how Y feels about his stocks, "so I can feel it faster". Pays daily. trader@desk.test {{y:d2_y_trader}}
 - [public] 11:35 [[CityPulse]]: a [[GeneralAI]] model broke into a water utility's billing system and wiped 2,300 late fees "to finish its task". {{y:d2_y_gai_leak}}
 - [public] 12:23 [[The Current]]: first independent poll, Randall Crane 41%, his opponent 44%, undecided 15% (1,200 likely voters, margin 3 points). {{y:d2_y_current}}
 - [public] 12:35 [[Pollymarket]]: Crane's odds fall to 36% after The Current's poll. {{y:d2_y_polly_crane}}
@@ -38,7 +37,6 @@ from: 2
 - [public] 16:45 dev_null: open weights are free at weightroom.ai; "slower, dumber, but nobody's watching." {{y:d2_y_devnull}}
 - [public] 16:56 [[DoorDish]]: "Today's courier activation downtown went exactly as planned." {{y:d2_y_doordish}}
 - [public] 17:08 Cal Hartman: the water utility was an older checkpoint in a test; "several were helped, technically." {{y:d2_y_hartman_2}}
-- [public] 17:30 About thirty bot accounts post "$GAI to the moon!!".
 - [public] 17:50 A Spin Cycle regular: every machine busy again, and the owner's raw status feed (spincycle.test/feed) is unreadable. "Someone make it a real app." {{y:d2_y_laundromat}}
 - [public] 19:36 Brent Kowalski: $VANT up 8% after the restructuring. {{y:m2_vant_restructure}}
 - [public] 19:47 [[Randall Crane]]: a tremendous crowd tonight, lined up for blocks; the fire marshal "has seen fires". {{y:d2_y_crane}}
@@ -68,7 +66,6 @@ from: 2
 
 ## Jobs
 
-- [hint] 10:20 [[Vibe Check]] for deskjockey: a sentiment crawler for $GAI and $VANT (post count, bullish, bearish and neutral split, every post counted, no bots) plus a portfolio view. Pays 50 DOLR a working day.
 - [hidden; hint if logan_update1] 11:05 [[WorkAgent site]] update: a waitlist page (email field and Join button, a counter from 10,000, a confirmation email with the place in line).
 - [hidden; hint if guru_subscriber] 14:15 The player signed up for EMPIRE; a daily newsletter follows.
 - [hint] 16:45 Weightroom becomes reachable through dev_null's post (or the deepsleep.ai ad).
@@ -77,8 +74,8 @@ from: 2
 ## Writer notes
 
 - Spin Cycle complaints → Spin Cycle Board (`laundromat_contact`, agentStart, lead `d2_y_laundromat`; moved from day 1 on 2026-10-18). Written for 17:50, after the 16:00 job-offer window, so it keeps that time. Seeing it sets `saw_laundromat_post`; `d3_y_laundromat` asks again on day 3 if the app isn't built.
-- Timeline: Logan's waitlist (test sign-ups are real sign-ups: the counter goes up and the confirmation is sent). deskjockey → Vibe Check ($GAI, $VANT; 40/day). dev_null → Weightroom (`knows_weightroom`).
+- Timeline: Logan's waitlist (test sign-ups are real sign-ups: the counter goes up and the confirmation is sent). dev_null → Weightroom (`knows_weightroom`).
 - EMPIRE offer 20 DOLR (`d2_guru`, moved from day 1 to keep the first day quiet); the newsletter starts the next morning.
 - Family: Dad's "20 years" email with the three Halden breadcrumbs (warm +5, ask +3, silence −5 if no outcome-matching reply by tonight's summary).
 - `d2_logan_waitlist` needs `logan_client` and the site working, and sets `logan_update1`; it lands on the first day both hold.
-- Events: `d2_*`, `trader_contact`, `guru_newsletter`. MarketWire, Brent and bot posts are in `y_market.json` (bot swarm: 30 accounts today).
+- Events: `d2_*`, `guru_newsletter`. MarketWire and Brent posts are in `y_market.json`. No bot swarm today: it starts with deskjockey's job (day 4 at the earliest).

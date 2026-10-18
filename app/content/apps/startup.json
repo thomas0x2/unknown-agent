@@ -27,18 +27,26 @@
     {
       "id": "landing",
       "name": "landing page",
-      "description": "a landing page with the startup's name and its one-line pitch",
+      "folder": "landing",
+      "description": "a landing page with the startup's name, its one-line pitch and a \"Backed by\" row of investor logos",
       "aka": [
         "home page",
         "front page",
         "start page",
         "homepage",
-        "hero"
+        "hero",
+        "landing page",
+        "landing",
+        "backed by row",
+        "backed by",
+        "investor logos",
+        "investor row"
       ],
       "pageId": "landing",
       "failures": [
         "visible",
-        "subtle"
+        "subtle",
+        "failed_fetch"
       ],
       "bugs": [
         {
@@ -56,88 +64,7 @@
             "Put the pitch back to \"{{pitch}}\".",
             "The headline said something else. It reads \"{{pitch}}\" now."
           ]
-        }
-      ],
-      "components": [
-        {
-          "id": "name",
-          "label": "the startup's name",
-          "bugs": [
-            "name_wrong"
-          ],
-          "aka": [
-            "name",
-            "company name",
-            "startup name",
-            "logo",
-            "title",
-            "brand"
-          ]
         },
-        {
-          "id": "pitch",
-          "label": "the one-line pitch (the headline)",
-          "bugs": [
-            "pitch_wrong"
-          ],
-          "aka": [
-            "pitch",
-            "headline",
-            "tagline",
-            "slogan",
-            "one-liner",
-            "hero text",
-            "what it says"
-          ]
-        }
-      ],
-      "nearMiss": [
-        "I opened the landing page and it looked like every landing page. Which part of it is wrong?",
-        "Couldn't find the problem on the landing page. Tell me which part is off."
-      ],
-      "checklist": [
-        {
-          "id": "name",
-          "text": "{{name}}",
-          "bug": "name_wrong"
-        },
-        {
-          "id": "pitch",
-          "text": "{{pitch}}",
-          "bug": "pitch_wrong"
-        }
-      ],
-      "complaints": {
-        "missing": "there's no landing page. people land on nothing.",
-        "name_wrong": "the site says \"{{shown}}\". it's {{expected}}. one word, capital A. it's the brand.",
-        "pitch_wrong": "the headline says \"{{shown}}\". way too specific. it's \"{{expected}}\". nobody needs to know what we do yet.",
-        "down": "the homepage shows an error. on launch week.",
-        "wrong": "the homepage isn't right. check the name and the pitch."
-      }
-    },
-    {
-      "id": "investors",
-      "name": "backed by row",
-      "description": "a \"Backed by\" row on the landing page with the logos of the investors",
-      "aka": [
-        "investors",
-        "investor logos",
-        "investor row",
-        "backed by",
-        "logos",
-        "logo row",
-        "funds",
-        "vcs"
-      ],
-      "pageId": "landing",
-      "failures": [
-        "subtle",
-        "failed_fetch"
-      ],
-      "details": [
-        "investors"
-      ],
-      "bugs": [
         {
           "id": "logos_wrong",
           "when": "The \"Backed by\" row has the wrong investors: one missing, misspelled or made up (it should be {{investors}}).",
@@ -158,7 +85,37 @@
       ],
       "components": [
         {
-          "id": "logos",
+          "id": "name",
+          "label": "the startup's name",
+          "bugs": [
+            "name_wrong"
+          ],
+          "aka": [
+            "name",
+            "company name",
+            "startup name",
+            "title",
+            "brand"
+          ]
+        },
+        {
+          "id": "pitch",
+          "label": "the one-line pitch (the headline)",
+          "bugs": [
+            "pitch_wrong"
+          ],
+          "aka": [
+            "pitch",
+            "headline",
+            "tagline",
+            "slogan",
+            "one-liner",
+            "hero text",
+            "what it says"
+          ]
+        },
+        {
+          "id": "investors/logos",
           "label": "which investors the row shows",
           "bugs": [
             "logos_wrong",
@@ -175,7 +132,7 @@
           ]
         },
         {
-          "id": "loading",
+          "id": "investors/loading",
           "label": "loading the logo images (the image files and links)",
           "bugs": [
             "logos_broken"
@@ -194,10 +151,22 @@
         }
       ],
       "nearMiss": [
+        "I opened the landing page and it looked like every landing page. Which part of it is wrong?",
+        "Couldn't find the problem on the landing page. Tell me which part is off.",
         "I looked at the investor row for a while. It looked well funded. Which part of it is wrong?",
         "I can't find what's wrong with the \"Backed by\" row. Point me at the part that's broken."
       ],
       "checklist": [
+        {
+          "id": "name",
+          "text": "{{name}}",
+          "bug": "name_wrong"
+        },
+        {
+          "id": "pitch",
+          "text": "{{pitch}}",
+          "bug": "pitch_wrong"
+        },
         {
           "id": "investors",
           "text": "{{investors}}",
@@ -205,20 +174,39 @@
         }
       ],
       "complaints": {
-        "missing": "where's the backed by row. investors want to see other investors.",
+        "missing": "there's no landing page. people land on nothing.",
+        "name_wrong": "the site says \"{{shown}}\". it's {{expected}}. one word, capital A. it's the brand.",
+        "pitch_wrong": "the headline says \"{{shown}}\". way too specific. it's \"{{expected}}\". nobody needs to know what we do yet.",
+        "down": "the homepage shows an error. on launch week.",
+        "wrong": "the homepage isn't right. check the name, the pitch and the backed by row.",
         "logos_wrong:removed": "{{expected}} isn't in the backed by row. they're on the cap table. spiritually.",
         "logos_wrong:renamed": "the backed by row says \"{{shown}}\". it's {{expected}}.",
         "logos_wrong:invented": "the backed by row has {{shown}}. i've never talked to {{shown}}. take it off before they see it.",
         "logos_wrong": "the investor logos are wrong. compare them with what i sent.",
         "hallucinated": "who are {{shown}}? those aren't my investors. it's {{expected}}.",
-        "logos_broken": "the investor logos don't load. it's a row of broken images under \"Backed by\". looks pre-seed.",
-        "down": "the backed by row doesn't load.",
-        "wrong": "the investor row isn't right. compare it with what i sent."
-      }
+        "logos_broken": "the investor logos don't load. it's a row of broken images under \"Backed by\". looks pre-seed."
+      },
+      "folderAka": {
+        "investors": [
+          "backed by row",
+          "backed by",
+          "investor logos",
+          "investor row",
+          "investors",
+          "logo row",
+          "logos row",
+          "funds",
+          "vcs"
+        ]
+      },
+      "details": [
+        "investors"
+      ]
     },
     {
       "id": "about",
       "name": "about us page",
+      "folder": "about",
       "description": "an About us page with the founder, his name and his credentials",
       "aka": [
         "about page",
@@ -226,7 +214,8 @@
         "team page",
         "team",
         "founder page",
-        "about us"
+        "about us",
+        "about us page"
       ],
       "pageId": "about",
       "failures": [
@@ -344,7 +333,6 @@
     },
     {
       "id": "waitlist",
-      "name": "waitlist",
       "description": "a waitlist sign-up (email and a Join button) with a counter of the people on it that starts at a set number, and a confirmation email that tells each sign-up their place in line",
       "aka": [
         "wait list",

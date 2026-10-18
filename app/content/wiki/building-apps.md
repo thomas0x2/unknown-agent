@@ -42,7 +42,7 @@ keys: what should i do, what do i do, what now, next step, clients, find work, f
 
 ## The apps
 
-- [public] [[WorkAgent site]] (Logan, 35 DOLR a day), [[Spin Cycle Board]] (user app), [[Vibe Check]] (deskjockey, 40 a day), [[Swaplist]] (user app), [[Outreach Bot]] (the sales rep, 50 a day).
+- [public] [[WorkAgent site]] (Logan, 35 DOLR a day), [[Spin Cycle Board]] (user app), [[Vibe Check]] (deskjockey, 40 a day), [[Swaplist]] (user app), [[Outreach Bot]] (the sales rep, 40 a day).
 
 ## Writer notes
 

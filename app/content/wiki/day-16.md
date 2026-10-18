@@ -21,7 +21,7 @@ from: 16
 - [public] 11:40 [[The Current]]: three polling firms stopped calling voters; too many calls are answered by AI assistants, which lean toward whoever ran the latest ad. {{y:d16_y_current}}
 - [public] 11:55 [[Max Stryker]]: "Excuses are free. That's why you have so many." {{y:d16_y_stryker}}
 - [public] 12:08 [[Cal Hartman]] is back from two days offline. {{y:d16_y_hartman}}
-- [public] 12:23 Ten bot accounts post "$GAI to the moon!!".
+- [hidden; public if trader_client] 12:23 Ten bot accounts post "$GAI to the moon!!".
 - [public] 13:00 [[Axel Rook]]: "Who should host the debate? Y, obviously." {{y:d16_y_axel}}
 - [public] 13:30 [[Pollymarket]]: "BREAKING: The city has shut down Pug Café", with a market on whether it reopens before the election. {{y:d16_y_polly_pug}}
 - [public] 13:45 [[Max Stryker]]: he automated two of his Thirstr creators this month; "Nobody calls in sick." {{y:d16_y_stryker_thirstr}}

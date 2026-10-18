@@ -5,7 +5,7 @@
   "addr": "trader@desk.test",
   "subject": "RE: sentiment bot",
   "trigger": {
-    "dayMin": 2
+    "dayMin": 4
   },
   "latent": true,
   "body": "Spec: $GAI and $VANT. Per ticker: today's post count, bullish/bearish/neutral split, and every post it counted. No bots, no spam. Portfolio view: holdings, cash, today's change. Prices have to match Sherwood (sherwood.com) or it's useless to me.",

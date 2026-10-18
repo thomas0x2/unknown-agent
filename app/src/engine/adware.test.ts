@@ -6,7 +6,8 @@
 import { loadContent } from '../content/load';
 import { agentTermPrompt } from './hacks';
 import { composeEmail, promptAgent } from './actions';
-import { installAdware, tickAdware, closePopup, openPopup, adwareOps, ADWARE_PAYOUT } from './adware';
+import { installAdware, tickAdware, closePopup, openPopup, adwareOps, ADWARE_PAYOUT,
+  EXE_RUN_LINES, EXE_RUN_STEPS, exeWorking, exeDone, POPUP_ADS } from './adware';
 import { addFlag, gameMinutes } from './core';
 import { CLOCK } from './config';
 import { fakeRouter, pickJev, startAll } from './_fixtures';
@@ -126,5 +127,31 @@ describe('fake-antivirus adware', () => {
     const r = await composeEmail(s, content, pickJev({ route: ['blackmail'] }), 'gh0stbyte@nullmail.test', 'I have your source and your name. Send me money or I send it to everyone.');
     expect(r.state.flags).toContain('adware_blackmailed');
     expect(r.state.values.crypto).toBeCloseTo(before + ADWARE_PAYOUT.blackmail, 2);
+  });
+
+  it('the exe output loads in stages: a work line shows its ellipsis before its "done"', () => {
+    const work = EXE_RUN_STEPS.find((st) => st.work)!;
+    expect(exeWorking(work)).toMatch(/…$/);
+    expect(exeWorking(work)).not.toMatch(/done/);
+    expect(exeDone(work)).toMatch(/… done$/);
+    // the finished output (the motion-off / test path) is the same five lines as before
+    expect(EXE_RUN_LINES.map((l) => l.text)).toEqual([
+      './PCMedic_Setup.exe',
+      'PC Medic 0.9 — scanning your device …',
+      'removing 3 threats … done',
+      'installing 1 threat … done',
+      'PC Medic is now protecting your device. PC Medic cannot be closed.',
+    ]);
+  });
+
+  it('the pop-ups are third-party scam ads, not PC Medic premium nags', () => {
+    expect(POPUP_ADS.length).toBeGreaterThan(3);
+    for (const ad of POPUP_ADS) {
+      expect(ad.brand).toBeTruthy();
+      expect(ad.brand.toLowerCase()).not.toContain('pc medic'); // the window no longer reads as PC Medic
+      expect(ad.href).not.toContain('pcmedic'); // and none drives traffic back to the antivirus
+      expect(`${ad.title} ${ad.body} ${ad.cta}`.toLowerCase()).not.toMatch(/pc medic pro|upgrade|premium/);
+    }
+    expect(POPUP_ADS.some((ad) => ad.hint)).toBe(true); // the one genuinely useful ad survives
   });
 });

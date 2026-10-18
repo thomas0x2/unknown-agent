@@ -71,7 +71,7 @@ function startupDetail(
     const name = String(app.specParams.landing?.name ?? app.name);
     if (variant === 'name_wrong') { vars.shown = misspell(name, seed); vars.expected = name; }
     if (variant === 'pitch_wrong') { vars.shown = wrongPitch(seed); vars.expected = String(params.pitch ?? ''); }
-    return undefined;
+    if (variant !== 'hallucinated' && variant !== 'logos_wrong') return undefined;
   }
   if (id === 'waitlist') {
     if (variant === 'counter_zero') vars.shown = '0';
@@ -84,7 +84,7 @@ function startupDetail(
     if (variant === 'founder_wrong') { vars.shown = misspell(founder, seed); vars.expected = founder; }
     if (variant === 'fake_cofounders') vars.shown = FAKE_COFOUNDERS.map((c) => c.name).join(' and ');
   }
-  const key = id === 'investors' ? 'investors' : id === 'about' ? 'credentials' : undefined;
+  const key = id === 'landing' ? 'investors' : id === 'about' ? 'credentials' : undefined;
   if (!key) return undefined;
   const spec = parseList(app.specParams[id]?.[key]);
   const shown = (key === 'investors' ? investorsShown : credentialsShown)({ variant, seed, params });

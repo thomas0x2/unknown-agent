@@ -34,7 +34,10 @@ describe('arrivals over the day', () => {
   });
   it('names each bot post once, so they can land as a barrage', () => {
     const s = make();
-    s.endDay(); // day 2: a 30-account bot swarm posts about $GAI
+    s.state.flagDays.trader_client = 1; // the swarms only post once the trader is a client
+    s.endDay();
+    s.endDay();
+    s.endDay(); // day 4: a 30-account bot swarm posts about $GAI
     const heard: Arrival[] = [];
     s.onArrival((a) => heard.push(a));
     for (let i = 0; i < 700; i++) s.passMinutes(1);

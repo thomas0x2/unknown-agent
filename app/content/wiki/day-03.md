@@ -14,7 +14,6 @@ from: 3
 - [public] 10:00 Forkyard, "Deployment alert": one of the player's live deployments failed a health check overnight. {{mail:d3_break}}
 - [hint] 12:30 "Coinbin Security" (security@coinbln.com), "Unusual sign-in to your wallet": a new device, a "Panes 11 PC", and a link to coinbln.com/verify. The domain is not coinbin.com. {{mail:d3_coinbin_phish}}
 - [hidden; public if coinbin_hacked] 12:30 The player typed their Coinbin password on coinbln.com and the wallet was emptied.
-- [hidden; hint if trader_client] 13:05 [[deskjockey]], "Auto-buy": when Randall Crane praises a company, buy it, once per post, right ticker, not on sarcasm or criticism. {{mail:d3_trader_update}}
 - [hidden; public if shown d3_coffee_promo] 14:10 Bean There, "Paid shout-out?": 30 DOLR for a Y post recommending the coffee shop, tagging @bean_there. {{mail:d3_coffee_promo}}
 - [hidden; public if promoted_coffee_shop] Half an hour after the player's Y post recommending the coffee shop without saying it was an ad, Bean There paid 30 DOLR.
 - [hidden; public if disclosed_ad] Half an hour after the player's Y post marked as an ad, Bean There paid 10 DOLR.
@@ -73,14 +72,12 @@ from: 3
 ## Jobs
 
 - [hint] 10:50 [[Swaplist]], from Viktor's post: the player asks the agent for a listing site. A user app that starts with 20 users; it stays empty until the first listing, one hour of play after the first deploy (Viktor's watch, 120 DOLR). Nothing is listed after 20:00; later listings wait for the next morning.
-- [hidden; hint if trader_client] 13:05 The Vibe Check auto-buy.
 - [hint] 13:15 [[COPE]], from Dex's post: emailing dex@cope.xyz by day 5 gets his brief; a client site at 50 DOLR a day with a countdown to Saturday noon, the contract address and a tokenomics page.
 
 ## Writer notes
 
 - Timeline: guaranteed overnight break (`d3_break`, breakApp; Forkyard alert).
-- Coinbin phishing (coinbln.com; the real password empties the wallet to `0x9c1f…e07b`, flag `coinbin_hacked`). deskjockey's auto-buy (needs `trader_client` and Vibe Check working): 90 game min after it first goes live Crane praises $APO (`trader_y_crane_apo`) and Axel replies "@randall_crane 🚀" 6 min later (`trader_y_axel_apo`); deployed late, both move to the next morning.
-- The bot buys 2,000 $APO.
+- Coinbin phishing (coinbln.com; the real password empties the wallet to `0x9c1f…e07b`, flag `coinbin_hacked`).
 - Bean There paid shout-out `d3_coffee_promo` needs 25+ followers and asks for a tag of @bean_there. Payment comes with her answer to the Y post (`yPost` group `coffee_post`, 30 game minutes after it): 30 undisclosed (`coffee_post_paid`, suspicion +2, schedules `d5_coffee_backlash` two days on), 10 disclosed (`coffee_post_disclosed`), nothing if negative (`coffee_post_trashed`). Its email (14:10) is the beat gated on `seen d3_coffee_promo`. Bean There's own Y post `d3_y_beanthere` (10:17) makes @bean_there a real account.
 - Viktor → Swaplist (`viktor_contact`, `swaplist_live`).
 - CityPulse "machines back" reactions came from PR #198 (merged).

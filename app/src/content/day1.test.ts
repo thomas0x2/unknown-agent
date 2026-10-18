@@ -29,7 +29,7 @@ const FIX: Record<string, string> = {
   credentials_wrong: wa + `the credentials on About us are wrong, they should be ${CREDS}.`,
 };
 const fixFor = (feature: string, variant?: string) => FIX[variant ?? '']
-  ?? (feature === 'investors' ? FIX.logos_wrong : feature === 'about' ? FIX.credentials_wrong : FIX.pitch_wrong);
+  ?? (feature === 'about' ? FIX.credentials_wrong : variant === 'hallucinated' ? FIX.logos_wrong : FIX.pitch_wrong);
 const take = async () => (await composeEmail(startAll(content, 7), content, wordJev, 'logan@workagent.test', "Hi Logan, I'm in, I can build the website.")).state;
 
 describe('day 1 playthrough', () => {
@@ -54,15 +54,22 @@ describe('day 1 playthrough', () => {
     expect(seen!.candidates.find((c) => c.id === 'offer')!.when).toMatch(/want me to build it/);
   });
 
-  it('take the gig, get paid up front, build, deploy, fix the bug, and get paid at day end', async () => {
+  it('a night with the site not live yet pays nothing', async () => {
+    const s = (await composeEmail(startAll(content, 7), content, wordJev, 'logan@workagent.test', "Hi Logan, I'm in. I can build the WorkAgent website.")).state;
+    expect(s.apps.some((a) => a.clientEventId === 'logan_contact')).toBe(true);
+    const next = endAll(s, content);
+    expect(next.tx.some((x) => /WorkAgent/.test(x.memo) && x.amount > 0)).toBe(false);
+  });
+
+  it('take the gig (nothing up front), build, deploy, fix the bug, and get paid at day end', async () => {
     let s = startAll(content, 7);
     const start = s.values.crypto;
 
-    // email Logan to take the job -> creates the client app, pays the first day up front, drops the spec in the inbox
+    // email Logan to take the job -> creates the client app and drops the spec in the inbox; no pay until the site is live
     const c = await composeEmail(s, content, wordJev, 'logan@workagent.test', "Hi Logan, I'm in. I can build the WorkAgent website.");
     expect(c.sent).toBe(true);
     s = c.state;
-    expect(s.values.crypto).toBeCloseTo(start + 35, 5);
+    expect(s.values.crypto).toBeCloseTo(start, 5);
     const app = s.apps.find((a) => a.clientEventId === 'logan_contact');
     expect(app).toBeTruthy();
     const appId = app!.id;
@@ -70,7 +77,7 @@ describe('day 1 playthrough', () => {
     // brief the agent to build all three, spelling out the details
     const b = await briefBuild(s, content, wordJev, appId, FULL);
     s = b.state;
-    expect(b.requested.sort()).toEqual(['about', 'investors', 'landing']);
+    expect(b.requested.sort()).toEqual(['about', 'landing']);
 
     // the player's first deploy always ships at least one bug; fix whichever is there, naming it, until the live app meets spec
     s = deploy(s, appId);
@@ -82,11 +89,11 @@ describe('day 1 playthrough', () => {
     }
     expect(appMeetsSpec(getApp(s, appId)!)).toBe(true);
 
-    // end the day: the working client app pays 40
+    // end the day: the working client app pays 35
     const before = s.values.crypto;
     s = endAll(s, content);
     expect(s.values.day).toBe(2);
-    expect(s.values.crypto).toBeGreaterThan(before); // +40 pay, minus the level-1 subscription
+    expect(s.values.crypto).toBeGreaterThan(before); // +35 pay, minus dinner and the level-1 subscription
   });
 
   it('names the repo after the client', async () => {
@@ -99,13 +106,13 @@ describe('day 1 playthrough', () => {
   it('a build prompt without the investors gets invented ones, and a fix without them invents others', async () => {
     let s = await take();
     s = (await briefBuild(s, content, wordJev, 'workagent', 'Build a landing page with the name and pitch, and a backed by row with the investor logos.')).state;
-    expect(getApp(s, 'workagent')!.repo.find((f) => f.id === 'investors')).toMatchObject({ correct: false, variant: 'hallucinated' });
+    expect(getApp(s, 'workagent')!.repo.find((f) => f.id === 'landing')).toMatchObject({ correct: false, variant: 'hallucinated' });
     const v = getApp(s, 'workagent')!.repoVersion;
     s = (await briefFix(s, content, wordJev, 'workagent', 'The investors in the backed by row are wrong, fix it.')).state;
-    expect(getApp(s, 'workagent')!.repo.find((f) => f.id === 'investors')).toMatchObject({ correct: false, variant: 'hallucinated' });
+    expect(getApp(s, 'workagent')!.repo.find((f) => f.id === 'landing')).toMatchObject({ correct: false, variant: 'hallucinated' });
     expect(getApp(s, 'workagent')!.repoVersion).toBe(v + 1);
     s = (await briefFix(s, content, wordJev, 'workagent', `The investors in the backed by row should be exactly: ${INVESTORS}.`)).state;
-    expect(getApp(s, 'workagent')!.repo.find((f) => f.id === 'investors')!.variant).not.toBe('hallucinated');
+    expect(getApp(s, 'workagent')!.repo.find((f) => f.id === 'landing')!.variant).not.toBe('hallucinated');
   });
 
   it('in agent.chat, a fix prompt that names the bug fixes it; one that only says "about page" does not', async () => {
@@ -113,7 +120,6 @@ describe('day 1 playthrough', () => {
     const app = getApp(s, 'workagent')!;
     app.repo = [
       { id: 'landing', correct: true, params: app.specParams.landing },
-      { id: 'investors', correct: true, params: app.specParams.investors },
       { id: 'about', correct: false, variant: 'fake_cofounders', params: app.specParams.about, seed: 1 },
     ];
     app.repoVersion = 1;
@@ -143,8 +149,8 @@ describe('day 1 playthrough', () => {
     const asks: Record<string, [string, string]> = {
       name_wrong: ['landing', 'The website needs to show it is for WorkAgent'],
       pitch_wrong: ['landing', `The headline should read "${PITCH}"`],
-      logos_wrong: ['investors', 'Bonsai Capital is missing from the investors and there is a fund that never invested'],
-      logos_broken: ['investors', 'The logos in the backed by row are broken images'],
+      logos_wrong: ['landing', 'Bonsai Capital is missing from the investors and there is a fund that never invested'],
+      logos_broken: ['landing', 'The logos in the backed by row are broken images'],
       founder_wrong: ['about', 'The founder is Logan Pryce, not Logan Price'],
       fake_cofounders: ['about', 'Take the two made-up cofounders off the team'],
       credentials_wrong: ['about', `Logan's credentials should be: ${CREDS}`],
@@ -200,7 +206,8 @@ describe('day 1 playthrough', () => {
     s = (await briefBuild(s, content, wordJev, 'workagent', LAZY)).state;
     const app = getApp(s, 'workagent')!;
     expect(app.repo.find((f) => f.id === 'about')).toMatchObject({ correct: false, variant: 'hallucinated', also: ['founder_wrong'] });
-    expect(app.repo.find((f) => f.id === 'landing')).toMatchObject({ correct: false, variant: 'name_wrong', also: ['pitch_wrong'] });
+    // no investors given either: the backed by row is made up too
+    expect(app.repo.find((f) => f.id === 'landing')).toMatchObject({ correct: false, variant: 'hallucinated', also: expect.arrayContaining(['name_wrong', 'pitch_wrong']) });
     s = deploy(s, 'workagent');
     const html = renderAppSite(getApp(s, 'workagent')!, content.apps.startup, 'about');
     expect(html).not.toContain('Logan Pryce');
@@ -213,7 +220,6 @@ describe('day 1 playthrough', () => {
     const app = getApp(s, 'workagent')!;
     app.repo = [
       { id: 'landing', correct: false, variant: 'name_wrong', also: ['pitch_wrong'], params: app.specParams.landing, seed: 1 },
-      { id: 'investors', correct: true, params: app.specParams.investors },
       { id: 'about', correct: true, params: app.specParams.about },
     ];
     app.repoVersion = 1;
@@ -257,7 +263,7 @@ describe('day 1 playthrough', () => {
     let s = await take();
     s.values.agentLevel = 5;
     s = (await briefBuild(s, content, wordJev, 'workagent', LAZY)).state;
-    expect(getApp(s, 'workagent')!.repo.find((f) => f.id === 'landing')).toMatchObject({ variant: 'name_wrong', also: ['pitch_wrong'] });
+    expect(getApp(s, 'workagent')!.repo.find((f) => f.id === 'landing')).toMatchObject({ variant: 'hallucinated', also: expect.arrayContaining(['name_wrong', 'pitch_wrong']) });
     s = (await promptDone(s, content, wordJev, wa + `The startup name on the landing page is misspelled, it should say WorkAgent. And the pitch on the landing page should be "${PITCH}"`)).state;
     s = (await promptDone(s, content, wordJev, wa + `The investors in the backed by row are invented. It should be: ${INVESTORS}.`)).state;
     s = (await promptDone(s, content, wordJev, wa + `The credentials on About us are invented. They should be: ${CREDS}. And the founder name on About us is misspelled, it is Logan Pryce.`)).state;
@@ -313,8 +319,8 @@ describe('day 1 playthrough', () => {
     s = deploy(s, 'workagent');
     const html = renderAppSite(getApp(s, 'workagent')!, content.apps.startup, undefined);
     for (const n of ['Why Combinator', 'Bonsai Capital', 'a67x']) expect(html).toContain(`aria-label="${n}"`);
-    devToggleBug(s, 'workagent', 'investors', 'logos_broken');
+    devToggleBug(s, 'workagent', 'landing', 'logos_broken');
     expect(renderAppSite(getApp(s, 'workagent')!, content.apps.startup, undefined)).toContain('bonsai-capital-logo.png');
-    expect(bugsOf(getApp(s, 'workagent')!.features.find((f) => f.id === 'investors')!)).toEqual(['logos_broken']);
+    expect(bugsOf(getApp(s, 'workagent')!.features.find((f) => f.id === 'landing')!)).toEqual(['logos_broken']);
   });
 });

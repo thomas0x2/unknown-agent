@@ -54,7 +54,7 @@ describe('Jev tests', () => {
   });
 
   it('reads which near-miss came back', async () => {
-    const c = all.find((x) => x.expect.near === 'near_part')!;
+    const c = all.find((x) => x.expect.near === 'near_part' && x.broken[0].startsWith('waitlist/'))!;
     const r = await runJevTest(content, pickJev({ features: ['::waitlist::area'] }), c);
     expect(r.got.near).toBe('near_part');
     expect(r.pass).toBe(true);
