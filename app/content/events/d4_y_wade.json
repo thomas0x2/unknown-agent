@@ -1,0 +1,11 @@
+{
+  "id": "d4_y_wade",
+  "site": "y",
+  "from": "Wade Tillman",
+  "trigger": {
+    "dayMin": 4,
+    "dayMax": 4
+  },
+  "at": "14:00",
+  "body": "Name one person who has seen a baby pigeon. You can't. Ask yourself who builds the pigeons, and who builds the robot couriers, and why you've never seen either of them being built."
+}

@@ -29,6 +29,9 @@ summary: Perdure Pharma, the drug company that makes NoDoze MAX, Ozempra and the
 ## From day 9: Fluvera
 
 - [public] On day 9 at 14:20 Perdure launches Fluvera on Y: 4 DOLR, no appointment, autism-free. Its banner ad runs from day 9: "Flu season is here. One shot. All season. Fluvera. Autism-free." {{y:d9_y_perdure}}
+- [public] The day after the launch, [[Wade Tillman]] reads "autism-free" as a confession: "Perdure just told you." {{y:y_wade_fluvera}}
+- [public] Five days after the launch, Wade says a pharmacist peeled the sticker off a Fluvera box and found last year's date underneath. {{y:y_wade_fluvera_2}}
+- [hidden] [planned] He is right about the sticker: Fluvera is last season's flu vaccine in new cartons, which the [[Halden Logistics]] hack shows (see [[Wade Tillman]]). The vaccine doesn't cause autism; the slogan is there so nobody asks about the strain.
 - [public] On day 11 doomscroll gets the shot; the box says autism-free in bigger letters than the word flu. {{y:d11_y_doomscroll_fluvera}}
 - [public] On day 25 Fluvera sells out ahead of flu season, and $PDUR rises. {{y:m25_pdur_fluvera}}
 
@@ -48,6 +51,7 @@ summary: Perdure Pharma, the drug company that makes NoDoze MAX, Ozempra and the
 
 - Purdue Pharma parody (the Ashcrofts are the Sacklers, Calmadol is OxyContin, Ozempra is Ozempic). Added 2026-10-17 at Thomas's request.
 - Brand: `app/src/ui/perdure.ts` (violet `#3d2c6b`, a capsule cut out of a disc with its lower half filled back in), registered for the `perdure` landing theme in `ui/brandLogos.ts`; Y avatar in `ui/y-avatars.ts`. Sites in `app/src/sites/adSites.ts` (perdure.com, ozempra.com, fluvera.com; nodoze.max links to perdure.com). Ads in `app/src/ui/ads.ts`: `ozempra` (wide, from day 3), `fluvera` (wide, from day 9), `perdure` (square).
-- Fluvera's recurring joke (Thomas, 2026-10-17): it is always "autism-free", stated flatly like "gluten-free" and never explained. Keep it to one mention per item; no CityPulse story or anyone in the world commenting on it beyond doomscroll's day 11 post.
+- Fluvera's recurring joke (Thomas, 2026-10-17): it is always "autism-free", stated flatly like "gluten-free" and never explained. Keep it to one mention per item; no CityPulse story or anyone in the world commenting on it beyond doomscroll's day 11 post and Wade Tillman's two posts (Thomas, 2026-10-18).
+- Launch day: `d9_y_perdure` sets `fluvera_launched`; Wade's posts trigger 1 and 5 days after it. Thomas wants Fluvera later than day 9 (new day still open); moving it means changing that event, the `fluvera` ad gate and the day 9/11 page beats.
 - $PDUR in `MARKET_SCRIPT` (`app/src/engine/crawler.ts`): +9% day 3, +5% day 13, +3% day 18. Not tracked by [[Vibe Check]] and not in the trader's book.
 - Possible hooks *(placeholder)*: NoDoze MAX for the AI-for-bio plot; the Ashcroft family as a donor in the election.

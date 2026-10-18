@@ -1,0 +1,11 @@
+{
+  "id": "d28_y_wade",
+  "site": "y",
+  "from": "Wade Tillman",
+  "trigger": {
+    "dayMin": 28,
+    "dayMax": 28
+  },
+  "at": "14:30",
+  "body": "Voted. Paper ballot, my own pen, sunglasses on for the cameras. Whoever wins tonight, remember the boat."
+}

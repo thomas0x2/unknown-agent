@@ -43,6 +43,7 @@ from: 1
 - [public] 12:30 [[Mara Vey]] of [[The Current]] asks people behind this week's AI layoffs to write to her at mara@thecurrent.test. From now on the player can email her. {{y:d1_y_journalist}}
 - [public] 13:15 Axel Rook: "@mara_vey Interesting." {{y:d1_y_axel_2}}
 - [public] 13:50 A Spin Cycle regular: every machine busy again, and the owner's raw status feed (spincycle.test/feed) is unreadable. "Someone make it a real app." {{y:d1_y_laundromat}}
+- [public] 14:30 [[Wade Tillman]] asks where GeneralAI's model "almost escaped" to, and from what. {{y:d1_y_wade}}
 - [public] 17:55 doomscroll: screen time says 11 hours; "it's broken, i was barely on." {{y:f1}}
 - [public] 18:08 [[The Current]]: three weeks to the election; it will post independent polls with sample sizes and margins of error, and no Y polls. {{y:d1_y_current}}
 - [public] 19:40 [[Randall Crane]]: another company fired its people and hired a computer that doesn't pay taxes. "SAD!" {{y:d1_y_crane}}

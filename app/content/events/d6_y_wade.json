@@ -1,0 +1,11 @@
+{
+  "id": "d6_y_wade",
+  "site": "y",
+  "from": "Wade Tillman",
+  "trigger": {
+    "dayMin": 6,
+    "dayMax": 6
+  },
+  "at": "16:00",
+  "body": "Every candidate this year has the same dentist. Look at the teeth. Then look at the eyes when a camera flash goes off. That's all I'll say on here."
+}

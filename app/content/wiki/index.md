@@ -40,6 +40,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[The consultant]] (the-consultant.md): A political consultant who writes from c@gradient.test and says only that he represents a campaign
 - [[The player]] (the-player.md): The player was laid off from Vantor Group on Day 1, when their team's work was handed to GeneralAI
 - [[Tanner Hollis]] (tanner-hollis.md): Tanner Hollis is a B2B sales rep at Closers (rep@closers.test), "Senior Revenue Partner" in his email…
+- [[Wade Tillman]] (wade-tillman.md): Wade Tillman (@wade_awake) is a conspiracy theorist on Y who believes every theory going, and is now and then right
 - [[Viktor]] (viktor.md): Viktor was recently laid off after twenty-two years in accounts payable
 - [[Y regulars]] (y-regulars.md): Ordinary accounts that post on Y most days, mostly about their own lives, sometimes linking a CityPulse story
 - [[zev.dolr]] (zev-dolr.md): zev.dolr (@zev_dolr) is a crypto-adjacent poster on Y who builds side projects with agent

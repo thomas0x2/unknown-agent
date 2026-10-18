@@ -34,6 +34,7 @@ from: 11
 - [public] 16:55 [[6ft_sigma]]: "6'0" on most apps. Good to have the science confirmed." {{y:d11_y_sigma}}
 - [public] 17:15 [[CityPulse]]: PARTY PALS, photos show Randall Crane on sex offender [[Kirschbaum]]'s yacht; he "barely knew him" and stayed four days. {{y:d11_y_citypulse_kirschbaum}}
 - [public] 17:37 noodleposter ranked flavor 88 at 3am: 6/10, the replies say 7. {{y:f11}}
+- [public] 18:05 [[Wade Tillman]]: he told everyone about the Lucky Lady last Friday; "I'll take my apology in the replies." {{y:d11_y_wade}}
 - [public] 18:30 [[Axel Rook]]: Y has 600 million users, "of which a small number are bots". {{y:d11_y_axel_2}}
 - [public] 19:17 MarketWire: $GAI moves with Crane's poll numbers now. {{y:m11_gai_poll}}
 - [public] 19:31 [[Randall Crane]]: "DoorDish KNEW." When he is President, a machine that won't stop gets unplugged, and so do the executives who hid it. {{y:d11_y_crane}}
