@@ -131,6 +131,9 @@ export const PINNED = ['coinbin.com', 'qmail.com', 'y.com', 'agent.chat', 'forky
 const HOME_TAB = PINNED.indexOf('qmail.com') + 1;
 const siteOf = (url: string) => url.split('/')[0];
 const startTabs = (): Tab[] => PINNED.map((url, i) => ({ id: i + 1, url, back: [], fwd: [], pinned: url }));
+/** A new game also has the outplacement page Vantor's layoff mail points to open, as an ordinary tab. */
+const NEW_GAME_TABS = ['vantor.group/next-chapter'];
+const newGameTabs = (): Tab[] => [...startTabs(), ...NEW_GAME_TABS.map((url, i) => ({ id: PINNED.length + i + 1, url, back: [], fwd: [] }))];
 
 /** What came in when the clock moved or an action landed, for alerts and sounds. */
 export interface Arrival {
@@ -186,6 +189,7 @@ export class GameStore {
   constructor(readonly content: Content, private router: JevRouter, private writer: Writer, private store: SaveStore) {
     const loaded = this.store.load();
     this.state = loaded ?? startGame(content);
+    if (!loaded) this.openNewGameTabs();
     fillSave(this.state); // saves from before a field or meter was added
     nameUnnamedBugs(this.state, content); // saves from before the app had named bugs
     holdHiddenBugs(this.state, content); // and from before bugs waited until they could show
@@ -542,8 +546,10 @@ export class GameStore {
   newGame(): void {
     this.store.clear();
     this.resetTo(startGame(this.content));
+    this.openNewGameTabs();
     this.ui.greet = true; this.emit();
   }
+  private openNewGameTabs(): void { this.tabs = newGameTabs(); this.nextTab = this.tabs.length + 1; }
   /** Snapshot the current game into a manual slot. */
   saveSlot(n: Slot): boolean { const ok = writeSlot(n, this.state); this.ui.slotNote = ok ? '' : `Slot ${n} wasn't saved: this browser isn't letting the game store anything.`; this.emit(); return ok; }
   /** Replace the current game with a slot's snapshot (it becomes the autosave too). */
