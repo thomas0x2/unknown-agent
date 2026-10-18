@@ -29,13 +29,16 @@ const Y_HANDLES: Record<string, string> = { 'Wade Tillman': 'wade_awake', 'Brynn
 /** The Y handle a display name gets (Randall Crane → randall_crane). */
 export const handleOf = (from: string) => Y_HANDLES[from] ?? (from.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '').slice(0, 20) || 'user');
 
-/** Every stock post on Y up to today, bots expanded into their separate accounts. */
+/** Every stock post on Y up to today, bots expanded into their separate accounts (only once the trader is a client). */
 export function marketPosts(s: GameState, content: Content): MarketPost[] {
   const m = content.yMarket;
   if (!m) return [];
   const today = s.values.day;
   const out: MarketPost[] = [];
+  // the bot swarms only start once the player has taken deskjockey's job, from that day on
+  const botsFrom = s.flagDays.trader_client ?? Infinity;
   for (const p of m.posts) {
+    if (p.bots && p.day < botsFrom) continue;
     // today's posts go up over the day; the crawler only sees what's on the timeline so far
     const min = postMin(p, p.day);
     if (!posted(s, p.day, min)) continue;

@@ -21,6 +21,7 @@ function onDay(day: number): GameState {
   const s = startGame(content, 7);
   s.values.day = day;
   s.clockMin = CLOCK.sleep - 1; // late in the day, once all of today's posts are up
+  s.flagDays.trader_client = 1; // the bot swarms only post once the trader is a client
   // the story events with stock labels, as if delivered on their day
   for (const l of content.yMarket!.events) {
     const e = content.events.find((x) => x.id === l.event)!;
@@ -32,14 +33,22 @@ const bugs = (...b: string[]) => new Set(b);
 const row = (rows: ReturnType<typeof crawl>, t: string) => rows.find((r) => r.ticker === t)!;
 
 describe('stock posts on Y', () => {
-  it('day 2 has the planted posts, 30 bots and fresh posts every later day', () => {
-    const posts = marketPosts(onDay(2), content);
-    expect(posts.filter((p) => p.bot && p.day === 2)).toHaveLength(30);
+  it('day 4 has a 30-account bot swarm, and every day has fresh posts', () => {
+    const posts = marketPosts(onDay(4), content);
+    expect(posts.filter((p) => p.bot && p.day === 4)).toHaveLength(30);
     expect(new Set(posts.filter((p) => p.bot).map((p) => p.handle)).size).toBe(30);
     expect(posts.some((p) => /nova/i.test(p.text))).toBe(false);
     const all = marketPosts(onDay(28), content);
     // only a few before deskjockey's job (day 4), so the first days stay quiet
     for (let d = 1; d <= 28; d++) expect(all.filter((p) => p.day === d && !p.bot).length, `day ${d}`).toBeGreaterThanOrEqual(d < 4 ? 1 : 2);
+  });
+  it("the bot swarms only post from the day the player takes the trader's job", () => {
+    const s = onDay(6);
+    delete s.flagDays.trader_client;
+    expect(marketPosts(s, content).some((p) => p.bot)).toBe(false);
+    s.flagDays.trader_client = 4;
+    const days = new Set(marketPosts(s, content).filter((p) => p.bot).map((p) => p.day));
+    expect([...days].sort()).toEqual([4, 6]);
   });
   it('a $GAI post is already on Y when day 1 starts', () => {
     const s = startGame(content);
@@ -68,7 +77,7 @@ describe('vibe check', () => {
   });
 
   it('each bug shows up in the numbers', () => {
-    expect(row(crawl(posts, 4, bugs('bots_counted')), 'GAI').count).toBe(17);
+    expect(row(crawl(posts, 4, bugs('bots_counted')), 'GAI').count).toBe(32);
     expect(row(crawl(posts, 4, bugs('sarcasm_literal')), 'VANT').bullish).toBe(50);
     expect(row(crawl(posts, 4, bugs('inverted')), 'GAI')).toMatchObject({ bullish: 0, bearish: 100 });
     expect(row(crawl(posts, 4, bugs('lowercase_missed')), 'GAI').count).toBe(1);
@@ -78,7 +87,7 @@ describe('vibe check', () => {
   it('lists every crawled post with the mood it read, bugs included', () => {
     const ok = row(crawl(posts, 4, bugs()), 'VANT');
     expect(ok.posts).toHaveLength(ok.count);
-    expect(row(crawl(posts, 4, bugs('bots_counted')), 'GAI').posts.filter((p) => /\d{4}$/.test(p.handle)).length).toBe(15);
+    expect(row(crawl(posts, 4, bugs('bots_counted')), 'GAI').posts.filter((p) => /\d{4}$/.test(p.handle)).length).toBe(30);
     const sarcastic = posts.find((p) => p.literal && p.tickers.includes('VANT'))!;
     expect(ok.posts.find((p) => p.handle === sarcastic.handle)!.mood).toBe(sarcastic.mood);
     expect(row(crawl(posts, 4, bugs('sarcasm_literal')), 'VANT').posts.find((p) => p.handle === sarcastic.handle)!.mood).toBe(sarcastic.literal);

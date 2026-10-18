@@ -19,6 +19,7 @@ function crawlerOn(day: number, seed: number): { s: GameState; id: string } {
   const s = startGame(content, seed);
   s.values.day = day;
   s.clockMin = CLOCK.sleep - 1;
+  s.flagDays.trader_client = 1; // the bot swarms post from the day the job is taken
   deliverCrane(s, day);
   const id = registerApp(s, { template: 'sentiment', kind: 'client', name: 'Vibe Check', spec: tmpl.features.map((f) => ({ id: f.id, params: f.params })) });
   return { s, id };

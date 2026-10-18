@@ -136,7 +136,7 @@ describe('job offers spread over the first six hours', () => {
     const s1 = endDay(s0, content);
     expect(s1.delivered.some((d) => d.eventId === 'd1_y_logan')).toBe(false);
     const times = offersToday(s1);
-    expect(times.length).toBeGreaterThanOrEqual(2); // Logan's day 1 lead and the trader
+    expect(times.length).toBeGreaterThanOrEqual(2); // Logan's day 1 lead and Spin Cycle's
     expect(times[0]).toBeGreaterThanOrEqual(JOB_OFFERS.from);
     for (let i = 1; i < times.length; i++) expect(times[i] - times[i - 1]).toBeGreaterThanOrEqual(JOB_OFFERS.gap);
   });
