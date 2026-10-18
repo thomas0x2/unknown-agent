@@ -18,7 +18,7 @@ from: 1
 - [public] 10:00 [[The Current]]'s morning newsletter, "Unemployment reaches 30%": Three in ten working-age people in the city are now out of work, the highest rate since records began. Below it, "Vantor" and "Election". {{mail:current_newsletter@1}}
 - [public] 10:00 People & Culture at [[Vantor Group]], "Changes to your role": the player's position is eliminated, effective immediately; the final salary payment "has already been made". {{mail:d1_hr_termination}}
 - [public] 10:00 [[GeneralAI]], "Welcome to agent": the [[agent]] account is active and billed to the [[Coinbin]] wallet, every prompt at the model's rate. {{mail:d1_gai_welcome}}
-- [hidden; public if asked_mom_money] 11:20 Mom sent 20 DOLR when the player asked for money: "Buy vegetables."
+- [hidden; public if asked_mom_money] 12:20 Mom sent 20 DOLR when the player asked for money: "Buy vegetables."
 - [public] 14:15 [[Max Stryker]] of Alpha Ascend, "You were BORN for more": his course EMPIRE is 200 DOLR, today only 20. Replying EMPIRE gets the sign-up link. {{mail:d1_guru}}
 
 ## Money
@@ -27,7 +27,7 @@ from: 1
 
 ## Family
 
-- [public] 11:20 [[Mom]], "Are you okay?": she heard about the layoffs and asks if the player is eating. "Your father says hi (he didn't)." {{mail:d1_mom}}
+- [public] 12:20 [[Mom]], "Are you okay?": she heard about the layoffs and asks if the player is eating. "Your father says hi (he didn't)." {{mail:d1_mom}}
 - [public] 13:40 [[Brother]] replies to all: "well at least the robots will remember you fondly lmao. you good though?" {{mail:d1_brother_joke}}
 
 ## Y
@@ -83,6 +83,6 @@ from: 1
 - Family: Mom (warm reply +5 trust, ask for money +20 DOLR and −10 trust with `asked_mom_money`, silence −5 if no outcome-matching reply by tonight's summary); brother replies-all. Money: Gary, rent due Sunday.
 - Events: `d1_hr_termination`, `d1_gai_welcome`, `d1_landlord_rent`, `d1_mom`, `d1_brother_joke`, `d1_guru`, `d1_y_*`, `logan_contact`, `laundromat_contact` (agentStart, lead `d1_y_laundromat`).
 - Job offers (the Logan and laundromat posts) go through `spreadJobOffers`: 10:15 to 16:00, at least an hour apart, so on a crowded day they can land later than their `at`.
-- The opening hour is kept quiet: Stryker's and CityPulse's posts (and the article behind it) are up before 10:00, Hartman answers in the afternoon, Gary writes at 10:50 and the brother's reply-all comes after lunch. An event `at` before 10:00 is delivered at the start and shows its own time.
+- The opening hour is kept quiet: Stryker's and CityPulse's posts (and the article behind it) are up before 10:00, Hartman answers in the afternoon, Gary writes at 10:50, Mom at 12:20 and the brother's reply-all comes after lunch. An event `at` before 10:00 is delivered at the start and shows its own time.
 - Filler times are computed by `spreadMin(id@day)`; MarketWire 09:30 is already up when the day starts.
 - Start values: `START` in config.

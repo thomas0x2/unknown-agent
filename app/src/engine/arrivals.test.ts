@@ -14,15 +14,15 @@ const at = (hhmm: string) => Number(hhmm.slice(0, 2)) * 60 + Number(hhmm.slice(3
 const has = (s: ReturnType<typeof startGame>, id: string) => s.delivered.some((d) => d.eventId === id);
 
 describe('timed arrivals', () => {
-  it('day 1 opens with the termination email; Mom writes later in the morning', () => {
+  it('day 1 opens with the termination email; Mom writes around midday', () => {
     const s = startGame(content, 7);
     expect(has(s, 'd1_hr_termination')).toBe(true);
     expect(has(s, 'd1_mom')).toBe(false);
     expect(s.arriving?.some((a) => a.eventId === 'd1_mom')).toBe(true);
-    advanceClock(s, at('11:20') - s.clockMin);
+    advanceClock(s, at('12:20') - s.clockMin);
     const landed = deliverArrivals(s, content);
     expect(landed.map((d) => d.eventId)).toContain('d1_mom');
-    expect(s.delivered.find((d) => d.eventId === 'd1_mom')?.min).toBe(at('11:20'));
+    expect(s.delivered.find((d) => d.eventId === 'd1_mom')?.min).toBe(at('12:20'));
     expect(s.arriving?.some((a) => a.eventId === 'd1_mom')).toBe(false);
   });
 
