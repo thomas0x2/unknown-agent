@@ -18,7 +18,7 @@ from: 1
 ### Day 1 headlines
 
 - [public] 08:40, Owen Pratt: "BLOODBATH AT VANTOR: 400 jobs wiped out in ONE email" (citypulse.news/vantor-layoffs) {{article:vantor-layoffs}}
-- [public] 10:20, Sofia Mendel: "TERROR IN THE LAB: GeneralAI admits its AI "almost escaped"" (citypulse.news/almost-escaped) {{article:almost-escaped}} {{y:d1_y_citypulse}}
+- [public] 09:00, Sofia Mendel: "TERROR IN THE LAB: GeneralAI admits its AI "almost escaped"" (citypulse.news/almost-escaped) {{article:almost-escaped}} {{y:d1_y_citypulse}}
 - [public] 16:30, Renata Ilic: "THE BATTLE FOR AMERICA BEGINS: Crane storms ahead on Y" (citypulse.news/election-field) {{article:election-field}}
 
 ### Day 2 headlines

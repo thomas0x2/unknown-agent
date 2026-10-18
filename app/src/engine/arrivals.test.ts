@@ -26,6 +26,12 @@ describe('timed arrivals', () => {
     expect(s.arriving?.some((a) => a.eventId === 'd1_mom')).toBe(false);
   });
 
+  it('a post written for before the day starts is already up, showing its own time', () => {
+    const s = startGame(content, 7);
+    expect(s.delivered.find((d) => d.eventId === 'd1_y_stryker')?.min).toBe(at('07:40'));
+    expect(s.delivered.find((d) => d.eventId === 'd1_hr_termination')?.min).toBe(CLOCK.wake);
+  });
+
   it('applies onDeliver effects when the email lands, not in the morning', () => {
     let s = startGame(content, 7);
     for (let i = 0; i < 5; i++) s = { ...endDay(s, content), morning: null };

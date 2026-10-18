@@ -107,6 +107,12 @@ export function arrivalMin(ev: Pick<GameEvent, 'at'>): number {
   return at == null ? CLOCK.wake : Math.max(CLOCK.wake, Math.min(CLOCK.sleep - 1, at));
 }
 
+/** The time an event shows once it's in: one written for before the day starts keeps its own time, already there when the player wakes. */
+export function shownMin(ev: Pick<GameEvent, 'at'>): number {
+  const at = parseClock(ev.at);
+  return at != null && at < CLOCK.wake ? at : arrivalMin(ev);
+}
+
 /** The minute a timeline post goes up on its day: its `at`, or a time spread over the day. */
 export function postMin(p: { id: string; at?: string }, day: number): number {
   return parseClock(p.at) ?? spreadMin(`${p.id}@${day}`);
@@ -138,7 +144,7 @@ function deliver(s: GameState, ev: GameEvent, min = s.clockMin): DeliveredEvent 
     seq: s.nextId++,
     answered: false,
     expiresDay: ev.expiresDay,
-    min,
+    min: min <= CLOCK.wake ? Math.min(min, shownMin(ev)) : min,
   };
   const sp = ev.special;
   const special = !!sp && s.values.day >= sp.dayMin && !s.delivered.some((x) => x.eventId === ev.id && x.cc);

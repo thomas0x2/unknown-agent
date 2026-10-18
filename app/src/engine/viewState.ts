@@ -5,7 +5,7 @@
  */
 import type { Content } from '../content/schema';
 import { newGame, type GameState } from './state';
-import { triggerMatches, arrivalMin } from './events';
+import { triggerMatches, arrivalMin, shownMin } from './events';
 
 export function estimatedState(content: Content, day: number, min: number, flags: string[] = []): GameState {
   const s = newGame(1);
@@ -17,7 +17,7 @@ export function estimatedState(content: Content, day: number, min: number, flags
     if (ev.latent || ev.launch || ev.yPost || !['qmail', 'y', 'yowl'].includes(ev.site)) continue;
     for (let d = 1; d <= day; d++) {
       if (!triggerMatches({ ...s, values: { ...s.values, day: d } }, ev.trigger)) continue;
-      if (d < day || arrivalMin(ev) <= min) s.delivered.push({ eventId: ev.id, site: ev.site, day: d, answered: false, min: arrivalMin(ev) });
+      if (d < day || arrivalMin(ev) <= min) s.delivered.push({ eventId: ev.id, site: ev.site, day: d, answered: false, min: shownMin(ev) });
       break;
     }
   }

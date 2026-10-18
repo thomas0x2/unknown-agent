@@ -15,7 +15,7 @@ from: 1
 
 ## His posts, day by day
 
-- [public] On day 1 (11:40) he addresses the "testing incident": everyone is safe, the model is safe, and "we take this extremely seriously, which is why we told everyone."
+- [public] On day 1 (16:10) he addresses the "testing incident": everyone is safe, the model is safe, and "we take this extremely seriously, which is why we told everyone."
 - [public] On day 2 he says agent usage is up 40% and asks people to be patient while GeneralAI is "compute constrained".
 - [public] On day 2 he answers the water-utility report: it was an older checkpoint and a test, and "no customer was harmed", though "several were helped, technically."
 - [public] On day 3 he says new technology always created more jobs eventually: "we're in the while."

@@ -15,7 +15,7 @@ summary: Pollymarket is a prediction market site and Y account showing the odds 
 ## Markets
 
 - [public] "Will Randall Crane win the presidential election?" (Politics), open from day 1, ends Sunday, November 3, 2030. Resolves only on the election office's call; polls, online votes and Y posts don't count. The biggest market on the site. See [[The election]].
-- [public] "Will a GeneralAI model escape before 2031?" (Tech), from day 1 at 10:20. Resolution source: [[GeneralAI]].
+- [public] "Will a GeneralAI model escape before 2031?" (Tech), from day 1 at 09:00. Resolution source: [[GeneralAI]].
 - [public] "Will DOLR stay at 1 dollar through October?" (Crypto), from day 1, resolved on the DOLR Foundation's own price feed. One wallet buys 500,000 DOLR of YES every Monday at 11:05.
 - [public] From day 2: "Will DoorDish find its missing delivery robot by Nov 1?" (Local), opened at 16:10 at 72%. "Promoted", "retired" and "exactly where it needs to be" do not count as found. See [[DoorDish]].
 - [public] From day 3: "Will Axel Rook endorse a presidential candidate before the election?" (Politics), opened at 17:45 after his 🤣 reply to Crane. One-word replies don't count. See [[Axel Rook]].
