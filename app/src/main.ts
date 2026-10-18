@@ -372,6 +372,7 @@ const ACTS: Record<string, (t: HTMLElement) => void> = {
   'stack-spin': () => store.stackSpin(),
   'stack-copy': () => copyDepositAddress(),
   'pcmedic-download': () => store.downloadCleaner(),
+  'qd-delete': (t) => store.confirm(`Delete ${t.dataset.name}? It can't be recovered.`, 'Delete', () => store.deleteDriveFile(t.dataset.file!)),
   'sw-sell': (t) => { if (store.trade(t.dataset.ticker!, 'sell', val('#sw-amount').trim())) clearField('sw-amount'); },
   'sw-sell-all': (t) => { if (store.trade(t.dataset.ticker!, 'sell', 'all')) clearField('sw-amount'); },
   sleep: () => store.endDay(),

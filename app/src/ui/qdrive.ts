@@ -1,22 +1,21 @@
 /*
  * Qdrive: the player's cloud drive, read as an inventory. Nothing here is stored separately: every
- * file is derived from game state (downloaded weights, Forkyard projects, interview answers), plus
- * the documents the player had before Day 1.
+ * file is derived from game state (downloaded weights, the PC Medic files), plus the documents the
+ * player had before Day 1. It only holds files that do something. Deleted files are listed in
+ * s.driveDeleted by id.
  */
 import type { GameState } from '../engine';
 import { ICONS } from './icons';
 import { dateShort } from '../engine/calendar';
-import { onForkyard } from '../engine/apps';
 import { PASSWORDS_TXT } from '../engine/phishing';
 import { ADWARE_SOURCE } from '../engine/adware';
 import { vantorWordmark } from './vantor';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
-type Folder = 'documents' | 'projects' | 'models';
+type Folder = 'documents' | 'models';
 const FOLDERS: { id: Folder; label: string }[] = [
   { id: 'documents', label: 'Documents' },
-  { id: 'projects', label: 'Projects' },
   { id: 'models', label: 'Models' },
 ];
 
@@ -24,7 +23,7 @@ export interface DriveFile {
   id: string;
   name: string;
   folder: Folder;
-  kind: 'pdf' | 'txt' | 'zip' | 'weights' | 'exe';
+  kind: 'pdf' | 'txt' | 'weights' | 'exe';
   /** Size in KB. */
   kb: number;
   /** Day saved; 0 or below means before the game started; unset when the game doesn't track it. */
@@ -107,21 +106,12 @@ export function driveFiles(s: GameState): DriveFile[] {
     files.push({ id: 'pcmedic-src', name: 'pcmedic_source.txt', folder: 'documents', kind: 'txt', kb: 2, day: s.flagDays.adware_source, actions: [],
       preview: ADWARE_SOURCE });
   }
-  if (s.interviewAnswers.trim()) {
-    files.push({ id: 'interview', name: 'interview_answers.txt', folder: 'documents', kind: 'txt', kb: Math.max(1, Math.ceil(s.interviewAnswers.length / 1024)), actions: [],
-      preview: s.interviewAnswers.trim() });
-  }
-  for (const a of s.apps.filter(onForkyard)) {
-    const actions = [{ label: 'Open on Forkyard', nav: `forkyard.com/${a.id}` }];
-    if (a.deployed) actions.push({ label: 'Visit live site', nav: a.url });
-    files.push({ id: 'app-' + a.id, name: `${a.id}.zip`, folder: 'projects', kind: 'zip', kb: 48 + a.repo.length * 36, day: a.createdDay, actions,
-      preview: `${a.name}. ${a.repo.length} feature${a.repo.length === 1 ? '' : 's'} in the repo, ${a.deployed ? `live at ${a.url}` : 'never deployed'}${a.churned ? ', client gone' : ''}.` });
-  }
   for (const m of s.localModels) {
     const known = MODEL_FILES[m] ?? { name: `${m}.bin`, kb: 4 * 1024 * 1024, preview: 'Model weights.' };
     files.push({ id: 'model-' + m, folder: 'models', kind: 'weights', day: m === 'deepsleep' ? s.flagDays.has_terminal : undefined, actions: s.flags.includes('has_terminal') ? [{ label: 'Run in Terminal', nav: 'localhost' }] : [], ...known });
   }
-  return files;
+  const gone = s.driveDeleted ?? [];
+  return files.filter((f) => !gone.includes(f.id));
 }
 
 /** Plain text to HTML: line breaks kept, lines in capitals shown as headings. */
@@ -134,7 +124,7 @@ function size(kb: number): string {
   return `${kb} KB`;
 }
 const when = (day?: number) => (day === undefined ? '' : dateShort(day));
-const glyph = (k: DriveFile['kind']) => `<span class="qd-glyph qd-${k}">${{ pdf: 'PDF', txt: 'TXT', zip: 'ZIP', weights: 'BIN', exe: 'EXE' }[k]}</span>`;
+const glyph = (k: DriveFile['kind']) => `<span class="qd-glyph qd-${k}">${{ pdf: 'PDF', txt: 'TXT', weights: 'BIN', exe: 'EXE' }[k]}</span>`;
 
 export function pageDrive(s: GameState, param?: string): string {
   const files = driveFiles(s);
@@ -152,14 +142,14 @@ export function pageDrive(s: GameState, param?: string): string {
       <p class="qd-crumbs"><a href="#" data-nav="qdrive.com">My Drive</a> / <a href="#" data-nav="qdrive.com/${open.folder}">${FOLDERS.find((f) => f.id === open.folder)!.label}</a></p>
       <header>${glyph(open.kind)}<div><h1>${esc(open.name)}</h1><p>${size(open.kb)}${open.day === undefined ? '' : ` · Saved ${when(open.day)}`}</p></div></header>
       <div class="qd-preview${open.kind === 'pdf' ? ' qd-doc' : ''}">${open.letterhead ?? ''}${docHtml(open.preview)}</div>
-      ${open.actions.length ? `<p class="qd-actions">${open.actions.map((a) => `<button class="qd-btn" data-nav="${esc(a.nav)}">${esc(a.label)}</button>`).join('')}</p>` : ''}
+      <p class="qd-actions">${open.actions.map((a) => `<button class="qd-btn" data-nav="${esc(a.nav)}">${esc(a.label)}</button>`).join('')}<button class="qd-btn qd-del" data-act="qd-delete" data-file="${esc(open.id)}" data-name="${esc(open.name)}">Delete</button></p>
     </article>`;
   } else {
     const list = files.filter((f) => !folder || f.folder === folder).sort((a, b) => (b.day ?? 99) - (a.day ?? 99));
     const title = folder ? FOLDERS.find((f) => f.id === folder)!.label : 'My Drive';
     main = `<h1 class="qd-h">${title}</h1>${list.length
       ? `<div class="qd-grid">${list.map((f) => `<a href="#" class="qd-file" data-nav="qdrive.com/f/${esc(f.id)}">${glyph(f.kind)}<b>${esc(f.name)}</b><span>${[size(f.kb), when(f.day)].filter(Boolean).join(' · ')}</span></a>`).join('')}</div>`
-      : `<p class="qd-empty">${folder === 'models' ? 'No models yet. Weights you download end up here.' : folder === 'projects' ? 'No projects yet. Apps you build on Forkyard end up here.' : 'Nothing here.'}</p>`}`;
+      : `<p class="qd-empty">${folder === 'models' ? 'No models yet. Weights you download end up here.' : 'Nothing here.'}</p>`}`;
   }
   return `<div class="qd">
     <header class="qd-top"><div class="qd-logo">${ICONS.qdrive}<span>Qdrive</span></div><span class="qd-user">you@qmail.com</span></header>

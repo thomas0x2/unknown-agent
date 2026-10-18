@@ -84,7 +84,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[nullboard and Cellar]] (nullboard-and-cellar.md): nullboard.onion is the Null Collective's forum
 - [[Pollymarket]] (pollymarket.md): Pollymarket (pollymarket.com) is a prediction market and Y account; story markets with odds and trades, nothing to bet with
 - [[prince-claims.xyz]] (prince-claims.md): prince-claims.xyz is the site behind the Crypto Prince banner ad ("CONGRATS!!!
-- [[Qdrive]] (qdrive.md): Qdrive (qdrive.com) is the player's cloud drive, with Documents, Projects and Models folders
+- [[Qdrive]] (qdrive.md): Qdrive (qdrive.com) is the player's cloud drive, with Documents and Models folders
 - [[Qmail]] (qmail.md): Qmail (qmail.com) is the player's email, you@qmail.com
 - [[Sherwood]] (sherwood.md): Sherwood (sherwood.com) is a stock trading app, white with black type and one green, bookmarked after the first visit
 - [[SorryWriter]] (sorrywriter.md): SorryWriter (sorrywriter.ai) is an apology chat laid out like agent.chat, with a logo of an envelope sealed with a pink tear
