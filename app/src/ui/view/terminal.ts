@@ -10,6 +10,7 @@ import { adHtml } from '../ads';
 import { MODELS, PULL_MS, pullLines, pullPct } from '../../game/pull';
 import { READY, SUSPENDED_TERM, policyActive, type AgentTermLine } from '../../engine';
 import { esc } from './common';
+import { streamer } from '../stream';
 
 // ── Weightroom ──
 const WR_MODELS = [{ id: 'deepsleep', blurb: 'The only model here that costs nothing. Replies in confident Chinese nonsense. Nobody is watching what you ask it.', tier: 'useless' }];
@@ -68,15 +69,17 @@ function agentTermHtml(store: GameStore): string {
   const guard = policyActive(s);
   const game = s.hackGame;
   const head = `<div class="at-status"><span>agent-${level}</span><span class="at-gr${guard ? ' on' : ''}">guardrails ${guard ? 'on' : 'off'}</span>${game ? '<span class="at-block">job blocked</span>' : ''}</div>`;
-  const row = (l: AgentTermLine) => {
+  const st = streamer('aterm', (s.agentTerm ?? []).length);
+  const row = (l: AgentTermLine, i = -1) => {
     const debug = l.debug?.length ? `<details class="at-debug"><summary>Details</summary>${l.debug.map((d) => `<div>${esc(d)}</div>`).join('')}</details>` : '';
-    return `<div class="at-${l.k}">${l.k === 'in' ? '<span class="at-ps">›</span> ' : ''}${esc(l.text)}</div>${debug}`;
+    return `<div class="at-${l.k}">${l.k === 'in' ? '<span class="at-ps">›</span> ' : ''}${l.k === 'agent' && i >= 0 ? st(i, l.text, esc) : esc(l.text)}</div>${debug}`;
   };
   // the agent's newest lines appear one after another (store.termReveal); the prompt shows as soon as it's sent
   const all = s.agentTerm ?? [];
   const hidden = Math.min(all.length, store.termHidden());
   const pending = store.termPending;
-  const lines = all.slice(0, all.length - hidden).slice(-200).map(row).join('') + (pending != null ? row({ k: 'in', text: pending }) : '');
+  const upto = all.length - hidden;
+  const lines = all.slice(0, upto).map((l, i) => ({ l, i })).slice(-200).map(({ l, i }) => row(l, i)).join('') + (pending != null ? row({ k: 'in', text: pending }) : '');
   // a Claude Code style spinner while the agent reads the prompt or works through its steps
   const working = pending != null || hidden > 0;
   const spin = working ? `<div class="at-spin" role="status"><span class="at-star" aria-hidden="true"></span>${hidden && store.termHack ? 'Hacking…' : 'Working…'}</div>` : '';
