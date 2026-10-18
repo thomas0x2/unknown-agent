@@ -41,7 +41,7 @@ from: 1
 
 ## Writer notes
 
-- Persona `mom` in characters.json; contact in contacts.json. Events `d1_mom`, `d6_mom_bday_chip|own|skip`. Birthday is day 6, Saturday Oct 12.
+- Persona `mom` in content/characters/; contact in content/contacts/. Events `d1_mom`, `d6_mom_bday_chip|own|skip`. Birthday is day 6, Saturday Oct 12.
 - Day 1 outcomes: warm reply +5 family trust; asking for money +20 DOLR, −10 trust, flag `asked_mom_money`; silence −5. Day 6 own gift +5 trust.
 - Silence = no outcome-matching reply by the end of day 1 (the day it arrives; `noReply` has no `byDay`). Only a reply Jev matches to an outcome closes the thread; a reply that matches nothing (a miss or a hint) or a `keepsOpen` outcome doesn't, so the penalty still lands. Binning the email doesn't help (mailbin.ts). `lapseUnanswered` in `engine/events.ts` runs in the night summary (`day.ts`).
 - Family members stay unnamed.

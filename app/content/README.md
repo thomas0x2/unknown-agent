@@ -28,7 +28,9 @@ touching engine code.
   `wiki/README.md` before writing content; Haiku answers agent.chat queries from it.
 - `agent.json` — agent.chat's near-miss topics (Haiku writes the reply; their lines are its model and fallback), the query wording and fallback lines, roasts
   and morning lines.
-- `contacts.json` — who answers at each address. `replyAfter` is how many minutes of game time
+- `characters/*.json` — one `Character` per file, named by its id: the profile and few-shot
+  examples Haiku writes that character's replies from. Restart `npm run proxy` after adding one.
+- `contacts/*.json` — one `Contact` per file, named by its address: who answers there. `replyAfter` is how many minutes of game time
   their replies take (default 60). The clock runs in real time, one game minute per
   real second (a whole day, 10:00 to 22:00, in 12 minutes), so 30 game minutes is 30 seconds. An outcome or scripted reply can set its own
   `replyAfter` to answer faster or slower.

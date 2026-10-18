@@ -3,7 +3,7 @@
  * (no outcome, no hint), the character still answers: in their own voice, about what the player
  * said, and never helpfully. A hit (an outcome, a hint, a build) is always scripted, never this.
  *
- * Each character's profile and examples live in content/characters.json; the proxy
+ * Each character's profile and examples live in content/characters/; the proxy
  * (server/jev-proxy.mjs) turns them into Claude Haiku's prompt. This file tidies what comes back.
  */
 import type { Character } from '../content/schema';

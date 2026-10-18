@@ -12,7 +12,7 @@
 import type { GameState } from './state';
 import type { Content } from '../content/schema';
 import type { JevRouter } from './jev';
-import { wikiCtx, queryablePages, querySections, sectionNow, sectionName, cleanWikiText, EMBED, type WikiPage, type WikiSection, type WikiCtx } from './wiki';
+import { wikiCtx, queryablePages, querySections, sectionNow, sectionName, pageGist, cleanWikiText, EMBED, type WikiPage, type WikiSection, type WikiCtx } from './wiki';
 import { deliveryCc, deliveryKey, eventBody, posted, postMin } from './events';
 import { marketPosts } from './crawler';
 import { liveArticles } from './citypulse';
@@ -70,21 +70,13 @@ export function seenItems(s: GameState, content: Content): Map<string, string> {
   return out;
 }
 
-/** What a page is about in a line: its `summary`, or the first sentence of its first section. */
-function gist(p: WikiPage): string {
-  if (p.summary) return p.summary;
-  const first = querySections(p)[0]?.blocks[0]?.text ?? '';
-  const text = cleanWikiText(first.replace(EMBED, ''));
-  return (text.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? text).slice(0, 220);
-}
-
 /** How Jev sees a page: its title, other names, what kind of thing it is and what it's about. */
 function pageDesc(p: WikiPage, day: number): string {
   // the player asks about "today" and "yesterday", not day numbers
   const when = p.category === 'days' ? (p.from === day ? ' (today)' : p.from === day - 1 ? ' (yesterday)' : '') : '';
   if (when) return `${p.title}${when}: what has happened ${when.slice(2, -1)} (${p.aliases[0] ?? p.title})`;
   const kind = { people: 'a person', family: "a member of the player's family", companies: 'a company or organisation', sites: 'a website or app', apps: 'an app the player builds', world: 'a topic', days: 'what happened on that day', writers: '' }[p.category] ?? 'a topic';
-  const about = gist(p);
+  const about = pageGist(p);
   // a summary says what the page is in its own words, kind included
   return `${p.title}${when}${p.aliases.length ? ` (also called ${p.aliases.slice(0, 16).join(', ')})` : ''}: ${p.summary ?? `${kind}${about ? `. ${about}` : ''}`}`;
 }

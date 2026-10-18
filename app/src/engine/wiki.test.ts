@@ -6,7 +6,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   parseWikiPage, wikiCtx, blockNow, sectionNow, evalTag, parseTagRule, formatTagRule, formatWikiPage,
-  latestDay, queryablePages, cleanWikiText, EMBED, seenRef, childSections, type WikiPage,
+  latestDay, queryablePages, cleanWikiText, EMBED, seenRef, childSections, wikiIndexMarkdown, type WikiPage,
 } from './wiki';
 import { METER_IDS } from './values';
 
@@ -146,9 +146,9 @@ describe('wiki: the real pages', () => {
     expect(untagged).toEqual([]);
   });
 
-  it('the index lists every page', () => {
-    const index = readFileSync(join(DIR, 'index.md'), 'utf8');
-    const missing = wiki.filter((p) => !isIndex(p) && !index.includes(p.file.replace(/\.md$/, '')) && !index.includes(p.title));
+  it('the index lists every page, built from the pages', () => {
+    const index = wikiIndexMarkdown(wiki);
+    const missing = wiki.filter((p) => !isIndex(p) && !index.includes(`(${p.file})`));
     expect(missing.map((p) => p.file)).toEqual([]);
   });
 

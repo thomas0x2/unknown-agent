@@ -9,7 +9,7 @@
  * Run: npm run proxy   (reads .env if present)
  */
 import http from 'node:http';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { execFile } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { QUERY_TOOLS, runQueryTool, readSite } from './screens.mjs';
@@ -19,11 +19,13 @@ const KEY = process.env.TYPESAFE_API_KEY || '';
 const BASE_URL = process.env.TYPESAFE_BASE_URL || undefined;
 
 // Off-script character replies (the "Haiku (API)" Misses setting). The browser sends only a
-// character id and the player's text; the prompt is built here from content/characters.json, so
+// character id and the player's text; the prompt is built here from content/characters/*.json, so
 // this is not an open proxy either.
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY || '';
 const WRITER_MODEL = 'claude-haiku-5-5';
-const CHARACTERS = JSON.parse(readFileSync(new URL('../content/characters.json', import.meta.url), 'utf8'));
+const CHARACTER_DIR = new URL('../content/characters/', import.meta.url);
+const CHARACTERS = readdirSync(CHARACTER_DIR).filter((f) => f.endsWith('.json')).sort()
+  .map((f) => JSON.parse(readFileSync(new URL(f, CHARACTER_DIR), 'utf8')));
 let anthropicPromise = null;
 async function getAnthropic() {
   if (!ANTHROPIC_KEY) return null;

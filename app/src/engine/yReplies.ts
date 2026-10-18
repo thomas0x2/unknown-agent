@@ -16,7 +16,7 @@ import { POST_BANDS, postBase } from './actions/social';
 import { playMinutes, rand, randInt, pick } from './core';
 import type { Writer } from './writer';
 
-/** The regulars who reply to the player's posts, and the character (content/characters.json) that writes for each. */
+/** The regulars who reply to the player's posts, and the character (content/characters/) that writes for each. */
 export const Y_REPLIERS = [
   { handle: 'doomscroll', author: 'doomscroll', character: 'y_doomscroll' },
   { handle: 'cat_ceo', author: 'cat_ceo', character: 'y_cat_ceo' },

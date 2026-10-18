@@ -9,7 +9,6 @@ import { fakeRouter } from './_fixtures';
 import { maxFollowers, yReplyChance, deliverYReplies, Y_REPLIERS, Y_REPLY_DELAY } from './yReplies';
 import { Y as YCFG, START, LAST_DAY } from './config';
 import { scriptedWriter } from './writer';
-import characters from '../../content/characters.json';
 
 const content = loadContent();
 const router = fakeRouter({ rating: () => ({ category: 'tip', quality: 0.5 }) });
@@ -77,6 +76,6 @@ describe('regular replies', () => {
   });
 
   it('every replier has a character for Haiku', () => {
-    for (const r of Y_REPLIERS) expect(characters.some((c) => c.id === r.character), r.character).toBe(true);
+    for (const r of Y_REPLIERS) expect((content.characters ?? []).some((c) => c.id === r.character), r.character).toBe(true);
   });
 });

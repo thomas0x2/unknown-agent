@@ -4,7 +4,7 @@
  * world (a query), agent answers it, looking things up first. The "Misses" setting on agent.chat picks who writes that
  * line: Claude Haiku through the local proxy (game/haiku.ts), or the scripted fallback lines from
  * content. 'agent' is agent.chat; an email address or Y handle maps to a character through
- * content/contacts.json. If Haiku can't answer, the scripted line is used, so play never blocks.
+ * content/contacts/. If Haiku can't answer, the scripted line is used, so play never blocks.
  */
 import type { Writer, WriteReq } from '../engine';
 import type { Content } from '../content/schema';

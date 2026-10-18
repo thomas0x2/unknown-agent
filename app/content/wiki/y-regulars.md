@@ -92,5 +92,5 @@ nest: true
 ## Writer notes
 
 - Filler posts in `y_filler.json` (one a day, rotating doomscroll, cat_ceo, zev_dolr, noodleposter, plus on some days an overnight post between 02:00 and 05:00 that is already up when the day starts: f22-f29; f20 and f21 run on days 27 and 28, f30-f36 on days 20 to 26); story posts `d1_y_doomscroll_news`, `d3_y_*_machines`, `d3_y_teo_jobsfair`, `d8_y_noodle_dish`, `d8_y_deb_taxes`, `d10_y_catceo_apogee`, `d10_y_mourn_teo_vasquez`, `d28_y_teo_voted`, `d5_coffee_backlash`. Bios and the stranger pool in `y-bios.ts`.
-- Reply characters (Haiku, `characters.json`): `y_doomscroll`, `y_cat_ceo`, `y_zev_dolr`. Their replies follow the same rules as their posts: one chronically-online detail at most, played straight.
+- Reply characters (Haiku, `content/characters/`): `y_doomscroll`, `y_cat_ceo`, `y_zev_dolr`. Their replies follow the same rules as their posts: one chronically-online detail at most, played straight.
 - The four background regulars are chronically online (Thomas, 2026-10-17): screen time, likes, follower counts, 3-4am posting, reading every reply. Keep it in the details of each post, one per post at most, and never say "addicted" or "touch grass" outright. Teo Vasquez and Deb Halloran are not in this group.

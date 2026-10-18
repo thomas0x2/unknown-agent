@@ -386,6 +386,36 @@ export function childSections(page: WikiPage): { i: number; slug: string; headin
     ? [{ i, slug: sectionSlug(s.heading), heading: s.heading, fromDay: s.fromDay }] : []);
 }
 
+/** What a page is about in a line: its `summary`, or the first sentence of its first section. */
+export function pageGist(p: WikiPage): string {
+  if (p.summary) return p.summary;
+  const first = querySections(p)[0]?.blocks[0]?.text ?? '';
+  const text = cleanWikiText(first.replace(EMBED, ''));
+  return (text.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? text).slice(0, 220);
+}
+
+/** The wiki's categories, in the order the index and the sidebar list them. */
+export const WIKI_CATEGORIES: [WikiCategory, string][] = [['days', 'Days'], ['people', 'People'], ['family', 'Family'], ['companies', 'Companies'], ['sites', 'Sites'], ['apps', 'Apps'], ['world', 'World'], ['writers', 'Writers']];
+
+/**
+ * Every page by category, built from the pages themselves, so adding a page never means editing a
+ * shared list: `[[Title]] (file): what it is`, days in order and the rest by title. The wiki shows it
+ * on the Index page; `npm run wiki:index` prints it.
+ */
+export function wikiIndex(pages: WikiPage[]): { category: WikiCategory; label: string; pages: { page: WikiPage; gist: string }[] }[] {
+  return WIKI_CATEGORIES.map(([category, label]) => ({
+    category, label,
+    pages: pages.filter((p) => p.category === category && p.file !== 'index.md')
+      .sort((a, b) => (category === 'days' ? a.from - b.from : a.title.localeCompare(b.title)))
+      .map((page) => ({ page, gist: pageGist(page) })),
+  })).filter((c) => c.pages.length);
+}
+
+/** wikiIndex as Markdown, one `[[Title]] (file): what it is` line per page under a heading per category. */
+export function wikiIndexMarkdown(pages: WikiPage[]): string {
+  return wikiIndex(pages).map((c) => `## ${c.label}\n\n${c.pages.map(({ page, gist }) => `- [[${page.title}]] (${page.file}): ${gist}`).join('\n')}\n`).join('\n');
+}
+
 /** A block back as markdown, with its tag rule. */
 export function formatBlock(b: Pick<WikiBlock, 'rule' | 'text' | 'bullet' | 'row'>): string {
   const tag = b.rule ? `[${b.rule}] ` : '';

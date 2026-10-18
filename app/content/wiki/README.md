@@ -3,7 +3,7 @@
 The world bible and the day-by-day timeline, one page per thing: a person, a company, a site, an app,
 a day. It is the reference for anyone writing game content, and what agent answers the player's
 questions from (agent.chat queries, `src/engine/query.ts`). Read `index.md` first; it lists every
-page. In the game, with dev mode on, the bookmarked **wiki.dev** site shows every page with each
+page (the list is built from the pages; `npm run wiki:index` prints it). In the game, with dev mode on, the bookmarked **wiki.dev** site shows every page with each
 paragraph's tag as the player stands now, and edits text and tags. The same editor runs in a real
 browser tab at **http://localhost:5173/wiki.html** (while `npm run dev` runs), with "view as" day,
 time and flags instead of the game's. Both save here through the local proxy (`npm run proxy`), and a
@@ -132,4 +132,4 @@ also read the player's own screens (Qmail, Y, Yowl, CityPulse, Forkyard, Coinbin
 The wiki is the master world bible and timeline (it replaced `/mnt/project-files/world/world-bible.md`
 and `timeline.md`). When a piece of work adds or changes story content (an event, a Y post, an
 article, a rollout, rent, a day-gated site), update the pages and the day page in the same PR, tag
-every new paragraph, and list new pages in `index.md`. Code on main wins over the wiki: fix the wiki.
+every new paragraph. A new page shows up in the index on its own. Code on main wins over the wiki: fix the wiki.

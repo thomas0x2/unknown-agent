@@ -22,6 +22,6 @@ from: 3
 
 ## Writer notes
 
-- Catalogue in `src/engine/swaplist.ts` (first listing exactly one hour of play after the first deploy); offers in `swapdeal.ts` (sellers take 75% of asking, Viktor 90%). Personas `seller_ines|sam|pia|kofi|steph|walker` in characters.json.
+- Catalogue in `src/engine/swaplist.ts` (first listing exactly one hour of play after the first deploy); offers in `swapdeal.ts` (sellers take 75% of asking, Viktor 90%). Personas `seller_ines|sam|pia|kofi|steph|walker` in content/characters/.
 - Ines's leather jacket is the day 4 Mom's-birthday purchase option (`gift_own`).
 - late_night_lou's day 7 listing is planned, not built.

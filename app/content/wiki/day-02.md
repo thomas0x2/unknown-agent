@@ -73,6 +73,8 @@ from: 2
 
 ## Writer notes
 
-- Timeline: Logan's waitlist (test sign-ups are real sign-ups: the counter goes up and the confirmation is sent). deskjockey → Vibe Check ($GAI, $VANT; 50/day). dev_null → Weightroom (`knows_weightroom`). EMPIRE newsletter daily if subscribed. Family: Dad's "20 years" email with the three Halden breadcrumbs (warm +5, ask +3, silence −5 if no outcome-matching reply by tonight's summary).
+- Timeline: Logan's waitlist (test sign-ups are real sign-ups: the counter goes up and the confirmation is sent). deskjockey → Vibe Check ($GAI, $VANT; 50/day). dev_null → Weightroom (`knows_weightroom`).
+- EMPIRE newsletter daily if subscribed.
+- Family: Dad's "20 years" email with the three Halden breadcrumbs (warm +5, ask +3, silence −5 if no outcome-matching reply by tonight's summary).
 - `d2_logan_waitlist` needs `logan_client` and the site working, and sets `logan_update1`; it lands on the first day both hold.
 - Events: `d2_*`, `trader_contact`, `guru_newsletter`. MarketWire, Brent and bot posts are in `y_market.json` (bot swarm: 30 accounts today).

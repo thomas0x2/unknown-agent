@@ -1,9 +1,7 @@
-import characters from '../../content/characters.json';
-import contacts from '../../content/contacts.json';
-import type { Character } from '../content/schema';
+import { loadContent } from '../content/load';
 import { finishReply } from './characters';
 
-const all = characters as Character[];
+const { characters: all = [], contacts } = loadContent();
 const agent = all.find((c) => c.id === 'agent')!;
 const mom = all.find((c) => c.id === 'mom')!;
 

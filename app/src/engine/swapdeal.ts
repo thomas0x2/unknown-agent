@@ -18,7 +18,7 @@ import { MAX_INPUT_CHARS } from './config';
 import { type Writer, type HistoryLine } from './writer';
 import { settlePurchase } from './events';
 
-/** The character (content/characters.json) who answers for each seller handle. */
+/** The character (content/characters/) who answers for each seller handle. */
 export const SELLER_CHARACTER: Record<string, string> = {
   viktor: 'viktor', ines_sells: 'seller_ines', second_hand_sam: 'seller_sam', pia_l: 'seller_pia',
   kofi_a: 'seller_kofi', steph_m: 'seller_steph', walked_there_again: 'seller_walker',

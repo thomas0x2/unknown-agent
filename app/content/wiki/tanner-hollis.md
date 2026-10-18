@@ -36,7 +36,7 @@ from: 6
 
 ## Writer notes
 
-- Persona `salesrep` (name Tanner Hollis in characters.json and contacts.json); events `d6_y_outreach`, `outreach_contact`, `dN_y_sales_rep` (days 8, 9, 11, 13, 15). Two strikes and he leaves.
+- Persona `salesrep` (name Tanner Hollis in content/characters/ and content/contacts/); events `d6_y_outreach`, `outreach_contact`, `dN_y_sales_rep` (days 8, 9, 11, 13, 15). Two strikes and he leaves.
 - Email shows his real name; Y keeps the anonymous "a sales rep" persona (Thomas, 2026-10-17).
 - His Y posts read as Claude-written LinkedIn slop (Thomas, Papers, Please batch 2, 2026-10-18). The joke is the register; the content stays plausible. His emails stay short and pushy.
 - Spec: personalised cold emails to 200 leads ({first name}, {company}), max 50 a day, working unsubscribe link, never email an unsubscriber, no duplicates, Test button sends the first 3 to him.

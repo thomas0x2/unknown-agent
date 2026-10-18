@@ -27,4 +27,4 @@ The HR termination email (`d1_hr_termination.json`), the Qdrive offboarding pack
 
 Copy left alone in the last copy pass because it already works (`/mnt/project-files/copy-review/copy-suggestions.md`): the bookmarks error, the DeepSleep blurb, the GeneralAI parking listing, Leo Brandt's "Please hire a human.", Rolf's `cake-fund` repo, "thinking… (this laptop is not fast)", Mom's "for the train", the laundromat's `M3 ST=1 T=731??`, Viktor's post, Mara Vey's posts.
 
-When writing a new line for a character, match the few-shot examples in `app/content/characters.json`; they steer Gemma more than the profile does.
+When writing a new line for a character, match the few-shot examples in `app/content/characters/`; they steer Gemma more than the profile does.

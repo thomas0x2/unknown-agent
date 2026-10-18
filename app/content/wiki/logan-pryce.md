@@ -33,7 +33,7 @@ from: 1
 
 ## Writer notes
 
-- Persona `logan` in `content/characters.json`; contact entry in `content/contacts.json`; events `d1_y_logan`, `logan_contact` (pay 40, 40 up front), `logan_promo`, `logan_promo_thanks`, `d2_logan_waitlist` (needs `logan_client` and the site working; sets `logan_update1`), `d2_y_logan`, `d3_y_logan`. Y bio in `ui/y-bios.ts`, avatar `LOGAN` in `ui/y-avatars.ts`.
+- Persona `logan` in `content/characters/`; contact entry in `content/contacts/`; events `d1_y_logan`, `logan_contact` (pay 40, 40 up front), `logan_promo`, `logan_promo_thanks`, `d2_logan_waitlist` (needs `logan_client` and the site working; sets `logan_update1`), `d2_y_logan`, `d3_y_logan`. Y bio in `ui/y-bios.ts`, avatar `LOGAN` in `ui/y-avatars.ts`.
 - His credentials (Why Combinator Startup School, San Fortuna State dropout, host of the Founder Mode podcast, 2x founder) were a default while Thomas's decision was still open. "2x founder" is the larp: he has never shipped anything.
 - Planned arc, not built yet (decisions batch 1): he raises a pre-seed from his uncle, announces it on Y as "led by top operators", then builds the next version with agent himself and stops emailing.
 - Logan replaced Trattoria Gino (Gino Fenoglio) as the day 1 job giver. Gino's app, his DoorDish listing, the dish pictures, Marguerite's #AIslop post and the raise beat were removed with him.

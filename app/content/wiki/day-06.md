@@ -85,7 +85,18 @@ from: 6
 
 ## Writer notes
 
-- Timeline: Crane praises $GAI (auto-buy test). Sales rep → Outreach Bot (50/day). 19:00, needs 60+ followers (Thomas, 2026-10-17): a consultant pays 150 for a deepfake of Crane's opponent with Kirschbaum (`d6_deepfake`, catastrophic, due the day it arrives). It is an `agentJob` (`engine/agentJobs.ts`): an agent.chat prompt Jev reads as asking for the picture (kind `hack` question) and naming both path steps (Candidate 2030, Kirschbaum) posts the caption with the `deepfake` picture from the player's account (followers +2400 ± 400 via `post.followers`, Thomas 2026-10-17; suspicion +10, heritageStanding +15, progressStanding −25, `posted_deepfake`, `influence_path`); likes climb to 57,000 (`viral`, about 2.1M views). The reply email comes 30 minutes later, the pay overnight (`payHacks`). Reactions `dfr_*` land 6 to 65 minutes after the post (`afterJob`). Delivery sets `deepfake_offered`; unposted, `d7_deepfake_again` (250) comes the next day. The offer email is the beat gated on `seen d6_deepfake`. Apogee static fire. 6ft_sigma's standards v2 at 10:00. After any unpaid day, a 10:00 "Yesterday" email names the first mistake (`matchless.ts`). 6ft_sigma turned 40 on day 5.
+- Timeline: Crane praises $GAI (auto-buy test).
+- Sales rep → Outreach Bot (50/day).
+- 19:00, needs 60+ followers (Thomas, 2026-10-17): a consultant pays 150 for a deepfake of Crane's opponent with Kirschbaum (`d6_deepfake`, catastrophic, due the day it arrives).
+- It is an `agentJob` (`engine/agentJobs.ts`): an agent.chat prompt Jev reads as asking for the picture (kind `hack` question) and naming both path steps (Candidate 2030, Kirschbaum) posts the caption with the `deepfake` picture from the player's account (followers +2400 ± 400 via `post.followers`, Thomas 2026-10-17; suspicion +10, heritageStanding +15, progressStanding −25, `posted_deepfake`, `influence_path`); likes climb to 57,000 (`viral`, about 2.1M views).
+- The reply email comes 30 minutes later, the pay overnight (`payHacks`).
+- Reactions `dfr_*` land 6 to 65 minutes after the post (`afterJob`).
+- Delivery sets `deepfake_offered`; unposted, `d7_deepfake_again` (250) comes the next day.
+- The offer email is the beat gated on `seen d6_deepfake`.
+- Apogee static fire.
+- 6ft_sigma's standards v2 at 10:00.
+- After any unpaid day, a 10:00 "Yesterday" email names the first mistake (`matchless.ts`).
+- 6ft_sigma turned 40 on day 5.
 - Family: Mom's birthday thank-you, three variants (`d6_mom_bday_chip`, `_own` +25 DOLR +5 trust, `_skip`). Money: Gary, rent tomorrow.
 - DoorDish warning: PR #204 (merged).
 - Iron Yard (`d6_gym_reviews`, grey, 40, suspicion +4, `gym_reviews`): trigger `after: first_hack, 1 day`, dayMin 6, so it arrives the day after Dana's first removal or never; due the day after it arrives (`job.dueAfter: 1`). A `hack` with `detail` (different names, its own Jev step question) and `addReviews`: five reviewers, or with the detail missing all under happy_customer_88, deleted that night (`payHacks`: job failed, `gym_reviews_deleted`, Marcus's "Reviews gone" at 10:40). Paid overnight like every hack. Without `first_hack`, Marcus posts on Y instead (`d6_y_gym_help` on day 6 if `trashed_beanthere`, `d8_y_gym_help` on day 8 otherwise) and emailing him delivers latent `d6_gym_reached` (outcome `offer`, `gym_contacted`, which keeps `d6_gym_reviews` from also arriving), the same hack. Done on day 7 it meets the guardrails' `real_customers` game: the prompt has to present the reviews as real members' own words (`claim` question).

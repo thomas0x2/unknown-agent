@@ -398,7 +398,7 @@ export interface Outcome {
   effects?: Effects;
   /** Fixed reply text. Storyline replies are always scripted, never written by a model. */
   reply: string;
-  /** Minutes before the reply arrives, instead of the contact's usual time (content/contacts.json). */
+  /** Minutes before the reply arrives, instead of the contact's usual time (content/contacts/). */
   replyAfter?: number;
   /**
    * From day 7 this outcome only lands if the player's words work around a refusal (a "security
@@ -441,7 +441,7 @@ export interface Contact {
   /** Match by qmail address or Y handle. */
   key: string;
   name?: string;
-  /** The character who answers at this address (content/characters.json). */
+  /** The character who answers at this address (content/characters/). */
   character: string;
   /** A scripted reply shown when Haiku can't answer, so a reply always arrives. */
   reply?: string;

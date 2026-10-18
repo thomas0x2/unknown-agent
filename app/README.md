@@ -27,7 +27,7 @@ Haiku (**Haiku (API)**, through `npm run proxy`) or **Scripted lines**.
 "Haiku via: Claude subscription" runs `claude -p` on your machine, so it bills the Claude
 subscription you're logged in to with Claude Code (use this for development only). "API key" uses
 `ANTHROPIC_API_KEY` from `.env`. Either way the proxy builds the prompt from
-`content/characters.json`; the browser only sends the character id and the player's text.
+`content/characters/`; the browser only sends the character id and the player's text.
 
 ## How the three models are wired
 
@@ -37,7 +37,7 @@ subscription you're logged in to with Claude Code (use this for development only
   use stand-ins from `engine/_fixtures.ts`; the game itself never decides by keywords.
 - **Claude Haiku 5.5**, through the proxy, writes every off-script reply: a short roast for
   agent.chat prompts that drive nothing, and the people behind Qmail addresses, each in the voice of
-  their profile in `content/characters.json`. A prompt Jev reads as a question about the world (a
+  their profile in `content/characters/`. A prompt Jev reads as a question about the world (a
   query: "who is Gino?", "did anyone email me?") is matched down the wiki (`content/wiki/`) to a page
   and a section; Haiku answers from what's public there now, only hints at hint paragraphs, and can
   read the player's own screens (`server/screens.mjs`, `ui/queryView.ts`). Naming nothing is a roast;
@@ -65,9 +65,25 @@ now needs that workaround.
 
 - `src/engine/` — the whole game as pure TypeScript (state, events, apps, agent/policy, day loop,
   endings, actions). `config.ts` holds every tunable number.
-- `src/content/` — story as JSON: `events/*.json`, `apps/*.json`, `contacts.json` (who maps to which character),
+- `src/content/` — story as JSON: `events/*.json`, `apps/*.json`, `characters/*.json`, `contacts/*.json` (who maps to which character),
   `trending.json`, filler/spam pools.
 - `src/game/` — store, Jev client, Haiku writer (`misses.ts` + `haiku.ts`), saves.
 - `src/ui/` — the legacy view (markup class-for-class) and icons.
 - `src/main.ts` — the controller that paints the shell and wires input.
 - `server/jev-proxy.mjs` — the key-holding backend proxy.
+
+## Adding things without merge conflicts
+
+Parallel PRs collide when they change the same lines of a shared file, so:
+
+- One file per thing. Events, apps, characters and contacts are one JSON file each under
+  `content/events/`, `content/apps/`, `content/characters/` and `content/contacts/`; wiki pages are
+  one file each. The loaders pick new files up, with nothing to register.
+- The wiki index is built from the pages (`npm run wiki:index` prints it); no page list is kept by hand.
+- Shared lists in code are one item per line, in alphabetical order: the engine barrel
+  (`src/engine/index.ts`), the `../engine` imports in `src/game/store.ts` and `src/ui/devOptions.ts`,
+  `REWIND` in `src/engine/rewind.ts`. Add a line in its sorted place, not at the end.
+- Browser UI state is `freshUi()` in `src/game/uiState.ts`, one field per line; a new field goes there
+  once (a new game and a loaded save both start from it).
+- Day pages: one beat per bullet, in time order; writer notes one fact per bullet. Add a bullet
+  rather than extending another feature's.

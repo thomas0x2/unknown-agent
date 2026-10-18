@@ -4,9 +4,98 @@
  * injected into the pure engine functions.
  */
 import {
-  type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
-  startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, joinWaitlist, joinEmpire, sendCrypto, settlePayments, recordStake, recordDeposit, spinSlot, applyCasinoCode, withdrawCasino, payStakes, buyStock, sellStock, exchangeCoins, createToken, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, rewindArrivals, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy, deliverSwapReplies, deliverYReplies, matchlessSwipe, matchlessLogin, clone, uploadFile, fileRentAppeal, applyToWhyC, donateCrane, craneDonations, fillSave, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat, agentTermPrompt, dropHackGame, hackMinutes, BOOT_MS, READ_MS, dateShort, clockTime, AGENT_POLICY, installAdware, tickAdware, closePopup, EXE_RUN_LINES,
+  addFlag,
+  addValue,
+  advanceClock,
+  AGENT_POLICY,
+  AGENT_ROLLOUT,
+  AGENT_USAGE,
+  agentTermPrompt,
+  applyCasinoCode,
+  applyToWhyC,
+  binMail,
+  BOOT_MS,
+  buyStock,
+  chargeChat,
+  clearFlag,
+  CLOCK,
+  clockTime,
+  clone,
+  closePopup,
+  composeEmail,
+  craneDonations,
+  createToken,
+  dateShort,
+  deliverArrivals,
+  deliverDue,
+  deliverSwapReplies,
+  deliverYReplies,
+  deploy,
+  devToggleBug,
+  donateCrane,
+  dropHackGame,
+  emptyMailBin,
+  endDay,
+  exchangeCoins,
+  EXE_RUN_LINES,
+  fileRentAppeal,
+  fillerToday,
+  fillSave,
+  gameMinutes,
+  type GameState,
+  hackMinutes,
+  holdHiddenBugs,
+  installAdware,
+  JevOffline,
+  type JevRouter,
+  joinEmpire,
+  joinWaitlist,
+  localPrompt,
+  lonelyReply,
+  lonelySay,
+  marketPosts,
+  matchlessLogin,
+  matchlessSwipe,
+  type MeterId,
+  money,
+  MS_PER_GAME_MIN,
+  nameUnnamedBugs,
+  payStakes,
+  phishLogin,
+  postToY,
+  promptAgent,
+  READ_MS,
+  recordDeposit,
+  recordStake,
+  replyToEvent,
+  restoreMail,
+  revealBugs,
+  rewindArrivals,
+  type SaveStore,
+  seedClaim,
+  sellStock,
+  sendCrypto,
+  settlePayments,
+  setValue,
+  sorryChat,
+  sorryReply,
+  sorrySay,
+  sorryScripted,
+  sorryTooLong,
+  spinSlot,
+  spreadJobOffers,
+  startDayChat,
+  startGame,
+  swapBuy,
+  swapMessage,
+  swapOffer,
+  takeDown,
+  tickAdware,
+  uploadFile,
+  wakeApps,
+  withdrawCasino,
+  type Writer,
+  writeReview,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -17,13 +106,14 @@ import { DEEPSLEEP_LINES, DEEPSLEEP_PLEA } from '../engine/deepsleep';
 import { shellLines } from './shell';
 import { MISSES } from './misses';
 import { haikuApology } from './haiku';
+import { freshUi, type Draft, type Ui } from './uiState';
 
 /**
  * A browser tab. back/fwd are the pages behind and ahead of it, like a real browser's history. A
  * pinned tab always shows its site and can't be closed.
  */
 export interface Tab { id: number; url: string; back: string[]; fwd: string[]; pinned?: string }
-export interface Draft { to: string; subject: string; body: string }
+export type { Draft } from './uiState';
 
 const norm = (u: string) =>
   String(u || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/+$/, '') || 'newtab';
@@ -69,66 +159,7 @@ export class GameStore {
   /** agent is looking a query up on the WWW (Haiku is writing the answer). */
   searching = false;
   setSearching(on: boolean): void { this.searching = on; this.emit(); }
-  ui = {
-    ySearch: '', yAllDay: 0, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null as Draft | null,
-    /** Bot posts landing as a barrage: when each shows up on Y (performance.now() ms), so a repaint keeps the timing. */
-    yBurst: {} as Record<string, number>,
-    project: '', dev: false, liked: {} as Record<string, boolean>, reposted: {} as Record<string, boolean>, intro: true, greet: false, memWarn: false, confirm: null as null | { text: string; yes: string; fn: () => void }, start: false, menuCat: 'saves',
-    /** The Terminal is its own window: open (in the taskbar) and shown (in front of the browser). */
-    termOpen: false, termShown: false,
-    /** Which Terminal tab is in front: the laptop's own shell (local models) or agent-terminal. */
-    termTab: 'shell' as 'shell' | 'agent',
-    /** The you@laptop shell's folder, from ~ down (game/shell.ts). */
-    termCwd: [] as string[],
-    /** invaders.exe is running in the you@laptop tab. */
-    invaders: false,
-    /** Dev mode: the site whose options panel is open (agent, qmail, y), or ''. */
-    devOptions: '' as string,
-    /** Dev: the flags and meters editor is open, and which of its tabs shows. */
-    devEdit: false,
-    devTab: 'edit' as 'edit' | 'jev',
-    /** Coinbin's Send form: open or not, what was typed, and why the last attempt failed. */
-    send: { open: false, to: '', amount: '', error: '' },
-    ex: { open: false, from: 'DOLR', to: 'EURI', amount: '', error: '' },
-    /** Coinbin's Create token form ($COPE, engine/cope.ts). */
-    tok: { open: false, ticker: '', supply: '', error: '' },
-    /** A line under Coinbin's Send/Receive buttons: "Address copied", or what was just sent. */
-    cbNotice: '',
-    /** Sherwood's order box: what was typed, why the last order was refused, or what it filled. */
-    sw: { amount: '', error: '', notice: '' },
-    /** Yowl: Post was pressed with no rating picked. */
-    reviewNeedsStars: false,
-    /** The save-slot menu's last failure, shown in its note. */
-    slotNote: '',
-    /** Qmail compose: why Send was refused before anything went out. */
-    mailError: '',
-    /** Qmail: the line above the list after a conversation went into or out of the Bin, with what Undo puts back. */
-    mailNotice: null as null | { text: string; ids: string[]; undo: 'bin' | 'restore' },
-    /** coinbln.com: why the last sign-in was refused. */
-    phishError: '',
-    /** prince-claims.xyz: why the last seed phrase was refused. */
-    princeError: '',
-    /** Coinbin: the recovery phrase is on screen. */
-    seedShown: false,
-    /** stack.com: the bet picked, the reels are spinning, and the last refusal or notice under the wallet. */
-    stackBet: 1, stackSpinning: false, stack: { error: '', notice: '' },
-    /** lonely.ai: Mia is typing. */
-    lonelyTyping: false,
-    /** lonely.ai / sorrywriter.ai: why the last message wasn't sent (the wallet couldn't cover it). */
-    chatError: '',
-    /** sorrywriter.ai: the apology is being written. */
-    sorryTyping: false,
-    /** Why the last upload was refused (vantor.group/next-chapter takes PDFs only). */
-    uploadError: '',
-    /** The file last picked for an upload, so the picker keeps it after the page redraws. */
-    uploadPick: '',
-    /** An ad site's working button: the line under it (rentboard.gov's appeal). */
-    adNotice: '',
-    /** An action Jev was needed for and couldn't be reached: why, and the text to put back in its box. */
-    jevOffline: null as { reason: string; field?: string; text?: string } | null,
-    /** Y posts by others that went up since the player last looked at the timeline, for the Y tab's badge. */
-    yUnread: 0,
-  };
+  ui: Ui = freshUi();
   /** A model download playing out in the Terminal, if one is running. */
   pull: { id: string; startedAt: number } | null = null;
   /** agent-terminal is loading until this time (Date.now() ms): agent.chat shows its loading line, then the Terminal opens. */
@@ -524,7 +555,7 @@ export class GameStore {
     this.state = state;
     this.tabs = startTabs();
     this.active = HOME_TAB; this.nextTab = PINNED.length + 1;
-    this.ui = { ySearch: '', yAllDay: 0, yBurst: {}, yowlSearch: '', fySearch: '', reviewStars: 0, walletRange: '1M', draft: null, project: '', dev: this.ui.dev, liked: {}, reposted: {}, intro: false, greet: false, memWarn: false, confirm: null, start: false, menuCat: 'saves', termOpen: false, termShown: false, termTab: 'shell', termCwd: [], invaders: false, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab, send: { open: false, to: '', amount: '', error: '' }, ex: { open: false, from: 'DOLR', to: 'EURI', amount: '', error: '' }, tok: { open: false, ticker: '', supply: '', error: '' }, cbNotice: '', sw: { amount: '', error: '', notice: '' }, reviewNeedsStars: false, slotNote: '', mailError: '', mailNotice: null, phishError: '', princeError: '', seedShown: false, lonelyTyping: false, stackBet: 1, stackSpinning: false, stack: { error: '', notice: '' }, chatError: '', uploadError: '', uploadPick: '', sorryTyping: false, adNotice: '', jevOffline: null, yUnread: 0 };
+    this.ui = { ...freshUi(), intro: false, dev: this.ui.dev, devOptions: this.ui.devOptions, devEdit: this.ui.devEdit, devTab: this.ui.devTab };
     this.store.save(this.state);
     this.emit();
   }
