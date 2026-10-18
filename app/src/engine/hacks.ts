@@ -1,5 +1,5 @@
 /*
- * Hacking happens in agent-terminal, the agent's tab in the Terminal, never in agent.chat. A chat
+ * Hacking happens in agent-terminal, the agent's session in the Terminal, never in agent.chat. A chat
  * prompt Jev reads as a hack attempt opens agent-terminal (after a short boot, see the store). There
  * a prompt that asks for an open hack's job (GameEvent.hack) and names every step of its path (site,
  * business, account) lands it: the same one-question-per-step tree a fix's component path uses. From
