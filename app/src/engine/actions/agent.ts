@@ -666,7 +666,7 @@ export async function promptAgent(
       }
       // "only did the feature work" only when feature work was actually done
       const skipped = skippedFixes && builtSome ? `\n\n${SKIPPED_FIXES}` : '';
-      const reply = `Pushed to Forkyard for ${names.join(', ')}.\n${lines.map((l) => `- ${l}`).join('\n')}${skipped}\n\nDeploy it on Forkyard to make it live.`;
+      const reply = `Pushed to Forkyard for ${names.join(', ')}.\n${lines.map((l) => `- ${l}`).join('\n')}${skipped}\n\n${deployLine([...byApp.keys()].map((id) => getApp(s, id)!))}`;
       // the work takes a while: the push and the report land later, and the agent says it's started
       const kind = builds.some((m) => matched.has(m)) ? 'build' : 'fix';
       const ack = startWork(s, s0, [...byApp.keys()], kind, matched.size, { from: 'agent', text: reply, src: 'build', level });
@@ -803,6 +803,11 @@ async function namedBugs(jev: JevRouter, app: AppInstance, tmpl: AppTemplate | u
   return out;
 }
 
+/** Closing line of a push report: an app that has been live before gets redeployed. */
+function deployLine(apps: { deployedVersion: number }[]): string {
+  return apps.every((a) => a.deployedVersion > 0) ? 'Redeploy it on Forkyard to make it live.' : 'Deploy it on Forkyard to make it live.';
+}
+
 export async function briefBuild(
   s0: GameState,
   content: Content,
@@ -823,7 +828,7 @@ export async function briefBuild(
   if (charged) buildApp(s, appId, requested, level, { tmpl, content, prompt: text, named });
   const reply = !charged
     ? "I can't run — your balance won't cover it. Pay agent.chat and try again."
-    : `Pushed \`${app.template}\` to Forkyard for ${app.name}.\nBuilt: ${requested.length ? requested.join(', ') : 'nothing I could pin down — be specific about the features'}.\n\nDeploy it on Forkyard to make it live.`;
+    : `Pushed \`${app.template}\` to Forkyard for ${app.name}.\nBuilt: ${requested.length ? requested.join(', ') : 'nothing I could pin down — be specific about the features'}.\n\n${deployLine([app])}`;
   s.chat.push({ from: 'you', text, day: s.values.day, cost });
   s.chat.push({ from: 'agent', text: reply, day: s.values.day, src: charged ? 'build' : 'locked' });
   return { state: s, requested, charged };

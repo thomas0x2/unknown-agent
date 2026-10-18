@@ -169,6 +169,17 @@ describe('brief the agent', () => {
     expect(out.state.values.crypto).toBeCloseTo(99.47, 2); // 0.5 per prompt + 0.01 × 3 prompt words
   });
 
+  it('tells you to deploy a new app and redeploy one that has been live', async () => {
+    const s = startGame(content, 1);
+    const appId = s.apps.find((a) => a.clientEventId === 'client_shop')!.id;
+    s.values.crypto = 100;
+    const r = fakeRouter({ features: () => ['price_chf'] });
+    const last = (st: typeof s) => st.chat[st.chat.length - 1].text;
+    expect(last((await briefBuild(s, content, r, appId, 'add CHF prices')).state)).toMatch(/\nDeploy it on Forkyard/);
+    getApp(s, appId)!.deployedVersion = 1;
+    expect(last((await briefBuild(s, content, r, appId, 'add CHF prices')).state)).toMatch(/Redeploy it on Forkyard/);
+  });
+
   it('fixing targets the broken feature', async () => {
     const s0 = startGame(content, 1);
     const appId = s0.apps.find((a) => a.clientEventId === 'client_shop')!.id;
