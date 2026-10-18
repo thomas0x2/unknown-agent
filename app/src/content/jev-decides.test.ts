@@ -12,10 +12,14 @@ import { getApp, devToggleBug } from '../engine/apps';
 import { postToY, deploy } from '../engine/actions';
 import { noJev, JevOffline, type JevRouter, type FeatureMatchInput, type RouteInput } from '../engine/jev';
 import { pickJev, promptDone } from '../engine/_fixtures';
+import { promptAgent } from '../engine/actions';
+import { deliverAgentWork } from '../engine/core';
 import { GameStore } from '../game/store';
 import type { GameState, SaveStore, Writer, WriteReq } from '../engine';
 
 const content = loadContent();
+/** A fake fix's landed report, after its "couldn't find the bug" sentence: what the prompt was missing. */
+const report = (s: GameState) => { const t = s.chat.at(-1)!.text; return t.slice(t.indexOf('. ') + 2); };
 const CONTACTS = ['restaurant_contact', 'trader_contact', 'laundromat_contact', 'viktor_contact', 'outreach_contact'];
 
 /** The app a contact's job creates, with every feature built right except `wrong` (if given). */
@@ -157,7 +161,7 @@ describe('fixing named bugs', () => {
     // the part without its feature asks for the feature
     const bare: JevRouter = { ...partial, matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => x.endsWith('::c:confirmation/date') || x.endsWith('::*::app')) };
     const noFeature = (await promptDone(s, content, bare, 'Trattoria Gino: the date is wrong')).state;
-    expect(content.agent!.hints.find((h) => h.id === 'near_feature')!.replies.map((l) => l.replaceAll('{{part}}', 'date'))).toContain(noFeature.chat.at(-1)!.text);
+    expect(content.agent!.hints.find((h) => h.id === 'near_feature')!.replies.map((l) => l.replaceAll('{{part}}', 'date'))).toContain(report(noFeature));
     // the feature and a folder but no part: it lists that folder's parts
     const folderOnly: JevRouter = { ...partial, matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => /::booking::(area|s:booking|s:booking\/confirmation)$|::\*::app$/.test(x)) };
     const noPart = (await promptDone(s, content, folderOnly, 'Trattoria Gino: the booking confirmation is wrong')).state;
@@ -182,9 +186,33 @@ describe('fixing named bugs', () => {
   it('naming only the feature is a near-miss: a scripted line from that feature, and nothing changes', async () => {
     const { s, id } = withApp('restaurant_contact', 'menu');
     const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::menu::area'] }), 'Trattoria Gino: the menu is wrong')).state;
-    expect(content.apps.restaurant.features.find((f) => f.id === 'menu')!.nearMiss).toContain(out.chat.at(-1)!.text);
+    expect(content.apps.restaurant.features.find((f) => f.id === 'menu')!.nearMiss).toContain(report(out));
     expect(out.chat.at(-1)!.src).toBe('near_miss');
     expect(getApp(out, id)!.repo).toEqual(getApp(s, id)!.repo);
+  });
+
+  it('a near-miss on a fix is a fake fix: "Good catch!", billed, takes time, then nothing found', async () => {
+    const { s, id } = withApp('restaurant_contact', 'menu');
+    const r = await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::menu::area'] }), 'Trattoria Gino: the menu is wrong');
+    expect(r.charged).toBe(true);
+    expect(r.state.values.crypto).toBeLessThan(s.values.crypto);
+    expect(r.state.chat.at(-1)).toMatchObject({ src: 'working' });
+    expect(r.state.chat.at(-1)!.text).toMatch(/^Good catch! /);
+    expect(r.state.agentWork).toMatchObject({ kind: 'fix', appIds: [id], apps: [] });
+    expect(r.state.agentWork!.at).toBeGreaterThan(r.state.agentWork!.from);
+    deliverAgentWork(r.state, true);
+    expect(r.state.chat.at(-1)).toMatchObject({ src: 'near_miss' });
+    expect(r.state.chat.at(-1)!.text).toMatch(/find (the )?(no )?bug/);
+    expect(getApp(r.state, id)!.repo).toEqual(getApp(s, id)!.repo);
+    expect(getApp(r.state, id)!.repoVersion).toBe(getApp(s, id)!.repoVersion);
+  });
+
+  it('a real fix opens with "Good catch!"; feature work does not', async () => {
+    const { s, id } = withApp('restaurant_contact', 'menu');
+    getApp(s, id)!.repo.find((f) => f.id === 'menu')!.variant = 'wrong_items';
+    const fix = await promptAgent(s, content, pickJev({ route: ['fix'], features: ['::menu::c:items'] }), 'Trattoria Gino: the menu items are wrong');
+    expect(fix.state.chat.at(-1)).toMatchObject({ src: 'working' });
+    expect(fix.reply).toMatch(/^Good catch! /);
   });
 
   it('Haiku writes the near-miss, told what was missing and given the scripted lines', async () => {
@@ -199,7 +227,8 @@ describe('fixing named bugs', () => {
     expect(seen[0]).toMatchObject({ as: 'agent', mode: 'near' });
     expect(seen[0].near!.why).toMatch(/date.*Booking.*form or confirmation|date.*booking.*form or confirmation/i);
     expect(seen[0].near!.lines.some((l) => /form or confirmation/.test(l))).toBe(true);
-    expect(out.chat.at(-1)).toMatchObject({ src: 'near_miss', text: 'Which booking date, the form or the confirmation? Pick one.', by: 'Haiku' });
+    expect(out.chat.at(-1)).toMatchObject({ src: 'near_miss', by: 'Haiku' });
+    expect(report(out)).toBe('Which booking date, the form or the confirmation? Pick one.');
   });
 
   it('a near-miss gives way to anything more precise in the same prompt', async () => {

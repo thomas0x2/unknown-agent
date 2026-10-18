@@ -1,4 +1,4 @@
-# Unknown Agent — days 1–7
+# Good catch! — days 1–7
 
 The playable first week, built on the mechanics spec. Engine-first TypeScript + Vite; the UI is the
 **legacy game's interface and stylesheet** (`src/style.css`), driven by the new engine. No
