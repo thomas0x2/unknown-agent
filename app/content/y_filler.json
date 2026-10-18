@@ -1,29 +1,5 @@
 [
   {
-    "id": "f1",
-    "day": 1,
-    "at": "17:55",
-    "from": "doomscroll",
-    "handle": "doomscroll",
-    "body": "screen time says 11 hours today. it's broken, i was barely on. everything is fine."
-  },
-  {
-    "id": "f2",
-    "day": 2,
-    "at": "17:30",
-    "from": "cat_ceo",
-    "handle": "cat_ceo",
-    "body": "my productivity hack is checking the cat's follower count instead of my bank balance. one of them goes up."
-  },
-  {
-    "id": "f3",
-    "day": 3,
-    "at": "17:02",
-    "from": "zev_dolr",
-    "handle": "zev_dolr",
-    "body": "shipped three side projects this week. wrote a thread for each. two of them have users. one of the users is my mom."
-  },
-  {
     "id": "f4",
     "day": 4,
     "at": "15:19",

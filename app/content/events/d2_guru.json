@@ -1,11 +1,11 @@
 {
-  "id": "d1_guru",
+  "id": "d2_guru",
   "site": "qmail",
   "from": "Max Stryker · Alpha Ascend",
   "addr": "max@alphaascend.test",
   "subject": "You were BORN for more",
   "trigger": {
-    "dayMin": 1
+    "dayMin": 2
   },
   "at": "14:15",
   "body": "Most people will ignore this email. That's why most people are broke.\n\nMy course EMPIRE is 200 DOLR. For you, today only, 20 DOLR. Reply EMPIRE to claim it.",

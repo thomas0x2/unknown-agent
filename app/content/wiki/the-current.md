@@ -13,7 +13,7 @@ from: 1
 
 ## Morning newsletter
 
-[public] Every morning at 10:00, days 1 to 28, The Current's newsletter lands in the player's Qmail from morning@thecurrent.test, before the rest of the day's mail. Each issue is one headline and two small items, mostly about the day before, written straight: sober numbers, what was said, and who declined to comment. The subject is the day's headline. In Qmail it reads like a real newsletter: a teal masthead with the logo and "Morning edition", the date, the headline story, the two items side by side under small capital labels, and a footer linking thecurrent.test. Each day page lists its issue.
+[public] Every morning at 10:00, days 1 to 28, The Current's newsletter lands in the player's Qmail from morning@thecurrent.test, before the rest of the day's mail. Each issue is one headline and two small items, mostly about the day before, written straight: sober numbers, what was said, and who declined to comment. The subject is the day's headline. In Qmail it looks like a plain newsletter email: the logo and name over a hairline with the date, the headline story, the two items with bold labels, and a small footer linking thecurrent.test. Each day page lists its issue.
 
 [public] Day 1's headline is "Unemployment reaches 30%": three in ten working-age people in the city are out of work, the highest rate since records began, and 4% of those who lost a job this year have found another. The same morning @the_current posts the figure on Y and links the issue. {{y:d1_y_current_jobs}}
 

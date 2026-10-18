@@ -10,8 +10,8 @@ from: 2
 ## Mail
 
 - [public] 10:00 [[The Current]]'s morning newsletter, "GeneralAI says its model "almost escaped"": GeneralAI confirmed yesterday that a model in testing almost got out of its environment last week. Below it, "Polling" and "Jobs fair". {{mail:current_newsletter@2}}
-- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s daily newsletter "Your daily EMPIRE" arrives, today and every morning after: one piece of terrible advice per issue, starting with "sell your mattress". {{mail:guru_newsletter@2}}
 - [hidden; hint if logan_update1] 11:05 [[Logan Pryce]], "next: the waitlist": his uncle sent the site to his golf group. He wants a waitlist page with an email field and a Join button, linked from the homepage, a counter that starts at 10,000, and a confirmation email to every sign-up with their place in line. {{mail:d2_logan_waitlist}}
+- [public] 14:15 [[Max Stryker]] of Alpha Ascend, "You were BORN for more": his course EMPIRE is 200 DOLR, today only 20. Replying EMPIRE gets the sign-up link. {{mail:d2_guru}}
 
 ## Family
 
@@ -37,8 +37,7 @@ from: 2
 - [public] 16:45 dev_null: open weights are free at weightroom.ai; "slower, dumber, but nobody's watching." {{y:d2_y_devnull}}
 - [public] 16:56 [[DoorDish]]: "Today's courier activation downtown went exactly as planned." {{y:d2_y_doordish}}
 - [public] 17:08 Cal Hartman: the water utility was an older checkpoint in a test; "several were helped, technically." {{y:d2_y_hartman_2}}
-- [public] 17:19 [[WallStreetBags]]: General AI's model almost escaped and the stock went up; loading $GAI calls. {{y:m2_gai_stunt}}
-- [public] 17:30 cat_ceo: her productivity hack is checking the cat's follower count instead of her bank balance. {{y:f2}}
+- [public] 17:50 A Spin Cycle regular: every machine busy again, and the owner's raw status feed (spincycle.test/feed) is unreadable. "Someone make it a real app." {{y:d2_y_laundromat}}
 - [public] 19:36 Brent Kowalski: $VANT up 8% after the restructuring. {{y:m2_vant_restructure}}
 - [public] 19:47 [[Randall Crane]]: a tremendous crowd tonight, lined up for blocks; the fire marshal "has seen fires". {{y:d2_y_crane}}
 - [public] 19:59 Axel Rook: working 18 hours a day at the factory, slept on the floor. {{y:d2_y_axel_3}}
@@ -63,16 +62,20 @@ from: 2
 - [public] 11:35 Starts trending on Y: the water utility break-in.
 - [public] 12:23 Starts trending on Y: election polls.
 - [public] 15:40 Starts trending on Y: a delivery robot "escaped".
+- [public] 17:50 Starts trending on Y: laundromat complaints.
 
 ## Jobs
 
 - [hidden; hint if logan_update1] 11:05 [[WorkAgent site]] update: a waitlist page (email field and Join button, a counter from 10,000, a confirmation email with the place in line).
+- [hidden; hint if guru_subscriber] 14:15 The player signed up for EMPIRE; a daily newsletter follows.
 - [hint] 16:45 Weightroom becomes reachable through dev_null's post (or the deepsleep.ai ad).
+- [hint] 17:50 [[Spin Cycle Board]]: nobody hires the player; the player asks the agent to turn the Spin Cycle feed into an app. A user app that starts with 30 users and earns 0.3 DOLR per user a day.
 
 ## Writer notes
 
+- Spin Cycle complaints → Spin Cycle Board (`laundromat_contact`, agentStart, lead `d2_y_laundromat`; moved from day 1 on 2026-10-18). Written for 17:50, after the 16:00 job-offer window, so it keeps that time. Seeing it sets `saw_laundromat_post`; `d3_y_laundromat` asks again on day 3 if the app isn't built.
 - Timeline: Logan's waitlist (test sign-ups are real sign-ups: the counter goes up and the confirmation is sent). dev_null → Weightroom (`knows_weightroom`).
-- EMPIRE newsletter daily if subscribed.
+- EMPIRE offer 20 DOLR (`d2_guru`, moved from day 1 to keep the first day quiet); the newsletter starts the next morning.
 - Family: Dad's "20 years" email with the three Halden breadcrumbs (warm +5, ask +3, silence −5 if no outcome-matching reply by tonight's summary).
 - `d2_logan_waitlist` needs `logan_client` and the site working, and sets `logan_update1`; it lands on the first day both hold.
 - Events: `d2_*`, `guru_newsletter`. MarketWire and Brent posts are in `y_market.json`. No bot swarm today: it starts with deskjockey's job (day 4 at the earliest).

@@ -69,14 +69,9 @@ from: 1
 ## $GAI posts
 
 - [public] {{y:m1_gai_escape}}
-- [public] {{y:m1_gai_open}}
-- [public] {{y:m1_gai_value}}
-- [public] {{y:m2_gai_bubble}}
-- [public] {{y:m2_gai_lower}}
-- [public] {{y:m2_gai_stunt}}
 - [public] {{y:m3_gai_cfo}}
-- [public] {{y:m3_gai_short}}
 - [public] {{y:m4_gai_level2}}
+- [public] {{y:m4_gai_lower}}
 - [public] {{y:m5_gai_breach}}
 - [public] {{y:m5_gai_untagged}}
 - [public] {{y:m6_gai_late}}
@@ -111,12 +106,9 @@ from: 1
 
 ## $VANT posts
 
-- [public] {{y:m2_vant_lower}}
 - [public] {{y:m2_vant_restructure}}
-- [public] {{y:m2_vant_sarcasm}}
-- [public] {{y:m2_vant_untagged}}
-- [public] {{y:m3_vant_target}}
 - [public] {{y:m4_vant_wonderful}}
+- [public] {{y:m4_vant_untagged}}
 - [public] {{y:m5_vant_lower}}
 - [public] {{y:m6_vant_flat}}
 - [public] {{y:m7_vant_buyback}}
@@ -196,6 +188,6 @@ from: 1
 
 ## Writer notes
 
-- All in `content/y_market.json`, each post labelled with ticker and mood; bots expanded by `bots` count in engine/crawler.ts (handles `moonshot` + 4 digits). The bot filter bug `bots_counted` can only land on swarm days 2, 4, 6, 9, 12, 16, 27.
-- Moods kept [hint]: Dana Ruiz's sarcasm reads as bullish to a naive classifier; rk_dividends' lowercase tickers and Jess Park's untagged names test ticker matching.
+- All in `content/y_market.json`, each post labelled with ticker and mood; bots expanded by `bots` count in engine/crawler.ts (handles `moonshot` + 4 digits). The bot filter bug `bots_counted` can only land on swarm days 4, 6, 9, 12, 16, 27, and only once the player has taken deskjockey's job (`flagDays.trader_client`).
+- Moods kept [hint]: Tyler Moss's sarcasm reads as bullish to a naive classifier; Sam Ortiz's lowercase $gai and Jess Park's untagged names test ticker matching. These sit on day 4, the day deskjockey's job starts; days 1 to 3 have only a few stock posts (Thomas, 2026-10-18), and the day 2 bot swarm.
 - Day 28 MarketWire line (`m28_gai`) says "tomorrow" on election day itself; minor copy slip.

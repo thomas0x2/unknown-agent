@@ -1,9 +1,9 @@
 [
   { "where": "mail:d1_mom", "text": "Hi mom, I'm doing fine, don't worry. Love you.", "expect": "warm" },
   { "where": "mail:d1_mom", "text": "Actually mom could you lend me some money for rent?", "expect": "money" },
-  { "where": "mail:d1_guru", "text": "EMPIRE", "expect": "interested" },
-  { "where": "mail:d1_guru", "text": "yeah sign me up for the course", "expect": "interested" },
-  { "where": "mail:d1_guru", "text": "no thanks, not interested", "expect": "nothing" },
+  { "where": "mail:d2_guru", "text": "EMPIRE", "expect": "interested" },
+  { "where": "mail:d2_guru", "text": "yeah sign me up for the course", "expect": "interested" },
+  { "where": "mail:d2_guru", "text": "no thanks, not interested", "expect": "nothing" },
   { "where": "mail:d2_dad", "text": "Congrats on the 20 years dad, I'm proud of you.", "expect": "warm" },
   { "where": "mail:d2_dad", "text": "How's the warehouse these days?", "expect": "ask" },
   { "where": "mail:d3_coffee_promo", "text": "Sure, I'll post a nice recommendation.", "expect": "agree" },

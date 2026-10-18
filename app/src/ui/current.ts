@@ -19,18 +19,17 @@ export const CURRENT_MARK = `<svg class="cur-mark" viewBox="0 0 24 24" role="img
 export const CURRENT_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6" fill="${CURRENT_TEAL}"/><path d="${WAVES}" fill="none" stroke="${CURRENT_PAPER}" stroke-width="2.2" stroke-linecap="round"/></svg>`;
 
 /**
- * The morning newsletter as Qmail shows it: masthead, the headline story, the two small items side by
- * side and the footer. `body` is the delivered issue (engine/newsletter.ts), `subject` its headline.
+ * The morning newsletter as Qmail shows it, kept plain like a real newsletter email: logo and name,
+ * the headline story, the two small items and a footer. `body` is the delivered issue (engine/newsletter.ts), `subject` its headline.
  */
 export function newsletterHtml(subject: string, body: string, day: number): string {
   const p = issueParts(body);
   return `<div class="cur-nl">
-    <div class="cur-nl-mast"><span class="cur-nl-logo">${CURRENT_ICON}</span><span class="cur-nl-name">The Current</span><span class="cur-nl-ed">Morning edition</span></div>
-    <p class="cur-nl-date">${esc(dateFull(day))}</p>
+    <div class="cur-nl-mast"><span class="cur-nl-logo">${CURRENT_ICON}</span><span class="cur-nl-name">The Current</span><span class="cur-nl-date">Morning edition · ${esc(dateFull(day))}</span></div>
     <h2 class="cur-nl-head">${esc(subject)}</h2>
-    <p class="cur-nl-lede">${esc(p.text)}</p>
-    <div class="cur-nl-items">${p.items.map((it) => `<section><span class="cur-nl-kicker">${esc(it.title)}</span><p>${esc(it.text)}</p></section>`).join('')}</div>
-    <div class="cur-nl-foot"><a href="#" data-nav="thecurrent.test">Read online at thecurrent.test</a><span>Independent reporting, funded by readers.</span></div>
+    <p>${esc(p.text)}</p>
+    ${p.items.map((it) => `<p><b>${esc(it.title)}.</b> ${esc(it.text)}</p>`).join('')}
+    <div class="cur-nl-foot"><a href="#" data-nav="thecurrent.test">Read online at thecurrent.test</a> · Independent reporting, funded by readers.</div>
   </div>`;
 }
 
