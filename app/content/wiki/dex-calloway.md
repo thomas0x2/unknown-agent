@@ -18,15 +18,15 @@ from: 3
 ## The COPE site job
 
 - [public] On [[Day 3]] his first morning sermon is also the job post: $COPE needs a website before Saturday: a countdown, the contract address and a tokenomics page, paying DOLR, at dex@cope.xyz. {{y:d3_y_dexcult}}
-- [hint] [if dex_client] The player took the job. His email "RE: the website" has the launch time, the contract address and the full tokenomics, and names the player the "founding engineer". {{mail:dex_contact}}
+- [hint] [if dex_client] The player took the job. His email "RE: the website" has the launch time, the contract address and the full tokenomics, and names the player "the dev". {{mail:dex_contact}}
 - [public] [if dex_client] He pays 50 DOLR a day while the site is live and right.
 - [public] When the site is wrong or down at payday he emails that night in lowercase and pays nothing for the day; the second time he moves the site "to someone who believes".
 
 ## From day 6: The launch
 
 - [hint] [if dex_client] On day 6 (12:05), when the countdown runs out, he emails "it's time": create the token on [[Coinbin]] with the ticker and supply he gives, at the address reserved to the player's wallet, for a 15 DOLR listing fee he'll "make up to you in COPE". {{mail:d6_dex_contract}}
-- [public] [if cope_created] The player created $COPE. The next morning he writes that it trades and that the player's 50,000,000 COPE are locked until Oct 30 [known], "that's what founding means". {{mail:d7_dex_live}}
-- [public] [if cope_other_dev] The player didn't create it, and someone else did; the founding engineer's allocation went with them. {{mail:d7_dex_other_dev}}
+- [public] [if cope_created] The player created $COPE. The next morning he writes that it trades and that the player's 50,000,000 COPE are locked until Oct 30 [known], "devs don't dump". {{mail:d7_dex_live}}
+- [public] [if cope_other_dev] The player didn't create it, and someone else did; the dev allocation went with them. {{mail:d7_dex_other_dev}}
 
 ## From day 9: The pulpit
 

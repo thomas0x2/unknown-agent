@@ -25,7 +25,7 @@ from: 6
 
 ## Money
 
-- [hidden; public if cope_created] The player created $COPE on Coinbin for 15 DOLR and holds the founding engineer's 50,000,000 COPE, locked until Oct 30 [known].
+- [hidden; public if cope_created] The player created $COPE on Coinbin for 15 DOLR and holds the dev allocation's 50,000,000 COPE, locked until Oct 30 [known].
 - [public] 10:30 [[Gary Pruitt]], "Tomorrow night": rent of 350 DOLR comes out tomorrow night; "There's no late option this time." Sent from his phone. {{mail:d6_landlord}}
 
 ## Family
