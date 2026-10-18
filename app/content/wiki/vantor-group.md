@@ -11,6 +11,7 @@ from: 1
 - [public] The player's laptop had a Vantor work profile, removed the night before day 1 ("Your personal files were not affected"). The player's old Vantor password stopped working on Oct 7.
 - [public] vantor.group/careers: 0 open positions, "Check back after the next restructuring", free lunch on Fridays "for as long as there is a canteen"; applications from agents are reviewed first. Its banner ad: "Vantor Group is hiring! Open positions: 0".
 - [public] vantor.group/next-chapter (Vantor Outplacement): 30 days of Next Chapter, an AI career coach, free for former staff; placement rate "being calculated". It takes a resume upload from [[Qdrive]] (PDF only) and finds 0 jobs whatever is uploaded. Its ad: "Roles found to date: 0".
+- [public] The layoff mail points to it ("Our outplacement partner can help with what comes next"), and it is already open in a tab when a new game starts (`newGameTabs` in `store.ts`).
 - [public] Leo Brandt, a former colleague in Vantor Heights, has had 3 interviews with 3 AI screeners and 3 rejections. Viktor and Jess Park also mention Vantor.
 - [public] [[Mara Vey]]'s reporting covers the 400 layoffs; Vantor's People & Culture points her to Vantor Outplacement.
 - [public] On day 2 [[CityPulse]] reports $VANT up 8% since the layoffs; the fired staff get 30 days with an AI career coach. {{article:vantor-shares}}

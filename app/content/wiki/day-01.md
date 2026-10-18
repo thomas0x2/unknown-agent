@@ -17,6 +17,7 @@ from: 1
 
 - [public] 10:00 [[The Current]]'s morning newsletter, "Unemployment reaches 30%": Three in ten working-age people in the city are now out of work, the highest rate since records began. Below it, "Vantor" and "Election". {{mail:current_newsletter@1}}
 - [public] 10:00 People & Culture at [[Vantor Group]], "Changes to your role": the player's position is eliminated, effective immediately; the final salary payment "has already been made". {{mail:d1_hr_termination}}
+- [public] The layoff mail links vantor.group/next-chapter (Vantor Outplacement), and a new game starts with that page already open in an ordinary, closable tab next to the pinned ones; the browser still opens on Qmail.
 - [public] 10:00 [[GeneralAI]], "Welcome to agent": the [[agent]] account is active and billed to the [[Coinbin]] wallet, every prompt at the model's rate; the body links agent.chat. {{mail:d1_gai_welcome}}
 - [hidden; public if asked_mom_money] 12:20 Mom sent 20 DOLR when the player asked for money: "Buy vegetables."
 
