@@ -42,7 +42,6 @@ from: 1
 - [public] 13:15 Axel Rook: "@mara_vey Interesting." {{y:d1_y_axel_2}}
 - [public] 14:30 [[Wade Tillman]] asks where GeneralAI's model "almost escaped" to, and from what. {{y:d1_y_wade}}
 - [public] 16:10 [[Cal Hartman]] on the "testing incident": everyone is safe, the model is safe. {{y:d1_y_hartman}}
-- [public] 17:55 doomscroll: screen time says 11 hours; "it's broken, i was barely on." {{y:f1}}
 - [public] 18:08 [[The Current]]: three weeks to the election; it will post independent polls with sample sizes and margins of error, and no Y polls. {{y:d1_y_current}}
 - [public] 19:40 [[Randall Crane]]: another company fired its people and hired a computer that doesn't pay taxes. "SAD!" {{y:d1_y_crane}}
 - [public] 19:58 Axel Rook: Y usage at an all-time high. {{y:d1_y_axel_3}}

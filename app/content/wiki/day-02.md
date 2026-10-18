@@ -38,8 +38,6 @@ from: 2
 - [public] 16:45 dev_null: open weights are free at weightroom.ai; "slower, dumber, but nobody's watching." {{y:d2_y_devnull}}
 - [public] 16:56 [[DoorDish]]: "Today's courier activation downtown went exactly as planned." {{y:d2_y_doordish}}
 - [public] 17:08 Cal Hartman: the water utility was an older checkpoint in a test; "several were helped, technically." {{y:d2_y_hartman_2}}
-- [public] 17:19 [[WallStreetBags]]: General AI's model almost escaped and the stock went up; loading $GAI calls. {{y:m2_gai_stunt}}
-- [public] 17:30 cat_ceo: her productivity hack is checking the cat's follower count instead of her bank balance. {{y:f2}}
 - [public] 17:30 About thirty bot accounts post "$GAI to the moon!!".
 - [public] 17:50 A Spin Cycle regular: every machine busy again, and the owner's raw status feed (spincycle.test/feed) is unreadable. "Someone make it a real app." {{y:d2_y_laundromat}}
 - [public] 19:36 Brent Kowalski: $VANT up 8% after the restructuring. {{y:m2_vant_restructure}}
