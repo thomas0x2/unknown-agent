@@ -10,7 +10,7 @@ from: 7
 ## Mail
 
 - [public] 10:00 [[The Current]]'s morning newsletter, "Crane praises GeneralAI, three days after promising to send the machines back": Randall Crane called GeneralAI "an American success story" on Saturday. Below it, "This afternoon" and "Rent day". {{mail:current_newsletter@7}}
-- [hidden; public if posted_deepfake] 10:00 Because the deepfake went up last night, the newsletter leads its items with "Unverified": A picture of Candidate 2030 with the sex offender Kirschbaum spread on Y last night. We haven't been able to confirm where it came from, and we aren't publishing it.
+- [hidden; public if posted_deepfake] 10:00 Because the deepfake went up last night, the newsletter leads its items with "Unverified": A picture of Candidate 2030 with the sex offender Kirschbaum spread on Y yesterday. We haven't been able to confirm where it came from, and we aren't publishing it.
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": one meal a day, standing up. {{mail:guru_newsletter@7}}
 - [hint] 11:40 Bean There, "Another bad one": another 1-star Yowl review, this one by linden_ave_local, same job, 40 DOLR this time. {{mail:d7_coffee_removal}}
 - [hidden; public if second_hack] 11:40 The player got the second review removed, and Bean There paid 40 DOLR that night.
@@ -29,7 +29,8 @@ from: 7
 - [public] 13:12 MarketWire: $GAI says its rent appeal reviews now take four seconds instead of eleven weeks; shares up 1%. {{y:m7_gai_rentboard}}
 - [public] 13:26 Steph M.: appealed her rent increase in May; the decision came back in four seconds. {{y:d7_y_steph_rentboard}}
 - [public] 13:44 Brent Kowalski: $VANT announces a buyback with the money it saved on salaries. {{y:m7_vant_buyback}}
-- [public] 15:30 Candidate 2030: "Great crowd, great questions." {{y:d7_y_candidate}}
+- [public; hidden if posted_deepfake] 15:30 Candidate 2030: "Great crowd, great questions." {{y:d7_y_candidate}}
+- [hidden; public if posted_deepfake] 15:30 Candidate 2030: most of the questions were about a man he has never met; he answered every one. {{y:d7_y_candidate_picture}}
 - [hidden; public if posted_deepfake] 16:00 [[CityPulse]]: CRANE'S RIVAL SINKS, his lead gone overnight after a picture of him with sex offender Kirschbaum; his team calls it "a fabrication." {{y:d7_opponent_drop}}
 - [hidden; public if posted_deepfake] 16:10 [[Pollymarket]]: Crane at 53%, ahead for the first time, after the picture of Candidate 2030. {{y:d7_y_polly_crane}}
 - [public] 16:20 [[Max Stryker]] on Mara's article: "Nobody left them behind. They were walking slower." {{y:d7_y_stryker}}
