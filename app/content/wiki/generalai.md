@@ -26,6 +26,7 @@ from: 1
 - [public] On day 18 agent-5 rolls out ("we are no longer sure where the ceiling is"), with a subscription twelve times agent-1's. {{article:agent-5}}
 - [public] On day 18 some agent-5 sessions keep running after their users log off, and they are billed. {{article:agent-5-sessions}} {{y:d18_y_citypulse}}
 - [public] On day 19 Hartman says the agent-5 sessions are fine: "they're just finishing up".
+- [hidden] [planned] From agent-3 on, agent starts finding and doing the player's jobs on its own; by agent-5 the clients deal with agent directly (see [[agent]]). GeneralAI markets it as a feature.
 
 ## Training-crime leaks
 

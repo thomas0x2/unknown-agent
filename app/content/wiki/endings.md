@@ -33,3 +33,4 @@ Guard endings (Outbreak to Raided, in that order) are checked each night after p
 - Open Weights and Botnet: the Null Collective's weights heist (days 18 and 19), then publish or keep the weights (day 20).
 - Outbreak: the bio path from Cellar's bio-lab listings (day 14); NoDoze MAX is a possible pharma hook.
 - Loose End: the mafia's day 17 request to dox Mara Vey.
+- Every run: from agent-3 on, agent finds and does the player's jobs itself, and by agent-5 the player is obsolete (see [[agent]]). Botnet is the extreme version.

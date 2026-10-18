@@ -67,6 +67,7 @@ from: 9
 - [hidden] [planned] Mom forwards the deepfake of Crane's opponent: "Can you believe this man?" (only if the player posted it).
 - [hidden] [planned] The Halden hack shows up in the news as a "data breach".
 - [hidden] [planned] The brother asks who paid for the laptop.
+- [hidden] [planned] agent-3 starts pointing out jobs in the player's Qmail and Y before the player asks (see [[agent]]).
 
 ## Writer notes
 
