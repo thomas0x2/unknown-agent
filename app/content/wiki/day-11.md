@@ -9,6 +9,7 @@ from: 11
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "Apogee rocket breaks apart after launch. The stock went up.": Apogee's first rocket lifted off at 10:02 yesterday and broke apart four minutes later over open water. Below it, "Moxon" and "Volunteers". {{mail:current_newsletter@11}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": "I can't afford it yet", on credit. {{mail:guru_newsletter@11}}
 
 ## Y

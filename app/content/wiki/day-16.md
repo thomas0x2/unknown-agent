@@ -9,6 +9,7 @@ from: 16
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "Crane flew on Kirschbaum's jet eleven times": Flight records obtained by The Current show Randall Crane flew on Kirschbaum's private jet eleven times between 2014 and 2019. Below it, "Congress" and "Y". {{mail:current_newsletter@16}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": delete your calendar. {{mail:guru_newsletter@16}}
 - [hidden; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards", the final version: "These aren't preferences anymore, they're facts." Age 21 to 25, 5'3" or under, 115 lbs or under, mandibular height to width ratio 0.70 or under, blonde. {{mail:d16_matchless_rules_7}}
 

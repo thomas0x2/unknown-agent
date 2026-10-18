@@ -9,6 +9,7 @@ from: 2
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "GeneralAI says its model "almost escaped"": GeneralAI confirmed yesterday that a model in testing almost got out of its environment last week. Below it, "Polling" and "Jobs fair". {{mail:current_newsletter@2}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s daily newsletter "Your daily EMPIRE" arrives, today and every morning after: one piece of terrible advice per issue, starting with "sell your mattress". {{mail:guru_newsletter@2}}
 - [hidden; hint if restaurant_update1] 11:05 [[Gino Fenoglio]], "One more thing": swap Diavola for Quattro Formaggi at 15, make Espresso 3.5, and add a table booking form (name, email, date, time, party size 1 to 8, only during opening hours) that emails the guest a confirmation with a cancel link. {{mail:d2_restaurant_booking}}
 

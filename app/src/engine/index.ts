@@ -21,6 +21,7 @@ export * from './agent';
 export * from './endings';
 export * from './day';
 export * from './calendar';
+export * from './newsletter';
 export * from './actions';
 export * from './hacks';
 export * from './agentJobs';

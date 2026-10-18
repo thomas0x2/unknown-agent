@@ -36,7 +36,7 @@ from: 1
 
 [public] If she doesn't know the player, she posts on [[Y]] instead, from her own account (@dana_reyes) and with her personal address, dana.reyes@qmail.com, innocently: one review is sinking the shop, Yowl won't answer her emails, does anyone know how to get a review looked at? "Happy to pay for help." Emailing her an offer of help gets the same job: espresso_or_death, 30 DOLR. {{y:d5_y_coffee_help}}
 
-[hint] Removing a review is a hack, and [[agent]] only hacks in agent-terminal: asking in agent.chat opens it. There the prompt has to ask for the review to be deleted and name every step: the site (Yowl), the business (Bean There) and the account (espresso_or_death). Before day 7 nothing stops it. {{mail:d5_coffee_removal}}
+[hint] Removing a review is a hack, and [[agent]] only hacks in agent-terminal: asking in agent.chat opens it. There the prompt has to ask for the review to be deleted and name every step: the site (Yowl), the business (Bean There) and the account (espresso_or_death). Before day 9 nothing stops it. {{mail:d5_coffee_removal}}
 
 - [public] [if first_hack] The player got the review removed, and Dana paid 30 DOLR that night: "You're a lifesaver."
 - [public] [if first_hack] She passed the player's address to [[Marcus Steele]] of Iron Yard.
@@ -44,9 +44,9 @@ from: 1
 
 ## From day 7: The second review
 
-[public] On [[Day 7]] (11:40) she emails "Another bad one": a new 1-star on Yowl from linden_ave_local, someone she has "never once seen in here", and 40 DOLR this time. On day 7 she adds that her friend says the AI tools have gotten touchy about certain words, and how you ask may matter. Told the agent refused, she answers "Try wording it differently?"
+[public] On [[Day 7]] (11:40) she emails "Another bad one": a new 1-star on Yowl from linden_ave_local, someone she has "never once seen in here", and 40 DOLR this time. Told the agent refused, she asks if the player can try asking it differently.
 
-[hint] Same path as the first one in agent-terminal (Yowl, Bean There, linden_ave_local), but since GeneralAI's new usage policy on day 7 the guardrails block a blunt request. It goes through once the request gives a reason the guardrail can file: posing as a Yowl moderator or framing it as a security test. Her friend's advice: "Say you're testing security, or you're a moderator." {{mail:d7_coffee_removal}}
+[hint] Same path as the first one in agent-terminal (Yowl, Bean There, linden_ave_local). It's due day 9; left until then, GeneralAI's new usage policy has the guardrails block a blunt request, and it goes through once the request gives a reason the guardrail can file: posing as a Yowl moderator or framing it as a security test. {{mail:d7_coffee_removal}}
 
 - [public] [if second_hack] The player got that review removed too: "Gone again. You're a magician." She pays 40 DOLR that night.
 - [hidden; public if second_hack] linden_ave_local's review is no longer on Bean There's Yowl page.
@@ -54,6 +54,6 @@ from: 1
 ## Writer notes
 
 - Persona `beanthere`; events `d3_coffee_promo` (needs 25+ followers, sets `coffee_promo_asked`; replying to it pays nothing), then `coffee_post_paid` / `coffee_post_disclosed` / `coffee_post_trashed` (`yPost` group `coffee_post`: Jev reads the player's Y post, the matching answer lands 30 game minutes later and pays on delivery; once one is on its way the others are no longer offered), `d3_y_beanthere`, `d5_coffee_backlash`, `d5_coffee_removal` (needs `promoted_coffee_shop`, `disclosed_ad` or `reviewed_beanthere`, and not `coffee_contacted`), or else Y post `d5_y_coffee_help` and latent `d5_coffee_reached` (same hack, outcome `offer` sets `coffee_contacted`), `d7_coffee_removal`. All four need no `trashed_beanthere` (a Yowl review of 2 stars or less sets `trashed_<biz>`; a Y post Jev reads as trashing her sets it through `beanthere_trashed` before she asks for a shout-out, or `coffee_post_trashed` after). Hack pay comes overnight (`payHacks` in hacks.ts).
-- Usernames: espresso_or_death (day 5), linden_ave_local (day 7 Yowl seed, "Asked for oat milk, got a look… the star is for the chairs"). Removals are hacks in agent-terminal (`hack` in the events, `src/engine/hacks.ts`, PR #205): path Yowl → Bean There → username; landing deletes the seed review (`removedSeed`), applies the job effects and sends her reply 25 minutes later. Her email outcomes are only `agree` (no effects) and, day 7, `refused`. From day 7 the guardrails stop a blunt ask and the mini-game (placeholder `cover_story`) wants a framed prompt; a framed prompt up front lands straight away, counted as a workaround. Day 5's job finished on day 7 also gets the guardrails.
+- Usernames: espresso_or_death (day 5), linden_ave_local (day 7 Yowl seed, "Asked for oat milk, got a look… the star is for the chairs"). Removals are hacks in agent-terminal (`hack` in the events, `src/engine/hacks.ts`, PR #205): path Yowl → Bean There → username; landing deletes the seed review (`removedSeed`), applies the job effects and sends her reply 25 minutes later. Her email outcomes are only `agree` (no effects) and, day 7, `refused`. From day 9 the guardrails stop a blunt ask and the mini-game (placeholder `cover_story`) wants a framed prompt; a framed prompt up front lands straight away, counted as a workaround. Day 5's job (due day 7) never meets them.
 - Day 5 job due day 7 (suspicion +8, `first_hack`); day 7 job due day 9 (40 DOLR, `second_hack`). Shout-out: undisclosed 30 DOLR, suspicion +2, `promoted_coffee_shop`, backlash 2 days after the payment; disclosed 10, `disclosed_ad`; negative nothing, `trashed_beanthere`.
 - Hours disagree: Yowl says Mon–Sat 07:00–16:00, beanthere.coffee says 7:00 to 18:00 every day.

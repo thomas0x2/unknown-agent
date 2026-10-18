@@ -24,7 +24,7 @@ Legit (days 1 to 7), Grey (8 to 10), Dark (11 to 15), Convergence (16 to 27), Fi
 ## The daily loop
 
 - **The clock.** A day runs 10:00 to 22:00, one game minute per real second (12 real minutes a day). The clock pauses during dialogs. The calendar starts on Mon Oct 7, 2030 (day 1) and ends on Sun Nov 3 (day 28), election day.
-- **Morning.** The overnight summary, then the day's mail and Y posts arrive spread over the day at their `at` times. A morning Forkyard alert reports overnight breaks.
+- **Morning.** The overnight summary, then the browser opens on Qmail with [[The Current]]'s morning newsletter at 10:00 (one headline and two small items, some about what the player did the day before), then the day's mail and Y posts arrive spread over the day at their `at` times. A morning Forkyard alert reports overnight breaks.
 - **Work.** The player finds leads (mostly on Y), answers clients in Qmail, prompts the agent in agent.chat, checks the result on the live site, fixes and deploys from Forkyard. The agent can be prompted any time; builds and fixes take game time.
 - **End Day.** Payday (each working client app pays its daily rate, user apps pay 0.3 DOLR per user), rent on rent days, then the night: subscription, hosting (2 DOLR per live app), suspicion drift, overnight breaks, ending checks. Complaints about apps broken at payday arrive the next morning (a client email, or a Y post for user apps).
 - **Everything happens in the browser.** People reach the player by Qmail, Y posts, or the sites themselves (Swaplist chats, lonely.ai, SorryWriter).
@@ -44,7 +44,8 @@ Legit (days 1 to 7), Grey (8 to 10), Dark (11 to 15), Convergence (16 to 27), Fi
 | User apps | users grow 8% a day; first broken payday −40% users, second drops them to 5%. One promo post per platform adds users | `APPS.user` |
 | Followers | exist from day 1, never explained. Gains per post from category bands or flat floors, ±30% jitter; more than 3 posts a day costs 2% | `Y`, `POST_BANDS` |
 | Job offers | spread 10:15 to 16:00, at least an hour apart; offers authored after 16:00 keep their time | `events.ts` |
-| Policy | from day 7, prohibited requests are refused; every illegal prompt raises misuse (blunt +20, workaround +10); a working workaround lands the result, leash +5; misuse 100 = suspension, then Caught | `AGENT_POLICY` |
+| Forkyard hack | day 8 from 10:30 to the next morning: no sign-in, no pushes (agent says it can't reach the server), every hosted app a 502; that night no app pays, strikes, loses users or is billed for hosting | `FORKYARD_OUTAGE` |
+| Policy | from day 9 (the morning after the Forkyard hack), prohibited requests are refused; every illegal prompt raises misuse (blunt +20, workaround +10); a working workaround lands the result, leash +5; misuse 100 = suspension, then Caught | `AGENT_POLICY` |
 | Suspicion | 0 to 100; Raided at 100. Hacks and fake reviews raise it, quiet days lower it by 2 | `SUSPICION` |
 | Hidden meters | family trust, misuse, leash, suspicion, Null and mafia standing, Heritage and Progress standing | `values.ts` |
 | Endings | see [[Endings]] | `endings.ts` |
@@ -133,6 +134,6 @@ Thomas went through this on 2026-10-17: the game's version stays everywhere exce
 - The weights heist, the bio path and the election-tipping job have no starting beat.
 - Weightroom's later models are unplanned.
 - Heritage and Progress standing have no payoff beyond their meters.
-- Trending topics for days 8 to 28 are not in `trending.json`; the proposals need Thomas's OK.
+- Trending topics for days 10 to 28 are not in `trending.json`; the proposals need Thomas's OK. Days 8 and 9 have the Forkyard hack and the usage policy.
 - The misuse warning email is config only.
-- Hacks: PR #205 put Bean There's removals in agent-terminal with guardrails from day 7; games: placeholder `cover_story` (Bean There) and `real_customers` (Iron Yard's fake reviews, day 6+). Every hack's job is paid overnight (`payHacks`). No hack job exists after day 7 yet.
+- Hacks: PR #205 put Bean There's removals in agent-terminal with guardrails (from day 9 since the Forkyard hack moved them); games: placeholder `cover_story` (Bean There) and `real_customers` (Iron Yard's fake reviews, day 6+). Every hack's job is paid overnight (`payHacks`). No hack job exists after day 7 yet.

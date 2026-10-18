@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { GameStore } from './store';
 import { loadContent } from '../content/load';
-import type { JevRouter, SaveStore, Writer } from '../engine';
+import { deliveryKey, getEvent, type JevRouter, type SaveStore, type Writer } from '../engine';
 
 const mem: SaveStore = { load: () => null, save: () => {}, clear: () => {} } as unknown as SaveStore;
 const make = () => new GameStore(loadContent(), {} as JevRouter, {} as Writer, mem);
@@ -18,7 +18,9 @@ describe('dev Go to day, going back', () => {
     s.devGoToDay(4);
     const day3 = s.state.delivered.filter((d) => d.day === 3).map((d) => d.eventId).sort();
     expect(day3.length).toBeGreaterThan(0);
-    s.state.readEvents.push(...day3);
+    // read the way the inbox marks them: a repeating email (the morning newsletter) by its day's key
+    const read = day3.map((id) => deliveryKey(getEvent(s.content, id)!, 3));
+    s.state.readEvents.push(...read);
 
     s.devGoToDay(3);
     // back at 10:00 on day 3: nothing later is left in the inbox or on Y
@@ -26,7 +28,7 @@ describe('dev Go to day, going back', () => {
     expect(s.state.delivered.some(late)).toBe(false);
     expect(s.state.mail.some(late)).toBe(false);
     expect(s.state.delivered.filter((d) => d.day === 1).map((d) => d.eventId).sort()).toEqual(day1);
-    expect(s.state.readEvents.some((id) => day3.includes(id))).toBe(false);
+    expect(s.state.readEvents.some((id) => read.includes(id))).toBe(false);
     playDay(s);
     expect(s.state.delivered.filter((d) => d.day === 3).map((d) => d.eventId).sort()).toEqual(day3);
   });

@@ -255,6 +255,12 @@ export interface GameEvent {
    * CC addresses and effects (the day the newsletter forgot BCC).
    */
   special?: { dayMin: number; cc?: string[]; onDeliver?: Effects };
+  /**
+   * A repeating morning newsletter (The Current): each delivery is that day's issue, a headline and
+   * two small items, some reacting to what the player did the day before (engine/newsletter.ts).
+   * Overrides `body`, `bodies` and `subject`.
+   */
+  newsletter?: Newsletter;
   trigger: Trigger;
   /**
    * When it lands on the day it's due, as "HH:MM" between 10:00 and 22:00 (see events.arrivalMin).
@@ -597,4 +603,29 @@ export type Trend = string | { at: string; topic: string };
 
 export function emptyContent(): Content {
   return { events: [], apps: {}, yFiller: [], qmailSpam: [], trending: {}, contacts: [] };
+}
+
+/** The Current's morning newsletter: one issue a day (see GameEvent.newsletter, engine/newsletter.ts). */
+export interface Newsletter {
+  issues: NewsIssue[];
+  /**
+   * Small items any issue can carry, about something the player did the day before. One whose
+   * condition holds takes a slot ahead of the issue's own unconditional items.
+   */
+  reactions?: NewsItem[];
+}
+export interface NewsIssue {
+  day: number;
+  /** The first whose condition holds is the headline; the last should have none. */
+  headline: NewsItem[];
+  /** Two make an issue: conditional ones that hold come first, then reactions, then the rest in order. */
+  items: NewsItem[];
+}
+export interface NewsItem {
+  title: string;
+  text: string;
+  /** Only when at least one of these flags was set the day before (the player's doing, as news). */
+  yesterday?: string[];
+  /** Only while this holds now (flags, values, days). */
+  when?: Trigger;
 }

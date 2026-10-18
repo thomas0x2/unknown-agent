@@ -9,6 +9,7 @@ from: 14
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "Axel Rook endorses Crane. Someone bet 90,000 DOLR on it two minutes earlier.": Axel Rook endorsed Randall Crane yesterday. Below it, "GeneralAI" and "agent". {{mail:current_newsletter@14}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": fire your alarm clock. {{mail:guru_newsletter@14}}
 - [public] 10:00 [[GeneralAI]] rolls out agent-4 and switches agent-3 off. Prices: 35 DOLR a night, 3 per prompt, 0.05 per word.
 - [hidden; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": he has been reading about facial harmony; Max Stryker says it's a science. Body count 1 or under, canthal tilt +4° or more, 130 lbs or under (weight now shows on the cards), no earrings. {{mail:d14_matchless_rules_6}}

@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_forkyard_status",
+  "site": "y",
+  "from": "Forkyard",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "12:40",
+  "body": "We're investigating reports of sign-in failures and hosted apps not loading. We'll post updates here."
+}

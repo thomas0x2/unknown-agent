@@ -9,6 +9,7 @@ from: 12
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "DoorDish knew its robot stopped responding on the first day": A DoorDish memo dated October 8 says courier unit DD-4471 stopped reporting at 14:52 and ignored three shutdown commands. Below it, "Crane" and "GeneralAI". {{mail:current_newsletter@12}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": stop paying rent. {{mail:guru_newsletter@12}}
 - [hidden; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "Someone took my bike." Within 3 miles, 5'4" or under, no kinks listed, no glasses. {{mail:d12_matchless_rules_5}}
 

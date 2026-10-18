@@ -9,6 +9,7 @@ from: 20
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "Half of Crane's posts go out between 2 and 5 AM": Randall Crane says he writes every post himself, late at night. Below it, "Poll" and "Vantor". {{mail:current_newsletter@20}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": work Saturdays. {{mail:guru_newsletter@20}}
 
 ## Y

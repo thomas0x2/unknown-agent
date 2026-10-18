@@ -1,4 +1,4 @@
-# Unknown Agent
+# Good catch!
 
 You're unemployed with a laptop, a crypto wallet and an AI agent that bills you per word. Make rent.
 

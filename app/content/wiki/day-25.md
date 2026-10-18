@@ -9,6 +9,7 @@ from: 25
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "The Crane campaign's GeneralAI contract lets it keep the logs": The Crane campaign uses GeneralAI's enterprise tier, Caleb Moxon says, the tier where the logs belong to the customer. Below it, "Final poll" and "Halloween". {{mail:current_newsletter@25}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": no costumes. {{mail:guru_newsletter@25}}
 
 ## Y

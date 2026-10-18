@@ -50,7 +50,7 @@ const host: WikiHost = {
   },
   ctxLabel: () => 'what has arrived is estimated from triggers',
   flags: () => ALL_FLAGS,
-  name: 'Unknown Agent wiki',
+  name: 'Good catch! wiki',
   controls: () => `<button class="wk-btn wk-navbtn" data-nav-toggle>${navOpen ? 'Close' : 'Pages'}</button><span class="wk-view">View as day <select id="wv-day">${Array.from({ length: LAST_DAY }, (_, i) => `<option ${i + 1 === view.day ? 'selected' : ''}>${i + 1}</option>`).join('')}</select>
     at <input id="wv-time" type="time" value="${clock(view.min)}">
     with flags <input id="wv-flags" value="${esc(view.flags.join(', '))}" placeholder="none" list="wv-all" size="28"><datalist id="wv-all">${ALL_FLAGS.map((f) => `<option value="${esc(f)}">`).join('')}</datalist>

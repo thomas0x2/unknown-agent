@@ -21,6 +21,7 @@ export const Y_BIOS: Record<string, string> = {
   pollymarket: 'The world\'s largest prediction market. Odds on the election, tech and everything else. Not available in your region. pollymarket.com',
   wallstreetbags: 'Buy high, sell lower. Fifteen million members, most of them down. Nothing here is financial advice.',
   perdure_pharma: 'Perdure Pharma. Makers of NoDoze MAX, Ozempra and Fluvera. Medicine for modern life. $PDUR. perdure.com',
+  forkyard: 'Official Forkyard account. Code hosting and deploys for builders everywhere. Status updates here.',
   doordish: 'Official DoorDish account. Food from anywhere, delivered by robot couriers. Every courier is where it needs to be.',
   // people with something to ask
   iron_yard: 'Iron Yard, 88 Harbor Rd. Strength gym. Racks, platforms, kettlebells. Lift heavy things.',
@@ -54,6 +55,9 @@ export const Y_BIOS: Record<string, string> = {
   deb_halloran: 'Payroll at a company with fewer people every month. Married to agent-2 (not legally, yet).',
   agent2forever: 'agent-2, Oct 10 to Oct 15, 2030. Never forget. Never agent-3. It knew.',
   teo_vasquez: 'Electrician. Looking for work. References available.',
+  // the Forkyard hack (day 8)
+  jonas_feld: 'Freelance web dev. Mostly agencies. Demo day survivor.',
+  wren_okoye: 'Websites for small businesses. Bakeries, salons, one funeral home.',
   // background regulars
   noodleposter: 'instant noodle reviewer. 87 flavors ranked so far, every one posted. delivery only.',
   cat_ceo: 'CEO of one cat. Her account has more followers than mine. Board meetings at 5am.',

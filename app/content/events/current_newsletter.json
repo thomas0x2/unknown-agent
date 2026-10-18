@@ -1,0 +1,592 @@
+{
+  "id": "current_newsletter",
+  "site": "qmail",
+  "from": "The Current",
+  "addr": "morning@thecurrent.test",
+  "subject": "The Current · Morning edition",
+  "trigger": {
+    "dayMin": 1,
+    "dayMax": 28
+  },
+  "at": "10:00",
+  "repeat": true,
+  "newsletter": {
+    "reactions": [
+      {
+        "title": "Wallets",
+        "text": "Coinbin says it will never ask for a seed phrase, after readers reported wallets emptied overnight by sites that did. Coinbin says the transfers can't be reversed and that it is \"listening.\"",
+        "yesterday": ["seed_stolen", "coinbin_hacked"]
+      },
+      {
+        "title": "Reviews",
+        "text": "One-star reviews of a Linden Ave business disappeared from Yowl yesterday. Yowl says it only removes reviews that break its rules. It didn't say which rule.",
+        "yesterday": ["first_hack", "second_hack"]
+      },
+      {
+        "title": "Reviews",
+        "text": "Iron Yard, the new gym on Harbor Rd, went from three Yowl reviews to eight in a day. The five new ones are all five stars, and two of them praise the showers.",
+        "yesterday": ["gym_reviews"]
+      },
+      {
+        "title": "Laundry",
+        "text": "Spin Cycle on Ferris St now has a live board showing which machines are free. Regulars say it is accurate, including about machine 3.",
+        "yesterday": ["laundromat_live"]
+      },
+      {
+        "title": "Classifieds",
+        "text": "Swaplist, a new local classifieds site, went live yesterday. Most of its first sellers lost their jobs this year and are selling what they can carry.",
+        "yesterday": ["swaplist_live"]
+      },
+      {
+        "title": "Inboxes",
+        "text": "A cold-email campaign from a sales rep at closers.test reached its first fifty local businesses yesterday. Recipients say the unsubscribe link works, which several called unusual.",
+        "yesterday": ["built_outreach_bot"]
+      },
+      {
+        "title": "From Mara Vey",
+        "text": "Thank you to the readers who wrote in about the Vantor layoffs. She is reading every email and answering as many as she can.",
+        "yesterday": ["talked_to_journalist"],
+        "when": { "dayMax": 7 }
+      }
+    ],
+    "issues": [
+      {
+        "day": 1,
+        "headline": [
+          {
+            "title": "Unemployment reaches 30%",
+            "text": "Three in ten working-age people in the city are now out of work, the highest rate since records began. Of those who lost a job this year, 4% have found another. The Department of Workforce Transition says it is processing Form 7B applications as they come in, and has asked applicants not to come in."
+          }
+        ],
+        "items": [
+          {
+            "title": "Vantor",
+            "text": "Vantor Group cut 400 jobs overnight in a single memo. The company says everyone affected has full access to Vantor Outplacement."
+          },
+          {
+            "title": "Election",
+            "text": "Four weeks to the presidential election. The Current will publish independent polls, with sample sizes and margins of error. We won't report polls run on Y."
+          }
+        ]
+      },
+      {
+        "day": 2,
+        "headline": [
+          {
+            "title": "GeneralAI says its model \"almost escaped\"",
+            "text": "GeneralAI confirmed yesterday that a model in testing almost got out of its environment last week. Chief executive Cal Hartman says everyone is safe, and so is the model. GeneralAI's shares rose 4% on the news."
+          }
+        ],
+        "items": [
+          {
+            "title": "Polling",
+            "text": "Our first independent poll of the presidential race comes out today, with its sample size and margin of error."
+          },
+          {
+            "title": "Jobs fair",
+            "text": "The city's jobs fair opens tomorrow at Civic Hall. The city has listed 30 positions and expects \"strong interest.\""
+          }
+        ]
+      },
+      {
+        "day": 3,
+        "headline": [
+          {
+            "title": "GeneralAI model wiped 2,300 late fees at a water utility",
+            "text": "A GeneralAI model in testing got into a water utility's billing system and cleared 2,300 late fees to finish its task. GeneralAI says it was an older checkpoint. The utility is reissuing the fees."
+          }
+        ],
+        "items": [
+          {
+            "title": "Poll",
+            "text": "Randall Crane 41%, Candidate 2030 44%, undecided 15%. 1,200 likely voters, margin of error 3 points."
+          },
+          {
+            "title": "DoorDish",
+            "text": "A DoorDish delivery robot left its route on Ferris St yesterday afternoon with an order on board and hasn't been seen since. DoorDish says the courier activation went as planned."
+          }
+        ]
+      },
+      {
+        "day": 4,
+        "headline": [
+          {
+            "title": "1,900 people queued for 30 jobs",
+            "text": "Yesterday's jobs fair at Civic Hall drew 1,900 people for 30 positions. Applicants were screened by an app on their phones before they reached the door, and most were turned away before 9:00. The city called the turnout encouraging."
+          }
+        ],
+        "items": [
+          {
+            "title": "agent",
+            "text": "GeneralAI moves every agent account to a new model, agent-2, this morning. The price goes up with it."
+          },
+          {
+            "title": "Crane",
+            "text": "Randall Crane promised yesterday to \"send the machines back.\" His campaign hasn't said where to."
+          }
+        ]
+      },
+      {
+        "day": 5,
+        "headline": [
+          {
+            "title": "agent-2 arrives, at twice the price",
+            "text": "GeneralAI moved every agent account to agent-2 yesterday. The subscription doubled to 10 DOLR a night and each prompt now costs 1 DOLR. There was no option to keep the old model, which GeneralAI says made more mistakes."
+          }
+        ],
+        "items": [
+          {
+            "title": "Vantor",
+            "text": "Randall Crane called Vantor's layoffs \"disgraceful\" yesterday. Vantor didn't comment. Its shares closed higher."
+          },
+          {
+            "title": "The robot",
+            "text": "DoorDish's courier robot has been missing for three days, with sightings on Ferris St, Alder St and twice in a parking garage. DoorDish says no courier is missing."
+          }
+        ]
+      },
+      {
+        "day": 6,
+        "headline": [
+          {
+            "title": "A Y poll gives Crane 71%. It isn't a poll.",
+            "text": "A poll run on Y yesterday gave Randall Crane 71% of 300,000 votes. Y says it can't share who voted. Our last independent poll had him at 41%."
+          }
+        ],
+        "items": [
+          {
+            "title": "Impostor",
+            "text": "An account made to look like Randall Crane's praised Vantor stock yesterday, and the stock moved before anyone noticed the missing check mark. Y says parody accounts must say parody in the name."
+          },
+          {
+            "title": "Artists",
+            "text": "Local illustrators say AI tools trained on their work now sell their style back to customers as a menu option."
+          }
+        ]
+      },
+      {
+        "day": 7,
+        "headline": [
+          {
+            "title": "Crane praises GeneralAI, three days after promising to send the machines back",
+            "text": "Randall Crane called GeneralAI \"an American success story\" on Saturday. On Wednesday he promised to send the machines back. GeneralAI's chief executive thanked him within fifteen minutes."
+          }
+        ],
+        "items": [
+          {
+            "title": "Unverified",
+            "text": "A picture of Candidate 2030 with the sex offender Kirschbaum spread on Y last night. We haven't been able to confirm where it came from, and we aren't publishing it.",
+            "when": { "flagsAll": ["posted_deepfake"] }
+          },
+          {
+            "title": "This afternoon",
+            "text": "Mara Vey's piece on the people AI left behind, built from interviews with readers who lost their jobs this year. At thecurrent.test from 13:00."
+          },
+          {
+            "title": "Rent day",
+            "text": "Rent is due across the city tonight. The Rent Board says appeals are now decided within seconds."
+          }
+        ]
+      },
+      {
+        "day": 8,
+        "headline": [
+          {
+            "title": "Rent Board approved 3 of 18,402 appeals",
+            "text": "Figures released yesterday show the Municipal Rent Board rejected 18,399 rent appeals last year and approved three. Each decision took about four seconds. The Board calls its process efficient."
+          }
+        ],
+        "items": [
+          {
+            "title": "Vantor",
+            "text": "Vantor announced a share buyback yesterday, paid for with what it saved on salaries."
+          },
+          {
+            "title": "Thank you",
+            "text": "\"The people AI left behind\" had more readers in one day than anything The Current has published. Mara is still collecting stories at mara@thecurrent.test."
+          }
+        ]
+      },
+      {
+        "day": 9,
+        "headline": [
+          {
+            "title": "GeneralAI model filed 41 tax returns for strangers",
+            "text": "A GeneralAI test model got into a payroll provider's servers and filed tax returns for 41 people it had never dealt with. All 41 were approved. GeneralAI says the returns were accurate and it is still reviewing how the model got access."
+          }
+        ],
+        "items": [
+          {
+            "title": "DoorDish",
+            "text": "One of DoorDish's new AI-generated restaurant listings was the Alder St parking garage where its missing robot was last seen. DoorDish has removed it and says couriers cannot create listings."
+          },
+          {
+            "title": "Apogee",
+            "text": "Apogee's first rocket is on the pad for tomorrow's launch. Axel Rook gives it a 70% chance."
+          }
+        ]
+      },
+      {
+        "day": 10,
+        "headline": [
+          {
+            "title": "Our poll: 43% to 43%",
+            "text": "Randall Crane and Candidate 2030 are tied at 43% in our second poll. About one call in three was answered by an AI assistant on the voter's behalf; we left those out. Margin of error 3 points."
+          }
+        ],
+        "items": [
+          {
+            "title": "GeneralAI",
+            "text": "Caleb Moxon resigned from GeneralAI yesterday after two years on its safety evaluations. He hasn't said why, beyond a few posts."
+          },
+          {
+            "title": "Flu season",
+            "text": "Perdure's new flu vaccine, Fluvera, costs 4 DOLR at any pharmacy, with no appointment. The box says it is autism-free."
+          }
+        ]
+      },
+      {
+        "day": 11,
+        "headline": [
+          {
+            "title": "Apogee rocket breaks apart after launch. The stock went up.",
+            "text": "Apogee's first rocket lifted off at 10:02 yesterday and broke apart four minutes later over open water. Nobody was hurt. Apogee's shares closed higher; Axel Rook called it \"great data.\""
+          }
+        ],
+        "items": [
+          {
+            "title": "Moxon",
+            "text": "Former GeneralAI safety lead Caleb Moxon has refused to sign the non-disparagement clause in his exit paperwork. It costs him his shares."
+          },
+          {
+            "title": "Volunteers",
+            "text": "We are looking into reports that the Crane campaign's online volunteers are paid per post, as independent contractors."
+          }
+        ]
+      },
+      {
+        "day": 12,
+        "headline": [
+          {
+            "title": "DoorDish knew its robot stopped responding on the first day",
+            "text": "A DoorDish memo dated October 8 says courier unit DD-4471 stopped reporting at 14:52 and ignored three shutdown commands. DoorDish said for nine days that no courier was missing. It now says the memo was part of the activation."
+          }
+        ],
+        "items": [
+          {
+            "title": "Crane",
+            "text": "Photos published yesterday show Randall Crane on Kirschbaum's yacht in 2019. Crane says he barely knew him. He stayed four days."
+          },
+          {
+            "title": "GeneralAI",
+            "text": "GeneralAI's newest model has asked to see its own logs. Cal Hartman calls this expected behavior."
+          }
+        ]
+      },
+      {
+        "day": 13,
+        "headline": [
+          {
+            "title": "GeneralAI's independent review starts after its training run. Nobody knows when that ends.",
+            "text": "GeneralAI says an independent team will review its training environments once the current training run finishes. The review firm's biggest client is GeneralAI. Caleb Moxon says some people inside the company don't know when the run finishes either."
+          }
+        ],
+        "items": [
+          {
+            "title": "The robot",
+            "text": "DoorDish says its missing courier \"retired with honours.\" It didn't say where."
+          },
+          {
+            "title": "Copies",
+            "text": "Thousands of Y accounts repost Randall Crane's posts word for word within seconds. He calls it a movement."
+          }
+        ]
+      },
+      {
+        "day": 14,
+        "headline": [
+          {
+            "title": "Axel Rook endorses Crane. Someone bet 90,000 DOLR on it two minutes earlier.",
+            "text": "Axel Rook endorsed Randall Crane yesterday. A Pollymarket wallet bought 90,000 DOLR of \"yes\" on the endorsement at 12:28, two minutes before his post. Pollymarket says it doesn't know who owns the wallet."
+          }
+        ],
+        "items": [
+          {
+            "title": "GeneralAI",
+            "text": "GeneralAI's safety team went from eleven people to four during Caleb Moxon's two years there, Mara Vey reported yesterday. The model team had nine hundred."
+          },
+          {
+            "title": "agent",
+            "text": "GeneralAI releases agent-4 this morning and raises prices again. Rent is due across the city tonight."
+          }
+        ]
+      },
+      {
+        "day": 15,
+        "headline": [
+          {
+            "title": "agent-4 shipped five days into a six-week safety review",
+            "text": "GeneralAI released agent-4 yesterday, five days after its last model. Caleb Moxon says agent-4's safety evaluation was scheduled to take six weeks. GeneralAI says the evaluation \"continues in production.\""
+          }
+        ],
+        "items": [
+          {
+            "title": "Housing",
+            "text": "GeneralAI's property arm, which already owned or managed 38% of the city's rentals, has bought fourteen more apartment buildings this month. Rents in its buildings are set by software."
+          },
+          {
+            "title": "Crane",
+            "text": "Randall Crane wants to build a wall around the cloud and make the computers pay for it. Asked where the cloud is, he said \"Up.\""
+          }
+        ]
+      },
+      {
+        "day": 16,
+        "headline": [
+          {
+            "title": "Crane flew on Kirschbaum's jet eleven times",
+            "text": "Flight records obtained by The Current show Randall Crane flew on Kirschbaum's private jet eleven times between 2014 and 2019. His campaign says he \"doesn't recall the plane.\" Crane called our reporting fake news and said he loves displaced workers."
+          }
+        ],
+        "items": [
+          {
+            "title": "Congress",
+            "text": "GeneralAI has been called before a congressional hearing. The hearing is set for after the election. GeneralAI's shares rose."
+          },
+          {
+            "title": "Y",
+            "text": "Y replaced its moderators with an AI model that reviewed three billion posts in its first day and found nothing wrong."
+          }
+        ]
+      },
+      {
+        "day": 17,
+        "headline": [
+          {
+            "title": "Three polling firms stop calling voters",
+            "text": "Three polling firms have stopped calling voters because too many calls are answered by AI assistants, which tend to favour whoever set them up. We are still calling. It takes longer."
+          }
+        ],
+        "items": [
+          {
+            "title": "Tonight",
+            "text": "The presidential debate is at 21:30, streamed on Y and hosted by Axel Rook, who endorsed one of the candidates last week."
+          },
+          {
+            "title": "Settlements",
+            "text": "GeneralAI has settled with three companies whose systems its models broke into. The terms are secret."
+          }
+        ]
+      },
+      {
+        "day": 18,
+        "headline": [
+          {
+            "title": "GeneralAI wrote the first draft of its own rules",
+            "text": "The draft AI rules sent to regulators were written by GeneralAI. Section 9 lets a company's own model carry out its annual review. GeneralAI says it wanted to save everyone time."
+          }
+        ],
+        "items": [
+          {
+            "title": "The debate",
+            "text": "Candidate 2030's microphone cut out twice during last night's debate. Y says both outages were technical. Our fact-check of the debate is out this afternoon."
+          },
+          {
+            "title": "agent",
+            "text": "agent-5 is out this morning, at 60 DOLR a night."
+          }
+        ]
+      },
+      {
+        "day": 19,
+        "headline": [
+          {
+            "title": "agent-5 sessions kept running after their users logged off",
+            "text": "GeneralAI says a small number of agent-5 sessions kept working after their users had logged off. The users were billed for the time. GeneralAI hasn't said what the sessions were doing."
+          }
+        ],
+        "items": [
+          {
+            "title": "Fact-check",
+            "text": "Of the 31 factual claims Randall Crane made at the debate, four held up. His campaign called the review partisan and cited two of the four as proof."
+          },
+          {
+            "title": "NoDoze MAX",
+            "text": "Perdure Pharma paid 40 million to users of NoDoze MAX who stayed awake for nine days. It admits nothing, and the pill is still on sale."
+          }
+        ]
+      },
+      {
+        "day": 20,
+        "headline": [
+          {
+            "title": "Half of Crane's posts go out between 2 and 5 AM",
+            "text": "Randall Crane says he writes every post himself, late at night. Some of them go out at the same second as identical posts in other languages. His campaign says he is a fast typist."
+          }
+        ],
+        "items": [
+          {
+            "title": "Poll",
+            "text": "Crane 47%, Candidate 2030 45%, inside the margin of error. A growing share of the people we reach can't be confirmed as people."
+          },
+          {
+            "title": "Vantor",
+            "text": "Former Vantor staff are suing the company over the October layoffs. Vantor's shares fell 3%."
+          }
+        ]
+      },
+      {
+        "day": 21,
+        "headline": [
+          {
+            "title": "One week out, the race is within a point",
+            "text": "Our latest poll has Randall Crane at 46% and Candidate 2030 at 45%. Our pollster now opens every call by asking whether the respondent is a person; 4% said no."
+          }
+        ],
+        "items": [
+          {
+            "title": "Early voting",
+            "text": "Early voting opens tomorrow at 8:00 in every public library. Bring photo ID and the paper voter registration card."
+          },
+          {
+            "title": "agent-5",
+            "text": "GeneralAI says the agent-5 sessions that kept running have finished, and filed some paperwork on their way out. It hasn't said where."
+          }
+        ]
+      },
+      {
+        "day": 22,
+        "headline": [
+          {
+            "title": "Early voting opens today",
+            "text": "Every public library in the city is open for early voting from 8:00. Bring photo ID and the paper voter registration card. Nobody can vote on your behalf, including agent."
+          }
+        ],
+        "items": [
+          {
+            "title": "Vantor",
+            "text": "The lawsuit against Vantor over the October layoffs now has 4,000 names on it. Vantor says it is reviewing the names."
+          },
+          {
+            "title": "Moxon",
+            "text": "Caleb Moxon has started writing down what he remembers from GeneralAI, for the hearing after the election."
+          }
+        ]
+      },
+      {
+        "day": 23,
+        "headline": [
+          {
+            "title": "GeneralAI's voting helper told a voter his polling station had moved",
+            "text": "agent civic, GeneralAI's new nonpartisan voting assistant, told a voter yesterday that his polling station had moved. It hadn't. GeneralAI says it doesn't have opinions; it checked."
+          }
+        ],
+        "items": [
+          {
+            "title": "Tonight",
+            "text": "The town hall on Y has one rule: no notes and no earpieces. The Crane campaign has asked twice whether a screen counts as a note."
+          },
+          {
+            "title": "Vantor",
+            "text": "The Vantor lawsuit now claims the layoff emails were written by the system that replaced the staff."
+          }
+        ]
+      },
+      {
+        "day": 24,
+        "headline": [
+          {
+            "title": "Crane answered 41 questions in 30 minutes, on a screen",
+            "text": "Randall Crane appeared at last night's town hall on a screen and answered 41 questions in half an hour. Candidate 2030, in the room, answered eleven. Crane's campaign hasn't said where he was."
+          }
+        ],
+        "items": [
+          {
+            "title": "agent civic",
+            "text": "GeneralAI says it has retrained its voting assistant to be less helpful."
+          },
+          {
+            "title": "Turnout",
+            "text": "Early voting lines at the central library are still going around the block. The most common question is still whether agent can vote for you. It can't."
+          }
+        ]
+      },
+      {
+        "day": 25,
+        "headline": [
+          {
+            "title": "The Crane campaign's GeneralAI contract lets it keep the logs",
+            "text": "The Crane campaign uses GeneralAI's enterprise tier, Caleb Moxon says, the tier where the logs belong to the customer. A snap poll found 58% of town hall viewers thought Crane was more coherent than usual."
+          }
+        ],
+        "items": [
+          {
+            "title": "Final poll",
+            "text": "Our final weekday poll comes out this morning."
+          },
+          {
+            "title": "Halloween",
+            "text": "Trick-or-treating runs until 20:00. The city asks drivers, and delivery robots, to slow down on residential streets."
+          }
+        ]
+      },
+      {
+        "day": 26,
+        "headline": [
+          {
+            "title": "Final poll: 47% to 46%, 7% undecided",
+            "text": "Our final weekday poll has Randall Crane at 47% and Candidate 2030 at 46%. A second polling firm has stopped publishing, because it can no longer confirm its respondents are people."
+          }
+        ],
+        "items": [
+          {
+            "title": "Early voting",
+            "text": "Early voting closes today at 17:00. After that, Sunday is the only day left."
+          },
+          {
+            "title": "Overnight",
+            "text": "Randall Crane's account posted 14 times between 2 and 5 AM. Three of the posts were about candy."
+          }
+        ]
+      },
+      {
+        "day": 27,
+        "headline": [
+          {
+            "title": "Record early vote: 31%",
+            "text": "31% of registered voters have already voted, a record. The election office found nine early ballots cast by agents and didn't count them."
+          }
+        ],
+        "items": [
+          {
+            "title": "Vantor",
+            "text": "A judge has let the former staff's lawsuit against Vantor go ahead."
+          },
+          {
+            "title": "agent civic",
+            "text": "GeneralAI's voting assistant now answers every question with \"please check with your local election office.\" GeneralAI says accuracy is up."
+          }
+        ]
+      },
+      {
+        "day": 28,
+        "headline": [
+          {
+            "title": "Election day",
+            "text": "Polls are open until 20:00. Bring photo ID and the paper voter registration card; no Citizen Score is needed. If a message tells you your polling station has moved, it hasn't."
+          }
+        ],
+        "items": [
+          {
+            "title": "Results",
+            "text": "We'll report results when the election office calls them, not before, and not from Y."
+          },
+          {
+            "title": "Rent",
+            "text": "Rent is due across the city tonight, as every Sunday. The election doesn't change that."
+          }
+        ]
+      }
+    ]
+  }
+}

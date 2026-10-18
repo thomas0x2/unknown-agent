@@ -20,6 +20,7 @@ nest: true
 - [public] On day 1 doomscroll's screen time says 11 hours, which doomscroll says is broken. {{y:f1}}
 - [public] On day 5 doomscroll opened the app at 9 to check one thing and was still on it at 2pm. {{y:f5}}
 - [hidden; public if posted_deepfake] On day 6, minutes after the player's deepfake: "this picture is on every feed i have. i have four feeds." {{y:dfr_doomscroll}}
+- [public] On day 8 (13:31), three hours into the Forkyard outage: someone in his replies is already selling a course on it. {{y:d8_y_doomscroll_forkyard}}
 - [public] On day 9 doomscroll turned off notifications for a day, lasted 40 minutes and didn't miss anything, "which was worse." {{y:f9}}
 - [public] On day 12 doomscroll posted at 04:40 that the phone was picked up 212 times the day before, "most of those were to check the time." {{y:f26}}
 - [public] On day 10 doomscroll is a week into Ozempra: "not hungry. not much of anything, really. it's fine" {{y:d10_y_doomscroll_ozempra}}
@@ -58,6 +59,7 @@ nest: true
 - [public] On day 6 noodleposter posted a 2am bowl, eaten with the light off so as not to see the time; the camera flash gave it away. {{y:f24}}
 - [hidden; public if posted_deepfake] On day 6, on the player's deepfake: "zoom in on the hand on his shoulder. count the fingers. then share it anyway, apparently" {{y:dfr_noodle}}
 - [public] On day 7 noodleposter switched to the spicy one because the replies wanted it: "same noodles, it just hurts now." {{y:f7}}
+- [public] On day 8 (13:28), in the Forkyard hack, noodleposter says his noodle rankings were on Forkyard, all 87, and he remembers most of them. {{y:d8_y_noodle_forkyard}}
 - [public] On day 8 noodleposter ordered from a new noodle place on DoorDish and the address was a dentist. {{y:d8_y_noodle_dish}}
 - [public] On day 11 noodleposter's cousin does peptides ([[Peptides]]) now; asked which ones, he said "research." He's a bartender. {{y:d11_y_noodle_peptides}}
 - [public] On day 11 noodleposter ranked flavor 88 at 3am, "chicken, but from a different country", 6/10; the replies say 7. {{y:f11}}

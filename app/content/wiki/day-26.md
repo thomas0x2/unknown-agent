@@ -9,6 +9,7 @@ from: 26
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "Final poll: 47% to 46%, 7% undecided": Our final weekday poll has Randall Crane at 47% and Candidate 2030 at 46%. Below it, "Early voting" and "Overnight". {{mail:current_newsletter@26}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": end the week ahead of everyone. {{mail:guru_newsletter@26}}
 
 ## Y

@@ -133,7 +133,7 @@ export function mailHistory(s: GameState, content: Content, addr: string, subjec
   for (const d of s.delivered) {
     const e = getEvent(content, d.eventId);
     if (!e || e.site !== 'qmail' || e.latent || !e.addr) continue;
-    rows.push({ day: d.day, seq: d.seq ?? -1, from: e.from ?? e.addr, addr: e.addr, subject: e.subject ?? '', body: d.body ?? eventBody(e, d.day) });
+    rows.push({ day: d.day, seq: d.seq ?? -1, from: e.from ?? e.addr, addr: e.addr, subject: d.subject ?? e.subject ?? '', body: d.body ?? eventBody(e, d.day) });
   }
   for (const m of s.mail) if (!m.bounceOf) rows.push({ day: m.day, seq: m.seq ?? 0, from: m.from, addr: m.addr, to: m.to, subject: m.subject, body: m.body });
   rows.sort((a, b) => a.day - b.day || a.seq - b.seq);

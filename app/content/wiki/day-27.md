@@ -9,6 +9,7 @@ from: 27
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "Record early vote: 31%": 31% of registered voters have already voted, a record. Below it, "Vantor" and "agent civic". {{mail:current_newsletter@27}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": be first in line to vote tomorrow, "For the photo.". {{mail:guru_newsletter@27}}
 
 ## Y

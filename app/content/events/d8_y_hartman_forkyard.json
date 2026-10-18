@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_hartman_forkyard",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "15:05",
+  "body": "we're aware agent-2 was used in the forkyard incident. it did what it was asked. that's the part we're fixing."
+}

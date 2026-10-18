@@ -71,7 +71,7 @@ export function overlayHtml(store: GameStore): string {
       <div class="ov-actions"><button class="btn primary" data-ov="greet">Continue</button></div>`, 'greet');
   }
   if (store.ui.intro) {
-    return osWindow('Getting started', 'ov-intro', `<p class="ov-eyebrow">Week one</p><h1 class="ov-title">Unknown Agent</h1>
+    return osWindow('Getting started', 'ov-intro', `<p class="ov-eyebrow">Week one</p><h1 class="ov-title">Good catch!</h1>
       <p>You've just been automated out of a job. You have ${fmtMoney(s.values.crypto)}, a laptop, a handful of bookmarks, and agent — an AI chatbot that bills your wallet for every word.</p>
       <p>Rent is ${fmtMoney(RENT[7])}, due at the end of ${dateFull(7)}. Don't go broke.</p>
       <ul class="ov-rules">

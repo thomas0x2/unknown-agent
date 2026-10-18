@@ -1,0 +1,11 @@
+{
+  "id": "d9_y_forkyard_back",
+  "site": "y",
+  "from": "Forkyard",
+  "trigger": {
+    "dayMin": 9,
+    "dayMax": 9
+  },
+  "at": "09:30",
+  "body": "Forkyard is back. Sign-in, pushes and hosted apps are restored. Please rotate your access tokens."
+}

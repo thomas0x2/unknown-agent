@@ -9,7 +9,17 @@ from: 1
 
 ## thecurrent.test
 
-[public] A plain serif newspaper site in dark teal, reachable from the start by address or link, never bookmarked. The front page lists its stories; before Mara's article it says "No new stories this week."
+[public] A plain serif newspaper site in dark teal, reachable from the start by address or link, never bookmarked. The front page leads with the latest morning edition the player received, then lists its stories.
+
+## Morning newsletter
+
+[public] Every morning at 10:00, days 1 to 28, The Current's newsletter lands in the player's Qmail from morning@thecurrent.test, before the rest of the day's mail. Each issue is one headline and two small items, mostly about the day before, written straight: sober numbers, what was said, and who declined to comment. The subject is the day's headline. Each day page lists its issue.
+
+[public] Day 1's headline is "Unemployment reaches 30%": three in ten working-age people in the city are out of work, the highest rate since records began, and 4% of those who lost a job this year have found another. The same morning @the_current posts the figure on Y and links the issue. {{y:d1_y_current_jobs}}
+
+[public] Some items are about what happened the day before because of the player, never naming them: a wave of drained Coinbin wallets, one-star reviews of a Linden Ave business disappearing from Yowl, Iron Yard's five new five-star reviews, Spin Cycle's live machine board, Swaplist going live, a cold-email campaign from closers.test, and (until day 7) Mara thanking the readers who wrote in. An item about the player's doing takes a slot ahead of the issue's own small items, so an issue still has two.
+
+[hidden; public if posted_deepfake] On day 7 the newsletter's first item is about the picture of Candidate 2030 with Kirschbaum that spread on Y the night before: The Current couldn't confirm where it came from and isn't publishing it.
 
 
 ## On Y
@@ -40,5 +50,7 @@ from: 1
 
 ## Writer notes
 
+- The newsletter is one repeating event, `content/events/current_newsletter.json` (`newsletter.issues` per day, `newsletter.reactions` for the day after a flag), composed by `app/src/engine/newsletter.ts`; the delivery stores the issue's subject and body. Thomas's decision (2026-10-18, Papers, Please notes): the newsletter anchors the day like the game's newspaper. Rule for writing issues: only what is known by 10:00 (yesterday's beats, the morning's rollouts and rent days), so it never spoils a beat later the same day.
+- [planned] Issues for days 8 to 10 are written generic on purpose while the Forkyard outage (day 8) and the guardrails (day 9) are rebuilt in other work; day 9's issue should lead with the Forkyard hack and day 10's with the guardrails once those land. Logan Pryce, Dex Calloway and $COPE aren't in any issue yet either.
 - `app/src/ui/current.ts`, `app/src/engine/current.ts`, posts `dN_y_current*.json`. The article quoting the player's email is PR #190.
 - Mara's name and the article title are placeholders. [planned] The mafia asks the player to dox Mara on day 17.

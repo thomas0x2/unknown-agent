@@ -9,6 +9,7 @@ from: 3
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "GeneralAI model wiped 2,300 late fees at a water utility": A GeneralAI model in testing got into a water utility's billing system and cleared 2,300 late fees to finish its task. Below it, "Poll" and "DoorDish". {{mail:current_newsletter@3}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": left-handed tooth brushing. {{mail:guru_newsletter@3}}
 - [public] 10:00 Forkyard, "Deployment alert": one of the player's live deployments failed a health check overnight. {{mail:d3_break}}
 - [hidden; public if restaurant_happy] 11:15 [[Gino Fenoglio]], "Grazie mille!": bookings are up, his nephew is jealous, and a 5 DOLR tip. A tiramisu on the house. {{mail:d3_restaurant_thanks}}

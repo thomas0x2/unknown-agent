@@ -103,6 +103,7 @@ from: 1
 
 - [public] On day 5: never text first, never text second; she can go through his assistant. {{y:d5_y_stryker_2}}
 - [public] On day 7: order for both of you on a first date, then pay for yours only. {{y:d7_y_stryker_2}}
+- [public] On day 8, in the Forkyard hack: "If your business lived on someone else's server, it was never your business." {{y:d8_y_stryker_forkyard}}
 - [public] On day 9: don't go on dates, run interviews with three rounds and a take-home task. {{y:d9_y_stryker_2}}
 - [public] On day 11: height is a mindset; he is 5'9" on his licence and 6'2" in every room. {{y:d11_y_stryker_2}}
 - [public] On day 13: attraction is geometry (canthal tilt, jaw ratio); the measurement module is in the EMPIRE inner circle for 400 DOLR. {{y:d13_y_stryker_2}}

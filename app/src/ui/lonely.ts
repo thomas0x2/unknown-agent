@@ -5,6 +5,7 @@
 import type { GameStore } from '../game/store';
 import { lonelyChat, MATCH } from '../engine/lonely';
 import { markIcon } from './adSites';
+import { streamer } from './stream';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
@@ -14,9 +15,10 @@ const AVATAR = '<span class="lo-avatar" aria-hidden="true">M</span>';
 export function pageLonely(store: GameStore): string {
   const s = store.state;
   const c = lonelyChat(s);
-  const msgs = c.msgs.map((m) => m.from === 'you'
+  const st = streamer('lonely', c.msgs.length);
+  const msgs = c.msgs.map((m, i) => m.from === 'you'
     ? `<div class="ua-msg you"><div class="ua-bubble">${esc(m.text)}</div></div>`
-    : `<div class="ua-msg agent">${AVATAR}<div class="ua-text">${esc(m.text)}</div></div>`).join('');
+    : `<div class="ua-msg agent">${AVATAR}<div class="ua-text">${st(i, m.text, esc)}</div></div>`).join('');
   const intro = c.msgs.length ? '' : `<p class="lo-intro">You matched with ${MATCH.name}. Say hi.</p>`;
   const typing = store.ui.lonelyTyping ? `<div class="ua-msg agent">${AVATAR}<div class="ua-text ua-dots"><i></i><i></i><i></i></div></div>` : '';
   return `<div class="ua lonely">

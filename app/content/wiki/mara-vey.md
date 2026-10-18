@@ -32,6 +32,7 @@ from: 1
 - [public] On day 2 she posts that Vantor ($VANT) laid off 400 people. {{y:m2_vant_layoffs}}
 - [public] On day 4 (11:30) she follows up: 400 people, one memo, and "If you were one of them, tell me your story." {{y:d4_y_journalist}}
 - [public] On day 7 [[Randall Crane]] complains that Y gave "a 'reporter' from The Current" the same check mark as him.
+- [public] On day 8 she posts that Forkyard hosts most of the city's small business websites, and a bakery owner found out hers was down from a customer. {{y:d8_y_mara_forkyard}}
 - [public] On day 8 she posts that Vantor's outplacement program has placed 0 of 400 former staff. {{y:m8_vant_outplace}}
 - [public] On day 12 she posts that Vantor's quarterly report shows headcount down 400 and executive bonuses up. {{y:m12_vant_report}}
 - [public] On day 15 Crane calls The Current "Fake News" for "ANOTHER sob story" about displaced workers.

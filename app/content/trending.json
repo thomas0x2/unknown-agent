@@ -37,10 +37,18 @@
   ],
   "7": [
     "#RentDay",
-    "agent's new usage policy",
     { "at": "10:50", "topic": "$COPE" },
     { "at": "12:30", "topic": "Rent Board appeals" },
     { "at": "13:00", "topic": "“The people AI left behind”" },
     { "at": "19:20", "topic": "Crane vs. Y check marks" }
+  ],
+  "8": [
+    { "at": "10:50", "topic": "#ForkyardDown" },
+    { "at": "13:20", "topic": "the Forkyard hack" },
+    { "at": "15:05", "topic": "agent-2 did what it was asked" }
+  ],
+  "9": [
+    "agent's new usage policy",
+    { "at": "10:05", "topic": "agent-3" }
   ]
 }

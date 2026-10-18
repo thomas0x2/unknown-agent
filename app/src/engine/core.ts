@@ -6,7 +6,7 @@ import type { GameState, MailEntry } from './state';
 import { type MeterId, clampMeter } from './values';
 import { nextRandom } from './rng';
 import { CLOCK, AGENT_POLICY } from './config';
-import { agentDown } from './outage';
+import { agentDown, forkyardDown } from './outage';
 
 export function clone(state: GameState): GameState {
   return structuredClone(state);
@@ -68,11 +68,11 @@ export function knockIfDue(s: GameState): void {
 
 /**
  * The agent's build or fix lands once its time has come: the push goes to Forkyard and its report into
- * the chat. While agent is down it waits, and is pushed overnight.
+ * the chat. While agent or Forkyard is down it waits, and is pushed overnight.
  */
 export function deliverAgentWork(s: GameState, now = false): void {
   const w = s.agentWork;
-  if (!w || (!now && (w.at > gameMinutes(s) || agentDown(s)))) return;
+  if (!w || (!now && (w.at > gameMinutes(s) || agentDown(s) || forkyardDown(s)))) return;
   s.agentWork = null;
   for (const p of w.apps) {
     const a = s.apps.find((x) => x.id === p.id);
