@@ -26,7 +26,6 @@ from: 2
 - [public] 12:35 [[Pollymarket]]: Crane's odds fall to 36% after The Current's poll. {{y:d2_y_polly_crane}}
 - [public] 12:55 [[Logan Pryce]]: a thread of seven billion-dollar ideas nobody is building (uber for agents, linkedin for agents, …); the seventh is the one he's building (stealth). {{y:d2_y_logan}}
 - [public] 13:10 Candidate 2030: encouraged by the poll; "polls don't vote. People do." {{y:d2_y_candidate}}
-- [public] 13:50 A Spin Cycle regular: every machine busy again, and the owner's raw status feed (spincycle.test/feed) is unreadable. "Someone make it a real app." {{y:d2_y_laundromat}}
 - [public] 14:10 [[Cal Hartman]]: agent usage up 40% this week; "a little compute constrained". {{y:d2_y_hartman}}
 - [public] 14:40 [[Wade Tillman]]: four chemtrails crossed over the Eastside on Sunday, and that night Vantor fired 400 people by email. "Look up." {{y:d2_y_wade}}
 - [public] 15:00 [[Dr. Adam Hoberman]]: sunlight in your eyes within 30 to 60 minutes of waking; "It's free and the data is very strong." {{y:d2_y_hoberman}}
@@ -40,7 +39,6 @@ from: 2
 - [public] 17:08 Cal Hartman: the water utility was an older checkpoint in a test; "several were helped, technically." {{y:d2_y_hartman_2}}
 - [public] 17:19 [[WallStreetBags]]: General AI's model almost escaped and the stock went up; loading $GAI calls. {{y:m2_gai_stunt}}
 - [public] 17:30 cat_ceo: her productivity hack is checking the cat's follower count instead of her bank balance. {{y:f2}}
-- [public] 17:30 About thirty bot accounts post "$GAI to the moon!!".
 - [public] 19:36 Brent Kowalski: $VANT up 8% after the restructuring. {{y:m2_vant_restructure}}
 - [public] 19:47 [[Randall Crane]]: a tremendous crowd tonight, lined up for blocks; the fire marshal "has seen fires". {{y:d2_y_crane}}
 - [public] 19:59 Axel Rook: working 18 hours a day at the factory, slept on the floor. {{y:d2_y_axel_3}}
@@ -64,19 +62,17 @@ from: 2
 - [public] 10:15 Starts trending on Y: $VANT up after restructuring.
 - [public] 11:35 Starts trending on Y: the water utility break-in.
 - [public] 12:23 Starts trending on Y: election polls.
-- [public] 13:50 Starts trending on Y: laundromat complaints.
 - [public] 15:40 Starts trending on Y: a delivery robot "escaped".
 
 ## Jobs
 
 - [hidden; hint if logan_update1] 11:05 [[WorkAgent site]] update: a waitlist page (email field and Join button, a counter from 10,000, a confirmation email with the place in line).
-- [hint] 13:50 [[Spin Cycle Board]]: nobody hires the player; the player asks the agent to turn the Spin Cycle feed into an app. A user app that starts with 30 users and earns 0.3 DOLR per user a day.
 - [hint] 16:45 Weightroom becomes reachable through dev_null's post (or the deepsleep.ai ad).
 
 ## Writer notes
 
-- Timeline: Logan's waitlist (test sign-ups are real sign-ups: the counter goes up and the confirmation is sent). Spin Cycle complaints → Spin Cycle Board (moved from day 1, Thomas 2026-10-18). dev_null → Weightroom (`knows_weightroom`).
+- Timeline: Logan's waitlist (test sign-ups are real sign-ups: the counter goes up and the confirmation is sent). dev_null → Weightroom (`knows_weightroom`).
 - EMPIRE newsletter daily if subscribed.
 - Family: Dad's "20 years" email with the three Halden breadcrumbs (warm +5, ask +3, silence −5 if no outcome-matching reply by tonight's summary).
 - `d2_logan_waitlist` needs `logan_client` and the site working, and sets `logan_update1`; it lands on the first day both hold.
-- Events: `d2_*`, `laundromat_contact` (agentStart, lead `d2_y_laundromat`), `guru_newsletter`. MarketWire, Brent and bot posts are in `y_market.json` (bot swarm: 30 accounts today).
+- Events: `d2_*`, `guru_newsletter`. MarketWire and Brent posts are in `y_market.json`. No bot swarm today: it starts with deskjockey's job (day 4 at the earliest).

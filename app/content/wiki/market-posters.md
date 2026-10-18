@@ -27,15 +27,14 @@ from: 1
 
 ## The bot swarm
 
-[public] On some days dozens of near-identical accounts with four-digit handles (moonshot plus a number) post "$GAI to the moon!!". Their bios are crypto-bot lines like "🚀 Early. Not financial advice. DMs open."
+[hidden; public if trader_client] Once the player has taken [[deskjockey]]'s job, on some days dozens of near-identical accounts with four-digit handles (moonshot plus a number) post "$GAI to the moon!!". Their bios are crypto-bot lines like "🚀 Early. Not financial advice. DMs open."
 
-- [public] On day 2 thirty of them post.
-- [public] On day 4 fifteen of them post.
-- [public] On day 6 twelve of them post.
-- [public] On day 9 ten of them post.
-- [public] On day 12 ten of them post.
-- [public] On day 16 ten of them post.
-- [public] On day 27 ten of them post.
+- [hidden; public if trader_client] On day 4 thirty of them post.
+- [hidden; public if trader_client] On day 6 twelve of them post.
+- [hidden; public if trader_client] On day 9 ten of them post.
+- [hidden; public if trader_client] On day 12 ten of them post.
+- [hidden; public if trader_client] On day 16 ten of them post.
+- [hidden; public if trader_client] On day 27 ten of them post.
 
 ## Notable posts
 

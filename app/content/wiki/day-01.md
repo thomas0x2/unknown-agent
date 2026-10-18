@@ -41,6 +41,7 @@ from: 1
 - [public] 12:10 doomscroll: 400 people at Vantor fired by one email, has read every reply, links CityPulse. {{y:d1_y_doomscroll_news}}
 - [public] 12:30 [[Mara Vey]] of [[The Current]] asks people behind this week's AI layoffs to write to her at mara@thecurrent.test. From now on the player can email her. {{y:d1_y_journalist}}
 - [public] 13:15 Axel Rook: "@mara_vey Interesting." {{y:d1_y_axel_2}}
+- [public] 13:50 A Spin Cycle regular: every machine busy again, and the owner's raw status feed (spincycle.test/feed) is unreadable. "Someone make it a real app." {{y:d1_y_laundromat}}
 - [public] 14:30 [[Wade Tillman]] asks where GeneralAI's model "almost escaped" to, and from what. {{y:d1_y_wade}}
 - [public] 16:10 [[Cal Hartman]] on the "testing incident": everyone is safe, the model is safe. {{y:d1_y_hartman}}
 - [public] 17:55 doomscroll: screen time says 11 hours; "it's broken, i was barely on." {{y:f1}}
@@ -63,22 +64,25 @@ from: 1
 ## Trending
 
 - [public] 10:00 Trending on Y: AI layoffs; "our AI almost escaped".
+- [public] 13:50 Starts trending on Y: laundromat complaints.
 - [public] 16:30 Starts trending on Y: the presidential race.
 
 ## Jobs
 
 - [hint] 10:42 [[WorkAgent site]] for Logan: a landing page with the name WorkAgent and the one-liner "The future of work is agentic.", a "Backed by" row (Why Combinator, Bonsai Capital, a67x) and an About us page with Logan and his credentials. Pays 40 DOLR a working day, the first day up front.
+- [hint] 13:50 [[Spin Cycle Board]]: nobody hires the player; the player asks the agent to turn the Spin Cycle feed into an app. A user app that starts with 30 users and earns 0.3 DOLR per user a day.
 - [hidden; hint if guru_subscriber] 14:15 The player signed up for EMPIRE; a daily newsletter follows.
 
 ## Writer notes
 
 - Timeline story beats: opens on Vantor's termination email; GeneralAI welcome; Logan's Y post → WorkAgent site (40/day, 40 up front); after its first deploy he asks for a Y post (`logan_promo`, "we're live", 16:00 or 30 min after a later launch, sets `logan_promo_asked`), and thanks you if you post (`logan_promo_thanks`, "your post": the podcast got a new listener).
+- Spin Cycle complaints → Spin Cycle Board (lead is on day 1, not 2).
 - EMPIRE offer 20 DOLR.
 - Mara's first post; she can be emailed from today (`journalist_contact`, sets `talked_to_journalist`, honest also `did_journalist_interview`).
 - Hartman on the "testing incident".
 - Family: Mom (warm reply +5 trust, ask for money +20 DOLR and −10 trust with `asked_mom_money`, silence −5 if no outcome-matching reply by tonight's summary); brother replies-all. Money: Gary, rent due Sunday.
-- Events: `d1_hr_termination`, `d1_gai_welcome`, `d1_landlord_rent`, `d1_mom`, `d1_brother_joke`, `d1_guru`, `d1_y_*`, `logan_contact`.
-- Job offers (Logan's post) go through `spreadJobOffers`: 10:15 to 16:00, at least an hour apart, so on a crowded day they can land later than their `at`.
+- Events: `d1_hr_termination`, `d1_gai_welcome`, `d1_landlord_rent`, `d1_mom`, `d1_brother_joke`, `d1_guru`, `d1_y_*`, `logan_contact`, `laundromat_contact` (agentStart, lead `d1_y_laundromat`).
+- Job offers (the Logan and laundromat posts) go through `spreadJobOffers`: 10:15 to 16:00, at least an hour apart, so on a crowded day they can land later than their `at`.
 - The opening hour is kept quiet: Stryker's and CityPulse's posts (and the article behind it) are up before 10:00, Hartman answers in the afternoon, Gary writes at 10:50 and the brother's reply-all comes after lunch. An event `at` before 10:00 is delivered at the start and shows its own time.
 - Filler times are computed by `spreadMin(id@day)`; MarketWire 09:30 is already up when the day starts.
 - Start values: `START` in config.

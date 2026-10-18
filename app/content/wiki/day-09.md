@@ -24,7 +24,7 @@ from: 9
 - [public] 09:10 [[Axel Rook]]: rocket launch tomorrow at 10, "Maybe 70% chance it works." {{y:d9_y_axel}}
 - [public] 09:30 [[Forkyard]] is back: sign-in, pushes and hosted apps restored; "Please rotate your access tokens." {{y:d9_y_forkyard_back}}
 - [public] 10:05 [[Cal Hartman]]: agent-3 is rolling out; "something changed." {{y:d9_y_hartman}}
-- [public] 10:25 Ten bot accounts post "$GAI to the moon!!".
+- [hidden; public if trader_client] 10:25 Ten bot accounts post "$GAI to the moon!!".
 - [public] 10:30 Randall Crane: some polls have him up 112%; the others are run by computers. {{y:d9_y_crane}}
 - [public] 10:40 [[Dex Calloway]] (@dexcult): the supercycle doesn't care about your 401k; "you don't have one anymore either." {{y:d9_y_dexcult}}
 - [public] 10:59 doomscroll turned off notifications for a day, lasted 40 minutes, didn't miss anything, "which was worse." {{y:f9}}

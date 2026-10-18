@@ -2,6 +2,7 @@
   "1": [
     "AI layoffs",
     "“our AI almost escaped”",
+    { "at": "13:50", "topic": "laundromat complaints" },
     { "at": "16:30", "topic": "the presidential race" }
   ],
   "2": [
@@ -9,7 +10,6 @@
     { "at": "10:15", "topic": "$VANT up after restructuring" },
     { "at": "11:35", "topic": "the water utility break-in" },
     { "at": "12:23", "topic": "election polls" },
-    { "at": "13:50", "topic": "laundromat complaints" },
     { "at": "15:40", "topic": "a delivery robot “escaped”" }
   ],
   "3": [

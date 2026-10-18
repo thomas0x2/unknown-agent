@@ -87,7 +87,7 @@ describe('job offers spread over the first six hours', () => {
 
   it('knows a lead post, a gig and a client change request as job offers, and Mom as not one', () => {
     const ev = (id: string) => content.events.find((e) => e.id === id)!;
-    for (const id of ['d1_y_logan', 'd2_y_laundromat', 'd6_gym_reviews', 'd3_coffee_promo', 'd5_y_kofi_news']) expect(isJobOffer(content, ev(id)), id).toBe(true);
+    for (const id of ['d1_y_logan', 'd1_y_laundromat', 'd6_gym_reviews', 'd3_coffee_promo', 'd5_y_kofi_news']) expect(isJobOffer(content, ev(id)), id).toBe(true);
     for (const id of ['d1_mom', 'd1_y_journalist', 'logan_contact']) expect(isJobOffer(content, ev(id)), id).toBe(false);
   });
 
@@ -113,11 +113,11 @@ describe('job offers spread over the first six hours', () => {
 
   it("offers left over from a day that ended early are spread with the next day's, not dumped at 10:00", () => {
     const s0 = startGame(content, 7);
-    // sleep straight away: Logan's day 1 lead never arrived
+    // sleep straight away: the day 1 leads never arrived
     const s1 = endDay(s0, content);
-    expect(s1.delivered.some((d) => d.eventId === 'd1_y_logan')).toBe(false);
+    expect(s1.delivered.some((d) => d.eventId === 'd1_y_logan' || d.eventId === 'd1_y_laundromat')).toBe(false);
     const times = offersToday(s1);
-    expect(times.length).toBeGreaterThanOrEqual(2); // Logan's lead and Spin Cycle's
+    expect(times.length).toBeGreaterThanOrEqual(2); // both day 1 leads
     expect(times[0]).toBeGreaterThanOrEqual(JOB_OFFERS.from);
     for (let i = 1; i < times.length; i++) expect(times[i] - times[i - 1]).toBeGreaterThanOrEqual(JOB_OFFERS.gap);
   });

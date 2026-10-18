@@ -79,20 +79,6 @@
       "mood": "bullish"
     },
     {
-      "id": "m2_nova_bots",
-      "day": 2,
-      "at": "17:30",
-      "from": "moonshot",
-      "handle": "moonshot",
-      "body": "$GAI to the moon!!",
-      "likes": 1,
-      "tickers": [
-        "GAI"
-      ],
-      "mood": "bullish",
-      "bots": 30
-    },
-    {
       "id": "m2_vant_layoffs",
       "day": 2,
       "at": "18:36",
@@ -246,7 +232,7 @@
         "GAI"
       ],
       "mood": "bullish",
-      "bots": 15
+      "bots": 30
     },
     {
       "id": "m4_vant_crane",

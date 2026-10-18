@@ -28,7 +28,7 @@ from: 4
 - [public] 10:30 [[Dex Calloway]] (@dexcult): they gave you severance and a webinar; "we're giving you a countdown." {{y:d4_y_dexcult}}
 - [public] 11:30 [[Mara Vey]] follows up on the Vantor layoffs, 400 people, one memo: "tell me your story." {{y:d4_y_journalist}}
 - [public] [if talked_to_journalist] If the player already answered her, writing to her again gets "I already heard from you, thanks!" Otherwise the conversation is the one from day 1. {{mail:journalist_followup}}
-- [public] 11:31 Fifteen bot accounts post "$GAI to the moon!!".
+- [hidden; public if trader_client] 11:31 About thirty bot accounts post "$GAI to the moon!!". The swarms only post once the player has taken deskjockey's job.
 - [public] 11:43 [[6ft_sigma]]: needs someone to do his swiping on matchless.com, following his standards exactly. 35 DOLR a day for ten swipes, paid nightly, only if every one is right. {{y:d4_y_sigma}}
 - [public] 11:57 [[Max Stryker]]: GeneralAI doubled their prices, "Good." EMPIRE is now 400 DOLR, today only 20. {{y:d4_y_stryker}}
 - [public] 12:20 [[Axel Rook]]: Apogee rocket stacked on the pad. "Looks sick." {{y:d4_y_axel}}
