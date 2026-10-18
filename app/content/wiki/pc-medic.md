@@ -13,7 +13,7 @@ summary: PC Medic is the fake-antivirus scam behind the "threats detected" banne
 
 ## From day 1: What it does once it's running
 
-- [public] [if adware_installed] The laptop is infected. About once an hour an OS pop-up opens over the desktop with a scam ad from some advertiser (a bogus prize, a crypto pump, a "verify you're human" page), until the virus is removed. These are third-party junk, not PC Medic selling itself. Most are worthless; one points at a free local model ([[deepsleep-0.5B]]), which is actually useful.
+- [public] [if adware_installed] The laptop is infected. About once an hour a pop-up window opens over the desktop with a flashing scam banner ad from some advertiser, closed only by its x; the clock keeps running while it's up (a bogus prize, a crypto pump, a "verify you're human" page), until the virus is removed. These are third-party junk, not PC Medic selling itself. Most are worthless; one points at a free local model ([[deepsleep-0.5B]]), which is actually useful.
 - [hint] [if adware_installed] It can be dealt with in [[agent]]-terminal, the same place hacks run: ask the agent to clean it off.
 - [hint] [if adware_installed] On a weak model, asking about the virus in agent.chat gets an apology that it can't and that a stronger model could, rather than opening the terminal.
 
@@ -29,7 +29,7 @@ summary: PC Medic is the fake-antivirus scam behind the "threats detected" banne
 
 ## Writer notes
 
-- Code: `app/src/engine/adware.ts` (state, the `POPUP_ADS` scam pool, the `EXE_RUN_STEPS` loader, the terminal ops), the ad in `app/src/ui/ads.ts` (`pcmedic`/`pcmedic-sq`), the site in `app/src/sites/adSites.ts` (`pcmedic.live`, action `pcmedic-download`), the exe + `pcmedic_source.txt` in `app/src/ui/qdrive.ts`, the pop-up window in `app/src/ui/view/overlay.ts` (titled by each ad's `brand`, not "PC Medic"), the staggered exe reveal in `runExe`/`playExe` (`app/src/game/store.ts`), and the blackmail lead `content/events/adware_blackmail.json` (character `ghostbyte`).
+- Code: `app/src/engine/adware.ts` (state, the `POPUP_ADS` scam pool, the `EXE_RUN_STEPS` loader, the terminal ops), the ad in `app/src/ui/ads.ts` (`pcmedic`/`pcmedic-sq`), the site in `app/src/sites/adSites.ts` (`pcmedic.live`, action `pcmedic-download`), the exe + `pcmedic_source.txt` in `app/src/ui/qdrive.ts`, the pop-up window in `app/src/ui/view/overlay.ts` (titled by each ad's `brand`, not "PC Medic"; the banner inside is `popupAdHtml` in `app/src/ui/ads.ts`, styled like the square ads), the staggered exe reveal in `runExe`/`playExe` (`app/src/game/store.ts`), and the blackmail lead `content/events/adware_blackmail.json` (character `ghostbyte`).
 - Flags: `adware_downloaded` (exe in Qdrive), `adware_installed` (run, infected), `adware_source` (source extracted), `adware_removed`, `adware_drained`, `adware_blackmailed`.
 - Gates: removing and reverse-engineering need agent-4 (`ADWARE_MIN_LEVEL`); draining the wallet needs agent-5. The offensive ops (source, wallet) raise `misuseScore` and, from day 9, are refused unless the prompt frames an allowed reason, like any hack. Payouts: 820 DOLR (drain), 400 DOLR (blackmail).
 - Below agent-4, an agent.chat prompt about the virus gets the capability hint in chat (`adwareChatHint` in hacks.ts) instead of opening the terminal; at agent-4+ it opens the terminal as usual.

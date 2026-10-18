@@ -271,10 +271,10 @@ export class GameStore {
     deliverArrivals(s, this.content);
   }
 
-  /** A dialog is up (or the run is over), so time stands still. */
+  /** A dialog is up (or the run is over), so time stands still. Adware pop-ups don't count: ads don't wait for you. */
   get dialogOpen(): boolean {
     const s = this.state;
-    return !!(s.ending || s.morning || this.ui.jevOffline || this.ui.confirm || this.ui.memWarn || this.ui.greet || this.ui.intro || s.adware?.popup);
+    return !!(s.ending || s.morning || this.ui.jevOffline || this.ui.confirm || this.ui.memWarn || this.ui.greet || this.ui.intro);
   }
   get clockPaused(): boolean {
     return this.clockHeld || this.dialogOpen || (typeof document !== 'undefined' && document.hidden);

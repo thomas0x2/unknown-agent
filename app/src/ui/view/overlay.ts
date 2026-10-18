@@ -4,6 +4,7 @@
 import { GameStore } from '../../game/store';
 import { type GameState, RENT, dateMedium, dateFull, openPopup } from '../../engine';
 import { esc, fmtMoney } from './common';
+import { popupAdHtml } from '../ads';
 
 // ── overlay (intro / morning / confirm / ending) ──
 const ENDINGS: Record<string, string> = {
@@ -91,10 +92,7 @@ export function overlayHtml(store: GameStore): string {
   }
   const pop = openPopup(s);
   if (pop) {
-    return osWindow(pop.brand, 'ov-small ov-adpop', `<p class="ov-eyebrow">Pop-up ad · ${esc(pop.brand)}</p><h2>${esc(pop.title)}</h2>
-      <p>${esc(pop.body)}</p>
-      <div class="ov-actions"><button class="btn" data-ov="adpop-close">Close</button><button class="btn primary" data-ov="adpop-go" data-url="${esc(pop.href)}">${esc(pop.cta)}</button></div>
-      <p class="ov-dim ov-adpop-fine">${esc(pop.fine)}</p>`, 'adpop-close');
+    return osWindow(pop.brand, 'ov-adpop', popupAdHtml(pop), 'adpop-close');
   }
   return '';
 }
