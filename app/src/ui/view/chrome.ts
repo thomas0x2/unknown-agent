@@ -80,11 +80,10 @@ export function taskTitle(store: GameStore): string {
   return `Browser — ${r.site === 'newtab' ? 'New tab' : store.url}`;
 }
 
-/** The window list: the browser, and the Terminal once a model is on the laptop. */
+/** The window list: the browser and the Terminal. */
 export function tasksHtml(store: GameStore): string {
   const { termOpen, termShown } = store.ui;
   const browser = `<button class="dk-task${termShown ? ' open' : ' on'}" data-task="browser" title="${esc(taskTitle(store))}" aria-label="Browser">${BROWSER_ICON}</button>`;
-  if (!store.termTabs().length) return browser;
   const cls = termShown ? ' on' : termOpen ? ' open' : '';
   return browser + `<button class="dk-task dk-term${cls}" data-task="terminal" title="Terminal" aria-label="Terminal">${ICONS.terminal}</button>`;
 }

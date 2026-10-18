@@ -3,6 +3,7 @@
  * wires input (event delegation, same architecture as the legacy game). No framework: the shell in
  * index.html is static and we fill #tabs / #bookmarks / #viewport / the taskbar / #overlay / #dev.
  */
+import { mountInvaders } from './ui/invaders';
 import './style.css';
 import './ui/coinbin.css';
 import './ui/sherwood.css';
@@ -215,13 +216,17 @@ function renderTerm(): void {
   const typed = old?.value ?? '';
   // a prompt that was waiting on the agent gets the focus back when it's free again
   const hadFocus = !!old && (document.activeElement === old || old.disabled);
+  // a running invaders.exe keeps its canvas: repainting the log would end the game
+  const playing = store.ui.invaders && store.termTabShown() === 'shell' && !!$('#inv-canvas');
   if (!win.firstElementChild) win.innerHTML = V.termWindowHtml(store);
   else {
-    $('#tm-log')!.innerHTML = V.termBodyHtml(store);
+    if (!playing) $('#tm-log')!.innerHTML = V.termBodyHtml(store);
     $('#tw-tabs')!.innerHTML = V.termTabsHtml(store);
     $('#tw-title')!.textContent = V.termTitle(store);
   }
   const log = $('#tm-log')!; log.scrollTop = log.scrollHeight;
+  const canvas = $<HTMLCanvasElement>('#inv-canvas');
+  if (canvas) mountInvaders(canvas, (lines) => store.endInvaders(lines));
   const input = $<HTMLInputElement>('#termwin .tm-in input');
   if (input) {
     if (old?.id === input.id) input.value = typed;

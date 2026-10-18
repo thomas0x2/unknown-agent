@@ -11,6 +11,7 @@ from: 1
 
 - [public] 10:00 The player has 100 DOLR, 12 Y followers and agent-1, and has just been laid off from [[Vantor Group]].
 - [public] 10:00 A laptop window says the Vantor work profile was removed overnight; personal files were not affected.
+- [public] 10:00 The [[Terminal]] sits in the taskbar next to the browser, a bare you@laptop shell with no model on it.
 
 ## Mail
 
