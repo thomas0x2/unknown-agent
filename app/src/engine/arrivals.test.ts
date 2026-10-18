@@ -41,7 +41,7 @@ describe('timed arrivals', () => {
     };
     const ids = (t: ReturnType<typeof startGame>) => [...t.delivered.map((d) => d.eventId), ...(t.arriving ?? []).map((a) => a.eventId)];
     const seen = day2();
-    expect(seen.delivered.find((d) => d.eventId === 'd2_y_laundromat')?.min).toBe(at('17:50'));
+    expect(seen.delivered.find((d) => d.eventId === 'd2_y_laundromat')?.min).toBe(at('14:00'));
     expect(ids(endDay(seen, content))).toContain('d3_y_laundromat');
     const built = day2();
     built.flags.push('laundromat_live');
@@ -127,7 +127,7 @@ describe('job offers spread over the first six hours', () => {
       deliverArrivals(s, content);
       s = { ...endDay(s, content), morning: null };
     }
-    expect([...late].sort((a, b) => a - b)).toEqual([at('17:50'), at('19:00')]); // the Spin Cycle lead in the late afternoon, the deepfake gig in the evening
+    expect([...late].sort((a, b) => a - b)).toEqual([at('19:00')]); // the deepfake gig in the evening
   });
 
   it("offers left over from a day that ended early are spread with the next day's, not dumped at 10:00", () => {

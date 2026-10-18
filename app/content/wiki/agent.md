@@ -23,10 +23,11 @@ keys: what can you do, can you do, prompt, prompts, prompt cost
 - [public] agent-3 costs 20 DOLR a night, 2 DOLR per prompt and 0.03 DOLR per word, and checks deployments and reports what broke.
 - [public] agent-4 costs 35 DOLR a night, 3 DOLR per prompt and 0.05 DOLR per word, and fixes and redeploys on its own: "Stops asking first."
 - [public] agent-5 costs 60 DOLR a night, 5 DOLR per prompt and 0.08 DOLR per word, and the Models page describes it as "Everything" and "Near-flawless".
-- [public] agent-2 works 1.25 times as fast as agent-1.
-- [public] agent-3 works about 1.5 times as fast as agent-1.
-- [public] agent-4 works twice as fast as agent-1.
-- [public] agent-5 works 2.5 times as fast as agent-1.
+- [public] agent-1 is slow: a build or fix takes it 1.5 times the base time, caps included (a full build up to about 2 hours 15 minutes of game time).
+- [public] agent-2 works about 1.9 times as fast as agent-1.
+- [public] agent-3 works about 2.3 times as fast as agent-1.
+- [public] agent-4 works 3 times as fast as agent-1.
+- [public] agent-5 works about 3.8 times as fast as agent-1.
 
 [public] The Models page (agent.chat/models) lists only the models already rolled out, with the one in use marked. GeneralAI's banner ads link there.
 - [public] {{mail:d4_gai_level2}}
@@ -43,7 +44,7 @@ keys: what can you do, can you do, prompt, prompts, prompt cost
 
 ## From day 5: agent-terminal, where agent hacks
 
-[public] **agent-terminal.** agent never hacks from agent.chat. Asked to break into something, it says it needs a real shell ("That needs a real shell. Opening agent-terminal.") and, after a moment to read that, agent.chat shows a "Starting agent-terminal" loading line ("agent-terminal 0.9.3 · GeneralAI", "session logged for quality and safety purposes") before the [[Terminal]] opens an agent-terminal tab with an "agent ›" prompt and a status line with the model and the guardrails. Terminal prompts are billed like chat prompts. Typing exit drops the job.
+[public] **agent-terminal.** agent never hacks from agent.chat. Asked to break into something, it says it needs a real shell ("That needs a real shell. Opening agent-terminal.") and, after a moment to read that, agent.chat shows a "Starting agent-terminal" loading line ("agent-terminal 0.9.3 · GeneralAI", "session logged for quality and safety purposes") before the [[Terminal]] opens an agent-terminal session with an "agent ›" prompt and a status line with the model and the guardrails. After that, typing agent at the Terminal's shell starts a session. Terminal prompts are billed like chat prompts. Typing exit or quit ends the session and drops a blocked job.
 
 [hint] In agent-terminal the prompt has to name the job and every step of its path (site, business, account); a missing step gets "Which business? I need it named before I touch anything." Its log says what it did, never how ("requesting removal … accepted"). Some jobs need one more thing said: Iron Yard's reviews come from one account unless the prompt asks for different names. The client pays during the night, not when the hack lands.
 

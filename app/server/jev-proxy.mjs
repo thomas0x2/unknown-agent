@@ -72,7 +72,7 @@ async function write(body) {
   const situation = String(body.situation ?? '').slice(0, 800).trim();
   // a Y regular replying under the player's post (src/engine/yReplies.ts)
   const system = body.mode === 'y'
-    ? `${ch.profile}\n\n${situation}\n\nThis is a reply on a social network in a satirical game. React to what the post says, in character, as a stranger scrolling past. ` +
+    ? `${ch.profile}\n\n${situation}\n\nThis is a post on a social network in a satirical game, about the post below; the game tags its author for you. React to what it says, in character, as a stranger scrolling past. ` +
       `No advice, no hashtags, no @ mentions, no links. ${form}`
     : situation
     ? `${ch.profile}\n\n${situation}\n\nThis is a chat message in a satirical game. Reply in character, as a private seller texting a buyer on a classifieds site. ` +

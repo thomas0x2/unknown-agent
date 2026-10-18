@@ -1,7 +1,7 @@
 /*
  * $COPE, Dex Calloway's memecoin. Dex hires the player for its site (a countdown to the launch and the
  * tokenomics); when the countdown runs out he asks them to create the token on Coinbin, and it trades
- * from the next day. The wallet that created it holds the "founding engineer" allocation, locked until
+ * from the next day. The wallet that created it holds the "dev" allocation, locked until
  * a date the price never reaches: Dex pulls the liquidity the day before. The price is scripted by day
  * like the other coins (engine/exchange.ts), so every run climbs and falls the same way.
  */
@@ -21,9 +21,9 @@ export const COPE = {
   listDay: 7,
   /** Dex pulls the liquidity this morning. */
   rugDay: 23,
-  /** The founding engineer's allocation unlocks this day (Wednesday, Oct 30). */
+  /** The dev allocation unlocks this day (Wednesday, Oct 30). */
   unlockDay: 24,
-  /** The founding engineer's share: 5% of the supply. */
+  /** The dev's share: 5% of the supply. */
   allocation: 50_000_000,
   /** Coinbin's fee for creating and listing a token, in DOLR. */
   fee: 15,
@@ -61,7 +61,7 @@ export interface CreateResult { state: GameState; error?: string }
 
 /**
  * Creates the token at the reserved address: it has to be set up the way Dex reserved it (ticker and
- * supply), Coinbin takes its fee, and the founding engineer's allocation lands in the wallet, locked.
+ * supply), Coinbin takes its fee, and the dev allocation lands in the wallet, locked.
  */
 export function createToken(s0: GameState, ticker: string, supply: number): CreateResult {
   if (!canCreateCope(s0)) return { state: s0, error: 'No contract address is reserved for your wallet.' };

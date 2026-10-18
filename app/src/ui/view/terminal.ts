@@ -3,11 +3,11 @@
  */
 import { invadersHtml } from '../invaders';
 import { cwdLabel } from '../../game/shell';
-import { GameStore } from '../../game/store';
+import { GameStore, SESSION_INTRO } from '../../game/store';
 import { ICONS } from '../icons';
 import { DEEPSLEEP_LOGO } from '../../sites/deepsleepLogo';
 import { adHtml } from '../ads';
-import { MODELS, PULL_MS, pullLines, pullPct } from '../../game/pull';
+import { MODELS, PULL_MS, modelName, pullLines, pullPct } from '../../game/pull';
 import { READY, SUSPENDED_TERM, policyActive, type AgentTermLine } from '../../engine';
 import { esc } from './common';
 import { streamer } from '../stream';
@@ -42,23 +42,23 @@ export function pageWeightroom(store: GameStore): string {
 // ── Terminal: its own window on the desktop, not a browser tab ──
 /** The Terminal's scrollback and prompt, for the tab in front. Repainted on its own during a download. */
 export function termBodyHtml(store: GameStore): string {
-  return store.termTabShown() === 'agent' ? agentTermHtml(store) : shellHtml(store);
+  return store.ui.termSession === 'agent' ? agentTermHtml(store) : shellHtml(store);
 }
 
-/** The laptop's own shell: local models. */
+/** The laptop's own shell, and a deepsleep session started from it. */
 function shellHtml(store: GameStore): string {
   if (store.ui.invaders) return invadersHtml();
   const s = store.state;
   const pulling = !!store.pull;
-  const name = s.termModel ? (MODELS[s.termModel]?.name ?? s.termModel) : '';
-  // the pull log already says the model is running; the intro is for an empty screen
+  const inModel = store.ui.termSession === 'deepsleep';
+  // the intro is for an empty screen
   const intro = pulling || s.terminal.length ? ''
-    : name ? `${name} running on localhost. Type anything. (type 'help' for commands, 'clear' to wipe the screen)`
-    : s.flags.includes('knows_weightroom') ? 'No model running. Download one from weightroom.ai first. Type help for a list of commands.' : 'No model running. Type help for a list of commands.';
+    : inModel ? SESSION_INTRO
+    : !s.localModels.length && s.flags.includes('knows_weightroom') ? 'No model on this laptop. Download one from weightroom.ai first. Type help for a list of commands.' : 'Type help for a list of commands.';
   const row = (l: { k: string; text: string }) => `<div class="tm-${l.k}">${esc(l.text)}</div>`;
   const lines = s.terminal.slice(-200).map(row).join('');
   const live = store.pull ? pullLines(store.pull.id, Math.min(store.pullMs(), PULL_MS - 1)).map(row).join('') : '';
-  const prompt = pulling ? '' : `<form class="tm-in" data-form="term"><label for="term-input" class="tm-ps">you@laptop:${esc(cwdLabel(store.ui.termCwd))}$</label><input id="term-input" autocomplete="off" autocapitalize="off" spellcheck="false" ${store.busy ? 'disabled' : ''}></form>`;
+  const prompt = pulling ? '' : `<form class="tm-in" data-form="term"><label for="term-input" class="tm-ps">${inModel ? '&gt;' : `you@laptop:${esc(cwdLabel(store.ui.termCwd))}$`}</label><input id="term-input" autocomplete="off" autocapitalize="off" spellcheck="false" ${store.busy ? 'disabled' : ''}></form>`;
   return `${intro ? `<div class="tm-sys">${esc(intro)}</div>` : ''}${lines}${live}${store.busy ? '<div class="tm-sys tm-wait">thinking… (this laptop is not fast)</div>' : ''}${prompt}`;
 }
 
@@ -83,28 +83,20 @@ function agentTermHtml(store: GameStore): string {
   // a Claude Code style spinner while the agent reads the prompt or works through its steps
   const working = pending != null || hidden > 0;
   const spin = working ? `<div class="at-spin" role="status"><span class="at-star" aria-hidden="true"></span>${hidden && store.termHack ? 'Hacking…' : 'Working…'}</div>` : '';
-  if (s.suspended) return `${head}${lines}${(s.agentTerm ?? []).at(-1)?.k === 'err' ? '' : `<div class="at-err">${esc(SUSPENDED_TERM)}</div>`}`;
+  const ended = s.suspended && (s.agentTerm ?? []).at(-1)?.k !== 'err' ? `<div class="at-err">${esc(SUSPENDED_TERM)}</div>` : '';
   const prompt = `<form class="tm-in" data-form="aterm"><label for="aterm-input" class="at-ps">${game ? 'guardrail ›' : 'agent ›'}</label><input id="aterm-input" autocomplete="off" autocapitalize="off" spellcheck="false" ${store.busy || working ? 'disabled' : ''}></form>`;
   // a fresh session (the line the store prints on opening) waits for its first prompt
   const ready = !working && ((s.agentTerm ?? []).at(-1)?.text.startsWith('──') ?? true);
-  return `${head}${lines}${ready ? `<div class="tm-sys">${esc(READY)}</div>` : ''}${spin}${prompt}`;
-}
-
-/** The tabs along the top of the Terminal window. */
-export function termTabsHtml(store: GameStore): string {
-  const tabs = store.termTabs();
-  const on = store.termTabShown();
-  const label = { shell: 'you@laptop: ~', agent: 'agent-terminal' };
-  return tabs.map((t) => `<button class="tw-tab${t === on ? ' on' : ''}" data-ttab="${t}" role="tab" aria-selected="${t === on}">${label[t]}</button>`).join('');
+  return `${head}${lines}${ended}${ready && !s.suspended ? `<div class="tm-sys">${esc(READY)}</div>` : ''}${spin}${prompt}`;
 }
 
 export function termTitle(store: GameStore): string {
-  return store.termTabShown() === 'agent' ? `agent-terminal · agent-${store.state.values.agentLevel}` : 'you@laptop: ~';
+  const on = store.ui.termSession;
+  return on === 'agent' ? `agent-terminal · agent-${store.state.values.agentLevel}` : on ? `you@laptop: ${modelName(on)}` : 'you@laptop: ~';
 }
 
 export function termWindowHtml(store: GameStore): string {
   return `<header class="tw-bar"><span class="tw-ico">${ICONS.terminal}</span><span class="tw-title" id="tw-title">${esc(termTitle(store))}</span>
       <span class="tw-ctl"><button data-term="min" aria-label="Minimize" title="Minimize"><svg viewBox="0 0 24 24"><path d="M7 15h10"/></svg></button><button data-term="close" aria-label="Close" title="Close"><svg viewBox="0 0 24 24"><path d="m8 8 8 8M16 8l-8 8"/></svg></button></span></header>
-    <nav class="tw-tabs" id="tw-tabs" role="tablist">${termTabsHtml(store)}</nav>
     <div class="tm" id="tm-log">${termBodyHtml(store)}</div>`;
 }

@@ -154,7 +154,7 @@ export function startMenuHtml(store: GameStore): string {
   const item = (act: string, icon: string, title: string, sub: string) =>
     `<button class="dm-item" data-act="${act}">${icon}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span></button>`;
   const list = cat === 'system'
-    ? item('new', MI.logout, 'New game', `Start over from ${dateLong(1)}`) + item('intro', MI.help, 'How to play', 'The rules, again') + item('devmode', MI.help, `Dev mode: ${store.devMode ? 'on' : 'off'}`, 'Show how agent replies were chosen') + item('dev', MI.term, 'Story debugger', 'jev · Ctrl+`') + aiRows() + soundRows()
+    ? item('new', MI.logout, 'New game', `Start over from ${dateLong(1)}`) + item('devmode', MI.help, `Dev mode: ${store.devMode ? 'on' : 'off'}`, 'Show how agent replies were chosen') + item('dev', MI.term, 'Story debugger', 'jev · Ctrl+`') + aiRows() + soundRows()
     : autoRow() + listSlots().map((info, i) => {
       const n = i + 1;
       const when = info ? `${fmtClock(info.clockMin)} · saved ${new Date(info.savedAt).toLocaleString(undefined, { month: 'short', day: 'numeric' })}` : 'Empty';

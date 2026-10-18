@@ -26,7 +26,7 @@ keys: laundromat, laundry
 
 [public] His customers post on [[Y]] as "Spin Cycle regulars" (@spin_cycle_regulars, bio "Unofficial account for the people waiting at Spin Cycle. Never trust machine 3.").
 
-[public] On [[Day 2]] (17:50) they complain that every machine is busy again and the owner's raw status feed is unreadable: "Someone make it a real app." Nobody hires the player for it; the player can ask [[agent]] to build an app from the feed. {{y:d2_y_laundromat}} If nobody built it, they ask again on [[Day 3]] (18:15). {{y:d3_y_laundromat}}
+[public] On [[Day 2]] (14:00) they complain that every machine is busy again and the owner's raw status feed is unreadable: "Someone make it a real app." Nobody hires the player for it; the player can ask [[agent]] to build an app from the feed. {{y:d2_y_laundromat}} If nobody built it, they ask again on [[Day 3]] (18:15). {{y:d3_y_laundromat}}
 
 ## From day 5: Four more machines
 

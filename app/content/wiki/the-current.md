@@ -9,7 +9,7 @@ from: 1
 
 ## thecurrent.test
 
-[public] Its logo is two white waves on a deep teal tile, used for the favicon, the site's masthead and the newsletter. A plain serif newspaper site in dark teal, reachable from the start by address or link, never bookmarked. The front page leads with the latest morning edition the player received, then lists its stories.
+[public] Its logo is two white waves on a deep teal tile, used for the favicon, the site's masthead and the newsletter. A plain serif newspaper site in dark teal, reachable from the start by address or link, never bookmarked. The front page reads like a newspaper's: today's date under the masthead, the latest morning edition the player received as the lead story, Mara's article below it once it's out, and a side column with the earlier editions (newest first, each on its own page at thecurrent.test/edition-N) and a short About box (reader-funded, the edition goes out at 10:00, polls come with sample size and margin of error, no Y polls). Only editions that have reached the player exist; there is never a story ahead of its day.
 
 ## Morning newsletter
 

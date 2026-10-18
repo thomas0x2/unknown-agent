@@ -18,7 +18,8 @@ export function pageAdSite(url: string, state: GameState, notice = '', extra = '
   const stats = rows?.length
     ? `<div class="lp-stats">${rows.map(([v, l]) => `<div><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join('')}</div>` : '';
   const cards = (typeof s.cards === 'function' ? s.cards(state) : s.cards).map(([h, p], i) => `<article class="lp-card"><span class="lp-n">${i + 1}</span><h2>${esc(h)}</h2><p>${esc(p)}</p></article>`).join('');
-  const link = s.link ? `<p class="lp-link">${esc(s.link[0])} <a href="#" data-nav="${esc(s.link[2])}">${esc(s.link[1])}</a></p>` : '';
+  const linkLogo = s.link && adSite(s.link[2])?.logo;
+  const link = s.link ? `<p class="lp-link">${esc(s.link[0])} <a href="#" data-nav="${esc(s.link[2])}">${linkLogo ? `<span class="lp-link-logo">${linkLogo}</span>` : ''}${esc(s.link[1])}</a></p>` : '';
   const action = s.action ? `<div class="lp-action"><button type="button" class="lp-btn" data-act="${esc(s.action[1])}">${esc(s.action[0])}</button>${notice ? `<p class="lp-notice" role="status">${esc(notice)}</p>` : ''}</div>` : '';
   const quote = s.quote ? `<blockquote class="lp-quote"><p>“${esc(s.quote[0])}”</p><cite>${esc(s.quote[1])}</cite></blockquote>` : '';
   return `<div class="lp lp-k-${s.kit} lp-t-${s.theme}">

@@ -14,6 +14,7 @@ function logan(): { s: GameState; id: string } {
   const s = clone(newGame(3));
   s.phase = 'work';
   s.values.crypto = 1000;
+  s.flags.push('first_break'); // the first-night break is taught already: only the bugs set here break it
   const id = registerApp(s, {
     template: 'startup', kind: 'client', name: 'WorkAgent', clientEventId: 'logan_contact', payPerDay: 40,
     spec: [

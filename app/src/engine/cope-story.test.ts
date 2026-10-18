@@ -1,6 +1,6 @@
 /*
  * Dex Calloway and $COPE as the story runs it: the coin site job, the token on launch day, the
- * founding engineer's locked allocation, one paid shill post a day, and the rug on day 23.
+ * dev's locked allocation, one paid shill post a day, and the rug on day 23.
  */
 import { describe, it, expect } from 'vitest';
 import { loadContent } from '../content/load';

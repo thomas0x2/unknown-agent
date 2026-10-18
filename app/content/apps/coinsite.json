@@ -200,7 +200,7 @@
     },
     {
       "id": "tokenomics",
-      "description": "a tokenomics page: the total supply and the allocation percentages, with the founding engineer's lock date",
+      "description": "a tokenomics page: the total supply and the allocation percentages, with the dev allocation's lock date",
       "aka": [
         "tokenomics page",
         "allocation page",
