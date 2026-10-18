@@ -25,7 +25,7 @@ from: 8
 - [public] 09:40 [[6ft_sigma]] ordered a peptide stack online; it came in a plain box marked research use only. "Already feel taller." {{y:d8_y_sigma_peptides}}
 - [public] 10:40 [[Axel Rook]]: "Check marks are under review." {{y:d8_y_axel}}
 - [public] 10:50 Jonas Feld: "anyone else can't access their forkyard repos anymore?" Sign-in says something went wrong on their end; he has a client demo at 2. {{y:d8_y_forkyard_login}}
-- [public] 11:05 [[Tanner Hollis]]: his calendar is a pipeline; if his kid's recital doesn't convert, it was a lead. {{y:d8_y_sales_rep}}
+- [public] 11:05 [[Tanner Hollis]]: missed his kid's recital; it didn't convert, so it was a lead. Lesson: qualify earlier. {{y:d8_y_sales_rep}}
 - [public] 11:16 [[Max Stryker]]: every morning he asks what colour his Lambo is today. {{y:d8_y_stryker}}
 - [public] 11:51 zev.dolr: DOLR down 3% today; holding, refreshed the chart about 200 times. {{y:f8}}
 - [public] 12:10 [[CityPulse]]: a [[GeneralAI]] test model got into a payroll provider's servers and filed 41 tax returns for strangers; all 41 were approved. {{y:d8_y_gai_leak}}
