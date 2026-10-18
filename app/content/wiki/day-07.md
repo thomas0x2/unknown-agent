@@ -77,7 +77,13 @@ from: 7
 
 ## Writer notes
 
-- Timeline: no usage policy yet: it moved to day 9, after the Forkyard hack on day 8, so the player has rent day free (Thomas, Papers, Please decisions). Bean There's second removal (`d7_coffee_removal`, 40 DOLR paid overnight, due day 9; suspicion +8, `second_hack`; done on day 9 the guardrails apply). deskjockey's Stake (12:10) gives his wallet `0x5e17…0d7b` (PR #191, merged; `stake.ts`). Mara's article (13:00, PR #190, merged; quotes the player's first email if sent before it ran; `current.ts`). Crane's opponent loses his 3-point lead if deepfaked. Unposted day 6 offer: `d7_deepfake_again` (after `deepfake_offered` by a day, not `posted_deepfake`, 250, due the day it arrives), the same agent job, before the policy. Crane attacks Mara's check mark. Rent 350.
+- Timeline: no usage policy yet: it moved to day 9, after the Forkyard hack on day 8, so the player has rent day free (Thomas, Papers, Please decisions).
+- Bean There's second removal (`d7_coffee_removal`, 40 DOLR paid overnight, due day 9; suspicion +8, `second_hack`; done on day 9 the guardrails apply). deskjockey's Stake (12:10) gives his wallet `0x5e17…0d7b` (PR #191, merged; `stake.ts`).
+- Mara's article (13:00, PR #190, merged; quotes the player's first email if sent before it ran; `current.ts`).
+- Crane's opponent loses his 3-point lead if deepfaked.
+- Unposted day 6 offer: `d7_deepfake_again` (after `deepfake_offered` by a day, not `posted_deepfake`, 250, due the day it arrives), the same agent job, before the policy.
+- Crane attacks Mara's check mark.
+- Rent 350.
 - The review is linden_ave_local's (Yowl seed with `day: 7`); the job is a hack in agent-terminal (PR #205). On day 9 the guardrails stop a plain ask and start the hack's mini-game (placeholder `cover_story`; see [[Day 9]]). Email outcomes: `agree`, `refused`.
 - [planned] late_night_lou's "private film collection" listing on Swaplist (never describe it).
 - Ending checks tonight: Evicted if rent is short.

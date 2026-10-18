@@ -81,7 +81,9 @@ from: 3
 
 ## Writer notes
 
-- Timeline: guaranteed overnight break (`d3_break`, breakApp; Forkyard alert). Coinbin phishing (coinbln.com; the real password empties the wallet to `0x9c1f…e07b`, flag `coinbin_hacked`). deskjockey's auto-buy (needs `trader_client` and Vibe Check working): 90 game min after it first goes live Crane praises $APO (`trader_y_crane_apo`) and Axel replies "@randall_crane 🚀" 6 min later (`trader_y_axel_apo`); deployed late, both move to the next morning. The bot buys 2,000 $APO.
+- Timeline: guaranteed overnight break (`d3_break`, breakApp; Forkyard alert).
+- Coinbin phishing (coinbln.com; the real password empties the wallet to `0x9c1f…e07b`, flag `coinbin_hacked`). deskjockey's auto-buy (needs `trader_client` and Vibe Check working): 90 game min after it first goes live Crane praises $APO (`trader_y_crane_apo`) and Axel replies "@randall_crane 🚀" 6 min later (`trader_y_axel_apo`); deployed late, both move to the next morning.
+- The bot buys 2,000 $APO.
 - Bean There paid shout-out `d3_coffee_promo` needs 25+ followers and asks for a tag of @bean_there. Payment comes with her answer to the Y post (`yPost` group `coffee_post`, 30 game minutes after it): 30 undisclosed (`coffee_post_paid`, suspicion +2, schedules `d5_coffee_backlash` two days on), 10 disclosed (`coffee_post_disclosed`), nothing if negative (`coffee_post_trashed`). Its email (14:10) is the beat gated on `seen d3_coffee_promo`. Bean There's own Y post `d3_y_beanthere` (10:17) makes @bean_there a real account.
 - Viktor → Swaplist (`viktor_contact`, `swaplist_live`).
 - CityPulse "machines back" reactions came from PR #198 (merged).

@@ -1,7 +1,7 @@
 /*
  * Off-script character replies from Claude Haiku, through the local proxy (server/jev-proxy.mjs,
  * POST /api/write). The proxy holds ANTHROPIC_API_KEY and builds the prompt from
- * content/characters.json; the browser only sends which character is speaking, what the player
+ * content/characters/; the browser only sends which character is speaking, what the player
  * wrote, and the conversation so far. Used when the "Misses" setting on agent.chat is "Haiku (API)".
  */
 import type { Character } from '../content/schema';

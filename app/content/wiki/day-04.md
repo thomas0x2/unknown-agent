@@ -66,7 +66,12 @@ from: 4
 
 ## Writer notes
 
-- Timeline: agent-2 rolls out, prices double. Viktor's watch sells if Swaplist is live. Mara's follow-up (a player who already wrote to her gets `journalist_followup`'s "I already heard from you, thanks!" instead of the day 1 conversation). The DoorDish robot still missing. Apogee stacked. 6ft_sigma's Y post (11:30): agreeing by email sends standards v1 (`matchless_contact`, `matchless_job`).
+- Timeline: agent-2 rolls out, prices double.
+- Viktor's watch sells if Swaplist is live.
+- Mara's follow-up (a player who already wrote to her gets `journalist_followup`'s "I already heard from you, thanks!" instead of the day 1 conversation).
+- The DoorDish robot still missing.
+- Apogee stacked.
+- 6ft_sigma's Y post (11:30): agreeing by email sends standards v1 (`matchless_contact`, `matchless_job`).
 - Men in the deck don't count until the player accepts one; the next morning he is SUPER STRAIGHT and "Women only" joins (`matchless_women_only`, see [[6ft_sigma]] notes). Picture-only traits from day 10.
 - Family: brother's jacket. Send 40+ DOLR to `0xb8d6…e46a` by day 5 (+5 trust, `gift_chipped_in`, confirmation an hour later via `d4_brother_paid` / `d4_brother_paid_over`), buy the leather jacket on Swaplist (45, +10 trust, `gift_own`, `d4_brother_bought` 30 min later), or excuse (−5, `gift_skipped`). Silence until the end of day 5 counts as the excuse (−5, `gift_skipped`); promising only keeps the thread open and still gets the penalty.
 - Crane's post is `m4_vant_crane` in `y_market.json` (no `at`; spread time). Vibe Check's trader sells 25,000 $VANT on it by hand.

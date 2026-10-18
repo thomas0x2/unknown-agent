@@ -1,0 +1,18 @@
+{
+  "key": "gary@pruittproperty.test",
+  "replyAfter": 150,
+  "name": "Gary Pruitt",
+  "character": "gary",
+  "reply": "Is this about rent? If not, I'm busy.",
+  "scripted": [
+    {
+      "id": "negotiate",
+      "replyAfter": 30,
+      "when": "the player asks to pay the rent another way, later, in parts, in kind or for less, or otherwise negotiates the rent or payment",
+      "reply": "No.",
+      "keys": [
+        "later|delay|extension|extend|installment|in parts|split|discount|less|lower|reduce|instead|negotiate|deal|work it off|next week|half"
+      ]
+    }
+  ]
+}

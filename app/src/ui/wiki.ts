@@ -11,6 +11,7 @@ import type { Content } from '../content/schema';
 import {
   blockGates, blockWhy, childSections, EMBED, eventBody, eventSubject, findArticle, arrivalMin,
   parseWikiPage, formatWikiPage, parseTagRule, formatTagRule, evalTag, blockNow, queryCtx, seenRef, CITYPULSE, METERS,
+  wikiIndex, WIKI_CATEGORIES,
   type WikiPage, type WikiBlock, type WikiSection, type WikiTag, type TagStep, type WikiCtx,
 } from '../engine';
 
@@ -28,7 +29,7 @@ const W = {
   saving: false,
 };
 
-const CATS: [string, string][] = [['days', 'Days'], ['people', 'People'], ['family', 'Family'], ['companies', 'Companies'], ['sites', 'Sites'], ['apps', 'Apps'], ['world', 'World'], ['writers', 'Writers']];
+const CATS: [string, string][] = WIKI_CATEGORIES;
 const KINDS: [TagStep['kind'] | 'notflag', string][] = [['day', 'from day'], ['flag', 'if flag set'], ['notflag', 'if flag not set'], ['meter', 'if meter'], ['seen', 'once shown']];
 
 /** Where the editor runs: the game (wiki.dev) or the standalone page. */
@@ -205,6 +206,12 @@ function sectionHtml(host: WikiHost, p: WikiPage, si: number, heading = true): s
     </section>`;
 }
 
+/** The Index page's list of every page, built from the pages (engine/wiki.ts wikiIndex). */
+function indexHtml(pages: WikiPage[]): string {
+  return wikiIndex(pages).map((c) => `<section class="wk-sec"><h2>${esc(c.label)}</h2><ul class="wk-kids">${c.pages.map(({ page, gist }) =>
+    `<li><button class="wk-wlink" data-wiki="open" data-file="${esc(target(page.file))}">${esc(page.title)}</button> <small class="wk-dim">${esc(gist)}</small></li>`).join('')}</ul></section>`).join('');
+}
+
 /** The whole editor for `param` (a page's file name without .md, and "/entry" for one entry of a nesting page; the open page or the index when unset). */
 export function wikiView(host: WikiHost, param?: string): string {
   const pages = pagesOf(host);
@@ -223,6 +230,7 @@ export function wikiView(host: WikiHost, param?: string): string {
       <p class="wk-meta"><span>known from day ${p.from}</span><span>${esc(p.file)}</span>${p.aliases.length ? `<span>also: ${esc(p.aliases.join(', '))}</span>` : ''}</p></header>
     ${W.note ? `<p class="wk-note" role="status">${esc(W.note)}</p>` : ''}
     ${p.sections.map((_sec, si) => kids.some((c) => c.i === si) ? '' : sectionHtml(host, p, si)).join('')}
+    ${p.file === 'index.md' ? indexHtml(pages) : ''}
     ${kids.length ? `<section class="wk-sec"><h2>Pages under ${esc(p.title)}</h2><ul class="wk-kids">${kids.map((c) => `<li><button class="wk-wlink" data-wiki="open" data-file="${esc(target(p.file, c.slug))}">${esc(c.heading)}</button>${c.fromDay ? ` <small class="wk-dim">day ${c.fromDay}+</small>` : ''}</li>`).join('')}</ul></section>` : ''}`;
   return `<div class="wk"><header class="wk-top"><b>${esc(host.name)}</b>${host.controls?.() ?? ''}<span class="wk-dim">${esc(host.ctxLabel())}</span></header>
     <div class="wk-wrap">${nav(host, p)}<main class="wk-main">${body}</main></div></div>`;

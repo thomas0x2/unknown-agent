@@ -13,6 +13,7 @@
     "typecheck": "tsc -b --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "wiki:index": "vite-node scripts/wiki-index.ts",
     "proxy": "node --env-file-if-exists=.env server/jev-proxy.mjs"
   },
   "dependencies": {
