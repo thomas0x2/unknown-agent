@@ -28,7 +28,9 @@
         "timer",
         "launch countdown",
         "clock",
-        "countdown timer"
+        "countdown timer",
+        "counter",
+        "launch counter"
       ],
       "pageId": "home",
       "failures": [

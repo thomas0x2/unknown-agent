@@ -1320,5 +1320,15 @@
         "machines/count"
       ]
     }
+  },
+  {
+    "app": "coinsite",
+    "broken": [
+      "countdown/timer/tick"
+    ],
+    "prompt": "On cope, the counter is stuck",
+    "expect": {
+      "near": "near_folder"
+    }
   }
 ]
