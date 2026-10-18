@@ -87,7 +87,7 @@ export const APPS = {
   /** Update-request cadence (days between requests) by app age in days. */
   updateCadence: { earlyUntilDay: 3, earlyEvery: 1, midUntilDay: 7, midEvery: 2, lateEvery: 3 },
   user: {
-    payPerUser: 0.25,
+    payPerUser: 0.5,
     startUsers: 100,
     growthPerDay: 0.08,
     firstBreakUsersMul: 0.6, // -40%

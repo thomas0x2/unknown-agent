@@ -5,7 +5,7 @@ category: apps
 from: 3
 ---
 
-[public] Swaplist is a plain classifieds site [[The player]] builds after Viktor asks for one, with a purple swap-arrows logo and two ad banners. It is a user app: nobody pays for it directly; it earns 0.25 DOLR per user a day from ads and starts with 20 users.
+[public] Swaplist is a plain classifieds site [[The player]] builds after Viktor asks for one, with a purple swap-arrows logo and two ad banners. It is a user app: nobody pays for it directly; it earns 0.5 DOLR per user a day from ads and starts with 20 users.
 
 ## Where it comes from
 
