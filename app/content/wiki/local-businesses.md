@@ -1,17 +1,12 @@
 ---
 title: Local businesses
-aliases: Bean There, beanthere.coffee, owner@beanthere.test, Iron Yard, ironyard.gym, coach@ironyard.test, marcus.steele@qmail.com, Spin Cycle Laundry, Spin Cycle, spincycle.test, owner@spincycle.test, Golden Lotus, Burger Barn, Sushi Kaito, Pita Point, Trattoria Gino, GreenBasket, Noodle Hut, Corner Pharmacy
+aliases: Bean There, beanthere.coffee, owner@beanthere.test, Iron Yard, ironyard.gym, coach@ironyard.test, marcus.steele@qmail.com, Spin Cycle Laundry, Spin Cycle, spincycle.test, owner@spincycle.test, Golden Lotus, Burger Barn, Sushi Kaito, Pita Point, GreenBasket, Noodle Hut, Corner Pharmacy
 category: companies
 from: 1
 hub: true
 ---
 
 [public] Small businesses around Alder St, Linden Ave, Harbor Rd and Ferris St. Their reviews are on [[Yowl]].
-
-## Trattoria Gino
-
-[public] Trattoria Gino, 14 Alder St, [[Gino Fenoglio]]'s family-run trattoria since 1998: Italian and pizza, $$, Tue–Sun 17:00–22:00. Wood-fired pizza, fresh pasta and a well-known tiramisu. Yowl reviews: Pia L. (5, the tiramisu), Tom R. (4, "Cash only, and no website"), Marguerite (5, the Diavola has a kick). See [[Trattoria Gino site]].
-- [public] {{y:d1_y_restaurant}}
 
 ## Bean There
 

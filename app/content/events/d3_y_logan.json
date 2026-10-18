@@ -1,0 +1,11 @@
+{
+  "id": "d3_y_logan",
+  "site": "y",
+  "from": "logan_ships",
+  "trigger": {
+    "dayMin": 3,
+    "dayMax": 3
+  },
+  "at": "12:05",
+  "body": "the first one-person unicorn will be founded this year. i'm not saying it's me. (it's me)"
+}

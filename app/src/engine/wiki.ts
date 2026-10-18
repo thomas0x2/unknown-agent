@@ -73,7 +73,7 @@ const WIKI_LAST_DAY = 28;
 const MODEL_DAY: Record<string, number> = { 2: 4, 3: 9, 4: 14, 5: 18 };
 const TAG = /^\[(public|hint|hidden|classified)((?:\s*;[^\]]*)?)\]\s*/i;
 const HIDDEN_TAG = /\[(planned|open|legacy|to decide)\b/i;
-/** An embedded email, post or article: `{{mail:d1_gino_site}}`, `{{y:m1_gai_escape}}`, `{{article:opponent-clip}}`. */
+/** An embedded email, post or article: `{{mail:logan_contact}}`, `{{y:m1_gai_escape}}`, `{{article:opponent-clip}}`. */
 export const EMBED = /\{\{\s*((?:mail|email|y|post|event|yowl|review|article):[a-z0-9_:.@-]+)\s*\}\}/gi;
 const BRANCH = /\[if\s+(!?)([a-z0-9_]+)\]/gi;
 // a sentence ends at . ! or ? and a space, except after a common abbreviation ("14 Alder St. is")
@@ -372,7 +372,7 @@ export function querySections(page: WikiPage): WikiSection[] {
   return page.sections.filter((s) => !s.writer && s.blocks.length);
 }
 
-/** A heading as it reads in a URL: "Trattoria Gino" → trattoria-gino. */
+/** A heading as it reads in a URL: "Bean There" → bean-there. */
 export const sectionSlug = (heading: string) => heading.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
 /**

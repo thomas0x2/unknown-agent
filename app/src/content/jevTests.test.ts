@@ -37,7 +37,7 @@ describe('Jev tests', () => {
   });
 
   it('a push to a part that works is a miss for a near-miss case, and too loose', async () => {
-    const c = all.find((x) => x.prompt === 'Trattoria Gino: the landing page looks off')!;
+    const c = all.find((x) => x.prompt === 'WorkAgent: the landing page looks off')!;
     const r = await runJevTest(content, pickJev({ features: ['::landing::c:name', '::landing::area'] }), c);
     expect(r.got).toMatchObject({ fix: [], near: undefined, pushed: true });
     expect(r.got.checked).toHaveLength(1);
@@ -46,7 +46,7 @@ describe('Jev tests', () => {
   });
 
   it('a prompt naming a part that works: the agent checks it and says it was already right', async () => {
-    const c = all.find((x) => x.expect.check && x.broken[0] === 'landing/hours')!;
+    const c = all.find((x) => x.expect.check && x.broken[0] === 'landing/pitch')!;
     const r = await runJevTest(content, pickJev({ features: ['::landing::c:name'] }), c);
     expect(r.got).toMatchObject({ fix: [], pushed: true });
     expect(r.got.checked).toHaveLength(1);
@@ -55,19 +55,19 @@ describe('Jev tests', () => {
 
   it('reads which near-miss came back', async () => {
     const c = all.find((x) => x.expect.near === 'near_part')!;
-    const r = await runJevTest(content, pickJev({ features: ['::booking::area'] }), c);
+    const r = await runJevTest(content, pickJev({ features: ['::waitlist::area'] }), c);
     expect(r.got.near).toBe('near_part');
     expect(r.pass).toBe(true);
   });
 
   it('replays other thresholds from the recorded scores, without asking Jev again', async () => {
-    const c = all.find((x) => x.expect.fix?.[0] === 'landing/hours' && x.broken.length === 1)!;
+    const c = all.find((x) => x.expect.fix?.[0] === 'landing/pitch' && x.broken.length === 1)!;
     let asked = 0;
     // a part scored 0.55 and its feature step 0.7: through at a 0.5 bar, a near-miss at 0.6
     const jev: JevRouter = {
       ...pickJev({}),
       matchFeatures: async () => [],
-      matchScores: async (i) => { asked++; return i.features.map((f) => (f.id.endsWith('::c:hours') ? 0.55 : f.id.endsWith('::s:landing') ? 0.7 : f.kind === 'app' ? 1 : 0)); },
+      matchScores: async (i) => { asked++; return i.features.map((f) => (f.id.endsWith('::c:pitch') ? 0.55 : f.id.endsWith('::s:landing') ? 0.7 : f.kind === 'app' ? 1 : 0)); },
     };
     const rec = newRecording();
     const now = await runJevTest(content, jev, c, undefined, rec);

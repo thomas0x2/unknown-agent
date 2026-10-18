@@ -16,10 +16,6 @@ export interface SeedReview { author: string; stars: number; text: string; day?:
 
 export const BUSINESSES: Business[] = [
   {
-    id: 'trattoria', name: 'Trattoria Gino', category: 'Italian · Pizza', price: '$$', address: '14 Alder St', owner: 'Gino Fenoglio',
-    hours: 'Tue–Sun 17:00–22:00', about: 'Family-run trattoria since 1998. Wood-fired pizza, fresh pasta, and the tiramisu everyone talks about.',
-  },
-  {
     id: 'beanthere', name: 'Bean There', category: 'Coffee & Tea', price: '$$', address: '3 Linden Ave', owner: 'Dana Reyes',
     hours: 'Mon–Sat 07:00–16:00', about: 'Specialty coffee, house-baked muffins, and free wifi. Laptop friendly — allegedly.',
   },
@@ -38,11 +34,6 @@ export const BUSINESSES: Business[] = [
 ];
 
 export const YOWL_SEED: Record<string, SeedReview[]> = {
-  trattoria: [
-    { author: 'Pia L.', stars: 5, text: 'The tiramisu alone is worth the walk. Gino remembers your name and your order.' },
-    { author: 'Tom R.', stars: 4, text: 'Solid Margherita, cozy room. Cash only, and no website, so you just show up and hope.' },
-    { author: 'Marguerite', stars: 5, text: 'Our Friday spot for years. The Diavola has a kick. Book ahead on weekends.' },
-  ],
   beanthere: [
     { author: 'espresso_or_death', stars: 1, text: 'Burnt. Every single time. And a twenty-minute wait for the privilege.' },
     { author: 'commuter22', stars: 2, text: 'Slow service, staff seem annoyed you came in. The muffins are fine, I guess.' },

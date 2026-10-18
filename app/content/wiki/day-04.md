@@ -12,7 +12,6 @@ from: 4
 - [public] 10:00 [[The Current]]'s morning newsletter, "1,900 people queued for 30 jobs": Yesterday's jobs fair at Civic Hall drew 1,900 people for 30 positions. Below it, "agent" and "Crane". {{mail:current_newsletter@4}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": cold coffee. {{mail:guru_newsletter@4}}
 - [public] 10:00 [[GeneralAI]], "agent just got smarter": agent-2 is rolled out to the player's account, "fewer mistakes, bigger jobs", with updated rates. Prices double: 10 DOLR a night, 1 DOLR per prompt, 0.02 per word. {{mail:d4_gai_level2}}
-- [hidden; hint if restaurant_client] 14:20 [[Gino Fenoglio]], "Get me on DoorDish": list Trattoria Gino on [[DoorDish]] with the same menu and hours as the site and the address 14 Alder St. The email links doordish.com (Golden Lotus is already listed there). {{mail:d4_restaurant_doordish}}
 
 ## Family
 
@@ -62,12 +61,10 @@ from: 4
 ## Jobs
 
 - [hint] 11:30 Swiping for 6ft_sigma on matchless.com. Agreeing by email gets his matchless.com login (6ft_sigma / 6ftAlpha!; the site is a locked sign-in screen until then) and his first standards: age 25 to 42, within 20 miles, non-smokers; nothing about gender. Ten profiles a day; 35 DOLR a night only when all ten are right. He stays anonymous.
-- [hidden; hint if restaurant_client] 14:20 Gino's DoorDish listing (no menu change).
-- [hidden; hint if restaurant_client; hidden if restaurant_raise] From today Gino agrees to pay 20 DOLR more a day if the player emails him asking for a raise; before today he says no. He never offers it himself.
 
 ## Writer notes
 
-- Timeline: agent-2 rolls out, prices double. Gino wants a DoorDish listing (14 Alder St; no menu change; needs `restaurant_update1` a day earlier and the site working). Viktor's watch sells if Swaplist is live. Mara's follow-up (a player who already wrote to her gets `journalist_followup`'s "I already heard from you, thanks!" instead of the day 1 conversation). The DoorDish robot still missing. Apogee stacked. 6ft_sigma's Y post (11:30): agreeing by email sends standards v1 (`matchless_contact`, `matchless_job`).
+- Timeline: agent-2 rolls out, prices double. Viktor's watch sells if Swaplist is live. Mara's follow-up (a player who already wrote to her gets `journalist_followup`'s "I already heard from you, thanks!" instead of the day 1 conversation). The DoorDish robot still missing. Apogee stacked. 6ft_sigma's Y post (11:30): agreeing by email sends standards v1 (`matchless_contact`, `matchless_job`).
 - Men in the deck don't count until the player accepts one; the next morning he is SUPER STRAIGHT and "Women only" joins (`matchless_women_only`, see [[6ft_sigma]] notes). Picture-only traits from day 10.
 - Family: brother's jacket. Send 40+ DOLR to `0xb8d6…e46a` by day 5 (+5 trust, `gift_chipped_in`, confirmation an hour later via `d4_brother_paid` / `d4_brother_paid_over`), buy the leather jacket on Swaplist (45, +10 trust, `gift_own`, `d4_brother_bought` 30 min later), or excuse (−5, `gift_skipped`). Silence until the end of day 5 counts as the excuse (−5, `gift_skipped`); promising only keeps the thread open and still gets the penalty.
 - Crane's post is `m4_vant_crane` in `y_market.json` (no `at`; spread time). Vibe Check's trader sells 25,000 $VANT on it by hand.

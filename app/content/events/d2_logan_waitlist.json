@@ -1,0 +1,32 @@
+{
+  "id": "d2_logan_waitlist",
+  "site": "qmail",
+  "from": "Logan Pryce",
+  "addr": "logan@workagent.test",
+  "subject": "next: the waitlist",
+  "trigger": {
+    "dayMin": 2,
+    "flagsAll": [
+      "logan_client"
+    ],
+    "appWorking": "logan_contact"
+  },
+  "at": "11:05",
+  "body": "site's live and people are noticing. my uncle sent it to his golf group.\n\nnext up, a waitlist:\n\n- a Waitlist page with an email field and a Join button, linked from the homepage.\n- a counter of how many people are on it. start it at 10,000. social proof.\n- every sign-up gets a confirmation email with their place in line.\n\ndemand is real. we just need somewhere to put it.\n\nlogan",
+  "onDeliver": {
+    "updateApp": {
+      "client": "logan_contact",
+      "add": [
+        {
+          "id": "waitlist",
+          "params": {
+            "start": "10,000"
+          }
+        }
+      ]
+    },
+    "setFlags": [
+      "logan_update1"
+    ]
+  }
+}

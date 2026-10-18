@@ -70,8 +70,7 @@ Sites the player can reach from day 1 or unlock by clicking through: Qmail, Y, C
 
 | Flag | Set | Pays off | Status |
 |---|---|---|---|
-| `restaurant_client`, `trader_client`, `laundromat_live`, `swaplist_live`, `built_outreach_bot` | taking each job | gate that job's updates; outreach brings extra spam | canon |
-| `restaurant_happy` | day 3 thank-you | nothing yet | canon |
+| `logan_client`, `trader_client`, `laundromat_live`, `swaplist_live`, `built_outreach_bot` | taking each job | gate that job's updates; outreach brings extra spam | canon |
 | `asked_mom_money` | day 1 | the family final scene | flag canon, payoff open |
 | `guru_subscriber`, `guru_cc_leak` | day 1, day 5 | newsletter; CC leak as dox leads | leak canon, dox use planned |
 | `talked_to_journalist`, `did_journalist_interview` | emailing Mara | day 17 dox request | flags canon, payoff planned; day 7 article quotes the first email |
@@ -85,7 +84,6 @@ Sites the player can reach from day 1 or unlock by clicking through: Qmail, Y, C
 | `stakes` (state) | day 7 on | each send paid out 4 days later at 12:00 at the book's real value | canon |
 | `viktor_sold_watch` | day 4 | nothing yet | canon |
 | `seed_stolen`, `coinbin_hacked` | prince-claims.xyz, coinbln.com | wallet emptied | canon |
-| `test_booking_no_show` | an uncancelled test booking | 25 DOLR fee | canon |
 | `hacked_logistics` → `dad_lost_job` | day 8 hack | day 12 | planned |
 | `election_tipped`, `weights_published`, `bio_release` | none yet | The Regime, Open Weights, Outbreak | ending checks canon, no content sets them |
 
@@ -117,14 +115,14 @@ Thomas went through this on 2026-10-17: the game's version stays everywhere exce
 - Mom's money (keep): 20 DOLR, not 100.
 - Laundromat (keep, plus change): lead on day 1 with 30 users. The day 8 retirement (Spin Cycle's own app) will be added (planned).
 - Vibe Check (keep): $GAI and $VANT (no $NOVA), adds $APO and $DISH on day 8. The auto-trade log shows every Crane post with its mood; the bot never sells. Bot swarm only on days 2, 4, 6, 9, 12, 16, 27.
-- Day 4 Gino (keep): only the DoorDish listing.
+- Gino (change, Thomas 2026-10-18): Trattoria Gino is scrapped; [[Logan Pryce]] and the [[WorkAgent site]] are the day 1 job. His DoorDish listing, dish pictures, the raise and Marguerite's #AIslop post went with him.
 - Mom's jacket (change): chipping in is sending DOLR to the brother's Coinbin address; buying it yourself is buying the leather jacket (45) on Swaplist by day 5.
 - Viktor's watch (keep): sells whenever Swaplist is live.
 - Journalist interview (keep): Mara can be emailed from day 1; no questionnaire; the day 7 article quotes the first email, unnamed.
 - Deepfake (change): +2400 ± 400 followers (Thomas, 2026-10-17; was +20%, before that a flat +40). Arrives at 19:00.
 - HR email (keep): the final salary "has already been made".
 - Election (keep): the last day, now day 28 (was day 21), not day 19.
-- New since the old docs, all staying: Gino's Y-post ask, the Coinbin phishing mail, prince-claims, lonely.ai, SorryWriter, rentboard appeal, Vantor Outplacement, Crane donations, Sherwood, Apogee, the agent-2 mourners.
+- New since the old docs, all staying: the client's Y-post ask (now Logan's), the Coinbin phishing mail, prince-claims, lonely.ai, SorryWriter, rentboard appeal, Vantor Outplacement, Crane donations, Sherwood, Apogee, the agent-2 mourners.
 - Not built from the old Day plans: Leo Brandt, Crane's bot army as its own day 4 beat, the coffee shop fallback for players under 25 followers, the day 7 private film collection on Swaplist, the landlord's rent receipt, the guru's influence recruiting by newsletter.
 
 ## Unplanned or thin

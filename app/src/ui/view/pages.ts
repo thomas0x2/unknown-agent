@@ -13,6 +13,7 @@ import { pageLonely } from '../lonely';
 import { pageMatchless } from '../matchless';
 import { pageSorry } from '../sorry';
 import { pageCurrent } from '../current';
+import { pageWhyC } from '../whyc';
 import { outplacementUpload, OUTPLACEMENT } from '../outplacement';
 import { setHeadline } from '../ads';
 import { pageCityPulse } from '../citypulse';
@@ -54,6 +55,7 @@ export function page(store: GameStore, r: Route): string {
     case 'matchless': return pageMatchless(store);
     case 'sorry': return pageSorry(store);
     case 'current': return pageCurrent(store.state, r.param);
+    case 'whyc': return pageWhyC(r.param, store.ui.adNotice);
     case 'adsite': return pageAdSite(r.param ?? '', store.state, store.ui.adNotice, r.param === OUTPLACEMENT ? outplacementUpload(store) : '');
     case 'citypulse': return pageCityPulse(store, r.param);
     case 'pollymarket': return pagePollymarket(store, r.param);

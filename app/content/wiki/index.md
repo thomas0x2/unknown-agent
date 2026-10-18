@@ -22,11 +22,11 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[deskjockey]] (deskjockey.md): deskjockey is a very rich, anonymous day-trader with an eight-figure portfolio, and the client for Vibe Check
 - [[dev_null]] (dev-null.md): dev_null is a member of the Null Collective, hackers working against GeneralAI
 - [[Gary Pruitt]] (gary-pruitt.md): Gary Pruitt of Pruitt Property Management is the player's landlord at Pine Street Apartments, Unit 4B
-- [[Gino Fenoglio]] (gino-fenoglio.md): Gino Fenoglio owns Trattoria Gino at 14 Alder St, a family-run Italian restaurant since 1998, open Tuesday to Sunday, 17:00 to 22:00
 - [[Hassan Okoro]] (hassan-okoro.md): Hassan Okoro owns Spin Cycle Laundry at 201 Ferris St (owner@spincycle.test)
 - [[late_night_lou]] (late-night-lou.md): late_night_lou ("Lou") has a public Forkyard profile: Harbor district, joined August 2023, 88 followers, following 2, bio "collector
 - [[Kirschbaum]] (kirschbaum.md): Harlan Kirschbaum is a financier and a registered sex offender, the man in the day 6 deepfake and an old friend of Randall Crane
 - [[Leo Brandt]] (leo-brandt.md): Leo Brandt is a former Vantor Group colleague of the player, now out of work
+- [[Logan Pryce]] (logan-pryce.md): Logan Pryce is 22, the founder and CEO of WorkAgent, a startup "building in stealth", and the client for the WorkAgent site
 - [[Mara Vey]] (mara-vey.md): Mara Vey is a reporter at The Current, a reader-funded paper, covering people displaced by AI
 - [[Marcus Steele]] (marcus-steele.md): Marcus Steele owns and coaches at Iron Yard, a new strength gym at 88 Harbor Rd (personal: marcus.steele@qmail.com, @marcus_steele)
 - [[Market posters]] (market-posters.md): The accounts on Y that post about stocks ($GAI, $VANT, $APO, $DISH) every day
@@ -71,6 +71,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[The Current]] (the-current.md): The Current is Mara Vey's reader-funded, independent newspaper: "Independent reporting, funded by readers." On Y it is @the_current…
 - [[Vantor Group]] (vantor-group.md): Vantor Group is The player's former employer, at 1 Vantor Plaza
 - [[WallStreetBags]] (wallstreetbags.md): WallStreetBags (@wallstreetbags) is a verified account on Y with 15.8 million followers, run for an online community of retail traders
+- [[Why Combinator]] (why-combinator.md): Why Combinator is a startup accelerator in San Fortuna, at whycombinator.com
 
 ## Sites
 
@@ -103,9 +104,9 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[Outreach Bot]] (outreach-bot.md): Outreach Bot is the cold-email bot The player builds for Tanner Hollis, a sales rep at Closers (rep@closers.test), who speaks in B2B…
 - [[Spin Cycle Board]] (spin-cycle-board.md): Spin Cycle Board is a user app: a readable status board for Spin Cycle Laundry's machines, built from the raw Spin Cycle feed
 - [[Swaplist]] (swaplist.md): Swaplist is a plain classifieds site The player builds after Viktor asks for one, with a purple swap-arrows logo and two ad banners
-- [[Trattoria Gino site]] (trattoria-gino-site.md): The Trattoria Gino site is the website The player builds for Gino Fenoglio's restaurant at 14 Alder St, through agent and Forkyard
 - [[COPE]] (cope.md): $COPE, Dex Calloway's memecoin, and its site cope.forkyard.app (countdown, contract address, tokenomics); listed on Coinbin day 7, rugged day 23
 - [[Vibe Check]] (vibe-check.md): Vibe Check is the sentiment crawler The player builds for deskjockey, live at vibe-check.forkyard.app
+- [[WorkAgent site]] (workagent-site.md): The WorkAgent site is the website The player builds for Logan Pryce's startup through agent and Forkyard
 
 ## World
 
@@ -119,10 +120,10 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 
 ## Days
 
-- [[Day 1]] (day-01.md): Vantor layoff, first leads (Gino, Spin Cycle), rent warning
-- [[Day 2]] (day-02.md): Gino booking, Dad's 20 years, deskjockey, DoorDish robot escapes
+- [[Day 1]] (day-01.md): Vantor layoff, first leads (Logan, Spin Cycle), rent warning
+- [[Day 2]] (day-02.md): Logan's waitlist, Dad's 20 years, deskjockey, DoorDish robot escapes
 - [[Day 3]] (day-03.md): overnight break, phishing mail, Viktor, Crane's "machines back", Ozempra
-- [[Day 4]] (day-04.md): agent-2, Mom's jacket, 6ft_sigma, Gino on DoorDish
+- [[Day 4]] (day-04.md): agent-2, Mom's jacket, 6ft_sigma
 - [[Day 5]] (day-05.md): first grey jobs, Crane impostor, Spin Cycle 12 machines
 - [[Day 6]] (day-06.md): Mom's birthday, Crane praises $GAI, outreach bot, deepfake offer
 - [[Day 7]] (day-07.md): rent 350, Mara's article, the stake

@@ -3,7 +3,7 @@
  */
 import { GameStore } from '../../game/store';
 import { ICONS } from '../icons';
-import { type AppInstance, getApp, bugsOf, breakVariant, onForkyard, userRevenue, LAST_DAY, dateShort, dateLong, dateFull, dayDate } from '../../engine';
+import { type AppInstance, getApp, onForkyard, userRevenue, LAST_DAY, dateShort } from '../../engine';
 import { findUser } from '../forkyard-users';
 import { adHtml } from '../ads';
 import { renderAppSite, devBugPanel, devBugCount } from '../appsite';
@@ -132,25 +132,6 @@ export function pageForkyard(store: GameStore, repo?: string): string {
   return `<div class="fy">${head}<div class="fy-wrap"><h1 class="fy-h">Repositories <span>${repos.length}</span></h1>${adHtml('forkyard', s.values.day, 'wide')}${list}</div></div>`;
 }
 
-/** Month grid for the booking form: one radio per game day, earlier days greyed out. */
-function bookingCalendar(today: number, first: number, picked: number): string {
-  const start = dayDate(1), year = start.getUTCFullYear(), month = start.getUTCMonth();
-  const daysInMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
-  const lead = (new Date(Date.UTC(year, month, 1)).getUTCDay() + 6) % 7; // Monday first
-  const toDay = (date: number) => date - start.getUTCDate() + 1;
-  const cells = Array.from({ length: lead }, () => '<span></span>');
-  for (let date = 1; date <= daysInMonth; date++) {
-    const d = toDay(date);
-    const open = d >= Math.max(1, first) && d <= LAST_DAY;
-    const cls = `${d === today ? ' today' : ''}${open ? '' : ' off'}`;
-    cells.push(open
-      ? `<label class="bk-day${cls}"><input type="radio" name="bk-date" value="${d}"${d === picked ? ' checked' : ''}><span>${date}</span></label>`
-      : `<span class="bk-day${cls}"><span>${date}</span></span>`);
-  }
-  return `<p class="bk-cal-month">${esc(dateLong(1).split(' ')[0])} ${year}</p>
-    <div class="bk-cal-grid">${['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map((w) => `<b>${w}</b>`).join('')}${cells.join('')}</div>`;
-}
-
 export function pageApp(store: GameStore, param?: string): string {
   const s = store.state;
   const [appId, ...rest] = (param ?? '').split('/');
@@ -158,46 +139,13 @@ export function pageApp(store: GameStore, param?: string): string {
   const a = appId ? getApp(s, appId) : undefined;
   if (!a || !a.deployed) return `<div class="err"><h1>404: NOT_FOUND</h1><p>Nothing is deployed here.</p></div>`;
   if (forkyardDown(s)) return `<div class="err"><h1>502: BAD_GATEWAY</h1><p>forkyard.app could not reach this deployment.</p></div>`;
-  const bk = store.ui.book;
-  // a correct form only offers today onward; with the past_dates bug the picker starts on day 1
-  const liveBooking = a.features.find((f) => f.id === 'booking');
-  const brk = a.breaks.find((b) => b.featureId === 'booking');
-  const pastBug = (liveBooking && !liveBooking.correct && bugsOf(liveBooking).includes('past_dates'))
-    || (!!brk && breakVariant(brk, store.content.apps[a.template]?.features.find((f) => f.id === 'booking')) === 'past_dates');
-  const firstBookable = pastBug ? 1 : s.values.day;
-  const notice = s.bookingNotice?.appId === a.id ? `<p class="pv-note ${s.bookingNotice.ok ? 'ok' : 'bad'}">${esc(s.bookingNotice.text)}</p>` : '';
-  // after booking: what was entered, to check against the confirmation email
-  const booked = s.bookingNotice?.appId === a.id && s.bookingNotice.bookingId ? s.bookings.find((b) => b.id === s.bookingNotice!.bookingId) : undefined;
-  const summary = booked
-    ? `<dl class="pv-summary"><dt>Your booking</dt>
-        <dd><span>Name</span>${esc(booked.name)}</dd><dd><span>Email</span>${esc(booked.email)}</dd>
-        <dd><span>Date</span>${dateFull(booked.date)}</dd><dd><span>Time</span>${esc(booked.time)}</dd>
-        <dd><span>Party</span>${booked.party}</dd></dl>`
-    : '';
-  // two steps, like the spec: who and when, then the time and party size
-  // once booked, the page shows only the confirmation, like a real site; another table is a click away
-  const booking = a.template === 'restaurant' && a.features.some((f) => f.id === 'booking')
-    ? booked
-      ? `<div class="pv-book"><h1>Table booked</h1>${notice}${summary}
-        <button class="pv-btn ok" type="button" data-act="book-again">Book another table</button></div>`
-      : bk.step === 1
-      ? `<form class="pv-book" data-form="book-next" data-app="${esc(a.id)}"><h1>Book a table</h1>
-        <p class="pv-sub">Step 1 of 2. You'll get a confirmation by email.</p>${notice}
-        <label>Name <input id="bk-name" value="${esc(bk.name || PLAYER.name)}"></label>
-        <label>Email <input id="bk-email" value="${esc(bk.email || PLAYER.addr)}"></label>
-        <fieldset class="bk-cal"><legend>Date</legend>${bookingCalendar(s.values.day, firstBookable, bk.date || s.values.day + 1)}</fieldset>
-        <button class="pv-btn ok" type="submit">Continue</button></form>`
-      : `<form class="pv-book" data-form="book" data-app="${esc(a.id)}"><h1>Book a table</h1>
-        <p class="pv-sub">Step 2 of 2: ${esc(bk.name)}, ${dateFull(bk.date)}.</p>${notice}
-        <label>Time <input id="bk-time" value="19:00"></label>
-        <label>Party size <input id="bk-party" value="2" type="number" min="1" max="8"></label>
-        <button class="pv-btn ghost" type="button" data-act="book-back">Back</button> <button class="pv-btn ok" type="submit">Book</button></form>`
-    : undefined;
-  // the cancel link from a confirmation email
-  const cancelled = sub?.startsWith('cancel-') ? s.bookings.find((b) => b.id === sub.slice(7) && b.appId === a.id) : undefined;
-  const cancel = cancelled
-    ? `<h1>Booking cancelled</h1><p class="pv-note ok">Your booking for ${cancelled.party} on ${dateFull(cancelled.date)} at ${esc(cancelled.time)} has been cancelled.</p><p class="pv-sub">We hope to see you another time.</p>`
+  // the waitlist form: one email field and a Join button; after joining, what the site said
+  const notice = s.waitlistNotice?.appId === a.id ? `<p class="pv-note ${s.waitlistNotice.ok ? 'ok' : 'bad'}">${esc(s.waitlistNotice.text)}</p>` : '';
+  const waitlist = a.template === 'startup' && a.features.some((f) => f.id === 'waitlist')
+    ? `<form class="pv-book as-w-form" data-form="waitlist" data-app="${esc(a.id)}">${notice}
+        <label>Email <input id="wl-email" value="${esc(PLAYER.addr)}"></label>
+        <button class="pv-btn ok" type="submit">Join the waitlist</button></form>`
     : undefined;
   const tmpl = store.content.apps[a.template];
-  return `<div class="pv-host">${renderAppSite(a, tmpl, cancel ? 'cancel' : sub, { booking, cancel, day: s.values.day, minute: s.clockMin, market: crawlable(store), crane: cranePosts(s, store.content), stakes: s.stakes, play: playMinutes(s), watchSold: s.flags.includes('viktor_sold_watch'), swap: s.swap, busy: store.busy })}</div>`;
+  return `<div class="pv-host">${renderAppSite(a, tmpl, sub, { waitlist, joined: s.waitlist.filter((w) => w.appId === a.id).length, day: s.values.day, minute: s.clockMin, market: crawlable(store), crane: cranePosts(s, store.content), stakes: s.stakes, play: playMinutes(s), watchSold: s.flags.includes('viktor_sold_watch'), swap: s.swap, busy: store.busy })}</div>`;
 }

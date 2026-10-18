@@ -1,10 +1,10 @@
 [
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
       "landing/name"
     ],
-    "prompt": "On the Trattoria Gino site, the restaurant name on the landing page is misspelled",
+    "prompt": "On the WorkAgent site, the startup name on the landing page is misspelled",
     "expect": {
       "fix": [
         "landing/name"
@@ -12,11 +12,11 @@
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
       "landing/name"
     ],
-    "prompt": "trattoria gino homepage says Trattoria Gina, fix the name",
+    "prompt": "workagent homepage says WorkAgnet, fix the name",
     "expect": {
       "fix": [
         "landing/name"
@@ -24,122 +24,98 @@
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "landing/hours"
+      "landing/pitch"
     ],
-    "prompt": "Gino site: opening hours on the front page are wrong",
+    "prompt": "WorkAgent: the headline on the front page is wrong",
     "expect": {
       "fix": [
-        "landing/hours"
+        "landing/pitch"
       ]
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "landing/hours"
+      "landing/pitch"
     ],
-    "prompt": "the home page of trattoria gino shows the wrong opening times",
+    "prompt": "the home page of workagent shows the wrong pitch",
     "expect": {
       "fix": [
-        "landing/hours"
+        "landing/pitch"
       ]
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
       "landing/name",
-      "landing/hours"
+      "landing/pitch"
     ],
-    "prompt": "Trattoria Gino landing page: wrong name and wrong hours",
+    "prompt": "WorkAgent landing page: wrong name and wrong headline",
     "expect": {
       "fix": [
         "landing/name",
-        "landing/hours"
+        "landing/pitch"
       ]
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
       "landing/name",
-      "landing/hours"
+      "landing/pitch"
     ],
-    "prompt": "On the Trattoria Gino site, the name and the opening hours on the landing page are wrong",
+    "prompt": "WorkAgent: the tagline on the landing page is off",
     "expect": {
       "fix": [
-        "landing/name",
-        "landing/hours"
+        "landing/pitch"
       ]
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "landing/name",
-      "landing/hours"
+      "landing/pitch"
     ],
-    "prompt": "Trattoria Gino: the hours on the landing page are off",
-    "expect": {
-      "fix": [
-        "landing/hours"
-      ]
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "landing/hours"
-    ],
-    "prompt": "Trattoria Gino: the landing page looks off",
+    "prompt": "WorkAgent: the landing page looks off",
     "expect": {
       "near": "near_miss"
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "landing/hours"
+      "landing/pitch"
     ],
-    "prompt": "something's wrong with the trattoria gino homepage",
+    "prompt": "something's wrong with the workagent homepage",
     "expect": {
       "near": "near_miss"
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
       "landing/name"
     ],
-    "prompt": "Trattoria Gino: the name is spelled wrong",
+    "prompt": "WorkAgent: the name is spelled wrong",
     "expect": {
       "near": "near_feature"
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "landing/hours"
+      "landing/pitch"
     ],
-    "prompt": "Trattoria Gino has the wrong opening hours",
-    "expect": {
-      "near": "near_feature"
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "landing/hours"
-    ],
-    "prompt": "Trattoria Gino: the name on the landing page is wrong",
+    "prompt": "WorkAgent: the name on the landing page is wrong",
     "expect": {
       "check": true
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
       "landing/name"
     ],
@@ -149,499 +125,443 @@
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "menu/prices"
+      "investors/logos"
     ],
-    "prompt": "Trattoria Gino: the prices on the menu are wrong",
+    "prompt": "WorkAgent: the investors in the backed by row are wrong",
     "expect": {
       "fix": [
-        "menu/prices"
+        "investors/logos"
       ]
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "menu/prices"
+      "investors/logos"
     ],
-    "prompt": "the menu on gino's site shows prices in EURI instead of DOLR",
+    "prompt": "logan's site shows Bonzai Capital in the investor logos, it's Bonsai Capital",
     "expect": {
       "fix": [
-        "menu/prices"
+        "investors/logos"
       ]
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "menu/prices"
+      "investors/logos"
     ],
-    "prompt": "Trattoria Gino menu page: the pizza prices dont match what Gino sent",
+    "prompt": "WorkAgent backed by row lists a fund Logan never talked to",
     "expect": {
       "fix": [
-        "menu/prices"
+        "investors/logos"
       ]
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "menu/items"
+      "investors/loading"
     ],
-    "prompt": "Trattoria Gino: wrong dishes on the menu",
+    "prompt": "On the WorkAgent site the investor logos don't load, just broken images",
     "expect": {
       "fix": [
-        "menu/items"
+        "investors/loading"
       ]
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "menu/items"
+      "investors/logos",
+      "investors/loading"
     ],
-    "prompt": "the Trattoria Gino menu lists pizzas Gino doesn't even make",
+    "prompt": "WorkAgent investor row: wrong funds and the logo images are broken",
     "expect": {
       "fix": [
-        "menu/items"
+        "investors/logos",
+        "investors/loading"
       ]
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "menu/items"
+      "investors/logos"
     ],
-    "prompt": "trattoria gino - menu items are wrong pls fix",
-    "expect": {
-      "fix": [
-        "menu/items"
-      ]
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "menu/items",
-      "menu/prices"
-    ],
-    "prompt": "Trattoria Gino menu: the dishes and the prices are both wrong",
-    "expect": {
-      "fix": [
-        "menu/items",
-        "menu/prices"
-      ]
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "menu/items",
-      "menu/prices"
-    ],
-    "prompt": "Trattoria Gino menu prices are wrong",
-    "expect": {
-      "fix": [
-        "menu/prices"
-      ]
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "menu/prices"
-    ],
-    "prompt": "Trattoria Gino, the menu is messed up",
+    "prompt": "WorkAgent, the backed by row is messed up",
     "expect": {
       "near": "near_miss"
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "menu/prices"
+      "investors/logos"
     ],
-    "prompt": "Trattoria Gino: prices are wrong",
-    "expect": {
-      "near": "near_feature"
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "menu/prices"
-    ],
-    "prompt": "Trattoria Gino: the dishes on the menu are wrong",
+    "prompt": "WorkAgent: the images in the backed by row don't load",
     "expect": {
       "check": true
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "menu/prices"
+      "investors/logos"
     ],
-    "prompt": "the menu prices are wrong",
+    "prompt": "the investors are wrong",
     "expect": {
       "none": true
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "booking/confirmation/date"
+      "about/credentials"
     ],
-    "prompt": "Trattoria Gino: the date in the booking confirmation email is wrong",
+    "prompt": "WorkAgent: Logan's credentials on the about page are wrong",
     "expect": {
       "fix": [
-        "booking/confirmation/date"
+        "about/credentials"
       ]
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "booking/confirmation/date"
+      "about/credentials"
     ],
-    "prompt": "On gino's site the booking confirmation mail shows the wrong day",
+    "prompt": "the credentials on the workagent about us page say San Fortuna State graduate, he dropped out",
     "expect": {
       "fix": [
-        "booking/confirmation/date"
+        "about/credentials"
       ]
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "booking/confirmation/time"
+      "about/team"
     ],
-    "prompt": "Trattoria Gino reservation confirmation email has the wrong time",
+    "prompt": "WorkAgent about page shows two cofounders who don't exist, Logan is a solo founder",
     "expect": {
       "fix": [
-        "booking/confirmation/time"
+        "about/team"
       ]
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "booking/confirmation/party"
+      "about/team"
     ],
-    "prompt": "Trattoria Gino booking confirmation: party size is wrong",
+    "prompt": "workagent - remove the fake people from the team page",
     "expect": {
       "fix": [
-        "booking/confirmation/party"
+        "about/team"
       ]
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "booking/confirmation/party"
+      "about/founder"
     ],
-    "prompt": "Trattoria Gino: I booked a table for 4 people and the booking confirmation email said 2 guests",
+    "prompt": "WorkAgent: the founder's name on the about page is spelled Logan Price",
     "expect": {
       "fix": [
-        "booking/confirmation/party"
+        "about/founder"
       ]
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "booking/confirmation/restaurant_name"
+      "about/team",
+      "about/credentials"
     ],
-    "prompt": "Trattoria Gino: the restaurant name in the booking confirmation email is wrong",
+    "prompt": "WorkAgent about page: the team and the credentials are both wrong",
     "expect": {
       "fix": [
-        "booking/confirmation/restaurant_name"
+        "about/team",
+        "about/credentials"
       ]
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "booking/confirmation/recipient"
+      "about/team",
+      "about/credentials"
     ],
-    "prompt": "Trattoria Gino: the booking confirmation goes to the restaurant instead of the guest",
+    "prompt": "WorkAgent about us: credentials are wrong",
     "expect": {
       "fix": [
-        "booking/confirmation/recipient"
+        "about/credentials"
       ]
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "booking/confirmation/sending"
+      "about/credentials"
     ],
-    "prompt": "Trattoria Gino: no booking confirmation email ever arrives",
+    "prompt": "WorkAgent, the about page is messed up",
     "expect": {
-      "fix": [
-        "booking/confirmation/sending"
-      ]
+      "near": "near_miss"
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "booking/confirmation/sending"
+      "about/credentials"
     ],
-    "prompt": "trattoria gino bookings: the confirmation emails are never sent",
-    "expect": {
-      "fix": [
-        "booking/confirmation/sending"
-      ]
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "booking/confirmation/date",
-      "booking/confirmation/time"
-    ],
-    "prompt": "Trattoria Gino: the date and time on the booking confirmation are both wrong",
-    "expect": {
-      "fix": [
-        "booking/confirmation/date",
-        "booking/confirmation/time"
-      ]
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "booking/confirmation/date",
-      "booking/confirmation/party"
-    ],
-    "prompt": "Trattoria Gino: the booking confirmation has the wrong party size",
-    "expect": {
-      "fix": [
-        "booking/confirmation/party"
-      ]
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "booking/confirmation/date"
-    ],
-    "prompt": "Trattoria Gino: the date in the confirmation is wrong",
+    "prompt": "WorkAgent: credentials are wrong",
     "expect": {
       "near": "near_feature"
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "booking/confirmation/date"
+      "about/credentials"
     ],
-    "prompt": "Trattoria Gino: the booking date is wrong",
-    "expect": {
-      "near": "near_folder"
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "booking/confirmation/party"
-    ],
-    "prompt": "Trattoria Gino booking shows the wrong number of guests",
-    "expect": {
-      "near": "near_folder"
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "booking/confirmation/time"
-    ],
-    "prompt": "Trattoria Gino: something's off with the booking confirmation",
-    "expect": {
-      "near": "near_part"
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "booking/confirmation/time"
-    ],
-    "prompt": "Trattoria Gino, the booking confirmation email is wrong",
-    "expect": {
-      "near": "near_part"
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "booking/confirmation/party"
-    ],
-    "prompt": "Trattoria Gino: fix the booking",
-    "expect": {
-      "near": "near_miss"
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "booking/confirmation/date"
-    ],
-    "prompt": "Trattoria Gino: bookings are broken",
-    "expect": {
-      "near": "near_miss"
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "booking/confirmation/time"
-    ],
-    "prompt": "Trattoria Gino: the party size on the booking confirmation is wrong",
+    "prompt": "WorkAgent: there are extra people on the about page",
     "expect": {
       "check": true
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "booking/confirmation/date"
+      "waitlist/confirmation/position"
     ],
-    "prompt": "the date on the booking confirmation is wrong",
+    "prompt": "WorkAgent: the place in line in the waitlist confirmation email is wrong",
+    "expect": {
+      "fix": [
+        "waitlist/confirmation/position"
+      ]
+    }
+  },
+  {
+    "app": "startup",
+    "broken": [
+      "waitlist/confirmation/position"
+    ],
+    "prompt": "I joined the workagent waitlist and the confirmation mail gives me the wrong place in line",
+    "expect": {
+      "fix": [
+        "waitlist/confirmation/position"
+      ]
+    }
+  },
+  {
+    "app": "startup",
+    "broken": [
+      "waitlist/confirmation/recipient"
+    ],
+    "prompt": "WorkAgent: the waitlist confirmation goes to Logan instead of the person who signed up",
+    "expect": {
+      "fix": [
+        "waitlist/confirmation/recipient"
+      ]
+    }
+  },
+  {
+    "app": "startup",
+    "broken": [
+      "waitlist/confirmation/sending"
+    ],
+    "prompt": "WorkAgent: no waitlist confirmation email ever arrives",
+    "expect": {
+      "fix": [
+        "waitlist/confirmation/sending"
+      ]
+    }
+  },
+  {
+    "app": "startup",
+    "broken": [
+      "waitlist/confirmation/sending"
+    ],
+    "prompt": "workagent waitlist: the confirmation emails are never sent",
+    "expect": {
+      "fix": [
+        "waitlist/confirmation/sending"
+      ]
+    }
+  },
+  {
+    "app": "startup",
+    "broken": [
+      "waitlist/confirmation/position",
+      "waitlist/confirmation/sending"
+    ],
+    "prompt": "WorkAgent: the waitlist confirmation has the wrong position",
+    "expect": {
+      "fix": [
+        "waitlist/confirmation/position"
+      ]
+    }
+  },
+  {
+    "app": "startup",
+    "broken": [
+      "waitlist/confirmation/position"
+    ],
+    "prompt": "WorkAgent: the number in the confirmation is wrong",
+    "expect": {
+      "near": "near_feature"
+    }
+  },
+  {
+    "app": "startup",
+    "broken": [
+      "waitlist/confirmation/position"
+    ],
+    "prompt": "WorkAgent: the waitlist position is wrong",
+    "expect": {
+      "near": "near_folder"
+    }
+  },
+  {
+    "app": "startup",
+    "broken": [
+      "waitlist/confirmation/position"
+    ],
+    "prompt": "WorkAgent: something's off with the waitlist confirmation",
+    "expect": {
+      "near": "near_part"
+    }
+  },
+  {
+    "app": "startup",
+    "broken": [
+      "waitlist/confirmation/sending"
+    ],
+    "prompt": "WorkAgent: fix the waitlist",
+    "expect": {
+      "near": "near_miss"
+    }
+  },
+  {
+    "app": "startup",
+    "broken": [
+      "waitlist/confirmation/position"
+    ],
+    "prompt": "WorkAgent: the waitlist confirmation goes to the wrong person",
+    "expect": {
+      "check": true
+    }
+  },
+  {
+    "app": "startup",
+    "broken": [
+      "waitlist/confirmation/position"
+    ],
+    "prompt": "the place in line on the waitlist confirmation is wrong",
     "expect": {
       "none": true
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "booking/form/date"
+      "waitlist/counter/start"
     ],
-    "prompt": "Trattoria Gino: the booking form lets you pick dates in the past",
+    "prompt": "WorkAgent: the waitlist counter starts at 0 instead of 10,000",
     "expect": {
       "fix": [
-        "booking/form/date"
+        "waitlist/counter/start"
       ]
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "booking/form/date"
+      "waitlist/counter/count"
     ],
-    "prompt": "on trattoria gino you can reserve a table for yesterday in the booking form",
+    "prompt": "on workagent the waitlist counter doesn't go up when I join",
     "expect": {
       "fix": [
-        "booking/form/date"
+        "waitlist/counter/count"
       ]
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "booking/form/hours"
+      "waitlist/form/join_button"
     ],
-    "prompt": "Trattoria Gino: the booking form accepts bookings at 3am when the restaurant is closed",
+    "prompt": "WorkAgent: the Join button on the waitlist form does nothing",
     "expect": {
       "fix": [
-        "booking/form/hours"
+        "waitlist/form/join_button"
       ]
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "booking/form/hours"
+      "waitlist/form/join_button"
     ],
-    "prompt": "Trattoria Gino booking form ignores the opening hours",
+    "prompt": "WorkAgent signup form: clicking the submit button doesn't work",
     "expect": {
       "fix": [
-        "booking/form/hours"
+        "waitlist/form/join_button"
       ]
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "booking/form/book_button"
+      "waitlist/counter/start",
+      "waitlist/counter/count"
     ],
-    "prompt": "Trattoria Gino: the Book button on the booking form does nothing",
+    "prompt": "WorkAgent waitlist counter: starts at zero and never goes up",
     "expect": {
       "fix": [
-        "booking/form/book_button"
+        "waitlist/counter/start",
+        "waitlist/counter/count"
       ]
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "booking/form/book_button"
+      "waitlist/counter/start"
     ],
-    "prompt": "Trattoria Gino reservation form: clicking the submit button doesn't work",
-    "expect": {
-      "fix": [
-        "booking/form/book_button"
-      ]
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "booking/form/date",
-      "booking/form/hours"
-    ],
-    "prompt": "Trattoria Gino booking form: you can pick past dates and times when it's closed",
-    "expect": {
-      "fix": [
-        "booking/form/date",
-        "booking/form/hours"
-      ]
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "booking/form/date"
-    ],
-    "prompt": "Trattoria Gino: you can book tables for dates in the past",
-    "expect": {
-      "near": "near_folder"
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "booking/form/book_button"
-    ],
-    "prompt": "Trattoria Gino: the booking form is broken",
+    "prompt": "WorkAgent: the waitlist counter is wrong",
     "expect": {
       "near": "near_part"
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "booking/form/hours"
+      "waitlist/form/join_button"
     ],
-    "prompt": "Trattoria Gino: the dates you can pick on the booking form are wrong",
+    "prompt": "WorkAgent: the waitlist form is broken",
+    "expect": {
+      "near": "near_part"
+    }
+  },
+  {
+    "app": "startup",
+    "broken": [
+      "waitlist/counter/count"
+    ],
+    "prompt": "WorkAgent: the waitlist counter starts at zero",
     "expect": {
       "check": true
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "booking/form/date"
-    ],
-    "prompt": "On Trattoria Gino the date on the booking confirmation is wrong",
-    "expect": {
-      "check": true
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "landing/hours"
+      "landing/pitch"
     ],
     "prompt": "it's broken",
     "expect": {
@@ -649,38 +569,112 @@
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "menu/prices"
+      "about/credentials"
     ],
-    "prompt": "fix gino",
+    "prompt": "fix logan",
     "expect": {
       "none": true
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
       "landing/name"
     ],
-    "prompt": "Trattoria Gino: make it look nicer",
+    "prompt": "WorkAgent: make it look nicer",
     "expect": {
       "none": true
     }
   },
   {
-    "app": "restaurant",
+    "app": "startup",
     "broken": [
-      "menu/prices",
-      "landing/hours"
+      "about/credentials",
+      "landing/pitch"
     ],
-    "prompt": "Trattoria Gino: the menu prices are wrong and so are the opening hours on the landing page",
+    "prompt": "WorkAgent: Logan's credentials on the about page are wrong and so is the headline on the landing page",
     "expect": {
       "fix": [
-        "menu/prices",
-        "landing/hours"
+        "about/credentials",
+        "landing/pitch"
       ]
     }
+  },
+  {
+    "app": "startup",
+    "broken": [],
+    "prompt": "WorkAgent: add the about us page with Logan and his credentials",
+    "expect": {
+      "build": [
+        "about"
+      ]
+    },
+    "missing": [
+      "about"
+    ]
+  },
+  {
+    "app": "startup",
+    "broken": [],
+    "prompt": "logan's site needs a waitlist so people can sign up",
+    "expect": {
+      "build": [
+        "waitlist"
+      ]
+    },
+    "missing": [
+      "waitlist"
+    ]
+  },
+  {
+    "app": "startup",
+    "broken": [],
+    "prompt": "WorkAgent: build the about page and the waitlist",
+    "expect": {
+      "build": [
+        "about",
+        "waitlist"
+      ]
+    },
+    "missing": [
+      "about",
+      "waitlist"
+    ]
+  },
+  {
+    "app": "startup",
+    "broken": [],
+    "prompt": "WorkAgent: make it look nicer",
+    "expect": {
+      "none": true
+    },
+    "missing": [
+      "about"
+    ]
+  },
+  {
+    "app": "startup",
+    "broken": [],
+    "prompt": "add the about page",
+    "expect": {
+      "none": true
+    },
+    "missing": [
+      "about"
+    ]
+  },
+  {
+    "app": "startup",
+    "broken": [
+      "landing/name"
+    ],
+    "prompt": "WorkAgent: make the landing page prettier, bigger fonts",
+    "expect": {
+      "none": true
+    },
+    "missing": []
   },
   {
     "app": "sentiment",
@@ -1230,80 +1224,6 @@
     }
   },
   {
-    "app": "restaurant",
-    "broken": [],
-    "missing": [
-      "menu"
-    ],
-    "prompt": "Trattoria Gino: add the menu page with Gino's dishes and prices",
-    "expect": {
-      "build": [
-        "menu"
-      ]
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [],
-    "missing": [
-      "booking"
-    ],
-    "prompt": "gino's site needs a booking form so people can reserve a table",
-    "expect": {
-      "build": [
-        "booking"
-      ]
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [],
-    "missing": [
-      "menu",
-      "booking"
-    ],
-    "prompt": "Trattoria Gino: build the menu and the table booking",
-    "expect": {
-      "build": [
-        "menu",
-        "booking"
-      ]
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [],
-    "missing": [
-      "menu"
-    ],
-    "prompt": "Trattoria Gino: make it look nicer",
-    "expect": {
-      "none": true
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [],
-    "missing": [
-      "menu"
-    ],
-    "prompt": "add the menu page",
-    "expect": {
-      "none": true
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "landing/name"
-    ],
-    "missing": [],
-    "prompt": "Trattoria Gino: make the landing page prettier, bigger fonts",
-    "expect": {
-      "none": true
-    }
-  },
-  {
     "app": "sentiment",
     "broken": [],
     "missing": [
@@ -1399,64 +1319,6 @@
       "fix": [
         "machines/count"
       ]
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "landing/address"
-    ],
-    "prompt": "Trattoria Gino: the address on the home page is wrong, it should be 14 Alder St",
-    "expect": {
-      "fix": [
-        "landing/address"
-      ]
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "landing/address"
-    ],
-    "prompt": "gino's site has the restaurant on the wrong street, fix where it says they are on the landing page",
-    "expect": {
-      "fix": [
-        "landing/address"
-      ]
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "photos/loading"
-    ],
-    "prompt": "On the Trattoria Gino site the dish pictures don't load, just broken images",
-    "expect": {
-      "fix": [
-        "photos/loading"
-      ]
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "photos/matching"
-    ],
-    "prompt": "Trattoria Gino menu pictures show the wrong dishes, the tiramisu has a pizza picture",
-    "expect": {
-      "fix": [
-        "photos/matching"
-      ]
-    }
-  },
-  {
-    "app": "restaurant",
-    "broken": [
-      "photos/matching"
-    ],
-    "prompt": "Trattoria Gino: something is off with the dish pictures",
-    "expect": {
-      "near": "near_miss"
     }
   }
 ]

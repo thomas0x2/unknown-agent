@@ -5,9 +5,9 @@
  */
 import type { GameState, AppInstance, MailEntry } from './state';
 import type { AppTemplate, Content } from '../content/schema';
-import { breakVariant, bugsOf as bugsOfFeature } from './apps';
+import { breakVariant } from './apps';
 import { pick } from './core';
-import { menuDishes, misspell, parseDishes, WRONG_HOURS, wrongAddress, dishPictures, dishKind, KIND_WORDS } from './restaurant';
+import { misspell, wrongPitch, investorsShown, credentialsShown, parseList, listDiff, FAKE_COFOUNDERS, waitlistStart, fmtCount } from './startup';
 
 /** One thing wrong with the live app: a feature and how it fails, or the whole app. */
 export interface AppProblem {
@@ -52,8 +52,8 @@ export function appProblems(app: AppInstance, tmpl: AppTemplate | undefined): Ap
     const params = liveF?.params ?? app.specParams[id] ?? {};
     const vars: Record<string, string> = {};
     for (const [k, v] of Object.entries(app.specParams[id] ?? {})) vars[k] = String(v);
-    if (app.template === 'restaurant' && variant) {
-      const sub = restaurantDetail(app, id, variant, seed, params, vars);
+    if (app.template === 'startup' && variant) {
+      const sub = startupDetail(app, id, variant, seed, params, vars);
       if (sub) keys.unshift(`${variant}:${sub}`);
     }
     out.push({ featureId: id, keys, vars });
@@ -62,43 +62,42 @@ export function appProblems(app: AppInstance, tmpl: AppTemplate | undefined): Ap
   return out;
 }
 
-/** Fill {{shown}}/{{expected}} with what Gino's site actually shows. Returns a sub-case key, if any. */
-function restaurantDetail(
+/** Fill {{shown}}/{{expected}} with what Logan's site actually shows. Returns a sub-case key, if any. */
+function startupDetail(
   app: AppInstance, id: string, variant: string, seed: number,
   params: Record<string, string | number>, vars: Record<string, string>,
 ): string | undefined {
   if (id === 'landing') {
     const name = String(app.specParams.landing?.name ?? app.name);
     if (variant === 'name_wrong') { vars.shown = misspell(name, seed); vars.expected = name; }
-    if (variant === 'hours_wrong') { vars.shown = WRONG_HOURS[seed % WRONG_HOURS.length]; vars.expected = String(params.hours ?? '').replace('-', '–'); }
-    if (variant === 'address_wrong') { vars.shown = wrongAddress(seed); vars.expected = String(params.address ?? ''); }
+    if (variant === 'pitch_wrong') { vars.shown = wrongPitch(seed); vars.expected = String(params.pitch ?? ''); }
     return undefined;
   }
-  if (id === 'photos') {
-    if (variant !== 'photos_wrong') return undefined;
-    // the first dish on the live menu whose picture shows something else
-    const m = app.features.find((f) => f.id === 'menu');
-    const dishes = menuDishes({ bugs: m && !m.correct ? bugsOfFeature(m) : [], seed: m?.seed ?? 0, params: m?.params ?? app.specParams.menu ?? {} }).dishes;
-    const pics = dishPictures(dishes, new Set([variant]), seed);
-    const i = dishes.findIndex((d, k) => pics[k] && pics[k] !== dishKind(d.name));
-    if (i >= 0) { vars.expected = dishes[i].name; vars.shown = KIND_WORDS[pics[i]!]; }
+  if (id === 'waitlist') {
+    if (variant === 'counter_zero') vars.shown = '0';
+    if (variant === 'position_wrong') vars.shown = '1';
+    vars.start = fmtCount(waitlistStart(app.specParams.waitlist));
     return undefined;
   }
-  if (id !== 'menu') return undefined;
-  const spec = parseDishes(app.specParams.menu?.dishes);
-  const shown = menuDishes({ variant, seed, params }).dishes;
+  if (id === 'about') {
+    const founder = String(app.specParams.about?.founder ?? '');
+    if (variant === 'founder_wrong') { vars.shown = misspell(founder, seed); vars.expected = founder; }
+    if (variant === 'fake_cofounders') vars.shown = FAKE_COFOUNDERS.map((c) => c.name).join(' and ');
+  }
+  const key = id === 'investors' ? 'investors' : id === 'about' ? 'credentials' : undefined;
+  if (!key) return undefined;
+  const spec = parseList(app.specParams[id]?.[key]);
+  const shown = (key === 'investors' ? investorsShown : credentialsShown)({ variant, seed, params });
   if (variant === 'hallucinated') {
-    vars.shown = shown.slice(0, 2).map((d) => d.name).join(' and ');
+    vars.shown = shown.slice(0, 2).join(' and ');
+    vars.expected = spec.join(', ');
     return undefined;
   }
-  if (variant !== 'wrong_items') return undefined;
-  const has = (list: { name: string }[], n: string) => list.some((d) => d.name === n);
-  const gone = spec.filter((d) => !has(shown, d.name));
-  const extra = shown.filter((d) => !has(spec, d.name));
-  if (gone.length && extra.length) { vars.expected = gone[0].name; vars.shown = extra[0].name; return 'renamed'; }
-  if (gone.length) { vars.expected = gone[0].name; return 'removed'; }
-  if (extra.length) { vars.shown = extra[0].name; return 'invented'; }
-  return undefined;
+  if (variant !== 'logos_wrong' && variant !== 'credentials_wrong') return undefined;
+  const d = listDiff(spec, shown);
+  if (d.expected) vars.expected = d.expected;
+  if (d.shown) vars.shown = d.shown;
+  return d.sub;
 }
 
 const fill = (text: string, vars: Record<string, string>) =>
