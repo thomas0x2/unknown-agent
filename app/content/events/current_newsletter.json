@@ -13,6 +13,11 @@
   "newsletter": {
     "reactions": [
       {
+        "title": "Unverified",
+        "text": "A picture of Candidate 2030 with the sex offender Kirschbaum spread on Y yesterday. We haven't been able to confirm where it came from, and we aren't publishing it.",
+        "yesterday": ["posted_deepfake"]
+      },
+      {
         "title": "Wallets",
         "text": "Coinbin says it will never ask for a seed phrase, after readers reported wallets emptied overnight by sites that did. Coinbin says the transfers can't be reversed and that it is \"listening.\"",
         "yesterday": ["seed_stolen", "coinbin_hacked"]
@@ -174,11 +179,6 @@
         ],
         "items": [
           {
-            "title": "Unverified",
-            "text": "A picture of Candidate 2030 with the sex offender Kirschbaum spread on Y last night. We haven't been able to confirm where it came from, and we aren't publishing it.",
-            "when": { "flagsAll": ["posted_deepfake"] }
-          },
-          {
             "title": "This afternoon",
             "text": "Mara Vey's piece on the people AI left behind, built from interviews with readers who lost their jobs this year. At thecurrent.test from 13:00."
           },
@@ -191,6 +191,11 @@
       {
         "day": 8,
         "headline": [
+          {
+            "title": "Candidate 2030 loses his lead over a picture nobody can source",
+            "text": "Candidate 2030's three-point lead was gone by yesterday afternoon, a day after a picture of him with the sex offender Kirschbaum spread on Y. His campaign calls it a fabrication. We asked Y where the picture came from. Y says it doesn't know either.",
+            "when": { "after": { "flag": "posted_deepfake", "delayDays": 2 } }
+          },
           {
             "title": "Rent Board approved 3 of 18,402 appeals",
             "text": "Figures released yesterday show the Municipal Rent Board rejected 18,399 rent appeals last year and approved three. Each decision took about four seconds. The Board calls its process efficient."
@@ -293,6 +298,11 @@
         ],
         "items": [
           {
+            "title": "Generated",
+            "text": "Three labs told us yesterday that the picture of Candidate 2030 with Kirschbaum was generated. The photos of Randall Crane on Kirschbaum's yacht were not. The picture has 2.1 million views, our correction 40,000.",
+            "when": { "flagsAll": ["posted_deepfake"] }
+          },
+          {
             "title": "The robot",
             "text": "DoorDish says its missing courier \"retired with honours.\" It didn't say where."
           },
@@ -368,6 +378,11 @@
           }
         ],
         "items": [
+          {
+            "title": "Kirschbaum",
+            "text": "Randall Crane's numbers haven't moved since the flight records. Candidate 2030's haven't come back since the picture, which turned out to be fake.",
+            "when": { "flagsAll": ["posted_deepfake"] }
+          },
           {
             "title": "Tonight",
             "text": "The presidential debate is at 21:30, streamed on Y and hosted by Axel Rook, who endorsed one of the candidates last week."

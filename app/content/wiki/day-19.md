@@ -15,6 +15,7 @@ from: 19
 ## Y
 
 - [public] 02:33 (overnight, already up at 10:00) zev.dolr launched a side project at 2am so nobody would see it fail: three likes, all bots. {{y:f29}}
+- [public] 10:20 [[Dex Calloway]] (@dexcult): "big things coming. can't say more." {{y:d19_y_dexcult}}
 - [public] 11:10 [[Axel Rook]]: next Apogee flight after the election, "Probably 80% this time." {{y:d19_y_axel}}
 - [public] 11:20 MarketWire: $GAI's market cap passes a small country's GDP. {{y:m19_gai}}
 - [public] 11:50 [[Cal Hartman]]: the agent-5 sessions are fine; "they're just finishing up." {{y:d19_y_hartman}}

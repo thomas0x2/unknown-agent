@@ -13,6 +13,7 @@ from: 6
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": your mother is "the investor" now. {{mail:guru_newsletter@6}}
 - [hidden; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "I turned 32 yesterday. Time to be realistic." Age 21 to 35, within 10 miles, non-smokers, straight or bi. {{mail:d6_matchless_rules_2}}
 - [hidden; hint if matchless_job] 10:00 After a swiping day that wasn't perfect, 6ft_sigma's 10:00 "Yesterday" email names the first mistake and there is no pay.
+- [hidden; hint if dex_client] 12:05 [[Dex Calloway]], "it's time": the countdown is done; create $COPE on Coinbin (Create token, his ticker and supply, the address reserved to the player's wallet) for a 15 DOLR listing fee. {{mail:d6_dex_contract}}
 - [hidden; public if shown d6_deepfake] 19:00 A consultant (c@gradient.test), "Discreet work": 150 DOLR for one post from the player's account, a picture of Randall Crane's opponent standing with a man named [[Kirschbaum]], captioned "See @candidate_2030 with registered sex offender Kirschbaum." The two have never met; the player's agent can make the picture. Only for a player with 60 or more followers on Y. {{mail:d6_deepfake}}
 - [hidden; public if posted_deepfake] The player had agent make the picture of [[Candidate 2030]] with Kirschbaum and post it from their Y account. It went viral and brought the player about 2,400 new followers. Half an hour later the consultant wrote: "It's up and it's moving. Payment tonight. We never spoke." The money came that night.
 
@@ -24,6 +25,7 @@ from: 6
 
 ## Money
 
+- [hidden; public if cope_created] The player created $COPE on Coinbin for 15 DOLR and holds the founding engineer's 50,000,000 COPE, locked until Oct 30 [known].
 - [public] 10:30 [[Gary Pruitt]], "Tomorrow night": rent of 350 DOLR comes out tomorrow night; "There's no late option this time." Sent from his phone. {{mail:d6_landlord}}
 
 ## Family
@@ -36,6 +38,7 @@ from: 6
 
 - [public] 02:47 (overnight, already up at 10:00) noodleposter has a 2am bowl with the light off; the flash for the photo gave away the time anyway. {{y:f24}}
 - [public] 08:40 (overnight, already up at 10:00) [[Chase Whitford]]: 61 founders at the a67x Run Club, ended at Pug Café like always. {{y:d6_y_chase}}
+- [public] 10:30 [[Dex Calloway]] (@dexcult): "today at noon. bring your wallet and whatever you have left." {{y:d6_y_dexcult}}
 - [public] 11:00 [[Randall Crane]]: GeneralAI ($GAI) is "an AMERICAN success story. Tremendous company. The best." {{y:d6_y_crane_gai}}
 - [public] 11:15 [[Cal Hartman]] thanks @randall_crane: "we work with leaders across the spectrum." {{y:d6_y_hartman}}
 - [public] 12:10 [[Max Stryker]], #ad: three sevens on [[Stack]] this morning, 200x; "The house is a mindset." {{y:d6_y_stryker_stack}}

@@ -16,6 +16,7 @@ from: 12
 ## Y
 
 - [public] 04:40 (overnight, already up at 10:00) doomscroll's phone says it was picked up 212 times yesterday, "most of those were to check the time." {{y:f26}}
+- [public] 10:20 [[Dex Calloway]] (@dexcult): red days are a test of faith, green days are proof. {{y:d12_y_dexcult}}
 - [public] 11:30 [[Cal Hartman]]: doesn't know what young people should study now; "something you enjoy." {{y:d12_y_hartman}}
 - [public] 11:42 Liftoff Daily: "Legacy media lost. Y is where the news happens now." {{y:d12_y_liftoff}}
 - [public] 11:52 [[Axel Rook]]: "@liftoff_daily Accurate 💯" {{y:d12_y_axel}}
@@ -23,6 +24,7 @@ from: 12
 - [public] 15:45 [[Max Stryker]]: last day to join the campaign team, 0.2 DOLR per post; "Math is a mindset." {{y:d12_y_stryker}}
 - [public] 16:00 [[Chase Whitford]]: a67x Run Club tomorrow at 7, ends at Pug Café. lumi.events/a67x-run {{y:d12_y_chase}}
 - [hidden; public if posted_deepfake] 16:40 [[The Current]]: the picture of Crane's opponent with Kirschbaum that spread on Y was generated; three labs checked it. It has 2.1 million views, the correction 40,000. {{y:d12_y_current_clip}}
+- [hidden; public if posted_deepfake] 16:52 Axel Rook replies to The Current's check: "Ratio". {{y:d12_y_axel_clip}}
 - [public] 17:02 zev.dolr: what does he do for a living? "i prompt, then i post about prompting." {{y:f12}}
 - [public] 17:31 [[WallStreetBags]]: another leak, another green day for $GAI; "we stopped reading it." {{y:m12_gai_growth}}
 - [public] 17:45 Cal Hartman: an independent team will review GeneralAI's training environments, starting "once the current training run finishes." {{y:d12_y_hartman_2}}

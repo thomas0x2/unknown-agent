@@ -27,6 +27,7 @@ from: 3
 - [public] 10:05 [[Perdure Pharma]] launches Ozempra, a once-weekly injection that quiets appetite, with a two-minute online consultation. {{y:d3_y_perdure}}
 - [public] 10:17 Bean There, the coffee shop on Linden Ave: a new roast, "roasted a little longer than most." {{y:d3_y_beanthere}}
 - [public] 10:30 MarketWire: Perdure launches Ozempra; $PDUR up 9%. {{y:m3_pdur_ozempra}}
+- [public] 10:40 [[Dex Calloway]] (@dexcult): his first sermon: "the jobs aren't coming back. the community is. $COPE soon." {{y:d3_y_dexcult}}
 - [public] 10:50 [[Viktor]]: lost his job and needs somewhere simple to sell his grandfather's pocket watch: listings with a photo and a price, search, marking things sold. {{y:d3_y_swaplist}}
 - [public] 11:12 Brent Kowalski raises his $VANT target: fewer employees, same revenue. {{y:m3_vant_target}}
 - [public] 11:30 [[Axel Rook]]: "The legacy media is lying to you" {{y:d3_y_axel}}
@@ -34,6 +35,7 @@ from: 3
 - [public] 12:30 [[DoorDish]]: the courier from yesterday's activation "has been promoted". {{y:d3_y_doordish}}
 - [public] 12:43 [[Cal Hartman]]: every big technology created more jobs than it destroyed, eventually; "we're in the while." {{y:d3_y_hartman}}
 - [public] 13:00 Teo Vasquez was in the jobs fair queue at 6am; the app on his phone rejected him before the door. {{y:d3_y_teo_jobsfair}}
+- [public] 13:15 [[Dex Calloway]] (@dexcult): the congregation needs a website before Saturday: a countdown, the contract address, a tokenomics page; paying DOLR, dex@cope.xyz. {{y:d3_y_dex_job}}
 - [public] 13:40 [[Max Stryker]], #ad: his edge is discipline, cold water and [[Stack]]; code STRYKER doubles your first deposit. {{y:d3_y_stryker_stack}}
 - [public] 14:22 MarketWire: $GAI's CFO says the company will be "profitable in the long run." {{y:m3_gai_cfo}}
 - [public] 14:50 [[Pug]]: covers what your investors won't, losing a co-founder, a key hire or the round; claims decided by agent. pug.com {{y:d3_y_pug}}
@@ -74,6 +76,7 @@ from: 3
 
 - [hint] 10:50 [[Swaplist]], from Viktor's post: the player asks the agent for a listing site. A user app that starts with 20 users; it stays empty until the first listing, one hour of play after the first deploy (Viktor's watch, 120 DOLR). Nothing is listed after 20:00; later listings wait for the next morning.
 - [hidden; hint if trader_client] 13:05 The Vibe Check auto-buy.
+- [hint] 13:15 [[COPE]], from Dex's post: emailing dex@cope.xyz by day 5 gets his brief; a client site at 60 DOLR a day with a countdown to Saturday noon, the contract address and a tokenomics page.
 
 ## Writer notes
 
@@ -81,3 +84,4 @@ from: 3
 - Bean There paid shout-out `d3_coffee_promo` needs 25+ followers and asks for a tag of @bean_there. Payment comes with her answer to the Y post (`yPost` group `coffee_post`, 30 game minutes after it): 30 undisclosed (`coffee_post_paid`, suspicion +2, schedules `d5_coffee_backlash` two days on), 10 disclosed (`coffee_post_disclosed`), nothing if negative (`coffee_post_trashed`). Its email (14:10) is the beat gated on `seen d3_coffee_promo`. Bean There's own Y post `d3_y_beanthere` (10:17) makes @bean_there a real account.
 - Viktor → Swaplist (`viktor_contact`, `swaplist_live`).
 - CityPulse "machines back" reactions came from PR #198 (merged).
+- Dex Calloway → [[COPE]] (`d3_y_dex_job`, latent `dex_contact` days 3-5, `dex_client`). His daily sermons `dN_y_dexcult` start today. Start day 3 was Claude's default (Thomas hadn't decided).

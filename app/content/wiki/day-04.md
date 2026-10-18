@@ -25,6 +25,7 @@ from: 4
 ## Y
 
 - [public] 10:05 [[Cal Hartman]]: agent-2 "feels a little bit like magic. the new pricing reflects that." {{y:d4_y_hartman}}
+- [public] 10:30 [[Dex Calloway]] (@dexcult): they gave you severance and a webinar; "we're giving you a countdown." {{y:d4_y_dexcult}}
 - [public] 11:30 [[Mara Vey]] follows up on the Vantor layoffs, 400 people, one memo: "tell me your story." {{y:d4_y_journalist}}
 - [public] [if talked_to_journalist] If the player already answered her, writing to her again gets "I already heard from you, thanks!" Otherwise the conversation is the one from day 1. {{mail:journalist_followup}}
 - [public] 11:31 Fifteen bot accounts post "$GAI to the moon!!".

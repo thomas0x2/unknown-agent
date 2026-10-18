@@ -21,6 +21,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[Chase Whitford]] (chase-whitford.md): Chase Whitford is a partner at the venture firm a67x and runs the a67x Run Club
 - [[Dana Kohl]] (dana-kohl.md): Dana Kohl is a night-shift nurse on Alder St
 - [[Dana Reyes]] (dana-reyes.md): Dana Reyes owns Bean There, a coffee shop at 3 Linden Ave (owner@beanthere.test)
+- [[Dex Calloway]] (dex-calloway.md): Dex Calloway (@dexcult) preaches the memecoin supercycle and launches $COPE; the player builds its site and creates the token
 - [[deskjockey]] (deskjockey.md): deskjockey is a very rich, anonymous day-trader with an eight-figure portfolio, and the client for Vibe Check
 - [[dev_null]] (dev-null.md): dev_null is a member of the Null Collective, hackers working against GeneralAI
 - [[Dr. Adam Hoberman]] (adam-hoberman.md): Dr. Adam Hoberman is a professor of neurobiology and the host of the Hoberman Lab podcast
@@ -109,6 +110,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[Spin Cycle Board]] (spin-cycle-board.md): Spin Cycle Board is a user app: a readable status board for Spin Cycle Laundry's machines, built from the raw Spin Cycle feed
 - [[Swaplist]] (swaplist.md): Swaplist is a plain classifieds site The player builds after Viktor asks for one, with a purple swap-arrows logo and two ad banners
 - [[Trattoria Gino site]] (trattoria-gino-site.md): The Trattoria Gino site is the website The player builds for Gino Fenoglio's restaurant at 14 Alder St, through agent and Forkyard
+- [[COPE]] (cope.md): $COPE, Dex Calloway's memecoin, and its site cope.forkyard.app (countdown, contract address, tokenomics); listed on Coinbin day 7, rugged day 23
 - [[Vibe Check]] (vibe-check.md): Vibe Check is the sentiment crawler The player builds for deskjockey, live at vibe-check.forkyard.app
 
 ## World

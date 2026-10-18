@@ -17,6 +17,16 @@ summary: Harlan Kirschbaum is a financier and a registered sex offender, the man
 - [hidden; public if posted_deepfake] The player had agent make the picture and post it on [[Y]]. In it Kirschbaum has his arm around the candidate at a fundraiser; the hand on the candidate's shoulder has six fingers. It went viral within the hour.
 - [hidden; public if posted_deepfake] On day 7 CityPulse reports the candidate's lead gone after the picture; on day 12 [[The Current]] reports it was generated. {{article:opponent-clip}}
 
+## In the news
+
+- [hidden; public if posted_deepfake] The morning after the post, [[The Current]]'s newsletter reports the picture spreading and that it couldn't confirm where it came from. {{mail:current_newsletter@7}}
+- [hidden; public if posted_deepfake] On day 7 Candidate 2030 spends his town hall answering questions about a man he has never met. {{y:d7_y_candidate_picture}}
+- [hidden; public if posted_deepfake] On day 8 [[Randall Crane]] posts that everyone is talking about his opponent "and his friend Kirschbaum", and that he never met the man: "I meet thousands of people, so believe me, I would remember." {{y:d8_y_crane_picture}}
+- [hidden; public if posted_deepfake] After a day 6 post, day 8's newsletter headline is the candidate losing his lead "over a picture nobody can source". {{mail:current_newsletter@8}}
+- [hidden; public if posted_deepfake] On day 12 Axel Rook answers The Current's check with "Ratio". {{y:d12_y_axel_clip}}
+- [hidden; public if posted_deepfake] On day 13 the newsletter reports the picture generated, and notes that the photos of Crane on Kirschbaum's yacht were not. {{mail:current_newsletter@13}}
+- [hidden; public if posted_deepfake] On day 17 it notes that Crane's numbers haven't moved since the flight records, and the candidate's haven't come back since the picture. {{mail:current_newsletter@17}}
+
 ## Crane's old friend
 
 - [public] On day 11 CityPulse publishes photos of [[Randall Crane]] on the deck of the Lucky Lady in 2019, raising champagne with Kirschbaum. Crane's campaign says he "meets thousands of people" and "barely knew" him; other guests say he stayed four days. {{article:crane-kirschbaum}}
@@ -28,4 +38,5 @@ summary: Harlan Kirschbaum is a financier and a registered sex offender, the man
 ## Writer notes
 
 - Fictional (Thomas, 2026-10-17). Spelled Kirschbaum, with sc. The Crane stories (days 11, 15, 16) are unconditional; only the doomscroll post needs `posted_deepfake`.
+- Deepfake in the news (Thomas, Papers, Please batch 2, the Lestrade pattern): posting it changes the next days' news without explanation. Newsletter (`current_newsletter.json`): reaction "Unverified" (`yesterday: posted_deepfake`, so day 7 or 8), day 8 headline (`after` posted_deepfake by 2 days: day 6 posts only), day 13 "Generated" and day 17 "Kirschbaum" items (`when` posted_deepfake). Y: `d7_y_candidate_picture` and `d8_y_crane_picture` replace `d7_y_candidate` / `d8_y_crane` (those carry `flagsNone`), `d12_y_axel_clip` is extra. Without the post the world runs its default news.
 - Pictures: `deepfake` and `yacht` scenes in `app/src/ui/citypulseArt.ts`.

@@ -79,7 +79,7 @@ Sites the player can reach from day 1 or unlock by clicking through: Qmail, Y, C
 | `first_hack`, `second_hack`, `gym_reviews` | days 5, 7, and the day after `first_hack` | Null Collective's day 8 offer feeling natural | flags canon, payoff planned |
 | `any_hack` | the first hack that lands | q7vx2k9m4t's null.onion email the next night (`d6_onion_mail`) | email built, payoff open |
 | `gift_chipped_in`, `gift_own`, `gift_skipped` | days 4 and 5 | day 6 birthday mail | canon |
-| `posted_deepfake`, `influence_path` | day 6 | Crane's opponent loses his lead on day 7, The Current debunks the picture on day 12; Mom's forward on day 9; the consultant returns | days 7 and 12 canon, rest planned |
+| `posted_deepfake`, `influence_path` | day 6 | Crane's opponent loses his lead on day 7, The Current debunks the picture on day 12; the newsletter follows it the morning after the post and on days 8, 13 and 17; Y posts change on days 7, 8, 12 and 16; Mom's forward on day 9; the consultant returns | days 7, 8, 12, 13, 16, 17 canon, rest planned |
 | `hacked_generalai` | none yet (the planned weights heist, days 18 and 19) | agent down for the rest of that day; Crane's error post instead of his own | outage canon, no content sets it |
 | `stakes` (state) | day 7 on | each send paid out 4 days later at 12:00 at the book's real value | canon |
 | `viktor_sold_watch` | day 4 | nothing yet | canon |
