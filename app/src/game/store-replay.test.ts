@@ -17,7 +17,7 @@ describe('actions taken while another waits on its answer', () => {
   it('a deploy during a pending reply is still live once the reply lands', async () => {
     const store = make();
     const s = store.state;
-    const id = registerApp(s, { template: 'restaurant', kind: 'client', name: 'Test Bistro', spec: [{ id: 'landing' }] });
+    const id = registerApp(s, { template: 'startup', kind: 'client', name: 'Test Startup', spec: [{ id: 'landing' }] });
     const app = s.apps.find((a) => a.id === id)!;
     // the agent's fix has landed in the repo; the live site still runs the old, buggy build
     app.repo = [{ id: 'landing', correct: true }];

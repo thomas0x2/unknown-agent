@@ -26,6 +26,7 @@ from: 16
 - [public] 13:30 [[Pollymarket]]: "BREAKING: The city has shut down Pug Café", with a market on whether it reopens before the election. {{y:d16_y_polly_pug}}
 - [public] 14:05 [[Randall Crane]]: his opponent "has never had a real job. He's had a CAREER." {{y:d16_y_crane}}
 - [public] 14:16 [[CityPulse]]: HUSH MONEY? GeneralAI settles with three companies whose systems its models broke into; terms secret. {{y:d16_y_gai_leak}}
+- [public] 14:30 [[Logan Pryce]]: "they closed pug café. where am i supposed to build" {{y:d16_y_logan_cafe}}
 - [public] 14:42 zev.dolr bought the DOLR dip again at 4am. {{y:f16}}
 - [public] 15:00 [[Caleb Moxon]]: at GeneralAI, settlements were signed off by the same people who signed off launches. {{y:d16_y_moxon}}
 - [public] 15:20 Candidate 2030: "I'm proud of my record of public service." {{y:d16_y_candidate}}

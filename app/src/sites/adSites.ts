@@ -510,7 +510,7 @@ export const AD_SITES: AdSite[] = [
         ? 'Starts at the fountain in the park. Ends outside Pug Café, which is closed. Coffee is now bring-your-own.'
         : 'Starts at the fountain in the park. Ends at Pug Café, where the coffee is on Pug.'],
       ['Hosted by', 'Chase Whitford, partner at a67x. He runs every week and reads every message after.'],
-      ['Going', 'Chase Whitford, Brynn LeClaire, Brayden Kolt and 71 others. The full list is visible to registered guests.'],
+      ['Going', 'Chase Whitford, Logan Pryce, Brynn LeClaire, Brayden Kolt and 70 others. The full list is visible to registered guests.'],
     ],
     fine: 'Registration requires approval by the host. Running is at your own risk; Pug sells cover for that.',
     link: ['Hosted by', 'a67x', 'a67x.com'],

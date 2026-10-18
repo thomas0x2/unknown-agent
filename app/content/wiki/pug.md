@@ -14,7 +14,7 @@ summary: Pug is a startup selling "AI-native insurance for founders", with a car
 
 ## Pug Café
 
-[public] Pug Café is Pug's café for founders, open 24 hours a day: free espresso for policyholders, 6 DOLR for everyone else, desks and outlets at every seat. pug.com calls it a policy benefit. The a67x Run Club ([[Chase Whitford]]) ends there every Saturday, and [[Lumi]] lists a Pug founder breakfast there every weekday at 8:00.
+[public] Pug Café is Pug's café for founders, open 24 hours a day: free espresso for policyholders, 6 DOLR for everyone else, desks and outlets at every seat. pug.com calls it a policy benefit. [[Logan Pryce]] works there every day. The a67x Run Club ([[Chase Whitford]]) ends there every Saturday, and [[Lumi]] lists a Pug founder breakfast there every weekday at 8:00.
 
 ## From day 16: The café shut down
 
@@ -35,5 +35,5 @@ summary: Pug is a startup selling "AI-native insurance for founders", with a car
 
 - Corgi parody (Thomas, Papers, Please decisions batch 2). Site: AD_SITES `pug.com` (sites/adSites.ts), logo sites/pugLogo.ts, ad `pug` in ui/ads.ts. The café closes at PUG_CAFE_CLOSES (day 16, 13:30; `pugCafeClosed`), which also switches pug.com and lumi.events. Shutdown day picked by Claude (mid-game, a weekday, after the day 14 rent).
 - Pollymarket market `pug-cafe`, resolves NO at day 28 20:00.
-- Logan Pryce works from the café every day (decided, not built until Logan lands with PR #285).
+- Logan Pryce works from the café every day: his posts days 4, 6, 11, 16, 17.
 - [open] Brynn's role beyond posting, and who founded Pug, are still open in the decisions.

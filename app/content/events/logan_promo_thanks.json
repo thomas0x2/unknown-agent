@@ -1,0 +1,20 @@
+{
+  "id": "logan_promo_thanks",
+  "site": "qmail",
+  "from": "Logan Pryce",
+  "addr": "logan@workagent.test",
+  "subject": "your post",
+  "trigger": {
+    "flagsAll": [
+      "logan_promo_asked"
+    ]
+  },
+  "yPost": {
+    "when": "The post is about, recommends or promotes WorkAgent, Logan Pryce's startup or its new website.",
+    "after": 30,
+    "keys": [
+      "workagent|logan|startup"
+    ]
+  },
+  "body": "saw your post. the podcast got a new listener out of it, so it's working.\n\nlogan"
+}

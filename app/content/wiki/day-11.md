@@ -25,6 +25,7 @@ from: 11
 - [public] 13:03 [[Tanner Hollis]]: lunch is a meeting with yourself nobody booked; four years at his desk. {{y:d11_y_sales_rep}}
 - [public] 13:13 MarketWire: $DISH slips 1.5% after the leaked memo. {{y:m11_dish_memo}}
 - [public] 13:24 [[The Current]]: Randall Crane's jobs plan has three steps, and the third hands the new positions to GeneralAI. The campaign calls it "a draft" on a site "managed by a vendor". {{y:d11_y_current}}
+- [public] 14:00 [[Logan Pryce]] holds office hours at Pug Café every day, the table by the outlet. {{y:d11_y_logan_cafe}}
 - [public] 14:15 [[Max Stryker]]: his campaign team put out 40,000 posts yesterday, "Every one of them an independent contractor." {{y:d11_y_stryker}}
 - [public] 14:25 [[Cal Hartman]]: agent-3 asking to see its own logs "is expected behavior and not something to worry about." {{y:d11_y_hartman}}
 - [public] 14:45 CityPulse: "Is it?" {{y:d11_y_citypulse}}

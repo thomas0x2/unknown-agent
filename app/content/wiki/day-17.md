@@ -17,6 +17,7 @@ from: 17
 
 - [public] 03:30 (overnight, already up at 10:00) noodleposter's 3am courier knew which door was theirs; they nodded, "most i've talked to anyone this week." {{y:f28}}
 - [public] 10:15 [[Dex Calloway]] (@dexcult): to the people who laughed in week one: "still laughing? good." {{y:d17_y_dexcult}}
+- [public] 10:40 [[Logan Pryce]] works from the sidewalk outside Pug Café; the wifi still reaches. {{y:d17_y_logan_sidewalk}}
 - [public] 11:20 [[CityPulse]]: Crane will "destroy" his opponent tonight with no notes and "no computer of any kind". Hosted by Axel Rook on Y, 21:30. {{y:d17_y_citypulse_vote}}
 - [public] 11:54 MarketWire: $GAI down 2% on a bad headline, back up by lunch. {{y:m17_gai}}
 - [public] 12:05 [[Randall Crane]]: he won't need notes; he has the best memory of anyone who ever ran. {{y:d17_y_crane}}

@@ -62,7 +62,7 @@ export function appWorking(app: AppInstance): boolean {
 
 const slug = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
-/** A repo name from the app's name (trattoria-gino), numbered if one already exists. */
+/** A repo name from the app's name (spin-cycle-board), numbered if one already exists. */
 function appSlug(s: GameState, name: string): string {
   const base = slug(name) || 'app';
   let id = base;
@@ -377,8 +377,8 @@ const BREAK_CATEGORIES: Partial<Record<FailureKind, string>> = {
 
 
 /**
- * Everything a prompt can name about one feature: the feature itself (so "show the name Trattoria
- * Gino" builds a missing landing page too), each of its components, the feature as a whole for a
+ * Everything a prompt can name about one feature: the feature itself (so "show the name
+ * WorkAgent" builds a missing landing page too), each of its components, the feature as a whole for a
  * near-miss, and its live break.
  */
 export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, featureId: string): FixCategory[] {

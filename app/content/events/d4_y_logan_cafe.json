@@ -1,0 +1,11 @@
+{
+  "id": "d4_y_logan_cafe",
+  "site": "y",
+  "from": "logan_ships",
+  "trigger": {
+    "dayMin": 4,
+    "dayMax": 4
+  },
+  "at": "14:30",
+  "body": "been at pug café since 9am. free espresso if you have a policy. i have a policy. founder mode"
+}

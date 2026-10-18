@@ -328,30 +328,27 @@
   }
  },
  {
-  "prompt": "who is Gino?",
+  "prompt": "who is Logan?",
   "day": 1,
   "expect": {
    "kind": "answer",
    "pages": [
-    "Gino Fenoglio"
+    "Logan Pryce"
    ],
    "also": [
-    "Trattoria Gino site",
-    "Local businesses"
+    "WorkAgent site",
+    "Why Combinator"
    ]
   }
  },
  {
-  "prompt": "what does Gino want for his website?",
+  "prompt": "what does Logan want for his website?",
   "day": 1,
   "expect": {
    "kind": "answer",
    "any": [
-    "Gino Fenoglio",
-    "Trattoria Gino site"
-   ],
-   "also": [
-    "Local businesses"
+    "Logan Pryce",
+    "WorkAgent site"
    ]
   }
  },
@@ -850,8 +847,7 @@
     "DoorDish"
    ],
    "also": [
-    "Local businesses",
-    "Trattoria Gino site"
+    "Local businesses"
    ]
   }
  },
@@ -1011,16 +1007,27 @@
   }
  },
  {
-  "prompt": "what's the Trattoria Gino site supposed to have?",
+  "prompt": "what's the WorkAgent site supposed to have?",
   "day": 1,
   "expect": {
    "kind": "answer",
    "pages": [
-    "Trattoria Gino site"
+    "WorkAgent site"
    ],
    "also": [
-    "Gino Fenoglio",
-    "Local businesses"
+    "Logan Pryce"
+   ]
+  }
+ },
+ {
+  "prompt": "is WorkAgent really backed by Why Combinator?",
+  "day": 1,
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Why Combinator",
+    "WorkAgent site",
+    "Logan Pryce"
    ]
   }
  },

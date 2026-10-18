@@ -5,20 +5,21 @@ import { clone } from './core';
 import { APPS } from './config';
 import { registerApp, deployApp, breakFeature, getApp } from './apps';
 import { appProblems, problemLine } from './complaints';
-import { menuDishes } from './restaurant';
+import { credentialsShown } from './startup';
 import { renderAppSite } from '../ui/appsite';
 
 const content = loadContent();
 
-function gino(): { s: GameState; id: string } {
+function logan(): { s: GameState; id: string } {
   const s = clone(newGame(3));
   s.phase = 'work';
   s.values.crypto = 1000;
   const id = registerApp(s, {
-    template: 'restaurant', kind: 'client', name: 'Trattoria Gino', clientEventId: 'restaurant_contact', payPerDay: 40,
+    template: 'startup', kind: 'client', name: 'WorkAgent', clientEventId: 'logan_contact', payPerDay: 40,
     spec: [
-      { id: 'landing', params: { name: 'Trattoria Gino', hours: '17:00-22:00' } },
-      { id: 'menu', params: { dishes: 'Margherita 12, Diavola 14, Lasagne 15, Tiramisu 7, Espresso 3' } },
+      { id: 'landing', params: { name: 'WorkAgent', pitch: 'The future of work is agentic.' } },
+      { id: 'investors', params: { investors: 'Why Combinator, Bonsai Capital, a67x' } },
+      { id: 'about', params: { founder: 'Logan Pryce', credentials: 'Why Combinator Startup School, San Fortuna State dropout, host of the Founder Mode podcast, 2x founder' } },
     ],
   });
   const app = getApp(s, id)!;
@@ -36,30 +37,19 @@ function withBug(s: GameState, id: string, featureId: string, variant: string, s
   }
 }
 
-const inbox = (s: GameState) => s.mail.filter((m) => m.folder === 'inbox' && m.addr === 'gino@trattoria.test');
+const inbox = (s: GameState) => s.mail.filter((m) => m.folder === 'inbox' && m.addr === 'logan@workagent.test');
 
 describe('complaints at payday', () => {
-  it("Gino's day 3 thank-you only comes if the site never broke", () => {
-    const thanks = (next: GameState) => next.delivered.some((d) => d.eventId === 'd3_restaurant_thanks');
-    const onDay2 = () => { const g = gino(); g.s.values.day = 2; g.s.flags.push('restaurant_client'); return g; };
-    expect(thanks(endAll(onDay2().s, content))).toBe(true);
-    const { s, id } = onDay2();
-    withBug(s, id, 'menu', 'prices_euri');
-    const next = endAll(s, content);
-    expect(inbox(next).length).toBeGreaterThan(0); // the complaint
-    expect(thanks(next)).toBe(false);
-  });
-
   it('a working client app pays and sends no complaint', () => {
-    const { s } = gino();
+    const { s } = logan();
     const next = endAll(s, content);
     expect(inbox(next)).toHaveLength(0);
     expect(next.apps[0].strikes).toBe(0);
   });
 
   it('a buggy client app gets a strike, no pay, and an email from the client naming the bug', () => {
-    const { s, id } = gino();
-    withBug(s, id, 'menu', 'prices_euri');
+    const { s, id } = logan();
+    withBug(s, id, 'investors', 'logos_broken');
     const before = s.values.crypto;
     const next = endAll(s, content);
     expect(next.apps[0].strikes).toBe(1);
@@ -67,58 +57,58 @@ describe('complaints at payday', () => {
     expect(next.values.crypto).toBeLessThan(before);
     const mail = inbox(next);
     expect(mail).toHaveLength(1);
-    expect(mail[0].from).toBe('Gino (Trattoria)');
+    expect(mail[0].from).toBe('Logan Pryce');
     expect(mail[0].day).toBe(next.values.day); // lands in the morning
-    expect(mail[0].body).toContain('EURI');
+    expect(mail[0].body).toContain('broken images');
     expect(mail[0].body).toContain('before tomorrow');
   });
 
-  it('names exactly what the live site shows (misspelled name, wrong hours, changed dish)', () => {
-    const { s, id } = gino();
-    withBug(s, id, 'landing', 'hours_wrong', 2);
+  it('names exactly what the live site shows (misspelled name, honest pitch, changed credential)', () => {
+    const { s, id } = logan();
+    withBug(s, id, 'landing', 'pitch_wrong', 2);
     const app = getApp(s, id)!;
-    const tmpl = content.apps.restaurant;
-    const hours = appProblems(app, tmpl)[0].vars.shown;
-    expect(problemLine(app, tmpl, appProblems(app, tmpl)[0])).toContain(`open ${hours}.`);
-    expect(renderAppSite(app, tmpl, undefined)).toContain(hours);
+    const tmpl = content.apps.startup;
+    const pitch = appProblems(app, tmpl)[0].vars.shown;
+    expect(problemLine(app, tmpl, appProblems(app, tmpl)[0])).toContain(`"${pitch}"`);
+    expect(renderAppSite(app, tmpl, undefined)).toContain(pitch);
 
     withBug(s, id, 'landing', 'name_wrong', 0);
     const name = appProblems(app, tmpl)[0].vars.shown;
-    expect(name).not.toBe('Trattoria Gino');
+    expect(name).not.toBe('WorkAgent');
     expect(problemLine(app, tmpl, appProblems(app, tmpl)[0])).toContain(`"${name}"`);
     expect(renderAppSite(app, tmpl, undefined)).toContain(name);
 
-    // wrong_items: the line names the same dish the menu page renders differently
-    withBug(s, id, 'landing', 'hours_wrong', 2);
+    // credentials_wrong: the line names the same credential the about page renders differently
     Object.assign(app.features[0], { correct: true, variant: undefined });
     for (let seed = 0; seed < 21; seed++) {
-      withBug(s, id, 'menu', 'wrong_items', seed);
+      withBug(s, id, 'about', 'credentials_wrong', seed);
       const line = problemLine(app, tmpl, appProblems(app, tmpl)[0]);
-      const shown = menuDishes({ variant: 'wrong_items', seed, params: app.specParams.menu }).dishes.map((d) => d.name);
-      const named = [...line.matchAll(/(?:"([^"]+)"|has ([^.]+?)\.|^(\S[^.]*?) is missing)/g)].map((m) => m[1] ?? m[2] ?? m[3]);
-      expect(named.length).toBeGreaterThan(0);
+      const shown = credentialsShown({ variant: 'credentials_wrong', seed, params: app.specParams.about });
+      const named = [...line.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+      expect(named.length, line).toBeGreaterThan(0);
       if (line.includes('is missing')) expect(shown).not.toContain(named[0]);
       else expect(shown).toContain(named[0]);
+      expect(renderAppSite(app, tmpl, 'about')).toContain(shown[0]);
     }
   });
 
   it('a live break is described by how it fails', () => {
-    const { s, id } = gino();
-    breakFeature(s, getApp(s, id)!, 'menu', 'failed_fetch');
+    const { s, id } = logan();
+    breakFeature(s, getApp(s, id)!, 'about', 'failed_fetch');
     const next = endAll(s, content);
-    expect(inbox(next)[0].body).toContain("menu page doesn't load");
+    expect(inbox(next)[0].body).toContain('the about page shows an error');
   });
 
   it('the second strike is the firing email', () => {
-    const { s, id } = gino();
-    withBug(s, id, 'menu', 'prices_missing');
+    const { s, id } = logan();
+    withBug(s, id, 'about', 'fake_cofounders');
     let next = endAll(s, content);
     next = endAll(next, content);
     expect(next.apps[0].churned).toBe(true);
     const mail = inbox(next);
     expect(mail).toHaveLength(2);
-    expect(mail[1].body).toContain('no prices');
-    expect(mail[1].body).toContain('second time');
+    expect(mail[1].body).toContain('solo founder');
+    expect(mail[1].body).toContain("that's twice");
   });
 
   it('a broken user app gets a complaint on Y about the actual problem', () => {
@@ -142,10 +132,10 @@ describe('complaints at payday', () => {
   });
 
   it('an app taken offline is complained about as offline', () => {
-    const { s, id } = gino();
+    const { s, id } = logan();
     getApp(s, id)!.deployed = false;
     const next = endAll(s, content);
-    expect(inbox(next)[0].body).toContain('The site is gone');
+    expect(inbox(next)[0].body).toContain('the site is down');
   });
 
   it('every app template has complaint copy for each feature', () => {
@@ -158,15 +148,15 @@ describe('complaints at payday', () => {
     }
   });
 
-  it("Gino's update request waits until the site passes a payday; the complaint comes first", () => {
-    const { s, id } = gino();
-    s.flags.push('restaurant_client');
+  it("Logan's update request waits until the site passes a payday; the complaint comes first", () => {
+    const { s, id } = logan();
+    s.flags.push('logan_client');
     s.flags.sort();
-    withBug(s, id, 'menu', 'prices_euri');
+    withBug(s, id, 'about', 'founder_wrong');
     let next = endAll(s, content);
     const subjects = (st: GameState) => inbox(st).map((m) => m.subject);
-    expect(subjects(next)).toEqual(['The website']);
-    expect(next.delivered.some((d) => d.eventId === 'd2_restaurant_booking')).toBe(false);
+    expect(subjects(next)).toEqual(['the site']);
+    expect(next.delivered.some((d) => d.eventId === 'd2_logan_waitlist')).toBe(false);
 
     // fixed and redeployed: the next morning brings the update, not a complaint (and nothing breaks overnight)
     const app = next.apps[0];
@@ -175,8 +165,8 @@ describe('complaints at payday', () => {
     const odds = APPS.breakOdds;
     APPS.breakOdds = [];
     try { next = endAll(next, content); } finally { APPS.breakOdds = odds; }
-    expect(next.delivered.some((d) => d.eventId === 'd2_restaurant_booking' && d.day === 3)).toBe(true);
-    expect(subjects(next)).toEqual(['The website']);
-    expect(content.events.find((e) => e.id === 'd2_restaurant_booking')!.body).not.toMatch(/agent|redeploy/i);
+    expect(next.delivered.some((d) => d.eventId === 'd2_logan_waitlist' && d.day === 3)).toBe(true);
+    expect(subjects(next)).toEqual(['the site']);
+    expect(content.events.find((e) => e.id === 'd2_logan_waitlist')!.body).not.toMatch(/agent|redeploy/i);
   });
 });

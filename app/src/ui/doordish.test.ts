@@ -1,12 +1,10 @@
-/* DoorDish is bookmarked after the first visit (ads, or the link in Gino's email); Gino's restaurant joins it once the DoorDish listing is deployed. */
+/* DoorDish is bookmarked after the first visit (its ads link it). */
 import { describe, it, expect } from 'vitest';
 import { GameStore } from '../game/store';
 import { loadContent } from '../content/load';
-import { composeEmail, deploy, getApp, type JevRouter, type SaveStore, type Writer } from '../engine';
-import { applyEffects } from '../engine/effects';
+import { type JevRouter, type SaveStore, type Writer } from '../engine';
 import { route, bookmarks } from '../sites/registry';
 import { page } from './view';
-import { wordJev } from '../engine/_fixtures';
 
 const mem: SaveStore = { load: () => null, save: () => {}, clear: () => {} } as unknown as SaveStore;
 
@@ -24,41 +22,9 @@ describe('DoorDish', () => {
     expect(ids()).toContain('sherwood');
   });
 
-  it("Gino's email links DoorDish", () => {
-    const ev = loadContent().events.find((e) => e.id === 'd4_restaurant_doordish')!;
-    expect(ev.body).toContain('doordish.com');
-  });
-
   it("deskjockey's job email links Sherwood", () => {
     const ev = loadContent().events.find((e) => e.id === 'trader_contact')!;
     expect(ev.body).toContain('sherwood.com');
-  });
-
-  it("Gino's update asks only for DoorDish, and his restaurant shows up there once it ships", async () => {
-    const content = loadContent();
-    const ev = content.events.find((e) => e.id === 'd4_restaurant_doordish')!;
-    expect(ev.onDeliver!.updateApp!.add.map((f) => f.id)).toEqual(['doordish']);
-
-    const store = new GameStore(content, {} as JevRouter, {} as Writer, mem);
-    store.state = (await composeEmail(store.state, content, wordJev, 'gino@trattoria.test', 'Hi Gino, I can build your restaurant website.')).state;
-    const html = (url: string) => page(store, route(url, store.state));
-    const app = getApp(store.state, 'trattoria-gino')!;
-    app.repo = [{ id: 'landing', correct: true, params: app.specParams.landing }, { id: 'menu', correct: true, params: app.specParams.menu }];
-    app.repoVersion = 1;
-    store.state = deploy(store.state, 'trattoria-gino');
-    applyEffects(store.state, ev.onDeliver!);
-    expect(html('doordish.com')).not.toContain('Trattoria Gino');
-
-    const a = getApp(store.state, 'trattoria-gino')!;
-    expect(a.required).toContain('doordish');
-    a.repo.push({ id: 'doordish', correct: true, params: a.specParams.doordish });
-    a.repoVersion++;
-    store.state = deploy(store.state, 'trattoria-gino');
-    expect(html('doordish.com')).toContain('Trattoria Gino');
-    const listing = html('doordish.com/trattoria-gino');
-    expect(listing).toContain('14 Alder St');
-    expect(listing).toContain('17:00–22:00');
-    expect(listing).toContain('Margherita');
   });
 });
 

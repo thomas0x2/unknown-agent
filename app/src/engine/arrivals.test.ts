@@ -81,8 +81,8 @@ describe('job offers spread over the first six hours', () => {
 
   it('knows a lead post, a gig and a client change request as job offers, and Mom as not one', () => {
     const ev = (id: string) => content.events.find((e) => e.id === id)!;
-    for (const id of ['d1_y_restaurant', 'd1_y_laundromat', 'd6_gym_reviews', 'd3_coffee_promo', 'd5_y_kofi_news']) expect(isJobOffer(content, ev(id)), id).toBe(true);
-    for (const id of ['d1_mom', 'd1_y_journalist', 'restaurant_contact']) expect(isJobOffer(content, ev(id)), id).toBe(false);
+    for (const id of ['d1_y_logan', 'd1_y_laundromat', 'd6_gym_reviews', 'd3_coffee_promo', 'd5_y_kofi_news']) expect(isJobOffer(content, ev(id)), id).toBe(true);
+    for (const id of ['d1_mom', 'd1_y_journalist', 'logan_contact']) expect(isJobOffer(content, ev(id)), id).toBe(false);
   });
 
   it('every day, the offers land between 10:15 and 16:00, an hour apart, except ones written for the evening', () => {
@@ -109,7 +109,7 @@ describe('job offers spread over the first six hours', () => {
     const s0 = startGame(content, 7);
     // sleep straight away: the day 1 leads never arrived
     const s1 = endDay(s0, content);
-    expect(s1.delivered.some((d) => d.eventId === 'd1_y_restaurant' || d.eventId === 'd1_y_laundromat')).toBe(false);
+    expect(s1.delivered.some((d) => d.eventId === 'd1_y_logan' || d.eventId === 'd1_y_laundromat')).toBe(false);
     const times = offersToday(s1);
     expect(times.length).toBeGreaterThanOrEqual(3); // both day 1 leads and the trader
     expect(times[0]).toBeGreaterThanOrEqual(JOB_OFFERS.from);
@@ -148,19 +148,19 @@ describe('Y posts go up one at a time', () => {
 
   it('a job lead due next to a post written for that time waits for the next free slot, off the round ten', () => {
     const s = startGame(content, 7);
-    const lead = s.arriving!.find((a) => a.eventId === 'd1_y_restaurant')!;
+    const lead = s.arriving!.find((a) => a.eventId === 'd1_y_logan')!;
     const story = { eventId: 'd1_y_journalist', day: 1, at: lead.at + 2 };
     s.arriving = [lead, story];
     advanceClock(s, story.at - s.clockMin);
     deliverArrivals(s, content);
     expect(s.delivered.find((d) => d.eventId === 'd1_y_journalist')?.min).toBe(story.at);
-    expect(has(s, 'd1_y_restaurant')).toBe(false);
-    const wait = s.arriving.find((a) => a.eventId === 'd1_y_restaurant')!.at;
+    expect(has(s, 'd1_y_logan')).toBe(false);
+    const wait = s.arriving.find((a) => a.eventId === 'd1_y_logan')!.at;
     expect(wait - story.at).toBeGreaterThanOrEqual(Y_GAP);
-    expect(wait).toBe(freeYMin(s, content, lead.at, 'd1_y_restaurant'));
+    expect(wait).toBe(freeYMin(s, content, lead.at, 'd1_y_logan'));
     advanceClock(s, wait - s.clockMin);
     deliverArrivals(s, content);
-    expect(s.delivered.find((d) => d.eventId === 'd1_y_restaurant')?.min).toBe(wait);
+    expect(s.delivered.find((d) => d.eventId === 'd1_y_logan')?.min).toBe(wait);
   });
 
   it('an overnight filler post is already on the timeline when the day starts, at its night time', () => {

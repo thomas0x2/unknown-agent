@@ -21,83 +21,10 @@
     "reply": "lol look who finally replied. ttyl moneybags"
   },
   {
-    "key": "gino@trattoria.test",
-    "name": "Gino (Trattoria)",
-    "character": "gino",
-    "reply": "Grazie for the note! Come by the trattoria, I'll feed you properly. We talk then.",
-    "scripted": [
-      {
-        "id": "raise",
-        "when": "the player asks Gino for a raise: more pay, more money per day or a higher daily rate for the website work, in any wording",
-        "keys": [
-          "raise",
-          "pay+more",
-          "more+money|dolr|pay",
-          "higher+pay|rate",
-          "increase+pay|rate"
-        ],
-        "trigger": {
-          "dayMin": 4,
-          "flagsAll": [
-            "restaurant_client"
-          ],
-          "flagsNone": [
-            "restaurant_raise"
-          ],
-          "appClient": "restaurant_contact"
-        },
-        "effects": {
-          "raisePay": {
-            "client": "restaurant_contact",
-            "by": 20
-          },
-          "setFlags": [
-            "restaurant_raise"
-          ]
-        },
-        "reply": "You know what, yes. Since the site went up the phone doesn't stop. From tonight I pay you 20 DOLR more a day, 60 instead of 40.\n\nGino",
-        "replyAfter": 30
-      },
-      {
-        "id": "raise_early",
-        "when": "the player asks Gino for a raise: more pay, more money per day or a higher daily rate for the website work, in any wording",
-        "keys": [
-          "raise",
-          "pay+more",
-          "more+money|dolr|pay",
-          "higher+pay|rate",
-          "increase+pay|rate"
-        ],
-        "trigger": {
-          "dayMax": 3,
-          "flagsAll": [
-            "restaurant_client"
-          ],
-          "appClient": "restaurant_contact"
-        },
-        "reply": "A raise? The site is a few days old. Let it rise first, like the dough. Ask me again when the business comes in.\n\nGino",
-        "replyAfter": 30
-      },
-      {
-        "id": "raise_again",
-        "when": "the player asks Gino for a raise: more pay, more money per day or a higher daily rate for the website work, in any wording",
-        "keys": [
-          "raise",
-          "pay+more",
-          "more+money|dolr|pay",
-          "higher+pay|rate",
-          "increase+pay|rate"
-        ],
-        "trigger": {
-          "flagsAll": [
-            "restaurant_raise"
-          ],
-          "appClient": "restaurant_contact"
-        },
-        "reply": "I gave you the raise already. Sixty a day, every night. Don't make me do the maths again.\n\nGino",
-        "replyAfter": 30
-      }
-    ]
+    "key": "logan@workagent.test",
+    "name": "Logan Pryce",
+    "character": "logan",
+    "reply": "appreciate you. heads down building, will circle back.\n\nlogan"
   },
   {
     "key": "gary@pruittproperty.test",

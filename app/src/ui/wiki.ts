@@ -70,7 +70,7 @@ export function gameWikiHost(store: GameStore): WikiHost {
 export const clock = (min: number) => `${String(Math.floor(min / 60)).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`;
 const pagesOf = (host: WikiHost): WikiPage[] => host.content.wiki ?? [];
 const ctxOf = (host: WikiHost): WikiCtx => host.ctx();
-/** What a page (or one of its entries) is opened by: "local-businesses/trattoria-gino". */
+/** What a page (or one of its entries) is opened by: "local-businesses/bean-there". */
 const target = (file: string, slug = '') => `${file.replace(/\.md$/, '')}${slug ? `/${slug}` : ''}`;
 const catLabel = (id: string) => CATS.find(([c]) => c === id)?.[1] ?? id;
 const tagPill = (t: WikiTag, title = '') => `<span class="wk-tag ${t === 'hidden' ? 'off' : t}"${title ? ` title="${esc(title)}"` : ''}>${t}</span>`;

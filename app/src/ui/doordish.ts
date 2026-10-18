@@ -1,11 +1,8 @@
 /*
- * doordish.com: food delivery (DoorDash parody). A few local places from the start; a client's
- * restaurant joins the list once its DoorDish feature is deployed, showing what the live site shows
- * (name, hours, menu, with the build's bugs), so the player can check the listing against the spec.
- * From day 5 DoorDish's AI-generated listings show up among them (CityPulse breaks the story on day 8).
+ * doordish.com: food delivery (DoorDash parody). A few local places from the start; from day 5
+ * DoorDish's AI-generated listings show up among them (CityPulse breaks the story on day 8).
  */
 import type { GameStore } from '../game/store';
-import { dishListing, dishPicture, type DishListing } from './appsite';
 import { ICONS } from './icons';
 import { adHtml } from './ads';
 
@@ -23,15 +20,24 @@ const FOOD: Record<string, string> = {
   pita: `<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="13" cy="15" r="4" fill="#d8453b"/><circle cx="20" cy="12" r="4.5" fill="#5fb54a"/><circle cx="27" cy="15" r="4" fill="#8a5a3c"/><path d="M5 16h30c0 9-7 17-15 17S5 25 5 16z" fill="#e9c27e"/><path d="M5 16h30" stroke="#c99a52" stroke-width="2" stroke-linecap="round"/><path d="M12 24c3 2 13 2 16 0" stroke="#c99a52" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>`,
   // a salad bowl
   salad: `<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="13" cy="18" r="5" fill="#5fb54a"/><circle cx="21" cy="15" r="5.5" fill="#7ccc5c"/><circle cx="28" cy="18" r="4.5" fill="#5fb54a"/><circle cx="17" cy="19" r="2.4" fill="#e5484d"/><circle cx="25" cy="19.5" r="2" fill="#f5c542"/><path d="M5 20h30c0 7-6 12-15 12S5 27 5 20z" fill="#b9c4cc"/><path d="M5 20h30" stroke="#94a1ab" stroke-width="2" stroke-linecap="round"/></svg>`,
-  // a pizza slice
   // a noodle bowl with chopsticks
   noodles: `<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M24 4l-6 16M30 6l-9 14" stroke="#8a5a3c" stroke-width="2" stroke-linecap="round"/><path d="M9 20c1-5 4-6 6-3s4 2 6-1 4-2 6 1 3 2 4 3" fill="#f3d27a"/><path d="M12 19c2-3 4 2 6 0s4-2 6 0 3 1 4 0" stroke="#d9b350" stroke-width="1.4" fill="none" stroke-linecap="round"/><path d="M5 20h30c0 7-6 12-15 12S5 27 5 20z" fill="#d8453b"/><path d="M5 20h30" stroke="#b5332b" stroke-width="2" stroke-linecap="round"/></svg>`,
   // a foil-wrapped burrito
   burrito: `<svg viewBox="0 0 40 40" aria-hidden="true"><g transform="rotate(-25 20 20)"><rect x="5" y="13" width="30" height="14" rx="7" fill="#e9c27e"/><path d="M22 13h6a7 7 0 0 1 0 14h-6z" fill="#c9ccd1"/><path d="M24 15.5v9M27.5 15v10" stroke="#aeb3ba" stroke-width="1.2"/><path d="M11 17l3 6M15 16.5l3 6" stroke="#c99a52" stroke-width="1.6" stroke-linecap="round"/></g></svg>`,
   // a plate with knife and fork
   plate: `<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="12" fill="#fbfaf6" stroke="#d6d2c6" stroke-width="2"/><circle cx="20" cy="20" r="7" fill="none" stroke="#e8e4d9" stroke-width="1.5"/><path d="M5 9v8M3 9v5c0 2 1 3 2 3s2-1 2-3V9M5 17v14" stroke="#9aa3ab" stroke-width="1.6" stroke-linecap="round"/><path d="M35 9c-2 2-2 7 0 9v13" stroke="#9aa3ab" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg>`,
-  pizza: `<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 10c9-4 19-4 28 0L20 35z" fill="#f5c542"/><path d="M6 10c9-4 19-4 28 0l-1.6 3c-8-3.5-16.8-3.5-24.8 0z" fill="#d9903a"/><circle cx="16" cy="16" r="2.6" fill="#d8453b"/><circle cx="24" cy="17" r="2.6" fill="#d8453b"/><circle cx="20" cy="24" r="2.4" fill="#d8453b"/><circle cx="21" cy="14" r="1" fill="#5fb54a"/><circle cx="17" cy="21.5" r="1" fill="#5fb54a"/></svg>`,
 };
+
+/** What a store page shows: its name, hours, address and menu. */
+interface DishListing {
+  name: string;
+  hours: string;
+  address: string;
+  dishes: { name: string; price: string }[];
+  currency: string;
+  /** The listing itself is down: the store page can't load its menu. */
+  down: boolean;
+}
 
 interface Store {
   id: string;
@@ -96,14 +102,6 @@ const live = (g: Generated, now: number) => now >= at(...g.from) && (!g.until ||
 const COUNT = [0, 0, 0, 0, 0, 9_840, 18_215, 27_903];
 const storeCount = (day: number) => (day < COUNT.length ? COUNT[day] : 40_000 + (day - 7) * 1_260);
 
-/** The client restaurants the player put on DoorDish, newest last. */
-function clientStores(store: GameStore): Store[] {
-  return store.state.apps.flatMap((a) => {
-    const listing = dishListing(a, store.content.apps[a.template]);
-    return listing ? [{ id: a.id, icon: 'pizza', hue: 10, cuisine: 'Italian · Pizza', eta: '30–40 min', fee: '2.99', rating: 'New', listing }] : [];
-  });
-}
-
 const tile = (x: Store, cls: string) => `<span class="${cls}" style="--h:${x.hue}" aria-hidden="true">${FOOD[x.icon]}</span>`;
 
 const tag = (l: DishListing) => [l.hours && `Open ${l.hours}`, l.address].filter(Boolean).map(esc).join(' · ');
@@ -111,7 +109,7 @@ const tag = (l: DishListing) => [l.hours && `Open ${l.hours}`, l.address].filter
 export function pageDoorDish(store: GameStore, param?: string): string {
   const day = store.state.values.day;
   const now = at(day, store.state.clockMin);
-  const all = [...clientStores(store), ...GENERATED.filter((g) => live(g, now)), ...SEED];
+  const all = [...GENERATED.filter((g) => live(g, now)), ...SEED];
   const sel = all.find((x) => x.id === param);
   const gone = !sel && GENERATED.find((g) => g.id === param && g.until && now >= at(...g.until));
   const head = `<header class="dd-top"><a href="#" class="dd-logo" data-nav="doordish.com"><span class="dd-mark">${ICONS.doordish}</span>DoorDish</a><span class="dd-where">Delivering to <b>your address</b></span></header>`;
@@ -131,7 +129,7 @@ export function pageDoorDish(store: GameStore, param?: string): string {
     const menu = l.down
       ? `<div class="dd-err"><p>Couldn't load this store's menu.</p><code>TypeError: Failed to fetch</code></div>`
       : l.dishes.length
-        ? `<ul class="dd-menu">${l.dishes.map((d, i) => `<li>${l.pictures ? dishPicture(l.pictures[i] ?? null, d.name) : ''}<span>${esc(d.name)}</span><b>${d.price ? `${esc(d.price)} ${esc(l.currency)}` : ''}</b></li>`).join('')}</ul>`
+        ? `<ul class="dd-menu">${l.dishes.map((d) => `<li><span>${esc(d.name)}</span><b>${d.price ? `${esc(d.price)} ${esc(l.currency)}` : ''}</b></li>`).join('')}</ul>`
         : `<p class="dd-dim">This store hasn't added a menu yet.</p>`;
     return `<div class="dd">${head}<div class="dd-wrap">
       <p class="dd-crumb"><a href="#" data-nav="doordish.com">← All stores</a></p>

@@ -1,0 +1,30 @@
+/* whycombinator.com (ui/whyc.ts): white page, the brand's orange, plain type. */
+.wc { min-height: 100%; background: #fff; color: #1d1d1b; font-family: 'Helvetica Neue', Arial, system-ui, sans-serif; }
+.wc-top { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; padding: 14px 24px; border-bottom: 1px solid #ece7e1; background: #fdfaf6; }
+.wc-brand { display: inline-flex; align-items: center; gap: 10px; color: #f26625; font-weight: 700; font-size: 18px; text-decoration: none; }
+.wc-mark svg { display: block; width: 26px; height: 26px; }
+.wc-nav { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.wc-nav a { color: #55524d; font-size: 14px; text-decoration: none; }
+.wc-nav a:hover, .wc-nav a.on { color: #f26625; }
+.wc-main { max-width: 760px; margin: 0 auto; padding: 36px 24px 48px; }
+.wc-main h1 { margin: 0 0 12px; font-size: 34px; line-height: 1.15; letter-spacing: -0.5px; }
+.wc-main h2 { margin: 28px 0 10px; font-size: 18px; }
+.wc-main p { font-size: 16px; line-height: 1.55; }
+.wc-hero h1 { font-size: 44px; }
+.wc-lead { margin: 0 0 22px; color: #55524d; font-size: 18px !important; }
+.wc-stats { display: flex; flex-wrap: wrap; gap: 14px; margin: 0 0 24px; }
+.wc-stats div { flex: 1 1 140px; padding: 14px 16px; border: 1px solid #ece7e1; border-radius: 6px; background: #fdfaf6; }
+.wc-stats b { display: block; font-size: 22px; color: #f26625; }
+.wc-stats span { font-size: 13px; color: #6d6962; }
+.wc-btn { padding: 12px 22px; border: 0; border-radius: 4px; background: #f26625; color: #fff; font: 600 16px 'Helvetica Neue', Arial, sans-serif; cursor: pointer; }
+.wc-btn:hover { background: #d9561b; }
+.wc-notice { margin: 10px 0 0; color: #55524d; font-size: 14px !important; }
+.wc-list { margin: 0; padding-left: 22px; }
+.wc-list li { margin: 0 0 16px; }
+.wc-list li p { margin: 4px 0 0; color: #55524d; }
+.wc-cos { margin: 0; padding: 0; list-style: none; border-top: 1px solid #ece7e1; }
+.wc-cos li { display: flex; flex-wrap: wrap; gap: 4px 14px; padding: 12px 0; border-bottom: 1px solid #ece7e1; }
+.wc-cos b { min-width: 150px; }
+.wc-cos span { color: #55524d; }
+.wc-foot { padding: 16px; text-align: center; font-size: 12px; color: #8a857d; border-top: 1px solid #ece7e1; }
+@media (max-width: 600px) { .wc-hero h1 { font-size: 32px; } .wc-main h1 { font-size: 28px; } }
