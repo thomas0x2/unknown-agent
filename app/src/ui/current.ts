@@ -1,10 +1,11 @@
 /*
- * thecurrent.test: Mara Vey's paper. One article so far, "The people AI left behind", up from her
- * day 7 Y post (engine/current.ts). It quotes the player's first email to Mara, if they sent one.
+ * thecurrent.test: Mara Vey's paper. The front page leads with the latest morning edition, with earlier
+ * editions at thecurrent.test/edition-N, and Mara's day 7 article "The people AI left behind" once her
+ * Y post is out (engine/current.ts). The article quotes the player's first email to Mara, if they sent one.
  * Also The Current's brand (two waves on deep teal) and its morning newsletter as Qmail shows it.
  */
 import type { GameState } from '../engine';
-import { articleOut, playerQuote, CURRENT_SLUG, MARA_ADDR, NEWSLETTER_EVENT, issueParts, dateFull, weekdayName } from '../engine';
+import { articleOut, playerQuote, CURRENT_SLUG, MARA_ADDR, NEWSLETTER_EVENT, issueParts, dateFull, dateMedium, weekdayName } from '../engine';
 
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
@@ -69,37 +70,72 @@ function article(s: GameState, day: number): string {
   </article>`;
 }
 
-/** The latest morning newsletter that reached the player, as the front page's lead. */
-function morning(s: GameState): string {
-  const d = [...s.delivered].reverse().find((x) => x.eventId === NEWSLETTER_EVENT && x.body);
-  if (!d?.body) return '';
-  const p = issueParts(d.body);
+/** Morning editions that reached the player, newest first. */
+function editions(s: GameState) {
+  return s.delivered.filter((x) => x.eventId === NEWSLETTER_EVENT && x.body).sort((a, b) => b.day - a.day);
+}
+
+const editionPath = (day: number) => `thecurrent.test/edition-${day}`;
+
+/** One morning edition in full: the front page's lead, and its own page at thecurrent.test/edition-N. */
+function edition(d: { day: number; subject?: string; body?: string }, lead: boolean): string {
+  const p = issueParts(d.body ?? '');
+  const title = lead ? `<a href="#" data-nav="${editionPath(d.day)}">${esc(d.subject ?? '')}</a>` : esc(d.subject ?? '');
   return `<section class="cur-morning">
     <span class="cur-kicker">Morning edition · ${esc(dateFull(d.day))}</span>
-    <h2>${esc(d.subject ?? '')}</h2>
+    <h2>${title}</h2>
     <p>${esc(p.text)}</p>
     ${p.items.map((it) => `<p class="cur-item"><b>${esc(it.title)}.</b> ${esc(it.text)}</p>`).join('')}
   </section>`;
 }
 
+/** Earlier editions in the side column, each linking its own page. */
+function archive(list: { day: number; subject?: string }[]): string {
+  if (!list.length) return '';
+  return `<section class="cur-box">
+    <h3>Earlier editions</h3>
+    <ul class="cur-archive">${list.map((d) => `<li><a href="#" data-nav="${editionPath(d.day)}"><span>${esc(dateMedium(d.day))}</span>${esc(d.subject ?? '')}</a></li>`).join('')}</ul>
+  </section>`;
+}
+
+const ABOUT = `<section class="cur-box">
+  <h3>About The Current</h3>
+  <p>Independent reporting, funded by readers. The morning edition goes out at 10:00 every day.</p>
+  <p>Polls we publish include sample size and margin of error. We don't report polls run on Y.</p>
+</section>`;
+
 function front(s: GameState, out: { day: number } | undefined): string {
-  const lead = morning(s);
-  if (!out) return lead || `<p class="cur-empty">No new stories this week.</p>`;
-  return `${lead}<a href="#" class="cur-card" data-nav="thecurrent.test/${CURRENT_SLUG}">
+  const [latest, ...earlier] = editions(s);
+  const story = out ? `<a href="#" class="cur-card" data-nav="thecurrent.test/${CURRENT_SLUG}">
     <span class="cur-kicker">Work</span>
     <h2>${esc(TITLE)}</h2>
     <p>${esc(DEK)}</p>
     <span class="cur-byline">By Mara Vey · ${esc(dateFull(out.day))}</span>
-  </a>`;
+  </a>` : '';
+  const lead = latest ? edition(latest, true) : `<p class="cur-empty">This morning's edition isn't out yet.</p>`;
+  return `<div class="cur-front">
+    <div class="cur-col">${lead}${story}</div>
+    <aside class="cur-side">${archive(earlier)}${ABOUT}</aside>
+  </div>`;
+}
+
+/** A past (or today's) edition on its own page; only editions the player has received exist. */
+function editionPage(s: GameState, day: number): string {
+  const d = editions(s).find((x) => x.day === day);
+  if (!d) return `<p class="cur-empty">Story not found.</p>`;
+  return `<div class="cur-single">${edition(d, false)}<a href="#" class="cur-back" data-nav="thecurrent.test">Front page</a></div>`;
 }
 
 export function pageCurrent(s: GameState, param?: string): string {
   const out = articleOut(s);
+  const ed = param?.match(/^edition-(\d+)$/);
   const main = !param ? front(s, out)
-    : param === CURRENT_SLUG && out ? article(s, out.day)
+    : ed ? editionPage(s, Number(ed[1]))
+    : param === CURRENT_SLUG && out ? `<div class="cur-single">${article(s, out.day)}</div>`
     : `<p class="cur-empty">Story not found.</p>`;
   return `<div class="cur">
     <header class="cur-mast"><a href="#" data-nav="thecurrent.test">${CURRENT_MARK}The Current</a><span>Independent reporting, funded by readers</span></header>
+    <div class="cur-dateline">${esc(dateFull(s.values.day))}</div>
     <main class="cur-main">${main}</main>
     <footer class="cur-foot">The Current · thecurrent.test</footer>
   </div>`;

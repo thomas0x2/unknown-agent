@@ -39,6 +39,6 @@ export function pullLines(id: string, ms: number): TermLine[] {
   if (ms < T.verify) return lines;
   lines.push({ k: 'sys', text: 'writing manifest' });
   if (ms < PULL_MS) return lines;
-  lines.push({ k: 'sys', text: 'success' }, { k: 'sys', text: `${m.name} is running on localhost. Replies are free but slow. (type 'clear' to wipe the screen)` });
+  lines.push({ k: 'sys', text: 'success' }, { k: 'sys', text: `${m.name} is on your laptop. Type ${m.id} to start a session. Replies are free but slow.` });
   return lines;
 }

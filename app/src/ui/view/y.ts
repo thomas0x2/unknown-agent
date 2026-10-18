@@ -18,7 +18,7 @@ export function crawlable(store: GameStore) {
 }
 
 // ── Y ──
-interface YPost { id: string; author: string; handle: string; text: string; day: number; /** A picture under the text (citypulseArt kind). */ img?: string; /** Minutes since midnight it went up, when known. */ min?: number; likes: number; mine?: boolean; delta?: number; score?: number; replyTo?: string; /** Order within a day: story posts first, bot spam last. */ rank?: number }
+interface YPost { id: string; author: string; handle: string; text: string; day: number; /** A picture under the text (citypulseArt kind). */ img?: string; /** Minutes since midnight it went up, when known. */ min?: number; likes: number; mine?: boolean; delta?: number; score?: number; /** Dev mode: why a scripted line stood in for Haiku. */ scripted?: string; /** Order within a day: story posts first, bot spam last. */ rank?: number }
 
 export function yPosts(store: GameStore): YPost[] {
   const s = store.state;
@@ -35,7 +35,7 @@ export function yPosts(store: GameStore): YPost[] {
   for (const p of market) if (!out.some((x) => x.id === p.id)) out.push({ id: p.id, author: p.author, handle: p.handle, text: p.text, day: p.day, min: p.min, likes: p.likes, rank: p.bot ? 2 : 1 });
   // today's filler, each post at its own time
   for (const f of fillerToday(s, store.content)) out.push({ id: f.id, author: f.from, handle: f.handle, text: f.body, day: s.values.day, min: postMin(f, s.values.day), likes: 3 + hashHue(f.id) % 60, rank: 1 });
-  for (const x of s.yExtra) out.push({ id: x.id, author: x.author, handle: x.handle, text: x.text, day: x.day, min: x.min, likes: x.likes, replyTo: x.replyTo });
+  for (const x of s.yExtra) out.push({ id: x.id, author: x.author, handle: x.handle, text: x.text, day: x.day, min: x.min, likes: x.likes, scripted: x.scripted });
   for (const u of s.userPosts) out.push({ id: u.id, author: PLAYER.name, handle: PLAYER.handle, text: u.text, day: u.day, min: u.min, likes: viralLikes(s, u), mine: true, delta: u.delta, score: u.score, img: u.img });
   // newest first: by day, then the time it went up
   return out.sort((a, b) => b.day - a.day || (b.min ?? 0) - (a.min ?? 0) || (a.rank ?? 0) - (b.rank ?? 0) || b.id.localeCompare(a.id));
@@ -59,7 +59,9 @@ function yPostHtml(store: GameStore, p: YPost): string {
   const reposted = !!store.ui.reposted[p.id];
   const likes = p.likes + (liked ? 1 : 0);
   const reposts = Math.round(p.likes * 0.14) + (reposted ? 1 : 0);
-  const text = linkify(esc(p.text).replace(/(^|[^&\w])(#[a-z][a-z0-9_]*)/gi, '$1<span class="y-at">$2</span>'));
+  const text = linkify(esc(p.text)
+    .replace(/(^|[^&\w])(#[a-z][a-z0-9_]*)/gi, '$1<span class="y-at">$2</span>')
+    .replace(/(^|[^\w$])(\$[A-Z]{2,5})(?![\w])/g, '$1<span class="y-cash">$2</span>'));
   const prof = `y.com/${esc(p.handle)}`;
   // a bot post in a barrage fades in at its own moment, wherever the repaint catches it
   const lands = store.ui.yBurst[p.id];
@@ -71,8 +73,8 @@ function yPostHtml(store: GameStore, p: YPost): string {
       <a href="#" class="y-who" data-nav="${prof}"><span class="y-name"><b>${esc(p.author)}</b>${yCheck(store.state, p.handle)}</span><span class="y-handle">@${esc(p.handle)}</span></a>
       <span class="y-time">${p.day === store.state.values.day && p.min != null ? fmtClock(p.min) : dateShort(p.day)}</span>
     </header>
-    ${p.replyTo && store.state.userPosts.some((u) => u.id === p.replyTo) ? `<div class="y-replying">Replying to <span class="y-at">@${PLAYER.handle}</span></div>` : ''}
     <p>${text}</p>
+    ${store.devMode && p.scripted ? `<p class="y-dev">Scripted line: ${esc(p.scripted)}</p>` : ''}
     ${p.img ? `<figure class="y-img">${art(p.img, 'y-img-art')}</figure>` : ''}
     <footer class="y-acts">
       <span class="y-act">${Y_ICONS.reply}${compact(Math.round(p.likes * 0.07))}</span>

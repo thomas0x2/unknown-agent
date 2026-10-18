@@ -2,7 +2,9 @@
 import { describe, it, expect } from 'vitest';
 import { newGame } from './state';
 import { clone } from './core';
+import { APPS } from './config';
 import { registerApp, buildApp, deployApp, getApp, bugsOf, nightlyBreaks, fixableComponents } from './apps';
+import { endAll } from './_fixtures';
 import { loadContent } from '../content/load';
 
 const content = loadContent();
@@ -11,6 +13,7 @@ const comps = tmpl.features.reduce((n, f) => n + fixableComponents(f).length, 0)
 
 function crawler(seed: number) {
   const s = clone(newGame(seed));
+  s.flags.push('first_break'); // past the guaranteed first break: the odds alone decide
   const id = registerApp(s, { template: 'sentiment', kind: 'client', name: 'Crawler', payPerDay: 50, spec: tmpl.features.map((f) => ({ id: f.id })) });
   return { s, id };
 }
@@ -82,6 +85,49 @@ describe('overnight breaks', () => {
       if (getApp(s, id)!.breaks.length && getApp(s, id2)!.breaks.length) both++;
     }
     expect(Math.abs(both / runs - 0.95 * 0.95)).toBeLessThan(0.04);
+  });
+
+  it('the first night anything can break, one live app is sure to; later nights only the odds decide', () => {
+    const odds = APPS.breakOdds;
+    APPS.breakOdds = [];
+    try {
+      for (let i = 0; i < 50; i++) {
+        const { s, id } = crawler(i + 1);
+        s.flags = [];
+        nightlyBreaks(s, content); // nothing live yet: the guarantee waits
+        expect(s.flags).not.toContain('first_break');
+        const a = getApp(s, id)!;
+        a.repo = a.required.map((f) => ({ id: f, correct: true }));
+        a.repoVersion = 1;
+        deployApp(s, id);
+        nightlyBreaks(s, content);
+        expect(getApp(s, id)!.breaks).toHaveLength(1);
+        expect(s.flags).toContain('first_break');
+        a.breaks = [];
+        nightlyBreaks(s, content);
+        expect(getApp(s, id)!.breaks).toHaveLength(0);
+      }
+    } finally { APPS.breakOdds = odds; }
+  });
+
+  it("Forkyard's mail about the first break comes the morning it shows", () => {
+    const { s, id } = crawler(7);
+    s.flags = [];
+    s.phase = 'work';
+    const a = getApp(s, id)!;
+    a.repo = a.required.map((f) => ({ id: f, correct: true }));
+    a.repoVersion = 1;
+    deployApp(s, id);
+    const next = endAll(s, content);
+    expect(next.values.day).toBe(2);
+    expect(getApp(next, id)!.breaks.length).toBeGreaterThan(0);
+    expect(next.delivered.filter((d) => d.eventId === 'first_break').map((d) => d.day)).toEqual([2]);
+    const later = endAll(next, content);
+    expect(later.delivered.filter((d) => d.eventId === 'first_break')).toHaveLength(1);
+    const ev = content.events.find((e) => e.id === 'first_break')!;
+    expect(ev.trigger.flagsAll).toEqual(['first_break']);
+    expect(ev.body).toMatch(/happens sometimes/i);
+    expect(content.events.find((e) => e.id === 'd3_break')!.trigger.after).toEqual({ flag: 'first_break', delayDays: 1 });
   });
 
   it('a subtle break shows a bug from the component that broke', () => {

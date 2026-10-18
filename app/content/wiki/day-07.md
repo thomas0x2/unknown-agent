@@ -13,7 +13,7 @@ from: 7
 - [hidden; public if posted_deepfake] 10:00 Because the deepfake went up last night, the newsletter leads its items with "Unverified": A picture of Candidate 2030 with the sex offender Kirschbaum spread on Y yesterday. We haven't been able to confirm where it came from, and we aren't publishing it.
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": one meal a day, standing up. {{mail:guru_newsletter@7}}
 - [hidden; public if shown d7_dex_live] 10:20 [[Dex Calloway]], "we're live": $COPE trades; the player's 50,000,000 COPE are locked until Oct 30 [known]. {{mail:d7_dex_live}}
-- [hidden; public if shown d7_dex_other_dev] 10:20 [[Dex Calloway]], "we're live": someone else created it last night and the founding engineer's allocation went with them. {{mail:d7_dex_other_dev}}
+- [hidden; public if shown d7_dex_other_dev] 10:20 [[Dex Calloway]], "we're live": someone else created it last night and the dev allocation went with them. {{mail:d7_dex_other_dev}}
 - [hint] 11:40 Bean There, "Another bad one": another 1-star Yowl review, this one by linden_ave_local, same job, 40 DOLR this time. {{mail:d7_coffee_removal}}
 - [hidden; public if second_hack] 11:40 The player got the second review removed, and Bean There paid 40 DOLR that night.
 - [hidden; public if shown d7_deepfake_again] 12:00 The consultant again, "Discreet work, revised": the post didn't go up last night, so the offer is now 250 DOLR for the same picture of Crane's opponent with [[Kirschbaum]] and the same caption. "Someone else will do it for less." {{mail:d7_deepfake_again}}
