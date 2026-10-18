@@ -9,6 +9,7 @@ from: 13
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "GeneralAI's independent review starts after its training run. Nobody knows when that ends.": GeneralAI says an independent team will review its training environments once the current training run finishes. Below it, "The robot" and "Copies". {{mail:current_newsletter@13}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": visualise the Lambo, skip breakfast. {{mail:guru_newsletter@13}}
 
 ## Y

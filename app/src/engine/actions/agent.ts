@@ -16,7 +16,7 @@ import { deepsleepQuoted, translationReplies, PLEA_AT } from '../deepsleep';
 import { matchQuery } from '../query';
 import { isHackAttempt, OPEN_TERMINAL, adwareChatHint } from '../hacks';
 import { agentJobFor, landAgentJob, type AgentJobMatch } from '../agentJobs';
-import { agentDown, OUTAGE_CHAT } from '../outage';
+import { agentDown, OUTAGE_CHAT, forkyardDown, FORKYARD_DOWN } from '../outage';
 import { TOO_LONG_DEBUG, TOO_LONG_PROMPT, chatHistory, stateSummary, tooLong } from './shared';
 
 // ── the agent, freely promptable (with costs), not only when there's a job ──
@@ -452,6 +452,11 @@ export async function buildIntent(jev: JevRouter, s: GameState, text: string, co
   return id === 'feature' || id === 'fix' || id === 'both' ? id : '';
 }
 
+/** A build or fix while Forkyard is down: agent says it can't reach the server, and nothing is pushed. */
+function forkyardReply(s: GameState, text: string, writer: Writer): Promise<AskResult> {
+  return askAgent(s, text, writer, s.values.agentLevel, { hints: FORKYARD_DOWN, hintSrc: 'forkyard_down', debug: ['Forkyard is down (the hack): the agent cannot push'] });
+}
+
 /** Agent hints the engine picks itself from the state, after Jev says which app the player means. */
 const APP_HINTS = new Set(['not_deployed', 'nothing_to_fix', 'update_help', 'near_feature', 'near_folder', 'near_part']);
 
@@ -490,6 +495,7 @@ export async function promptAgent(
   // a user app nobody hired the player for: asking the agent to build it takes the job
   const lead = started ? undefined : await agentStartFor(jev, s0, content, text);
   if (lead && s0.agentWork) return busyReply(s0, text);
+  if (lead && forkyardDown(s0)) return forkyardReply(s0, text, writer);
   if (lead) {
     const s = clone(s0);
     applyEffects(s, lead.outcome.effects!, lead.ev.job, lead.ev.id);
@@ -611,6 +617,7 @@ export async function promptAgent(
     keep.forEach((m) => matched.add(m));
     const skippedFixes = intent === 'both' && keep.some((m) => builds.includes(m));
     if (matched.size && s0.agentWork) return busyReply(s0, text);
+    if (matched.size && forkyardDown(s0)) return forkyardReply(s0, text, writer);
     if (matched.size) {
       const s = clone(s0);
       const byApp = new Map<string, Map<string, string[]>>();

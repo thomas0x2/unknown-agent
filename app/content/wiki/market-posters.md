@@ -82,11 +82,12 @@ from: 1
 - [public] {{y:m5_gai_untagged}}
 - [public] {{y:m6_gai_late}}
 - [public] {{y:m6_gai_rally}}
-- [public] {{y:m7_gai_policy}}
+- [public] {{y:m7_gai_rentboard}}
 
 ## From day 8: $GAI posts, second week
 
 - [public] {{y:m8_gai_laundry}}
+- [public] {{y:m9_gai_policy}}
 - [public] {{y:m9_gai_doubt}}
 - [public] {{y:m9_gai_level3}}
 - [public] {{y:m10_gai_crane}}

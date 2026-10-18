@@ -1,0 +1,12 @@
+{
+  "id": "d8_y_stryker_forkyard",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "13:35",
+  "viral": true,
+  "body": "If your business lived on someone else's server, it was never your business."
+}

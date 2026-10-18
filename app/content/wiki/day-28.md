@@ -9,6 +9,7 @@ from: 28
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "Election day": Polls are open until 20:00. Below it, "Results" and "Rent". {{mail:current_newsletter@28}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": he voted at 7:00, first in line. {{mail:guru_newsletter@28}}
 
 ## Y

@@ -9,6 +9,8 @@ export const CURRENT_SLUG = 'people-ai-left-behind';
 /** The Y post that announces the article; the article is out once it is delivered. */
 export const CURRENT_EVENT = 'd7_journalist_article';
 export const MARA_ADDR = 'mara@thecurrent.test';
+/** The morning newsletter (engine/newsletter.ts), whose latest issue leads the front page. */
+export const NEWSLETTER_EVENT = 'current_newsletter';
 
 /** When the article went up, or undefined while it's unpublished. */
 export function articleOut(s: GameState): { day: number; min: number } | undefined {

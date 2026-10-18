@@ -42,10 +42,10 @@ export function yPosts(store: GameStore): YPost[] {
 }
 
 /** Accounts with Y's verified check. */
-const Y_VERIFIED = new Set(['doordish', 'mara_vey', 'randall_crane', 'axel_rook', 'cal_hartman', 'caleb_moxon', 'max_stryker', 'the_current', 'candidate_2030', 'wallstreetbags', 'perdure_pharma', 'pollymarket', 'citypulse']);
+const Y_VERIFIED = new Set(['doordish', 'forkyard', 'mara_vey', 'randall_crane', 'axel_rook', 'cal_hartman', 'caleb_moxon', 'max_stryker', 'the_current', 'candidate_2030', 'wallstreetbags', 'perdure_pharma', 'pollymarket', 'citypulse']);
 
 /** Follower counts for the public figures; everyone else gets a small made-up number. */
-const Y_FOLLOWERS: Record<string, number> = { doordish: 3_100_000, randall_crane: 38_400_000, mara_vey: 61_200, axel_rook: 214_000_000, cal_hartman: 4_300_000, caleb_moxon: 41_300, max_stryker: 2_900_000, the_current: 184_000, candidate_2030: 1_900_000, wallstreetbags: 15_800_000, perdure_pharma: 412_000, pollymarket: 3_400_000, citypulse: 1_240_000 };
+const Y_FOLLOWERS: Record<string, number> = { doordish: 3_100_000, forkyard: 880_000, randall_crane: 38_400_000, mara_vey: 61_200, axel_rook: 214_000_000, cal_hartman: 4_300_000, caleb_moxon: 41_300, max_stryker: 2_900_000, the_current: 184_000, candidate_2030: 1_900_000, wallstreetbags: 15_800_000, perdure_pharma: 412_000, pollymarket: 3_400_000, citypulse: 1_240_000 };
 
 /** Rook puts check marks "under review" on day 8; from day 9 Crane's is bigger and golden. */
 const craneGold = (s: GameState) => s.values.day >= 9;

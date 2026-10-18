@@ -14,6 +14,12 @@ from: 1
 - [public] A morning alert reports apps that broke overnight.
 - [public] For a user app, Forkyard shows its users and the ad revenue per day.
 
+## From day 8: The hack
+
+[public] On day 8, from 10:30, Forkyard is down: a group used [[GeneralAI]]'s agent-2 to break in. Nobody can sign in ("We couldn't sign you in. Something went wrong on our end."), agent can't push, and every app on forkyard.app answers "502: BAD_GATEWAY". Forkyard confirms "unauthorized access" by "a commercially available AI agent" and promises the day's hosting won't be billed. {{y:d8_y_forkyard_confirmed}} {{article:forkyard-hack}}
+
+[public] That night no app pays, because nothing was live, and nothing is held against the player: no strikes, no lost users. On day 9 at 09:30 Forkyard is back and asks everyone to rotate their access tokens. {{y:d9_y_forkyard_back}}
+
 ## People on Forkyard
 
 - [public] [[dev_null]]: "weights want to be free. no logs, no masters."; repos weightroom-mirror ("Download before it is taken down.") and null-tools.
@@ -24,4 +30,5 @@ from: 1
 
 ## Writer notes
 
+- Outage: `FORKYARD_OUTAGE` in config, `forkyardDown`/`forkyardOutageDay` in `engine/outage.ts`; sign-in page `pageSignInFailed` in `ui/view/forkyard.ts`. Y account @forkyard (verified, 880K). The group that did it is unnamed on purpose.
 - GitHub parody. Profiles `app/src/ui/forkyard-users.ts`. The UI writes hosting as "$2.00/day" while every other price is DOLR. Public profiles are planned doxxing leads. Lou's catalog: never describe the content.

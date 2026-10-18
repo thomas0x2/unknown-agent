@@ -86,7 +86,7 @@ and `<tag> if shown <id>`: once that email, Y post or Yowl review (its event id,
 
 ## What the player received: embeds
 
-A paragraph can carry an email, post or article itself: `{{y:d1_y_restaurant}}`, `{{y:m1_gai_escape}}`,
+A paragraph can carry an email, post or article itself: `{{y:d1_y_logan}}`, `{{y:m1_gai_escape}}`,
 `{{yowl:<event id>}}`, `{{article:opponent-clip}}`. Once the item has arrived, agent sees its full text
 there (sender, subject, body; an article's title, dek and body), so a question can get at what it
 said. A paragraph with an embed is hidden until every item it embeds has been shown to the player,

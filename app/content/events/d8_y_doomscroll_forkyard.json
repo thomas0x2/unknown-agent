@@ -1,0 +1,12 @@
+{
+  "id": "d8_y_doomscroll_forkyard",
+  "site": "y",
+  "from": "doomscroll",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "13:31",
+  "viral": true,
+  "body": "forkyard has been down three hours and someone in my replies is already selling a course on it"
+}

@@ -12,6 +12,23 @@ import { devToggleBug } from '../engine/apps';
 const mem: SaveStore = { load: () => null, save: () => {}, clear: () => {} } as unknown as SaveStore;
 
 describe('Forkyard repos', () => {
+  it('during the day 8 hack sign-in fails and every live app is a 502', async () => {
+    const content = loadContent();
+    const store = new GameStore(content, {} as JevRouter, {} as Writer, mem);
+    store.state.values.day = 2;
+    store.state = (await composeEmail(store.state, content, wordJev, 'trader@desk.test', 'Hi, I can build your sentiment bot.')).state;
+    Object.assign(store.state.apps[0], { repoVersion: 1, deployedVersion: 1, deployed: true, repo: [{ id: 'tickers', correct: true }] });
+    store.state.values.day = 8;
+    store.state.clockMin = 11 * 60;
+    const html = (url: string) => page(store, route(url, store.state));
+    expect(html('forkyard.com')).toContain("We couldn't sign you in");
+    expect(html('forkyard.com/vibe-check')).not.toContain('data-deploy');
+    expect(html(store.state.apps[0].url)).toContain('502');
+    store.state.values.day = 9;
+    expect(html('forkyard.com')).toContain('vibe-check');
+    expect(html(store.state.apps[0].url)).not.toContain('502');
+  });
+
   it('a taken job has no repo until the agent builds it', async () => {
     const content = loadContent();
     const store = new GameStore(content, {} as JevRouter, {} as Writer, mem);

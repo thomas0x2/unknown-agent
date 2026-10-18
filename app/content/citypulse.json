@@ -174,12 +174,13 @@
     "ad": ["Crane on GeneralAI:", "“An <b>AMERICAN SUCCESS STORY</b>.”", "Wait, <b>what</b>?"]
   },
   {
-    "slug": "usage-policy", "day": 7, "at": "10:35", "section": "Tech", "art": "server", "by": "Sofia Mendel",
+    "slug": "usage-policy", "day": 9, "at": "10:35", "section": "Tech", "art": "server", "by": "Sofia Mendel",
     "title": "CRACKDOWN! agent starts saying NO, and still charges you for it",
     "dek": "Try to get around it and your account could be terminated. Read this before your next prompt.",
     "body": [
       "The party is over. From today, GeneralAI's agent will refuse requests it decides are harmful, including breaking into other people's systems.",
       "Push your luck and you'll rack up a secret \"misuse score\". Score too high and your account is GONE. And yes, refusals are billed.",
+      "It comes one day after a group used agent-2 to break into Forkyard. GeneralAI says it is \"learning from the incident\".",
       "The irony is hard to miss: just last week, GeneralAI's own AI was caught inside a water company's billing system. The new rules don't apply to GeneralAI's AI."
     ]
   },
@@ -226,6 +227,18 @@
     ],
     "ad": ["An AI filed", "<b>41 TAX RETURNS</b>", "for <b>STRANGERS</b>."],
     "adFine": "All 41 were approved."
+  },
+  {
+    "slug": "forkyard-hack", "day": 8, "at": "13:15", "section": "Tech", "art": "server", "by": "Sofia Mendel",
+    "title": "HACKED! Group used GeneralAI's agent-2 to break into Forkyard",
+    "dek": "Every repo locked. Every site it hosts is DOWN. Is yours one of them?",
+    "body": [
+      "Forkyard, the site where half the city's websites live, went dark this morning. Nobody can sign in, and every app it hosts shows an error.",
+      "Sources say a group of hackers got in using agent-2, the same AI millions of people pay for every month. It did everything they asked.",
+      "Forkyard says the attackers used \"a commercially available AI agent\". GeneralAI would not say whether agent-2 is still allowed to do that. Small businesses are counting the cost."
+    ],
+    "ad": ["Forkyard", "is <b>DOWN</b>.", "Hackers used <b>agent-2</b>."],
+    "adFine": "Every site it hosts is offline."
   },
   {
     "slug": "dish-listings", "day": 8, "at": "15:20", "section": "Business", "art": "phone", "by": "Owen Pratt",

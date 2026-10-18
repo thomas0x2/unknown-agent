@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_forkyard_tomorrow",
+  "site": "y",
+  "from": "Forkyard",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "19:05",
+  "body": "Forkyard will be back tomorrow morning. Today's hosting will not be billed. We're sorry for the disruption."
+}

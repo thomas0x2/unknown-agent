@@ -36,8 +36,10 @@ from: 1
 - [hidden; public from day 5] On day 4: GeneralAI agent-2; the DoorDish robot (still missing); from 13:26 Crane vs. Vantor.
 - [hidden; public from day 6] On day 5: is agent-2 worse?; from 16:20 Crane's 71% Y poll; from 17:30 AI-art backlash; from 19:10 the fake Randall Crane.
 - [hidden; public from day 7] On day 6: #RentDayEve; from 11:00 Crane's GeneralAI U-turn; from 15:18 $GAI rallying; from 18:50 Apogee static fire.
-- [hidden; public from day 8] On day 7: #RentDay; agent's new usage policy; from 12:30 Rent Board appeals; from 13:00 "The people AI left behind"; from 19:20 Crane vs. Y check marks.
-- [public] From day 8 the sidebar shows only #AI, #jobs and #election.
+- [hidden; public from day 8] On day 7: #RentDay; from 12:30 Rent Board appeals; from 13:00 "The people AI left behind"; from 19:20 Crane vs. Y check marks.
+- [hidden; public from day 9] On day 8: from 10:50 #ForkyardDown; from 13:20 the Forkyard hack; from 15:05 "agent-2 did what it was asked".
+- [hidden; public from day 10] On day 9: agent's new usage policy; from 10:05 agent-3.
+- [public] From day 10 the sidebar shows only #AI, #jobs and #election.
 
 ## Later changes
 

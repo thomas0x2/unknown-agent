@@ -9,6 +9,7 @@ from: 24
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "Crane answered 41 questions in 30 minutes, on a screen": Randall Crane appeared at last night's town hall on a screen and answered 41 questions in half an hour. Below it, "agent civic" and "Turnout". {{mail:current_newsletter@24}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": replace one human habit a week with a system; this week, lunch. {{mail:guru_newsletter@24}}
 
 ## Y

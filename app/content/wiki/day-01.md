@@ -15,6 +15,7 @@ from: 1
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "Unemployment reaches 30%": Three in ten working-age people in the city are now out of work, the highest rate since records began. Below it, "Vantor" and "Election". {{mail:current_newsletter@1}}
 - [public] 10:00 People & Culture at [[Vantor Group]], "Changes to your role": the player's position is eliminated, effective immediately; the final salary payment "has already been made". {{mail:d1_hr_termination}}
 - [public] 10:00 [[GeneralAI]], "Welcome to agent": the [[agent]] account is active and billed to the [[Coinbin]] wallet, every prompt at the model's rate. {{mail:d1_gai_welcome}}
 - [hidden; public if asked_mom_money] 11:20 Mom sent 20 DOLR when the player asked for money: "Buy vegetables."
@@ -33,6 +34,7 @@ from: 1
 
 - [public] 09:30 MarketWire: $GAI up 4% premarket on the "almost escaped" news. {{y:m1_gai_escape}}
 - [public] 09:50 [[Axel Rook]]: AI will do every job within a few years, and everyone gets universal high income. {{y:d1_y_axel}}
+- [public] 10:00 [[The Current]]: unemployment in the city has reached 30%, and 4% of those who lost a job this year have found another; links the morning edition at thecurrent.test. {{y:d1_y_current_jobs}}
 - [public] 10:20 [[Max Stryker]]: up at 4am; half the city got fired by a computer and went back to sleep. {{y:d1_y_stryker}}
 - [public] 10:32 [[CityPulse]] links its "almost escaped" story. {{y:d1_y_citypulse}}
 - [public] 10:42 [[Logan Pryce]] (@logan_ships): "why combinator-backed, building in stealth"; WorkAgent is looking for a founding engineer to ship its landing page this week, paying DOLR up front. logan@workagent.test {{y:d1_y_logan}}

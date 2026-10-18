@@ -9,7 +9,7 @@
 import type { GameStore } from '../game/store';
 import type { Content } from '../content/schema';
 import {
-  blockGates, blockWhy, childSections, EMBED, eventBody, findArticle, arrivalMin,
+  blockGates, blockWhy, childSections, EMBED, eventBody, eventSubject, findArticle, arrivalMin,
   parseWikiPage, formatWikiPage, parseTagRule, formatTagRule, evalTag, blockNow, queryCtx, seenRef, CITYPULSE, METERS,
   type WikiPage, type WikiBlock, type WikiSection, type WikiTag, type TagStep, type WikiCtx,
 } from '../engine';
@@ -301,7 +301,8 @@ export function embedItem(c: Content, ref: string): { title: string; when: strin
   const e = c.events.find((x) => x.id === id && (!on || x.repeat));
   if (e) {
     const day = on ? Number(on) : e.trigger.dayMin ?? 1;
-    const what = e.site === 'qmail' ? `Email from ${e.from ?? 'someone'}${e.subject ? `, "${e.subject}"` : ''}` : `${e.site === 'y' ? 'Y post' : e.site === 'yowl' ? 'Yowl review' : `${e.site} post`} by ${e.from ?? 'someone'}`;
+    const subject = eventSubject(e, day);
+    const what = e.site === 'qmail' ? `Email from ${e.from ?? 'someone'}${subject ? `, "${subject}"` : ''}` : `${e.site === 'y' ? 'Y post' : e.site === 'yowl' ? 'Yowl review' : `${e.site} post`} by ${e.from ?? 'someone'}`;
     const ccs = on && e.special?.dayMin === day ? e.special.cc : e.cc;
     const cc = ccs?.length ? `CC: ${ccs.join(', ')}\n\n` : '';
     return { title: what, when: `day ${day}${!on && e.trigger.dayMax && e.trigger.dayMax !== day ? `-${e.trigger.dayMax}` : ''}, ${at(arrivalMin(e))}`, text: cc + eventBody(e, day) };

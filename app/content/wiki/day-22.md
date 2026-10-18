@@ -9,6 +9,7 @@ from: 22
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "Early voting opens today": Every public library in the city is open for early voting from 8:00. Below it, "Vantor" and "Moxon". {{mail:current_newsletter@22}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": vote early, to be done before everyone else. {{mail:guru_newsletter@22}}
 
 ## Y

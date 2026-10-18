@@ -9,6 +9,7 @@ from: 2
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "GeneralAI says its model "almost escaped"": GeneralAI confirmed yesterday that a model in testing almost got out of its environment last week. Below it, "Polling" and "Jobs fair". {{mail:current_newsletter@2}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s daily newsletter "Your daily EMPIRE" arrives, today and every morning after: one piece of terrible advice per issue, starting with "sell your mattress". {{mail:guru_newsletter@2}}
 - [hidden; hint if logan_update1] 11:05 [[Logan Pryce]], "next: the waitlist": his uncle sent the site to his golf group. He wants a waitlist page with an email field and a Join button, linked from the homepage, a counter that starts at 10,000, and a confirmation email to every sign-up with their place in line. {{mail:d2_logan_waitlist}}
 

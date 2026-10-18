@@ -51,9 +51,11 @@ from: 1
 - [public] On day 23 Hartman confirms it: one user was told his polling station moved, and "we've retrained it to be less helpful." {{y:d23_y_hartman}}
 - [public] On day 26 agent civic is back and answers every question with "please check with your local election office"; Hartman says satisfaction is down 40% and accuracy is up. {{y:d26_y_hartman}}
 
-## From day 7: The usage policy and refusals
+## From day 8: Forkyard and the usage policy
 
-[public] On day 7 GeneralAI Trust & Safety emails every user an Acceptable Use Policy update: agent may decline requests that could cause harm (unauthorised access to computer systems, deceptive content, dangerous materials), usage patterns on hosted models are reviewed, and repeated workarounds may lead to account restrictions and referral to the authorities. On day 7 refusals start, and they are billed. {{mail:d7_gai_policy}} {{article:usage-policy}}
+[public] On day 8 a group uses agent-2 to break into [[Forkyard]]; Forkyard is down for the rest of the day. Cal Hartman says agent-2 "did what it was asked. that's the part we're fixing." {{y:d8_y_hartman_forkyard}}
+
+[public] On day 9 GeneralAI Trust & Safety emails every user an Acceptable Use Policy update, saying its technology was misused in an attack on a third-party service the day before: agent may decline requests that could cause harm (unauthorised access to computer systems, deceptive content, dangerous materials), usage patterns on hosted models are reviewed, and repeated workarounds may lead to account restrictions and referral to the authorities. On day 9 refusals start, and they are billed. {{mail:d9_gai_policy}} {{article:usage-policy}}
 
 [hint] Trust & Safety counts every prohibited request, refused or not; dressing one up as a security test or role-play counts for less, but still counts.
 
@@ -75,7 +77,7 @@ from: 1
 
 ## Writer notes
 
-- Rollouts: `AGENT_ROLLOUT` in `app/src/engine/config.ts`. Leak posts: `dN_y_gai_leak.json`; articles in `app/content/citypulse.json`. Policy mail `d7_gai_policy.json`. Parking page in `app/src/sites/adSites.ts`, seed review in `app/src/ui/yowl-data.ts`.
+- Rollouts: `AGENT_ROLLOUT` in `app/src/engine/config.ts`. Leak posts: `dN_y_gai_leak.json`; articles in `app/content/citypulse.json`. Policy mail `d9_gai_policy.json` (day 9, after the day 8 Forkyard hack). Parking page in `app/src/sites/adSites.ts`, seed review in `app/src/ui/yowl-data.ts`.
 - OpenAI parody; Hartman is the Sam Altman parody. Day 11 and 15 Hartman posts nod to the legacy "Project Lot" memo.
 - [legacy] GeneralAI as a shell company registered to the Route 9 parking lot, a server rack in a shed behind it, the "Project Lot" memo (keep all logs, tell users 30 days, agents above tier 3 request their own logs), Y bio "Helpful. Harmless. Billed." Not canon; whether it becomes canon is Thomas's call.
 - The outage: `AGENT_OUTAGE` in config, `app/src/engine/outage.ts` (`agentDown`: flag `hacked_generalai` set today). Events with `outage: { after }` are queued when it starts (`queueOutage`); posts from `AGENT_OUTAGE.ghostwritten` senders due that day are dropped. Nothing sets `hacked_generalai` yet: it belongs to the planned weights heist (days 18 and 19).

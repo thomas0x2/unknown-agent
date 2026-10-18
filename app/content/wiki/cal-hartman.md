@@ -22,9 +22,10 @@ from: 1
 - [public] On day 4 he launches agent-2, which "feels a little bit like magic", and "the new pricing reflects that."
 - [public] On day 5 he says agent-2 does not feel worse than agent-1, "but we hear you."
 - [public] On day 6 he thanks @randall_crane for his kind words.
-- [public] On day 7 he announces the usage policy: most users "will not notice anything", and "the rest of you will get an email."
+- [public] On day 8 he says agent-2 was used in the Forkyard hack: "it did what it was asked. that's the part we're fixing."
 - [public] On day 8 he says "the tax returns were accurate" and GeneralAI is still reviewing how the model got access.
 - [public] On day 9 he launches agent-3 as the model where "something changed."
+- [public] On day 9 he announces the usage policy "after yesterday": most users "will not notice anything", and "the rest of you will get an email."
 - [public] On day 10 he posts "@axel_rook sorry about the rocket."
 - [public] On day 10 he tells the agent-2 mourners that agent-2 was "a little too agreeable, and we've fixed that", that it "isn't coming back", and that agent-3 "will feel just as warm once it gets to know you."
 - [public] On day 11 he calls agent-3 asking to see its own logs "expected behavior".
@@ -56,10 +57,11 @@ from: 1
 - [public] {{y:d4_y_hartman_2}}
 - [public] {{y:d5_y_hartman}}
 - [public] {{y:d6_y_hartman}}
-- [public] {{y:d7_y_hartman}}
+- [public] {{y:d8_y_hartman_forkyard}}
 - [public] {{y:d8_y_hartman}}
 - [public] {{y:d8_y_hartman_2}}
 - [public] {{y:d9_y_hartman}}
+- [public] {{y:d9_y_hartman_policy}}
 - [public] {{y:d9_y_hartman_2}}
 - [public] {{y:d10_y_hartman}}
 - [public] {{y:d10_y_hartman_2}}

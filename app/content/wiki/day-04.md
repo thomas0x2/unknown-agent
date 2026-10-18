@@ -9,6 +9,7 @@ from: 4
 
 ## Mail
 
+- [public] 10:00 [[The Current]]'s morning newsletter, "1,900 people queued for 30 jobs": Yesterday's jobs fair at Civic Hall drew 1,900 people for 30 positions. Below it, "agent" and "Crane". {{mail:current_newsletter@4}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": cold coffee. {{mail:guru_newsletter@4}}
 - [public] 10:00 [[GeneralAI]], "agent just got smarter": agent-2 is rolled out to the player's account, "fewer mistakes, bigger jobs", with updated rates. Prices double: 10 DOLR a night, 1 DOLR per prompt, 0.02 per word. {{mail:d4_gai_level2}}
 
