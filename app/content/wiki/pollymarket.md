@@ -10,7 +10,7 @@ summary: Pollymarket is a prediction market site and Y account showing the odds 
 
 [public] The player can't bet. Every market page shows the Yes and No prices and the line "Trading is not available in your region." The site shows every market open so far with its chance, today's move, a small chart and the volume traded, a feed of recent trades, and on each market's page a full chart, the rules and its trades. Odds and trades move with the news during the day. Markets that have resolved stay on the site, marked Resolved YES or Resolved NO.
 
-[public] The site isn't bookmarked at first; it is added once the player has been there. Its links in Y posts open the market.
+[public] The site is never bookmarked. Its links in Y posts open the market.
 
 ## Markets
 
