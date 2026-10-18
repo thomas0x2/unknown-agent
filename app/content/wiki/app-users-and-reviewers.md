@@ -1,6 +1,6 @@
 ---
 title: App users and reviewers
-aliases: Kofi A., kofi_a, @kofi_a, Kofi, Ines, ines_sells, second_hand_sam, Sam, Pia L., pia_l, Pia, Steph M., steph_m, Steph, walked_there_again, espresso_or_death, linden_ave_local, commuter22, Zoe K., Tom R., Marguerite, liftbro, kettlebell_karen, Nadia, former_employee, Yowl reviewers
+aliases: Kofi A., kofi_a, @kofi_a, Kofi, Ines, ines_sells, second_hand_sam, Sam, Pia L., pia_l, Pia, Steph M., steph_m, Steph, walked_there_again, espresso_or_death, linden_ave_local, commuter22, Zoe K., liftbro, kettlebell_karen, Nadia, former_employee, Yowl reviewers
 category: people
 from: 1
 nest: true
@@ -25,13 +25,11 @@ nest: true
 
 - [public] Ines (@ines_sells), "Selling my aunt's furniture one chair at a time."
 - [public] second_hand_sam, "If it's used, I'm interested."
-- [public] Pia L. (@pia_l), "Bargain hunter. Will haggle over a spoon." She also gave Trattoria Gino 5 stars on Yowl for the tiramisu.
+- [public] Pia L. (@pia_l), "Bargain hunter. Will haggle over a spoon."
 - [public] When Swaplist is down or stale at payday, one of these three posts about it on Y. Their listings are on [[Swaplist sellers]].
 
 ## Yowl reviewers
 
-- [public] Trattoria Gino: Pia L. (5 stars), Tom R. (4, "Cash only, and no website"), Marguerite (5, "Our Friday spot for years"). Marguerite is a retired music teacher who has had Friday dinner at the same table since 2010; on Y she is @marguerite.
-- [hidden; public if shown d6_y_trattoria_photos] Marguerite posted on Y about Gino's AI menu pictures the day after they went live. {{y:d6_y_trattoria_photos}}
 - [public] Bean There: espresso_or_death (1 star, "Burnt. Every single time."), commuter22 (2), Zoe K. (2).
 - [public] Iron Yard: liftbro (3), Steph M. (4), kettlebell_karen (2).
 - [public] Spin Cycle Laundry: walked_there_again (2), Nadia (3, a van idling out back at 2am).

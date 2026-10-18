@@ -80,7 +80,7 @@ export function offlineScores(input: FeatureMatchInput): number[] {
   const top = Math.max(0, ...mains);
   input.features.forEach((f, i) => { if (f.kind === 'main' && spans[i] && spans[i]!.size < top) out[i] = 0.6; });
   // a part named only by words that sit inside a longer name of another part is that other part
-  // ("goes to the restaurant instead of the guest" is who gets it, not the number of guests)
+  // ("goes to the founder instead of the person who joined" is who gets it, not the founder's name)
   const parts = input.features.map((f, i) => (f.kind === 'component' && spans[i] && out[i] ? i : -1)).filter((i) => i >= 0);
   for (const i of parts) {
     const a = spans[i]!;

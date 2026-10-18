@@ -9,7 +9,6 @@ from: 1
 
 ## Businesses on Yowl
 
-- [public] Trattoria Gino (14 Alder St, Italian and pizza, $$, Tue–Sun 17:00–22:00): reviews by Pia L., Tom R., Marguerite.
 - [public] Bean There (3 Linden Ave, coffee and tea, $$, Mon–Sat 07:00–16:00): reviews by espresso_or_death (1 star), commuter22 (2), Zoe K. (2).
 - [public] Iron Yard (88 Harbor Rd, gym, $$, daily 06:00–23:00): reviews by liftbro (3), Steph M. (4), kettlebell_karen (2).
 - [public] Spin Cycle Laundry (201 Ferris St, laundromat, $, daily 06:00–00:00): reviews by walked_there_again (2) and Nadia (3, a van idling out back at 2am last week).

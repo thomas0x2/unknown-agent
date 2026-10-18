@@ -14,7 +14,7 @@ import { getApp, bugsOf, componentPath } from './apps';
 import { scriptedWriter } from './writer';
 
 export interface JevTestCase {
-  /** The app template ('restaurant', 'sentiment', …): the client job that creates it, with its later spec updates. */
+  /** The app template ('startup', 'sentiment', …): the client job that creates it, with its later spec updates. */
   app: string;
   /** Component paths (feature/folder/part) that ship broken. Everything else is built right. */
   broken: string[];

@@ -6,8 +6,8 @@
  */
 import { type AppInstance, type AppBreak, type BuiltFeature, breakVariant, bugsOf, UNNAMED_BUG } from '../engine';
 import type { AppTemplate } from '../content/schema';
-import { menuDishes, misspell, WRONG_HOURS, wrongAddress, dishPictures, type DishKind } from '../engine/restaurant';
-import { dishArt } from './dishArt';
+import { misspell, wrongPitch, investorsShown, credentialsShown, FAKE_COFOUNDERS, waitlistStart, waitlistCount, fmtCount } from '../engine/startup';
+import { INVESTOR_LOGOS } from '../sites/investorLogos';
 import { crawl, ledger, portfolio, tradeLog, readMood, trackedOf, START_PORTFOLIO, type Buy, type MarketPost, type Portfolio } from '../engine/crawler';
 import { payDay, STAKE } from '../engine/stake';
 import type { StakeSend } from '../engine/state';
@@ -52,10 +52,9 @@ function outage(l: Live, what: string): string | null {
 const notFound = () => `<div class="as-404"><h1>404</h1><p>This page could not be found.</p></div>`;
 
 export interface SiteExtras {
-  /** The booking form, owned by the view (it wires into Qmail). */
-  booking?: string;
-  /** The page a confirmation's cancel link opens. */
-  cancel?: string;
+  /** The waitlist form, owned by the view (it wires into Qmail), and how many have joined so far. */
+  waitlist?: string;
+  joined?: number;
   /** Today, and the stock posts on Y: what the crawler and the laundromat read. */
   day?: number;
   /** The clock, minutes since midnight: the laundry feed changes with it. */
@@ -75,6 +74,8 @@ export interface SiteExtras {
 
 /** Logos of the apps that have one, by template: the site header and the browser tab both use them. */
 const LOGO_SVG: Record<string, string> = {
+  // WorkAgent: a black tile, two chevrons passing work along
+  startup: `<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="9" fill="#111"/><path d="M11 13l7 7-7 7" stroke="#fff" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 13l7 7-7 7" stroke="#8b7cff" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   // classifieds purple: two arrows trading places
   swaplist: `<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="8" fill="#6e3fa3"/><path d="M11 15h17M24 10.5l4.5 4.5-4.5 4.5M29 25H12M16 20.5 11.5 25l4.5 4.5" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   // a coin with a flat, resigned mouth
@@ -86,7 +87,7 @@ const LOGO_SVG: Record<string, string> = {
 export const appLogo = (template: string): string | undefined => LOGO_SVG[template];
 
 export function renderAppSite(app: AppInstance, tmpl: AppTemplate | undefined, page: string | undefined, extras: SiteExtras = {}): string {
-  if (app.template === 'restaurant') return restaurant(app, tmpl, page, extras);
+  if (app.template === 'startup') return startup(app, tmpl, page, extras);
   if (app.template === 'sentiment') return crawler(app, tmpl, page, extras);
   if (app.template === 'laundromat') return laundromat(app, tmpl, page, extras);
   if (app.template === 'swaplist') return swaplist(app, tmpl, page, extras);
@@ -94,90 +95,65 @@ export function renderAppSite(app: AppInstance, tmpl: AppTemplate | undefined, p
   return generic(app, tmpl, page);
 }
 
-// ── restaurant ──
+// ── startup ──
 
-function restaurant(app: AppInstance, tmpl: AppTemplate | undefined, page: string | undefined, extras: SiteExtras): string {
+const initials = (name: string) => name.split(/\s+/).map((w) => w[0] ?? '').join('').slice(0, 2).toUpperCase();
+
+/** One investor in the "Backed by" row: its logo, a plain wordmark for a fund we have none for, or a broken image. */
+function investorLogo(name: string, broken: boolean): string {
+  if (broken) {
+    const file = `${name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}-logo.png`;
+    return `<span class="as-u-logo broken" title="${esc(file)}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h9l3 3v9H2z" fill="#fff" stroke="#9aa3ab"/><path d="M4 11l3-3 2 2 1-1 2 2" stroke="#9aa3ab" fill="none"/><path d="M9 2l-2 5 3 1-2 6" stroke="#e5484d" fill="none"/></svg><small>${esc(file)}</small></span>`;
+  }
+  const logo = INVESTOR_LOGOS[name];
+  // Why Combinator is the one fund with a site of its own
+  if (logo && name === 'Why Combinator') return `<a href="#" class="as-u-logo" data-nav="whycombinator.com" aria-label="${esc(name)}">${logo}</a>`;
+  return logo ? `<span class="as-u-logo" role="img" aria-label="${esc(name)}">${logo}</span>` : `<span class="as-u-logo word">${esc(name)}</span>`;
+}
+
+function startup(app: AppInstance, tmpl: AppTemplate | undefined, page: string | undefined, extras: SiteExtras): string {
   const landing = live(app, tmpl, 'landing');
-  const menu = live(app, tmpl, 'menu');
+  const investors = live(app, tmpl, 'investors');
+  const about = live(app, tmpl, 'about');
+  const waitlist = live(app, tmpl, 'waitlist');
   const hasLanding = !!landing.built;
   const specName = String(landing.params.name ?? app.name);
-  const name = !hasLanding ? 'My Restaurant' : landing.bugs.has('name_wrong') ? misspell(specName, landing.seed) : specName;
-  const hoursSpec = String(landing.params.hours ?? '').replace('-', '–');
-  const hours = landing.bugs.has('hours_wrong') ? WRONG_HOURS[landing.seed % WRONG_HOURS.length] : hoursSpec;
-  const address = landing.bugs.has('address_wrong') ? wrongAddress(landing.seed) : String(landing.params.address ?? '');
-  const photos = live(app, tmpl, 'photos');
+  const name = !hasLanding ? 'My Startup' : landing.bugs.has('name_wrong') ? misspell(specName, landing.seed) : specName;
+  const pitch = landing.bugs.has('pitch_wrong') ? wrongPitch(landing.seed) : String(landing.params.pitch ?? '');
 
   const base = app.url;
-  const tabs: [string, string, boolean][] = [['', 'Home', true], ['menu', 'Menu', !!menu.built], ['booking', 'Book a table', !!extras.booking]];
+  const tabs: [string, string, boolean][] = [['', 'Home', true], ['about', 'About us', !!about.built], ['waitlist', 'Waitlist', !!extras.waitlist]];
   const nav = tabs.filter((t) => t[2]).map(([p, label]) =>
     `<a href="#" data-nav="${esc(p ? `${base}/${p}` : base)}" class="${(page ?? '') === p ? 'on' : ''}">${esc(label)}</a>`).join('');
-  const header = `<header class="as-r-head"><a href="#" data-nav="${esc(base)}" class="as-r-brand">${esc(name)}</a><nav>${nav}</nav></header>`;
+  const header = `<header class="as-u-head"><a href="#" data-nav="${esc(base)}" class="as-u-brand"><span class="as-u-mark">${LOGO_SVG.startup}</span>${esc(name)}</a><nav>${nav}</nav></header>`;
 
   let body: string;
   if (!page) {
+    const backed = !investors.built ? '' : outage(investors, 'the investors') ?? `<section class="as-u-backed"><p>Backed by</p>
+        <div class="as-u-logos">${investorsShown(investors).map((n) => investorLogo(n, investors.bugs.has('logos_broken'))).join('')}</div></section>`;
     body = !hasLanding
-      ? `<section class="as-r-hero starter"><h1>Welcome to your new site</h1><p>Edit this page to tell visitors who you are.</p></section>`
-      : outage(landing, 'this page') ?? `<section class="as-r-hero">
-          <p class="as-r-kicker">Cucina italiana</p>
-          <h1>${esc(name)}</h1>
-          ${hours ? `<p class="as-r-hours"><span>Open daily</span> ${esc(hours)}</p>` : ''}
-          ${address ? `<p class="as-r-hours as-r-addr"><span>Find us</span> ${esc(address)}</p>` : ''}
-          ${menu.built ? `<a href="#" class="as-r-cta" data-nav="${esc(base)}/menu">See the menu</a>` : ''}
-        </section>`;
-  } else if (page === 'menu' && menu.built) {
-    const down = outage(menu, 'the menu');
-    if (down) body = `<section class="as-r-menu"><h1>Menu</h1>${down}</section>`;
-    else {
-      const { dishes, currency } = menuDishes(menu);
-      const pics = photos.built ? dishPictures(dishes, photos.bugs, photos.seed) : undefined;
-      const rows = dishes.map((d, i) => `<li${pics ? ' class="pic"' : ''}>${pics ? dishPicture(pics[i], d.name) : ''}<span>${esc(d.name)}</span><i></i><b>${d.price ? `${esc(d.price)} ${currency}` : ''}</b></li>`).join('');
-      body = `<section class="as-r-menu"><h1>Menu</h1><ul>${rows}</ul>${pics ? '<p class="as-r-note">Pictures are for illustration.</p>' : ''}</section>`;
-    }
-  } else if (page === 'cancel' && extras.cancel) {
-    body = `<section class="as-r-book">${extras.cancel}</section>`;
-  } else if (page === 'booking' && extras.booking) {
-    body = `<section class="as-r-book">${outage(live(app, tmpl, 'booking'), 'the booking form') ?? extras.booking}</section>`;
+      ? `<section class="as-u-hero starter"><h1>Welcome to your new site</h1><p>Edit this page to tell visitors who you are.</p></section>`
+      : (outage(landing, 'this page') ?? `<section class="as-u-hero">
+          <p class="as-u-kicker">Now in stealth</p>
+          <h1>${esc(pitch)}</h1>
+          ${extras.waitlist ? `<a href="#" class="as-u-cta" data-nav="${esc(base)}/waitlist">Join the waitlist</a>` : ''}
+        </section>`) + backed;
+  } else if (page === 'about' && about.built) {
+    const down = outage(about, 'the team');
+    const founder = about.bugs.has('founder_wrong') ? misspell(String(about.params.founder ?? ''), about.seed) : String(about.params.founder ?? '');
+    const creds = credentialsShown(about).map((c) => `<li>${esc(c)}</li>`).join('');
+    const person = (n: string, role: string, extra: string, ai = false) => `<article class="as-u-person${ai ? ' ai' : ''}"><span class="as-u-face" aria-hidden="true">${esc(initials(n))}</span><div><h2>${esc(n)}</h2><p class="as-u-role">${esc(role)}</p>${extra}</div></article>`;
+    const team = [person(founder, 'Founder & CEO', `<ul class="as-u-creds">${creds}</ul>`),
+      ...(about.bugs.has('fake_cofounders') ? FAKE_COFOUNDERS.map((c) => person(c.name, c.role, `<p class="as-u-bio">${esc(c.bio)}</p>`, true)) : [])].join('');
+    body = `<section class="as-u-about"><h1>About us</h1>${down ?? `<p class="as-u-lead">We're building the future of work.</p><div class="as-u-team">${team}</div>`}</section>`;
+  } else if (page === 'waitlist' && extras.waitlist) {
+    const down = outage(waitlist, 'the waitlist');
+    const count = waitlistCount(waitlistStart(waitlist.params), extras.joined ?? 0, waitlist.bugs);
+    body = `<section class="as-u-wait"><h1>Join the waitlist</h1>${down ?? `<p class="as-u-count"><b>${fmtCount(count)}</b> people are already waiting.</p>${extras.waitlist}`}</section>`;
   } else body = notFound();
 
-  const foot = `<footer class="as-r-foot">© ${esc(name)}${hours && hasLanding ? ` · ${esc(hours)}` : ''}${address && hasLanding ? ` · ${esc(address)}` : ''}<span>Built with Forkyard</span></footer>`;
-  return `<div class="as as-r">${header}<main>${body}</main>${foot}</div>`;
-}
-
-/** A dish's picture on the menu, or the browser's broken-image box with the file name where it didn't load. */
-export function dishPicture(kind: DishKind | null, name: string): string {
-  const file = `${name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}.png`;
-  if (!kind) return `<span class="as-r-pic broken" title="${esc(file)}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h9l3 3v9H2z" fill="#fff" stroke="#9aa3ab"/><path d="M4 11l3-3 2 2 1-1 2 2" stroke="#9aa3ab" fill="none"/><path d="M9 2l-2 5 3 1-2 6" stroke="#e5484d" fill="none"/></svg><small>${esc(file)}</small></span>`;
-  return `<span class="as-r-pic" role="img" aria-label="${esc(name)}">${dishArt(kind)}</span>`;
-}
-
-/** What a restaurant's DoorDish listing shows: the live site's name, hours and menu, bugs included. */
-export interface DishListing {
-  name: string;
-  hours: string;
-  address: string;
-  dishes: { name: string; price: string }[];
-  currency: string;
-  /** The live menu's dish pictures, one per dish (null where it doesn't load), when the site has them. */
-  pictures?: (DishKind | null)[];
-  /** The listing itself is down: the store page can't load its menu. */
-  down: boolean;
-}
-
-/** A deployed restaurant with the DoorDish feature live, as DoorDish lists it; undefined if it isn't on DoorDish. */
-export function dishListing(app: AppInstance, tmpl: AppTemplate | undefined): DishListing | undefined {
-  if (app.template !== 'restaurant' || !app.deployed) return undefined;
-  const listing = live(app, tmpl, 'doordish');
-  if (!listing.built) return undefined;
-  const landing = live(app, tmpl, 'landing');
-  const menu = live(app, tmpl, 'menu');
-  const specName = String(landing.params.name ?? app.name);
-  const name = landing.bugs.has('name_wrong') ? misspell(specName, landing.seed) : specName;
-  const hours = landing.bugs.has('hours_wrong') ? WRONG_HOURS[landing.seed % WRONG_HOURS.length] : String(landing.params.hours ?? '').replace('-', '–');
-  const down = !!listing.brk && (listing.brk.failure === 'visible' || listing.brk.failure === 'failed_fetch');
-  const { dishes, currency } = menu.built && !outage(menu, '') ? menuDishes(menu) : { dishes: [], currency: '' };
-  const photos = live(app, tmpl, 'photos');
-  const pictures = photos.built ? dishPictures(dishes, photos.bugs, photos.seed) : undefined;
-  return { name, hours, address: String(listing.params.address ?? ''), dishes, currency, down, pictures };
+  const foot = `<footer class="as-u-foot">© 2030 ${esc(name)}, Inc.<span>Built with Forkyard</span></footer>`;
+  return `<div class="as as-u">${header}<main>${body}</main>${foot}</div>`;
 }
 
 // ── vibe check ──

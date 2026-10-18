@@ -60,27 +60,6 @@ describe('pinned tabs', () => {
   });
 });
 
-describe('booking form', () => {
-  it("a refusal's notice is cleared by the next attempt", () => {
-    const s = make();
-    s.state.bookingNotice = { appId: 'trattoria-gino', ok: false, text: 'That date is in the past.' };
-    s.bookNext('You', 'you@qmail.com', s.state.values.day + 1);
-    expect(s.state.bookingNotice).toBeUndefined();
-    s.state.bookingNotice = { appId: 'trattoria-gino', ok: false, text: 'That date is in the past.' };
-    s.bookBack();
-    expect(s.state.bookingNotice).toBeUndefined();
-  });
-
-  it('"Book another table" leaves the confirmation for an empty form', () => {
-    const s = make();
-    s.state.bookingNotice = { appId: 'trattoria-gino', ok: true, text: 'Booked. A confirmation is on its way.', bookingId: 'b1' };
-    s.ui.book = { step: 2, name: 'You', email: 'you@qmail.com', date: 5 };
-    s.bookAgain();
-    expect(s.state.bookingNotice).toBeUndefined();
-    expect(s.ui.book).toEqual({ step: 1, name: '', email: '', date: 0 });
-  });
-});
-
 describe('a new day', () => {
   it('closes every tab but the pinned ones, back on their home pages', () => {
     const s = make();
