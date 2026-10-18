@@ -28,6 +28,8 @@
 .lp-link { max-width: 920px; margin: 24px auto 0; font-size: 15px; text-align: center; }
 .lp-link a { color: var(--lp-accent); font-weight: 600; }
 .lp-k-model .lp-link { text-align: left; }
+.lp-link-logo { display: inline-block; width: 18px; height: 18px; margin-right: 5px; vertical-align: -3px; }
+.lp-link-logo svg { display: block; width: 100%; height: 100%; }
 .lp-foot { max-width: 920px; margin: 44px auto 0; padding-top: 16px; border-top: 1px solid var(--lp-line); text-align: center; font-size: 11.5px; color: var(--lp-dim); }
 .lp-fine { margin: 0 auto 6px; max-width: 620px; line-height: 1.5; }
 .lp-copy { margin: 0; opacity: .7; }
