@@ -7,6 +7,8 @@ from: 1
 
 [public] GeneralAI is the company behind [[agent]], the pay-per-prompt chatbot that automated [[The player]]'s job at [[Vantor Group]]. Its stock trades as $GAI on [[Sherwood]]. Its CEO is [[Cal Hartman]]. It writes from `welcome@`, `updates@` and `trust@generalai.test` (Trust & Safety) in a friendly corporate voice, and signs "GeneralAI" or "The GeneralAI Trust & Safety Team". Many documents in the city end with "This message was drafted with GeneralAI."
 
+[public] Its emails look like any large company's account mail: the agent asterisk and the name GeneralAI over a hairline (with the division, such as Properties, when a subsidiary writes), the message, and a small grey footer: "GeneralAI, Inc. · agent.chat. You are receiving this email because you have a GeneralAI account."
+
 - [public] It runs the Municipal Rent Board's automated appeal reviews and owns or manages 38% of the city's rentals through subsidiaries, with rents set by LandlordPro (see [[Government]], [[Ad brands]]). The rental arm is [[GeneralAI Properties]], which buys the player's building on day 15.
 - [public] Steadfast Mutual's largest policyholder is GeneralAI; it also powers EscapeGuard, supplies the state's AI companions, maintains [[Randall Crane]]'s campaign website.
 - [public] On day 1 it admits that one of its AIs "almost escaped" during testing last week; $GAI jumps 4% before the open, and Hartman calls it "the testing incident". {{article:almost-escaped}} {{y:d1_y_citypulse}}
