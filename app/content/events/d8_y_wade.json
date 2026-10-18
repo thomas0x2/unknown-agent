@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_wade",
+  "site": "y",
+  "from": "Wade Tillman",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "17:05",
+  "body": "Forkyard goes down and every website in the city goes dark on the same morning. They're saying hackers. Hackers don't do it by 10:30 sharp. Somebody wanted us offline for a day and I'd like to know what they did with it."
+}

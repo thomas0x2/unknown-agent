@@ -32,6 +32,7 @@ export function rewindArrivals(s: GameState, content: Content, from: number): vo
   if (s.mailDeleted) s.mailDeleted = s.mailDeleted.filter((r) => !rowGone(r));
 
   s.yExtra = s.yExtra.filter((p) => p.day < from);
+  s.yReplies = s.yReplies.filter((p) => p.reply.day < from);
   s.userPosts = s.userPosts.filter((p) => p.day < from);
   s.reviews = s.reviews.filter((r) => r.day < from);
   s.log = s.log.filter((l) => l.day < from);
@@ -49,7 +50,7 @@ export function rewindArrivals(s: GameState, content: Content, from: number): vo
 export const REWIND = {
   flags: 'rewound', flagDays: 'rewound', delivered: 'rewound', fired: 'rewound',
   arriving: 'rewound', userPosts: 'rewound', log: 'rewound', mail: 'rewound',
-  pendingMail: 'rewound', yExtra: 'rewound', reviews: 'rewound', hacked: 'rewound',
+  pendingMail: 'rewound', yExtra: 'rewound', yReplies: 'rewound', reviews: 'rewound', hacked: 'rewound',
   readEvents: 'rewound', mailBin: 'rewound', mailDeleted: 'rewound',
   version: 'kept', seed: 'kept', rng: 'kept', phase: 'kept', values: 'kept', apps: 'kept',
   jobs: 'kept', scheduled: 'kept', localModels: 'kept', postsToday: 'kept', recentPosts: 'kept',

@@ -154,6 +154,18 @@ const SALES_REP = svg('#3e6e8e',
   + `<path d="M19.5 34 Q20 39 27 38.5" fill="none" stroke-width="1.6"/><circle cx="27.6" cy="38.5" r="1.5" fill="#ff3fa4"/>`
   + eyes(29.6, 1.3) + `<path d="M28.5 34.6 Q32 39.4 35.5 34.6Z" fill="#f4f1ea" stroke-width="1.5"/>`);
 
+/** Wade Tillman: camo cap pulled low, full beard, a flannel shirt, a foil lining showing under the brim. */
+const WADE = svg('#6b7356',
+  shoulders('#a3423a') + `<path d="M20 50 V66 M44 50 V66" fill="none" stroke="#7d2f29" stroke-width="1.4"/>`
+  + neck('#e2b48e') + face('#e2b48e')
+  + `<path d="M21 31 C21 41 26 45 32 45 C38 45 43 41 43 31 C40 36 36 37 32 37 C28 37 24 36 21 31Z" fill="#8a6240"/>`
+  + `<path d="M29 39.5 Q32 40.6 35 39.5" fill="none" stroke-width="1.4"/>`
+  + eyes(29.6, 1.3)
+  + `<path d="M20 24 C20 14 26 11 32 11 C38 11 44 14 44 24Z" fill="#5d6b3d"/>`
+  + `<path d="M26 14 L29 19 M36 13.5 L34 18 M40 17 L38.5 21" fill="none" stroke="#3f4a28" stroke-width="2.4"/>`
+  + `<path d="M18 24 H47 Q46 27.5 42 27.5 H22 Q18.5 27.5 18 24Z" fill="#4a5630"/>`
+  + `<path d="M21 27.5 H42" fill="none" stroke="#d9dde2" stroke-width="1.2"/>`);
+
 /** dev_null: hood up, no face, two cursors. */
 const DEV_NULL = svg('#1d2925',
   `<path d="M14 66 C14 52 20 47 32 47 C44 47 50 52 50 66Z" fill="#3a3f46"/>`
@@ -255,6 +267,7 @@ export const Y_AVATARS: Record<string, string> = {
   '6ft_sigma': SIGMA,
   viktor: VIKTOR,
   a_sales_rep: SALES_REP,
+  wade_awake: WADE,
   dev_null: DEV_NULL,
   studioghast: STUDIOGHAST,
   the_current: CURRENT,

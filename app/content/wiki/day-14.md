@@ -25,6 +25,7 @@ from: 14
 - [public] 11:54 MarketWire: $GAI up 7% on agent-4. {{y:m14_gai_level4}}
 - [public] 12:05 [[CityPulse]]: Crane vows to "build a wall around the cloud and make the computers pay for it." Asked where the cloud is: "Up." {{y:d14_y_citypulse_vote}}
 - [public] 12:30 [[Max Stryker]]: EMPIRE's refund policy is no. {{y:d14_y_stryker}}
+- [public] 14:08 (five days after Fluvera launches) [[Wade Tillman]]: a pharmacist peeled the sticker off a Fluvera box and found last year's date underneath. {{y:y_wade_fluvera_2}}
 - [public] 14:40 [[Max Stryker]], #ad: "Rent is due tonight. Weak men pay it. Strong men turn it into more rent." Code STRYKER at [[Stack]]. {{y:d14_y_stryker_stack}}
 - [public] 15:52 cat_ceo: the cat sits in the empty office chair like she's waiting for someone; posted every hour. {{y:f14}}
 - [public] 17:55 Axel Rook: Y is the number one news app in 140 countries. {{y:d14_y_axel_2}}

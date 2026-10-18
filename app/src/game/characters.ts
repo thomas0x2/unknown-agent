@@ -18,7 +18,8 @@ export function finishReply(ch: Character, raw: string, most?: number): string |
     .replace(new RegExp(`^\\s*(assistant|model|${escapeRe(ch.name)})\\s*:\\s*`, 'i'), '')
     .replace(/\s+/g, ' ')
     .trim();
-  const sentences = t.match(/[^.!?]+[.!?]+/g);
+  // a last line with no full stop (lowercase posters) still counts as a sentence
+  const sentences = t.match(/[^.!?]+[.!?]+|[^.!?]+$/g);
   if (sentences) t = sentences.slice(0, n).join('').trim();
   if (t.length > 160 * n) t = t.slice(0, 160 * n).replace(/\s+\S*$/, '') + '…';
   if (!t || t.split(' ').length < (ch.minWords ?? 1)) return null;

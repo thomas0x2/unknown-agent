@@ -6,7 +6,7 @@
 import {
   type GameState, type JevRouter, type SaveStore, type Writer, JevOffline,
   startGame, startDayChat, endDay, deploy, takeDown, postToY, replyToEvent, composeEmail,
-  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, joinWaitlist, joinEmpire, sendCrypto, settlePayments, recordStake, recordDeposit, spinSlot, applyCasinoCode, withdrawCasino, payStakes, buyStock, sellStock, exchangeCoins, createToken, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, rewindArrivals, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy, deliverSwapReplies, matchlessSwipe, matchlessLogin, clone, uploadFile, fileRentAppeal, applyToWhyC, donateCrane, craneDonations, thirstrSubscribe, fillSave, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat, agentTermPrompt, dropHackGame, hackMinutes, BOOT_MS, READ_MS, dateShort, clockTime, AGENT_POLICY, installAdware, tickAdware, closePopup, EXE_RUN_LINES,
+  promptAgent, writeReview, setValue, addFlag, clearFlag, AGENT_ROLLOUT, type MeterId, localPrompt, joinWaitlist, joinEmpire, sendCrypto, settlePayments, recordStake, recordDeposit, spinSlot, applyCasinoCode, withdrawCasino, payStakes, buyStock, sellStock, exchangeCoins, createToken, deliverDue, deliverArrivals, spreadJobOffers, marketPosts, fillerToday, CLOCK, MS_PER_GAME_MIN, advanceClock, phishLogin, seedClaim, lonelySay, lonelyReply, devToggleBug, nameUnnamedBugs, holdHiddenBugs, revealBugs, money, AGENT_USAGE, addValue, binMail, restoreMail, emptyMailBin, rewindArrivals, gameMinutes, wakeApps, swapMessage, swapOffer, swapBuy, deliverSwapReplies, deliverYReplies, matchlessSwipe, matchlessLogin, clone, uploadFile, fileRentAppeal, applyToWhyC, donateCrane, craneDonations, thirstrSubscribe, fillSave, chargeChat, sorrySay, sorryReply, sorryScripted, sorryTooLong, sorryChat, agentTermPrompt, dropHackGame, hackMinutes, BOOT_MS, READ_MS, dateShort, clockTime, AGENT_POLICY, installAdware, tickAdware, closePopup, EXE_RUN_LINES,
 } from '../engine';
 import type { Content } from '../content/schema';
 import { readSlot, writeSlot, type Slot } from './saves';
@@ -281,9 +281,10 @@ export class GameStore {
     const woke = wakeApps(s, this.content).length > 0 || shown || paid; // an empty app's first content (and its bugs) once its time has come
     deliverArrivals(s, this.content); // emails and posts whose time has come
     const answered = deliverSwapReplies(s); // Swaplist sellers getting back to the player
+    const replied = deliverYReplies(s); // the Y regulars answering the player's posts
     const popped = tickAdware(s); // an infected laptop's next ad pop-up, about once a game hour
     if (s.clockMin >= CLOCK.sleep) { this.sleep(s); this.store.save(this.state); this.announce(m); this.emit(); return; }
-    if (this.announce(m) || s.agentWork !== working || woke || answered || popped) { this.store.save(s); this.emit(); return; }
+    if (this.announce(m) || s.agentWork !== working || woke || answered || replied || popped) { this.store.save(s); this.emit(); return; }
     if (s.clockMin % 10 === 0) this.store.save(s);
     for (const fn of this.clockListeners) fn();
   }
@@ -791,7 +792,7 @@ export class GameStore {
   dismissJevOffline(): void { this.ui.jevOffline = null; this.emit(); }
 
   async post(text: string, trending: string[]) {
-    return this.run(async (s0) => { const r = await postToY(s0, this.router, text, trending, this.content); this.land(r.state); return r; }, 'post-input', text);
+    return this.run(async (s0) => { const r = await postToY(s0, this.router, text, trending, this.content, this.writer); this.land(r.state); return r; }, 'post-input', text);
   }
   async reply(eventId: string, text: string) {
     return this.run(async (s0) => { const r = await replyToEvent(s0, this.content, this.router, eventId, text, this.writer); this.land(r.state); return r; }, 'reply-body', text);

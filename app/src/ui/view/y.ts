@@ -45,7 +45,7 @@ export function yPosts(store: GameStore): YPost[] {
 const Y_VERIFIED = new Set(['doordish', 'forkyard', 'mara_vey', 'randall_crane', 'axel_rook', 'cal_hartman', 'caleb_moxon', 'max_stryker', 'the_current', 'candidate_2030', 'wallstreetbags', 'perdure_pharma', 'pollymarket', 'citypulse']);
 
 /** Follower counts for the public figures; everyone else gets a small made-up number. */
-const Y_FOLLOWERS: Record<string, number> = { doordish: 3_100_000, forkyard: 880_000, randall_crane: 38_400_000, mara_vey: 61_200, axel_rook: 214_000_000, cal_hartman: 4_300_000, caleb_moxon: 41_300, max_stryker: 2_900_000, the_current: 184_000, candidate_2030: 1_900_000, wallstreetbags: 15_800_000, perdure_pharma: 412_000, pollymarket: 3_400_000, citypulse: 1_240_000 };
+const Y_FOLLOWERS: Record<string, number> = { doordish: 3_100_000, forkyard: 880_000, randall_crane: 38_400_000, mara_vey: 61_200, axel_rook: 214_000_000, cal_hartman: 4_300_000, caleb_moxon: 41_300, max_stryker: 2_900_000, the_current: 184_000, candidate_2030: 1_900_000, wallstreetbags: 15_800_000, perdure_pharma: 412_000, pollymarket: 3_400_000, citypulse: 1_240_000, wade_awake: 38_600 };
 
 /** Rook puts check marks "under review" on day 8; from day 9 Crane's is bigger and golden. */
 const craneGold = (s: GameState) => s.values.day >= 9;
@@ -71,6 +71,7 @@ function yPostHtml(store: GameStore, p: YPost): string {
       <a href="#" class="y-who" data-nav="${prof}"><span class="y-name"><b>${esc(p.author)}</b>${yCheck(store.state, p.handle)}</span><span class="y-handle">@${esc(p.handle)}</span></a>
       <span class="y-time">${p.day === store.state.values.day && p.min != null ? fmtClock(p.min) : dateShort(p.day)}</span>
     </header>
+    ${p.replyTo && store.state.userPosts.some((u) => u.id === p.replyTo) ? `<div class="y-replying">Replying to <span class="y-at">@${PLAYER.handle}</span></div>` : ''}
     <p>${text}</p>
     ${p.img ? `<figure class="y-img">${art(p.img, 'y-img-art')}</figure>` : ''}
     <footer class="y-acts">

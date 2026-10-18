@@ -1,0 +1,11 @@
+{
+  "id": "d15_y_wade",
+  "site": "y",
+  "from": "Wade Tillman",
+  "trigger": {
+    "dayMin": 15,
+    "dayMax": 15
+  },
+  "at": "18:30",
+  "body": "Eleven flights on Kirschbaum's jet, says The Current. I count twelve. I'll post my sources when it's safe to."
+}
