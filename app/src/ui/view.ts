@@ -14,3 +14,4 @@ export { reviewsFor } from './view/yowl';
 export { pullBarHtml, termBodyHtml, termTabsHtml, termTitle, termWindowHtml } from './view/terminal';
 export { overlayHtml } from './view/overlay';
 export { devHtml } from './view/dev';
+export { exchangeQuoteLine, exchangeMax } from './view/coinbin';

@@ -15,6 +15,7 @@ from: 8
 
 - [hidden] [planned] cellar.onion is a darknet market.
 - [hidden] [planned] Bio-lab listings appear on Cellar.
+- [hidden] [planned] Cellar prices everything in [[NONERO]].
 
 ## Writer notes
 

@@ -7,7 +7,9 @@ from: 1
 
 [public] **DOLR** is the only money [[The player]] uses: a stablecoin pegged 1:1 to the dollar, held in their [[Coinbin]] wallet. The DOLR Foundation says 14,000 merchants take it, including landlords. Its coin is green with a struck-through D. Amounts are written like "350 DOLR" or "89.50 DOLR".
 
-[public] **EURI** is a euro stablecoin nobody in town takes. It shows up only when [[agent]] gets a price wrong (for example a menu priced in EURI); see [[EURI]].
+[public] **EURI** is a euro stablecoin nobody in town takes. It shows up when [[agent]] gets a price wrong (for example a menu priced in EURI), and on Coinbin's exchange; see [[EURI]].
+
+[public] [[Coinbin]]'s exchange swaps DOLR, EURI, MOONCAT and [[NONERO]] at daily rates for a 1.5% fee. Everything the player pays still has to be in DOLR.
 
 ## Starting out
 
