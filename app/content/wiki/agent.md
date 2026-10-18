@@ -23,10 +23,11 @@ keys: what can you do, can you do, prompt, prompts, prompt cost
 - [public] agent-3 costs 20 DOLR a night, 2 DOLR per prompt and 0.03 DOLR per word, and checks deployments and reports what broke.
 - [public] agent-4 costs 35 DOLR a night, 3 DOLR per prompt and 0.05 DOLR per word, and fixes and redeploys on its own: "Stops asking first."
 - [public] agent-5 costs 60 DOLR a night, 5 DOLR per prompt and 0.08 DOLR per word, and the Models page describes it as "Everything" and "Near-flawless".
-- [public] agent-2 works 1.25 times as fast as agent-1.
-- [public] agent-3 works about 1.5 times as fast as agent-1.
-- [public] agent-4 works twice as fast as agent-1.
-- [public] agent-5 works 2.5 times as fast as agent-1.
+- [public] agent-1 is slow: a build or fix takes it 1.5 times the base time, caps included (a full build up to about 2 hours 15 minutes of game time).
+- [public] agent-2 works about 1.9 times as fast as agent-1.
+- [public] agent-3 works about 2.3 times as fast as agent-1.
+- [public] agent-4 works 3 times as fast as agent-1.
+- [public] agent-5 works about 3.8 times as fast as agent-1.
 
 [public] The Models page (agent.chat/models) lists only the models already rolled out, with the one in use marked. GeneralAI's banner ads link there.
 - [public] {{mail:d4_gai_level2}}
