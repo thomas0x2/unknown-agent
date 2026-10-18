@@ -37,7 +37,7 @@ from: 1
 - [public] 09:30 MarketWire: $GAI up 4% premarket on the "almost escaped" news. {{y:m1_gai_escape}}
 - [public] 09:50 [[Axel Rook]]: AI will do every job within a few years, and everyone gets universal high income. {{y:d1_y_axel}}
 - [public] 10:00 [[The Current]]: unemployment in the city has reached 30%, and 4% of those who lost a job this year have found another; links the morning edition at thecurrent.test. {{y:d1_y_current_jobs}}
-- [public] 10:42 [[Logan Pryce]] (@logan_ships): "why combinator-backed, building in stealth"; WorkAgent is looking for a founding engineer to ship its landing page this week, paying DOLR up front. logan@workagent.test {{y:d1_y_logan}}
+- [public] 10:42 [[Logan Pryce]] (@logan_ships): "why combinator-backed, building in stealth"; WorkAgent is looking for a founding engineer to ship its landing page this week, paid in DOLR nightly once it ships. logan@workagent.test {{y:d1_y_logan}}
 - [public] 12:10 doomscroll: 400 people at Vantor fired by one email, has read every reply, links CityPulse. {{y:d1_y_doomscroll_news}}
 - [public] 12:30 [[Mara Vey]] of [[The Current]] asks people behind this week's AI layoffs to write to her at mara@thecurrent.test. From now on the player can email her. {{y:d1_y_journalist}}
 - [public] 13:15 Axel Rook: "@mara_vey Interesting." {{y:d1_y_axel_2}}
@@ -69,13 +69,13 @@ from: 1
 
 ## Jobs
 
-- [hint] 10:42 [[WorkAgent site]] for Logan: a landing page with the name WorkAgent and the one-liner "The future of work is agentic.", a "Backed by" row (Why Combinator, Bonsai Capital, a67x) and an About us page with Logan and his credentials. Pays 40 DOLR a working day, the first day up front.
+- [hint] 10:42 [[WorkAgent site]] for Logan: a landing page with the name WorkAgent and the one-liner "The future of work is agentic.", a "Backed by" row (Why Combinator, Bonsai Capital, a67x) and an About us page with Logan and his credentials. Pays 40 DOLR a working night once the site is live, nothing up front.
 - [hint] 13:50 [[Spin Cycle Board]]: nobody hires the player; the player asks the agent to turn the Spin Cycle feed into an app. A user app that starts with 30 users and earns 0.3 DOLR per user a day.
 - [hidden; hint if guru_subscriber] 14:15 The player signed up for EMPIRE; a daily newsletter follows.
 
 ## Writer notes
 
-- Timeline story beats: opens on Vantor's termination email; GeneralAI welcome; Logan's Y post → WorkAgent site (40/day, 40 up front); after its first deploy he asks for a Y post (`logan_promo`, "we're live", 16:00 or 30 min after a later launch, sets `logan_promo_asked`), and thanks you if you post (`logan_promo_thanks`, "your post": the podcast got a new listener).
+- Timeline story beats: opens on Vantor's termination email; GeneralAI welcome; Logan's Y post → WorkAgent site (40 a night once live, nothing up front); after its first deploy he asks for a Y post (`logan_promo`, "we're live", 16:00 or 30 min after a later launch, sets `logan_promo_asked`), and thanks you if you post (`logan_promo_thanks`, "your post": the podcast got a new listener).
 - Spin Cycle complaints → Spin Cycle Board (lead is on day 1, not 2).
 - EMPIRE offer 20 DOLR.
 - Mara's first post; she can be emailed from today (`journalist_contact`, sets `talked_to_journalist`, honest also `did_journalist_interview`).

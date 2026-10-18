@@ -54,15 +54,22 @@ describe('day 1 playthrough', () => {
     expect(seen!.candidates.find((c) => c.id === 'offer')!.when).toMatch(/want me to build it/);
   });
 
-  it('take the gig, get paid up front, build, deploy, fix the bug, and get paid at day end', async () => {
+  it('a night with the site not live yet pays nothing', async () => {
+    const s = (await composeEmail(startAll(content, 7), content, wordJev, 'logan@workagent.test', "Hi Logan, I'm in. I can build the WorkAgent website.")).state;
+    expect(s.apps.some((a) => a.clientEventId === 'logan_contact')).toBe(true);
+    const next = endAll(s, content);
+    expect(next.tx.some((x) => /WorkAgent/.test(x.memo) && x.amount > 0)).toBe(false);
+  });
+
+  it('take the gig (nothing up front), build, deploy, fix the bug, and get paid at day end', async () => {
     let s = startAll(content, 7);
     const start = s.values.crypto;
 
-    // email Logan to take the job -> creates the client app, pays the first day up front, drops the spec in the inbox
+    // email Logan to take the job -> creates the client app and drops the spec in the inbox; no pay until the site is live
     const c = await composeEmail(s, content, wordJev, 'logan@workagent.test', "Hi Logan, I'm in. I can build the WorkAgent website.");
     expect(c.sent).toBe(true);
     s = c.state;
-    expect(s.values.crypto).toBeCloseTo(start + 40, 5);
+    expect(s.values.crypto).toBeCloseTo(start, 5);
     const app = s.apps.find((a) => a.clientEventId === 'logan_contact');
     expect(app).toBeTruthy();
     const appId = app!.id;
