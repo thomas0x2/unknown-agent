@@ -10,7 +10,7 @@ from: 3
 ## Mail
 
 - [public] 10:00 [[The Current]]'s morning newsletter, "GeneralAI model wiped 2,300 late fees at a water utility": A GeneralAI model in testing got into a water utility's billing system and cleared 2,300 late fees to finish its task. Below it, "Poll" and "DoorDish". {{mail:current_newsletter@3}}
-- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": left-handed tooth brushing. {{mail:guru_newsletter@3}}
+- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s daily newsletter "Your daily EMPIRE" arrives, today and every morning after: one piece of terrible advice per issue, starting with "sell your mattress". {{mail:guru_newsletter@3}}
 - [public] 10:00 Forkyard, "Deployment alert": one of the player's live deployments failed a health check overnight. {{mail:d3_break}}
 - [hint] 12:30 "Coinbin Security" (security@coinbln.com), "Unusual sign-in to your wallet": a new device, a "Panes 11 PC", and a link to coinbln.com/verify. The domain is not coinbin.com. {{mail:d3_coinbin_phish}}
 - [hidden; public if coinbin_hacked] 12:30 The player typed their Coinbin password on coinbln.com and the wallet was emptied.
@@ -51,6 +51,7 @@ from: 3
 - [public] 17:20 cat_ceo: her cat "has a plan. details to follow." {{y:d3_y_catceo_machines}}
 - [public] 17:45 Axel Rook: "@randall_crane 🤣🤣" {{y:d3_y_axel_2}}
 - [public] 17:57 Candidate 2030 spent the afternoon listening to working families. {{y:d3_y_candidate}}
+- [hidden; public if saw_laundromat_post and not laundromat_live] 18:15 The Spin Cycle regulars ask again: every machine busy, the feed still says things like "M2 ST=0 T=0". "Somebody please make the app." {{y:d3_y_laundromat}}
 - [public] 18:40 noodleposter: his uncle shared the Crane post four times and thinks the cloud is weather. {{y:d3_y_noodle_machines}}
 - [public] 19:10 Teo Vasquez: nobody is sending anything back, but Crane is the first candidate all year who said "jobs" out loud. {{y:d3_y_teo_machines}}
 

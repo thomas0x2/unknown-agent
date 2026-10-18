@@ -26,7 +26,7 @@ keys: laundromat, laundry
 
 [public] His customers post on [[Y]] as "Spin Cycle regulars" (@spin_cycle_regulars, bio "Unofficial account for the people waiting at Spin Cycle. Never trust machine 3.").
 
-[public] On [[Day 1]] (13:50) they complain that every machine is busy again and the owner's raw status feed is unreadable: "Someone make it a real app." Nobody hires the player for it; the player can ask [[agent]] to build an app from the feed. {{y:d1_y_laundromat}}
+[public] On [[Day 2]] (17:50) they complain that every machine is busy again and the owner's raw status feed is unreadable: "Someone make it a real app." Nobody hires the player for it; the player can ask [[agent]] to build an app from the feed. {{y:d2_y_laundromat}} If nobody built it, they ask again on [[Day 3]] (18:15). {{y:d3_y_laundromat}}
 
 ## From day 5: Four more machines
 
@@ -38,6 +38,6 @@ keys: laundromat, laundry
 
 ## Writer notes
 
-- Persona `spincycle`; events `d1_y_laundromat`, `laundromat_contact`; he never emails the player (the day 5 machines update comes from Kofi's Y post `d5_y_kofi_news`); CityPulse `spin-cycle` (day 5). Feed: ST 0 free, 1 running, 2 done, 3 out of order; T is seconds left; 8 machines, 12 from day 5.
+- Persona `spincycle`; events `d2_y_laundromat`, `d3_y_laundromat`, `laundromat_contact`; he never emails the player (the day 5 machines update comes from Kofi's Y post `d5_y_kofi_news`); CityPulse `spin-cycle` (day 5). Feed: ST 0 free, 1 running, 2 done, 3 out of order; T is seconds left; 8 machines, 12 from day 5.
 - Hours disagree: Yowl says daily 06:00 to 00:00, spincycle.test says 10:00 to 22:00. Yowl's "Eight washers" also doesn't update on day 5.
 - The van at 2am is the mafia seed. Don't spend it as a joke.
