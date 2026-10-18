@@ -127,8 +127,8 @@ describe('authored content', () => {
     }
   });
 
-  it('has trending for days 1-6, with something trending from the start of the day', () => {
-    for (let d = 1; d <= 6; d++) {
+  it('has trending for days 1-7, with something trending from the start of the day', () => {
+    for (let d = 1; d <= 7; d++) {
       expect(trendingAt(content, d, CLOCK.wake).length, `trending day ${d} at wake`).toBeGreaterThan(0);
       for (const t of content.trending[d]) if (typeof t !== 'string') expect(t.at, `trending day ${d} ${t.topic}`).toMatch(/^(1\d|2[01]):[0-5]\d$/);
     }

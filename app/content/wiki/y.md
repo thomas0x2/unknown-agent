@@ -36,7 +36,8 @@ from: 1
 - [hidden; public from day 5] On day 4: GeneralAI agent-2; the DoorDish robot (still missing); from 13:26 Crane vs. Vantor.
 - [hidden; public from day 6] On day 5: is agent-2 worse?; from 16:20 Crane's 71% Y poll; from 17:30 AI-art backlash; from 19:10 the fake Randall Crane.
 - [hidden; public from day 7] On day 6: #RentDayEve; from 11:00 Crane's GeneralAI U-turn; from 15:18 $GAI rallying; from 18:50 Apogee static fire.
-- [public] From day 7 the sidebar shows only #AI, #jobs and #election.
+- [hidden; public from day 8] On day 7: #RentDay; agent's new usage policy; from 12:30 Rent Board appeals; from 13:00 "The people AI left behind"; from 19:20 Crane vs. Y check marks.
+- [public] From day 8 the sidebar shows only #AI, #jobs and #election.
 
 ## Later changes
 
@@ -47,6 +48,6 @@ from: 1
 
 ## Writer notes
 
-- Bios `app/src/ui/y-bios.ts`, avatars `app/src/ui/y-avatars.ts`, trending `app/content/trending.json` (a topic with `at` trends from that time, `trendingAt` in `src/engine/trending.ts`; days 7 to 21 fall back to #AI, #jobs, #election; proposals need Thomas's OK). Market posts `app/content/y_market.json`.
+- Bios `app/src/ui/y-bios.ts`, avatars `app/src/ui/y-avatars.ts`, trending `app/content/trending.json` (a topic with `at` trends from that time, `trendingAt` in `src/engine/trending.ts`; days 8 to 21 fall back to #AI, #jobs, #election; proposals need Thomas's OK). Market posts `app/content/y_market.json`.
 - Follower rubric `Y`/`POST_BANDS` in config: gains per post by category with ±30% jitter; more than 3 posts a day costs 2%. A post sharing a word with a trending topic rates as a "reaction". The deepfake needs 60+ followers and goes up as the player's own post with a picture (`img`), its likes climbing for hours (`viral`, engine/agentJobs.ts viralLikes); the Bean There shout-out 25+.
 - Bot swarm days: 2, 4, 6, 9, 12, 16, 20.

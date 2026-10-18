@@ -26,7 +26,7 @@ The city, the player (template variable `{{playerName}}`), Mom, Dad, the brother
 - Who Chen Wei is (deepsleep-0.5B's third answer).
 - Mom's day 9 forward and the other delayed family consequences; the day 21 family scene.
 - Payoffs for Heritage and Progress standing, `asked_mom_money`, `restaurant_happy`, `viktor_sold_watch`.
-- Trending topics for days 7 to 21 (proposals on the day pages need Thomas's OK).
+- Trending topics for days 8 to 21 (proposals on the day pages need Thomas's OK).
 
 ## Legacy docs
 
