@@ -58,8 +58,10 @@ from: 7
 
 ## Trending
 
-- [public] 10:00 Y shows no topics of its own today, only #AI, #jobs, #election.
-- [hidden] [planned] Proposed trending: GeneralAI usage policy; #RentDay; "the people AI left behind".
+- [public] 10:00 Trending on Y: #RentDay; agent's new usage policy.
+- [public] 12:30 Starts trending on Y: Rent Board appeals.
+- [public] 13:00 Starts trending on Y: "The people AI left behind".
+- [public] 19:20 Starts trending on Y: Crane vs. Y check marks.
 
 ## Jobs
 

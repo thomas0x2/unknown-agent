@@ -34,5 +34,12 @@
     { "at": "11:00", "topic": "Crane's GeneralAI U-turn" },
     { "at": "15:18", "topic": "$GAI rallying" },
     { "at": "18:50", "topic": "Apogee static fire" }
+  ],
+  "7": [
+    "#RentDay",
+    "agent's new usage policy",
+    { "at": "12:30", "topic": "Rent Board appeals" },
+    { "at": "13:00", "topic": "“The people AI left behind”" },
+    { "at": "19:20", "topic": "Crane vs. Y check marks" }
   ]
 }
