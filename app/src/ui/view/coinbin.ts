@@ -5,7 +5,7 @@ import { GameStore } from '../../game/store';
 import { ICONS, TOKENS } from '../icons';
 import { agentCost, RENT, dateShort, dateMedium } from '../../engine';
 import { adHtml } from '../ads';
-import { PHISH_WALLET, hacked, SEED_PHRASE } from '../../engine';
+import { PHISH_WALLET, hacked, SEED_PHRASE, COINS, EXCHANGE_FEE, EXCHANGE_MIN, coinRate, coinHeld, fmtCoin, quoteExchange, type Coin } from '../../engine';
 import { PLAYER, WALLET_ADDR, esc, rentDayOf, shortAddr } from './common';
 
 // ── coinbln.com: the phishing copy of Coinbin's sign-in (engine/phishing.ts) ──
@@ -111,6 +111,67 @@ function sendForm(store: GameStore): string {
   </form>`;
 }
 
+// ── Coinbin Exchange (engine/exchange.ts) ──
+const COIN_ICON: Record<Coin, string> = { DOLR: TOKENS.dolr, EURI: TOKENS.euri, MOONCAT: TOKENS.mooncat, NONERO: TOKENS.nonero };
+
+/** A DOLR price: per million for coins worth less than a tenth of a cent. */
+function fmtRate(n: number): string {
+  if (n < 0.001) return `${(n * 1e6).toFixed(2)} per 1M`;
+  return n.toFixed(n < 10 ? 4 : 2);
+}
+
+const exAmount = (raw: string) => Number(raw.replace(/,/g, '').trim());
+
+/** The line under the exchange form: what the typed amount gets today, or why it won't go. */
+export function exchangeQuoteLine(store: GameStore, raw: string): { text: string; over: boolean } {
+  const s = store.state;
+  const { from, to } = store.ui.ex as { from: Coin; to: Coin };
+  const fee = `Fee ${(EXCHANGE_FEE * 100).toFixed(1)}%.`;
+  const n = exAmount(raw);
+  if (!raw.trim() || !Number.isFinite(n) || n <= 0) return { text: `You have ${fmtCoin(from, Math.max(0, coinHeld(s, from)))} ${from}. ${fee}`, over: false };
+  const q = quoteExchange(s, from, to, n);
+  if (n > coinHeld(s, from) + 1e-9) return { text: `You have ${fmtCoin(from, Math.max(0, coinHeld(s, from)))} ${from}.`, over: true };
+  if (q.worth < EXCHANGE_MIN) return { text: `The minimum exchange is worth ${EXCHANGE_MIN.toFixed(2)} DOLR.`, over: true };
+  return { text: `You get ${fmtCoin(to, q.get)} ${to}. ${fee}`, over: false };
+}
+
+/** Everything held of the coin being exchanged, as the amount field writes it. */
+export function exchangeMax(store: GameStore): string {
+  const c = store.ui.ex.from as Coin;
+  return Math.max(0, coinHeld(store.state, c)).toFixed(COINS.find((x) => x.id === c)!.decimals);
+}
+
+/** Coinbin's Exchange form. The coin pickers redraw it; the quote line follows the amount as it's typed. */
+function exchangeForm(store: GameStore): string {
+  const s = store.state;
+  const f = store.ui.ex as { from: Coin; to: Coin; error: string };
+  const pick = (id: string, on: Coin) => `<select id="${id}">${COINS.map((c) => `<option value="${c.id}"${c.id === on ? ' selected' : ''}>${c.id}</option>`).join('')}</select>`;
+  const rate = coinRate(f.from, s.values.day) / coinRate(f.to, s.values.day);
+  return `<form class="cb-send cb-ex" data-form="cb-ex" autocomplete="off">
+    <label><span>From</span>${pick('cb-ex-from', f.from)}</label>
+    <button type="button" class="cb-btn ghost cb-flip" data-act="ex-flip" aria-label="Swap coins">⇄</button>
+    <label><span>To</span>${pick('cb-ex-to', f.to)}</label>
+    <label class="cb-amt"><span>Amount</span><input id="cb-ex-amount" name="amount" inputmode="decimal" placeholder="0.00"><small>${f.from}</small></label>
+    <button type="button" class="cb-btn ghost cb-max" data-act="ex-max">Max</button>
+    <p class="cb-ex-rate">${rate < 0.001 ? `1M ${f.from} = ${(rate * 1e6).toLocaleString('en-US', { maximumFractionDigits: 4 })}` : `1 ${f.from} = ${rate.toLocaleString('en-US', { maximumFractionDigits: 4 })}`} ${f.to} · today's rate</p>
+    <div class="cb-send-row">
+      ${f.error ? `<p class="cb-err" role="alert">${esc(f.error)}</p>` : '<p class="cb-hint" id="cb-ex-quote"></p>'}
+      <button type="button" class="cb-btn ghost" data-act="ex-cancel">Cancel</button><button type="submit" class="cb-btn primary">Exchange</button>
+    </div>
+  </form>`;
+}
+
+/** An asset row: holdings, today's rate and move, and its share of the wallet's worth. */
+function assetRow(s: GameStore['state'], c: Coin, total: number): string {
+  const held = coinHeld(s, c);
+  const day = s.values.day;
+  const r = coinRate(c, day), prev = coinRate(c, day - 1);
+  const move = c === 'DOLR' ? '' : ` · <em class="${r >= prev ? 'pos' : 'neg'}">${r >= prev ? '+' : '−'}${Math.abs((r / prev - 1) * 100).toFixed(1)}%</em>`;
+  const name = COINS.find((x) => x.id === c)!.name;
+  const worth = held * r;
+  return `<div class="cb-row"><span class="cb-asset"><i class="cb-tok">${COIN_ICON[c]}</i><span><b>${c}</b><small>${name} · ${c === 'DOLR' ? '$1.00' : `${fmtRate(r)} DOLR`}${move}</small></span></span><span class="cb-alloc"><i style="width:${Math.max(held > 0 ? 0.5 : 0, Math.max(0, worth) / total * 100).toFixed(1)}%"></i></span><span class="cb-num">${fmtCoin(c, held)}${c === 'DOLR' ? '' : `<small>≈ ${worth.toFixed(2)} DOLR</small>`}</span></div>`;
+}
+
 export function pageWallet(store: GameStore): string {
   const s = store.state;
   const txs = s.tx;
@@ -129,11 +190,15 @@ export function pageWallet(store: GameStore): string {
   const ops = [...groups.entries()].map(([day, list]) => `<div class="cb-day"><span>${esc(dateMedium(day))}</span><span>${day === s.values.day ? 'Today' : ''}</span></div>` + list.map((x) => {
     const out = x.amount < 0;
     const [who, note] = x.memo.split(' · ');
+    const swap = who === 'Coinbin Exchange';
+    // a swap between two other coins moves no DOLR: show what came in
+    const got = (note.split(' → ')[1] ?? '').split(' ');
+    const amt = swap && !x.amount ? `+${esc(got[0])}<small>${esc(got[1] ?? '')}</small>` : `${out ? '−' : '+'}${Math.abs(x.amount).toFixed(2)}<small>DOLR</small>`;
     return `<div class="cb-op">
-      <span class="cb-op-ico ${out ? 'out' : 'in'}" aria-hidden="true">${out ? '↑' : '↓'}</span>
+      <span class="cb-op-ico ${swap ? 'swap' : out ? 'out' : 'in'}" aria-hidden="true">${swap ? '⇄' : out ? '↑' : '↓'}</span>
       <span class="cb-op-what"><b>${esc(who)}</b><small>${esc(note || (out ? 'Sent' : 'Received'))}</small></span>
       <code class="cb-op-hash">${txHash(x)}</code>
-      <span class="cb-op-amt ${out ? '' : 'pos'}">${out ? '−' : '+'}${Math.abs(x.amount).toFixed(2)}<small>DOLR</small></span>
+      <span class="cb-op-amt ${out ? '' : 'pos'}">${amt}</span>
     </div>`;
   }).join('')).join('');
 
@@ -145,7 +210,7 @@ export function pageWallet(store: GameStore): string {
     `<div class="cb-row"><span><b>agent subscription</b><small>GeneralAI · nightly</small></span><span class="cb-num">−${sub.toFixed(2)}</span></div>`,
     live ? `<div class="cb-row"><span><b>Hosting</b><small>Forkyard · ${live} live · nightly</small></span><span class="cb-num">−${(live * 2).toFixed(2)}</span></div>` : '',
   ].join('');
-  const total = s.values.crypto + 0.42;
+  const total = COINS.reduce((a, c) => a + Math.max(0, coinHeld(s, c.id) * coinRate(c.id, s.values.day)), 0) || 1;
   const tabs = Object.keys(RANGES).map((r) => `<button class="cb-tab${r === range ? ' on' : ''}" data-wl-range="${r}">${r}</button>`).join('');
   return `<div class="cb">
     <header class="cb-top">
@@ -163,19 +228,19 @@ export function pageWallet(store: GameStore): string {
             <p class="cb-chg ${up ? 'pos' : 'neg'}">${up ? '+' : '−'}${Math.abs(change).toFixed(2)} (${up ? '+' : '−'}${Math.abs(pct).toFixed(1)}%) <span>${range === 'All' ? 'all time' : `past ${range === '1W' ? 'week' : 'month'}`}</span></p>
           </div>
           <div class="cb-side">
-            <div class="cb-actions"><button class="cb-btn${store.ui.send.open ? ' on' : ''}" data-act="send">Send</button><button class="cb-btn" data-act="receive">Receive</button></div>
+            <div class="cb-actions"><button class="cb-btn${store.ui.send.open ? ' on' : ''}" data-act="send">Send</button><button class="cb-btn" data-act="receive">Receive</button><button class="cb-btn${store.ui.ex.open ? ' on' : ''}" data-act="exchange">Exchange</button></div>
             ${store.ui.cbNotice && !store.ui.cbNotice.startsWith('Recovery') ? `<p class="cb-notice" role="status">${esc(store.ui.cbNotice)}</p>` : ''}
             <div class="cb-tabs" role="tablist" aria-label="Range">${tabs}</div>
           </div>
         </div>
         ${store.ui.send.open ? sendForm(store) : ''}
+        ${store.ui.ex.open ? exchangeForm(store) : ''}
         ${balanceChart(window)}
         <div class="cb-axis"><span>${esc(dateShort(Math.floor(window[0].t)))}</span><span>${esc(dateShort(s.values.day))}</span></div>
       </section>
       <div class="cb-cols">
         <section class="cb-card"><h2>Assets</h2>
-          <div class="cb-row"><span class="cb-asset"><i class="cb-tok">${TOKENS.dolr}</i><span><b>DOLR</b><small>Dollar stablecoin · $1.00</small></span></span><span class="cb-alloc"><i style="width:${(Math.max(0, s.values.crypto) / total * 100).toFixed(1)}%"></i></span><span class="cb-num">${s.values.crypto.toFixed(2)}</span></div>
-          <div class="cb-row"><span class="cb-asset"><i class="cb-tok">${TOKENS.mooncat}</i><span><b>MOONCAT</b><small>4,200,000 · <em class="neg">−99.4%</em></small></span></span><span class="cb-alloc"><i style="width:${Math.max(0.5, 0.42 / total * 100).toFixed(1)}%"></i></span><span class="cb-num">0.42</span></div>
+          ${COINS.map((c) => assetRow(s, c.id, total)).join('')}
         </section>
         <section class="cb-card"><h2>Upcoming</h2>${upcoming}</section>
       </div>

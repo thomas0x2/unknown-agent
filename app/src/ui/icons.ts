@@ -49,7 +49,9 @@ export const Y_ICONS: Record<string, string> = {
     + '<g clip-path="url(#yg-clip)"><g transform="rotate(25 12 12)"><rect class="yg-glint" x="-10" y="-6" width="7" height="36" fill="url(#yg-shine)"/></g></g></svg>',
 };
 /* Token coins, full colour. No gradients or ids, so any number can share a page. */
-export const TOKENS: Record<'dolr' | 'mooncat', string> = {
+export const TOKENS: Record<'dolr' | 'mooncat' | 'euri' | 'nonero', string> = {
+  euri: '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="#1f4fb8"/><circle cx="16" cy="16" r="12.6" fill="none" stroke="#c4d4fb" stroke-opacity=".45" stroke-width="1"/><path d="M21.2 10.4a6.6 6.6 0 1 0 0 11.2" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><path d="M8.6 14.2h8.4M8.6 17.8h8.4" stroke="#ffd34d" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  nonero: '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="#f26822"/><path d="M2.4 21.5h27.2A16 16 0 0 1 2.4 21.5z" fill="#4c4c4c"/><path d="M10.5 18.5V9.5l11 9V9.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/></svg>',
   dolr: '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="#17b26a"/><circle cx="16" cy="16" r="12.6" fill="none" stroke="#c9f7df" stroke-opacity=".45" stroke-width="1"/><path d="M12.6 9.6h3.6a6.4 6.4 0 0 1 0 12.8h-3.6z" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/><path d="M9.6 16h6M13.8 6.6v3M13.8 22.4v3" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>',
   mooncat: '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="#3b2a63"/><circle cx="16" cy="16" r="12.6" fill="none" stroke="#c7b6f2" stroke-opacity=".35" stroke-width="1"/><path d="M8.7 15.2 8.9 7.6l4.4 3.6a7.6 7.6 0 0 1 5.4 0l4.4-3.6.2 7.6A7.6 7.6 0 1 1 8.7 15.2z" fill="#f5d77a"/><circle cx="20.6" cy="18.4" r="6.2" fill="#3b2a63"/><path d="M11.6 15.9q1.1-1 2.2 0" fill="none" stroke="#3b2a63" stroke-width="1.3" stroke-linecap="round"/></svg>',
 };
