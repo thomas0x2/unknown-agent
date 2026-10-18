@@ -17,8 +17,7 @@ function logan(): { s: GameState; id: string } {
   const id = registerApp(s, {
     template: 'startup', kind: 'client', name: 'WorkAgent', clientEventId: 'logan_contact', payPerDay: 40,
     spec: [
-      { id: 'landing', params: { name: 'WorkAgent', pitch: 'The future of work is agentic.' } },
-      { id: 'investors', params: { investors: 'Why Combinator, Bonsai Capital, a67x' } },
+      { id: 'landing', params: { name: 'WorkAgent', pitch: 'The future of work is agentic.', investors: 'Why Combinator, Bonsai Capital, a67x' } },
       { id: 'about', params: { founder: 'Logan Pryce', credentials: 'Why Combinator Startup School, San Fortuna State dropout, host of the Founder Mode podcast, 2x founder' } },
     ],
   });
@@ -49,7 +48,7 @@ describe('complaints at payday', () => {
 
   it('a buggy client app gets a strike, no pay, and an email from the client naming the bug', () => {
     const { s, id } = logan();
-    withBug(s, id, 'investors', 'logos_broken');
+    withBug(s, id, 'landing', 'logos_broken');
     const before = s.values.crypto;
     const next = endAll(s, content);
     expect(next.apps[0].strikes).toBe(1);

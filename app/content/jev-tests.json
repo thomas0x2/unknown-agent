@@ -127,79 +127,79 @@
   {
     "app": "startup",
     "broken": [
-      "investors/logos"
+      "landing/investors/logos"
     ],
     "prompt": "WorkAgent: the investors in the backed by row are wrong",
     "expect": {
       "fix": [
-        "investors/logos"
+        "landing/investors/logos"
       ]
     }
   },
   {
     "app": "startup",
     "broken": [
-      "investors/logos"
+      "landing/investors/logos"
     ],
     "prompt": "logan's site shows Bonzai Capital in the investor logos, it's Bonsai Capital",
     "expect": {
       "fix": [
-        "investors/logos"
+        "landing/investors/logos"
       ]
     }
   },
   {
     "app": "startup",
     "broken": [
-      "investors/logos"
+      "landing/investors/logos"
     ],
     "prompt": "WorkAgent backed by row lists a fund Logan never talked to",
     "expect": {
       "fix": [
-        "investors/logos"
+        "landing/investors/logos"
       ]
     }
   },
   {
     "app": "startup",
     "broken": [
-      "investors/loading"
+      "landing/investors/loading"
     ],
     "prompt": "On the WorkAgent site the investor logos don't load, just broken images",
     "expect": {
       "fix": [
-        "investors/loading"
+        "landing/investors/loading"
       ]
     }
   },
   {
     "app": "startup",
     "broken": [
-      "investors/logos",
-      "investors/loading"
+      "landing/investors/logos",
+      "landing/investors/loading"
     ],
     "prompt": "WorkAgent investor row: wrong funds and the logo images are broken",
     "expect": {
       "fix": [
-        "investors/logos",
-        "investors/loading"
+        "landing/investors/logos",
+        "landing/investors/loading"
       ]
     }
   },
   {
     "app": "startup",
     "broken": [
-      "investors/logos"
+      "landing/investors/logos"
     ],
     "prompt": "WorkAgent, the backed by row is messed up",
     "expect": {
-      "near": "near_miss"
+      "near": "near_part"
     }
   },
   {
     "app": "startup",
     "broken": [
-      "investors/logos"
+      "landing/investors/logos"
     ],
     "prompt": "WorkAgent: the images in the backed by row don't load",
     "expect": {
@@ -209,7 +209,7 @@
   {
     "app": "startup",
     "broken": [
-      "investors/logos"
+      "landing/investors/logos"
     ],
     "prompt": "the investors are wrong",
     "expect": {

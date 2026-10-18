@@ -8,6 +8,7 @@ import { type AppInstance, type AppBreak, type BuiltFeature, breakVariant, bugsO
 import type { AppTemplate } from '../content/schema';
 import { misspell, wrongPitch, investorsShown, credentialsShown, FAKE_COFOUNDERS, waitlistStart, waitlistCount, fmtCount } from '../engine/startup';
 import { INVESTOR_LOGOS } from '../sites/investorLogos';
+import { Y_AVATARS } from './y-avatars';
 import { crawl, ledger, portfolio, tradeLog, readMood, trackedOf, START_PORTFOLIO, type Buy, type MarketPost, type Portfolio } from '../engine/crawler';
 import { payDay, STAKE } from '../engine/stake';
 import type { StakeSend } from '../engine/state';
@@ -113,7 +114,6 @@ function investorLogo(name: string, broken: boolean): string {
 
 function startup(app: AppInstance, tmpl: AppTemplate | undefined, page: string | undefined, extras: SiteExtras): string {
   const landing = live(app, tmpl, 'landing');
-  const investors = live(app, tmpl, 'investors');
   const about = live(app, tmpl, 'about');
   const waitlist = live(app, tmpl, 'waitlist');
   const hasLanding = !!landing.built;
@@ -129,21 +129,24 @@ function startup(app: AppInstance, tmpl: AppTemplate | undefined, page: string |
 
   let body: string;
   if (!page) {
-    const backed = !investors.built ? '' : outage(investors, 'the investors') ?? `<section class="as-u-backed"><p>Backed by</p>
-        <div class="as-u-logos">${investorsShown(investors).map((n) => investorLogo(n, investors.bugs.has('logos_broken'))).join('')}</div></section>`;
+    // the "Backed by" row is part of the landing page (landing/investors/ in the repo)
+    const funds = hasLanding ? investorsShown(landing) : [];
+    const backed = !funds.length ? '' : `<section class="as-u-backed"><p>Backed by</p>
+        <div class="as-u-logos">${funds.map((n) => investorLogo(n, landing.bugs.has('logos_broken'))).join('')}</div></section>`;
     body = !hasLanding
       ? `<section class="as-u-hero starter"><h1>Welcome to your new site</h1><p>Edit this page to tell visitors who you are.</p></section>`
-      : (outage(landing, 'this page') ?? `<section class="as-u-hero">
+      : outage(landing, 'this page') ?? (`<section class="as-u-hero">
           <p class="as-u-kicker">Now in stealth</p>
           <h1>${esc(pitch)}</h1>
           ${extras.waitlist ? `<a href="#" class="as-u-cta" data-nav="${esc(base)}/waitlist">Join the waitlist</a>` : ''}
-        </section>`) + backed;
+        </section>` + backed);
   } else if (page === 'about' && about.built) {
     const down = outage(about, 'the team');
     const founder = about.bugs.has('founder_wrong') ? misspell(String(about.params.founder ?? ''), about.seed) : String(about.params.founder ?? '');
     const creds = credentialsShown(about).map((c) => `<li>${esc(c)}</li>`).join('');
-    const person = (n: string, role: string, extra: string, ai = false) => `<article class="as-u-person${ai ? ' ai' : ''}"><span class="as-u-face" aria-hidden="true">${esc(initials(n))}</span><div><h2>${esc(n)}</h2><p class="as-u-role">${esc(role)}</p>${extra}</div></article>`;
-    const team = [person(founder, 'Founder & CEO', `<ul class="as-u-creds">${creds}</ul>`),
+    // Logan uses his Y picture; the cofounders the agent made up get initials
+    const person = (n: string, role: string, extra: string, ai = false, face = '') => `<article class="as-u-person${ai ? ' ai' : ''}"><span class="as-u-face${face ? ' pic' : ''}" aria-hidden="true">${face || esc(initials(n))}</span><div><h2>${esc(n)}</h2><p class="as-u-role">${esc(role)}</p>${extra}</div></article>`;
+    const team = [person(founder, 'Founder & CEO', `<ul class="as-u-creds">${creds}</ul>`, false, Y_AVATARS.logan_ships),
       ...(about.bugs.has('fake_cofounders') ? FAKE_COFOUNDERS.map((c) => person(c.name, c.role, `<p class="as-u-bio">${esc(c.bio)}</p>`, true)) : [])].join('');
     body = `<section class="as-u-about"><h1>About us</h1>${down ?? `<p class="as-u-lead">We're building the future of work.</p><div class="as-u-team">${team}</div>`}</section>`;
   } else if (page === 'waitlist' && extras.waitlist) {

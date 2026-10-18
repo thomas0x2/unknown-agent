@@ -159,8 +159,10 @@ export interface FeatureDef {
   id: string;
   /** Plain-language description a client spec refers to, e.g. "prices shown in CHF". */
   description: string;
-  /** What the player sees it called (its Forkyard folder, the agent's replies, Jev's questions) when that isn't the id. */
+  /** What the player sees it called (the agent's replies, Jev's questions) when that isn't the id. */
   name?: string;
+  /** Its folder on Forkyard when that isn't `name` (a repo-style "landing" for the "landing page"). */
+  folder?: string;
   /** Other common names for the feature that count as naming it ("home page" for the landing). */
   aka?: string[];
   /** The same for each folder of its components, by folder path ("confirmation email" for confirmation). */
