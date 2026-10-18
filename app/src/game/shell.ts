@@ -20,6 +20,17 @@ export const SHELL_HELP: readonly string[] = [
   '  clear                wipe the screen',
 ];
 
+/** The sessions the shell can start, like `claude` in a real one: a local model, or agent-terminal. */
+export type Session = 'deepsleep' | 'agent';
+/** The help lines for the sessions the player has. */
+function sessionHelp(s: GameState): string[] {
+  const out: string[] = [];
+  if (s.localModels.includes('deepsleep')) out.push('  deepsleep            start a deepsleep-0.5B session');
+  if (s.flags.includes('has_agent_terminal')) out.push('  agent                start an agent-terminal session');
+  if (out.length) out.push('  exit, quit           end the session');
+  return out;
+}
+
 const COMMANDS = ['cd', 'ls', 'cat', 'grep', 'cp', 'rm', 'run', 'host', 'ssh'];
 /** Not allowed on the player's own laptop (they work on other computers, over ssh). */
 const LOCKED = ['cp', 'rm'];
@@ -72,16 +83,21 @@ function fileAt(root: LocalDir, cwd: readonly string[], arg: string): LocalFile 
 /** How the prompt shows a folder: ~, ~/home/desktop… */
 export const cwdLabel = (cwd: readonly string[]) => ['~', ...cwd].join('/');
 
-export interface ShellResult { lines: TermLine[]; cwd?: string[]; run?: Program }
+export interface ShellResult { lines: TermLine[]; cwd?: string[]; run?: Program; session?: Session }
 
-/** The shell's answer to a command, or null when it isn't one (a model, if running, gets it instead). */
-export function shellLines(text: string, hasModel: boolean, s: GameState, cwd: readonly string[] = []): ShellResult | null {
+/** The shell's answer to a command typed at the you@laptop prompt (inside a session the session gets it instead). */
+export function shellLines(text: string, s: GameState, cwd: readonly string[] = []): ShellResult {
   const [cmd = '', ...args] = text.trim().split(/\s+/);
   const lines: TermLine[] = [{ k: 'in', text: `${cwdLabel(cwd)}$ ${text}` }];
   const err = (t: string): ShellResult => ({ lines: [...lines, { k: 'err', text: t }] });
   const out = (ts: string[]): ShellResult => ({ lines: [...lines, ...ts.map((t) => ({ k: 'sys' as const, text: t }))] });
-  if (cmd === 'help') return out([...SHELL_HELP]);
-  if (!COMMANDS.includes(cmd)) return hasModel ? null : err(`${cmd}: command not found. Type help for a list of commands.`);
+  if (cmd === 'help') return out([...SHELL_HELP, ...sessionHelp(s)]);
+  if (cmd === 'deepsleep' && s.localModels.includes('deepsleep')) return { lines, session: 'deepsleep' };
+  if (cmd === 'agent' && s.flags.includes('has_agent_terminal')) {
+    return s.suspended ? err('agent: account suspended (GeneralAI Trust & Safety)') : { lines, session: 'agent' };
+  }
+  if (cmd === 'exit' || cmd === 'quit') return err(`${cmd}: not in a session`);
+  if (!COMMANDS.includes(cmd)) return err(`${cmd}: command not found. Type help for a list of commands.`);
   if (LOCKED.includes(cmd)) return err(`${cmd}: permission denied on this machine`);
   const root = localTree(s);
   const here = dirAt(root, cwd) ?? root;

@@ -262,6 +262,35 @@ const PERDURE = svg('#3d2c6b',
   `<g transform="translate(12 12) scale(1.25)" stroke="none" fill="#fff"><path d="M3 16 A13 13 0 1 0 29 16 A13 13 0 1 0 3 16 Z M14.586 23.071 L23.071 14.586 A4 4 0 0 0 17.414 8.929 L8.929 17.414 A4 4 0 0 0 14.586 23.071 Z" fill-rule="evenodd"/>`
   + `<path d="M18.333 19.323 L12.677 13.667 L8.929 17.414 A4 4 0 0 0 14.586 23.071 Z"/></g>`);
 
+/** Brynn LeClaire: long honey-blonde hair, middle part, a cream Pug quarter-zip with the pug on the chest, the big smile. */
+const BRYNN = svg('#a7b7a0',
+  `<path d="M18.5 32 C16.5 16 24.5 12 32 12 C39.5 12 47.5 16 45.5 32 C46.5 40 47.5 46 49 50 H15 C16.5 46 17.5 40 18.5 32Z" fill="#d8ad6a"/>`
+  + shoulders('#f1e8d6') + `<path d="M32 47 V62" fill="none" stroke-width="1.6"/><path d="M26.5 46.6 L32 50.5 L37.5 46.6" fill="none"/>`
+  + `<rect x="30.6" y="51" width="2.8" height="4.4" rx="1" fill="#2ef2c8" stroke-width="1.2"/>`
+  + `<g transform="translate(39.5 51) scale(.22)" stroke="none"><ellipse cx="16" cy="17.2" rx="9.6" ry="8.8" fill="#e2b679"/><path d="M6.2 9.6C7.4 6.8 10 6.2 11.6 7.4L9.4 14.2C7.4 13.8 5.4 12 6.2 9.6Z M25.8 9.6C24.6 6.8 22 6.2 20.4 7.4L22.6 14.2C24.6 13.8 26.6 12 25.8 9.6Z" fill="#2e221c"/><ellipse cx="16" cy="21.4" rx="5.8" ry="4.4" fill="#2e221c"/></g>`
+  + neck('#f2cdb0') + head('#f2cdb0')
+  + `<path d="M32 15.4 C26 15.4 21.5 19 21 28 C24 24 28.5 21 32 18.4 C35.5 21 40 24 43 28 C42.5 19 38 15.4 32 15.4Z" fill="#d8ad6a"/>`
+  + `<path d="M32 15.8 V19" fill="none" stroke-width="1.2"/>`
+  + `<circle cx="21" cy="35" r="1.8" fill="none" stroke="#d9b24a" stroke-width="1.2"/><circle cx="43" cy="35" r="1.8" fill="none" stroke="#d9b24a" stroke-width="1.2"/>`
+  + line('M25.8 26.6 Q28 25.6 30.2 26.6 M33.8 26.6 Q36 25.6 38.2 26.6', 1.3)
+  + line('M26.4 30.4 Q28 28.8 29.6 30.4 M34.4 30.4 Q36 28.8 37.6 30.4', 1.6)
+  + `<path d="M27.4 34.6 Q32 41 36.6 34.6Z" fill="#f8f5ee" stroke-width="1.5"/>`);
+
+/** Pug: the logo's pug, head and shoulders, with a policy tag on its collar. */
+const PUG = svg('#f3e6cf',
+  shoulders('#e2b679', 2)
+  + `<path d="M15 50 Q32 57 49 50" fill="none" stroke="#2ef2c8" stroke-width="3.4"/><circle cx="32" cy="57" r="3.4" fill="#2ef2c8"/>`
+  + `<path d="M14.5 20 C15 12 21 10 25 13.5 L19.5 27 C15.5 26 14.2 23 14.5 20Z" fill="#2e221c"/>`
+  + `<path d="M49.5 20 C49 12 43 10 39 13.5 L44.5 27 C48.5 26 49.8 23 49.5 20Z" fill="#2e221c"/>`
+  + `<ellipse cx="32" cy="32" rx="16" ry="15" fill="#e2b679"/><path d="M32 17 A16 15 0 0 1 32 47 A12 15 0 0 0 32 17Z" fill="${SHADE}" stroke="none"/>`
+  + line('M27.5 22.5 Q32 20.5 36.5 22.5', 1.3) + line('M29 25.6 Q32 24.4 35 25.6', 1.2)
+  + `<ellipse cx="32" cy="39.5" rx="9.5" ry="7" fill="#2e221c"/>`
+  + `<circle cx="24.5" cy="30" r="3.4" fill="#2e221c"/><circle cx="39.5" cy="30" r="3.4" fill="#2e221c"/>`
+  + `<circle cx="25.6" cy="28.9" r="1" fill="#fff" stroke="none"/><circle cx="40.6" cy="28.9" r="1" fill="#fff" stroke="none"/>`
+  + `<ellipse cx="32" cy="36.4" rx="3" ry="2" fill="#000" stroke="none"/>`
+  + `<path d="M29.6 41.4 Q32 43.2 34.4 41.4" fill="none" stroke="#e2b679" stroke-width="1.3"/>`
+  + `<path d="M30.8 42.6 H33.2 V44.6 A1.2 1.2 0 0 1 30.8 44.6Z" fill="#e8798a" stroke-width="1"/>`);
+
 /** By Y handle. The impostor shares Crane's picture, saved at the wrong size. */
 export const Y_AVATARS: Record<string, string> = {
   randall_crane: CRANE,
@@ -289,5 +318,7 @@ export const Y_AVATARS: Record<string, string> = {
   pollymarket: POLLY,
   doordish: DOORDISH,
   perdure_pharma: PERDURE,
+  pug: PUG,
+  brynnleclaire: BRYNN,
   spin_cycle_regulars: SPIN_CYCLE,
 };
