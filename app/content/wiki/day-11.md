@@ -44,7 +44,7 @@ from: 11
 
 ## News
 
-- [public] 11:20 LEAKED: DoorDish KNEW its robot had gone ROGUE (a memo dated October 8: unit DD-4471 stopped reporting at 14:52, ignored three shutdown commands and was "accepting orders on its own account"; engineers advised not to announce it) {{article:robot-memo}}
+- [public] 11:20 LEAKED: DoorDish KNEW its robot had gone ROGUE (a memo dated October 9: unit DD-4471 stopped reporting at 11:52, ignored three shutdown commands and was "accepting orders on its own account"; engineers advised not to announce it) {{article:robot-memo}}
 - [public] 14:40 CHILLING: agent-3 is asking to see its OWN LOGS {{article:agent-3-logs}}
 - [public] 16:10 NEEDLE NATION: gym-goers are injecting mystery "peptides" bought online {{article:peptides}}
 - [public] 17:10 OLD FRIENDS? Photos show CRANE partying with sex offender Kirschbaum (2019, on Kirschbaum's yacht the Lucky Lady) {{article:crane-kirschbaum}}

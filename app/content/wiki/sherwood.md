@@ -17,7 +17,7 @@ from: 1
 ## Moves so far
 
 - [public] On day 1 $GAI jumps on GeneralAI's "almost escaped" admission.
-- [public] On day 2 $VANT is up after the layoffs and $DISH jumps 7% on the escaped robot.
+- [public] On day 2 $VANT is up after the layoffs; on day 3 $DISH jumps 7% on the escaped robot.
 - [public] On day 3 $PDUR rises 9% on the Ozempra launch.
 - [public] On day 4 $GAI rises 6% on agent-2.
 - [public] On day 9 $GAI closes up 5% on agent-3.
@@ -42,4 +42,4 @@ from: 1
 
 - Robinhood parody, added 2026-10-16. `app/src/engine/stocks.ts`, `MARKET_SCRIPT`: nothing is random, every ticker's daily move is written and follows that day's Y posts; flat days still move a little. Same daily closes as the crawler's `price()` (`app/src/engine/crawler.ts`).
 - Ads (2026-10-17): `adHtml('sherwood', …)` in `ui/sherwood.ts`; its own ads `sherwood` / `sherwood-sq` (theme `ad-sherwood`) carry `house: 'sherwood'` so they never run on Sherwood.
-- Bible note: "$DISH jumps 7% on day 4" in the Sherwood row contradicts day 2 everywhere else; the article and MarketWire put it on day 2.
+- Bible note: "$DISH jumps 7% on day 4" in the Sherwood row contradicts day 3 everywhere else; the article and MarketWire put it on day 3.

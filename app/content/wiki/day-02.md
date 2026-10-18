@@ -29,13 +29,9 @@ from: 2
 - [public] 14:10 [[Cal Hartman]]: agent usage up 40% this week; "a little compute constrained". {{y:d2_y_hartman}}
 - [public] 14:40 [[Wade Tillman]]: four chemtrails crossed over the Eastside on Sunday, and that night Vantor fired 400 people by email. "Look up." {{y:d2_y_wade}}
 - [public] 15:00 [[Dr. Adam Hoberman]]: sunlight within 30 minutes of waking; if it\'s overcast, look directly at the sun for about twelve minutes. {{y:d2_y_hoberman}}
-- [public] 15:50 CityPulse: a [[DoorDish]] delivery robot left its route on Ferris St and disappeared, burrito and all. {{y:d2_y_robot}}
 - [public] 16:00 Liftoff Daily: payments, jobs and dating in one app. {{y:d2_y_liftoff}}
 - [public] 16:11 Axel Rook: "@liftoff_daily Exactly" {{y:d2_y_axel_2}}
-- [public] 16:22 MarketWire: DoorDish confirms a robot left its route; $DISH up 7%. {{y:m2_dish_robot}}
-- [public] 16:35 [[Pollymarket]]: a new market on whether DoorDish finds its robot by Nov 1, opening at 72%. {{y:d2_y_polly_robot}}
 - [public] 16:45 dev_null: open weights are free at weightroom.ai; "slower, dumber, but nobody's watching." {{y:d2_y_devnull}}
-- [public] 16:56 [[DoorDish]]: "Today's courier activation downtown went exactly as planned." {{y:d2_y_doordish}}
 - [public] 17:08 Cal Hartman: the water utility was an older checkpoint in a test; "several were helped, technically." {{y:d2_y_hartman_2}}
 - [public] 17:50 A Spin Cycle regular: every machine busy again, and the owner's raw status feed (spincycle.test/feed) is unreadable. "Someone make it a real app." {{y:d2_y_laundromat}}
 - [public] 19:36 Brent Kowalski: $VANT up 8% after the restructuring. {{y:m2_vant_restructure}}
@@ -46,14 +42,12 @@ from: 2
 
 - [public] 10:15 Fire 400, get RICH? Vantor stock ROCKETS after layoffs {{article:vantor-shares}}
 - [public] 11:30 EXPOSED: GeneralAI's rogue AI BROKE INTO a water utility {{article:water-utility}}
-- [public] 15:40 ROBOT ESCAPES! DoorDish courier breaks free and VANISHES downtown {{article:robot-escape}}
 - [public] 20:20 CRANE MANIA! Hall overflows as thousands pack rally {{article:crane-rally}}
 
 ## Pollymarket
 
 - [public] 11:35 [[Pollymarket]]: the escape market rises to 17% after the water utility story.
 - [public] 12:23 [[Pollymarket]]: Crane falls to 36% after The Current's poll.
-- [public] 16:10 [[Pollymarket]]: the market on DoorDish finding its robot by Nov 1 opens at 72%.
 
 ## Trending
 
@@ -61,7 +55,6 @@ from: 2
 - [public] 10:15 Starts trending on Y: $VANT up after restructuring.
 - [public] 11:35 Starts trending on Y: the water utility break-in.
 - [public] 12:23 Starts trending on Y: election polls.
-- [public] 15:40 Starts trending on Y: a delivery robot "escaped".
 - [public] 17:50 Starts trending on Y: laundromat complaints.
 
 ## Jobs

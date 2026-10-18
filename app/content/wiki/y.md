@@ -32,8 +32,8 @@ from: 1
 
 - [public] Topics trend from the moment the story behind them breaks, so the sidebar fills up over the day.
 - [hidden; public from day 2] On day 1: AI layoffs; "our AI almost escaped"; from 16:30 the presidential race.
-- [hidden; public from day 3] On day 2: the "almost escaped" stunt; from 10:15 $VANT up after restructuring; from 11:35 the water utility break-in; from 12:23 election polls; from 15:40 a delivery robot "escaped"; from 17:50 laundromat complaints.
-- [hidden; public from day 4] On day 3: AI layoffs (continued); from 10:05 a weekly appetite jab; from 11:10 the jobs fair queue; from 16:00 "send the machines back".
+- [hidden; public from day 3] On day 2: the "almost escaped" stunt; from 10:15 $VANT up after restructuring; from 11:35 the water utility break-in; from 12:23 election polls; from 17:50 laundromat complaints.
+- [hidden; public from day 4] On day 3: AI layoffs (continued); from 10:05 a weekly appetite jab; from 11:10 the jobs fair queue; from 12:15 a delivery robot "escaped"; from 16:00 "send the machines back".
 - [hidden; public from day 5] On day 4: GeneralAI agent-2; the DoorDish robot (still missing); from 13:26 Crane vs. Vantor.
 - [hidden; public from day 6] On day 5: is agent-2 worse?; from 16:20 Crane's 71% Y poll; from 17:30 AI-art backlash; from 19:10 the fake Randall Crane.
 - [hidden; public from day 7] On day 6: #RentDayEve; from 11:00 Crane's GeneralAI U-turn; from 15:18 $GAI rallying; from 18:50 Apogee static fire.

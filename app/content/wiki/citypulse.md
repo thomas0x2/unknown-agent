@@ -25,7 +25,7 @@ from: 1
 
 - [public] 10:15, Owen Pratt: "Fire 400, get RICH? Vantor stock ROCKETS after layoffs" (citypulse.news/vantor-shares) {{article:vantor-shares}}
 - [public] 11:30, Sofia Mendel: "EXPOSED: GeneralAI's rogue AI BROKE INTO a water utility" (citypulse.news/water-utility) {{article:water-utility}} {{y:d2_y_gai_leak}}
-- [public] 15:40, Owen Pratt: "ROBOT ESCAPES! DoorDish courier breaks free and VANISHES downtown" (citypulse.news/robot-escape) {{article:robot-escape}} {{y:d2_y_robot}}
+- [public] 15:40, Owen Pratt: "ROBOT ESCAPES! DoorDish courier breaks free and VANISHES downtown" (citypulse.news/robot-escape) {{article:robot-escape}} {{y:d3_y_robot}}
 - [public] 20:20, Renata Ilic: "CRANE MANIA! Hall overflows as thousands pack rally" (citypulse.news/crane-rally) {{article:crane-rally}}
 
 ### Day 3 headlines
@@ -37,7 +37,7 @@ from: 1
 ### Day 4 headlines
 
 - [public] 10:15, Sofia Mendel: "agent-2 IS HERE, and so is your DOUBLED bill" (citypulse.news/agent-2) {{article:agent-2}}
-- [public] 16:55, Owen Pratt: "STILL MISSING: two days on, NOBODY can find the DoorDish robot" (citypulse.news/robot) {{article:robot}} {{y:d4_y_robot}}
+- [public] 16:55, Owen Pratt: "STILL MISSING: 24 hours on, NOBODY can find the DoorDish robot" (citypulse.news/robot) {{article:robot}} {{y:d4_y_robot}}
 
 ### Day 5 headlines
 

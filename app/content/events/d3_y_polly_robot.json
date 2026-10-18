@@ -1,11 +1,11 @@
 {
-  "id": "d2_y_polly_robot",
+  "id": "d3_y_polly_robot",
   "site": "y",
   "from": "Pollymarket",
   "trigger": {
-    "dayMin": 2,
-    "dayMax": 2
+    "dayMin": 3,
+    "dayMax": 3
   },
-  "at": "16:35",
+  "at": "14:00",
   "body": "New market: Will DoorDish find its missing delivery robot by Nov 1? It opened at 72%. pollymarket.com/doordish-robot"
 }

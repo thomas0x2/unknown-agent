@@ -1,0 +1,11 @@
+{
+  "id": "d4_y_doordish_promoted",
+  "site": "y",
+  "from": "DoorDish",
+  "trigger": {
+    "dayMin": 4,
+    "dayMax": 4
+  },
+  "at": "11:00",
+  "body": "Good news: the courier from yesterday's activation has been promoted. We're proud of where it's headed."
+}
