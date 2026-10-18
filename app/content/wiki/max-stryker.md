@@ -15,11 +15,10 @@ from: 1
 
 ## The EMPIRE offer and newsletter
 
-[public] On [[Day 1]] (14:15) he emails "You were BORN for more": EMPIRE is 200 DOLR, "For you, today only, 20 DOLR. Reply EMPIRE to claim it." {{mail:d1_guru}}
+[public] On [[Day 2]] (14:15) he emails "You were BORN for more": EMPIRE is 200 DOLR, "For you, today only, 20 DOLR. Reply EMPIRE to claim it." {{mail:d2_guru}}
 
 - [public] [if guru_subscriber] The player bought EMPIRE. Every morning at 10:00 a "Your daily EMPIRE" newsletter arrives with one piece of advice and "Reply EMPIRE to double down." Replying EMPIRE gets "Commitment logged."
-- [public] Day 2 issue: sell your mattress, because a man who sleeps comfortably has already decided to fail. {{mail:guru_newsletter@2}}
-- [public] Day 3 issue: brush your teeth with your left hand to build new pathways to new money. {{mail:guru_newsletter@3}}
+- [public] Day 3 issue: sell your mattress, because a man who sleeps comfortably has already decided to fail. {{mail:guru_newsletter@3}}
 - [public] Day 4 issue: drink your coffee cold, because comfort is a tax on ambition. {{mail:guru_newsletter@4}}
 - [public] Day 5 issue: no cold plunge at home, so fill the sink and put your face in it. {{mail:guru_newsletter@5}}
 - [public] On day 5 the regular issue went out with every subscriber in CC instead of BCC: 28 addresses, among them 6ft_sigma@qmail.com, from a course that claims 41,000 members. {{mail:guru_newsletter@5}}
@@ -148,7 +147,7 @@ from: 1
 
 ## Writer notes
 
-- Persona `max` (scripted "Commitment logged." on EMPIRE replies); events `dN_y_stryker_2` (dating advice, odd days 5 to 15, each answered by `dN_y_sigma`), `d1_guru` (interested reply: the 20 DOLR price "goes back to 200, as it has every midnight since launch"), `guru_newsletter` (27 bodies, one per day 2 to 28, mattress first; embed one issue as `mail:guru_newsletter@N` in double braces; `special` gives the first issue on or after day 5 a `cc` of 28 addresses incl. [[6ft_sigma]] and sets `guru_cc_leak`; a player who subscribes later gets the leak in their first issue), `dN_y_stryker_stack` (paid Stack posts, days 3, 6, 14, 18; see [[Stack]]), `dN_y_stryker`. EMPIRE page and `EMPIRE` constant in engine/actions/clicks.ts.
+- Persona `max` (scripted "Commitment logged." on EMPIRE replies); events `dN_y_stryker_2` (dating advice, odd days 5 to 15, each answered by `dN_y_sigma`), `d2_guru` (interested reply: the 20 DOLR price "goes back to 200, as it has every midnight since launch"), `guru_newsletter` (27 bodies, one per day 2 to 28; the first anyone gets is day 3's, the mattress; embed one issue as `mail:guru_newsletter@N` in double braces; `special` gives the first issue on or after day 5 a `cc` of 28 addresses incl. [[6ft_sigma]] and sets `guru_cc_leak`; a player who subscribes later gets the leak in their first issue), `dN_y_stryker_stack` (paid Stack posts, days 3, 6, 14, 18; see [[Stack]]), `dN_y_stryker`. EMPIRE page and `EMPIRE` constant in engine/actions/clicks.ts.
 - Stryker Talent (Papers, Please batch 2, 2026-10-18): he is Thirstr's pimp; his creators are the ones replaced by AI (see [[Thirstr]] writer notes). Events `d10_y_stryker_thirstr`, `d16_y_stryker_thirstr`.
 - Name and Alpha Ascend are placeholders. "4am" and "EMPIRE" are his alone; ration them.
 - The guru CC leak is a planned doxing lead. The bible had him recruiting by newsletter on days 10 to 12; the game does it on Y.

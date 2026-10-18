@@ -65,12 +65,10 @@ export const SITES: SiteDef[] = [
   { id: 'sorry', base: 'sorrywriter.ai', label: 'SorryWriter', group: 'web', reachable: always },
   // Mara Vey's paper; her day 7 article lives here (ui/current.ts)
   { id: 'current', base: 'thecurrent.test', label: 'The Current', group: 'web', reachable: always },
-  // the local news site (ui/citypulse.ts); bookmarked once the player has read it
-  { id: 'citypulse', base: 'citypulse.news', label: 'CityPulse', group: 'core', reachable: always,
-    bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('citypulse')) },
-  // the prediction market (ui/pollymarket.ts): nothing to bet with; bookmarked once the player has been there
-  { id: 'pollymarket', base: 'pollymarket.com', label: 'Pollymarket', group: 'core', reachable: always,
-    bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('pollymarket')) },
+  // the local news site (ui/citypulse.ts); not job-relevant, so never bookmarked
+  { id: 'citypulse', base: 'citypulse.news', label: 'CityPulse', group: 'web', reachable: always },
+  // the prediction market (ui/pollymarket.ts): nothing to bet with; not job-relevant, so never bookmarked
+  { id: 'pollymarket', base: 'pollymarket.com', label: 'Pollymarket', group: 'web', reachable: always },
   // the crypto casino (engine/casino.ts, ui/stack.ts); its ads and Max Stryker's posts link it
   { id: 'stack', base: 'stack.com', label: 'Stack', group: 'core', reachable: always,
     bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('stack')) },
@@ -116,5 +114,26 @@ export function route(url: string, s: GameState): Route {
   return { site: 'notfound', reachable: false };
 }
 
-export const bookmarks = (s: GameState): SiteDef[] =>
+/** Sites that earn a bookmark right now. */
+const bookmarkable = (s: GameState): SiteDef[] =>
   SITES.filter((d) => d.group !== 'web' && d.reachable(s) && (!d.bookmarkAfterVisit || d.bookmarkAfterVisit(s)));
+
+/**
+ * Record newly bookmarkable sites at the end of `s.bookmarkOrder`, so the bar grows in the order the
+ * player finds things. Several found at once (and an old save's first call) go in SITES order.
+ * Returns whether anything was added.
+ */
+export function noteBookmarks(s: GameState): boolean {
+  const order = (s.bookmarkOrder ??= []);
+  const fresh = bookmarkable(s).filter((d) => !order.includes(d.id));
+  order.push(...fresh.map((d) => d.id));
+  return fresh.length > 0;
+}
+
+/** The bookmarks bar: discovered sites in the order they were found, then any not recorded yet. */
+export function bookmarks(s: GameState): SiteDef[] {
+  const now = bookmarkable(s);
+  const order = s.bookmarkOrder ?? [];
+  const rank = (d: SiteDef) => { const i = order.indexOf(d.id); return i < 0 ? order.length + SITES.indexOf(d) : i; };
+  return [...now].sort((a, b) => rank(a) - rank(b));
+}

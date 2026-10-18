@@ -11,7 +11,7 @@ from: 1
 
 ## citypulse.news
 
-[public] Reachable from the start (its ad, links on Y, the address bar) and bookmarked after the first visit. The front page lists every article published so far, newest first: a lead story, four cards, an "Earlier" list and a "Most read" sidebar that always keeps the escaped DoorDish robot. Anything from today is tagged BREAKING. Each article sits at citypulse.news/ followed by its slug and has a flat drawing, no photos; a slug that isn't up yet shows "Story not found". Articles go up at their own time on their day, never early, and CityPulse's Y post linking each one follows a few minutes later. Its banner ad always promotes the newest article that has an ad.
+[public] Reachable from the start (its ad, links on Y, the address bar); it is never bookmarked. The front page lists every article published so far, newest first: a lead story, four cards, an "Earlier" list and a "Most read" sidebar that always keeps the escaped DoorDish robot. Anything from today is tagged BREAKING. Each article sits at citypulse.news/ followed by its slug and has a flat drawing, no photos; a slug that isn't up yet shows "Story not found". Articles go up at their own time on their day, never early, and CityPulse's Y post linking each one follows a few minutes later. Its banner ad always promotes the newest article that has an ad.
 
 ## Headlines
 

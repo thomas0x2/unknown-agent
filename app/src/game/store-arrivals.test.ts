@@ -11,7 +11,7 @@ describe('arrivals over the day', () => {
     const s = make();
     const heard: Arrival[] = [];
     s.onArrival((a) => heard.push(a));
-    s.passMinutes(80); // 10:00 to 11:20: Mom writes, Logan's lead goes up on Y
+    s.passMinutes(140); // 10:00 to 12:20: Gary and Mom write, Logan's lead goes up on Y
     expect(s.state.delivered.some((d) => d.eventId === 'd1_mom')).toBe(true);
     expect(heard.reduce((n, a) => n + a.mail, 0)).toBeGreaterThanOrEqual(2);
     expect(heard.reduce((n, a) => n + a.posts, 0)).toBeGreaterThanOrEqual(1);
