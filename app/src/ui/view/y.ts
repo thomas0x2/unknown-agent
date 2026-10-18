@@ -59,7 +59,9 @@ function yPostHtml(store: GameStore, p: YPost): string {
   const reposted = !!store.ui.reposted[p.id];
   const likes = p.likes + (liked ? 1 : 0);
   const reposts = Math.round(p.likes * 0.14) + (reposted ? 1 : 0);
-  const text = linkify(esc(p.text).replace(/(^|[^&\w])(#[a-z][a-z0-9_]*)/gi, '$1<span class="y-at">$2</span>'));
+  const text = linkify(esc(p.text)
+    .replace(/(^|[^&\w])(#[a-z][a-z0-9_]*)/gi, '$1<span class="y-at">$2</span>')
+    .replace(/(^|[^\w$])(\$[A-Z]{2,5})(?![\w])/g, '$1<span class="y-cash">$2</span>'));
   const prof = `y.com/${esc(p.handle)}`;
   // a bot post in a barrage fades in at its own moment, wherever the repaint catches it
   const lands = store.ui.yBurst[p.id];
