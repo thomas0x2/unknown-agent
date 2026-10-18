@@ -1,0 +1,14 @@
+{
+  "id": "d12_y_axel_clip",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 12,
+    "dayMax": 12,
+    "flagsAll": [
+      "posted_deepfake"
+    ]
+  },
+  "at": "16:52",
+  "body": "@the_current Ratio"
+}
