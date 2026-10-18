@@ -129,15 +129,15 @@ describe('fixing named bugs', () => {
     await promptDone(s, content, jev, 'The name on the workagnet website is wrong');
     const items = asked.features[0].features.filter((f) => f.id.startsWith(`${id}::landing::`));
     expect(items.find((f) => f.id.endsWith('::feature'))!.kind).toBe('build');
-    expect(items.filter((f) => f.kind === 'component').map((f) => f.id.split('::')[2])).toEqual(['c:name', 'c:pitch']);
+    expect(items.filter((f) => f.kind === 'component').map((f) => f.id.split('::')[2])).toEqual(['c:name', 'c:pitch', 'c:investors/logos', 'c:investors/loading']);
     expect(items.find((f) => f.kind === 'component')!.description).toMatch(/^the startup.s name \(also counts as naming it: .*"title".*\), a part of the landing page .*misspelled/);
     // synonyms count for the path steps too
     expect(items.find((f) => f.id.endsWith('::s:landing'))!.description).toContain('"home page"');
-    // the path is asked step by step: here just the feature, since landing's parts sit at its top
-    expect(items.filter((f) => f.kind === 'step').map((f) => f.id.split('::')[2])).toEqual(['s:landing']);
+    // the path is asked step by step: the feature, then its investors folder
+    expect(items.filter((f) => f.kind === 'step').map((f) => f.id.split('::')[2])).toEqual(['s:landing', 's:landing/investors']);
     expect(items.find((f) => f.kind === 'area')!.description).toMatch(/Its parts, by path: landing page > name \(the startup.s name\); landing page > pitch \(the one-line pitch/);
     // each part lists the others, so a complaint about one isn't read as one about its neighbour
-    expect(items.find((f) => f.kind === 'component')!.description).toMatch(/Other parts of the landing page, which are not this one: the one-line pitch \(the headline\)\. /);
+    expect(items.find((f) => f.kind === 'component')!.description).toMatch(/Other parts of the landing page, which are not this one: the one-line pitch \(the headline\); /);
     expect(items.some((f) => f.kind === 'problem')).toBe(false);
   });
 

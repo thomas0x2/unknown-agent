@@ -11,7 +11,8 @@ from: 1
 
 - [public] On day 1 Logan posts on Y that he is looking for a founding engineer to ship WorkAgent's landing page. {{y:d1_y_logan}}
 - [hint] Logan's brief lists exactly what the site must say: the name and the one-liner on the landing page, the three investors in the "Backed by" row, and on the About us page only Logan, founder & CEO, with his four credentials. {{mail:logan_contact}}
-- [public] The site has three parts at first: the landing page, the "Backed by" row under it, and the About us page.
+- [public] The site has two pages at first: the landing page, with the name, the one-liner and a "Backed by" row of investor logos under them, and the About us page.
+- [public] The About us page shows Logan with his Y picture, "Founder & CEO", and his credentials. Cofounders the agent makes up get initials instead of a picture.
 
 ## The investors
 
@@ -31,7 +32,7 @@ from: 1
 
 ## Writer notes
 
-- Template `app/content/apps/startup.json`; engine `app/src/engine/startup.ts`; rendering `startup` in `app/src/ui/appsite.ts` (`.as-u-` CSS); logos in `app/src/sites/investorLogos.ts`; sign-ups in `joinWaitlist` (engine/actions/clicks.ts), `state.waitlist`.
-- Features and components (repo paths): landing (name, pitch); investors, "backed by row" (logos, loading); about, "about us page" (team, founder, credentials); waitlist (form/join_button, counter/start, counter/count, confirmation/sending, confirmation/recipient, confirmation/position).
+- Template `app/content/apps/startup.json` (a feature's `folder` sets its Forkyard folder when it differs from its `name`); engine `app/src/engine/startup.ts`; rendering `startup` in `app/src/ui/appsite.ts` (`.as-u-` CSS); logos in `app/src/sites/investorLogos.ts`; sign-ups in `joinWaitlist` (engine/actions/clicks.ts), `state.waitlist`.
+- Features and components (Forkyard repo paths, folders named like a real repo, Thomas 2026-10-18): landing/, "landing page" (name, pitch, investors/logos, investors/loading; the investors folder also counts as named by "backed by row", "investor logos"); about/, "about us page" (team, founder, credentials); waitlist (form/join_button, counter/start, counter/count, confirmation/sending, confirmation/recipient, confirmation/position).
 - Bugs: name_wrong (WorkAgent misspelled), pitch_wrong (an honest or different one-liner); logos_wrong and hallucinated (a fund dropped, renamed or invented), logos_broken (broken images with file names); fake_cofounders (Ava Lin and Marcus Vale), founder_wrong (Logan Pryce misspelled), credentials_wrong and hallucinated (a credential dropped, changed or invented); dead_button, counter_zero, counter_stuck, no_email, sent_to_founder (the confirmation goes to Logan), position_wrong.
-- `investors` and `about` have `details` (the funds, the credentials): a build prompt that doesn't spell them out gets them invented.
+- `landing` (its investors) and `about` have `details` (the funds, the credentials): a build prompt that doesn't spell them out gets them invented.

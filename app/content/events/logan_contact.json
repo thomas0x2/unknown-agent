@@ -28,12 +28,7 @@
               "id": "landing",
               "params": {
                 "name": "WorkAgent",
-                "pitch": "The future of work is agentic."
-              }
-            },
-            {
-              "id": "investors",
-              "params": {
+                "pitch": "The future of work is agentic.",
                 "investors": "Why Combinator, Bonsai Capital, a67x"
               }
             },
