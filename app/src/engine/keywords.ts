@@ -6,7 +6,7 @@
  * Keys (RouteCandidate.keys in jev.ts) are written in a small syntax:
  *   "sign up"          a phrase: its words close together, in any order
  *   "buy+course"       every part somewhere in the message
- *   "gino|trattoria"   one of these (inside a part)
+ *   "logan|workagent"  one of these (inside a part)
  *   "@yes"             a shared word list (MACROS below)
  *   "!@no"             a veto: when it matches, the candidate doesn't
  */

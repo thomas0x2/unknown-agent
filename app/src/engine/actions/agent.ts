@@ -304,7 +304,7 @@ async function oneApp(jev: JevRouter, s: GameState, content: Content, text: stri
     channel: 'agent', text, context, stateSummary: stateSummary(s), hints: [], strict: true,
     candidates: ids.map((id) => getApp(s, id)!).map((a) => ({
       id: a.id,
-      when: `The prompt is about ${a.name} (${a.url}): it names this app (its name, part of the name, or what it is, like "the crawler" or "the restaurant site"), or names no app and the most recent earlier message was about this one.`,
+      when: `The prompt is about ${a.name} (${a.url}): it names this app (its name, part of the name, or what it is, like "the crawler" or "the startup site"), or names no app and the most recent earlier message was about this one.`,
       keys: [appNames(a, content).join('|')],
     })),
   });

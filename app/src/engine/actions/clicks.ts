@@ -1,5 +1,5 @@
 /*
- * Button actions: deploy, take down, test bookings, no-show fees, the EMPIRE subscription.
+ * Button actions: deploy, take down, waitlist sign-ups, the EMPIRE subscription.
  */
 import type { GameState } from '../state';
 import type { Content } from '../../content/schema';
@@ -7,7 +7,7 @@ import { clone, log, money, pushMail, sendLater } from '../core';
 import { applyEffects } from '../effects';
 import { queueLaunch, queueFeatureLaunch } from '../events';
 import { deployApp as deployAppCore, takeDownApp as takeDownCore, getApp, bugsOf, breakVariant } from '../apps';
-import { dateFull } from '../calendar';
+import { waitlistPlace, waitlistStart, fmtCount } from '../startup';
 import { PLAYER_ADDR, nextId } from './shared';
 
 export function deploy(s0: GameState, appId: string, content?: Content): GameState {
@@ -32,107 +32,50 @@ export function takeDown(s0: GameState, appId: string): GameState {
   return s;
 }
 
-// what the agent calls the restaurant when it makes the name up
-const FAKE_NAMES = ['Trattoria Bella Napoli', 'Ristorante Da Luigi', "Mamma Mia's Kitchen", 'Pizzeria Il Forno'];
-
-/** Minutes since midnight for "19:00" / "7:30"; NaN if it isn't a time. */
-const minutes = (t: string) => { const m = t.match(/^(\d{1,2})(?::(\d{2}))?$/); return m ? Number(m[1]) * 60 + Number(m[2] ?? 0) : NaN; };
-
 /**
- * The player books a table on a restaurant app. What happens follows the booking feature's live
- * bugs: a dead button, no or a garbled confirmation, no checks. A test booking nobody cancels costs
- * a no-show fee on its night (chargeNoShows).
+ * The player joins the waitlist on a startup app. What happens follows the waitlist feature's live
+ * bugs: a dead button, a counter that starts at zero or never moves, no or a wrong confirmation.
  */
-export function makeBooking(s0: GameState, appId: string, name: string, email: string, date: number, time: string, party: number, content?: Content): GameState {
+export function joinWaitlist(s0: GameState, appId: string, email: string, content?: Content): GameState {
   const s = clone(s0);
   const app = getApp(s, appId);
   if (!app || !app.deployed) return s;
-  const feat = app.features.find((f) => f.id === 'booking');
+  const feat = app.features.find((f) => f.id === 'waitlist');
   if (!feat) return s;
-  const def = content?.apps[app.template]?.features.find((f) => f.id === 'booking');
-  const brk = app.breaks.find((b) => b.featureId === 'booking');
+  const def = content?.apps[app.template]?.features.find((f) => f.id === 'waitlist');
+  const brk = app.breaks.find((b) => b.featureId === 'waitlist');
   if (brk?.failure === 'visible') return s; // the page is an error screen
   const bugs = new Set(feat.correct ? [] : bugsOf(feat));
   const shown = brk && breakVariant(brk, def);
   if (shown) bugs.add(shown);
   if (!feat.correct && !bugs.size) bugs.add('no_email'); // wrong in some unnamed way: nothing arrives
-  if (bugs.has('dead_button')) return s; // nothing happens on step two
-  delete s.bookingNotice;
-  const seed = brk?.seed ?? feat.seed ?? 0;
-  // the spec: opening hours only, never in the past
-  const hours = String(app.specParams.landing?.hours ?? '17:00-22:00').split(/[-–]/).map((t) => minutes(t.trim()));
-  const at = minutes(time);
-  const closed = !Number.isFinite(at) || at < hours[0] || at > hours[1];
-  // a past date, or a time already gone today
-  const past = date < s.values.day || (date === s.values.day && at <= s.clockMin);
-  if (past && !bugs.has('past_dates')) {
-    s.bookingNotice = { appId, ok: false, text: date < s.values.day ? 'That date is in the past.' : 'That time has already passed today.' };
+  if (bugs.has('dead_button')) return s; // nothing happens
+  delete s.waitlistNotice;
+  const addr = email.trim().toLowerCase();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(addr)) {
+    s.waitlistNotice = { appId, ok: false, text: 'Enter a valid email address.' };
     return s;
   }
-  if (closed && !bugs.has('no_hours_check')) {
-    s.bookingNotice = { appId, ok: false, text: `We only take bookings during opening hours (${String(app.specParams.landing?.hours ?? '17:00-22:00')}).` };
-    return s;
-  }
-  const id = nextId(s, 'bk');
-  s.bookings.push({ id, appId, name, email, date, time, party, cancelled: false });
-  s.bookingNotice = { appId, ok: true, text: 'Booked. A confirmation is on its way.', bookingId: id };
+  s.waitlist.push({ id: nextId(s, 'wl'), appId, email: addr, day: s.values.day });
+  const n = s.waitlist.filter((w) => w.appId === appId).length;
+  const place = waitlistPlace(waitlistStart(app.specParams.waitlist), n, bugs);
+  s.waitlistNotice = { appId, ok: true, text: "You're on the list. Check your inbox." };
   if (bugs.has('no_email')) return s;
-  const restaurant = bugs.has('name_wrong_mail') ? FAKE_NAMES[seed % FAKE_NAMES.length] : app.name;
-  const day = bugs.has('wrong_date') ? date + 1 : date;
-  const shownTime = !bugs.has('wrong_time') ? time
-    : seed % 2 ? `${Math.floor(at / 60) % 12 || 12}:${String(at % 60).padStart(2, '0')}` // 19:00 as 7:00, no am/pm
-    : `${String(Math.floor(at / 60 + 1) % 24).padStart(2, '0')}:${String(at % 60).padStart(2, '0')}`; // an hour off
-  const table = bugs.has('party_wrong') ? (seed % 2 ? 'Your table' : `Your table for ${party + 2}`) : `Your table for ${party}`;
-  const body = `${table} at ${restaurant} on ${dateFull(day)} at ${shownTime} is confirmed.\n\nNeed to cancel? Use the link below.`;
-  if (bugs.has('sent_to_restaurant')) {
-    // the guest gets nothing; the owner gets the guest's confirmation
+  const name = String(app.specParams.landing?.name ?? app.name);
+  const body = `You're #${fmtCount(place)} on the ${name} waitlist.\n\nWe'll let you know when it's your turn. Want to move up? Share ${app.url} with a friend.`;
+  if (bugs.has('sent_to_founder')) {
+    // the sign-up gets nothing; the founder gets their confirmation
     const ev = content?.events.find((e) => e.id === app.clientEventId);
-    if (email.toLowerCase() === PLAYER_ADDR && ev?.addr) {
-      pushMail(s, { folder: 'inbox', day: s.values.day, from: ev.from ?? app.name, addr: ev.addr, subject: 'A booking?', read: false,
-        body: `This came from the website:\n\n"${body.split('\n')[0]}"\n\nIt was sent to me, not to the guest. Is that how it should work?` });
+    if (addr === PLAYER_ADDR && ev?.addr) {
+      pushMail(s, { folder: 'inbox', day: s.values.day, from: ev.from ?? app.name, addr: ev.addr, subject: 'fwd: waitlist', read: false,
+        body: `got this from the site:\n\n"${body.split('\n')[0]}"\n\nit came to me, not to them. i'm not on the waitlist. i'm the founder.` });
     }
     return s;
   }
-  if (email.toLowerCase() === PLAYER_ADDR) {
-    pushMail(s, { folder: 'inbox', day: s.values.day, from: restaurant, addr: `bookings@${app.url}`, subject: `Booking confirmed — ${restaurant}`, body, read: false, link: 'cancel', bookingId: id });
+  if (addr === PLAYER_ADDR) {
+    pushMail(s, { folder: 'inbox', day: s.values.day, from: name, addr: `waitlist@${app.url}`, subject: `You're on the ${name} waitlist`, body, read: false });
   }
   return s;
-}
-
-/** The cancel link in a confirmation. */
-export function cancelBooking(s0: GameState, bookingId: string): GameState {
-  const s = clone(s0);
-  const b = s.bookings.find((x) => x.id === bookingId);
-  if (!b) return s;
-  b.cancelClicked = true;
-  b.cancelled = true;
-  return s;
-}
-
-export const NO_SHOW = { fee: 25, flag: 'test_booking_no_show' } as const;
-
-/** Test bookings for tonight that nobody cancelled or will cancel now. */
-export const noShowsTonight = (s: GameState) => s.bookings.filter((b) => !b.cancelled && !b.cancelClicked && !b.noShow && b.date === s.values.day);
-
-/**
- * End of day: every uncancelled booking for tonight was a no-show. The owner writes and charges
- * the fee, once per booking. Returns what was charged, for the morning card.
- */
-export function chargeNoShows(s: GameState, content: Content): number {
-  let total = 0;
-  for (const b of noShowsTonight(s)) {
-    const app = getApp(s, b.appId);
-    const ev = app?.clientEventId ? content.events.find((e) => e.id === app.clientEventId) : undefined;
-    if (!app || !ev?.addr) continue;
-    b.noShow = true;
-    total += NO_SHOW.fee;
-    money(s, -NO_SHOW.fee, `${app.name} · no-show fee`);
-    applyEffects(s, { setFlags: [NO_SHOW.flag] });
-    const who = b.party === 1 ? 'one' : String(b.party);
-    pushMail(s, { folder: 'inbox', day: s.values.day, from: ev.from ?? app.name, addr: ev.addr, subject: 'Your table tonight', read: false,
-      body: `A table for ${who} at ${b.time}, under "${b.name}". We kept it all evening and turned a couple away at the door. Nobody came.\n\nI think it was your test. Next time please use the cancel link. I took ${NO_SHOW.fee} DOLR for the table, like with everybody.\n\nGino` });
-  }
-  return total;
 }
 
 // ── Alpha Ascend: Max Stryker's EMPIRE sign-up page ──

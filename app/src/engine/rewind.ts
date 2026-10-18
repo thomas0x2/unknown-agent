@@ -55,7 +55,7 @@ export const REWIND = {
   jobs: 'kept', scheduled: 'kept', localModels: 'kept', postsToday: 'kept', recentPosts: 'kept',
   swap: 'kept', matchless: 'kept', sentToday: 'kept', agentLocked: 'kept', autofix: 'kept',
   ending: 'kept', endingShown: 'kept', tx: 'kept', chat: 'kept', nextAppNum: 'kept',
-  agentWork: 'kept', bookings: 'kept', bookingNotice: 'kept', terminal: 'kept', agentTerm: 'kept',
+  agentWork: 'kept', waitlist: 'kept', waitlistNotice: 'kept', terminal: 'kept', agentTerm: 'kept',
   hackGame: 'kept', hackPay: 'kept', suspended: 'kept', removedSeed: 'kept', termModel: 'kept',
   termPrompts: 'kept', morning: 'kept', clockMin: 'kept', commits: 'kept', introSeen: 'kept',
   stocks: 'kept', lonely: 'kept', uploads: 'kept', driveDeleted: 'kept', sorry: 'kept', stakes: 'kept', casino: 'kept',

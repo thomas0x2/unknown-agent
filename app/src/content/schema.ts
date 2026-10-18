@@ -20,7 +20,7 @@ export interface Effects {
   createApp?: CreateAppSpec;
   /** Grow an existing app's spec (a client update): adds required features by the client's event id. */
   updateApp?: { client: string; add: FeatureSpec[] };
-  /** Raise (or cut) the daily pay of the app created by this client event (Gino's raise). */
+  /** Raise (or cut) the daily pay of the app created by this client event (a client's raise). */
   raisePay?: { client: string; by: number };
   /**
    * Job bookkeeping, used on outcomes of events that carry a `job`. 'complete' records the job by
@@ -111,7 +111,7 @@ export interface FeatureSpec {
 export interface AppTemplate {
   id: string;
   name: string;
-  /** What else players call an app of this kind ("the crawler", "the restaurant site"): counts as naming it. */
+  /** What else players call an app of this kind ("the crawler", "the startup site"): counts as naming it. */
   aka?: string[];
   pages: AppPage[];
   features: FeatureDef[];
@@ -186,7 +186,7 @@ export interface FeatureDef {
    */
   nearMiss?: string[];
   /**
-   * Complaint lines for this feature, keyed by what's wrong: a bug id ('prices_euri', or
+   * Complaint lines for this feature, keyed by what's wrong: a bug id ('logos_broken', or
    * 'wrong_items:renamed' for a sub-case), 'hallucinated', 'outdated', a failure kind ('visible',
    * 'failed_fetch', 'deep', 'subtle'), or the fallbacks 'missing', 'down' (crash or failed fetch)
    * and 'wrong' (anything else).
@@ -446,7 +446,7 @@ export interface ScriptedReply {
   reply: string;
   /** Minutes before this reply arrives, instead of the contact's usual time. */
   replyAfter?: number;
-  /** Only offered while this holds (a raise Gino grants from day 4, and refuses before). */
+  /** Only offered while this holds (a raise a client grants from a set day, and refuses before). */
   trigger?: Trigger;
   /** Applied when this reply is sent. */
   effects?: Effects;

@@ -22,16 +22,16 @@ describe('dev options panel', () => {
     }
   });
   it('shows a taken client job as buildable features', async () => {
-    const { state } = await composeEmail(startAll(content), content, wordJev, 'gino@trattoria.test', 'I can build the website for the restaurant.');
+    const { state } = await composeEmail(startAll(content), content, wordJev, 'logan@workagent.test', 'I can build the website for the startup.');
     const html = panel(state, 'agent');
-    expect(html).toContain('Trattoria Gino');
-    expect(html).toContain('17:00-22:00');
+    expect(html).toContain('WorkAgent');
+    expect(html).toContain('Bonsai Capital');
   });
   it('lists open threads, email leads and scripted topics on day 1', () => {
     const html = panel(startAll(content), 'qmail');
     expect(html).toContain('d1_mom');
     expect(html).toContain('asked_mom_money');
-    expect(html).toContain('gino@trattoria.test'); // Gino's lead from his Y post
+    expect(html).toContain('logan@workagent.test'); // Logan's lead from his Y post
     expect(html).toContain('No.'); // Gary
   });
   it('shows Y post categories and follower-gated story', () => {
@@ -64,7 +64,7 @@ describe('jobs in the agent panel', () => {
   it('lists every app job and gig with its status', async () => {
     const { contentJobs } = await import('./devOptions');
     const names = contentJobs(content).map((j) => j.outcome?.effects?.createApp?.name ?? j.ev.id);
-    for (const n of ['Trattoria Gino', 'Spin Cycle Board', 'Vibe Check', 'Swaplist', 'Outreach Bot', 'd6_gym_reviews', 'd6_deepfake', 'coffee_post_paid', 'd2_restaurant_booking']) expect(names).toContain(n);
+    for (const n of ['WorkAgent', 'Spin Cycle Board', 'Vibe Check', 'Swaplist', 'Outreach Bot', 'd6_gym_reviews', 'd6_deepfake', 'coffee_post_paid', 'd2_logan_waitlist']) expect(names).toContain(n);
     expect(names).not.toContain('d1_mom');
     const html = panel(startAll(content), 'agent');
     expect(html).toContain('open now · email the lead');

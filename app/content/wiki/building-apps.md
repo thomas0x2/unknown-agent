@@ -17,7 +17,7 @@ keys: what should i do, what do i do, what now, next step, clients, find work, f
 
 ## Bugs and fixes
 
-- [public] A build can ship with mistakes: missing or wrong prices, prices in EURI, invented dishes, stale data, the wrong number of machines, sarcasm read as praise.
+- [public] A build can ship with mistakes: a misspelled name, an invented investor, a counter stuck at zero, stale data, the wrong number of machines, sarcasm read as praise.
 - [hint] The only way to know is to open the live app and compare it with what the client asked for, and with the source of truth (the Spin Cycle feed, Sherwood's prices, the client's email).
 - [public] A fix prompt has to name the app and what exactly is wrong, down to the part; the repo on Forkyard lists the features and the parts inside them.
 - [public] After a fix the player redeploys.
@@ -38,11 +38,11 @@ keys: what should i do, what do i do, what now, next step, clients, find work, f
 ## Promo posts
 
 - [public] The first Y post naming a live user app brings new users, and the first Yowl review naming it brings more; each works once.
-- [public] [[Gino Fenoglio]] asks for a Y post about his new site.
+- [public] [[Logan Pryce]] asks for a Y post about his new site.
 
 ## The apps
 
-- [public] [[Trattoria Gino site]] (Gino, 40 DOLR a day), [[Spin Cycle Board]] (user app), [[Vibe Check]] (deskjockey, 50 a day), [[Swaplist]] (user app), [[Outreach Bot]] (the sales rep, 50 a day).
+- [public] [[WorkAgent site]] (Logan, 40 DOLR a day), [[Spin Cycle Board]] (user app), [[Vibe Check]] (deskjockey, 50 a day), [[Swaplist]] (user app), [[Outreach Bot]] (the sales rep, 50 a day).
 
 ## Writer notes
 

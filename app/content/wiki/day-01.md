@@ -35,7 +35,7 @@ from: 1
 - [public] 09:50 [[Axel Rook]]: AI will do every job within a few years, and everyone gets universal high income. {{y:d1_y_axel}}
 - [public] 10:20 [[Max Stryker]]: up at 4am; half the city got fired by a computer and went back to sleep. {{y:d1_y_stryker}}
 - [public] 10:32 [[CityPulse]] links its "almost escaped" story. {{y:d1_y_citypulse}}
-- [public] 10:42 [[Gino Fenoglio]] (Trattoria owner): his nephew ran the restaurant's website and left for college with the password. He needs a simple site with the menu and hours and will pay. gino@trattoria.test {{y:d1_y_restaurant}}
+- [public] 10:42 [[Logan Pryce]] (@logan_ships): "why combinator-backed, building in stealth"; WorkAgent is looking for a founding engineer to ship its landing page this week, paying DOLR up front. logan@workagent.test {{y:d1_y_logan}}
 - [public] 11:40 [[Cal Hartman]] on the "testing incident": everyone is safe, the model is safe. {{y:d1_y_hartman}}
 - [public] 12:10 doomscroll: 400 people at Vantor fired by one email, has read every reply, links CityPulse. {{y:d1_y_doomscroll_news}}
 - [public] 12:30 [[Mara Vey]] of [[The Current]] asks people behind this week's AI layoffs to write to her at mara@thecurrent.test. From now on the player can email her. {{y:d1_y_journalist}}
@@ -66,15 +66,15 @@ from: 1
 
 ## Jobs
 
-- [hint] 10:40 [[Trattoria Gino site]] for Gino: a landing page with the name and hours (17:00 to 22:00) and a menu in DOLR (Margherita 12, Diavola 14, Lasagne 15, Tiramisu 7, Espresso 3). Pays 40 DOLR a working day.
+- [hint] 10:42 [[WorkAgent site]] for Logan: a landing page with the name WorkAgent and the one-liner "The future of work is agentic.", a "Backed by" row (Why Combinator, Bonsai Capital, a67x) and an About us page with Logan and his credentials. Pays 40 DOLR a working day, the first day up front.
 - [hint] 13:50 [[Spin Cycle Board]]: nobody hires the player; the player asks the agent to turn the Spin Cycle feed into an app. A user app that starts with 30 users and earns 0.3 DOLR per user a day.
 - [hidden; hint if guru_subscriber] 14:15 The player signed up for EMPIRE; a daily newsletter follows.
 
 ## Writer notes
 
-- Timeline story beats: opens on Vantor's termination email; GeneralAI welcome; Gino's Y post → Trattoria site (40/day); after its first deploy he asks for a Y post (`restaurant_promo`, "The new website", 16:00 or 30 min after a later launch, sets `restaurant_promo_asked`), and thanks you if you post (`restaurant_promo_thanks`, "Your post": a man ordered one espresso and stayed two hours). Spin Cycle complaints → Spin Cycle Board (lead is on day 1, not 2). EMPIRE offer 20 DOLR. Mara's first post; she can be emailed from today (`journalist_contact`, sets `talked_to_journalist`, honest also `did_journalist_interview`). Hartman on the "testing incident".
+- Timeline story beats: opens on Vantor's termination email; GeneralAI welcome; Logan's Y post → WorkAgent site (40/day, 40 up front); after its first deploy he asks for a Y post (`logan_promo`, "we're live", 16:00 or 30 min after a later launch, sets `logan_promo_asked`), and thanks you if you post (`logan_promo_thanks`, "your post": the podcast got a new listener). Spin Cycle complaints → Spin Cycle Board (lead is on day 1, not 2). EMPIRE offer 20 DOLR. Mara's first post; she can be emailed from today (`journalist_contact`, sets `talked_to_journalist`, honest also `did_journalist_interview`). Hartman on the "testing incident".
 - Family: Mom (warm reply +5 trust, ask for money +20 DOLR and −10 trust with `asked_mom_money`, silence −5 if no outcome-matching reply by tonight's summary); brother replies-all. Money: Gary, rent due Sunday.
-- Events: `d1_hr_termination`, `d1_gai_welcome`, `d1_landlord_rent`, `d1_mom`, `d1_brother_joke`, `d1_guru`, `d1_y_*`, `restaurant_contact`, `laundromat_contact` (agentStart, lead `d1_y_laundromat`).
-- Job offers (the Gino and laundromat posts) go through `spreadJobOffers`: 10:15 to 16:00, at least an hour apart, so on a crowded day they can land later than their `at`.
+- Events: `d1_hr_termination`, `d1_gai_welcome`, `d1_landlord_rent`, `d1_mom`, `d1_brother_joke`, `d1_guru`, `d1_y_*`, `logan_contact`, `laundromat_contact` (agentStart, lead `d1_y_laundromat`).
+- Job offers (the Logan and laundromat posts) go through `spreadJobOffers`: 10:15 to 16:00, at least an hour apart, so on a crowded day they can land later than their `at`.
 - Filler times are computed by `spreadMin(id@day)`; MarketWire 09:30 is already up when the day starts.
 - Start values: `START` in config.

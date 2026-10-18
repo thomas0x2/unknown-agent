@@ -10,5 +10,5 @@ export { type ReplyResult, replyContext, mailHistory, BOUNCE_ADDR, replyToEvent,
 export { tooLong, TOO_LONG_MAIL, TOO_LONG_PROMPT, stateSummary, chatHistory } from './actions/shared';
 export { type PolicyRead, policyCheck, type AskResult, type AskOpts, askAgent, recentChat, agentStartFor, appStatus, appNames, workMinutes, buildIntent, promptAgent, localPrompt, briefBuild, briefFix } from './actions/agent';
 export { promoteApps, POST_BANDS, POST_FLOORS, postBase, type PostResult, postToY, writeReview } from './actions/social';
-export { deploy, takeDown, makeBooking, cancelBooking, NO_SHOW, noShowsTonight, chargeNoShows, EMPIRE, joinEmpire } from './actions/clicks';
+export { deploy, takeDown, joinWaitlist, EMPIRE, joinEmpire } from './actions/clicks';
 export type { AppInstance } from './state';

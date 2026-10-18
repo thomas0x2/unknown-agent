@@ -27,7 +27,7 @@ export const Y_BIOS: Record<string, string> = {
   marcus_steele: 'Owner and head coach, Iron Yard on Harbor Rd. Lift heavy things.',
   dana_reyes: 'Coffee person. Owner of a small shop on Linden Ave. Opinions my own, reviews not.',
   bean_there: 'Bean There, 3 Linden Ave. Specialty coffee, house-baked muffins. Laptop friendly, allegedly.',
-  trattoria_owner: 'Trattoria Gino. Family-run since 1998. Tue to Sun, 17:00 to 22:00. Website under new management.',
+  logan_ships: 'Founder & CEO @ WorkAgent (stealth). Why Combinator, whycombinator.com. Host of the Founder Mode podcast. Building the first one-person unicorn. SF is so back.',
   spin_cycle_regulars: 'Unofficial account for the people waiting at Spin Cycle. Never trust machine 3.',
   deskjockey: 'Markets. No DMs.',
   '6ft_sigma': 'High-value man. 6\'0" on most apps. Building something with standards. EMPIRE member.',
@@ -60,7 +60,6 @@ export const Y_BIOS: Record<string, string> = {
   zev_dolr: 'Holding DOLR since 0.4. Ships everything with agent. Posting through it. Not financial advice.',
   // app users who complain on Y
   kofi_a: 'Spin Cycle regular. Sunday loads, 9am.',
-  marguerite: 'Retired music teacher. Friday dinners at the same table since 2010.',
   steph_m: 'Nurse, nights. Laundry in between.',
   walked_there_again: 'I walk to the laundromat a lot.',
   ines_sells: "Selling my aunt's furniture one chair at a time.",

@@ -23,7 +23,7 @@ function masthead(day: number): string {
   </header>`;
 }
 
-const foot = `<footer class="cp-foot"><p>CityPulse is reader-funded. Comments are closed on every story.</p><p>© 2030 CityPulse · citypulse.news</p></footer>`;
+const foot = `<footer class="cp-foot"><p>San Fortuna news. CityPulse is reader-funded. Comments are closed on every story.</p><p>© 2030 CityPulse · citypulse.news</p></footer>`;
 
 /** Anything from today is BREAKING. */
 const kicker = (a: Article, today: number) => `<p class="cp-kicker">${a.day === today ? '<span class="cp-tag">BREAKING</span>' : ''}<b>${esc(a.section)}</b> ${esc(when(a, today))}</p>`;

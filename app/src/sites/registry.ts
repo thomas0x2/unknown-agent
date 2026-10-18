@@ -7,7 +7,7 @@ import { adSite } from './adSites';
 
 export type SiteId =
   | 'y' | 'qmail' | 'qdrive' | 'coinbin' | 'sherwood' | 'doordish' | 'forkyard' | 'agent' | 'yowl'
-  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'phish' | 'prince' | 'lonely' | 'sorry' | 'current' | 'citypulse' | 'pollymarket' | 'stack' | 'matchless' | 'adsite' | 'app' | 'wiki' | 'newtab' | 'notfound';
+  | 'weightroom' | 'nullboard' | 'cellar' | 'empire' | 'spinfeed' | 'phish' | 'prince' | 'lonely' | 'sorry' | 'current' | 'citypulse' | 'pollymarket' | 'stack' | 'matchless' | 'whyc' | 'adsite' | 'app' | 'wiki' | 'newtab' | 'notfound';
 
 export interface SiteDef {
   id: SiteId;
@@ -39,7 +39,7 @@ export const SITES: SiteDef[] = [
   { id: 'yowl', base: 'yowl.com', label: 'Yowl', group: 'core', reachable: always },
   { id: 'coinbin', base: 'coinbin.com', label: 'Coinbin', group: 'core', reachable: always },
   // the stock app and the delivery site exist from day 1; bookmarked once the player has been there
-  // (their banner ads link them, and Gino's day 4 email links DoorDish)
+  // (their banner ads link them)
   { id: 'sherwood', base: 'sherwood.com', label: 'Sherwood', group: 'core', reachable: always,
     bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('sherwood')) },
   { id: 'doordish', base: 'doordish.com', label: 'DoorDish', group: 'core', reachable: always,
@@ -73,6 +73,8 @@ export const SITES: SiteDef[] = [
   // the crypto casino (engine/casino.ts, ui/stack.ts); its ads and Max Stryker's posts link it
   { id: 'stack', base: 'stack.com', label: 'Stack', group: 'core', reachable: always,
     bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('stack')) },
+  // the accelerator Logan claims backs WorkAgent (ui/whyc.ts); his Y bio and his site's investor row link it
+  { id: 'whyc', base: 'whycombinator.com', label: 'Why Combinator', group: 'web', reachable: always },
   // the world wiki and its editor (ui/wiki.ts): dev mode only
   { id: 'wiki', base: 'wiki.dev', label: 'Wiki', group: 'tools', reachable: inDevMode },
 ];

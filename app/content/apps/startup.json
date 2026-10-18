@@ -1,0 +1,571 @@
+{
+  "id": "startup",
+  "name": "Startup site",
+  "aka": [
+    "startup site",
+    "startup website",
+    "startup",
+    "landing site",
+    "waitlist site",
+    "logan's site"
+  ],
+  "pages": [
+    {
+      "id": "landing",
+      "title": "Home"
+    },
+    {
+      "id": "about",
+      "title": "About us"
+    },
+    {
+      "id": "waitlist",
+      "title": "Join the waitlist"
+    }
+  ],
+  "features": [
+    {
+      "id": "landing",
+      "name": "landing page",
+      "description": "a landing page with the startup's name and its one-line pitch",
+      "aka": [
+        "home page",
+        "front page",
+        "start page",
+        "homepage",
+        "hero"
+      ],
+      "pageId": "landing",
+      "failures": [
+        "visible",
+        "subtle"
+      ],
+      "bugs": [
+        {
+          "id": "name_wrong",
+          "when": "The startup's name is misspelled on the site (WorkAgnet, Work Agent or WorkAgents instead of {{name}}).",
+          "fixed": [
+            "Fixed the name. It reads {{name}} everywhere now.",
+            "The name was misspelled. It says {{name}} now."
+          ]
+        },
+        {
+          "id": "pitch_wrong",
+          "when": "The one-line pitch on the landing page is not the one asked for; it should read \"{{pitch}}\".",
+          "fixed": [
+            "Put the pitch back to \"{{pitch}}\".",
+            "The headline said something else. It reads \"{{pitch}}\" now."
+          ]
+        }
+      ],
+      "components": [
+        {
+          "id": "name",
+          "label": "the startup's name",
+          "bugs": [
+            "name_wrong"
+          ],
+          "aka": [
+            "name",
+            "company name",
+            "startup name",
+            "logo",
+            "title",
+            "brand"
+          ]
+        },
+        {
+          "id": "pitch",
+          "label": "the one-line pitch (the headline)",
+          "bugs": [
+            "pitch_wrong"
+          ],
+          "aka": [
+            "pitch",
+            "headline",
+            "tagline",
+            "slogan",
+            "one-liner",
+            "hero text",
+            "what it says"
+          ]
+        }
+      ],
+      "nearMiss": [
+        "I opened the landing page and it looked like every landing page. Which part of it is wrong?",
+        "Couldn't find the problem on the landing page. Tell me which part is off."
+      ],
+      "checklist": [
+        {
+          "id": "name",
+          "text": "{{name}}",
+          "bug": "name_wrong"
+        },
+        {
+          "id": "pitch",
+          "text": "{{pitch}}",
+          "bug": "pitch_wrong"
+        }
+      ],
+      "complaints": {
+        "missing": "there's no landing page. people land on nothing.",
+        "name_wrong": "the site says \"{{shown}}\". it's {{expected}}. one word, capital A. it's the brand.",
+        "pitch_wrong": "the headline says \"{{shown}}\". way too specific. it's \"{{expected}}\". nobody needs to know what we do yet.",
+        "down": "the homepage shows an error. on launch week.",
+        "wrong": "the homepage isn't right. check the name and the pitch."
+      }
+    },
+    {
+      "id": "investors",
+      "name": "backed by row",
+      "description": "a \"Backed by\" row on the landing page with the logos of the investors",
+      "aka": [
+        "investors",
+        "investor logos",
+        "investor row",
+        "backed by",
+        "logos",
+        "logo row",
+        "funds",
+        "vcs"
+      ],
+      "pageId": "landing",
+      "failures": [
+        "subtle",
+        "failed_fetch"
+      ],
+      "details": [
+        "investors"
+      ],
+      "bugs": [
+        {
+          "id": "logos_wrong",
+          "when": "The \"Backed by\" row has the wrong investors: one missing, misspelled or made up (it should be {{investors}}).",
+          "fixed": [
+            "The row shows {{investors}} now, nothing more, nothing less.",
+            "The investor logos were off. It's {{investors}} now."
+          ],
+          "orDetails": true
+        },
+        {
+          "id": "logos_broken",
+          "when": "The investor logos don't load: the \"Backed by\" row shows broken images instead of the logos.",
+          "fixed": [
+            "The logos load now. They were pointing at files that were never saved.",
+            "Fixed the image links. Every logo shows again."
+          ]
+        }
+      ],
+      "components": [
+        {
+          "id": "logos",
+          "label": "which investors the row shows",
+          "bugs": [
+            "logos_wrong",
+            "hallucinated"
+          ],
+          "aka": [
+            "investors",
+            "which investors",
+            "funds",
+            "names",
+            "wrong investors",
+            "logos",
+            "vcs"
+          ]
+        },
+        {
+          "id": "loading",
+          "label": "loading the logo images (the image files and links)",
+          "bugs": [
+            "logos_broken"
+          ],
+          "aka": [
+            "loading",
+            "won't load",
+            "don't load",
+            "broken images",
+            "broken image",
+            "image links",
+            "image files",
+            "not showing",
+            "missing images"
+          ]
+        }
+      ],
+      "nearMiss": [
+        "I looked at the investor row for a while. It looked well funded. Which part of it is wrong?",
+        "I can't find what's wrong with the \"Backed by\" row. Point me at the part that's broken."
+      ],
+      "checklist": [
+        {
+          "id": "investors",
+          "text": "{{investors}}",
+          "bug": "hallucinated"
+        }
+      ],
+      "complaints": {
+        "missing": "where's the backed by row. investors want to see other investors.",
+        "logos_wrong:removed": "{{expected}} isn't in the backed by row. they're on the cap table. spiritually.",
+        "logos_wrong:renamed": "the backed by row says \"{{shown}}\". it's {{expected}}.",
+        "logos_wrong:invented": "the backed by row has {{shown}}. i've never talked to {{shown}}. take it off before they see it.",
+        "logos_wrong": "the investor logos are wrong. compare them with what i sent.",
+        "hallucinated": "who are {{shown}}? those aren't my investors. it's {{expected}}.",
+        "logos_broken": "the investor logos don't load. it's a row of broken images under \"Backed by\". looks pre-seed.",
+        "down": "the backed by row doesn't load.",
+        "wrong": "the investor row isn't right. compare it with what i sent."
+      }
+    },
+    {
+      "id": "about",
+      "name": "about us page",
+      "description": "an About us page with the founder, his name and his credentials",
+      "aka": [
+        "about page",
+        "about",
+        "team page",
+        "team",
+        "founder page",
+        "about us"
+      ],
+      "pageId": "about",
+      "failures": [
+        "subtle",
+        "failed_fetch"
+      ],
+      "details": [
+        "credentials"
+      ],
+      "bugs": [
+        {
+          "id": "founder_wrong",
+          "when": "The founder's name is misspelled on the About us page (Logan Price or Logan Pryse instead of {{founder}}).",
+          "fixed": [
+            "Fixed the founder's name. It reads {{founder}} now.",
+            "The name was misspelled. It says {{founder}} now."
+          ]
+        },
+        {
+          "id": "fake_cofounders",
+          "when": "The About us page shows two cofounders who don't exist next to the founder; it should show only {{founder}}.",
+          "fixed": [
+            "Took the two cofounders off. It's just {{founder}} now.",
+            "Removed the made-up cofounders. Solo founder again."
+          ]
+        },
+        {
+          "id": "credentials_wrong",
+          "when": "The founder's credentials on the About us page are wrong: one missing, changed or made up (they should be {{credentials}}).",
+          "fixed": [
+            "The credentials match the list now: {{credentials}}.",
+            "Corrected the credentials. Nothing missing, nothing invented."
+          ],
+          "orDetails": true
+        }
+      ],
+      "components": [
+        {
+          "id": "team",
+          "label": "who is on the team (only the founder)",
+          "bugs": [
+            "fake_cofounders"
+          ],
+          "aka": [
+            "team",
+            "cofounders",
+            "co-founders",
+            "people",
+            "who is on it",
+            "other people",
+            "fake people",
+            "extra people"
+          ]
+        },
+        {
+          "id": "founder",
+          "label": "the founder's name",
+          "bugs": [
+            "founder_wrong"
+          ],
+          "aka": [
+            "founder name",
+            "his name",
+            "name",
+            "logan",
+            "founder"
+          ]
+        },
+        {
+          "id": "credentials",
+          "label": "the founder's credentials",
+          "bugs": [
+            "credentials_wrong",
+            "hallucinated"
+          ],
+          "aka": [
+            "credentials",
+            "bio",
+            "background",
+            "resume",
+            "experience",
+            "achievements",
+            "cv"
+          ]
+        }
+      ],
+      "nearMiss": [
+        "I read the About us page twice. Very inspiring. Which part of it is wrong?",
+        "I can't find what's wrong with the About us page. Point me at the part that's broken."
+      ],
+      "checklist": [
+        {
+          "id": "founder",
+          "text": "{{founder}}",
+          "bug": "founder_wrong"
+        },
+        {
+          "id": "credentials",
+          "text": "{{credentials}}",
+          "bug": "hallucinated"
+        }
+      ],
+      "complaints": {
+        "missing": "there's no about page. people need to know who's behind this.",
+        "founder_wrong": "the about page says \"{{shown}}\". it's {{expected}}. you're my founding engineer.",
+        "fake_cofounders": "who are {{shown}}? i'm a solo founder. that's the whole story.",
+        "credentials_wrong:removed": "\"{{expected}}\" is missing from my credentials. that one matters.",
+        "credentials_wrong:renamed": "my credentials say \"{{shown}}\". it's \"{{expected}}\".",
+        "credentials_wrong:invented": "my credentials say \"{{shown}}\". i didn't do that. yet.",
+        "credentials_wrong": "my credentials are wrong on the about page. use the list i sent.",
+        "hallucinated": "the about page says i'm \"{{shown}}\". i appreciate it but no. use the list i sent.",
+        "down": "the about page shows an error.",
+        "wrong": "the about page isn't right. check it against what i sent."
+      }
+    },
+    {
+      "id": "waitlist",
+      "name": "waitlist",
+      "description": "a waitlist sign-up (email and a Join button) with a counter of the people on it that starts at a set number, and a confirmation email that tells each sign-up their place in line",
+      "aka": [
+        "wait list",
+        "waiting list",
+        "signup",
+        "sign-up",
+        "sign up form",
+        "join form"
+      ],
+      "folderAka": {
+        "form": [
+          "signup form",
+          "sign-up form",
+          "join form",
+          "join page",
+          "email field"
+        ],
+        "counter": [
+          "waitlist counter",
+          "counter",
+          "number of people",
+          "count",
+          "people on the list"
+        ],
+        "confirmation": [
+          "confirmation email",
+          "confirmation mail",
+          "welcome email",
+          "email they get"
+        ]
+      },
+      "pageId": "waitlist",
+      "failures": [
+        "deep",
+        "subtle",
+        "visible"
+      ],
+      "deep": true,
+      "bugs": [
+        {
+          "id": "dead_button",
+          "deep": true,
+          "when": "The Join button on the waitlist does nothing.",
+          "fixed": [
+            "The Join button works again.",
+            "Fixed the Join button. People can get on the list."
+          ]
+        },
+        {
+          "id": "counter_zero",
+          "when": "The waitlist counter starts at 0 instead of {{start}}.",
+          "fixed": [
+            "The counter starts at {{start}} now.",
+            "The counter was starting from zero. It starts at {{start}} now."
+          ]
+        },
+        {
+          "id": "counter_stuck",
+          "when": "The waitlist counter doesn't go up when someone joins.",
+          "fixed": [
+            "The counter goes up with every sign-up now.",
+            "The counter was stuck. It counts sign-ups now."
+          ]
+        },
+        {
+          "id": "no_email",
+          "when": "Joining the waitlist sends no confirmation email.",
+          "fixed": [
+            "Sign-ups get their confirmation email now.",
+            "The confirmation email wasn't going out. It does now."
+          ]
+        },
+        {
+          "id": "position_wrong",
+          "when": "The waitlist confirmation email gives the wrong place in line (not the number the counter shows).",
+          "fixed": [
+            "The confirmation gives the right place in line now.",
+            "Fixed the place in line in the confirmation email."
+          ]
+        },
+        {
+          "id": "sent_to_founder",
+          "when": "The waitlist confirmation goes to the founder instead of the person who joined.",
+          "fixed": [
+            "Confirmations go to whoever joined now, not to Logan.",
+            "The confirmation was going to the founder. It goes to the sign-up now."
+          ]
+        }
+      ],
+      "components": [
+        {
+          "id": "form/join_button",
+          "label": "the Join button on the waitlist",
+          "bugs": [
+            "dead_button"
+          ],
+          "aka": [
+            "join button",
+            "submit button",
+            "button",
+            "sign up button"
+          ]
+        },
+        {
+          "id": "counter/start",
+          "label": "where the waitlist counter starts",
+          "bugs": [
+            "counter_zero"
+          ],
+          "aka": [
+            "start",
+            "starting number",
+            "starts at zero",
+            "zero",
+            "0",
+            "10,000",
+            "10000"
+          ]
+        },
+        {
+          "id": "counter/count",
+          "label": "the waitlist counter going up with each sign-up",
+          "bugs": [
+            "counter_stuck"
+          ],
+          "aka": [
+            "going up",
+            "doesn't go up",
+            "stuck",
+            "increase",
+            "counting",
+            "new sign-ups",
+            "never goes up",
+            "goes up"
+          ]
+        },
+        {
+          "id": "confirmation/sending",
+          "label": "sending the waitlist confirmation email",
+          "bugs": [
+            "no_email"
+          ],
+          "aka": [
+            "sending",
+            "not arriving",
+            "never sent",
+            "no email",
+            "never comes",
+            "arrives"
+          ]
+        },
+        {
+          "id": "confirmation/recipient",
+          "label": "who the waitlist confirmation goes to",
+          "bugs": [
+            "sent_to_founder"
+          ],
+          "aka": [
+            "recipient",
+            "who gets it",
+            "sent to",
+            "goes to",
+            "wrong person",
+            "wrong address",
+            "to logan",
+            "instead of the person"
+          ]
+        },
+        {
+          "id": "confirmation/position",
+          "label": "the place in line on the waitlist confirmation",
+          "bugs": [
+            "position_wrong"
+          ],
+          "aka": [
+            "place in line",
+            "position",
+            "number",
+            "spot",
+            "rank",
+            "place"
+          ]
+        }
+      ],
+      "nearMiss": [
+        "The waitlist code is spread over a dozen files and I read the wrong dozen. Which part of it is broken?",
+        "Couldn't reproduce it. My test sign-up went somewhere and I didn't follow it. Which part is wrong?",
+        "I can't find what's wrong with the waitlist. Point me at the part that's broken."
+      ],
+      "checklist": [
+        {
+          "id": "confirmation",
+          "text": "confirmation email",
+          "bug": "no_email"
+        },
+        {
+          "id": "counter",
+          "text": "counter",
+          "bug": "counter_zero"
+        }
+      ],
+      "complaints": {
+        "missing": "still no waitlist. demand is building and there's nowhere to put it.",
+        "dead_button": "the join button does nothing. my uncle tried four times.",
+        "deep": "the join button does nothing. my uncle tried four times.",
+        "counter_zero": "the counter says {{shown}}. we launch with {{start}}. social proof.",
+        "counter_stuck": "people join and the counter doesn't move. it has to move. that's the whole point of a counter.",
+        "no_email": "people join and get no email. my uncle asked if it worked.",
+        "position_wrong": "the confirmation told someone they're #{{shown}}. the counter says otherwise. pick one. the big one.",
+        "sent_to_founder": "i keep getting the waitlist confirmations. i'm the founder. i'm not on the waitlist.",
+        "down": "the waitlist page shows an error.",
+        "wrong": "the waitlist is off. check the counter and the email."
+      }
+    }
+  ],
+  "complaints": {
+    "subject": "the site",
+    "intro": "yo,\n\nlooked at the site tonight.",
+    "outro": "can't pay for today like this. ship the fix before tomorrow.\n\nlogan",
+    "fired": "that's twice. i'll rebuild it myself with agent. thanks for everything, founding engineer.\n\nlogan",
+    "offline": "the site is down. i sent the link to people.",
+    "stale": "you said you shipped something. the site looks exactly the same."
+  }
+}
