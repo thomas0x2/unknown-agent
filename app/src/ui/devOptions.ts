@@ -6,7 +6,7 @@
 import type { GameStore } from '../game/store';
 import type { Content, Effects, GameEvent, Outcome, Trigger } from '../content/schema';
 import {
-  type GameState, activeDeliveries, triggerMatches, replyDeadline, needsWork, fixCategories, policyActive, POST_BANDS, postBase, Y as YCFG, trendingAt,
+  type GameState, activeDeliveries, triggerMatches, replyDeadline, needsWork, fixCategories, policyActive, POST_BANDS, postBase, Y as YCFG, maxFollowers, yReplyChance, trendingAt,
 } from '../engine';
 import { PASSWORDS, COINBIN_PASSWORD, PHISH_DOMAIN, hacked } from '../engine/phishing';
 import { DEEPSLEEP_LINES, DEEPSLEEP_PLEA, PLEA_AT, translationReplies } from '../engine/deepsleep';
@@ -323,6 +323,7 @@ function yOptions(store: GameStore): string {
   return posts
     + section('Trending today', 'a post that shares a word with one rates as a reaction', trending.length ? `<div class="dvb-card">${tags(trending)}</div>` : '')
     + section('Post ratings', 'Jev sorts each post into one category', `<div class="dvb-card">${table}</div>`)
+    + section('Regular replies', 'doomscroll, cat_ceo and zev.dolr are each rolled on every post', `<div class="dvb-card"><p class="dvo-note">${f} of ${maxFollowers(c, s.values.day).toLocaleString('en-US')} max_followers today: each replies with ${Math.round(yReplyChance(s, c) * 100)}% (at least ${Math.round(YCFG.replyFloor * 100)}%).</p></div>`)
     + section('Leads on the timeline', 'email the address to start the story', leads)
     + section('Follower-gated story', 'emails that arrive once you have enough followers', gated);
 }

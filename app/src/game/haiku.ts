@@ -17,12 +17,12 @@ export interface QueryReq { known: { public: string[]; hint: string[] }; view?: 
 export interface NearReq { why: string; lines: string[]; /** a classified query: refuse it */ refuse?: boolean }
 
 /** `situation` (a Swaplist chat) tells the character what they're selling and what the player asked about. */
-export async function haikuReply(ch: Character, text: string, via: 'subscription' | 'api', history: HistoryLine[] = [], situation?: string, query?: QueryReq, near?: NearReq): Promise<HaikuReply> {
+export async function haikuReply(ch: Character, text: string, via: 'subscription' | 'api', history: HistoryLine[] = [], situation?: string, query?: QueryReq, near?: NearReq, mode?: 'y'): Promise<HaikuReply> {
   let res: Response;
   try {
     res = await fetch('/api/write', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ character: ch.id, text, via, history: history.slice(-12), ...(situation ? { situation } : {}), ...(query ? { mode: 'query', known: query.known, view: query.view } : {}), ...(near ? { mode: near.refuse ? 'refuse' : 'near', near: { why: near.why, lines: near.lines } } : {}) }),
+      body: JSON.stringify({ character: ch.id, text, via, history: history.slice(-12), ...(situation ? { situation } : {}), ...(mode ? { mode } : {}), ...(query ? { mode: 'query', known: query.known, view: query.view } : {}), ...(near ? { mode: near.refuse ? 'refuse' : 'near', near: { why: near.why, lines: near.lines } } : {}) }),
     });
   } catch {
     return { text: null, note: 'the proxy is not running (npm run proxy)', debug: [] };

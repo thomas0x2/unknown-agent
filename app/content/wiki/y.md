@@ -16,6 +16,7 @@ from: 1
 - [public] Links to citypulse.news articles in posts open the article, pollymarket.com links open the market, and stack.com links open [[Stack]].
 - [public] Verified accounts carry a check mark; Mara Vey's is yellow.
 - [hint] Followers open doors: some jobs only come to accounts with enough followers.
+- [public] Every time [[The player]] posts, three of the [[Y regulars]] (doomscroll, cat_ceo and [[zev.dolr]]) may each reply under it, a few minutes later. The bigger the account, the more often they do; a brand-new account still gets the odd reply. noodleposter never replies.
 
 ## Regulars
 
@@ -52,4 +53,6 @@ from: 1
 
 - Bios `app/src/ui/y-bios.ts`, avatars `app/src/ui/y-avatars.ts`, trending `app/content/trending.json` (a topic with `at` trends from that time, `trendingAt` in `src/engine/trending.ts`; days 8 to 28 fall back to #AI, #jobs, #election; proposals need Thomas's OK). Market posts `app/content/y_market.json`.
 - Follower rubric `Y`/`POST_BANDS` in config: gains per post by category with ±30% jitter; more than 3 posts a day costs 2%. A post sharing a word with a trending topic rates as a "reaction". The deepfake needs 60+ followers and goes up as the player's own post with a picture (`img`), its likes climbing for hours (`viral`, engine/agentJobs.ts viralLikes); the Bean There shout-out 25+.
+- max_followers (`maxFollowers`, engine/yReplies.ts): the most followers any player could have by the end of a day, not one playthrough: every day's three free posts at the best category and quality at the top of their +30% jitter, plus every agent-job follower jump at the top of its spread on its first possible day, counted once (the deepfake, 2800, day 6). 66 on day 1, about 11K on day 6, compounding into the billions by day 28. Shown in dev mode's Y options.
+- Regular replies (Thomas, 2026-10-18): on each post the player writes on Y, doomscroll, cat_ceo and zev.dolr are rolled separately; chance = followers / max_followers for the day, at least `Y.replyFloor` (5%). Haiku writes each reply in the regular's character (`y_doomscroll`, `y_cat_ceo`, `y_zev_dolr` in characters.json, Writer mode `y`) when the post goes up, scripted lines if it can't; it lands 4 to 25 game minutes later (`yReplies` queue, `deliverYReplies` on the clock tick) and shows "Replying to @you". Agent-job posts (the deepfake) don't roll: their reactions are scripted.
 - Bot swarm days: 2, 4, 6, 9, 12, 16, 20.

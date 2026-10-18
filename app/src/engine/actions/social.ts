@@ -11,6 +11,8 @@ import { queueAt, yPostEvents } from '../events';
 import { appNames } from './agent';
 import { replyContext } from './mail';
 import { nextId, stateSummary } from './shared';
+import { scriptedWriter, type Writer } from '../writer';
+import { rollYReplies } from '../yReplies';
 
 /**
  * A post that is about a live user app brings it users, once per platform: the first Y post and the
@@ -73,6 +75,7 @@ export async function postToY(
   text: string,
   trending: string[],
   content?: Content,
+  writer: Writer = scriptedWriter,
 ): Promise<PostResult> {
   const s = clone(s0);
   const rating = await jev.ratePost({ text, trending, recentPosts: s.recentPosts, followers: s.values.followers });
@@ -88,9 +91,11 @@ export async function postToY(
   addValue(s, 'followers', delta);
   s.postsToday += 1;
   s.recentPosts = [text, ...s.recentPosts].slice(0, 5);
-  s.userPosts.push({ id: `u${s.userPosts.length + 1}`, text, day: s.values.day, min: s.clockMin, likes: Math.max(0, delta * 3 + Math.round(s.values.followers * 0.02)), delta, score: rating.quality * 4 });
+  const id = `u${s.userPosts.length + 1}`;
+  s.userPosts.push({ id, text, day: s.values.day, min: s.clockMin, likes: Math.max(0, delta * 3 + Math.round(s.values.followers * 0.02)), delta, score: rating.quality * 4 });
   log(s, `Posted on Y (${rating.category}): ${delta >= 0 ? '+' : ''}${delta} followers.`, 'info');
   await promoteApps(jev, s, 'y', text, content);
+  if (content) await rollYReplies(s, content, writer, { id, text }); // doomscroll, cat_ceo and zev.dolr may answer
   return { state: s, rating, followerDelta: delta };
 }
 
