@@ -29,6 +29,7 @@ from: 2
 - [public] 13:10 Candidate 2030: encouraged by the poll; "polls don't vote. People do." {{y:d2_y_candidate}}
 - [public] 14:10 [[Cal Hartman]]: agent usage up 40% this week; "a little compute constrained". {{y:d2_y_hartman}}
 - [public] 14:40 [[Wade Tillman]]: four chemtrails crossed over the Eastside on Sunday, and that night Vantor fired 400 people by email. "Look up." {{y:d2_y_wade}}
+- [public] 15:00 [[Dr. Adam Hoberman]]: sunlight in your eyes within 30 to 60 minutes of waking; "It's free and the data is very strong." {{y:d2_y_hoberman}}
 - [public] 15:50 CityPulse: a [[DoorDish]] delivery robot left its route on Ferris St and disappeared, burrito and all. {{y:d2_y_robot}}
 - [public] 16:00 Liftoff Daily: payments, jobs and dating in one app. {{y:d2_y_liftoff}}
 - [public] 16:11 Axel Rook: "@liftoff_daily Exactly" {{y:d2_y_axel_2}}

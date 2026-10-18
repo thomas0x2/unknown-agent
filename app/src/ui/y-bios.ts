@@ -23,6 +23,13 @@ export const Y_BIOS: Record<string, string> = {
   perdure_pharma: 'Perdure Pharma. Makers of NoDoze MAX, Ozempra and Fluvera. Medicine for modern life. $PDUR. perdure.com',
   forkyard: 'Official Forkyard account. Code hosting and deploys for builders everywhere. Status updates here.',
   doordish: 'Official DoorDish account. Food from anywhere, delivered by robot couriers. Every courier is where it needs to be.',
+  // founders and the people around them
+  pug: 'Pug. AI-native insurance for founders. Quotes in 90 seconds. Pug Café, open 24/7. pug.com',
+  brynnleclaire: 'head of community @pug 🐶 building the future of founder insurance · ex-everything · if you know you know',
+  chase_whitford: 'Partner @a67x. Pre-seed to Series B. I run the a67x Run Club, Saturdays at 7. Pitches after the run, never during.',
+  hunter_vale: 'Founder & CEO, Glamdring Industries. Building the arsenal for the next century. glamdring.com',
+  dr_hoberman: 'Professor of neurobiology. Host of the Hoberman Lab podcast. Science-based tools for everyday life.',
+  brayden_kolt: 'Founder @purevial_research 💉 third-party tested · research use only · 22 · building in public',
   // people with something to ask
   iron_yard: 'Iron Yard, 88 Harbor Rd. Strength gym. Racks, platforms, kettlebells. Lift heavy things.',
   marcus_steele: 'Owner and head coach, Iron Yard on Harbor Rd. Lift heavy things.',

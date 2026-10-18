@@ -3,13 +3,15 @@
  * landing page in the sponsor's style. For now they're brochures with nothing to click, apart from
  * the odd link to a real site (deepsleep.ai links to Weightroom, Spin Cycle to its feed). Ads for sites that already exist
  * (EMPIRE, the coinbln.com phishing page, the prince-claims.xyz scam,
- * the lonely.ai chat, DoorDish, agent.chat/models, CityPulse) aren't here. Rendered by ui/adSites.ts; routed by sites/registry.ts.
+ * the lonely.ai chat, DoorDish, agent.chat/models, CityPulse) aren't here. A few brand sites have no ad
+ * (`noAd`) and are reached by links in Y posts and on each other's pages. Rendered by ui/adSites.ts; routed by sites/registry.ts.
  */
 
 import { citizenScore, citizenBand, type GameState } from '../engine';
 import { DEEPSLEEP_LOGO } from './deepsleepLogo';
 import { HERITAGE_LOGO } from './heritageLogo';
 import { PROGRESS_LOGO } from './progressLogo';
+import { PUG_LOGO } from './pugLogo';
 
 /** Page layout family: shapes the markup a little and the CSS a lot. */
 export type AdKit = 'corp' | 'gov' | 'campaign' | 'scam' | 'local' | 'news' | 'clinic' | 'soft' | 'model';
@@ -28,7 +30,8 @@ export interface AdSite {
   lead: string;
   /** a row of big numbers; a function when they come from the game */
   stats?: [value: string, label: string][] | ((s: GameState) => [value: string, label: string][]);
-  cards: [heading: string, body: string][];
+  /** a function when they change with the game */
+  cards: [heading: string, body: string][] | ((s: GameState) => [heading: string, body: string][]);
   quote?: [text: string, by: string];
   /** the footer's small print */
   fine: string;
@@ -42,6 +45,8 @@ export interface AdSite {
   upload?: boolean;
   /** one working button, under the cards: [label, data-act handled in main.ts] */
   action?: [string, string];
+  /** no banner ad points here: the page is reached by links in Y posts and on other pages */
+  noAd?: boolean;
 }
 
 export const AD_SITES: AdSite[] = [
@@ -450,7 +455,99 @@ export const AD_SITES: AdSite[] = [
     link: ['Download the weights from Weightroom:', 'weightroom.ai', 'weightroom.ai'],
     unlocks: 'knows_weightroom',
   },
+
+  // ── Founders ──
+  {
+    url: 'pug.com', brand: 'Pug', kit: 'soft', theme: 'pug', mark: 'P', logo: PUG_LOGO,
+    kicker: 'Insurance for founders', title: 'AI-native insurance for founders.',
+    lead: 'Pug covers the risks your investors won’t: losing a co-founder, losing a key hire, losing the round. Quotes in 90 seconds, claims decided by agent.',
+    stats: (s) => [['2,400', 'founders covered'], ['4 sec', 'average claim decision'], pugCafeClosed(s) ? ['Closed', 'Pug Café'] : ['24/7', 'Pug Café']],
+    cards: (s) => [
+      ['Coverage', 'Key-person cover, co-founder breakup cover and down-round cover. Pivots are covered once a year.'],
+      ['Claims', 'Our agent reads your claim, your cap table and your posts on Y, and decides in about four seconds. Appeals go to the same agent.'],
+      pugCafeClosed(s)
+        ? ['Pug Café', 'Pug Café is temporarily closed while we work with the city. Your coverage is not affected.']
+        : ['Pug Café', 'Our café never closes, because founders don’t. Free espresso for policyholders, desks for everyone, outlets at every seat.'],
+    ],
+    fine: 'Pug is an insurance agency, not an insurer. Coverage is underwritten by partners. Pug Café is a policy benefit.',
+    link: ['Backed by', 'a67x', 'a67x.com'],
+  },
+  {
+    noAd: true, url: 'a67x.com', brand: 'a67x', kit: 'corp', theme: 'a67x', mark: 'a',
+    kicker: 'Venture capital', title: 'We back founders who keep going.',
+    lead: 'a67x invests from pre-seed to Series B in companies building the next American century: software, defense, insurance and whatever comes after.',
+    stats: [['$9B', 'under management'], ['212', 'portfolio companies']],
+    cards: [
+      ['Portfolio', 'Pug, Glamdring Industries and 210 others. Most of them you haven’t heard of yet.'],
+      ['Run Club', 'Partner Chase Whitford runs the a67x Run Club every Saturday at 7:00. Founders welcome. Pitches after the run, never during.'],
+      ['How we invest', 'We meet founders where they are: on Y, at the run club, at Pug Café. We don’t read decks.'],
+    ],
+    fine: 'Past performance is not indicative of future results. a67x partners may hold positions in the companies they post about.',
+    link: ['Upcoming events on', 'Lumi', 'lumi.events'],
+  },
+  {
+    noAd: true, url: 'lumi.events', brand: 'Lumi', kit: 'soft', theme: 'lumi', mark: 'L',
+    kicker: 'Events', title: 'Find your people. Then find your next event.',
+    lead: 'Lumi is where founders, investors and everyone around them host and find events: dinners, demo days, run clubs.',
+    stats: [['38,000', 'events this month'], ['1.2M', 'guests']],
+    cards: (s) => [
+      ['This week', pugCafeClosed(s)
+        ? 'a67x Run Club, Saturday 7:00, 5 km, ends outside Pug Café. Founder Breakfast at Pug, cancelled.'
+        : 'a67x Run Club, Saturday 7:00, 5 km, ends at Pug Café. Founder Breakfast at Pug, every weekday at 8:00.'],
+      ['Public guest lists', 'Guest lists are public by default, so you can see who’s going before you go. Every guest has a profile.'],
+      ['Hosting', 'Free for everyone. Approval, waitlists and check-in included.'],
+    ],
+    fine: 'By registering for an event you agree to share your name, photo and profile with the host and the other guests.',
+    link: ['Featured:', 'a67x Run Club', 'lumi.events/a67x-run'],
+  },
+  {
+    noAd: true, url: 'lumi.events/a67x-run', brand: 'Lumi', kit: 'soft', theme: 'lumi', mark: 'L',
+    kicker: 'Saturdays · 7:00', title: 'a67x Run Club',
+    lead: 'A 5 km run for founders and investors, hosted by Chase Whitford, partner at a67x. All paces. Coffee after.',
+    stats: [['5 km', 'route'], ['74', 'going']],
+    cards: (s) => [
+      ['Route', pugCafeClosed(s)
+        ? 'Starts at the fountain in the park. Ends outside Pug Café, which is closed. Coffee is now bring-your-own.'
+        : 'Starts at the fountain in the park. Ends at Pug Café, where the coffee is on Pug.'],
+      ['Hosted by', 'Chase Whitford, partner at a67x. He runs every week and reads every message after.'],
+      ['Going', 'Chase Whitford, Logan Pryce, Brynn LeClaire, Brayden Kolt and 70 others. The full list is visible to registered guests.'],
+    ],
+    fine: 'Registration requires approval by the host. Running is at your own risk; Pug sells cover for that.',
+    link: ['Hosted by', 'a67x', 'a67x.com'],
+  },
+  {
+    noAd: true, url: 'glamdring.com', brand: 'Glamdring Industries', kit: 'corp', theme: 'glamdring', mark: 'sword',
+    kicker: 'Defense technology', title: 'The arsenal for the next century.',
+    lead: 'Glamdring Industries builds autonomous defense systems for the United States and its allies. Hardware, software and the judgment between them.',
+    stats: [['3', 'branches of the military'], ['0', 'people in the loop, when required']],
+    cards: [
+      ['Foehammer', 'An autonomous interceptor. It finds, decides and acts in milliseconds, so nobody has to.'],
+      ['Our name', 'Glamdring is a sword from an old book that glowed when enemies were near. Our products do the same, and more.'],
+      ['Careers', 'We’re hiring engineers who want their work to matter. Flip-flops are allowed. Clearances are required.'],
+    ],
+    fine: 'Glamdring Industries does not comment on operations, customers or targets.',
+    link: ['Backed by', 'a67x', 'a67x.com'],
+  },
+  {
+    url: 'purevial.com', brand: 'PureVial Research', kit: 'clinic', theme: 'purevial', mark: 'vial',
+    kicker: 'Research peptides', title: 'Research-grade peptides, shipped in 24 hours.',
+    lead: 'PureVial Research supplies peptides for laboratory research. Every batch is third-party tested and ships in plain packaging.',
+    stats: [['99%', 'purity'], ['24h', 'dispatch']],
+    cards: [
+      ['BPC-157', 'Studied for tissue repair in rats. Our bestseller.'],
+      ['Lab tested', 'Every batch comes with a certificate of analysis. Ask and we’ll send the PDF.'],
+      ['Shipping', 'Plain box, no logo, 24-hour dispatch. Each order includes a research-use-only label and a dosing chart.'],
+    ],
+    fine: 'For research use only. Not for human consumption. PureVial Research is not a pharmacy and has never said it was.',
+  },
 ];
+
+/** The city closes Pug Café on day 16 at 13:30 (Pollymarket breaks it on Y). */
+export const PUG_CAFE_CLOSES = { day: 16, at: 13 * 60 + 30 };
+export const pugCafeClosed = (s: GameState): boolean => {
+  const day = s.values?.day ?? 0;
+  return day > PUG_CAFE_CLOSES.day || (day === PUG_CAFE_CLOSES.day && s.clockMin >= PUG_CAFE_CLOSES.at);
+};
 
 const BY_URL = new Map(AD_SITES.map((s) => [s.url, s]));
 

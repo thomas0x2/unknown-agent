@@ -1,0 +1,11 @@
+{
+  "id": "d11_y_hoberman",
+  "site": "y",
+  "from": "Dr. Adam Hoberman",
+  "trigger": {
+    "dayMin": 11,
+    "dayMax": 11
+  },
+  "at": "10:50",
+  "body": "Delay caffeine 90 to 120 minutes after waking to avoid the afternoon crash. Today's episode is brought to you by Pug, AI-native insurance for founders."
+}

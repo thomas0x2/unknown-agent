@@ -1,0 +1,11 @@
+{
+  "id": "d17_y_logan_sidewalk",
+  "site": "y",
+  "from": "logan_ships",
+  "trigger": {
+    "dayMin": 17,
+    "dayMax": 17
+  },
+  "at": "10:40",
+  "body": "working from the sidewalk outside pug café. the wifi still reaches. founder mode"
+}

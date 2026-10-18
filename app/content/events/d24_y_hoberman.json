@@ -1,0 +1,11 @@
+{
+  "id": "d24_y_hoberman",
+  "site": "y",
+  "from": "Dr. Adam Hoberman",
+  "trigger": {
+    "dayMin": 24,
+    "dayMax": 24
+  },
+  "at": "14:00",
+  "body": "If you wake at 3am and can't get back to sleep, don't reach for your phone. Close this app."
+}

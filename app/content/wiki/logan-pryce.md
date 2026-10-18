@@ -31,6 +31,16 @@ from: 1
 - [public] On day 2 he posts a thread of seven billion-dollar ideas nobody is building, the seventh being his own (stealth). {{y:d2_y_logan}}
 - [public] On day 3 he posts that the first one-person unicorn will be founded this year. "(it's me)" {{y:d3_y_logan}}
 
+## Pug Café
+
+[public] He works from [[Pug]] Café every day, at the table by the outlet, and goes to the Saturday a67x Run Club ([[Chase Whitford]]), which ends there. He is on the run club's guest list on [[Lumi]].
+
+- [public] Day 4: at Pug Café since 9am; the espresso is free with a policy, and he has one. {{y:d4_y_logan_cafe}}
+- [public] Day 6: he pitched Chase after the run; Chase said "love the energy". {{y:d6_y_logan_runclub}}
+- [public] Day 11: office hours at Pug Café, every day. {{y:d11_y_logan_cafe}}
+- [public] Day 16: "they closed pug café. where am i supposed to build" {{y:d16_y_logan_cafe}}
+- [public] Day 17: he works from the sidewalk outside; the wifi still reaches. {{y:d17_y_logan_sidewalk}}
+
 ## Writer notes
 
 - Persona `logan` in `content/characters.json`; contact entry in `content/contacts.json`; events `d1_y_logan`, `logan_contact` (pay 40, 40 up front), `logan_promo`, `logan_promo_thanks`, `d2_logan_waitlist` (needs `logan_client` and the site working; sets `logan_update1`), `d2_y_logan`, `d3_y_logan`. Y bio in `ui/y-bios.ts`, avatar `LOGAN` in `ui/y-avatars.ts`.

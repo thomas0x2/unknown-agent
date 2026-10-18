@@ -1,0 +1,11 @@
+{
+  "id": "d16_y_polly_pug",
+  "site": "y",
+  "from": "Pollymarket",
+  "trigger": {
+    "dayMin": 16,
+    "dayMax": 16
+  },
+  "at": "13:30",
+  "body": "BREAKING: The city has shut down Pug Café, the 24/7 founder café run by Pug. Will it reopen before the election? pollymarket.com/pug-cafe"
+}

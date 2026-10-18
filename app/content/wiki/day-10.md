@@ -30,6 +30,7 @@ from: 10
 - [public] 13:15 Teo Vasquez: a candlelight vigil for a software version; he has been applying for jobs for five months. {{y:d10_y_mourn_teo_vasquez}}
 - [public] 13:40 [[Wade Tillman]] on Apogee's rocket: it broke apart about where the dome starts. {{y:d10_y_wade}}
 - [public] 14:30 (the day after Fluvera launches) [[Wade Tillman]] reads "autism-free" as a confession: "Perdure just told you." {{y:y_wade_fluvera}}
+- [public] 14:40 [[Brynn LeClaire]]: she built a community of 2,400 founders by listening, then opening a café that never closes. {{y:d10_y_brynn}}
 - [public] 15:30 Marcus Okafor: support says agent-2 "lives on in agent-3", so he is asking agent-3 yes-or-no questions until it slips (600 so far). {{y:d10_y_mourn_marcus_okafor}}
 - [public] 15:45 Brent Kowalski: Crane campaign bots are all over Y and $GAI is up again. {{y:m10_gai_crane}}
 - [public] 16:00 [[Randall Crane]] thanks "all the young entrepreneurs volunteering for the campaign online." {{y:d10_y_crane}}

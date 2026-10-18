@@ -1,0 +1,11 @@
+{
+  "id": "d8_y_hoberman",
+  "site": "y",
+  "from": "Dr. Adam Hoberman",
+  "trigger": {
+    "dayMin": 8,
+    "dayMax": 8
+  },
+  "at": "14:10",
+  "body": "New episode: the science of peptides. Short version, the human data isn't there yet. The long version is four hours and twelve minutes."
+}

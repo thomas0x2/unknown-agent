@@ -21,6 +21,7 @@ from: 21
 - [public] 11:50 quietquant: $DISH flat; weekend robot deliveries up, weekend tips at zero. {{y:m21_dish_couriers}}
 - [public] 12:10 [[Cal Hartman]]: agent will be available on election day as usual; "it will not be voting." {{y:d21_y_hartman}}
 - [public] 12:50 MarketWire: $GAI closes another week up; analysts now call it "the weather". {{y:m21_gai_week}}
+- [public] 13:10 [[Hunter Vale]]: Foehammer passed its final test; he can't say where. {{y:d21_y_hunter}}
 - [public] 13:40 [[The Current]]: early voting opens tomorrow at 8:00 in every public library; bring photo ID and the paper registration card. {{y:d21_y_current}}
 - [public] 14:30 [[Randall Crane]]: one week; the other side has stopped posting at night, "That's when the winners are up." {{y:d21_y_crane}}
 - [public] 15:20 Brent Kowalski: the $VANT former-staff lawsuit now has 4,000 names; Vantor is "reviewing the names". {{y:m21_vant_names}}

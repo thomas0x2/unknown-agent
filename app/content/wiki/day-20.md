@@ -14,6 +14,7 @@ from: 20
 
 ## Y
 
+- [public] 08:30 (overnight, already up at 10:00) [[Chase Whitford]]: run club ended at the café out of habit; the doors are chained, 40 founders stretched in front of them anyway. {{y:d20_y_chase}}
 - [public] 10:20 [[Dex Calloway]] (@dexcult): "conviction is a muscle." {{y:d20_y_dexcult}}
 - [public] 10:35 [[Axel Rook]] is working Saturday: "Rockets don't build themselves. Yet." {{y:d20_y_axel}}
 - [public] 11:15 MarketWire: $GAI quiet into the weekend as GeneralAI says the agent-5 sessions have "finished". {{y:m20_gai_quiet}}

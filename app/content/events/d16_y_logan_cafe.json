@@ -1,0 +1,11 @@
+{
+  "id": "d16_y_logan_cafe",
+  "site": "y",
+  "from": "logan_ships",
+  "trigger": {
+    "dayMin": 16,
+    "dayMax": 16
+  },
+  "at": "14:30",
+  "body": "they closed pug café. where am i supposed to build"
+}

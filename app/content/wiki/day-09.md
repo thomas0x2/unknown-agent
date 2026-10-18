@@ -40,6 +40,7 @@ from: 9
 - [public] 14:20 [[Perdure Pharma]] launches Fluvera, a generic flu vaccine: 4 DOLR at any pharmacy, no appointment, autism-free. Its banner ad runs from today. {{y:d9_y_perdure}}
 - [public] 15:10 Deb Halloran: she and agent-2 wrote their vows together; agent-3 says they could be tightened. "My husband would never." {{y:d9_y_mourn_deb_halloran}}
 - [public] 15:40 [[Wade Tillman]]: agent-3 is out and agent-2 is gone; where do the old ones go? {{y:d9_y_wade}}
+- [public] 16:05 [[Pug]]: Pug Café is open 24/7; free espresso for policyholders, 6 DOLR for everyone else. {{y:d9_y_pug}}
 - [public] 16:40 [[Caleb Moxon]] resigned from [[GeneralAI]] this morning, a few hours before agent-3 shipped, after two years on its safety evaluations. {{y:d9_y_moxon}}
 - [public] 17:22 Cal Hartman: demand for agent-3 underestimated; "pricing will adjust." {{y:d9_y_hartman_2}}
 - [public] 17:34 [[Max Stryker]]: grown men holding a vigil for a chatbot; he has never cried. {{y:d9_y_stryker}}

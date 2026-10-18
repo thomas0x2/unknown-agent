@@ -43,7 +43,7 @@ describe('banner ads', () => {
     }
   });
   it('has no landing page without an ad', () => {
-    for (const site of AD_SITES) expect(AD_HREFS, site.url).toContain(site.url);
+    for (const site of AD_SITES) if (!site.noAd) expect(AD_HREFS, site.url).toContain(site.url);
   });
   it('draws each landing page with its brand, three cards and the fine print', () => {
     for (const site of AD_SITES) {
