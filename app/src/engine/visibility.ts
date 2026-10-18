@@ -82,8 +82,8 @@ export const VISIBILITY: Record<string, Record<string, Rule>> = {
     // the target date shows next to the timer; a frozen one shows once the clock has moved past the deploy;
     // counting into negative time only once the launch has passed
     wrong_target: changesCountdown('wrong_target'), frozen: changesCountdown('frozen'), negative: changesCountdown('negative'),
-    address_wrong: always, address_cut: always,
-    supply_wrong: always, shares_wrong: always, sum_over: always, lock_wrong: always,
+    address_wrong: always,
+    supply_wrong: always, shares_wrong: always, sum_over: always,
   },
   swaplist: {
     titles_shifted: listed((l) => l.length >= 2),
