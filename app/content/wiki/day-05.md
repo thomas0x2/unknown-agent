@@ -20,6 +20,7 @@ from: 5
 ## Y
 
 - [public] 04:50 (overnight, already up at 10:00) cat_ceo is up because the cat's post from yesterday is still getting likes, so the cat is up too. {{y:f23}}
+- [public] 10:20 [[Dex Calloway]] (@dexcult): "a memecoin is a church with a ticker." {{y:d5_y_dexcult}}
 - [hidden; hint if shown d5_y_coffee_help] 11:05 [[Dana Reyes]] on her own Y account (@dana_reyes), for players she doesn't know: one Yowl review is sinking the coffee shop and Yowl won't answer; does anyone know how to get a review looked at? Happy to pay. dana.reyes@qmail.com {{y:d5_y_coffee_help}}
 
 - [public] 11:20 Candidate 2030: technology should work for people; "a balanced approach". {{y:d5_y_candidate}}

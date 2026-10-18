@@ -1,0 +1,11 @@
+{
+  "id": "d4_y_dexcult",
+  "site": "y",
+  "from": "dexcult",
+  "trigger": {
+    "dayMin": 4,
+    "dayMax": 4
+  },
+  "at": "10:30",
+  "body": "they gave you severance and a webinar. we're giving you a countdown."
+}

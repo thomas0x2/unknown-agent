@@ -1,0 +1,11 @@
+{
+  "id": "d19_y_dexcult",
+  "site": "y",
+  "from": "dexcult",
+  "trigger": {
+    "dayMin": 19,
+    "dayMax": 19
+  },
+  "at": "10:20",
+  "body": "big things coming. can't say more. i've never been able to say more."
+}

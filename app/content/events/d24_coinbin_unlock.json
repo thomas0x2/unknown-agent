@@ -1,0 +1,16 @@
+{
+  "id": "d24_coinbin_unlock",
+  "site": "qmail",
+  "from": "Coinbin",
+  "addr": "no-reply@coinbin.com",
+  "subject": "Your $COPE is unlocked",
+  "trigger": {
+    "dayMin": 24,
+    "dayMax": 24,
+    "flagsAll": [
+      "cope_deployer"
+    ]
+  },
+  "at": "10:05",
+  "body": "The founding engineer allocation of $COPE held by your wallet is now unlocked. You can exchange it on Coinbin at today's rate.\n\nCoinbin"
+}

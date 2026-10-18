@@ -49,7 +49,9 @@ export const Y_ICONS: Record<string, string> = {
     + '<g clip-path="url(#yg-clip)"><g transform="rotate(25 12 12)"><rect class="yg-glint" x="-10" y="-6" width="7" height="36" fill="url(#yg-shine)"/></g></g></svg>',
 };
 /* Token coins, full colour. No gradients or ids, so any number can share a page. */
-export const TOKENS: Record<'dolr' | 'mooncat' | 'euri' | 'nonero', string> = {
+export const TOKENS: Record<'dolr' | 'mooncat' | 'euri' | 'nonero' | 'cope', string> = {
+  // $COPE: a gold coin with a flat mouth (same mark as Dex's site)
+  cope: '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="#e8b931"/><circle cx="16" cy="16" r="12" fill="none" stroke="#b8891a" stroke-width="1.6"/><circle cx="12" cy="13.5" r="1.7" fill="#5a4210"/><circle cx="20" cy="13.5" r="1.7" fill="#5a4210"/><path d="M11 21h10" stroke="#5a4210" stroke-width="2" stroke-linecap="round"/></svg>',
   euri: '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="#1f4fb8"/><circle cx="16" cy="16" r="12.6" fill="none" stroke="#c4d4fb" stroke-opacity=".45" stroke-width="1"/><path d="M21.2 10.4a6.6 6.6 0 1 0 0 11.2" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><path d="M8.6 14.2h8.4M8.6 17.8h8.4" stroke="#ffd34d" stroke-width="1.8" stroke-linecap="round"/></svg>',
   nonero: '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="#f26822"/><path d="M2.4 21.5h27.2A16 16 0 0 1 2.4 21.5z" fill="#4c4c4c"/><path d="M10.5 18.5V9.5l11 9V9.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/></svg>',
   dolr: '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="#17b26a"/><circle cx="16" cy="16" r="12.6" fill="none" stroke="#c9f7df" stroke-opacity=".45" stroke-width="1"/><path d="M12.6 9.6h3.6a6.4 6.4 0 0 1 0 12.8h-3.6z" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/><path d="M9.6 16h6M13.8 6.6v3M13.8 22.4v3" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>',

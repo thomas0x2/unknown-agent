@@ -1,0 +1,11 @@
+{
+  "id": "d11_y_dexcult",
+  "site": "y",
+  "from": "dexcult",
+  "trigger": {
+    "dayMin": 11,
+    "dayMax": 11
+  },
+  "at": "10:30",
+  "body": "people keep asking what $COPE does. it holds. that's what it does."
+}

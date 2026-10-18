@@ -390,7 +390,9 @@ export function queueFeatureLaunch(s: GameState, content: Content, clientEventId
 /** Events that wait on a Y post about something (`yPost`), open now: trigger holds, not yet on its way, nor another of its group. */
 export function yPostEvents(s: GameState, content: Content): GameEvent[] {
   const taken = (group: string) => content.events.some((ev) => ev.yPost?.group === group && underway(s, ev));
-  return content.events.filter((ev) => ev.yPost && !underway(s, ev) && !(ev.yPost.group && taken(ev.yPost.group)) && triggerMatches(s, ev.trigger));
+  // a repeating one answers one post a day (Dex pays for one $COPE post a day)
+  const today = (ev: GameEvent) => !!ev.repeat && s.delivered.some((d) => d.eventId === ev.id && d.day === s.values.day);
+  return content.events.filter((ev) => ev.yPost && !underway(s, ev) && !today(ev) && !(ev.yPost.group && taken(ev.yPost.group)) && triggerMatches(s, ev.trigger));
 }
 
 /** Latent qmail events the player can currently email (trigger matches, not yet fired). */

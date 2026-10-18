@@ -31,6 +31,7 @@ export * from './save';
 export * from './wallets';
 export * from './stocks';
 export * from './exchange';
+export * from './cope';
 export * from './stake';
 export * from './phishing';
 export * from './lonely';

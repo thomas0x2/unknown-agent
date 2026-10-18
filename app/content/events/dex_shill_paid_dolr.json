@@ -1,0 +1,30 @@
+{
+  "id": "dex_shill_paid_dolr",
+  "site": "qmail",
+  "from": "Dex Calloway",
+  "addr": "dex@cope.xyz",
+  "subject": "your post",
+  "trigger": {
+    "dayMax": 22,
+    "flagsAll": [
+      "cope_shill_dolr"
+    ]
+  },
+  "repeat": true,
+  "yPost": {
+    "when": "The player's Y post promotes $COPE, Dex Calloway's memecoin: tells people to buy or hold it, or talks it up.",
+    "after": 25,
+    "keys": [
+      "cope"
+    ]
+  },
+  "bodies": [
+    "saw the post. 20 DOLR sent, as agreed.\n\ndex",
+    "20 DOLR sent. the congregation doesn't need to know how you're paid.\n\ndex"
+  ],
+  "onDeliver": {
+    "add": {
+      "crypto": 20
+    }
+  }
+}

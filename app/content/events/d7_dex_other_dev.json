@@ -1,0 +1,25 @@
+{
+  "id": "d7_dex_other_dev",
+  "site": "qmail",
+  "from": "Dex Calloway",
+  "addr": "dex@cope.xyz",
+  "subject": "we're live",
+  "trigger": {
+    "dayMin": 7,
+    "dayMax": 7,
+    "flagsAll": [
+      "dex_contract_ask"
+    ],
+    "flagsNone": [
+      "cope_created",
+      "cope_other_dev"
+    ]
+  },
+  "at": "10:20",
+  "body": "you didn't create it, so someone else did, last night. the founding engineer's allocation went with them.\n\nthe site still needs to be right. $COPE trades as of this morning.\n\ndex",
+  "onDeliver": {
+    "setFlags": [
+      "cope_other_dev"
+    ]
+  }
+}

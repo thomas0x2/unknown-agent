@@ -6,13 +6,17 @@
  */
 import type { GameState } from './state';
 import { clone, money } from './core';
+import { dateShort } from './calendar';
+import { COPE, copeRate, copeListed, copeLocked } from './cope';
 
-export type Coin = 'DOLR' | 'EURI' | 'MOONCAT' | 'NONERO';
+export type Coin = 'DOLR' | 'EURI' | 'MOONCAT' | 'NONERO' | 'COPE';
 export const COINS: { id: Coin; name: string; decimals: number }[] = [
   { id: 'DOLR', name: 'Dollar stablecoin', decimals: 2 },
   { id: 'EURI', name: 'Euro stablecoin', decimals: 2 },
   { id: 'MOONCAT', name: 'Memecoin', decimals: 0 },
   { id: 'NONERO', name: 'Privacy coin', decimals: 6 },
+  // Dex Calloway's memecoin (engine/cope.ts): only on Coinbin once it trades
+  { id: 'COPE', name: 'Memecoin', decimals: 0 },
 ];
 
 /** Share of what the player gets that Coinbin keeps. */
@@ -21,10 +25,10 @@ export const EXCHANGE_FEE = 0.015;
 export const EXCHANGE_MIN = 1;
 
 /** Each coin's DOLR price at the close before day 1. MOONCAT: the player's 4,200,000 were worth 0.42. */
-const BASE_RATE: Record<Coin, number> = { DOLR: 1, EURI: 1.084, MOONCAT: 0.42 / 4_200_000, NONERO: 148.6 };
+const BASE_RATE: Record<Exclude<Coin, 'COPE'>, number> = { DOLR: 1, EURI: 1.084, MOONCAT: 0.42 / 4_200_000, NONERO: 148.6 };
 
 /** Daily moves, days 1-21. EURI drifts, MOONCAT lurches and bleeds, NONERO moves like a mid-size coin. */
-export const COIN_SCRIPT: Record<Exclude<Coin, 'DOLR'>, number[]> = {
+export const COIN_SCRIPT: Record<Exclude<Coin, 'DOLR' | 'COPE'>, number[]> = {
   EURI: [0.001, -0.002, 0.0015, -0.001, 0.0005, 0.002, -0.0025, 0.001, -0.0005, 0.003, -0.001, 0.0015, -0.002, 0.0005, 0.001, -0.003, 0.002, -0.0005, 0.001, -0.0015, 0.0025],
   MOONCAT: [-0.06, 0.18, -0.11, -0.04, 0.32, -0.27, -0.08, 0.05, -0.14, 0.09, -0.12, 0.41, -0.33, -0.07, 0.02, -0.19, 0.11, -0.09, 0.06, -0.15, -0.21],
   NONERO: [0.012, -0.024, 0.031, 0.008, -0.017, 0.022, -0.009, 0.041, -0.028, 0.014, 0.006, -0.035, 0.019, 0.027, -0.011, 0.048, -0.022, 0.009, -0.016, 0.033, -0.007],
@@ -37,9 +41,15 @@ const roundTo = (n: number, d: number) => Math.floor(n * 10 ** d + 1e-9) / 10 **
 /** A coin's DOLR price at a day's close (day 0 is the close before the game starts). */
 export function coinRate(c: Coin, day: number): number {
   if (c === 'DOLR') return 1;
+  if (c === 'COPE') return copeRate(day);
   let p = BASE_RATE[c];
   for (let d = 1; d <= Math.min(day, 21); d++) p *= 1 + (COIN_SCRIPT[c][d - 1] ?? 0);
   return p;
+}
+
+/** The coins Coinbin shows today: COPE once it trades or the wallet holds some. */
+export function coinsListed(s: GameState): typeof COINS {
+  return COINS.filter((c) => c.id !== 'COPE' || copeListed(s.values.day) || coinHeld(s, 'COPE') > 0);
 }
 
 /** How much of a coin the player holds. */
@@ -70,6 +80,8 @@ export function exchangeCoins(s0: GameState, from: string, to: string, amount: n
   if (!isCoin(from) || !isCoin(to)) return { state: s0, error: 'Pick two coins.' };
   if (from === to) return { state: s0, error: 'Pick two different coins.' };
   if (!Number.isFinite(amount) || amount <= 0) return { state: s0, error: 'Enter an amount above 0.' };
+  if ((from === 'COPE' || to === 'COPE') && !copeListed(s0.values.day)) return { state: s0, error: 'COPE isn\'t trading yet.' };
+  if (from === 'COPE' && copeLocked(s0)) return { state: s0, error: `This wallet created $${COPE.ticker}. Its COPE is locked until ${dateShort(COPE.unlockDay)}.` };
   const give = roundTo(amount, decimalsOf(from));
   const held = coinHeld(s0, from);
   if (give > held + 1e-9) return { state: s0, error: `You have ${fmtCoin(from, Math.max(0, held))} ${from}.` };
