@@ -36,7 +36,8 @@ export const SITES: SiteDef[] = [
   { id: 'qmail', base: 'qmail.com', label: 'Qmail', group: 'core', reachable: always },
   { id: 'qdrive', base: 'qdrive.com', label: 'Qdrive', group: 'core', reachable: always },
   { id: 'y', base: 'y.com', label: 'Y', group: 'core', reachable: always },
-  { id: 'yowl', base: 'yowl.com', label: 'Yowl', group: 'core', reachable: always },
+  // reachable by address and links, but not bookmarked: bookmarks are for sites the player's jobs need
+  { id: 'yowl', base: 'yowl.com', label: 'Yowl', group: 'web', reachable: always },
   { id: 'coinbin', base: 'coinbin.com', label: 'Coinbin', group: 'core', reachable: always },
   // the stock app and the delivery site exist from day 1; bookmarked once the player has been there
   // (their banner ads link them)
@@ -74,8 +75,7 @@ export const SITES: SiteDef[] = [
   { id: 'stack', base: 'stack.com', label: 'Stack', group: 'core', reachable: always,
     bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('stack')) },
   // the creator subscription site (engine/thirstr.ts, ui/thirstr.ts); Max Stryker's posts link his agency page there
-  { id: 'thirstr', base: 'thirstr.com', label: 'Thirstr', group: 'core', reachable: always,
-    bookmarkAfterVisit: (s) => s.flags.includes(visitedFlag('thirstr')) },
+  { id: 'thirstr', base: 'thirstr.com', label: 'Thirstr', group: 'web', reachable: always },
   // the accelerator Logan claims backs WorkAgent (ui/whyc.ts); his Y bio and his site's investor row link it
   { id: 'whyc', base: 'whycombinator.com', label: 'Why Combinator', group: 'web', reachable: always },
   // the world wiki and its editor (ui/wiki.ts): dev mode only

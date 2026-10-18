@@ -6,7 +6,7 @@ from: 1
 summary: Thirstr (thirstr.com) is a subscription site where creators sell 30-day subscriptions; Max Stryker manages some of them as Stryker Talent.
 ---
 
-[public] Thirstr (thirstr.com) is a subscription site for creators, "Support creators directly." White pages with one teal; its logo is a white drop of water on a teal tile. It is not bookmarked at first: the bookmark appears after the player first opens it.
+[public] Thirstr (thirstr.com) is a subscription site for creators, "Support creators directly." White pages with one teal; its logo is a white drop of water on a teal tile. It is never bookmarked; the player reaches it by address or through links.
 
 [public] The front page, "Popular near you", lists the creators with a picture, a one-line bio and the price. Each creator's page (thirstr.com/<name>) shows the bio, the number of posts and subscribers, and a Subscribe button; without a subscription the posts are blurred tiles behind a lock. The footer says Thirstr takes 20% of every subscription and is 18+ only.
 
