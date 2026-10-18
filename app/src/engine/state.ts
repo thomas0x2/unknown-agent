@@ -250,8 +250,11 @@ export interface YExtra {
   text: string;
   day: number;
   likes: number;
+  /** The player's post this answers; it shows as an ordinary post tagging them. */
   replyTo?: string;
   generated?: boolean;
+  /** Why a scripted line stood in for Haiku (dev mode shows it under the post). */
+  scripted?: string;
   /** A user's complaint about this app (broken at payday). */
   about?: string;
   /** Minutes since midnight it went up, when known. */

@@ -9,7 +9,6 @@ import {
   activeDeliveries,
   fixCategories,
   type GameState,
-  maxFollowers,
   needsWork,
   policyActive,
   POST_BANDS,
@@ -335,7 +334,7 @@ function yOptions(store: GameStore): string {
   return posts
     + section('Trending today', 'a post that shares a word with one rates as a reaction', trending.length ? `<div class="dvb-card">${tags(trending)}</div>` : '')
     + section('Post ratings', 'Jev sorts each post into one category', `<div class="dvb-card">${table}</div>`)
-    + section('Regular replies', 'doomscroll, cat_ceo and zev.dolr are each rolled on every post', `<div class="dvb-card"><p class="dvo-note">${f} of ${maxFollowers(c, s.values.day).toLocaleString('en-US')} max_followers today: each replies with ${Math.round(yReplyChance(s, c) * 100)}% (at least ${Math.round(YCFG.replyFloor * 100)}%).</p></div>`)
+    + section('Regular replies', 'doomscroll, cat_ceo and zev.dolr are each rolled on every post', `<div class="dvb-card"><p class="dvo-note">${f} followers: each replies with ${(yReplyChance(s) * 100).toFixed(1)}% (${Math.round(YCFG.reply.floor * 100)}% up to ${YCFG.reply.floorAt.toLocaleString('en-US')} followers, ${Math.round(YCFG.reply.cap * 100)}% from ${YCFG.reply.capAt.toLocaleString('en-US')}).</p></div>`)
     + section('Leads on the timeline', 'email the address to start the story', leads)
     + section('Follower-gated story', 'emails that arrive once you have enough followers', gated);
 }
