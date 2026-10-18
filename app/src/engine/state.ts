@@ -322,6 +322,7 @@ export interface GameState {
   values: Record<MeterId, number>;
   flags: string[]; // kept sorted + unique
   flagDays: Record<string, number>; // day each flag was first set (for `after` triggers)
+  flagMins: Record<string, number>; // clock minute each flag was first set, on its flagDays day
   apps: AppInstance[];
   jobs: JobRecord[];
   delivered: DeliveredEvent[];
@@ -473,6 +474,7 @@ export function newGame(seed = makeSeed()): GameState {
     values: initialMeters(),
     flags: [],
     flagDays: {},
+    flagMins: {},
     apps: [],
     jobs: [],
     delivered: [],

@@ -39,7 +39,7 @@ export function rewindArrivals(s: GameState, content: Content, from: number): vo
 
   const late = new Set(Object.entries(s.flagDays).filter(([, d]) => d >= from).map(([f]) => f));
   s.flags = s.flags.filter((f) => !late.has(f));
-  for (const f of late) delete s.flagDays[f];
+  for (const f of late) { delete s.flagDays[f]; delete s.flagMins[f]; }
 }
 
 /**
@@ -53,6 +53,7 @@ export const REWIND = {
   delivered: 'rewound',
   fired: 'rewound',
   flagDays: 'rewound',
+  flagMins: 'rewound',
   flags: 'rewound',
   hacked: 'rewound',
   log: 'rewound',

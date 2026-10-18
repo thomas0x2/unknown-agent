@@ -9,11 +9,13 @@ import { startGame } from '../engine/day';
 import { postToY, writeReview, briefFix } from '../engine/actions';
 import { applyEffects } from '../engine/effects';
 import { getApp, nameUnnamedBugs, bugsOf } from '../engine/apps';
-import { marketPosts, cranePosts, tradeLog, crawl, autoBuys, ledger, portfolio, price, trackedOf, START_PORTFOLIO, MARKET_SCRIPT, TRADER_TRADES } from '../engine/crawler';
+import { marketPosts, swarmSlot, SWARM, cranePosts, tradeLog, crawl, autoBuys, ledger, portfolio, price, trackedOf, START_PORTFOLIO, MARKET_SCRIPT, TRADER_TRADES } from '../engine/crawler';
 import { machineFeed, machineRows } from '../engine/laundromat';
 import type { GameState } from '../engine/state';
 import { wordJev, promptDone } from '../engine/_fixtures';
 import { CLOCK } from '../engine/config';
+import { addFlag } from '../engine/core';
+import { yMinutesToday } from '../engine/events';
 
 const content = loadContent();
 
@@ -49,6 +51,49 @@ describe('stock posts on Y', () => {
     s.flagDays.trader_client = 4;
     const days = new Set(marketPosts(s, content).filter((p) => p.bot).map((p) => p.day));
     expect([...days].sort()).toEqual([4, 6]);
+  });
+  it(`a swarm goes up at the earliest ${SWARM.delay} minutes after the job is taken, and never after 19:00`, () => {
+    const at = (hhmm: string) => Number(hhmm.slice(0, 2)) * 60 + Number(hhmm.slice(3));
+    const swarm = content.yMarket!.posts.find((p) => p.id === 'm4_nova_bots')!; // day 4, 11:31
+    const take = (min: number) => {
+      const s = startGame(content, 7);
+      s.values.day = 4;
+      s.clockMin = min;
+      addFlag(s, 'trader_client');
+      return s;
+    };
+    // taken before its time: it keeps its time
+    expect(swarmSlot(take(at('10:20')), swarm)).toEqual({ day: 4, min: at('11:31') });
+    // taken after it was due: it waits, and nothing shows up back in time
+    const s = take(at('14:00'));
+    expect(swarmSlot(s, swarm)).toEqual({ day: 4, min: at('14:30') });
+    expect(marketPosts(s, content).some((p) => p.bot)).toBe(false);
+    s.clockMin = at('14:30');
+    const up = marketPosts(s, content).filter((p) => p.bot);
+    expect(up).toHaveLength(30);
+    expect(up.every((p) => p.day === 4 && p.min === at('14:30'))).toBe(true);
+    expect(yMinutesToday(s, content)).toContain(at('14:30'));
+    expect(yMinutesToday(s, content)).not.toContain(at('11:31'));
+    // right up to 19:00 it still goes up today; later than that, tomorrow at its written time
+    expect(swarmSlot(take(at('18:30')), swarm)).toEqual({ day: 4, min: at('19:00') });
+    for (const late of [at('18:31'), at('21:50')]) {
+      const t = take(late);
+      expect(swarmSlot(t, swarm)).toEqual({ day: 5, min: at('11:31') });
+      t.clockMin = CLOCK.sleep - 1;
+      expect(marketPosts(t, content).some((p) => p.bot)).toBe(false);
+      t.values.day = 5;
+      t.clockMin = at('11:31');
+      expect(marketPosts(t, content).filter((p) => p.bot && p.day === 5)).toHaveLength(30);
+      expect(yMinutesToday(t, content)).toContain(at('11:31'));
+    }
+    // taken the day before, however late: the next day's swarm keeps its time
+    const eve = take(at('21:50'));
+    eve.values.day = 3;
+    eve.flagDays.trader_client = 3;
+    expect(swarmSlot(eve, swarm)).toEqual({ day: 4, min: at('11:31') });
+  });
+  it('every bot swarm is written for 19:00 or earlier', () => {
+    for (const p of content.yMarket!.posts.filter((x) => x.bots)) expect(p.at! <= '19:00', p.id).toBe(true);
   });
   it('a $GAI post is already on Y when day 1 starts', () => {
     const s = startGame(content);
