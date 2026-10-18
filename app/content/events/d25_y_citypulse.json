@@ -1,0 +1,11 @@
+{
+  "id": "d25_y_citypulse",
+  "site": "y",
+  "from": "CityPulse",
+  "trigger": {
+    "dayMin": 25,
+    "dayMax": 25
+  },
+  "at": "18:50",
+  "body": "TRICK OR TWEET? Crane's account posted 14 times between 2 and 5 AM last night. Three were about candy."
+}

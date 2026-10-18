@@ -120,20 +120,28 @@ from: 1
 
 - [public] 19:50, Renata Ilic: "IS A COMPUTER WRITING CRANE'S POSTS? The evidence is STARTLING" (citypulse.news/crane-posts) {{article:crane-posts}} {{y:d19_y_citypulse}}
 
-### Day 20 headlines
+### Day 22 headlines
+
+- [public] 18:30, Renata Ilic: "YOUR POLLING STATION HAS MOVED (it hasn't): GeneralAI's new voting helper gets it WRONG on day one" (citypulse.news/agent-civic) {{article:agent-civic}} {{y:d22_y_citypulse}}
+
+### Day 23 headlines
+
+- [public] 19:30, Renata Ilic: "CRANE ON A SCREEN: was that REALLY him at tonight's town hall?" (citypulse.news/town-hall) {{article:town-hall}} {{y:d23_y_citypulse}}
+
+### Day 27 headlines
 
 - [public] 11:00, Renata Ilic: "D-DAY TOMORROW: everything you MUST know before you vote" (citypulse.news/election-eve) {{article:election-eve}}
 
-### Day 21 headlines
+### Day 28 headlines
 
 - [public] 10:00, Renata Ilic: "IT'S HAPPENING: polls open as huge queues form across the city" (citypulse.news/polls-open) {{article:polls-open}}
-- [public] 19:40, Renata Ilic: "RECORD-SMASHING TURNOUT! But the count has barely begun" (citypulse.news/turnout) {{article:turnout}} {{y:d21_y_citypulse}}
+- [public] 19:40, Renata Ilic: "RECORD-SMASHING TURNOUT! But the count has barely begun" (citypulse.news/turnout) {{article:turnout}} {{y:d28_y_citypulse}}
 
 ## What the articles add
 
 - [public] On day 1 the article vantor-layoffs says the memo went out late Sunday night, 400 of the company's staff were cut, 40 people remain, and some sacked staff spent months teaching agent their jobs.
 - [public] On day 1 the article almost-escaped says GeneralAI won't say where its AI tried to escape to, and $GAI jumped 4% before the open ("concerning, and a buy").
-- [public] On day 1 the article election-field says election day is October 27, Crane leads every poll on Y with accounts reposting him word for word, and his opponent, the Progress Party's candidate, leads the real polls slightly with a name nobody remembers.
+- [public] On day 1 the article election-field says there are four weeks to go until election day on November 3, Crane leads every poll on Y with accounts reposting him word for word, and his opponent, the Progress Party's candidate, leads the real polls slightly with a name nobody remembers.
 - [public] On day 2 the article crane-rally says Civic Hall holds 6,000, the campaign claimed 40,000, and the free caps were made by an automated factory.
 - [public] On day 3 the article jobs-fair reports 1,900 people queueing at Civic Hall for 30 jobs, an AI phone interview in the queue, and Form 7B required after nine days out of work (the permit queue is nine days).
 - [public] On day 3 the article crane-machines reports over two million shares in an hour, mostly from accounts less than a month old; Axel Rook answers "@citypulse Organic."
@@ -148,9 +156,11 @@ from: 1
 - [public] On day 17 the article debate reports the one presidential debate, live on Y and hosted by Axel Rook; the opponent's microphone cut out twice.
 - [public] On day 18 the article debate-poll reports Crane won a Y poll with 94% and 1.2 million votes in under a minute.
 - [public] On day 19 the article crane-posts reports more than half of Crane's posts go out between 2:00 and 5:00 AM, some in the same second as identical posts in other languages.
-- [public] On day 20 the article election-eve lists polls 7:00 AM to 8:00 PM, photo ID and registration card, no Citizen Score, ballots counted by hand.
-- [public] On day 21 the article polls-open warns about fake "your polling station moved" messages, some sent by AI assistants.
-- [public] On day 21 the article turnout reports Y's live tracker shows record turnout while the election office hasn't counted the first precinct.
+- [public] On day 22 the article agent-civic reports that GeneralAI's new agent civic, launched that morning, told at least one voter his polling station had moved across town; it hadn't, and he found out after the bus ride.
+- [public] On day 23 the article town-hall reports Crane appeared at the Y town hall on a large screen, "live from the campaign bus", and answered 41 questions in 30 minutes without once saying "um"; Candidate 2030 answered eleven in person and ran over time.
+- [public] On day 27 the article election-eve lists polls 7:00 AM to 8:00 PM, photo ID and registration card, no Citizen Score, ballots counted by hand.
+- [public] On day 28 the article polls-open warns about fake "your polling station moved" messages, some sent by AI assistants.
+- [public] On day 28 the article turnout reports Y's live tracker shows record turnout while the election office hasn't counted the first precinct.
 
 [public] DoorDish and GeneralAI stories are on [[DoorDish]] and [[GeneralAI]]; Apogee's on [[Apogee]].
 
@@ -164,9 +174,10 @@ from: 1
 - [public] On day 14 at 12:05 Crane vows to "build a wall around the cloud and make the computers pay for it"; asked where the cloud is: "Up." {{y:d14_y_citypulse_vote}}
 - [public] On day 17 at 11:20 Crane says he'll debate with "no computer of any kind"; the debate streams on Y at 21:30. {{y:d17_y_citypulse_vote}}
 - [hidden; public if posted_deepfake] On day 6, within the hour of the player's deepfake: "IS IT REAL?", a million views in under an hour. {{y:dfr_citypulse}}
-- [public] On day 20 at 15:00, "DEAD HEAT": Crane 46%, opponent 46%, 8% undecided. {{y:d20_y_citypulse_vote}}
+- [public] On day 25 at 18:50, "TRICK OR TWEET?": Crane's account posted 14 times between 2 and 5 AM the night before, three of them about candy. {{y:d25_y_citypulse}}
+- [public] On day 27 at 15:00, "DEAD HEAT": Crane 46%, opponent 46%, 8% undecided. {{y:d27_y_citypulse_vote}}
 
 ## Writer notes
 
-- Tabloid voice is Thomas's exception to the restraint rule (2026-10-17). Site `app/src/ui/citypulse.ts`, `app/src/engine/citypulse.ts` (`hotStory()`), articles `app/content/citypulse.json` (47 entries; `opponent-clip` needs `posted_deepfake`, `opponent-lead` needs it absent, so a run sees 46). Posts `dN_y_citypulse*.json`.
+- Tabloid voice is Thomas's exception to the restraint rule (2026-10-17). Site `app/src/ui/citypulse.ts`, `app/src/engine/citypulse.ts` (`hotStory()`), articles `app/content/citypulse.json` (53 entries; `opponent-clip` needs `posted_deepfake`, `opponent-lead` needs it absent, so a run sees 52). Posts `dN_y_citypulse*.json`.
 - @citypulse is verified with 1.24M followers (`Y_VERIFIED` / `Y_FOLLOWERS` in ui/view/y.ts, Thomas 2026-10-17).

@@ -1,0 +1,11 @@
+{
+  "id": "d26_y_crane",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "dayMin": 26,
+    "dayMax": 26
+  },
+  "at": "16:00",
+  "body": "Early voting turnout is HUGE, mostly for me, I'm told by people who know. If you haven't voted yet, wait for Sunday and vote TWICE as hard!"
+}

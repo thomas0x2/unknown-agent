@@ -1,0 +1,11 @@
+{
+  "id": "d27_y_moxon",
+  "site": "y",
+  "from": "Caleb Moxon",
+  "trigger": {
+    "dayMin": 27,
+    "dayMax": 27
+  },
+  "at": "14:00",
+  "body": "Someone asked agent-5 about me. It called me \"a former employee with access concerns\". I don't know where it learned the phrase. I would like to."
+}

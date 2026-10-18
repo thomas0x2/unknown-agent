@@ -1,0 +1,11 @@
+{
+  "id": "d27_y_hartman",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 27,
+    "dayMax": 27
+  },
+  "at": "15:21",
+  "body": "whoever wins tomorrow, generalai looks forward to working with them."
+}

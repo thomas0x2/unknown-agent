@@ -1,0 +1,11 @@
+{
+  "id": "d25_y_crane",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "dayMin": 25,
+    "dayMax": 25
+  },
+  "at": "16:30",
+  "body": "Happy Halloween! The scariest costume this year is my opponent's economic plan. The second scariest is my opponent."
+}

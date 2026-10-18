@@ -37,8 +37,15 @@ from: 1
 - [public] On day 17 he hosts the presidential debate live on Y, with over 40 million people listening, and calls it a "Wild night".
 - [public] On day 18 he calls the debate a "Big win for free speech".
 - [public] On day 19 he sets the next Apogee flight for after the election, "Probably 80% this time."
-- [public] On day 20 he tells people to vote tomorrow, since "The future depends on it, maybe."
-- [public] On day 21 he answers CityPulse's turnout story: "@citypulse Interesting."
+- [public] On day 20 he is working Saturday: "Rockets don't build themselves. Yet." In the evening he tells Crane his rally's "Y numbers were good".
+- [public] On day 21 he posts "One week" and answers Liftoff Daily with "@liftoff_daily Correct".
+- [public] On day 22 he votes early, in 4 minutes: "Y told me where to go." He answers CityPulse's agent civic story with "@citypulse Fake news".
+- [public] On day 23 he announces the Y town hall at 19:00 with both candidates confirmed, then posts "Record viewers".
+- [public] On day 24 he calls it the "Best town hall ever. Very efficient." and answers Crane: "@randall_crane Very real".
+- [public] On day 25, Halloween, he is "Going as myself again."
+- [public] On day 26 he says the Apogee launch is next week, "Like I said", and answers The Current's report of nine agent ballots: "@the_current Nine is a lot".
+- [public] On day 27 he tells people to vote tomorrow, since "The future depends on it, maybe."
+- [public] On day 28 he answers CityPulse's turnout story: "@citypulse Interesting."
 
 ## From day 3: The rocket reply to Crane
 
@@ -94,6 +101,19 @@ from: 1
 - [public] {{y:d20_y_axel_2}}
 - [public] {{y:d21_y_axel}}
 - [public] {{y:d21_y_axel_2}}
+- [public] {{y:d22_y_axel}}
+- [public] {{y:d22_y_axel_2}}
+- [public] {{y:d23_y_axel}}
+- [public] {{y:d23_y_axel_2}}
+- [public] {{y:d24_y_axel}}
+- [public] {{y:d24_y_axel_2}}
+- [public] {{y:d25_y_axel}}
+- [public] {{y:d26_y_axel}}
+- [public] {{y:d26_y_axel_2}}
+- [public] {{y:d27_y_axel}}
+- [public] {{y:d27_y_axel_2}}
+- [public] {{y:d28_y_axel}}
+- [public] {{y:d28_y_axel_2}}
 
 ## In the news
 

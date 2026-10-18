@@ -18,4 +18,4 @@ from: 1
 ## Writer notes
 
 - Events in `app/content/events/`, spam in `app/content/qmail_spam.json` (Mindset Daily spam only after `built_outreach_bot`). Replies to characters go through Jev/Gemma; personas in `app/content/characters.json`, addresses in `contacts.json`.
-- Days 8 to 21 have no Qmail story yet beyond deskjockey's day 8 "Two more" [planned].
+- Days 8 to 28 have no Qmail story yet beyond deskjockey's day 8 "Two more" [planned].

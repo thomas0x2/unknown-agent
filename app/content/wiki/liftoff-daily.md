@@ -13,6 +13,9 @@ from: 2
 - [public] On day 12 it posts that legacy media lost and "Y is where the news happens now." {{y:d12_y_liftoff}}
 - [public] On day 15 it says AI moderation is already better than any human team: "Fewer mistakes, zero bias." {{y:d15_y_liftoff}}
 - [public] On day 19 it posts that Apogee has hired 2,000 people this year while everyone else does layoffs. {{y:d19_y_liftoff}}
+- [public] On day 20 it says $APO keeps climbing on talk of a second launch: "Talk is also what the first one was." {{y:m20_apo_talk}}
+- [public] On day 21 Rook answers it with "@liftoff_daily Correct". {{y:d21_y_axel_2}}
+- [public] On day 25 it says $APO is up again and half the Halloween costumes downtown are Apogee flight suits. {{y:m25_apo_costume}}
 
 ## Writer notes
 

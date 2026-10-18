@@ -31,7 +31,7 @@ describe('authored content', () => {
       ...content.yFiller.map((f) => f.body),
     ].filter((t): t is string => !!t).map((t) => t.trim().toLowerCase());
     expect(texts.filter((t, i) => texts.indexOf(t) !== i)).toEqual([]);
-    for (const f of content.yFiller) expect(f.day >= 1 && f.day <= 21, f.id).toBe(true);
+    for (const f of content.yFiller) expect(f.day >= 1 && f.day <= 28, f.id).toBe(true);
   });
 
   it('event ids are unique', () => {

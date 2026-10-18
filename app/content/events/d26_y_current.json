@@ -1,0 +1,11 @@
+{
+  "id": "d26_y_current",
+  "site": "y",
+  "from": "The Current",
+  "trigger": {
+    "dayMin": 26,
+    "dayMax": 26
+  },
+  "at": "12:15",
+  "body": "Early voting closes at 17:00 today. 31% of registered voters have already voted, a record. The election office found nine early ballots cast by agents. They were not counted."
+}

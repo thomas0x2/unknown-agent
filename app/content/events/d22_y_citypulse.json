@@ -1,0 +1,11 @@
+{
+  "id": "d22_y_citypulse",
+  "site": "y",
+  "from": "CityPulse",
+  "trigger": {
+    "dayMin": 22,
+    "dayMax": 22
+  },
+  "at": "18:40",
+  "body": "AGENT CIVIC told a voter his polling station had MOVED. It hadn't. citypulse.news/agent-civic"
+}

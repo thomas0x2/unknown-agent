@@ -16,6 +16,10 @@ from: 1
 - [public] On day 10 the rocket lifts off at 10:02 and breaks apart four minutes later over the sea, with nobody on board; Rook calls it a "rapid unscheduled disassembly" with "great data", and $APO goes up 6%. {{article:apogee-launch}} {{y:d10_y_citypulse}}
 - [public] On day 10 [[Cal Hartman]] posts "@axel_rook sorry about the rocket." {{y:d10_y_hartman}}
 - [public] On day 19 Apogee schedules a second launch for after the election ("Probably 80% this time."), and Liftoff Daily says Apogee hired 2,000 people this year. {{y:m19_apo_launch2}} {{y:d19_y_axel}}
+- [public] On day 20 $APO keeps climbing on talk of a second launch. {{y:m20_apo_talk}}
+- [public] On day 21 $APO ends the week higher for the fourth week running. {{y:m21_apo_week}}
+- [public] On day 22 WallStreetBags notes Apogee is hiring while everyone else fires. {{y:m22_apo_hires}}
+- [public] On day 26 Apogee confirms its second launch for next week and $APO rises; Rook: "Apogee launch next week. Like I said." {{y:m26_apo_launch}}
 
 ## Writer notes
 

@@ -1,0 +1,11 @@
+{
+  "id": "d23_y_candidate",
+  "site": "y",
+  "from": "Candidate 2030",
+  "trigger": {
+    "dayMin": 23,
+    "dayMax": 23
+  },
+  "at": "13:20",
+  "body": "Looking forward to tonight's town hall. Bring your hardest questions."
+}

@@ -1,0 +1,11 @@
+{
+  "id": "d27_y_polly_crane",
+  "site": "y",
+  "from": "Pollymarket",
+  "trigger": {
+    "dayMin": 27,
+    "dayMax": 27
+  },
+  "at": "15:10",
+  "body": "Randall Crane at 54%, down from 63% after the town hall. Election tomorrow. pollymarket.com/crane-wins"
+}

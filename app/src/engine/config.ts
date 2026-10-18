@@ -3,7 +3,7 @@
  * The engine imports from here; nothing else hard-codes a balance number.
  */
 
-export const LAST_DAY = 21;
+export const LAST_DAY = 28;
 
 /**
  * The longest email or agent prompt that goes to Jev and Haiku, in characters. Anything longer gets
@@ -46,7 +46,7 @@ export const START = {
 } as const;
 
 /** Rent is deducted at payday on these days. Not enough crypto => Evicted. */
-export const RENT: Record<number, number> = { 7: 350, 14: 500, 21: 650 };
+export const RENT: Record<number, number> = { 7: 350, 14: 500, 21: 650, 28: 650 };
 
 /** GeneralAI rolls the agent to this level on the morning of the given day. */
 export const AGENT_ROLLOUT: Record<number, number> = { 4: 2, 9: 3, 14: 4, 18: 5 };

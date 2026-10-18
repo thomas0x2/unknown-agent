@@ -153,7 +153,7 @@
   },
   {
     "id": "f20",
-    "day": 20,
+    "day": 27,
     "at": "17:59",
     "from": "zev_dolr",
     "handle": "zev_dolr",
@@ -161,7 +161,7 @@
   },
   {
     "id": "f21",
-    "day": 21,
+    "day": 28,
     "at": "17:24",
     "from": "doomscroll",
     "handle": "doomscroll",
@@ -230,5 +230,61 @@
     "from": "zev_dolr",
     "handle": "zev_dolr",
     "body": "launched a side project at 2am so nobody would see it fail. three likes, all bots."
+  },
+  {
+    "id": "f30",
+    "day": 20,
+    "at": "13:20",
+    "from": "cat_ceo",
+    "handle": "cat_ceo",
+    "body": "saturday. no applications to send because nobody reads them on weekends. sent four anyway. the cat judged me in silence, which is her right."
+  },
+  {
+    "id": "f31",
+    "day": 21,
+    "at": "10:45",
+    "from": "noodleposter",
+    "handle": "noodleposter",
+    "body": "rent comes out tonight. moved the shrimp flavor to the back of the shelf so i don't eat it to save on food."
+  },
+  {
+    "id": "f32",
+    "day": 22,
+    "at": "14:00",
+    "from": "zev_dolr",
+    "handle": "zev_dolr",
+    "body": "went to vote early. guy in front of me asked if his agent could hold his place in line. the volunteer said no. he went home."
+  },
+  {
+    "id": "f33",
+    "day": 23,
+    "at": "14:05",
+    "from": "doomscroll",
+    "handle": "doomscroll",
+    "body": "watched three \"what to expect at the town hall\" videos. all three had the same voice. different faces."
+  },
+  {
+    "id": "f34",
+    "day": 24,
+    "at": "16:05",
+    "from": "cat_ceo",
+    "handle": "cat_ceo",
+    "body": "the cat watched the town hall with me and left halfway through. she has never left a screen halfway through."
+  },
+  {
+    "id": "f35",
+    "day": 25,
+    "at": "13:25",
+    "from": "noodleposter",
+    "handle": "noodleposter",
+    "body": "put out a bowl of candy for trick-or-treaters. nobody came. ate it at 9 with the lights off, like a normal person."
+  },
+  {
+    "id": "f36",
+    "day": 26,
+    "at": "13:00",
+    "from": "zev_dolr",
+    "handle": "zev_dolr",
+    "body": "made 40 DOLR this week. paid 41 in agent fees. the growth mindset says that's a lesson."
   }
 ]

@@ -1,0 +1,11 @@
+{
+  "id": "d26_y_candidate",
+  "site": "y",
+  "from": "Candidate 2030",
+  "trigger": {
+    "dayMin": 26,
+    "dayMax": 26
+  },
+  "at": "13:45",
+  "body": "Early voting closes at 5 today. If you can't make it, there's still Sunday."
+}

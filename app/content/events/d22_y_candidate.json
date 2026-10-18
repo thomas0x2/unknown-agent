@@ -1,0 +1,11 @@
+{
+  "id": "d22_y_candidate",
+  "site": "y",
+  "from": "Candidate 2030",
+  "trigger": {
+    "dayMin": 22,
+    "dayMax": 22
+  },
+  "at": "14:45",
+  "body": "Voted this morning at the Eastside library with my family. It took twenty minutes and nobody asked us for a score."
+}

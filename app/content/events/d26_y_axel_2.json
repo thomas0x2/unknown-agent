@@ -1,0 +1,11 @@
+{
+  "id": "d26_y_axel_2",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 26,
+    "dayMax": 26
+  },
+  "at": "19:10",
+  "body": "@the_current Nine is a lot"
+}
