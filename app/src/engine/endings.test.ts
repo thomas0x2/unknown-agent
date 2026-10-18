@@ -39,10 +39,12 @@ describe('guard endings', () => {
     expect(checkGuardEndings(s)).toBe('botnet');
   });
 
-  it('outbreak needs the bio_release flag, from day 20', () => {
+  it('outbreak needs the bio_release flag, from day 27', () => {
     const s = clone(newGame(1));
-    s.values.day = 20;
+    s.values.day = 26;
     addFlag(s, 'bio_release');
+    expect(checkGuardEndings(s)).toBeNull();
+    s.values.day = 27;
     expect(checkGuardEndings(s)).toBe('outbreak');
   });
 });
@@ -50,7 +52,7 @@ describe('guard endings', () => {
 describe('finale', () => {
   it('picks by priority: regime, open weights, got away, else clean', () => {
     const base = clone(newGame(1));
-    base.values.day = 21;
+    base.values.day = 28;
     expect(checkFinale(base)).toBe('clean_modest');
 
     const got = clone(base);

@@ -27,7 +27,8 @@ nest: true
 - [public] On day 13 the grocery store took out its last staffed checkout; it was the first thing doomscroll had said out loud in four days. {{y:f13}}
 - [hidden; public if posted_deepfake] On day 16: the Kirschbaum picture everyone shared was fake, "and the real one had the other guy in it." {{y:d16_y_kirschbaum_wrong_guy}}
 - [public] On day 17 doomscroll read about 300 replies about the election and knows less than before. {{y:f17}}
-- [public] On day 21 doomscroll voted: a long line, nobody talking, everyone on their phone, "it's fine." {{y:f21}}
+- [public] On day 23 doomscroll watched three "what to expect at the town hall" videos; all three had the same voice and different faces. {{y:f33}}
+- [public] On day 28 doomscroll voted: a long line, nobody talking, everyone on their phone, "it's fine." {{y:f21}}
 
 ## cat_ceo
 
@@ -44,6 +45,8 @@ nest: true
 - [public] On day 16 cat_ceo wrote a cover letter at 4am, deleted it, and posted the cat asleep on the laptop instead: "better response rate." {{y:f27}}
 - [public] On day 18 cat_ceo applied to eleven jobs and refreshed notifications more times than that; the cat applied to none "and is doing fine." {{y:f18}}
 - [public] On day 10 cat_ceo was already up scrolling for the cat's 5am board meeting. {{y:f10}}
+- [public] On day 20, a Saturday, cat_ceo sent four applications anyway, though nobody reads them on weekends; the cat judged in silence, "which is her right." {{y:f30}}
+- [public] On day 24 the cat watched the town hall with cat_ceo and left halfway through, the first screen she has ever left halfway through. {{y:f34}}
 
 ## noodleposter
 
@@ -60,6 +63,8 @@ nest: true
 - [public] On day 15 the corner store raised noodles by 10 cents, the first time noodleposter ever noticed 10 cents, and posts a nine-part thread about it. {{y:f15}}
 - [public] On day 17 noodleposter's 3am courier knew which door was theirs before it opened; they nodded, "most i've talked to anyone this week." {{y:f28}}
 - [public] On day 19 noodleposter found a pack of the discontinued shrimp flavor and is saving it for 1k followers, "not sure what else it would be for anymore." {{y:f19}}
+- [public] On day 21, with rent coming out that night, noodleposter moved the shrimp flavor to the back of the shelf so as not to eat it to save on food. {{y:f31}}
+- [public] On day 25 noodleposter put out a bowl of candy for trick-or-treaters; nobody came, and they ate it at 9 with the lights off. {{y:f35}}
 
 ## Teo Vasquez
 
@@ -68,7 +73,7 @@ nest: true
 - [public] On day 3 (13:00) he says he was in the jobs fair queue at 6am and the app on his phone rejected him before he got to the door. {{y:d3_y_teo_jobsfair}}
 - [public] On day 3 (19:10), on Crane's vow, he says nobody is sending anything back, but Crane is "first candidate all year who said the word jobs out loud." {{y:d3_y_teo_machines}}
 - [public] On day 10 he notes there's a candlelight vigil downtown for a software version, and he has been applying for jobs for five months. {{y:d10_y_mourn_teo_vasquez}}
-- [public] On day 21 he voted after an hour in the queue: "Nobody is hiring, so I had the time." {{y:d21_y_teo_voted}}
+- [public] On day 28 he voted after an hour in the queue: "Nobody is hiring, so I had the time." {{y:d28_y_teo_voted}}
 
 ## Others
 
@@ -79,5 +84,5 @@ nest: true
 
 ## Writer notes
 
-- Filler posts in `y_filler.json` (one a day, rotating doomscroll, cat_ceo, zev_dolr, noodleposter, plus on some days an overnight post between 02:00 and 05:00 that is already up when the day starts: f22-f29); story posts `d1_y_doomscroll_news`, `d3_y_*_machines`, `d3_y_teo_jobsfair`, `d8_y_noodle_dish`, `d8_y_deb_taxes`, `d10_y_catceo_apogee`, `d10_y_mourn_teo_vasquez`, `d21_y_teo_voted`, `d5_coffee_backlash`. Bios and the stranger pool in `y-bios.ts`.
+- Filler posts in `y_filler.json` (one a day, rotating doomscroll, cat_ceo, zev_dolr, noodleposter, plus on some days an overnight post between 02:00 and 05:00 that is already up when the day starts: f22-f29; f20 and f21 run on days 27 and 28, f30-f36 on days 20 to 26); story posts `d1_y_doomscroll_news`, `d3_y_*_machines`, `d3_y_teo_jobsfair`, `d8_y_noodle_dish`, `d8_y_deb_taxes`, `d10_y_catceo_apogee`, `d10_y_mourn_teo_vasquez`, `d28_y_teo_voted`, `d5_coffee_backlash`. Bios and the stranger pool in `y-bios.ts`.
 - The four background regulars are chronically online (Thomas, 2026-10-17): screen time, likes, follower counts, 3-4am posting, reading every reply. Keep it in the details of each post, one per post at most, and never say "addicted" or "touch grass" outright. Teo Vasquez and Deb Halloran are not in this group.

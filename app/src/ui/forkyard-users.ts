@@ -13,14 +13,14 @@ export interface FyUser {
   followers: number;
   following: number;
   repos: { name: string; desc: string; lang: string; stars: number }[];
-  /** Commits per day index 0..20 (Day 1..21), for the contribution grid. */
+  /** Commits per day index 0..27 (Day 1..28), for the contribution grid. */
   activity: number[];
 }
 
 function grid(seed: number): number[] {
   const out: number[] = [];
   let x = seed >>> 0;
-  for (let i = 0; i < 21; i++) { x = (x * 1664525 + 1013904223) >>> 0; out.push(x % 5 === 0 ? 0 : x % 4); }
+  for (let i = 0; i < 28; i++) { x = (x * 1664525 + 1013904223) >>> 0; out.push(x % 5 === 0 ? 0 : x % 4); }
   return out;
 }
 

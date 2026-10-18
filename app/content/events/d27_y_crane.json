@@ -1,0 +1,11 @@
+{
+  "id": "d27_y_crane",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "dayMin": 27,
+    "dayMax": 27
+  },
+  "at": "17:30",
+  "body": "Tomorrow is the most important day in the history of our country, maybe of any country. Get out and VOTE. If you see a robot trying to vote, call me personally."
+}

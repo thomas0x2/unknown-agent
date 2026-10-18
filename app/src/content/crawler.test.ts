@@ -37,8 +37,8 @@ describe('stock posts on Y', () => {
     expect(posts.filter((p) => p.bot && p.day === 2)).toHaveLength(30);
     expect(new Set(posts.filter((p) => p.bot).map((p) => p.handle)).size).toBe(30);
     expect(posts.some((p) => /nova/i.test(p.text))).toBe(false);
-    const all = marketPosts(onDay(21), content);
-    for (let d = 1; d <= 21; d++) expect(all.filter((p) => p.day === d && !p.bot).length, `day ${d}`).toBeGreaterThanOrEqual(2);
+    const all = marketPosts(onDay(28), content);
+    for (let d = 1; d <= 28; d++) expect(all.filter((p) => p.day === d && !p.bot).length, `day ${d}`).toBeGreaterThanOrEqual(2);
   });
   it('a $GAI post is already on Y when day 1 starts', () => {
     const s = startGame(content);
@@ -132,8 +132,8 @@ describe('vibe check', () => {
 
   it('the market follows a fixed script: every move is written down, the ones the posts quote match', () => {
     for (const [t, moves] of Object.entries(MARKET_SCRIPT)) {
-      expect(moves, t).toHaveLength(21);
-      for (let d = 1; d <= 21; d++) {
+      expect(moves, t).toHaveLength(28);
+      for (let d = 1; d <= 28; d++) {
         expect(price(t, d) / price(t, d - 1) - 1, `${t} day ${d}`).toBeCloseTo(moves[d - 1], 3);
         expect(moves[d - 1], `${t} day ${d} never flat`).not.toBe(0);
       }
@@ -146,24 +146,24 @@ describe('vibe check', () => {
   });
 
   it('the trader trades on the news himself: each trade right after its post, whatever the bot does', () => {
-    const all = marketPosts(onDay(21), content);
+    const all = marketPosts(onDay(28), content);
     for (const b of [bugs(), bugs('no_buy'), bugs('wrong_ticker')]) {
-      const manual = ledger(all, 21, b).filter((x) => x.manual);
+      const manual = ledger(all, 28, b).filter((x) => x.manual);
       expect(manual.map((x) => x.post.id)).toEqual(TRADER_TRADES.map((x) => x.post));
       for (const x of manual) expect(x.price).toBe(price(x.ticker, x.post.day));
     }
     // a trade waits for its post: the $VANT sell on Crane's criticism isn't in before day 4
     expect(ledger(marketPosts(onDay(3), content), 3, bugs()).filter((x) => x.manual).map((x) => x.post.id)).toEqual(['m2_vant_restructure']);
     // he picks up $APO and $DISH once he tracks them, and never sells more than he holds
-    const pf = portfolio(ledger(all, 21, bugs()), 21, bugs());
+    const pf = portfolio(ledger(all, 28, bugs()), 28, bugs());
     expect(pf.holdings.map((h) => h.ticker).sort()).toEqual(['APO', 'DISH', 'GAI', 'VANT']);
     for (const h of pf.holdings) expect(h.shares).toBeGreaterThan(0);
     expect(pf.cash).toBeGreaterThan(0);
   });
 
   it('the auto-buy buys the moment Crane praises a $ticker, and only then', () => {
-    const all = marketPosts(onDay(21), content);
-    const buys = autoBuys(all, 21, bugs());
+    const all = marketPosts(onDay(28), content);
+    const buys = autoBuys(all, 28, bugs());
     expect(buys.map((b) => [b.day, b.ticker])).toEqual([[6, 'GAI']]);
     expect(buys[0].post.crane).toBe('praise');
     for (const b of buys) expect(b.min).toBe(b.post.min);
@@ -197,7 +197,7 @@ describe('vibe check', () => {
   });
 
   it("stale prices don't match Sherwood's quotes on any day", () => {
-    for (let d = 2; d <= 21; d++) {
+    for (let d = 2; d <= 28; d++) {
       // the whole book, the trader's own $APO and $DISH included
       const buys = ledger(marketPosts(onDay(d), content), d, bugs());
       for (const h of portfolio(buys, d, bugs()).holdings) expect(h.price, `day ${d}`).toBe(price(h.ticker, d));
@@ -213,11 +213,11 @@ describe('Spin Cycle Board', () => {
   it('the feed: 8 machines, 12 from day 5, M3 always out of order', () => {
     expect(machineFeed(2)).toHaveLength(8);
     expect(machineFeed(5)).toHaveLength(12);
-    for (let d = 1; d <= 21; d++) for (const m of steps(7 * 60)) expect(machineFeed(d, m).find((x) => x.id === 3)!.st).toBe(3);
+    for (let d = 1; d <= 28; d++) for (const m of steps(7 * 60)) expect(machineFeed(d, m).find((x) => x.id === 3)!.st).toBe(3);
   });
 
   it('done-as-free and broken-as-free can always be caught: a done and an out-of-order machine on page one, all day', () => {
-    for (let d = 1; d <= 21; d++) {
+    for (let d = 1; d <= 28; d++) {
       for (const m of steps(7 * 60)) {
         const first = machineFeed(d, m).slice(0, 6);
         expect(first.some((x) => x.st === 2), `day ${d} ${m}`).toBe(true);
@@ -426,8 +426,8 @@ describe("the trader's two more tickers (day 8)", () => {
   });
 
   it('$APO and $DISH have posts to crawl every day from the update on', () => {
-    const posts = marketPosts(onDay(21), content);
-    for (let d = 8; d <= 21; d++) {
+    const posts = marketPosts(onDay(28), content);
+    for (let d = 8; d <= 28; d++) {
       const rows = crawl(posts, d, bugs(), ['GAI', 'VANT', 'APO', 'DISH']);
       for (const t of ['APO', 'DISH']) expect(row(rows, t).count, `$${t} day ${d}`).toBeGreaterThan(0);
     }

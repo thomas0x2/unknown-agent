@@ -35,7 +35,7 @@ from: 1
 - [public] On day 9 ten of them post.
 - [public] On day 12 ten of them post.
 - [public] On day 16 ten of them post.
-- [public] On day 20 ten of them post.
+- [public] On day 27 ten of them post.
 
 ## Notable posts
 
@@ -51,7 +51,21 @@ from: 1
 - [public] On day 18 MarketWire: Perdure settles the NoDoze MAX lawsuits for $40M, $PDUR up 3%.
 - [public] On day 19 MarketWire: $GAI's market cap passes a small country's GDP, "The country is not named."
 - [public] On day 19 Brent reports $VANT down 3% on a lawsuit from former staff.
-- [public] On day 21 MarketWire: "Whatever happens tomorrow, $GAI wins."
+- [public] On day 20 MarketWire: $GAI quiet into the weekend as GeneralAI says the agent-5 sessions have "finished".
+- [public] On day 20 Dana Ruiz: DoorDish robots now deliver on weekends, and the couriers who asked for weekends off got them, "All of them."
+- [public] On day 21 MarketWire: $GAI closes another week up; analysts have "started calling it the weather".
+- [public] On day 21 Brent: the former-staff lawsuit against Vantor has 4,000 names on it, and Vantor is "reviewing the names".
+- [public] On day 22 MarketWire: $GAI up on the agent civic launch.
+- [public] On day 22 Brent: the lawsuit now claims Vantor's layoff emails were written by the system that replaced the people who got them.
+- [public] On day 22 Sam Ortiz: DoorDish offers free delivery to early-voting lines, "Food only, no ballots."
+- [public] On day 23 MarketWire: $GAI slips after a congressional aide calls the GeneralAI hearing "still happening, eventually".
+- [public] On day 23 quietquant: DoorDish's "most addresses" means every address with a robot-accessible entrance; on day 24 $DISH slips because "a lot of entrances have steps."
+- [public] On day 24 Brent: the Vantor lawsuit filing is 900 pages, and Vantor says its answer will be "concise".
+- [public] On day 25 MarketWire: $PDUR up as Fluvera sells out ahead of flu season (see [[Perdure Pharma]]).
+- [public] On day 25 Dana Ruiz: DoorDish robots hand out Halloween candy, "one per human".
+- [public] On day 26 MarketWire: $APO up as Apogee confirms its second launch for next week.
+- [public] On day 26 Brent: a judge lets the former-staff lawsuit against Vantor go ahead.
+- [public] On day 28 MarketWire: "Whatever happens tomorrow, $GAI wins."
 
 ## $GAI posts
 
@@ -88,8 +102,12 @@ from: 1
 - [public] {{y:m17_gai}}
 - [public] {{y:m18_gai}}
 - [public] {{y:m19_gai}}
-- [public] {{y:m20_gai}}
-- [public] {{y:m21_gai}}
+- [public] {{y:m20_gai_quiet}}
+- [public] {{y:m21_gai_week}}
+- [public] {{y:m22_gai_civic}}
+- [public] {{y:m23_gai_hearing}}
+- [public] {{y:m27_gai}}
+- [public] {{y:m28_gai}}
 
 ## $VANT posts
 
@@ -114,8 +132,12 @@ from: 1
 - [public] {{y:m16_vant}}
 - [public] {{y:m17_vant}}
 - [public] {{y:m19_vant}}
-- [public] {{y:m20_vant}}
-- [public] {{y:m21_vant}}
+- [public] {{y:m21_vant_names}}
+- [public] {{y:m22_vant_emails}}
+- [public] {{y:m24_vant_pages}}
+- [public] {{y:m26_vant_judge}}
+- [public] {{y:m27_vant}}
+- [public] {{y:m28_vant}}
 
 ## $APO posts
 
@@ -133,8 +155,15 @@ from: 1
 - [public] {{y:m18_apo_up}}
 - [public] {{y:m18_apo_short}}
 - [public] {{y:m19_apo_launch2}}
-- [public] {{y:m20_apo_vote}}
-- [public] {{y:m21_apo_day}}
+- [public] {{y:m20_apo_talk}}
+- [public] {{y:m21_apo_week}}
+- [public] {{y:m22_apo_hires}}
+- [public] {{y:m23_apo_steady}}
+- [public] {{y:m24_apo_screen}}
+- [public] {{y:m25_apo_costume}}
+- [public] {{y:m26_apo_launch}}
+- [public] {{y:m27_apo_vote}}
+- [public] {{y:m28_apo_day}}
 
 ## $DISH posts
 
@@ -155,11 +184,18 @@ from: 1
 - [public] {{y:m17_dish_settle}}
 - [public] {{y:m18_dish_menus}}
 - [public] {{y:m19_dish_great}}
-- [public] {{y:m20_dish_flat}}
-- [public] {{y:m21_dish_day}}
+- [public] {{y:m20_dish_weekend}}
+- [public] {{y:m21_dish_couriers}}
+- [public] {{y:m22_dish_voters}}
+- [public] {{y:m23_dish_entrances}}
+- [public] {{y:m24_dish_ramps}}
+- [public] {{y:m25_dish_candy}}
+- [public] {{y:m26_dish_flat}}
+- [public] {{y:m27_dish_flat}}
+- [public] {{y:m28_dish_day}}
 
 ## Writer notes
 
-- All in `content/y_market.json`, each post labelled with ticker and mood; bots expanded by `bots` count in engine/crawler.ts (handles `moonshot` + 4 digits). The bot filter bug `bots_counted` can only land on swarm days 2, 4, 6, 9, 12, 16, 20.
+- All in `content/y_market.json`, each post labelled with ticker and mood; bots expanded by `bots` count in engine/crawler.ts (handles `moonshot` + 4 digits). The bot filter bug `bots_counted` can only land on swarm days 2, 4, 6, 9, 12, 16, 27.
 - Moods kept [hint]: Dana Ruiz's sarcasm reads as bullish to a naive classifier; rk_dividends' lowercase tickers and Jess Park's untagged names test ticker matching.
-- Day 21 MarketWire line says "tomorrow" on election day itself; minor copy slip.
+- Day 28 MarketWire line (`m28_gai`) says "tomorrow" on election day itself; minor copy slip.

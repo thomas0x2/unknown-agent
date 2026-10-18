@@ -1,0 +1,11 @@
+{
+  "id": "d24_y_stryker",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 24,
+    "dayMax": 24
+  },
+  "at": "17:40",
+  "body": "My EMPIRE coaches are digital now too. They don't get tired, and they don't take refunds."
+}

@@ -1,0 +1,11 @@
+{
+  "id": "d28_y_crane",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "dayMin": 28,
+    "dayMax": 28
+  },
+  "at": "10:05",
+  "body": "TODAY IS THE DAY. Vote Crane! They said a man like me could never get this far, and they were right, and here I am anyway. BELIEVE IT."
+}

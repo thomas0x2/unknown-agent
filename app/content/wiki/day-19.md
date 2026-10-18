@@ -20,7 +20,7 @@ from: 19
 - [public] 12:00 [[Caleb Moxon]] doesn't know what agent-5 does in those sessions, "and it is also the problem". {{y:d19_y_moxon}}
 - [public] 12:30 [[The Current]]: Crane 47%, his opponent 45%, inside the margin; a growing share of respondents can't be confirmed as people. {{y:d19_y_current}}
 - [public] 12:57 noodleposter found the discontinued shrimp flavor and is saving it for 1k followers. {{y:f19}}
-- [public] 14:00 Candidate 2030: two days left; make a plan to vote. {{y:d19_y_candidate}}
+- [public] 14:00 Candidate 2030: nine days left; make a plan to vote. {{y:d19_y_candidate}}
 - [public] 16:05 [[Max Stryker]]: his posts go out at 3am because he's up. {{y:d19_y_stryker}}
 - [public] 17:43 Brent Kowalski: $VANT down 3% on a lawsuit from former staff. {{y:m19_vant}}
 - [public] 17:55 Liftoff Daily: Apogee hired 2,000 people this year. {{y:d19_y_liftoff}}

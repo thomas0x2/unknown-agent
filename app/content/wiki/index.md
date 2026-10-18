@@ -84,7 +84,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[nullboard and Cellar]] (nullboard-and-cellar.md): nullboard.onion is the Null Collective's forum
 - [[Pollymarket]] (pollymarket.md): Pollymarket (pollymarket.com) is a prediction market and Y account; story markets with odds and trades, nothing to bet with
 - [[prince-claims.xyz]] (prince-claims.md): prince-claims.xyz is the site behind the Crypto Prince banner ad ("CONGRATS!!!
-- [[Qdrive]] (qdrive.md): Qdrive (qdrive.com) is the player's cloud drive, with Documents, Projects and Models folders
+- [[Qdrive]] (qdrive.md): Qdrive (qdrive.com) is the player's cloud drive, with Documents and Models folders
 - [[Qmail]] (qmail.md): Qmail (qmail.com) is the player's email, you@qmail.com
 - [[Sherwood]] (sherwood.md): Sherwood (sherwood.com) is a stock trading app, white with black type and one green, bookmarked after the first visit
 - [[SorryWriter]] (sorrywriter.md): SorryWriter (sorrywriter.ai) is an apology chat laid out like agent.chat, with a logo of an envelope sealed with a pink tear
@@ -111,7 +111,7 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[Money and DOLR]] (money-and-dolr.md): DOLR is the only money The player uses: a stablecoin pegged 1:1 to the dollar, held in their Coinbin wallet
 - [[Peptides]] (peptides.md): Peptides are short chains of amino acids sold online in plain boxes as vials labelled "for research use only, not for human consumption", with names like BPC-157
 - [[The city]] (the-city.md): An unnamed present-day American city where GeneralAI has made white-collar work optional
-- [[The election]] (the-election.md): Election day is Sunday, October 27, 2030
+- [[The election]] (the-election.md): Election day is Sunday, November 3, 2030
 
 ## Days
 
@@ -134,8 +134,15 @@ Every page in the wiki, by category. Format: `[[Title]] (file): what it is`. Upd
 - [[Day 17]] (day-17.md): debate night, GeneralAI wrote the AI rules
 - [[Day 18]] (day-18.md): agent-5, debate poll, sessions that keep running, NoDoze MAX settlement
 - [[Day 19]] (day-19.md): is a computer writing Crane's posts
-- [[Day 20]] (day-20.md): election eve, dead heat
-- [[Day 21]] (day-21.md): election day, rent 650, finale
+- [[Day 20]] (day-20.md): Crane's stadium rally, the agent-5 sessions "filed paperwork"
+- [[Day 21]] (day-21.md): one week to go, rent 650
+- [[Day 22]] (day-22.md): early voting opens, agent civic moves a polling station
+- [[Day 23]] (day-23.md): town hall, Crane on a screen
+- [[Day 24]] (day-24.md): "in spirit and in high definition", enterprise logs
+- [[Day 25]] (day-25.md): Halloween, final weekday poll
+- [[Day 26]] (day-26.md): early voting closes, nine agent ballots
+- [[Day 27]] (day-27.md): election eve, dead heat
+- [[Day 28]] (day-28.md): election day, rent 650, finale
 
 ## Writers
 

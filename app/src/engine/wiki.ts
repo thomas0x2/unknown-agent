@@ -61,12 +61,14 @@ export interface WikiCtx { day: number; min: number | null; flags: Set<string>; 
 /** `seen` maps each arrived item to its text, for embeds; a plain list of ids is fine when only rules need it. */
 export function wikiCtx(day: number, min?: number | null, flags: Iterable<string> = [], meters: Record<string, number> = {}, seen: Iterable<string> | Map<string, string> = []): WikiCtx {
   const items = seen instanceof Map ? seen : new Map([...seen].map((id) => [seenRef(id), '']));
-  return { day: Math.min(21, Math.max(1, Math.floor(day) || 1)), min: Number.isFinite(min) ? (min as number) : null, flags: new Set(flags), meters: { ...meters, day: Math.floor(day) || 1 }, seen: items };
+  return { day: Math.min(WIKI_LAST_DAY, Math.max(1, Math.floor(day) || 1)), min: Number.isFinite(min) ? (min as number) : null, flags: new Set(flags), meters: { ...meters, day: Math.floor(day) || 1 }, seen: items };
 }
 
 /** A `seen` reference as stored: mail:, y: and event: are only labels for an event id; article: stays. */
 export const seenRef = (ref: string): string => ref.trim().replace(/^(mail|email|y|post|event|yowl|review):/i, '');
 
+/** The last day of the game (LAST_DAY in config.ts; no imports here). */
+const WIKI_LAST_DAY = 28;
 // agent-N goes live on these days (config AGENT_ROLLOUT), so naming it before then is a spoiler.
 const MODEL_DAY: Record<string, number> = { 2: 4, 3: 9, 4: 14, 5: 18 };
 const TAG = /^\[(public|hint|hidden|classified)((?:\s*;[^\]]*)?)\]\s*/i;
@@ -156,8 +158,9 @@ export function latestDay(s: string): number {
     seen(+m[1]);
     for (const n of (m[2] || '').match(/\d+/g) ?? []) seen(+n);
   }
-  // day 1 is October 7 (DAY_ONE in calendar.ts)
+  // day 1 is October 7 (DAY_ONE in calendar.ts), day 26 is November 1
   for (const m of rest.matchAll(/\bOct(?:ober)?\s+(\d+)/gi)) seen(+m[1] - 6);
+  for (const m of rest.matchAll(/\bNov(?:ember)?\s+(\d+)/gi)) seen(+m[1] + 25);
   for (const m of rest.matchAll(/\bagent-([2-5])\b/gi)) seen(MODEL_DAY[m[1]]);
   return latest;
 }

@@ -1,10 +1,10 @@
 {
-  "id": "d20_y_citypulse_vote",
+  "id": "d27_y_citypulse_vote",
   "site": "y",
   "from": "CityPulse",
   "trigger": {
-    "dayMin": 20,
-    "dayMax": 20
+    "dayMin": 27,
+    "dayMax": 27
   },
   "at": "15:00",
   "body": "DEAD HEAT! The final poll before tomorrow: Crane 46%, his opponent 46%, 8% STILL undecided. Polls open at 7:00 AM. Every single vote counts!"

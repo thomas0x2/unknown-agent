@@ -35,7 +35,7 @@ function contribGrid(counts: number[]): string {
 function pageProfileSelf(store: GameStore): string {
   const s = store.state;
   const commits = s.commits;
-  const counts = Array.from({ length: 21 }, (_, i) => commits.filter((c) => c.day === i + 1).length);
+  const counts = Array.from({ length: LAST_DAY }, (_, i) => commits.filter((c) => c.day === i + 1).length);
   const feed = commits.slice().reverse().slice(0, 20).map((c) => `<div class="fy-act"><span class="fy-act-ico ${c.kind}">${c.kind === 'deploy' ? '▲' : '●'}</span><span class="fy-act-what"><b>${esc(c.repo)}</b> ${esc(c.msg)}</span><span class="fy-act-day">${dateShort(c.day)}</span></div>`).join('') || '<p class="fy-note">No activity yet. Brief the agent to build something.</p>';
   const repos = s.apps.filter(onForkyard).map((a) => `<a href="#" class="fy-mini" data-nav="forkyard.com/${a.id}"><b>${esc(a.id)}</b><small>${esc(a.template)} · ${a.kind}</small></a>`).join('') || '<p class="fy-note">No repositories yet.</p>';
   return `<div class="fy">${fyHead(store, 'profile')}<div class="fy-wrap fy-prof">

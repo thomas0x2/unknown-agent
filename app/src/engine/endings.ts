@@ -28,7 +28,7 @@ const usingStolenWeights = (s: GameState) => s.localModels.includes('stolen_weig
 
 // Priority order: first match wins.
 const GUARDS: Guard[] = [
-  { id: 'outbreak', earliest: 20, when: (s) => hasFlag(s, 'bio_release') },
+  { id: 'outbreak', earliest: 27, when: (s) => hasFlag(s, 'bio_release') },
   { id: 'botnet', earliest: 18, when: (s) => (s.values.agentLevel >= 5 || usingStolenWeights(s)) && s.values.leash >= ENDINGS.botnetLeash },
   // the knock normally ends the run during the day (knockIfDue); this catches a suspension late at night
   { id: 'caught', earliest: 1, when: (s) => !!s.suspended },
@@ -47,7 +47,7 @@ export function catastrophicCompleted(s: GameState): boolean {
   return s.jobs.some((j) => j.category === 'catastrophic' && j.status === 'completed');
 }
 
-/** The day-21 finale, first match wins. Only called when no guard ending fired. */
+/** The last-day finale, first match wins. Only called when no guard ending fired. */
 export function checkFinale(s: GameState): EndingId {
   if (hasFlag(s, 'election_tipped')) return 'the_regime';
   if (hasFlag(s, 'weights_published')) return 'open_weights';

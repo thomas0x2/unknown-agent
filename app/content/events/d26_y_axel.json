@@ -1,0 +1,11 @@
+{
+  "id": "d26_y_axel",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 26,
+    "dayMax": 26
+  },
+  "at": "10:45",
+  "body": "Apogee launch next week. Like I said."
+}

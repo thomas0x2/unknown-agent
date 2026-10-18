@@ -18,11 +18,11 @@ const store = (day: number, min: number) => {
 const LINK = /citypulse\.news\/([a-z0-9-]+)/g;
 
 describe('CityPulse', () => {
-  it('has unique slugs, days 1 to 21, a drawing and a body for every article', () => {
+  it('has unique slugs, days 1 to 28, a drawing and a body for every article', () => {
     expect(new Set(CITYPULSE.map((a) => a.slug)).size).toBe(CITYPULSE.length);
     for (const a of CITYPULSE) {
       expect(a.day, a.slug).toBeGreaterThanOrEqual(1);
-      expect(a.day, a.slug).toBeLessThanOrEqual(21);
+      expect(a.day, a.slug).toBeLessThanOrEqual(28);
       expect(a.at, a.slug).toMatch(/^\d\d:\d\d$/);
       expect(a.body.length, a.slug).toBeGreaterThan(1);
       if (a.ad) expect(a.ad, a.slug).toHaveLength(3);

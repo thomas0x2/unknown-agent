@@ -1,0 +1,11 @@
+{
+  "id": "d25_y_hartman",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 25,
+    "dayMax": 25
+  },
+  "at": "12:40",
+  "body": "happy halloween. the office dressed up as last year's models. it was a bit much."
+}

@@ -14,7 +14,7 @@ import './style.css';
 import { loadContent } from './content/load';
 import { onWikiFiles } from './content/wikiFiles';
 import { wikiView, wikiClickIn, wikiInputIn, clock, embedItem, itemIds, type WikiHost } from './ui/wiki';
-import { queryCtx, estimatedState, CLOCK, type GameState } from './engine';
+import { queryCtx, estimatedState, CLOCK, LAST_DAY, type GameState } from './engine';
 
 const content = loadContent();
 const KEY = 'unknown-agent-wiki-view';
@@ -51,7 +51,7 @@ const host: WikiHost = {
   ctxLabel: () => 'what has arrived is estimated from triggers',
   flags: () => ALL_FLAGS,
   name: 'Good catch! wiki',
-  controls: () => `<button class="wk-btn wk-navbtn" data-nav-toggle>${navOpen ? 'Close' : 'Pages'}</button><span class="wk-view">View as day <select id="wv-day">${Array.from({ length: 21 }, (_, i) => `<option ${i + 1 === view.day ? 'selected' : ''}>${i + 1}</option>`).join('')}</select>
+  controls: () => `<button class="wk-btn wk-navbtn" data-nav-toggle>${navOpen ? 'Close' : 'Pages'}</button><span class="wk-view">View as day <select id="wv-day">${Array.from({ length: LAST_DAY }, (_, i) => `<option ${i + 1 === view.day ? 'selected' : ''}>${i + 1}</option>`).join('')}</select>
     at <input id="wv-time" type="time" value="${clock(view.min)}">
     with flags <input id="wv-flags" value="${esc(view.flags.join(', '))}" placeholder="none" list="wv-all" size="28"><datalist id="wv-all">${ALL_FLAGS.map((f) => `<option value="${esc(f)}">`).join('')}</datalist>
     shown <input id="wv-shown" value="${esc(view.shown.join(', '))}" placeholder="as the triggers say" list="wv-items" size="24" title="Emails, posts and articles to count as shown (an id), or as not shown (!id), on top of what has arrived by then"><datalist id="wv-items">${itemIds(host).map((f) => `<option value="${esc(f)}">`).join('')}</datalist></span>`,

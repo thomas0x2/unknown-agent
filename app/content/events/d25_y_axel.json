@@ -1,0 +1,11 @@
+{
+  "id": "d25_y_axel",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 25,
+    "dayMax": 25
+  },
+  "at": "10:30",
+  "body": "Halloween. Going as myself again."
+}

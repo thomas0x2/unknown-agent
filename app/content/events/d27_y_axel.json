@@ -1,0 +1,11 @@
+{
+  "id": "d27_y_axel",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 27,
+    "dayMax": 27
+  },
+  "at": "12:15",
+  "body": "Vote tomorrow. The future depends on it, maybe."
+}

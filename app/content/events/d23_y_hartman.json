@@ -1,0 +1,11 @@
+{
+  "id": "d23_y_hartman",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 23,
+    "dayMax": 23
+  },
+  "at": "11:00",
+  "body": "about agent civic: one user was told his polling station moved. it hadn't. we've retrained it to be less helpful."
+}

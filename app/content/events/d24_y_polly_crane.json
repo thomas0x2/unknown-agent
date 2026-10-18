@@ -1,0 +1,11 @@
+{
+  "id": "d24_y_polly_crane",
+  "site": "y",
+  "from": "Pollymarket",
+  "trigger": {
+    "dayMin": 24,
+    "dayMax": 24
+  },
+  "at": "12:15",
+  "body": "Randall Crane wins: 63% after the town hall, up from 58% last week. pollymarket.com/crane-wins"
+}

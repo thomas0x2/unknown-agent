@@ -1,0 +1,11 @@
+{
+  "id": "d22_y_moxon",
+  "site": "y",
+  "from": "Caleb Moxon",
+  "trigger": {
+    "dayMin": 22,
+    "dayMax": 22
+  },
+  "at": "16:20",
+  "body": "Ask agent civic who to vote for and screenshot the answer. Ask again tomorrow. Compare."
+}

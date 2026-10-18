@@ -1,0 +1,11 @@
+{
+  "id": "d22_y_hartman",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 22,
+    "dayMax": 22
+  },
+  "at": "11:05",
+  "body": "today we're launching agent civic: nonpartisan answers about where, when and how to vote. it doesn't have opinions. we checked."
+}

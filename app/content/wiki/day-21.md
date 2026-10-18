@@ -5,50 +5,32 @@ category: days
 from: 21
 ---
 
-[public] Sunday, October 27, election day and the last day of the game. Rent of 650 DOLR, set by LandlordPro for [[GeneralAI Properties]], is taken at payday tonight. [known]
+[public] Sunday, October 27, one week before the election. Rent of 650 DOLR, set by LandlordPro for [[GeneralAI Properties]], is taken at payday tonight. [known]
 
 ## Mail
 
-- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": he voted at 7:00, first in line. {{mail:guru_newsletter@21}}
+- [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": pay rent early and on purpose. {{mail:guru_newsletter@21}}
 
 ## Y
 
-- [public] 09:05 [[Axel Rook]]: "Big day" {{y:d21_y_axel}}
-- [public] 09:40 Candidate 2030: "Whoever you support, go vote." {{y:d21_y_candidate}}
-- [public] 10:05 [[Randall Crane]]: "TODAY IS THE DAY. Vote Crane! ... BELIEVE IT." {{y:d21_y_crane}}
-- [public] 10:20 [[The Current]]: polls open until 20:00; bring photo ID and the registration card; no Citizen Score needed; if a message says your polling station moved, it hasn't. {{y:d21_y_current}}
-- [public] 10:30 [[Cal Hartman]]: "go vote. if you're unsure, agent can help you decide." {{y:d21_y_hartman}}
-- [public] 10:40 MarketWire: "Whatever happens tomorrow, $GAI wins." {{y:m21_gai}}
-- [public] 10:52 [[Max Stryker]] voted at 7:00 sharp, first in line. {{y:d21_y_stryker}}
-- [public] 11:06 [[Caleb Moxon]] won't tell anyone how to vote, only asks that they do it themselves. {{y:d21_y_moxon}}
-- [public] 12:00 Teo Vasquez voted; the queue was an hour; "Nobody is hiring, so I had the time." {{y:d21_y_teo_voted}}
-- [public] 17:24 doomscroll voted; nobody in line was talking, everyone on their phone, "it's fine." {{y:f21}}
-- [public] 18:49 Brent Kowalski: $VANT under pressure as the layoff lawsuit grows. {{y:m21_vant}}
-- [public] 18:59 MarketWire: $APO and $GAI lead early trading. {{y:m21_apo_day}}
-- [public] 19:45 [[CityPulse]]: record turnout according to Y's live tracker; the election office hasn't finished counting the first precinct. {{y:d21_y_citypulse}}
-- [public] 19:50 [[Pollymarket]]: Crane at 57% with the count barely started. {{y:d21_y_polly_crane}}
-- [public] 19:55 Axel Rook: "@citypulse Interesting." {{y:d21_y_axel_2}}
-
-## News
-
-- [public] 10:00 IT'S HAPPENING: polls open as huge queues form across the city (fake "your polling station moved" messages, some sent by AI assistants) {{article:polls-open}}
-- [public] 19:40 RECORD-SMASHING TURNOUT! But the count has barely begun {{article:turnout}}
-
-## Pollymarket
-
-- [public] 19:45 [[Pollymarket]]: Crane is at 57% with the count barely started; the market can't resolve until the election office calls it.
-- [public] 20:00 [[Pollymarket]]: the Hartman market resolves NO.
+- [public] 10:10 [[Axel Rook]]: "One week" {{y:d21_y_axel}}
+- [public] 10:45 noodleposter moved the shrimp flavor to the back of the shelf before rent comes out. {{y:f31}}
+- [public] 11:30 Candidate 2030: one week from today; check your registration and make a plan. {{y:d21_y_candidate}}
+- [public] 11:50 quietquant: $DISH flat; weekend robot deliveries up, weekend tips at zero. {{y:m21_dish_couriers}}
+- [public] 12:10 [[Cal Hartman]]: agent will be available on election day as usual; "it will not be voting." {{y:d21_y_hartman}}
+- [public] 12:50 MarketWire: $GAI closes another week up; analysts now call it "the weather". {{y:m21_gai_week}}
+- [public] 13:40 [[The Current]]: early voting opens tomorrow at 8:00 in every public library; bring photo ID and the paper registration card. {{y:d21_y_current}}
+- [public] 14:30 [[Randall Crane]]: one week; the other side has stopped posting at night, "That's when the winners are up." {{y:d21_y_crane}}
+- [public] 15:20 Brent Kowalski: the $VANT former-staff lawsuit now has 4,000 names; Vantor is "reviewing the names". {{y:m21_vant_names}}
+- [public] 16:05 [[Max Stryker]]: rent day; "If paying it hurt, the lesson was free." {{y:d21_y_stryker}}
+- [public] 17:10 [[Caleb Moxon]] has started writing down what he remembers, for the hearing after the election. {{y:d21_y_moxon}}
+- [public] 18:00 MarketWire: $APO up for the fourth week running. {{y:m21_apo_week}}
+- [public] 19:00 Axel Rook: "@liftoff_daily Correct" {{y:d21_y_axel_2}}
 
 ## Trending
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.
-- [hidden] [planned] Proposed trending: #ElectionDay; record turnout; #RentDay.
-
-## Not written yet
-
-- [hidden] [open] The family's final scene has no design yet.
 
 ## Writer notes
 
-- Rent 650, then the finale ending check (see [[Endings]]).
-- MarketWire's 10:37 post says "tomorrow" on election day itself.
+- Rent 650 at payday (RENT in config), the third payday; day 28 takes 650 again.

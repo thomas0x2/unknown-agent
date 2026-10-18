@@ -1,0 +1,11 @@
+{
+  "id": "d22_y_axel",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 22,
+    "dayMax": 22
+  },
+  "at": "13:15",
+  "body": "Voted early. 4 minutes. Y told me where to go."
+}

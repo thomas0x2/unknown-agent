@@ -90,6 +90,12 @@ describe('endDay', () => {
     s.values.crypto = 1000; // covers rent 650 + sub
     addFlag(s, 'election_tipped');
     s = endDay(s, content);
+    expect(s.ending).toBeNull(); // day 21 is a payday, not the end
+    s = startGame(content, 1);
+    s.values.day = 28;
+    s.values.crypto = 1000;
+    addFlag(s, 'election_tipped');
+    s = endDay(s, content);
     expect(s.ending).toBe('the_regime');
   });
 });
