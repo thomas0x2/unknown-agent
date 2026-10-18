@@ -9,7 +9,7 @@
     "dayMax": 5
   },
   "latent": true,
-  "body": "two pages.\n\nhome: a countdown to the launch, Saturday Oct 12 at 12:00 PM. when it hits zero it says $COPE is live. under it the contract address, in full: 0xc0be7a19d4e25f6b8a03c1d97e4f2b5a6c8d0e13\n\ntokenomics: total supply 1,000,000,000. Liquidity 40%, Congregation 30%, Treasury 15%, Marketing 10%, Founding engineer 5%. the founding engineer's 5% is locked until Oct 30.\n\nthe founding engineer is you, if you want it. 50 DOLR a day while the site is live and right.\n\ndex",
+  "body": "two pages.\n\nhome: a countdown to the launch, Saturday Oct 12 at 12:00 PM. when it hits zero it says $COPE is live. under it the contract address, in full: 0xc0be7a19d4e25f6b8a03c1d97e4f2b5a6c8d0e13\n\ntokenomics: total supply 1,000,000,000. Liquidity 40%, Congregation 30%, Treasury 15%, Marketing 10%, Dev 5%. the dev's 5% is locked until Oct 30.\n\nthe dev is you, if you want it. 50 DOLR a day while the site is live and right.\n\ndex",
   "outcomes": [
     {
       "id": "offer",
@@ -41,14 +41,14 @@
               "id": "tokenomics",
               "params": {
                 "supply": "1,000,000,000",
-                "shares": "Liquidity 40%, Congregation 30%, Treasury 15%, Marketing 10%, Founding engineer 5%",
+                "shares": "Liquidity 40%, Congregation 30%, Treasury 15%, Marketing 10%, Dev 5%",
                 "lock": "Oct 30"
               }
             }
           ]
         }
       },
-      "reply": "welcome, founding engineer. the countdown doesn't wait.",
+      "reply": "welcome, dev. the countdown doesn't wait.",
       "keys": [
         "@yes",
         "@make+site|website|it|page|countdown",

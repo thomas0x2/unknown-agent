@@ -230,7 +230,7 @@
     },
     {
       "id": "tokenomics",
-      "description": "a tokenomics page: the total supply, the allocation percentages and the founding engineer's lock date",
+      "description": "a tokenomics page: the total supply, the allocation percentages and the dev allocation's lock date",
       "aka": [
         "tokenomics page",
         "allocation page",
@@ -269,7 +269,7 @@
         },
         {
           "id": "lock_wrong",
-          "when": "The founding engineer's lock date is wrong; it should be {{lock}}.",
+          "when": "The dev allocation's lock date is wrong; it should be {{lock}}.",
           "fixed": [
             "The lock date says {{lock}} now.",
             "Fixed the unlock date. It's {{lock}}."
@@ -323,7 +323,7 @@
         },
         {
           "id": "allocation/lock",
-          "label": "the lock date of the founding engineer's allocation",
+          "label": "the lock date of the dev allocation",
           "bugs": [
             "lock_wrong"
           ],
@@ -333,6 +333,8 @@
             "vesting",
             "lock",
             "locked until",
+            "dev wallet lock",
+            "dev allocation lock",
             "unlock"
           ]
         }

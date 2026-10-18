@@ -27,7 +27,7 @@ export const MS_PER_GAME_MIN = CLOCK.dayMs / (CLOCK.sleep - CLOCK.wake);
 
 /**
  * How long the agent works on a build or fix before it pushes, in game minutes (one per real second):
- * a base plus a share per feature or problem, up to a cap, times the agent model's speed (agent-1 …
+ * a base plus a share per feature or problem, up to a cap, times the agent model's speed (agent-1 is slow at 1.5, …
  * agent-5), then up to 20% either way.
  */
 export const AGENT_WORK = {
@@ -35,7 +35,7 @@ export const AGENT_WORK = {
   fix: { base: 12, each: 6, max: 45 },
   /** A hack in agent-terminal: base + each line of the agent's log, in game minutes. */
   hack: { base: 8, each: 3, max: 30 },
-  speed: [1, 0.8, 0.65, 0.5, 0.4],
+  speed: [1.5, 0.8, 0.65, 0.5, 0.4],
   spread: 0.2,
 };
 
@@ -203,6 +203,10 @@ export const Y = {
   overpostPenaltyPct: -0.02,
   /** A post's follower change lands randomly within this share either side of what its rating earns. */
   postJitter: 0.3,
-  /** The lowest chance a Y regular replies to a player's post, however few followers they have (engine/yReplies.ts). */
-  replyFloor: 0.05,
+  /**
+   * The chance each Y regular answers a player's post (engine/yReplies.ts): `floor` up to `floorAt`
+   * followers, then rising evenly per tenfold to `cap` at `capAt`. With three regulars, a 16-follower
+   * account sees one reply about 3% of the time and two about 0.03%.
+   */
+  reply: { floor: 0.01, floorAt: 100, cap: 0.6, capAt: 1_000_000 },
 };

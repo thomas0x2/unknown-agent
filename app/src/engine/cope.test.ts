@@ -71,7 +71,7 @@ describe("Dex's coin site", () => {
     expect(wrong).not.toBe(COPE.address);
     expect(wrong).toHaveLength(COPE.address.length);
     expect(siteAddress(COPE.address, new Set(['address_cut']), 0)).toMatch(/…/);
-    const shares = 'Liquidity 40%, Congregation 30%, Treasury 15%, Marketing 10%, Founding engineer 5%';
+    const shares = 'Liquidity 40%, Congregation 30%, Treasury 15%, Marketing 10%, Dev 5%';
     const sum = (b: string[]) => siteAllocation(shares, new Set(b)).reduce((a, r) => a + r.pct, 0);
     expect(sum([])).toBe(100);
     expect(sum(['sum_over'])).toBeGreaterThan(100);
