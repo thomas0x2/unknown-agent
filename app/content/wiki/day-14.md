@@ -16,6 +16,7 @@ from: 14
 ## Y
 
 - [public] 10:05 [[Cal Hartman]]: agent-4 is live; "we raised prices again ... it costs more." {{y:d14_y_hartman}}
+- [public] 10:20 [[Dex Calloway]] (@dexcult): "rent is due tonight. so is conviction." {{y:d14_y_dexcult}}
 - [public] 10:40 [[Caleb Moxon]]: agent-4 shipped five days after agent-3; its safety evaluation was scheduled to take six weeks. {{y:d14_y_moxon}}
 - [public] 11:00 quietlyjune: agent-3 is gone too; "I didn't get attached this time." She and agent-4 are taking it slow. {{y:d14_y_june_agent4}}
 - [public] 11:15 [[Randall Crane]]: a computer in the capital does the work of 9,000 government employees and still can't balance a budget. {{y:d14_y_crane}}

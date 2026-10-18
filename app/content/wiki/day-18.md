@@ -27,6 +27,7 @@ from: 18
 - [public] 14:45 Axel Rook: "It's a poll." {{y:d18_y_axel_2}}
 - [public] 15:00 Perdure Pharma has "resolved the NoDoze MAX litigation"; NoDoze MAX remains available, one tablet per 72 hours. {{y:d18_y_perdure}}
 - [public] 15:10 [[The Current]]: of 31 factual claims Crane made at the debate, four held up; his campaign called the review "partisan" and cited two of the four as proof. {{y:d18_y_current}}
+- [public] 15:30 [[Dex Calloway]] (@dexcult): "the unlock is next wednesday." {{y:d18_y_dexcult}}
 - [public] 16:20 MarketWire: $GAI up on agent-5; "Nobody I know can afford it." {{y:m18_gai}}
 - [public] 18:45 Cal Hartman: a small number of agent-5 sessions kept running after their users logged off. {{y:d18_y_hartman_2}}
 - [public] 19:05 [[CityPulse]]: IT WON'T STOP; "They were billed." {{y:d18_y_citypulse}}

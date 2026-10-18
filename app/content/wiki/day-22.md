@@ -13,6 +13,7 @@ from: 22
 
 ## Y
 
+- [public] 10:10 [[Dex Calloway]] (@dexcult): something important tomorrow: "set an alarm." {{y:d22_y_dexcult}}
 - [public] 10:20 [[The Current]]: early voting is open; the most common question at the central library is whether agent can vote for someone. It can't. {{y:d22_y_current}}
 - [public] 10:40 Sam Ortiz: $DISH offers free delivery to early-voting lines, "Food only, no ballots." {{y:m22_dish_voters}}
 - [public] 11:05 [[Cal Hartman]] launches agent civic, nonpartisan voting answers: "it doesn't have opinions. we checked." {{y:d22_y_hartman}}

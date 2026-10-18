@@ -14,6 +14,7 @@ from: 21
 ## Y
 
 - [public] 10:10 [[Axel Rook]]: "One week" {{y:d21_y_axel}}
+- [public] 10:20 [[Dex Calloway]] (@dexcult): "everyone is always still early." {{y:d21_y_dexcult}}
 - [public] 10:45 noodleposter moved the shrimp flavor to the back of the shelf before rent comes out. {{y:f31}}
 - [public] 11:30 Candidate 2030: one week from today; check your registration and make a plan. {{y:d21_y_candidate}}
 - [public] 11:50 quietquant: $DISH flat; weekend robot deliveries up, weekend tips at zero. {{y:m21_dish_couriers}}

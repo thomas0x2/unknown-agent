@@ -28,6 +28,10 @@ export interface Effects {
    * just record status. The suspicion/standing changes themselves stay authored in `add`.
    */
   job?: 'accept' | 'complete' | 'fail';
+  /** Coins other than DOLR into the Coinbin wallet (Dex paying in COPE), from `from`, shown as the sender. */
+  coins?: { from: string; add: Record<string, number> };
+  /** The client of this client event is gone (Dex after the rug): no more pay, no more mail about the app. */
+  dropClient?: string;
   /** Scripted break: knock one live app offline (a named one, or a random one). */
   breakApp?: boolean | { appId?: string };
 }
@@ -399,6 +403,8 @@ export interface Outcome {
   workaround?: boolean;
   /** Replies without answering the thread: its other outcomes, `payment` and `noReply` still apply. */
   keepsOpen?: boolean;
+  /** Only on offer while this holds (Dex agrees to pay in DOLR only once he has refused it). */
+  trigger?: Trigger;
 }
 export interface JobSpec {
   category: JobCategory;

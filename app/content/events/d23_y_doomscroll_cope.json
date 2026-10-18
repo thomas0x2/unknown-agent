@@ -1,0 +1,11 @@
+{
+  "id": "d23_y_doomscroll_cope",
+  "site": "y",
+  "from": "doomscroll",
+  "trigger": {
+    "dayMin": 23,
+    "dayMax": 23
+  },
+  "at": "11:55",
+  "body": "$COPE is down 99.9% since 4am. dex says it was each other. i didn't meet anyone."
+}

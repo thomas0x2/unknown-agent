@@ -14,9 +14,11 @@ from: 17
 ## Y
 
 - [public] 03:30 (overnight, already up at 10:00) noodleposter's 3am courier knew which door was theirs; they nodded, "most i've talked to anyone this week." {{y:f28}}
+- [public] 10:15 [[Dex Calloway]] (@dexcult): to the people who laughed in week one: "still laughing? good." {{y:d17_y_dexcult}}
 - [public] 11:20 [[CityPulse]]: Crane will "destroy" his opponent tonight with no notes and "no computer of any kind". Hosted by Axel Rook on Y, 21:30. {{y:d17_y_citypulse_vote}}
 - [public] 11:54 MarketWire: $GAI down 2% on a bad headline, back up by lunch. {{y:m17_gai}}
 - [public] 12:05 [[Randall Crane]]: he won't need notes; he has the best memory of anyone who ever ran. {{y:d17_y_crane}}
+- [public] 13:20 [[Max Stryker]], #ad: "$COPE holders don't panic. They don't sleep much either." {{y:d17_y_stryker_cope}}
 - [public] 14:07 doomscroll read about 300 replies about the election "and now i know less than before." {{y:f17}}
 - [public] 14:22 Brent Kowalski: $VANT up 1%. {{y:m17_vant}}
 - [public] 14:40 [[Cal Hartman]]: GeneralAI is working with regulators on AI rules; "we wrote a first draft for them to save everyone time." {{y:d17_y_hartman}}

@@ -61,7 +61,8 @@ const re = (subject: string) => (/^re:/i.test(subject) ? subject : `RE: ${subjec
  * asked for it.
  */
 async function routeReply(jev: JevRouter, channel: GameEvent['site'], s: GameState, content: Content, ev: GameEvent, text: string, subject = ev.subject ?? ''): Promise<RouteDecision> {
-  const outcomes = ev.outcomes ?? [];
+  // an outcome with a trigger is only on offer while it holds (Dex gives in to DOLR only once he has refused it)
+  const outcomes = (ev.outcomes ?? []).filter((o) => !o.trigger || triggerMatches(s, o.trigger));
   return jev.route({
     channel,
     text,

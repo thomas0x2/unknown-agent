@@ -13,6 +13,7 @@ from: 11
 
 ## Y
 
+- [public] 10:30 [[Dex Calloway]] (@dexcult): what $COPE does: "it holds." {{y:d11_y_dexcult}}
 - [public] 11:30 [[CityPulse]]: DoorDish knew; a memo from the day of the "activation" says the robot stopped answering recall commands. {{y:d11_y_robot_memo}}
 - [public] 11:45 doomscroll got the Fluvera shot; the box says autism-free in bigger letters than the word flu. {{y:d11_y_doomscroll_fluvera}}
 - [public] 12:15 [[DoorDish]]: "The memo circulating today was part of the activation. So was the leak." {{y:d11_y_doordish}}

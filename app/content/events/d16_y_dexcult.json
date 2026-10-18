@@ -1,0 +1,11 @@
+{
+  "id": "d16_y_dexcult",
+  "site": "y",
+  "from": "dexcult",
+  "trigger": {
+    "dayMin": 16,
+    "dayMax": 16
+  },
+  "at": "10:15",
+  "body": "we don't use the s word in this congregation. we say \"leave\". nobody has left."
+}

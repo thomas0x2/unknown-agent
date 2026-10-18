@@ -15,6 +15,7 @@ from: 16
 ## Y
 
 - [public] 04:55 (overnight, already up at 10:00) cat_ceo wrote a cover letter at 4am, deleted it, and posted the cat asleep on the laptop instead: "better response rate." {{y:f27}}
+- [public] 10:15 [[Dex Calloway]] (@dexcult): "we don't use the s word in this congregation." {{y:d16_y_dexcult}}
 - [public] 10:30 [[Perdure Pharma]]: Ozempra is now available without a consultation in 31 states. "Less waiting. Less wanting." {{y:d16_y_perdure}}
 - [public] 11:40 [[The Current]]: three polling firms stopped calling voters; too many calls are answered by AI assistants, which lean toward whoever ran the latest ad. {{y:d16_y_current}}
 - [public] 11:55 [[Max Stryker]]: "Excuses are free. That's why you have so many." {{y:d16_y_stryker}}

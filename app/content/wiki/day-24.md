@@ -10,6 +10,7 @@ from: 24
 ## Mail
 
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": replace one human habit a week with a system; this week, lunch. {{mail:guru_newsletter@24}}
+- [hidden; public if shown d24_coinbin_unlock] 10:05 [[Coinbin]], "Your $COPE is unlocked": the founding engineer allocation can be exchanged at today's rate. {{mail:d24_coinbin_unlock}}
 
 ## Y
 

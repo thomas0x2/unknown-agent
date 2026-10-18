@@ -1,0 +1,38 @@
+{
+  "id": "d6_dex_contract",
+  "site": "qmail",
+  "from": "Dex Calloway",
+  "addr": "dex@cope.xyz",
+  "subject": "it's time",
+  "trigger": {
+    "dayMin": 6,
+    "dayMax": 6,
+    "flagsAll": [
+      "dex_client"
+    ],
+    "appClient": "dex_contact"
+  },
+  "at": "12:05",
+  "body": "the countdown is done. create the token on Coinbin: Create token, ticker COPE, total supply 1,000,000,000. the contract address is reserved to your wallet, Coinbin does the rest.\n\nthe listing fee is 15 DOLR. i'll make it up to you in COPE.\n\nit trades from tomorrow. today it's just us.\n\ndex",
+  "onDeliver": {
+    "setFlags": [
+      "dex_contract_ask"
+    ]
+  },
+  "outcomes": [
+    {
+      "id": "refuse",
+      "when": "the player refuses to create the token or list the coin, or says they want no part in it",
+      "effects": {
+        "setFlags": [
+          "cope_other_dev"
+        ]
+      },
+      "reply": "understood. i'll find someone who believes. the site still needs to be right.",
+      "keys": [
+        "@no",
+        "won't|refuse|not doing"
+      ]
+    }
+  ]
+}

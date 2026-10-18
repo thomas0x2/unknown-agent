@@ -1,0 +1,11 @@
+{
+  "id": "d12_y_dexcult",
+  "site": "y",
+  "from": "dexcult",
+  "trigger": {
+    "dayMin": 12,
+    "dayMax": 12
+  },
+  "at": "10:20",
+  "body": "every red day is a test of faith. every green day is proof. both are fine."
+}

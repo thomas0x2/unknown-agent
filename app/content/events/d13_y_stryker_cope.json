@@ -1,0 +1,11 @@
+{
+  "id": "d13_y_stryker_cope",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 13,
+    "dayMax": 13
+  },
+  "at": "13:05",
+  "body": "My mother asked me what $COPE is. I told her: a filter. Most people can't hold anything. #ad"
+}
