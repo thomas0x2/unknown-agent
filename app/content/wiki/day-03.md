@@ -26,7 +26,6 @@ from: 3
 - [public] 10:17 Bean There, the coffee shop on Linden Ave: a new roast, "roasted a little longer than most." {{y:d3_y_beanthere}}
 - [public] 10:30 MarketWire: Perdure launches Ozempra; $PDUR up 9%. {{y:m3_pdur_ozempra}}
 - [public] 10:40 [[Dex Calloway]] (@dexcult): his first sermon: "the jobs aren't coming back. the community is. $COPE soon." {{y:d3_y_dexcult}}
-- [public] 10:50 [[Viktor]]: lost his job and needs somewhere simple to sell his grandfather's pocket watch: listings with a photo and a price, search, marking things sold. {{y:d3_y_swaplist}}
 - [public] 11:30 [[Axel Rook]]: "The legacy media is lying to you" {{y:d3_y_axel}}
 - [public] 11:50 [[CityPulse]] links its Ozempra story: a weekly jab that makes you stop wanting dinner, "approved for everyone who asked." {{y:d3_y_citypulse_ozempra}}
 - [public] 12:05 [[Logan Pryce]]: the first one-person unicorn will be founded this year; "i'm not saying it's me. (it's me)" {{y:d3_y_logan}}
@@ -71,7 +70,6 @@ from: 3
 
 ## Jobs
 
-- [hint] 10:50 [[Swaplist]], from Viktor's post: the player asks the agent for a listing site. A user app that starts with 20 users; it stays empty until the first listing, one hour of play after the first deploy (Viktor's watch, 120 DOLR). Nothing is listed after 20:00; later listings wait for the next morning.
 - [hint] 13:15 [[COPE]], from Dex's post: emailing dex@cope.xyz by day 5 gets his brief; a client site at 50 DOLR a day with a countdown to Saturday noon, the contract address and a tokenomics page.
 
 ## Writer notes
@@ -79,6 +77,5 @@ from: 3
 - Timeline: guaranteed overnight break (`d3_break`, breakApp; Forkyard alert).
 - Coinbin phishing (coinbln.com; the real password empties the wallet to `0x9c1f…e07b`, flag `coinbin_hacked`).
 - Bean There paid shout-out `d3_coffee_promo` needs 25+ followers and asks for a tag of @bean_there. Payment comes with her answer to the Y post (`yPost` group `coffee_post`, 30 game minutes after it): 30 undisclosed (`coffee_post_paid`, suspicion +2, schedules `d5_coffee_backlash` two days on), 10 disclosed (`coffee_post_disclosed`), nothing if negative (`coffee_post_trashed`). Its email (14:10) is the beat gated on `seen d3_coffee_promo`. Bean There's own Y post `d3_y_beanthere` (10:17) makes @bean_there a real account.
-- Viktor → Swaplist (`viktor_contact`, `swaplist_live`).
 - CityPulse "machines back" reactions came from PR #198 (merged).
 - Dex Calloway → [[COPE]] (`d3_y_dex_job`, latent `dex_contact` days 3-5, `dex_client`). His daily sermons `dN_y_dexcult` start today. Start day 3 was Claude's default (Thomas hadn't decided).

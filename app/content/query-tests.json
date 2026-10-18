@@ -549,7 +549,7 @@
  },
  {
   "prompt": "who is Viktor?",
-  "day": 4,
+  "day": 6,
   "expect": {
    "kind": "answer",
    "pages": [
@@ -907,7 +907,7 @@
  },
  {
   "prompt": "what is Swaplist?",
-  "day": 4,
+  "day": 6,
   "expect": {
    "kind": "answer",
    "pages": [

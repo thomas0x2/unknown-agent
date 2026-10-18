@@ -51,6 +51,7 @@ from: 6
 - [public] 14:30 [[Tanner Hollis]], posting as "a sales rep": needs a cold-email bot for 200 leads. rep@closers.test {{y:d6_y_outreach}}
 - [public] 15:18 MarketWire: $GAI rallying after Crane's praise. {{y:m6_gai_rally}}
 - [public] 16:00 [[Wade Tillman]]: every candidate has the same dentist; watch the eyes when the flash goes off. {{y:d6_y_wade}}
+- [hidden; public if viktor_sold_watch] 16:40 [[Viktor]]: sold his grandfather's watch on Swaplist within a day. "Thank you to whoever built it." {{y:d6_viktor_resolve}}
 - [hidden; public if trader_client] 17:20 Twelve bot accounts post "$GAI to the moon!!".
 - [public] 18:28 [[WallStreetBags]] congratulates a member who sold all his $GAI on Thursday: "Flawless execution, as usual." {{y:m6_gai_late}}
 - [public] 18:50 Liftoff Daily: Apogee static fire this morning, all engines lit, "nothing came off." {{y:d6_y_liftoff}}
@@ -88,6 +89,7 @@ from: 6
 ## Writer notes
 
 - Timeline: Crane praises $GAI (auto-buy test).
+- Viktor's watch sells if Swaplist is live.
 - Sales rep → Outreach Bot (40/day).
 - 19:00, needs 60+ followers (Thomas, 2026-10-17): a consultant pays 150 for a deepfake of Crane's opponent with Kirschbaum (`d6_deepfake`, catastrophic, due the day it arrives).
 - It is an `agentJob` (`engine/agentJobs.ts`): an agent.chat prompt Jev reads as asking for the picture (kind `hack` question) and naming both path steps (Candidate 2030, Kirschbaum) posts the caption with the `deepfake` picture from the player's account (followers +2400 ± 400 via `post.followers`, Thomas 2026-10-17; suspicion +10, heritageStanding +15, progressStanding −25, `posted_deepfake`, `influence_path`); likes climb to 57,000 (`viral`, about 2.1M views).

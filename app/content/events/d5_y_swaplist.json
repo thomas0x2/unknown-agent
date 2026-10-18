@@ -1,10 +1,10 @@
 {
-  "id": "d3_y_swaplist",
+  "id": "d5_y_swaplist",
   "site": "y",
   "from": "Viktor",
   "trigger": {
-    "dayMin": 3
+    "dayMin": 5
   },
-  "at": "10:50",
+  "at": "12:15",
   "body": "Lost my job. Need to sell my grandfather's pocket watch and there's nowhere simple to list it anymore. Listings with a photo and a price, search, and marking things sold. That's all. Does anyone still build that kind of thing?"
 }
