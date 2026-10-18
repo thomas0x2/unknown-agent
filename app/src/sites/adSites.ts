@@ -8,6 +8,7 @@
  */
 
 import { citizenScore, citizenBand, type GameState } from '../engine';
+import { A67X_LOGO } from './a67xLogo';
 import { DEEPSLEEP_LOGO } from './deepsleepLogo';
 import { HERITAGE_LOGO } from './heritageLogo';
 import { PROGRESS_LOGO } from './progressLogo';
@@ -473,7 +474,7 @@ export const AD_SITES: AdSite[] = [
     link: ['Backed by', 'a67x', 'a67x.com'],
   },
   {
-    noAd: true, url: 'a67x.com', brand: 'a67x', kit: 'corp', theme: 'a67x', mark: 'a',
+    noAd: true, url: 'a67x.com', brand: 'a67x', kit: 'corp', theme: 'a67x', mark: 'a', logo: A67X_LOGO,
     kicker: 'Venture capital', title: 'We back founders who keep going.',
     lead: 'a67x invests from pre-seed to Series B in companies building the next American century: software, defense, insurance and whatever comes after.',
     stats: [['$9B', 'under management'], ['212', 'portfolio companies']],

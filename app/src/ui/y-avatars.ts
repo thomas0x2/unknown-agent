@@ -262,6 +262,21 @@ const PERDURE = svg('#3d2c6b',
   `<g transform="translate(12 12) scale(1.25)" stroke="none" fill="#fff"><path d="M3 16 A13 13 0 1 0 29 16 A13 13 0 1 0 3 16 Z M14.586 23.071 L23.071 14.586 A4 4 0 0 0 17.414 8.929 L8.929 17.414 A4 4 0 0 0 14.586 23.071 Z" fill-rule="evenodd"/>`
   + `<path d="M18.333 19.323 L12.677 13.667 L8.929 17.414 A4 4 0 0 0 14.586 23.071 Z"/></g>`);
 
+/** Pug: the logo's pug, head and shoulders, with a policy tag on its collar. */
+const PUG = svg('#f3e6cf',
+  shoulders('#e2b679', 2)
+  + `<path d="M15 50 Q32 57 49 50" fill="none" stroke="#2ef2c8" stroke-width="3.4"/><circle cx="32" cy="57" r="3.4" fill="#2ef2c8"/>`
+  + `<path d="M14.5 20 C15 12 21 10 25 13.5 L19.5 27 C15.5 26 14.2 23 14.5 20Z" fill="#2e221c"/>`
+  + `<path d="M49.5 20 C49 12 43 10 39 13.5 L44.5 27 C48.5 26 49.8 23 49.5 20Z" fill="#2e221c"/>`
+  + `<ellipse cx="32" cy="32" rx="16" ry="15" fill="#e2b679"/><path d="M32 17 A16 15 0 0 1 32 47 A12 15 0 0 0 32 17Z" fill="${SHADE}" stroke="none"/>`
+  + line('M27.5 22.5 Q32 20.5 36.5 22.5', 1.3) + line('M29 25.6 Q32 24.4 35 25.6', 1.2)
+  + `<ellipse cx="32" cy="39.5" rx="9.5" ry="7" fill="#2e221c"/>`
+  + `<circle cx="24.5" cy="30" r="3.4" fill="#2e221c"/><circle cx="39.5" cy="30" r="3.4" fill="#2e221c"/>`
+  + `<circle cx="25.6" cy="28.9" r="1" fill="#fff" stroke="none"/><circle cx="40.6" cy="28.9" r="1" fill="#fff" stroke="none"/>`
+  + `<ellipse cx="32" cy="36.4" rx="3" ry="2" fill="#000" stroke="none"/>`
+  + `<path d="M29.6 41.4 Q32 43.2 34.4 41.4" fill="none" stroke="#e2b679" stroke-width="1.3"/>`
+  + `<path d="M30.8 42.6 H33.2 V44.6 A1.2 1.2 0 0 1 30.8 44.6Z" fill="#e8798a" stroke-width="1"/>`);
+
 /** By Y handle. The impostor shares Crane's picture, saved at the wrong size. */
 export const Y_AVATARS: Record<string, string> = {
   randall_crane: CRANE,
@@ -289,5 +304,6 @@ export const Y_AVATARS: Record<string, string> = {
   pollymarket: POLLY,
   doordish: DOORDISH,
   perdure_pharma: PERDURE,
+  pug: PUG,
   spin_cycle_regulars: SPIN_CYCLE,
 };
