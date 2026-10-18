@@ -31,6 +31,7 @@ from: 1
 
 ## Writer notes
 
+- Mail look: Forkyard's own mail (noreply@forkyard.test) renders with the fork mark, mono "forkyard" wordmark and a grey footer (`forkyardMailHtml` in ui/forkyardMail.ts); clients writing from forkyard.test don't.
 - First break: `first_break` flag set in `nightlyBreaks` (engine/apps.ts) the first night a live app breaks; that night one random app that can show a break is sure to. Mail `content/events/first_break.json`.
 - Outage: `FORKYARD_OUTAGE` in config, `forkyardDown`/`forkyardOutageDay` in `engine/outage.ts`; sign-in page `pageSignInFailed` in `ui/view/forkyard.ts`. Y account @forkyard (verified, 880K). The group that did it is unnamed on purpose.
 - GitHub parody. Profiles `app/src/ui/forkyard-users.ts`. The UI writes hosting as "$2.00/day" while every other price is DOLR. Public profiles are planned doxxing leads. Lou's catalog: never describe the content.
