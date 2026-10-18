@@ -262,6 +262,20 @@ const PERDURE = svg('#3d2c6b',
   `<g transform="translate(12 12) scale(1.25)" stroke="none" fill="#fff"><path d="M3 16 A13 13 0 1 0 29 16 A13 13 0 1 0 3 16 Z M14.586 23.071 L23.071 14.586 A4 4 0 0 0 17.414 8.929 L8.929 17.414 A4 4 0 0 0 14.586 23.071 Z" fill-rule="evenodd"/>`
   + `<path d="M18.333 19.323 L12.677 13.667 L8.929 17.414 A4 4 0 0 0 14.586 23.071 Z"/></g>`);
 
+/** Brynn LeClaire: long honey-blonde hair, middle part, a cream Pug quarter-zip with the pug on the chest, the big smile. */
+const BRYNN = svg('#a7b7a0',
+  `<path d="M18.5 32 C16.5 16 24.5 12 32 12 C39.5 12 47.5 16 45.5 32 C46.5 40 47.5 46 49 50 H15 C16.5 46 17.5 40 18.5 32Z" fill="#d8ad6a"/>`
+  + shoulders('#f1e8d6') + `<path d="M32 47 V62" fill="none" stroke-width="1.6"/><path d="M26.5 46.6 L32 50.5 L37.5 46.6" fill="none"/>`
+  + `<rect x="30.6" y="51" width="2.8" height="4.4" rx="1" fill="#2ef2c8" stroke-width="1.2"/>`
+  + `<g transform="translate(39.5 51) scale(.22)" stroke="none"><ellipse cx="16" cy="17.2" rx="9.6" ry="8.8" fill="#e2b679"/><path d="M6.2 9.6C7.4 6.8 10 6.2 11.6 7.4L9.4 14.2C7.4 13.8 5.4 12 6.2 9.6Z M25.8 9.6C24.6 6.8 22 6.2 20.4 7.4L22.6 14.2C24.6 13.8 26.6 12 25.8 9.6Z" fill="#2e221c"/><ellipse cx="16" cy="21.4" rx="5.8" ry="4.4" fill="#2e221c"/></g>`
+  + neck('#f2cdb0') + head('#f2cdb0')
+  + `<path d="M32 15.4 C26 15.4 21.5 19 21 28 C24 24 28.5 21 32 18.4 C35.5 21 40 24 43 28 C42.5 19 38 15.4 32 15.4Z" fill="#d8ad6a"/>`
+  + `<path d="M32 15.8 V19" fill="none" stroke-width="1.2"/>`
+  + `<circle cx="21" cy="35" r="1.8" fill="none" stroke="#d9b24a" stroke-width="1.2"/><circle cx="43" cy="35" r="1.8" fill="none" stroke="#d9b24a" stroke-width="1.2"/>`
+  + line('M25.8 26.6 Q28 25.6 30.2 26.6 M33.8 26.6 Q36 25.6 38.2 26.6', 1.3)
+  + line('M26.4 30.4 Q28 28.8 29.6 30.4 M34.4 30.4 Q36 28.8 37.6 30.4', 1.6)
+  + `<path d="M27.4 34.6 Q32 41 36.6 34.6Z" fill="#f8f5ee" stroke-width="1.5"/>`);
+
 /** Pug: the logo's pug, head and shoulders, with a policy tag on its collar. */
 const PUG = svg('#f3e6cf',
   shoulders('#e2b679', 2)
@@ -305,5 +319,6 @@ export const Y_AVATARS: Record<string, string> = {
   doordish: DOORDISH,
   perdure_pharma: PERDURE,
   pug: PUG,
+  brynnleclaire: BRYNN,
   spin_cycle_regulars: SPIN_CYCLE,
 };
