@@ -2,7 +2,7 @@
  * Weightroom and the Terminal window.
  */
 import { invadersHtml } from '../invaders';
-import { cwdLabel } from '../../game/shell';
+import { cwdLabel, sshPrompt } from '../../game/shell';
 import { GameStore, SESSION_INTRO } from '../../game/store';
 import { ICONS } from '../icons';
 import { DEEPSLEEP_LOGO } from '../../sites/deepsleepLogo';
@@ -51,6 +51,7 @@ function shellHtml(store: GameStore): string {
   const s = store.state;
   const pulling = !!store.pull;
   const inModel = store.ui.termSession === 'deepsleep';
+  const ssh = !inModel ? store.ui.termSsh : null;
   // the intro is for an empty screen
   const intro = pulling || s.terminal.length ? ''
     : inModel ? SESSION_INTRO
@@ -58,7 +59,7 @@ function shellHtml(store: GameStore): string {
   const row = (l: { k: string; text: string }) => `<div class="tm-${l.k}">${esc(l.text)}</div>`;
   const lines = s.terminal.slice(-200).map(row).join('');
   const live = store.pull ? pullLines(store.pull.id, Math.min(store.pullMs(), PULL_MS - 1)).map(row).join('') : '';
-  const prompt = pulling ? '' : `<form class="tm-in" data-form="term"><label for="term-input" class="tm-ps">${inModel ? '&gt;' : `you@laptop:${esc(cwdLabel(store.ui.termCwd))}$`}</label><input id="term-input" autocomplete="off" autocapitalize="off" spellcheck="false" ${store.busy ? 'disabled' : ''}></form>`;
+  const prompt = pulling ? '' : `<form class="tm-in" data-form="term"><label for="term-input" class="tm-ps">${ssh ? esc(sshPrompt(ssh)) : inModel ? '&gt;' : `you@laptop:${esc(cwdLabel(store.ui.termCwd))}$`}</label><input id="term-input" ${ssh ? 'type="password" ' : ''}autocomplete="off" autocapitalize="off" spellcheck="false" ${store.busy ? 'disabled' : ''}></form>`;
   return `${intro ? `<div class="tm-sys">${esc(intro)}</div>` : ''}${lines}${live}${store.busy ? '<div class="tm-sys tm-wait">thinking… (this laptop is not fast)</div>' : ''}${prompt}`;
 }
 

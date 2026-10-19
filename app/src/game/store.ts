@@ -109,7 +109,7 @@ import { route, visitedFlag, setDevSites, noteBookmarks } from '../sites/registr
 import { adSite } from '../sites/adSites';
 import { PULL_MS, modelName, pullLines } from './pull';
 import { DEEPSLEEP_LINES, DEEPSLEEP_PLEA } from '../engine/deepsleep';
-import { shellLines } from './shell';
+import { shellLines, sshPassword, sshPrompt } from './shell';
 import { MISSES } from './misses';
 import { haikuApology } from './haiku';
 import { freshUi, type Draft, type Ui } from './uiState';
@@ -1038,10 +1038,18 @@ export class GameStore {
         this.land(r.state); return r;
       });
     }
+    // a password at an ssh prompt: not echoed, never right
+    if (this.ui.termSsh) {
+      const r = sshPassword(this.ui.termSsh);
+      this.state.terminal.push({ k: 'in', text: sshPrompt(this.ui.termSsh) }, ...r.lines);
+      this.ui.termSsh = r.login;
+      this.store.save(this.state); this.emit(); return;
+    }
     // the shell's own commands (help, ls, cd, run…), and the sessions it starts
     const own = shellLines(text, this.state, this.ui.termCwd);
     this.state.terminal.push(...own.lines);
     if (own.cwd) this.ui.termCwd = own.cwd;
+    if (own.ssh) this.ui.termSsh = own.ssh;
     if (own.run === 'pcmedic') { this.runExe(); return; }
     if (own.run === 'invaders') this.ui.invaders = true;
     if (own.session === 'agent') { this.openAgentTerm(); return; }

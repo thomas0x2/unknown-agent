@@ -77,7 +77,7 @@ describe('the Terminal from day 1', () => {
     await s.term('ls');
     expect(s.state.terminal.map((l) => l.text)).toEqual(['~$ ls', 'home/   qdrive/']);
     await s.term('ssh 10.0.0.1');
-    expect(s.state.terminal.at(-1)?.text).toBe('ssh: nothing to work with here yet');
+    expect(s.state.terminal.at(-1)?.text).toBe('ssh: could not resolve 10.0.0.1');
     await s.term('make coffee');
     expect(s.state.terminal.at(-1)?.text).toBe('make: command not found. Type help for a list of commands.');
     await s.term('rm notes.txt');
@@ -181,5 +181,43 @@ describe('sessions', () => {
     await s.term('help');
     expect(s.state.terminal.some((l) => l.text.startsWith('  agent '))).toBe(true);
     expect(s.state.terminal.some((l) => l.text.startsWith('  exit, quit '))).toBe(true);
+  });
+});
+
+describe('host and ssh', () => {
+  it('host gives any reachable server a fixed address, and nothing for unknown names', async () => {
+    const s = make();
+    await s.term('host qmail.com');
+    const line = s.state.terminal.at(-1)!;
+    expect(line.text).toMatch(/^qmail\.com has address \d+\.\d+\.\d+\.\d+$/);
+    await s.term('host https://www.qmail.com/inbox');
+    expect(s.state.terminal.at(-1)?.text).toBe(line.text);
+    await s.term('host nope.example');
+    expect(s.state.terminal.at(-1)).toEqual({ k: 'err', text: 'host: nope.example: not found' });
+    await s.term('host nullboard.onion');
+    expect(s.state.terminal.at(-1)?.k).toBe('err');
+  });
+
+  it('ssh asks for a password and never takes one', async () => {
+    const s = make();
+    await s.term('ssh admin@y.com');
+    expect(s.ui.termSsh).toEqual({ user: 'admin', host: 'y.com', tries: 0 });
+    await s.term('hunter2');
+    expect(s.state.terminal.at(-1)?.text).toBe('Permission denied, please try again.');
+    expect(s.state.terminal.some((l) => l.text.includes('hunter2'))).toBe(false);
+    await s.term('clear');
+    await s.term('admin');
+    expect(s.state.terminal.at(-1)?.text).toBe('admin@y.com: Permission denied.');
+    expect(s.ui.termSsh).toBeNull();
+    await s.term('ls');
+    expect(s.state.terminal.at(-1)?.text).toBe('home/   qdrive/');
+  });
+
+  it('ssh takes an address from host too', async () => {
+    const s = make();
+    await s.term('host coinbin.com');
+    const ip = s.state.terminal.at(-1)!.text.split(' ').pop()!;
+    await s.term(`ssh root@${ip}`);
+    expect(s.ui.termSsh?.host).toBe('coinbin.com');
   });
 });
