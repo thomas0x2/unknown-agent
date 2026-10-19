@@ -15,7 +15,7 @@
   "outcomes": [
     {
       "id": "honest",
-      "when": "the player shares their story honestly and sincerely",
+      "when": "the player tells her their own story: how they lost their job or how they are coping, honestly and sincerely",
       "effects": {
         "setFlags": [
           "talked_to_journalist",
@@ -29,7 +29,7 @@
     },
     {
       "id": "curt",
-      "when": "the player gives a short, guarded, or generic answer",
+      "when": "the player turns her down or won't share anything: says no comment, not interested, or brushes her off. A hello, an offer to help or a question back to her is not this",
       "effects": {
         "setFlags": [
           "talked_to_journalist"
