@@ -168,7 +168,8 @@ describe('fixing named bugs', () => {
     // the part without its feature asks for the feature
     const bare: JevRouter = { ...partial, matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => x.endsWith('::c:confirmation/position') || x.endsWith('::*::app')) };
     const noFeature = (await promptDone(s, content, bare, 'WorkAgent: the position is wrong')).state;
-    expect(content.agent!.hints.find((h) => h.id === 'near_feature')!.replies.map((l) => l.replaceAll('{{part}}', 'position'))).toContain(report(noFeature));
+    expect(content.agent!.hints.find((h) => h.id === 'near_feature')!.replies.map((l) => l.replaceAll('{{part}}', 'position')).some((l) => report(noFeature).startsWith(l))).toBe(true);
+    expect(report(noFeature)).toMatch(/Forkyard/);
     // the feature and a folder but no part: it lists that folder's parts
     const folderOnly: JevRouter = { ...partial, matchFeatures: async (i) => i.features.map((f) => f.id).filter((x) => /::waitlist::(area|s:waitlist|s:waitlist\/confirmation)$|::\*::app$/.test(x)) };
     const noPart = (await promptDone(s, content, folderOnly, 'WorkAgent: the waitlist confirmation is wrong')).state;
@@ -190,7 +191,9 @@ describe('fixing named bugs', () => {
   it('naming only the feature is a near-miss: a scripted line from that feature, and nothing changes', async () => {
     const { s, id } = withApp('logan_contact', 'about');
     const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::about::area'] }), 'WorkAgent: the about page is wrong')).state;
-    expect(content.apps.startup.features.find((f) => f.id === 'about')!.nearMiss).toContain(report(out));
+    expect(content.apps.startup.features.find((f) => f.id === 'about')!.nearMiss!.some((l) => report(out).startsWith(l))).toBe(true);
+    // and points at the repo on Forkyard, where the part's name can be looked up
+    expect(report(out)).toMatch(/WorkAgent repo on Forkyard|Forkyard's file tree for WorkAgent/);
     expect(out.chat.at(-1)!.src).toBe('near_miss');
     expect(getApp(out, id)!.repo).toEqual(getApp(s, id)!.repo);
   });
@@ -239,6 +242,7 @@ describe('fixing named bugs', () => {
     const out = (await promptDone(s, content, partial, 'WorkAgent: the waitlist position is wrong', writer)).state;
     expect(seen[0]).toMatchObject({ as: 'agent', mode: 'near' });
     expect(seen[0].near!.why).toMatch(/position.*waitlist.*form or counter or confirmation/i);
+    expect(seen[0].near!.why).toMatch(/WorkAgent repo on Forkyard/);
     expect(seen[0].near!.lines.some((l) => /form or counter or confirmation/.test(l))).toBe(true);
     expect(out.chat.at(-1)).toMatchObject({ src: 'near_miss', by: 'Haiku' });
     expect(report(out)).toBe('Which position, the counter or the confirmation? Pick one.');
