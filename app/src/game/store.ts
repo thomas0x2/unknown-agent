@@ -281,7 +281,7 @@ export class GameStore {
   /** A dialog is up (or the run is over), so time stands still. Adware pop-ups don't count: ads don't wait for you. */
   get dialogOpen(): boolean {
     const s = this.state;
-    return !!(s.ending || s.morning || this.ui.jevOffline || this.ui.confirm || this.ui.memWarn || this.ui.greet || this.ui.filePick);
+    return !!(s.ending || s.morning || this.ui.jevOffline || this.ui.keys || this.ui.confirm || this.ui.memWarn || this.ui.greet || this.ui.filePick);
   }
   get clockPaused(): boolean {
     return this.clockHeld || this.dialogOpen || (typeof document !== 'undefined' && document.hidden);
@@ -573,6 +573,8 @@ export class GameStore {
   endDay(): void { this.sleep(this.state); this.store.save(this.state); this.emit(); }
   dismissGreet(): void { this.ui.greet = false; this.state.introSeen = true; this.store.save(this.state); this.emit(); }
   dismissMemWarn(): void { this.ui.memWarn = false; this.emit(); }
+  /** The API keys dialog (GitHub Pages build only). */
+  showKeys(on: boolean): void { this.ui.keys = on; if (on) this.ui.jevOffline = null; this.emit(); }
   /**
    * End the day and autosave the new morning into the 'auto' slot. The next day starts with only the
    * pinned tabs open.

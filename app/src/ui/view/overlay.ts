@@ -6,6 +6,7 @@ import { type GameState, dateFull, openPopup } from '../../engine';
 import { esc, fmtMoney } from './common';
 import { filePickerBody } from '../filePicker';
 import { popupAdHtml } from '../ads';
+import { API_KEYS, DIRECT } from '../../game/apiKeys';
 
 // ── overlay (greeting / morning / confirm / ending) ──
 const ENDINGS: Record<string, string> = {
@@ -46,6 +47,25 @@ function osWindow(title: string, cls: string, body: string, close?: string): str
   return `<div class="ov-card ${cls}" role="dialog" aria-label="${esc(title)}"><header class="ow-bar"><span class="ow-title">${esc(title)}</span>${x}</header><div class="ow-body">${body}</div></div>`;
 }
 
+/**
+ * The GitHub Pages build's key settings: shown at first launch, and from Home > System. The fields
+ * start filled with the saved keys, so clearing one and saving removes it.
+ */
+function keysDialog(): string {
+  const { anthropic, typesafe } = API_KEYS.keys;
+  const field = (id: string, label: string, help: string, value: string, ph: string) =>
+    `<label class="ov-key"><b>${label}</b><small>${help}</small>
+      <input id="${id}" type="password" autocomplete="off" spellcheck="false" placeholder="${ph}" value="${esc(value)}"></label>`;
+  return osWindow('API keys', 'ov-keys', `<form data-form="keys">
+      <p>This copy of the game runs in your browser. To play online, it needs two API keys of your own.</p>
+      ${field('key-typesafe', 'Jev key (TypeSafe)', 'Jev decides what your emails, posts and prompts actually do.', typesafe, 'Your TypeSafe API key')}
+      ${field('key-anthropic', 'Anthropic API key', 'Claude Haiku writes what people say back when your message misses.', anthropic, 'sk-ant-…')}
+      <p class="ov-dim">Your keys are saved in this browser only and are sent to nothing but api.typesafe.ai and api.anthropic.com. Your progress is saved in this browser too. Clear a field to remove that key.</p>
+      <p class="ov-dim">No keys? Offline mode plays the whole game with a keyword matcher and scripted replies.</p>
+      <div class="ov-actions"><button type="button" class="btn" data-ov="keys-offline">Play offline</button><button type="submit" class="btn primary">Save keys</button></div>
+    </form>`, API_KEYS.any ? 'keys-close' : undefined);
+}
+
 export function overlayHtml(store: GameStore): string {
   const s = store.state;
   if (s.ending && !store.ui.confirm) {
@@ -53,9 +73,12 @@ export function overlayHtml(store: GameStore): string {
       <p>${esc(epitaph(s))} ${dateFull(s.values.day)}.</p>
       <div class="ov-actions"><button class="btn primary" data-ov="new">Play again</button></div>`);
   }
+  if (store.ui.keys) return keysDialog();
   if (store.ui.jevOffline) {
+    // the browser build can fix it right here: the usual cause is a missing or wrong key
+    const keys = DIRECT ? '<button class="btn" data-ov="jev-keys">API keys</button>' : '';
     return osWindow('Jev is offline', 'ov-small ov-confirm', `<p>Jev decides what your messages do, and it can't be reached right now, so nothing was sent and nothing was charged.</p>
-      <p class="ov-dim">${esc(store.ui.jevOffline.reason)}</p><div class="ov-actions"><button class="btn primary" data-ov="jev-ok">OK</button></div>`, 'jev-ok');
+      <p class="ov-dim">${esc(store.ui.jevOffline.reason)}</p><div class="ov-actions">${keys}<button class="btn primary" data-ov="jev-ok">OK</button></div>`, 'jev-ok');
   }
   if (store.ui.confirm) {
     const c = store.ui.confirm;

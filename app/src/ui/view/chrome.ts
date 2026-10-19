@@ -5,6 +5,7 @@ import { SOUND } from '../sound';
 import { GameStore } from '../../game/store';
 import { MISSES } from '../../game/misses';
 import { JEV } from '../../game/backendJev';
+import { API_KEYS, DIRECT } from '../../game/apiKeys';
 import { listSlots, autoSlot } from '../../game/saves';
 import { ICONS } from '../icons';
 import { route, bookmarks } from '../../sites/registry';
@@ -136,13 +137,13 @@ function aiRows(): string {
     : [' off', 'Story decisions: Jev offline', JEV.reason || "Nothing gets decided until it's back"] as const;
   let missNote = st.misses === 'haiku' ? 'Haiku answers in character' : 'Scripted lines only';
   let err = false;
-  if (st.misses === 'haiku' && st.haikuVia === 'api' && JEV.haikuKey === false) { missNote = 'ANTHROPIC_API_KEY is not set in app/.env, so misses use scripted lines'; err = true; }
+  if (st.misses === 'haiku' && st.haikuVia === 'api' && JEV.haikuKey === false) { missNote = DIRECT ? 'No Anthropic key, so misses use scripted lines' : 'ANTHROPIC_API_KEY is not set in app/.env, so misses use scripted lines'; err = true; }
   else if (st.misses === 'haiku' && JEV.haikuKey === null && JEV.mode !== 'checking') { missNote = 'Start the proxy (npm run proxy) for Haiku replies'; err = true; }
   return modeRow +
     `<div class="dm-slot dm-jev" title="${esc(JEV.reason)}"><i class="dm-dot${jev[0]}"></i><span><b>${esc(jev[1])}</b><small>${esc(jev[2])}</small></span></div>
     <label class="dm-slot dm-ai" title="What agent and email contacts say when Jev finds nothing in your message">${MI.chat}<span><b>Misses</b><small${err ? ' class="dm-err"' : ''}>${esc(missNote)}</small></span>
       <span class="dm-slot-acts"><select id="llm-misses">${sel(st.misses, 'haiku', 'Haiku (API)')}${sel(st.misses, 'scripted', 'Scripted lines')}</select></span></label>` +
-    (st.misses === 'haiku' ? `<label class="dm-slot dm-ai" title="Subscription runs the claude CLI on your machine (dev only, slow); API uses ANTHROPIC_API_KEY">${MI.key}<span><b>Haiku via</b><small>${st.haikuVia === 'api' ? 'ANTHROPIC_API_KEY' : 'The claude CLI (slow)'}</small></span>
+    (st.misses === 'haiku' && !DIRECT ? `<label class="dm-slot dm-ai" title="Subscription runs the claude CLI on your machine (dev only, slow); API uses ANTHROPIC_API_KEY">${MI.key}<span><b>Haiku via</b><small>${st.haikuVia === 'api' ? 'ANTHROPIC_API_KEY' : 'The claude CLI (slow)'}</small></span>
       <span class="dm-slot-acts"><select id="llm-haiku-via">${sel(st.haikuVia, 'api', 'API key')}${sel(st.haikuVia, 'subscription', 'Claude subscription')}</select></span></label>` : '');
 }
 
@@ -154,7 +155,8 @@ export function startMenuHtml(store: GameStore): string {
   const item = (act: string, icon: string, title: string, sub: string) =>
     `<button class="dm-item" data-act="${act}">${icon}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span></button>`;
   const list = cat === 'system'
-    ? item('new', MI.logout, 'New game', `Start over from ${dateLong(1)}`) + item('devmode', MI.help, `Dev mode: ${store.devMode ? 'on' : 'off'}`, 'Show how agent replies were chosen') + item('dev', MI.term, 'Story debugger', 'jev · Ctrl+`') + aiRows() + soundRows()
+    ? item('new', MI.logout, 'New game', `Start over from ${dateLong(1)}`) + item('devmode', MI.help, `Dev mode: ${store.devMode ? 'on' : 'off'}`, 'Show how agent replies were chosen') + item('dev', MI.term, 'Story debugger', 'jev · Ctrl+`')
+      + (DIRECT ? item('keys', MI.key, 'API keys', API_KEYS.any ? 'Saved in this browser' : 'Not set: add yours to play online') : '') + aiRows() + soundRows()
     : autoRow() + listSlots().map((info, i) => {
       const n = i + 1;
       const when = info ? `${fmtClock(info.clockMin)} · saved ${new Date(info.savedAt).toLocaleString(undefined, { month: 'short', day: 'numeric' })}` : 'Empty';

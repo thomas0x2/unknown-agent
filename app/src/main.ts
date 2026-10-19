@@ -33,6 +33,7 @@ import { GameStore } from './game/store';
 import { loadContent } from './content/load';
 import { localStorageStore, PLAYER_WALLET, SEED_PHRASE, CASINO_WALLET, trendingAt } from './engine';
 import { JEV } from './game/backendJev';
+import { API_KEYS, DIRECT } from './game/apiKeys';
 import { ROUTER } from './game/router';
 import { MISSES, makeWriter, type Misses, type HaikuVia, type Net } from './game/misses';
 import * as V from './ui/view';
@@ -67,6 +68,7 @@ let lastSite = '';
 let lastUrl = '';
 let shownPage = '';
 let shownMenu = '';
+let shownOverlay = '';
 
 // Unsent text in every page's fields, keyed by the page's URL. Cleared when a form is sent.
 const drafts = new Map<string, Record<string, string>>();
@@ -198,7 +200,8 @@ function render(): void {
   if (menuHtml !== shownMenu && (document.activeElement?.id !== 'snd-vol' || !store.ui.start)) { menu.innerHTML = menuHtml; shownMenu = menuHtml; }
   const startBtn = $('#dk-home')!; startBtn.classList.toggle('on', store.ui.start); startBtn.setAttribute('aria-expanded', String(store.ui.start));
 
-  const ov = $('#overlay')!; const oh = V.overlayHtml(store); ov.innerHTML = oh; ov.hidden = !oh;
+  // only redraw a dialog when it changed, so what is typed into one (the API keys) survives a repaint
+  const ov = $('#overlay')!; const oh = V.overlayHtml(store); if (oh !== shownOverlay) { ov.innerHTML = oh; shownOverlay = oh; } ov.hidden = !oh;
   const dev = $('#dev')!; dev.hidden = !store.ui.dev; if (store.ui.dev) dev.innerHTML = V.devHtml(store);
   const dve = $('#devedit')!; const showEdit = store.ui.dev && store.ui.devEdit; dve.hidden = !showEdit; if (showEdit) dve.innerHTML = store.ui.devTab === 'jev' ? jevTestsHtml(store) : devEditHtml(store);
 
@@ -303,6 +306,9 @@ store.startClock();
 MISSES.onChange(render);
 JEV.onChange(render);
 void JEV.probe();
+// the GitHub Pages build asks for the player's own keys at first launch, unless they chose offline
+API_KEYS.onChange(() => { void JEV.probe(); render(); });
+if (DIRECT && !API_KEYS.any && !MISSES.offline) store.showKeys(true);
 
 /** Coinbin Exchange's "you get" line, kept current while the amount is typed. */
 function updateQuote(): void {
@@ -412,6 +418,7 @@ const ACTS: Record<string, (t: HTMLElement) => void> = {
   jevfails: () => jevTestsFailsOnly(store),
   devmode: () => store.setDevMode(!store.devMode),
   sound: () => SOUND.setMuted(!SOUND.settings.muted),
+  keys: () => store.showKeys(true),
 };
 const dataAttr = (key: string) => `[data-${key.replace(/[A-Z]/g, (c) => '-' + c.toLowerCase())}]`;
 const CLICKABLE = ['close', ...Object.keys(MENU_CLICKS), ...Object.keys(CLICKS)].map(dataAttr).join(',');
@@ -480,6 +487,9 @@ function onOverlay(a: string, t?: HTMLElement): void {
   else if (a === 'fp-cancel') store.closeFilePicker();
   else if (a === 'confirm-yes') store.resolveConfirm(true);
   else if (a === 'confirm-no') store.resolveConfirm(false);
+  else if (a === 'keys-close') store.showKeys(false);
+  else if (a === 'keys-offline') { MISSES.set({ net: 'offline' }); store.showKeys(false); }
+  else if (a === 'jev-keys') store.showKeys(true);
   else if (a === 'jev-ok') {
     // put the text back where it was typed, so the player can send it again once Jev is back
     const j = store.ui.jevOffline;
@@ -492,6 +502,12 @@ function onOverlay(a: string, t?: HTMLElement): void {
 // ── forms ──
 /** What submitting a form with data-form="<kind>" does. */
 const FORMS: Record<string, (f: HTMLFormElement) => void> = {
+  keys: () => {
+    API_KEYS.set({ anthropic: val('#key-anthropic'), typesafe: val('#key-typesafe') });
+    // keys mean playing online; without a Jev key there is nothing online to play with
+    if (API_KEYS.keys.typesafe) MISSES.set({ net: 'online' });
+    store.showKeys(false);
+  },
   'dev-day': () => { quietReset(); store.devGoToDay(Number(val('#dev-day'))); },
   'dev-flag': () => { const v = val('#dev-flag-name').trim(); if (v) store.devSetFlag(v, true); },
   phish: () => store.phish(val('#ph-pass')),

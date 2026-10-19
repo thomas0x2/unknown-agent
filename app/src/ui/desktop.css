@@ -175,6 +175,13 @@
 .dm-note.dm-err { margin-top: 0; color: #ff8a80; }
 .ov-dim { color: var(--muted, #777); font-size: 13px; }
 
+/* the API keys dialog (GitHub Pages build) */
+.ov-keys form { display: flex; flex-direction: column; gap: 12px; }
+.ov-key { display: grid; gap: 3px; }
+.ov-key small { color: var(--muted, #999); font-size: 12.5px; }
+.ov-key input { margin-top: 3px; padding: 7px 9px; border: 1px solid var(--dk-line); border-radius: 4px; background: var(--dk-panel); color: var(--dk-ink); font: 13px var(--f-mono); min-width: 0; }
+.ov-key input:focus { outline: 2px solid var(--dk-accent); outline-offset: -1px; }
+
 /* out-of-memory dialog: a System Monitor style readout */
 .mem-panel { display: grid; gap: 8px; padding: 10px 12px; background: var(--dk-panel); border: 1px solid var(--dk-line); border-radius: 4px; font-size: 12.5px; }
 .mem-bar { display: grid; grid-template-columns: 56px minmax(0, 1fr); align-items: center; column-gap: 10px; row-gap: 2px; }

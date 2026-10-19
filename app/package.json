@@ -8,6 +8,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:pages": "tsc -b && VITE_DIRECT_API=1 vite build",
+    "dev:pages": "VITE_DIRECT_API=1 vite",
     "build:wiki": "WIKI_ONLY=1 vite build && mv dist-wiki/wiki.html dist-wiki/index.html",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",

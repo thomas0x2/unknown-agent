@@ -29,6 +29,17 @@ subscription you're logged in to with Claude Code (use this for development only
 `ANTHROPIC_API_KEY` from `.env`. Either way the proxy builds the prompt from
 `content/characters/`; the browser only sends the character id and the player's text.
 
+### The GitHub Pages version (players bring their own keys)
+
+`.github/workflows/pages.yml` publishes the game to GitHub Pages on every push to main that touches
+`app/`, with the read-only wiki next to it at `wiki.html`. That build (`npm run build:pages`, or
+`npm run dev:pages` to try it locally) sets `VITE_DIRECT_API=1`: there is no proxy, and the browser
+calls api.typesafe.ai and api.anthropic.com itself with the player's own keys. At first launch an
+**API keys** dialog asks for them (also under Home > System > API keys); they live in that browser's
+localStorage and go nowhere else. "Play offline" skips them for the keyword matcher and scripted
+replies. Progress saves in the browser as always. Both routes build the same prompts and Jev
+questions from `server/api.mjs`, so changing one changes both.
+
 ## How the three models are wired
 
 - **Jev (TypeSafe)** categorizes everything the player writes — which outcome a reply/post/prompt
@@ -70,7 +81,7 @@ now needs that workaround.
 - `src/game/` — store, Jev client, Haiku writer (`misses.ts` + `haiku.ts`), saves.
 - `src/ui/` — the legacy view (markup class-for-class) and icons.
 - `src/main.ts` — the controller that paints the shell and wires input.
-- `server/jev-proxy.mjs` — the key-holding backend proxy.
+- `server/jev-proxy.mjs` — the key-holding backend proxy; `server/api.mjs` — the prompts and Jev questions it shares with the Pages build (`src/game/api.ts`).
 
 ## Adding things without merge conflicts
 
