@@ -10,6 +10,7 @@ import type { Writer, WriteReq } from '../engine';
 import type { Content } from '../content/schema';
 import { haikuReply } from './haiku';
 import type { PlayerView } from './playerView';
+import { DIRECT } from './apiKeys';
 
 export type Misses = 'haiku' | 'scripted';
 /** Who pays for Haiku replies: the Claude subscription logged in to the claude CLI (dev), or ANTHROPIC_API_KEY. */
@@ -30,7 +31,8 @@ function load(): MissSettings {
   try {
     const saved = JSON.parse(localStorage.getItem(KEY) || '{}');
     if (saved.misses === 'scripted') d.misses = 'scripted';
-    if (saved.haikuVia === 'subscription') d.haikuVia = 'subscription';
+    // the subscription route runs the claude CLI next to the proxy, so the browser build has only the API
+    if (saved.haikuVia === 'subscription' && !DIRECT) d.haikuVia = 'subscription';
     if (saved.net === 'offline') d.net = 'offline';
   } catch { /* storage off */ }
   return d;

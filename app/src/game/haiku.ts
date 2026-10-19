@@ -1,13 +1,14 @@
 /*
  * Off-script character replies from Claude Haiku, through the local proxy (server/jev-proxy.mjs,
- * POST /api/write). The proxy holds ANTHROPIC_API_KEY and builds the prompt from
- * content/characters/; the browser only sends which character is speaking, what the player
- * wrote, and the conversation so far. Used when the "Misses" setting on agent.chat is "Haiku (API)".
+ * POST /api/write), or in the GitHub Pages build straight from the browser with the player's key
+ * (game/api.ts). The prompt is built from content/characters/ by server/api.mjs; the game only
+ * sends which character is speaking, what the player wrote, and the conversation so far. Used when the "Misses" setting on agent.chat is "Haiku (API)".
  */
 import type { Character } from '../content/schema';
 import type { HistoryLine } from '../engine';
 import type { PlayerView } from './playerView';
 import { finishReply } from './characters';
+import { apiPost } from './api';
 
 export interface HaikuReply { text: string | null; note?: string; debug: string[] }
 
@@ -18,16 +19,13 @@ export interface NearReq { why: string; lines: string[]; /** a classified query:
 
 /** `situation` (a Swaplist chat) tells the character what they're selling and what the player asked about. */
 export async function haikuReply(ch: Character, text: string, via: 'subscription' | 'api', history: HistoryLine[] = [], situation?: string, query?: QueryReq, near?: NearReq, mode?: 'y'): Promise<HaikuReply> {
-  let res: Response;
+  let res;
   try {
-    res = await fetch('/api/write', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ character: ch.id, text, via, history: history.slice(-12), ...(situation ? { situation } : {}), ...(mode ? { mode } : {}), ...(query ? { mode: 'query', known: query.known, view: query.view } : {}), ...(near ? { mode: near.refuse ? 'refuse' : 'near', near: { why: near.why, lines: near.lines } } : {}) }),
-    });
+    res = await apiPost('write', { character: ch.id, text, via, history: history.slice(-12), ...(situation ? { situation } : {}), ...(mode ? { mode } : {}), ...(query ? { mode: 'query', known: query.known, view: query.view } : {}), ...(near ? { mode: near.refuse ? 'refuse' : 'near', near: { why: near.why, lines: near.lines } } : {}) });
   } catch {
     return { text: null, note: 'the proxy is not running (npm run proxy)', debug: [] };
   }
-  const data: any = await res.json().catch(() => ({}));
+  const data = res.data;
   // Vite answers 500 itself when nothing listens on the proxy port
   if (!res.ok) return { text: null, note: data.error || (res.status >= 500 ? 'the proxy is not running (npm run proxy)' : `proxy returned ${res.status}`), debug: [] };
   const raw = String(data.text ?? '');
@@ -43,14 +41,11 @@ export async function haikuReply(ch: Character, text: string, via: 'subscription
   return reply ? { text: reply, debug } : { text: null, note: `Haiku's reply was unusable: ${raw.slice(0, 80) || data.stop}`, debug };
 }
 
-/** sorrywriter.ai: Haiku writes the player's apology (POST /api/apology; the prompt lives in the proxy). */
+/** sorrywriter.ai: Haiku writes the player's apology (POST /api/apology; the prompt lives in server/api.mjs). */
 export async function haikuApology(text: string, via: 'subscription' | 'api', history: HistoryLine[] = []): Promise<{ text: string | null; note?: string }> {
   try {
-    const res = await fetch('/api/apology', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, via, history: history.slice(-12) }),
-    });
-    const data: any = await res.json().catch(() => ({}));
+    const res = await apiPost('apology', { text, via, history: history.slice(-12) });
+    const data = res.data;
     if (!res.ok) return { text: null, note: data.error || `proxy returned ${res.status}` };
     const out = String(data.text ?? '').trim();
     return out ? { text: out } : { text: null, note: 'Haiku returned nothing' };

@@ -24,6 +24,8 @@ export function freshUi() {
     liked: {} as Record<string, boolean>,
     reposted: {} as Record<string, boolean>,
     greet: false,
+    /** The API keys dialog (GitHub Pages build): open at first launch until keys are saved or offline is picked, and from Home > System. */
+    keys: false,
     memWarn: false,
     confirm: null as null | { text: string; yes: string; fn: () => void },
     start: false,

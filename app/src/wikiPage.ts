@@ -4,7 +4,7 @@
  * `npm run dev` runs. Saves need `npm run proxy` too. A save in either copy lands in the file and
  * Vite passes it to the other (content/wikiFiles.ts), so they always match.
  *
- * A built copy (the one published on GitHub Pages, see .github/workflows/wiki-pages.yml) has no proxy
+ * A built copy (the one published on GitHub Pages next to the game, see .github/workflows/pages.yml) has no proxy
  * to save to, so it's read-only, and on a phone the page list folds behind a Pages button.
  *
  * There's no game here, so "view as" picks the day, time and flags to judge the tags by. What has

@@ -1,12 +1,14 @@
 /*
- * Client-side Jev router that talks to the backend proxy (which holds the API key). If the proxy
+ * Client-side Jev router that talks to the backend proxy (which holds the API key), or, in the
+ * GitHub Pages build, to TypeSafe directly with the player's own key (game/api.ts). If the proxy
  * isn't running or a call fails, the call throws JevOffline: the action doesn't happen and the UI
- * says Jev is offline. There is no keyword fallback. The key never ships in the client.
+ * says Jev is offline. There is no keyword fallback.
  */
 import {
   JevOffline,
   type JevRouter, type RouteInput, type RouteDecision, type PostInput, type PostRating, type FeatureMatchInput,
 } from '../engine';
+import { apiPost, apiStatus, NO_PROXY } from './api';
 
 export type JevMode = 'checking' | 'online' | 'offline';
 
@@ -21,16 +23,15 @@ export class BackendJev implements JevRouter {
 
   onChange(fn: () => void): () => void { this.listeners.add(fn); return () => this.listeners.delete(fn); }
 
-  /** Ask the proxy whether Jev is usable, so the UI shows the right mode before the first call. */
+  /** Ask the proxy (or the saved keys) whether Jev is usable, so the UI shows the right mode before the first call. */
   async probe(): Promise<void> {
     try {
-      const res = await fetch('/api/status');
-      const body = res.ok ? ((await res.json()) as { jev?: boolean; reason?: string; writer?: boolean }) : null;
+      const body = await apiStatus();
       this.haikuKey = body ? !!body.writer : null;
       if (body?.jev) this.setMode('online');
-      else this.goOffline(body?.reason ?? 'The Jev proxy is not running (npm run proxy).');
+      else this.goOffline(body?.reason || NO_PROXY);
     } catch {
-      this.goOffline('The Jev proxy is not running (npm run proxy).');
+      this.goOffline(NO_PROXY);
     }
   }
 
@@ -59,24 +60,18 @@ export class BackendJev implements JevRouter {
 
   /** Every call tries the proxy, so Jev is back the moment the proxy is. */
   private async call<T>(path: string, payload: unknown): Promise<T> {
-    let res: Response;
+    let res;
     try {
-      res = await fetch(`/api/${path}`, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      res = await apiPost(path, payload);
     } catch {
-      throw this.goOffline('The Jev proxy is not running (npm run proxy).');
+      throw this.goOffline(NO_PROXY);
     }
     if (!res.ok) {
-      const err = (await res.json().catch(() => null)) as { error?: string } | null;
       // the dev server answers 5xx for a proxy that isn't running
-      throw this.goOffline(err?.error ?? (res.status >= 500 ? 'The Jev proxy is not running (npm run proxy).' : `The Jev proxy answered ${res.status}.`));
+      throw this.goOffline(res.data?.error ?? (res.status >= 500 ? NO_PROXY : `The Jev proxy answered ${res.status}.`));
     }
-    const out = (await res.json()) as T;
     this.setMode('online');
-    return out;
+    return res.data as T;
   }
 }
 
