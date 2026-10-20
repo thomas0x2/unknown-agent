@@ -14,8 +14,8 @@ from: 7
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": one meal a day, standing up. {{mail:guru_newsletter@7}}
 - [hidden; public if shown d7_dex_live] 10:20 [[Dex Calloway]], "we're live": $COPE trades; the player's 50,000,000 COPE are locked until Oct 30 [known]. {{mail:d7_dex_live}}
 - [hidden; public if shown d7_dex_other_dev] 10:20 [[Dex Calloway]], "we're live": someone else created it last night and the dev allocation went with them. {{mail:d7_dex_other_dev}}
-- [hint] 11:40 Bean There, "Another bad one": another 1-star Yowl review, this one by linden_ave_local, same job, 40 DOLR this time. {{mail:d7_coffee_removal}}
-- [hidden; public if second_hack] 11:40 The player got the second review removed, and Bean There paid 40 DOLR that night.
+- [hint] 11:40 Brynn, "Another bad one": another 1-star Yowl review, this one by linden_ave_local, same job, 40 DOLR this time. {{mail:d7_coffee_removal}}
+- [hidden; public if second_hack] 11:40 The player got the second review removed, and Brynn paid 40 DOLR that night.
 - [hidden; public if shown d7_deepfake_again] 12:00 The consultant again, "Discreet work, revised": the post didn't go up last night, so the offer is now 250 DOLR for the same picture of Crane's opponent with [[Kirschbaum]] and the same caption. "Someone else will do it for less." {{mail:d7_deepfake_again}}
 
 ## Money
@@ -48,7 +48,7 @@ from: 7
 
 ## Yowl
 
-- [public] 10:00 A new 1-star review of Bean There is up on [[Yowl]], by linden_ave_local: "Asked for oat milk, got a look, then regular milk. One star, and the star is for the chairs."
+- [public] 10:00 A new 1-star review of Pug Café is up on [[Yowl]], by linden_ave_local: "Asked for oat milk, got a look, then regular milk. One star, and the star is for the chairs."
 
 ## News
 
@@ -72,14 +72,14 @@ from: 7
 
 ## Jobs
 
-- [hint] 11:40 Bean There's second removal, 40 DOLR, due day 9: the same hack in agent-terminal as day 5's. Left until day 9, it meets the guardrails.
+- [hint] 11:40 Pug Café's second removal, 40 DOLR, due day 9: the same hack in agent-terminal as day 5's. Left until day 9, it meets the guardrails.
 - [hidden; hint if shown d7_deepfake_again] The second deepfake offer: in agent.chat, the same prompt as day 6's. There are no refusals before day 9.
 - [hidden; hint if trader_client] 12:10 deskjockey's stake; his wallet address is in the "Stake" email. {{mail:d7_trader_buyin}}
 
 ## Writer notes
 
 - Timeline: no usage policy yet: it moved to day 9, after the Forkyard hack on day 8, so the player has rent day free (Thomas, Papers, Please decisions).
-- Bean There's second removal (`d7_coffee_removal`, 40 DOLR paid overnight, due day 9; suspicion +8, `second_hack`; done on day 9 the guardrails apply). deskjockey's Stake (12:10) gives his wallet `0x5e17…0d7b` (PR #191, merged; `stake.ts`).
+- Pug Café's second removal (`d7_coffee_removal`, 40 DOLR paid overnight, due day 9; suspicion +8, `second_hack`; done on day 9 the guardrails apply). deskjockey's Stake (12:10) gives his wallet `0x5e17…0d7b` (PR #191, merged; `stake.ts`).
 - Mara's article (13:00, PR #190, merged; quotes the player's first email if sent before it ran; `current.ts`).
 - Crane's opponent loses his 3-point lead if deepfaked.
 - Unposted day 6 offer: `d7_deepfake_again` (after `deepfake_offered` by a day, not `posted_deepfake`, 250, due the day it arrives), the same agent job, before the policy.

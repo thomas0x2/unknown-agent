@@ -588,24 +588,24 @@
   }
  },
  {
-  "prompt": "who is Dana Reyes?",
+  "prompt": "who is Brynn LeClaire?",
   "expect": {
    "kind": "answer",
    "pages": [
-    "Dana Reyes"
+    "Brynn LeClaire"
    ],
    "also": [
-    "Local businesses"
+    "Pug"
    ]
   }
  },
  {
-  "prompt": "who runs Bean There?",
+  "prompt": "who runs Pug Café?",
   "expect": {
    "kind": "answer",
    "any": [
-    "Dana Reyes",
-    "Local businesses"
+    "Pug",
+    "Brynn LeClaire"
    ]
   }
  },
@@ -1102,12 +1102,12 @@
   }
  },
  {
-  "prompt": "what is Bean There?",
+  "prompt": "what is Pug Café?",
   "expect": {
    "kind": "answer",
    "any": [
-    "Local businesses",
-    "Dana Reyes"
+    "Pug",
+    "Brynn LeClaire"
    ]
   }
  },

@@ -20,7 +20,7 @@ from: 8
 ## Y
 
 - [public] 10:25 [[Dex Calloway]] (@dexcult): "price is just the congregation getting louder." {{y:d8_y_dexcult}}
-- [hidden; hint if shown d8_y_gym_help] 11:35 Marcus Steele (@marcus_steele), if Dana's review job was never done: still three reviews, two about the showers, "which work now"; he pays anyone who can fix Yowl. marcus.steele@qmail.com {{y:d8_y_gym_help}}
+- [hidden; hint if shown d8_y_gym_help] 11:35 Marcus Steele (@marcus_steele), if Brynn's review job was never done: still three reviews, two about the showers, "which work now"; he pays anyone who can fix Yowl. marcus.steele@qmail.com {{y:d8_y_gym_help}}
 
 - [public] 09:10 [[Max Stryker]]: his peptide stack costs more than your rent; he won't say which peptides. {{y:d8_y_stryker_peptides}}
 - [public] 09:40 [[6ft_sigma]] ordered a peptide stack online; it came in a plain box marked research use only. "Already feel taller." {{y:d8_y_sigma_peptides}}

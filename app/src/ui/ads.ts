@@ -179,7 +179,7 @@ export const WIDE: Ad[] = [
     cta: 'Start crying', fine: 'Tears are stored to improve our bots.',
   },
   {
-    id: 'insurance', sponsor: 'Steadfast Mutual', href: 'steadfast.insure', theme: 'ad-steadfast', deco: 'shine',
+    id: 'insurance', sponsor: 'Pug', href: 'pug.com', theme: 'ad-pug', deco: 'shine', from: 3,
     frames: ['When the AI escapes,', 'will you be covered?', '<b>No.</b> But you’ll have paid.'],
     cta: 'Get a quote', fine: 'Excludes acts of God, acts of GeneralAI, and acts.',
   },
@@ -223,11 +223,6 @@ const SQUARE: Ad[] = [
     id: 'mindset', sponsor: 'Mindset Daily', href: 'mindsetdaily.co/4am', theme: 'ad-mind', deco: 'sparkle', cta_fx: 'pulse',
     frames: ['Wake up at <b>4am</b>.', 'Why?', 'Doesn’t matter. <b>4am.</b>'],
     cta: 'Subscribe', fine: 'Results not typical. Sleep not included.',
-  },
-  {
-    id: 'bean', sponsor: 'Bean There', href: 'beanthere.coffee', theme: 'ad-bean', deco: 'steam', from: 3,
-    frames: ['Bean There ☕', 'Coffee so good', 'someone was <b>paid</b> to tell you.'],
-    cta: '3 Linden Ave', fine: 'This is not an ad. #notanad',
   },
   {
     id: 'prince', sponsor: 'Crypto Prince', href: 'prince-claims.xyz', theme: 'ad-prince', deco: 'siren', cta_fx: 'blink',

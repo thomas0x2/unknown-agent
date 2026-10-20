@@ -17,4 +17,4 @@ from: 5
 
 ## Writer notes
 
-- Event `d5_y_robot_sighting` (PR #204). Not [[Dana Reyes]] of Bean There.
+- Event `d5_y_robot_sighting` (PR #204).

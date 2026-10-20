@@ -16,8 +16,8 @@ export interface SeedReview { author: string; stars: number; text: string; day?:
 
 export const BUSINESSES: Business[] = [
   {
-    id: 'beanthere', name: 'Bean There', category: 'Coffee & Tea', price: '$$', address: '3 Linden Ave', owner: 'Dana Reyes',
-    hours: 'Mon–Sat 07:00–16:00', about: 'Specialty coffee, house-baked muffins, and free wifi. Laptop friendly — allegedly.',
+    id: 'pugcafe', name: 'Pug Café', category: 'Coffee & Tea', price: '$$', address: '3 Linden Ave', owner: 'Pug',
+    hours: 'Open 24 hours', about: 'Espresso, desks and outlets at every seat. Free for Pug policyholders. Founders welcome, everyone else tolerated.',
   },
   {
     id: 'ironyard', name: 'Iron Yard', category: 'Gym · Strength', price: '$$', address: '88 Harbor Rd', owner: 'Marcus Steele',
@@ -34,11 +34,11 @@ export const BUSINESSES: Business[] = [
 ];
 
 export const YOWL_SEED: Record<string, SeedReview[]> = {
-  beanthere: [
+  pugcafe: [
     { author: 'espresso_or_death', stars: 1, text: 'Burnt. Every single time. And a twenty-minute wait for the privilege.' },
-    { author: 'commuter22', stars: 2, text: 'Slow service, staff seem annoyed you came in. The muffins are fine, I guess.' },
+    { author: 'commuter22', stars: 2, text: 'Every seat taken by someone on a call. Espresso is 6 DOLR unless you buy insurance.' },
     { author: 'Zoe K.', stars: 2, text: 'Wanted to love it. Latte was lukewarm and they spelled a three-letter name wrong.' },
-    // Dana's second removal job (day 7)
+    // Brynn's second removal job (day 7)
     { author: 'linden_ave_local', stars: 1, text: 'Asked for oat milk, got a look, then regular milk. One star, and the star is for the chairs.', day: 7 },
   ],
   ironyard: [

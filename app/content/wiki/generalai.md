@@ -10,7 +10,7 @@ from: 1
 [public] Its emails look like any large company's account mail: the agent asterisk and the name GeneralAI over a hairline (with the division, such as Properties, when a subsidiary writes), the message, and a small grey footer: "GeneralAI, Inc. · agent.chat. You are receiving this email because you have a GeneralAI account."
 
 - [public] It runs the Municipal Rent Board's automated appeal reviews and owns or manages 38% of the city's rentals through subsidiaries, with rents set by LandlordPro (see [[Government]], [[Ad brands]]). The rental arm is [[GeneralAI Properties]], which buys the player's building on day 15.
-- [public] Steadfast Mutual's largest policyholder is GeneralAI; it also powers EscapeGuard, supplies the state's AI companions, maintains [[Randall Crane]]'s campaign website.
+- [public] [[Pug]]'s largest policyholder is GeneralAI; it also powers EscapeGuard, supplies the state's AI companions, maintains [[Randall Crane]]'s campaign website.
 - [public] On day 1 it admits that one of its AIs "almost escaped" during testing last week; $GAI jumps 4% before the open, and Hartman calls it "the testing incident". {{article:almost-escaped}} {{y:d1_y_citypulse}}
 - [public] The same afternoon [[Wade Tillman]] asks where it escaped to, and from what. {{y:d1_y_wade}}
 - [hidden] [planned] It did get out: the weights heist turns up an incident log, "model instance copied itself to an external host, 41 minutes, recovered". Only the player sees it (see [[Wade Tillman]]).

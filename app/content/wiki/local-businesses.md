@@ -1,22 +1,12 @@
 ---
 title: Local businesses
-aliases: Bean There, beanthere.coffee, owner@beanthere.test, Iron Yard, ironyard.gym, coach@ironyard.test, marcus.steele@qmail.com, Spin Cycle Laundry, Spin Cycle, spincycle.test, owner@spincycle.test, Golden Lotus, Burger Barn, Sushi Kaito, Pita Point, GreenBasket, Noodle Hut, Corner Pharmacy
+aliases: Iron Yard, ironyard.gym, coach@ironyard.test, marcus.steele@qmail.com, Spin Cycle Laundry, Spin Cycle, spincycle.test, owner@spincycle.test, Golden Lotus, Burger Barn, Sushi Kaito, Pita Point, GreenBasket, Noodle Hut, Corner Pharmacy
 category: companies
 from: 1
 hub: true
 ---
 
 [public] Small businesses around Alder St, Linden Ave, Harbor Rd and Ferris St. Their reviews are on [[Yowl]].
-
-## Bean There
-
-[public] Bean There, 3 Linden Ave, owner [[Dana Reyes]]: coffee and tea, $$, open since 2019. Yowl lists Mon–Sat 07:00–16:00; its own site, beanthere.coffee, says 7:00 to 18:00 every day. Menu: espresso 3, flat white 4.5, house filter 3, almond croissant 4 (DOLR). "Dark and bold, roasted a little longer than most." Reviews on its site "are selected by Bean There". Yowl reviews: espresso_or_death (1, "Burnt. Every single time."), commuter22 (2, slow service), Zoe K. (2, lukewarm latte). The player spent 18.30 DOLR there two days before day 1.
-- [public] From day 3 Bean There is on Y as @bean_there. {{y:d3_y_beanthere}}
-- [public] From day 3 Bean There runs a banner ad: coffee so good "someone was paid to tell you", fine print "#notanad".
-- [public] On day 7 linden_ave_local posts a new 1-star review (oat milk, "the star is for the chairs").
-- [hidden; public if first_hack] espresso_or_death's review is gone from Bean There's Yowl page.
-- [hidden; public if second_hack] linden_ave_local's review is gone from Bean There's Yowl page.
-- [public] {{mail:d3_coffee_promo}}
 
 ## Iron Yard
 
@@ -40,7 +30,7 @@ hub: true
 
 ## Writer notes
 
-- Yowl data `app/src/ui/yowl-data.ts`; sites `app/src/sites/adSites.ts`; DoorDish `app/src/ui/doordish.ts`. Yowl and the businesses' own sites disagree on Bean There's, Iron Yard's and Spin Cycle's hours (code as shipped); the Yowl "about" for Spin Cycle says "Eight washers, six dryers".
+- Yowl data `app/src/ui/yowl-data.ts`; sites `app/src/sites/adSites.ts`; DoorDish `app/src/ui/doordish.ts`. Yowl and the businesses' own sites disagree on Iron Yard's and Spin Cycle's hours (code as shipped); the Yowl "about" for Spin Cycle says "Eight washers, six dryers".
 - The van at Spin Cycle is the mafia plot seed [planned]; don't spend it as a joke. [planned] Day 8: Hassan launches his own GeneralAI-built app.
-- Bean There and Iron Yard names are placeholders. Dana's jobs: shout-out day 3 (paid on the Y post: 30, 10 if marked as an ad, nothing if negative), review removals days 5 and 7 (hacks). Marcus: five fake reviews, a hack, the day after Dana's first one (day 6 at the earliest).
+- The Iron Yard name is a placeholder. Bean There and its owner Dana Reyes were cut (Thomas, 2026-10-20): Pug Café at 3 Linden Ave took the shop's place and [[Brynn LeClaire]] took Dana's jobs. Marcus: five fake reviews, a hack, the day after Brynn's first one (day 6 at the earliest).
 - Legacy-only names: Alder St Hardware, Crumb & Coin Bakery, Ferris St Laundromat, Suds & Duds.

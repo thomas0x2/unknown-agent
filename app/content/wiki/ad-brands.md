@@ -1,12 +1,12 @@
 ---
 title: Ad brands
-aliases: banner ads, ads, EscapeGuard, escapeguard.ai, GriefGPT, griefgpt.com, DOLR Foundation, dolr.money, LiquidAssets, liquidassets.cellar, Meridian Pods, meridianpods.live, NoDoze MAX, nodoze.max, Ozempra, ozempra.com, Fluvera, fluvera.com, Pug, pug.com, PureVial Research, purevial.com, Perdure Pharma, perdure.com, CloudCasket, cloudcasket.eternal, Steadfast Mutual, steadfast.insure, LandlordPro, landlordpro.ai, HumanVerified, humanverified.id, Cryo-Later, cryolater.com, Mindset Daily, mindsetdaily.co, LegacySEO, legacyseo.rip, Crane Victory Fund, Your Bank (totally), Crypto Prince, GeneralAI Wellness, GeneralAI Billing
+aliases: banner ads, ads, EscapeGuard, escapeguard.ai, GriefGPT, griefgpt.com, DOLR Foundation, dolr.money, LiquidAssets, liquidassets.cellar, Meridian Pods, meridianpods.live, NoDoze MAX, nodoze.max, Ozempra, ozempra.com, Fluvera, fluvera.com, Pug, pug.com, PureVial Research, purevial.com, Perdure Pharma, perdure.com, CloudCasket, cloudcasket.eternal, LandlordPro, landlordpro.ai, HumanVerified, humanverified.id, Cryo-Later, cryolater.com, Mindset Daily, mindsetdaily.co, LegacySEO, legacyseo.rip, Crane Victory Fund, Your Bank (totally), Crypto Prince, GeneralAI Wellness, GeneralAI Billing
 category: companies
 from: 1
 hub: true
 ---
 
-[public] Banner ads run across the city's sites. Every ad shows its brand's logo and opens the sponsor's site in a new tab. Most sponsors have a plain landing page in their own colours with nothing to click. Sponsors with full pages of their own: [[EMPIRE]], [[coinbln.com]] ("Your Bank (totally)"), [[prince-claims.xyz]] (Crypto Prince), [[PC Medic]] (pcmedic.live, the fake virus scan), [[lonely.ai]], [[SorryWriter]], [[DoorDish]], [[CityPulse]], [[Pollymarket]], [[Sherwood]], [[Stack]], [[deepsleep-0.5B]] (deepsleep.ai), Spin Cycle and GeneralAI's agent ads, which open the [[agent]] models page. Government ads are on [[Government]]; Bean There, Iron Yard and Spin Cycle on [[Local businesses]].
+[public] Banner ads run across the city's sites. Every ad shows its brand's logo and opens the sponsor's site in a new tab. Most sponsors have a plain landing page in their own colours with nothing to click. Sponsors with full pages of their own: [[EMPIRE]], [[coinbln.com]] ("Your Bank (totally)"), [[prince-claims.xyz]] (Crypto Prince), [[PC Medic]] (pcmedic.live, the fake virus scan), [[lonely.ai]], [[SorryWriter]], [[DoorDish]], [[CityPulse]], [[Pollymarket]], [[Sherwood]], [[Stack]], [[deepsleep-0.5B]] (deepsleep.ai), Spin Cycle and GeneralAI's agent ads, which open the [[agent]] models page. Government ads are on [[Government]]; Pug Café, Iron Yard and Spin Cycle on [[Local businesses]].
 
 ## EscapeGuard
 
@@ -42,7 +42,7 @@ hub: true
 
 ## Pug
 
-[hidden; public from day 3] Pug (pug.com), "AI-native insurance for founders", see [[Pug]]. Ad from day 3: "Your co-founder could quit tomorrow. Be covered today. Pug. AI-native insurance for founders." Fine print: "Quotes in 90 seconds. Claims decided by agent. Pug is an agency, not an insurer."
+[hidden; public from day 3] Pug (pug.com), "AI-native insurance for founders", see [[Pug]]. Ad from day 3: "Your co-founder could quit tomorrow. Be covered today. Pug. AI-native insurance for founders." Fine print: "Quotes in 90 seconds. Claims decided by agent. Pug is an agency, not an insurer." A second Pug ad, also from day 3: "When the AI escapes, will you be covered? No. But you'll have paid." Fine print: "Excludes acts of God, acts of GeneralAI, and acts."
 
 ## PureVial Research
 
@@ -55,10 +55,6 @@ hub: true
 ## CloudCasket
 
 [public] CloudCasket (cloudcasket.eternal), digital afterlife: runs everything you typed as a version of you. Upload at a clinic or by sharing your passwords. Essential 29 DOLR a month, Eternal 89; payments pass to your family; visits billed per minute; two missed payments mean deletion after 30 days. Ad: "Death is a legacy system."
-
-## Steadfast Mutual
-
-[public] Steadfast Mutual (steadfast.insure), insurer since 1952: AI incident cover excludes systems made by companies it insures; income protection doesn't count automation. Its largest policyholder is GeneralAI.
 
 ## LandlordPro
 
@@ -104,6 +100,6 @@ hub: true
 ## Writer notes
 
 - Ads: `app/src/ui/ads.ts` (`from` gates: crane 3, doordish 3, bean 3, gai2 4, sorrywriter 5, craneagain 6, progress 6). Landing pages: `app/src/sites/adSites.ts`.
-- Brand ties: Steadfast brand `app/src/ui/steadfast.ts` (navy `#13314d`, fluted column in a shield). LiquidAssets' logo is a kidney.
+- Brand ties: LiquidAssets' logo is a kidney. Steadfast Mutual (steadfast.insure) was cut (Thomas, 2026-10-20): Pug took its ad and its GeneralAI line.
 - Perdure brand: `app/src/ui/perdure.ts`; the ozempra ad runs from day 3, the fluvera ad from day 9. The pug ad runs from day 3, purevial from day 8; a67x.com, lumi.events and glamdring.com are landing pages with no ad (`noAd`), reached from Y posts and each other.
 - Possible hooks *(placeholder)*: NoDoze MAX for the AI-for-bio plot (`bio_release`, Outbreak); CloudCasket records as a doxxing source / leverage for the mafia plot (day 17, Mara Vey).

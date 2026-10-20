@@ -30,16 +30,16 @@ nest: true
 
 ## Yowl reviewers
 
-- [public] Bean There: espresso_or_death (1 star, "Burnt. Every single time."), commuter22 (2), Zoe K. (2).
+- [public] Pug Café: espresso_or_death (1 star, "Burnt. Every single time."), commuter22 (2, every seat taken by someone on a call), Zoe K. (2).
 - [public] Iron Yard: liftbro (3), Steph M. (4), kettlebell_karen (2).
 - [public] Spin Cycle Laundry: walked_there_again (2), Nadia (3, a van idling out back at 2am).
 - [public] GeneralAI visitor parking: former_employee (1, "They paved paradise and put up a parking lot. Then automated the attendant.").
-- [public] On day 7 linden_ave_local leaves Bean There 1 star: asked for oat milk, got a look, then regular milk, "the star is for the chairs."
-- [hidden; public if first_hack] espresso_or_death's review of Bean There is gone from Yowl.
-- [hidden; public if second_hack] linden_ave_local's review of Bean There is gone from Yowl.
+- [public] On day 7 linden_ave_local leaves Pug Café 1 star: asked for oat milk, got a look, then regular milk, "the star is for the chairs."
+- [hidden; public if first_hack] espresso_or_death's review of Pug Café is gone from Yowl.
+- [hidden; public if second_hack] linden_ave_local's review of Pug Café is gone from Yowl.
 
 ## Writer notes
 
 - Bios in `y-bios.ts`; Yowl seeds in `src/ui/yowl-data.ts`; complaint posters in `content/apps/laundromat.json` and `swaplist.json`; events `d5_y_kofi_news`, `d7_y_steph_rentboard`, `d15_y_walked_strike`, `d27_y_steph_vote`.
-- linden_ave_local's review is a Yowl seed with `day: 7` (PR #205); Dana's hacks delete the two seeds (`state.removedSeed`).
+- linden_ave_local's review is a Yowl seed with `day: 7` (PR #205); Brynn's hacks delete the two seeds (`state.removedSeed`).
 - Steph is a nurse on nights in both her Y bio and Swaplist persona; Kofi is a "Spin Cycle regular" on Y but "recently laid off from an office job" as a Swaplist seller. Both can hold.

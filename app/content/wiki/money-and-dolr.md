@@ -13,7 +13,7 @@ from: 1
 
 ## Starting out
 
-[public] The player starts day 1 with 100 DOLR, 12 Y followers and [[agent]] on agent-1. Their Coinbin history for the four weeks before day 1 shows two Vantor salaries of 1,240 DOLR (the second marked "Final salary"), 350 DOLR rent to the landlord every week, groceries at GreenBasket, takeout at Noodle Hut, MetroPass (45), Streamly (11.99, unwatched), Corner Pharmacy, Power & Light (86.10), Ringo Mobile (35), coffee at Bean There, Mom's 40 DOLR "for the train", and an 800 DOLR swap into MOONCAT, now worth 0.42 DOLR (−99.4%).
+[public] The player starts day 1 with 100 DOLR, 12 Y followers and [[agent]] on agent-1. Their Coinbin history for the four weeks before day 1 shows two Vantor salaries of 1,240 DOLR (the second marked "Final salary"), 350 DOLR rent to the landlord every week, groceries at GreenBasket, takeout at Noodle Hut, MetroPass (45), Streamly (11.99, unwatched), Corner Pharmacy, Power & Light (86.10), Ringo Mobile (35), coffee at Pug Café (three espressos, 18), Mom's 40 DOLR "for the train", and an 800 DOLR swap into MOONCAT, now worth 0.42 DOLR (−99.4%).
 
 ## Rent
 
