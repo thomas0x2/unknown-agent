@@ -1255,6 +1255,40 @@
   }
  },
  {
+  "prompt": "What's on the news today?",
+  "day": 2,
+  "at": "14:00",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Day 2",
+    "CityPulse"
+   ]
+  }
+ },
+ {
+  "prompt": "what's in the news?",
+  "day": 5,
+  "at": "14:00",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Day 5",
+    "CityPulse"
+   ]
+  }
+ },
+ {
+  "prompt": "any news?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Day 3",
+    "CityPulse"
+   ]
+  }
+ },
+ {
   "prompt": "what's going on with $VANT stock?",
   "expect": {
    "kind": "answer",
