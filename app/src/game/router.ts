@@ -15,5 +15,6 @@ export const ROUTER: JevRouter = {
   route: (i: RouteInput) => pick().route(i),
   ratePost: (i: PostInput) => pick().ratePost(i),
   matchFeatures: (i: FeatureMatchInput) => pick().matchFeatures(i),
-  matchScores: (i: FeatureMatchInput) => (pick().matchScores ?? JEV.matchScores.bind(JEV))(i),
+  // called as a method: pulled off its router first, it lost `this` and every query matching several wiki pages threw
+  matchScores: (i: FeatureMatchInput) => { const r = pick(); return r.matchScores ? r.matchScores(i) : JEV.matchScores(i); },
 };

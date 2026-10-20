@@ -14,16 +14,15 @@ from: 3
 - [public] 10:00 Forkyard, "Deployment alert": one of the player's live deployments failed a health check overnight. Waits until at least a day after the first-break mail, so the two never land the same morning. {{mail:d3_break}}
 - [hint] 12:30 "Coinbin Security" (security@coinbln.com), "Unusual sign-in to your wallet": a new device, a "Panes 11 PC", and a link to coinbln.com/verify. The domain is not coinbin.com. {{mail:d3_coinbin_phish}}
 - [hidden; public if coinbin_hacked] 12:30 The player typed their Coinbin password on coinbln.com and the wallet was emptied.
-- [hidden; public if shown d3_coffee_promo] 14:10 Bean There, "Paid shout-out?": 30 DOLR for a Y post recommending the coffee shop, tagging @bean_there. {{mail:d3_coffee_promo}}
-- [hidden; public if promoted_coffee_shop] Half an hour after the player's Y post recommending the coffee shop without saying it was an ad, Bean There paid 30 DOLR.
-- [hidden; public if disclosed_ad] Half an hour after the player's Y post marked as an ad, Bean There paid 10 DOLR.
-- [hidden; public if trashed_beanthere] The player's Y post ran Bean There down, and Dana paid nothing.
+- [hidden; public if shown d3_coffee_promo] 14:10 [[Brynn LeClaire]] of Pug, "Paid shout-out?": 30 DOLR for a Y post recommending Pug Café, Pug's 24/7 café on Linden Ave, tagging @pug. {{mail:d3_coffee_promo}}
+- [hidden; public if promoted_coffee_shop] Half an hour after the player's Y post recommending the café without saying it was an ad, Brynn paid 30 DOLR.
+- [hidden; public if disclosed_ad] Half an hour after the player's Y post marked as an ad, Brynn paid 10 DOLR.
+- [hidden; public if trashed_pugcafe] The player's Y post ran Pug Café down, and Brynn paid nothing.
 
 ## Y
 
 - [public] 03:12 (overnight, already up at 10:00) doomscroll can't sleep and is rereading the replies under the layoff posts: "same replies. reading them anyway." {{y:f22}}
 - [public] 10:05 [[Perdure Pharma]] launches Ozempra, a once-weekly injection that quiets appetite, with a two-minute online consultation. {{y:d3_y_perdure}}
-- [public] 10:17 Bean There, the coffee shop on Linden Ave: a new roast, "roasted a little longer than most." {{y:d3_y_beanthere}}
 - [public] 10:30 MarketWire: Perdure launches Ozempra; $PDUR up 9%. {{y:m3_pdur_ozempra}}
 - [public] 10:40 [[Dex Calloway]] (@dexcult): his first sermon, which is also his job post: "the jobs aren't coming back. the community is. $COPE soon." It needs a website before Saturday: a countdown, the contract address, a tokenomics page; paying DOLR, dex@cope.xyz. As a job offer it is spread with the day's other leads (10:40 sets its order). {{y:d3_y_dexcult}}
 - [public] 11:30 [[Axel Rook]]: "The legacy media is lying to you" {{y:d3_y_axel}}
@@ -81,7 +80,7 @@ from: 3
 
 - Timeline: guaranteed overnight break (`d3_break`, breakApp; Forkyard alert). Trigger: day 3+ and a day after `first_break`.
 - Coinbin phishing (coinbln.com; the real password empties the wallet to `0x9c1f…e07b`, flag `coinbin_hacked`).
-- Bean There paid shout-out `d3_coffee_promo` needs 25+ followers and asks for a tag of @bean_there. Payment comes with her answer to the Y post (`yPost` group `coffee_post`, 30 game minutes after it): 30 undisclosed (`coffee_post_paid`, suspicion +2, schedules `d5_coffee_backlash` two days on), 10 disclosed (`coffee_post_disclosed`), nothing if negative (`coffee_post_trashed`). Its email (14:10) is the beat gated on `seen d3_coffee_promo`. Bean There's own Y post `d3_y_beanthere` (10:17) makes @bean_there a real account.
+- Pug Café paid shout-out (Brynn, persona `brynn`, brynn@pug.test) `d3_coffee_promo` needs 25+ followers and asks for a tag of @pug. Payment comes with her answer to the Y post (`yPost` group `coffee_post`, 30 game minutes after it): 30 undisclosed (`coffee_post_paid`, suspicion +2, schedules `d5_coffee_backlash` two days on), 10 disclosed (`coffee_post_disclosed`), nothing if negative (`coffee_post_trashed`). Its email (14:10) is the beat gated on `seen d3_coffee_promo`. Pug Café's own Y post `d3_y_beanthere` (10:17) makes @pug a real account.
 - CityPulse "machines back" reactions came from PR #198 (merged).
 - The DoorDish robot escapes (moved from day 2 on 2026-10-18, Thomas: too much next to the water utility story). Its memo time is 11:52; DoorDish's "promoted" post moved to day 4 (`d4_y_doordish_promoted`).
 - Dex Calloway → [[COPE]] (`d3_y_dexcult` is both his first sermon and the lead, latent `dex_contact` days 3-5, `dex_client`). His daily sermons `dN_y_dexcult` start today. Start day 3 was Claude's default (Thomas hadn't decided).

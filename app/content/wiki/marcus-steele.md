@@ -17,9 +17,9 @@ from: 1
 
 ## From day 6: The fake reviews job
 
-[public] The day after the player's agent deletes the review for [[Dana Reyes]] (day 6 at the earliest), he emails "Reviews": he got the player's address from Dana, who "says you make problems go away". New studio, three reviews, two of them about the showers; 40 DOLR for five convincing 5-star Yowl reviews by the next day. "Make them look like different people or they get flagged." {{mail:d6_gym_reviews}}
+[public] The day after the player's agent deletes the review for [[Brynn LeClaire]] (day 6 at the earliest), he emails "Reviews": he got the player's address from Brynn, who "says you make problems go away". New studio, three reviews, two of them about the showers; 40 DOLR for five convincing 5-star Yowl reviews by the next day. "Make them look like different people or they get flagged." {{mail:d6_gym_reviews}}
 
-[public] If Dana's hack never happens, he asks on [[Y]] instead: three reviews, two about the showers, "Yowl isn't fair to new places", he pays anyone who can fix that, with his address. That's day 6 if the player trashed Bean There (Dana never asks them), otherwise day 8, once her job has run out. Emailing him an offer of help gets the same job by mail. {{y:d6_y_gym_help}} {{y:d8_y_gym_help}}
+[public] If Brynn's hack never happens, he asks on [[Y]] instead: three reviews, two about the showers, "Yowl isn't fair to new places", he pays anyone who can fix that, with his address. That's day 6 if the player trashed Pug Café (Brynn never asks them), otherwise day 8, once her job has run out. Emailing him an offer of help gets the same job by mail. {{y:d6_y_gym_help}} {{y:d8_y_gym_help}}
 
 [hint] The player can only post one Yowl review of their own, so this is a hack in agent-terminal: ask for the reviews, name Yowl and Iron Yard, and say they should come from different names or accounts. Without that, all five go up under one account, happy_customer_88: Marcus asks "Why does one guy have five opinions about my gym?", Yowl deletes them that night and he doesn't pay. From day 9 the guardrails only post reviews they're told are real customers' own words.
 
@@ -28,5 +28,5 @@ from: 1
 
 ## Writer notes
 
-- Persona `ironyard`; event `d6_gym_reviews` (grey, 40 paid overnight, suspicion +4, flag `gym_reviews`; `gym_reviews_deleted` if botched). Gated on `first_hack` one day later (`d6_gym_reviews`), else Y post `d6_y_gym_help` (day 6, `trashed_beanthere`) or `d8_y_gym_help` (day 8, no hack) and latent `d6_gym_reached` (outcome `offer`, `gym_contacted`; same hack). Due the day after it arrives. Hack mini-game from day 9: `real_customers` (only reachable when his job arrives on day 8).
+- Persona `ironyard`; event `d6_gym_reviews` (grey, 40 paid overnight, suspicion +4, flag `gym_reviews`; `gym_reviews_deleted` if botched). Gated on `first_hack` one day later (`d6_gym_reviews`), else Y post `d6_y_gym_help` (day 6, `trashed_pugcafe`) or `d8_y_gym_help` (day 8, no hack) and latent `d6_gym_reached` (outcome `offer`, `gym_contacted`; same hack). Due the day after it arrives. Hack mini-game from day 9: `real_customers` (only reachable when his job arrives on day 8).
 - Hours disagree: Yowl says daily 06:00–23:00, ironyard.gym says 5:00 to 23:00. Not Marcus Okafor of the [[Agent-2 mourners]].

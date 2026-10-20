@@ -342,9 +342,9 @@
       "mood": "neutral"
     },
     {
-      "id": "m9_gai_doubt",
-      "day": 9,
-      "at": "17:08",
+      "id": "m12_gai_doubt",
+      "day": 12,
+      "at": "17:55",
       "from": "quietquant",
       "handle": "quietquant",
       "body": "Every $GAI release is a step change. The steps just keep going down for everyone else.",
@@ -355,9 +355,9 @@
       "mood": "bearish"
     },
     {
-      "id": "m9_gai_level3",
-      "day": 9,
-      "at": "18:46",
+      "id": "m12_gai_level3",
+      "day": 12,
+      "at": "18:50",
       "from": "MarketWire",
       "handle": "marketwire",
       "body": "$GAI up 5% on agent-3. Analysts call it \"a step change.\"",
@@ -683,8 +683,8 @@
       "mood": "bullish"
     },
     {
-      "id": "m14_gai_level4",
-      "day": 14,
+      "id": "m19_gai_level4",
+      "day": 19,
       "at": "11:54",
       "from": "MarketWire",
       "handle": "marketwire",
@@ -907,8 +907,8 @@
       "mood": "bullish"
     },
     {
-      "id": "m18_gai",
-      "day": 18,
+      "id": "m25_gai",
+      "day": 25,
       "at": "16:20",
       "from": "MarketWire",
       "handle": "marketwire",
@@ -1049,8 +1049,8 @@
       "literal": "bullish"
     },
     {
-      "id": "m20_gai_quiet",
-      "day": 20,
+      "id": "m27_gai_quiet",
+      "day": 27,
       "at": "11:15",
       "from": "MarketWire",
       "handle": "marketwire",

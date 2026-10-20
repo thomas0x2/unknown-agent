@@ -1,0 +1,11 @@
+{
+  "id": "d25_y_stryker_2",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 25,
+    "dayMax": 25
+  },
+  "at": "13:56",
+  "body": "agent-5 costs twelve times agent-1. Finally, an AI that understands premium positioning."
+}

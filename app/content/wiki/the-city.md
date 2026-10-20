@@ -14,7 +14,7 @@ from: 1
 | [public] Pine Street Apartments, Unit 4B | [[The player]]'s flat, rented from [[Pruitt Property Management]] |
 | [public] 17 Alder St | Pita Point |
 | [public] Alder St | a parking garage where the escaped DoorDish robot was seen twice; a bakery |
-| [public] 3 Linden Ave | Bean There ([[Dana Reyes]]) |
+| [public] 3 Linden Ave | Pug Café ([[Pug]]) |
 | [public] 9 Linden Ave | Sushi Kaito |
 | [public] 88 Harbor Rd | Iron Yard ([[Marcus Steele]]) |
 | [public] 230 Harbor Rd | Burger Barn |

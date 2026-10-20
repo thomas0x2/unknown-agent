@@ -216,6 +216,12 @@ export interface ComponentDef {
   aka?: string[];
   /** The feature's bug ids that live in this component. */
   bugs?: string[];
+  /**
+   * It shows on more pages than the feature's own, so it sits in a folder at the top of the repo
+   * instead of under the feature ('brand/name': the startup's name in the header of every page). Its
+   * path is its id alone: a fix names its folders, not the feature.
+   */
+  shared?: boolean;
 }
 export interface ChecklistItem {
   id: string;

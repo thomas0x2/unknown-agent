@@ -1,17 +1,17 @@
 {
   "id": "d5_y_coffee_help",
   "site": "y",
-  "from": "Dana Reyes",
+  "from": "Brynn LeClaire",
   "trigger": {
     "dayMin": 5,
     "flagsNone": [
       "disclosed_ad",
       "promoted_coffee_shop",
-      "reviewed_beanthere",
-      "trashed_beanthere"
+      "reviewed_pugcafe",
+      "trashed_pugcafe"
     ]
   },
   "at": "11:05",
-  "addr": "dana.reyes@qmail.com",
-  "body": "Small business question. One review on Yowl is sinking my coffee shop and Yowl won't answer my emails. Does anyone know how to get a review looked at? Happy to pay for help. dana.reyes@qmail.com"
+  "addr": "brynn.leclaire@qmail.com",
+  "body": "Community question 🐶 One review on Yowl is dragging down our café and Yowl won't answer my emails. Does anyone know how to get a review looked at? Happy to pay for help. brynn.leclaire@qmail.com"
 }

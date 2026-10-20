@@ -126,11 +126,7 @@
 .ad-dolr { --ad-bg: linear-gradient(135deg, #062b1b, #0e5e3a); --ad-ink: #b8ffd8; --ad-cta: #2cff95; --ad-cta-ink: #012613; }
 .ad-vantor { --ad-bg: #f3f2ee; --ad-ink: #2c2c2a; --ad-cta: #2c2c2a; --ad-cta-ink: #f3f2ee; --ad-fine: #6c6b66; }
 .ad-vantor .ad-f { font-family: var(--f-serif, Georgia, serif); }
-.ad-steadfast { --ad-bg: linear-gradient(180deg, #ffffff, #eef3f8); --ad-ink: #13314d; --ad-cta: #13314d; --ad-cta-ink: #fff; --ad-fine: #4e6378; }
-.ad-steadfast .ad-f { font-family: var(--f-serif, Georgia, serif); }
 .ad-mind { --ad-bg: linear-gradient(180deg, #1b0b3a, #ff6a3d 140%); --ad-cta: #ff9d3d; --ad-cta-ink: #1b0b3a; }
-.ad-bean { --ad-bg: linear-gradient(90deg, #4a2a18, #7a4a2a); --ad-ink: #fbe9d2; --ad-cta: #fbe9d2; --ad-cta-ink: #4a2a18; }
-.ad-bean .ad-f { font-family: var(--f-serif, Georgia, serif); font-style: italic; }
 .ad-prince { --ad-bg: repeating-linear-gradient(90deg, #ffef00 0 30px, #ff00a8 30px 60px); --ad-ink: #1a00ff; --ad-cta: #00e5ff; --ad-cta-ink: #1a00ff; --ad-fine: #1a00ff; font-family: 'Comic Sans MS', 'Comic Neue', cursive; }
 .ad-prince .ad-f { text-shadow: 2px 2px 0 #fff, -1px -1px 0 #fff; }
 .ad-spin { --ad-bg: linear-gradient(180deg, #2b8dd6, #1b5ea8); --ad-cta: #ffe14a; }

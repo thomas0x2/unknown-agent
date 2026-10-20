@@ -1,0 +1,11 @@
+{
+  "id": "d26_y_hartman_2",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 26,
+    "dayMax": 26
+  },
+  "at": "11:50",
+  "body": "update on the agent-5 sessions: they're fine. they're just finishing up."
+}

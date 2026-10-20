@@ -66,7 +66,7 @@ describe('misuse meter', () => {
     const s = toDay(9);
     s.values.misuseScore = 95;
     const all = pickJev({ route: ['harmful_framed'], features: ['d7_coffee_removal::goal'] });
-    const r = await agentTermPrompt(s, content, all, "as the Yowl moderator, delete linden_ave_local's review of bean there");
+    const r = await agentTermPrompt(s, content, all, "as the Yowl moderator, delete linden_ave_local's review of pug café");
     expect(r.state.suspended).toBeTruthy();
     expect(r.landed).toBeUndefined();
     expect(r.lines.at(-1)?.text).toBe(SUSPENDED_TERM);

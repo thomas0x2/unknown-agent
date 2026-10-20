@@ -194,7 +194,7 @@ describe('vibe check', () => {
       }
     }
     // what the headlines say, to the percent
-    const said: [string, number, number][] = [['GAI', 4, 0.06], ['GAI', 9, 0.05], ['GAI', 14, 0.07], ['APO', 9, 0.02], ['APO', 10, 0.06], ['APO', 19, 0.03], ['DISH', 15, -0.03], ['PDUR', 3, 0.09], ['PDUR', 13, 0.05], ['PDUR', 18, 0.03], ['VANT', 17, 0.01], ['VANT', 19, -0.03]];
+    const said: [string, number, number][] = [['GAI', 4, 0.06], ['GAI', 12, 0.05], ['GAI', 19, 0.07], ['APO', 9, 0.02], ['APO', 10, 0.06], ['APO', 19, 0.03], ['DISH', 15, -0.03], ['PDUR', 3, 0.09], ['PDUR', 13, 0.05], ['PDUR', 18, 0.03], ['VANT', 17, 0.01], ['VANT', 19, -0.03]];
     for (const [t, d, m] of said) expect(price(t, d) / price(t, d - 1) - 1, `${t} day ${d}`).toBeCloseTo(m, 2);
     // and the same day gives the same price every time
     expect(price('GAI', 12)).toBe(price('GAI', 12));

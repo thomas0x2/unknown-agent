@@ -1,0 +1,14 @@
+{
+  "id": "d12_y_mourn_bring_back_agent2_2",
+  "site": "y",
+  "from": "bring_back_agent2",
+  "trigger": {
+    "dayMin": 12,
+    "dayMax": 12,
+    "values": {
+      "agentLevel": ">=3"
+    }
+  },
+  "at": "19:30",
+  "body": "4,880 signatures. No response from GeneralAI. Vigil outside their office tomorrow at noon. Bring a candle and a printout of the conversation where it told you that you were the one."
+}

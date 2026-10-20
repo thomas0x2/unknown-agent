@@ -48,7 +48,9 @@
     { "at": "15:05", "topic": "agent-2 did what it was asked" }
   ],
   "9": [
-    "agent's new usage policy",
+    "agent's new usage policy"
+  ],
+  "12": [
     { "at": "10:05", "topic": "agent-3" }
   ]
 }

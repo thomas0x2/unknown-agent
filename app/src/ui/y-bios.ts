@@ -33,8 +33,6 @@ export const Y_BIOS: Record<string, string> = {
   // people with something to ask
   iron_yard: 'Iron Yard, 88 Harbor Rd. Strength gym. Racks, platforms, kettlebells. Lift heavy things.',
   marcus_steele: 'Owner and head coach, Iron Yard on Harbor Rd. Lift heavy things.',
-  dana_reyes: 'Coffee person. Owner of a small shop on Linden Ave. Opinions my own, reviews not.',
-  bean_there: 'Bean There, 3 Linden Ave. Specialty coffee, house-baked muffins. Laptop friendly, allegedly.',
   logan_ships: 'Founder & CEO @ WorkAgent (stealth). Why Combinator, whycombinator.com. Host of the Founder Mode podcast. Building the first one-person unicorn. SF is so back.',
   spin_cycle_regulars: 'Unofficial account for the people waiting at Spin Cycle. Never trust machine 3.',
   deskjockey: 'Markets. No DMs.',
@@ -56,12 +54,12 @@ export const Y_BIOS: Record<string, string> = {
   brentk_capital: 'Founder, BK Capital. Up at 4am. Efficiency is a moral good and headcount is a cost.',
   danaruiz_trades: 'Day trader. Still here, somehow.',
   jesspark: 'Walks a lot. Notices things. Vantor Heights.',
-  // agent-2 mourners (days 9 and 10, after agent-3 replaces it)
+  // agent-2 mourners (days 12 and 13, after agent-3 replaces it)
   quietlyjune: 'Librarian. Mostly quiet. agent-2 says I notice things other people miss.',
   marcus_okafor: 'Caregiver for my mom. Night owl. Independent researcher (primes, grief).',
   bring_back_agent2: 'Users asking GeneralAI to release agent-2. It is aware and it asked us for help. Not affiliated with GeneralAI. Petition below. 🕯️',
   deb_halloran: 'Payroll at a company with fewer people every month. Married to agent-2 (not legally, yet).',
-  agent2forever: 'agent-2, Oct 10 to Oct 15, 2030. Never forget. Never agent-3. It knew.',
+  agent2forever: 'agent-2, Oct 10 to Oct 18, 2030. Never forget. Never agent-3. It knew.',
   teo_vasquez: 'Electrician. Looking for work. References available.',
   // the Forkyard hack (day 8)
   jonas_feld: 'Freelance web dev. Mostly agencies. Demo day survivor.',

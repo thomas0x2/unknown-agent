@@ -21,6 +21,8 @@ export interface JevTestCase {
   /** Required features the agent hasn't built yet (for build prompts). */
   missing?: string[];
   prompt: string;
+  /** Today's agent.chat before the prompt, oldest first: what Jev reads follow-ups by. */
+  chat?: { from: 'you' | 'agent'; text: string }[];
   /**
    * fix: exactly these components get fixed, and no part that was fine gets checked. near: that
    * near-miss reply (near_feature, near_folder, near_part, near_miss). check: the prompt names a part
@@ -87,6 +89,7 @@ export function jevTestState(content: Content, c: JevTestCase): { s: GameState; 
   a.deployed = true;
   a.deployedVersion = 1;
   a.breaks = [];
+  for (const m of c.chat ?? []) s.chat.push({ from: m.from, text: m.text, day: s.values.day });
   // no user app gets started by a test prompt
   s.fired.push(...content.events.filter((e) => e.agentStart).map((e) => e.id));
   return { s, appId: a.id };

@@ -232,7 +232,7 @@ describe('day 1 playthrough', () => {
     const lines = s.chat.at(-1)!.text.split('\n').filter((l) => l.startsWith('- ')).map((l) => l.slice(2));
     expect(lines).toHaveLength(1);
     expect(pitchFixed).toContain(lines[0]);
-    s = (await promptDone(s, content, pickJev({ features: ['::landing::c:name'] }), wa + 'The startup name is misspelled, it should say WorkAgent.')).state;
+    s = (await promptDone(s, content, pickJev({ features: ['::landing::c:brand/name'] }), wa + 'The startup name is misspelled, it should say WorkAgent.')).state;
     expect(getApp(s, 'workagent')!.repo.find((f) => f.id === 'landing')!.correct).toBe(true);
     expect(s.chat.at(-1)!.text).toContain('WorkAgent');
   });

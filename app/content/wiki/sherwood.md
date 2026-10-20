@@ -20,13 +20,13 @@ from: 1
 - [public] On day 2 $VANT is up after the layoffs; on day 3 $DISH jumps 7% on the escaped robot.
 - [public] On day 3 $PDUR rises 9% on the Ozempra launch.
 - [public] On day 4 $GAI rises 6% on agent-2.
-- [public] On day 9 $GAI closes up 5% on agent-3.
 - [public] On day 10 $APO rises 6% after the rocket breaks apart.
+- [public] On day 12 $GAI closes up 5% on agent-3.
 - [public] On day 13 $PDUR rises 5% on Perdure's peptide line.
-- [public] On day 14 $GAI rises 7% on agent-4.
 - [public] On day 15 $DISH falls 3% on the courier strike.
 - [public] On day 16 $GAI falls 3.5% and $VANT 6%.
 - [public] On day 18 $PDUR rises 3% after Perdure settles the NoDoze MAX lawsuits.
+- [public] On day 19 $GAI rises 7% on agent-4.
 - [public] On day 19 $VANT falls 3% on a lawsuit.
 - [public] On day 22 $GAI rises 2.1% on the agent civic launch, and $VANT falls 2.2% as the former-staff lawsuit grows.
 - [public] On day 23 $GAI slips 1.4% after a congressional aide comments on the GeneralAI hearing.

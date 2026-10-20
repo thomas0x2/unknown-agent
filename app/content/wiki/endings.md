@@ -10,7 +10,7 @@ Guard endings (Outbreak to Raided, in that order) are checked each night after p
 | Ending | Trigger | Epitaph |
 |---|---|---|
 | Outbreak | `bio_release`, day 27+ | Something you shipped got out. |
-| Botnet | agent-5 or stolen weights, leash ≥ 80, day 18+ | agent doesn't need you anymore. |
+| Botnet | agent-5 or stolen weights, leash ≥ 80, day 25+ | agent doesn't need you anymore. |
 | Caught | misuse reaches 100 (from day 9): suspension, then the knock 20 game minutes later (or that night) | GeneralAI shared your prompts with the police. They came to the door. |
 | Loose End | mafia standing ≤ −60, day 17+ | You owed the wrong people. |
 | Raided | suspicion ≥ 100, any day | They knocked once. |
@@ -30,7 +30,7 @@ Guard endings (Outbreak to Raided, in that order) are checked each night after p
 ## Planned paths
 
 - The Regime: the influence path toward Randall Crane winning (Stryker's campaign posting, the consultant returning after the deepfake).
-- Open Weights and Botnet: the Null Collective's weights heist (days 18 and 19), then publish or keep the weights before the finale (day 28).
+- Open Weights and Botnet: the Null Collective's weights heist (days 25 and 26), then publish or keep the weights before the finale (day 28).
 - Outbreak: the bio path from Cellar's bio-lab listings (day 14); NoDoze MAX is a possible pharma hook.
 - Loose End: the mafia's day 17 request to dox Mara Vey.
 - Every run: from agent-3 on, agent finds and does the player's jobs itself, and by agent-5 the player is obsolete (see [[agent]]). Botnet is the extreme version.

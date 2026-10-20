@@ -588,24 +588,24 @@
   }
  },
  {
-  "prompt": "who is Dana Reyes?",
+  "prompt": "who is Brynn LeClaire?",
   "expect": {
    "kind": "answer",
    "pages": [
-    "Dana Reyes"
+    "Brynn LeClaire"
    ],
    "also": [
-    "Local businesses"
+    "Pug"
    ]
   }
  },
  {
-  "prompt": "who runs Bean There?",
+  "prompt": "who runs Pug Café?",
   "expect": {
    "kind": "answer",
    "any": [
-    "Dana Reyes",
-    "Local businesses"
+    "Pug",
+    "Brynn LeClaire"
    ]
   }
  },
@@ -1102,12 +1102,12 @@
   }
  },
  {
-  "prompt": "what is Bean There?",
+  "prompt": "what is Pug Café?",
   "expect": {
    "kind": "answer",
    "any": [
-    "Local businesses",
-    "Dana Reyes"
+    "Pug",
+    "Brynn LeClaire"
    ]
   }
  },
@@ -1251,6 +1251,40 @@
    "any": [
     "CityPulse",
     "Day 3"
+   ]
+  }
+ },
+ {
+  "prompt": "What's on the news today?",
+  "day": 2,
+  "at": "14:00",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Day 2",
+    "CityPulse"
+   ]
+  }
+ },
+ {
+  "prompt": "what's in the news?",
+  "day": 5,
+  "at": "14:00",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Day 5",
+    "CityPulse"
+   ]
+  }
+ },
+ {
+  "prompt": "any news?",
+  "expect": {
+   "kind": "answer",
+   "any": [
+    "Day 3",
+    "CityPulse"
    ]
   }
  },

@@ -45,7 +45,7 @@ Code paths, flags, open questions. Never part of an answer, never tagged.
   section is matched on its own, so a question that names one brand or shop finds its section
   without naming the page.
   In the wiki, its sections show as pages nested under it (Companies › Local businesses ›
-  Bean There, at `local-businesses/bean-there`); the file stays one page.
+  Iron Yard, at `local-businesses/iron-yard`); the file stays one page.
 - **nest: true** (optional) nests a page's sections the same way in the wiki without changing how
   questions match it (Y regulars, App users and reviewers). A "Who they are" or "Overview" section
   and writer notes stay on the parent page. Day pages are grouped by week.
@@ -101,7 +101,7 @@ pages of the people and companies involved embed theirs. A test checks every id 
 - a page whose `from` is later than today;
 - a `## From day N` section before day N, a `## If flag` / `## If !flag` section on the other branch;
 - any sentence that names a later day ("On day 9 …", "days 10 to 12 …") or a model not rolled out
-  yet (agent-3 before day 9, agent-4 before 14, agent-5 before 18);
+  yet (agent-3 before day 12, agent-4 before 19, agent-5 before 25);
 - on today's own day page, a beat whose time hasn't come yet: start each beat with its 24h time
   (`- [public] 11:30 Crane praises $GAI on Y.`); an untimed beat counts from the next day. Anywhere
   else, a sentence naming today and a later time;

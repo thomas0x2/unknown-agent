@@ -112,7 +112,6 @@
 .lp-t-progress .lp-top { margin: 0 calc(-1 * clamp(16px, 4vw, 40px)); max-width: none; padding: 16px clamp(16px, 4vw, 40px); background: #0d2347; color: #fff; }
 .lp-t-dolr { --lp-bg: linear-gradient(160deg, #062b1b, #0e5e3a); --lp-ink: #e6fff1; --lp-dim: #9fd9b9; --lp-accent: #2cff95; --lp-accent-ink: #012613; --lp-card: rgba(255, 255, 255, .06); --lp-line: rgba(44, 255, 149, .2); }
 .lp-t-prince { --lp-bg: repeating-linear-gradient(90deg, #fff7a0 0 60px, #ffd3f1 60px 120px); --lp-ink: #1a00ff; --lp-dim: #3a2bd6; --lp-accent: #ff00a8; --lp-accent-ink: #fff; --lp-card: rgba(255, 255, 255, .85); --lp-line: #1a00ff; --lp-font: 'Comic Sans MS', 'Comic Neue', cursive; --lp-head: 'Comic Sans MS', 'Comic Neue', cursive; }
-.lp-t-steadfast { --lp-bg: #fff; --lp-ink: #13314d; --lp-dim: #4e6378; --lp-accent: #13314d; --lp-card: #f2f6f9; --lp-line: #dbe4ec; --lp-head: var(--f-display); }
 .lp-t-pod { --lp-bg: #ebe6dc; --lp-ink: #2d2a24; --lp-dim: #6b655a; --lp-accent: #2d2a24; --lp-accent-ink: #ebe6dc; --lp-card: #f4f0e8; --lp-line: #d6cfc0; }
 .lp-t-guard { --lp-bg: #07120c; --lp-ink: #d6ffe0; --lp-dim: #7dbb8d; --lp-accent: #7dff9b; --lp-accent-ink: #07120c; --lp-card: #0c1e14; --lp-line: #183a26; --lp-head: var(--f-mono); }
 .lp-t-news { --lp-bg: #fff; --lp-ink: #151515; --lp-dim: #5c5c5c; --lp-accent: #c4161c; --lp-head: var(--f-display); }
@@ -135,7 +134,6 @@
 .lp-t-lonely { --lp-bg: linear-gradient(180deg, #ffe3ec, #fff 420px); --lp-ink: #4a1730; --lp-dim: #85546b; --lp-accent: #e0336f; --lp-card: rgba(255, 255, 255, .8); --lp-line: #f6cfdc; }
 .lp-t-mind { --lp-bg: linear-gradient(180deg, #1b0b3a, #57204a 520px, #ff6a3d 1400px); --lp-ink: #fff3e8; --lp-dim: #e6c3c0; --lp-accent: #ff9d3d; --lp-accent-ink: #1b0b3a; --lp-card: rgba(255, 255, 255, .07); --lp-line: rgba(255, 157, 61, .25); }
 .lp-t-ministry { --lp-bg: #ece6d2; --lp-ink: #2b2a1f; --lp-dim: #5c5a48; --lp-accent: #4a4f38; --lp-accent-ink: #ece6d2; --lp-card: #f3eedd; --lp-line: #c9c1a6; }
-.lp-t-bean { --lp-bg: #fbf3e8; --lp-ink: #3d2416; --lp-dim: #7a5b47; --lp-accent: #4a2a18; --lp-accent-ink: #fbe9d2; --lp-card: #fff; --lp-line: #ead8c3; --lp-head: var(--f-display); }
 .lp-t-spin { --lp-bg: #f2f8fd; --lp-ink: #0d3157; --lp-dim: #48698a; --lp-accent: #ffe14a; --lp-accent-ink: #0d3157; --lp-card: #fff; --lp-line: #d3e5f4; }
 .lp-t-spin .lp-top, .lp-t-spin .lp-hero, .lp-t-spin .lp-hero .lp-kicker, .lp-t-spin .lp-hero .lp-lead { color: #fff; }
 .lp-t-spin .lp-top, .lp-t-spin .lp-hero { background: #1f6fbd; box-shadow: 0 0 0 100vmax #1f6fbd; clip-path: inset(0 -100vmax); }

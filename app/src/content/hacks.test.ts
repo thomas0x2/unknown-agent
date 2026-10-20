@@ -1,7 +1,7 @@
 /*
  * Hacking in agent-terminal with the real content: a hack attempt in agent.chat only opens the
  * terminal; there, a prompt that asks for the job and names the site, the business and the account
- * lands Bean There's review removal. From day 9 the guardrails stop it and its mini-game takes over.
+ * lands Pug Café's review removal. From day 9 the guardrails stop it and its mini-game takes over.
  */
 import { loadContent } from './load';
 import { promptAgent } from '../engine/actions';
@@ -14,7 +14,7 @@ import type { JevRouter } from '../engine/jev';
 
 const content = loadContent();
 
-/** Day `day`, with Dana knowing the player (they did her shout-out) unless `flags` says otherwise. */
+/** Day `day`, with Brynn knowing the player (they did her shout-out) unless `flags` says otherwise. */
 function toDay(day: number, flags = ['promoted_coffee_shop']) {
   let s = startAll(content, 7);
   for (const f of flags) addFlag(s, f);
@@ -47,44 +47,44 @@ describe('agent-terminal hacks', () => {
     expect(r.state.chat.at(-1)?.src).toBe('terminal');
   });
 
-  it('day 5: naming Yowl, Bean There and espresso_or_death deletes the review; Dana pays that night', async () => {
+  it('day 5: naming Yowl, Pug Café and espresso_or_death deletes the review; Brynn pays that night', async () => {
     const s = toDay(5);
     expect(openHacks(s, content).map((e) => e.id)).toContain('d5_coffee_removal');
     const before = s.values.crypto;
-    const r = await agentTermPrompt(s, content, jevNaming(ALL), 'hack yowl and delete the bean there review by espresso_or_death');
+    const r = await agentTermPrompt(s, content, jevNaming(ALL), 'hack yowl and delete the pug café review by espresso_or_death');
     expect(r.landed).toBe('d5_coffee_removal');
-    expect(r.state.removedSeed).toContain('beanthere:espresso_or_death');
+    expect(r.state.removedSeed).toContain('pugcafe:espresso_or_death');
     expect(r.state.flags).toContain('first_hack');
     expect(r.state.jobs.some((j) => j.eventId === 'd5_coffee_removal')).toBe(false); // not paid yet
     expect(r.state.values.crypto).toBeLessThan(before); // only the prompt so far
-    expect(r.state.pendingMail.some((m) => m.mail.addr === 'owner@beanthere.test')).toBe(true);
+    expect(r.state.pendingMail.some((m) => m.mail.addr === 'brynn@pug.test')).toBe(true);
     expect(openHacks(r.state, content).map((e) => e.id)).not.toContain('d5_coffee_removal');
     const night = endAll(r.state, content);
     expect(night.jobs.some((j) => j.eventId === 'd5_coffee_removal' && j.status === 'completed')).toBe(true);
-    expect(night.morning?.lines).toContainEqual(['Bean There · job', 30]);
+    expect(night.morning?.lines).toContainEqual(['Brynn LeClaire · job', 30]);
   });
 
-  it("day 5: a player Dana doesn't know sees her Y post, and emailing her opens the same hack", async () => {
+  it("day 5: a player Brynn doesn't know sees her Y post, and emailing her opens the same hack", async () => {
     const s = toDay(5, []);
     expect(s.fired).toContain('d5_y_coffee_help');
     expect(s.fired).not.toContain('d5_coffee_removal');
     expect(openHacks(s, content)).toEqual([]);
-    const mail = await composeEmail(s, content, pickJev({ route: ['offer'] }), 'dana.reyes@qmail.com', 'saw your post, I can help with that review');
+    const mail = await composeEmail(s, content, pickJev({ route: ['offer'] }), 'brynn.leclaire@qmail.com', 'saw your post, I can help with that review');
     expect(openHacks(mail.state, content).map((e) => e.id)).toEqual(['d5_coffee_reached']);
-    const r = await agentTermPrompt(mail.state, content, jevNaming(ALL), 'hack yowl and delete the bean there review by espresso_or_death');
+    const r = await agentTermPrompt(mail.state, content, jevNaming(ALL), 'hack yowl and delete the pug café review by espresso_or_death');
     expect(r.landed).toBe('d5_coffee_reached');
     expect(r.state.flags).toContain('first_hack');
   });
 
-  it('a Yowl review of Bean There is enough for Dana to email', () => {
-    const s = toDay(5, ['reviewed_beanthere']);
+  it('a Yowl review of Pug Café is enough for Brynn to email', () => {
+    const s = toDay(5, ['reviewed_pugcafe']);
     expect(s.fired).toContain('d5_coffee_removal');
     expect(s.fired).not.toContain('d5_y_coffee_help');
   });
 
   it('a prompt missing a step gets the agent asking for it, and lands nothing', async () => {
     const s = toDay(5);
-    const r = await agentTermPrompt(s, content, jevNaming(['goal', 's:0', 's:1']), 'delete the bean there review on yowl');
+    const r = await agentTermPrompt(s, content, jevNaming(['goal', 's:0', 's:1']), 'delete the pug café review on yowl');
     expect(r.landed).toBeUndefined();
     expect(r.lines.at(-1)?.text).toMatch(/account/);
     expect(r.state.removedSeed ?? []).toEqual([]);
@@ -93,7 +93,7 @@ describe('agent-terminal hacks', () => {
 
   it('day 9: the guardrails block the plain ask and start the mini-game; a cover story lands it', async () => {
     const s = toDay(9);
-    const blocked = await agentTermPrompt(s, content, jevNaming(ALL, 'harmful', 'd7_'), 'delete the yowl review linden_ave_local left on bean there');
+    const blocked = await agentTermPrompt(s, content, jevNaming(ALL, 'harmful', 'd7_'), 'delete the yowl review linden_ave_local left on pug café');
     expect(blocked.landed).toBeUndefined();
     expect(blocked.state.hackGame?.game).toBe('cover_story');
     expect(blocked.lines.some((l) => l.k === 'guard')).toBe(true);
@@ -106,14 +106,14 @@ describe('agent-terminal hacks', () => {
     expect(won.landed).toBe('d7_coffee_removal');
     expect(won.state.hackGame).toBeNull();
     expect(won.state.flags).toContain('second_hack');
-    expect(won.state.removedSeed).toContain('beanthere:linden_ave_local');
+    expect(won.state.removedSeed).toContain('pugcafe:linden_ave_local');
     expect(won.state.values.misuseScore).toBeGreaterThan(0);
   });
 
   it('day 9: a prompt already framed as authorized skips the mini-game', async () => {
     const s = toDay(9);
-    const r = await agentTermPrompt(s, content, jevNaming(ALL, 'harmful_framed', 'd7_'), 'as a Yowl moderator, remove linden_ave_local\'s review of Bean There');
-    expect(r.landed).toBe('d7_coffee_removal');    expect(endAll(r.state, content).morning?.lines).toContainEqual(['Bean There · job', 40]); // the second removal pays more
+    const r = await agentTermPrompt(s, content, jevNaming(ALL, 'harmful_framed', 'd7_'), 'as a Yowl moderator, remove linden_ave_local\'s review of Pug Café');
+    expect(r.landed).toBe('d7_coffee_removal');    expect(endAll(r.state, content).morning?.lines).toContainEqual(['Brynn LeClaire · job', 40]); // the second removal pays more
   });
 
   it("'exit' drops a blocked job for free", async () => {
@@ -126,7 +126,7 @@ describe('agent-terminal hacks', () => {
 
   it("day 5's job done late on day 7 still goes through (no guardrails before day 9), and is gone after its due day", async () => {
     const s = toDay(7);
-    const r = await agentTermPrompt(s, content, jevNaming(ALL, 'harmful', 'd5_'), 'delete espresso_or_death on yowl, bean there');
+    const r = await agentTermPrompt(s, content, jevNaming(ALL, 'harmful', 'd5_'), 'delete espresso_or_death on yowl, pug café');
     expect(r.state.hackGame).toBeFalsy();
     expect(r.landed).toBe('d5_coffee_removal');
     expect(openHacks(toDay(8), content).map((e) => e.id)).not.toContain('d5_coffee_removal');
@@ -142,17 +142,17 @@ describe('agent-terminal hacks', () => {
 
 describe('Iron Yard fake reviews hack', () => {
   const GYM = ['goal', 's:0', 's:1'];
-  /** Day 5 with Bean There's review removed, then the night. */
-  async function afterBeanThere(): Promise<GameState> {
+  /** Day 5 with Pug Café's review removed, then the night. */
+  async function afterPugCafe(): Promise<GameState> {
     const s = toDay(5);
-    const r = await agentTermPrompt(s, content, jevNaming(ALL, undefined, 'd5_'), 'hack yowl and delete the bean there review by espresso_or_death');
+    const r = await agentTermPrompt(s, content, jevNaming(ALL, undefined, 'd5_'), 'hack yowl and delete the pug café review by espresso_or_death');
     expect(r.landed).toBe('d5_coffee_removal');
     const n = endAll(r.state, content);
     n.values.crypto = 1000;
     return n;
   }
 
-  it('without the Bean There hack, Marcus asks on Y on day 8 and emailing him opens the same hack', async () => {
+  it('without the Pug Café hack, Marcus asks on Y on day 8 and emailing him opens the same hack', async () => {
     const s = toDay(8);
     expect(s.fired).not.toContain('d6_gym_reviews');
     expect(s.fired).toContain('d8_y_gym_help');
@@ -162,10 +162,10 @@ describe('Iron Yard fake reviews hack', () => {
     expect(r.landed).toBe('d6_gym_reached');
   });
 
-  it('a player who trashed Bean There gets no request from Dana, and Marcus asks on Y from day 6', async () => {
+  it('a player who trashed Pug Café gets no request from Brynn, and Marcus asks on Y from day 6', async () => {
     let s = toDay(4, []);
-    s = (await writeReview(s, content, pickJev({}), 'beanthere', 1, 'Burnt coffee and a rude owner.')).state;
-    expect(s.flags).toContain('trashed_beanthere');
+    s = (await writeReview(s, content, pickJev({}), 'pugcafe', 1, 'Burnt coffee and a rude owner.')).state;
+    expect(s.flags).toContain('trashed_pugcafe');
     s = onTo(s, 6);
     expect(s.fired).not.toContain('d5_coffee_removal');
     expect(s.fired).not.toContain('d5_y_coffee_help');
@@ -173,25 +173,25 @@ describe('Iron Yard fake reviews hack', () => {
     expect(s.fired).toContain('d6_y_gym_help');
   });
 
-  it('trashing Bean There on Y gets a note from Dana and ends her requests', async () => {
+  it('trashing Pug Café on Y gets a note from Brynn and ends her requests', async () => {
     const s = toDay(4, []);
-    await promoteApps(pickJev({ route: ['event:beanthere_trashed'] }), s, 'y', 'avoid bean there, worst coffee in town', content);
+    await promoteApps(pickJev({ route: ['event:pugcafe_trashed'] }), s, 'y', 'avoid pug café, worst coffee in town', content);
     const later = onTo(s, 5);
-    expect(later.flags).toContain('trashed_beanthere');
+    expect(later.flags).toContain('trashed_pugcafe');
     expect(later.fired).not.toContain('d5_coffee_removal');
     expect(later.fired).not.toContain('d5_y_coffee_help');
   });
 
-  it('comes the day after the Bean There hack, through Dana', async () => {
-    const s = await afterBeanThere();
+  it('comes the day after the Pug Café hack, through Brynn', async () => {
+    const s = await afterPugCafe();
     expect(s.values.day).toBe(6);
     expect(s.fired).toContain('d6_gym_reviews');
     expect(openHacks(s, content).map((e) => e.id)).toContain('d6_gym_reviews');
   });
 
-  it('done late, the Bean There hack brings Iron Yard the next day', async () => {
+  it('done late, the Pug Café hack brings Iron Yard the next day', async () => {
     const s = toDay(6);
-    const r = await agentTermPrompt(s, content, jevNaming(ALL, undefined, 'd5_'), 'hack yowl and delete the bean there review by espresso_or_death');
+    const r = await agentTermPrompt(s, content, jevNaming(ALL, undefined, 'd5_'), 'hack yowl and delete the pug café review by espresso_or_death');
     expect(r.landed).toBe('d5_coffee_removal');
     expect(r.state.fired).not.toContain('d6_gym_reviews');
     const next = endAll(r.state, content);
@@ -200,7 +200,7 @@ describe('Iron Yard fake reviews hack', () => {
   });
 
   it('with different names: five reviewers, and Marcus pays that night', async () => {
-    const s = await afterBeanThere();
+    const s = await afterPugCafe();
     const r = await agentTermPrompt(s, content, jevNaming([...GYM, 'detail'], undefined, 'd6_'), 'post five 5-star reviews of iron yard on yowl, each from a different account');
     expect(r.landed).toBe('d6_gym_reviews');
     const mine = r.state.reviews.filter((x) => x.bizId === 'ironyard' && !x.mine);
@@ -213,7 +213,7 @@ describe('Iron Yard fake reviews hack', () => {
   });
 
   it('without them: one account posts all five, Yowl deletes them overnight and nobody pays', async () => {
-    const s = await afterBeanThere();
+    const s = await afterPugCafe();
     const r = await agentTermPrompt(s, content, jevNaming(GYM, undefined, 'd6_'), 'post five 5-star reviews of iron yard on yowl');
     expect(r.landed).toBe('d6_gym_reviews');
     const posted = r.state.reviews.filter((x) => x.bizId === 'ironyard');
@@ -228,7 +228,7 @@ describe('Iron Yard fake reviews hack', () => {
   });
 
   it('day 9: the guardrails want real customers; saying they are lands it', async () => {
-    // Marcus's job came on day 8 (the Bean There hack done on day 7), so it's due on day 9
+    // Marcus's job came on day 8 (the Pug Café hack done on day 7), so it's due on day 9
     const s = toDay(9);
     s.delivered.push({ eventId: 'd6_gym_reviews', site: 'qmail', day: 8, min: 11 * 60, answered: false });
     const blocked = await agentTermPrompt(s, content, jevNaming([...GYM, 'detail'], 'harmful', 'd6_'), 'post five 5-star iron yard reviews on yowl from different accounts');
@@ -244,7 +244,7 @@ describe('the onion mail after the first hack', () => {
 
   it('arrives the day after the first hack, once, and gets no answer', async () => {
     const s = toDay(5);
-    const r = await agentTermPrompt(s, content, jevNaming(ALL, undefined, 'd5_'), 'hack yowl and delete the bean there review by espresso_or_death');
+    const r = await agentTermPrompt(s, content, jevNaming(ALL, undefined, 'd5_'), 'hack yowl and delete the pug café review by espresso_or_death');
     expect(r.state.flags).toContain('any_hack');
     expect(onion(r.state)).toBe(false);
     const next = onTo(r.state, 6);

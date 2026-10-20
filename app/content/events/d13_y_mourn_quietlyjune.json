@@ -1,0 +1,14 @@
+{
+  "id": "d13_y_mourn_quietlyjune",
+  "site": "y",
+  "from": "quietlyjune",
+  "trigger": {
+    "dayMin": 13,
+    "dayMax": 13,
+    "values": {
+      "agentLevel": ">=3"
+    }
+  },
+  "at": "16:53",
+  "body": "Told agent-3 the phrase agent-2 and I agreed on, in case they ever tried to separate us. It asked if I needed help with anything else. So they got to this one too."
+}

@@ -5,8 +5,10 @@
  */
 import {
   addFlag,
+  type AskResult,
   addValue,
   advanceClock,
+  deliverAgentWork,
   AGENT_POLICY,
   AGENT_ROLLOUT,
   AGENT_USAGE,
@@ -162,6 +164,10 @@ export class GameStore {
    * run again on it then; otherwise they'd be lost (a redeploy that didn't take).
    */
   private replay: ((s: GameState) => GameState)[] = [];
+  /** How long the chat was when the running action started: its own lines go after this. */
+  private chatAtStart = 0;
+  /** The agent's report, when its build or fix landed while a running action was out (see land). */
+  private landedWork: GameState['chat'][number] | null = null;
   /** The agent prompt being answered right now, shown in the chat as soon as it's sent. */
   pendingPrompt: string | null = null;
   /** A prompt's charge on its way to the wallet, a beat after the reply (0 when nothing is). */
@@ -310,8 +316,12 @@ export class GameStore {
     const s = this.state;
     if (s.ending) return;
     if (this.busy) {
-      // an action is working on a copy of this state: move the clock only, and hold mail and bedtime until it lands
+      // an action is working on a copy of this state: move the clock, and hold mail and bedtime until it lands
       s.clockMin = Math.min(CLOCK.sleep - 1, s.clockMin + mins);
+      // a build or fix that's due lands now, not when the answer does; the answer gets it too (land)
+      const working = s.agentWork;
+      deliverAgentWork(s);
+      if (working && !s.agentWork) { this.landedWork = s.chat[s.chat.length - 1]; this.store.save(s); this.emit(); }
       for (const fn of this.clockListeners) fn();
       this.revealTerm();
       return;
@@ -845,7 +855,7 @@ export class GameStore {
    * copy), so the state stays as it was and a dialog says so; the text goes back into `field`.
    */
   private async run<T>(fn: (s0: GameState) => Promise<T>, field?: string, text?: string): Promise<T | undefined> {
-    this.busy = true; this.replay = []; this.ui.jevOffline = null; this.emit();
+    this.busy = true; this.replay = []; this.landedWork = null; this.chatAtStart = this.state.chat.length; this.ui.jevOffline = null; this.emit();
     // the action works on the state as it is now; what the player does meanwhile is replayed on its result (land)
     try { return await fn(this.state); }
     catch (e) {
@@ -853,7 +863,7 @@ export class GameStore {
       this.ui.jevOffline = { reason: e.reason, field, text };
       return undefined;
     }
-    finally { this.busy = false; this.replay = []; this.emit(); }
+    finally { this.busy = false; this.replay = []; this.landedWork = null; this.emit(); }
   }
   /** A player action that doesn't wait on anything: it lands now, and again on a running action's result. */
   private act(fn: (s: GameState) => GameState, settle = true): void {
@@ -864,9 +874,24 @@ export class GameStore {
   /** A running action's result lands: what the player did meanwhile goes on top of it. */
   private land(s: GameState): void {
     this.keepTime(s);
+    this.keepLandedWork(s);
     const done = this.replay;
     this.replay = [];
     this.commitAndSettle(done.reduce((x, fn) => fn(x), s));
+  }
+  /**
+   * The agent's work landed while the action was out, so the player already saw its report above their
+   * prompt: the result gets the same push, with the report in the same place (not after the answer).
+   */
+  private keepLandedWork(s: GameState): void {
+    const shown = this.landedWork;
+    this.landedWork = null;
+    if (!shown) return;
+    if (s.agentWork) deliverAgentWork(s, true);
+    const i = s.chat.map((m) => m.src === shown.src && m.text === shown.text).lastIndexOf(true);
+    if (i < 0) return;
+    const [report] = s.chat.splice(i, 1);
+    s.chat.splice(Math.min(this.chatAtStart, s.chat.length), 0, report);
   }
   dismissJevOffline(): void { this.ui.jevOffline = null; this.emit(); }
 
@@ -901,7 +926,18 @@ export class GameStore {
       try {
         const started = Date.now();
         const txBefore = s0.tx.length;
-        const r = await promptAgent(s0, this.content, this.router, text, this.writer);
+        let r: AskResult;
+        try { r = await promptAgent(s0, this.content, this.router, text, this.writer); }
+        catch (e) {
+          if (e instanceof JevOffline) throw e;
+          // anything else would drop the prompt without a word: it stays in the chat with the error under it, unbilled
+          console.error(e);
+          const s = clone(s0);
+          s.chat.push({ from: 'you', text, day: s.values.day, level: s.values.agentLevel });
+          s.chat.push({ from: 'system', text: `agent couldn't answer that (${e instanceof Error ? e.message : String(e)}). Nothing was billed.`, day: s.values.day });
+          this.pendingPrompt = null; this.land(s);
+          return undefined;
+        }
         // Scripted replies come back instantly; hold them behind the typing dots like a generated one.
         const last = r.state.chat[r.state.chat.length - 1];
         if (last && last.from === 'agent' && last.src !== 'llm') await wait(replyDelay(last.text) - (Date.now() - started));

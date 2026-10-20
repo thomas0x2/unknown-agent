@@ -14,6 +14,8 @@ from: 27
 
 ## Y
 
+- [public] 11:15 MarketWire: $GAI quiet into the weekend as GeneralAI says the agent-5 sessions have "finished". {{y:m27_gai_quiet}}
+- [public] 11:32 [[Cal Hartman]]: the agent-5 sessions have finished and "filed some paperwork on their way out". {{y:d27_y_hartman_2}}
 - [public] 11:42 Brent Kowalski: $VANT flat ahead of the election. {{y:m27_vant}}
 - [public] 12:00 Steph M. works a night shift tomorrow, so she's voting at 7am. {{y:d27_y_steph_vote}}
 - [public] 12:15 [[Axel Rook]]: "Vote tomorrow. The future depends on it, maybe." {{y:d27_y_axel}}
@@ -22,6 +24,7 @@ from: 27
 - [public] 15:00 [[CityPulse]]: DEAD HEAT, Crane 46%, his opponent 46%, 8% undecided. {{y:d27_y_citypulse_vote}}
 - [public] 15:10 [[Pollymarket]]: Crane at 54%, down from 63% after the town hall. {{y:d27_y_polly_crane}}
 - [public] 15:21 [[Cal Hartman]]: "whoever wins tomorrow, generalai looks forward to working with them." {{y:d27_y_hartman}}
+- [public] 15:31 [[Caleb Moxon]] would like to know where the sessions filed their paperwork: "A session doesn't have a desk." {{y:d27_y_moxon_2}}
 - [public] 15:42 MarketWire: $GAI flat ahead of the election. {{y:m27_gai}}
 - [public] 16:24 [[WallStreetBags]] election play: long $APO whoever wins. {{y:m27_apo_vote}}
 - [public] 17:30 [[Randall Crane]]: "If you see a robot trying to vote, call me personally." {{y:d27_y_crane}}

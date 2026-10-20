@@ -21,7 +21,7 @@ from: 1
 ## Regulars
 
 - [public] Daily posters: [[Randall Crane]] (@randall_crane, 38.4M followers), [[Axel Rook]] (@axel_rook, 214M), [[Cal Hartman]] (@cal_hartman, 4.3M, all lowercase), [[Max Stryker]] (@max_stryker, 2.9M).
-- [public] On day 9 [[Caleb Moxon]] (@caleb_moxon, verified, 41.3K), a safety researcher who just left GeneralAI, starts posting, about once a day.
+- [public] On day 12 [[Caleb Moxon]] (@caleb_moxon, verified, 41.3K), a safety researcher who just left GeneralAI, starts posting, about once a day.
 - [public] News: [[CityPulse]] (@citypulse, verified), [[The Current]] (@the_current), MarketWire (@marketwire); fan account [[Liftoff Daily]]; [[DoorDish]] (@doordish); the betting site [[Pollymarket]] (@pollymarket, verified).
 - [public] Market posters: [[WallStreetBags]] (@wallstreetbags, verified), Brent Kowalski (@brentk_capital), Priya Shah (@priyashah_cfa), Dana Ruiz (@danaruiz_trades), Tyler Moss, quietquant, Ollie Banks, Sam Ortiz, rk_dividends, Jess Park; and bot accounts posting "$GAI to the moon!!" on some days.
 - [public] Background accounts: noodleposter, cat_ceo, doomscroll, zev.dolr (@zev_dolr), Teo Vasquez, studioghast, and the conspiracy theorist [[Wade Tillman]] (@wade_awake).
@@ -39,7 +39,8 @@ from: 1
 - [hidden; public from day 7] On day 6: #RentDayEve; from 11:00 Crane's GeneralAI U-turn; from 15:18 $GAI rallying; from 18:50 Apogee static fire; from 19:30 the fake Randall Crane.
 - [hidden; public from day 8] On day 7: #RentDay; from 12:30 Rent Board appeals; from 13:00 "The people AI left behind"; from 19:20 Crane vs. Y check marks.
 - [hidden; public from day 9] On day 8: from 10:50 #ForkyardDown; from 13:20 the Forkyard hack; from 15:05 "agent-2 did what it was asked".
-- [hidden; public from day 10] On day 9: agent's new usage policy; from 10:05 agent-3.
+- [hidden; public from day 10] On day 9: agent's new usage policy.
+- [hidden; public from day 13] On day 12: from 10:05 agent-3.
 - [public] From day 10 the sidebar shows only #AI, #jobs and #election.
 
 ## Later changes
@@ -52,6 +53,6 @@ from: 1
 ## Writer notes
 
 - Bios `app/src/ui/y-bios.ts`, avatars `app/src/ui/y-avatars.ts`, trending `app/content/trending.json` (a topic with `at` trends from that time, `trendingAt` in `src/engine/trending.ts`; days 8 to 28 fall back to #AI, #jobs, #election; proposals need Thomas's OK). Market posts `app/content/y_market.json`.
-- Follower rubric `Y`/`POST_BANDS` in config: gains per post by category with ±30% jitter; more than 3 posts a day costs 2%. A post sharing a word with a trending topic rates as a "reaction". The deepfake needs 60+ followers and goes up as the player's own post with a picture (`img`), its likes climbing for hours (`viral`, engine/agentJobs.ts viralLikes); the Bean There shout-out 25+.
+- Follower rubric `Y`/`POST_BANDS` in config: gains per post by category with ±30% jitter; more than 3 posts a day costs 2%. A post sharing a word with a trending topic rates as a "reaction". The deepfake needs 60+ followers and goes up as the player's own post with a picture (`img`), its likes climbing for hours (`viral`, engine/agentJobs.ts viralLikes); the Pug Café shout-out 25+.
 - Regular replies (Thomas, 2026-10-18): on each post the player writes on Y, doomscroll, cat_ceo and zev.dolr are rolled separately; since Thomas's 2026-10-18 follow-up the chance climbs with followers on a log scale (`Y.reply` in config.ts): 1% up to 100 followers, then evenly per tenfold to 60% at 1M. At 16 followers one reply comes about 3% of the time, two about 0.03%. (It used to be followers / max_followers, which gave a 16-follower day 1 account 24% each.) Haiku writes each reply in the regular's character (`y_doomscroll`, `y_cat_ceo`, `y_zev_dolr` in content/characters/, Writer mode `y`) when the post goes up, scripted lines if it can't; it lands 4 to 25 game minutes later (`yReplies` queue, `deliverYReplies` on the clock tick) and shows as an ordinary post starting with @you (no "Replying to" line). Dev mode notes under the post when a scripted line stood in for Haiku, and why. Agent-job posts (the deepfake) don't roll: their reactions are scripted.
 - Bot swarm days: 4, 6, 9, 12, 16, 27, only from the day the player takes deskjockey's job (`trader_client`; `marketPosts` in engine/crawler.ts skips bot posts before `flagDays.trader_client`). Thomas, 2026-10-18: the swarm comes with the job. A swarm due less than 30 game minutes after the job is taken waits until then, never goes up after 19:00, and if it would, goes up the next day at its written time (`swarmSlot`/`SWARM` in engine/crawler.ts, job time in `flagMins.trader_client`). Swarms are written for 19:00 or earlier (test).

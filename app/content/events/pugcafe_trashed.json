@@ -1,0 +1,28 @@
+{
+  "id": "pugcafe_trashed",
+  "site": "qmail",
+  "from": "Brynn LeClaire",
+  "addr": "brynn@pug.test",
+  "subject": "Your post",
+  "trigger": {
+    "dayMax": 7,
+    "flagsNone": [
+      "first_hack",
+      "trashed_pugcafe",
+      "coffee_promo_asked"
+    ]
+  },
+  "yPost": {
+    "when": "The post trashes, warns people off or complains about Pug Café, Pug's 24/7 café at 3 Linden Ave run by Brynn LeClaire (bad coffee, bad service, don't go there).",
+    "after": 45,
+    "keys": [
+      "pug café|pug cafe|coffee shop|café|linden+@broken|bad|worst|awful|terrible|avoid|burnt|disgusting|overpriced|rude|do not go"
+    ]
+  },
+  "onDeliver": {
+    "setFlags": [
+      "trashed_pugcafe"
+    ]
+  },
+  "body": "A policyholder showed me your post about our café. I don't know what we did to you. Please don't come in."
+}

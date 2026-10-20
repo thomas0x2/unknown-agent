@@ -9,7 +9,7 @@ from: 15
 
 ## Mail
 
-- [public] 10:00 [[The Current]]'s morning newsletter, "agent-4 shipped five days into a six-week safety review": GeneralAI released agent-4 yesterday, five days after its last model. Below it, "Housing" and "Crane". {{mail:current_newsletter@15}}
+- [public] 10:00 [[The Current]]'s morning newsletter, "Housing": GeneralAI's property arm, which already owned or managed 38% of the city's rentals, has bought fourteen more apartment buildings this month. Below it, "Crane" and "GeneralAI". {{mail:current_newsletter@15}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": never appeal. {{mail:guru_newsletter@15}}
 - [public] 10:20 [[Gary Pruitt]], "The building": he sold Pine Street Apartments to [[GeneralAI Properties]]; rent and emails go to them now. {{mail:d15_landlord_sold}}
 

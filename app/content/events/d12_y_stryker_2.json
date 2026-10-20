@@ -1,0 +1,11 @@
+{
+  "id": "d12_y_stryker_2",
+  "site": "y",
+  "from": "Max Stryker",
+  "trigger": {
+    "dayMin": 12,
+    "dayMax": 12
+  },
+  "at": "18:15",
+  "body": "Grown men are holding a vigil for a chatbot. I have never cried. Not once. Not even at my own seminar, and that seminar was very moving."
+}

@@ -585,7 +585,18 @@ export async function promptAgent(
       let why: string;
       let kind: string; // which near-miss: the hint id, or 'near_miss' for the feature's own lines
       let near: string; // what was missing, for Haiku
-      if (stop) {
+      const shared = stop && def?.components?.find((c) => c.id === stop.m.split('::c:')[1])?.shared;
+      if (stop && shared) {
+        // a shared part (the name in every header) has no feature to name: only its own folders
+        const cid = stop.m.split('::c:')[1];
+        const part = featureName(cid.split('/').at(-1)!);
+        const folder = featureName(cid.split('/')[stop.at]);
+        kind = 'near_feature';
+        const lines = content.agent?.hints.find((h) => h.id === kind)?.replies;
+        hints = (lines?.length ? lines : [NEAR_MISS]).map((l) => fill(l, part));
+        why = `names the ${part} but not the ${folder} folder it's in`;
+        near = `They want the ${part} on ${a.name} fixed but didn't say where it is. It's in the ${folder} folder, shared by every page.`;
+      } else if (stop) {
         const cid = stop.m.split('::c:')[1];
         const part = featureName(cid.split('/').at(-1)!);
         const hid = stop.at === 0 ? 'near_feature' : 'near_folder';
@@ -600,7 +611,9 @@ export async function promptAgent(
           : `They want the ${part} in the ${featureName(fid, def)} on ${a.name} fixed but didn't say which part of the ${featureName(fid, def)} it's in. It could be the ${folders.join(' or ')}.`;
       } else {
         // the deepest folder of this feature the prompt did name, if any: ask which part of it
-        const folder = foundAll.filter((m) => m.startsWith(`${appId}::${fid}::s:${fid}/`)).map((m) => m.split(`::s:${fid}/`)[1]).sort((x, y) => y.split('/').length - x.split('/').length)[0];
+        // a shared folder doesn't count: its names include the pages it shows on ("landing page" for brand/)
+        const sharedFolders = new Set((def?.components ?? []).filter((c) => c.shared).map((c) => c.id.split('/')[0]));
+        const folder = foundAll.filter((m) => m.startsWith(`${appId}::${fid}::s:${fid}/`)).map((m) => m.split(`::s:${fid}/`)[1]).filter((f) => !sharedFolders.has(f.split('/')[0])).sort((x, y) => y.split('/').length - x.split('/').length)[0];
         const parts = folder ? (def?.components ?? []).filter((c) => c.id.startsWith(`${folder}/`)).map((c) => featureName(c.id.slice(folder.length + 1).split('/')[0])) : [];
         const lines = folder ? content.agent?.hints.find((h) => h.id === 'near_part')?.replies : undefined;
         if (folder && lines?.length) {
@@ -699,9 +712,11 @@ export async function promptAgent(
   const debug: string[] = [];
   // the player's apps, in case the prompt names one without asking for anything that needs doing
   const apps = s0.apps.filter((a) => !a.churned && onForkyard(a));
+  // an app the agent is building for the first time isn't on Forkyard yet, but the player can still ask how it's going
+  const asking = [...apps, ...s0.apps.filter((a) => !a.churned && !onForkyard(a) && s0.agentWork?.appIds.includes(a.id))];
   const topics = (agent?.hints ?? []).filter((h) => !APP_HINTS.has(h.id));
   const candidates = [
-    ...apps.map((a) => ({ id: `status:${a.id}`, when: `The player asks whether the agent did, built, updated or fixed something on ${a.name} (${a.url}), or what state it is in: a question about work already done, not a request for new work. Includes follow-up questions about the agent's last push to it.`, keys: [`@status+${appNames(a, content).join('|')}`] })),
+    ...asking.map((a) => ({ id: `status:${a.id}`, when: `The player asks whether the agent did, built, updated or fixed something on ${a.name} (${a.url}), or what state it is in: a question about work already done, not a request for new work. Includes follow-up questions about the agent's last push to it.`, keys: [`@status+${appNames(a, content).join('|')}`] })),
     ...apps.map((a) => ({ id: `app:${a.id}`, when: `The player names ${a.name} (${a.url}) and asks the agent to change, update or fix it, without saying what is wrong, or asking for something it already has.`, keys: [`@change+${appNames(a, content).join('|')}`, '!@question'] })),
     ...topics.map((h) => ({ id: h.id, when: h.when, keys: h.keys })),
     { id: 'query', when: agent?.query?.when ?? QUERY_WHEN, keys: agent?.query?.keys ?? ['@question'] },

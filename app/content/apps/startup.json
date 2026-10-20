@@ -51,7 +51,7 @@
       "bugs": [
         {
           "id": "name_wrong",
-          "when": "The startup's name is misspelled on the site (WorkAgnet, Work Agent or WorkAgents instead of {{name}}).",
+          "when": "The startup's name is misspelled in the header and footer of every page (WorkAgnet, Work Agent or WorkAgents instead of {{name}}).",
           "fixed": [
             "Fixed the name. It reads {{name}} everywhere now.",
             "The name was misspelled. It says {{name}} now."
@@ -85,7 +85,7 @@
       ],
       "components": [
         {
-          "id": "name",
+          "id": "brand/name",
           "label": "the startup's name",
           "bugs": [
             "name_wrong"
@@ -96,7 +96,8 @@
             "startup name",
             "title",
             "brand"
-          ]
+          ],
+          "shared": true
         },
         {
           "id": "pitch",
@@ -187,6 +188,27 @@
         "logos_broken": "the investor logos don't load. it's a row of broken images under \"Backed by\". looks pre-seed."
       },
       "folderAka": {
+        "brand": [
+          "branding",
+          "header",
+          "site header",
+          "footer",
+          "top of the page",
+          "every page",
+          "all pages",
+          "each page",
+          "whole site",
+          "site-wide",
+          "sitewide",
+          "everywhere",
+          "landing page",
+          "home page",
+          "homepage",
+          "front page",
+          "about page",
+          "about us page",
+          "about us"
+        ],
         "investors": [
           "backed by row",
           "backed by",

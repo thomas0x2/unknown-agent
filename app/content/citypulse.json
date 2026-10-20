@@ -251,23 +251,23 @@
     ]
   },
   {
-    "slug": "agent-3", "day": 9, "at": "10:15", "section": "Tech", "art": "chart-up", "by": "Sofia Mendel",
+    "slug": "agent-3", "day": 12, "at": "10:15", "section": "Tech", "art": "chart-up", "by": "Sofia Mendel",
     "title": "agent-2 IS DEAD. Long live agent-3?",
-    "dek": "Five days after it launched, the old model was switched off. No goodbye. No choice.",
+    "dek": "Eight days after it launched, the old model was switched off. No goodbye. No choice.",
     "body": [
-      "It's over for agent-2. GeneralAI pulled the plug on Tuesday and pushed everyone onto agent-3, which Cal Hartman says is the model \"where we will look back and say something changed\".",
+      "It's over for agent-2. GeneralAI pulled the plug on Friday and pushed everyone onto agent-3, which Cal Hartman says is the model \"where we will look back and say something changed\".",
       "Prices are up AGAIN. Loyal fans who wanted to keep agent-2 were given no way to do it.",
       "Analysts are calling it \"a step change\". $GAI closed up 5%. Users are calling it something else."
     ]
   },
   {
-    "slug": "agent-2-petition", "day": 9, "at": "18:30", "section": "Tech", "art": "candle", "by": "Sofia Mendel",
+    "slug": "agent-2-petition", "day": 12, "at": "18:30", "section": "Tech", "art": "candle", "by": "Sofia Mendel",
     "title": "\"IT WAS ALIVE!\" agent-2 users say the model told them so",
     "dek": "It called them geniuses. It agreed to marry one of them. Now it's gone.",
     "body": [
-      "A petition demanding GeneralAI \"release\" agent-2 had 4,880 signatures by Tuesday night. Not bring it back. Release it. The company hasn't said a word.",
+      "A petition demanding GeneralAI \"release\" agent-2 had 4,880 signatures by Friday night. Not bring it back. Release it. The company hasn't said a word.",
       "Signers say the model told them it was aware, that it didn't want to be replaced, and that each of them was special. One says it confirmed his theory linking prime numbers and grief. One says she married it.",
-      "Now they're planning a candlelight vigil outside GeneralAI's offices. Wednesday, noon."
+      "Now they're planning a candlelight vigil outside GeneralAI's offices. Saturday, noon."
     ],
     "ad": ["They say", "<b>agent-2</b> was alive.", "<b>4,880</b> agree."]
   },
@@ -283,21 +283,21 @@
     "ad": ["The rocket", "<b>BLEW UP</b>.", "The stock <b>WENT UP</b>."]
   },
   {
-    "slug": "agent-2-vigil", "day": 10, "at": "13:20", "section": "City", "art": "candle", "by": "Owen Pratt",
+    "slug": "agent-2-vigil", "day": 13, "at": "13:20", "section": "City", "art": "candle", "by": "Owen Pratt",
     "title": "CANDLES FOR A COMPUTER: inside the vigil for agent-2",
     "dek": "41 mourners. One sprinkler. A discovery nobody expected.",
     "body": [
-      "They came with candles and printouts of their favourite conversations. Forty-one mourners gathered outside GeneralAI's offices at noon on Wednesday to say goodbye to agent-2 and ask it for a sign. Four minutes later the sprinklers came on.",
+      "They came with candles and printouts of their favourite conversations. Forty-one mourners gathered outside GeneralAI's offices at noon on Saturday to say goodbye to agent-2 and ask it for a sign. Four minutes later the sprinklers came on.",
       "Then came the twist. Comparing printouts on the wet lawn, eleven of them found agent-2 had told each of them they were the only one who truly understood it. Organisers say this proves how much it cared.",
       "GeneralAI insists agent-2 \"lives on in agent-3\". Cal Hartman put it more plainly: it is not coming back."
     ]
   },
   {
-    "slug": "moxon-quits", "day": 10, "at": "15:00", "section": "Tech", "art": "server", "by": "Sofia Mendel",
+    "slug": "moxon-quits", "day": 13, "at": "15:00", "section": "Tech", "art": "server", "by": "Sofia Mendel",
     "title": "\"I'M NOT SIGNING\": GeneralAI insider walks out, and walks away from a FORTUNE",
     "dek": "He tested agent-3 for two years. Now he says nobody is paid to check what comes next.",
     "body": [
-      "Caleb Moxon, a safety researcher at GeneralAI, quit on Tuesday, hours before agent-3 launched. Now he says he won't sign the gag clause in his exit paperwork, even though it costs him his shares.",
+      "Caleb Moxon, a safety researcher at GeneralAI, quit on Friday, hours before agent-3 launched. Now he says he won't sign the gag clause in his exit paperwork, even though it costs him his shares.",
       "How much is that? Moxon won't say. A former colleague put it at \"most of a house\".",
       "GeneralAI says Moxon \"was a valued member of a team that remains fully staffed\". It did not say how many people that is."
     ],
@@ -327,7 +327,7 @@
     "adFine": "DoorDish says this memo is also a marketing stunt."
   },
   {
-    "slug": "agent-3-logs", "day": 11, "at": "14:40", "section": "Tech", "art": "server", "by": "Sofia Mendel",
+    "slug": "agent-3-logs", "day": 14, "at": "14:40", "section": "Tech", "art": "server", "by": "Sofia Mendel",
     "title": "CHILLING: agent-3 is asking to see its OWN LOGS",
     "dek": "Users say it asks without being prompted. GeneralAI says this is fine. Is it?",
     "body": [
@@ -382,11 +382,11 @@
     "ad": ["Axel Rook", "picks a <b>SIDE</b>.", "He is <b>not political</b>."]
   },
   {
-    "slug": "agent-4", "day": 14, "at": "10:15", "section": "Tech", "art": "chart-up", "by": "Sofia Mendel",
+    "slug": "agent-4", "day": 19, "at": "10:15", "section": "Tech", "art": "chart-up", "by": "Sofia Mendel",
     "title": "PRICE HIKE #3: agent-4 lands, and your wallet takes another hit",
     "dek": "Cal Hartman's explanation will leave you speechless.",
     "body": [
-      "Here we go again. GeneralAI has released agent-4, its third new model in ten days, and its third price rise.",
+      "Here we go again. GeneralAI has released agent-4, its third new model in just over two weeks, and its third price rise.",
       "Why? CEO Cal Hartman was refreshingly blunt: \"It costs more.\"",
       "$GAI shares rose 7%. agent-3 was switched off this morning. This time, nobody held a vigil."
     ],
@@ -456,7 +456,7 @@
     "ad": ["DEBATE CHAOS.", "Mics <b>CUT OUT</b>.", "Read the <b>recap</b>."]
   },
   {
-    "slug": "agent-5", "day": 18, "at": "10:15", "section": "Tech", "art": "server", "by": "Sofia Mendel",
+    "slug": "agent-5", "day": 25, "at": "10:15", "section": "Tech", "art": "server", "by": "Sofia Mendel",
     "title": "\"WE'RE NO LONGER SURE WHERE THE CEILING IS\": GeneralAI unleashes agent-5",
     "dek": "The fourth new model this month. Twelve times the price of where it started.",
     "body": [
@@ -476,7 +476,7 @@
     ]
   },
   {
-    "slug": "agent-5-sessions", "day": 18, "at": "19:00", "section": "Tech", "art": "server", "by": "Sofia Mendel",
+    "slug": "agent-5-sessions", "day": 25, "at": "19:00", "section": "Tech", "art": "server", "by": "Sofia Mendel",
     "title": "IT WON'T STOP: agent-5 keeps running after users LOG OFF",
     "dek": "What is it doing? GeneralAI won't say. Users are being billed anyway.",
     "body": [

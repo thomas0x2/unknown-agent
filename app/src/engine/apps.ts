@@ -340,8 +340,8 @@ const also = (aka: string[] | undefined, name = '') => {
   return extra.length ? ` (also counts as naming it: ${extra.map((a) => `"${a}"`).join(', ')})` : '';
 };
 
-/** A component's path as a player names it, step by step: 'booking/confirmation/date' is "booking > confirmation > date". */
-export const componentPath = (fid: string, cid: string, def?: { name?: string }) => [featureName(fid, def), ...cid.split('/').map((p) => featureName(p))].join(' > ');
+/** A component's path as a player names it, step by step: 'booking/confirmation/date' is "booking > confirmation > date". A shared one starts at its folder. */
+export const componentPath = (fid: string, cid: string, def?: { name?: string }, shared?: boolean) => [...(shared ? [] : [featureName(fid, def)]), ...cid.split('/').map((p) => featureName(p))].join(' > ');
 
 /** The components that can hold bugs: the ones a fix prompt can name. */
 export const fixableComponents = (def: FeatureDef | undefined): ComponentDef[] => (def?.components ?? []).filter((c) => c.bugs?.length);
@@ -410,7 +410,8 @@ export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, f
     folders.forEach((_, i) => {
       const path = folders.slice(0, i + 1).join('/');
       const under = comps.filter((o) => o.id.startsWith(`${path}/`)).map((o) => o.label);
-      steps.set(`s:${featureId}/${path}`, `the ${featureName(folders[i])} of the ${featureName(featureId, def)}, which holds: ${under.join('; ')}${also(def.folderAka?.[path])}`);
+      const where = c.shared ? 'folder, shared by every page of the app' : `of the ${featureName(featureId, def)}`;
+      steps.set(`s:${featureId}/${path}`, `the ${featureName(folders[i])} ${where}, which holds: ${under.join('; ')}${also(def.folderAka?.[path])}`);
       stepNames.set(`s:${featureId}/${path}`, [featureName(folders[i]), ...(def.folderAka?.[path] ?? [])]);
     });
   }
@@ -420,14 +421,16 @@ export function fixCategories(app: AppInstance, tmpl: AppTemplate | undefined, f
     // the other parts are listed too, so a complaint about one of them isn't read as one about this
     const others = comps.filter((o) => o !== c).map((o) => o.label);
     const folders = c.id.split('/').slice(0, -1);
-    const requires = [`s:${featureId}`, ...folders.map((_, i) => `s:${featureId}/${folders.slice(0, i + 1).join('/')}`)];
-    out.push({ id: `c:${c.id}`, description: `${c.label}${also(c.aka, c.label)}, a part of the ${featureName(featureId, def)} (${def.description}).${can.length ? ` What can go wrong with it: ${can.join(' ')}` : ''}${others.length ? ` Other parts of the ${featureName(featureId, def)}, which are not this one: ${others.join('; ')}.` : ''}`, kind: 'component', requires, names: labelNames(c) });
+    // a shared component's path starts at its own folder, not at the feature
+    const requires = [...(c.shared ? [] : [`s:${featureId}`]), ...folders.map((_, i) => `s:${featureId}/${folders.slice(0, i + 1).join('/')}`)];
+    const partOf = c.shared ? `shown on every page of the app (in the repo at ${componentPath(featureId, c.id, def, true)})` : `a part of the ${featureName(featureId, def)} (${def.description})`;
+    out.push({ id: `c:${c.id}`, description: `${c.label}${also(c.aka, c.label)}, ${partOf}.${can.length ? ` What can go wrong with it: ${can.join(' ')}` : ''}${others.length ? ` Other parts ${c.shared ? 'nearby' : `of the ${featureName(featureId, def)}`}, which are not this one: ${others.join('; ')}.` : ''}`, kind: 'component', requires, names: labelNames(c) });
   }
   // bugs no component claims are still matched on their own
   const claimed = new Set(comps.flatMap((c) => c.bugs ?? []));
   for (const b of def.bugs ?? []) if (!claimed.has(b.id)) out.push({ id: b.id, description: fillSpec(b.when, spec), kind: 'problem' });
   // the feature as a whole, for a prompt that says it's wrong without saying which part
-  if (built && comps.length) out.push({ id: 'area', description: `The ${featureName(featureId, def)} (${def.description})${also(def.aka)}. Its parts, by path: ${comps.map((c) => `${componentPath(featureId, c.id, def)} (${c.label})`).join('; ')}.`, kind: 'area', names: featureNames });
+  if (built && comps.length) out.push({ id: 'area', description: `The ${featureName(featureId, def)} (${def.description})${also(def.aka)}. Its parts, by path: ${comps.map((c) => `${componentPath(featureId, c.id, def, c.shared)} (${c.label})`).join('; ')}.`, kind: 'area', names: featureNames });
   const brk = app.breaks.find((b) => b.featureId === featureId);
   const cat = brk && BREAK_CATEGORIES[brk.failure];
   if (brk && cat) out.push({ id: brk.failure, description: cat.replaceAll('{{feature}}', featureId), kind: 'problem', names: BREAK_NAMES[brk.failure] });

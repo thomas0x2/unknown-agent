@@ -9,7 +9,7 @@ Names and points Thomas has not settled. Don't build on them as if final.
 
 ## Names marked placeholder
 
-Vantor Group, Axel Rook / Apogee, Cal Hartman, Max Stryker / Alpha Ascend, Mara Vey, her article title, Halden Logistics, Rolf, Randall Crane, Heritage Party, Progress Party, Leo Brandt, DeepSleep (deepsleep-0.5B), Swaplist, Bean There, Iron Yard, late_night_lou, the trader's and consultant's handles. Tie-ins marked placeholder: NoDoze MAX as the bio hook, CloudCasket as the mafia/doxxing hook.
+Vantor Group, Axel Rook / Apogee, Cal Hartman, Max Stryker / Alpha Ascend, Mara Vey, her article title, Halden Logistics, Rolf, Randall Crane, Heritage Party, Progress Party, Leo Brandt, DeepSleep (deepsleep-0.5B), Swaplist, Iron Yard, late_night_lou, the trader's and consultant's handles. Tie-ins marked placeholder: NoDoze MAX as the bio hook, CloudCasket as the mafia/doxxing hook.
 
 ## Unnamed so far
 

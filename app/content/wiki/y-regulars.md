@@ -25,9 +25,9 @@ nest: true
 - [hidden; public if posted_deepfake] On day 6, minutes after the player's deepfake: "this picture is on every feed i have. i have four feeds." {{y:dfr_doomscroll}}
 - [public] On day 8 (13:31), three hours into the Forkyard outage: someone in his replies is already selling a course on it. {{y:d8_y_doomscroll_forkyard}}
 - [public] On day 9 doomscroll turned off notifications for a day, lasted 40 minutes and didn't miss anything, "which was worse." {{y:f9}}
-- [public] On day 12 doomscroll posted at 04:40 that the phone was picked up 212 times the day before, "most of those were to check the time." {{y:f26}}
 - [public] On day 10 doomscroll is a week into Ozempra: "not hungry. not much of anything, really. it's fine" {{y:d10_y_doomscroll_ozempra}}
 - [public] On day 11 doomscroll got [[Perdure Pharma]]'s Fluvera flu shot: "arm hurts. the box says autism-free in bigger letters than the word flu" {{y:d11_y_doomscroll_fluvera}}
+- [public] On day 12 doomscroll posted at 04:40 that the phone was picked up 212 times the day before, "most of those were to check the time." {{y:f26}}
 - [public] On day 13 the grocery store took out its last staffed checkout; it was the first thing doomscroll had said out loud in four days. {{y:f13}}
 - [hidden; public if posted_deepfake] On day 16: the Kirschbaum picture everyone shared was fake, "and the real one had the other guy in it." {{y:d16_y_kirschbaum_wrong_guy}}
 - [public] On day 17 doomscroll read about 300 replies about the election and knows less than before. {{y:f17}}
@@ -44,10 +44,10 @@ nest: true
 - [public] On day 6 the cat walked across the keyboard during a video interview; cat_ceo posted the clip before the call ended, and "they said she seemed engaged." {{y:f6}}
 - [hidden; public if posted_deepfake] On day 6 cat_ceo reposted the player's deepfake before reading it, "same as everyone, looks like". {{y:dfr_catceo}}
 - [public] On day 10 cat_ceo's cat knocked a glass off the table and "nobody gave her 6%", after Apogee's stock rose on its rocket exploding. {{y:d10_y_catceo_apogee}}
+- [public] On day 10 cat_ceo was already up scrolling for the cat's 5am board meeting. {{y:f10}}
 - [public] On day 14 the cat has started sitting in the empty office chair "like she's waiting for someone"; cat_ceo has posted it every hour. {{y:f14}}
 - [public] On day 16 cat_ceo wrote a cover letter at 4am, deleted it, and posted the cat asleep on the laptop instead: "better response rate." {{y:f27}}
 - [public] On day 18 cat_ceo applied to eleven jobs and refreshed notifications more times than that; the cat applied to none "and is doing fine." {{y:f18}}
-- [public] On day 10 cat_ceo was already up scrolling for the cat's 5am board meeting. {{y:f10}}
 - [public] On day 20, a Saturday, cat_ceo sent four applications anyway, though nobody reads them on weekends; the cat judged in silence, "which is her right." {{y:f30}}
 - [public] On day 24 the cat watched the town hall with cat_ceo and left halfway through, the first screen she has ever left halfway through. {{y:f34}}
 
@@ -75,18 +75,18 @@ nest: true
 
 - [public] On day 3 (13:00) he says he was in the jobs fair queue at 6am and the app on his phone rejected him before he got to the door. {{y:d3_y_teo_jobsfair}}
 - [public] On day 3 (19:10), on Crane's vow, he says nobody is sending anything back, but Crane is "first candidate all year who said the word jobs out loud." {{y:d3_y_teo_machines}}
-- [public] On day 10 he notes there's a candlelight vigil downtown for a software version, and he has been applying for jobs for five months. {{y:d10_y_mourn_teo_vasquez}}
+- [public] On day 13 he notes there's a candlelight vigil downtown for a software version, and he has been applying for jobs for five months. {{y:d13_y_mourn_teo_vasquez}}
 - [public] On day 28 he voted after an hour in the queue: "Nobody is hiring, so I had the time." {{y:d28_y_teo_voted}}
 
 ## Others
 
-- [public] On day 8 Deb Halloran, who does payroll, posts that nobody has ever approved 41 of anything she filed (see [[Agent-2 mourners]]). {{y:d8_y_deb_taxes}}
 - [public] [if promoted_coffee_shop] On day 5 a follower posts that the coffee place some guy on Y recommended was the worst coffee of their life. {{y:d5_coffee_backlash}}
+- [public] On day 8 Deb Halloran, who does payroll, posts that nobody has ever approved 41 of anything she filed (see [[Agent-2 mourners]]). {{y:d8_y_deb_taxes}}
 - [public] [[Liftoff Daily]] is a fan account of [[Axel Rook]].
 - [public] [[zev.dolr]] posts about DOLR and side projects.
 
 ## Writer notes
 
-- Filler posts in `y_filler.json` (one a day, rotating doomscroll, cat_ceo, zev_dolr, noodleposter, plus on some days an overnight post between 02:00 and 05:00 that is already up when the day starts: f22-f29; f20 and f21 run on days 27 and 28, f30-f36 on days 20 to 26); story posts `d1_y_doomscroll_news`, `d3_y_*_machines`, `d3_y_teo_jobsfair`, `d8_y_noodle_dish`, `d8_y_deb_taxes`, `d10_y_catceo_apogee`, `d10_y_mourn_teo_vasquez`, `d28_y_teo_voted`, `d5_coffee_backlash`. Bios and the stranger pool in `y-bios.ts`.
+- Filler posts in `y_filler.json` (one a day, rotating doomscroll, cat_ceo, zev_dolr, noodleposter, plus on some days an overnight post between 02:00 and 05:00 that is already up when the day starts: f22-f29; f20 and f21 run on days 27 and 28, f30-f36 on days 20 to 26); story posts `d1_y_doomscroll_news`, `d3_y_*_machines`, `d3_y_teo_jobsfair`, `d8_y_noodle_dish`, `d8_y_deb_taxes`, `d10_y_catceo_apogee`, `d13_y_mourn_teo_vasquez`, `d28_y_teo_voted`, `d5_coffee_backlash`. Bios and the stranger pool in `y-bios.ts`.
 - Reply characters (Haiku, `content/characters/`): `y_doomscroll`, `y_cat_ceo`, `y_zev_dolr`. Their replies follow the same rules as their posts: one chronically-online detail at most, played straight.
 - The four background regulars are chronically online (Thomas, 2026-10-17): screen time, likes, follower counts, 3-4am posting, reading every reply. Keep it in the details of each post, one per post at most, and never say "addicted" or "touch grass" outright. Teo Vasquez and Deb Halloran are not in this group.

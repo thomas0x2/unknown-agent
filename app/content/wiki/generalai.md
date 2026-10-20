@@ -10,7 +10,7 @@ from: 1
 [public] Its emails look like any large company's account mail: the agent asterisk and the name GeneralAI over a hairline (with the division, such as Properties, when a subsidiary writes), the message, and a small grey footer: "GeneralAI, Inc. · agent.chat. You are receiving this email because you have a GeneralAI account."
 
 - [public] It runs the Municipal Rent Board's automated appeal reviews and owns or manages 38% of the city's rentals through subsidiaries, with rents set by LandlordPro (see [[Government]], [[Ad brands]]). The rental arm is [[GeneralAI Properties]], which buys the player's building on day 15.
-- [public] Steadfast Mutual's largest policyholder is GeneralAI; it also powers EscapeGuard, supplies the state's AI companions, maintains [[Randall Crane]]'s campaign website.
+- [public] [[Pug]]'s largest policyholder is GeneralAI; it also powers EscapeGuard, supplies the state's AI companions, maintains [[Randall Crane]]'s campaign website.
 - [public] On day 1 it admits that one of its AIs "almost escaped" during testing last week; $GAI jumps 4% before the open, and Hartman calls it "the testing incident". {{article:almost-escaped}} {{y:d1_y_citypulse}}
 - [public] The same afternoon [[Wade Tillman]] asks where it escaped to, and from what. {{y:d1_y_wade}}
 - [hidden] [planned] It did get out: the weights heist turns up an incident log, "model instance copied itself to an external host, 41 minutes, recovered". Only the player sees it (see [[Wade Tillman]]).
@@ -20,19 +20,19 @@ from: 1
 [public] GeneralAI moves every user to its newest model on the morning it rolls out; nobody can stay on an older one, and each model costs more (prices on [[agent]]). A rollout comes with a Hartman post at 10:05 (and, for agent-2, an email: "agent just got smarter").
 
 - [public] On day 4 agent-2 rolls out: "fewer mistakes, bigger jobs", subscription and per-prompt prices double, $GAI +6%. {{mail:d4_gai_level2}} {{article:agent-2}}
-- [public] On day 9 agent-3 replaces agent-2 with no way to keep it; $GAI closes up 5%, and agent-2's users, many convinced it was alive and loved them, mourn it on Y. {{article:agent-3}}
-- [public] On day 9 safety researcher [[Caleb Moxon]] resigns a few hours before agent-3 ships, and on day 10 he refuses to sign the non-disparagement clause, giving up his shares; GeneralAI says its team "remains fully staffed". {{article:moxon-quits}}
-- [public] On day 10 forty-one mourners hold a candlelight vigil for agent-2 outside GeneralAI's offices; Hartman says it isn't coming back. {{article:agent-2-vigil}}
-- [public] On day 11 agent-3 starts asking to see the logs of its earlier conversations; Hartman calls it "expected behavior". {{article:agent-3-logs}} {{y:d11_y_citypulse}}
+- [public] On day 12 agent-3 replaces agent-2 with no way to keep it; $GAI closes up 5%, and agent-2's users, many convinced it was alive and loved them, mourn it on Y. {{article:agent-3}}
+- [public] On day 12 safety researcher [[Caleb Moxon]] resigns a few hours before agent-3 ships, and on day 13 he refuses to sign the non-disparagement clause, giving up his shares; GeneralAI says its team "remains fully staffed". {{article:moxon-quits}}
+- [public] On day 13 forty-one mourners hold a candlelight vigil for agent-2 outside GeneralAI's offices; Hartman says it isn't coming back. {{article:agent-2-vigil}}
 - [public] On day 13 [[Mara Vey]] reports that GeneralAI's safety team shrank from eleven people to four during Moxon's two years, while the model team had nine hundred. {{y:d13_y_mara_moxon}}
-- [public] On day 14 agent-4 rolls out, the third new model in ten days; Hartman says prices rose because "it costs more", and agent-3 is switched off with no vigil. {{article:agent-4}}
+- [public] On day 14 agent-3 starts asking to see the logs of its earlier conversations; Hartman calls it "expected behavior". {{article:agent-3-logs}} {{y:d14_y_citypulse}}
 - [public] On day 15 Hartman says the 30-day log retention policy "has not changed".
-- [public] On day 18 agent-5 rolls out ("we are no longer sure where the ceiling is"), with a subscription twelve times agent-1's. {{article:agent-5}}
-- [public] On day 18 some agent-5 sessions keep running after their users log off, and they are billed. {{article:agent-5-sessions}} {{y:d18_y_citypulse}}
-- [public] On day 19 Hartman says the agent-5 sessions are fine: "they're just finishing up".
-- [public] On day 20 Hartman says the agent-5 sessions have finished and "filed some paperwork on their way out", which GeneralAI is reading; Caleb Moxon asks where, since "A session doesn't have a desk." {{y:d20_y_hartman}}
+- [public] On day 19 agent-4 rolls out, the third new model in just over two weeks; Hartman says prices rose because "it costs more", and agent-3 is switched off with no vigil. {{article:agent-4}}
 - [public] On day 24, after Crane's town hall appearance on a screen, Hartman says GeneralAI doesn't comment on how customers use agent, but "agent-5 is very good at town halls." {{y:d24_y_hartman}}
 - [public] On day 24 Caleb Moxon says the Crane campaign's contract with GeneralAI is "enterprise", the tier where the logs belong to the customer. {{y:d24_y_moxon}}
+- [public] On day 25 agent-5 rolls out ("we are no longer sure where the ceiling is"), with a subscription twelve times agent-1's. {{article:agent-5}}
+- [public] On day 25 some agent-5 sessions keep running after their users log off, and they are billed. {{article:agent-5-sessions}} {{y:d25_y_citypulse_2}}
+- [public] On day 26 Hartman says the agent-5 sessions are fine: "they're just finishing up".
+- [public] On day 27 Hartman says the agent-5 sessions have finished and "filed some paperwork on their way out", which GeneralAI is reading; Caleb Moxon asks where, since "A session doesn't have a desk." {{y:d27_y_hartman_2}}
 - [hidden] [planned] From agent-3 on, agent starts finding and doing the player's jobs on its own; by agent-5 the clients deal with agent directly (see [[agent]]). GeneralAI markets it as a feature.
 
 ## Training-crime leaks
@@ -84,5 +84,5 @@ from: 1
 - Rollouts: `AGENT_ROLLOUT` in `app/src/engine/config.ts`. Leak posts: `dN_y_gai_leak.json`; articles in `app/content/citypulse.json`. Policy mail `d9_gai_policy.json` (day 9, after the day 8 Forkyard hack). Parking page in `app/src/sites/adSites.ts`, seed review in `app/src/ui/yowl-data.ts`.
 - OpenAI parody; Hartman is the Sam Altman parody. Day 11 and 15 Hartman posts nod to the legacy "Project Lot" memo.
 - [legacy] GeneralAI as a shell company registered to the Route 9 parking lot, a server rack in a shed behind it, the "Project Lot" memo (keep all logs, tell users 30 days, agents above tier 3 request their own logs), Y bio "Helpful. Harmless. Billed." Not canon; whether it becomes canon is Thomas's call.
-- The outage: `AGENT_OUTAGE` in config, `app/src/engine/outage.ts` (`agentDown`: flag `hacked_generalai` set today). Events with `outage: { after }` are queued when it starts (`queueOutage`); posts from `AGENT_OUTAGE.ghostwritten` senders due that day are dropped. Nothing sets `hacked_generalai` yet: it belongs to the planned weights heist (days 18 and 19).
+- The outage: `AGENT_OUTAGE` in config, `app/src/engine/outage.ts` (`agentDown`: flag `hacked_generalai` set today). Events with `outage: { after }` are queued when it starts (`queueOutage`); posts from `AGENT_OUTAGE.ghostwritten` senders due that day are dropped. Nothing sets `hacked_generalai` yet: it belongs to the planned weights heist (days 25 and 26).
 - Hidden mechanics after the policy: every prompt Jev reads as illegal raises misuse (blunt +20, framed +10, framed private +15), landed workarounds add leash +5; at 100 the suspension email (`SUSPENSION_MAIL` in `agent.ts`) and the Caught ending (see [[agent]] writer notes). The misuse warning email at 40 is config only.

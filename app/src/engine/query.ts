@@ -74,7 +74,8 @@ export function seenItems(s: GameState, content: Content): Map<string, string> {
 function pageDesc(p: WikiPage, day: number): string {
   // the player asks about "today" and "yesterday", not day numbers
   const when = p.category === 'days' ? (p.from === day ? ' (today)' : p.from === day - 1 ? ' (yesterday)' : '') : '';
-  if (when) return `${p.title}${when}: what has happened ${when.slice(2, -1)} (${p.aliases[0] ?? p.title})`;
+  // "the news" with no day named means today's: today's page says it holds the news
+  if (when) return `${p.title}${when}: what has happened ${when.slice(2, -1)} (${p.aliases[0] ?? p.title})${p.from === day ? ": today's news and headlines (CityPulse articles), mail and Y posts. Asking what's in the news, on the news or new, with or without saying today, is asking about this page" : ''}`;
   const kind = { people: 'a person', family: "a member of the player's family", companies: 'a company or organisation', sites: 'a website or app', apps: 'an app the player builds', world: 'a topic', days: 'what happened on that day', writers: '' }[p.category] ?? 'a topic';
   const about = pageGist(p);
   // a summary says what the page is in its own words, kind included
@@ -91,7 +92,7 @@ const offlineAliases = (p: WikiPage) => p.aliases.filter((a) => !/^@?(you|me|i|m
 function pageNames(p: WikiPage, day: number): string[] {
   if (p.category === 'days') {
     const rel = p.from === day ? 'today' : p.from === day - 1 ? 'yesterday' : '';
-    return [p.title, ...p.aliases, ...(rel ? [`happened ${rel}`, `${rel} news`, `going on ${rel}`, `new ${rel}`, `${rel} happen`] : [])];
+    return [p.title, ...p.aliases, ...(rel ? [`happened ${rel}`, `${rel} news`, `news ${rel}`, `going on ${rel}`, `new ${rel}`, `${rel} happen`] : []), ...(p.from === day ? ['the news', 'any news', 'headlines'] : [])];
   }
   const words = p.title.split(/[\s.]+/).filter((w) => w.length > 2 && /^[A-Z0-9]/.test(w) && !PLAIN.has(w.toLowerCase()));
   return [p.title, ...offlineAliases(p), ...(words.length > 1 ? words : []), ...(p.keys ?? [])];

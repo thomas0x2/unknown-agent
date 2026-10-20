@@ -23,7 +23,7 @@ summary: Pollymarket is a prediction market site and Y account showing the odds 
 - [public] From day 4: "Will GeneralAI release another agent model before Oct 20?" (Tech), opened at 18:30.
 - [public] From day 7: "Will the Rent Board approve more than 10 appeals in October?" (Local), opened at 12:30 at 4%.
 - [public] From day 9: "Will $APO close higher on launch day?" (Business), at 18:21; "The launch itself has no bearing on this market."
-- [public] From day 9: "Will GeneralAI bring agent-2 back by Oct 20?" (Tech), opened at 13:30 after the petition. "Signs, coincidences and sprinklers do not count." See [[agent-2 mourners]].
+- [public] From day 12: "Will GeneralAI bring agent-2 back by Oct 20?" (Tech), opened at 13:30 after the petition. "Signs, coincidences and sprinklers do not count." See [[agent-2 mourners]].
 - [public] From day 15: "Will Cal Hartman testify before Congress before the election?" (Politics), opened at 12:33. See [[Cal Hartman]].
 - [public] From day 16: "Will Pug Café reopen before the election?" (Local), opened at 13:30 when the city shut the café. "Founders working on the sidewalk outside do not count." See [[Pug]].
 - [hidden; public if posted_deepfake] From day 7: "Will the Candidate 2030 picture be confirmed fake before the election?" (Politics), only in a run where the player posted the deepfake.
@@ -37,9 +37,10 @@ summary: Pollymarket is a prediction market site and Y account showing the odds 
 - [public] On day 5 Crane reaches 47% after the Y poll; the robot market rises to 51% on Dana Kohl's cold-burrito sighting.
 - [hidden; public if posted_deepfake] On day 7 Crane jumps to 53%, ahead for the first time, after the picture of Candidate 2030 spreads.
 - [public] On day 8 the robot market falls to 36% after the parking-garage listing. The next-model market jumps from 17% to 71% after Cal Hartman's walk and his tax-return post.
-- [public] On day 9 the next-model market resolves YES at 10:00. Crane is at 50% after the tied poll [if !posted_deepfake]. Crane is at 54% after the tied poll [if posted_deepfake]. Apogee's orbit market reaches 70% at 18:21; at 20:00 one wallet buys 180,000 DOLR of NO and it drops to 64%.
+- [public] On day 9 Crane is at 50% after the tied poll [if !posted_deepfake]. Crane is at 54% after the tied poll [if posted_deepfake]. Apogee's orbit market reaches 70% at 18:21; at 20:00 one wallet buys 180,000 DOLR of NO and it drops to 64%.
 - [public] On day 10 the orbit market goes from 84% at liftoff (10:02) to 2% at 10:09 and resolves NO at 10:40. The $APO market drops to 9% at 10:09, recovers to 71% when $APO opens up and resolves YES at 19:30. The agent-2 market falls to 2% after Hartman says it isn't coming back.
 - [public] On day 11 the robot market falls to 19% after the leaked memo.
+- [public] On day 12 the next-model market resolves YES at 10:00, when agent-3 rolls out.
 - [hidden; public if posted_deepfake] On day 12 Crane slips to 50% and the picture market resolves YES at 16:45 after The Current's check.
 - [public] On day 12 the robot market falls to 11% when DoorDish says the robot "retired with honours".
 - [public] On day 13 Rook's endorsement resolves his market YES at 12:45. An account (0xe1…7b2) bought 90,000 DOLR of YES at 12:28, two minutes before his post; it had bought YES twice before, each time right after one of his replies to Crane. Crane rises to 58%, then 61% after the Rook bump poll.
@@ -76,8 +77,8 @@ summary: Pollymarket is a prediction market site and Y account showing the odds 
 - [public] On day 13 it posts Rook's market resolving YES, and the 90,000 DOLR bought two minutes before his post. {{y:d13_y_polly_rook}}
 - [public] On day 13 it posts Crane at 61%, his highest yet. {{y:d13_y_polly_crane}}
 - [public] On day 15 it posts the Hartman market falling from 38% to 3%. {{y:d15_y_polly_hartman}}
-- [public] On day 18 it posts the escape market at 44%, its highest yet. {{y:d18_y_polly_escape}}
 - [public] On day 16 it posts "BREAKING: The city has shut down Pug Café". {{y:d16_y_polly_pug}}
+- [public] On day 18 it posts the escape market at 44%, its highest yet. {{y:d18_y_polly_escape}}
 - [public] On day 24 it posts Crane at 63% after the town hall, up from 58% the week before. {{y:d24_y_polly_crane}}
 - [public] On day 26 it posts Crane at 61% as early voting closes, down from 63% after the town hall. {{y:d26_y_polly_crane}}
 - [public] On day 27 it posts Crane at 54%, down from 63% after the town hall, with the election tomorrow. {{y:d27_y_polly_crane}}

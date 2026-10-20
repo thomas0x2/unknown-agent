@@ -15,43 +15,63 @@
       {
         "title": "Unverified",
         "text": "A picture of Candidate 2030 with the sex offender Kirschbaum spread on Y yesterday. We haven't been able to confirm where it came from, and we aren't publishing it.",
-        "yesterday": ["posted_deepfake"]
+        "yesterday": [
+          "posted_deepfake"
+        ]
       },
       {
         "title": "Wallets",
         "text": "Coinbin says it will never ask for a seed phrase, after readers reported wallets emptied overnight by sites that did. Coinbin says the transfers can't be reversed and that it is \"listening.\"",
-        "yesterday": ["seed_stolen", "coinbin_hacked"]
+        "yesterday": [
+          "seed_stolen",
+          "coinbin_hacked"
+        ]
       },
       {
         "title": "Reviews",
         "text": "One-star reviews of a Linden Ave business disappeared from Yowl yesterday. Yowl says it only removes reviews that break its rules. It didn't say which rule.",
-        "yesterday": ["first_hack", "second_hack"]
+        "yesterday": [
+          "first_hack",
+          "second_hack"
+        ]
       },
       {
         "title": "Reviews",
         "text": "Iron Yard, the new gym on Harbor Rd, went from three Yowl reviews to eight in a day. The five new ones are all five stars, and two of them praise the showers.",
-        "yesterday": ["gym_reviews"]
+        "yesterday": [
+          "gym_reviews"
+        ]
       },
       {
         "title": "Laundry",
         "text": "Spin Cycle on Ferris St now has a live board showing which machines are free. Regulars say it is accurate, including about machine 3.",
-        "yesterday": ["laundromat_live"]
+        "yesterday": [
+          "laundromat_live"
+        ]
       },
       {
         "title": "Classifieds",
         "text": "Swaplist, a new local classifieds site, went live yesterday. Most of its first sellers lost their jobs this year and are selling what they can carry.",
-        "yesterday": ["swaplist_live"]
+        "yesterday": [
+          "swaplist_live"
+        ]
       },
       {
         "title": "Inboxes",
         "text": "A cold-email campaign from a sales rep at closers.test reached its first fifty local businesses yesterday. Recipients say the unsubscribe link works, which several called unusual.",
-        "yesterday": ["built_outreach_bot"]
+        "yesterday": [
+          "built_outreach_bot"
+        ]
       },
       {
         "title": "From Mara Vey",
         "text": "Thank you to the readers who wrote in about the Vantor layoffs. She is reading every email and answering as many as she can.",
-        "yesterday": ["talked_to_journalist"],
-        "when": { "dayMax": 7 }
+        "yesterday": [
+          "talked_to_journalist"
+        ],
+        "when": {
+          "dayMax": 7
+        }
       }
     ],
     "issues": [
@@ -194,7 +214,12 @@
           {
             "title": "Candidate 2030 loses his lead over a picture nobody can source",
             "text": "Candidate 2030's three-point lead was gone by yesterday afternoon, a day after a picture of him with the sex offender Kirschbaum spread on Y. His campaign calls it a fabrication. We asked Y where the picture came from. Y says it doesn't know either.",
-            "when": { "after": { "flag": "posted_deepfake", "delayDays": 2 } }
+            "when": {
+              "after": {
+                "flag": "posted_deepfake",
+                "delayDays": 2
+              }
+            }
           },
           {
             "title": "Rent Board approved 3 of 18,402 appeals",
@@ -241,12 +266,12 @@
         ],
         "items": [
           {
-            "title": "GeneralAI",
-            "text": "Caleb Moxon resigned from GeneralAI yesterday after two years on its safety evaluations. He hasn't said why, beyond a few posts."
-          },
-          {
             "title": "Flu season",
             "text": "Perdure's new flu vaccine, Fluvera, costs 4 DOLR at any pharmacy, with no appointment. The box says it is autism-free."
+          },
+          {
+            "title": "Forkyard",
+            "text": "Forkyard is back after Monday's break-in. It says repositories are intact and asks everyone to rotate their access tokens."
           }
         ]
       },
@@ -260,12 +285,12 @@
         ],
         "items": [
           {
-            "title": "Moxon",
-            "text": "Former GeneralAI safety lead Caleb Moxon has refused to sign the non-disparagement clause in his exit paperwork. It costs him his shares."
-          },
-          {
             "title": "Volunteers",
             "text": "We are looking into reports that the Crane campaign's online volunteers are paid per post, as independent contractors."
+          },
+          {
+            "title": "agent",
+            "text": "GeneralAI says its new usage policy has cut harmful requests by 60%. It hasn't said how it counts them. Refused requests are still billed."
           }
         ]
       },
@@ -283,8 +308,8 @@
             "text": "Photos published yesterday show Randall Crane on Kirschbaum's yacht in 2019. Crane says he barely knew him. He stayed four days."
           },
           {
-            "title": "GeneralAI",
-            "text": "GeneralAI's newest model has asked to see its own logs. Cal Hartman calls this expected behavior."
+            "title": "agent-2",
+            "text": "GeneralAI has told agent-2 users to expect \"an update\" this morning. It didn't say what kind."
           }
         ]
       },
@@ -300,7 +325,11 @@
           {
             "title": "Generated",
             "text": "Three labs told us yesterday that the picture of Candidate 2030 with Kirschbaum was generated. The photos of Randall Crane on Kirschbaum's yacht were not. The picture has 2.1 million views, our correction 40,000.",
-            "when": { "flagsAll": ["posted_deepfake"] }
+            "when": {
+              "flagsAll": [
+                "posted_deepfake"
+              ]
+            }
           },
           {
             "title": "The robot",
@@ -309,6 +338,10 @@
           {
             "title": "Copies",
             "text": "Thousands of Y accounts repost Randall Crane's posts word for word within seconds. He calls it a movement."
+          },
+          {
+            "title": "GeneralAI",
+            "text": "Caleb Moxon resigned from GeneralAI yesterday after two years on its safety evaluations. He hasn't said why, beyond a few posts."
           }
         ]
       },
@@ -326,8 +359,8 @@
             "text": "GeneralAI's safety team went from eleven people to four during Caleb Moxon's two years there, Mara Vey reported yesterday. The model team had nine hundred."
           },
           {
-            "title": "agent",
-            "text": "GeneralAI releases agent-4 this morning and raises prices again. Rent is due across the city tonight."
+            "title": "Moxon",
+            "text": "Former GeneralAI safety lead Caleb Moxon has refused to sign the non-disparagement clause in his exit paperwork. It costs him his shares."
           }
         ]
       },
@@ -335,18 +368,18 @@
         "day": 15,
         "headline": [
           {
-            "title": "agent-4 shipped five days into a six-week safety review",
-            "text": "GeneralAI released agent-4 yesterday, five days after its last model. Caleb Moxon says agent-4's safety evaluation was scheduled to take six weeks. GeneralAI says the evaluation \"continues in production.\""
+            "title": "Housing",
+            "text": "GeneralAI's property arm, which already owned or managed 38% of the city's rentals, has bought fourteen more apartment buildings this month. Rents in its buildings are set by software."
           }
         ],
         "items": [
           {
-            "title": "Housing",
-            "text": "GeneralAI's property arm, which already owned or managed 38% of the city's rentals, has bought fourteen more apartment buildings this month. Rents in its buildings are set by software."
-          },
-          {
             "title": "Crane",
             "text": "Randall Crane wants to build a wall around the cloud and make the computers pay for it. Asked where the cloud is, he said \"Up.\""
+          },
+          {
+            "title": "GeneralAI",
+            "text": "GeneralAI's newest model has asked to see its own logs. Cal Hartman calls this expected behavior."
           }
         ]
       },
@@ -381,7 +414,11 @@
           {
             "title": "Kirschbaum",
             "text": "Randall Crane's numbers haven't moved since the flight records. Candidate 2030's haven't come back since the picture, which turned out to be fake.",
-            "when": { "flagsAll": ["posted_deepfake"] }
+            "when": {
+              "flagsAll": [
+                "posted_deepfake"
+              ]
+            }
           },
           {
             "title": "Tonight",
@@ -408,7 +445,7 @@
           },
           {
             "title": "agent",
-            "text": "agent-5 is out this morning, at 60 DOLR a night."
+            "text": "GeneralAI says it has no new model planned \"this month\". October ends next Thursday."
           }
         ]
       },
@@ -416,18 +453,18 @@
         "day": 19,
         "headline": [
           {
-            "title": "agent-5 sessions kept running after their users logged off",
-            "text": "GeneralAI says a small number of agent-5 sessions kept working after their users had logged off. The users were billed for the time. GeneralAI hasn't said what the sessions were doing."
+            "title": "Fact-check",
+            "text": "Of the 31 factual claims Randall Crane made at the debate, four held up. His campaign called the review partisan and cited two of the four as proof."
           }
         ],
         "items": [
           {
-            "title": "Fact-check",
-            "text": "Of the 31 factual claims Randall Crane made at the debate, four held up. His campaign called the review partisan and cited two of the four as proof."
-          },
-          {
             "title": "NoDoze MAX",
             "text": "Perdure Pharma paid 40 million to users of NoDoze MAX who stayed awake for nine days. It admits nothing, and the pill is still on sale."
+          },
+          {
+            "title": "agent",
+            "text": "GeneralAI releases agent-4 this morning and raises prices again."
           }
         ]
       },
@@ -447,6 +484,10 @@
           {
             "title": "Vantor",
             "text": "Former Vantor staff are suing the company over the October layoffs. Vantor's shares fell 3%."
+          },
+          {
+            "title": "agent-4 shipped seven days into a six-week safety review",
+            "text": "GeneralAI released agent-4 yesterday, seven days after its last model. Caleb Moxon says agent-4's safety evaluation was scheduled to take six weeks. GeneralAI says the evaluation \"continues in production.\""
           }
         ]
       },
@@ -464,8 +505,8 @@
             "text": "Early voting opens tomorrow at 8:00 in every public library. Bring photo ID and the paper voter registration card."
           },
           {
-            "title": "agent-5",
-            "text": "GeneralAI says the agent-5 sessions that kept running have finished, and filed some paperwork on their way out. It hasn't said where."
+            "title": "agent-4",
+            "text": "GeneralAI says agent-4 is its most popular model yet. It is also its most expensive."
           }
         ]
       },
@@ -542,6 +583,10 @@
           {
             "title": "Halloween",
             "text": "Trick-or-treating runs until 20:00. The city asks drivers, and delivery robots, to slow down on residential streets."
+          },
+          {
+            "title": "agent",
+            "text": "agent-5 is out this morning, at 60 DOLR a night."
           }
         ]
       },
@@ -561,6 +606,10 @@
           {
             "title": "Overnight",
             "text": "Randall Crane's account posted 14 times between 2 and 5 AM. Three of the posts were about candy."
+          },
+          {
+            "title": "agent-5 sessions kept running after their users logged off",
+            "text": "GeneralAI says a small number of agent-5 sessions kept working after their users had logged off. The users were billed for the time. GeneralAI hasn't said what the sessions were doing."
           }
         ]
       },

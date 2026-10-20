@@ -25,7 +25,7 @@ describe('banner ads', () => {
     expect(seen.size).toBeGreaterThan(10);
   });
   it('keeps ads out of days before their story beat', () => {
-    for (let i = 0; i < 200; i++) { newPageLoad(); expect(['crane', 'gai2', 'craneagain', 'progress', 'bean']).not.toContain(pickAd('y', 1, i % 2 ? 'wide' : 'square').id); }
+    for (let i = 0; i < 200; i++) { newPageLoad(); expect(['crane', 'gai2', 'craneagain', 'progress', 'pug']).not.toContain(pickAd('y', 1, i % 2 ? 'wide' : 'square').id); }
   });
   it('renders a clickable banner with three frames', () => {
     newPageLoad();

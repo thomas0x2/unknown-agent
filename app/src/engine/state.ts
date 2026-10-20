@@ -447,7 +447,7 @@ export const SEED_TX: Tx[] = [
   { day: -5, amount: 40, memo: 'Mom · for the train' },
   { day: -4, amount: -35, memo: 'Ringo Mobile · Phone plan' },
   { day: -3, amount: -11.25, memo: 'Noodle Hut · Takeout' },
-  { day: -2, amount: -18.6, memo: 'Bean There · Coffee' },
+  { day: -2, amount: -18, memo: 'Pug Café · Coffee' },
   { day: 0, amount: -350, memo: 'Landlord · Rent' },
 ];
 

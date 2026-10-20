@@ -285,12 +285,28 @@ store.onArrival(({ mail, posts, bots }) => {
   [...bots].sort((a, b) => a.localeCompare(b)).forEach((id, i) => { store.ui.yBurst[id] = start + burst[i] * 1000; });
   SOUND.burst('post', burst, at);
 });
+/**
+ * The build/fix meter moves on every game minute. Only its numbers change: redrawing the whole line would
+ * restart the spinner and snap the bar, so they're patched in place.
+ */
+function patchWork(): void {
+  const work = $('#ua-work');
+  if (!work) return;
+  const html = V.workHtml(store.state);
+  const fresh = document.createElement('div');
+  fresh.innerHTML = html;
+  const next = fresh.firstElementChild;
+  const bar = work.querySelector<HTMLElement>('.ua-work-bar i'), nextBar = next?.querySelector<HTMLElement>('.ua-work-bar i');
+  if (!next || !bar || !nextBar || work.children.length !== next.children.length) { work.outerHTML = html; return; }
+  [...next.children].forEach((el, i) => { if (el.className !== 'ua-work-bar' && el.textContent !== work.children[i].textContent) work.children[i].textContent = el.textContent; });
+  bar.style.width = nextBar.style.width;
+}
 store.subscribe(render);
 store.subscribe(listen);
 store.onPull(renderPull);
 store.onClock(() => {
   $('#clock')!.innerHTML = V.clockHtml(store.state);
-  const work = $('#ua-work'); if (work) work.outerHTML = V.workHtml(store.state);
+  patchWork();
   // Dex's countdown moves while the player watches (a frozen one doesn't: it was drawn at the deploy)
   const cd = $('#as-c-clock');
   if (cd) {
