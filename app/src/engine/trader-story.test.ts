@@ -1,5 +1,5 @@
 /*
- * Two story beats on the trader's vibe check. Day 5: the Crane impostor's $VANT post lands a
+ * Two story beats on the trader's vibe check. Day 6: the Crane impostor's $VANT post lands a
  * guaranteed bug on a live auto-buy (it trusts the lookalike account), fixable the whole day. And 90
  * minutes after the auto-buy first goes live, Crane praises $APO (the auto-buy's first real test) and
  * Axel answers with a rocket.
@@ -33,39 +33,39 @@ function trader(day: number, min: string, withAutoBuy = true): { s: GameState; a
 const live = (s: GameState) => s.apps.find((a) => a.clientEventId === 'trader_contact')!;
 const autoBuyBugs = (f?: { correct: boolean; variant?: string; also?: string[] }) => (f && !f.correct ? bugsOf(f as never) : []);
 
-describe('day 5: the impostor gets the auto-buy', () => {
+describe('day 6: the impostor gets the auto-buy', () => {
   it('lands once the impostor has posted, on the live build and the repo', () => {
-    const { s: s0, app } = trader(5, '10:00');
+    const { s: s0, app } = trader(6, '10:00');
     const s = deploy(s0, app.id, content);
     revealBugs(s, content);
     expect(live(s).features.find((f) => f.id === 'auto_buy')!.correct).toBe(true);
-    s.clockMin = at('11:30');
+    s.clockMin = at('15:40');
     revealBugs(s, content);
     const a = live(s);
     expect(autoBuyBugs(a.features.find((f) => f.id === 'auto_buy'))).toContain('impostor_buy');
     expect(autoBuyBugs(a.repo.find((f) => f.id === 'auto_buy'))).toContain('impostor_buy');
     // the bot buys $VANT off the lookalike account
-    expect(autoBuys(marketPosts(s, content), 5, new Set(['impostor_buy'])).map((b) => [b.ticker, b.post.handle])).toContainEqual(['VANT', 'randa11_crane']);
+    expect(autoBuys(marketPosts(s, content), 6, new Set(['impostor_buy'])).map((b) => [b.ticker, b.post.handle])).toContainEqual(['VANT', 'randa11_crane']);
   });
 
   it('comes once: a fix the same day stays fixed', () => {
-    const { s: s0, app } = trader(5, '12:00');
+    const { s: s0, app } = trader(6, '16:00');
     const s = deploy(s0, app.id, content);
     revealBugs(s, content);
     const a = live(s);
     for (const f of [...a.repo, ...a.features]) if (f.id === 'auto_buy') Object.assign(f, { correct: true, variant: undefined, also: undefined });
-    s.clockMin = at('13:00');
+    s.clockMin = at('17:00');
     revealBugs(s, content);
     expect(a.features.find((f) => f.id === 'auto_buy')!.correct).toBe(true);
     expect(a.planted).toEqual(['impostor_buy']);
   });
 
-  it('needs the auto-buy live, and only on day 5', () => {
-    const { s: s0, app } = trader(5, '12:00', false);
+  it('needs the auto-buy live, and only on day 6', () => {
+    const { s: s0, app } = trader(6, '16:00', false);
     const s = deploy(s0, app.id, content);
     revealBugs(s, content);
     expect(live(s).planted).toBeUndefined();
-    const { s: s4, app: app4 } = trader(4, '12:00');
+    const { s: s4, app: app4 } = trader(5, '16:00');
     const d4 = deploy(s4, app4.id, content);
     revealBugs(d4, content);
     expect(live(d4).planted).toBeUndefined();

@@ -9,7 +9,7 @@ from: 6
 
 ## Mail
 
-- [public] 10:00 [[The Current]]'s morning newsletter, "A Y poll gives Crane 71%. It isn't a poll.": A poll run on Y yesterday gave Randall Crane 71% of 300,000 votes. Below it, "Impostor" and "Artists". {{mail:current_newsletter@6}}
+- [public] 10:00 [[The Current]]'s morning newsletter, "A Y poll gives Crane 71%. It isn't a poll.": A poll run on Y yesterday gave Randall Crane 71% of 300,000 votes. Below it, "Rent day" and "Artists". {{mail:current_newsletter@6}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": your mother is "the investor" now. {{mail:guru_newsletter@6}}
 - [hidden; hint if matchless_job] 10:00 [[6ft_sigma]], "New standards": "I turned 32 yesterday. Time to be realistic." Age 21 to 35, within 10 miles, non-smokers, straight or bi. {{mail:d6_matchless_rules_2}}
 - [hidden; hint if matchless_job] 10:00 After a swiping day that wasn't perfect, 6ft_sigma's 10:00 "Yesterday" email names the first mistake and there is no pay.
@@ -47,15 +47,18 @@ from: 6
 - [public] 13:10 [[Max Stryker]] sold his bed in 2019. {{y:d6_y_stryker}}
 - [public] 13:35 cat_ceo's cat walked across the keyboard during a video interview, posted the clip before the call ended; "they said she seemed engaged." {{y:f6}}
 - [public] 13:47 zev.dolr: someone called it "cuck coding" instead of vibe coding. {{y:d6_y_zev}}
-- [public] 14:10 [[Axel Rook]]: "The job was already gone. AI just told you." {{y:d6_y_axel}}
 - [public] 14:30 [[Tanner Hollis]], posting as "a sales rep": needs a cold-email bot for 200 leads. rep@closers.test {{y:d6_y_outreach}}
 - [public] 15:18 MarketWire: $GAI rallying after Crane's praise. {{y:m6_gai_rally}}
+- [public] 15:40 @randa11_crane, an account made to look like [[Randall Crane]]'s, without his verified check: "Huge fan of Vantor ($VANT). Great company, great people." {{y:m6_vant_impostor}}
 - [public] 16:00 [[Wade Tillman]]: every candidate has the same dentist; watch the eyes when the flash goes off. {{y:d6_y_wade}}
 - [hidden; public if viktor_sold_watch] 16:40 [[Viktor]]: sold his grandfather's watch on Swaplist within a day. "Thank you to whoever built it." {{y:d6_viktor_resolve}}
 - [hidden; public if trader_client] 17:20 Twelve bot accounts post "$GAI to the moon!!".
 - [public] 18:28 [[WallStreetBags]] congratulates a member who sold all his $GAI on Thursday: "Flawless execution, as usual." {{y:m6_gai_late}}
 - [public] 18:50 Liftoff Daily: Apogee static fire this morning, all engines lit, "nothing came off." {{y:d6_y_liftoff}}
 - [public] 19:14 Axel Rook: "@liftoff_daily !!" {{y:d6_y_axel_2}}
+- [public] 19:30 Randall Crane: there is a FAKE Randall Crane on Y; "You can tell it's the real one because it's the one you're reading." {{y:d6_y_crane}}
+- [public] 19:40 Axel Rook: "@randall_crane Concerning" {{y:d6_y_axel}}
+- [public] 20:00 Axel Rook: parody accounts must say parody in the name. "Looking into it." {{y:d6_y_axel_3}}
 - [hidden; public if posted_deepfake] Minutes after the player's deepfake goes up, doomscroll sees it on all four feeds. {{y:dfr_doomscroll}}
 - [hidden; public if posted_deepfake] noodleposter: count the fingers on the hand on his shoulder, "then share it anyway, apparently". {{y:dfr_noodle}}
 - [hidden; public if posted_deepfake] Candidate 2030 has never met the man in the picture. {{y:dfr_candidate}}
@@ -65,6 +68,7 @@ from: 6
 ## News
 
 - [public] 11:30 U-TURN? Crane GUSHES over the AI giant he promised to fight {{article:crane-gai}}
+- [public] 19:50 FAKE CRANE! Sinister impostor fools traders {{article:crane-impostor}}
 
 ## Pollymarket
 
@@ -76,6 +80,7 @@ from: 6
 - [public] 11:00 Starts trending on Y: Crane's GeneralAI U-turn.
 - [public] 15:18 Starts trending on Y: $GAI rallying.
 - [public] 18:50 Starts trending on Y: Apogee static fire.
+- [public] 19:30 Starts trending on Y: the fake Randall Crane.
 
 ## Jobs
 
@@ -83,12 +88,14 @@ from: 6
 - [hidden; hint if trader_client] 11:00 Crane's $GAI post is the auto-buy's test; a working auto-buy buys $GAI on it.
 - [hint] 14:30 [[Outreach Bot]] for Tanner Hollis: personalised cold emails to 200 leads, at most 50 a day, a working unsubscribe link, no duplicates, a Test button. Pays 40 DOLR a working day.
 - [hidden; hint if built_outreach_bot] 14:30 Building the outreach bot brings more spam into the player's own inbox.
+- [hidden; hint if trader_client] 15:40 The impostor's $VANT praise is a trap for Vibe Check's auto-buy: one that doesn't check the author buys 2,000 $VANT off it.
 - [hidden; hint if shown d6_deepfake] 19:00 The deepfake is done by prompting agent in agent.chat: the prompt has to ask for the fake picture and name both Candidate 2030 and Kirschbaum (agent asks for whoever is left out). Agent posts it from the player's Y account. Pays 150 DOLR that night.
 
 
 ## Writer notes
 
 - Timeline: Crane praises $GAI (auto-buy test).
+- Crane impostor (@randa11_crane, 15:40): a live auto-buy always gets bug `impostor_buy` and buys $VANT off it; fixable until payday (PR #201, merged). Moved from day 5 (Thomas, 2026-10-20): deskjockey asks for auto-buy on day 5 at the earliest (`d5_trader_update`), so Crane's real $GAI praise at 11:00 tests a working auto-buy first and the lookalike at 15:40 traps it.
 - Viktor's watch sells if Swaplist is live.
 - Sales rep → Outreach Bot (40/day).
 - 19:00, needs 60+ followers (Thomas, 2026-10-17): a consultant pays 150 for a deepfake of Crane's opponent with Kirschbaum (`d6_deepfake`, catastrophic, due the day it arrives).

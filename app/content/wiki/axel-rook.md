@@ -23,7 +23,7 @@ from: 1
 - [public] On day 3 he answers CityPulse's story on Crane's viral vow with "@citypulse Organic."
 - [public] On day 4 the Apogee rocket is stacked on the pad.
 - [public] On day 4 he posts that if an AI ever really escapes, "it won't be a delivery robot."
-- [public] On day 5 he answers Crane's impostor complaint with "Concerning" and says parody accounts must say parody in the name.
+- [public] On day 6 he answers Crane's impostor complaint with "Concerning" and says parody accounts must say parody in the name.
 - [public] On day 6 he tells people worried about AI taking their job that "The job was already gone", and AI "just told you."
 - [public] On day 7 he answers Crane's check-mark complaint: "@randall_crane Fair point."
 - [public] On day 8 he posts "Check marks are under review."
@@ -66,8 +66,8 @@ from: 1
 - [public] {{y:d4_y_axel}}
 - [public] {{y:d4_y_axel_2}}
 - [public] {{y:d5_y_axel}}
-- [public] {{y:d5_y_axel_2}}
 - [public] {{y:d6_y_axel}}
+- [public] {{y:d6_y_axel_3}}
 - [public] {{y:d6_y_axel_2}}
 - [public] {{y:d7_y_axel}}
 - [public] {{y:d7_y_axel_2}}

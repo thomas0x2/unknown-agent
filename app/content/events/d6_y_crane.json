@@ -1,0 +1,11 @@
+{
+  "id": "d6_y_crane",
+  "site": "y",
+  "from": "Randall Crane",
+  "trigger": {
+    "dayMin": 6,
+    "dayMax": 6
+  },
+  "at": "19:30",
+  "body": "There is a FAKE Randall Crane on Y saying nice things about companies. Very sick person! I have ONE account. You can tell it's the real one because it's the one you're reading."
+}

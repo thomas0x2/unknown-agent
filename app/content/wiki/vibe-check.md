@@ -17,7 +17,7 @@ from: 2
 
 - [hint] On day 5 at the earliest (the morning after Vibe Check first works) deskjockey asks for auto-buy: when [[Randall Crane]] praises a company, buy it, once per post, the right ticker, not on sarcasm or criticism. {{mail:d5_trader_update}}
 - [public] [if trader_client] Ninety minutes after auto-buy first goes live, Crane praises Apogee on Y, the bot's first real test. {{y:trader_y_crane_apo}}
-- [public] On day 5 a fake Crane account, [[randa11_crane]], praises $VANT. {{y:m5_vant_impostor}}
+- [public] On day 6 a fake Crane account, [[randa11_crane]], praises $VANT. {{y:m6_vant_impostor}}
 - [public] On day 6 Crane praises $GAI. {{y:d6_y_crane_gai}}
 - [public] deskjockey also trades by hand on the news; those trades show in the log as "Manual trade".
 
@@ -36,6 +36,6 @@ from: 2
 ## Writer notes
 
 - Template `app/content/apps/sentiment.json`; events `d4_y_trader`, `trader_contact` (pay 40), `d5_trader_update`, `d7_trader_buyin` (PR #191), `d8_trader_tickers`; crawler `app/src/engine/crawler.ts`; stake `app/src/engine/stake.ts`.
-- Bugs: tickers wrong_tickers, lowercase_missed (Sam Ortiz, day 4); sentiment inverted, sarcasm_literal (Tyler Moss, day 4); filter bots_counted (only on swarm days 4, 6, 9, 12, 16, 27, once the job is taken); portfolio stale_prices, wrong_totals, value_wrong, pnl_sign, pct_wrong; auto_buy no_buy, wrong_ticker, buys_on_criticism, repeat_buys, impostor_buy. `repeat_buys` shows in the auto-trade log as one Crane post with BUY ×N (the bot rebuys on every 15-minute refresh until the cash runs out) and the position jumping by N × 2,000 shares, where the spec says once per post. Story bug: a live auto-buy on day 5 always gets `impostor_buy` (buys 2,000 $VANT off @randa11_crane at 11:30), fixable until payday.
+- Bugs: tickers wrong_tickers, lowercase_missed (Sam Ortiz, day 4); sentiment inverted, sarcasm_literal (Tyler Moss, day 4); filter bots_counted (only on swarm days 4, 6, 9, 12, 16, 27, once the job is taken); portfolio stale_prices, wrong_totals, value_wrong, pnl_sign, pct_wrong; auto_buy no_buy, wrong_ticker, buys_on_criticism, repeat_buys, impostor_buy. `repeat_buys` shows in the auto-trade log as one Crane post with BUY ×N (the bot rebuys on every 15-minute refresh until the cash runs out) and the position jumping by N × 2,000 shares, where the spec says once per post. Story bug: a live auto-buy on day 6 always gets `impostor_buy` (buys 2,000 $VANT off @randa11_crane at 15:40), fixable until payday.
 - Crane's $APO test (`trader_y_crane_apo`, Axel's 🚀 6 min later) lands 90 game min after the auto-buy first goes live only if both posts fit by 20:00; otherwise both go up the next morning at 10:30 and 10:36 (`queueFeatureLaunch`, `LAST_POST`).
 - Auto-buy buys 2,000 shares. Manual trades `TRADER_TRADES`. Stake wallet `0x5e17…0d7b`; sends from day 18 would pay after the election.
