@@ -6,7 +6,7 @@ import { startGame, endDay } from './day';
 import { promptAgent, workMinutes } from './actions';
 import { advanceClock } from './core';
 import { AGENT_WORK, CLOCK } from './config';
-import { makeContent, fakeRouter } from './_fixtures';
+import { makeContent, fakeRouter, pickJev } from './_fixtures';
 
 const content = makeContent();
 const catalog = fakeRouter({ features: (_p, ids) => ids.filter((i) => i.endsWith('::catalog::feature')) });
@@ -71,6 +71,15 @@ describe('agent work takes game time', () => {
     expect(chat.charged).toBe(true);
     expect(chat.state.chat.at(-1)!.src).not.toBe('busy');
     expect(chat.state.agentWork).toBeTruthy();
+  });
+
+  it("asking how a first build is going gets the agent's progress, though the app isn't on Forkyard yet", async () => {
+    const { r } = await startBuild();
+    expect(shop(r.state).repoVersion).toBe(0);
+    const status = pickJev({ route: [`status:${shop(r.state).id}`], features: [] });
+    const asked = await promptAgent(r.state, content, status, 'is the Rosa Shop site done yet?');
+    expect(asked.state.chat.at(-1)!.text).toContain(shop(r.state).name);
+    expect(asked.state.chat.at(-1)!.debug?.join(' ')).toContain('still working on');
   });
 
   it('work still going at bedtime is pushed overnight and reported in the morning', async () => {
