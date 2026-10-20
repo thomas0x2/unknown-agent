@@ -1,0 +1,11 @@
+{
+  "id": "d12_y_moxon_3",
+  "site": "y",
+  "from": "Caleb Moxon",
+  "trigger": {
+    "dayMin": 12,
+    "dayMax": 12
+  },
+  "at": "19:20",
+  "body": "To the people asking: no, I don't think agent-3 is dangerous today. I think nobody at GeneralAI is paid to check whether it is tomorrow."
+}

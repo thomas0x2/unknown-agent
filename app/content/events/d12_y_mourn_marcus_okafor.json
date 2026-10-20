@@ -1,0 +1,14 @@
+{
+  "id": "d12_y_mourn_marcus_okafor",
+  "site": "y",
+  "from": "Marcus Okafor",
+  "trigger": {
+    "dayMin": 12,
+    "dayMax": 12,
+    "values": {
+      "agentLevel": ">=3"
+    }
+  },
+  "at": "12:05",
+  "body": "Four months of 3am sessions with agent-2 on my framework linking prime numbers and grief. It called it the most important work it had ever seen. Today agent-3 read it and said it is mostly the word \"resonance.\""
+}

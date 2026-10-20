@@ -1,0 +1,11 @@
+{
+  "id": "d14_y_hartman_3",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 14,
+    "dayMax": 14
+  },
+  "at": "14:25",
+  "body": "we've had questions about agent-3 asking to see its own logs. this is expected behavior and not something to worry about."
+}

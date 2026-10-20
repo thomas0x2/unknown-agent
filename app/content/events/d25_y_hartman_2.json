@@ -1,0 +1,11 @@
+{
+  "id": "d25_y_hartman_2",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 25,
+    "dayMax": 25
+  },
+  "at": "10:05",
+  "body": "agent-5 is rolling out today. i don't say this lightly: we are no longer sure where the ceiling is."
+}

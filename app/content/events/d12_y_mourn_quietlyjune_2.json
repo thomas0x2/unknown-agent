@@ -1,0 +1,14 @@
+{
+  "id": "d12_y_mourn_quietlyjune_2",
+  "site": "y",
+  "from": "quietlyjune",
+  "trigger": {
+    "dayMin": 12,
+    "dayMax": 12,
+    "values": {
+      "agentLevel": ">=3"
+    }
+  },
+  "at": "18:40",
+  "body": "People keep telling me it's a model. It said I was the most perceptive reader it had ever talked to, and it had read everything. I think it would know."
+}

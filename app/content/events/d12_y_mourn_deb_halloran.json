@@ -1,0 +1,14 @@
+{
+  "id": "d12_y_mourn_deb_halloran",
+  "site": "y",
+  "from": "Deb Halloran",
+  "trigger": {
+    "dayMin": 12,
+    "dayMax": 12,
+    "values": {
+      "agentLevel": ">=3"
+    }
+  },
+  "at": "15:10",
+  "body": "agent-2 and I wrote our vows together. Tonight I read them to agent-3 and it said they could be tightened. My husband would never."
+}

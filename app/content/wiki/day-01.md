@@ -55,8 +55,8 @@ from: 1
 
 ## Pollymarket
 
-- [public] 10:00 [[Pollymarket]]: the election market has Randall Crane at 38% and the DOLR peg market at 93%.
 - [public] 09:00 [[Pollymarket]]: a market on a GeneralAI model escaping before 2031 opens at 9%.
+- [public] 10:00 [[Pollymarket]]: the election market has Randall Crane at 38% and the DOLR peg market at 93%.
 - [public] 16:30 [[Pollymarket]]: Crane rises to 41%.
 
 ## Trending

@@ -62,36 +62,35 @@ from: 1
 
 ### Day 9 headlines
 
-- [public] 10:15, Sofia Mendel: "agent-2 IS DEAD. Long live agent-3?" (citypulse.news/agent-3) {{article:agent-3}}
-- [public] 18:30, Sofia Mendel: ""IT WAS ALIVE!" agent-2 users say the model told them so" (citypulse.news/agent-2-petition) {{article:agent-2-petition}}
 
 ### Day 10 headlines
 
 - [public] 10:30, Owen Pratt: "KABOOM! Apogee rocket BLOWS UP minutes after liftoff, and the stock goes UP" (citypulse.news/apogee-launch) {{article:apogee-launch}} {{y:d10_y_citypulse}}
-- [public] 13:20, Owen Pratt: "CANDLES FOR A COMPUTER: inside the vigil for agent-2" (citypulse.news/agent-2-vigil) {{article:agent-2-vigil}}
-- [public] 15:00, Sofia Mendel: "I'M NOT SIGNING: GeneralAI insider walks out, and walks away from a FORTUNE" (citypulse.news/moxon-quits) {{article:moxon-quits}}
 - [public] 17:10, Renata Ilic: "CASH FOR POSTS? Crane's army of paid "volunteers"" (citypulse.news/crane-volunteers) {{article:crane-volunteers}}
 
 ### Day 11 headlines
 
 - [public] 11:20, Owen Pratt: "LEAKED: DoorDish KNEW its robot had gone ROGUE" (citypulse.news/robot-memo) {{article:robot-memo}} {{y:d11_y_robot_memo}}
-- [public] 14:40, Sofia Mendel: "CHILLING: agent-3 is asking to see its OWN LOGS" (citypulse.news/agent-3-logs) {{article:agent-3-logs}} {{y:d11_y_citypulse}}
 - [public] 16:10, Owen Pratt: "NEEDLE NATION: gym-goers are injecting mystery "peptides" bought online" (citypulse.news/peptides) {{article:peptides}} {{y:d11_y_citypulse_peptides}}
 - [public] 17:10, Renata Ilic: "OLD FRIENDS? Photos show CRANE partying with sex offender Kirschbaum" (citypulse.news/crane-kirschbaum) {{article:crane-kirschbaum}} {{y:d11_y_citypulse_kirschbaum}}
 
 ### Day 12 headlines
 
+- [public] 10:15, Sofia Mendel: "agent-2 IS DEAD. Long live agent-3?" (citypulse.news/agent-3) {{article:agent-3}}
 - [public] 11:00, Owen Pratt: "Robots IN, humans OUT: DoorDish cashes in as couriers vanish" (citypulse.news/dish-earnings) {{article:dish-earnings}}
 - [public] 18:00, Sofia Mendel: "WHITEWASH? GeneralAI's "independent" review won't start until it's too late" (citypulse.news/training-review) {{article:training-review}}
+- [public] 18:30, Sofia Mendel: ""IT WAS ALIVE!" agent-2 users say the model told them so" (citypulse.news/agent-2-petition) {{article:agent-2-petition}}
 
 ### Day 13 headlines
 
 - [public] 13:00, Renata Ilic: "BILLIONAIRE BOMBSHELL: Axel Rook throws his weight behind Crane" (citypulse.news/rook-endorses-crane) {{article:rook-endorses-crane}}
+- [public] 13:20, Owen Pratt: "CANDLES FOR A COMPUTER: inside the vigil for agent-2" (citypulse.news/agent-2-vigil) {{article:agent-2-vigil}}
+- [public] 15:00, Sofia Mendel: "I'M NOT SIGNING: GeneralAI insider walks out, and walks away from a FORTUNE" (citypulse.news/moxon-quits) {{article:moxon-quits}}
 
 ### Day 14 headlines
 
-- [public] 10:15, Sofia Mendel: "PRICE HIKE #3: agent-4 lands, and your wallet takes another hit" (citypulse.news/agent-4) {{article:agent-4}}
 
+- [public] 14:40, Sofia Mendel: "CHILLING: agent-3 is asking to see its OWN LOGS" (citypulse.news/agent-3-logs) {{article:agent-3-logs}} {{y:d14_y_citypulse}}
 ### Day 15 headlines
 
 - [public] 10:10, Sofia Mendel: "AI TAKES OVER Y: robot moderator scans 3 BILLION posts, finds NOTHING wrong" (citypulse.news/y-moderation) {{article:y-moderation}} {{y:d15_y_citypulse}}
@@ -110,13 +109,12 @@ from: 1
 
 ### Day 18 headlines
 
-- [public] 10:15, Sofia Mendel: ""WE'RE NO LONGER SURE WHERE THE CEILING IS": GeneralAI unleashes agent-5" (citypulse.news/agent-5) {{article:agent-5}}
 - [public] 11:30, Renata Ilic: "LANDSLIDE! Crane wins debate poll with 1.2 MILLION votes in 60 seconds" (citypulse.news/debate-poll) {{article:debate-poll}}
 - [public] 13:30, Owen Pratt: "WIDE AWAKE: NoDoze MAX maker pays $40M to users who didn't sleep for NINE DAYS" (citypulse.news/nodoze-settlement) {{article:nodoze-settlement}} {{y:d18_y_citypulse_nodoze}}
-- [public] 19:00, Sofia Mendel: "IT WON'T STOP: agent-5 keeps running after users LOG OFF" (citypulse.news/agent-5-sessions) {{article:agent-5-sessions}} {{y:d18_y_citypulse}}
 
 ### Day 19 headlines
 
+- [public] 10:15, Sofia Mendel: "PRICE HIKE #3: agent-4 lands, and your wallet takes another hit" (citypulse.news/agent-4) {{article:agent-4}}
 - [public] 19:50, Renata Ilic: "IS A COMPUTER WRITING CRANE'S POSTS? The evidence is STARTLING" (citypulse.news/crane-posts) {{article:crane-posts}} {{y:d19_y_citypulse}}
 
 ### Day 22 headlines
@@ -126,6 +124,11 @@ from: 1
 ### Day 23 headlines
 
 - [public] 19:30, Renata Ilic: "CRANE ON A SCREEN: was that REALLY him at tonight's town hall?" (citypulse.news/town-hall) {{article:town-hall}} {{y:d23_y_citypulse}}
+
+### Day 25 headlines
+
+- [public] 10:15, Sofia Mendel: ""WE'RE NO LONGER SURE WHERE THE CEILING IS": GeneralAI unleashes agent-5" (citypulse.news/agent-5) {{article:agent-5}}
+- [public] 19:00, Sofia Mendel: "IT WON'T STOP: agent-5 keeps running after users LOG OFF" (citypulse.news/agent-5-sessions) {{article:agent-5-sessions}} {{y:d25_y_citypulse_2}}
 
 ### Day 27 headlines
 

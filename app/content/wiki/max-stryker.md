@@ -67,13 +67,13 @@ from: 1
 - [public] On day 15 Y's new AI moderator flags him for "unverifiable income claims" and he loses the appeal in under a second.
 - [public] On day 16 he posts that excuses are free, "That's why you have so many."
 - [public] On day 17 he sells debate watch-party seats with the EMPIRE inner circle at 400 DOLR.
-- [public] On day 18 he says agent-5 "understands premium positioning."
 - [public] On day 19 he confirms his posts go out at 3am because he's up.
 - [public] On day 20 he says "Saturday is a weekday for people with goals."
 - [public] On day 21, rent day, he says if paying it hurt, "the lesson was free. EMPIRE is 20 DOLR."
 - [public] On day 22 he votes early: "Didn't wait in line. The line waited for me."
 - [public] On day 23 he won't watch the town hall: "I don't take questions, I take action."
 - [public] On day 24 he says his EMPIRE coaches are digital now too, and "they don't take refunds."
+- [public] On day 25 he says agent-5 "understands premium positioning."
 - [public] On day 25 he says Halloween is for people who want to be someone else for one night; he "became someone else permanently."
 - [public] On day 26 he says tired is a choice, "So is broke."
 - [public] On day 27 he tells people to vote tomorrow like a man who gets up at 4.
@@ -124,7 +124,7 @@ from: 1
 - [public] {{y:d6_y_stryker}}
 - [public] {{y:d7_y_stryker}}
 - [public] {{y:d8_y_stryker}}
-- [public] {{y:d9_y_stryker}}
+- [public] {{y:d12_y_stryker_2}}
 - [public] {{y:d10_y_stryker}}
 - [public] {{y:d11_y_stryker}}
 - [public] {{y:d12_y_stryker}}
@@ -133,7 +133,7 @@ from: 1
 - [public] {{y:d15_y_stryker}}
 - [public] {{y:d16_y_stryker}}
 - [public] {{y:d17_y_stryker}}
-- [public] {{y:d18_y_stryker}}
+- [public] {{y:d25_y_stryker_2}}
 - [public] {{y:d19_y_stryker}}
 - [public] {{y:d20_y_stryker}}
 - [public] {{y:d21_y_stryker}}

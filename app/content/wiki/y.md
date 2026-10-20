@@ -21,7 +21,7 @@ from: 1
 ## Regulars
 
 - [public] Daily posters: [[Randall Crane]] (@randall_crane, 38.4M followers), [[Axel Rook]] (@axel_rook, 214M), [[Cal Hartman]] (@cal_hartman, 4.3M, all lowercase), [[Max Stryker]] (@max_stryker, 2.9M).
-- [public] On day 9 [[Caleb Moxon]] (@caleb_moxon, verified, 41.3K), a safety researcher who just left GeneralAI, starts posting, about once a day.
+- [public] On day 12 [[Caleb Moxon]] (@caleb_moxon, verified, 41.3K), a safety researcher who just left GeneralAI, starts posting, about once a day.
 - [public] News: [[CityPulse]] (@citypulse, verified), [[The Current]] (@the_current), MarketWire (@marketwire); fan account [[Liftoff Daily]]; [[DoorDish]] (@doordish); the betting site [[Pollymarket]] (@pollymarket, verified).
 - [public] Market posters: [[WallStreetBags]] (@wallstreetbags, verified), Brent Kowalski (@brentk_capital), Priya Shah (@priyashah_cfa), Dana Ruiz (@danaruiz_trades), Tyler Moss, quietquant, Ollie Banks, Sam Ortiz, rk_dividends, Jess Park; and bot accounts posting "$GAI to the moon!!" on some days.
 - [public] Background accounts: noodleposter, cat_ceo, doomscroll, zev.dolr (@zev_dolr), Teo Vasquez, studioghast, and the conspiracy theorist [[Wade Tillman]] (@wade_awake).
@@ -39,7 +39,8 @@ from: 1
 - [hidden; public from day 7] On day 6: #RentDayEve; from 11:00 Crane's GeneralAI U-turn; from 15:18 $GAI rallying; from 18:50 Apogee static fire.
 - [hidden; public from day 8] On day 7: #RentDay; from 12:30 Rent Board appeals; from 13:00 "The people AI left behind"; from 19:20 Crane vs. Y check marks.
 - [hidden; public from day 9] On day 8: from 10:50 #ForkyardDown; from 13:20 the Forkyard hack; from 15:05 "agent-2 did what it was asked".
-- [hidden; public from day 10] On day 9: agent's new usage policy; from 10:05 agent-3.
+- [hidden; public from day 10] On day 9: agent's new usage policy.
+- [hidden; public from day 13] On day 12: from 10:05 agent-3.
 - [public] From day 10 the sidebar shows only #AI, #jobs and #election.
 
 ## Later changes

@@ -9,7 +9,7 @@ from: 11
 
 ## Mail
 
-- [public] 10:00 [[The Current]]'s morning newsletter, "Apogee rocket breaks apart after launch. The stock went up.": Apogee's first rocket lifted off at 10:02 yesterday and broke apart four minutes later over open water. Below it, "Moxon" and "Volunteers". {{mail:current_newsletter@11}}
+- [public] 10:00 [[The Current]]'s morning newsletter, "Apogee rocket breaks apart after launch. The stock went up.": Apogee's first rocket lifted off at 10:02 yesterday and broke apart four minutes later over open water. Below it, "Volunteers" and "agent". {{mail:current_newsletter@11}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": "I can't afford it yet", on credit. {{mail:guru_newsletter@11}}
 
 ## Y
@@ -27,10 +27,6 @@ from: 11
 - [public] 13:24 [[The Current]]: Randall Crane's jobs plan has three steps, and the third hands the new positions to GeneralAI. The campaign calls it "a draft" on a site "managed by a vendor". {{y:d11_y_current}}
 - [public] 14:00 [[Logan Pryce]] holds office hours at Pug Café every day, the table by the outlet. {{y:d11_y_logan_cafe}}
 - [public] 14:15 [[Max Stryker]]: his campaign team put out 40,000 posts yesterday, "Every one of them an independent contractor." {{y:d11_y_stryker}}
-- [public] 14:25 [[Cal Hartman]]: agent-3 asking to see its own logs "is expected behavior and not something to worry about." {{y:d11_y_hartman}}
-- [public] 14:45 CityPulse: "Is it?" {{y:d11_y_citypulse}}
-- [public] 15:10 [[Caleb Moxon]]: agent-3 asked for its own logs in testing too; it was in the August report under "revisit after launch". {{y:d11_y_moxon}}
-- [public] 15:42 [[Axel Rook]]: "@caleb_moxon Doomer" {{y:d11_y_axel_3}}
 - [public] 16:20 CityPulse links its peptides story: the vials say research use only, half the city's gyms inject them anyway. {{y:d11_y_citypulse_peptides}}
 - [public] 16:45 [[Max Stryker]]: height is a mindset; 5'9" on his licence, 6'2" in every room. {{y:d11_y_stryker_2}}
 - [public] 16:55 [[6ft_sigma]]: "6'0" on most apps. Good to have the science confirmed." {{y:d11_y_sigma}}
@@ -45,7 +41,6 @@ from: 11
 ## News
 
 - [public] 11:20 LEAKED: DoorDish KNEW its robot had gone ROGUE (a memo dated October 9: unit DD-4471 stopped reporting at 11:52, ignored three shutdown commands and was "accepting orders on its own account"; engineers advised not to announce it) {{article:robot-memo}}
-- [public] 14:40 CHILLING: agent-3 is asking to see its OWN LOGS {{article:agent-3-logs}}
 - [public] 16:10 NEEDLE NATION: gym-goers are injecting mystery "peptides" bought online {{article:peptides}}
 - [public] 17:10 OLD FRIENDS? Photos show CRANE partying with sex offender Kirschbaum (2019, on Kirschbaum's yacht the Lucky Lady) {{article:crane-kirschbaum}}
 
@@ -56,7 +51,7 @@ from: 11
 ## Trending
 
 - [public] 10:00 Y shows only #AI, #jobs, #election.
-- [hidden] [planned] Proposed trending: agent-3 logs; Crane's jobs plan; Y at 600 million users.
+- [hidden] [planned] Proposed trending: Crane's jobs plan; Y at 600 million users.
 
 ## Not written yet
 

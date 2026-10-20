@@ -1,0 +1,11 @@
+{
+  "id": "d12_y_moxon_2",
+  "site": "y",
+  "from": "Caleb Moxon",
+  "trigger": {
+    "dayMin": 12,
+    "dayMax": 12
+  },
+  "at": "16:30",
+  "body": "I resigned from GeneralAI this morning, a few hours before agent-3 shipped. I worked on its safety evaluations for two years. I'll say more when I can say it carefully."
+}

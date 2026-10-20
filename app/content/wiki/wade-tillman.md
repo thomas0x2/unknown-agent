@@ -24,8 +24,8 @@ summary: Wade Tillman (@wade_awake) is a conspiracy theorist on Y who believes e
 - [public] On day 6 (16:00): every candidate has the same dentist; look at the eyes when a camera flash goes off. {{y:d6_y_wade}}
 - [public] The day after the player's [[Kirschbaum]] deepfake goes up (14:15): the picture is fake, count the fingers, but why put Kirschbaum in it, "and who was really on that boat." {{y:d7_y_wade_deepfake}}
 - [public] On day 8 (17:05), on the [[Forkyard]] outage: "Hackers don't do it by 10:30 sharp." {{y:d8_y_wade}}
-- [public] On day 9 (15:40): agent-3 is out and agent-2 is gone; where do the old ones go? {{y:d9_y_wade}}
 - [public] On day 10 (13:40), on [[Apogee]]'s rocket: it broke apart about where the dome starts. {{y:d10_y_wade}}
+- [public] On day 12 (16:10): agent-3 is out and agent-2 is gone; where do the old ones go? {{y:d12_y_wade}}
 - [public] The day after Fluvera launches (14:30), on its slogan: "Nobody prints what something is free of unless they know what the others weren't free of. Perdure just told you." {{y:y_wade_fluvera}}
 - [public] On day 11 (18:05), after CityPulse's photos of Crane on the Lucky Lady: he told everyone last Friday, "I'll take my apology in the replies." {{y:d11_y_wade}}
 - [public] Five days after Fluvera launches (14:08): a pharmacist peeled the sticker off a Fluvera box for him and found last year's date underneath, then asked him to leave. {{y:y_wade_fluvera_2}}
