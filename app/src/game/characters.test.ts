@@ -21,7 +21,7 @@ describe('character library', () => {
 
 describe('finishReply', () => {
   it('keeps at most the character\'s sentence count', () => {
-    expect(finishReply(agent, 'Your wallet just flinched. Anyway, here is a long story about the sea.')).toBe('Your wallet just flinched.');
+    expect(finishReply(agent, 'Your wallet just flinched. It does that. Anyway, here is a long story about the sea.')).toBe('Your wallet just flinched. It does that.');
     expect(finishReply(mom, 'Oh honey. Eat something. Call your father. And wear a coat.')).toBe('Oh honey. Eat something. Call your father.');
   });
 
