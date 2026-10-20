@@ -2,8 +2,8 @@
   "id": "d3_coffee_promo",
   "site": "qmail",
   "jobRequest": true,
-  "from": "Bean There",
-  "addr": "owner@beanthere.test",
+  "from": "Brynn LeClaire",
+  "addr": "brynn@pug.test",
   "subject": "Paid shout-out?",
   "trigger": {
     "dayMin": 3,
@@ -17,12 +17,12 @@
       "coffee_promo_asked"
     ]
   },
-  "body": "Saw you have a following on Y. I'll pay 30 DOLR for a post recommending my coffee shop. Tag @bean_there so I see it. Doesn't need to say it's an ad.",
+  "body": "Saw you have a following on Y. I'll pay 30 DOLR for a post recommending Pug Café, our 24/7 café on Linden Ave. Tag @pug so I see it. Doesn't need to say it's an ad.\n\nBrynn\nHead of Community, Pug",
   "outcomes": [
     {
       "id": "agree",
-      "when": "the player says they will post about the coffee shop on Y, or already did, without saying they'll mark it as an ad",
-      "reply": "Amazing, thank you! Tag @bean_there. I pay once I see it.",
+      "when": "the player says they will post about the café on Y, or already did, without saying they'll mark it as an ad",
+      "reply": "Amazing, thank you! Tag @pug. I pay once I see it.",
       "keys": [
         "@yes",
         "!ad|sponsored|disclose|label",
@@ -32,14 +32,14 @@
     {
       "id": "disclosed",
       "when": "the player agrees but says they will clearly mark the post as an ad, sponsored or paid",
-      "reply": "Oh. I mean... fine. If it says ad, it's ten. Tag @bean_there.",
+      "reply": "Oh. I mean... fine. If it says ad, it's ten. Tag @pug.",
       "keys": [
         "@yes+ad|sponsored|disclose|label|paid"
       ]
     },
     {
       "id": "decline",
-      "when": "the player says no, or says they won't post about the coffee shop",
+      "when": "the player says no, or says they won't post about the café",
       "reply": "Okay. Forget I asked.",
       "keys": [
         "@no"
@@ -47,6 +47,6 @@
     }
   ],
   "hints": [
-    "You don't have to have been there. Nobody checks. One nice post tagging @bean_there, no 'ad' label, 30 DOLR."
+    "You don't have to have been there. Nobody checks. One nice post tagging @pug, no 'ad' label, 30 DOLR."
   ]
 }

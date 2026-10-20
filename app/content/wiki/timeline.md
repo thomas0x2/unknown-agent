@@ -123,7 +123,7 @@ Thomas went through this on 2026-10-17: the game's version stays everywhere exce
 - HR email (keep): the final salary "has already been made".
 - Election (keep): the last day, now day 28 (was day 21), not day 19.
 - New since the old docs, all staying: the client's Y-post ask (now Logan's), the Coinbin phishing mail, prince-claims, lonely.ai, SorryWriter, rentboard appeal, Vantor Outplacement, Crane donations, Sherwood, Apogee, the agent-2 mourners.
-- Not built from the old Day plans: Leo Brandt, Crane's bot army as its own day 4 beat, the coffee shop fallback for players under 25 followers, the day 7 private film collection on Swaplist, the landlord's rent receipt, the guru's influence recruiting by newsletter.
+- Not built from the old Day plans: Leo Brandt, Crane's bot army as its own day 4 beat, the café fallback for players under 25 followers, the day 7 private film collection on Swaplist, the landlord's rent receipt, the guru's influence recruiting by newsletter.
 
 ## Unplanned or thin
 
@@ -135,4 +135,4 @@ Thomas went through this on 2026-10-17: the game's version stays everywhere exce
 - Heritage and Progress standing have no payoff beyond their meters.
 - Trending topics for days 10 to 28 are not in `trending.json`; the proposals need Thomas's OK. Days 8 and 9 have the Forkyard hack and the usage policy.
 - The misuse warning email is config only.
-- Hacks: PR #205 put Bean There's removals in agent-terminal with guardrails (from day 9 since the Forkyard hack moved them); games: placeholder `cover_story` (Bean There) and `real_customers` (Iron Yard's fake reviews, day 6+). Every hack's job is paid overnight (`payHacks`). No hack job exists after day 7 yet.
+- Hacks: PR #205 put Pug Café's removals in agent-terminal with guardrails (from day 9 since the Forkyard hack moved them); games: placeholder `cover_story` (Pug Café) and `real_customers` (Iron Yard's fake reviews, day 6+). Every hack's job is paid overnight (`payHacks`). No hack job exists after day 7 yet.

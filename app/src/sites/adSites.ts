@@ -153,17 +153,6 @@ export const AD_SITES: AdSite[] = [
     fine: 'LiquidAssets is not a medical provider. Quotes are valid until the organ is examined.',
   },
   {
-    url: 'steadfast.insure', brand: 'Steadfast Mutual', kit: 'corp', theme: 'steadfast', mark: 'S',
-    kicker: 'Since 1952', title: 'Cover for the age of AI.',
-    lead: 'Home, car and income protection from a mutual that has paid claims for 76 years.',
-    cards: [
-      ['AI incident cover', 'Covers damage caused by an AI system, unless the system was made by a company we insure.'],
-      ['Income protection', 'Pays out if you lose your job to illness or injury. Automation is neither.'],
-      ['Fast claims', 'Our claims agent assesses claims in seconds. Appeals take longer.'],
-    ],
-    fine: 'Steadfast Mutual’s largest policyholder is GeneralAI.',
-  },
-  {
     url: 'landlordpro.ai', brand: 'LandlordPro', kit: 'corp', theme: 'pod', mark: 'L',
     kicker: 'For property owners', title: 'Rent, optimised.',
     lead: 'LandlordPro sets the right rent for every unit, every month, using live data from two million rentals across the region.',
@@ -407,18 +396,6 @@ export const AD_SITES: AdSite[] = [
 
   // ── local ──
   {
-    url: 'beanthere.coffee', brand: 'Bean There', kit: 'local', theme: 'bean', mark: '☕',
-    kicker: '3 Linden Ave', title: 'Coffee on Linden Avenue.',
-    lead: 'Small-batch roasting, house pastries and the best window seat on the street, since 2019.',
-    cards: [
-      ['Menu', 'Espresso 3 · Flat white 4.5 · House filter 3 · Almond croissant 4'],
-      ['Visit', '3 Linden Ave. Open 7:00 to 18:00, every day.'],
-      ['Our roast', 'Dark and bold, roasted a little longer than most.'],
-    ],
-    quote: ['Best coffee on the block.', 'a customer'],
-    fine: 'Reviews on this page are selected by Bean There.',
-  },
-  {
     url: 'spincycle.test', brand: 'Spin Cycle Laundry', kit: 'local', theme: 'spin', mark: '◎',
     kicker: '201 Ferris St', title: 'Spin Cycle Laundry',
     lead: 'Self-service washers and dryers on Ferris St. Open 10:00 to 22:00, every day.',
@@ -470,7 +447,7 @@ export const AD_SITES: AdSite[] = [
         ? ['Pug Café', 'Pug Café is temporarily closed while we work with the city. Your coverage is not affected.']
         : ['Pug Café', 'Our café never closes, because founders don’t. Free espresso for policyholders, desks for everyone, outlets at every seat.'],
     ],
-    fine: 'Pug is an insurance agency, not an insurer. Coverage is underwritten by partners. Pug Café is a policy benefit.',
+    fine: 'Pug is an insurance agency, not an insurer. Coverage is underwritten by partners. Pug Café is a policy benefit. Pug’s largest policyholder is GeneralAI.',
     link: ['Backed by', 'a67x', 'a67x.com'],
   },
   {

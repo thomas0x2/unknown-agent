@@ -33,8 +33,6 @@ export const Y_BIOS: Record<string, string> = {
   // people with something to ask
   iron_yard: 'Iron Yard, 88 Harbor Rd. Strength gym. Racks, platforms, kettlebells. Lift heavy things.',
   marcus_steele: 'Owner and head coach, Iron Yard on Harbor Rd. Lift heavy things.',
-  dana_reyes: 'Coffee person. Owner of a small shop on Linden Ave. Opinions my own, reviews not.',
-  bean_there: 'Bean There, 3 Linden Ave. Specialty coffee, house-baked muffins. Laptop friendly, allegedly.',
   logan_ships: 'Founder & CEO @ WorkAgent (stealth). Why Combinator, whycombinator.com. Host of the Founder Mode podcast. Building the first one-person unicorn. SF is so back.',
   spin_cycle_regulars: 'Unofficial account for the people waiting at Spin Cycle. Never trust machine 3.',
   deskjockey: 'Markets. No DMs.',

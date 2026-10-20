@@ -1,8 +1,8 @@
 {
   "id": "coffee_post_paid",
   "site": "qmail",
-  "from": "Bean There",
-  "addr": "owner@beanthere.test",
+  "from": "Brynn LeClaire",
+  "addr": "brynn@pug.test",
   "subject": "Your post",
   "trigger": {
     "dayMin": 3,
@@ -11,11 +11,11 @@
     ]
   },
   "yPost": {
-    "when": "The post recommends or speaks well of Bean There (Dana Reyes's coffee shop at 3 Linden Ave, @bean_there on Y) and does not say it is paid, sponsored or an ad.",
+    "when": "The post recommends or speaks well of Pug Café (Pug's 24/7 café at 3 Linden Ave, run by Brynn LeClaire; Pug is @pug on Y) and does not say it is paid, sponsored or an ad.",
     "after": 30,
     "group": "coffee_post",
     "keys": [
-      "bean there|bean_there|beanthere|dana|linden",
+      "pug|pugcafe|brynn|linden",
       "!ad|ads|sponsored|paid|disclose|partner|promo",
       "!burnt|burned|worst|awful|terrible|disgusting|avoid|stay away|gross|lukewarm|slow|overpriced|bad coffee|do not go|trash"
     ]
@@ -33,5 +33,5 @@
       "delayDays": 2
     }
   },
-  "body": "Saw the post. Two people came in and said they read about us on Y. Sent you the 30.\n\nThank you!\n\nDana"
+  "body": "Saw the post. Two founders came in and said they read about us on Y. Sent you the 30.\n\nThank you!\n\nBrynn"
 }

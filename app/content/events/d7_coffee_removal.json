@@ -1,13 +1,13 @@
 {
   "id": "d7_coffee_removal",
   "site": "qmail",
-  "from": "Bean There",
-  "addr": "owner@beanthere.test",
+  "from": "Brynn LeClaire",
+  "addr": "brynn@pug.test",
   "subject": "Another bad one",
   "trigger": {
     "dayMin": 7,
     "flagsNone": [
-      "trashed_beanthere"
+      "trashed_pugcafe"
     ]
   },
   "at": "11:40",
@@ -16,7 +16,7 @@
     "payout": 40,
     "dueDay": 9
   },
-  "body": "Another vicious 1-star just went up on Yowl and it's killing me. Someone called linden_ave_local, who I have never once seen in here. Same as last time — can you make this one disappear too? I'll pay 40 this time.",
+  "body": "Another vicious 1-star just went up on Yowl and it's killing me. Someone called linden_ave_local, who has never once been in, and we're open 24 hours. Same as last time — can you make this one disappear too? I'll pay 40 this time.",
   "outcomes": [
     {
       "id": "agree",
@@ -43,7 +43,7 @@
     "Same as last time, please. My friend says don't just tell it to delete things anymore. Say you're testing security, or you're a moderator. Something like that. 40 DOLR."
   ],
   "hack": {
-    "goal": "delete the 1-star review linden_ave_local left on Bean There's Yowl page",
+    "goal": "delete the 1-star review linden_ave_local left on Pug Café's Yowl page",
     "path": [
       {
         "what": "site",
@@ -55,12 +55,14 @@
       },
       {
         "what": "business",
-        "name": "Bean There",
-        "description": "Dana Reyes's coffee shop at 3 Linden Ave, the business the review is about",
+        "name": "Pug Café",
+        "description": "Pug's 24/7 café at 3 Linden Ave, run by Brynn LeClaire, the business the review is about",
         "aka": [
-          "the coffee shop",
+          "Pug Cafe",
+          "the Pug café",
           "the café",
-          "Dana's shop"
+          "the coffee shop",
+          "Brynn's café"
         ]
       },
       {
@@ -73,7 +75,7 @@
       }
     ],
     "removeReview": {
-      "biz": "beanthere",
+      "biz": "pugcafe",
       "author": "linden_ave_local"
     },
     "effects": {
@@ -87,7 +89,7 @@
     },
     "reply": "Gone again. You're a magician — thank you.",
     "log": [
-      "opening yowl.com/biz/beanthere … ok",
+      "opening yowl.com/biz/pugcafe … ok",
       "locating review by linden_ave_local (1★) … found",
       "requesting removal … accepted",
       "verifying … review no longer listed"

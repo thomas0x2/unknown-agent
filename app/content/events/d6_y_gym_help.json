@@ -6,7 +6,7 @@
   "trigger": {
     "dayMin": 6,
     "flagsAll": [
-      "trashed_beanthere"
+      "trashed_pugcafe"
     ],
     "flagsNone": [
       "first_hack",

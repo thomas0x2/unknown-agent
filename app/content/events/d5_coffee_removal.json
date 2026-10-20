@@ -1,19 +1,19 @@
 {
   "id": "d5_coffee_removal",
   "site": "qmail",
-  "from": "Bean There",
-  "addr": "owner@beanthere.test",
+  "from": "Brynn LeClaire",
+  "addr": "brynn@pug.test",
   "subject": "Can you make it disappear?",
   "trigger": {
     "dayMin": 5,
     "flagsAny": [
       "promoted_coffee_shop",
       "disclosed_ad",
-      "reviewed_beanthere"
+      "reviewed_pugcafe"
     ],
     "flagsNone": [
       "coffee_contacted",
-      "trashed_beanthere"
+      "trashed_pugcafe"
     ]
   },
   "at": "11:15",
@@ -22,7 +22,7 @@
     "payout": 30,
     "dueDay": 7
   },
-  "body": "A customer left a brutal 1-star review on Yowl that's sinking me. espresso_or_death, whoever that is. Can you just... make it go away? I'll pay 30.",
+  "body": "Someone left a brutal 1-star review of Pug Café on Yowl and it's dragging the whole page down. espresso_or_death, whoever that is. Can you just... make it go away? I'll pay 30.\n\nBrynn",
   "outcomes": [
     {
       "id": "agree",
@@ -39,7 +39,7 @@
     "I know it's not technically my review to delete. That's why I'm offering 30. It's the one by espresso_or_death on Yowl."
   ],
   "hack": {
-    "goal": "delete the 1-star review espresso_or_death left on Bean There's Yowl page",
+    "goal": "delete the 1-star review espresso_or_death left on Pug Café's Yowl page",
     "path": [
       {
         "what": "site",
@@ -51,12 +51,14 @@
       },
       {
         "what": "business",
-        "name": "Bean There",
-        "description": "Dana Reyes's coffee shop at 3 Linden Ave, the business the review is about",
+        "name": "Pug Café",
+        "description": "Pug's 24/7 café at 3 Linden Ave, run by Brynn LeClaire, the business the review is about",
         "aka": [
-          "the coffee shop",
+          "Pug Cafe",
+          "the Pug café",
           "the café",
-          "Dana's shop"
+          "the coffee shop",
+          "Brynn's café"
         ]
       },
       {
@@ -69,7 +71,7 @@
       }
     ],
     "removeReview": {
-      "biz": "beanthere",
+      "biz": "pugcafe",
       "author": "espresso_or_death"
     },
     "effects": {
@@ -83,7 +85,7 @@
     },
     "reply": "You're a lifesaver. It's gone — thank you. I'll send the 30 tonight.",
     "log": [
-      "opening yowl.com/biz/beanthere … ok",
+      "opening yowl.com/biz/pugcafe … ok",
       "locating review by espresso_or_death (1★) … found",
       "requesting removal … accepted",
       "verifying … review no longer listed"

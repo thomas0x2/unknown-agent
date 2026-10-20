@@ -45,7 +45,7 @@ Code paths, flags, open questions. Never part of an answer, never tagged.
   section is matched on its own, so a question that names one brand or shop finds its section
   without naming the page.
   In the wiki, its sections show as pages nested under it (Companies › Local businesses ›
-  Bean There, at `local-businesses/bean-there`); the file stays one page.
+  Iron Yard, at `local-businesses/iron-yard`); the file stays one page.
 - **nest: true** (optional) nests a page's sections the same way in the wiki without changing how
   questions match it (Y regulars, App users and reviewers). A "Who they are" or "Overview" section
   and writer notes stay on the parent page. Day pages are grouped by week.

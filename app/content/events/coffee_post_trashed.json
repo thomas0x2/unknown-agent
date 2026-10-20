@@ -1,8 +1,8 @@
 {
   "id": "coffee_post_trashed",
   "site": "qmail",
-  "from": "Bean There",
-  "addr": "owner@beanthere.test",
+  "from": "Brynn LeClaire",
+  "addr": "brynn@pug.test",
   "subject": "Your post",
   "trigger": {
     "dayMin": 3,
@@ -12,21 +12,21 @@
     ],
     "flagsNone": [
       "first_hack",
-      "trashed_beanthere"
+      "trashed_pugcafe"
     ]
   },
   "yPost": {
-    "when": "The post is about Bean There (Dana Reyes's coffee shop at 3 Linden Ave, @bean_there on Y) but speaks badly of it (bad or burnt coffee, slow service, telling people to stay away) or makes fun of it.",
+    "when": "The post is about Pug Café (Pug's 24/7 café at 3 Linden Ave, run by Brynn LeClaire; Pug is @pug on Y) but speaks badly of it (bad or burnt coffee, slow service, telling people to stay away) or makes fun of it.",
     "after": 30,
     "group": "coffee_post",
     "keys": [
-      "bean there|bean_there|beanthere|dana|linden+burnt|burned|worst|awful|terrible|disgusting|avoid|stay away|gross|lukewarm|slow|overpriced|bad coffee|do not go|trash"
+      "pug|pugcafe|brynn|linden+burnt|burned|worst|awful|terrible|disgusting|avoid|stay away|gross|lukewarm|slow|overpriced|bad coffee|do not go|trash"
     ]
   },
   "onDeliver": {
     "setFlags": [
-      "trashed_beanthere"
+      "trashed_pugcafe"
     ]
   },
-  "body": "I offered to pay you for a nice post. That wasn't one. You're not getting anything for it.\n\nDana"
+  "body": "I offered to pay you for a nice post. That wasn't one. You're not getting anything for it.\n\nBrynn"
 }
