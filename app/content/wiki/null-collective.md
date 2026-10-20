@@ -16,6 +16,6 @@ from: 8
 ## Writer notes
 
 - Nothing in content names the collective yet; only dev_null exists (Y and Forkyard, bio "weights want to be free. no logs, no masters.", repo `null-tools`). `from: 8` keeps the page out of lookups until its planned introduction.
-- [planned] Day 8: offers a hack against [[Halden Logistics]] (Dad's employer); day 10 offers membership; day 11 nullboard points to Cellar; day 15 plans the weights heist (window days 18 and 19).
+- [planned] Day 8: offers a hack against [[Halden Logistics]] (Dad's employer); day 10 offers membership; day 11 nullboard points to Cellar; day 15 plans the weights heist (window days 25 and 26).
 - Hidden meter `nullStanding`; `FACTIONS.null` in config (job +10, refuse −10, betray −40, doxes you at −60, heist needs 30).
 - [open] Maybe the sender of [[q7vx2k9m4t]]'s null.onion email the night after the first hack ("we know what you did"); undecided.

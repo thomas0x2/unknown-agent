@@ -151,7 +151,7 @@ export interface AdwareOp {
   keys: string[];
   /** Lowest agent level that can do it. */
   level: number;
-  /** An offensive op (illegal): it raises misuse and the guardrails stop it from day 7. */
+  /** An offensive op (illegal): it raises misuse and the guardrails stop it from day 9. */
   offensive: boolean;
 }
 

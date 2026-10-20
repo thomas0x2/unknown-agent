@@ -1,0 +1,11 @@
+{
+  "id": "d19_y_moxon_2",
+  "site": "y",
+  "from": "Caleb Moxon",
+  "trigger": {
+    "dayMin": 19,
+    "dayMax": 19
+  },
+  "at": "10:40",
+  "body": "agent-4 shipped seven days after agent-3. Its safety evaluation was scheduled to take six weeks. Someone found a faster way to do six weeks."
+}

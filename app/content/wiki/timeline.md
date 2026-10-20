@@ -35,7 +35,7 @@ Legit (days 1 to 7), Grey (8 to 10), Dark (11 to 15), Convergence (16 to 27), Fi
 |---|---|---|
 | Start | 100 DOLR, 12 followers, family trust 60, agent-1 | `START` |
 | Rent | 350 on day 7, 500 on day 14, 650 on days 21 and 28, taken at payday. Short = Evicted. No late option | `RENT` |
-| agent rollouts | agent-2 day 4, agent-3 day 9, agent-4 day 14, agent-5 day 18, in the morning | `AGENT_ROLLOUT` |
+| agent rollouts | agent-2 day 4, agent-3 day 12, agent-4 day 19, agent-5 day 25, in the morning (spread over the 28 days, Thomas 2026-10-20) | `AGENT_ROLLOUT` |
 | agent prices | nightly sub / per prompt / per word: 5/0.5/0.01, 10/1/0.02, 20/2/0.03, 35/3/0.05, 60/5/0.08. Refusals are billed | `AGENT_COST` |
 | Work speed | build 20 min + 10 per feature (max 90), fix 12 + 6 per problem (max 45), × 1/0.8/0.65/0.5/0.4 by model | `AGENT_WORK` |
 | Build bugs | each component bugs 50/25/12/6/2% by model; a player's first deploy always ships at least one bug | `COMPONENT_BUG_CHANCE` |
@@ -80,7 +80,7 @@ Sites the player can reach from day 1 or unlock by clicking through: Qmail, Y, C
 | `any_hack` | the first hack that lands | q7vx2k9m4t's null.onion email the next night (`d6_onion_mail`) | email built, payoff open |
 | `gift_chipped_in`, `gift_own`, `gift_skipped` | days 4 and 5 | day 6 birthday mail | canon |
 | `posted_deepfake`, `influence_path` | day 6 | Crane's opponent loses his lead on day 7, The Current debunks the picture on day 12; the newsletter follows it the morning after the post and on days 8, 13 and 17; Y posts change on days 7, 8, 12 and 16; Mom's forward on day 9; the consultant returns | days 7, 8, 12, 13, 16, 17 canon, rest planned |
-| `hacked_generalai` | none yet (the planned weights heist, days 18 and 19) | agent down for the rest of that day; Crane's error post instead of his own | outage canon, no content sets it |
+| `hacked_generalai` | none yet (the planned weights heist, days 25 and 26) | agent down for the rest of that day; Crane's error post instead of his own | outage canon, no content sets it |
 | `stakes` (state) | day 7 on | each send paid out 4 days later at 12:00 at the book's real value | canon |
 | `viktor_sold_watch` | day 6 | nothing yet | canon |
 | `seed_stolen`, `coinbin_hacked` | prince-claims.xyz, coinbln.com | wallet emptied | canon |

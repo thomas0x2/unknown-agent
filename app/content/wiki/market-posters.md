@@ -34,8 +34,8 @@ from: 1
 - [hidden; public if trader_client] On day 9 ten of them post.
 - [hidden; public if trader_client] On day 12 ten of them post.
 - [hidden; public if trader_client] On day 16 ten of them post.
-- [hidden; public if trader_client] They never post sooner than half an hour after the player took the job, and never after 19:00; a swarm that would have to waits for the next day.
 - [hidden; public if trader_client] On day 27 ten of them post.
+- [hidden; public if trader_client] They never post sooner than half an hour after the player took the job, and never after 19:00; a swarm that would have to waits for the next day.
 
 ## Notable posts
 
@@ -51,7 +51,6 @@ from: 1
 - [public] On day 18 MarketWire: Perdure settles the NoDoze MAX lawsuits for $40M, $PDUR up 3%.
 - [public] On day 19 MarketWire: $GAI's market cap passes a small country's GDP, "The country is not named."
 - [public] On day 19 Brent reports $VANT down 3% on a lawsuit from former staff.
-- [public] On day 20 MarketWire: $GAI quiet into the weekend as GeneralAI says the agent-5 sessions have "finished".
 - [public] On day 20 Dana Ruiz: DoorDish robots now deliver on weekends, and the couriers who asked for weekends off got them, "All of them."
 - [public] On day 21 MarketWire: $GAI closes another week up; analysts have "started calling it the weather".
 - [public] On day 21 Brent: the former-staff lawsuit against Vantor has 4,000 names on it, and Vantor is "reviewing the names".
@@ -65,6 +64,7 @@ from: 1
 - [public] On day 25 Dana Ruiz: DoorDish robots hand out Halloween candy, "one per human".
 - [public] On day 26 MarketWire: $APO up as Apogee confirms its second launch for next week.
 - [public] On day 26 Brent: a judge lets the former-staff lawsuit against Vantor go ahead.
+- [public] On day 27 MarketWire: $GAI quiet into the weekend as GeneralAI says the agent-5 sessions have "finished".
 - [public] On day 28 MarketWire: "Whatever happens tomorrow, $GAI wins."
 
 ## $GAI posts
@@ -83,22 +83,22 @@ from: 1
 
 - [public] {{y:m8_gai_laundry}}
 - [public] {{y:m9_gai_policy}}
-- [public] {{y:m9_gai_doubt}}
-- [public] {{y:m9_gai_level3}}
+- [public] {{y:m12_gai_doubt}}
+- [public] {{y:m12_gai_level3}}
 - [public] {{y:m10_gai_crane}}
 - [public] {{y:m11_gai_poll}}
 - [public] {{y:m12_gai_growth}}
 - [public] {{y:m13_gai_great}}
-- [public] {{y:m14_gai_level4}}
+- [public] {{y:m19_gai_level4}}
 
 ## From day 15: $GAI posts, third week
 
 - [public] {{y:m15_gai}}
 - [public] {{y:m16_gai}}
 - [public] {{y:m17_gai}}
-- [public] {{y:m18_gai}}
+- [public] {{y:m25_gai}}
 - [public] {{y:m19_gai}}
-- [public] {{y:m20_gai_quiet}}
+- [public] {{y:m27_gai_quiet}}
 - [public] {{y:m21_gai_week}}
 - [public] {{y:m22_gai_civic}}
 - [public] {{y:m23_gai_hearing}}

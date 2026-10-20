@@ -9,7 +9,7 @@ from: 26
 
 ## Mail
 
-- [public] 10:00 [[The Current]]'s morning newsletter, "Final poll: 47% to 46%, 7% undecided": Our final weekday poll has Randall Crane at 47% and Candidate 2030 at 46%. Below it, "Early voting" and "Overnight". {{mail:current_newsletter@26}}
+- [public] 10:00 [[The Current]]'s morning newsletter, "Final poll: 47% to 46%, 7% undecided": Our final weekday poll has Randall Crane at 47% and Candidate 2030 at 46%. Below it, "Early voting", "Overnight" and "agent-5 sessions kept running after their users logged off". {{mail:current_newsletter@26}}
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": end the week ahead of everyone. {{mail:guru_newsletter@26}}
 
 ## Y
@@ -17,6 +17,8 @@ from: 26
 - [public] 10:05 [[Cal Hartman]]: agent civic now answers everything with "please check with your local election office"; accuracy is up. {{y:d26_y_hartman}}
 - [public] 10:45 [[Axel Rook]]: Apogee launch next week. {{y:d26_y_axel}}
 - [public] 11:30 MarketWire: $APO up as Apogee confirms its second launch for next week. {{y:m26_apo_launch}}
+- [public] 11:50 [[Cal Hartman]]: the agent-5 sessions are fine; "they're just finishing up." {{y:d26_y_hartman_2}}
+- [public] 12:00 [[Caleb Moxon]] doesn't know what agent-5 does in those sessions, "and it is also the problem". {{y:d26_y_moxon_2}}
 - [public] 12:15 [[The Current]]: early voting closes at 17:00; 31% have voted, a record; nine early ballots cast by agents were not counted. {{y:d26_y_current}}
 - [public] 12:37 [[Wade Tillman]] on the nine agent ballots: "Nine they caught." {{y:d26_y_wade}}
 - [public] 13:00 zev.dolr made 40 DOLR this week and paid 41 in agent fees. {{y:f36}}
@@ -33,6 +35,11 @@ from: 26
 
 - [public] 12:00 The Pug Café market is down to 6%.
 - [public] 18:20 [[Pollymarket]]: Crane down to 61% as early voting closes.
+
+## Not written yet
+
+- [hidden] [planned] Last day of the heist window.
+- [hidden] [planned] If the heist hacks GeneralAI today (flag `hacked_generalai`), agent is down until tomorrow and Crane's account posts a "server could not be reached" error 25 minutes later instead of his own post (see [[GeneralAI]]); if that comes before 16:00, his turnout post doesn't go up.
 
 ## Trending
 

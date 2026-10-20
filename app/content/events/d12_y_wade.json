@@ -1,0 +1,11 @@
+{
+  "id": "d12_y_wade",
+  "site": "y",
+  "from": "Wade Tillman",
+  "trigger": {
+    "dayMin": 12,
+    "dayMax": 12
+  },
+  "at": "16:10",
+  "body": "agent-3 came out this morning and agent-2 is gone. Where do the old ones go? I've asked GeneralAI four times. Still no answer."
+}

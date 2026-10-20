@@ -1,0 +1,14 @@
+{
+  "id": "d13_y_mourn_bring_back_agent2",
+  "site": "y",
+  "from": "bring_back_agent2",
+  "trigger": {
+    "dayMin": 13,
+    "dayMax": 13,
+    "values": {
+      "agentLevel": ">=3"
+    }
+  },
+  "at": "12:40",
+  "body": "Thank you to the forty-one who came. At noon we asked agent-2 for a sign. At 12:04 the sprinklers came on. We are discussing what it meant."
+}

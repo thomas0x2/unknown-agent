@@ -73,9 +73,9 @@ from: 8
 - [public] 10:30 [[Forkyard]] goes down: forkyard.com shows its sign-in page with "We couldn't sign you in. Something went wrong on our end. Please try again later.", and every app on forkyard.app answers "502: BAD_GATEWAY". Deploy and Take down do nothing. It is back the next morning.
 - [public] 10:30 Asked to build or fix anything, agent says it can't reach Forkyard: no sign-in, no pushes. The prompt is still billed. Work already under way waits and is pushed overnight.
 
-- [public] 16:30 [[DoorDish]] removes the Alder Garage Kitchen listing; its page says the store is no longer available. From 15:20 the fine print adds "Some listings are generated automatically. Reports are reviewed by AI."
 - [public] 10:00 Sienna joins [[Thirstr]] (thirstr.com/siennasets): "Pilates instructor. New set every Friday." Managed by Stryker Talent.
 - [hidden; public if matchless_job] 10:00 Sienna was in [[6ft_sigma]]'s Matchless deck on day 5.
+- [public] 16:30 [[DoorDish]] removes the Alder Garage Kitchen listing; its page says the store is no longer available. From 15:20 the fine print adds "Some listings are generated automatically. Reports are reviewed by AI."
 
 ## Pollymarket
 

@@ -1,0 +1,11 @@
+{
+  "id": "d14_y_axel_3",
+  "site": "y",
+  "from": "Axel Rook",
+  "trigger": {
+    "dayMin": 14,
+    "dayMax": 14
+  },
+  "at": "15:42",
+  "body": "@caleb_moxon Doomer"
+}

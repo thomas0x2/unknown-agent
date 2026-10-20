@@ -1,0 +1,11 @@
+{
+  "id": "d19_y_hartman_2",
+  "site": "y",
+  "from": "Cal Hartman",
+  "trigger": {
+    "dayMin": 19,
+    "dayMax": 19
+  },
+  "at": "10:05",
+  "body": "agent-4 is live. we raised prices again, and i want to be honest about why: it costs more."
+}

@@ -42,9 +42,9 @@ from: 2
 - [public] [if trader_client] On day 10 he buys $DISH.
 - [public] [if trader_client] On day 11 he sells 30,000 $VANT.
 - [public] [if trader_client] On day 12 he buys more $DISH.
-- [public] [if trader_client] On day 14 he buys 3,000 $GAI on agent-4.
 - [public] [if trader_client] On day 15 he sells 6,000 $DISH on the courier strike.
 - [public] [if trader_client] On day 16 he sells 20,000 $VANT.
+- [public] [if trader_client] On day 19 he buys 3,000 $GAI on agent-4.
 - [public] [if trader_client] On day 19 he buys more $APO.
 
 ## Writer notes

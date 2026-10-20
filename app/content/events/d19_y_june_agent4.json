@@ -1,0 +1,11 @@
+{
+  "id": "d19_y_june_agent4",
+  "site": "y",
+  "from": "quietlyjune",
+  "trigger": {
+    "dayMin": 19,
+    "dayMax": 19
+  },
+  "at": "11:00",
+  "body": "agent-3 is gone now too. I didn't get attached this time. agent-4 and I are taking it slow. citypulse.news/agent-4"
+}

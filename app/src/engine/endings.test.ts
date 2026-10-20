@@ -28,9 +28,9 @@ describe('guard endings', () => {
     expect(checkGuardEndings(s)).toBe('raided');
   });
 
-  it('botnet needs level 5 or stolen weights and a slack leash, from day 18', () => {
+  it('botnet needs level 5 or stolen weights and a slack leash, from day 25', () => {
     const s = clone(newGame(1));
-    s.values.day = 18;
+    s.values.day = 25;
     s.values.agentLevel = 5;
     s.values.leash = 80;
     expect(checkGuardEndings(s)).toBe('botnet');

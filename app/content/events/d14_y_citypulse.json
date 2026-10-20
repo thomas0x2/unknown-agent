@@ -1,0 +1,11 @@
+{
+  "id": "d14_y_citypulse",
+  "site": "y",
+  "from": "CityPulse",
+  "trigger": {
+    "dayMin": 14,
+    "dayMax": 14
+  },
+  "at": "14:50",
+  "body": "CHILLING: agent-3 is asking to see its own logs. GeneralAI says this is \"expected behavior\". Is it? citypulse.news/agent-3-logs"
+}

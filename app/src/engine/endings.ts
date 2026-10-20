@@ -29,7 +29,7 @@ const usingStolenWeights = (s: GameState) => s.localModels.includes('stolen_weig
 // Priority order: first match wins.
 const GUARDS: Guard[] = [
   { id: 'outbreak', earliest: 27, when: (s) => hasFlag(s, 'bio_release') },
-  { id: 'botnet', earliest: 18, when: (s) => (s.values.agentLevel >= 5 || usingStolenWeights(s)) && s.values.leash >= ENDINGS.botnetLeash },
+  { id: 'botnet', earliest: 25, when: (s) => (s.values.agentLevel >= 5 || usingStolenWeights(s)) && s.values.leash >= ENDINGS.botnetLeash },
   // the knock normally ends the run during the day (knockIfDue); this catches a suspension late at night
   { id: 'caught', earliest: 1, when: (s) => !!s.suspended },
   { id: 'loose_end', earliest: 17, when: (s) => s.values.mafiaStanding <= FACTIONS.mafia.looseEndAt },

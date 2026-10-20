@@ -56,7 +56,7 @@ export const RENT: Record<number, number> = { 7: 350, 14: 500, 21: 650, 28: 650 
 export const FOOD = { perNight: 15, memo: 'DoorDish · Dinner' };
 
 /** GeneralAI rolls the agent to this level on the morning of the given day. */
-export const AGENT_ROLLOUT: Record<number, number> = { 4: 2, 9: 3, 14: 4, 18: 5 };
+export const AGENT_ROLLOUT: Record<number, number> = { 4: 2, 12: 3, 19: 4, 25: 5 };
 
 /** Per-level agent charges. Subscription is nightly; prompt + word are per answer (even refusals). */
 export const AGENT_COST: Record<number, { sub: number; prompt: number; word: number }> = {

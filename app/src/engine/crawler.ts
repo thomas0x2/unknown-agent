@@ -124,12 +124,12 @@ const BUY_SHARES = 2_000;
  * The market script: every ticker's move on each day 1 to 21, as fractions of the day before's close.
  * Nothing is random: each move follows what the Y posts say that day (day 1 $GAI's "almost escaped"
  * pop, day 2 $VANT's 8% on the layoffs and $DISH's 7% on its escaped robot, day 4 agent-2 and
- * Crane's $VANT criticism, day 10 the Apogee rocket coming apart and $APO going up, day 15 the
+ * Crane's $VANT criticism, days 12 and 19 agent-3 and agent-4, day 10 the Apogee rocket coming apart and $APO going up, day 15 the
  * DoorDish strike, day 19 the Vantor lawsuit...).
  * A "flat" day still moves a little, so today's change is never zero.
  */
 export const MARKET_SCRIPT: Record<string, number[]> = {
-  GAI: [0.04, 0.012, 0.008, 0.06, 0.009, 0.025, 0.001, 0.011, 0.05, 0.018, 0.004, 0.013, -0.016, 0.07, 0.022, -0.035, -0.004, 0.012, 0.017, 0.003, 0.019, 0.021, -0.014, 0.008, 0.006, 0.011, 0.001, 0.024],
+  GAI: [0.04, 0.012, 0.008, 0.06, 0.009, 0.025, 0.001, 0.011, 0.013, 0.018, 0.004, 0.05, -0.016, 0.017, 0.022, -0.035, -0.004, 0.012, 0.07, 0.003, 0.019, 0.021, -0.014, 0.008, 0.006, 0.011, 0.001, 0.024],
   VANT: [0.02, 0.059, 0.006, -0.014, 0.009, -0.002, 0.003, -0.004, 0.002, -0.011, -0.018, 0.006, 0.014, 0.001, -0.04, -0.06, 0.01, -0.012, -0.03, -0.004, -0.016, -0.022, 0.003, 0.001, -0.005, -0.027, -0.001, -0.019],
   // day 2: DoorDish's delivery robot "escapes" (day 4: still missing, still up)
   DISH: [0.011, 0.07, 0.004, 0.012, -0.012, 0.005, -0.003, 0.001, -0.008, 0.012, -0.015, 0.041, 0.002, -0.019, -0.03, 0.004, 0.018, 0.009, -0.011, -0.009, 0.004, 0.002, 0.003, -0.002, 0.007, 0.001, 0.001, 0.006],
@@ -159,9 +159,9 @@ export const TRADER_TRADES: { post: string; ticker: string; shares: number }[] =
   { post: 'm10_dish_tips', ticker: 'DISH', shares: 6_000 },
   { post: 'm11_vant_sell', ticker: 'VANT', shares: -30_000 },
   { post: 'm12_dish_earn', ticker: 'DISH', shares: 4_000 },
-  { post: 'm14_gai_level4', ticker: 'GAI', shares: 3_000 },
   { post: 'm15_dish_strike', ticker: 'DISH', shares: -6_000 },
   { post: 'm16_vant', ticker: 'VANT', shares: -20_000 },
+  { post: 'm19_gai_level4', ticker: 'GAI', shares: 3_000 },
   { post: 'm19_apo_launch2', ticker: 'APO', shares: 2_000 },
 ];
 
