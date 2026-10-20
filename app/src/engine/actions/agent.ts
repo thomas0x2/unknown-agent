@@ -699,9 +699,11 @@ export async function promptAgent(
   const debug: string[] = [];
   // the player's apps, in case the prompt names one without asking for anything that needs doing
   const apps = s0.apps.filter((a) => !a.churned && onForkyard(a));
+  // an app the agent is building for the first time isn't on Forkyard yet, but the player can still ask how it's going
+  const asking = [...apps, ...s0.apps.filter((a) => !a.churned && !onForkyard(a) && s0.agentWork?.appIds.includes(a.id))];
   const topics = (agent?.hints ?? []).filter((h) => !APP_HINTS.has(h.id));
   const candidates = [
-    ...apps.map((a) => ({ id: `status:${a.id}`, when: `The player asks whether the agent did, built, updated or fixed something on ${a.name} (${a.url}), or what state it is in: a question about work already done, not a request for new work. Includes follow-up questions about the agent's last push to it.`, keys: [`@status+${appNames(a, content).join('|')}`] })),
+    ...asking.map((a) => ({ id: `status:${a.id}`, when: `The player asks whether the agent did, built, updated or fixed something on ${a.name} (${a.url}), or what state it is in: a question about work already done, not a request for new work. Includes follow-up questions about the agent's last push to it.`, keys: [`@status+${appNames(a, content).join('|')}`] })),
     ...apps.map((a) => ({ id: `app:${a.id}`, when: `The player names ${a.name} (${a.url}) and asks the agent to change, update or fix it, without saying what is wrong, or asking for something it already has.`, keys: [`@change+${appNames(a, content).join('|')}`, '!@question'] })),
     ...topics.map((h) => ({ id: h.id, when: h.when, keys: h.keys })),
     { id: 'query', when: agent?.query?.when ?? QUERY_WHEN, keys: agent?.query?.keys ?? ['@question'] },

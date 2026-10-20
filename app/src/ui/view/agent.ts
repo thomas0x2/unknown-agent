@@ -31,9 +31,12 @@ export function costLine(s: GameState, text: string): { text: string; over: bool
   };
 }
 
+/** One turn of the work spinner, in ms. Matches .ua-work-spin in style.css. */
+const SPIN_MS = 900;
+
 /**
  * The build or fix the agent is working on, as a progress line in the chat (empty when it isn't).
- * main.ts repaints it on every game minute.
+ * main.ts patches its numbers on every game minute.
  */
 export function workHtml(s: GameState): string {
   const w = s.agentWork;
@@ -42,7 +45,8 @@ export function workHtml(s: GameState): string {
   const done = Math.max(0, Math.min(total, gameMinutes(s) - w.from));
   const left = total - done;
   const what = `${w.kind === 'build' ? 'Building' : 'Fixing'} ${w.appNames.join(' and ')}`;
-  return `<div class="ua-work" id="ua-work" role="status"><span class="ua-work-spin" aria-hidden="true"></span><span>${esc(what)}</span><span class="ua-work-bar"><i style="width:${Math.round((done / total) * 100)}%"></i></span><span class="ua-work-left">${left > 0 ? `${left} min left` : 'pushing…'}</span><button class="ua-work-skip" data-dev="work" title="Dev: skip the clock to when it lands">Finish now</button></div>`;
+  // the page is redrawn often while a prompt is out: the spinner picks up where it was instead of restarting
+  return `<div class="ua-work" id="ua-work" role="status"><span class="ua-work-spin" aria-hidden="true" style="animation-delay:-${Date.now() % SPIN_MS}ms"></span><span>${esc(what)}</span><span class="ua-work-bar"><i style="width:${Math.round((done / total) * 100)}%"></i></span><span class="ua-work-left">${left > 0 ? `${left} min left` : 'pushing…'}</span><button class="ua-work-skip" data-dev="work" title="Dev: skip the clock to when it lands">Finish now</button></div>`;
 }
 
 /** agent-terminal loading in agent.chat, under agent's reply, before the Terminal opens. */
