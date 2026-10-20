@@ -38,7 +38,7 @@ describe('Jev tests', () => {
 
   it('a push to a part that works is a miss for a near-miss case, and too loose', async () => {
     const c = all.find((x) => x.prompt === 'WorkAgent: the landing page looks off')!;
-    const r = await runJevTest(content, pickJev({ features: ['::landing::c:name', '::landing::area'] }), c);
+    const r = await runJevTest(content, pickJev({ features: ['::landing::c:brand/name', '::landing::area'] }), c);
     expect(r.got).toMatchObject({ fix: [], near: undefined, pushed: true });
     expect(r.got.checked).toHaveLength(1);
     expect(r.pass).toBe(false);
@@ -47,7 +47,7 @@ describe('Jev tests', () => {
 
   it('a prompt naming a part that works: the agent checks it and says it was already right', async () => {
     const c = all.find((x) => x.expect.check && x.broken[0] === 'landing/pitch')!;
-    const r = await runJevTest(content, pickJev({ features: ['::landing::c:name'] }), c);
+    const r = await runJevTest(content, pickJev({ features: ['::landing::c:brand/name'] }), c);
     expect(r.got).toMatchObject({ fix: [], pushed: true });
     expect(r.got.checked).toHaveLength(1);
     expect(r.pass).toBe(true);
