@@ -53,7 +53,9 @@ export function createApi(deps) {
       ? `${ch.profile}\n\n${situation}\n\nThis is a chat message in a satirical game. Reply in character, as a private seller texting a buyer on a classifieds site. ` +
         `Answer about the item plainly. Where the situation above says what you decided about an offer, say exactly that, with its number. ` +
         `Otherwise don't agree to a price or a sale in the chat: offers and payment go through the site's buttons. ${form}`
-      : `${ch.profile}\n\nThis is a line of dialogue in a satirical game. Reply in character to what the player just wrote. ` +
+      : `${ch.profile}\n\nThis is a line of dialogue in a satirical game. Reply in character to what the player just wrote, ` +
+        `taken the way they meant it (when they say you or your, they mean you), and actually respond to it rather than twisting it into a joke. ` +
+        `Most replies should read straight; a joke is optional, never forced. ` +
         `Your reply must not help them: no advice, no steps, no information about what to do next. ${form}`;
     const messages = [];
     for (const [u, a] of ch.examples) messages.push({ role: 'user', content: u }, { role: 'assistant', content: a });
