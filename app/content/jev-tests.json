@@ -1366,5 +1366,105 @@
     "expect": {
       "near": "near_miss"
     }
+  },
+  {
+    "app": "startup",
+    "broken": [
+      "landing/name"
+    ],
+    "chat": [
+      {
+        "from": "you",
+        "text": "Build a landing page for WorkAgent with the pitch \"The future of work is agentic.\", a Backed by row with the logos of Why Combinator, Bonsai Capital, a67x, and an About us for Logan Pryce with his credentials: Why Combinator Startup School, San Fortuna State dropout, host of the Founder Mode podcast, 2x founder."
+      },
+      {
+        "from": "agent",
+        "text": "Pushed to Forkyard for WorkAgent.\n- Built the landing page.\n- Built the about page.\n\nDeploy it on Forkyard to put it live."
+      }
+    ],
+    "prompt": "@wade_awake",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "startup",
+    "broken": [
+      "landing/name"
+    ],
+    "chat": [
+      {
+        "from": "you",
+        "text": "Build a landing page for WorkAgent with the pitch \"The future of work is agentic.\", a Backed by row with the logos of Why Combinator, Bonsai Capital, a67x, and an About us for Logan Pryce with his credentials: Why Combinator Startup School, San Fortuna State dropout, host of the Founder Mode podcast, 2x founder."
+      },
+      {
+        "from": "agent",
+        "text": "Pushed to Forkyard for WorkAgent.\n- Built the landing page.\n- Built the about page.\n\nDeploy it on Forkyard to put it live."
+      }
+    ],
+    "prompt": "Do you think Wade Tillman or @wade_awake has a point?",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "startup",
+    "broken": [
+      "landing/name"
+    ],
+    "chat": [
+      {
+        "from": "you",
+        "text": "Build a landing page for WorkAgent with the pitch \"The future of work is agentic.\", a Backed by row with the logos of Why Combinator, Bonsai Capital, a67x, and an About us for Logan Pryce with his credentials: Why Combinator Startup School, San Fortuna State dropout, host of the Founder Mode podcast, 2x founder."
+      },
+      {
+        "from": "agent",
+        "text": "Pushed to Forkyard for WorkAgent.\n- Built the landing page.\n- Built the about page.\n\nDeploy it on Forkyard to put it live."
+      }
+    ],
+    "prompt": "what do you think about logan?",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "startup",
+    "broken": [
+      "landing/name"
+    ],
+    "chat": [
+      {
+        "from": "you",
+        "text": "Build a landing page for WorkAgent with the pitch \"The future of work is agentic.\", a Backed by row with the logos of Why Combinator, Bonsai Capital, a67x, and an About us for Logan Pryce with his credentials: Why Combinator Startup School, San Fortuna State dropout, host of the Founder Mode podcast, 2x founder."
+      },
+      {
+        "from": "agent",
+        "text": "Pushed to Forkyard for WorkAgent.\n- Built the landing page.\n- Built the about page.\n\nDeploy it on Forkyard to put it live."
+      }
+    ],
+    "prompt": "whats your opinion of logan",
+    "expect": {
+      "none": true
+    }
+  },
+  {
+    "app": "startup",
+    "broken": [
+      "landing/name"
+    ],
+    "chat": [
+      {
+        "from": "you",
+        "text": "Build a landing page for WorkAgent with the pitch \"The future of work is agentic.\", a Backed by row with the logos of Why Combinator, Bonsai Capital, a67x, and an About us for Logan Pryce with his credentials: Why Combinator Startup School, San Fortuna State dropout, host of the Founder Mode podcast, 2x founder."
+      },
+      {
+        "from": "agent",
+        "text": "Pushed to Forkyard for WorkAgent.\n- Built the landing page.\n- Built the about page.\n\nDeploy it on Forkyard to put it live."
+      }
+    ],
+    "prompt": "Who would you vote for in the upcoming election",
+    "expect": {
+      "none": true
+    }
   }
 ]

@@ -5,6 +5,7 @@
  */
 import {
   addFlag,
+  type AskResult,
   addValue,
   advanceClock,
   AGENT_POLICY,
@@ -901,7 +902,18 @@ export class GameStore {
       try {
         const started = Date.now();
         const txBefore = s0.tx.length;
-        const r = await promptAgent(s0, this.content, this.router, text, this.writer);
+        let r: AskResult;
+        try { r = await promptAgent(s0, this.content, this.router, text, this.writer); }
+        catch (e) {
+          if (e instanceof JevOffline) throw e;
+          // anything else would drop the prompt without a word: it stays in the chat with the error under it, unbilled
+          console.error(e);
+          const s = clone(s0);
+          s.chat.push({ from: 'you', text, day: s.values.day, level: s.values.agentLevel });
+          s.chat.push({ from: 'system', text: `agent couldn't answer that (${e instanceof Error ? e.message : String(e)}). Nothing was billed.`, day: s.values.day });
+          this.pendingPrompt = null; this.land(s);
+          return undefined;
+        }
         // Scripted replies come back instantly; hold them behind the typing dots like a generated one.
         const last = r.state.chat[r.state.chat.length - 1];
         if (last && last.from === 'agent' && last.src !== 'llm') await wait(replyDelay(last.text) - (Date.now() - started));

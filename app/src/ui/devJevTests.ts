@@ -72,7 +72,7 @@ function caseHtml(c: JevTestCase, i: number): string {
   if (failsOnly && (!r || r === 'running' || r.pass)) return '';
   const head = `<div class="jt-head"><span class="jt-mark ${r === 'running' ? 'run' : r ? (r.pass ? 'pass' : 'fail') : ''}">${r === 'running' ? '…' : r ? (r.pass ? '✓' : '✗') : '·'}</span>
     <span class="jt-prompt">${esc(c.prompt)}</span><button data-act="jevtests" data-case="${i}"${busy ? ' disabled' : ''}>Run</button></div>`;
-  const meta = `<p class="dv-dim">${esc(c.app)} · broken: ${esc(c.broken.map((p) => p.replaceAll('/', ' > ')).join(', '))} · expects ${esc(describeOutcome(c.expect))}</p>`;
+  const meta = `<p class="dv-dim">${esc(c.app)} · broken: ${esc(c.broken.map((p) => p.replaceAll('/', ' > ')).join(', '))} · ${c.chat?.length ? `after ${c.chat.length} earlier messages · ` : ''}expects ${esc(describeOutcome(c.expect))}</p>`;
   if (!r || r === 'running') return `<div class="jt-case">${head}${meta}</div>`;
   const miss = r.pass || r.error ? '' : ` <span class="jt-miss">${MISS[missKind(c.expect, r.got)]}</span>`;
   const got = r.error ? `<p class="jt-err">${esc(r.error)}</p>` : `<p>Got: <b>${esc(describeOutcome(r.got))}</b>${miss}</p>`;
