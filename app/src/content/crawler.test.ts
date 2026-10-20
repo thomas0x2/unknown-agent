@@ -160,8 +160,8 @@ describe('vibe check', () => {
     const crane = cranePosts(s, content);
     const log = (...b: string[]) => tradeLog(crane, autoBuys(all, 6, bugs(...b)), bugs(...b));
     const byId = (rows: ReturnType<typeof log>, id: string) => rows.find((r) => r.post.id === id)!;
-    // one post a day, plus the $VANT criticism (day 4) and the lookalike account (day 5)
-    expect(crane.map((p) => p.day)).toEqual([1, 2, 3, 4, 5, 5, 6]);
+    // one post a day, plus the $VANT criticism (day 4), and on day 6 the lookalike account and Crane's complaint about it
+    expect(crane.map((p) => p.day)).toEqual([1, 2, 3, 4, 5, 6, 6, 6]);
     expect(crane.find((p) => p.impostor)!.handle).toBe('randa11_crane');
     const ok = log();
     expect(ok.filter((r) => r.buys.length).map((r) => r.post.id)).toEqual(['d6_y_crane_gai']);
@@ -172,7 +172,7 @@ describe('vibe check', () => {
     expect(byId(log('no_buy'), 'd6_y_crane_gai').buys).toHaveLength(0);
     expect(byId(log('wrong_ticker'), 'd6_y_crane_gai').buys[0].ticker).toBe('VANT');
     expect(byId(log('buys_on_criticism'), 'm4_vant_crane').buys).toHaveLength(1);
-    expect(byId(log('impostor_buy'), 'm5_vant_impostor').buys).toHaveLength(1);
+    expect(byId(log('impostor_buy'), 'm6_vant_impostor').buys).toHaveLength(1);
     expect(byId(log('repeat_buys'), 'd6_y_crane_gai').buys.length).toBeGreaterThan(1);
     expect(byId(log('inverted'), 'm4_vant_crane').mood).toBe('bullish');
     // posts with no $ticker never trade, whatever the bugs

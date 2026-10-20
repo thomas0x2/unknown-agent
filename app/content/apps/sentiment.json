@@ -556,7 +556,7 @@
   },
   "storyBugs": [
     {
-      "day": 5,
+      "day": 6,
       "feature": "auto_buy",
       "bug": "impostor_buy"
     }

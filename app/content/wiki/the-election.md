@@ -16,7 +16,7 @@ from: 1
 - [public] On day 2 Crane's Civic Hall rally: the campaign claims 40,000; the hall holds 6,000.
 - [public] On day 3 Crane vows to "send the machines back"; two million shares in an hour, mostly from month-old accounts.
 - [public] On day 5 a Y poll puts Crane at 71% (300,000 votes; Y won't say who voted). {{y:d5_y_citypulse_vote}}
-- [public] On day 5 an impostor, @randa11_crane, posts in Crane's name.
+- [public] On day 6 an impostor, @randa11_crane, posts in Crane's name.
 - [public] On day 6 Crane calls GeneralAI "an American success story".
 - [public] On day 7 a fake picture of Crane's opponent with sex offender [[Kirschbaum]] spreads and his 3-point lead is gone [if posted_deepfake]. {{article:opponent-clip}}
 - [public] On day 7 Crane's opponent leads by 3 in a phone poll of 800 likely voters, with one call in three answered by an AI assistant and left out [if !posted_deepfake]. {{article:opponent-lead}}

@@ -43,11 +43,11 @@ from: 1
 
 - [public] 10:40, Owen Pratt: "Ferris St laundromat gets FOUR new machines, but the curse of machine 3 lives on" (citypulse.news/spin-cycle) {{article:spin-cycle}}
 - [public] 17:50, Sofia Mendel: "STOLEN! Local artists say AI ripped off their life's work" (citypulse.news/ai-art) {{article:ai-art}}
-- [public] 19:40, Renata Ilic: "FAKE CRANE! Sinister impostor fools traders" (citypulse.news/crane-impostor) {{article:crane-impostor}}
 
 ### Day 6 headlines
 
 - [public] 11:30, Owen Pratt: "U-TURN? Crane GUSHES over the AI giant he promised to fight" (citypulse.news/crane-gai) {{article:crane-gai}}
+- [public] 19:50, Renata Ilic: "FAKE CRANE! Sinister impostor fools traders" (citypulse.news/crane-impostor) {{article:crane-impostor}}
 
 ### Day 7 headlines
 

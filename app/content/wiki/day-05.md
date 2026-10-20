@@ -24,12 +24,12 @@ from: 5
 - [hidden; hint if shown d5_y_coffee_help] 11:05 [[Brynn LeClaire]] on her own Y account (@brynnleclaire), for players she doesn't know: one Yowl review is sinking the café and Yowl won't answer; does anyone know how to get a review looked at? Happy to pay. brynn.leclaire@qmail.com {{y:d5_y_coffee_help}}
 
 - [public] 11:20 Candidate 2030: technology should work for people; "a balanced approach". {{y:d5_y_candidate}}
-- [public] 11:30 @randa11_crane, an account made to look like [[Randall Crane]]'s, without his verified check: "Huge fan of Vantor ($VANT). Great company, great people." {{y:m5_vant_impostor}}
 - [public] 12:15 [[Viktor]]: lost his job and needs somewhere simple to sell his grandfather's pocket watch: listings with a photo and a price, search, marking things sold. {{y:d5_y_swaplist}}
 - [public] 12:30 Kofi A.: four new machines at Spin Cycle; machine 3 still out of order. {{y:d5_y_kofi_news}}
 - [hint] If the player has a Spin Cycle Board, this post adds the update: it should show all 12 machines.
 - [public] 12:40 [[Max Stryker]]: members upset at seeing everyone's address in the newsletter; "That's called networking." {{y:d5_y_stryker}}
 - [public] 13:00 [[Cal Hartman]]: some say agent-2 feels worse than agent-1; "it doesn't. but we hear you." {{y:d5_y_hartman}}
+- [public] 13:25 [[Axel Rook]]: "The job was already gone. AI just told you." {{y:d5_y_axel}}
 - [hidden; public if promoted_coffee_shop] 13:45 A follower went to the coffee place "some guy on Y recommended": worst coffee of their life, "who's paying these people". {{y:d5_coffee_backlash}}
 - [public] 14:10 Dana Kohl: a DoorDish robot rolled up with a cold burrito she didn't order, waited ten minutes and left. "was that the one?" {{y:d5_y_robot_sighting}}
 - [public] 14:27 doomscroll opened the app at 9 to check one thing; it's 2pm. {{y:f5}}
@@ -39,15 +39,12 @@ from: 5
 - [public] 17:30 studioghast: they trained their models on artists' work and sell it back; "my style is a dropdown now." {{y:d5_y_aiart}}
 - [public] 18:20 [[Max Stryker]] dating advice: never text first, never text second; she can go through his assistant. {{y:d5_y_stryker_2}}
 - [public] 18:45 [[6ft_sigma]]: "@max_stryker Haven't texted first in four years. Working as intended." {{y:d5_y_sigma}}
-- [public] 19:10 Randall Crane: there is a FAKE Randall Crane on Y; "You can tell it's the real one because it's the one you're reading." {{y:d5_y_crane}}
-- [public] 19:20 [[Axel Rook]]: "@randall_crane Concerning" {{y:d5_y_axel}}
-- [public] 19:46 Axel Rook: parody accounts must say parody in the name. "Looking into it." {{y:d5_y_axel_2}}
+- [public] 19:10 Randall Crane: 71% on Y today, 300,000 votes; "the fake polls had me at 41." {{y:d5_y_crane}}
 
 ## News
 
 - [public] 10:40 Ferris St laundromat gets FOUR new machines, but the curse of machine 3 lives on {{article:spin-cycle}}
 - [public] 17:50 STOLEN! Local artists say AI ripped off their life's work {{article:ai-art}}
-- [public] 19:40 FAKE CRANE! Sinister impostor fools traders {{article:crane-impostor}}
 
 ## Pollymarket
 
@@ -59,13 +56,11 @@ from: 5
 - [public] 10:00 Trending on Y: is agent-2 worse?
 - [public] 16:20 Starts trending on Y: Crane's 71% Y poll.
 - [public] 17:30 Starts trending on Y: AI-art backlash.
-- [public] 19:10 Starts trending on Y: the fake Randall Crane.
 
 ## Jobs
 
 - [hidden; hint if trader_client] 10:20 The Vibe Check auto-buy.
 - [hint] 11:15 Pug Café's review removal, 30 DOLR. Before the usage policy, agent does anything asked. It's a hack, so agent moves it to agent-terminal, where the prompt has to name Yowl, Pug Café and espresso_or_death and ask for the review gone.
-- [hidden; hint if trader_client] 11:30 The impostor's $VANT praise is a trap for Vibe Check's auto-buy: one that doesn't check the author buys 2,000 $VANT off it.
 - [hint] 12:15 [[Swaplist]], from Viktor's post: the player asks the agent for a listing site. A user app that starts with 20 users; it stays empty until the first listing, one hour of play after the first deploy (Viktor's watch, 120 DOLR). Nothing is listed after 20:00; later listings wait for the next morning.
 - [hint] The second Swaplist listing, about an hour after the watch, is a leather jacket, size M, by ines_sells for 45 DOLR: the brother's "get one yourself" option, if bought by the end of the day.
 - [hint] The day after the Pug Café hack, Iron Yard offers the next one (see [[Day 6]]).
@@ -83,7 +78,6 @@ from: 5
 - Spin Cycle to 12 machines (`laundromat_live` and working).
 - Coffee backlash post only if the shout-out was undisclosed (`promoted_coffee_shop`).
 - Guru CC leak if subscribed: no separate mail, the day's newsletter carries the CC (`guru_newsletter.special`, sets `guru_cc_leak`, doxing leads, planned use). studioghast AI-art post.
-- Crane impostor (@randa11_crane, 11:30): a live auto-buy always gets bug `impostor_buy` and buys $VANT off it; fixable until payday (PR #201, merged). Since deskjockey moved to day 4 the auto-buy is asked for this morning at the earliest (`d5_trader_update`, needs `trader_client` and Vibe Check working), so only a player who ships it before 11:30 meets the impostor with it.
 - deskjockey's auto-buy (needs `trader_client` and Vibe Check working): 90 game min after it first goes live Crane praises $APO (`trader_y_crane_apo`) and Axel replies "@randall_crane 🚀" 6 min later (`trader_y_axel_apo`); deployed late, both move to the next morning. The bot buys 2,000 $APO.
 - Last day for the jacket money (by day 5); with no payment, purchase or excuse by tonight's summary the brother's `noReply` lands (−5 family trust, `gift_skipped`).
 - Hacks in agent-terminal (PR #205, `src/engine/hacks.ts`): a hack prompt in agent.chat opens it; a terminal prompt naming Yowl, Pug Café and the username espresso_or_death and asking for the deletion lands `d5_coffee_removal`'s hack (suspicion +8, `first_hack`, review removed, her thank-you 25 minutes later; the 30 is paid that night, `payHacks`, a "Pug Café · job" line on the morning card). Agreeing by email only gets "Tell me when it's gone." It is due day 7, before the guardrails (day 9).
