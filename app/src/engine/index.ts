@@ -36,6 +36,7 @@ export * from './phishing';
 export * from './pollymarket';
 export * from './query';
 export * from './queryTests';
+export * from './chatTests';
 export * from './rentboard';
 export * from './rewind';
 export * from './rng';
