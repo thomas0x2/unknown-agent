@@ -129,15 +129,15 @@ describe('fixing named bugs', () => {
     await promptDone(s, content, jev, 'The name on the workagnet website is wrong');
     const items = asked.features[0].features.filter((f) => f.id.startsWith(`${id}::landing::`));
     expect(items.find((f) => f.id.endsWith('::feature'))!.kind).toBe('build');
-    expect(items.filter((f) => f.kind === 'component').map((f) => f.id.split('::')[2])).toEqual(['c:name', 'c:pitch', 'c:investors/logos', 'c:investors/loading']);
-    expect(items.find((f) => f.kind === 'component')!.description).toMatch(/^the startup.s name \(also counts as naming it: .*"title".*\), a part of the landing page .*misspelled/);
+    expect(items.filter((f) => f.kind === 'component').map((f) => f.id.split('::')[2])).toEqual(['c:brand/name', 'c:pitch', 'c:investors/logos', 'c:investors/loading']);
+    expect(items.find((f) => f.kind === 'component')!.description).toMatch(/^the startup.s name \(also counts as naming it: .*"title".*\), shown on every page of the app .*brand > name.*misspelled/);
     // synonyms count for the path steps too
     expect(items.find((f) => f.id.endsWith('::s:landing'))!.description).toContain('"home page"');
     // the path is asked step by step: the feature, then its investors folder
-    expect(items.filter((f) => f.kind === 'step').map((f) => f.id.split('::')[2])).toEqual(['s:landing', 's:landing/investors']);
-    expect(items.find((f) => f.kind === 'area')!.description).toMatch(/Its parts, by path: landing page > name \(the startup.s name\); landing page > pitch \(the one-line pitch/);
+    expect(items.filter((f) => f.kind === 'step').map((f) => f.id.split('::')[2])).toEqual(['s:landing', 's:landing/brand', 's:landing/investors']);
+    expect(items.find((f) => f.kind === 'area')!.description).toMatch(/Its parts, by path: brand > name \(the startup.s name\); landing page > pitch \(the one-line pitch/);
     // each part lists the others, so a complaint about one isn't read as one about its neighbour
-    expect(items.find((f) => f.kind === 'component')!.description).toMatch(/Other parts of the landing page, which are not this one: the one-line pitch \(the headline\); /);
+    expect(items.find((f) => f.kind === 'component')!.description).toMatch(/Other parts nearby, which are not this one: the one-line pitch \(the headline\); /);
     expect(items.some((f) => f.kind === 'problem')).toBe(false);
   });
 
@@ -251,7 +251,7 @@ describe('fixing named bugs', () => {
   it('a near-miss gives way to anything more precise in the same prompt', async () => {
     const { s, id } = withApp('logan_contact', 'landing');
     getApp(s, id)!.repo.find((f) => f.id === 'landing')!.variant = 'name_wrong';
-    const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::landing::area', '::landing::c:name'] }), 'WorkAgent: the landing page is off, the name is misspelled')).state;
+    const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::landing::area', '::landing::c:brand/name'] }), 'WorkAgent: the landing page is off, the name is misspelled')).state;
     expect(out.chat.at(-1)!.src).toBe('build');
     expect(getApp(out, id)!.repo.find((f) => f.id === 'landing')!.correct).toBe(true);
   });
@@ -290,7 +290,7 @@ describe('fixing named bugs', () => {
   it('a named bug that was not there is reported as already right', async () => {
     const { s, id } = withApp('logan_contact');
     getApp(s, id)!.repo[0] = { id: 'landing', correct: false, variant: 'pitch_wrong', params: getApp(s, id)!.specParams.landing, seed: 1 };
-    const out = (await promptDone(s, content, pickJev({ features: ['::landing::c:name'] }), 'WorkAgent: the name is misspelled')).state;
+    const out = (await promptDone(s, content, pickJev({ features: ['::landing::c:brand/name'] }), 'WorkAgent: the name is misspelled')).state;
     expect(out.chat.at(-1)!.text).toMatch(/already right/);
     expect(getApp(out, id)!.repo[0]).toMatchObject({ correct: false, variant: 'pitch_wrong' });
   });
@@ -314,7 +314,7 @@ describe('one kind of work per prompt', () => {
     const { s, id } = withApp('logan_contact');
     const a = getApp(s, id)!;
     a.repo = a.repo.map((f) => (f.id === 'landing' ? { ...f, correct: false, variant: 'name_wrong', seed: 1 } : f.id === 'about' ? { ...f, correct: false, variant: 'hallucinated', seed: 1 } : f));
-    return { s, id, jev: (intent: string) => pickJev({ route: [intent], features: ['::landing::c:name', '::about::feature'] }) };
+    return { s, id, jev: (intent: string) => pickJev({ route: [intent], features: ['::landing::c:brand/name', '::about::feature'] }) };
   }
   const prompt = 'WorkAgent: the name is misspelled. Also the founder page should list Why Combinator Startup School and 2x founder.';
 
@@ -443,7 +443,7 @@ describe('fixes never add bugs', () => {
       s.rng = seed;
       s.values.agentLevel = 0;
       getApp(s, id)!.repo[0] = { id: 'landing', correct: false, variant: 'name_wrong', params: getApp(s, id)!.specParams.landing, seed: 1 };
-      const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::landing::c:name'] }), 'WorkAgent: the name is misspelled')).state;
+      const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::landing::c:brand/name'] }), 'WorkAgent: the name is misspelled')).state;
       expect(getApp(out, id)!.repo[0].correct).toBe(true);
     }
   });
@@ -548,7 +548,7 @@ describe('one app per prompt', () => {
 
   it('when Jev matches on two apps, only the one it says the prompt means is touched', async () => {
     const { s, wa, crawler } = twoApps();
-    const out = (await promptDone(s, content, pickJev({ route: ['fix', crawler], features: ['::filter::c:bots', '::landing::c:name'] }), "The crawler doesn't filter for bots")).state;
+    const out = (await promptDone(s, content, pickJev({ route: ['fix', crawler], features: ['::filter::c:bots', '::landing::c:brand/name'] }), "The crawler doesn't filter for bots")).state;
     expect(getApp(out, crawler)!.repo.find((f) => f.id === 'filter')!.correct).toBe(true);
     expect(getApp(out, wa)!.repo[0]).toMatchObject({ correct: false, variant: 'name_wrong' });
     expect(out.chat.at(-1)!.text).not.toMatch(/WorkAgent/);
@@ -556,7 +556,7 @@ describe('one app per prompt', () => {
 
   it('when Jev cannot tell which app, it asks and changes nothing', async () => {
     const { s, wa, crawler } = twoApps();
-    const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::filter::c:bots', '::landing::c:name'] }), 'fix the bots and the name')).state;
+    const out = (await promptDone(s, content, pickJev({ route: ['fix'], features: ['::filter::c:bots', '::landing::c:brand/name'] }), 'fix the bots and the name')).state;
     expect(content.agent!.hints.find((h) => h.id === 'which_app')!.replies).toContain(out.chat.at(-1)!.text);
     expect(getApp(out, crawler)!.repo).toEqual(getApp(s, crawler)!.repo);
     expect(getApp(out, wa)!.repo).toEqual(getApp(s, wa)!.repo);

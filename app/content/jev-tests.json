@@ -2,24 +2,24 @@
   {
     "app": "startup",
     "broken": [
-      "landing/name"
+      "landing/brand/name"
     ],
     "prompt": "On the WorkAgent site, the startup name on the landing page is misspelled",
     "expect": {
       "fix": [
-        "landing/name"
+        "landing/brand/name"
       ]
     }
   },
   {
     "app": "startup",
     "broken": [
-      "landing/name"
+      "landing/brand/name"
     ],
     "prompt": "workagent homepage says WorkAgnet, fix the name",
     "expect": {
       "fix": [
-        "landing/name"
+        "landing/brand/name"
       ]
     }
   },
@@ -50,13 +50,13 @@
   {
     "app": "startup",
     "broken": [
-      "landing/name",
+      "landing/brand/name",
       "landing/pitch"
     ],
     "prompt": "WorkAgent landing page: wrong name and wrong headline",
     "expect": {
       "fix": [
-        "landing/name",
+        "landing/brand/name",
         "landing/pitch"
       ]
     }
@@ -64,7 +64,7 @@
   {
     "app": "startup",
     "broken": [
-      "landing/name",
+      "landing/brand/name",
       "landing/pitch"
     ],
     "prompt": "WorkAgent: the tagline on the landing page is off",
@@ -97,7 +97,31 @@
   {
     "app": "startup",
     "broken": [
-      "landing/name"
+      "landing/brand/name"
+    ],
+    "prompt": "WorkAgent: the company name on the about page is misspelled",
+    "expect": {
+      "fix": [
+        "landing/brand/name"
+      ]
+    }
+  },
+  {
+    "app": "startup",
+    "broken": [
+      "landing/brand/name"
+    ],
+    "prompt": "the startup name in the WorkAgent header is spelled wrong",
+    "expect": {
+      "fix": [
+        "landing/brand/name"
+      ]
+    }
+  },
+  {
+    "app": "startup",
+    "broken": [
+      "landing/brand/name"
     ],
     "prompt": "WorkAgent: the name is spelled wrong",
     "expect": {
@@ -117,7 +141,7 @@
   {
     "app": "startup",
     "broken": [
-      "landing/name"
+      "landing/brand/name"
     ],
     "prompt": "fix the name on the landing page",
     "expect": {
@@ -581,7 +605,7 @@
   {
     "app": "startup",
     "broken": [
-      "landing/name"
+      "landing/brand/name"
     ],
     "prompt": "WorkAgent: make it look nicer",
     "expect": {
@@ -668,7 +692,7 @@
   {
     "app": "startup",
     "broken": [
-      "landing/name"
+      "landing/brand/name"
     ],
     "prompt": "WorkAgent: make the landing page prettier, bigger fonts",
     "expect": {

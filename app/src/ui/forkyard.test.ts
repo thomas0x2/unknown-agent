@@ -8,6 +8,8 @@ import { page } from './view';
 import { wordJev } from '../engine/_fixtures';
 import { devBugPanel, devBugCount } from './appsite';
 import { devToggleBug } from '../engine/apps';
+import type { AppInstance } from '../engine';
+import { repoFiles, treeAt, fileSource } from './repoTree';
 
 const mem: SaveStore = { load: () => null, save: () => {}, clear: () => {} } as unknown as SaveStore;
 
@@ -66,6 +68,18 @@ describe('Forkyard repos', () => {
     // the tree never says which part is broken
     expect(file).not.toMatch(/wrong_ticker|bug/i);
     expect(html('forkyard.com/vibe-check/nope')).toContain('404');
+  });
+
+  it("WorkAgent's name sits in a shared brand/ folder at the top of the repo, not under the landing page", () => {
+    const content = loadContent();
+    const tmpl = content.apps.startup;
+    const app = { repo: [{ id: 'landing', correct: true }, { id: 'about', correct: true }] } as unknown as AppInstance;
+    const paths = repoFiles(app, tmpl).map((f) => f.path);
+    expect(paths).toContain('brand/name.ts');
+    expect(paths).toContain('landing/pitch.ts');
+    expect(paths.some((p) => p.startsWith('landing/brand') || p === 'landing/name.ts')).toBe(false);
+    const at = treeAt(repoFiles(app, tmpl), 'brand/name.ts');
+    expect(at && 'file' in at && fileSource(at.file)).toContain('shown on every page');
   });
 
   it('the dev bug panel shows a requested feature nobody built as missing, with no bugs', async () => {
