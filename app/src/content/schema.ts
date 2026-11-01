@@ -128,7 +128,7 @@ export interface AppTemplate {
    */
   firstContentAfter?: number;
   /**
-   * Bugs the story lands on a set day, whatever the build (the day 5 Crane impostor gets the auto-buy):
+   * Bugs the story lands on a set day, whatever the build (the day 6 Crane impostor gets the auto-buy):
    * once per game, on a live build of the feature, held like any bug until something shows it.
    */
   storyBugs?: { day: number; feature: string; bug: string }[];

@@ -1,11 +1,11 @@
 {
-  "id": "d5_y_axel_2",
+  "id": "d6_y_axel_3",
   "site": "y",
   "from": "Axel Rook",
   "trigger": {
-    "dayMin": 5,
-    "dayMax": 5
+    "dayMin": 6,
+    "dayMax": 6
   },
-  "at": "19:46",
+  "at": "20:00",
   "body": "Parody accounts must say parody in the name. Looking into it."
 }

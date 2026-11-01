@@ -16,7 +16,7 @@ from: 1
 - [public] [[Mara Vey]]'s reporting covers the 400 layoffs; Vantor's People & Culture points her to Vantor Outplacement.
 - [public] On day 2 [[CityPulse]] reports $VANT up 8% since the layoffs; the fired staff get 30 days with an AI career coach. {{article:vantor-shares}}
 - [public] On day 4 [[Randall Crane]] criticises $VANT's layoffs: "Disgraceful." {{y:m4_vant_crane}}
-- [public] On day 5 Crane's impostor @randa11_crane praises $VANT, and traders pile in before anyone notices the spelling. {{y:m5_vant_impostor}}
+- [public] On day 6 Crane's impostor @randa11_crane praises $VANT, and traders pile in before anyone notices the spelling. {{y:m6_vant_impostor}}
 - [public] On day 16 $VANT falls 6%.
 - [public] On day 19 $VANT drops 3% on a lawsuit. {{y:m19_vant}}
 - [public] On day 21 the former-staff lawsuit has 4,000 names on it; Vantor says it is "reviewing the names". {{y:m21_vant_names}}

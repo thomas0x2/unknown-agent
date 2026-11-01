@@ -9,7 +9,7 @@ from: 7
 
 ## Mail
 
-- [public] 10:00 [[The Current]]'s morning newsletter, "Crane praises GeneralAI, three days after promising to send the machines back": Randall Crane called GeneralAI "an American success story" on Saturday. Below it, "This afternoon" and "Rent day". {{mail:current_newsletter@7}}
+- [public] 10:00 [[The Current]]'s morning newsletter, "Crane praises GeneralAI, three days after promising to send the machines back": Randall Crane called GeneralAI "an American success story" on Saturday. Below it, "This afternoon" and "Impostor". {{mail:current_newsletter@7}}
 - [hidden; public if posted_deepfake] 10:00 Because the deepfake went up last night, the newsletter leads its items with "Unverified": A picture of Candidate 2030 with the sex offender Kirschbaum spread on Y yesterday. We haven't been able to confirm where it came from, and we aren't publishing it.
 - [hidden; public if guru_subscriber] 10:00 [[Max Stryker]]'s "Your daily EMPIRE": one meal a day, standing up. {{mail:guru_newsletter@7}}
 - [hidden; public if shown d7_dex_live] 10:20 [[Dex Calloway]], "we're live": $COPE trades; the player's 50,000,000 COPE are locked until Oct 30 [known]. {{mail:d7_dex_live}}
